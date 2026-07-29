@@ -16,7 +16,7 @@ import {getTextFilterContent, waitForNetworkTab} from '../helpers/network-helper
 describe('The Extension API', () => {
   it('can reveal the network panel', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('empty.html');
-    const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
+    const extension = await loadExtension(devToolsPage, inspectedPage, 'TestExtension', undefined, undefined);
 
     await extension.evaluate(() => window.chrome.devtools.panels.network.show());
 
@@ -25,7 +25,7 @@ describe('The Extension API', () => {
 
   it('can reveal the network panel with filters', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('empty.html');
-    const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
+    const extension = await loadExtension(devToolsPage, inspectedPage, 'TestExtension', undefined, undefined);
 
     await extension.evaluate(() => window.chrome.devtools.panels.network.show({filter: 'foobar'}));
 

@@ -34,7 +34,7 @@ const configureAndCheckHeaderOverrides = async (devToolsPage: DevToolsPage, insp
   let responseHeaderSection = await devToolsPage.waitFor('[aria-label="Response headers"]', networkView);
 
   let row = await devToolsPage.waitFor('.row', responseHeaderSection);
-  assert.deepEqual(await getTextFromHeadersRow(row, devToolsPage), [
+  assert.deepEqual(await getTextFromHeadersRow(devToolsPage, row), [
     'cache-control',
     'max-age=3600',
   ]);
@@ -43,20 +43,20 @@ const configureAndCheckHeaderOverrides = async (devToolsPage: DevToolsPage, insp
     await devToolsPage.click('.header-name', {root: row});
     await devToolsPage.click('.header-value', {root: row});
     await devToolsPage.pasteText('Foo');
-    return (await getTextFromHeadersRow(row, devToolsPage))[1] === 'Foo';
+    return (await getTextFromHeadersRow(devToolsPage, row))[1] === 'Foo';
   });
 
   await devToolsPage.click('[title="Reveal header override definitions"]');
 
   const headersView = await devToolsPage.waitFor('devtools-sources-headers-view');
   const headersViewRow = await devToolsPage.waitFor('.row.padded', headersView);
-  assert.deepEqual(await getTextFromHeadersRow(headersViewRow, devToolsPage), [
+  assert.deepEqual(await getTextFromHeadersRow(devToolsPage, headersViewRow), [
     'cache-control',
     'Foo',
   ]);
 
-  await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
-  await selectRequestByName('hello.html', {}, devToolsPage);
+  await navigateToNetworkTab(devToolsPage, inspectedPage, 'hello.html');
+  await selectRequestByName(devToolsPage, 'hello.html', {});
   networkView = await devToolsPage.waitFor('.network-item-view');
   await devToolsPage.click('#tab-headers-component', {
     root: networkView,
@@ -64,7 +64,7 @@ const configureAndCheckHeaderOverrides = async (devToolsPage: DevToolsPage, insp
 
   responseHeaderSection = await devToolsPage.waitFor('[aria-label="Response headers"]');
   row = await devToolsPage.waitFor('.row.header-overridden', responseHeaderSection);
-  assert.deepEqual(await getTextFromHeadersRow(row, devToolsPage), ['cache-control', 'Foo']);
+  assert.deepEqual(await getTextFromHeadersRow(devToolsPage, row), ['cache-control', 'Foo']);
 };
 
 describe('The Network Request view', () => {
@@ -73,11 +73,11 @@ describe('The Network Request view', () => {
        devToolsPage,
        inspectedPage,
      }) => {
-       await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+       await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
 
-       await waitForSomeRequestsToAppear(SIMPLE_PAGE_REQUEST_NUMBER + 1, devToolsPage);
+       await waitForSomeRequestsToAppear(devToolsPage, SIMPLE_PAGE_REQUEST_NUMBER + 1);
 
-       await selectRequestByName('image.svg?id=0', {}, devToolsPage);
+       await selectRequestByName(devToolsPage, 'image.svg?id=0', {});
        let networkView = await devToolsPage.waitFor('.network-item-view');
        await devToolsPage.clickMoreTabsButton(networkView);
        await devToolsPage.click('[aria-label=Timing]');
@@ -100,7 +100,7 @@ describe('The Network Request view', () => {
                                                 devToolsPage,
                                                 inspectedPage,
                                               }) => {
-    await navigateToNetworkTab('embedded_requests.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'embedded_requests.html');
 
     // For the issue to manifest it's mandatory to load the stylesheet by absolute URL. A relative URL would be treated
     // relative to the data URL in the preview iframe and thus not work. We need to generate the URL because the
@@ -114,12 +114,12 @@ describe('The Network Request view', () => {
       (document.querySelector('iframe') as HTMLIFrameElement).src = dataUrl;
     }, dataUrl);
 
-    await waitForSomeRequestsToAppear(3, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 3);
 
     const names = await getAllRequestNames(devToolsPage);
     const name = names.find(v => v?.startsWith('data:'));
     assert.isOk(name);
-    await selectRequestByName(name, {}, devToolsPage);
+    await selectRequestByName(devToolsPage, name, {});
 
     // This stylesheets violates the iframe csp as well as the devtools csp
     const styleSrcErrors = [
@@ -143,7 +143,7 @@ describe('The Network Request view', () => {
   });
 
   it('permits inline styles on the preview tab.', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab('embedded_requests.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'embedded_requests.html');
     const contents = '<head><style>p { color: red; }</style></head><body><p>Content</p></body>';
     await devToolsPage.waitForFunction(async () => (await inspectedPage.page.$('iframe')) ?? undefined);
     const dataUrl = `data:text/html,${contents}`;
@@ -151,14 +151,14 @@ describe('The Network Request view', () => {
       (document.querySelector('iframe') as HTMLIFrameElement).src = dataUrl;
     }, dataUrl);
 
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
     const name = await devToolsPage.waitForFunction(async () => {
       const names = await getAllRequestNames(devToolsPage);
       const name = names.find(v => v?.startsWith('data:'));
       return name;
     });
-    await selectRequestByName(name, {}, devToolsPage);
+    await selectRequestByName(devToolsPage, name, {});
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('[aria-label=Preview].tabbed-pane-header-tab', {
@@ -176,10 +176,10 @@ describe('The Network Request view', () => {
   });
 
   const navigateToEventStreamMessages = async (devToolsPage: DevToolsPage, inspectedPage: InspectedPage) => {
-    await navigateToNetworkTab('eventstream.html', devToolsPage, inspectedPage);
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'eventstream.html');
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
-    await selectRequestByName('event-stream.rawresponse', {}, devToolsPage);
+    await selectRequestByName(devToolsPage, 'event-stream.rawresponse', {});
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('[aria-label=EventStream].tabbed-pane-header-tab', {
@@ -197,9 +197,9 @@ describe('The Network Request view', () => {
   }
 
   const waitForMessages = async (
+      devToolsPage: DevToolsPage,
       messagesView: puppeteer.ElementHandle<Element>,
       count: number,
-      devToolsPage: DevToolsPage,
       ) => {
     return await devToolsPage.waitForFunction(async () => {
       const messages = await devToolsPage.$$('.data-grid-data-grid-node', messagesView);
@@ -235,10 +235,10 @@ describe('The Network Request view', () => {
     assert.deepEqual(actualMessage.data, expectedMessage.data);
   };
   const assertBaseState = async (
-      messagesView: puppeteer.ElementHandle<Element>,
       devToolsPage: DevToolsPage,
+      messagesView: puppeteer.ElementHandle<Element>,
       ) => {
-    const messages = await waitForMessages(messagesView, 3, devToolsPage);
+    const messages = await waitForMessages(devToolsPage, messagesView, 3);
     assertMessage(messages[0], knownMessages[0]);
     assertMessage(messages[1], knownMessages[1]);
     assertMessage(messages[2], knownMessages[2]);
@@ -246,8 +246,8 @@ describe('The Network Request view', () => {
 
   it('stores EventSource filter', async ({devToolsPage, inspectedPage}) => {
     const messagesView = await navigateToEventStreamMessages(devToolsPage, inspectedPage);
-    let messages = await waitForMessages(messagesView, 3, devToolsPage);
-    await assertBaseState(messagesView, devToolsPage);
+    let messages = await waitForMessages(devToolsPage, messagesView, 3);
+    await assertBaseState(devToolsPage, messagesView);
 
     const inputSelector = '[aria-placeholder="Filter using regex (example: https?)';
 
@@ -256,44 +256,44 @@ describe('The Network Request view', () => {
     // "one"
     await filterInput.focus();
     await devToolsPage.typeText('one');
-    messages = await waitForMessages(messagesView, 1, devToolsPage);
+    messages = await waitForMessages(devToolsPage, messagesView, 1);
     assertMessage(messages[0], knownMessages[0]);
 
     // clear
     await devToolsPage.click('[title="Clear"]', {
       root: messagesView,
     });
-    await assertBaseState(messagesView, devToolsPage);
+    await assertBaseState(devToolsPage, messagesView);
 
     // "two"
     await filterInput.focus();
     await devToolsPage.typeText('two');
-    messages = await waitForMessages(messagesView, 1, devToolsPage);
+    messages = await waitForMessages(devToolsPage, messagesView, 1);
     assertMessage(messages[0], knownMessages[1]);
 
     // invalid regex
     await filterInput.focus();
     await devToolsPage.typeText('invalid(');
-    messages = await waitForMessages(messagesView, 0, devToolsPage);
+    messages = await waitForMessages(devToolsPage, messagesView, 0);
   });
 
   it('handles EventSource clear', async ({devToolsPage, inspectedPage}) => {
     const messagesView = await navigateToEventStreamMessages(devToolsPage, inspectedPage);
-    await assertBaseState(messagesView, devToolsPage);
+    await assertBaseState(devToolsPage, messagesView);
 
     await devToolsPage.click('[aria-label="Clear all"]', {
       root: messagesView,
     });
-    await waitForMessages(messagesView, 0, devToolsPage);
+    await waitForMessages(devToolsPage, messagesView, 0);
   });
 
   it('stores websocket filter', async ({devToolsPage, inspectedPage}) => {
     const navigateToWebsocketMessages = async (devToolsPage: DevToolsPage, inspectedPage: InspectedPage) => {
-      await navigateToNetworkTab('websocket.html', devToolsPage, inspectedPage);
+      await navigateToNetworkTab(devToolsPage, inspectedPage, 'websocket.html');
 
-      await waitForSomeRequestsToAppear(2, devToolsPage);
+      await waitForSomeRequestsToAppear(devToolsPage, 2);
 
-      await selectRequestByName('localhost', {}, devToolsPage);
+      await selectRequestByName(devToolsPage, 'localhost', {});
 
       const networkView = await devToolsPage.waitFor('.network-item-view');
       await devToolsPage.click('[aria-label=Messages].tabbed-pane-header-tab', {
@@ -304,7 +304,7 @@ describe('The Network Request view', () => {
     };
 
     let messagesView = await navigateToWebsocketMessages(devToolsPage, inspectedPage);
-    const waitForMessages = async (count: number, devToolsPage: DevToolsPage) => {
+    const waitForMessages = async (devToolsPage: DevToolsPage, count: number) => {
       return await devToolsPage.waitForFunction(async () => {
         const messages = await devToolsPage.$$('.data-column.resource-chunk-view-td', messagesView);
         if (messages.length !== count) {
@@ -315,18 +315,18 @@ describe('The Network Request view', () => {
         }));
       });
     };
-    let messages = await waitForMessages(4, devToolsPage);
+    let messages = await waitForMessages(devToolsPage, 4);
 
     const filterInput = await devToolsPage.waitFor(
         '[aria-label="Filter using regex (example: (web)?socket)"][role=textbox]', messagesView);
     await filterInput.focus();
     await devToolsPage.typeText('p[ai]ng');
 
-    messages = await waitForMessages(2, devToolsPage);
+    messages = await waitForMessages(devToolsPage, 2);
     assert.deepEqual(messages, ['ping', 'ping']);
 
     messagesView = await navigateToWebsocketMessages(devToolsPage, inspectedPage);
-    messages = await waitForMessages(2, devToolsPage);
+    messages = await waitForMessages(devToolsPage, 2);
 
     assert.deepEqual(messages, ['ping', 'ping']);
   });
@@ -344,11 +344,11 @@ describe('The Network Request view', () => {
   }
 
   it('shows request headers and payload', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab('headers-and-payload.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'headers-and-payload.html');
 
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
-    await selectRequestByName('image.svg?id=42&param=a%20b', {}, devToolsPage);
+    await selectRequestByName(devToolsPage, 'image.svg?id=42&param=a%20b', {});
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('[aria-label=Headers].tabbed-pane-header-tab', {
@@ -435,7 +435,7 @@ describe('The Network Request view', () => {
       const section = await devToolsPage.waitFor(`[aria-label="${sectionContent.aria}"]`);
       const rows = await devToolsPage.$$('.row', section);
       const rowsText =
-          await (await Promise.all(rows.map(async row => await getTextFromHeadersRow(row, devToolsPage)))).flat();
+          await (await Promise.all(rows.map(async row => await getTextFromHeadersRow(devToolsPage, row)))).flat();
       assertOutlineMatches(sectionContent.rows, rowsText);
     }
 
@@ -472,11 +472,11 @@ describe('The Network Request view', () => {
   });
 
   it('shows raw headers', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab('headers-and-payload.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'headers-and-payload.html');
 
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
-    await selectRequestByName('image.svg?id=42&param=a%20b', {}, devToolsPage);
+    await selectRequestByName(devToolsPage, 'image.svg?id=42&param=a%20b', {});
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('[aria-label=Headers].tabbed-pane-header-tab', {
@@ -563,17 +563,17 @@ describe('The Network Request view', () => {
       const section = await devToolsPage.waitFor(`[aria-label="${sectionContent.aria}"]`);
       const rows = await devToolsPage.$$('.row', section);
       const rowsText =
-          await (await Promise.all(rows.map(async row => await getTextFromHeadersRow(row, devToolsPage)))).flat();
+          await (await Promise.all(rows.map(async row => await getTextFromHeadersRow(devToolsPage, row)))).flat();
       assertOutlineMatches(sectionContent.rows, rowsText);
     }
   });
 
   it('payload tab selection is preserved', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab('headers-and-payload.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'headers-and-payload.html');
 
-    await waitForSomeRequestsToAppear(3, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 3);
 
-    await selectRequestByName('image.svg?id=42&param=a%20b', {}, devToolsPage);
+    await selectRequestByName(devToolsPage, 'image.svg?id=42&param=a%20b', {});
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('[aria-label=Payload].tabbed-pane-header-tab', {
@@ -581,24 +581,24 @@ describe('The Network Request view', () => {
     });
     await devToolsPage.waitFor('[aria-label=Payload].tabbed-pane-header-tab[aria-selected=true]', networkView);
 
-    await selectRequestByName('image.svg', {}, devToolsPage);
+    await selectRequestByName(devToolsPage, 'image.svg', {});
     await devToolsPage.waitForElementWithTextContent('foogamma');
   });
 
   it('no duplicate payload tab on headers update', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab('requests.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'requests.html');
     void inspectedPage.evaluate(() => fetch('image.svg?delay'));
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
-    await selectRequestByName('image.svg?delay', {}, devToolsPage);
+    await selectRequestByName(devToolsPage, 'image.svg?delay', {});
     await inspectedPage.evaluate(async () => await fetch('/?send_delayed'));
   });
 
   it('can create header overrides via request\'s context menu', async ({devToolsPage, inspectedPage}) => {
     await devToolsPage.setupOverridesFSMocks();
     await devToolsPage.useSoftMenu();
-    await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
-    await selectRequestByName('hello.html', {button: 'right'}, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'hello.html');
+    await selectRequestByName(devToolsPage, 'hello.html', {button: 'right'});
 
     await devToolsPage.click('aria/Override headers');
 
@@ -607,8 +607,8 @@ describe('The Network Request view', () => {
 
   it('can create header overrides via header\'s pencil icon', async ({devToolsPage, inspectedPage}) => {
     await devToolsPage.setupOverridesFSMocks();
-    await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
-    await selectRequestByName('hello.html', {}, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'hello.html');
+    await selectRequestByName(devToolsPage, 'hello.html', {});
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('#tab-headers-component', {
@@ -620,11 +620,11 @@ describe('The Network Request view', () => {
   });
 
   it('can search by headers name', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab('headers-and-payload.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'headers-and-payload.html');
 
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
-    await selectRequestByName('image.svg?id=42&param=a%20b', {}, devToolsPage);
+    await selectRequestByName(devToolsPage, 'image.svg?id=42&param=a%20b', {});
     const SEARCH_QUERY = '[aria-label="Find"]';
     const SEARCH_RESULT = '.search-result';
 
@@ -663,15 +663,15 @@ describe('The Network Request view', () => {
 
     async function setupPreviewTest(
         devToolsPage: DevToolsPage, inspectedPage: InspectedPage, url: string, resourceName?: string) {
-      await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
+      await navigateToNetworkTab(devToolsPage, inspectedPage, 'hello.html');
       await inspectedPage.evaluate(url => fetch(url), url);
-      await waitForSomeRequestsToAppear(3, devToolsPage);
+      await waitForSomeRequestsToAppear(devToolsPage, 3);
 
       if (!resourceName) {
         resourceName = url.length > 20 ? url.substring(0, 19) + '…' : url;
       }
 
-      await selectRequestByName(resourceName, {}, devToolsPage);
+      await selectRequestByName(devToolsPage, resourceName, {});
 
       const networkView = await devToolsPage.waitFor('.network-item-view');
       await devToolsPage.click('[aria-label=Preview].tabbed-pane-header-tab', {

@@ -6,7 +6,7 @@ import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('The WebAudio Panel', () => {
   it('Listens for audio contexts', async ({devToolsPage, inspectedPage}) => {
-    await openPanelViaMoreTools('WebAudio', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'WebAudio');
     await devToolsPage.waitFor('div[aria-label="WebAudio panel"]');
 
     await inspectedPage.goToResource('webaudio/default.html');

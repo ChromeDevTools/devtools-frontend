@@ -54,9 +54,9 @@ describe('Hide issues menu', () => {
 
     await navigateToIssuesTab(devToolsPage);
     const issueTitle = 'Deprecated feature used';
-    const issueHeader = await getIssueHeaderByTitle(issueTitle, devToolsPage);
+    const issueHeader = await getIssueHeaderByTitle(devToolsPage, issueTitle);
     assert.isOk(issueHeader);
-    const hideIssuesMenu = await getHideIssuesMenu(issueHeader, devToolsPage);
+    const hideIssuesMenu = await getHideIssuesMenu(devToolsPage, issueHeader);
     let menuDisplay = await hideIssuesMenu.evaluate(
         node => window.getComputedStyle(node as HTMLElement).getPropertyValue('visibility'));
     assert.strictEqual(menuDisplay, 'hidden');
@@ -79,9 +79,9 @@ describe('Hide issues menu', () => {
     });
     await navigateToIssuesTab(devToolsPage);
     const issueTitle = 'Ensure credentialed requests aren’t sent to CORS resources with origin wildcards';
-    const issueHeader = await getIssueHeaderByTitle(issueTitle, devToolsPage);
+    const issueHeader = await getIssueHeaderByTitle(devToolsPage, issueTitle);
     await issueHeader!.hover();
-    const hideIssuesMenu = await getHideIssuesMenu(undefined, devToolsPage);
+    const hideIssuesMenu = await getHideIssuesMenu(devToolsPage, undefined);
     await hideIssuesMenu.click();
     const menuItem = await getHideIssuesMenuItem(devToolsPage);
     const content = await menuItem!.evaluate(node => node.textContent);
@@ -94,9 +94,9 @@ describe('Hide issues menu', () => {
     await navigateToIssuesTab(devToolsPage);
 
     const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
-    const issueHeader = await getIssueHeaderByTitle(issueTitle, devToolsPage);
+    const issueHeader = await getIssueHeaderByTitle(devToolsPage, issueTitle);
     await issueHeader!.hover();
-    const hideIssuesMenuBtn = await getHideIssuesMenu(undefined, devToolsPage);
+    const hideIssuesMenuBtn = await getHideIssuesMenu(devToolsPage, undefined);
     await hideIssuesMenuBtn.click();
     const menuItem = await getHideIssuesMenuItem(devToolsPage);
     await devToolsPage.waitFor(ISSUE);
@@ -109,9 +109,9 @@ describe('Hide issues menu', () => {
     await navigateToIssuesTab(devToolsPage);
 
     const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
-    const issueHeader = await getIssueHeaderByTitle(issueTitle, devToolsPage);
+    const issueHeader = await getIssueHeaderByTitle(devToolsPage, issueTitle);
     await issueHeader!.hover();
-    const hideIssuesMenuBtn = await getHideIssuesMenu(undefined, devToolsPage);
+    const hideIssuesMenuBtn = await getHideIssuesMenu(devToolsPage, undefined);
     await hideIssuesMenuBtn.click();
     const menuItem = await getHideIssuesMenuItem(devToolsPage);
     await menuItem!.click();
@@ -127,9 +127,9 @@ describe('Hide issues menu', () => {
        await navigateToIssuesTab(devToolsPage);
 
        const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
-       const issueHeader = await getIssueHeaderByTitle(issueTitle, devToolsPage);
+       const issueHeader = await getIssueHeaderByTitle(devToolsPage, issueTitle);
        await issueHeader!.hover();
-       let hideIssuesMenuBtn = await getHideIssuesMenu(undefined, devToolsPage);
+       let hideIssuesMenuBtn = await getHideIssuesMenu(devToolsPage, undefined);
        await hideIssuesMenuBtn.click();
        const menuItem = await getHideIssuesMenuItem(devToolsPage);
        await menuItem!.click();
@@ -141,9 +141,9 @@ describe('Hide issues menu', () => {
        const body = await getHiddenIssuesRowBody(devToolsPage);
        isHidden = await body!.evaluate(node => node.classList.contains('hidden'));
        assert.isFalse(isHidden);
-       const hiddenIssueHeader = await getIssueHeaderByTitle(issueTitle, devToolsPage);
+       const hiddenIssueHeader = await getIssueHeaderByTitle(devToolsPage, issueTitle);
        await hiddenIssueHeader!.hover();
-       hideIssuesMenuBtn = await getHideIssuesMenu(undefined, devToolsPage);
+       hideIssuesMenuBtn = await getHideIssuesMenu(devToolsPage, undefined);
        await hideIssuesMenuBtn.click();
        await getUnhideIssuesMenuItem(devToolsPage);
      });
@@ -153,9 +153,9 @@ describe('Hide issues menu', () => {
     await navigateToIssuesTab(devToolsPage);
 
     const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
-    const issueHeader = await getIssueHeaderByTitle(issueTitle, devToolsPage);
+    const issueHeader = await getIssueHeaderByTitle(devToolsPage, issueTitle);
     await issueHeader!.hover();
-    let hideIssuesMenuBtn = await getHideIssuesMenu(undefined, devToolsPage);
+    let hideIssuesMenuBtn = await getHideIssuesMenu(devToolsPage, undefined);
     await hideIssuesMenuBtn.click();
     const menuItem = await getHideIssuesMenuItem(devToolsPage);
     await menuItem!.click();
@@ -167,9 +167,9 @@ describe('Hide issues menu', () => {
     const body = await getHiddenIssuesRowBody(devToolsPage);
     isHidden = await body!.evaluate(node => node.classList.contains('hidden'));
     assert.isFalse(isHidden);
-    const hiddenIssueHeader = await getIssueHeaderByTitle(issueTitle, devToolsPage);
+    const hiddenIssueHeader = await getIssueHeaderByTitle(devToolsPage, issueTitle);
     await hiddenIssueHeader!.hover();
-    hideIssuesMenuBtn = await getHideIssuesMenu(undefined, devToolsPage);
+    hideIssuesMenuBtn = await getHideIssuesMenu(devToolsPage, undefined);
     await hideIssuesMenuBtn.click();
     const unhideMenuItem = await getUnhideIssuesMenuItem(devToolsPage);
     await unhideMenuItem?.click();

@@ -106,7 +106,7 @@ export const selectEdit = async (devToolsPage: DevToolsPage) => {
   await selectDeviceItem(devToolsPage, 'Edit');
 };
 
-export const selectDevice = async (name: string, devToolsPage: DevToolsPage) => {
+export const selectDevice = async (devToolsPage: DevToolsPage, name: string) => {
   await selectDeviceItem(devToolsPage, name);
 };
 
@@ -135,7 +135,7 @@ export const waitForZoomDropDownNotExpanded = async (devToolsPage: DevToolsPage)
   await waitForNotExpanded(ZOOM_LIST_DROPDOWN_SELECTOR, devToolsPage);
 };
 
-export const clickDevicePosture = async (name: string, devToolsPage: DevToolsPage) => {
+export const clickDevicePosture = async (devToolsPage: DevToolsPage, name: string) => {
   const toolbar = await devToolsPage.waitFor(DEVICE_TOOLBAR_SELECTOR);
   const element = await devToolsPage.waitFor(DEVICE_POSTURE_DROPDOWN_SELECTOR, toolbar);
   await selectOption(devToolsPage, element, name);

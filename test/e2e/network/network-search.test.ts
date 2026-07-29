@@ -88,10 +88,10 @@ describe('The Network Tab search', function() {
                                   devToolsPage: DevToolsPage,
                                   inspectedPage: InspectedPage,
                                 }) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await inspectedPage.evaluate(
         () => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`).then(r => r.text()))));
-    await waitForSomeRequestsToAppear(6, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 6);
 
     await devToolsPage.summonSearchBox();
     await devToolsPage.waitFor('.search-toolbar-input');
@@ -107,10 +107,10 @@ describe('The Network Tab search', function() {
                                                                 devToolsPage: DevToolsPage,
                                                                 inspectedPage: InspectedPage,
                                                               }) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await inspectedPage.evaluate(
         () => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`).then(r => r.text()))));
-    await waitForSomeRequestsToAppear(6, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 6);
 
     await devToolsPage.summonSearchBox();
     await devToolsPage.waitFor('.search-toolbar-input');
@@ -126,10 +126,10 @@ describe('The Network Tab search', function() {
                                                               devToolsPage: DevToolsPage,
                                                               inspectedPage: InspectedPage,
                                                             }) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await inspectedPage.evaluate(
         () => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`).then(r => r.text()))));
-    await waitForSomeRequestsToAppear(6, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 6);
 
     await devToolsPage.summonSearchBox();
     await devToolsPage.waitFor('.search-toolbar-input');
@@ -143,10 +143,10 @@ describe('The Network Tab search', function() {
                                                                devToolsPage: DevToolsPage,
                                                                inspectedPage: InspectedPage,
                                                              }) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await inspectedPage.evaluate(
         () => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`).then(r => r.text()))));
-    await waitForSomeRequestsToAppear(6, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 6);
 
     await devToolsPage.summonSearchBox();
     await devToolsPage.waitFor('.search-toolbar-input');
@@ -161,10 +161,10 @@ describe('The Network Tab search', function() {
                                                                                   devToolsPage: DevToolsPage,
                                                                                   inspectedPage: InspectedPage,
                                                                                 }) => {
-        await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+        await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
         await inspectedPage.evaluate(
             () => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`).then(r => r.text()))));
-        await waitForSomeRequestsToAppear(6, devToolsPage);
+        await waitForSomeRequestsToAppear(devToolsPage, 6);
 
         await devToolsPage.summonSearchBox();
         await devToolsPage.waitFor('.search-toolbar-input');

@@ -15,7 +15,7 @@ describe('The Elements tab', () => {
     await expandSelectedNodeRecursively(devToolsPage);
 
     async function expandIframeContent() {
-      await waitForAndClickTreeElementWithPartialText('#document', devToolsPage);
+      await waitForAndClickTreeElementWithPartialText(devToolsPage, '#document');
       // #document cannot be expanded. Using keyboard nav as a workaround.
       await devToolsPage.click('.selected[role="treeitem"]', {clickOptions: {count: 2}});
       await devToolsPage.pressKey('ArrowDown');
@@ -26,19 +26,19 @@ describe('The Elements tab', () => {
     await expandIframeContent();
 
     // Part of the iframe URL.
-    await waitForElementWithPartialText('devtools.oopif.test', devToolsPage);
+    await waitForElementWithPartialText(devToolsPage, 'devtools.oopif.test');
     // iframe content.
-    await waitForElementWithPartialText('Hello World', devToolsPage);
+    await waitForElementWithPartialText(devToolsPage, 'Hello World');
 
     // Navigate to a local frame.
     const frame = await inspectedPage.page.waitForFrame(frame => frame.url().includes('devtools.oopif.test'));
     await frame.goto(`${inspectedPage.getResourcesPath('127.0.0.1')}/empty.html`);
-    await waitForStyleRule('iframe', devToolsPage);
+    await waitForStyleRule(devToolsPage, 'iframe');
 
     await expandIframeContent();
     // Part of the iframe URL.
-    await waitForElementWithPartialText('127.0.0.1', devToolsPage);
+    await waitForElementWithPartialText(devToolsPage, '127.0.0.1');
     // iframe content.
-    await waitForElementWithPartialText('Hello World', devToolsPage);
+    await waitForElementWithPartialText(devToolsPage, 'Hello World');
   });
 });

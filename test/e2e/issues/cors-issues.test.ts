@@ -22,13 +22,13 @@ describe('CORS issues', () => {
     });
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
-    const issueElement = await getIssueByTitle('Ensure CORS response header values are valid', devToolsPage);
+    const issueElement = await getIssueByTitle(devToolsPage, 'Ensure CORS response header values are valid');
     assert.isOk(issueElement);
     const section =
-        await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+        await getResourcesElement(devToolsPage, 'requests', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '3 requests');
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [
       [
         'Request',
@@ -63,7 +63,7 @@ describe('CORS issues', () => {
         '',
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 
   it('should display credentialed+wildcard CORS issues with the correct affected resources',
@@ -81,13 +81,13 @@ describe('CORS issues', () => {
        await navigateToIssuesTab(devToolsPage);
        await expandIssue(devToolsPage);
        const issueElement = await getIssueByTitle(
-           'Ensure credentialed requests aren’t sent to CORS resources with origin wildcards', devToolsPage);
+           devToolsPage, 'Ensure credentialed requests aren’t sent to CORS resources with origin wildcards');
        assert.isOk(issueElement);
        const section =
-           await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+           await getResourcesElement(devToolsPage, 'request', issueElement, '.cors-issue-affected-resource-label');
        const text = await section.label.evaluate(el => el.textContent);
        assert.strictEqual(text, '1 request');
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          [
            'Request',
@@ -100,7 +100,7 @@ describe('CORS issues', () => {
            '',
          ],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display invalid CORS preflight response codes with the correct affected resources',
@@ -129,13 +129,13 @@ describe('CORS issues', () => {
        });
        await navigateToIssuesTab(devToolsPage);
        await expandIssue(devToolsPage);
-       const issueElement = await getIssueByTitle('Ensure preflight responses are valid', devToolsPage);
+       const issueElement = await getIssueByTitle(devToolsPage, 'Ensure preflight responses are valid');
        assert.isOk(issueElement);
        const section =
-           await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+           await getResourcesElement(devToolsPage, 'requests', issueElement, '.cors-issue-affected-resource-label');
        const text = await section.label.evaluate(el => el.textContent);
        assert.strictEqual(text, '2 requests');
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          [
            'Request',
@@ -156,7 +156,7 @@ describe('CORS issues', () => {
            'Response to preflight was a redirect',
          ],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display CORS ACAO mismatches with the correct affected resources',
@@ -183,13 +183,13 @@ describe('CORS issues', () => {
        await navigateToIssuesTab(devToolsPage);
        await expandIssue(devToolsPage);
        const issueElement =
-           await getIssueByTitle('Ensure CORS requesting origin matches resource’s allowed origin', devToolsPage);
+           await getIssueByTitle(devToolsPage, 'Ensure CORS requesting origin matches resource’s allowed origin');
        assert.isOk(issueElement);
        const section =
-           await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+           await getResourcesElement(devToolsPage, 'requests', issueElement, '.cors-issue-affected-resource-label');
        const text = await section.label.evaluate(el => el.textContent);
        assert.strictEqual(text, '2 requests');
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          [
            'Request',
@@ -213,7 +213,7 @@ describe('CORS issues', () => {
            'https://devtools.oopif.test',
          ],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display invalid CORS ACAC values with the correct affected resources',
@@ -240,13 +240,13 @@ describe('CORS issues', () => {
        await navigateToIssuesTab(devToolsPage);
        await expandIssue(devToolsPage);
        const issueElement =
-           await getIssueByTitle('Ensure CORS requests include credentials only when allowed', devToolsPage);
+           await getIssueByTitle(devToolsPage, 'Ensure CORS requests include credentials only when allowed');
        assert.isOk(issueElement);
        const section =
-           await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+           await getResourcesElement(devToolsPage, 'requests', issueElement, '.cors-issue-affected-resource-label');
        const text = await section.label.evaluate(el => el.textContent);
        assert.strictEqual(text, '2 requests');
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          [
            'Request',
@@ -267,7 +267,7 @@ describe('CORS issues', () => {
            'false',
          ],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display CORS requests using disallowed methods with the correct affected resources',
@@ -288,13 +288,13 @@ describe('CORS issues', () => {
        });
        await navigateToIssuesTab(devToolsPage);
        await expandIssue(devToolsPage);
-       const issueElement = await getIssueByTitle('Ensure CORS request uses allowed method', devToolsPage);
+       const issueElement = await getIssueByTitle(devToolsPage, 'Ensure CORS request uses allowed method');
        assert.isOk(issueElement);
        const section =
-           await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+           await getResourcesElement(devToolsPage, 'request', issueElement, '.cors-issue-affected-resource-label');
        const text = await section.label.evaluate(el => el.textContent);
        assert.strictEqual(text, '1 request');
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          [
            'Request',
@@ -309,7 +309,7 @@ describe('CORS issues', () => {
            'PUT',
          ],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display CORS requests using disallowed headers with the correct affected resources',
@@ -329,13 +329,13 @@ describe('CORS issues', () => {
        });
        await navigateToIssuesTab(devToolsPage);
        await expandIssue(devToolsPage);
-       const issueElement = await getIssueByTitle('Ensure CORS request includes only allowed headers', devToolsPage);
+       const issueElement = await getIssueByTitle(devToolsPage, 'Ensure CORS request includes only allowed headers');
        assert.isOk(issueElement);
        const section =
-           await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+           await getResourcesElement(devToolsPage, 'request', issueElement, '.cors-issue-affected-resource-label');
        const text = await section.label.evaluate(el => el.textContent);
        assert.strictEqual(text, '1 request');
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
 
        const expectedTableRows = [
          [
@@ -351,7 +351,7 @@ describe('CORS issues', () => {
            'x-foo',
          ],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display CORS requests redirecting to credentialed URLs', async ({devToolsPage, inspectedPage}) => {
@@ -368,13 +368,13 @@ describe('CORS issues', () => {
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
     const issueElement =
-        await getIssueByTitle('Ensure CORS requests aren’t redirected to URLs containing credentials', devToolsPage);
+        await getIssueByTitle(devToolsPage, 'Ensure CORS requests aren’t redirected to URLs containing credentials');
     assert.isOk(issueElement);
     const section =
-        await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+        await getResourcesElement(devToolsPage, 'request', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [
       [
         'Request',
@@ -385,7 +385,7 @@ describe('CORS issues', () => {
         'blocked',
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 
   it('should display CORS issues that are disallowed by the mode', async ({devToolsPage, inspectedPage}) => {
@@ -400,13 +400,13 @@ describe('CORS issues', () => {
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
     const issueElement = await getIssueByTitle(
-        'Ensure only same-origin resources are fetched with same-origin request mode', devToolsPage);
+        devToolsPage, 'Ensure only same-origin resources are fetched with same-origin request mode');
     assert.isOk(issueElement);
     const section =
-        await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+        await getResourcesElement(devToolsPage, 'request', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [
       [
         'Request',
@@ -421,7 +421,7 @@ describe('CORS issues', () => {
         /.*:\d+/,
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 
   it('should display CORS issues that are unsupported by the scheme', async ({devToolsPage, inspectedPage}) => {
@@ -437,13 +437,13 @@ describe('CORS issues', () => {
     });
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
-    const issueElement = await getIssueByTitle('Ensure CORS requests are made on supported schemes', devToolsPage);
+    const issueElement = await getIssueByTitle(devToolsPage, 'Ensure CORS requests are made on supported schemes');
     assert.isOk(issueElement);
     const section =
-        await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+        await getResourcesElement(devToolsPage, 'request', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [
       [
         'Request',
@@ -460,7 +460,7 @@ describe('CORS issues', () => {
         'webdav',
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 
   it('should display CORS issues that are misconfiguring the redirect mode', async ({devToolsPage, inspectedPage}) => {
@@ -476,13 +476,13 @@ describe('CORS issues', () => {
     });
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
-    const issueElement = await getIssueByTitle('Ensure no-cors requests configure redirect mode follow', devToolsPage);
+    const issueElement = await getIssueByTitle(devToolsPage, 'Ensure no-cors requests configure redirect mode follow');
     assert.isOk(issueElement);
     const section =
-        await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+        await getResourcesElement(devToolsPage, 'request', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [
       [
         'Request',
@@ -495,6 +495,6 @@ describe('CORS issues', () => {
         /.*:\d+/,
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 });

@@ -19,16 +19,16 @@ describe('The Console Tab', function() {
     // eslint-disable-next-line no-console
     await inspectedPage.evaluate(() => console.log('target'));
 
-    await typeIntoConsoleAndWaitForResult('1;', 1, undefined, devToolsPage);
-    await typeIntoConsoleAndWaitForResult('2;', 1, undefined, devToolsPage);
-    await typeIntoConsoleAndWaitForResult('3;', 1, undefined, devToolsPage);
+    await typeIntoConsoleAndWaitForResult(devToolsPage, '1;', 1, undefined);
+    await typeIntoConsoleAndWaitForResult(devToolsPage, '2;', 1, undefined);
+    await typeIntoConsoleAndWaitForResult(devToolsPage, '3;', 1, undefined);
 
     const evaluateResults = await devToolsPage.evaluate(() => {
       return Array.from(document.querySelectorAll('.console-user-command-result')).map(node => node.textContent);
     });
     assert.deepEqual(evaluateResults, ['1', '2', '3'], 'did not find expected output in the console');
 
-    await typeIntoConsole('console.clear();', devToolsPage);
+    await typeIntoConsole(devToolsPage, 'console.clear();');
 
     await devToolsPage.waitForFunction(async () => {
       return await devToolsPage.evaluate(() => document.querySelectorAll('.console-user-command-result').length === 1);

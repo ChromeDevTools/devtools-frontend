@@ -29,7 +29,7 @@ describe('Sources Tab', () => {
 
     await step('wait for the marker console message to show up', async () => {
       await navigateToConsoleTab(devToolsPage);
-      await waitForLastConsoleMessageToHaveContent('Console marker the test can wait for', devToolsPage);
+      await waitForLastConsoleMessageToHaveContent(devToolsPage, 'Console marker the test can wait for');
     });
 
     await step('click the pause button', async () => {

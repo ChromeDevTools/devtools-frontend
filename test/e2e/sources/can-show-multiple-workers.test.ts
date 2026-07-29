@@ -13,11 +13,11 @@ import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
 function createSelectorsForFile(fileName: string, inspectedPage: InspectedPage) {
-  return createSelectorsForWorkerFile(fileName, 'test/e2e/resources/sources', fileName, 1, inspectedPage);
+  return createSelectorsForWorkerFile(inspectedPage, fileName, 'test/e2e/resources/sources', fileName, 1);
 }
 
 async function openNestedWorkerFile(selectors: NestedFileSelector, devToolsPage: DevToolsPage) {
-  const workerFile = await expandFileTree(selectors, devToolsPage);
+  const workerFile = await expandFileTree(devToolsPage, selectors);
 
   return await workerFile.evaluate(node => node.textContent);
 }

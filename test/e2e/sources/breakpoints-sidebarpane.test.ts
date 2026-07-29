@@ -40,14 +40,14 @@ describe('The Breakpoints Sidebar', () => {
       const expectedResolvedLineNumber = 17;
       const originalSource = 'reload-breakpoints-with-source-maps-source1.js';
 
-      await openSourceCodeEditorForFile(
-          originalSource, 'reload-breakpoints-with-source-maps.html', devToolsPage, inspectedPage);
+      await openSourceCodeEditorForFile(devToolsPage, inspectedPage, originalSource,
+                                        'reload-breakpoints-with-source-maps.html');
 
       // Set a breakpoint on the original source.
-      const breakpointLineHandle = await getLineNumberElement(setBreakpointLine, devToolsPage);
+      const breakpointLineHandle = await getLineNumberElement(devToolsPage, setBreakpointLine);
       assert.isOk(breakpointLineHandle);
       await devToolsPage.clickElement(breakpointLineHandle);
-      await devToolsPage.waitForFunction(async () => await isBreakpointSet(expectedResolvedLineNumber, devToolsPage));
+      await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, expectedResolvedLineNumber));
 
       // Check if the breakpoint sidebar correctly shows the original source breakpoint.
       await testBreakpointContent(originalSource, expectedResolvedLineNumber, devToolsPage);
@@ -63,10 +63,10 @@ describe('The Breakpoints Sidebar', () => {
     const fileName = 'click-breakpoint.js';
 
     async function setupBreakpoints(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-      await openSourceCodeEditorForFile(fileName, 'click-breakpoint.html', devToolsPage, inspectedPage);
+      await openSourceCodeEditorForFile(devToolsPage, inspectedPage, fileName, 'click-breakpoint.html');
 
       for (const location of expectedLocations) {
-        await addBreakpointForLine(location, devToolsPage);
+        await addBreakpointForLine(devToolsPage, location);
       }
 
       await devToolsPage.waitForMany(BREAKPOINT_ITEM_SELECTOR, 3);
@@ -104,8 +104,8 @@ describe('The Breakpoints Sidebar', () => {
 
   describe('for wasm files', () => {
     it('shows the correct code snippets', async ({devToolsPage, inspectedPage}) => {
-      await openSourceCodeEditorForFile('memory.wasm', 'wasm/memory.html', devToolsPage, inspectedPage);
-      await addBreakpointForLine('0x037', devToolsPage);
+      await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'memory.wasm', 'wasm/memory.html');
+      await addBreakpointForLine(devToolsPage, '0x037');
 
       const codeSnippetHandle = await devToolsPage.waitFor(`${BREAKPOINT_ITEM_SELECTOR} ${CODE_SNIPPET_SELECTOR}`);
       const actualCodeSnippet = await extractTextContentIfConnected(codeSnippetHandle);
@@ -119,16 +119,16 @@ describe('The Breakpoints Sidebar', () => {
 
   it('will keep the focus on breakpoint items whose location has changed after disabling',
      async ({devToolsPage, inspectedPage}) => {
-       await openSourceCodeEditorForFile(
-           'breakpoint-on-comment.js', 'breakpoint-on-comment.html', devToolsPage, inspectedPage);
+       await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'breakpoint-on-comment.js',
+                                         'breakpoint-on-comment.html');
 
        // Set a breakpoint on a comment and expect it to slide.
        const originalBreakpointLine = 3;
        const slidBreakpointLine = 5;
-       const breakpointLine = await getLineNumberElement(originalBreakpointLine, devToolsPage);
+       const breakpointLine = await getLineNumberElement(devToolsPage, originalBreakpointLine);
        assert.isOk(breakpointLine);
        await devToolsPage.clickElement(breakpointLine);
-       await devToolsPage.waitForFunction(async () => await isBreakpointSet(slidBreakpointLine, devToolsPage));
+       await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, slidBreakpointLine));
 
        const breakpointView = await devToolsPage.$(BREAKPOINT_VIEW_COMPONENT);
        assert.isOk(breakpointView);
@@ -142,7 +142,7 @@ describe('The Breakpoints Sidebar', () => {
        await devToolsPage.clickElement(checkbox);
 
        // Wait until the click has propagated: the line is updated with the new location.
-       await devToolsPage.waitForFunction(async () => await isBreakpointSet(originalBreakpointLine, devToolsPage));
+       await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, originalBreakpointLine));
        let breakpointItemTextContent: string|null = null;
        await devToolsPage.waitForFunction(async () => {
          const updatedBreakpointItem = await devToolsPage.waitFor(FIRST_BREAKPOINT_ITEM_SELECTOR, breakpointView);

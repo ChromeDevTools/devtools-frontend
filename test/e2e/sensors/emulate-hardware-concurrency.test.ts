@@ -22,7 +22,7 @@ async function waitForChangedConcurrency(
 
 describe('hardwareConcurrency emulation on Sensors panel', () => {
   it('can emulate navigator.hardwareConcurrency', async ({devToolsPage, inspectedPage}) => {
-    await openPanelViaMoreTools('Sensors', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Sensors');
     let concurrency = await waitForChangedConcurrency(undefined, devToolsPage, inspectedPage);
 
     // Wait for the checkbox to load

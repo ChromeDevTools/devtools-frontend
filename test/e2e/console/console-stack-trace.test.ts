@@ -54,7 +54,7 @@ describe('The Console Tab', () => {
   });
 
   it('shows messages with stack traces containing ignore-listed frames', async ({devToolsPage, inspectedPage}) => {
-    await openSettingsTab('Ignore list', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Ignore list');
     await devToolsPage.click(ADD_FILENAME_PATTERN_BUTTON);
     await devToolsPage.typeText('ignoreMe.js');
     await devToolsPage.click(ADD_BUTTON);

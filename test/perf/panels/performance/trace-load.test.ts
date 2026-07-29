@@ -10,7 +10,7 @@ import type {DevToolsPage} from '../../../e2e/shared/frontend-helper.js';
 import type {InspectedPage} from '../../../e2e/shared/target-helper.js';
 import {measurements} from '../../report/report.js';
 async function timeFixture(fixture: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<number> {
-  await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
+  await navigateToPerformanceTab(devToolsPage, inspectedPage, undefined);
   await devToolsPage.waitFor('.widget.panel.timeline');
 
   return await uploadTraceFile(devToolsPage, `front_end/panels/timeline/fixtures/traces/${fixture}.gz`);

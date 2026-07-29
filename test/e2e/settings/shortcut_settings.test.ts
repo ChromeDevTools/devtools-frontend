@@ -37,22 +37,22 @@ import {
 
 describe('Shortcuts Settings tab', () => {
   it('should update when the shortcuts preset is changed ', async ({devToolsPage}) => {
-    await openSettingsTab('Shortcuts', devToolsPage);
-    await selectKeyboardShortcutPreset('vsCode', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Shortcuts');
+    await selectKeyboardShortcutPreset(devToolsPage, 'vsCode');
 
     await waitForVSCodeShortcutPreset(devToolsPage);
 
-    const shortcutsShortcuts = await shortcutsForAction('Show Shortcuts', devToolsPage);
-    const settingsShortcuts = await shortcutsForAction('Settings', devToolsPage);
-    const pauseShortcuts = await shortcutsForAction('Pause script execution', devToolsPage);
+    const shortcutsShortcuts = await shortcutsForAction(devToolsPage, 'Show Shortcuts');
+    const settingsShortcuts = await shortcutsForAction(devToolsPage, 'Settings');
+    const pauseShortcuts = await shortcutsForAction(devToolsPage, 'Pause script execution');
     assert.deepEqual(shortcutsShortcuts, VS_CODE_SHORTCUTS_SHORTCUTS);
     assert.deepEqual(settingsShortcuts, VS_CODE_SETTINGS_SHORTCUTS);
     assert.deepEqual(pauseShortcuts, VS_CODE_PAUSE_SHORTCUTS);
   });
 
   it('should apply new shortcuts when the preset is changed', async ({devToolsPage}) => {
-    await openSettingsTab('Shortcuts', devToolsPage);
-    await selectKeyboardShortcutPreset('vsCode', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Shortcuts');
+    await selectKeyboardShortcutPreset(devToolsPage, 'vsCode');
 
     await waitForVSCodeShortcutPreset(devToolsPage);
 
@@ -72,16 +72,16 @@ describe('Shortcuts Settings tab', () => {
   });
 
   it('should allow users to open the shortcut editor and view the current shortcut', async ({devToolsPage}) => {
-    await openSettingsTab('Shortcuts', devToolsPage);
-    await editShortcutListItem('Toggle Console', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Shortcuts');
+    await editShortcutListItem(devToolsPage, 'Toggle Console');
 
     const shortcutInputsText = await shortcutInputValues(devToolsPage);
     assert.deepEqual(shortcutInputsText, CONSOLE_SHORTCUT_INPUT_TEXT);
   });
 
   it('should allow users to open the shortcut editor and change and add shortcuts', async ({devToolsPage}) => {
-    await openSettingsTab('Shortcuts', devToolsPage);
-    await editShortcutListItem('Toggle Console', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Shortcuts');
+    await editShortcutListItem(devToolsPage, 'Toggle Console');
 
     await devToolsPage.pressKey('1', {control: true});
 
@@ -94,15 +94,15 @@ describe('Shortcuts Settings tab', () => {
     await clickShortcutConfirmButton(devToolsPage);
     await devToolsPage.waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-    const shortcuts = await shortcutsForAction('Toggle Console', devToolsPage);
+    const shortcuts = await shortcutsForAction(devToolsPage, 'Toggle Console');
     assert.deepEqual(shortcuts, CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT);
   });
 
   it('should allow users to open shortcut editor and change and reset shortcuts', async ({devToolsPage}) => {
-    await openSettingsTab('Shortcuts', devToolsPage);
-    const defaultShortcuts = await shortcutsForAction('Start recording events', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Shortcuts');
+    const defaultShortcuts = await shortcutsForAction(devToolsPage, 'Start recording events');
 
-    await editShortcutListItem('Start recording events', devToolsPage);
+    await editShortcutListItem(devToolsPage, 'Start recording events');
 
     await devToolsPage.pressKey('1', {control: true});
 
@@ -113,22 +113,22 @@ describe('Shortcuts Settings tab', () => {
     await clickShortcutConfirmButton(devToolsPage);
     await devToolsPage.waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-    const modifiedShortcuts = await shortcutsForAction('Start recording events', devToolsPage);
+    const modifiedShortcuts = await shortcutsForAction(devToolsPage, 'Start recording events');
     assert.deepEqual(modifiedShortcuts, CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT);
 
-    await editShortcutListItem('Start recording events', devToolsPage);
+    await editShortcutListItem(devToolsPage, 'Start recording events');
     await clickShortcutResetButton(devToolsPage);
 
     await clickShortcutConfirmButton(devToolsPage);
     await devToolsPage.waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-    const shortcuts = await shortcutsForAction('Start recording events', devToolsPage);
+    const shortcuts = await shortcutsForAction(devToolsPage, 'Start recording events');
     assert.deepEqual(shortcuts, defaultShortcuts, 'Default shortcuts weren\'t restored correctly');
   });
 
   it('should allow users to open the shortcut editor and delete and reset shortcuts', async ({devToolsPage}) => {
-    await openSettingsTab('Shortcuts', devToolsPage);
-    await editShortcutListItem('Toggle Console', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Shortcuts');
+    await editShortcutListItem(devToolsPage, 'Toggle Console');
 
     await devToolsPage.pressKey('1', {control: true});
 
@@ -139,7 +139,7 @@ describe('Shortcuts Settings tab', () => {
     const shortcutInputsText = await shortcutInputValues(devToolsPage);
     assert.deepEqual(shortcutInputsText, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT);
 
-    await clickShortcutDeleteButton(0, devToolsPage);
+    await clickShortcutDeleteButton(devToolsPage, 0);
     let shortcutInputTextAfterDeletion;
     await devToolsPage.waitForFunction(async () => {
       shortcutInputTextAfterDeletion = await shortcutInputValues(devToolsPage);
@@ -154,13 +154,13 @@ describe('Shortcuts Settings tab', () => {
     await clickShortcutConfirmButton(devToolsPage);
     await devToolsPage.waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-    const shortcuts = await shortcutsForAction('Toggle Console', devToolsPage);
+    const shortcuts = await shortcutsForAction(devToolsPage, 'Toggle Console');
     assert.deepEqual(shortcuts, CONSOLE_SHORTCUT_DISPLAY_TEXT);
   });
 
   it('should allow users to cancel an edit and discard their changes to shortcuts', async ({devToolsPage}) => {
-    await openSettingsTab('Shortcuts', devToolsPage);
-    await editShortcutListItem('Toggle Console', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Shortcuts');
+    await editShortcutListItem(devToolsPage, 'Toggle Console');
 
     await devToolsPage.pressKey('1', {control: true});
 
@@ -173,13 +173,13 @@ describe('Shortcuts Settings tab', () => {
     await clickShortcutCancelButton(devToolsPage);
     await devToolsPage.waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-    const shortcuts = await shortcutsForAction('Toggle Console', devToolsPage);
+    const shortcuts = await shortcutsForAction(devToolsPage, 'Toggle Console');
     assert.deepEqual(shortcuts, CONSOLE_SHORTCUT_DISPLAY_TEXT);
   });
 
   it('should allow users to set a multi-keypress shortcut (chord)', async ({devToolsPage}) => {
-    await openSettingsTab('Shortcuts', devToolsPage);
-    await editShortcutListItem('Toggle Console', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Shortcuts');
+    await editShortcutListItem(devToolsPage, 'Toggle Console');
 
     await devToolsPage.pressKey('1', {control: true});
     await devToolsPage.pressKey('2', {control: true});
@@ -189,13 +189,13 @@ describe('Shortcuts Settings tab', () => {
     await clickShortcutConfirmButton(devToolsPage);
     await devToolsPage.waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-    const shortcuts = await shortcutsForAction('Toggle Console', devToolsPage);
+    const shortcuts = await shortcutsForAction(devToolsPage, 'Toggle Console');
     assert.deepEqual(shortcuts, CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT);
   });
 
   it('should display the physical key that is pressed rather than special characters', async ({devToolsPage}) => {
-    await openSettingsTab('Shortcuts', devToolsPage);
-    await editShortcutListItem('Toggle Console', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Shortcuts');
+    await editShortcutListItem(devToolsPage, 'Toggle Console');
 
     await devToolsPage.pressKey('c', {control: true, alt: true});
 
@@ -204,8 +204,8 @@ describe('Shortcuts Settings tab', () => {
   });
 
   it('should allow users to set a new shortcut after the chord timeout', async ({devToolsPage}) => {
-    await openSettingsTab('Shortcuts', devToolsPage);
-    await editShortcutListItem('Toggle Console', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Shortcuts');
+    await editShortcutListItem(devToolsPage, 'Toggle Console');
 
     await devToolsPage.pressKey('1', {control: true});
     await devToolsPage.timeout(SHORTCUT_CHORD_TIMEOUT * 1.2);
@@ -216,7 +216,7 @@ describe('Shortcuts Settings tab', () => {
     await clickShortcutConfirmButton(devToolsPage);
     await devToolsPage.waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-    const shortcuts = await shortcutsForAction('Toggle Console', devToolsPage);
+    const shortcuts = await shortcutsForAction(devToolsPage, 'Toggle Console');
     assert.deepEqual(shortcuts, CONTROL_2_SHORTCUT_DISPLAY_TEXT);
   });
 });

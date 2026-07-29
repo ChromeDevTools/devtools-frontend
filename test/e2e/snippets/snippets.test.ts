@@ -21,7 +21,7 @@ describe('Snippet creation', () => {
   it('can show newly created snippets show up in command menu', async ({devToolsPage}) => {
     await openSourcesPanel(devToolsPage);
     await openSnippetsSubPane(devToolsPage);
-    await createNewSnippet('New snippet', undefined, devToolsPage);
+    await createNewSnippet(devToolsPage, 'New snippet', undefined);
 
     await openCommandMenu(devToolsPage);
     await showSnippetsAutocompletion(devToolsPage);
@@ -58,7 +58,7 @@ describe('Expression evaluation', () => {
   async function navigateToSourcesAndRunSnippet(devToolsPage: DevToolsPage) {
     await openSourcesPanel(devToolsPage);
     await openSnippetsSubPane(devToolsPage);
-    await createNewSnippet('New snippet', undefined, devToolsPage);
+    await createNewSnippet(devToolsPage, 'New snippet', undefined);
     await devToolsPage.typeText(`(x => {debugger})(${message});`);
     await runSnippet(devToolsPage);
   }
@@ -68,7 +68,7 @@ describe('Expression evaluation', () => {
     const messages = await devToolsPage.waitForFunction(async () => {
       await selectFunctionParameterElement(devToolsPage);
       await evaluateSelectedTextInConsole(devToolsPage);
-      const maybeMessages = await maybeGetCurrentConsoleMessages(false, undefined, devToolsPage);
+      const maybeMessages = await maybeGetCurrentConsoleMessages(devToolsPage, false, undefined);
       if (maybeMessages.length) {
         return maybeMessages;
       }
@@ -101,12 +101,10 @@ describe('Snippet evaluation', () => {
   it('highlights the correct line when a snippet throws an error', async ({devToolsPage}) => {
     await openSourcesPanel(devToolsPage);
     await openSnippetsSubPane(devToolsPage);
-    await createNewSnippet(
-        'throwing', `
+    await createNewSnippet(devToolsPage, 'throwing', `
       (function foo() {
         throw new Error('kaboom');
-      })();`,
-        devToolsPage);
+      })();`);
 
     await runSnippet(devToolsPage);
 

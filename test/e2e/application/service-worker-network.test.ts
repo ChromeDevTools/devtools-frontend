@@ -21,10 +21,10 @@ describe('The Application Tab', () => {
   it('Clicking on Network requests for service worker should open Network panel',
      async ({devToolsPage, inspectedPage}) => {
        expectError('Request Network.enableDeviceBoundSessions failed. {"code":-32603,"message":"Internal error"}');
-       await navigateToApplicationTab(TEST_HTML_FILE, devToolsPage, inspectedPage);
+       await navigateToApplicationTab(devToolsPage, inspectedPage, TEST_HTML_FILE);
        await navigateToServiceWorkers(devToolsPage);
        await devToolsPage.click(SERVICE_WORKER_NETWORK_SELECTOR);
-       await tabExistsInMainPanel(NETWORK_TAB_SELECTOR, devToolsPage);
+       await tabExistsInMainPanel(devToolsPage, NETWORK_TAB_SELECTOR);
 
        await unregisterServiceWorker(devToolsPage);
      });

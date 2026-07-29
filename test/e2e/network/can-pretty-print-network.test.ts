@@ -19,9 +19,9 @@ const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print"]';
 
 describe('The Network Tab', function() {
   it('can pretty print an inline json subtype file', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab('code-with-json-subtype-request.html', devToolsPage, inspectedPage);
-    await waitForSomeRequestsToAppear(2, devToolsPage);
-    await selectRequestByName('json-subtype-ld.rawresponse', {}, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'code-with-json-subtype-request.html');
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
+    await selectRequestByName(devToolsPage, 'json-subtype-ld.rawresponse', {});
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('#tab-headers-component', {
@@ -76,9 +76,9 @@ describe('The Network Tab', function() {
   });
 
   it('can pretty print when there is only one json or json subtype file', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab('json-subtype-ld.rawresponse', devToolsPage, inspectedPage);
-    await waitForSomeRequestsToAppear(1, devToolsPage);
-    await selectRequestByName('json-subtype-ld.rawresponse', {}, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'json-subtype-ld.rawresponse');
+    await waitForSomeRequestsToAppear(devToolsPage, 1);
+    await selectRequestByName(devToolsPage, 'json-subtype-ld.rawresponse', {});
 
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('#tab-headers-component', {

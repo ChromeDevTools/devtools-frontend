@@ -22,7 +22,7 @@ describe('The Window Controls Overlay', () => {
 
   it('shows emulation controls when manifest with property display_overide is present',
      async ({devToolsPage, inspectedPage}) => {
-       await navigateToApplicationTab(TEST_HTML_FILE, devToolsPage, inspectedPage);
+       await navigateToApplicationTab(devToolsPage, inspectedPage, TEST_HTML_FILE);
        const windowControlsCheckbox =
            await (await devToolsPage.waitFor('[title="Emulate the Window Controls Overlay on"]')).toElement('input');
        const controlsDropDown = await devToolsPage.waitFor('select');

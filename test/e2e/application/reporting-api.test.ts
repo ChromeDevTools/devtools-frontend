@@ -15,11 +15,11 @@ describe('The Reporting API Page', () => {
   setup({dockingMode: 'undocked'});
 
   it('shows reports', async ({devToolsPage, inspectedPage}) => {
-    await navigateToApplicationTab('empty', devToolsPage, inspectedPage);
-    await navigateToApplicationTab('reporting-api', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'empty');
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'reporting-api');
     await devToolsPage.click(REPORTING_API_SELECTOR);
-    const dataGrid = await getDataGrid(undefined, devToolsPage);
-    const innerText = await getInnerTextOfDataGridCells(dataGrid, 1, false, devToolsPage);
+    const dataGrid = await getDataGrid(devToolsPage, undefined);
+    const innerText = await getInnerTextOfDataGridCells(devToolsPage, dataGrid, 1, false);
     const reportBody = '{"columnNumber":20,"id":"NavigatorVibrate","lineNumber":9,"message":' +
         '"Blocked call to navigator.vibrate because user hasn\'t tapped on the frame or any ' +
         'embedded frame yet: https://www.chromestatus.com/feature/5644273861001216.","sourceFile":' +
@@ -30,7 +30,7 @@ describe('The Reporting API Page', () => {
     assert.strictEqual(innerText[0][4], 'default');
     assert.strictEqual(innerText[0][6], reportBody);
 
-    const rows = await getDataGridRows(1, dataGrid, false, devToolsPage);
+    const rows = await getDataGridRows(devToolsPage, 1, dataGrid, false);
     await rows[rows.length - 1][0].click();
 
     const jsonView = await devToolsPage.waitFor('.json-view');
@@ -39,15 +39,15 @@ describe('The Reporting API Page', () => {
   });
 
   it('shows endpoints', async ({devToolsPage, inspectedPage}) => {
-    await navigateToApplicationTab('empty', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'empty');
     await inspectedPage.goToResource('application/reporting-api.rawresponse');
     await devToolsPage.click('#tab-resources');
     await devToolsPage.waitFor('.storage-group-list-item');  // Make sure the application navigation list is shown
     await devToolsPage.click(REPORTING_API_SELECTOR);
 
     const container = await devToolsPage.waitFor('.endpoints-container');
-    const dataGrid = await getDataGrid(container, devToolsPage);
-    const innerText = await getInnerTextOfDataGridCells(dataGrid, 2, true, devToolsPage);
+    const dataGrid = await getDataGrid(devToolsPage, container);
+    const innerText = await getInnerTextOfDataGridCells(devToolsPage, dataGrid, 2, true);
     assert.strictEqual(innerText[0][0], inspectedPage.domain());
     assert.strictEqual(innerText[0][1], 'default');
     assert.strictEqual(innerText[0][2], 'https://reports.example/default');

@@ -12,7 +12,7 @@ const STOP_INSTRUMENTING_BUTTON = 'button[title="Stop instrumenting coverage and
 
 export async function waitForTheCoveragePanelToLoad(devToolsPage: DevToolsPage) {
   // Open panel and wait for content
-  await openPanelViaMoreTools('Coverage', devToolsPage);
+  await openPanelViaMoreTools(devToolsPage, 'Coverage');
   await devToolsPage.waitFor('div[aria-label="Coverage panel"]');
   await devToolsPage.waitFor('.coverage-results .empty-state');
 }
@@ -36,7 +36,7 @@ export async function clearCoverageContent(devToolsPage: DevToolsPage) {
   await devToolsPage.waitFor('.coverage-results .empty-state');
 }
 
-export async function getCoverageData(expectedCount: number, devToolsPage: DevToolsPage) {
+export async function getCoverageData(devToolsPage: DevToolsPage, expectedCount: number) {
   return await devToolsPage.waitForFunction(async () => {
     const rows = await devToolsPage.waitForMany(
         '.data-grid-data-grid-node', expectedCount, await devToolsPage.waitFor('.coverage-results'));
@@ -51,10 +51,10 @@ export async function getCoverageData(expectedCount: number, devToolsPage: DevTo
   });
 }
 
-export async function waitForCoverageData(
-    expectedData: Array<{url: string, total: string, unused: string}>, devToolsPage: DevToolsPage) {
+export async function waitForCoverageData(devToolsPage: DevToolsPage,
+                                          expectedData: Array<{url: string, total: string, unused: string}>) {
   return await devToolsPage.waitForFunction(async () => {
-    const data = await getCoverageData(expectedData.length, devToolsPage);
+    const data = await getCoverageData(devToolsPage, expectedData.length);
     for (let i = 0; i < data.length; i++) {
       if (data[i].url !== expectedData[i].url || data[i].total !== expectedData[i].total ||
           data[i].unused !== expectedData[i].unused) {

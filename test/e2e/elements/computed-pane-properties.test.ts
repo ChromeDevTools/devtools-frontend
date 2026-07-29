@@ -24,7 +24,7 @@ import type {InspectedPage} from '../shared/target-helper.js';
 describe('The Computed pane', function() {
   async function openComputedPane(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await inspectedPage.goToResource('elements/simple-styled-page.html');
-    await navigateToSidePane('Computed', devToolsPage);
+    await navigateToSidePane(devToolsPage, 'Computed');
     await waitForElementsComputedSection(devToolsPage);
     // Note that navigating to the computed pane moved focus away from the
     // elements pane. Restore it.
@@ -36,7 +36,7 @@ describe('The Computed pane', function() {
     // Select the H1 element and wait for the computed pane to change.
     let content = await getContentOfComputedPane(devToolsPage);
     await devToolsPage.pressKey('ArrowDown');
-    await waitForComputedPaneChange(content, devToolsPage);
+    await waitForComputedPaneChange(devToolsPage, content);
     await waitForElementsComputedSection(devToolsPage);
 
     const h1Properties = await getAllPropertiesFromComputedPane(devToolsPage);
@@ -52,7 +52,7 @@ describe('The Computed pane', function() {
     // Select the H2 element by pressing down again.
     content = await getContentOfComputedPane(devToolsPage);
     await devToolsPage.pressKey('ArrowDown');
-    await waitForComputedPaneChange(content, devToolsPage);
+    await waitForComputedPaneChange(devToolsPage, content);
     await waitForElementsComputedSection(devToolsPage);
 
     const h2Properties = await getAllPropertiesFromComputedPane(devToolsPage);
@@ -71,7 +71,7 @@ describe('The Computed pane', function() {
     // Select the H1 element and wait for the computed pane to change.
     const content = await getContentOfComputedPane(devToolsPage);
     await devToolsPage.pressKey('ArrowDown');
-    await waitForComputedPaneChange(content, devToolsPage);
+    await waitForComputedPaneChange(devToolsPage, content);
 
     await toggleShowAllComputedProperties(devToolsPage);
     await waitForElementsComputedSection(devToolsPage);
@@ -110,15 +110,15 @@ describe('The Computed pane', function() {
   it('allows tracing to style rules (ported layout test)', async ({devToolsPage, inspectedPage}) => {
     await openComputedPane(devToolsPage, inspectedPage);
     await inspectedPage.goToResource('elements/css-styles-variables.html');
-    await waitForNumberOfComputedProperties(7, devToolsPage);
+    await waitForNumberOfComputedProperties(devToolsPage, 7);
     await toggleShowAllComputedProperties(devToolsPage);
-    await filterComputedProperties('--', devToolsPage);
-    await waitForNumberOfComputedProperties(1, devToolsPage);
+    await filterComputedProperties(devToolsPage, '--');
+    await waitForNumberOfComputedProperties(devToolsPage, 1);
     await focusElementsTree(devToolsPage);
     await devToolsPage.pressKey('ArrowRight');
     await devToolsPage.pressKey('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('"id1"', devToolsPage);
-    await waitForNumberOfComputedProperties(2, devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '"id1"');
+    await waitForNumberOfComputedProperties(devToolsPage, 2);
     const computedPane = await getComputedPanel(devToolsPage);
     await computedPane.$$eval(
         'pierce/.arrow-icon', elements => elements.map(element => (element as HTMLElement).click()));
@@ -146,7 +146,7 @@ describe('The Computed pane', function() {
         async () => JSON.stringify(await getComputedStyleProperties(devToolsPage)) === JSON.stringify(expectedPropId1));
     await devToolsPage.pressKey('ArrowRight');
     await devToolsPage.pressKey('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('"id2"', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '"id2"');
     const expectedPropId2 = [
       {
         name: '--a',
@@ -178,7 +178,7 @@ describe('The Computed pane', function() {
         async () => JSON.stringify(await getComputedStyleProperties(devToolsPage)) === JSON.stringify(expectedPropId2));
     await devToolsPage.pressKey('ArrowRight');
     await devToolsPage.pressKey('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('"id3"', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '"id3"');
     const expectedPropId3 = [
       {
         name: '--a',

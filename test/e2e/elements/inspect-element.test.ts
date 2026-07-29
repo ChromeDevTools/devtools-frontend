@@ -30,13 +30,13 @@ describe('The Elements panel ', () => {
 
     await inspectedPage.click('#inner');
 
-    await waitForPartialContentOfSelectedElementsNode('outer', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'outer');
 
     // Enable inspect mode again and click on #inner with shift. #inner should be selected.
     await devToolsPage.click('[aria-label="Select an element in the page to inspect it"]');
 
     await inspectedPage.click('#inner', {modifiers: {shift: true}});
 
-    await waitForPartialContentOfSelectedElementsNode('inner', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'inner');
   });
 });

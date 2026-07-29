@@ -41,8 +41,8 @@ describe('Recorder', function() {
           })
         })();
       `);
-      await enableAndOpenRecorderPanel('recorder/recorder.html', devToolsPage, inspectedPage);
-      await createAndStartRecording('Test', undefined, devToolsPage);
+      await enableAndOpenRecorderPanel(devToolsPage, inspectedPage, 'recorder/recorder.html');
+      await createAndStartRecording(devToolsPage, 'Test', undefined);
       await record(devToolsPage, inspectedPage);
       await stopRecording(devToolsPage);
     }

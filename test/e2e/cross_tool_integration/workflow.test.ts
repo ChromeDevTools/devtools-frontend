@@ -52,7 +52,7 @@ describe('A user can navigate across', function() {
 
   it('Performance -> Sources', async ({devToolsPage, inspectedPage}) => {
     await setupForTests(devToolsPage, inspectedPage);
-    await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
+    await navigateToPerformanceTab(devToolsPage, inspectedPage, undefined);
 
     await startRecording(devToolsPage);
 
@@ -86,23 +86,23 @@ describe('A user can move tabs', function() {
 
   it('Move Memory to drawer', async ({devToolsPage}) => {
     await navigateToMemoryTab(devToolsPage);
-    await tabExistsInMainPanel(MEMORY_TAB_ID, devToolsPage);
-    await clickOnContextMenuItemFromTab(MEMORY_TAB_ID, MOVE_TO_DRAWER_SELECTOR, devToolsPage);
-    await tabExistsInDrawer(MEMORY_TAB_ID, devToolsPage);
+    await tabExistsInMainPanel(devToolsPage, MEMORY_TAB_ID);
+    await clickOnContextMenuItemFromTab(devToolsPage, MEMORY_TAB_ID, MOVE_TO_DRAWER_SELECTOR);
+    await tabExistsInDrawer(devToolsPage, MEMORY_TAB_ID);
   });
 
   it('Move Animations to main panel', async ({devToolsPage}) => {
     const ANIMATIONS_TAB_ID = '#tab-animations';
-    await openPanelViaMoreTools('Animations', devToolsPage);
-    await tabExistsInDrawer(ANIMATIONS_TAB_ID, devToolsPage);
-    await clickOnContextMenuItemFromTab(ANIMATIONS_TAB_ID, MOVE_TO_MAIN_TAB_BAR_SELECTOR, devToolsPage);
-    await tabExistsInMainPanel(ANIMATIONS_TAB_ID, devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Animations');
+    await tabExistsInDrawer(devToolsPage, ANIMATIONS_TAB_ID);
+    await clickOnContextMenuItemFromTab(devToolsPage, ANIMATIONS_TAB_ID, MOVE_TO_MAIN_TAB_BAR_SELECTOR);
+    await tabExistsInMainPanel(devToolsPage, ANIMATIONS_TAB_ID);
   });
 });
 
 describe('A user can open panels via the "panel" query param', function() {
   it('Layers is shown', async ({devToolsPage}) => {
     await devToolsPage.reloadWithParams({panel: 'layers'});
-    await tabExistsInMainPanel(LAYERS_TAB_SELECTOR, devToolsPage);
+    await tabExistsInMainPanel(devToolsPage, LAYERS_TAB_SELECTOR);
   });
 });

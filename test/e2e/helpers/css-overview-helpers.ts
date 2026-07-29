@@ -28,7 +28,7 @@ export async function navigateToCssOverviewTab(devToolsPage: DevToolsPage) {
 }
 
 export async function openCSSOverviewPanelFromMoreTools(devToolsPage: DevToolsPage) {
-  await openPanelViaMoreTools(CSS_OVERVIEW_PANEL_TITLE, devToolsPage);
+  await openPanelViaMoreTools(devToolsPage, CSS_OVERVIEW_PANEL_TITLE);
   await cssOverviewTabExists(devToolsPage);
   await cssOverviewPanelContentIsLoaded(devToolsPage);
 }
@@ -39,36 +39,33 @@ export async function cssOverviewTabExists(devToolsPage: DevToolsPage) {
 
 export async function cssOverviewPanelContentIsLoaded(devToolsPage: DevToolsPage) {
   await devToolsPage.waitFor(CSS_OVERVIEW_PANEL_CONTENT);
-  await expectVeEvents(
-      [veImpressionsUnder(
-          'Panel: css-overview',
-          [
-            veImpression('Action', 'css-overview.capture-overview'),
-            veImpression('Action', 'feedback'),
-            veImpression('Link', 'css-overview.quick-start'),
-            veImpression('Link', 'feedback'),
-          ])],
-      undefined, devToolsPage);
+  await expectVeEvents(devToolsPage, [veImpressionsUnder('Panel: css-overview',
+                                                         [
+                                                           veImpression('Action', 'css-overview.capture-overview'),
+                                                           veImpression('Action', 'feedback'),
+                                                           veImpression('Link', 'css-overview.quick-start'),
+                                                           veImpression('Link', 'feedback'),
+                                                         ])],
+                       undefined);
 }
 
 export async function startCaptureCSSOverview(devToolsPage: DevToolsPage) {
   await devToolsPage.click(CSS_OVERVIEW_CAPTURE_BUTTON_SELECTOR);
   await devToolsPage.waitFor(CSS_OVERVIEW_COMPLETED_VIEW_SELECTOR);
   await devToolsPage.raf();
-  await expectVeEvents(
-      [
-        veClick('Panel: css-overview > Action: css-overview.capture-overview'),
-        veImpressionsUnder(
-            'Panel: css-overview',
-            [
-              veImpression('Action', 'css-overview.clear-overview'),
-              veImpression('Action', 'css-overview.color'),
-              veImpression('Item', 'css-overview.colors'),
-              veImpression('Item', 'css-overview.font-info'),
-              veImpression('Item', 'css-overview.media-queries'),
-              veImpression('Item', 'css-overview.summary'),
-              veImpression('Item', 'css-overview.unused-declarations'),
-            ]),
-      ],
-      undefined, devToolsPage);
+  await expectVeEvents(devToolsPage,
+                       [
+                         veClick('Panel: css-overview > Action: css-overview.capture-overview'),
+                         veImpressionsUnder('Panel: css-overview',
+                                            [
+                                              veImpression('Action', 'css-overview.clear-overview'),
+                                              veImpression('Action', 'css-overview.color'),
+                                              veImpression('Item', 'css-overview.colors'),
+                                              veImpression('Item', 'css-overview.font-info'),
+                                              veImpression('Item', 'css-overview.media-queries'),
+                                              veImpression('Item', 'css-overview.summary'),
+                                              veImpression('Item', 'css-overview.unused-declarations'),
+                                            ]),
+                       ],
+                       undefined);
 }

@@ -16,7 +16,7 @@ describe('The Console Tab', () => {
     await inspectedPage.reload();
 
     const result =
-        (await getConsoleMessages('alert-toString-exception', undefined, undefined, devToolsPage, inspectedPage))[0];
+        (await getConsoleMessages(devToolsPage, inspectedPage, 'alert-toString-exception', undefined, undefined))[0];
     assert.strictEqual(result, 'Uncaught Exception in toString().');
   });
 });

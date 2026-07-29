@@ -61,7 +61,7 @@ describe('The Console Tab', () => {
       return messages.length === 2;
     });
 
-    const messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+    const messages = await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined);
     assert.deepEqual(messages, [
       '\'console expression\'',
       '\'console expression\'',

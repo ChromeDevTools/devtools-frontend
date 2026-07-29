@@ -28,20 +28,16 @@ describe('Recorder', function() {
 
   describe('Replay', () => {
     it('should navigate to the url of the first section', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
-              },
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+        ],
+      },
+                                             undefined);
       assert.strictEqual(
           inspectedPage.page.url(),
           `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
@@ -49,32 +45,28 @@ describe('Recorder', function() {
     });
 
     it('should be able to replay click steps', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/recorder.html`,
+          },
+          {
+            type: 'click' as StepType.Click,
+            selectors: ['a[href="recorder2.html"]'],
+            offsetX: 1,
+            offsetY: 1,
+            assertedEvents: [
               {
-                type: 'navigate' as StepType.Navigate,
+                type: 'navigation' as AssertedEventType.Navigation,
                 url: `${inspectedPage.getResourcesPath()}/recorder/recorder.html`,
-              },
-              {
-                type: 'click' as StepType.Click,
-                selectors: ['a[href="recorder2.html"]'],
-                offsetX: 1,
-                offsetY: 1,
-                assertedEvents: [
-                  {
-                    type: 'navigation' as AssertedEventType.Navigation,
-                    url: `${inspectedPage.getResourcesPath()}/recorder/recorder.html`,
-                  },
-                ],
               },
             ],
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+        ],
+      },
+                                             undefined);
       assert.strictEqual(
           inspectedPage.page.url(),
           `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
@@ -82,52 +74,44 @@ describe('Recorder', function() {
     });
 
     it('should be able to replay click steps on checkboxes', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/checkbox.html`,
-              },
-              {
-                type: 'click' as StepType.Click,
-                selectors: ['input'],
-                offsetX: 1,
-                offsetY: 1,
-              },
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/checkbox.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'click' as StepType.Click,
+            selectors: ['input'],
+            offsetX: 1,
+            offsetY: 1,
+          },
+        ],
+      },
+                                             undefined);
       assert.isTrue(await inspectedPage.evaluate(() => document.querySelector('input')?.checked));
     });
 
     it('should be able to replay keyboard events', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/input.html`,
-              },
-              {type: 'keyDown' as StepType.KeyDown, target: 'main', key: 'Tab'},
-              {type: 'keyUp' as StepType.KeyUp, target: 'main', key: 'Tab'},
-              {type: 'keyDown' as StepType.KeyDown, target: 'main', key: '1'},
-              {type: 'keyUp' as StepType.KeyUp, target: 'main', key: '1'},
-              {type: 'keyDown' as StepType.KeyDown, target: 'main', key: 'Tab'},
-              {type: 'keyUp' as StepType.KeyUp, target: 'main', key: 'Tab'},
-              {type: 'keyDown' as StepType.KeyDown, target: 'main', key: '2'},
-              {type: 'keyUp' as StepType.KeyUp, target: 'main', key: '2'},
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/input.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {type: 'keyDown' as StepType.KeyDown, target: 'main', key: 'Tab'},
+          {type: 'keyUp' as StepType.KeyUp, target: 'main', key: 'Tab'},
+          {type: 'keyDown' as StepType.KeyDown, target: 'main', key: '1'},
+          {type: 'keyUp' as StepType.KeyUp, target: 'main', key: '1'},
+          {type: 'keyDown' as StepType.KeyDown, target: 'main', key: 'Tab'},
+          {type: 'keyUp' as StepType.KeyUp, target: 'main', key: 'Tab'},
+          {type: 'keyDown' as StepType.KeyDown, target: 'main', key: '2'},
+          {type: 'keyUp' as StepType.KeyUp, target: 'main', key: '2'},
+        ],
+      },
+                                             undefined);
       const value = await inspectedPage.page.$eval(
           '#log',
           e => (e as HTMLElement).innerText.trim(),
@@ -136,26 +120,22 @@ describe('Recorder', function() {
     });
 
     it('should be able to replay events on select', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/select.html`,
-              },
-              {
-                type: 'change' as StepType.Change,
-                target: 'main',
-                selectors: ['aria/Select'],
-                value: 'O2',
-              },
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/select.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'change' as StepType.Change,
+            target: 'main',
+            selectors: ['aria/Select'],
+            value: 'O2',
+          },
+        ],
+      },
+                                             undefined);
 
       const value = await inspectedPage.page.$eval(
           '#select',
@@ -165,26 +145,22 @@ describe('Recorder', function() {
     });
 
     it('should be able to replay events on non text inputs', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/input.html`,
-              },
-              {
-                type: 'change' as StepType.Change,
-                target: 'main',
-                selectors: ['#color'],
-                value: '#333333',
-              },
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/input.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'change' as StepType.Change,
+            target: 'main',
+            selectors: ['#color'],
+            value: '#333333',
+          },
+        ],
+      },
+                                             undefined);
 
       const value = await inspectedPage.page.$eval(
           '#color',
@@ -194,27 +170,23 @@ describe('Recorder', function() {
     });
 
     it('should be able to replay events with text selectors', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/iframe1.html`,
-              },
-              {
-                type: 'click' as StepType.Click,
-                target: 'main',
-                selectors: ['text/To'],
-                offsetX: 0,
-                offsetY: 0,
-              },
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/iframe1.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'click' as StepType.Click,
+            target: 'main',
+            selectors: ['text/To'],
+            offsetX: 0,
+            offsetY: 0,
+          },
+        ],
+      },
+                                             undefined);
 
       const frame = inspectedPage.page.frames().find(
           frame => frame.url() === `${inspectedPage.getResourcesPath()}/recorder/iframe2.html`,
@@ -223,27 +195,23 @@ describe('Recorder', function() {
     });
 
     it('should be able to replay events with xpath selectors', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/iframe1.html`,
-              },
-              {
-                type: 'click' as StepType.Click,
-                target: 'main',
-                selectors: ['xpath//html/body/a'],
-                offsetX: 0,
-                offsetY: 0,
-              },
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/iframe1.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'click' as StepType.Click,
+            target: 'main',
+            selectors: ['xpath//html/body/a'],
+            offsetX: 0,
+            offsetY: 0,
+          },
+        ],
+      },
+                                             undefined);
 
       const frame = inspectedPage.page.frames().find(
           frame => frame.url() === `${inspectedPage.getResourcesPath()}/recorder/iframe2.html`,
@@ -253,26 +221,22 @@ describe('Recorder', function() {
 
     it('should be able to override the value in text inputs that have a value already',
        async ({inspectedPage, devToolsPage}) => {
-         await setupRecorderWithScriptAndReplay(
+         await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+           title: 'Test Recording',
+           steps: [
              {
-               title: 'Test Recording',
-               steps: [
-                 {
-                   type: 'navigate' as StepType.Navigate,
-                   url: `${inspectedPage.getResourcesPath()}/recorder/input.html`,
-                 },
-                 {
-                   type: 'change' as StepType.Change,
-                   target: 'main',
-                   selectors: ['#prefilled'],
-                   value: 'cba',
-                 },
-               ],
+               type: 'navigate' as StepType.Navigate,
+               url: `${inspectedPage.getResourcesPath()}/recorder/input.html`,
              },
-             undefined,
-             devToolsPage,
-             inspectedPage,
-         );
+             {
+               type: 'change' as StepType.Change,
+               target: 'main',
+               selectors: ['#prefilled'],
+               value: 'cba',
+             },
+           ],
+         },
+                                                undefined);
 
          const value = await inspectedPage.page.$eval(
              '#prefilled',
@@ -283,26 +247,22 @@ describe('Recorder', function() {
 
     it('should be able to override the value in text inputs that are partially prefilled',
        async ({inspectedPage, devToolsPage}) => {
-         await setupRecorderWithScriptAndReplay(
+         await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+           title: 'Test Recording',
+           steps: [
              {
-               title: 'Test Recording',
-               steps: [
-                 {
-                   type: 'navigate' as StepType.Navigate,
-                   url: `${inspectedPage.getResourcesPath()}/recorder/input.html`,
-                 },
-                 {
-                   type: 'change' as StepType.Change,
-                   target: 'main',
-                   selectors: ['#partially-prefilled'],
-                   value: 'abcdef',
-                 },
-               ],
+               type: 'navigate' as StepType.Navigate,
+               url: `${inspectedPage.getResourcesPath()}/recorder/input.html`,
              },
-             undefined,
-             devToolsPage,
-             inspectedPage,
-         );
+             {
+               type: 'change' as StepType.Change,
+               target: 'main',
+               selectors: ['#partially-prefilled'],
+               value: 'abcdef',
+             },
+           ],
+         },
+                                                undefined);
 
          const value = await inspectedPage.page.$eval(
              '#partially-prefilled',
@@ -312,67 +272,59 @@ describe('Recorder', function() {
        });
 
     it('should be able to replay viewport change', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/select.html`,
-              },
-              {
-                type: 'setViewport' as StepType.SetViewport,
-                width: 800,
-                height: 600,
-                isLandscape: false,
-                isMobile: false,
-                deviceScaleFactor: 1,
-                hasTouch: false,
-              },
-              {
-                type: 'waitForExpression' as StepType.WaitForExpression,
-                expression: 'window.visualViewport?.width === 800 && window.visualViewport?.height === 600',
-              },
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/select.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'setViewport' as StepType.SetViewport,
+            width: 800,
+            height: 600,
+            isLandscape: false,
+            isMobile: false,
+            deviceScaleFactor: 1,
+            hasTouch: false,
+          },
+          {
+            type: 'waitForExpression' as StepType.WaitForExpression,
+            expression: 'window.visualViewport?.width === 800 && window.visualViewport?.height === 600',
+          },
+        ],
+      },
+                                             undefined);
     });
 
     it('should be able to replay scroll events', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/scroll.html`,
-              },
-              {
-                type: 'setViewport' as StepType.SetViewport,
-                width: 800,
-                height: 600,
-                isLandscape: false,
-                isMobile: false,
-                deviceScaleFactor: 1,
-                hasTouch: false,
-              },
-              {
-                type: 'scroll' as StepType.Scroll,
-                target: 'main',
-                selectors: ['body > div:nth-child(1)'],
-                x: 0,
-                y: 40,
-              },
-              {type: 'scroll' as StepType.Scroll, target: 'main', x: 40, y: 40},
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/scroll.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'setViewport' as StepType.SetViewport,
+            width: 800,
+            height: 600,
+            isLandscape: false,
+            isMobile: false,
+            deviceScaleFactor: 1,
+            hasTouch: false,
+          },
+          {
+            type: 'scroll' as StepType.Scroll,
+            target: 'main',
+            selectors: ['body > div:nth-child(1)'],
+            x: 0,
+            y: 40,
+          },
+          {type: 'scroll' as StepType.Scroll, target: 'main', x: 40, y: 40},
+        ],
+      },
+                                             undefined);
 
       assert.strictEqual(await inspectedPage.evaluate(() => window.pageXOffset), 40);
       assert.strictEqual(await inspectedPage.evaluate(() => window.pageYOffset), 40);
@@ -387,26 +339,22 @@ describe('Recorder', function() {
     });
 
     it('should be able to scroll into view when needed', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/scroll-into-view.html`,
-              },
-              {
-                type: 'click' as StepType.Click,
-                selectors: [['button']],
-                offsetX: 1,
-                offsetY: 1,
-              },
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/scroll-into-view.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'click' as StepType.Click,
+            selectors: [['button']],
+            offsetX: 1,
+            offsetY: 1,
+          },
+        ],
+      },
+                                             undefined);
 
       assert.strictEqual(
           await inspectedPage.evaluate(() => document.querySelector('button')?.innerText),
@@ -415,36 +363,32 @@ describe('Recorder', function() {
     });
 
     it('should be able to replay ARIA selectors on inputs', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/form.html`,
-              },
-              {
-                type: 'setViewport' as StepType.SetViewport,
-                width: 800,
-                height: 600,
-                isLandscape: false,
-                isMobile: false,
-                deviceScaleFactor: 1,
-                hasTouch: false,
-              },
-              {
-                type: 'click' as StepType.Click,
-                target: 'main',
-                selectors: ['aria/Name:'],
-                offsetX: 1,
-                offsetY: 1,
-              },
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/form.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'setViewport' as StepType.SetViewport,
+            width: 800,
+            height: 600,
+            isLandscape: false,
+            isMobile: false,
+            deviceScaleFactor: 1,
+            hasTouch: false,
+          },
+          {
+            type: 'click' as StepType.Click,
+            target: 'main',
+            selectors: ['aria/Name:'],
+            offsetX: 1,
+            offsetY: 1,
+          },
+        ],
+      },
+                                             undefined);
 
       assert.strictEqual(
           await inspectedPage.evaluate(() => document.activeElement?.id),
@@ -453,37 +397,33 @@ describe('Recorder', function() {
     });
 
     it('should be able to waitForElement', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/shadow-dynamic.html`,
-              },
-              {
-                type: 'waitForElement' as StepType.WaitForElement,
-                selectors: [['custom-element', 'button']],
-              },
-              {
-                type: 'click' as StepType.Click,
-                target: 'main',
-                selectors: [['custom-element', 'button']],
-                offsetX: 1,
-                offsetY: 1,
-              },
-              {
-                type: 'waitForElement' as StepType.WaitForElement,
-                selectors: [['custom-element', 'button']],
-                operator: '>=',
-                count: 2,
-              },
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/shadow-dynamic.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'waitForElement' as StepType.WaitForElement,
+            selectors: [['custom-element', 'button']],
+          },
+          {
+            type: 'click' as StepType.Click,
+            target: 'main',
+            selectors: [['custom-element', 'button']],
+            offsetX: 1,
+            offsetY: 1,
+          },
+          {
+            type: 'waitForElement' as StepType.WaitForElement,
+            selectors: [['custom-element', 'button']],
+            operator: '>=',
+            count: 2,
+          },
+        ],
+      },
+                                             undefined);
       assert.strictEqual(
           await inspectedPage.evaluate(() => document.querySelectorAll('custom-element').length),
           2,
@@ -491,32 +431,28 @@ describe('Recorder', function() {
     });
 
     it('should be able to waitForExpression', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
-              {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/shadow-dynamic.html`,
-              },
-              {
-                type: 'click' as StepType.Click,
-                target: 'main',
-                selectors: [['custom-element', 'button']],
-                offsetX: 1,
-                offsetY: 1,
-              },
-              {
-                type: 'waitForExpression' as StepType.WaitForExpression,
-                target: 'main',
-                expression: 'document.querySelectorAll("custom-element").length === 2',
-              },
-            ],
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/shadow-dynamic.html`,
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'click' as StepType.Click,
+            target: 'main',
+            selectors: [['custom-element', 'button']],
+            offsetX: 1,
+            offsetY: 1,
+          },
+          {
+            type: 'waitForExpression' as StepType.WaitForExpression,
+            target: 'main',
+            expression: 'document.querySelectorAll("custom-element").length === 2',
+          },
+        ],
+      },
+                                             undefined);
       assert.strictEqual(
           await inspectedPage.evaluate(
               () => document.querySelectorAll('custom-element').length,
@@ -527,20 +463,16 @@ describe('Recorder', function() {
 
     it('should show PerformancePanel if the MeasurePerformance SelectMenu is clicked for replay',
        async ({inspectedPage, devToolsPage}) => {
-         await setupRecorderWithScript(
+         await setupRecorderWithScript(devToolsPage, inspectedPage, {
+           title: 'Test Recording',
+           steps: [
              {
-               title: 'Test Recording',
-               steps: [
-                 {
-                   type: 'navigate' as StepType.Navigate,
-                   url: `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
-                 },
-               ],
+               type: 'navigate' as StepType.Navigate,
+               url: `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
              },
-             undefined,
-             devToolsPage,
-             inspectedPage,
-         );
+           ],
+         },
+                                       undefined);
          const onceFinished = onReplayFinished(devToolsPage);
          await devToolsPage.click('aria/Performance panel');
          await onceFinished;
@@ -567,45 +499,41 @@ describe('Recorder', function() {
       browser.browser.on('targetcreated', targetCreatedHandler);
       browser.browser.on('targetdestroyed', targetDestroyedHandler);
 
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/recorder.html`,
+            assertedEvents: [
               {
-                type: 'navigate' as StepType.Navigate,
-                url: `${inspectedPage.getResourcesPath()}/recorder/recorder.html`,
-                assertedEvents: [
-                  {
-                    title: '',
-                    type: 'navigation' as AssertedEventType.Navigation,
-                    url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
-                  },
-                ],
-              },
-              {
-                type: 'click' as StepType.Click,
-                selectors: [['aria/Open Popup'], ['#popup']],
-                target: 'main',
-                offsetX: 1,
-                offsetY: 1,
-              },
-              {
-                type: 'click' as StepType.Click,
-                selectors: [['aria/Button in Popup'], ['body > button']],
-                target: `${inspectedPage.getResourcesPath()}/recorder/popup.html`,
-                offsetX: 1,
-                offsetY: 1,
-              },
-              {
-                type: 'close' as StepType.Close,
-                target: `${inspectedPage.getResourcesPath()}/recorder/popup.html`,
+                title: '',
+                type: 'navigation' as AssertedEventType.Navigation,
+                url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
               },
             ],
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'click' as StepType.Click,
+            selectors: [['aria/Open Popup'], ['#popup']],
+            target: 'main',
+            offsetX: 1,
+            offsetY: 1,
+          },
+          {
+            type: 'click' as StepType.Click,
+            selectors: [['aria/Button in Popup'], ['body > button']],
+            target: `${inspectedPage.getResourcesPath()}/recorder/popup.html`,
+            offsetX: 1,
+            offsetY: 1,
+          },
+          {
+            type: 'close' as StepType.Close,
+            target: `${inspectedPage.getResourcesPath()}/recorder/popup.html`,
+          },
+        ],
+      },
+                                             undefined);
       assert.deepEqual(events, [
         {
           type: 'targetCreated',
@@ -622,41 +550,37 @@ describe('Recorder', function() {
     });
 
     it('should record interactions with OOPIFs', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScriptAndReplay(
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/oopif.html`,
+            assertedEvents: [
               {
-                type: 'navigate' as StepType.Navigate,
+                title: '',
+                type: 'navigation' as AssertedEventType.Navigation,
                 url: `${inspectedPage.getResourcesPath()}/recorder/oopif.html`,
-                assertedEvents: [
-                  {
-                    title: '',
-                    type: 'navigation' as AssertedEventType.Navigation,
-                    url: `${inspectedPage.getResourcesPath()}/recorder/oopif.html`,
-                  },
-                ],
-              },
-              {
-                type: 'click' as StepType.Click,
-                target: `${inspectedPage.getOopifResourcesPath()}/recorder/iframe1.html`,
-                selectors: [['aria/To iframe 2'], ['body > a']],
-                offsetX: 1,
-                offsetY: 1,
-                assertedEvents: [
-                  {
-                    type: 'navigation' as AssertedEventType.Navigation,
-                    title: '',
-                    url: `${inspectedPage.getOopifResourcesPath()}/recorder/iframe2.html`,
-                  },
-                ],
               },
             ],
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+          {
+            type: 'click' as StepType.Click,
+            target: `${inspectedPage.getOopifResourcesPath()}/recorder/iframe1.html`,
+            selectors: [['aria/To iframe 2'], ['body > a']],
+            offsetX: 1,
+            offsetY: 1,
+            assertedEvents: [
+              {
+                type: 'navigation' as AssertedEventType.Navigation,
+                title: '',
+                url: `${inspectedPage.getOopifResourcesPath()}/recorder/iframe2.html`,
+              },
+            ],
+          },
+        ],
+      },
+                                             undefined);
       const frame = inspectedPage.page.frames().find(
           frame => frame.url() === `${inspectedPage.getOopifResourcesPath()}/recorder/iframe2.html`,
       );
@@ -664,35 +588,31 @@ describe('Recorder', function() {
     });
 
     it('should replay when clicked on slow replay', async ({inspectedPage, devToolsPage}) => {
-      await setupRecorderWithScript(
+      await setupRecorderWithScript(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
           {
-            title: 'Test Recording',
-            steps: [
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/recorder.html`,
+          },
+          {
+            type: 'click' as StepType.Click,
+            selectors: ['a[href="recorder2.html"]'],
+            offsetX: 1,
+            offsetY: 1,
+            assertedEvents: [
               {
-                type: 'navigate' as StepType.Navigate,
+                type: 'navigation' as AssertedEventType.Navigation,
                 url: `${inspectedPage.getResourcesPath()}/recorder/recorder.html`,
-              },
-              {
-                type: 'click' as StepType.Click,
-                selectors: ['a[href="recorder2.html"]'],
-                offsetX: 1,
-                offsetY: 1,
-                assertedEvents: [
-                  {
-                    type: 'navigation' as AssertedEventType.Navigation,
-                    url: `${inspectedPage.getResourcesPath()}/recorder/recorder.html`,
-                  },
-                ],
               },
             ],
           },
-          undefined,
-          devToolsPage,
-          inspectedPage,
-      );
+        ],
+      },
+                                    undefined);
 
       const onceFinished = onReplayFinished(devToolsPage);
-      await clickSelectButtonItem('Slow', '.select-button', devToolsPage);
+      await clickSelectButtonItem(devToolsPage, 'Slow', '.select-button');
       await onceFinished;
 
       assert.strictEqual(
@@ -703,20 +623,16 @@ describe('Recorder', function() {
   });
 
   it('should be able to start a replay with shortcut', async ({inspectedPage, devToolsPage}) => {
-    await setupRecorderWithScript(
+    await setupRecorderWithScript(devToolsPage, inspectedPage, {
+      title: 'Test Recording',
+      steps: [
         {
-          title: 'Test Recording',
-          steps: [
-            {
-              type: 'navigate' as StepType.Navigate,
-              url: `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
-            },
-          ],
+          type: 'navigate' as StepType.Navigate,
+          url: `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
         },
-        undefined,
-        devToolsPage,
-        inspectedPage,
-    );
+      ],
+    },
+                                  undefined);
     const onceFinished = onReplayFinished(devToolsPage);
     await replayShortcut(devToolsPage);
     await onceFinished;
@@ -728,35 +644,31 @@ describe('Recorder', function() {
   });
 
   it('should be able to navigate to a prerendered page', async ({inspectedPage, devToolsPage}) => {
-    await setupRecorderWithScriptAndReplay(
+    await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+      title: 'Test Recording',
+      steps: [
         {
-          title: 'Test Recording',
-          steps: [
+          type: 'navigate' as StepType.Navigate,
+          url: `${inspectedPage.getResourcesPath()}/recorder/prerender.html`,
+        },
+        {
+          type: 'click' as StepType.Click,
+          selectors: ['a'],
+          offsetX: 1,
+          offsetY: 1,
+          assertedEvents: [
             {
-              type: 'navigate' as StepType.Navigate,
-              url: `${inspectedPage.getResourcesPath()}/recorder/prerender.html`,
-            },
-            {
-              type: 'click' as StepType.Click,
-              selectors: ['a'],
-              offsetX: 1,
-              offsetY: 1,
-              assertedEvents: [
-                {
-                  type: 'navigation' as AssertedEventType.Navigation,
-                  url: `${inspectedPage.getResourcesPath()}/recorder/prerendered.html`,
-                },
-              ],
-            },
-            {
-              type: 'waitForExpression' as StepType.WaitForExpression,
-              expression: 'document.querySelector("div")?.innerText === "true"',
+              type: 'navigation' as AssertedEventType.Navigation,
+              url: `${inspectedPage.getResourcesPath()}/recorder/prerendered.html`,
             },
           ],
         },
-        undefined,
-        devToolsPage,
-        inspectedPage,
-    );
+        {
+          type: 'waitForExpression' as StepType.WaitForExpression,
+          expression: 'document.querySelector("div")?.innerText === "true"',
+        },
+      ],
+    },
+                                           undefined);
   });
 });

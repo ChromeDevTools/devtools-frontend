@@ -50,7 +50,7 @@ describe('The Console Tab', () => {
     await step('check that the expected output is logged', async () => {
       // TODO: it should actually wait for rendering to finish.
       await devToolsPage.drainTaskQueue();
-      const messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+      const messages = await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined);
       assert.deepEqual(messages, [
         'undefined',
         '\'fooValue\'',

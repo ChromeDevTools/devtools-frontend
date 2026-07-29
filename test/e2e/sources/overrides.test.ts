@@ -26,7 +26,7 @@ const OVERRIDES_FILESYSTEM_SELECTOR = '[aria-label="overrides, fs"]';
 
 async function waitForOverrideContentMenuItemIsEnabled(requestName: string, devToolsPage: DevToolsPage) {
   await devToolsPage.waitForFunction(async () => {
-    await selectRequestByName(requestName, {button: 'right'}, devToolsPage);
+    await selectRequestByName(devToolsPage, requestName, {button: 'right'});
     const menuItem = await devToolsPage.waitForAria('Override content');
     const isDisabled = await devToolsPage.hasClass(menuItem, 'soft-context-menu-disabled');
     if (!isDisabled) {
@@ -45,11 +45,11 @@ describe('Overrides panel', function() {
 
     await openSourcesPanel(devToolsPage);
     await enableLocalOverrides(devToolsPage);
-    await openSoftContextMenuAndClickOnItem(OVERRIDES_FILESYSTEM_SELECTOR, 'New file', devToolsPage);
+    await openSoftContextMenuAndClickOnItem(devToolsPage, OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
     await devToolsPage.waitFor('[aria-label="NewFile, file"]');
     await devToolsPage.typeText('foo\n');
 
-    await openSoftContextMenuAndClickOnItem(OVERRIDES_FILESYSTEM_SELECTOR, 'New file', devToolsPage);
+    await openSoftContextMenuAndClickOnItem(devToolsPage, OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
     await devToolsPage.waitFor('[aria-label="NewFile, file"]');
     await devToolsPage.typeText('bar\n');
     await devToolsPage.waitFor('[aria-label="bar, file"]');
@@ -78,7 +78,7 @@ describe('Overrides panel', function() {
     const treeItemNames = (await Promise.all(treeItems.map(x => x.evaluate(y => y.textContent))));
     assert.isFalse(treeItemNames?.includes('coffees.json'));
 
-    await typeIntoQuickOpen('coffees.json', undefined, devToolsPage);
+    await typeIntoQuickOpen(devToolsPage, 'coffees.json', undefined);
     const list = await readQuickOpenResults(devToolsPage);
     assert.deepEqual(list, ['coffees.json']);
   });
@@ -102,7 +102,7 @@ describe('Overrides panel', function() {
     const treeItemNames = (await Promise.all(treeItems.map(x => x.evaluate(y => y.textContent))));
     assert.isFalse(treeItemNames?.includes('coffees.json'));
 
-    await typeIntoQuickOpen('coffees.json', undefined, devToolsPage);
+    await typeIntoQuickOpen(devToolsPage, 'coffees.json', undefined);
     const list = await readQuickOpenResults(devToolsPage);
     assert.deepEqual(list, ['coffees.json']);
   });
@@ -183,7 +183,7 @@ describe('Overrides panel', function() {
     await devToolsPage.waitFor('[aria-label="coffees.json, file"]');
 
     await openNetworkTab(devToolsPage);
-    await setCacheDisabled(false, devToolsPage);
+    await setCacheDisabled(devToolsPage, false);
     networkPanel = await devToolsPage.waitFor('.tabbed-pane-header-tab.selected');
     icons = await networkPanel.$$('devtools-icon.warning');
 
@@ -196,7 +196,7 @@ describe('Overrides panel', function() {
     await devToolsPage.click('aria/Clear configuration');
 
     await openNetworkTab(devToolsPage);
-    await setCacheDisabled(false, devToolsPage);
+    await setCacheDisabled(devToolsPage, false);
     networkPanel = await devToolsPage.waitFor('.tabbed-pane-header-tab.selected');
     icons = await networkPanel.$$('devtools-icon.warning');
 
@@ -204,11 +204,11 @@ describe('Overrides panel', function() {
 
     await devToolsPage.click('aria/Sources');
     await devToolsPage.click('aria/Select folder for overrides');
-    await openSoftContextMenuAndClickOnItem(OVERRIDES_FILESYSTEM_SELECTOR, 'New file', devToolsPage);
+    await openSoftContextMenuAndClickOnItem(devToolsPage, OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
     await devToolsPage.waitFor('[aria-label="NewFile, file"]');
 
     await openNetworkTab(devToolsPage);
-    await setCacheDisabled(false, devToolsPage);
+    await setCacheDisabled(devToolsPage, false);
     networkPanel = await devToolsPage.waitFor('.tabbed-pane-header-tab.selected');
     icons = await networkPanel.$$('devtools-icon.warning');
 
@@ -234,10 +234,10 @@ describe('Overrides panel', function() {
 
     // Set up & enable overrides in the Sources panel
     await devToolsPage.click('aria/Select folder for overrides');
-    await openSoftContextMenuAndClickOnItem(OVERRIDES_FILESYSTEM_SELECTOR, 'New file', devToolsPage);
+    await openSoftContextMenuAndClickOnItem(devToolsPage, OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
 
     await openNetworkTab(devToolsPage);
-    await selectRequestByName('coffees.json', {button: 'right'}, devToolsPage);
+    await selectRequestByName(devToolsPage, 'coffees.json', {button: 'right'});
     await devToolsPage.click('aria/Show all overrides');
 
     // In the Sources panel
@@ -339,7 +339,7 @@ describe('Overrides panel', function() {
     await enableLocalOverrides(devToolsPage);
 
     await openNetworkTab(devToolsPage);
-    await waitForSomeRequestsToAppear(4, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 4);
     await waitForOverrideContentMenuItemIsEnabled('sourcemap-origin.min.js', devToolsPage);
     await devToolsPage.click('aria/Open in Sources panel');
 
@@ -369,7 +369,7 @@ describe('Overrides panel', function() {
     await enableLocalOverrides(devToolsPage);
 
     await openNetworkTab(devToolsPage);
-    await waitForSomeRequestsToAppear(4, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 4);
     await waitForOverrideContentMenuItemIsEnabled('sourcemap-origin.css', devToolsPage);
     await devToolsPage.click('aria/Open in Sources panel');
 
@@ -398,7 +398,7 @@ describe('Overrides panel', () => {
     await devToolsPage.useSoftMenu();
     await inspectedPage.goToResource('elements/elements-panel-styles.html');
     await openNetworkTab(devToolsPage);
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
     await waitForOverrideContentMenuItemIsEnabled('elements-panel-styles.css', devToolsPage);
     await devToolsPage.click('aria/Open in Sources panel');
 
@@ -418,7 +418,7 @@ describe('Network panel', () => {
   it('context menu "override" items are disabled for forbidden URLs', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goTo('chrome://terms');
     await openNetworkTab(devToolsPage);
-    await selectRequestByName('terms', {button: 'right'}, devToolsPage);
+    await selectRequestByName(devToolsPage, 'terms', {button: 'right'});
 
     const menuItem1 = await devToolsPage.waitForAria('Override content');
     const isDisabled1 = await menuItem1.evaluate(el => el.classList.contains('soft-context-menu-disabled'));
@@ -448,7 +448,7 @@ describe('Overrides panel > Delete context menus', () => {
     await devToolsPage.typeText('foo.js\n');
 
     await openNetworkTab(devToolsPage);
-    await selectRequestByName('coffees.json', {button: 'right'}, devToolsPage);
+    await selectRequestByName(devToolsPage, 'coffees.json', {button: 'right'});
     await devToolsPage.click('aria/Override headers');
     await devToolsPage.waitFor('[title="Reveal header override definitions"]');
   }
@@ -457,7 +457,7 @@ describe('Overrides panel > Delete context menus', () => {
     await devToolsPage.setupOverridesFSMocks();
     await devToolsPage.useSoftMenu();
     await prepare(devToolsPage, inspectedPage);
-    await selectRequestByName('coffees.json', {button: 'right'}, devToolsPage);
+    await selectRequestByName(devToolsPage, 'coffees.json', {button: 'right'});
     await devToolsPage.click('aria/Show all overrides');
 
     await devToolsPage.waitFor('[aria-label=".headers, file"]');

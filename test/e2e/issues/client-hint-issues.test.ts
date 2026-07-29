@@ -21,15 +21,15 @@ describe('Client Hint issues test', () => {
     await inspectedPage.goToResource('issues/client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html');
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
-    const issueElement = await getIssueByTitle('Client Hint meta tag contained invalid origin', devToolsPage);
+    const issueElement = await getIssueByTitle(devToolsPage, 'Client Hint meta tag contained invalid origin');
     assert.isOk(issueElement);
-    const section = await getResourcesElement('2 sources', issueElement, '.affected-resource-label', devToolsPage);
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+    const section = await getResourcesElement(devToolsPage, '2 sources', issueElement, '.affected-resource-label');
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [
       ['client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html:1'],
       ['client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html:4'],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 
   it('should display issue when Client Hints are modified by javascript for DelegateCH', async ({
@@ -39,11 +39,11 @@ describe('Client Hint issues test', () => {
     await inspectedPage.goToResource('issues/client-hint-issue-DelegateCH-MetaTagModifiedHTML.html');
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
-    const issueElement = await getIssueByTitle('Client Hint meta tag modified by javascript', devToolsPage);
+    const issueElement = await getIssueByTitle(devToolsPage, 'Client Hint meta tag modified by javascript');
     assert.isOk(issueElement);
-    const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label', devToolsPage);
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+    const section = await getResourcesElement(devToolsPage, '1 source', issueElement, '.affected-resource-label');
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [['client-hint-issue-DelegateCH-MetaTagModifiedHTML.html:7']];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 });

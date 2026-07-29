@@ -12,9 +12,9 @@ import {
 describe('The Elements tab', () => {
   it('shows OOPIF frame error inline', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/page-error.html');
-    await waitForElementsStyleSection(null, devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, null);
     await expandSelectedNodeRecursively(devToolsPage);
-    await waitForElementWithPartialText('<iframe src=', devToolsPage);
-    await waitForElementWithPartialText('404 - File not found', devToolsPage);
+    await waitForElementWithPartialText(devToolsPage, '<iframe src=');
+    await waitForElementWithPartialText(devToolsPage, '404 - File not found');
   });
 });

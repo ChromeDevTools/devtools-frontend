@@ -6,7 +6,7 @@ import {openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', () => {
   it('links to the correct origins for eval\'ed resources', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile('call-to-foo.js', 'eval-origin.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'call-to-foo.js', 'eval-origin.html');
     await devToolsPage.waitFor('.devtools-link[title$="foo.js:3"]');
   });
 });

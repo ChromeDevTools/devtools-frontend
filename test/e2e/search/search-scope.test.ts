@@ -17,7 +17,7 @@ describe('The Search Panel', () => {
     await inspectedPage.goToResource('search/search.html');
 
     // Launch the search panel.
-    await openPanelViaMoreTools('Search', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Search');
     await devToolsPage.waitFor(SEARCH_QUERY);
     const inputElement = await devToolsPage.$(SEARCH_QUERY);
     assert.isOk(inputElement, 'Unable to find search input field');

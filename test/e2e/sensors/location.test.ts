@@ -8,7 +8,7 @@ import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Location emulation on Sensors panel', () => {
   it('includes UI for emulating a location', async ({devToolsPage}) => {
-    await openPanelViaMoreTools('Sensors', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Sensors');
     const select = await devToolsPage.waitFor('.geo-fields select');
     const actual = await select.evaluate(node => node.textContent);
     const expected = [
@@ -29,7 +29,7 @@ describe('Location emulation on Sensors panel', () => {
   });
 
   it('unavailable location', async ({devToolsPage, inspectedPage}) => {
-    await openPanelViaMoreTools('Sensors', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Sensors');
     await inspectedPage.goToResource('sensors/geolocation.html');
     // Grant geolocation permissions.
     await inspectedPage.page.browserContext().overridePermissions(

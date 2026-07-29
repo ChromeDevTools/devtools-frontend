@@ -21,29 +21,29 @@ describe('The Elements Tab', () => {
     await devToolsPage.waitFor('.styles-selector');
 
     // Check to make sure we have the correct node selected after opening a file
-    await waitForContentOfSelectedElementsNode('<body>\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<body>\u200B');
 
     await devToolsPage.pressKey('ArrowRight');
-    await waitForContentOfSelectedElementsNode('<div id=\u200B"host">\u200B…\u200B</div>\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div id=\u200B"host">\u200B…\u200B</div>\u200B');
 
     // Open the div (shows new nodes, but does not alter the selected node)
     await devToolsPage.pressKey('ArrowRight');
-    await waitForContentOfSelectedElementsNode('<div id=\u200B"host">\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div id=\u200B"host">\u200B');
 
     await devToolsPage.pressKey('ArrowRight');
-    await waitForContentOfSelectedElementsNode('#shadow-root (open)', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage, '#shadow-root (open)');
 
     // Open the shadow root (shows new nodes, but does not alter the selected node)
     await devToolsPage.pressKey('ArrowRight');
     await waitForChildrenOfSelectedElementNode(devToolsPage);
-    await waitForContentOfSelectedElementsNode('#shadow-root (open)', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage, '#shadow-root (open)');
 
     await devToolsPage.pressKey('ArrowRight');
-    await waitForContentOfSelectedElementsNode('<style>\u200B .red { color: red; } \u200B</style>\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<style>\u200B .red { color: red; } \u200B</style>\u200B');
 
     await devToolsPage.pressKey('ArrowDown');
-    await waitForContentOfSelectedElementsNode(
-        '<div id=\u200B"inner" class=\u200B"red">\u200Bhi!\u200B</div>\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage,
+                                               '<div id=\u200B"inner" class=\u200B"red">\u200Bhi!\u200B</div>\u200B');
 
     await devToolsPage.waitForFunction(async () => {
       const styleSections = await devToolsPage.$$('.styles-section');
@@ -88,12 +88,12 @@ describe('The Elements Tab', () => {
          <input type="date">
       `);
 
-       await togglePreferenceInSettingsTab('User agent shadow DOM', undefined, devToolsPage);
+       await togglePreferenceInSettingsTab(devToolsPage, 'User agent shadow DOM', undefined);
        await expandSelectedNodeRecursively(devToolsPage);
 
        const getProperties = async (elementSpec: string, expectedSelector: string) => {
          await devToolsPage.click(`pierceShadowText/${elementSpec}`);
-         await waitForPartialContentOfSelectedElementsNode(elementSpec, devToolsPage);
+         await waitForPartialContentOfSelectedElementsNode(devToolsPage, elementSpec);
          return await devToolsPage.waitForFunction(async () => {
            const properties = await getDisplayedStyleRules(devToolsPage);
            const index = properties.findIndex(({selectorText}) => selectorText === expectedSelector);

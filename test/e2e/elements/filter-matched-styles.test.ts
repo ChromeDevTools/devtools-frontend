@@ -10,7 +10,7 @@ import {
 
 describe('Filtering in the styles tab', () => {
   it('filters and highlights styles', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/filter-matched-styles.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/filter-matched-styles.html');
     const stylesTab = await devToolsPage.waitForAria('Styles panel');
     // Wait for rules to appear
     await devToolsPage.waitForAria('body, css selector');
@@ -29,7 +29,7 @@ describe('Filtering in the styles tab', () => {
   });
 
   it('auto-expands and collapses shorthands when filtering', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/filter-matched-styles.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/filter-matched-styles.html');
     const stylesTab = await devToolsPage.waitForAria('Styles panel');
     // Wait for rules to appear
     await devToolsPage.waitForAria('body, css selector');

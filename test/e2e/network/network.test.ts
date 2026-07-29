@@ -26,17 +26,17 @@ const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
 
 describe('The Network Tab', function() {
   async function navigateToNetworkTabEmptyPage(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-    await navigateToNetworkTab('empty.html', devToolsPage, inspectedPage);
-    await setCacheDisabled(true, devToolsPage);
-    await setKeepLog(false, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'empty.html');
+    await setCacheDisabled(devToolsPage, true);
+    await setKeepLog(devToolsPage, false);
   }
 
   it('displays requests', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
 
     // Wait for all the requests to be displayed + 1 to account for the page itself.
-    await waitForSomeRequestsToAppear(SIMPLE_PAGE_REQUEST_NUMBER + 1, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, SIMPLE_PAGE_REQUEST_NUMBER + 1);
 
     const expectedNames = [];
     expectedNames.push('favicon.ico');
@@ -51,20 +51,20 @@ describe('The Network Tab', function() {
 
   it('can select requests', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
 
     let selected = await getSelectedRequestName(devToolsPage);
     assert.isNull(selected, 'No request should be selected by default');
 
-    await selectRequestByName(SIMPLE_PAGE_URL, {}, devToolsPage);
-    await waitForSelectedRequestChange(selected, devToolsPage);
+    await selectRequestByName(devToolsPage, SIMPLE_PAGE_URL, {});
+    await waitForSelectedRequestChange(devToolsPage, selected);
 
     selected = await getSelectedRequestName(devToolsPage);
     assert.strictEqual(selected, SIMPLE_PAGE_URL, 'Selecting the first request should work');
 
     const lastRequestName = `image.svg?id=${SIMPLE_PAGE_REQUEST_NUMBER - 1}`;
-    await selectRequestByName(lastRequestName, {}, devToolsPage);
-    await waitForSelectedRequestChange(selected, devToolsPage);
+    await selectRequestByName(devToolsPage, lastRequestName, {});
+    await waitForSelectedRequestChange(devToolsPage, selected);
 
     selected = await getSelectedRequestName(devToolsPage);
     assert.strictEqual(selected, lastRequestName, 'Selecting the last request should work');
@@ -72,17 +72,17 @@ describe('The Network Tab', function() {
 
   it('can persist requests', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
 
     // Wait for all the requests to be displayed + 1 to account for the page itself, and get their names.
-    await waitForSomeRequestsToAppear(SIMPLE_PAGE_REQUEST_NUMBER + 1, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, SIMPLE_PAGE_REQUEST_NUMBER + 1);
     const firstPageRequestNames = (await getAllRequestNames(devToolsPage)).sort();
 
-    await setKeepLog(true, devToolsPage);
+    await setKeepLog(devToolsPage, true);
 
     // Navigate to a new page, and wait for the same requests to still be there.
     await inspectedPage.goTo('about:blank');
-    await waitForSomeRequestsToAppear(SIMPLE_PAGE_REQUEST_NUMBER + 1, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, SIMPLE_PAGE_REQUEST_NUMBER + 1);
     let secondPageRequestNames: Array<string|null> = [];
     await devToolsPage.waitForFunction(async () => {
       secondPageRequestNames = await getAllRequestNames(devToolsPage);
@@ -96,8 +96,8 @@ describe('The Network Tab', function() {
   it('should continue receiving new requests after timeline filter is cleared',
      async ({devToolsPage, inspectedPage}) => {
        await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
-       await navigateToNetworkTab('infinite-requests.html', devToolsPage, inspectedPage);
-       await waitForSomeRequestsToAppear(2, devToolsPage);
+       await navigateToNetworkTab(devToolsPage, inspectedPage, 'infinite-requests.html');
+       await waitForSomeRequestsToAppear(devToolsPage, 2);
 
        await setTimeWindow(devToolsPage);
        const initialNumberOfRequests = await getNumberOfRequests(devToolsPage);
@@ -117,15 +117,15 @@ describe('The Network Tab', function() {
 
        // After some time we expect new requests to come so it must be
        // that the number of requests increased.
-       await waitForSomeRequestsToAppear(numOfRequest + 1, devToolsPage);
+       await waitForSomeRequestsToAppear(devToolsPage, numOfRequest + 1);
      });
 
   it('should display preloaded request column with correct value', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
-    await navigateToNetworkTab('preload.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'preload.html');
 
-    await setTextFilter('is:preloaded', devToolsPage);
-    await waitForSomeRequestsToAppear(1, devToolsPage);
+    await setTextFilter(devToolsPage, 'is:preloaded');
+    await waitForSomeRequestsToAppear(devToolsPage, 1);
 
     const names = await getAllRequestNames(devToolsPage);
     assert.include(names, 'style.css');
@@ -145,16 +145,16 @@ describe('The Network Tab', function() {
 
     it('can persist requests across cross-origin navigation', async ({devToolsPage, inspectedPage}) => {
       await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
-      await setKeepLog(true, devToolsPage);
+      await setKeepLog(devToolsPage, true);
 
-      await navigateToNetworkTab('headers-and-payload.html', devToolsPage, inspectedPage);
-      await waitForSomeRequestsToAppear(3, devToolsPage);
+      await navigateToNetworkTab(devToolsPage, inspectedPage, 'headers-and-payload.html');
+      await waitForSomeRequestsToAppear(devToolsPage, 3);
 
       // Navigate to a different origin's page
       await inspectedPage.goToResourceWithCustomHost('devtools.test', 'host/page-with-oopif.html');
 
       // Introspect a request from the first navigation
-      await selectRequestByName('headers-and-payload.html', {}, devToolsPage);
+      await selectRequestByName(devToolsPage, 'headers-and-payload.html', {});
       const networkView = await devToolsPage.waitFor('.network-item-view');
       await devToolsPage.click('[aria-label=Response].tabbed-pane-header-tab', {
         root: networkView,
@@ -166,22 +166,22 @@ describe('The Network Tab', function() {
     it('does not persist response body if keep log was disabled during request',
        async ({devToolsPage, inspectedPage}) => {
          await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
-         await setKeepLog(false, devToolsPage);
+         await setKeepLog(devToolsPage, false);
 
-         await navigateToNetworkTab('headers-and-payload.html', devToolsPage, inspectedPage);
-         await waitForSomeRequestsToAppear(3, devToolsPage);
+         await navigateToNetworkTab(devToolsPage, inspectedPage, 'headers-and-payload.html');
+         await waitForSomeRequestsToAppear(devToolsPage, 3);
 
          // Enable keep log after requests are made
-         await setKeepLog(true, devToolsPage);
+         await setKeepLog(devToolsPage, true);
 
          // Navigate to a different origin's page
          await inspectedPage.goToResourceWithCustomHost('devtools.test', 'host/page-with-oopif.html');
 
          // Requests should still be there because keep log was enabled before navigation
-         await waitForSomeRequestsToAppear(3, devToolsPage);
+         await waitForSomeRequestsToAppear(devToolsPage, 3);
 
          // Introspect a request from the first navigation
-         await selectRequestByName('headers-and-payload.html', {}, devToolsPage);
+         await selectRequestByName(devToolsPage, 'headers-and-payload.html', {});
          const networkView = await devToolsPage.waitFor('.network-item-view');
          await devToolsPage.click('[aria-label=Response].tabbed-pane-header-tab', {
            root: networkView,

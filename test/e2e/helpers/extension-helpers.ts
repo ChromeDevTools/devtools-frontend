@@ -13,9 +13,9 @@ const globalThis: any = global;
 
 let loadExtensionPromise: Promise<unknown> = Promise.resolve();
 
-export async function loadExtension(
-    name: string, startPage: string|undefined = undefined, allowFileAccess: boolean|undefined = undefined,
-    devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<puppeteer.Frame> {
+export async function loadExtension(devToolsPage: DevToolsPage, inspectedPage: InspectedPage, name: string,
+                                    startPage: string|undefined = undefined,
+                                    allowFileAccess: boolean|undefined = undefined): Promise<puppeteer.Frame> {
   startPage = startPage || `${inspectedPage.getResourcesPath()}/extensions/empty_extension.html`;
   const extensionInfo = {startPage, name, allowFileAccess};
 

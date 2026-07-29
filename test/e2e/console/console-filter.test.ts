@@ -53,16 +53,16 @@ async function testMessageFilter(
 
   await step('navigate to console-filter.html and get console messages', async () => {
     unfilteredMessages =
-        await getConsoleMessages('console-filter', showMessagesWithAnchor, undefined, devToolsPage, inspectedPage);
+        await getConsoleMessages(devToolsPage, inspectedPage, 'console-filter', showMessagesWithAnchor, undefined);
   });
 
   await step(`filter to only show messages containing '${filter}'`, async () => {
-    await filterConsoleMessages(filter, devToolsPage);
+    await filterConsoleMessages(devToolsPage, filter);
   });
 
   await step('check that messages are correctly filtered', async () => {
     const filteredMessages =
-        await getCurrentConsoleMessages(showMessagesWithAnchor, undefined, undefined, devToolsPage);
+        await getCurrentConsoleMessages(devToolsPage, showMessagesWithAnchor, undefined, undefined);
     const expectedMessages = getExpectedMessages(unfilteredMessages, expectedMessageFilter);
     assert.isNotEmpty(filteredMessages);
     assert.deepEqual(filteredMessages, expectedMessages);
@@ -74,7 +74,7 @@ describe('The Console Tab', () => {
     let messages: string[];
     const withAnchor = true;
     await step('navigate to console-filter.html and get console messages', async () => {
-      messages = await getConsoleMessages('console-filter', withAnchor, undefined, devToolsPage, inspectedPage);
+      messages = await getConsoleMessages(devToolsPage, inspectedPage, 'console-filter', withAnchor, undefined);
     });
 
     await step('check that all console messages appear', async () => {
@@ -106,7 +106,7 @@ describe('The Console Tab', () => {
     let uniqueUrls = new Set<string>();
 
     await step('navigate to console-filter.html and wait for console messages', async () => {
-      await getConsoleMessages('console-filter', undefined, undefined, devToolsPage, inspectedPage);
+      await getConsoleMessages(devToolsPage, inspectedPage, 'console-filter', undefined, undefined);
     });
 
     await step('collect source urls from all messages', async () => {
@@ -145,7 +145,7 @@ describe('The Console Tab', () => {
     let uniqueUrls = new Set<string>();
 
     await step('navigate to console-filter.html and wait for console messages', async () => {
-      await getConsoleMessages('console-filter', undefined, undefined, devToolsPage, inspectedPage);
+      await getConsoleMessages(devToolsPage, inspectedPage, 'console-filter', undefined, undefined);
     });
 
     await step('collect source urls from all messages', async () => {
@@ -314,28 +314,28 @@ describe('The Console Tab', () => {
     const withAnchor = true;
     const allMessages = Level.All;
 
-    const initialMessages: string[] = await getConsoleMessages(
-        'console-filter', withAnchor, () => waitForConsoleMessagesToBeNonEmpty(18, devToolsPage), devToolsPage,
-        inspectedPage);
+    const initialMessages: string[] =
+        await getConsoleMessages(devToolsPage, inspectedPage, 'console-filter', withAnchor,
+                                 () => waitForConsoleMessagesToBeNonEmpty(devToolsPage, 18));
 
     await openConsoleSidebar(devToolsPage);
 
     // Verify only verbose messages are shown.
     await selectConsoleSidebarItem(devToolsPage, SidebarItem.Verbose);
-    const verboseMessages = await getCurrentConsoleMessages(
-        withAnchor, allMessages, () => waitForExactConsoleMessageCount(1, devToolsPage), devToolsPage);
+    const verboseMessages = await getCurrentConsoleMessages(devToolsPage, withAnchor, allMessages,
+                                                            () => waitForExactConsoleMessageCount(devToolsPage, 1));
     assert.deepEqual(verboseMessages, ['console-filter.html:45 verbose debug message']);
 
     // Verify that groups containing matches are shown.
     await selectConsoleSidebarItem(devToolsPage, SidebarItem.Errors);
-    const errorMessages = await getCurrentConsoleMessages(
-        withAnchor, allMessages, () => waitForExactConsoleMessageCount(1, devToolsPage), devToolsPage);
+    const errorMessages = await getCurrentConsoleMessages(devToolsPage, withAnchor, allMessages,
+                                                          () => waitForExactConsoleMessageCount(devToolsPage, 1));
     assert.deepEqual(errorMessages, ['console-filter.html:33 enterCollapsedGroup collapsedGroup']);
 
     // Verify that closing the sidebar reverts any filtering.
     await closeConsoleSidebar(devToolsPage);
     const messagesAfterClose = await getCurrentConsoleMessages(
-        withAnchor, allMessages, () => waitForConsoleMessagesToBeNonEmpty(18, devToolsPage), devToolsPage);
+        devToolsPage, withAnchor, allMessages, () => waitForConsoleMessagesToBeNonEmpty(devToolsPage, 18));
     assert.deepEqual(messagesAfterClose, initialMessages);
   });
 
@@ -344,8 +344,8 @@ describe('The Console Tab', () => {
         /Access to fetch at 'https:.*' from origin 'https:.*' has been blocked by CORS policy: .*/;
     const NETWORK_ERROR_PATTERN = /GET https:.* net::ERR_FAILED/;
     const JS_ERROR_PATTERN = /Uncaught \(in promise\) TypeError: Failed to fetch.*/;
-    const allMessages = await getConsoleMessages(
-        'cors-issue', false, () => waitForConsoleMessagesToBeNonEmpty(6, devToolsPage), devToolsPage, inspectedPage);
+    const allMessages = await getConsoleMessages(devToolsPage, inspectedPage, 'cors-issue', false,
+                                                 () => waitForConsoleMessagesToBeNonEmpty(devToolsPage, 6));
     allMessages.sort();
     assert.lengthOf(allMessages, 6);
     assert.match(allMessages[0], CORS_DETAILED_ERROR_PATTERN);
@@ -356,7 +356,7 @@ describe('The Console Tab', () => {
     assert.match(allMessages[5], JS_ERROR_PATTERN);
 
     await toggleShowCorsErrors(devToolsPage);
-    const filteredMessages = await getCurrentConsoleMessages(undefined, undefined, undefined, devToolsPage);
+    const filteredMessages = await getCurrentConsoleMessages(devToolsPage, undefined, undefined, undefined);
     assert.lengthOf(filteredMessages, 2);
     for (const message of filteredMessages) {
       assert.match(message, JS_ERROR_PATTERN);

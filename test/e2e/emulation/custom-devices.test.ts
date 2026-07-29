@@ -125,7 +125,7 @@ describe('Custom devices', () => {
     // Reload the test page, and verify things working.
     await inspectedPage.reload();
 
-    void waitForDomNodeToBeVisible('#res-dump-done', inspectedPage);
+    void waitForDomNodeToBeVisible(inspectedPage, '#res-dump-done');
     assert.strictEqual(await targetTextContent('#res-ua', inspectedPage), 'Test device browser 1.0');
     assert.strictEqual(await targetTextContent('#res-mobile', inspectedPage), 'true');
     assert.strictEqual(await targetTextContent('#res-num-brands', inspectedPage), '2');
@@ -177,7 +177,7 @@ describe('Custom devices', () => {
     // Reload the test page, and verify things working.
     await inspectedPage.reload();
 
-    void waitForDomNodeToBeVisible('#res-dump-done', inspectedPage);
+    void waitForDomNodeToBeVisible(inspectedPage, '#res-dump-done');
     assert.strictEqual(await targetTextContent('#res-ua', inspectedPage), 'Test device browser 1.0');
     assert.strictEqual(await targetTextContent('#res-mobile', inspectedPage), 'true');
     assert.strictEqual(await targetTextContent('#res-num-brands', inspectedPage), '2');
@@ -220,7 +220,7 @@ describe('Custom devices', () => {
     await devToolsPage.waitForNone(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
 
     // Select the device in the menu.
-    await selectDevice('Prime numbers', devToolsPage);
+    await selectDevice(devToolsPage, 'Prime numbers');
 
     // Check fit-to-window text is selected.
     await waitForZoom(devToolsPage, 'Fit to window');

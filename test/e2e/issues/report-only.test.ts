@@ -9,13 +9,13 @@ describe('The Issues tab report-only issues', () => {
     await inspectedPage.goToResource('elements/element-reveal-inline-issue.html');
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
-    await assertStatus('blocked', devToolsPage);
+    await assertStatus(devToolsPage, 'blocked');
   });
 
   it('should report the violation as report-only', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('network/csp-report-only.rawresponse');
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
-    await assertStatus('report-only', devToolsPage);
+    await assertStatus(devToolsPage, 'report-only');
   });
 });

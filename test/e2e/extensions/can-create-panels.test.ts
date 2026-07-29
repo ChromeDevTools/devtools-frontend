@@ -34,7 +34,7 @@ async function createPanel(extension: puppeteer.Frame, resourcePath = '') {
 describe('The Extension API', () => {
   it('can create panels with callbacks', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('empty.html');
-    const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
+    const extension = await loadExtension(devToolsPage, inspectedPage, 'TestExtension', undefined, undefined);
 
     const callbackArgs = await createPanel(extension);
 
@@ -43,7 +43,7 @@ describe('The Extension API', () => {
 
   it('rejects absolute resource URLs', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('empty.html');
-    const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
+    const extension = await loadExtension(devToolsPage, inspectedPage, 'TestExtension', undefined, undefined);
 
     const error = expectError(
         'Extension server error: Invalid argument page: Resources paths cannot point to non-extension resources');
@@ -56,7 +56,7 @@ describe('The Extension API', () => {
   it('handles absolute resource paths correctly', async ({devToolsPage, inspectedPage}) => {
     expectError('Unknown VE context: \'https://localhostextension-tab-title\'');
     await inspectedPage.goToResource('empty.html');
-    const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
+    const extension = await loadExtension(devToolsPage, inspectedPage, 'TestExtension', undefined, undefined);
 
     await createPanel(extension, '/blank.html');
     await devToolsPage.clickMoreTabsButton();
@@ -71,7 +71,7 @@ describe('The Extension API', () => {
   it('handles relative resource paths correctly', async ({devToolsPage, inspectedPage}) => {
     expectError('Unknown VE context: \'https://localhostextension-tab-title\'');
     await inspectedPage.goToResource('empty.html');
-    const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
+    const extension = await loadExtension(devToolsPage, inspectedPage, 'TestExtension', undefined, undefined);
     await createPanel(extension, 'blank.html');
     await devToolsPage.clickMoreTabsButton();
     const header = await devToolsPage.waitForAria('extension-tab-title');
@@ -85,7 +85,7 @@ describe('The Extension API', () => {
   it('can handle search events', async ({devToolsPage, inspectedPage}) => {
     expectError('Unknown VE context: \'https://localhostSearchPanel\'');
     await inspectedPage.goToResource('empty.html');
-    const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
+    const extension = await loadExtension(devToolsPage, inspectedPage, 'TestExtension', undefined, undefined);
 
     const page = new URL(`${inspectedPage.getResourcesPath()}/extensions/test_panel.html`).pathname;
 

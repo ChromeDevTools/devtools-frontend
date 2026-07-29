@@ -73,7 +73,7 @@ describe('ConsoleInsight', function() {
     await inspectedPage.evaluate(() => {
       console.error(new Error('Unexpected error'));
     });
-    await clickOnContextMenu(CLICK_TARGET_SELECTOR, EXPLAIN_ACTION_ID, devToolsPage);
+    await clickOnContextMenu(devToolsPage, CLICK_TARGET_SELECTOR, EXPLAIN_ACTION_ID);
 
     await devToolsPage.waitFor('.devtools-console-insight');
   });

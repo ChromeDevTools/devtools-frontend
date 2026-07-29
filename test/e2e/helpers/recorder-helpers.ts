@@ -75,13 +75,13 @@ export async function enableUntrustedEventMode(devToolsPage: DevToolsPage) {
   })()`);
 }
 
-export async function enableAndOpenRecorderPanel(
-    path: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+export async function enableAndOpenRecorderPanel(devToolsPage: DevToolsPage, inspectedPage: InspectedPage,
+                                                 path: string) {
   await inspectedPage.goToResource(path);
   await openRecorderPanel(devToolsPage);
 }
 
-async function createRecording(name: string, selectorAttribute: string|undefined, devToolsPage: DevToolsPage) {
+async function createRecording(devToolsPage: DevToolsPage, name: string, selectorAttribute?: string) {
   const newRecordingButton = await devToolsPage.waitForAria('Create recording');
   await newRecordingButton.click();
   const input = await devToolsPage.waitForAria('RECORDING NAME');
@@ -94,16 +94,15 @@ async function createRecording(name: string, selectorAttribute: string|undefined
   }
 }
 
-export async function createAndStartRecording(
-    name: string|undefined, selectorAttribute: string|undefined, devToolsPage: DevToolsPage) {
-  await createRecording(name ?? TEST_RECORDING_NAME, selectorAttribute, devToolsPage);
+export async function createAndStartRecording(devToolsPage: DevToolsPage, name?: string, selectorAttribute?: string) {
+  await createRecording(devToolsPage, name ?? TEST_RECORDING_NAME, selectorAttribute);
   const onRecordingStarted = onRecordingStateChanged(devToolsPage);
   await devToolsPage.click('.control-button');
   await devToolsPage.waitFor('.recording-view');
   await onRecordingStarted;
 }
 
-export async function changeNetworkConditions(condition: string, devToolsPage: DevToolsPage) {
+export async function changeNetworkConditions(devToolsPage: DevToolsPage, condition: string) {
   await openCommandMenu(devToolsPage);
   await devToolsPage.typeText('Show Network');
   await devToolsPage.pressKey('Enter');
@@ -125,24 +124,23 @@ interface StartRecordingOptions {
 }
 
 export async function startRecording(
+    devToolsPage: DevToolsPage,
+    inspectedPage: InspectedPage,
     path: string,
     options: StartRecordingOptions = {
       networkCondition: '',
       untrustedEvents: false,
     },
-    devToolsPage: DevToolsPage,
-    inspectedPage: InspectedPage,
-
 ) {
   await devToolsPage.bringToFront();
   if (options.networkCondition) {
-    await changeNetworkConditions(options.networkCondition, devToolsPage);
+    await changeNetworkConditions(devToolsPage, options.networkCondition);
   }
-  await enableAndOpenRecorderPanel(path, devToolsPage, inspectedPage);
+  await enableAndOpenRecorderPanel(devToolsPage, inspectedPage, path);
   if (options.untrustedEvents) {
     await enableUntrustedEventMode(devToolsPage);
   }
-  await createAndStartRecording(TEST_RECORDING_NAME, options.selectorAttribute, devToolsPage);
+  await createAndStartRecording(devToolsPage, TEST_RECORDING_NAME, options.selectorAttribute);
 }
 
 export async function stopRecording(devToolsPage: DevToolsPage): Promise<UserFlow> {
@@ -232,7 +230,7 @@ export const processAndVerifyBaseRecording = (
   return parsed;
 };
 
-async function setCode(flow: string, devToolsPage: DevToolsPage) {
+async function setCode(devToolsPage: DevToolsPage, flow: string) {
   const view = await getRecordingPanel(devToolsPage);
   await view.evaluate(async (el, flow) => {
     const promise = new Promise(resolve => el.addEventListener('setrecordingfinished', resolve, {once: true}));
@@ -241,7 +239,7 @@ async function setCode(flow: string, devToolsPage: DevToolsPage) {
   }, flow);
 }
 
-export async function clickSelectButtonItem(itemLabel: string, root: string, devToolsPage: DevToolsPage) {
+export async function clickSelectButtonItem(devToolsPage: DevToolsPage, itemLabel: string, root: string) {
   const selectMenu = await devToolsPage.waitFor(root);
   const selectMenuButton = await devToolsPage.waitFor(
       'select',
@@ -254,26 +252,26 @@ export async function clickSelectButtonItem(itemLabel: string, root: string, dev
 }
 
 export async function setupRecorderWithScript(
-    script: UserFlow,
-    path = 'recorder/recorder.html',
     devToolsPage: DevToolsPage,
     inspectedPage: InspectedPage,
+    script: UserFlow,
+    path = 'recorder/recorder.html',
     ): Promise<void> {
-  await enableAndOpenRecorderPanel(path, devToolsPage, inspectedPage);
-  await createAndStartRecording(script.title, undefined, devToolsPage);
+  await enableAndOpenRecorderPanel(devToolsPage, inspectedPage, path);
+  await createAndStartRecording(devToolsPage, script.title, undefined);
   await stopRecording(devToolsPage);
-  await setCode(JSON.stringify(script), devToolsPage);
+  await setCode(devToolsPage, JSON.stringify(script));
 }
 
 export async function setupRecorderWithScriptAndReplay(
-    script: UserFlow,
-    path = 'recorder/recorder.html',
     devToolsPage: DevToolsPage,
     inspectedPage: InspectedPage,
+    script: UserFlow,
+    path = 'recorder/recorder.html',
     ): Promise<void> {
-  await setupRecorderWithScript(script, path, devToolsPage, inspectedPage);
+  await setupRecorderWithScript(devToolsPage, inspectedPage, script, path);
   const onceFinished = onReplayFinished(devToolsPage);
-  await clickSelectButtonItem('Normal (Default)', '.select-button', devToolsPage);
+  await clickSelectButtonItem(devToolsPage, 'Normal (Default)', '.select-button');
   await onceFinished;
 }
 
@@ -297,9 +295,9 @@ export async function getCurrentRecording(
 }
 
 export async function startOrStopRecordingShortcut(
-    execute: 'inspectedPage'|'devToolsPage' = 'devToolsPage',
     devToolsPage: DevToolsPage,
     inspectedPage: InspectedPage,
+    execute: 'inspectedPage'|'devToolsPage' = 'devToolsPage',
 ) {
   const executeOn = execute === 'devToolsPage' ? devToolsPage : inspectedPage;
   const onRecordingStarted = onRecordingStateChanged(devToolsPage);
@@ -312,21 +310,21 @@ export async function startOrStopRecordingShortcut(
 }
 
 export async function fillCreateRecordingForm(
-    path: string,
     devToolsPage: DevToolsPage,
     inspectedPage: InspectedPage,
+    path: string,
 ) {
-  await enableAndOpenRecorderPanel(path, devToolsPage, inspectedPage);
-  await createRecording(TEST_RECORDING_NAME, undefined, devToolsPage);
+  await enableAndOpenRecorderPanel(devToolsPage, inspectedPage, path);
+  await createRecording(devToolsPage, TEST_RECORDING_NAME, undefined);
 }
 
 export async function startRecordingViaShortcut(
-    path: string,
     devToolsPage: DevToolsPage,
     inspectedPage: InspectedPage,
+    path: string,
 ) {
-  await enableAndOpenRecorderPanel(path, devToolsPage, inspectedPage);
-  await startOrStopRecordingShortcut('devToolsPage', devToolsPage, inspectedPage);
+  await enableAndOpenRecorderPanel(devToolsPage, inspectedPage, path);
+  await startOrStopRecordingShortcut(devToolsPage, inspectedPage, 'devToolsPage');
 }
 
 export async function replayShortcut(

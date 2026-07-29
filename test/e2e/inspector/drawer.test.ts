@@ -455,15 +455,15 @@ describe('Drawer', () => {
     await devToolsPage.click('#tab-elements');
     await devToolsPage.waitForNone(DRAWER_SELECTOR);
 
-    await runCommandWithQuickOpen('Toggle console', devToolsPage);
+    await runCommandWithQuickOpen(devToolsPage, 'Toggle console');
     await devToolsPage.waitFor(DRAWER_SELECTOR);
     await devToolsPage.waitFor(MINIMIZE_BUTTON_SELECTOR);
 
-    await runCommandWithQuickOpen('Toggle console', devToolsPage);
+    await runCommandWithQuickOpen(devToolsPage, 'Toggle console');
     await devToolsPage.waitFor(DRAWER_SELECTOR);
     await devToolsPage.waitFor(EXPAND_BUTTON_SELECTOR);
 
-    await runCommandWithQuickOpen('Toggle console', devToolsPage);
+    await runCommandWithQuickOpen(devToolsPage, 'Toggle console');
     await devToolsPage.waitFor(DRAWER_SELECTOR);
     await devToolsPage.waitFor(MINIMIZE_BUTTON_SELECTOR);
   });

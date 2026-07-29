@@ -102,7 +102,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
 
     await devToolsPage.waitForElementWithTextContent(linkText);
 
-    await openSoftContextMenuAndClickOnItem(linkSelector, 'Copy', devToolsPage);
+    await openSoftContextMenuAndClickOnItem(devToolsPage, linkSelector, 'Copy');
 
     const expectedClipboardText = `link "cats" focusable: true url: ${
         inspectedPage.getResourcesPath()}/elements/x\n  StaticText "cats"\n    InlineTextBox "cats"\n`;
@@ -126,7 +126,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
     await devToolsPage.waitForStrictEqual(expectedClipboardText, async () => {
       // Sometimes doesn't register; retry until it works.
       await devToolsPage.click(headingSelector);
-      await waitForSelectedTreeElementSelectorWhichIncludesText('Title', devToolsPage);
+      await waitForSelectedTreeElementSelectorWhichIncludesText(devToolsPage, 'Title');
       await devToolsPage.pressKey('c', {control: true});
       return (await devToolsPage.readClipboard()).replaceAll('\r\n', '\n');
     }, 'Waiting for clipboard to exactly contain ' + JSON.stringify(expectedClipboardText));
@@ -143,7 +143,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
        await devToolsPage.waitForElementWithTextContent(headingText);
 
        await devToolsPage.click(headingSelector, {clickOptions: {button: 'right'}});
-       await waitForSelectedTreeElementSelectorWhichIncludesText('Title', devToolsPage);
+       await waitForSelectedTreeElementSelectorWhichIncludesText(devToolsPage, 'Title');
 
        const contextMenu = await devToolsPage.waitFor('.soft-context-menu');
        await devToolsPage.click('[aria-label="Switch to DOM tree"]', {root: contextMenu});

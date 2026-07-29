@@ -52,12 +52,12 @@ describe('Network emulation', () => {
     await uaDropdown.click();
     await devToolsPage.click('[aria-label="Close drawer"]');
 
-    await setCacheDisabled(true, devToolsPage);
+    await setCacheDisabled(devToolsPage, true);
     await inspectedPage.goToResource('application/service-worker-network.html');
-    await setTextFilter('is:service-worker-initiated', devToolsPage);
+    await setTextFilter(devToolsPage, 'is:service-worker-initiated');
 
-    await waitForSomeRequestsToAppear(2, devToolsPage);
-    await selectRequestByName('⚙ main.css', {}, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
+    await selectRequestByName(devToolsPage, '⚙ main.css', {});
     await openHeadersTab(devToolsPage);
 
     const responseHeaderSection = await devToolsPage.waitFor(RESPONSE_HEADERS_SELECTOR);

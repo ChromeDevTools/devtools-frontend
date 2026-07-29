@@ -45,17 +45,17 @@ import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 async function runJSSetTest(devToolsPage: DevToolsPage) {
   await navigateToMemoryTab(devToolsPage);
-  await takeHeapSnapshot(undefined, devToolsPage);
+  await takeHeapSnapshot(devToolsPage, undefined);
   await waitForNonEmptyHeapSnapshotData(devToolsPage);
-  await setSearchFilter('Retainer', devToolsPage);
-  await waitForSearchResultNumber(4, devToolsPage);
-  await findSearchResult('Retainer()', undefined, devToolsPage);
-  await focusTableRowWithName('Retainer()', devToolsPage);
+  await setSearchFilter(devToolsPage, 'Retainer');
+  await waitForSearchResultNumber(devToolsPage, 4);
+  await findSearchResult(devToolsPage, 'Retainer()', undefined);
+  await focusTableRowWithName(devToolsPage, 'Retainer()');
   await expandFocusedRow(devToolsPage);
-  await focusTableRowWithName('customProperty', devToolsPage);
+  await focusTableRowWithName(devToolsPage, 'customProperty');
   const sizesForSet = await getSizesFromSelectedRow(devToolsPage);
   await expandFocusedRow(devToolsPage);
-  await focusTableRowWithName('(internal array)[]', devToolsPage);
+  await focusTableRowWithName(devToolsPage, '(internal array)[]');
   const sizesForBackingStorage = await getSizesFromSelectedRow(devToolsPage);
   return {sizesForSet, sizesForBackingStorage};
 }
@@ -78,9 +78,9 @@ describe('The Memory Panel', function() {
   it('Can take several heap snapshots ', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/default.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await takeHeapSnapshot('Snapshot 2', devToolsPage);
+    await takeHeapSnapshot(devToolsPage, 'Snapshot 2');
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
     const heapSnapShots = await devToolsPage.$$('.heap-snapshot-sidebar-tree-item');
     assert.lengthOf(heapSnapShots, 2);
@@ -89,59 +89,55 @@ describe('The Memory Panel', function() {
   it('Shows a DOM node and its JS wrapper as a single node', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/detached-node.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await setSearchFilter('leaking', devToolsPage);
-    await waitForSearchResultNumber(4, devToolsPage);
-    await findSearchResult('leaking()', undefined, devToolsPage);
-    await waitForRetainerChain(
-        [
-          'Detached V8EventListener',
-          'Detached EventListener',
-          'Detached InternalNode',
-          'Detached InternalNode',
-          'Detached InternalNode',
-          'Detached <div>',
-          'Retainer',
-          `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
-          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
-        ],
-        devToolsPage);
+    await setSearchFilter(devToolsPage, 'leaking');
+    await waitForSearchResultNumber(devToolsPage, 4);
+    await findSearchResult(devToolsPage, 'leaking()', undefined);
+    await waitForRetainerChain(devToolsPage, [
+      'Detached V8EventListener',
+      'Detached EventListener',
+      'Detached InternalNode',
+      'Detached InternalNode',
+      'Detached InternalNode',
+      'Detached <div>',
+      'Retainer',
+      `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
+      `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
+    ]);
   });
 
   it('Correctly retains the path for event listeners', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/event-listeners.html');
     await step('taking a heap snapshot', async () => {
       await navigateToMemoryTab(devToolsPage);
-      await takeHeapSnapshot(undefined, devToolsPage);
+      await takeHeapSnapshot(devToolsPage, undefined);
       await waitForNonEmptyHeapSnapshotData(devToolsPage);
     });
     await step('searching for the event listener', async () => {
-      await setSearchFilter('myEventListener', devToolsPage);
-      await waitForSearchResultNumber(4, devToolsPage);
+      await setSearchFilter(devToolsPage, 'myEventListener');
+      await waitForSearchResultNumber(devToolsPage, 4);
     });
 
     await step('selecting the search result that we need', async () => {
-      await findSearchResult('myEventListener()', undefined, devToolsPage);
+      await findSearchResult(devToolsPage, 'myEventListener()', undefined);
     });
 
     await step('waiting for retainer chain', async () => {
-      await waitForRetainerChain(
-          [
-            'V8EventListener',
-            'EventListener',
-            'InternalNode',
-            'InternalNode',
-            '<body>',
-          ],
-          devToolsPage);
+      await waitForRetainerChain(devToolsPage, [
+        'V8EventListener',
+        'EventListener',
+        'InternalNode',
+        'InternalNode',
+        '<body>',
+      ]);
     });
   });
 
   it('Puts all ActiveDOMObjects with pending activities into one group', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/dom-objects.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
     // The test ensures that the following structure is present:
     // Pending activities
@@ -149,7 +145,7 @@ describe('The Memory Panel', function() {
     //    -> InternalNode
     //       -> MediaQueryList
     //       -> MediaQueryList
-    await setSearchFilter('Pending activities', devToolsPage);
+    await setSearchFilter(devToolsPage, 'Pending activities');
     // Here and below we have to wait until the elements are actually created
     // and visible.
     await devToolsPage.waitForFunction(async () => {
@@ -185,46 +181,45 @@ describe('The Memory Panel', function() {
   it('Shows the correct number of divs for a detached DOM tree correctly', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/detached-dom-tree.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await setSearchFilter('Detached <div>', devToolsPage);
-    await waitForSearchResultNumber(3, devToolsPage);
+    await setSearchFilter(devToolsPage, 'Detached <div>');
+    await waitForSearchResultNumber(devToolsPage, 3);
   });
 
   it('Shows the correct output for an attached iframe', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/attached-iframe.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await setSearchFilter('searchable string', devToolsPage);
-    await waitForSearchResultNumber(1, devToolsPage);
+    await setSearchFilter(devToolsPage, 'searchable string');
+    await waitForSearchResultNumber(devToolsPage, 1);
     // The following line checks two things: That the property 'aUniqueName'
     // in the iframe is retaining the Retainer class object, and that the
     // iframe window is not detached.
     await waitUntilRetainerChainSatisfies(
-        retainerChain => retainerChain.some(
-            ({propertyName, retainerClassName}) =>
-                propertyName === 'aUniqueName' && retainerClassName === `Window [JSGlobalObject] / ://`),
-        devToolsPage);
+        devToolsPage,
+        retainerChain => retainerChain.some(({propertyName, retainerClassName}) => propertyName === 'aUniqueName' &&
+                                                retainerClassName === `Window [JSGlobalObject] / ://`));
   });
 
   it('Correctly shows multiple retainer paths for an object', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/multiple-retainers.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await setSearchFilter('leaking', devToolsPage);
-    await waitForSearchResultNumber(4, devToolsPage);
-    await findSearchResult('\"leaking\"', '1 of 4', devToolsPage);
+    await setSearchFilter(devToolsPage, 'leaking');
+    await waitForSearchResultNumber(devToolsPage, 4);
+    await findSearchResult(devToolsPage, '\"leaking\"', '1 of 4');
 
     await devToolsPage.waitForFunction(async () => {
       // Wait for all the rows of the data-grid to load.
-      const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
+      const retainerGridElements = await getDataGridRows(devToolsPage, '.retaining-paths-view table.data');
       return retainerGridElements.length === 114;
     });
 
     const sharedInLeakingElementRow = await devToolsPage.waitForFunction(async () => {
-      const results = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
+      const results = await getDataGridRows(devToolsPage, '.retaining-paths-view table.data');
       const findPromises = await Promise.all(results.map(async e => {
         const textContent = await e.evaluate(el => el.textContent);
         // Can't search for "shared in leaking()" because the different parts are spaced with CSS.
@@ -271,39 +266,38 @@ describe('The Memory Panel', function() {
   it('Shows the correct output for a detached iframe', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/detached-iframe.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await setSearchFilter('Leak', devToolsPage);
-    await waitForSearchResultNumber(9, devToolsPage);
+    await setSearchFilter(devToolsPage, 'Leak');
+    await waitForSearchResultNumber(devToolsPage, 9);
     await waitUntilRetainerChainSatisfies(
-        retainerChain => retainerChain.some(({retainerClassName}) => retainerClassName === 'Detached Window'),
         devToolsPage,
-    );
+        retainerChain => retainerChain.some(({retainerClassName}) => retainerClassName === 'Detached Window'));
   });
 
   it('Shows a tooltip', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/detached-dom-tree.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await setSearchFilter('Detached <div>', devToolsPage);
-    await waitForSearchResultNumber(3, devToolsPage);
+    await setSearchFilter(devToolsPage, 'Detached <div>');
+    await waitForSearchResultNumber(devToolsPage, 3);
     await devToolsPage.waitForFunction(async () => {
-      if (await checkRetainerChainSatisfies(retainerChain => {
+      if (await checkRetainerChainSatisfies(devToolsPage, retainerChain => {
             return retainerChain.length > 0 && retainerChain[0].propertyName === 'retaining_wrapper';
-          }, devToolsPage)) {
+          })) {
         return true;
       }
       await devToolsPage.click('[aria-label="Show next result"]');
       return false;
     });
-    const rows = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
+    const rows = await getDataGridRows(devToolsPage, '.retaining-paths-view table.data');
     const propertyNameElement = await rows[0].$('span.property-name');
     await propertyNameElement!.hover();
     const el = await devToolsPage.waitFor('div.vbox.flex-auto.no-pointer-events');
     await devToolsPage.waitFor('.source-code', el);
 
-    await setSearchFilter('system / descriptorarray', devToolsPage);
+    await setSearchFilter(devToolsPage, 'system / descriptorarray');
     // Explicitly wait for the search to complete and results to be updated
     await devToolsPage.waitForFunction(async () => {
       const selectedRow = await devToolsPage.$('.data-grid-data-grid-node.selected');
@@ -314,7 +308,7 @@ describe('The Memory Panel', function() {
       return text?.includes('system / DescriptorArray');
     });
     // Find the first one as these are system
-    await findSearchResult('system / DescriptorArray', /1 of/, devToolsPage);
+    await findSearchResult(devToolsPage, 'system / DescriptorArray', /1 of/);
     await devToolsPage.hover('.selected.data-grid-data-grid-node span.object-value-null');
     await devToolsPage.waitFor('.widget .object-popover-footer');
   });
@@ -330,15 +324,15 @@ describe('The Memory Panel', function() {
     await inspectedPage.goToResource('memory/allocations.html');
     await navigateToMemoryTab(devToolsPage);
     void takeAllocationProfile(devToolsPage);
-    void changeAllocationSampleViewViaDropdown('Chart', devToolsPage);
+    void changeAllocationSampleViewViaDropdown(devToolsPage, 'Chart');
     await devToolsPage.waitFor('canvas.flame-chart-canvas');
   });
 
   it('shows allocations for an allocation timeline', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/allocations.html');
     await navigateToMemoryTab(devToolsPage);
-    void takeAllocationTimelineProfile({recordStacks: true}, devToolsPage);
-    await changeViewViaDropdown('Allocation', devToolsPage);
+    void takeAllocationTimelineProfile(devToolsPage, {recordStacks: true});
+    await changeViewViaDropdown(devToolsPage, 'Allocation');
 
     const header = await devToolsPage.waitForElementWithTextContent('Live Count');
     const table = await header.evaluateHandle(node => {
@@ -350,7 +344,7 @@ describe('The Memory Panel', function() {
   it('does not show allocations perspective when stacks not recorded', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/allocations.html');
     await navigateToMemoryTab(devToolsPage);
-    void takeAllocationTimelineProfile({recordStacks: false}, devToolsPage);
+    void takeAllocationTimelineProfile(devToolsPage, {recordStacks: false});
     const dropdown = await devToolsPage.waitFor('select[aria-label="Perspective"]');
     await devToolsPage.waitForNoElementsWithTextContent('Allocation', dropdown);
   });
@@ -390,8 +384,8 @@ describe('The Memory Panel', function() {
         window.myTestClass2 = new MyTestClass2();
         //# sourceURL=my-test-script.js`);
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
-    await setClassFilter('MyTest', devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
+    await setClassFilter(devToolsPage, 'MyTest');
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
 
     const expectedEntries = [
@@ -401,7 +395,7 @@ describe('The Memory Panel', function() {
       {constructor: 'MyTestClass2', link: 'my-test-script.js:11'},
     ];
 
-    const rows = await getDataGridRows('.data-grid', devToolsPage);
+    const rows = await getDataGridRows(devToolsPage, '.data-grid');
     for (const entry of expectedEntries) {
       let row: puppeteer.ElementHandle<Element>|null = null;
       // Find the row with the desired constructor.
@@ -470,173 +464,163 @@ describe('The Memory Panel', function() {
   it('Computes distances and sizes for WeakMap values correctly', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/weakmap.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await setClassFilter('CustomClass', devToolsPage);
-    assert.strictEqual(8, await getDistanceFromCategoryRow('CustomClass1', devToolsPage));
-    assert.strictEqual(9, await getDistanceFromCategoryRow('CustomClass2', devToolsPage));
-    assert.strictEqual(5, await getDistanceFromCategoryRow('CustomClass3', devToolsPage));
-    assert.strictEqual(11, await getDistanceFromCategoryRow('CustomClass4', devToolsPage));
-    assert.isTrue((await getSizesFromCategoryRow('CustomClass1Key', devToolsPage)).retainedSize >= 2 ** 15);
-    assert.isTrue((await getSizesFromCategoryRow('CustomClass2Key', devToolsPage)).retainedSize >= 2 ** 15);
-    assert.isTrue((await getSizesFromCategoryRow('CustomClass3Key', devToolsPage)).retainedSize < 2 ** 15);
-    assert.isTrue((await getSizesFromCategoryRow('CustomClass4Key', devToolsPage)).retainedSize < 2 ** 15);
-    assert.isTrue((await getSizesFromCategoryRow('CustomClass4Retainer', devToolsPage)).retainedSize >= 2 ** 15);
+    await setClassFilter(devToolsPage, 'CustomClass');
+    assert.strictEqual(8, await getDistanceFromCategoryRow(devToolsPage, 'CustomClass1'));
+    assert.strictEqual(9, await getDistanceFromCategoryRow(devToolsPage, 'CustomClass2'));
+    assert.strictEqual(5, await getDistanceFromCategoryRow(devToolsPage, 'CustomClass3'));
+    assert.strictEqual(11, await getDistanceFromCategoryRow(devToolsPage, 'CustomClass4'));
+    assert.isTrue((await getSizesFromCategoryRow(devToolsPage, 'CustomClass1Key')).retainedSize >= 2 ** 15);
+    assert.isTrue((await getSizesFromCategoryRow(devToolsPage, 'CustomClass2Key')).retainedSize >= 2 ** 15);
+    assert.isTrue((await getSizesFromCategoryRow(devToolsPage, 'CustomClass3Key')).retainedSize < 2 ** 15);
+    assert.isTrue((await getSizesFromCategoryRow(devToolsPage, 'CustomClass4Key')).retainedSize < 2 ** 15);
+    assert.isTrue((await getSizesFromCategoryRow(devToolsPage, 'CustomClass4Retainer')).retainedSize >= 2 ** 15);
   });
 
   it('Allows ignoring retainers', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/ignoring-retainers.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await setSearchFilter('searchable_string', devToolsPage);
-    await waitForSearchResultNumber(2, devToolsPage);
-    await findSearchResult('"searchable_string"', '1 of 2', devToolsPage);
-    await waitForRetainerChain(
-        [
-          '{y}',
-          'KeyType',
-          `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
-          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
-        ],
-        devToolsPage);
-    await clickOnContextMenuForRetainer('KeyType', 'Ignore this retainer', devToolsPage);
-    await waitForRetainerChain(
-        [
-          '{y}',
-          '{x}',
-          `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
-          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
-        ],
-        devToolsPage);
-    await clickOnContextMenuForRetainer('x', 'Ignore this retainer', devToolsPage);
-    await waitForRetainerChain(
-        [
-          '{y}',
-          '(internal array)[]',
-          'WeakMap',
-          `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
-          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
-        ],
-        devToolsPage);
-    await clickOnContextMenuForRetainer('(internal array)[]', 'Ignore this retainer', devToolsPage);
-    await waitForRetainerChain(
-        [
-          '{y}',
-          '{d}',
-          `{${'#'.repeat(130)}, …}`,
-          '{b, irrelevantProperty, <symbol also irrelevant>, "}"}',
-          '{a, extraProp0, extraProp1, extraProp2, extraProp3, …, extraProp6, extraProp7, extraProp8, extraProp9}',
-          `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
-          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
-        ],
-        devToolsPage);
-    await clickOnContextMenuForRetainer('b', 'Ignore this retainer', devToolsPage);
+    await setSearchFilter(devToolsPage, 'searchable_string');
+    await waitForSearchResultNumber(devToolsPage, 2);
+    await findSearchResult(devToolsPage, '"searchable_string"', '1 of 2');
+    await waitForRetainerChain(devToolsPage, [
+      '{y}',
+      'KeyType',
+      `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
+      `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
+    ]);
+    await clickOnContextMenuForRetainer(devToolsPage, 'KeyType', 'Ignore this retainer');
+    await waitForRetainerChain(devToolsPage, [
+      '{y}',
+      '{x}',
+      `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
+      `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
+    ]);
+    await clickOnContextMenuForRetainer(devToolsPage, 'x', 'Ignore this retainer');
+    await waitForRetainerChain(devToolsPage, [
+      '{y}',
+      '(internal array)[]',
+      'WeakMap',
+      `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
+      `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
+    ]);
+    await clickOnContextMenuForRetainer(devToolsPage, '(internal array)[]', 'Ignore this retainer');
+    await waitForRetainerChain(devToolsPage, [
+      '{y}',
+      '{d}',
+      `{${'#'.repeat(130)}, …}`,
+      '{b, irrelevantProperty, <symbol also irrelevant>, "}"}',
+      '{a, extraProp0, extraProp1, extraProp2, extraProp3, …, extraProp6, extraProp7, extraProp8, extraProp9}',
+      `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
+      `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
+    ]);
+    await clickOnContextMenuForRetainer(devToolsPage, 'b', 'Ignore this retainer');
     await restoreIgnoredRetainers(devToolsPage);
-    await waitForRetainerChain(
-        [
-          '{y}',
-          'KeyType',
-          `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
-          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
-        ],
-        devToolsPage);
+    await waitForRetainerChain(devToolsPage, [
+      '{y}',
+      'KeyType',
+      `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
+      `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
+    ]);
   });
 
   it('Can filter the summary view', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/filtering.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await setFilterDropdown('Duplicated strings', devToolsPage);
-    await setSearchFilter('"duplicatedKey":"duplicatedValue"', devToolsPage);
-    await waitForSearchResultNumber(2, devToolsPage);
-    await setFilterDropdown('Objects retained by detached DOM nodes', devToolsPage);
-    await getCategoryRow('ObjectRetainedByDetachedDom', undefined, devToolsPage);
-    assert.isNotOk(await getCategoryRow('ObjectRetainedByBothDetachedDomAndConsole', false, devToolsPage));
-    await setFilterDropdown('Objects retained by DevTools Console', devToolsPage);
-    await getCategoryRow('ObjectRetainedByConsole', undefined, devToolsPage);
-    assert.isNotOk(await getCategoryRow('ObjectRetainedByBothDetachedDomAndConsole', false, devToolsPage));
-    await setFilterDropdown('Objects retained by Event Handlers', devToolsPage);
-    await getCategoryRow('ObjectRetainedByEventHandler', undefined, devToolsPage);
-    assert.isNotOk(await getCategoryRow('ObjectRetainedByConsole', false, devToolsPage));
-    assert.isNotOk(await getCategoryRow('ObjectRetainedByDetachedDom', false, devToolsPage));
-    const functionCategoryRow = await getCategoryRow('Function', undefined, devToolsPage);
-    await focusTableRow(functionCategoryRow, devToolsPage);
+    await setFilterDropdown(devToolsPage, 'Duplicated strings');
+    await setSearchFilter(devToolsPage, '"duplicatedKey":"duplicatedValue"');
+    await waitForSearchResultNumber(devToolsPage, 2);
+    await setFilterDropdown(devToolsPage, 'Objects retained by detached DOM nodes');
+    await getCategoryRow(devToolsPage, 'ObjectRetainedByDetachedDom', undefined);
+    assert.isNotOk(await getCategoryRow(devToolsPage, 'ObjectRetainedByBothDetachedDomAndConsole', false));
+    await setFilterDropdown(devToolsPage, 'Objects retained by DevTools Console');
+    await getCategoryRow(devToolsPage, 'ObjectRetainedByConsole', undefined);
+    assert.isNotOk(await getCategoryRow(devToolsPage, 'ObjectRetainedByBothDetachedDomAndConsole', false));
+    await setFilterDropdown(devToolsPage, 'Objects retained by Event Handlers');
+    await getCategoryRow(devToolsPage, 'ObjectRetainedByEventHandler', undefined);
+    assert.isNotOk(await getCategoryRow(devToolsPage, 'ObjectRetainedByConsole', false));
+    assert.isNotOk(await getCategoryRow(devToolsPage, 'ObjectRetainedByDetachedDom', false));
+    const functionCategoryRow = await getCategoryRow(devToolsPage, 'Function', undefined);
+    await focusTableRow(devToolsPage, functionCategoryRow);
     await expandFocusedRow(devToolsPage);
-    await focusTableRowWithName('handleEventForTest()', devToolsPage);
+    await focusTableRowWithName(devToolsPage, 'handleEventForTest()');
   });
 
   it('Groups HTML elements by tag name', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/dom-details.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await setClassFilter('<div>', devToolsPage);
-    assert.strictEqual(3, await getCountFromCategoryRowWithName('<div>', devToolsPage));
-    assert.strictEqual(3, await getCountFromCategoryRowWithName('Detached <div>', devToolsPage));
-    await setSearchFilter('Detached <div data-x="p" data-y="q">', devToolsPage);
-    await waitForSearchResultNumber(1, devToolsPage);
+    await setClassFilter(devToolsPage, '<div>');
+    assert.strictEqual(3, await getCountFromCategoryRowWithName(devToolsPage, '<div>'));
+    assert.strictEqual(3, await getCountFromCategoryRowWithName(devToolsPage, 'Detached <div>'));
+    await setSearchFilter(devToolsPage, 'Detached <div data-x="p" data-y="q">');
+    await waitForSearchResultNumber(devToolsPage, 1);
   });
 
   it('Groups plain JS objects by interface', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/diff.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await setClassFilter('{a, b, c, d, ', devToolsPage);
+    await setClassFilter(devToolsPage, '{a, b, c, d, ');
     // Objects should be grouped by interface if there are at least two matching instances.
-    assert.strictEqual(2, await getCountFromCategoryRowWithName('{a, b, c, d, p, q, r}', devToolsPage));
-    assert.isNotOk(await getCategoryRow('{a, b, c, d, e}', /* wait:*/ false, devToolsPage));
+    assert.strictEqual(2, await getCountFromCategoryRowWithName(devToolsPage, '{a, b, c, d, p, q, r}'));
+    assert.isNotOk(await getCategoryRow(devToolsPage, '{a, b, c, d, e}', /* wait:*/ false));
     await inspectedPage.bringToFront();
     await inspectedPage.page.click('button#update');
     await devToolsPage.bringToFront();
-    await takeHeapSnapshot('Snapshot 2', devToolsPage);
+    await takeHeapSnapshot(devToolsPage, 'Snapshot 2');
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await changeViewViaDropdown('Comparison', devToolsPage);
-    await setClassFilter('{a, b, c, d, ', devToolsPage);
+    await changeViewViaDropdown(devToolsPage, 'Comparison');
+    await setClassFilter(devToolsPage, '{a, b, c, d, ');
     // When comparing, the old snapshot is categorized according to the new one's interfaces,
     // so the comparison should report only one new object of the following type, not two.
-    assert.strictEqual(1, await getAddedCountFromComparisonRowWithName('{a, b, c, d, e}', devToolsPage));
+    assert.strictEqual(1, await getAddedCountFromComparisonRowWithName(devToolsPage, '{a, b, c, d, e}'));
     // Only one of these objects remains, so it's no longer a category.
-    assert.isNotOk(await getCategoryRow('{a, b, c, d, p, q, r}', /* wait:*/ false, devToolsPage));
+    assert.isNotOk(await getCategoryRow(devToolsPage, '{a, b, c, d, p, q, r}', /* wait:*/ false));
   });
 
   it('Groups objects by constructor location', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/duplicated-names.html');
     await navigateToMemoryTab(devToolsPage);
-    await takeHeapSnapshot(undefined, devToolsPage);
+    await takeHeapSnapshot(devToolsPage, undefined);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
     // TODO: filtering does not work while UI is rendering snapshot.
     await devToolsPage.drainTaskQueue();
-    await setClassFilter('DuplicatedClassName', devToolsPage);
+    await setClassFilter(devToolsPage, 'DuplicatedClassName');
     let rows = await devToolsPage.waitForMany('tr.data-grid-data-grid-node', 3);
-    assert.strictEqual(30, await getCountFromCategoryRow(rows[0], devToolsPage));
-    assert.strictEqual(3, await getCountFromCategoryRow(rows[1], devToolsPage));
-    assert.strictEqual(2, await getCountFromCategoryRow(rows[2], devToolsPage));
-    await focusTableRow(rows[0], devToolsPage);
+    assert.strictEqual(30, await getCountFromCategoryRow(devToolsPage, rows[0]));
+    assert.strictEqual(3, await getCountFromCategoryRow(devToolsPage, rows[1]));
+    assert.strictEqual(2, await getCountFromCategoryRow(devToolsPage, rows[2]));
+    await focusTableRow(devToolsPage, rows[0]);
     await expandFocusedRow(devToolsPage);
     // TODO: pressing arrowDown does not work while UI is rendering.
     await devToolsPage.drainTaskQueue();
     await devToolsPage.drainTaskQueue();
     await devToolsPage.page.keyboard.press('ArrowDown');
-    await clickOnContextMenuForRetainer('x', 'Reveal in Summary view', devToolsPage);
+    await clickOnContextMenuForRetainer(devToolsPage, 'x', 'Reveal in Summary view');
     await waitUntilRetainerChainSatisfies(
-        retainerChain => retainerChain.length > 0 && retainerChain[0].propertyName === 'a', devToolsPage);
+        devToolsPage, retainerChain => retainerChain.length > 0 && retainerChain[0].propertyName === 'a');
     await inspectedPage.bringToFront();
     await inspectedPage.page.click('button#update');
     await devToolsPage.bringToFront();
-    await takeHeapSnapshot('Snapshot 2', devToolsPage);
+    await takeHeapSnapshot(devToolsPage, 'Snapshot 2');
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
-    await changeViewViaDropdown('Comparison', devToolsPage);
-    await setClassFilter('DuplicatedClassName', devToolsPage);
+    await changeViewViaDropdown(devToolsPage, 'Comparison');
+    await setClassFilter(devToolsPage, 'DuplicatedClassName');
     rows = await devToolsPage.waitForMany('tr.data-grid-data-grid-node', 3);
-    assert.strictEqual(5, await getAddedCountFromComparisonRow(rows[0], devToolsPage));
-    assert.strictEqual(1, await getRemovedCountFromComparisonRow(rows[0], devToolsPage));
-    assert.strictEqual(1, await getAddedCountFromComparisonRow(rows[1], devToolsPage));
-    assert.strictEqual(10, await getRemovedCountFromComparisonRow(rows[1], devToolsPage));
-    assert.strictEqual(0, await getAddedCountFromComparisonRow(rows[2], devToolsPage));
-    assert.strictEqual(2, await getRemovedCountFromComparisonRow(rows[2], devToolsPage));
+    assert.strictEqual(5, await getAddedCountFromComparisonRow(devToolsPage, rows[0]));
+    assert.strictEqual(1, await getRemovedCountFromComparisonRow(devToolsPage, rows[0]));
+    assert.strictEqual(1, await getAddedCountFromComparisonRow(devToolsPage, rows[1]));
+    assert.strictEqual(10, await getRemovedCountFromComparisonRow(devToolsPage, rows[1]));
+    assert.strictEqual(0, await getAddedCountFromComparisonRow(devToolsPage, rows[2]));
+    assert.strictEqual(2, await getRemovedCountFromComparisonRow(devToolsPage, rows[2]));
   });
 });
 
@@ -667,18 +651,18 @@ describe('The Memory Panel', () => {
        await inspectedPage.goToResource('memory/default.html');
        await navigateToMemoryTab(devToolsPage);
        await inspectedPage.evaluate(`document.body.fieldOnDomWrapper = 2012;`);
-       await takeHeapSnapshot(undefined, devToolsPage);
+       await takeHeapSnapshot(devToolsPage, undefined);
        await waitForNonEmptyHeapSnapshotData(devToolsPage);
-       await setClassFilter('HTMLBodyElement', devToolsPage);
+       await setClassFilter(devToolsPage, 'HTMLBodyElement');
 
-       const row = await getCategoryRow('HTMLBodyElement', undefined, devToolsPage);
+       const row = await getCategoryRow(devToolsPage, 'HTMLBodyElement', undefined);
        assert.isOk(row, 'HTMLBodyElement row not found in UI');
 
-       const count = await getCountFromCategoryRow(row, devToolsPage);
+       const count = await getCountFromCategoryRow(devToolsPage, row);
        assert.isAbove(count, 0, 'Should have found at least one HTMLBodyElement');
 
        // Expand the row to make sure we can see instances without crashing
-       await focusTableRow(row, devToolsPage);
+       await focusTableRow(devToolsPage, row);
        await expandFocusedRow(devToolsPage);
      });
 });

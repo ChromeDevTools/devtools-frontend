@@ -14,7 +14,7 @@ import {
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 async function getStyleRuleProperties(selector: string, count: number, devToolsPage: DevToolsPage) {
-  const rule = await getStyleRule(selector, devToolsPage);
+  const rule = await getStyleRule(devToolsPage, selector);
   const propertyElements = await devToolsPage.waitForMany(STYLE_PROPERTIES_SELECTOR, count, rule);
   const properties = await Promise.all(propertyElements.map(e => e.evaluate(e => e.textContent)));
   properties.sort();
@@ -25,12 +25,12 @@ async function getStyleRuleProperties(selector: string, count: number, devToolsP
 
 describe('The styles pane', () => {
   it('shows syntax mismatches as invalid properties', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/at-property.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/at-property.html');
     await devToolsPage.waitFor('.invalid-property-value:has(> [aria-label="CSS property name: --my-color"])');
   });
 
   it('shows a parser error message popover on syntax mismatches', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/at-property.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/at-property.html');
     await devToolsPage.hover(
         '.invalid-property-value:has(> [aria-label="CSS property name: --my-color"]) .exclamation-mark');
 
@@ -42,7 +42,7 @@ describe('The styles pane', () => {
   });
 
   it('shows registered properties', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/at-property.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/at-property.html');
     assert.deepEqual(await getStyleRuleProperties('--my-color', 3, devToolsPage), {
       properties: ['    inherits: false;', '    initial-value: red;', '    syntax: "<color>";'],
       subtitle: '<style>',
@@ -59,27 +59,27 @@ describe('The styles pane', () => {
 
   it('shows a foldable @property section when there are 5 or less registered properties',
      async ({devToolsPage, inspectedPage}) => {
-       await goToResourceAndWaitForStyleSection('elements/at-property.html', devToolsPage, inspectedPage);
+       await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/at-property.html');
 
        const stylesPane = await devToolsPage.waitFor('div.styles-pane');
        {
          const section = await devToolsPage.waitForElementWithTextContent('@property', stylesPane);
          assert.deepEqual(await section.evaluate(e => e.ariaExpanded), 'true');
-         const rule = await getStyleRule('--my-color', devToolsPage);
+         const rule = await getStyleRule(devToolsPage, '--my-color');
          assert.isTrue(await rule.evaluate(e => !e.classList.contains('hidden')));
        }
 
        {
          const section = await devToolsPage.click('pierceShadowText/@property', {root: stylesPane});
          await devToolsPage.waitForFunction(async () => 'false' === await section.evaluate(e => e.ariaExpanded));
-         const rule = await getStyleRule('--my-color', devToolsPage);
+         const rule = await getStyleRule(devToolsPage, '--my-color');
          await devToolsPage.waitForFunction(() => rule.evaluate(e => e.classList.contains('hidden')));
        }
      });
 
   it('shows a collapsed @property section when there are more than 5 registered properties',
      async ({devToolsPage, inspectedPage}) => {
-       await goToResourceAndWaitForStyleSection('elements/at-property.html', devToolsPage, inspectedPage);
+       await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/at-property.html');
 
        // Add some properties to go above the threshold
        await inspectedPage.evaluate(() => {
@@ -95,14 +95,14 @@ describe('The styles pane', () => {
          const section = await devToolsPage.waitForElementWithTextContent('@property', stylesPane);
          assert.deepEqual(await section.evaluate(e => e.ariaExpanded), 'false');
          // Pick the style rule added last to ensure the sections are fully drawn
-         const rule = await getStyleRule('--custom-prop-4', devToolsPage);
+         const rule = await getStyleRule(devToolsPage, '--custom-prop-4');
          assert.isTrue(await rule.evaluate(e => e.classList.contains('hidden')));
        }
 
        await devToolsPage.waitForFunction(async () => {
          const section = await devToolsPage.click('pierceShadowText/@property', {root: stylesPane});
          await devToolsPage.waitForFunction(async () => 'true' === await section.evaluate(e => e.ariaExpanded));
-         const rule = await getStyleRule('--custom-prop-4', devToolsPage);
+         const rule = await getStyleRule(devToolsPage, '--custom-prop-4');
          return await rule.evaluate(e => !e.classList.contains('hidden'));
        });
      });
@@ -127,7 +127,7 @@ describe('The styles pane', () => {
 
       return popoverContents;
     }
-    await goToResourceAndWaitForStyleSection('elements/at-property.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/at-property.html');
 
     assert.strictEqual(
         await hoverVariable('var(--my-cssom-color)', devToolsPage),

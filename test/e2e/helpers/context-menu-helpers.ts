@@ -11,8 +11,8 @@ export async function waitForSoftContextMenu(devToolsPage: DevToolsPage): Promis
   return await devToolsPage.waitFor('.soft-context-menu');
 }
 
-export async function findSubMenuEntryItem(
-    text: string, devToolsPage: DevToolsPage): Promise<puppeteer.ElementHandle<Element>> {
+export async function findSubMenuEntryItem(devToolsPage: DevToolsPage,
+                                           text: string): Promise<puppeteer.ElementHandle<Element>> {
   const matchingElement = await devToolsPage.$textContent(text);
 
   if (!matchingElement) {
@@ -23,7 +23,7 @@ export async function findSubMenuEntryItem(
   return matchingElement;
 }
 
-export async function openSoftContextMenuAndClickOnItem(selector: string, label: string, devToolsPage: DevToolsPage) {
+export async function openSoftContextMenuAndClickOnItem(devToolsPage: DevToolsPage, selector: string, label: string) {
   // Find the selected node, right click.
   await devToolsPage.click(selector, {clickOptions: {button: 'right'}});
 
@@ -32,13 +32,13 @@ export async function openSoftContextMenuAndClickOnItem(selector: string, label:
   await devToolsPage.click(`[aria-label="${label}"]`, {root});
 }
 
-export async function openSubMenu(selector: string, text: string, devToolsPage: DevToolsPage) {
+export async function openSubMenu(devToolsPage: DevToolsPage, selector: string, text: string) {
   // Find the selected node, right click.
   await devToolsPage.click(selector, {clickOptions: {button: 'right'}});
 
   // Wait for the context menu option, and click it.
   await waitForSoftContextMenu(devToolsPage);
 
-  const subMenuEntryItem = await findSubMenuEntryItem(text, devToolsPage);
+  const subMenuEntryItem = await findSubMenuEntryItem(devToolsPage, text);
   await subMenuEntryItem.hover();
 }

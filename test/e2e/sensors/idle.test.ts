@@ -30,7 +30,7 @@ describe('Idle Emulation on Sensors panel', () => {
 
   it('includes UI for emulating an idle state', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.overridePermissions(['idle-detection']);
-    await openPanelViaMoreTools('Sensors', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Sensors');
     const select = await devToolsPage.waitFor('.idle-section select');
     const actual = await select.evaluate(node => node.textContent);
 
@@ -46,7 +46,7 @@ describe('Idle Emulation on Sensors panel', () => {
 
   it('changing idle state emulation causes change of the IdleDetector state', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.overridePermissions(['idle-detection']);
-    await openPanelViaMoreTools('Sensors', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Sensors');
     await step('opening idle-detector.html', async () => {
       await inspectedPage.goToResource('sensors/idle-detector.html');
     });

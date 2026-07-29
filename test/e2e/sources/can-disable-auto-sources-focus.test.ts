@@ -10,9 +10,9 @@ import type {InspectedPage} from '../shared/target-helper.js';
 
 async function breakAndCheckFocusedPanel(
     expectedPanel: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-  await openSourceCodeEditorForFile('click-breakpoint.js', 'click-breakpoint.html', devToolsPage, inspectedPage);
+  await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'click-breakpoint.js', 'click-breakpoint.html');
 
-  await addBreakpointForLine(4, devToolsPage);
+  await addBreakpointForLine(devToolsPage, 4);
 
   await navigateToConsoleTab(devToolsPage);
 
@@ -27,7 +27,7 @@ describe('Sources Panel', () => {
   it('is not opened on Debugger.paused if autoFocusOnDebuggerPausedEnabled is false',
      async ({devToolsPage, inspectedPage}) => {
        await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
-       await togglePreferenceInSettingsTab('Focus Sources panel when triggering a breakpoint', undefined, devToolsPage);
+       await togglePreferenceInSettingsTab(devToolsPage, 'Focus Sources panel when triggering a breakpoint', undefined);
 
        // Note: This test checks if we *do not* switch panels after receiving
        // a Debugger.paused event. If this functionality that we are testing is not

@@ -32,15 +32,15 @@ describe('Cookie attribute exceeds max size issues test', () => {
          await navigateToIssuesTab(devToolsPage);
          await expandIssue(devToolsPage);
          const issueElement =
-             await getIssueByTitle('Ensure cookie attribute values don’t exceed 1024 characters', devToolsPage);
+             await getIssueByTitle(devToolsPage, 'Ensure cookie attribute values don’t exceed 1024 characters');
          assert.isOk(issueElement);
-         const section = await getResourcesElement('1 cookie', issueElement, '.affected-resource-label', devToolsPage);
-         await ensureResourceSectionIsExpanded(section, devToolsPage);
+         const section = await getResourcesElement(devToolsPage, '1 cookie', issueElement, '.affected-resource-label');
+         await ensureResourceSectionIsExpanded(devToolsPage, section);
          const expectedTableRows = [
            ['Name', 'Domain & Path'],
            ['exceeds_max_size', 'localhost/test/e2e/resources'],
          ];
-         await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+         await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
        } finally {
          await clearCookies(inspectedPage);
        }

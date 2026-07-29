@@ -20,8 +20,8 @@ describe('Sources Tab', () => {
     const callFrameNames = await getCallFrameNames(devToolsPage);
     assert.deepEqual(callFrameNames.slice(0, 3), ['baz', 'bar', 'foo']);
 
-    await openSoftContextMenuAndClickOnItem(
-        '.call-frame-item[aria-posinset="2"]', 'Restart frame', devToolsPage);  // Aria indices are 1-based.
+    await openSoftContextMenuAndClickOnItem(devToolsPage, '.call-frame-item[aria-posinset="2"]',
+                                            'Restart frame');  // Aria indices are 1-based.
 
     await devToolsPage.waitForFunction(async () => {
       const callFrameNames = await getCallFrameNames(devToolsPage);

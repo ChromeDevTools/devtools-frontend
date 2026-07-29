@@ -17,7 +17,7 @@ describe('DevTools panels', () => {
   PANEL_NAMES.forEach(panel => {
     it(`${panel} doesn't increase number of adopted style sheets on the document`, async ({devToolsPage}) => {
       const previousNumStyleSheets = await devToolsPage.evaluate(() => document.adoptedStyleSheets.length);
-      await runCommandWithQuickOpen(`Show ${panel}`, devToolsPage);
+      await runCommandWithQuickOpen(devToolsPage, `Show ${panel}`);
       await devToolsPage.waitFor(`[aria-label="${panel}"]`);
       const nextNumStyleSheets = await devToolsPage.evaluate(() => document.adoptedStyleSheets.length);
       assert.strictEqual(previousNumStyleSheets, nextNumStyleSheets);

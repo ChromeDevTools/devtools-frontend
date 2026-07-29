@@ -25,8 +25,8 @@ async function openRecorderAndStartRecording(
     devToolsPage: DevToolsPage,
     inspectedPage: InspectedPage,
 ) {
-  await enableAndOpenRecorderPanel('recorder/recorder.html', devToolsPage, inspectedPage);
-  await createAndStartRecording(undefined, undefined, devToolsPage);
+  await enableAndOpenRecorderPanel(devToolsPage, inspectedPage, 'recorder/recorder.html');
+  await createAndStartRecording(devToolsPage, undefined, undefined);
 }
 
 describe('Recorder', function() {
@@ -105,7 +105,7 @@ describe('Recorder', function() {
           );
           return successfulSteps.length === 3;
         });
-        await clickSelectButtonItem('Normal (Default)', '.select-button', devToolsPage);
+        await clickSelectButtonItem(devToolsPage, 'Normal (Default)', '.select-button');
         await inspectedPage.bringToFront();
         await promise;
         assert.strictEqual(
@@ -427,7 +427,7 @@ describe('Recorder', function() {
   describe('Header', () => {
     describe('Shortcut Dialog', () => {
       it('should open the shortcut dialog', async ({devToolsPage, inspectedPage}) => {
-        await enableAndOpenRecorderPanel('recorder/recorder.html', devToolsPage, inspectedPage);
+        await enableAndOpenRecorderPanel(devToolsPage, inspectedPage, 'recorder/recorder.html');
         await devToolsPage.bringToFront();
         const shortcutDialog = await devToolsPage.waitFor('devtools-shortcut-dialog');
         const buttonDialog = await devToolsPage.waitFor('devtools-button-dialog', shortcutDialog);

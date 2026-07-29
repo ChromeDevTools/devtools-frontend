@@ -13,7 +13,7 @@ describe('The Console Tab', () => {
     await inspectedPage.goToResource('empty.html');
     await navigateToConsoleTab(devToolsPage);
 
-    await waitForIssueButtonLabel('No issues', devToolsPage);
+    await waitForIssueButtonLabel(devToolsPage, 'No issues');
   });
 
   it('shows the toolbar button for one issue correctly', async ({devToolsPage, inspectedPage}) => {
@@ -21,7 +21,7 @@ describe('The Console Tab', () => {
     await inspectedPage.goToResource('elements/quirks-mode.html');
     await navigateToConsoleTab(devToolsPage);
 
-    await waitForIssueButtonLabel('1 issue:', devToolsPage);
+    await waitForIssueButtonLabel(devToolsPage, '1 issue:');
   });
 
   it('shows the toolbar button for three issues correctly', async ({devToolsPage, inspectedPage}) => {
@@ -29,7 +29,7 @@ describe('The Console Tab', () => {
     await inspectedPage.goToResource('issues/cors-issue-2.html');
     await navigateToConsoleTab(devToolsPage);
 
-    await waitForIssueButtonLabel('3 issues:', devToolsPage);
+    await waitForIssueButtonLabel(devToolsPage, '3 issues:');
   });
 
   it('updates the toolbar button correctly', async ({devToolsPage, inspectedPage}) => {
@@ -37,13 +37,13 @@ describe('The Console Tab', () => {
     await inspectedPage.goToResource('empty.html');
     await navigateToConsoleTab(devToolsPage);
 
-    await waitForIssueButtonLabel('No issues', devToolsPage);
+    await waitForIssueButtonLabel(devToolsPage, 'No issues');
 
     await inspectedPage.evaluate(() => {
       // Trigger a CookieIssue.
       document.cookie = 'foo=bar;samesite=None';
     });
 
-    await waitForIssueButtonLabel('1 issue:', devToolsPage);
+    await waitForIssueButtonLabel(devToolsPage, '1 issue:');
   });
 });

@@ -11,7 +11,7 @@ const PRETTY_PRINTED_TOGGLE = 'devtools-text-editor.pretty-printed';
 
 describe('The Sources tab', () => {
   it('should also scroll horizontally when stopping', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile('scroll-into-view.js', 'scroll-into-view.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'scroll-into-view.js', 'scroll-into-view.html');
 
     // We need to disable the pretty printing, so that
     // we can check whether the Sources panel correctly

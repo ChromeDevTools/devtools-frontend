@@ -38,8 +38,8 @@ describe('Multi-Workers', function() {
     const targetPage = sourceMaps ? 'sources/multi-workers-sourcemap.html' : 'sources/multi-workers.html';
     const scriptFile = sourceMaps ? 'multi-workers.min.js' : 'multi-workers.js';
     function workerFileSelectors(workerIndex: number, inspectedPage: InspectedPage) {
-      return createSelectorsForWorkerFile(
-          scriptFile, 'test/e2e/resources/sources', 'multi-workers.js', workerIndex, inspectedPage);
+      return createSelectorsForWorkerFile(inspectedPage, scriptFile, 'test/e2e/resources/sources', 'multi-workers.js',
+                                          workerIndex);
     }
 
     async function validateNavigationTree(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
@@ -47,11 +47,11 @@ describe('Multi-Workers', function() {
     }
 
     async function validateBreakpoints(devToolsPage: DevToolsPage) {
-      await waitForLines(12, devToolsPage);
+      await waitForLines(devToolsPage, 12);
       // Wait for breakpoints to be present
       await devToolsPage.waitFor('.cm-gutterElement ~ .cm-breakpoint ~ .cm-breakpoint');
-      assert.deepEqual(await getBreakpointDecorators(false, 2, devToolsPage), [6, 12]);
-      assert.deepEqual(await getBreakpointDecorators(true, 1, devToolsPage), [6]);
+      assert.deepEqual(await getBreakpointDecorators(devToolsPage, false, 2), [6, 12]);
+      assert.deepEqual(await getBreakpointDecorators(devToolsPage, true, 1), [6]);
     }
 
     describe(`loads scripts exactly once ${withOrWithout}`, () => {
@@ -100,7 +100,7 @@ describe('Multi-Workers', function() {
         await inspectedPage.goToResource(targetPage);
         await devToolsPage.click('#tab-sources');
         await validateNavigationTree(devToolsPage, inspectedPage);
-        await openNestedWorkerFile(workerFileSelectors(1, inspectedPage), devToolsPage);
+        await openNestedWorkerFile(devToolsPage, workerFileSelectors(1, inspectedPage));
 
         // Look at source tabs
         await validateSourceTabs(devToolsPage);
@@ -132,20 +132,20 @@ describe('Multi-Workers', function() {
     });
 
     it(`shows exactly one breakpoint ${withOrWithout}`, async ({devToolsPage, inspectedPage}) => {
-      await waitForSourceFiles(
-          SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith('multi-workers.js')), async () => {
-            // Have the target load the page.
-            await inspectedPage.goToResource(targetPage);
-            await devToolsPage.click('#tab-sources');
+      await waitForSourceFiles(devToolsPage, SourceFileEvents.SOURCE_FILE_LOADED,
+                               files => files.some(f => f.endsWith('multi-workers.js')), async () => {
+                                 // Have the target load the page.
+                                 await inspectedPage.goToResource(targetPage);
+                                 await devToolsPage.click('#tab-sources');
 
-            // Wait for all workers to load
-            await validateNavigationTree(devToolsPage, inspectedPage);
+                                 // Wait for all workers to load
+                                 await validateNavigationTree(devToolsPage, inspectedPage);
 
-            // Open file from second worker
-            await openNestedWorkerFile(workerFileSelectors(2, inspectedPage), devToolsPage);
-          }, devToolsPage);
+                                 // Open file from second worker
+                                 await openNestedWorkerFile(devToolsPage, workerFileSelectors(2, inspectedPage));
+                               });
       // Set a breakpoint
-      await addBreakpointForLine(6, devToolsPage);
+      await addBreakpointForLine(devToolsPage, 6);
 
       await devToolsPage.waitFor(BREAKPOINT_ITEM_SELECTOR);
       const breakpoints = (await devToolsPage.$$(BREAKPOINT_ITEM_SELECTOR)).length;
@@ -155,20 +155,20 @@ describe('Multi-Workers', function() {
     describe(`copies breakpoints between workers ${withOrWithout}`, () => {
       async function setupBreakpoints(
           {devToolsPage, inspectedPage}: {devToolsPage: DevToolsPage, inspectedPage: InspectedPage}) {
-        await waitForSourceFiles(
-            SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith('multi-workers.js')), async () => {
-              // Have the target load the page.
-              await inspectedPage.goToResource(targetPage);
+        await waitForSourceFiles(devToolsPage, SourceFileEvents.SOURCE_FILE_LOADED,
+                                 files => files.some(f => f.endsWith('multi-workers.js')), async () => {
+                                   // Have the target load the page.
+                                   await inspectedPage.goToResource(targetPage);
 
-              await devToolsPage.click('#tab-sources');
+                                   await devToolsPage.click('#tab-sources');
 
-              // Wait for all workers to load
-              await validateNavigationTree(devToolsPage, inspectedPage);
+                                   // Wait for all workers to load
+                                   await validateNavigationTree(devToolsPage, inspectedPage);
 
-              await openNestedWorkerFile(workerFileSelectors(2, inspectedPage), devToolsPage);
-            }, devToolsPage);
+                                   await openNestedWorkerFile(devToolsPage, workerFileSelectors(2, inspectedPage));
+                                 });
 
-        await addBreakpointForLine(6, devToolsPage);
+        await addBreakpointForLine(devToolsPage, 6);
 
         const bpEntry = await devToolsPage.waitFor(BREAKPOINT_ITEM_SELECTOR);
         const bpCheckbox = await bpEntry?.$('input');
@@ -176,7 +176,7 @@ describe('Multi-Workers', function() {
         await bpCheckbox.click();
         await devToolsPage.waitFor('.cm-breakpoint-disabled');
 
-        await addBreakpointForLine(12, devToolsPage);
+        await addBreakpointForLine(devToolsPage, 12);
         await validateBreakpoints(devToolsPage);
         await devToolsPage.click('[aria-label="Close multi-workers.js"]');
       }
@@ -185,7 +185,7 @@ describe('Multi-Workers', function() {
         await setupBreakpoints({devToolsPage, inspectedPage});
 
         // Open different worker
-        await openNestedWorkerFile(workerFileSelectors(3, inspectedPage), devToolsPage);
+        await openNestedWorkerFile(devToolsPage, workerFileSelectors(3, inspectedPage));
 
         await validateBreakpoints(devToolsPage);
       });
@@ -197,7 +197,7 @@ describe('Multi-Workers', function() {
         // FIXME(crbug/1112692): Refactor test to remove the timeout.
         await devToolsPage.timeout(100);
 
-        await openNestedWorkerFile(workerFileSelectors(4, inspectedPage), devToolsPage);
+        await openNestedWorkerFile(devToolsPage, workerFileSelectors(4, inspectedPage));
 
         await devToolsPage.waitFor('.cm-breakpoint');
         await validateBreakpoints(devToolsPage);
@@ -208,16 +208,16 @@ describe('Multi-Workers', function() {
       setup({enabledDevToolsExperiments: ['instrumentation-breakpoints']});
 
       async function setupInstrumentationBreakpoints(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-        await waitForSourceFiles(
-            SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith('multi-workers.js')), async () => {
-              // Have the target load the page.
-              await inspectedPage.goToResource(targetPage);
-              await devToolsPage.click('#tab-sources');
-              await validateNavigationTree(devToolsPage, inspectedPage);
-              await openNestedWorkerFile(workerFileSelectors(2, inspectedPage), devToolsPage);
-            }, devToolsPage);
+        await waitForSourceFiles(devToolsPage, SourceFileEvents.SOURCE_FILE_LOADED,
+                                 files => files.some(f => f.endsWith('multi-workers.js')), async () => {
+                                   // Have the target load the page.
+                                   await inspectedPage.goToResource(targetPage);
+                                   await devToolsPage.click('#tab-sources');
+                                   await validateNavigationTree(devToolsPage, inspectedPage);
+                                   await openNestedWorkerFile(devToolsPage, workerFileSelectors(2, inspectedPage));
+                                 });
 
-        await addBreakpointForLine(6, devToolsPage);
+        await addBreakpointForLine(devToolsPage, 6);
       }
 
       it('for pre-loaded workers', async ({devToolsPage, inspectedPage}) => {

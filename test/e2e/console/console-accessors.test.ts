@@ -15,7 +15,7 @@ describe('The Console Tab', () => {
     await devToolsPage.click(CONSOLE_TAB_SELECTOR);
     await focusConsolePrompt(devToolsPage);
 
-    await typeIntoConsole('new class ClassWithStringGetter { get x() { return 84 / 2; }}', devToolsPage);
+    await typeIntoConsole(devToolsPage, 'new class ClassWithStringGetter { get x() { return 84 / 2; }}');
 
     await devToolsPage.click('.console-view-object-properties-section');
     await devToolsPage.click('.object-value-calculate-value-button');
@@ -28,7 +28,7 @@ describe('The Console Tab', () => {
     await devToolsPage.click(CONSOLE_TAB_SELECTOR);
     await focusConsolePrompt(devToolsPage);
 
-    await typeIntoConsole('new class ClassWithSymbolGetter { get [Symbol("foo")]() { return 21 + 21; }}', devToolsPage);
+    await typeIntoConsole(devToolsPage, 'new class ClassWithSymbolGetter { get [Symbol("foo")]() { return 21 + 21; }}');
 
     await devToolsPage.click('.console-view-object-properties-section');
     await devToolsPage.click('.object-value-calculate-value-button');
@@ -41,7 +41,7 @@ describe('The Console Tab', () => {
     await devToolsPage.click(CONSOLE_TAB_SELECTOR);
     await focusConsolePrompt(devToolsPage);
 
-    await typeIntoConsole('new class ClassWithPrivateGetter { get #x() { return 21 << 1; }}', devToolsPage);
+    await typeIntoConsole(devToolsPage, 'new class ClassWithPrivateGetter { get #x() { return 21 << 1; }}');
 
     await devToolsPage.click('.console-view-object-properties-section');
     await devToolsPage.click('.object-value-calculate-value-button');

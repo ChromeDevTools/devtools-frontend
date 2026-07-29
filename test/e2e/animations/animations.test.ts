@@ -20,10 +20,10 @@ describe('The Animations Panel', () => {
 
   async function waitForAnimationsPanelToLoad(devToolsPage: DevToolsPage) {
     // Open panel and wait for content
-    await openPanelViaMoreTools('Animations', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Animations');
     await devToolsPage.waitFor('div[aria-label="Animations panel"]');
     await devToolsPage.waitFor('div.animation-timeline-header');
-    await expectVeEvents([veImpressionsUnder('Drawer', [veImpressionForAnimationsPanel()])], undefined, devToolsPage);
+    await expectVeEvents(devToolsPage, [veImpressionsUnder('Drawer', [veImpressionForAnimationsPanel()])], undefined);
   }
 
   async function navigateToSiteWithAnimation(inspectedPage: InspectedPage) {

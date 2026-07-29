@@ -37,7 +37,7 @@ describe('Sources Tab', function() {
 
     {
       const capturedFileNames = await captureAddedSourceFiles(
-          2, () => inspectedPage.goToResource('sources/wasm/call-to-add-wasm.html'), devToolsPage);
+          devToolsPage, 2, () => inspectedPage.goToResource('sources/wasm/call-to-add-wasm.html'));
       assert.deepEqual(capturedFileNames, [
         '/test/e2e/resources/sources/wasm/call-to-add-wasm.html',
         '/test/e2e/resources/sources/wasm/add.wasm',
@@ -45,9 +45,9 @@ describe('Sources Tab', function() {
     }
 
     {
-      const capturedFileNames = await captureAddedSourceFiles(2, async () => {
+      const capturedFileNames = await captureAddedSourceFiles(devToolsPage, 2, async () => {
         await inspectedPage.reload();
-      }, devToolsPage);
+      });
       assert.deepEqual(capturedFileNames, [
         '/test/e2e/resources/sources/wasm/call-to-add-wasm.html',
         '/test/e2e/resources/sources/wasm/add.wasm',
@@ -58,10 +58,10 @@ describe('Sources Tab', function() {
   it('can add a breakpoint in raw wasm', async ({devToolsPage, inspectedPage}) => {
     await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
 
-    await openSourceCodeEditorForFile('add.wasm', 'wasm/call-to-add-wasm.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine('0x023', devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'add.wasm', 'wasm/call-to-add-wasm.html');
+    await addBreakpointForLine(devToolsPage, '0x023');
 
-    const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', inspectedPage, devToolsPage);
+    const scriptLocation = await retrieveTopCallFrameScriptLocation(devToolsPage, inspectedPage, 'main();');
     assert.deepEqual(scriptLocation, 'add.wasm:0x23');
   });
 
@@ -69,30 +69,30 @@ describe('Sources Tab', function() {
     await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
     const fileName = 'add.wasm';
 
-    await openSourceCodeEditorForFile(fileName, 'wasm/call-to-add-wasm.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, fileName, 'wasm/call-to-add-wasm.html');
 
-    await addBreakpointForLine('0x027', devToolsPage);
-    await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
-    await devToolsPage.waitForFunction(async () => await isBreakpointSet('0x027', devToolsPage));
+    await addBreakpointForLine(devToolsPage, '0x027');
+    await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
+    await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, '0x027'));
 
     let scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
     assert.deepEqual(scriptLocation, 'add.wasm:0x27');
 
-    await removeBreakpointForLine('0x027', devToolsPage);
+    await removeBreakpointForLine(devToolsPage, '0x027');
 
     await devToolsPage.page.keyboard.press('F8');
     await devToolsPage.waitFor(PAUSE_BUTTON);
 
-    await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+    await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
 
-    await devToolsPage.waitForFunction(async () => !(await isBreakpointSet('0x027', devToolsPage)));
+    await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(devToolsPage, '0x027')));
     await checkBreakpointDidNotActivate(devToolsPage);
 
-    await addBreakpointForLine('0x028', devToolsPage);
+    await addBreakpointForLine(devToolsPage, '0x028');
 
-    await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+    await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
 
-    await devToolsPage.waitForFunction(async () => await isBreakpointSet('0x028', devToolsPage));
+    await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, '0x028'));
 
     scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
     assert.deepEqual(scriptLocation, 'add.wasm:0x28');
@@ -102,9 +102,9 @@ describe('Sources Tab', function() {
     await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
     const fileName = 'add.wasm';
 
-    await openSourceCodeEditorForFile('add.wasm', 'wasm/call-to-add-wasm.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine('0x023', devToolsPage);
-    await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'add.wasm', 'wasm/call-to-add-wasm.html');
+    await addBreakpointForLine(devToolsPage, '0x023');
+    await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
     const pausedPosition = await devToolsPage.waitForFunction(async () => {
       const element = await devToolsPage.$('.cm-executionLine .token-variable');
       if (element && await element.evaluate(e => e.isConnected)) {
@@ -121,33 +121,33 @@ describe('Sources Tab', function() {
 
   it('cannot set a breakpoint on non-breakable line in raw wasm', async ({devToolsPage, inspectedPage}) => {
     await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
-    await openSourceCodeEditorForFile('add.wasm', 'wasm/call-to-add-wasm.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'add.wasm', 'wasm/call-to-add-wasm.html');
     assert.deepEqual(await getNonBreakableLines(devToolsPage), [
       0x000,
       0x022,
       0x04b,
     ]);
-    assert.deepEqual(await getBreakpointDecorators(undefined, undefined, devToolsPage), []);
+    assert.deepEqual(await getBreakpointDecorators(devToolsPage, undefined, undefined), []);
     // Line 3 is breakable.
-    await addBreakpointForLine('0x023', devToolsPage);
-    assert.deepEqual(await getBreakpointDecorators(undefined, undefined, devToolsPage), [0x023]);
+    await addBreakpointForLine(devToolsPage, '0x023');
+    assert.deepEqual(await getBreakpointDecorators(devToolsPage, undefined, undefined), [0x023]);
   });
 
   it('is able to step with state', async ({devToolsPage, inspectedPage}) => {
     await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
     const fileName = 'stepping-with-state.wasm';
 
-    await openSourceCodeEditorForFile(
-        'stepping-with-state.wasm', 'wasm/stepping-with-state.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine('0x060', devToolsPage);
-    await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
-    await devToolsPage.waitForFunction(async () => await isBreakpointSet('0x060', devToolsPage));
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'stepping-with-state.wasm',
+                                      'wasm/stepping-with-state.html');
+    await addBreakpointForLine(devToolsPage, '0x060');
+    await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
+    await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, '0x060'));
 
     let scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
     assert.deepEqual(scriptLocation, 'stepping-with-state.wasm:0x60');
     await stepThroughTheCode(devToolsPage);
     await stepThroughTheCode(devToolsPage);
-    let localScopeValues = await getValuesForScope('Local', 0, 3, devToolsPage);
+    let localScopeValues = await getValuesForScope(devToolsPage, 'Local', 0, 3);
     assert.deepEqual(localScopeValues, [
       '$var0: i32 {value: 42}',
       '$var1: i32 {value: 8}',
@@ -155,17 +155,17 @@ describe('Sources Tab', function() {
     ]);
     await devToolsPage.page.keyboard.press('F8');
     await devToolsPage.waitFor(PAUSE_BUTTON);
-    await removeBreakpointForLine('0x060', devToolsPage);
-    await addBreakpointForLine('0x048', devToolsPage);
-    await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+    await removeBreakpointForLine(devToolsPage, '0x060');
+    await addBreakpointForLine(devToolsPage, '0x048');
+    await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
 
-    await devToolsPage.waitForFunction(async () => await isBreakpointSet('0x048', devToolsPage));
+    await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, '0x048'));
 
     scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
     assert.deepEqual(scriptLocation, 'stepping-with-state.wasm:0x48');
     await stepThroughTheCode(devToolsPage);
     await stepThroughTheCode(devToolsPage);
-    localScopeValues = await getValuesForScope('Local', 0, 2, devToolsPage);
+    localScopeValues = await getValuesForScope(devToolsPage, 'Local', 0, 2);
     assert.deepEqual(localScopeValues, [
       '$var0: i32 {value: 50}',
       '$var1: i32 {value: 5}',
@@ -180,8 +180,8 @@ describe('Sources Tab', function() {
     it('is able to step with state in multi-threaded code in main thread', async ({devToolsPage, inspectedPage}) => {
       await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
       const fileName = 'stepping-with-state.wasm';
-      await openSourceCodeEditorForFile(
-          'stepping-with-state.wasm', 'wasm/stepping-with-state-and-threads.html', devToolsPage, inspectedPage);
+      await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'stepping-with-state.wasm',
+                                        'wasm/stepping-with-state-and-threads.html');
 
       await Promise.all([
         devToolsPage.click(THREADS_SELECTOR),
@@ -202,10 +202,10 @@ describe('Sources Tab', function() {
         0x06c,
         0x0c1,
       ]);
-      await addBreakpointForLine('0x060', devToolsPage);
-      await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+      await addBreakpointForLine(devToolsPage, '0x060');
+      await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
 
-      await devToolsPage.waitForFunction(async () => await isBreakpointSet('0x060', devToolsPage));
+      await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, '0x060'));
 
       let scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
       assert.deepEqual(scriptLocation, 'stepping-with-state.wasm:0x60');
@@ -213,7 +213,7 @@ describe('Sources Tab', function() {
       await stepThroughTheCode(devToolsPage);
       await stepThroughTheCode(devToolsPage);
 
-      let localScopeValues = await getValuesForScope('Local', 0, 3, devToolsPage);
+      let localScopeValues = await getValuesForScope(devToolsPage, 'Local', 0, 3);
       assert.deepEqual(localScopeValues, [
         '$var0: i32 {value: 42}',
         '$var1: i32 {value: 8}',
@@ -221,11 +221,11 @@ describe('Sources Tab', function() {
       ]);
       await devToolsPage.page.keyboard.press('F8');
       await devToolsPage.waitFor(PAUSE_BUTTON);
-      await removeBreakpointForLine('0x060', devToolsPage);
-      await addBreakpointForLine('0x048', devToolsPage);
-      await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+      await removeBreakpointForLine(devToolsPage, '0x060');
+      await addBreakpointForLine(devToolsPage, '0x048');
+      await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
 
-      await devToolsPage.waitForFunction(async () => await isBreakpointSet('0x048', devToolsPage));
+      await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, '0x048'));
 
       scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
       assert.deepEqual(scriptLocation, 'stepping-with-state.wasm:0x48');
@@ -239,13 +239,13 @@ describe('Sources Tab', function() {
       await stepThroughTheCode(devToolsPage);
       await stepThroughTheCode(devToolsPage);
 
-      localScopeValues = await getValuesForScope('Local', 0, 2, devToolsPage);
+      localScopeValues = await getValuesForScope(devToolsPage, 'Local', 0, 2);
       assert.deepEqual(localScopeValues, [
         '$var0: i32 {value: 50}',
         '$var1: i32 {value: 5}',
       ]);
 
-      await removeBreakpointForLine('0x048', devToolsPage);
+      await removeBreakpointForLine(devToolsPage, '0x048');
 
       await devToolsPage.page.keyboard.press('F8');
       await devToolsPage.waitFor(PAUSE_BUTTON);
@@ -256,8 +256,8 @@ describe('Sources Tab', function() {
       await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
       const fileName = 'stepping-with-state.wasm';
 
-      await openSourceCodeEditorForFile(
-          fileName, 'wasm/stepping-with-state-and-threads.html', devToolsPage, inspectedPage);
+      await openSourceCodeEditorForFile(devToolsPage, inspectedPage, fileName,
+                                        'wasm/stepping-with-state-and-threads.html');
 
       await Promise.all([
         devToolsPage.click(THREADS_SELECTOR),
@@ -270,11 +270,11 @@ describe('Sources Tab', function() {
       });
       assert.strictEqual(selectedThreadName, 'Main', 'the Main thread is not active');
 
-      await addBreakpointForLine('0x06d', devToolsPage);
+      await addBreakpointForLine(devToolsPage, '0x06d');
 
-      await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+      await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
 
-      await devToolsPage.waitForFunction(async () => await isBreakpointSet('0x06d', devToolsPage));
+      await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, '0x06d'));
 
       const scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
       assert.deepEqual(scriptLocation, 'stepping-with-state.wasm:0x6d');
@@ -289,24 +289,24 @@ describe('Sources Tab', function() {
       await stepThroughTheCode(devToolsPage);
       await stepThroughTheCode(devToolsPage);
 
-      let localScopeValues = await getValuesForScope('Local', 0, 1, devToolsPage);
+      let localScopeValues = await getValuesForScope(devToolsPage, 'Local', 0, 1);
       assert.deepEqual(localScopeValues, [
         '$var0: i32 {value: 42}',
         '$var1: i32 {value: 6}',
         '$var2: i32 {value: 5}',
       ]);
 
-      await removeBreakpointForLine('0x06d', devToolsPage);
+      await removeBreakpointForLine(devToolsPage, '0x06d');
 
-      await addBreakpointForLine('0x050', devToolsPage);
+      await addBreakpointForLine(devToolsPage, '0x050');
 
-      await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+      await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
 
-      await devToolsPage.waitForFunction(async () => await isBreakpointSet('0x050', devToolsPage));
+      await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, '0x050'));
 
       // Due to the reload we may catch the last
       // step though, so make sure DevTools updates.
-      await waitForStackTopMatch(/stepping-with-state.wasm:0x50/, devToolsPage);
+      await waitForStackTopMatch(devToolsPage, /stepping-with-state.wasm:0x50/);
 
       selectedThreadElement = await devToolsPage.waitFor(SELECTED_THREAD_SELECTOR);
       selectedThreadName = await selectedThreadElement.evaluate(element => {
@@ -318,7 +318,7 @@ describe('Sources Tab', function() {
       await stepThroughTheCode(devToolsPage);
       await stepThroughTheCode(devToolsPage);
 
-      localScopeValues = await getValuesForScope('Local', 0, 1, devToolsPage);
+      localScopeValues = await getValuesForScope(devToolsPage, 'Local', 0, 1);
       assert.deepEqual(localScopeValues, [
         '$var0: i32 {value: 42}',
         '$var1: i32 {value: 6}',
@@ -335,8 +335,8 @@ describe('Sources Tab', function() {
 describe('Raw-Wasm', () => {
   it('displays correct location in Wasm source', async ({devToolsPage, inspectedPage}) => {
     // Have the target load the page.
-    await openSourceCodeEditorForFile(
-        'callstack-wasm-to-js.wasm', 'wasm/callstack-wasm-to-js.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'callstack-wasm-to-js.wasm',
+                                      'wasm/callstack-wasm-to-js.html');
 
     // Go
     const fooPromise = inspectedPage.evaluate('foo();');  // Don't await this, the target hits a debugger statement.
@@ -361,7 +361,7 @@ describe('Raw-Wasm', () => {
     assert.strictEqual(locations[1], 'callstack-wasm-to-js.wasm:0x32');
 
     // Select second call frame.
-    await switchToCallFrame(2, devToolsPage);
+    await switchToCallFrame(devToolsPage, 2);
 
     // Wasm code for function call should be highlighted
     const codeLine = await devToolsPage.waitFor('.cm-executionLine');

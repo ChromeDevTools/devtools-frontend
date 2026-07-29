@@ -41,14 +41,14 @@ describe('Bounce Tracking issue', () => {
     });
     await expandIssue(devToolsPage);
     const issueElement = await getIssueByTitle(
-        'Chrome may soon delete state for intermediate websites in a recent navigation chain', devToolsPage);
+        devToolsPage, 'Chrome may soon delete state for intermediate websites in a recent navigation chain');
     assert.isOk(issueElement);
-    const section = await getResourcesElement('2 potentially tracking websites', issueElement, undefined, devToolsPage);
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+    const section = await getResourcesElement(devToolsPage, '2 potentially tracking websites', issueElement, undefined);
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [
       ['example_1.test'],
       ['example_2.test'],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 });

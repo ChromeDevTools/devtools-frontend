@@ -34,7 +34,7 @@ async function assertValidationFails(
 
 describe('Orientation emulation on Sensors panel', () => {
   it('presets correct default values on Custom orientation selected', async ({devToolsPage}) => {
-    await openPanelViaMoreTools('Sensors', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Sensors');
     await setCustomOrientation(devToolsPage);
 
     const actualOrientations = await getOrientationValues(devToolsPage);
@@ -45,7 +45,7 @@ describe('Orientation emulation on Sensors panel', () => {
   });
 
   it('highlights values outside the allowed ranges', async ({devToolsPage}) => {
-    await openPanelViaMoreTools('Sensors', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Sensors');
     await setCustomOrientation(devToolsPage);
 
     const [alpha, beta, gamma] = await getOrientationInputs(devToolsPage);

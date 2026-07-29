@@ -22,14 +22,14 @@ import type {InspectedPage} from '../shared/target-helper.js';
 describe('Sources Tab', () => {
   async function runTest(
       filename: string, functionName: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-    await openFileInEditor(filename, devToolsPage);
-    await addBreakpointForLine(2, devToolsPage);
+    await openFileInEditor(devToolsPage, filename);
+    await addBreakpointForLine(devToolsPage, 2);
 
     const scriptEvaluation = inspectedPage.evaluate(functionName + '();');
     await devToolsPage.waitFor(RESUME_BUTTON);
 
     // Breakpoint is still visible
-    assert.deepEqual(await getBreakpointDecorators(false, 1, devToolsPage), [2]);
+    assert.deepEqual(await getBreakpointDecorators(devToolsPage, false, 1), [2]);
 
     await executionLineHighlighted(devToolsPage);
 
@@ -48,12 +48,12 @@ describe('Sources Tab', () => {
   }
 
   it('can handle filename with space loading over the network', async ({devToolsPage, inspectedPage}) => {
-    await openFileInSourcesPanel('filesystem/special-characters.html', devToolsPage, inspectedPage);
+    await openFileInSourcesPanel(devToolsPage, inspectedPage, 'filesystem/special-characters.html');
     await runTest('with space.js', 'f1', devToolsPage, inspectedPage);
   });
 
   it('can handle filename with escape sequence loading over the network', async ({devToolsPage, inspectedPage}) => {
-    await openFileInSourcesPanel('filesystem/special-characters.html', devToolsPage, inspectedPage);
+    await openFileInSourcesPanel(devToolsPage, inspectedPage, 'filesystem/special-characters.html');
     await runTest('with%20space.js', 'f2', devToolsPage, inspectedPage);
   });
 

@@ -21,16 +21,16 @@ function createSelectorsForFile(domainName: string, folderName: string, fileName
 describe('The Sources Tab', () => {
   it('resolves relative sourceURL annotations correctly', async ({devToolsPage, inspectedPage}) => {
     const domainName = inspectedPage.getResourcesPath().split('/')[2];
-    await openFileInSourcesPanel('sourceurl.html', devToolsPage, inspectedPage);
-    await expandFileTree(createSelectorsForFile(domainName, 'test/e2e/resources/sources', 'eval.js'), devToolsPage);
-    await expandFileTree(createSelectorsForFile(domainName, 'test/e2e/resources/sources', 'inline.js'), devToolsPage);
+    await openFileInSourcesPanel(devToolsPage, inspectedPage, 'sourceurl.html');
+    await expandFileTree(devToolsPage, createSelectorsForFile(domainName, 'test/e2e/resources/sources', 'eval.js'));
+    await expandFileTree(devToolsPage, createSelectorsForFile(domainName, 'test/e2e/resources/sources', 'inline.js'));
   });
 
   it('retains absolute webpack:/// and webpack-internal:/// sourceURL annotations',
      async ({devToolsPage, inspectedPage}) => {
-       await openFileInSourcesPanel('sourceurl.html', devToolsPage, inspectedPage);
-       await expandFileTree(createSelectorsForFile('webpack://', 'src', 'index.js'), devToolsPage);
-       await expandFileTree(
-           createSelectorsForFile('webpack-internal://', '(webpack-dev-server)', 'generated.js'), devToolsPage);
+       await openFileInSourcesPanel(devToolsPage, inspectedPage, 'sourceurl.html');
+       await expandFileTree(devToolsPage, createSelectorsForFile('webpack://', 'src', 'index.js'));
+       await expandFileTree(devToolsPage,
+                            createSelectorsForFile('webpack-internal://', '(webpack-dev-server)', 'generated.js'));
      });
 });

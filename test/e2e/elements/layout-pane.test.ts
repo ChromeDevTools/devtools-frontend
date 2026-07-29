@@ -21,22 +21,18 @@ describe('Layout Pane in the Elements Tab', function() {
 
   it('displays Layout pane', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/css-grid.html');
-    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
     await expandSelectedNodeRecursively(devToolsPage);
-    await waitForAdorners(
-        [
-          {textContent: 'view-source', isActive: false},
-          {textContent: 'grid', isActive: false},
-        ],
-        devToolsPage);
+    await waitForAdorners(devToolsPage, [
+      {textContent: 'view-source', isActive: false},
+      {textContent: 'grid', isActive: false},
+    ]);
     await openLayoutPane(devToolsPage);
     await toggleElementCheckboxInLayoutPane(devToolsPage);
-    await waitForAdorners(
-        [
-          {textContent: 'view-source', isActive: false},
-          {textContent: 'grid', isActive: true},
-        ],
-        devToolsPage);
+    await waitForAdorners(devToolsPage, [
+      {textContent: 'view-source', isActive: false},
+      {textContent: 'grid', isActive: true},
+    ]);
   });
 
   it('Lists grids in UA shadow DOM only when needed', async ({devToolsPage, inspectedPage}) => {
@@ -46,10 +42,10 @@ describe('Layout Pane in the Elements Tab', function() {
     const grids = await getGridsInLayoutPane(devToolsPage);
     assert.lengthOf(grids, 1, 'Without UA shadow DOM, there is only one grid');
 
-    await togglePreferenceInSettingsTab('User agent shadow DOM', true, devToolsPage);
+    await togglePreferenceInSettingsTab(devToolsPage, 'User agent shadow DOM', true);
 
     // We only wait for at least 2 grids, the <video> element may generate more grids, but we're not interested
     // in testing how many exactly.
-    await waitForSomeGridsInLayoutPane(2, devToolsPage);
+    await waitForSomeGridsInLayoutPane(devToolsPage, 2);
   });
 });

@@ -63,11 +63,11 @@ export async function deleteConsoleMessagesFilter(devToolsPage: DevToolsPage) {
     root: main,
   });
 
-  await expectVeEvents(
-      [veClick('Toolbar > TextField: filter > Action: clear')], await veRoot(devToolsPage), devToolsPage);
+  await expectVeEvents(devToolsPage, [veClick('Toolbar > TextField: filter > Action: clear')],
+                       await veRoot(devToolsPage));
 }
 
-export async function filterConsoleMessages(filter: string, devToolsPage: DevToolsPage) {
+export async function filterConsoleMessages(devToolsPage: DevToolsPage, filter: string) {
   const main = await devToolsPage.waitFor('.console-main-toolbar');
   await devToolsPage.evaluate(toolbar => {
     const prompt = toolbar.querySelector<HTMLElement>('.toolbar-input-prompt.text-prompt');
@@ -77,11 +77,11 @@ export async function filterConsoleMessages(filter: string, devToolsPage: DevToo
   await devToolsPage.drainTaskQueue();
   await devToolsPage.pressKey('Tab');
   if (filter.length) {
-    await expectVeEvents([veChange('Toolbar > TextField: filter')], await veRoot(devToolsPage), devToolsPage);
+    await expectVeEvents(devToolsPage, [veChange('Toolbar > TextField: filter')], await veRoot(devToolsPage));
   }
 }
 
-export async function waitForConsoleMessagesToBeNonEmpty(numberOfMessages: number, devToolsPage: DevToolsPage) {
+export async function waitForConsoleMessagesToBeNonEmpty(devToolsPage: DevToolsPage, numberOfMessages: number) {
   await devToolsPage.waitForFunction(async () => {
     const messages = await devToolsPage.$$(CONSOLE_ALL_MESSAGES_SELECTOR);
     if (messages.length < numberOfMessages) {
@@ -91,10 +91,10 @@ export async function waitForConsoleMessagesToBeNonEmpty(numberOfMessages: numbe
         await Promise.all(messages.map(message => message.evaluate(message => message.textContent || '')));
     return textContents.every(text => text !== '');
   });
-  await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
+  await expectVeEvents(devToolsPage, [veImpressionForConsoleMessage()], await veRoot(devToolsPage));
 }
 
-export async function waitForExactConsoleMessageCount(expectedCount: number, devToolsPage: DevToolsPage) {
+export async function waitForExactConsoleMessageCount(devToolsPage: DevToolsPage, expectedCount: number) {
   const messageCount = await devToolsPage.waitForFunction(async () => {
     const selected = await devToolsPage.$$(CONSOLE_ALL_MESSAGES_SELECTOR);
     const messageTexts =
@@ -103,10 +103,10 @@ export async function waitForExactConsoleMessageCount(expectedCount: number, dev
     return validMessages.length;
   });
   assert.strictEqual(messageCount, expectedCount);
-  await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
+  await expectVeEvents(devToolsPage, [veImpressionForConsoleMessage()], await veRoot(devToolsPage));
 }
 
-export async function waitForLastConsoleMessageToHaveContent(expectedTextContent: string, devToolsPage: DevToolsPage) {
+export async function waitForLastConsoleMessageToHaveContent(devToolsPage: DevToolsPage, expectedTextContent: string) {
   await devToolsPage.waitForFunction(async () => {
     const messages = await devToolsPage.$$(CONSOLE_ALL_MESSAGES_SELECTOR);
     if (messages.length === 0) {
@@ -115,23 +115,22 @@ export async function waitForLastConsoleMessageToHaveContent(expectedTextContent
     const lastMessageContent = await messages[messages.length - 1].evaluate(message => message.textContent);
     return lastMessageContent === expectedTextContent;
   });
-  await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
+  await expectVeEvents(devToolsPage, [veImpressionForConsoleMessage()], await veRoot(devToolsPage));
 }
 
-export async function getConsoleMessages(
-    testName: string, withAnchor = false, callback: (() => Promise<void>)|undefined, devToolsPage: DevToolsPage,
-    inspectedPage: InspectedPage) {
+export async function getConsoleMessages(devToolsPage: DevToolsPage, inspectedPage: InspectedPage, testName: string,
+                                         withAnchor = false, callback: (() => Promise<void>)|undefined = undefined) {
   // Ensure Console is loaded before the page is loaded to avoid a race condition.
   await navigateToConsoleTab(devToolsPage);
 
   // Have the target load the page.
   await inspectedPage.goToResource(`console/${testName}.html`);
 
-  return await getCurrentConsoleMessages(withAnchor, Level.All, callback, devToolsPage);
+  return await getCurrentConsoleMessages(devToolsPage, withAnchor, Level.All, callback);
 }
 
-export async function getCurrentConsoleMessages(
-    withAnchor = false, level = Level.All, callback: (() => Promise<void>)|undefined, devToolsPage: DevToolsPage) {
+export async function getCurrentConsoleMessages(devToolsPage: DevToolsPage, withAnchor = false, level = Level.All,
+                                                callback: (() => Promise<void>)|undefined = undefined) {
   const asyncScope = new AsyncScope();
 
   await navigateToConsoleTab(devToolsPage);
@@ -157,7 +156,7 @@ export async function getCurrentConsoleMessages(
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
   await devToolsPage.timeout(100);
 
-  await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
+  await expectVeEvents(devToolsPage, [veImpressionForConsoleMessage()], await veRoot(devToolsPage));
 
   // Get the messages from the console.
   return await devToolsPage.page.evaluate(selector => {
@@ -165,12 +164,12 @@ export async function getCurrentConsoleMessages(
   }, selector);
 }
 
-export async function getLastConsoleMessages(offset = 0, devToolsPage: DevToolsPage) {
-  return (await getCurrentConsoleMessages(false, Level.All, undefined, devToolsPage)).at(-1 - offset);
+export async function getLastConsoleMessages(devToolsPage: DevToolsPage, offset = 0) {
+  return (await getCurrentConsoleMessages(devToolsPage, false, Level.All, undefined)).at(-1 - offset);
 }
 
-export async function maybeGetCurrentConsoleMessages(
-    withAnchor = false, callback: (() => Promise<void>)|undefined, devToolsPage: DevToolsPage) {
+export async function maybeGetCurrentConsoleMessages(devToolsPage: DevToolsPage, withAnchor = false,
+                                                     callback: (() => Promise<void>)|undefined = undefined) {
   const asyncScope = new AsyncScope();
 
   await navigateToConsoleTab(devToolsPage);
@@ -193,7 +192,7 @@ export async function maybeGetCurrentConsoleMessages(
   }, selector);
 
   if (result.length) {
-    await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
+    await expectVeEvents(devToolsPage, [veImpressionForConsoleMessage()], await veRoot(devToolsPage));
   }
   return result;
 }
@@ -217,7 +216,7 @@ export async function getStructuredConsoleMessages(devToolsPage: DevToolsPage) {
       return message.childNodes.length > 0;
     });
   }, {timeout: 0}, CONSOLE_ALL_MESSAGES_SELECTOR));
-  await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
+  await expectVeEvents(devToolsPage, [veImpressionForConsoleMessage()], await veRoot(devToolsPage));
 
   return await devToolsPage.evaluate(selector => {
     return Array.from(document.querySelectorAll(selector)).map(wrapper => {
@@ -249,7 +248,7 @@ export async function showVerboseMessages(devToolsPage: DevToolsPage) {
   await devToolsPage.click(LOG_LEVELS_VERBOSE_OPTION_SELECTOR);
 }
 
-export async function typeIntoConsole(message: string, devToolsPage: DevToolsPage) {
+export async function typeIntoConsole(devToolsPage: DevToolsPage, message: string) {
   const asyncScope = new AsyncScope();
   const consoleElement = await devToolsPage.waitFor(CONSOLE_PROMPT_SELECTOR, undefined, asyncScope);
   await consoleElement.click();
@@ -271,14 +270,14 @@ export async function typeIntoConsole(message: string, devToolsPage: DevToolsPag
   await devToolsPage.pressKey('Enter');
 }
 
-export async function typeIntoConsoleAndWaitForResult(
-    message: string, leastExpectedMessages = 1, selector = Level.All, devToolsPage: DevToolsPage) {
+export async function typeIntoConsoleAndWaitForResult(devToolsPage: DevToolsPage, message: string,
+                                                      leastExpectedMessages = 1, selector = Level.All) {
   // Get the current number of console results so we can check we increased it.
   const originalLength = await devToolsPage.evaluate(selector => {
     return document.querySelectorAll(selector).length;
   }, selector);
 
-  await typeIntoConsole(message, devToolsPage);
+  await typeIntoConsole(devToolsPage, message);
 
   await new AsyncScope().exec(
       () => devToolsPage.page.waitForFunction(
@@ -311,7 +310,7 @@ export async function navigateToConsoleTab(devToolsPage: DevToolsPage) {
   }
   await devToolsPage.click(CONSOLE_TAB_SELECTOR);
   await devToolsPage.waitFor(CONSOLE_PROMPT_SELECTOR);
-  await expectVeEvents([veImpressionForConsolePanel()], undefined, devToolsPage);
+  await expectVeEvents(devToolsPage, [veImpressionForConsolePanel()], undefined);
 }
 
 export async function openConsoleSidebar(devToolsPage: DevToolsPage) {
@@ -333,44 +332,44 @@ export async function selectConsoleSidebarItem(devToolsPage: DevToolsPage, itemP
 export async function waitForConsoleInfoMessageAndClickOnLink(devToolsPage: DevToolsPage) {
   const consoleMessage = await devToolsPage.waitFor('div.console-group-messages .console-info-level span.source-code');
   await devToolsPage.click('button.devtools-link', {root: consoleMessage});
-  await expectVeEvents(
-      [veClick('Item: console-message > Link: script-location')], await veRoot(devToolsPage), devToolsPage);
+  await expectVeEvents(devToolsPage, [veClick('Item: console-message > Link: script-location')],
+                       await veRoot(devToolsPage));
 }
 
 export async function turnOffHistoryAutocomplete(devToolsPage: DevToolsPage) {
   await devToolsPage.click(CONSOLE_SETTINGS_SELECTOR);
   await devToolsPage.click(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);
-  await expectVeEvents(
-      [
-        veClick('Toolbar > ToggleSubpane: console-settings'),
-        ...veImpressionsForConsoleSettings(),
-        veChange('Toggle: console-history-autocomplete'),
-      ],
-      await veRoot(devToolsPage), devToolsPage);
+  await expectVeEvents(devToolsPage,
+                       [
+                         veClick('Toolbar > ToggleSubpane: console-settings'),
+                         ...veImpressionsForConsoleSettings(),
+                         veChange('Toggle: console-history-autocomplete'),
+                       ],
+                       await veRoot(devToolsPage));
 }
 
 export async function toggleShowCorsErrors(devToolsPage: DevToolsPage) {
   await devToolsPage.click(CONSOLE_SETTINGS_SELECTOR);
   await devToolsPage.click(SHOW_CORS_ERRORS_SELECTOR);
-  await expectVeEvents(
-      [
-        veClick('Toolbar > ToggleSubpane: console-settings'),
-        ...veImpressionsForConsoleSettings(),
-        veChange('Toggle: console-shows-cors-errors'),
-      ],
-      await veRoot(devToolsPage), devToolsPage);
+  await expectVeEvents(devToolsPage,
+                       [
+                         veClick('Toolbar > ToggleSubpane: console-settings'),
+                         ...veImpressionsForConsoleSettings(),
+                         veChange('Toggle: console-shows-cors-errors'),
+                       ],
+                       await veRoot(devToolsPage));
 }
 
 export async function toggleShowLogXmlHttpRequests(devToolsPage: DevToolsPage) {
   await devToolsPage.click(CONSOLE_SETTINGS_SELECTOR);
   await devToolsPage.click(LOG_XML_HTTP_REQUESTS_SELECTOR);
-  await expectVeEvents(
-      [
-        veClick('Toolbar > ToggleSubpane: console-settings'),
-        ...veImpressionsForConsoleSettings(),
-        veChange('Toggle: monitoring-xhr-enabled'),
-      ],
-      await veRoot(devToolsPage), devToolsPage);
+  await expectVeEvents(devToolsPage,
+                       [
+                         veClick('Toolbar > ToggleSubpane: console-settings'),
+                         ...veImpressionsForConsoleSettings(),
+                         veChange('Toggle: monitoring-xhr-enabled'),
+                       ],
+                       await veRoot(devToolsPage));
 }
 
 async function getIssueButtonLabel(devToolsPage: DevToolsPage): Promise<string|null> {
@@ -378,30 +377,30 @@ async function getIssueButtonLabel(devToolsPage: DevToolsPage): Promise<string|n
   const iconButton = await devToolsPage.waitFor('icon-button', infobarButton);
   const titleElement = await devToolsPage.waitFor('.icon-button-title', iconButton);
   const infobarButtonText = await titleElement.evaluate(node => node.textContent);
-  await expectVeEvents([veImpression('Counter', 'issues')], `${await veRoot(devToolsPage)} > Toolbar`, devToolsPage);
+  await expectVeEvents(devToolsPage, [veImpression('Counter', 'issues')], `${await veRoot(devToolsPage)} > Toolbar`);
   return infobarButtonText;
 }
 
-export async function waitForIssueButtonLabel(expectedLabel: string, devToolsPage: DevToolsPage) {
+export async function waitForIssueButtonLabel(devToolsPage: DevToolsPage, expectedLabel: string) {
   await devToolsPage.waitForFunction(async () => {
     const label = await getIssueButtonLabel(devToolsPage);
     return expectedLabel === label;
   });
 }
 
-export async function clickOnContextMenu(selectorForNode: string, jslogContext: string, devToolsPage: DevToolsPage) {
+export async function clickOnContextMenu(devToolsPage: DevToolsPage, selectorForNode: string, jslogContext: string) {
   await devToolsPage.click(selectorForNode, {clickOptions: {button: 'right'}});
   const menuItem = await devToolsPage.waitFor(`[jslog*="context: ${jslogContext}"]`);
   await menuItem.click();
   const isObject = ['copy-object', 'expand-recursively'].includes(jslogContext);
-  await expectVeEvents(
-      [
-        veClick(isObject ? 'Tree > TreeItem' : ''),
-        veImpressionForConsoleMessageContextMenu(jslogContext),
-        veClick(`Menu > Action: ${jslogContext}`),
-        veResize('Menu'),
-      ],
-      `${await veRoot(devToolsPage)} > Item: console-message`, devToolsPage);
+  await expectVeEvents(devToolsPage,
+                       [
+                         veClick(isObject ? 'Tree > TreeItem' : ''),
+                         veImpressionForConsoleMessageContextMenu(jslogContext),
+                         veClick(`Menu > Action: ${jslogContext}`),
+                         veResize('Menu'),
+                       ],
+                       `${await veRoot(devToolsPage)} > Item: console-message`);
 }
 
 /**
@@ -409,20 +408,21 @@ export async function clickOnContextMenu(selectorForNode: string, jslogContext: 
  * bottom (checks last message by default)
  */
 export function checkCommandResultFunction(offset = 0) {
-  return async function(command: string, expected: string, message: string|undefined, devToolsPage: DevToolsPage) {
-    await typeIntoConsoleAndWaitForResult(command, 1, undefined, devToolsPage);
-    assert.strictEqual(await getLastConsoleMessages(offset, devToolsPage), expected, message);
+  return async function(devToolsPage: DevToolsPage, command: string, expected: string,
+                        message: string|undefined = undefined) {
+    await typeIntoConsoleAndWaitForResult(devToolsPage, command, 1);
+    assert.strictEqual(await getLastConsoleMessages(devToolsPage, offset), expected, message);
   };
 }
 
-export async function getLastConsoleStacktrace(offset = 0, devToolsPage: DevToolsPage) {
+export async function getLastConsoleStacktrace(devToolsPage: DevToolsPage, offset = 0) {
   return (await getStructuredConsoleMessages(devToolsPage)).at(-1 - offset)?.stackPreview as string;
 }
 
-export async function checkCommandStacktrace(
-    command: string, expected: string, leastMessages = 1, offset = 0, devToolsPage: DevToolsPage) {
-  await typeIntoConsoleAndWaitForResult(command, leastMessages, undefined, devToolsPage);
-  await unifyLogVM(await getLastConsoleStacktrace(offset, devToolsPage), expected);
+export async function checkCommandStacktrace(devToolsPage: DevToolsPage, command: string, expected: string,
+                                             leastMessages = 1, offset = 0) {
+  await typeIntoConsoleAndWaitForResult(devToolsPage, command, leastMessages);
+  await unifyLogVM(await getLastConsoleStacktrace(devToolsPage, offset), expected);
 }
 
 function veImpressionForConsoleMessage() {

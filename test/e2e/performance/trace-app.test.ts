@@ -20,7 +20,7 @@ async function loadEnhancedTrace(
   // Scripts in these traces happen to fail asserts in formatter_worker.
   expectError(/ScopeParser\.js|formatter_worker\.js/);
 
-  await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
+  await navigateToPerformanceTab(devToolsPage, inspectedPage, undefined);
 
   const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
   const tracePath = path.join(GEN_DIR, 'test/e2e/resources', resource);
@@ -54,7 +54,7 @@ async function searchAndClickOnStackTrace(
     devToolsPage: DevToolsPage, searchTerm: string, expectedHighlightedContent: string,
     expectedSourceLocation: string) {
   // This is a function on a firebase script that has sourcemaps.
-  await searchForComponent(searchTerm, devToolsPage);
+  await searchForComponent(devToolsPage, searchTerm);
   await devToolsPage.raf();
   await devToolsPage.timeout(3000);
 

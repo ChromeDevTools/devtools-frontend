@@ -19,7 +19,7 @@ describe('Extension panels', () => {
   it('can perform search actions', async ({devToolsPage, inspectedPage}) => {
     expectError('Unknown VE context: \'https://localhostTestPanel\'');
     await inspectedPage.goToResource('empty.html');
-    const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
+    const extension = await loadExtension(devToolsPage, inspectedPage, 'TestExtension', undefined, undefined);
 
     const page = new URL(`${inspectedPage.getResourcesPath()}/extensions/test_panel.html`).pathname;
 

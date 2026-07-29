@@ -10,8 +10,8 @@ describe('Sources Tab', function() {
   it('is highlighting the syntax correctly', async ({devToolsPage, inspectedPage}) => {
     const componentsFormats = new Set();
 
-    await openSourceCodeEditorForFile(
-        'syntax-highlighting.wasm', 'wasm/syntax-highlighting.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'syntax-highlighting.wasm',
+                                      'wasm/syntax-highlighting.html');
     // Wait for at least 1 keyword to show up, at which we know the highlighting has been applied.
     await devToolsPage.waitFor('.token-keyword');
 

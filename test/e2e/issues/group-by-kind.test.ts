@@ -21,7 +21,7 @@ describe('The Issues tab group by kind checkbox', () => {
       await toggleGroupByKind(devToolsPage);
     }
 
-    await expandKind('.page-errors', devToolsPage);
+    await expandKind(devToolsPage, '.page-errors');
     const issue = await devToolsPage.waitFor(ISSUE);
     const isParentedByKind = await issue.evaluate(node => node.parentElement?.classList.contains('issue-kind-body'));
     assert.isTrue(isParentedByKind);

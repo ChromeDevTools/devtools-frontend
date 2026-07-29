@@ -19,35 +19,35 @@ import type {InspectedPage} from '../shared/target-helper.js';
 describe('Flexbox Editor', function() {
   async function setupStyles(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await inspectedPage.goToResource('elements/flexbox-editor.html');
-    await waitForContentOfSelectedElementsNode('<body>\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<body>\u200B');
     await focusElementsTree(devToolsPage);
-    await clickNthChildOfSelectedElementNode(1, devToolsPage);
-    await waitForCSSPropertyValue('#target', 'display', 'flex', undefined, devToolsPage);
+    await clickNthChildOfSelectedElementNode(devToolsPage, 1);
+    await waitForCSSPropertyValue(devToolsPage, '#target', 'display', 'flex', undefined);
   }
 
   it('can be opened and flexbox styles can be edited', async ({devToolsPage, inspectedPage}) => {
     await setupStyles(devToolsPage, inspectedPage);
 
-    await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor', devToolsPage);
+    await clickStylePropertyEditorButton(devToolsPage, 'Open flexbox editor', 'devtools-flexbox-editor');
 
     // Clicking once sets the value.
-    await clickPropertyButton('[title="Add flex-direction: column"]', devToolsPage);
-    await waitForCSSPropertyValue('#target', 'flex-direction', 'column', undefined, devToolsPage);
+    await clickPropertyButton(devToolsPage, '[title="Add flex-direction: column"]');
+    await waitForCSSPropertyValue(devToolsPage, '#target', 'flex-direction', 'column', undefined);
 
     // Clicking again removes the value.
-    await clickPropertyButton('[title="Remove flex-direction: column"]', devToolsPage);
+    await clickPropertyButton(devToolsPage, '[title="Remove flex-direction: column"]');
     // Wait for the button's title to be updated so that we know the change
     // was made.
     await devToolsPage.waitFor('[title="Add flex-direction: column"]');
-    const property = await getCSSPropertyInRule('#target', 'flex-direction', undefined, devToolsPage);
+    const property = await getCSSPropertyInRule(devToolsPage, '#target', 'flex-direction', undefined);
     assert.isUndefined(property);
   });
 
   it('can be opened for flexbox styles with !important', async ({devToolsPage, inspectedPage}) => {
     await setupStyles(devToolsPage, inspectedPage);
-    await editCSSProperty('#target', 'display', 'flex !important', devToolsPage);
+    await editCSSProperty(devToolsPage, '#target', 'display', 'flex !important');
     await devToolsPage.drainTaskQueue();
-    await waitForCSSPropertyValue('#target', 'display', 'flex !important', undefined, devToolsPage);
-    await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor', devToolsPage);
+    await waitForCSSPropertyValue(devToolsPage, '#target', 'display', 'flex !important', undefined);
+    await clickStylePropertyEditorButton(devToolsPage, 'Open flexbox editor', 'devtools-flexbox-editor');
   });
 });

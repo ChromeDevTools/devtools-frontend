@@ -25,7 +25,7 @@ describe('The Console Tab', () => {
     await devToolsPage.waitForFunction(
         () => devToolsPage.evaluate(() => document.querySelectorAll('.console-user-command-result').length === 2));
 
-    const messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+    const messages = await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined);
 
     assert.deepEqual(messages, [
       '\'non-function\'',

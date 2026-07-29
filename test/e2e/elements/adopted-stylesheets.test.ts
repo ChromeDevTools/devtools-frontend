@@ -58,34 +58,34 @@ describe('The Elements tab', function() {
     await devToolsPage.waitForTextNotMatching(tree, /^\<html\>/);
 
     // Check to make sure we have the correct node selected after opening a file
-    await waitForPartialContentOfSelectedElementsNode('<body>', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '<body>');
     // This isn't consistently expanded, so this arrow right might expand it
     // or it might move the selected node, but either way it should change
     // the text of the selected node.
     const bodyNodeText = await getContentOfSelectedNode(devToolsPage);
     await devToolsPage.pressKey('ArrowRight');
-    await waitForSelectedNodeChange(bodyNodeText, devToolsPage);
+    await waitForSelectedNodeChange(devToolsPage, bodyNodeText);
 
     // Click the node for this test.
-    await waitForAndClickTreeElementWithPartialText('"with-constructed-stylesheet-import"', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '"with-constructed-stylesheet-import"');
 
     // Expand and navigate to its shadow root.
     await devToolsPage.pressKey('ArrowRight');
     await waitForChildrenOfSelectedElementNode(devToolsPage);
     await devToolsPage.pressKey('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('#shadow-root', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '#shadow-root');
 
     // One more time to get the adopted stylesheet set.
     await devToolsPage.pressKey('ArrowRight');
     await waitForChildrenOfSelectedElementNode(devToolsPage);
     await devToolsPage.pressKey('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('#adopted-style-sheets', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '#adopted-style-sheets');
 
     // One more time to get the adopted stylesheet.
     await devToolsPage.pressKey('ArrowRight');
     await waitForChildrenOfSelectedElementNode(devToolsPage);
     await devToolsPage.pressKey('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('#adopted-style-sheet \(', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '#adopted-style-sheet \(');
 
     // Check that the link to the imported stylesheet is present.
     assert.match(
@@ -98,23 +98,23 @@ describe('The Elements tab', function() {
        await inspectedPage.goToResource('elements/adopted-stylesheet.html');
        const tree = await devToolsPage.waitForAria('Page DOM');
        await devToolsPage.waitForTextNotMatching(tree, /^\<html\>/);
-       const styleSheets = await elementWithPartialText('#adopted-style-sheets', devToolsPage);
+       const styleSheets = await elementWithPartialText(devToolsPage, '#adopted-style-sheets');
        assert.isOk(styleSheets);
        const expectExpanded = async (expanded: boolean) =>
            assert.strictEqual(await styleSheets.evaluate(e => e.getAttribute('aria-expanded')), `${expanded}`);
        await expectExpanded(false);
 
        // Check to make sure we have the correct node selected after opening a file
-       await waitForPartialContentOfSelectedElementsNode('<body>', devToolsPage);
+       await waitForPartialContentOfSelectedElementsNode(devToolsPage, '<body>');
        // This isn't consistently expanded, so this arrow right might expand it
        // or it might move the selected node, but either way it should change
        // the text of the selected node.
        const bodyNodeText = await getContentOfSelectedNode(devToolsPage);
        await devToolsPage.pressKey('ArrowRight');
-       await waitForSelectedNodeChange(bodyNodeText, devToolsPage);
+       await waitForSelectedNodeChange(devToolsPage, bodyNodeText);
 
        // Click the node for this test.
-       await waitForAndClickTreeElementWithPartialText('"from-document"', devToolsPage);
+       await waitForAndClickTreeElementWithPartialText(devToolsPage, '"from-document"');
 
        // Wait for the link text to appear to ensure it's fully rendered.
        const rule = await devToolsPage.waitFor('.matched-styles[aria-label=".from-document, css selector"]');
@@ -125,7 +125,7 @@ describe('The Elements tab', function() {
            '.matched-styles[aria-label=".from-document, css selector"] > .styles-section-subtitle > devtools-widget');
 
        // The adopted stylesheet set should now be expanded.
-       const expandedStyleSheets = await waitForElementWithPartialText('#adopted-style-sheets', devToolsPage);
+       const expandedStyleSheets = await waitForElementWithPartialText(devToolsPage, '#adopted-style-sheets');
        assert.isOk(expandedStyleSheets);
        await devToolsPage.waitForClass(expandedStyleSheets, 'expanded');
        assert.strictEqual(await expandedStyleSheets.evaluate((e: Element) => e.getAttribute('aria-expanded')), 'true');

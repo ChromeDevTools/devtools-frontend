@@ -16,99 +16,59 @@ describe('The Console Tab', () => {
     await inspectedPage.goToResource('../resources/console/console-uncaught-promise.html');
     await navigateToConsoleTab(devToolsPage);
 
-    await checkCommandStacktrace(
-        'await promiseTest1();',
-        `
+    await checkCommandStacktrace(devToolsPage, 'await promiseTest1();', `
         promiseTest1 @ console-uncaught-promise.html:3
         (anonymous) @ VM26:1
       `,
-        2,
-        0,
-        devToolsPage,
-    );
+                                 2, 0);
 
-    await checkCommandStacktrace(
-        'await promiseTest2();',
-        `
+    await checkCommandStacktrace(devToolsPage, 'await promiseTest2();', `
         promiseTest2 @ console-uncaught-promise.html:23
         (anonymous) @ VM44:1
       `,
-        2,
-        0,
-        devToolsPage,
-    );
+                                 2, 0);
 
-    await checkCommandStacktrace(
-        'await promiseTest3();',
-        `
+    await checkCommandStacktrace(devToolsPage, 'await promiseTest3();', `
         throwDOMException	@	console-uncaught-promise.html:39
         catcher	@	console-uncaught-promise.html:32
         Promise.catch
         promiseTest3	@	console-uncaught-promise.html:31
         (anonymous)	@	VM66:1
       `,
-        2,
-        0,
-        devToolsPage,
-    );
+                                 2, 0);
 
-    await checkCommandStacktrace(
-        'await promiseTest4();',
-        `
+    await checkCommandStacktrace(devToolsPage, 'await promiseTest4();', `
         promiseTest4	@	console-uncaught-promise.html:44
         (anonymous)	@	VM86:1
       `,
-        2,
-        0,
-        devToolsPage,
-    );
+                                 2, 0);
 
-    await checkCommandStacktrace(
-        'await promiseTest5();',
-        `
+    await checkCommandStacktrace(devToolsPage, 'await promiseTest5();', `
         promiseTest5	@	console-uncaught-promise.html:48
         (anonymous)	@	VM104:1
       `,
-        2,
-        0,
-        devToolsPage,
-    );
+                                 2, 0);
 
-    await checkCommandStacktrace(
-        'await promiseTest6();',
-        `
+    await checkCommandStacktrace(devToolsPage, 'await promiseTest6();', `
         promiseTest6	@	console-uncaught-promise.html:52
         (anonymous)	@	VM122:1
       `,
-        2,
-        0,
-        devToolsPage,
-    );
+                                 2, 0);
 
-    await checkCommandStacktrace(
-        'await promiseTest7();',
-        `
+    await checkCommandStacktrace(devToolsPage, 'await promiseTest7();', `
         promiseTest7	@	console-uncaught-promise.html:56
         (anonymous)	@	VM138:1
       `,
-        2,
-        0,
-        devToolsPage,
-    );
+                                 2, 0);
 
-    await checkCommandStacktrace(
-        'await promiseTest8();',
-        `
+    await checkCommandStacktrace(devToolsPage, 'await promiseTest8();', `
         promiseTest8	@	console-uncaught-promise.html:60
         (anonymous)	@	VM150:1
       `,
-        2,
-        0,
-        devToolsPage,
-    );
+                                 2, 0);
 
-    await typeIntoConsoleAndWaitForResult('await promiseTest9();', 3, undefined, devToolsPage);
-    const lastMessages = (await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage)).slice(-2);
+    await typeIntoConsoleAndWaitForResult(devToolsPage, 'await promiseTest9();', 3, undefined);
+    const lastMessages = (await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined)).slice(-2);
     assert.include(
         lastMessages,
         'A bad HTTP response code (404) was received when fetching the script.',

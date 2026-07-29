@@ -31,108 +31,108 @@ describe('The Elements tab', function() {
   it('can force :hover state for selected DOM node', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/hover.html');
 
-    await waitForElementsStyleSection('<body', devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, '<body');
 
     await devToolsPage.pressKey('ArrowRight');
-    await waitForContentOfSelectedElementsNode('<div id=\u200B"hover">\u200B…\u200B</div>\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div id=\u200B"hover">\u200B…\u200B</div>\u200B');
 
-    await forcePseudoState(':hover', undefined, devToolsPage);
+    await forcePseudoState(devToolsPage, ':hover', undefined);
     await assertGutterDecorationForDomNodeExists(devToolsPage);
-    await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_HOVER_SELECTOR, inspectedPage);
+    await waitForDomNodeToBeVisible(inspectedPage, TARGET_SHOWN_ON_HOVER_SELECTOR);
 
     const displayComputedStyle =
-        await getComputedStylesForDomNode(TARGET_SHOWN_ON_HOVER_SELECTOR, 'display', inspectedPage);
+        await getComputedStylesForDomNode(inspectedPage, TARGET_SHOWN_ON_HOVER_SELECTOR, 'display');
     assert.strictEqual(displayComputedStyle, 'inline');
   });
 
   it('can force :target state for selected DOM node', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/target.html');
 
-    await waitForElementsStyleSection('<body', devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, '<body');
 
     await devToolsPage.pressKey('ArrowRight');
     await waitForContentOfSelectedElementsNode(
-        '<span id=\u200B"show-on-target">\u200BSome text here, only shown on :target\u200B</span>\u200B', devToolsPage);
+        devToolsPage, '<span id=\u200B"show-on-target">\u200BSome text here, only shown on :target\u200B</span>\u200B');
 
-    await forcePseudoState(':target', undefined, devToolsPage);
+    await forcePseudoState(devToolsPage, ':target', undefined);
     await assertGutterDecorationForDomNodeExists(devToolsPage);
-    await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_TARGET_SELECTOR, inspectedPage);
+    await waitForDomNodeToBeVisible(inspectedPage, TARGET_SHOWN_ON_TARGET_SELECTOR);
 
     const displayComputedStyle =
-        await getComputedStylesForDomNode(TARGET_SHOWN_ON_TARGET_SELECTOR, 'display', inspectedPage);
+        await getComputedStylesForDomNode(inspectedPage, TARGET_SHOWN_ON_TARGET_SELECTOR, 'display');
     assert.strictEqual(displayComputedStyle, 'inline');
   });
 
   it('can force :focus state for selected DOM node', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/focus.html');
 
-    await waitForElementsStyleSection('<body', devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, '<body');
 
     await devToolsPage.pressKey('ArrowRight');
-    await waitForContentOfSelectedElementsNode(
-        '<div id=\u200B"focus" tabindex=\u200B"0">\u200B…\u200B</div>\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage,
+                                               '<div id=\u200B"focus" tabindex=\u200B"0">\u200B…\u200B</div>\u200B');
 
-    await forcePseudoState(':focus', undefined, devToolsPage);
+    await forcePseudoState(devToolsPage, ':focus', undefined);
     await assertGutterDecorationForDomNodeExists(devToolsPage);
-    await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_FOCUS_SELECTOR, inspectedPage);
+    await waitForDomNodeToBeVisible(inspectedPage, TARGET_SHOWN_ON_FOCUS_SELECTOR);
 
     const displayComputedStyle =
-        await getComputedStylesForDomNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display', inspectedPage);
+        await getComputedStylesForDomNode(inspectedPage, TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
     assert.strictEqual(displayComputedStyle, 'inline');
 
-    const backgroundColorComputedStyle = await getComputedStylesForDomNode('#focus', 'backgroundColor', inspectedPage);
+    const backgroundColorComputedStyle = await getComputedStylesForDomNode(inspectedPage, '#focus', 'backgroundColor');
     assert.strictEqual(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
   });
 
   it('can remove :focus state', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/focus.html');
 
-    await waitForElementsStyleSection('<body', devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, '<body');
 
     await devToolsPage.pressKey('ArrowRight');
-    await waitForContentOfSelectedElementsNode(
-        '<div id=\u200B"focus" tabindex=\u200B"0">\u200B…\u200B</div>\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage,
+                                               '<div id=\u200B"focus" tabindex=\u200B"0">\u200B…\u200B</div>\u200B');
 
-    await forcePseudoState(':focus', undefined, devToolsPage);
+    await forcePseudoState(devToolsPage, ':focus', undefined);
     await assertGutterDecorationForDomNodeExists(devToolsPage);
-    await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_FOCUS_SELECTOR, inspectedPage);
+    await waitForDomNodeToBeVisible(inspectedPage, TARGET_SHOWN_ON_FOCUS_SELECTOR);
 
     const displayComputedStyle =
-        await getComputedStylesForDomNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display', inspectedPage);
+        await getComputedStylesForDomNode(inspectedPage, TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
     assert.strictEqual(displayComputedStyle, 'inline');
 
-    const backgroundColorComputedStyle = await getComputedStylesForDomNode('#focus', 'backgroundColor', inspectedPage);
+    const backgroundColorComputedStyle = await getComputedStylesForDomNode(inspectedPage, '#focus', 'backgroundColor');
     assert.strictEqual(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
 
-    await removePseudoState(':focus', devToolsPage);
-    await waitForDomNodeToBeHidden(TARGET_SHOWN_ON_FOCUS_SELECTOR, inspectedPage);
+    await removePseudoState(devToolsPage, ':focus');
+    await waitForDomNodeToBeHidden(inspectedPage, TARGET_SHOWN_ON_FOCUS_SELECTOR);
 
     const hiddenDisplayStyle =
-        await getComputedStylesForDomNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display', inspectedPage);
+        await getComputedStylesForDomNode(inspectedPage, TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
     assert.strictEqual(hiddenDisplayStyle, 'none');
   });
 
   it('can toggle emulate a focused page', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/dissapearing-popup.html');
-    await waitForElementsStyleSection('<body', devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, '<body');
 
     // Navigate to #query input
     await devToolsPage.pressKey('ArrowRight');
-    await waitForContentOfSelectedElementsNode('<input id=\u200B"query" type=\u200B"text">\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<input id=\u200B"query" type=\u200B"text">\u200B');
 
     // Verify #result is hidden
     await devToolsPage.pressKey('ArrowDown');
-    await waitForPartialContentOfSelectedElementsNode('<p id=\u200B"result" class=\u200B"hide">\u200B', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '<p id=\u200B"result" class=\u200B"hide">\u200B');
 
     // Verify #result is visible
-    await forcePseudoState(EMULATE_FOCUSED_PAGE, undefined, devToolsPage);
+    await forcePseudoState(devToolsPage, EMULATE_FOCUSED_PAGE, undefined);
     await inspectedPage.pressKey('Tab');
-    await waitForPartialContentOfSelectedElementsNode('<p id=\u200B"result" class>\u200B', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '<p id=\u200B"result" class>\u200B');
 
     // Verify #result is hidden
-    await removePseudoState(EMULATE_FOCUSED_PAGE, devToolsPage);
+    await removePseudoState(devToolsPage, EMULATE_FOCUSED_PAGE);
     await inspectedPage.pressKey('Tab');
-    await waitForPartialContentOfSelectedElementsNode('<p id=\u200B"result" class=\u200B"hide">\u200B', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '<p id=\u200B"result" class=\u200B"hide">\u200B');
   });
 
   const dualCasesOneCheckbox = [
@@ -146,7 +146,7 @@ describe('The Elements tab', function() {
   for (const {start, dual, elementCount} of dualCasesOneCheckbox) {
     it(`can force ${start} elements to be :${dual}`, async ({devToolsPage, inspectedPage}) => {
       await inspectedPage.goToResource('elements/specific-pseudo-states.html');
-      await waitForElementsStyleSection('<body', devToolsPage);
+      await waitForElementsStyleSection(devToolsPage, '<body');
 
       // Verify assumptions behind our test file.
 
@@ -162,18 +162,18 @@ describe('The Elements tab', function() {
       assert.strictEqual(ids.length, elementCount);
 
       const id = ids[0];
-      await findElementById(id, devToolsPage);
+      await findElementById(devToolsPage, id);
       const unforcedSelector = `#${id}:${start}`;
       const forcedSelector = `#${id}:${dual}`;
       assert.deepEqual(await inspectedPage.page.$$(forcedSelector), []);
       assert.lengthOf(await inspectedPage.page.$$(unforcedSelector), 1);
 
-      await forcePseudoState(':' + dual, true, devToolsPage);
+      await forcePseudoState(devToolsPage, ':' + dual, true);
 
       assert.deepEqual(await inspectedPage.page.$$(unforcedSelector), []);
       assert.lengthOf(await inspectedPage.page.$$(forcedSelector), 1);
 
-      await removePseudoState(':' + dual, devToolsPage);
+      await removePseudoState(devToolsPage, ':' + dual);
 
       assert.deepEqual(await inspectedPage.page.$$(forcedSelector), []);
       assert.lengthOf(await inspectedPage.page.$$(unforcedSelector), 1);
@@ -189,7 +189,7 @@ describe('The Elements tab', function() {
   for (const {start, dual, elementCount} of dualCasesTwoCheckboxes) {
     it(`can force ${start} elements to be :${dual} but not both`, async ({devToolsPage, inspectedPage}) => {
       await inspectedPage.goToResource('elements/specific-pseudo-states.html');
-      await waitForElementsStyleSection('<body', devToolsPage);
+      await waitForElementsStyleSection(devToolsPage, '<body');
 
       // Verify assumptions behind our test file.
       // These combinations should not exist.
@@ -204,19 +204,19 @@ describe('The Elements tab', function() {
       assert.strictEqual(ids.length, elementCount);
 
       const id = ids[0];
-      await findElementById(id, devToolsPage);
+      await findElementById(devToolsPage, id);
       const unforcedSelector = `#${id}:${start}`;
       const forcedSelector = `#${id}:${dual}`;
       assert.deepEqual(await inspectedPage.page.$$(forcedSelector), []);
       assert.lengthOf(await inspectedPage.page.$$(unforcedSelector), 1);
 
-      await forcePseudoState(':' + dual, true, devToolsPage);
+      await forcePseudoState(devToolsPage, ':' + dual, true);
       await devToolsPage.waitFor(`input[type="checkbox"][title=":${dual}"]:checked`);
 
       assert.deepEqual(await inspectedPage.page.$$(unforcedSelector), []);
       assert.lengthOf(await inspectedPage.page.$$(forcedSelector), 1);
 
-      await forcePseudoState(':' + start, true, devToolsPage);
+      await forcePseudoState(devToolsPage, ':' + start, true);
       await devToolsPage.waitFor(`input[type="checkbox"][title=":${start}"]:checked`);
       await devToolsPage.waitFor(`input[type="checkbox"][title=":${dual}"]:not(:checked)`);
 

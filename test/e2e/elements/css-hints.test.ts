@@ -14,35 +14,35 @@ import {
 
 describe('CSS hints in the Styles panel', () => {
   it('can detect inactive CSS', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/inactive-css-page.html', devToolsPage, inspectedPage);
-    await waitForStyleRule('body', devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('wrapper', devToolsPage);
-    await waitForStyleRule('#wrapper', devToolsPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/inactive-css-page.html');
+    await waitForStyleRule(devToolsPage, 'body');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'wrapper');
+    await waitForStyleRule(devToolsPage, '#wrapper');
 
     const propertiesWithHints = await getPropertiesWithHints(devToolsPage);
     assert.deepEqual(propertiesWithHints, ['align-content']);
   });
 
   it('does not show authoring hint when property value is invalid', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection(
-        'elements/inactive-css-with-invalid-value.html', devToolsPage, inspectedPage);
-    await waitForStyleRule('body', devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('wrapper', devToolsPage);
-    await waitForStyleRule('#wrapper', devToolsPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage,
+                                             'elements/inactive-css-with-invalid-value.html');
+    await waitForStyleRule(devToolsPage, 'body');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'wrapper');
+    await waitForStyleRule(devToolsPage, '#wrapper');
 
     const propertiesWithHints = await getPropertiesWithHints(devToolsPage);
     assert.deepEqual(propertiesWithHints, []);
   });
 
   it('updates the hint if the styles are edited', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/inactive-css-page.html', devToolsPage, inspectedPage);
-    await waitForStyleRule('body', devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('wrapper', devToolsPage);
-    await waitForStyleRule('#wrapper', devToolsPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/inactive-css-page.html');
+    await waitForStyleRule(devToolsPage, 'body');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'wrapper');
+    await waitForStyleRule(devToolsPage, '#wrapper');
 
     assert.deepEqual(await getPropertiesWithHints(devToolsPage), ['align-content']);
 
-    await focusCSSPropertyValue('#wrapper', 'flex-wrap', devToolsPage);
+    await focusCSSPropertyValue(devToolsPage, '#wrapper', 'flex-wrap');
     await devToolsPage.typeText('wrap', {delay: 100});
     await devToolsPage.pressKey('Enter');
 

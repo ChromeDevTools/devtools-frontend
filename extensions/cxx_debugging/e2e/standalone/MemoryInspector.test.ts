@@ -27,8 +27,8 @@ describe('LinearMemoryInspector', () => {
 
     const file = 'scope-view-primitives.c';
     const breakpoint = 14;
-    await openFileInEditor(file, devToolsPage);
-    await addBreakpointForLine(Number(breakpoint), devToolsPage);
+    await openFileInEditor(devToolsPage, file);
+    await addBreakpointForLine(devToolsPage, Number(breakpoint));
 
     await inspectedPage.reload();
     await devToolsPage.waitForFunction(

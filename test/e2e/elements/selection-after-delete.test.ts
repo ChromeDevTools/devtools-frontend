@@ -16,11 +16,11 @@ describe('The Elements tab', () => {
     await inspectedPage.goToResource('elements/selection-after-delete.html');
 
     // Wait for the file to be loaded and selectors to be shown.
-    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
     await expandSelectedNodeRecursively(devToolsPage);
 
     // Wait for the expansion and select the final child in the tree.
-    const child = await waitForElementWithPartialText('child2', devToolsPage);
+    const child = await waitForElementWithPartialText(devToolsPage, 'child2');
     await child.click();
 
     const expected = [
@@ -37,9 +37,9 @@ describe('The Elements tab', () => {
 
       const initialValue = await getContentOfSelectedNode(devToolsPage);
       await devToolsPage.page.keyboard.press('Backspace');
-      await waitForSelectedNodeChange(initialValue, devToolsPage);
+      await waitForSelectedNodeChange(devToolsPage, initialValue);
 
-      await waitForContentOfSelectedElementsNode(nextVal, devToolsPage);
+      await waitForContentOfSelectedElementsNode(devToolsPage, nextVal);
     } while (expected.length);
   });
 });

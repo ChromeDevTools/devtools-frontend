@@ -10,7 +10,7 @@ import type {InspectedPage} from '../shared/target-helper.js';
 
 describe('Element has violating properties', function() {
   async function expandFormWithIssues(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-    await goToResourceAndWaitForStyleSection('elements/form-with-issues.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/form-with-issues.html');
     await expandSelectedNodeRecursively(devToolsPage);
   }
 

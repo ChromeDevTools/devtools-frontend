@@ -33,7 +33,7 @@ async function setupRequestBlocking(
     devToolsPage: DevToolsPage,
     {patterns, enabled, useURLPatterns}: {patterns: string[], enabled: boolean, useURLPatterns: boolean}):
     Promise<void> {
-  await openPanelViaMoreTools(useURLPatterns ? 'Request conditions' : 'Network request blocking', devToolsPage);
+  await openPanelViaMoreTools(devToolsPage, useURLPatterns ? 'Request conditions' : 'Network request blocking');
   for (const pattern of patterns) {
     await devToolsPage.click(
         useURLPatterns ? 'aria/Add network request blocking or throttling pattern' :
@@ -51,7 +51,7 @@ async function setupRequestBlocking(
 }
 
 async function disableRequestBlocking(devToolsPage: DevToolsPage, useURLPatterns: boolean): Promise<void> {
-  await openPanelViaMoreTools(useURLPatterns ? 'Request conditions' : 'Network request blocking', devToolsPage);
+  await openPanelViaMoreTools(devToolsPage, useURLPatterns ? 'Request conditions' : 'Network request blocking');
   await devToolsPage.click(
       useURLPatterns ? 'aria/Remove all network request blocking or throttling patterns' :
                        'aria/Remove all network request blocking patterns');
@@ -133,13 +133,13 @@ for (const useURLPatterns of [true]) {
 
     it('displays blocked reason for CSP blocked requests', async ({devToolsPage, inspectedPage}) => {
       await setUpHostConfig(devToolsPage);
-      await navigateToNetworkTab('csp.html', devToolsPage, inspectedPage);
-      await setTextFilter('csp.js', devToolsPage);
+      await navigateToNetworkTab(devToolsPage, inspectedPage, 'csp.html');
+      await setTextFilter(devToolsPage, 'csp.js');
       await inspectedPage.evaluate(() => {
         // @ts-expect-error
         sendCSPRequest();
       });
-      await waitForSomeRequestsToAppear(1, devToolsPage);
+      await waitForSomeRequestsToAppear(devToolsPage, 1);
       const status = await devToolsPage.waitFor('.network-log-grid tbody .status-column');
       assert.strictEqual(await status.evaluate(node => node.textContent), '(blocked:csp)');
 
@@ -153,13 +153,13 @@ for (const useURLPatterns of [true]) {
       await setUpHostConfig(devToolsPage);
       await setupRequestBlocking(devToolsPage, {patterns, enabled: true, useURLPatterns});
 
-      await navigateToNetworkTab('csp.html', devToolsPage, inspectedPage);
-      await setTextFilter(url.substring(url.lastIndexOf('/') + 1), devToolsPage);
+      await navigateToNetworkTab(devToolsPage, inspectedPage, 'csp.html');
+      await setTextFilter(devToolsPage, url.substring(url.lastIndexOf('/') + 1));
       void inspectedPage.evaluate(url => {
         // @ts-expect-error
         addBlockedScript(url);
       }, url);
-      await waitForSomeRequestsToAppear(1, devToolsPage);
+      await waitForSomeRequestsToAppear(devToolsPage, 1);
       const status = await devToolsPage.waitFor('.network-log-grid tbody .status-column');
       assert.strictEqual(await status.evaluate(node => node.textContent), expectedStatus);
 

@@ -14,7 +14,7 @@ import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 
 describe('Ignore list', () => {
   it('can be toggled on and off in console stack trace', async ({devToolsPage, inspectedPage}) => {
-    await setIgnoreListPattern('thirdparty', devToolsPage);
+    await setIgnoreListPattern(devToolsPage, 'thirdparty');
 
     await inspectedPage.goToResource('../resources/sources/multi-files.html');
     await navigateToConsoleTab(devToolsPage);

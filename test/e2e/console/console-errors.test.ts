@@ -60,7 +60,7 @@ describe('The Console\'s errors', function() {
     await inspectedPage.goToResource('console/resource-errors.html');
     await navigateToConsoleTab(devToolsPage);
     await showVerboseMessages(devToolsPage);
-    await waitForConsoleMessagesToBeNonEmpty(5, devToolsPage);
+    await waitForConsoleMessagesToBeNonEmpty(devToolsPage, 5);
     const messages = await getStructuredConsoleMessages(devToolsPage);
     messages.sort((m1, m2) => (m1.message as string).localeCompare(m2.message as string));
     assert.deepEqual(messages, [
@@ -123,7 +123,7 @@ performActions @ resource-errors.html:8
     await inspectedPage.goToResource('sources/error-with-cause.html');
     await navigateToConsoleTab(devToolsPage);
     await showVerboseMessages(devToolsPage);
-    await waitForConsoleMessagesToBeNonEmpty(/* numberOfMessages */ 1, devToolsPage);
+    await waitForConsoleMessagesToBeNonEmpty(devToolsPage, /* numberOfMessages */ 1);
 
     const messages = await getStructuredConsoleMessages(devToolsPage);
     assert.lengthOf(messages, 1);
@@ -149,7 +149,7 @@ performActions @ resource-errors.html:8
       }
     });
 
-    await waitForConsoleMessagesToBeNonEmpty(1, devToolsPage);
+    await waitForConsoleMessagesToBeNonEmpty(devToolsPage, 1);
     const messages = await getStructuredConsoleMessages(devToolsPage);
     assert.lengthOf(messages, 1);
     const firstMessage = messages[0];

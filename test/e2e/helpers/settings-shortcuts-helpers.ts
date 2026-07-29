@@ -52,12 +52,12 @@ if (platform === 'mac') {
   CONTROL_ALT_C_SHORTCUT_INPUT_TEXT = ['⌘ ⌥ C'];
 }
 
-export const selectKeyboardShortcutPreset = async (option: string, devToolsPage: DevToolsPage) => {
+export const selectKeyboardShortcutPreset = async (devToolsPage: DevToolsPage, option: string) => {
   const presetSelectElement = await devToolsPage.waitForElementWithTextContent(SHORTCUT_SELECT_TEXT);
   await selectOption(await presetSelectElement.toElement('select'), option);
 };
 
-export const getShortcutListItemElement = async (shortcutText: string, devToolsPage: DevToolsPage) => {
+export const getShortcutListItemElement = async (devToolsPage: DevToolsPage, shortcutText: string) => {
   const textMatches = await devToolsPage.$$textContent(shortcutText);
   let titleElement;
   for (const matchingElement of textMatches) {
@@ -72,8 +72,8 @@ export const getShortcutListItemElement = async (shortcutText: string, devToolsP
   return listItemElement.asElement();
 };
 
-export const editShortcutListItem = async (shortcutText: string, devToolsPage: DevToolsPage) => {
-  const listItemElement = await getShortcutListItemElement(shortcutText, devToolsPage) as ElementHandle;
+export const editShortcutListItem = async (devToolsPage: DevToolsPage, shortcutText: string) => {
+  const listItemElement = await getShortcutListItemElement(devToolsPage, shortcutText) as ElementHandle;
 
   await devToolsPage.clickElement(listItemElement);
   await devToolsPage.click(EDIT_BUTTON_SELECTOR, {root: listItemElement});
@@ -81,8 +81,8 @@ export const editShortcutListItem = async (shortcutText: string, devToolsPage: D
   await devToolsPage.waitFor(RESET_BUTTON_SELECTOR);
 };
 
-export const shortcutsForAction = async (shortcutText: string, devToolsPage: DevToolsPage) => {
-  const listItemElement = await getShortcutListItemElement(shortcutText, devToolsPage);
+export const shortcutsForAction = async (devToolsPage: DevToolsPage, shortcutText: string) => {
+  const listItemElement = await getShortcutListItemElement(devToolsPage, shortcutText);
   assert.isOk(listItemElement, `Could not find shortcut item with text ${shortcutText}`);
   const shortcutElements = await listItemElement.$$(SHORTCUT_DISPLAY_SELECTOR);
   const shortcutElementsTextContent =
@@ -125,7 +125,7 @@ export const clickShortcutResetButton = async (devToolsPage: DevToolsPage) => {
   await devToolsPage.click(RESET_BUTTON_SELECTOR);
 };
 
-export const clickShortcutDeleteButton = async (index: number, devToolsPage: DevToolsPage) => {
+export const clickShortcutDeleteButton = async (devToolsPage: DevToolsPage, index: number) => {
   const deleteButtons = await devToolsPage.$$(DELETE_BUTTON_SELECTOR);
   if (deleteButtons.length <= index) {
     assert.fail(`shortcut delete button #${index} not found`);

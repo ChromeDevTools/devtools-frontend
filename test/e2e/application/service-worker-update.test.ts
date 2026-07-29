@@ -21,7 +21,7 @@ describe('The Application Tab', () => {
   it('Navigate to a page with service worker we should find service worker update timeline info',
      async ({devToolsPage, inspectedPage}) => {
        expectError('Request Network.enableDeviceBoundSessions failed. {"code":-32603,"message":"Internal error"}');
-       await navigateToApplicationTab(TEST_HTML_FILE, devToolsPage, inspectedPage);
+       await navigateToApplicationTab(devToolsPage, inspectedPage, TEST_HTML_FILE);
        await navigateToServiceWorkers(devToolsPage);
 
        const timeline = await devToolsPage.waitFor(SERVICE_WORKER_UPDATE_TIMELINE_SELECTOR);

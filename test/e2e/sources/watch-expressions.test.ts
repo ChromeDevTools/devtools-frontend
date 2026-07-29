@@ -48,18 +48,18 @@ describe('Watch Expression Pane', () => {
   });
 
   it('deobfuscates variable names', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile(
-        'sourcemap-scopes-minified.js', 'sourcemap-scopes-minified.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'sourcemap-scopes-minified.js',
+                                      'sourcemap-scopes-minified.html');
 
     const breakLocationOuterRegExp = /sourcemap-scopes-minified\.js:2$/;
     const watchText = 'arg0+1';
     const watchValue = '11';
 
-    await addBreakpointForLine(2, devToolsPage);
+    await addBreakpointForLine(devToolsPage, 2);
 
     void inspectedPage.evaluate('foo(10);');
 
-    const scriptLocation = await waitForStackTopMatch(breakLocationOuterRegExp, devToolsPage);
+    const scriptLocation = await waitForStackTopMatch(devToolsPage, breakLocationOuterRegExp);
     assert.match(scriptLocation, breakLocationOuterRegExp);
 
     await addWatchExpression(watchText, devToolsPage);

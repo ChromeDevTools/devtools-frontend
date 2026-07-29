@@ -36,10 +36,10 @@ describe('Test the Device Posture API support', () => {
     await selectFoldableDevice(devToolsPage);
     await waitForWidthOfDevice(devToolsPage, ZENBOOK_VERTICAL_WIDTH);
 
-    await clickDevicePosture('Folded', devToolsPage);
+    await clickDevicePosture(devToolsPage, 'Folded');
     await waitForWidthOfDevice(devToolsPage, ZENBOOK_VERTICAL_SPANNED_WIDTH);
 
-    await clickDevicePosture('Continuous', devToolsPage);
+    await clickDevicePosture(devToolsPage, 'Continuous');
     await waitForWidthOfDevice(devToolsPage, ZENBOOK_VERTICAL_WIDTH);
   });
 

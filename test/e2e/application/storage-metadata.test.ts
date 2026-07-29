@@ -10,7 +10,7 @@ import type {InspectedPage} from '../shared/target-helper.js';
 
 export async function navigateToBucketViaDbMetadata(
     devToolsPage: DevToolsPage, inspectedPage: InspectedPage, subPanel: string, dbSelector: string) {
-  await navigateToApplicationTab('storage-buckets-link', devToolsPage, inspectedPage);
+  await navigateToApplicationTab(devToolsPage, inspectedPage, 'storage-buckets-link');
 
   await devToolsPage.bringToFront();
   await devToolsPage.reload();

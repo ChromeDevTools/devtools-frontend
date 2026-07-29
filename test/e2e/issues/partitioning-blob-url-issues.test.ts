@@ -32,7 +32,7 @@ describe('Partitioning Blob URL Issue', () => {
          // @ts-expect-error
          window.addIssueForTest(issue);
        });
-       const issueElement = await getAndExpandSpecificIssueByTitle('Fetching partitioned blob URL issue', devToolsPage);
+       const issueElement = await getAndExpandSpecificIssueByTitle(devToolsPage, 'Fetching partitioned blob URL issue');
        assert.isOk(issueElement);
      });
 
@@ -56,7 +56,7 @@ describe('Partitioning Blob URL Issue', () => {
          window.addIssueForTest(issue);
        });
        const issueElement =
-           await getAndExpandSpecificIssueByTitle('Navigating partitioned blob URL issue', devToolsPage);
+           await getAndExpandSpecificIssueByTitle(devToolsPage, 'Navigating partitioned blob URL issue');
        assert.isOk(issueElement);
      });
 
@@ -67,7 +67,7 @@ describe('Partitioning Blob URL Issue', () => {
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
     const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
-    const issueElement = await getIssueByTitle(issueTitle, devToolsPage);
+    const issueElement = await getIssueByTitle(devToolsPage, issueTitle);
     assert.isOk(issueElement);
     const childElements = await devToolsPage.$$(RESOURCES_LABEL, issueElement);
     let foundBlobResourceElement = false;

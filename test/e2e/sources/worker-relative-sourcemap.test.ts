@@ -10,11 +10,11 @@ import type {InspectedPage} from '../shared/target-helper.js';
 
 function createSelectorsForEvalWorker(fileName: string, inspectedPage: InspectedPage) {
   const EVAL_WORKER_NAME = '#1';
-  return createSelectorsForWorkerFile(EVAL_WORKER_NAME, 'test/e2e/resources/sources', fileName, 1, inspectedPage);
+  return createSelectorsForWorkerFile(inspectedPage, EVAL_WORKER_NAME, 'test/e2e/resources/sources', fileName, 1);
 }
 
 async function openNestedWorkerFile(selectors: NestedFileSelector, devToolsPage: DevToolsPage) {
-  const workerFile = await expandFileTree(selectors, devToolsPage);
+  const workerFile = await expandFileTree(devToolsPage, selectors);
 
   return await workerFile.evaluate(node => node.textContent);
 }

@@ -22,9 +22,9 @@ describe('The Issues tab categories checkbox', () => {
     }
 
     await expandCategory(devToolsPage);
-    await assertCategoryName('Content Security Policy', devToolsPage);
+    await assertCategoryName(devToolsPage, 'Content Security Policy');
     await expandIssue(devToolsPage);
-    await assertIssueTitle('Content Security Policy blocks inline execution of scripts and stylesheets', devToolsPage);
+    await assertIssueTitle(devToolsPage, 'Content Security Policy blocks inline execution of scripts and stylesheets');
   });
 
   it('should use a flat list of issues when not checked', async ({inspectedPage, devToolsPage}) => {
@@ -36,6 +36,6 @@ describe('The Issues tab categories checkbox', () => {
     }
 
     await expandIssue(devToolsPage);
-    await assertIssueTitle('Content Security Policy blocks inline execution of scripts and stylesheets', devToolsPage);
+    await assertIssueTitle(devToolsPage, 'Content Security Policy blocks inline execution of scripts and stylesheets');
   });
 });

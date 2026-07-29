@@ -18,15 +18,15 @@ describe('Select element accessibility issues test', () => {
        await inspectedPage.goToResource('issues/select-element-accessibility-issue-DisallowedSelectChild.html');
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
-           await getAndExpandSpecificIssueByTitle('Invalid element or text node within <select>', devToolsPage);
+           await getAndExpandSpecificIssueByTitle(devToolsPage, 'Invalid element or text node within <select>');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display issue when there is a disallowed child of an optgroup element',
@@ -34,15 +34,15 @@ describe('Select element accessibility issues test', () => {
        await inspectedPage.goToResource('issues/select-element-accessibility-issue-DisallowedOptGroupChild.html');
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
-           await getAndExpandSpecificIssueByTitle('Invalid element or text node within <optgroup>', devToolsPage);
+           await getAndExpandSpecificIssueByTitle(devToolsPage, 'Invalid element or text node within <optgroup>');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display issue when there is a non-phrasing child element of an option element',
@@ -50,15 +50,15 @@ describe('Select element accessibility issues test', () => {
        await inspectedPage.goToResource('issues/select-element-accessibility-issue-NonPhrasingContentOptionChild.html');
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
-           await getAndExpandSpecificIssueByTitle('Non-phrasing content used within an <option> element', devToolsPage);
+           await getAndExpandSpecificIssueByTitle(devToolsPage, 'Non-phrasing content used within an <option> element');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display issue when there is an interactive child element of an option element',
@@ -66,15 +66,15 @@ describe('Select element accessibility issues test', () => {
        await inspectedPage.goToResource('issues/select-element-accessibility-issue-InteractiveContentOptionChild.html');
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
-           await getAndExpandSpecificIssueByTitle('Interactive element inside of an <option> element', devToolsPage);
+           await getAndExpandSpecificIssueByTitle(devToolsPage, 'Interactive element inside of an <option> element');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display issue when there is an interactive child element of a legend element',
@@ -82,15 +82,15 @@ describe('Select element accessibility issues test', () => {
        await inspectedPage.goToResource('issues/select-element-accessibility-issue-InteractiveContentLegendChild.html');
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
-           await getAndExpandSpecificIssueByTitle('Interactive element inside of a <legend> element', devToolsPage);
+           await getAndExpandSpecificIssueByTitle(devToolsPage, 'Interactive element inside of a <legend> element');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display issue when there is an element with disallowed attributes as a child of a select element',
@@ -99,15 +99,15 @@ describe('Select element accessibility issues test', () => {
            'issues/select-element-accessibility-issue-InteractiveAttributesSelectDescendant.html');
        await navigateToIssuesTab(devToolsPage);
        const issueElement = await getAndExpandSpecificIssueByTitle(
-           'Element with invalid attributes within a <select> element', devToolsPage);
+           devToolsPage, 'Element with invalid attributes within a <select> element');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 
   it('should display issue when there is an interactive element as a descendant of a summary element',
@@ -116,14 +116,14 @@ describe('Select element accessibility issues test', () => {
            'issues/summary-element-accessibility-issue-InteractiveContentSummaryDescendant.html');
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
-           await getAndExpandSpecificIssueByTitle('Interactive element inside of a <summary> element', devToolsPage);
+           await getAndExpandSpecificIssueByTitle(devToolsPage, 'Interactive element inside of a <summary> element');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
-       await ensureResourceSectionIsExpanded(section, devToolsPage);
+       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
        ];
-       await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+       await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
      });
 });

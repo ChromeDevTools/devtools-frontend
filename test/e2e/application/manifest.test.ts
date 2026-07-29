@@ -16,23 +16,23 @@ describe('The Manifest Page', () => {
   setup({dockingMode: 'undocked'});
 
   it('shows app id', async ({devToolsPage, inspectedPage}) => {
-    await navigateToApplicationTab('app-manifest-id', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'app-manifest-id');
     await devToolsPage.click(MANIFEST_SELECTOR);
     await devToolsPage.waitFor(APP_ID_SELECTOR);
 
-    const fieldNames = await getTrimmedTextContent(FIELD_NAMES_SELECTOR, devToolsPage);
-    const fieldValues = await getTrimmedTextContent(FIELD_VALUES_SELECTOR, devToolsPage);
+    const fieldNames = await getTrimmedTextContent(devToolsPage, FIELD_NAMES_SELECTOR);
+    const fieldValues = await getTrimmedTextContent(devToolsPage, FIELD_VALUES_SELECTOR);
     assert.strictEqual(fieldNames[3], 'Computed App ID');
     assert.strictEqual(fieldValues[3], `https://localhost:${inspectedPage.serverPort}/some_idLearn more`);
   });
 
   it('shows start id as app id', async ({devToolsPage, inspectedPage}) => {
-    await navigateToApplicationTab('app-manifest-no-id', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'app-manifest-no-id');
     await devToolsPage.click(MANIFEST_SELECTOR);
     await devToolsPage.waitFor(APP_ID_SELECTOR);
 
-    const fieldNames = await getTrimmedTextContent(FIELD_NAMES_SELECTOR, devToolsPage);
-    const fieldValues = await getTrimmedTextContent(FIELD_VALUES_SELECTOR, devToolsPage);
+    const fieldNames = await getTrimmedTextContent(devToolsPage, FIELD_NAMES_SELECTOR);
+    const fieldValues = await getTrimmedTextContent(devToolsPage, FIELD_VALUES_SELECTOR);
     assert.strictEqual(fieldNames[3], 'Computed App ID');
     assert.strictEqual(
         fieldValues[3],

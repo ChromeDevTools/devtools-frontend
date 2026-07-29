@@ -29,7 +29,7 @@ const RESPONSE_HEADERS_SELECTOR = '[aria-label="Response headers"]';
 const HEADER_ROW_SELECTOR = '.row';
 
 async function createHeaderOverride(devToolsPage: DevToolsPage) {
-  await openSoftContextMenuAndClickOnItem(OVERRIDES_FILESYSTEM_SELECTOR, 'New file', devToolsPage);
+  await openSoftContextMenuAndClickOnItem(devToolsPage, OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
   await devToolsPage.waitFor('.being-edited');
   await devToolsPage.typeText('.headers\n');
   await devToolsPage.click('.add-block');
@@ -104,14 +104,14 @@ describe('The Overrides Panel', function() {
     await devToolsPage.waitFor('.network-log-grid');
     await inspectedPage.goToResource('network/hello.html');
 
-    await waitForSomeRequestsToAppear(1, devToolsPage);
-    await selectRequestByName('hello.html', {}, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 1);
+    await selectRequestByName(devToolsPage, 'hello.html', {});
     await openHeadersTab(devToolsPage);
 
     const responseHeaderSection = await devToolsPage.waitFor(RESPONSE_HEADERS_SELECTOR);
     const row = await devToolsPage.waitFor(HEADER_ROW_SELECTOR, responseHeaderSection);
     assert.isOk(row);
-    assert.deepEqual(await getTextFromHeadersRow(row, devToolsPage), ['aaa', 'bbb']);
+    assert.deepEqual(await getTextFromHeadersRow(devToolsPage, row), ['aaa', 'bbb']);
     await cleanup(devToolsPage);
   });
 
@@ -122,9 +122,9 @@ describe('The Overrides Panel', function() {
       {name: 'prefers-reduced-motion', value: 'reduce'},
     ]);
 
-    await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
-    await waitForSomeRequestsToAppear(1, devToolsPage);
-    await selectRequestByName('hello.html', {}, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'hello.html');
+    await waitForSomeRequestsToAppear(devToolsPage, 1);
+    await selectRequestByName(devToolsPage, 'hello.html', {});
     await openHeadersTab(devToolsPage);
 
     await devToolsPage.click('.enable-editing');
@@ -142,15 +142,15 @@ describe('The Overrides Panel', function() {
     assert.isTrue(await editorTabHasPurpleDot(devToolsPage));
     assert.isTrue(await fileTreeEntryIsSelectedAndHasPurpleDot(devToolsPage));
 
-    await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
-    await waitForSomeRequestsToAppear(1, devToolsPage);
-    await selectRequestByName('hello.html', {}, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'hello.html');
+    await waitForSomeRequestsToAppear(devToolsPage, 1);
+    await selectRequestByName(devToolsPage, 'hello.html', {});
     await openHeadersTab(devToolsPage);
 
     const responseHeaderSection = await devToolsPage.waitFor(RESPONSE_HEADERS_SELECTOR);
     const row = await devToolsPage.waitFor('.row.header-overridden.header-editable', responseHeaderSection);
     assert.isOk(row);
-    assert.deepEqual(await getTextFromHeadersRow(row, devToolsPage), ['foo', 'bar']);
+    assert.deepEqual(await getTextFromHeadersRow(devToolsPage, row), ['foo', 'bar']);
     await devToolsPage.click('[title="Reveal header override definitions"]');
     assert.isTrue(await editorTabHasPurpleDot(devToolsPage));
     assert.isTrue(await fileTreeEntryIsSelectedAndHasPurpleDot(devToolsPage));

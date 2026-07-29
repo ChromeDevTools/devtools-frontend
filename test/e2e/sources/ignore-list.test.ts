@@ -22,10 +22,10 @@ import {
 
 describe('Ignore list', function() {
   it('can be toggled on and off in call stack', async ({devToolsPage, inspectedPage}) => {
-    await setIgnoreListPattern('thirdparty', devToolsPage);
+    await setIgnoreListPattern(devToolsPage, 'thirdparty');
 
-    await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine(4, devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'multi-files-mycode.js', 'multi-files.html');
+    await addBreakpointForLine(devToolsPage, 4);
 
     const scriptEvaluation = inspectedPage.evaluate('f();');
     await devToolsPage.waitFor(RESUME_BUTTON);
@@ -47,10 +47,10 @@ describe('Ignore list', function() {
   });
 
   it('shows no toggle when everything is ignore-listed', async ({devToolsPage, inspectedPage}) => {
-    await setIgnoreListPattern('multi|pptr', devToolsPage);
+    await setIgnoreListPattern(devToolsPage, 'multi|pptr');
 
-    await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine(4, devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'multi-files-mycode.js', 'multi-files.html');
+    await addBreakpointForLine(devToolsPage, 4);
 
     const scriptEvaluation = inspectedPage.evaluate('f();');
     await devToolsPage.waitFor(RESUME_BUTTON);
@@ -67,11 +67,11 @@ describe('Ignore list', function() {
   });
 
   it('skips frames when stepping in and out', async ({devToolsPage, inspectedPage}) => {
-    await setIgnoreListPattern('thirdparty', devToolsPage);
+    await setIgnoreListPattern(devToolsPage, 'thirdparty');
     await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
 
-    await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine(8, devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'multi-files-mycode.js', 'multi-files.html');
+    await addBreakpointForLine(devToolsPage, 8);
 
     const scriptEvaluation = inspectedPage.evaluate('f();');
     await devToolsPage.waitFor(RESUME_BUTTON);
@@ -93,11 +93,11 @@ describe('Ignore list', function() {
   });
 
   it('skips instrumentation breakpoints', async ({devToolsPage, inspectedPage}) => {
-    await setIgnoreListPattern('thirdparty', devToolsPage);
+    await setIgnoreListPattern(devToolsPage, 'thirdparty');
     await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
 
-    await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html', devToolsPage, inspectedPage);
-    await setEventListenerBreakpoint('Timer', 'setTimeout', devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'multi-files-mycode.js', 'multi-files.html');
+    await setEventListenerBreakpoint(devToolsPage, 'Timer', 'setTimeout');
 
     const scriptEvaluation = inspectedPage.evaluate('debugger; timeoutTestCase();');
 
@@ -120,7 +120,7 @@ describe('Ignore list', function() {
   });
 
   it('indicates ignored sources in page source tree', async ({devToolsPage, inspectedPage}) => {
-    await setIgnoreListPattern('/sources/', devToolsPage);
+    await setIgnoreListPattern(devToolsPage, '/sources/');
     await inspectedPage.goToResource('sources/multi-files.html');
     await openSourcesPanel(devToolsPage);
     assert.deepEqual(await readIgnoreListedSources(devToolsPage), [
@@ -129,9 +129,9 @@ describe('Ignore list', function() {
       'multi-files-mycode.js',
       'multi-files-thirdparty.js',
     ]);
-    await toggleIgnoreListing(false, devToolsPage);
+    await toggleIgnoreListing(devToolsPage, false);
     assert.deepEqual(await readIgnoreListedSources(devToolsPage), []);
-    await toggleIgnoreListing(true, devToolsPage);
+    await toggleIgnoreListing(devToolsPage, true);
     assert.deepEqual(await readIgnoreListedSources(devToolsPage), [
       'test/e2e/resources/sources',
       'multi-files.html',
@@ -145,13 +145,13 @@ describe('Ignore list', function() {
       devToolsSettings: {'navigator-just-my-code': true},
     });
     it('removes ignored sources from page source tree', async ({devToolsPage, inspectedPage}) => {
-      await setIgnoreListPattern('thirdparty', devToolsPage);
+      await setIgnoreListPattern(devToolsPage, 'thirdparty');
       await inspectedPage.goToResource('sources/multi-files.html');
       await openSourcesPanel(devToolsPage);
       assert.deepEqual(
           await readSourcesTreeView(devToolsPage),
           ['top', 'localhost:XXXX', 'test/e2e/resources/sources', 'multi-files.html', 'multi-files-mycode.js']);
-      await toggleIgnoreListing(false, devToolsPage);
+      await toggleIgnoreListing(devToolsPage, false);
       assert.deepEqual(await readSourcesTreeView(devToolsPage), [
         'top',
         'localhost:XXXX',
@@ -160,7 +160,7 @@ describe('Ignore list', function() {
         'multi-files-mycode.js',
         'multi-files-thirdparty.js',
       ]);
-      await toggleIgnoreListing(true, devToolsPage);
+      await toggleIgnoreListing(devToolsPage, true);
       assert.deepEqual(
           await readSourcesTreeView(devToolsPage),
           ['top', 'localhost:XXXX', 'test/e2e/resources/sources', 'multi-files.html', 'multi-files-mycode.js']);

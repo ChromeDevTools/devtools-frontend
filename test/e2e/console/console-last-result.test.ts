@@ -18,15 +18,15 @@ describe('The Console Tab', () => {
     await turnOffHistoryAutocomplete(devToolsPage);
     await focusConsolePrompt(devToolsPage);
 
-    await typeIntoConsoleAndWaitForResult('1+1', undefined, undefined, devToolsPage);
-    await typeIntoConsoleAndWaitForResult('$_', undefined, undefined, devToolsPage);
+    await typeIntoConsoleAndWaitForResult(devToolsPage, '1+1', undefined, undefined);
+    await typeIntoConsoleAndWaitForResult(devToolsPage, '$_', undefined, undefined);
 
     let evaluateResults = await devToolsPage.evaluate(() => {
       return Array.from(document.querySelectorAll('.console-user-command-result')).map(node => node.textContent);
     });
     assert.deepEqual(evaluateResults, ['2', '2'], 'did not find expected output in the console');
 
-    await typeIntoConsole('console.clear();', devToolsPage);
+    await typeIntoConsole(devToolsPage, 'console.clear();');
 
     await devToolsPage.waitForFunction(() => {
       return devToolsPage.evaluate(() => {
@@ -34,7 +34,7 @@ describe('The Console Tab', () => {
       });
     });
 
-    await typeIntoConsoleAndWaitForResult('$_', undefined, undefined, devToolsPage);
+    await typeIntoConsoleAndWaitForResult(devToolsPage, '$_', undefined, undefined);
 
     evaluateResults = await devToolsPage.evaluate(() => {
       return Array.from(document.querySelectorAll('.console-user-command-result')).map(node => node.textContent);

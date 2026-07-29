@@ -8,7 +8,7 @@ describe('The Application Tab', () => {
   it('shows several resources with the same url if they were loaded with inspector already opened',
      async ({devToolsPage, inspectedPage}) => {
        // 1. Navigate to the main page which loads the CSS once.
-       await navigateToApplicationTab('resource-tree-non-unique-url-iframe', devToolsPage, inspectedPage);
+       await navigateToApplicationTab(devToolsPage, inspectedPage, 'resource-tree-non-unique-url-iframe');
 
        // 2. Expand Frames to be ready/visible.
        await devToolsPage.click('#tab-resources');

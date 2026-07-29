@@ -12,7 +12,7 @@ import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 async function toggleSearchAsYouType(devToolsPage: DevToolsPage, enabled: boolean) {
-  await togglePreferenceInSettingsTab('Search as you type', enabled, devToolsPage);
+  await togglePreferenceInSettingsTab(devToolsPage, 'Search as you type', enabled);
 }
 
 describe('The Elements tab', function() {
@@ -22,7 +22,7 @@ describe('The Elements tab', function() {
 
     await devToolsPage.page.keyboard.type('html');
 
-    await assertSearchResultMatchesText('1 of 1', devToolsPage);
+    await assertSearchResultMatchesText(devToolsPage, '1 of 1');
     await devToolsPage.page.keyboard.press('Escape');
   });
 
@@ -32,7 +32,7 @@ describe('The Elements tab', function() {
     await devToolsPage.page.keyboard.type('html');
     await devToolsPage.page.keyboard.press('Enter');
 
-    await assertSearchResultMatchesText('1 of 1', devToolsPage);
+    await assertSearchResultMatchesText(devToolsPage, '1 of 1');
 
     await devToolsPage.waitForNone(`${SEARCH_BOX_SELECTOR}.hidden`);
     await inspectedPage.reload();
@@ -52,11 +52,11 @@ describe('The Elements tab', function() {
       // Wait a bit in case the search results are fetched, otherwise the assertion might always pass.
       await devToolsPage.timeout(200);
 
-      await assertSearchResultMatchesText('', devToolsPage);
+      await assertSearchResultMatchesText(devToolsPage, '');
 
       await devToolsPage.page.keyboard.press('Enter');
 
-      await assertSearchResultMatchesText('1 of 1', devToolsPage);
+      await assertSearchResultMatchesText(devToolsPage, '1 of 1');
     });
 
     it('search should jump to next match when Enter is pressed when the input is not changed',
@@ -68,10 +68,10 @@ describe('The Elements tab', function() {
 
          await devToolsPage.page.keyboard.type('two');
          await devToolsPage.page.keyboard.press('Enter');
-         await assertSearchResultMatchesText('1 of 2', devToolsPage);
+         await assertSearchResultMatchesText(devToolsPage, '1 of 2');
 
          await devToolsPage.page.keyboard.press('Enter');
-         await assertSearchResultMatchesText('2 of 2', devToolsPage);
+         await assertSearchResultMatchesText(devToolsPage, '2 of 2');
        });
 
     it('search should be performed with the new query when the input is changed and Enter is pressed',
@@ -83,7 +83,7 @@ describe('The Elements tab', function() {
 
          await devToolsPage.page.keyboard.type('one');
          await devToolsPage.page.keyboard.press('Enter');
-         await assertSearchResultMatchesText('1 of 1', devToolsPage);
+         await assertSearchResultMatchesText(devToolsPage, '1 of 1');
 
          await devToolsPage.page.keyboard.press('Backspace');
          await devToolsPage.page.keyboard.press('Backspace');
@@ -91,7 +91,7 @@ describe('The Elements tab', function() {
 
          await devToolsPage.page.keyboard.type('two');
          await devToolsPage.page.keyboard.press('Enter');
-         await assertSearchResultMatchesText('1 of 2', devToolsPage);
+         await assertSearchResultMatchesText(devToolsPage, '1 of 2');
        });
   });
 });

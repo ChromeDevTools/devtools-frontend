@@ -44,15 +44,15 @@ describe('Heavy Ad issue', () => {
       window.addIssueForTest(issue2);
     });
     await expandIssue(devToolsPage);
-    const issueElement = await getIssueByTitle('An ad on your site has exceeded resource limits', devToolsPage);
+    const issueElement = await getIssueByTitle(devToolsPage, 'An ad on your site has exceeded resource limits');
     assert.isOk(issueElement);
-    const section = await getResourcesElement('2 resources', issueElement, undefined, devToolsPage);
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+    const section = await getResourcesElement(devToolsPage, '2 resources', issueElement, undefined);
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [
       ['Limit exceeded', 'Resolution Status', 'Frame URL'],
       ['Network limit', 'Removed', /.*/],
       ['CPU peak limit', 'Warned', /.*/],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 });

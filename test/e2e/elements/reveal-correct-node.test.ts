@@ -23,7 +23,7 @@ describe('The Issues tab', () => {
     await expandIssue(devToolsPage);
     await revealNodeInElementsPanel(devToolsPage);
 
-    await waitForSelectedTreeElementSelectorWhichIncludesText('alert("This should be blocked by CSP");', devToolsPage);
+    await waitForSelectedTreeElementSelectorWhichIncludesText(devToolsPage, 'alert("This should be blocked by CSP");');
   });
 });
 
@@ -33,7 +33,7 @@ describe('The Elements panel', () => {
                                                                                          inspectedPage,
                                                                                        }) => {
     await inspectedPage.goToResource('application/main-frame.html');
-    await openSoftContextMenuAndClickOnItem('[aria-label="</iframe>"]', 'Show iframe details', devToolsPage);
+    await openSoftContextMenuAndClickOnItem(devToolsPage, '[aria-label="</iframe>"]', 'Show iframe details');
 
     await step('Frame details report with correct title is shown', async () => {
       await devToolsPage.waitForFunction(async () => {
@@ -52,20 +52,18 @@ describe('The Elements panel', () => {
     await inspectedPage.goToResource('elements/slot-element.html');
     await expandSelectedNodeRecursively(devToolsPage);
     await devToolsPage.click('[aria-label="reveal"]');
-    await waitForPartialContentOfSelectedElementsNode('<h1>​headline​</h1>', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '<h1>​headline​</h1>');
   });
 
   it('has link from a slot element to a slot', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/slot-element.html');
     await expandSelectedNodeRecursively(devToolsPage);
-    await waitForAdorners(
-        ([
-          {textContent: 'view-source', isActive: false},
-          {textContent: 'reveal', isActive: false},
-          {textContent: 'slot', isActive: false},
-        ]),
-        devToolsPage);
+    await waitForAdorners(devToolsPage, ([
+                            {textContent: 'view-source', isActive: false},
+                            {textContent: 'reveal', isActive: false},
+                            {textContent: 'slot', isActive: false},
+                          ]));
     await devToolsPage.click('[aria-label="slot"]');
-    await waitForPartialContentOfSelectedElementsNode('<slot>', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '<slot>');
   });
 });

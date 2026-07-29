@@ -8,7 +8,7 @@ import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Sensors panel', () => {
   it('includes UI for emulating touch', async ({devToolsPage}) => {
-    await openPanelViaMoreTools('Sensors', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Sensors');
     const select = await devToolsPage.waitFor('.touch-section select');
     const actual = await select.evaluate(node => node.textContent);
 

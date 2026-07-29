@@ -33,12 +33,12 @@ describe('The Application Tab', () => {
   it('shows cookies even when navigating to an unreachable page (crbug.com/1047348)',
      async ({devToolsPage, inspectedPage, browser}) => {
        // This sets a new cookie foo=bar
-       await navigateToApplicationTab('cookies', devToolsPage, inspectedPage);
+       await navigateToApplicationTab(devToolsPage, inspectedPage, 'cookies');
        await inspectedPage.goToResource('network/unreachable.rawresponse');
 
        await navigateToCookiesForTopDomain(devToolsPage, inspectedPage);
 
-       const dataGridRowValues = await getStorageItemsData(['name', 'value'], undefined, devToolsPage);
+       const dataGridRowValues = await getStorageItemsData(devToolsPage, ['name', 'value'], undefined);
        const match = dataGridRowValues.find(item => item.name === 'foo');
        assert.deepEqual(match, {name: 'foo', value: 'bar'});
        await deleteCookies(browser);
@@ -46,11 +46,11 @@ describe('The Application Tab', () => {
 
   it('shows a preview of the cookie value (crbug.com/462370)', async ({devToolsPage, inspectedPage, browser}) => {
     // This sets a new cookie foo=bar
-    await navigateToApplicationTab('cookies', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'cookies');
 
     await navigateToCookiesForTopDomain(devToolsPage, inspectedPage);
 
-    await selectCookieByName('foo', devToolsPage);
+    await selectCookieByName(devToolsPage, 'foo');
 
     await devToolsPage.waitForFunction(async () => {
       const previewValueNode = await devToolsPage.waitFor('.cookie-preview-widget-cookie-value');
@@ -63,11 +63,11 @@ describe('The Application Tab', () => {
   it(
       'shows cookie partition key site and has cross site ancestor', async ({devToolsPage, inspectedPage, browser}) => {
         // This sets a new cookie foo=bar
-        await navigateToApplicationTab('cookies', devToolsPage, inspectedPage);
+        await navigateToApplicationTab(devToolsPage, inspectedPage, 'cookies');
 
         await navigateToCookiesForTopDomain(devToolsPage, inspectedPage);
 
-        const dataGridRowValues1 = await getStorageItemsData(['partition-key-site'], 4, devToolsPage);
+        const dataGridRowValues1 = await getStorageItemsData(devToolsPage, ['partition-key-site'], 4);
         assert.deepEqual(dataGridRowValues1, [
           {
             'partition-key-site': 'https://localhost',
@@ -83,7 +83,7 @@ describe('The Application Tab', () => {
           },
         ]);
 
-        const dataGridRowValues2 = await getStorageItemsData(['has-cross-site-ancestor'], 4, devToolsPage);
+        const dataGridRowValues2 = await getStorageItemsData(devToolsPage, ['has-cross-site-ancestor'], 4);
         assert.deepEqual(dataGridRowValues2, [
           {
             'has-cross-site-ancestor': '',
@@ -103,13 +103,13 @@ describe('The Application Tab', () => {
 
   it('can also show the urldecoded value (crbug.com/997625)', async ({devToolsPage, inspectedPage, browser}) => {
     // This sets a new cookie foo=bar
-    await navigateToApplicationTab('cookies', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'cookies');
 
     await navigateToCookiesForTopDomain(devToolsPage, inspectedPage);
 
     await devToolsPage.click('.cookies-table devtools-data-grid');
 
-    await selectCookieByName('urlencoded', devToolsPage);
+    await selectCookieByName(devToolsPage, 'urlencoded');
 
     await devToolsPage.waitForFunction(async () => {
       const previewValueNode = await devToolsPage.waitFor('.cookie-preview-widget-cookie-value');
@@ -130,11 +130,11 @@ describe('The Application Tab', () => {
   it('clears the preview value when clearing cookies (crbug.com/1086462)',
      async ({devToolsPage, inspectedPage, browser}) => {
        // This sets a new cookie foo=bar
-       await navigateToApplicationTab('cookies', devToolsPage, inspectedPage);
+       await navigateToApplicationTab(devToolsPage, inspectedPage, 'cookies');
 
        await navigateToCookiesForTopDomain(devToolsPage, inspectedPage);
 
-       await selectCookieByName('foo', devToolsPage);
+       await selectCookieByName(devToolsPage, 'foo');
 
        // Select a cookie first
        await devToolsPage.waitForFunction(async () => {
@@ -158,11 +158,11 @@ describe('The Application Tab', () => {
   it('only clear currently visible cookies (crbug.com/978059)', async ({devToolsPage, inspectedPage, browser}) => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     // This sets a new cookie foo=bar
-    await navigateToApplicationTab('cookies', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'cookies');
 
     await navigateToCookiesForTopDomain(devToolsPage, inspectedPage);
 
-    const dataGridRowValues1 = await getStorageItemsData(['name'], 4, devToolsPage);
+    const dataGridRowValues1 = await getStorageItemsData(devToolsPage, ['name'], 4);
     assert.deepEqual(dataGridRowValues1, [
       {
         name: '__Host-foo3',
@@ -178,16 +178,16 @@ describe('The Application Tab', () => {
       },
     ]);
 
-    await filterStorageItems('foo2', devToolsPage);
+    await filterStorageItems(devToolsPage, 'foo2');
     await devToolsPage.waitForFunction(async () => {
-      const values = await getDataGridData('.storage-view table', ['name'], devToolsPage);
+      const values = await getDataGridData(devToolsPage, '.storage-view table', ['name']);
       return values.length === 1;
     });
     await clearStorageItems(devToolsPage);
     await clearStorageItemsFilter(devToolsPage);
 
     const dataGridRowValues2 = await devToolsPage.waitForFunction(async () => {
-      const values = await getDataGridData('.storage-view table', ['name'], devToolsPage);
+      const values = await getDataGridData(devToolsPage, '.storage-view table', ['name']);
       return values.length === 3 ? values : undefined;
     });
 
@@ -207,14 +207,14 @@ describe('The Application Tab', () => {
 
   it('can sort cookies', async ({devToolsPage, inspectedPage, browser}) => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
-    await navigateToApplicationTab('cookies', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'cookies');
 
     await navigateToCookiesForTopDomain(devToolsPage, inspectedPage);
     const dataGrid = await devToolsPage.waitFor('devtools-data-grid');
     await devToolsPage.click('th.name-column', {root: dataGrid});
     await devToolsPage.click('th.name-column', {root: dataGrid});
     const dataGridRowValues = await devToolsPage.waitForFunction(async () => {
-      const values = await getDataGridData('.storage-view table', ['name'], devToolsPage);
+      const values = await getDataGridData(devToolsPage, '.storage-view table', ['name']);
       return values.length === 4 && values[0].name === 'urlencoded' ? values : undefined;
     });
     assert.deepEqual(dataGridRowValues, [

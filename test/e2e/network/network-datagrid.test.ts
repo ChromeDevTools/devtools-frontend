@@ -46,16 +46,16 @@ describe('The Network Tab', function() {
   };
 
   async function loadNetworkTab(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-    await navigateToNetworkTab('empty.html', devToolsPage, inspectedPage);
-    await setTextFilter('favicon.ico', devToolsPage);
-    await setInvert(true, devToolsPage);
-    await setCacheDisabled(true, devToolsPage);
-    await setKeepLog(false, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'empty.html');
+    await setTextFilter(devToolsPage, 'favicon.ico');
+    await setInvert(devToolsPage, true);
+    await setCacheDisabled(devToolsPage, true);
+    await setKeepLog(devToolsPage, false);
   }
 
   it('can click on checkbox label to toggle checkbox', async ({devToolsPage, inspectedPage}) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
-    await navigateToNetworkTab('resources-from-cache.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'resources-from-cache.html');
 
     // Click the label next to the checkbox input element
     await devToolsPage.click('[title^="Disable cache"] + label');
@@ -68,12 +68,12 @@ describe('The Network Tab', function() {
 
   it('shows Last-Modified', async ({devToolsPage, inspectedPage}) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
-    await navigateToNetworkTab('last-modified.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'last-modified.html');
 
     // Reload to populate network request table
     await inspectedPage.page.reload({waitUntil: 'networkidle0'});
 
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
     await devToolsPage.click('.name-column', {clickOptions: {button: 'right'}});
 
@@ -93,11 +93,11 @@ describe('The Network Tab', function() {
 
   it('shows size of chunked responses', async ({devToolsPage, inspectedPage}) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
-    await navigateToNetworkTab('chunked.txt?numChunks=5', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'chunked.txt?numChunks=5');
 
     // Reload to populate network request table
     await inspectedPage.page.reload({waitUntil: 'networkidle0'});
-    await waitForSomeRequestsToAppear(1, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 1);
 
     // Get the size of the first two network request responses (excluding header and favicon.ico).
     const getNetworkRequestSize = () => devToolsPage.evaluate(() => {
@@ -111,11 +111,11 @@ describe('The Network Tab', function() {
 
   it('shows size of chunked responses for sync XHR', async ({devToolsPage, inspectedPage}) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
-    await navigateToNetworkTab('chunked_sync.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'chunked_sync.html');
 
     // Reload to populate network request table
     await inspectedPage.page.reload({waitUntil: 'networkidle0'});
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
     // Get the size of the first two network request responses (excluding header and favicon.ico).
     const getNetworkRequestSize = () => devToolsPage.evaluate(() => {
@@ -130,13 +130,13 @@ describe('The Network Tab', function() {
 
   it('the HTML response including cyrillic characters with utf-8 encoding', async ({devToolsPage, inspectedPage}) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
-    await navigateToNetworkTab('utf-8.rawresponse', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'utf-8.rawresponse');
 
     // Reload to populate network request table
     await inspectedPage.page.reload({waitUntil: 'networkidle0'});
 
     // Wait for the column to show up and populate its values
-    await waitForSomeRequestsToAppear(1, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 1);
 
     // Open the HTML file that was loaded
     await devToolsPage.click('td.name-column');
@@ -162,14 +162,14 @@ describe('The Network Tab', function() {
   it('the correct MIME type when resources came from HTTP cache', async ({devToolsPage, inspectedPage}) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
 
-    await navigateToNetworkTab('resources-from-cache.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'resources-from-cache.html');
 
     // Reload the page without a cache, to force a fresh load of the network resources
-    await setCacheDisabled(true, devToolsPage);
+    await setCacheDisabled(devToolsPage, true);
     await inspectedPage.page.reload({waitUntil: 'networkidle0'});
 
     // Wait for the column to show up and populate its values
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
     // Get the size of the first two network request responses (excluding header and favicon.ico).
     const getNetworkRequestSize = () => devToolsPage.evaluate(() => {
@@ -189,10 +189,10 @@ describe('The Network Tab', function() {
     ]);
 
     // Allow resources from the cache again and reload the page to load from cache
-    await setCacheDisabled(false, devToolsPage);
+    await setCacheDisabled(devToolsPage, false);
     await inspectedPage.page.reload({waitUntil: 'networkidle0'});
     // Wait for the column to show up and populate its values
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
     assert.deepEqual(await getNetworkRequestSize(), [
       `${formatKbSize(404)}${formatKbSize(219)}`,
@@ -208,12 +208,12 @@ describe('The Network Tab', function() {
   it('shows the correct initiator address space', async ({devToolsPage, inspectedPage}) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
 
-    await navigateToNetworkTab('fetch.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'fetch.html');
 
     // Reload to populate network request table
     await inspectedPage.page.reload({waitUntil: 'networkidle0'});
 
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
     await devToolsPage.click('.name-column', {clickOptions: {button: 'right'}});
 
@@ -232,12 +232,12 @@ describe('The Network Tab', function() {
   it('shows the correct remote address space', async ({devToolsPage, inspectedPage}) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
 
-    await navigateToNetworkTab('fetch.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'fetch.html');
 
     // Reload to populate network request table
     await inspectedPage.page.reload({waitUntil: 'networkidle0'});
 
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
     await devToolsPage.click('.name-column', {clickOptions: {button: 'right'}});
 
@@ -259,19 +259,19 @@ describe('The Network Tab', function() {
                                                     }) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
 
-    await navigateToNetworkTab('send_beacon_on_unload.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'send_beacon_on_unload.html');
 
-    await setCacheDisabled(true, devToolsPage);
+    await setCacheDisabled(devToolsPage, true);
     await inspectedPage.bringToFront();
     await inspectedPage.page.reload({waitUntil: 'networkidle0'});
 
     await devToolsPage.bringToFront();
-    await waitForSomeRequestsToAppear(1, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 1);
 
-    await setKeepLog(true, devToolsPage);
+    await setKeepLog(devToolsPage, true);
 
-    await navigateToNetworkTab('fetch.html', devToolsPage, inspectedPage);
-    await waitForSomeRequestsToAppear(1, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'fetch.html');
+    await waitForSomeRequestsToAppear(devToolsPage, 1);
 
     // We need to wait for the network log to update.
     await devToolsPage.waitForFunction(async () => {
@@ -284,14 +284,14 @@ describe('The Network Tab', function() {
   it('repeats xhr request on "r" shortcut when the request is focused', async ({devToolsPage, inspectedPage}) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
 
-    await navigateToNetworkTab('xhr.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'xhr.html');
     await inspectedPage.page.reload({waitUntil: 'networkidle0'});
-    await waitForSomeRequestsToAppear(2, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 2);
 
-    await selectRequestByName('image.svg', {}, devToolsPage);
-    await waitForSelectedRequestChange(null, devToolsPage);
+    await selectRequestByName(devToolsPage, 'image.svg', {});
+    await waitForSelectedRequestChange(devToolsPage, null);
     await devToolsPage.pressKey('r');
-    await waitForSomeRequestsToAppear(3, devToolsPage);
+    await waitForSomeRequestsToAppear(devToolsPage, 3);
 
     const updatedRequestNames = await getAllRequestNames(devToolsPage);
     assert.deepEqual(updatedRequestNames, ['xhr.html', 'image.svg', 'image.svg']);
@@ -301,10 +301,10 @@ describe('The Network Tab', function() {
      async ({devToolsPage, inspectedPage}) => {
        await loadNetworkTab(devToolsPage, inspectedPage);
 
-       await navigateToNetworkTab('xhr.html', devToolsPage, inspectedPage);
+       await navigateToNetworkTab(devToolsPage, inspectedPage, 'xhr.html');
        await inspectedPage.page.reload({waitUntil: 'networkidle0'});
-       await waitForSomeRequestsToAppear(2, devToolsPage);
-       await selectRequestByName('xhr.html', {}, devToolsPage);
+       await waitForSomeRequestsToAppear(devToolsPage, 2);
+       await selectRequestByName(devToolsPage, 'xhr.html', {});
        await devToolsPage.pressKey('ArrowDown');
 
        const getSelectedRequestBgColor = () => devToolsPage.evaluate(() => {
@@ -317,13 +317,13 @@ describe('The Network Tab', function() {
   it('shows the request panel when clicked during a websocket message (https://crbug.com/1222382)',
      async ({devToolsPage, inspectedPage}) => {
        await loadNetworkTab(devToolsPage, inspectedPage);
-       await navigateToNetworkTab('websocket.html?infiniteMessages=true', devToolsPage, inspectedPage);
+       await navigateToNetworkTab(devToolsPage, inspectedPage, 'websocket.html?infiniteMessages=true');
 
-       await waitForSomeRequestsToAppear(2, devToolsPage);
+       await waitForSomeRequestsToAppear(devToolsPage, 2);
 
        // WebSocket messages get sent every 100 milliseconds, so holding the mouse
        // down for 300 milliseconds should suffice.
-       await selectRequestByName('localhost', {delay: 300}, devToolsPage);
+       await selectRequestByName(devToolsPage, 'localhost', {delay: 300});
 
        await devToolsPage.waitFor('.network-item-view');
      });
@@ -341,7 +341,7 @@ describe('The Network Tab', function() {
         return status === 'Finished' && type === 'script';
       }),
     ];
-    await navigateToNetworkTab('service-worker.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'service-worker.html');
     await inspectedPage.page.waitForSelector('xpath///div[@id="content" and text()="pong"]');
     await Promise.all(promises);
   });

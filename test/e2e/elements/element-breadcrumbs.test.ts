@@ -20,7 +20,7 @@ const EXPECTED_TEXT_CONTENT = '<div class=\u200B"div2">\u200B last child \u200B<
 describe('Element breadcrumbs', () => {
   async function expandToTargetNode(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await inspectedPage.goToResource('elements/element-breadcrumbs.html');
-    await waitForElementsStyleSection(null, devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, null);
 
     // expand the tree and then navigate down to the target node
     await expandSelectedNodeRecursively(devToolsPage);
@@ -28,8 +28,8 @@ describe('Element breadcrumbs', () => {
     await devToolsPage.clickElement(targetChildNode);
 
     // double check we got to the node we expect
-    await waitForSelectedTreeElementSelectorWithTextcontent(EXPECTED_TEXT_CONTENT, devToolsPage);
-    await assertSelectedElementsNodeTextIncludes('last child', devToolsPage);
+    await waitForSelectedTreeElementSelectorWithTextcontent(devToolsPage, EXPECTED_TEXT_CONTENT);
+    await assertSelectedElementsNodeTextIncludes(devToolsPage, 'last child');
   }
 
   it('lists all the elements in the tree', async ({devToolsPage, inspectedPage}) => {
@@ -42,14 +42,14 @@ describe('Element breadcrumbs', () => {
       'div.div2',
     ];
     const actualCrumbsText =
-        await getBreadcrumbsTextContent({expectedNodeCount: expectedCrumbsText.length}, devToolsPage);
+        await getBreadcrumbsTextContent(devToolsPage, {expectedNodeCount: expectedCrumbsText.length});
     assert.deepEqual(actualCrumbsText, expectedCrumbsText);
   });
 
   it('correctly highlights the active node', async ({devToolsPage, inspectedPage}) => {
     await expandToTargetNode(devToolsPage, inspectedPage);
     // Wait for the crumbs to render with all the elements we expect.
-    await getBreadcrumbsTextContent({expectedNodeCount: 5}, devToolsPage);
+    await getBreadcrumbsTextContent(devToolsPage, {expectedNodeCount: 5});
     const selectedCrumbText = await getSelectedBreadcrumbTextContent(devToolsPage);
     assert.strictEqual(selectedCrumbText, 'div.div2');
   });

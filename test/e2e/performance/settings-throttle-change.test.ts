@@ -19,8 +19,8 @@ describe('The Performance panel', function() {
   increaseTimeoutForPerfPanel(this);
 
   async function setupPerformancePanel(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-    await navigateToPerformanceTab('empty', devToolsPage, inspectedPage);
-    await openCaptureSettings('.timeline-settings-pane', devToolsPage);
+    await navigateToPerformanceTab(devToolsPage, inspectedPage, 'empty');
+    await openCaptureSettings(devToolsPage, '.timeline-settings-pane');
   }
 
   async function assertOption(select: ElementHandle<HTMLSelectElement>, expected: string) {
@@ -38,17 +38,17 @@ describe('The Performance panel', function() {
     await assertOption(select, 'Disabled: No throttling');
     await select.select('3G');
     await assertOption(select, 'Presets: 3G');
-    await expectVeEvents([veChange(networkDropdownVeName)], veRoot, devToolsPage);
+    await expectVeEvents(devToolsPage, [veChange(networkDropdownVeName)], veRoot);
 
     // Change to "Slow 4G"
     await assertOption(select, 'Presets: 3G');
     await select.select('Slow 4G');
     await assertOption(select, 'Presets: Slow 4G');
-    await expectVeEvents([veChange(networkDropdownVeName)], veRoot, devToolsPage);
+    await expectVeEvents(devToolsPage, [veChange(networkDropdownVeName)], veRoot);
 
     // Change back to "No throttling"
     await select.select('No throttling');
     await assertOption(select, 'Disabled: No throttling');
-    await expectVeEvents([veChange(networkDropdownVeName)], veRoot, devToolsPage);
+    await expectVeEvents(devToolsPage, [veChange(networkDropdownVeName)], veRoot);
   });
 });

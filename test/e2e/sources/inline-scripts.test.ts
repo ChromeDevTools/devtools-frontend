@@ -14,9 +14,9 @@ import {
 
 describe('The Sources Tab', function() {
   it('sets the breakpoint in the first script for multiple inline scripts', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile('inline-scripts.html', 'inline-scripts.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine(4, devToolsPage);
-    await addBreakpointForLine(11, devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'inline-scripts.html', 'inline-scripts.html');
+    await addBreakpointForLine(devToolsPage, 4);
+    await addBreakpointForLine(devToolsPage, 11);
 
     void inspectedPage.reload();
     await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);

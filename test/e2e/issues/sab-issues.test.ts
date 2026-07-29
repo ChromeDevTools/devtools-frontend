@@ -18,19 +18,19 @@ describe('SAB issues test', () => {
        await inspectedPage.goToResource('issues/sab-issue.rawresponse');
        await navigateToIssuesTab(devToolsPage);
        const issueElement = await getAndExpandSpecificIssueByTitle(
-           'SharedArrayBuffer usage is restricted to cross-origin isolated sites', devToolsPage);
+           devToolsPage, 'SharedArrayBuffer usage is restricted to cross-origin isolated sites');
        assert.isNotNull(issueElement);
        if (issueElement) {
-         const section = await getResourcesElement('violation', issueElement, undefined, devToolsPage);
+         const section = await getResourcesElement(devToolsPage, 'violation', issueElement, undefined);
          const text = await section.label.evaluate(el => el.textContent);
          assert.strictEqual(text, '2 violations');
-         await ensureResourceSectionIsExpanded(section, devToolsPage);
+         await ensureResourceSectionIsExpanded(devToolsPage, section);
          const expectedTableRows = [
            ['Source Location', 'Trigger', 'Status'],
            ['corp-frame.rawresponse:1', 'Instantiation', /warning|blocked/],
            ['corp-frame.rawresponse:1', 'Transfer', /warning|blocked/],
          ];
-         await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+         await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
        }
      });
 });

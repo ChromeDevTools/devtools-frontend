@@ -46,15 +46,15 @@ describe('Cookie Deprecation Metadata issue', () => {
     });
     await expandIssue(devToolsPage);
     const issueElement =
-        await getIssueByTitle('Third-party websites are allowed to read cookies on this page', devToolsPage);
+        await getIssueByTitle(devToolsPage, 'Third-party websites are allowed to read cookies on this page');
     assert.isOk(issueElement);
     const section =
-        await getResourcesElement('2 websites allowed to access cookies', issueElement, undefined, devToolsPage);
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+        await getResourcesElement(devToolsPage, '2 websites allowed to access cookies', issueElement, undefined);
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [
       ['example_1.test'],
       ['example_2.test (opt-out: 50% - learn more)'],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 });

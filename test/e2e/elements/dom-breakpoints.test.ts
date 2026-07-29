@@ -15,16 +15,16 @@ import {
 describe('Elements DOM Breakpoints section', () => {
   it('avoids duplication and persists DOM breakpoint state between page reloads',
      async ({devToolsPage, inspectedPage}) => {
-       await goToResourceAndWaitForStyleSection('empty.html', devToolsPage, inspectedPage);
-       await setDOMBreakpointOnSelectedNode('subtree modifications', devToolsPage);
+       await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'empty.html');
+       await setDOMBreakpointOnSelectedNode(devToolsPage, 'subtree modifications');
 
        await waitForElementsDOMBreakpointsSection(devToolsPage);
        const breakpoints = await devToolsPage.$$('.breakpoint-entry');
        assert.lengthOf(breakpoints, 1);
-       assert.isTrue(await isDOMBreakpointEnabled(breakpoints[0], devToolsPage));
+       assert.isTrue(await isDOMBreakpointEnabled(devToolsPage, breakpoints[0]));
 
        // Disable the DOM breakpoint
-       await toggleDOMBreakpointCheckbox(breakpoints[0], false, devToolsPage);
+       await toggleDOMBreakpointCheckbox(devToolsPage, breakpoints[0], false);
 
        // Reload the test page and validate the DOM breakpoint is still disabled
        await inspectedPage.reload();
@@ -32,6 +32,6 @@ describe('Elements DOM Breakpoints section', () => {
        const newBreakpoints = await devToolsPage.$$('.breakpoint-entry');
 
        assert.lengthOf(newBreakpoints, 1);
-       assert.isFalse(await isDOMBreakpointEnabled(newBreakpoints[0], devToolsPage));
+       assert.isFalse(await isDOMBreakpointEnabled(devToolsPage, newBreakpoints[0]));
      });
 });

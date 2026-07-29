@@ -37,7 +37,7 @@ describe('The Elements tab', function() {
     const selectedNode = await devToolsPage.waitForElementWithTextContent('Inspected Node', elementsContentPanel);
 
     await selectedNode.click({button: 'right'});
-    const editAsHTMLOption = await findSubMenuEntryItem('Edit as HTML', devToolsPage);
+    const editAsHTMLOption = await findSubMenuEntryItem(devToolsPage, 'Edit as HTML');
     await editAsHTMLOption.click();
 
     const editor = await devToolsPage.waitFor('.elements-disclosure devtools-text-editor');

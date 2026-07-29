@@ -12,7 +12,7 @@ describe('Snippets subpane', () => {
   async function runTest(name: string, devToolsPage: DevToolsPage) {
     await openSourcesPanel(devToolsPage);
     await openSnippetsSubPane(devToolsPage);
-    await createNewSnippet(name, undefined, devToolsPage);
+    await createNewSnippet(devToolsPage, name, undefined);
 
     // Title matches
     const openSources = await devToolsPage.waitForFunction(async () => {

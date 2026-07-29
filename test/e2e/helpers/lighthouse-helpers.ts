@@ -11,8 +11,8 @@ import type {InspectedPage} from '../shared/target-helper.js';
 import {getQuotaUsage, waitForQuotaUsage} from './application-helpers.js';
 import {openCommandMenu} from './quick_open-helpers.js';
 
-export async function navigateToLighthouseTab(
-    path: string|undefined, devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<ElementHandle<Element>> {
+export async function navigateToLighthouseTab(devToolsPage: DevToolsPage, inspectedPage: InspectedPage,
+                                              path?: string): Promise<ElementHandle<Element>> {
   await openCommandMenu(devToolsPage);
   await devToolsPage.pasteText('Lighthouse');
   await devToolsPage.pressKey('Enter');
@@ -68,7 +68,7 @@ type CheckboxLabel = Element&{checked: boolean};
  * Set the category checkboxes
  * @param selectedCategoryIds One of 'performance'|'accessibility'|'best-practices'|'seo'|'pwa'
  */
-export async function selectCategories(selectedCategoryIds: string[], devToolsPage: DevToolsPage) {
+export async function selectCategories(devToolsPage: DevToolsPage, selectedCategoryIds: string[]) {
   const startViewHandle = await devToolsPage.waitFor('.lighthouse-start-view');
   const checkboxHandles = await startViewHandle.$$('devtools-checkbox');
   for (const checkboxHandle of checkboxHandles) {
@@ -81,7 +81,7 @@ export async function selectCategories(selectedCategoryIds: string[], devToolsPa
   }
 }
 
-export async function selectRadioOption(value: string, optionName: string, devToolsPage: DevToolsPage) {
+export async function selectRadioOption(devToolsPage: DevToolsPage, value: string, optionName: string) {
   const startViewHandle = await devToolsPage.waitFor('.lighthouse-start-view');
   await startViewHandle.$eval(`input[value="${value}"][name="${optionName}"]`, radioElem => {
     (radioElem as HTMLInputElement).checked = true;
@@ -90,15 +90,15 @@ export async function selectRadioOption(value: string, optionName: string, devTo
   });
 }
 
-export async function selectMode(mode: 'navigation'|'timespan'|'snapshot', devToolsPage: DevToolsPage) {
-  await selectRadioOption(mode, 'lighthouse.mode', devToolsPage);
+export async function selectMode(devToolsPage: DevToolsPage, mode: 'navigation'|'timespan'|'snapshot') {
+  await selectRadioOption(devToolsPage, mode, 'lighthouse.mode');
 }
 
-export async function selectDevice(device: 'mobile'|'desktop', devToolsPage: DevToolsPage) {
-  await selectRadioOption(device, 'lighthouse.device-type', devToolsPage);
+export async function selectDevice(devToolsPage: DevToolsPage, device: 'mobile'|'desktop') {
+  await selectRadioOption(devToolsPage, device, 'lighthouse.device-type');
 }
 
-export async function setToolbarCheckboxWithText(enabled: boolean, textContext: string, devToolsPage: DevToolsPage) {
+export async function setToolbarCheckboxWithText(devToolsPage: DevToolsPage, enabled: boolean, textContext: string) {
   const toolbarHandle = await devToolsPage.waitFor('.lighthouse-settings-pane .lighthouse-settings-toolbar');
   const label = await devToolsPage.waitForElementWithTextContent(textContext, toolbarHandle);
   await label.evaluate((label, enabled: boolean) => {
@@ -110,7 +110,7 @@ export async function setToolbarCheckboxWithText(enabled: boolean, textContext: 
   }, enabled);
 }
 
-export async function setThrottlingMethod(throttlingMethod: 'simulate'|'devtools', devToolsPage: DevToolsPage) {
+export async function setThrottlingMethod(devToolsPage: DevToolsPage, throttlingMethod: 'simulate'|'devtools') {
   const toolbarHandle = await devToolsPage.waitFor('.lighthouse-settings-pane .lighthouse-settings-toolbar');
   await toolbarHandle.evaluate((toolbar, throttlingMethod) => {
     const selectElem = toolbar.querySelector('select')!;
@@ -152,7 +152,7 @@ export async function clearSiteData(devToolsPage: DevToolsPage, inspectedPage: I
 
 export async function waitForStorageUsage(p: (quota: number) => boolean, devToolsPage: DevToolsPage) {
   await openStorageView(devToolsPage);
-  await waitForQuotaUsage(p, devToolsPage);
+  await waitForQuotaUsage(devToolsPage, p);
   await devToolsPage.click('#tab-lighthouse');
 }
 
@@ -234,7 +234,7 @@ export async function interceptNextFileSave(devToolsPage: DevToolsPage): Promise
   return () => devToolsPage.evaluate(() => window.__nextFile);
 }
 
-export async function renderHtmlInIframe(html: string, inspectedPage: InspectedPage) {
+export async function renderHtmlInIframe(inspectedPage: InspectedPage, html: string) {
   return (await inspectedPage.page.evaluateHandle(async html => {
            const iframe = document.createElement('iframe');
            iframe.srcdoc = html;

@@ -8,13 +8,13 @@ import {openFileInEditor, openFileInSourcesPanel} from '../helpers/sources-helpe
 
 describe('Color swatches in the sources panel', () => {
   it('allows changing the color format', async ({devToolsPage, inspectedPage}) => {
-    await openFileInSourcesPanel('inline-css.html', devToolsPage, inspectedPage);
-    await openFileInEditor('inline-css.html', devToolsPage);
+    await openFileInSourcesPanel(devToolsPage, inspectedPage, 'inline-css.html');
+    await openFileInEditor(devToolsPage, 'inline-css.html');
 
     const editor = await devToolsPage.waitForAria('Code editor');
 
     await devToolsPage.waitForFunction(() => devToolsPage.$textContent('red', editor));
-    await shiftClickColorSwatch(editor, 0, 'Panel: sources > Pane: editor > TextField', devToolsPage);
+    await shiftClickColorSwatch(devToolsPage, editor, 0, 'Panel: sources > Pane: editor > TextField');
     const menu = await waitForSoftContextMenu(devToolsPage);
     await devToolsPage.click('[aria-label="#f00"]', {root: menu});
 

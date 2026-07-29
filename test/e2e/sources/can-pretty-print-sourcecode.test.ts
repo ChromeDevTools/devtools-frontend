@@ -24,8 +24,8 @@ const PRETTY_PRINTED_TOGGLE = 'devtools-text-editor.pretty-printed';
 
 describe('The Sources Tab', function() {
   it('can pretty-print a JavaScript file inline', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile(
-        'minified-sourcecode.js', 'minified-sourcecode.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'minified-sourcecode.js',
+                                      'minified-sourcecode.html');
 
     await step('can pretty-print successfully', async () => {
       await devToolsPage.click(PRETTY_PRINT_BUTTON);
@@ -75,8 +75,8 @@ describe('The Sources Tab', function() {
   });
 
   it('can toggle pretty print on a small non-minified JSON file', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile(
-        'small-json.rawresponse', '../network/small-json.rawresponse', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'small-json.rawresponse',
+                                      '../network/small-json.rawresponse');
 
     // Small files (< 80 chars avg line length) are not auto-formatted
     await devToolsPage.waitForFunction(async () => !(await isPrettyPrinted(devToolsPage)));
@@ -109,8 +109,8 @@ describe('The Sources Tab', function() {
   });
 
   it('can pretty print an inline json subtype file', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile(
-        'json-subtype-ld.rawresponse', '../network/json-subtype-ld.rawresponse', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'json-subtype-ld.rawresponse',
+                                      '../network/json-subtype-ld.rawresponse');
     const editor = await devToolsPage.waitFor('[aria-label="Code editor"]');
 
     await step('can pretty-print a json subtype', async () => {
@@ -158,7 +158,7 @@ describe('The Sources Tab', function() {
   });
 
   it('can show error icons for pretty-printed file', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile('minified-errors.js', 'minified-errors.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'minified-errors.js', 'minified-errors.html');
 
     await step('shows 3 separate errors when pretty-printed', async () => {
       await devToolsPage.click(PRETTY_PRINT_BUTTON);
@@ -182,72 +182,72 @@ describe('The Sources Tab', function() {
   });
 
   it('can add breakpoint for pretty-printed file', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile(
-        'minified-sourcecode.js', 'minified-sourcecode.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'minified-sourcecode.js',
+                                      'minified-sourcecode.html');
     await devToolsPage.click(PRETTY_PRINT_BUTTON);
     await devToolsPage.waitFor(PRETTY_PRINTED_TOGGLE);
 
     // Set a breakpoint in line 6 of the pretty-printed view (which is the
     // line with the label "6" not the 6th line from the top).
-    await addBreakpointForLine(6, devToolsPage);
+    await addBreakpointForLine(devToolsPage, 6);
 
     const scriptLocation =
-        await retrieveTopCallFrameScriptLocation('notFormattedFunction();', inspectedPage.page, devToolsPage);
+        await retrieveTopCallFrameScriptLocation(devToolsPage, inspectedPage.page, 'notFormattedFunction();');
     assert.deepEqual(scriptLocation, 'minified-sourcecode.js:6');
   });
 
   it('can add breakpoint on minified source and then break correctly on pretty-printed source',
      async ({devToolsPage, inspectedPage}) => {
-       await openSourceCodeEditorForFile(
-           'minified-sourcecode.js', 'minified-sourcecode.html', devToolsPage, inspectedPage);
-       await addBreakpointForLine(6, devToolsPage);
+       await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'minified-sourcecode.js',
+                                         'minified-sourcecode.html');
+       await addBreakpointForLine(devToolsPage, 6);
        await devToolsPage.click(PRETTY_PRINT_BUTTON);
        await devToolsPage.waitFor(PRETTY_PRINTED_TOGGLE);
 
        const scriptLocation =
-           await retrieveTopCallFrameScriptLocation('notFormattedFunction();', inspectedPage.page, devToolsPage);
+           await retrieveTopCallFrameScriptLocation(devToolsPage, inspectedPage.page, 'notFormattedFunction();');
        assert.deepEqual(scriptLocation, 'minified-sourcecode.js:6');
      });
 
   it('can go to line in a pretty-printed file', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile(
-        'minified-sourcecode.js', 'minified-sourcecode.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'minified-sourcecode.js',
+                                      'minified-sourcecode.html');
     await devToolsPage.click(PRETTY_PRINT_BUTTON);
     await devToolsPage.waitFor(PRETTY_PRINTED_TOGGLE);
 
     await openGoToLineQuickOpen(devToolsPage);
     await devToolsPage.typeText('6');
     await devToolsPage.page.keyboard.press('Enter');
-    await waitForHighlightedLine(6, devToolsPage);
+    await waitForHighlightedLine(devToolsPage, 6);
   });
 
   it('automatically pretty-prints minified code (by default)', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile(
-        'minified-sourcecode-1.min.js', 'minified-sourcecode-1.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'minified-sourcecode-1.min.js',
+                                      'minified-sourcecode-1.html');
     const lines = await retrieveCodeMirrorEditorContent(devToolsPage);
     assert.lengthOf(lines, 23);
   });
 
   it('does not automatically pretty-print minified code (when disabled via settings)',
      async ({devToolsPage, inspectedPage}) => {
-       await togglePreferenceInSettingsTab('Automatically pretty print minified sources', false, devToolsPage);
+       await togglePreferenceInSettingsTab(devToolsPage, 'Automatically pretty print minified sources', false);
 
-       await openSourceCodeEditorForFile(
-           'minified-sourcecode-1.min.js', 'minified-sourcecode-1.html', devToolsPage, inspectedPage);
+       await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'minified-sourcecode-1.min.js',
+                                         'minified-sourcecode-1.html');
        const lines = await retrieveCodeMirrorEditorContent(devToolsPage);
        assert.lengthOf(lines, 3);
      });
 
   it('does not automatically pretty-print authored code', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile(
-        'minified-sourcecode-1.js', 'minified-sourcecode-1.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'minified-sourcecode-1.js',
+                                      'minified-sourcecode-1.html');
     const lines = await retrieveCodeMirrorEditorContent(devToolsPage);
     assert.lengthOf(lines, 2);
   });
 
   it('shows execution position and inline variables in large pretty-printed minified code',
      async ({devToolsPage, inspectedPage}) => {
-       await openFileInSourcesPanel('minified-sourcecode-2.html', devToolsPage, inspectedPage);
+       await openFileInSourcesPanel(devToolsPage, inspectedPage, 'minified-sourcecode-2.html');
 
        // Emulate the button click and wait for the script to open in the Sources panel.
        const evalPromise = inspectedPage.evaluate('handleClick();');

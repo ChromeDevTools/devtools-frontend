@@ -23,8 +23,8 @@ const triggerQuirksModeIssueInIssuesTab =
   await navigateToIssuesTab(devToolsPage);
   await expandIssue(devToolsPage);
   const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
-  await assertIssueTitle(issueTitle, devToolsPage);
-  const issueElement = await getIssueByTitle(issueTitle, devToolsPage);
+  await assertIssueTitle(devToolsPage, issueTitle);
+  const issueElement = await getIssueByTitle(devToolsPage, issueTitle);
   assert.isOk(issueElement);
   return issueElement;
 };
@@ -33,7 +33,7 @@ describe('Quirks Mode issues', () => {
   it('should report Quirks Mode issues', async ({devToolsPage, inspectedPage}) => {
     const issueElement =
         await triggerQuirksModeIssueInIssuesTab('elements/quirks-mode.html', devToolsPage, inspectedPage);
-    const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
+    const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
     const expectedTableRows = [
       [
         'Document in the DOM tree',
@@ -46,13 +46,13 @@ describe('Quirks Mode issues', () => {
         `${inspectedPage.getResourcesPath()}/elements/quirks-mode.html`,
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 
   it('should report Limited Quirks Mode issues', async ({devToolsPage, inspectedPage}) => {
     const issueElement =
         await triggerQuirksModeIssueInIssuesTab('elements/limited-quirks-mode.html', devToolsPage, inspectedPage);
-    const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
+    const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
     const expectedTableRows = [
       [
         'Document in the DOM tree',
@@ -65,14 +65,14 @@ describe('Quirks Mode issues', () => {
         `${inspectedPage.getResourcesPath()}/elements/limited-quirks-mode.html`,
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 
   it('should report Quirks Mode issues in iframes', async ({devToolsPage, inspectedPage}) => {
     const issueElement =
         await triggerQuirksModeIssueInIssuesTab('elements/quirks-mode-iframes.html', devToolsPage, inspectedPage);
-    const section = await getResourcesElement('2 elements', issueElement, undefined, devToolsPage);
-    await waitForTableFromResourceSection(section.content, table => {
+    const section = await getResourcesElement(devToolsPage, '2 elements', issueElement, undefined);
+    await waitForTableFromResourceSection(devToolsPage, section.content, table => {
       if (table.length !== 3) {
         return undefined;
       }
@@ -99,6 +99,6 @@ describe('Quirks Mode issues', () => {
         return undefined;
       }
       return true;
-    }, devToolsPage);
+    });
   });
 });

@@ -21,23 +21,23 @@ describe('The Sources Tab', () => {
   const fileName = 'with-sourcemap.ll';
 
   it('can add breakpoint for a sourcemapped wasm module', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile(fileName, 'wasm/wasm-with-sourcemap.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine(5, devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, fileName, 'wasm/wasm-with-sourcemap.html');
+    await addBreakpointForLine(devToolsPage, 5);
 
-    const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', inspectedPage, devToolsPage);
+    const scriptLocation = await retrieveTopCallFrameScriptLocation(devToolsPage, inspectedPage, 'main();');
     assert.deepEqual(scriptLocation, `${fileName}:5`);
   });
 
   it('hits two breakpoints that are set and activated separately', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile(fileName, 'wasm/wasm-with-sourcemap.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, fileName, 'wasm/wasm-with-sourcemap.html');
 
-    await addBreakpointForLine(5, devToolsPage);
+    await addBreakpointForLine(devToolsPage, 5);
 
-    await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+    await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
 
-    await openFileInEditor(fileName, devToolsPage);
+    await openFileInEditor(devToolsPage, fileName);
 
-    await devToolsPage.waitForFunction(async () => await isBreakpointSet(5, devToolsPage));
+    await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, 5));
 
     await devToolsPage.waitForFunction(async () => {
       const scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
@@ -47,20 +47,20 @@ describe('The Sources Tab', () => {
     await devToolsPage.page.keyboard.press('F8');
     await devToolsPage.waitFor(PAUSE_BUTTON);
 
-    await removeBreakpointForLine('5', devToolsPage);
+    await removeBreakpointForLine(devToolsPage, '5');
 
-    await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+    await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
 
-    await openFileInEditor(fileName, devToolsPage);
+    await openFileInEditor(devToolsPage, fileName);
 
-    await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(5, devToolsPage)));
+    await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(devToolsPage, 5)));
     await checkBreakpointDidNotActivate(devToolsPage);
 
-    await addBreakpointForLine(6, devToolsPage);
+    await addBreakpointForLine(devToolsPage, 6);
 
-    await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+    await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
 
-    await devToolsPage.waitForFunction(async () => await isBreakpointSet(6, devToolsPage));
+    await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, 6));
 
     await devToolsPage.waitForFunction(async () => {
       const scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);

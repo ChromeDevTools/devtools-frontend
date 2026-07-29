@@ -133,7 +133,7 @@ describe('CXX Debugging Extension Test Suite', function() {
             await focusConsolePrompt(devToolsPage);
 
             for (const {expression, value} of evaluations) {
-              await typeIntoConsoleAndWaitForResult(expression, undefined, undefined, devToolsPage);
+              await typeIntoConsoleAndWaitForResult(devToolsPage, expression);
               const evaluateResults = await devToolsPage.evaluate(() => {
                 return Array.from(document.querySelectorAll('.console-user-command-result'))
                     .map(node => node.textContent);
@@ -260,9 +260,9 @@ async function doActions(inspectedPage: InspectedPage, devToolsPage: DevToolsPag
           if (!breakpoint) {
             throw new Error('Invalid breakpoint spec: missing `breakpoint`');
           }
-          await openFileInEditor(file, devToolsPage);
+          await openFileInEditor(devToolsPage, file);
           await scrollToLine(devToolsPage, Number(breakpoint));
-          await addBreakpointForLine(breakpoint, devToolsPage);
+          await addBreakpointForLine(devToolsPage, breakpoint);
           break;
         }
         case 'remove_breakpoint': {
@@ -271,7 +271,7 @@ async function doActions(inspectedPage: InspectedPage, devToolsPage: DevToolsPag
             throw new Error('Invalid breakpoint spec: missing `breakpoint`');
           }
           await scrollToLine(devToolsPage, Number(breakpoint));
-          await removeBreakpointForLine(breakpoint, devToolsPage);
+          await removeBreakpointForLine(devToolsPage, breakpoint);
           break;
         }
         case 'step_over':

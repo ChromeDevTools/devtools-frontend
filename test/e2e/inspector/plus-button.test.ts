@@ -112,7 +112,7 @@ describe('Plus button', () => {
     // tab strip.
     assert.include(labels, 'Animations');
     await devToolsPage.click(`${SOFT_MENU_ITEM_SELECTOR}[aria-label="Animations"]`, {root: menu});
-    await tabExistsInMainPanel('#tab-animations', devToolsPage);
+    await tabExistsInMainPanel(devToolsPage, '#tab-animations');
   });
 
   it('drawer plus button moves a panel tool into the drawer', async ({devToolsPage}) => {
@@ -131,6 +131,6 @@ describe('Plus button', () => {
     // a cross-location candidate so the user can move it into the drawer.
     assert.include(labels, 'Recorder');
     await devToolsPage.click(`${SOFT_MENU_ITEM_SELECTOR}[aria-label="Recorder"]`, {root: menu});
-    await tabExistsInDrawer('#tab-chrome-recorder', devToolsPage);
+    await tabExistsInDrawer(devToolsPage, '#tab-chrome-recorder');
   });
 });

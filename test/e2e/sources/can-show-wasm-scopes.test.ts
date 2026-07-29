@@ -22,13 +22,13 @@ describe('Source Tab', () => {
     const fileName = 'scopes.wasm';
     let expectedValues: string[];
 
-    await openSourceCodeEditorForFile('scopes.wasm', 'wasm/scopes.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine(breakpointLine, devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'scopes.wasm', 'wasm/scopes.html');
+    await addBreakpointForLine(devToolsPage, breakpointLine);
     let scriptLocation;
     // Note: this is a flake in our breakpoint logic code: we sometimes wrongly stop at a different
     // location, reload until we actually stop where we want to for this test.
     do {
-      await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+      await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
       scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
     } while (scriptLocation !== 'scopes.wasm:0x5f');
 
@@ -43,7 +43,7 @@ describe('Source Tab', () => {
     expectedValues = [
       'stack: Stack\xA0{}',
     ];
-    await waitValuesForScope('Expression', 0, expectedValues, devToolsPage);
+    await waitValuesForScope(devToolsPage, 'Expression', 0, expectedValues);
 
     expectedValues = [
       '$f32_var: f32 {value: 5.5}',
@@ -51,7 +51,7 @@ describe('Source Tab', () => {
       '$i32: i32 {value: 42}',
       '$i64_var: i64 {value: 9221120237041090n}',
     ];
-    const localScopeValues = await waitValuesForScope('Local', 0, expectedValues, devToolsPage);
+    const localScopeValues = await waitValuesForScope(devToolsPage, 'Local', 0, expectedValues);
 
     expectedValues = [
       'functions: Functions\xA0{$foo: ƒ}',
@@ -61,7 +61,7 @@ describe('Source Tab', () => {
       '$memory0: Memory(1)',
       'module: Module\xA0{}',
     ];
-    const moduleScopeValues = await getValuesForScope('Module', 0, 4, devToolsPage);
+    const moduleScopeValues = await getValuesForScope(devToolsPage, 'Module', 0, 4);
     // Remove occurrences of arrays.
     const formattedValues = moduleScopeValues.map((line: string) => {
       return line.replace(/\[[^\]]*\]/, '').trim();
@@ -71,13 +71,13 @@ describe('Source Tab', () => {
     await devToolsPage.pressKey('F9');
     await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 
-    await waitValuesForScope('Module', 0, moduleScopeValues, devToolsPage);
-    await waitValuesForScope('Local', 0, localScopeValues, devToolsPage);
+    await waitValuesForScope(devToolsPage, 'Module', 0, moduleScopeValues);
+    await waitValuesForScope(devToolsPage, 'Local', 0, localScopeValues);
 
     expectedValues = [
       'stack: Stack\xA0{0: i32}',
     ];
-    await waitValuesForScope('Expression', 0, expectedValues, devToolsPage);
+    await waitValuesForScope(devToolsPage, 'Expression', 0, expectedValues);
     await devToolsPage.click(RESUME_BUTTON);
   });
 });

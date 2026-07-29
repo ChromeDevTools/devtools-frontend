@@ -265,7 +265,7 @@ describe('The Console Tab', () => {
 
   describe('keyboard navigation', () => {
     it('can navigate between individual messages', async ({devToolsPage, inspectedPage}) => {
-      await getConsoleMessages('focus-interaction', undefined, undefined, devToolsPage, inspectedPage);
+      await getConsoleMessages(devToolsPage, inspectedPage, 'focus-interaction', undefined, undefined);
       await focusConsolePrompt(devToolsPage);
 
       await devToolsPage.tabBackward();
@@ -292,13 +292,13 @@ describe('The Console Tab', () => {
     });
 
     it('should not lose focus on prompt when logging and scrolling', async ({inspectedPage, devToolsPage}) => {
-      await getConsoleMessages('focus-interaction', undefined, undefined, devToolsPage, inspectedPage);
+      await getConsoleMessages(devToolsPage, inspectedPage, 'focus-interaction', undefined, undefined);
       await focusConsolePrompt(devToolsPage);
 
       await inspectedPage.evaluate(() => {
         console.log('New message');
       });
-      await waitForLastConsoleMessageToHaveContent('New message', devToolsPage);
+      await waitForLastConsoleMessageToHaveContent(devToolsPage, 'New message');
       assert.strictEqual(await devToolsPage.activeElementAccessibleName(), 'Console prompt');
 
       await inspectedPage.evaluate(() => {
@@ -306,7 +306,7 @@ describe('The Console Tab', () => {
           console.log(`Message ${i}`);
         }
       });
-      await waitForLastConsoleMessageToHaveContent('Message 99', devToolsPage);
+      await waitForLastConsoleMessageToHaveContent(devToolsPage, 'Message 99');
       assert.strictEqual(await devToolsPage.activeElementAccessibleName(), 'Console prompt');
 
       const consolePrompt = await devToolsPage.activeElement();
@@ -342,7 +342,7 @@ describe('The Console Tab', () => {
 
     async function waitForConsoleMessages(count: number, devToolsPage: DevToolsPage): Promise<void> {
       await devToolsPage.waitForFunction(async () => {
-        const messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+        const messages = await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined);
         return messages.length === count ? messages : null;
       });
     }
@@ -405,8 +405,8 @@ describe('The Console Tab', () => {
 
   describe('message anchor', () => {
     it('opens the breakpoint edit dialog for logpoint messages', async ({devToolsPage, inspectedPage}) => {
-      await openSourceCodeEditorForFile('logpoint.js', 'logpoint.html', devToolsPage, inspectedPage);
-      await addLogpointForLine(3, 'x', devToolsPage);
+      await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'logpoint.js', 'logpoint.html');
+      await addLogpointForLine(devToolsPage, 3, 'x');
       await inspectedPage.evaluate('triggerLogpoint(42)');
 
       await navigateToConsoleTab(devToolsPage);
@@ -421,7 +421,7 @@ describe('The Console Tab', () => {
 
     it('shows one memory icon to open memory inspector for ArrayBuffers (description)', async ({devToolsPage}) => {
       await navigateToConsoleTab(devToolsPage);
-      await typeIntoConsoleAndWaitForResult('new ArrayBuffer(10)', 1, undefined, devToolsPage);
+      await typeIntoConsoleAndWaitForResult(devToolsPage, 'new ArrayBuffer(10)', 1, undefined);
 
       // We expect one memory icon directly next to the description.
       let memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
@@ -439,7 +439,7 @@ describe('The Console Tab', () => {
     it('shows two memory icons to open memory inspector for a TypedArray (description, buffer)',
        async ({devToolsPage}) => {
          await navigateToConsoleTab(devToolsPage);
-         await typeIntoConsoleAndWaitForResult('new Uint8Array(10)', 1, undefined, devToolsPage);
+         await typeIntoConsoleAndWaitForResult(devToolsPage, 'new Uint8Array(10)', 1, undefined);
 
          // We expect one memory icon directly next to the description.
          let memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
@@ -462,7 +462,7 @@ describe('The Console Tab', () => {
     it('shows two memory icons to open memory inspector for a DataView (description, buffer)',
        async ({devToolsPage}) => {
          await navigateToConsoleTab(devToolsPage);
-         await typeIntoConsoleAndWaitForResult('new DataView(new Uint8Array(10).buffer)', 1, undefined, devToolsPage);
+         await typeIntoConsoleAndWaitForResult(devToolsPage, 'new DataView(new Uint8Array(10).buffer)', 1, undefined);
 
          // We expect one memory icon directly next to the description.
          let memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
@@ -485,7 +485,7 @@ describe('The Console Tab', () => {
     it('shows two memory icons to open memory inspector for WebAssembly memory (description, buffer)',
        async ({devToolsPage}) => {
          await navigateToConsoleTab(devToolsPage);
-         await typeIntoConsoleAndWaitForResult('new WebAssembly.Memory({initial: 10})', 1, undefined, devToolsPage);
+         await typeIntoConsoleAndWaitForResult(devToolsPage, 'new WebAssembly.Memory({initial: 10})', 1, undefined);
 
          // We expect one memory icon directly next to the description.
          let memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
@@ -519,7 +519,7 @@ describe('The Console Tab', () => {
          });
 
          await devToolsPage.waitForFunction(async () => {
-           const messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+           const messages = await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined);
            return messages.length >= 26;
          });
 
@@ -545,7 +545,7 @@ describe('The Console Tab', () => {
          });
 
          await devToolsPage.waitForFunction(async () => {
-           const messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+           const messages = await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined);
            return messages.length >= 36;
          });
 

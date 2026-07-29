@@ -8,7 +8,7 @@ import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Rendering pane', () => {
   it('includes UI for simulating vision deficiencies', async ({devToolsPage}) => {
-    await openPanelViaMoreTools('Rendering', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Rendering');
 
     const option = await devToolsPage.waitFor('option[value="achromatopsia"]');
     const actual = await option.evaluate(node => {
@@ -28,7 +28,7 @@ describe('Rendering pane', () => {
   });
 
   it('includes UI for emulating color-gamut media feature', async ({devToolsPage}) => {
-    await openPanelViaMoreTools('Rendering', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Rendering');
 
     const option = await devToolsPage.waitFor('option[value="rec2020"]');
     const actual = await option.evaluate(node => {
@@ -45,7 +45,7 @@ describe('Rendering pane', () => {
   });
 
   it('includes UI for emulating prefers-contrast media feature', async function({devToolsPage}) {
-    await openPanelViaMoreTools('Rendering', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Rendering');
 
     const option = await devToolsPage.waitFor('option[value="custom"]');
     const actual = await option.evaluate(node => {
@@ -62,7 +62,7 @@ describe('Rendering pane', () => {
   });
 
   it('includes UI for emulating auto dark mode', async ({devToolsPage}) => {
-    await openPanelViaMoreTools('Rendering', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Rendering');
     await devToolsPage.waitFor('[title="Enable automatic dark mode"]');
   });
 });

@@ -43,62 +43,58 @@ describe('The Coverage Panel', function() {
     await navigateToCoverageTestSite(inspectedPage);
     await startInstrumentingCoverage(devToolsPage);
     const URL_PREFIX = `${inspectedPage.getResourcesPath()}/coverage`;
-    await waitForCoverageData(
-        [
-          {
-            total: '193',
-            unused: '35',
-            url: `${URL_PREFIX}/default.html`,
-          },
-          {
-            total: '43',
-            unused: '31',
-            url: `${URL_PREFIX}/script.js`,
-          },
-        ],
-        devToolsPage);
+    await waitForCoverageData(devToolsPage, [
+      {
+        total: '193',
+        unused: '35',
+        url: `${URL_PREFIX}/default.html`,
+      },
+      {
+        total: '43',
+        unused: '31',
+        url: `${URL_PREFIX}/script.js`,
+      },
+    ]);
   });
 
   it('Shows completely uncovered css files', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('coverage/unused-css-coverage.html');
     await waitForTheCoveragePanelToLoad(devToolsPage);
     // Bring the coverage panel to the top to ensure it has enough height to show all the rows.
-    await clickOnContextMenuItemFromTab(COVERAGE_TAB_ID, MOVE_TO_MAIN_TAB_BAR_SELECTOR, devToolsPage);
-    await tabExistsInMainPanel(COVERAGE_TAB_ID, devToolsPage);
+    await clickOnContextMenuItemFromTab(devToolsPage, COVERAGE_TAB_ID, MOVE_TO_MAIN_TAB_BAR_SELECTOR);
+    await tabExistsInMainPanel(devToolsPage, COVERAGE_TAB_ID);
     await startInstrumentingCoverage(devToolsPage);
     const URL_PREFIX = `${inspectedPage.getResourcesPath()}/coverage`;
-    await waitForCoverageData(
-        [
-          {
-            total: '283',
-            unused: '276',
-            url: `${URL_PREFIX}/unused-css-coverage.html`,
-          },
-          {
-            total: '176',
-            unused: '176',
-            url: `${URL_PREFIX}/not-initially-used.css`,
-          },
-          {
-            total: '174',
-            unused: '174',
-            url: `${URL_PREFIX}/unused.css`,
-          },
-          {
-            total: '176',
-            unused: '152',
-            url: `${URL_PREFIX}/used.css`,
-          },
-          {
-            total: '0',
-            unused: '0',
-            url: `${URL_PREFIX}/empty.css`,
-          },
-        ],
-        devToolsPage);
+    await waitForCoverageData(devToolsPage, [
+      {
+        total: '283',
+        unused: '276',
+        url: `${URL_PREFIX}/unused-css-coverage.html`,
+      },
+      {
+        total: '176',
+        unused: '176',
+        url: `${URL_PREFIX}/not-initially-used.css`,
+      },
+      {
+        total: '174',
+        unused: '174',
+        url: `${URL_PREFIX}/unused.css`,
+      },
+      {
+        total: '176',
+        unused: '152',
+        url: `${URL_PREFIX}/used.css`,
+      },
+      {
+        total: '0',
+        unused: '0',
+        url: `${URL_PREFIX}/empty.css`,
+      },
+    ]);
     await inspectedPage.evaluate('appendStylesheet()');
 
-    assert.deepInclude(await getCoverageData(6, devToolsPage), {
+    assert.deepInclude(await getCoverageData(devToolsPage, 6), {
       total: '0',
       unused: '0',
       url: `${URL_PREFIX}/lazily-loaded.css`,
@@ -109,7 +105,7 @@ describe('The Coverage Panel', function() {
     // This is the expected `textContent` for the coverage row.
     // It reads as {URL}{type: CSS}{Total Bytes: 176}{Unused Bytes: 176 100%}
     await devToolsPage.waitForElementWithTextContent(`${URL_PREFIX}/not-initially-used.cssCSS17615286.4%`);
-    assert.deepInclude(await getCoverageData(6, devToolsPage), {
+    assert.deepInclude(await getCoverageData(devToolsPage, 6), {
       total: '176',
       unused: '152',
       url: `${URL_PREFIX}/not-initially-used.css`,

@@ -23,7 +23,7 @@ import type {InspectedPage} from '../../shared/target-helper.js';
 
 async function searchForWasmCall(devToolsPage: DevToolsPage) {
   await devToolsPage.waitForFunction(async () => {
-    await searchForComponent('mainWasm', devToolsPage);
+    await searchForComponent(devToolsPage, 'mainWasm');
     const title = await devToolsPage.$('.timeline-details-chip-title');
     if (!title) {
       return false;
@@ -63,13 +63,13 @@ describe('The Performance panel', function() {
   increaseTimeoutForPerfPanel(this);
 
   async function setupPerformancePanel(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-    await navigateToPerformanceTab('wasm/profiling', devToolsPage, inspectedPage);
+    await navigateToPerformanceTab(devToolsPage, inspectedPage, 'wasm/profiling');
     await uploadTraceFile(devToolsPage, 'test/e2e/resources/performance/wasm/mainWasm_profile.json');
     await searchForWasmCall(devToolsPage);
   }
 
   it('is able to record performance', async ({devToolsPage, inspectedPage}) => {
-    await navigateToPerformanceTab('wasm/profiling', devToolsPage, inspectedPage);
+    await navigateToPerformanceTab(devToolsPage, inspectedPage, 'wasm/profiling');
     await devToolsPage.page.keyboard.press('Escape');
     await devToolsPage.waitFor('.console-searchable-view');
     await startRecording(devToolsPage);

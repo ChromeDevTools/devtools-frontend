@@ -13,9 +13,7 @@ const QUICK_OPEN_ITEMS_SELECTOR = '.filtered-list-widget-item';
 
 const QUICK_OPEN_SELECTED_ITEM_SELECTOR = `${QUICK_OPEN_ITEMS_SELECTOR}.selected`;
 
-export const openCommandMenu = async (
-    devToolsPage: DevToolsPage,
-    ) => {
+export const openCommandMenu = async (devToolsPage: DevToolsPage) => {
   await devToolsPage.pressKey('P', {control: true, shift: true});
 
   await devToolsPage.waitFor(QUICK_OPEN_SELECTOR);
@@ -32,21 +30,21 @@ export async function readQuickOpenResults(devtoolsPage: DevToolsPage): Promise<
 }
 
 /** Does not play well with pptr:evaluate scripts. crbug.com/391533572 */
-export const openFileWithQuickOpen = async (sourceFile: string, filePosition = 0, devtoolsPage: DevToolsPage) => {
+export const openFileWithQuickOpen = async (devtoolsPage: DevToolsPage, sourceFile: string, filePosition = 0) => {
   await waitForSourceFiles(
+      devtoolsPage,
       SourceFileEvents.SOURCE_FILE_LOADED,
       files => files.some(f => f.endsWith(sourceFile)),
       async () => {
         await openFileQuickOpen(devtoolsPage);
-        await typeIntoQuickOpen(sourceFile, undefined, devtoolsPage);
-        const firstItem = await getMenuItemAtPosition(filePosition, devtoolsPage);
+        await typeIntoQuickOpen(devtoolsPage, sourceFile);
+        const firstItem = await getMenuItemAtPosition(devtoolsPage, filePosition);
         await firstItem.click();
       },
-      devtoolsPage,
   );
 };
 
-export async function runCommandWithQuickOpen(command: string, devtoolsPage: DevToolsPage): Promise<void> {
+export async function runCommandWithQuickOpen(devtoolsPage: DevToolsPage, command: string): Promise<void> {
   await openCommandMenu(devtoolsPage);
   await devtoolsPage.typeText(command);
   // TODO: it should actually wait for rendering to finish.
@@ -77,7 +75,7 @@ export async function getAvailableSnippets(devtoolsPage: DevToolsPage) {
   return snippets;
 }
 
-export async function getMenuItemAtPosition(position: number, devtoolsPage: DevToolsPage) {
+export async function getMenuItemAtPosition(devtoolsPage: DevToolsPage, position: number) {
   const quickOpenElement = await devtoolsPage.waitFor(QUICK_OPEN_SELECTOR);
   await devtoolsPage.waitFor(QUICK_OPEN_ITEMS_SELECTOR);
   const itemsHandles = await devtoolsPage.$$(QUICK_OPEN_ITEMS_SELECTOR, quickOpenElement);
@@ -86,7 +84,7 @@ export async function getMenuItemAtPosition(position: number, devtoolsPage: DevT
   return item;
 }
 
-export async function getMenuItemTitleAtPosition(position: number, devtoolsPage: DevToolsPage) {
+export async function getMenuItemTitleAtPosition(devtoolsPage: DevToolsPage, position: number) {
   const quickOpenElement = await devtoolsPage.waitFor(QUICK_OPEN_SELECTOR);
   await devtoolsPage.waitFor(QUICK_OPEN_ITEMS_SELECTOR);
   const itemsHandles = await devtoolsPage.$$(QUICK_OPEN_ITEMS_SELECTOR, quickOpenElement);
@@ -108,7 +106,7 @@ export const getSelectedItemText = async (devToolsPage: DevToolsPage) => {
   return await textContent.jsonValue();
 };
 
-export async function typeIntoQuickOpen(query: string, expectEmptyResults = false, devtoolsPage: DevToolsPage) {
+export async function typeIntoQuickOpen(devtoolsPage: DevToolsPage, query: string, expectEmptyResults = false) {
   await openFileQuickOpen(devtoolsPage);
   const prompt = await devtoolsPage.waitFor('[aria-label="Quick open prompt"]');
   await prompt.type(query);

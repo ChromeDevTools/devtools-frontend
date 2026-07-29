@@ -15,7 +15,7 @@ import {
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 async function getStyleRuleProperties(selector: string, count: number, devToolsPage: DevToolsPage) {
-  const rule = await getStyleRule(selector, devToolsPage);
+  const rule = await getStyleRule(devToolsPage, selector);
   const propertyElements =
       await devToolsPage.waitForMany(STYLE_PROPERTIES_SELECTOR + ' .webkit-css-property', count, rule);
   const properties = await Promise.all(propertyElements.map(e => e.evaluate(e => e.textContent)));
@@ -28,10 +28,10 @@ async function getStyleRuleProperties(selector: string, count: number, devToolsP
 
 describe('The styles pane', () => {
   it('shows css functions', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/at-function.html', devToolsPage, inspectedPage);
-    await waitForStyleRule('body', devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"test1"', devToolsPage);
-    await waitForStyleRule('#test1', devToolsPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/at-function.html');
+    await waitForStyleRule(devToolsPage, 'body');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"test1"');
+    await waitForStyleRule(devToolsPage, '#test1');
 
     assert.deepEqual(await getStyleRuleProperties('--f(--x)', 4, devToolsPage), {
       properties: ['--myVar', '--y', '--y', 'result'],
@@ -40,70 +40,70 @@ describe('The styles pane', () => {
   });
 
   it('shows a foldable @function section when there are 5 or less functions', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/at-function.html', devToolsPage, inspectedPage);
-    await waitForStyleRule('body', devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"test1"', devToolsPage);
-    await waitForStyleRule('#test1', devToolsPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/at-function.html');
+    await waitForStyleRule(devToolsPage, 'body');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"test1"');
+    await waitForStyleRule(devToolsPage, '#test1');
 
     const stylesPane = await devToolsPage.waitFor('div.styles-pane');
     {
       const section = await devToolsPage.waitForElementWithTextContent('@function', stylesPane);
       assert.deepEqual(await section.evaluate(e => e.ariaExpanded), 'true');
-      const rule = await getStyleRule('--f(--x)', devToolsPage);
+      const rule = await getStyleRule(devToolsPage, '--f(--x)');
       assert.isTrue(await rule.evaluate(e => !e.classList.contains('hidden')));
     }
 
     {
       const section = await devToolsPage.click('pierceShadowText/@function', {root: stylesPane});
       await devToolsPage.waitForFunction(async () => 'false' === await section.evaluate(e => e.ariaExpanded));
-      const rule = await getStyleRule('--f(--x)', devToolsPage);
+      const rule = await getStyleRule(devToolsPage, '--f(--x)');
       await devToolsPage.waitForFunction(() => rule.evaluate(e => e.classList.contains('hidden')));
     }
   });
 
   it('shows a collapsed @function section when there are more than 5 functions',
      async ({devToolsPage, inspectedPage}) => {
-       await goToResourceAndWaitForStyleSection('elements/at-function.html', devToolsPage, inspectedPage);
-       await waitForStyleRule('body', devToolsPage);
-       await waitForAndClickTreeElementWithPartialText('id=\u200B"test3"', devToolsPage);
-       await waitForStyleRule('#test3', devToolsPage);
+       await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/at-function.html');
+       await waitForStyleRule(devToolsPage, 'body');
+       await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"test3"');
+       await waitForStyleRule(devToolsPage, '#test3');
 
        const stylesPane = await devToolsPage.waitFor('div.styles-pane');
        {
          const section = await devToolsPage.waitForElementWithTextContent('@function', stylesPane);
          assert.deepEqual(await section.evaluate(e => e.ariaExpanded), 'false');
          // Pick the style rule added last to ensure the sections are fully drawn
-         const rule = await getStyleRule('--inner1(--x)', devToolsPage);
+         const rule = await getStyleRule(devToolsPage, '--inner1(--x)');
          assert.isTrue(await rule.evaluate(e => e.classList.contains('hidden')));
        }
 
        await devToolsPage.waitForFunction(async () => {
          const section = await devToolsPage.click('pierceShadowText/@function', {root: stylesPane});
          await devToolsPage.waitForFunction(async () => 'true' === await section.evaluate(e => e.ariaExpanded));
-         const rule = await getStyleRule('--inner1(--x)', devToolsPage);
+         const rule = await getStyleRule(devToolsPage, '--inner1(--x)');
          return await rule.evaluate(e => !e.classList.contains('hidden'));
        });
      });
 
   it('expands @function section when a function link is clicked', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/at-function.html', devToolsPage, inspectedPage);
-    await waitForStyleRule('body', devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"test3"', devToolsPage);
-    await waitForStyleRule('#test3', devToolsPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/at-function.html');
+    await waitForStyleRule(devToolsPage, 'body');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"test3"');
+    await waitForStyleRule(devToolsPage, '#test3');
 
     const stylesPane = await devToolsPage.waitFor('div.styles-pane');
     const section = await devToolsPage.waitForElementWithTextContent('@function', stylesPane);
     {
       assert.deepEqual(await section.evaluate(e => e.ariaExpanded), 'false');
       // Pick the style rule added last to ensure the sections are fully drawn
-      const rule = await getStyleRule('--inner1(--x)', devToolsPage);
+      const rule = await getStyleRule(devToolsPage, '--inner1(--x)');
       assert.isTrue(await rule.evaluate(e => e.classList.contains('hidden')));
     }
 
     await devToolsPage.waitForFunction(async () => {
       await devToolsPage.click('[aria-label="CSS property value: --outer(yellow)"] button[role="link"]');
       await devToolsPage.waitForFunction(async () => 'true' === await section.evaluate(e => e.ariaExpanded));
-      const rule = await getStyleRule('--inner1(--x)', devToolsPage);
+      const rule = await getStyleRule(devToolsPage, '--inner1(--x)');
       return await rule.evaluate(e => !e.classList.contains('hidden'));
     });
   });

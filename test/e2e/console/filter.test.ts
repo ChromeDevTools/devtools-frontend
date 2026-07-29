@@ -19,7 +19,7 @@ describe('The Console Tab', () => {
     await navigateToConsoleTab(devToolsPage);
 
     await showVerboseMessages(devToolsPage);
-    await waitForConsoleMessagesToBeNonEmpty(19, devToolsPage);
+    await waitForConsoleMessagesToBeNonEmpty(devToolsPage, 19);
 
     await devToolsPage.waitForFunction(async () => {
       return await devToolsPage.evaluate(
@@ -56,12 +56,12 @@ describe('The Console Tab', () => {
   it('resets the filter', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('console/console-filter.html');
     await navigateToConsoleTab(devToolsPage);
-    await waitForConsoleMessagesToBeNonEmpty(18, devToolsPage);
+    await waitForConsoleMessagesToBeNonEmpty(devToolsPage, 18);
 
-    await filterConsoleMessages('outer', devToolsPage);
-    await waitForConsoleMessagesToBeNonEmpty(3, devToolsPage);
+    await filterConsoleMessages(devToolsPage, 'outer');
+    await waitForConsoleMessagesToBeNonEmpty(devToolsPage, 3);
 
     await deleteConsoleMessagesFilter(devToolsPage);
-    await waitForConsoleMessagesToBeNonEmpty(18, devToolsPage);
+    await waitForConsoleMessagesToBeNonEmpty(devToolsPage, 18);
   });
 });

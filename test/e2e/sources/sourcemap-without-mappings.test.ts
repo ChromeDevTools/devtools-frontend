@@ -7,11 +7,10 @@ import {addBreakpointForLine, openSourceCodeEditorForFile} from '../helpers/sour
 
 describe('SourceMap handling', () => {
   it('can deal with a source map that has no mappings', async ({devToolsPage, inspectedPage}) => {
-    await setIgnoreListPattern('cljs/user.cljs', devToolsPage);
+    await setIgnoreListPattern(devToolsPage, 'cljs/user.cljs');
 
-    await openSourceCodeEditorForFile(
-        'script-with-sourcemap-without-mappings.js', 'script-with-sourcemap-without-mappings.html', devToolsPage,
-        inspectedPage);
-    await addBreakpointForLine(1, devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'script-with-sourcemap-without-mappings.js',
+                                      'script-with-sourcemap-without-mappings.html');
+    await addBreakpointForLine(devToolsPage, 1);
   });
 });

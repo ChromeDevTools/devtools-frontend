@@ -18,9 +18,9 @@ describe('The Application Tab', () => {
   setup({dockingMode: 'undocked'});
 
   it('shows Session Storage keys and values', async ({devToolsPage, inspectedPage}) => {
-    await navigateToApplicationTab('session-storage', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'session-storage');
     await navigateToSessionStorageForTopDomain(devToolsPage, inspectedPage);
-    const dataGridRowValues = await getStorageItemsData(['key', 'value'], 2, devToolsPage);
+    const dataGridRowValues = await getStorageItemsData(devToolsPage, ['key', 'value'], 2);
     assert.deepEqual(dataGridRowValues, [
       {
         key: 'firstKey',
@@ -34,14 +34,14 @@ describe('The Application Tab', () => {
   });
 
   it('can delete selected items', async ({devToolsPage, inspectedPage}) => {
-    await navigateToApplicationTab('session-storage', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'session-storage');
 
     await navigateToSessionStorageForTopDomain(devToolsPage, inspectedPage);
 
-    await selectStorageItemAtIndex(0, devToolsPage);
+    await selectStorageItemAtIndex(devToolsPage, 0);
     await deleteSelectedStorageItem(devToolsPage);
 
-    const dataGridRowValues = await getStorageItemsData(['key', 'value'], 1, devToolsPage);
+    const dataGridRowValues = await getStorageItemsData(devToolsPage, ['key', 'value'], 1);
     assert.deepEqual(dataGridRowValues, [
       {
         key: 'secondKey',

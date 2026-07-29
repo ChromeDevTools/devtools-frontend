@@ -55,7 +55,7 @@ const LAYER_SEPARATOR_SELECTOR = '.layer-separator';
 const SIDEBAR_SEPARATOR_SELECTOR = '.sidebar-separator';
 
 const prepareElementsTab = async (devToolsPage: DevToolsPage) => {
-  await waitForElementsStyleSection(null, devToolsPage);
+  await waitForElementsStyleSection(devToolsPage, null);
   await expandSelectedNodeRecursively(devToolsPage);
 };
 
@@ -69,12 +69,12 @@ const deletePropertyByBackspace =
 
 describe('The Styles pane', () => {
   it('can show overridden shorthands as inactive (ported layout test)', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-shorthand-override.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-shorthand-override.html');
     await prepareElementsTab(devToolsPage);
-    await waitForStyleRule('body', devToolsPage);
+    await waitForStyleRule(devToolsPage, 'body');
 
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"inspected1"', devToolsPage);
-    await waitForStyleRule('#inspected1', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"inspected1"');
+    await waitForStyleRule(devToolsPage, '#inspected1');
     const inspected1Rules = await getDisplayedStyleRules(devToolsPage);
     const expectedInspected1Rules = [
       {selectorText: 'element.style', propertyData: []},
@@ -99,8 +99,8 @@ describe('The Styles pane', () => {
     ];
     assert.deepEqual(inspected1Rules, expectedInspected1Rules);
 
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"inspected2"', devToolsPage);
-    await waitForStyleRule('#inspected2', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"inspected2"');
+    await waitForStyleRule(devToolsPage, '#inspected2');
     const inspected2Rules = await getDisplayedStyleRules(devToolsPage);
 
     const expectedInspected2Rules = [
@@ -129,8 +129,8 @@ describe('The Styles pane', () => {
       },
     ];
     assert.deepEqual(inspected2Rules, expectedInspected2Rules);
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"inspected3"', devToolsPage);
-    await waitForStyleRule('#inspected3', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"inspected3"');
+    await waitForStyleRule(devToolsPage, '#inspected3');
     const inspected3Rules = await getDisplayedStyleRules(devToolsPage);
     const expectedInspected3Rules = [
       {
@@ -277,12 +277,12 @@ describe('The Styles pane', () => {
   });
 
   it('can display the CSS properties of the selected element', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/simple-styled-page.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/simple-styled-page.html');
     await prepareElementsTab(devToolsPage);
 
-    const onH1RuleAppeared = waitForStyleRule('h1', devToolsPage);
+    const onH1RuleAppeared = waitForStyleRule(devToolsPage, 'h1');
 
-    await waitForAndClickTreeElementWithPartialText('<h1>', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<h1>');
     await onH1RuleAppeared;
 
     await devToolsPage.waitForFunction(async () => (await getDisplayedStyleRules(devToolsPage)).length === 4);
@@ -293,8 +293,8 @@ describe('The Styles pane', () => {
       propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
     });
 
-    const onH2RuleAppeared = waitForStyleRule('h2', devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('<h2>', devToolsPage);
+    const onH2RuleAppeared = waitForStyleRule(devToolsPage, 'h2');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<h2>');
     await onH2RuleAppeared;
 
     await devToolsPage.waitForFunction(async () => (await getDisplayedStyleRules(devToolsPage)).length === 3);
@@ -311,43 +311,43 @@ describe('The Styles pane', () => {
 
   it('can jump to a CSS variable definition', async ({devToolsPage, inspectedPage}) => {
     await devToolsPage.enableAnimations();
-    await goToResourceAndWaitForStyleSection('elements/css-variables.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-variables.html');
 
     // Select div that we will inspect the CSS variables for
-    await waitForAndClickTreeElementWithPartialText('properties-to-inspect', devToolsPage);
-    await waitForContentOfSelectedElementsNode(
-        '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'properties-to-inspect');
+    await waitForContentOfSelectedElementsNode(devToolsPage,
+                                               '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
 
-    const testElementRule = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR, devToolsPage);
+    const testElementRule = await getStyleRule(devToolsPage, PROPERTIES_TO_INSPECT_SELECTOR);
     await devToolsPage.click('.link-swatch-link', {root: testElementRule});
 
-    await waitForPropertyToHighlight('html', '--title-color', devToolsPage);
+    await waitForPropertyToHighlight(devToolsPage, 'html', '--title-color');
   });
 
   it('can jump to an unexpanded CSS variable definition', async ({devToolsPage, inspectedPage}) => {
     await devToolsPage.enableAnimations();
-    await goToResourceAndWaitForStyleSection('elements/css-variables-many.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-variables-many.html');
 
     // Select div that we will inspect the CSS variables for
-    await waitForAndClickTreeElementWithPartialText('properties-to-inspect', devToolsPage);
-    await waitForContentOfSelectedElementsNode(
-        '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'properties-to-inspect');
+    await waitForContentOfSelectedElementsNode(devToolsPage,
+                                               '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
 
-    const testElementRule = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR, devToolsPage);
+    const testElementRule = await getStyleRule(devToolsPage, PROPERTIES_TO_INSPECT_SELECTOR);
     await devToolsPage.click('.link-swatch-link', {root: testElementRule});
 
-    await waitForPropertyToHighlight('html', '--color56', devToolsPage);
+    await waitForPropertyToHighlight(devToolsPage, 'html', '--color56');
   });
 
   it('displays the correct value when editing CSS var() functions', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-variables.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-variables.html');
 
     // Select div that we will inspect the CSS variables for
-    await waitForAndClickTreeElementWithPartialText('properties-to-inspect', devToolsPage);
-    await waitForContentOfSelectedElementsNode(
-        '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'properties-to-inspect');
+    await waitForContentOfSelectedElementsNode(devToolsPage,
+                                               '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
 
-    const propertiesSection = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR, devToolsPage);
+    const propertiesSection = await getStyleRule(devToolsPage, PROPERTIES_TO_INSPECT_SELECTOR);
 
     const propertyValue = await devToolsPage.waitFor(FIRST_PROPERTY_VALUE_SELECTOR, propertiesSection);
     // Specifying 10px from the left of the value to click on the word var rather than in the middle which would jump to
@@ -358,27 +358,27 @@ describe('The Styles pane', () => {
   });
 
   it('generates links inside var() functions for defined properties', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-variables.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-variables.html');
 
     // Select div that we will inspect the CSS variables for
-    await waitForAndClickTreeElementWithPartialText('properties-to-inspect', devToolsPage);
-    await waitForContentOfSelectedElementsNode(
-        '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'properties-to-inspect');
+    await waitForContentOfSelectedElementsNode(devToolsPage,
+                                               '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
 
-    const propertiesSection = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR, devToolsPage);
+    const propertiesSection = await getStyleRule(devToolsPage, PROPERTIES_TO_INSPECT_SELECTOR);
     const propertyValue = await devToolsPage.waitFor(FIRST_PROPERTY_VALUE_SELECTOR, propertiesSection);
     const link = await devToolsPage.$$('.link-swatch-link', propertyValue);
     assert.lengthOf(link, 1, 'The expected var link was not created');
   });
 
   it('renders computed CSS variables in @keyframes rules', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-variables.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-variables.html');
 
     // Select div that we will inspect the CSS variables for
-    await waitForAndClickTreeElementWithPartialText('keyframes-rule', devToolsPage);
-    await waitForContentOfSelectedElementsNode('<div id=\u200B"keyframes-rule">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'keyframes-rule');
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div id=\u200B"keyframes-rule">\u200B</div>\u200B');
 
-    const propertiesSection = await getStyleRule(KEYFRAMES_100_PERCENT_RULE_SELECTOR, devToolsPage);
+    const propertiesSection = await getStyleRule(devToolsPage, KEYFRAMES_100_PERCENT_RULE_SELECTOR);
     const propertyValue = await devToolsPage.waitFor(FIRST_PROPERTY_VALUE_SELECTOR, propertiesSection);
     const propertyValueText = await propertyValue.evaluate(node => (node as HTMLElement).innerText);
     assert.strictEqual(
@@ -392,7 +392,7 @@ describe('The Styles pane', () => {
            grid-column-gap: 4px;
          }
        </style>`);
-    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
 
     await devToolsPage.hover('.hint-wrapper');
 
@@ -402,10 +402,11 @@ describe('The Styles pane', () => {
         textContent,
         'The display: block property prevents grid-column-gap from having an effect.\nTry setting display to something other than block.');
     await expectVeEvents(
+        devToolsPage,
         [veImpressionsUnder(
             'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: grid-column-gap',
             [veImpression('Popover', 'elements.css-hint')])],
-        undefined, devToolsPage);
+        undefined);
   });
 
   it('Shows a syntax error popover for registered property', async ({devToolsPage, inspectedPage}) => {
@@ -420,10 +421,10 @@ describe('The Styles pane', () => {
              initial-value: green;
            }
          </style>`);
-    await waitForElementsStyleSection(undefined, devToolsPage);
-    await waitForStyleRule('--color', devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
+    await waitForStyleRule(devToolsPage, '--color');
 
-    const bodySection = await getStyleRule('body', devToolsPage);
+    const bodySection = await getStyleRule(devToolsPage, 'body');
     const isCollapsed = await bodySection.evaluate(section => section.classList.contains('collapsed'));
     if (isCollapsed) {
       await devToolsPage.click('.section-collapse-icon', {root: bodySection});
@@ -437,31 +438,33 @@ describe('The Styles pane', () => {
         textContent.replaceAll(/\s+/g, ' ').trim(),
         'Invalid property value, expected type "<color>" View registered property');
     await expectVeEvents(
+        devToolsPage,
         [veImpressionsUnder(
             'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: custom-property',
             [veImpression('Popover', 'elements.invalid-property-decl-popover')])],
-        undefined, devToolsPage);
+        undefined);
   });
 
   it('shows variable values in a popover for property values', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-variables.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-variables.html');
 
     // Select div that we will inspect the CSS variables for
-    await waitForAndClickTreeElementWithPartialText('properties-to-inspect', devToolsPage);
-    await waitForContentOfSelectedElementsNode(
-        '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'properties-to-inspect');
+    await waitForContentOfSelectedElementsNode(devToolsPage,
+                                               '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
 
-    const testElementRule = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR, devToolsPage);
+    const testElementRule = await getStyleRule(devToolsPage, PROPERTIES_TO_INSPECT_SELECTOR);
     await devToolsPage.hover('.link-swatch-link', {root: testElementRule});
 
     const infobox = await devToolsPage.waitFor('[aria-label="CSS property value: var(--title-color)"] :popover-open');
     const textContent = await infobox.evaluate(e => e.deepInnerText());
     assert.strictEqual(textContent.trim(), 'black');
     await expectVeEvents(
+        devToolsPage,
         [veImpressionsUnder(
             'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: color > Value > Link: css-variable',
             [veImpression('Popover', 'elements.css-var')])],
-        undefined, devToolsPage);
+        undefined);
   });
 
   it('shows variable values in a popover for property names', async ({devToolsPage, inspectedPage}) => {
@@ -471,7 +474,7 @@ describe('The Styles pane', () => {
              --color: red;
            }
          </style>`);
-    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
 
     await devToolsPage.hover('aria/CSS property name: --color');
 
@@ -479,10 +482,11 @@ describe('The Styles pane', () => {
     const textContent = await infobox.evaluate(e => e.deepInnerText());
     assert.strictEqual(textContent.trim(), 'red');
     await expectVeEvents(
+        devToolsPage,
         [veImpressionsUnder(
             'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: custom-property > Key',
             [veImpression('Popover', 'elements.css-var')])],
-        undefined, devToolsPage);
+        undefined);
   });
 
   it('shows mixed colors in a popover', async ({devToolsPage, inspectedPage}) => {
@@ -492,7 +496,7 @@ describe('The Styles pane', () => {
              color: color-mix(in srgb, red, blue);
            }
          </style>`);
-    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
 
     await devToolsPage.hover('devtools-color-mix-swatch');
 
@@ -501,10 +505,10 @@ describe('The Styles pane', () => {
     const textContent = await infobox.evaluate(e => e.deepInnerText());
     assert.strictEqual(textContent.trim(), '#800080');
     await expectVeEvents(
-        [veImpressionsUnder(
-            'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: color > Value',
-            [veImpression('Popover', 'elements.css-color-mix')])],
-        undefined, devToolsPage);
+        devToolsPage, [veImpressionsUnder(
+                          'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: color > Value',
+                          [veImpression('Popover', 'elements.css-color-mix')])],
+        undefined);
   });
 
   it('shows absolute length units in a popover', async ({devToolsPage, inspectedPage}) => {
@@ -514,7 +518,7 @@ describe('The Styles pane', () => {
              width: 1em;
            }
          </style>`);
-    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
 
     await devToolsPage.hover('text/1em', {root: await devToolsPage.waitForAria('CSS property value: 1em')});
 
@@ -522,22 +526,22 @@ describe('The Styles pane', () => {
     const textContent = await infobox.evaluate(e => e.deepInnerText());
     assert.strictEqual(textContent.trim(), '16px');
     await expectVeEvents(
-        [veImpressionsUnder(
-            'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: width > Value',
-            [veImpression('Popover', 'length-popover')])],
-        undefined, devToolsPage);
+        devToolsPage, [veImpressionsUnder(
+                          'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: width > Value',
+                          [veImpression('Popover', 'length-popover')])],
+        undefined);
   });
 
   it('can remove a CSS property when its name or value is deleted', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/style-pane-properties.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/style-pane-properties.html');
 
     // Select div that we will remove the CSS properties from
-    await waitForAndClickTreeElementWithPartialText('properties-to-delete', devToolsPage);
-    await waitForContentOfSelectedElementsNode('<div id=\u200B"properties-to-delete">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'properties-to-delete');
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div id=\u200B"properties-to-delete">\u200B</div>\u200B');
 
-    const propertiesSection = await getStyleRule(PROPERTIES_TO_DELETE_SELECTOR, devToolsPage);
+    const propertiesSection = await getStyleRule(devToolsPage, PROPERTIES_TO_DELETE_SELECTOR);
     {
-      const displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+      const displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
       assert.deepEqual(
           displayedNames,
           [
@@ -552,7 +556,7 @@ describe('The Styles pane', () => {
 
     // verify the second CSS property entry has been removed
     {
-      const displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+      const displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
       assert.deepEqual(
           displayedNames,
           [
@@ -566,19 +570,19 @@ describe('The Styles pane', () => {
 
     // verify the first CSS property entry has been removed
     {
-      const displayedValues = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+      const displayedValues = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
       assert.deepEqual(displayedValues, [], 'incorrectly displayed style after removing first property\'s name');
     }
   });
 
   it('can display the source names for stylesheets', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection(
-        'elements/stylesheets-with-various-sources.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage,
+                                             'elements/stylesheets-with-various-sources.html');
 
     // Select the div element by pressing down, since <body> is the default selected element.
-    const onDivRuleAppeared = waitForStyleRule('div', devToolsPage);
+    const onDivRuleAppeared = waitForStyleRule(devToolsPage, 'div');
 
-    await waitForAndClickTreeElementWithPartialText('<div', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<div');
     await onDivRuleAppeared;
 
     const subtitles = await getStyleSectionSubtitles(devToolsPage);
@@ -627,18 +631,18 @@ describe('The Styles pane', () => {
   });
 
   it('can edit multiple constructed stylesheets', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection(
-        'elements/multiple-constructed-stylesheets.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage,
+                                             'elements/multiple-constructed-stylesheets.html');
 
     // Select div that we will remove a CSS property from.
-    await waitForAndClickTreeElementWithPartialText('<div class=\u200B"rule1 rule2">\u200B</div>\u200B', devToolsPage);
-    await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1 rule2">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<div class=\u200B"rule1 rule2">\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div class=\u200B"rule1 rule2">\u200B</div>\u200B');
 
     // Verify that initial CSS properties correspond to the ones in the test file.
-    const rule1PropertiesSection = await getStyleRule(RULE1_SELECTOR, devToolsPage);
-    const rule2PropertiesSection = await getStyleRule(RULE2_SELECTOR, devToolsPage);
+    const rule1PropertiesSection = await getStyleRule(devToolsPage, RULE1_SELECTOR);
+    const rule2PropertiesSection = await getStyleRule(devToolsPage, RULE2_SELECTOR);
     {
-      const displayedNames = await getDisplayedCSSPropertyNames(rule1PropertiesSection, devToolsPage);
+      const displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, rule1PropertiesSection);
       assert.deepEqual(
           displayedNames,
           [
@@ -647,7 +651,7 @@ describe('The Styles pane', () => {
           'incorrectly displayed style after initialization');
     }
     {
-      const displayedNames = await getDisplayedCSSPropertyNames(rule2PropertiesSection, devToolsPage);
+      const displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, rule2PropertiesSection);
       assert.deepEqual(
           displayedNames,
           [
@@ -662,7 +666,7 @@ describe('The Styles pane', () => {
 
     // Verify that .rule1 has background-color.
     {
-      const displayedNames = await getDisplayedCSSPropertyNames(rule1PropertiesSection, devToolsPage);
+      const displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, rule1PropertiesSection);
       assert.deepEqual(
           displayedNames,
           [
@@ -673,7 +677,7 @@ describe('The Styles pane', () => {
 
     // Verify that .rule2 has background-color removed and only color remains.
     {
-      const displayedNames = await getDisplayedCSSPropertyNames(rule2PropertiesSection, devToolsPage);
+      const displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, rule2PropertiesSection);
       assert.deepEqual(
           displayedNames,
           [
@@ -684,24 +688,24 @@ describe('The Styles pane', () => {
 
     // Verify that computed styles correspond to the changes made.
     const computedStyles = [
-      await getComputedStylesForDomNode(RULE1_SELECTOR, 'color', inspectedPage),
-      await getComputedStylesForDomNode(RULE1_SELECTOR, 'backgroundColor', inspectedPage),
+      await getComputedStylesForDomNode(inspectedPage, RULE1_SELECTOR, 'color'),
+      await getComputedStylesForDomNode(inspectedPage, RULE1_SELECTOR, 'backgroundColor'),
     ];
     assert.deepEqual(computedStyles, ['rgb(255, 0, 0)', 'rgb(255, 0, 0)'], 'Styles are not correct after the update');
   });
 
   it('can display and edit container queries', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-container-queries.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-container-queries.html');
 
     // Select the child that has container queries.
-    await waitForAndClickTreeElementWithPartialText('<div class=\u200B"rule1 rule2">\u200B</div>\u200B', devToolsPage);
-    await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1 rule2">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<div class=\u200B"rule1 rule2">\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div class=\u200B"rule1 rule2">\u200B</div>\u200B');
 
     // Verify that initial CSS properties correspond to the ones in the test file.
-    const rule1PropertiesSection = await getStyleRule(RULE1_SELECTOR, devToolsPage);
-    let rule2PropertiesSection = await getStyleRule(RULE2_SELECTOR, devToolsPage);
+    const rule1PropertiesSection = await getStyleRule(devToolsPage, RULE1_SELECTOR);
+    let rule2PropertiesSection = await getStyleRule(devToolsPage, RULE2_SELECTOR);
     {
-      const displayedNames = await getDisplayedCSSPropertyNames(rule1PropertiesSection, devToolsPage);
+      const displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, rule1PropertiesSection);
       assert.deepEqual(
           displayedNames,
           [
@@ -710,7 +714,7 @@ describe('The Styles pane', () => {
           'incorrectly displayed style after initialization');
     }
     {
-      const displayedNames = await getDisplayedCSSPropertyNames(rule2PropertiesSection, devToolsPage);
+      const displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, rule2PropertiesSection);
       assert.deepEqual(
           displayedNames,
           [
@@ -719,28 +723,28 @@ describe('The Styles pane', () => {
           'incorrectly displayed style after initialization');
     }
 
-    await editQueryRuleText(rule1PropertiesSection, '(min-width: 300px)', devToolsPage, true);
+    await editQueryRuleText(devToolsPage, rule1PropertiesSection, '(min-width: 300px)', true);
     // This can cause the styles pane to be regenerated, so we need to get the
     // style rule handle again.
-    rule2PropertiesSection = await getStyleRule(RULE2_SELECTOR, devToolsPage);
-    await editQueryRuleText(rule2PropertiesSection, '(max-width: 300px)', devToolsPage);
+    rule2PropertiesSection = await getStyleRule(devToolsPage, RULE2_SELECTOR);
+    await editQueryRuleText(devToolsPage, rule2PropertiesSection, '(max-width: 300px)');
 
     // Verify that computed styles correspond to the changes made.
     const computedStyles = [
-      await getComputedStylesForDomNode(RULE1_SELECTOR, 'width', inspectedPage),
-      await getComputedStylesForDomNode(RULE2_SELECTOR, 'height', inspectedPage),
+      await getComputedStylesForDomNode(inspectedPage, RULE1_SELECTOR, 'width'),
+      await getComputedStylesForDomNode(inspectedPage, RULE2_SELECTOR, 'height'),
     ];
     assert.deepEqual(computedStyles, ['0px', '10px'], 'Styles are not correct after the update');
   });
 
   it('can display container link', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-container-queries.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-container-queries.html');
 
     // Select the child that has container queries.
-    await waitForAndClickTreeElementWithPartialText('<div class=\u200B"rule1 rule2">\u200B</div>\u200B', devToolsPage);
-    await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1 rule2">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<div class=\u200B"rule1 rule2">\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div class=\u200B"rule1 rule2">\u200B</div>\u200B');
 
-    const rule1PropertiesSection = await getStyleRule(RULE1_SELECTOR, devToolsPage);
+    const rule1PropertiesSection = await getStyleRule(devToolsPage, RULE1_SELECTOR);
     const containerLink = await devToolsPage.waitFor('.container-link', rule1PropertiesSection);
     const nodeLabelName = await devToolsPage.waitFor('.node-label-name', containerLink);
     const nodeLabelNameContent = await nodeLabelName.evaluate(node => node.textContent as string);
@@ -753,24 +757,24 @@ describe('The Styles pane', () => {
   });
 
   it('can display @supports at-rules', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-supports.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-supports.html');
 
     // Select the child that has @supports rules.
-    await waitForAndClickTreeElementWithPartialText('<div class=\u200B"rule1">\u200B</div>\u200B', devToolsPage);
-    await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<div class=\u200B"rule1">\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div class=\u200B"rule1">\u200B</div>\u200B');
 
-    const rule1PropertiesSection = await getStyleRule(RULE1_SELECTOR, devToolsPage);
+    const rule1PropertiesSection = await getStyleRule(devToolsPage, RULE1_SELECTOR);
     const supportsQuery = await devToolsPage.waitFor('.query.editable', rule1PropertiesSection);
     const supportsQueryText = await supportsQuery.evaluate(node => (node as HTMLElement).innerText);
     assert.deepEqual(supportsQueryText, '@supports (width: 10px) {', 'incorrectly displayed @supports rule');
   });
 
   it('can display @layer separators', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-layers.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-layers.html');
 
     // Select the child that has @layer rules.
-    await waitForAndClickTreeElementWithPartialText('<div class=\u200B"rule1">\u200B</div>\u200B', devToolsPage);
-    await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<div class=\u200B"rule1">\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div class=\u200B"rule1">\u200B</div>\u200B');
 
     const layerSeparators = await devToolsPage.waitForFunction(async () => {
       const layers = await devToolsPage.$$(LAYER_SEPARATOR_SELECTOR);
@@ -789,11 +793,11 @@ describe('The Styles pane', () => {
   });
 
   it('can click @layer separators to open layer tree', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-layers.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-layers.html');
 
     // Select the child that has @layer rules.
-    await waitForAndClickTreeElementWithPartialText('<div class=\u200B"rule1">\u200B</div>\u200B', devToolsPage);
-    await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<div class=\u200B"rule1">\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div class=\u200B"rule1">\u200B</div>\u200B');
 
     await devToolsPage.click('aria/overrule[role="button"]');
 
@@ -802,12 +806,12 @@ describe('The Styles pane', () => {
   });
 
   it('can display inherited CSS highlight pseudo styles', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/highlight-pseudo-inheritance.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/highlight-pseudo-inheritance.html');
 
-    const onH1RuleAppeared = waitForStyleRule('h1', devToolsPage);
+    const onH1RuleAppeared = waitForStyleRule(devToolsPage, 'h1');
 
     // Select the h1 for which we will inspect the pseudo styles
-    await waitForAndClickTreeElementWithPartialText('<h1', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<h1');
 
     await onH1RuleAppeared;
 
@@ -915,12 +919,12 @@ describe('The Styles pane', () => {
   });
 
   it('can show styles properly (ported layout test)', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/elements-panel-styles.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/elements-panel-styles.html');
     await prepareElementsTab(devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"container"', devToolsPage);
-    await waitForStyleRule('#container', devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"foo"', devToolsPage);
-    await waitForStyleRule('.foo', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"container"');
+    await waitForStyleRule(devToolsPage, '#container');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"foo"');
+    await waitForStyleRule(devToolsPage, '.foo');
     const fooRules = await getDisplayedStyleRules(devToolsPage);
     const expected = [
       {
@@ -1047,12 +1051,12 @@ describe('The Styles pane', () => {
 
   it('shows longhands overridden by shorthands with var() as inactive (ported layout test)',
      async ({devToolsPage, inspectedPage}) => {
-       await goToResourceAndWaitForStyleSection('elements/css-longhand-override.html', devToolsPage, inspectedPage);
+       await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-longhand-override.html');
        await prepareElementsTab(devToolsPage);
-       await waitForStyleRule('body', devToolsPage);
+       await waitForStyleRule(devToolsPage, 'body');
 
-       await waitForAndClickTreeElementWithPartialText('id=\u200B"inspected"', devToolsPage);
-       await waitForStyleRule('#inspected', devToolsPage);
+       await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"inspected"');
+       await waitForStyleRule(devToolsPage, '#inspected');
        const inspectedRules = await getDisplayedStyleRules(devToolsPage);
        const expectedInspected1Rules = [
          {selectorText: 'element.style', propertyData: []},
@@ -1082,11 +1086,11 @@ describe('The Styles pane', () => {
      });
 
   it('shows longhands with parsed values under a shorthand', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-shorthand-override.html', devToolsPage, inspectedPage);
-    await waitForStyleRule('body', devToolsPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-shorthand-override.html');
+    await waitForStyleRule(devToolsPage, 'body');
 
-    await waitForAndClickTreeElementWithPartialText('inspected4', devToolsPage);
-    await waitForStyleRule('#inspected4', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected4');
+    await waitForStyleRule(devToolsPage, '#inspected4');
 
     const inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
     assert.deepEqual(inspectedRules, [
@@ -1102,14 +1106,14 @@ describe('The Styles pane', () => {
   });
 
   it('shows overridden properties as inactive (ported layout test)', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-override.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-override.html');
     await prepareElementsTab(devToolsPage);
-    await waitForStyleRule('body', devToolsPage);
+    await waitForStyleRule(devToolsPage, 'body');
 
-    await waitForAndClickTreeElementWithPartialText('<div', devToolsPage);
-    await waitForStyleRule('div', devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"inspected"', devToolsPage);
-    await waitForStyleRule('#inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<div');
+    await waitForStyleRule(devToolsPage, 'div');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"inspected"');
+    await waitForStyleRule(devToolsPage, '#inspected');
     const inspectedRules = await getDisplayedStyleRules(devToolsPage);
     const expectedInspected1Rules = [
       {
@@ -1165,14 +1169,14 @@ describe('The Styles pane', () => {
 
   it('shows non-standard mixed-cased properties correctly (ported layout test)',
      async ({devToolsPage, inspectedPage}) => {
-       await goToResourceAndWaitForStyleSection('elements/css-mixed-case.html', devToolsPage, inspectedPage);
+       await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-mixed-case.html');
        await prepareElementsTab(devToolsPage);
-       await waitForStyleRule('body', devToolsPage);
+       await waitForStyleRule(devToolsPage, 'body');
 
-       await waitForAndClickTreeElementWithPartialText('id=\u200B"container"', devToolsPage);
-       await waitForStyleRule('#container', devToolsPage);
-       await waitForAndClickTreeElementWithPartialText('id=\u200B"nested"', devToolsPage);
-       await waitForStyleRule('#nested', devToolsPage);
+       await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"container"');
+       await waitForStyleRule(devToolsPage, '#container');
+       await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"nested"');
+       await waitForStyleRule(devToolsPage, '#nested');
        const inspectedRules = await getDisplayedStyleRules(devToolsPage);
        const expectedInspected1Rules = [
          {
@@ -1223,7 +1227,7 @@ describe('The Styles pane', () => {
      });
 
   it('shows styles from injected user stylesheets (ported layout test)', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-inject-stylesheet.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-inject-stylesheet.html');
     await prepareElementsTab(devToolsPage);
 
     await inspectedPage.evaluate(async () => {
@@ -1233,8 +1237,8 @@ describe('The Styles pane', () => {
       document.head.append(style);
     });
 
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"main"', devToolsPage);
-    await waitForStyleRule('#main', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"main"');
+    await waitForStyleRule(devToolsPage, '#main');
     const inspectedRulesBefore = await getDisplayedStyleRulesCompact(devToolsPage);
     const expectedInspectedRulesBefore = [
       {
@@ -1278,7 +1282,7 @@ describe('The Styles pane', () => {
 
   it('shows styles from injected user stylesheets for a injected iframe (ported layout test)',
      async ({devToolsPage, inspectedPage}) => {
-       await goToResourceAndWaitForStyleSection('elements/css-inject-stylesheet.html', devToolsPage, inspectedPage);
+       await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-inject-stylesheet.html');
        await prepareElementsTab(devToolsPage);
 
        await inspectedPage.evaluate(() => {
@@ -1303,10 +1307,10 @@ describe('The Styles pane', () => {
 
        await devToolsPage.waitForFunction(async () => {
          await expandSelectedNodeRecursively(devToolsPage);
-         return await elementWithPartialText('id=\u200B"iframeBody"', devToolsPage);
+         return await elementWithPartialText(devToolsPage, 'id=\u200B"iframeBody"');
        });
-       await waitForAndClickTreeElementWithPartialText('id=\u200B"iframeBody"', devToolsPage);
-       await waitForStyleRule('#iframeBody', devToolsPage);
+       await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"iframeBody"');
+       await waitForStyleRule(devToolsPage, '#iframeBody');
        const inspectedRulesAfter = await getDisplayedStyleRulesCompact(devToolsPage);
        const expectedInspectedRulesAfter = [
          {
@@ -1352,13 +1356,13 @@ describe('The Styles pane', () => {
      });
 
   it('can parse webkit css region styling (ported layout test)', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-webkit-region.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-webkit-region.html');
     await prepareElementsTab(devToolsPage);
-    await waitForStyleRule('body', devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"article1"', devToolsPage);
-    await waitForStyleRule('#article1', devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"p1"', devToolsPage);
-    await waitForStyleRule('#p1', devToolsPage);
+    await waitForStyleRule(devToolsPage, 'body');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"article1"');
+    await waitForStyleRule(devToolsPage, '#article1');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"p1"');
+    await waitForStyleRule(devToolsPage, '#p1');
     const inspectedRules = await getDisplayedStyleRulesCompact(devToolsPage);
     const expectedInspectedRules = [
       {
@@ -1385,13 +1389,13 @@ describe('The Styles pane', () => {
   });
 
   it('can display @scope at-rules', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-scopes.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-scopes.html');
 
     // Select the child that has @scope rules.
-    await waitForAndClickTreeElementWithPartialText('<div class=\u200B"rule1">\u200B</div>\u200B', devToolsPage);
-    await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1">\u200B</div>\u200B', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '<div class=\u200B"rule1">\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode(devToolsPage, '<div class=\u200B"rule1">\u200B</div>\u200B');
 
-    const rule1PropertiesSection = await getStyleRule(RULE1_SELECTOR, devToolsPage);
+    const rule1PropertiesSection = await getStyleRule(devToolsPage, RULE1_SELECTOR);
     const scopeQuery = await devToolsPage.waitFor('.query.editable', rule1PropertiesSection);
     const scopeQueryText = await scopeQuery.evaluate(node => (node as HTMLElement).innerText);
     assert.deepEqual(scopeQueryText, '@scope (body) {', 'incorrectly displayed @supports rule');
@@ -1399,24 +1403,24 @@ describe('The Styles pane', () => {
 
   it('shows an infobox with specificity information when hovering a selector',
      async ({devToolsPage, inspectedPage}) => {
-       await goToResourceAndWaitForStyleSection('elements/css-specificity.html', devToolsPage, inspectedPage);
+       await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-specificity.html');
 
        // Select the child that has a style rule attached
-       await waitForAndClickTreeElementWithPartialText('properties-to-inspect', devToolsPage);
-       await waitForContentOfSelectedElementsNode(
-           '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B', devToolsPage);
+       await waitForAndClickTreeElementWithPartialText(devToolsPage, 'properties-to-inspect');
+       await waitForContentOfSelectedElementsNode(devToolsPage,
+                                                  '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
 
        // Hover the selector in the Styles pane
-       const testElementRule = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR, devToolsPage);
+       const testElementRule = await getStyleRule(devToolsPage, PROPERTIES_TO_INSPECT_SELECTOR);
        await devToolsPage.hover('.selector-matches', {root: testElementRule});
 
        // Check if an infobox is shown or not. If not, this will throw
        const infobox = await devToolsPage.waitFor('.styles-selector :popover-open');
        await expectVeEvents(
-           [veImpressionsUnder(
-               'Panel: elements > Pane: styles > Section: style-properties > CSSRuleHeader: selector',
-               [veImpression('Popover', 'elements.css-selector-specificity')])],
-           undefined, devToolsPage);
+           devToolsPage,
+           [veImpressionsUnder('Panel: elements > Pane: styles > Section: style-properties > CSSRuleHeader: selector',
+                               [veImpression('Popover', 'elements.css-selector-specificity')])],
+           undefined);
 
        // Make sure it’s the specificity infobox
        const innerText = await infobox.evaluate(node => (node as HTMLElement).innerText);
@@ -1440,16 +1444,16 @@ describe('The Styles pane', () => {
           <div id="inspected">Text</div>
       </div>
     `);
-    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
 
     // Select the node and expand it to show pseudos.
-    await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'container');
     await expandSelectedNodeRecursively(devToolsPage);
 
     // --- Assert styles ---
     // #inspected
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
-    await waitForStyleRule('#inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
+    await waitForStyleRule(devToolsPage, '#inspected');
 
     await devToolsPage.waitForFunction(async () => {
       const inspectedStyles = await getDisplayedStyleRules(devToolsPage);
@@ -1525,21 +1529,21 @@ describe('The Styles pane', () => {
 
     // Removing 'content' from ::after should remove the pseudo element.
     await removeLastRule();
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
     await expandSelectedNodeRecursively(devToolsPage);
     await waitForChildrenOfSelectedElementNode(devToolsPage, ['::marker', '::before', 'Text']);
 
     // Removing 'content' from ::before should remove the pseudo element.
     await removeLastRule();
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
     await expandSelectedNodeRecursively(devToolsPage);
     await waitForChildrenOfSelectedElementNode(devToolsPage, ['::marker', 'Text']);
 
     // Removing 'content' from ::marker should remove the pseudo element.
     await removeLastRule();
     await removeLastRule();
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
-    await waitForPartialContentOfSelectedElementsNode('<div id=\u200B"inspected">\u200BText\u200B</div>', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '<div id=\u200B"inspected">\u200BText\u200B</div>');
 
     // Add back the rules.
     await inspectedPage.evaluate(() => {
@@ -1550,7 +1554,7 @@ describe('The Styles pane', () => {
       sheet.addRule('#inspected:after', 'content: "AFTER"');
     });
 
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
     await expandSelectedNodeRecursively(devToolsPage);
     await waitForChildrenOfSelectedElementNode(devToolsPage, ['::marker', '::before', 'Text', '::after']);
 
@@ -1558,7 +1562,7 @@ describe('The Styles pane', () => {
     await inspectedPage.evaluate(() => {
       (document.getElementById('inspected') as HTMLElement).textContent = 'bar';
     });
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
     await expandSelectedNodeRecursively(devToolsPage);
     await waitForChildrenOfSelectedElementNode(devToolsPage, ['::marker', '::before', 'bar', '::after']);
 
@@ -1566,13 +1570,13 @@ describe('The Styles pane', () => {
     await inspectedPage.evaluate(() => {
       (document.getElementById('inspected') as HTMLElement).textContent = '';
     });
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
     await expandSelectedNodeRecursively(devToolsPage);
     await waitForChildrenOfSelectedElementNode(devToolsPage, ['::marker', '::before', '::after']);
 
     // --- Remove node ---
     await inspectedPage.evaluate(() => document.getElementById('inspected')?.remove());
-    await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'container');
     await expandSelectedNodeRecursively(devToolsPage);
     await waitForChildrenOfSelectedElementNode(devToolsPage, []);
   });
@@ -1603,20 +1607,20 @@ describe('The Styles pane', () => {
         <div id="inspected">Text</div>
       </div>
     `);
-    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
 
-    await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'container');
     await devToolsPage.pressKey('ArrowRight');
 
     // Select the node and expand it to show pseudos.
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
     await expandSelectedNodeRecursively(devToolsPage);
     await waitForChildrenOfSelectedElementNode(devToolsPage, ['::before', '::marker', 'Text', '::after', '::marker']);
 
     // --- Assert styles ---
     // ::before
-    await waitForAndClickTreeElementWithPartialText('::before', devToolsPage);
-    await waitForStyleRule('#inspected::before', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '::before');
+    await waitForStyleRule(devToolsPage, '#inspected::before');
     await devToolsPage.waitForFunction(async () => {
       const styleRules = await getDisplayedStyleRules(devToolsPage);
       if (styleRules.length !== 3) {
@@ -1645,11 +1649,11 @@ describe('The Styles pane', () => {
       return true;
     });
     await devToolsPage.pressKey('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('::marker', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '::marker');
 
     // ::after
-    await waitForAndClickTreeElementWithPartialText('::after', devToolsPage);
-    await waitForStyleRule('#inspected::after', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '::after');
+    await waitForStyleRule(devToolsPage, '#inspected::after');
     await devToolsPage.waitForFunction(async () => {
       const styleRules = await getDisplayedStyleRules(devToolsPage);
       if (styleRules.length !== 3) {
@@ -1678,7 +1682,7 @@ describe('The Styles pane', () => {
       return true;
     });
     await devToolsPage.pressKey('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('::marker', devToolsPage);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '::marker');
 
     // --- Dynamically modify styles ---
 
@@ -1689,7 +1693,7 @@ describe('The Styles pane', () => {
 
     // Removing 'display: list-item' from ::after should remove its marker.
     await removeLastRule();  // Removes #inspected::after { display: list-item; }
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
     await expandSelectedNodeRecursively(devToolsPage);
     await waitForChildrenOfSelectedElementNode(devToolsPage, ['::before', '::marker', 'Text', '::after']);
 
@@ -1704,7 +1708,7 @@ describe('The Styles pane', () => {
       sheet.addRule('#inspected::after', 'display: list-item');
     });
 
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
     await expandSelectedNodeRecursively(devToolsPage);
     await waitForChildrenOfSelectedElementNode(devToolsPage, ['::before', '::marker', 'Text', '::after', '::marker']);
 
@@ -1734,37 +1738,37 @@ describe('The Styles pane', () => {
     const blue = 'rgb(0, 0, 255)';
 
     it('cancels editing if the page is reloaded', async ({devToolsPage, inspectedPage}) => {
-      await goToResourceAndWaitForStyleSection('elements/simple-body-color.html', devToolsPage, inspectedPage);
+      await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/simple-body-color.html');
       await assertBodyColor(green, inspectedPage);
 
       // Start editing.
-      await focusCSSPropertyValue('body', 'color', devToolsPage);
+      await focusCSSPropertyValue(devToolsPage, 'body', 'color');
       await devToolsPage.page.keyboard.type(blue, {delay: 100});
       await assertBodyColor(blue, inspectedPage);
       await assertIsEditing(true, devToolsPage);
 
       // Reload and wait for styles.
-      await goToResourceAndWaitForStyleSection('elements/simple-body-color.html', devToolsPage, inspectedPage);
+      await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/simple-body-color.html');
 
       // Expect the editing to be discarded and the editing mode turned off.
-      await waitForCSSPropertyValue('body', 'color', green, undefined, devToolsPage);
+      await waitForCSSPropertyValue(devToolsPage, 'body', 'color', green, undefined);
       await assertBodyColor(green, inspectedPage);
       await assertIsEditing(false, devToolsPage);
     });
 
     it('cancels editing on Esc', async ({devToolsPage, inspectedPage}) => {
-      await goToResourceAndWaitForStyleSection('elements/simple-body-color.html', devToolsPage, inspectedPage);
+      await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/simple-body-color.html');
       await assertBodyColor(green, inspectedPage);
 
       // Start editing.
-      await focusCSSPropertyValue('body', 'color', devToolsPage);
+      await focusCSSPropertyValue(devToolsPage, 'body', 'color');
       await devToolsPage.page.keyboard.type(blue, {delay: 100});
       await assertBodyColor(blue, inspectedPage);
       await assertIsEditing(true, devToolsPage);
       await devToolsPage.page.keyboard.press('Escape');
 
       // Expect the editing to be discarded and the editing mode turned off.
-      await waitForCSSPropertyValue('body', 'color', green, undefined, devToolsPage);
+      await waitForCSSPropertyValue(devToolsPage, 'body', 'color', green, undefined);
       await assertBodyColor(green, inspectedPage);
       await assertIsEditing(false, devToolsPage);
     });
@@ -1779,7 +1783,7 @@ describe('The Styles pane', () => {
          color: light-dark(red, blue);
        }
        </style>`);
-       await waitForElementsStyleSection(undefined, devToolsPage);
+       await waitForElementsStyleSection(devToolsPage, undefined);
 
        const color = await inspectedPage.evaluate(() => {
          return getComputedStyle(document.body).color;
@@ -1789,7 +1793,7 @@ describe('The Styles pane', () => {
        const blue = 'rgb(0, 0, 255)';
        assert.isTrue(color === red || color === blue, 'light-dark color is neither red nor blue');
 
-       await openPanelViaMoreTools('Rendering', devToolsPage);
+       await openPanelViaMoreTools(devToolsPage, 'Rendering');
 
        let isLight = color === red;
 
@@ -1811,7 +1815,7 @@ describe('The Styles pane', () => {
 
        async function waitForLightDark(isLight: boolean): Promise<void> {
          await devToolsPage.waitForFunction(async () => {
-           const property = await getCSSPropertyInRule('body', 'color', undefined, devToolsPage);
+           const property = await getCSSPropertyInRule(devToolsPage, 'body', 'color', undefined);
            if (!property) {
              return undefined;
            }
@@ -1839,10 +1843,10 @@ describe('The Styles pane', () => {
       </style>
       <div id="inspected">Text</div>
       <div id="other"></div>`);
-    await waitForElementsStyleSection(undefined, devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
 
-    let propertiesSection = await getStyleRule('#inspected', devToolsPage);
+    let propertiesSection = await getStyleRule(devToolsPage, '#inspected');
     let inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
     assert.sameDeepMembers(inspectedRules, ['color: red;', 'display: block;', 'unicode-bidi: isolate;']);
 
@@ -1851,14 +1855,14 @@ describe('The Styles pane', () => {
     await devToolsPage.typeText('background-color');
 
     // Select another node (#other)
-    await waitForAndClickTreeElementWithPartialText('other', devToolsPage);
-    propertiesSection = await getStyleRule('#other', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'other');
+    propertiesSection = await getStyleRule(devToolsPage, '#other');
     inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
     assert.sameDeepMembers(inspectedRules, ['color: blue;', 'display: block;', 'unicode-bidi: isolate;']);
 
     // Selected #inspected again
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
-    propertiesSection = await getStyleRule('#inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
+    propertiesSection = await getStyleRule(devToolsPage, '#inspected');
     inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
     assert.includeDeepMembers(inspectedRules, ['background-color: red;', 'display: block;', 'unicode-bidi: isolate;']);
   });
@@ -1874,11 +1878,11 @@ describe('The Styles pane', () => {
       </div>
       <div id="other">
       </div>`);
-    await waitForElementsStyleSection(undefined, devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'container');
 
-    let propertiesSection = await getStyleRule('#container', devToolsPage);
-    let displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+    let propertiesSection = await getStyleRule(devToolsPage, '#container');
+    let displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
     assert.deepEqual(
         displayedNames,
         [
@@ -1895,7 +1899,7 @@ describe('The Styles pane', () => {
     // Disable the style rule
     await devToolsPage.click('.tree-outline li:nth-of-type(1) input', {root: propertiesSection});
     await devToolsPage.waitFor('.tree-outline li:nth-of-type(1).overloaded.disabled.inactive', propertiesSection);
-    displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+    displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
     inspectedRules = await getDisplayedStyleRules(devToolsPage);
     inspectedRulesContainer = inspectedRules.filter(rule => rule.selectorText === '#container');
     assert.deepEqual(inspectedRulesContainer, [{
@@ -1907,12 +1911,12 @@ describe('The Styles pane', () => {
     await deletePropertyByBackspace(devToolsPage, '.webkit-css-property[aria-label="CSS property name: font-weight"]');
 
     // Select another node (#other)
-    await waitForAndClickTreeElementWithPartialText('other', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'other');
 
     // Selected #inspected again
-    await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
-    propertiesSection = await getStyleRule('#container', devToolsPage);
-    displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'container');
+    propertiesSection = await getStyleRule(devToolsPage, '#container');
+    displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
     assert.isEmpty(displayedNames);
   });
 
@@ -1926,14 +1930,14 @@ describe('The Styles pane', () => {
       </style>
       <div id="inspected">Text</div>
       <div id="other"></div>`);
-    await waitForElementsStyleSection(undefined, devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
 
     const propertiesSectionSelector = getStyleRuleSelector('#inspected');
     const propertiesSection = await devToolsPage.waitFor(propertiesSectionSelector);
     let inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
     assert.sameDeepMembers(inspectedRules, ['font-size: 12px;', 'display: block;', 'unicode-bidi: isolate;']);
-    let displayedNames = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+    let displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
     assert.deepEqual(
         displayedNames,
         [
@@ -1945,7 +1949,7 @@ describe('The Styles pane', () => {
     await devToolsPage.pasteText('margin-left: 1px');
     await devToolsPage.click(propertiesSectionSelector);
     displayedNames =
-        await getDisplayedCSSPropertyNames(await devToolsPage.waitFor(propertiesSectionSelector), devToolsPage);
+        await getDisplayedCSSPropertyNames(devToolsPage, await devToolsPage.waitFor(propertiesSectionSelector));
     assert.sameDeepMembers(
         displayedNames,
         [
@@ -1958,7 +1962,7 @@ describe('The Styles pane', () => {
     await devToolsPage.pasteText('margin-top: 1px; color: red;');
     await devToolsPage.click(propertiesSectionSelector);
     displayedNames =
-        await getDisplayedCSSPropertyNames(await devToolsPage.waitFor(propertiesSectionSelector), devToolsPage);
+        await getDisplayedCSSPropertyNames(devToolsPage, await devToolsPage.waitFor(propertiesSectionSelector));
     assert.sameDeepMembers(
         displayedNames,
         [
@@ -1975,7 +1979,7 @@ describe('The Styles pane', () => {
     await devToolsPage.pasteText('foo: bar; moo: zoo;');
     await devToolsPage.click(propertiesSectionSelector);
     displayedNames =
-        await getDisplayedCSSPropertyNames(await devToolsPage.waitFor(propertiesSectionSelector), devToolsPage);
+        await getDisplayedCSSPropertyNames(devToolsPage, await devToolsPage.waitFor(propertiesSectionSelector));
     assert.sameDeepMembers(
         displayedNames,
         [
@@ -2007,10 +2011,10 @@ describe('The Styles pane', () => {
       </style>
       <div id="inspected">Text</div>
       <div id="other"></div>`);
-    await waitForElementsStyleSection(undefined, devToolsPage);
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
 
-    let propertiesSection = await getStyleRule('#inspected', devToolsPage);
+    let propertiesSection = await getStyleRule(devToolsPage, '#inspected');
     let inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
     assert.sameDeepMembers(inspectedRules, ['font-size: 12px;', 'display: block;', 'unicode-bidi: isolate;']);
 
@@ -2021,11 +2025,11 @@ describe('The Styles pane', () => {
     await devToolsPage.pressKey('Enter');
 
     // Select another node (#other)
-    await waitForAndClickTreeElementWithPartialText('other', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'other');
 
     // Selected #inspected again
-    await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
-    propertiesSection = await getStyleRule('#inspected', devToolsPage);
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
+    propertiesSection = await getStyleRule(devToolsPage, '#inspected');
     inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
     assert.sameDeepMembers(
         inspectedRules, ['font-size: 12px;', 'color: rgb(1);', 'display: block;', 'unicode-bidi: isolate;']);
@@ -2063,14 +2067,14 @@ describe('The Styles pane', () => {
 
     async function setupAndWaitForFooStylePropertiesSection(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
       await setupAiCompletion(devToolsPage);
-      await goToResourceAndWaitForStyleSection('elements/elements-panel-styles.html', devToolsPage, inspectedPage);
+      await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/elements-panel-styles.html');
       await prepareElementsTab(devToolsPage);
-      await waitForAndClickTreeElementWithPartialText('id=\u200B"container"', devToolsPage);
-      await waitForStyleRule('#container', devToolsPage);
-      await waitForAndClickTreeElementWithPartialText('id=\u200B"foo"', devToolsPage);
-      await waitForStyleRule('.foo', devToolsPage);
+      await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"container"');
+      await waitForStyleRule(devToolsPage, '#container');
+      await waitForAndClickTreeElementWithPartialText(devToolsPage, 'id=\u200B"foo"');
+      await waitForStyleRule(devToolsPage, '.foo');
 
-      const propertiesSection = await getStyleRule('#container .foo', devToolsPage);
+      const propertiesSection = await getStyleRule(devToolsPage, '#container .foo');
       return propertiesSection;
     }
 
@@ -2423,12 +2427,12 @@ describe('The Styles pane', () => {
             <div id="inspected">Text</div>
         </div>
       `);
-      await waitForElementsStyleSection(undefined, devToolsPage);
+      await waitForElementsStyleSection(devToolsPage, undefined);
 
-      await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
+      await waitForAndClickTreeElementWithPartialText(devToolsPage, 'container');
       await expandSelectedNodeRecursively(devToolsPage);
-      await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
-      await waitForStyleRule('#inspected', devToolsPage);
+      await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
+      await waitForStyleRule(devToolsPage, '#inspected');
 
       // dynamically update the stylesheet
       await inspectedPage.evaluate(() => {
@@ -2437,9 +2441,9 @@ describe('The Styles pane', () => {
       });
 
       // re-select the element to update devtools
-      await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+      await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
       await expandSelectedNodeRecursively(devToolsPage);
-      const propertiesSection = await getStyleRule('#inspected', devToolsPage);
+      const propertiesSection = await getStyleRule(devToolsPage, '#inspected');
       await propertiesSection.focus();
 
       await mockAidaCodeComplete(devToolsPage, {
@@ -2473,12 +2477,12 @@ describe('The Styles pane', () => {
         </style>
         <div id="inspected">Text</div>
       `);
-      await waitForElementsStyleSection(undefined, devToolsPage);
+      await waitForElementsStyleSection(devToolsPage, undefined);
 
-      await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
-      await waitForStyleRule('#inspected', devToolsPage);
+      await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
+      await waitForStyleRule(devToolsPage, '#inspected');
 
-      const propertiesSection = await getStyleRule('#inspected', devToolsPage);
+      const propertiesSection = await getStyleRule(devToolsPage, '#inspected');
       await propertiesSection.focus();
 
       // Paste a large block of css properties.
@@ -2489,7 +2493,7 @@ describe('The Styles pane', () => {
       await devToolsPage.page.keyboard.press('Enter');
       await devToolsPage.page.keyboard.press('Escape');
       await devToolsPage.waitForFunction(async () => {
-        const names = await getDisplayedCSSPropertyNames(propertiesSection, devToolsPage);
+        const names = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
         return names.includes('margin') && names.includes('background-image');
       });
 
@@ -2531,12 +2535,12 @@ describe('The Styles pane', () => {
         </style>
         <div id="inspected">Text</div>
       `);
-      await waitForElementsStyleSection(undefined, devToolsPage);
+      await waitForElementsStyleSection(devToolsPage, undefined);
 
-      await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
-      await waitForStyleRule('#inspected', devToolsPage);
+      await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
+      await waitForStyleRule(devToolsPage, '#inspected');
 
-      const propertiesSection = await getStyleRule('#inspected', devToolsPage);
+      const propertiesSection = await getStyleRule(devToolsPage, '#inspected');
       await propertiesSection.focus();
 
       // Delete multiple properties

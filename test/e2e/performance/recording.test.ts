@@ -17,7 +17,7 @@ describe('The Performance panel', function() {
   increaseTimeoutForPerfPanel(this);
 
   it('supports the user manually starting and stopping a recording', async ({devToolsPage, inspectedPage}) => {
-    await navigateToPerformanceTab('empty', devToolsPage, inspectedPage);
+    await navigateToPerformanceTab(devToolsPage, inspectedPage, 'empty');
 
     await startRecording(devToolsPage);
     await stopRecording(devToolsPage);
@@ -28,7 +28,7 @@ describe('The Performance panel', function() {
   });
 
   it('can reload and record a trace', async ({devToolsPage, inspectedPage}) => {
-    await navigateToPerformanceTab('fake-website', devToolsPage, inspectedPage);
+    await navigateToPerformanceTab(devToolsPage, inspectedPage, 'fake-website');
     await reloadAndRecord(devToolsPage);
 
     await devToolsPage.waitForFunction(async () => {
@@ -38,7 +38,7 @@ describe('The Performance panel', function() {
   });
 
   it('can import a stored trace file', async ({devToolsPage, inspectedPage}) => {
-    await navigateToPerformanceTab('empty', devToolsPage, inspectedPage);
+    await navigateToPerformanceTab(devToolsPage, inspectedPage, 'empty');
     await uploadTraceFile(devToolsPage, 'test/e2e/resources/performance/timeline/web.dev-trace.json.gz');
     const canvas = await devToolsPage.waitFor('canvas.flame-chart-canvas');
     // Check that we have rendered the timeline canvas.

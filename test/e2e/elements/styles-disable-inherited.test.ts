@@ -15,9 +15,10 @@ import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 describe('The Elements tab', function() {
   const uncheckStylesPaneCheckbox = async (checkboxLabel: string, devToolsPage: DevToolsPage) => {
-    await expectVeEvents([veImpression(`Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: ${
+    await expectVeEvents(devToolsPage,
+                         [veImpression(`Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: ${
                              checkboxLabel.split(' ')[0]} > Key`)],
-                         undefined, devToolsPage);
+                         undefined);
     await devToolsPage.hover(`.enabled-button[aria-label="${checkboxLabel}"]`);
     await devToolsPage.click(`.enabled-button[aria-label="${checkboxLabel}"]`);
   };
@@ -31,8 +32,8 @@ describe('The Elements tab', function() {
         await devToolsPage.click('text/nested', {
           root: elementsContentPanel,
         });
-        await waitForElementsStyleSection(null, devToolsPage);
-        await checkStyleAttributes(['display: block;', 'font-weight: bold;'], devToolsPage);
+        await waitForElementsStyleSection(devToolsPage, null);
+        await checkStyleAttributes(devToolsPage, ['display: block;', 'font-weight: bold;']);
         await devToolsPage.click('text/container', {
           root: elementsContentPanel,
         });
@@ -40,6 +41,6 @@ describe('The Elements tab', function() {
         await devToolsPage.click('text/nested', {
           root: elementsContentPanel,
         });
-        await checkStyleAttributes(['display: block;'], devToolsPage);
+        await checkStyleAttributes(devToolsPage, ['display: block;']);
       });
 });

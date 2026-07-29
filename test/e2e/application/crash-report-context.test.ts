@@ -32,7 +32,7 @@ describe('The Crash Report Context Page', function() {
   setup({dockingMode: 'undocked'});
 
   async function setupTest(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-    await navigateToApplicationTab('reporting-api', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'reporting-api');
     await inspectedPage.evaluate(async () => {
       await window.crashReport.initialize(1024);
     });
@@ -66,8 +66,8 @@ describe('The Crash Report Context Page', function() {
       window.crashReport.set('test-key', 'test-value');
     });
     await clickCrashReportContext(devToolsPage);
-    const dataGrid = await getDataGrid(undefined, devToolsPage);
-    const innerText = await getInnerTextOfDataGridCells(dataGrid, 1, true, devToolsPage);
+    const dataGrid = await getDataGrid(devToolsPage, undefined);
+    const innerText = await getInnerTextOfDataGridCells(devToolsPage, dataGrid, 1, true);
     assertRowDetails(innerText[0], 'test-key', 'test-value');
   });
 
@@ -78,14 +78,14 @@ describe('The Crash Report Context Page', function() {
       window.crashReport.set('banana', 'yellow');
     });
     await clickCrashReportContext(devToolsPage);
-    const dataGrid = await getDataGrid(undefined, devToolsPage);
-    await getDataGridRows(2, dataGrid, false, devToolsPage);
+    const dataGrid = await getDataGrid(devToolsPage, undefined);
+    await getDataGridRows(devToolsPage, 2, dataGrid, false);
     const toolbar = await devToolsPage.waitFor(TOOLBAR_SELECTOR);
     const filterInput = await devToolsPage.waitFor(FILTER_INPUT_SELECTOR, toolbar);
     await filterInput.click();
     await devToolsPage.typeText('apple');
 
-    const innerText = await getInnerTextOfDataGridCells(dataGrid, 1, true, devToolsPage);
+    const innerText = await getInnerTextOfDataGridCells(devToolsPage, dataGrid, 1, true);
     assertRowDetails(innerText[0], 'apple', 'red');
   });
 
@@ -96,13 +96,13 @@ describe('The Crash Report Context Page', function() {
       window.crashReport.set('banana', 'yellow');
     });
     await clickCrashReportContext(devToolsPage);
-    const dataGrid = await getDataGrid(undefined, devToolsPage);
-    await getDataGridRows(2, dataGrid, false, devToolsPage);
+    const dataGrid = await getDataGrid(devToolsPage, undefined);
+    await getDataGridRows(devToolsPage, 2, dataGrid, false);
     const toolbar = await devToolsPage.waitFor(TOOLBAR_SELECTOR);
     const filterInput = await devToolsPage.waitFor(FILTER_INPUT_SELECTOR, toolbar);
     await filterInput.click();
     await devToolsPage.typeText('red');
-    const innerText = await getInnerTextOfDataGridCells(dataGrid, 1, true, devToolsPage);
+    const innerText = await getInnerTextOfDataGridCells(devToolsPage, dataGrid, 1, true);
     assertRowDetails(innerText[0], 'apple', 'red');
   });
 
@@ -113,8 +113,8 @@ describe('The Crash Report Context Page', function() {
       window.crashReport.set('banana', 'yellow');
     });
     await clickCrashReportContext(devToolsPage);
-    const dataGrid = await getDataGrid(undefined, devToolsPage);
-    const innerTextBeforeDelete = await getInnerTextOfDataGridCells(dataGrid, 2, true, devToolsPage);
+    const dataGrid = await getDataGrid(devToolsPage, undefined);
+    const innerTextBeforeDelete = await getInnerTextOfDataGridCells(devToolsPage, dataGrid, 2, true);
     assertRowDetails(innerTextBeforeDelete[0], 'apple', 'red');
     assertRowDetails(innerTextBeforeDelete[1], 'banana', 'yellow');
     await inspectedPage.evaluate(async () => {
@@ -126,7 +126,7 @@ describe('The Crash Report Context Page', function() {
     // Wait for the deleted entry to be gone from the UI.
     await devToolsPage.waitForNoElementsWithTextContent('apple');
 
-    const innerText = await getInnerTextOfDataGridCells(dataGrid, 1, true, devToolsPage);
+    const innerText = await getInnerTextOfDataGridCells(devToolsPage, dataGrid, 1, true);
     assertRowDetails(innerText[0], 'banana', 'yellow');
   });
 });

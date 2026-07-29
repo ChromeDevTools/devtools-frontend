@@ -35,7 +35,7 @@ export async function closeSecurityTab(devToolsPage: DevToolsPage) {
 }
 
 export async function openSecurityPanelFromMoreTools(devToolsPage: DevToolsPage) {
-  await openPanelViaMoreTools(SECURITY_PANEL_TITLE, devToolsPage);
+  await openPanelViaMoreTools(devToolsPage, SECURITY_PANEL_TITLE);
   await securityTabExists(devToolsPage);
   await securityPanelContentIsLoaded(devToolsPage);
 }

@@ -24,7 +24,7 @@ describe.skip('The Performance panel', function() {
 
   it('can collect a line-level CPU profile without a url and show it in Sources',
      async ({devToolsPage, inspectedPage}) => {
-       await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
+       await navigateToPerformanceTab(devToolsPage, inspectedPage, undefined);
        await inspectedPage.goToResource('../resources/ai_assistance/index.html');
        await startRecording(devToolsPage);
 
@@ -41,7 +41,7 @@ describe.skip('The Performance panel', function() {
        await devToolsPage.waitForMany('.navigator-file-tree-item', 2);
 
        // Quickopen is far more reliable then clicking through the navigator tree. It doesn't play well with evaluated pptr: scripts so we made a proper work.js fixture
-       await openFileWithQuickOpen('work.js', 0, devToolsPage);
+       await openFileWithQuickOpen(devToolsPage, 'work.js', 0);
        // There should be 4+ decorations
        const gutterEls = await devToolsPage.waitForMany('.cm-performanceGutter .cm-gutterElement', 1);
        const gutterTexts = await Promise.all(gutterEls.map(e => e.evaluate(el => el.textContent)));
@@ -49,7 +49,7 @@ describe.skip('The Performance panel', function() {
      });
 
   it('can collect a column-level CPU profile and show it in Sources', async ({devToolsPage, inspectedPage}) => {
-    await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
+    await navigateToPerformanceTab(devToolsPage, inspectedPage, undefined);
     await inspectedPage.goToResource('../resources/ai_assistance/index.html');
     await startRecording(devToolsPage);
     // This script looks bizarre, but we need it to hit the TextUtils.isMinified heuristic of average chars/line > 80.
@@ -64,7 +64,7 @@ describe.skip('The Performance panel', function() {
 
     await devToolsPage.waitForMany('.navigator-file-tree-item', 2);
     // Quicker to use quickopen than click through navigator tree.
-    await openFileWithQuickOpen('minified-work.js', 0, devToolsPage);
+    await openFileWithQuickOpen(devToolsPage, 'minified-work.js', 0);
     const lineNumberText = await (await devToolsPage.waitFor('div.cm-lineNumbers')).evaluate(e => e.innerText);
     // It was pretty-printed.
     assert.strictEqual(lineNumberText, `1

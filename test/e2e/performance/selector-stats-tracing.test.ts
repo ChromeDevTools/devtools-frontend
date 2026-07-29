@@ -36,7 +36,7 @@ async function cssSelectorStatsRecording(
     devToolsPage: DevToolsPage,
     inspectedPage: InspectedPage,
 ) {
-  await navigateToPerformanceTab(testName, devToolsPage, inspectedPage);
+  await navigateToPerformanceTab(devToolsPage, inspectedPage, testName);
   await enableCSSSelectorStats(devToolsPage);
   await startRecording(devToolsPage);
   await inspectedPage.reload();
@@ -58,12 +58,8 @@ describe('The Performance panel', function() {
     );
 
     await navigateToSelectorStatsTab(devToolsPage);
-    const rows = await getDataGridRows(
-        1 /* expectedNumberOfRows*/,
-        undefined /* root*/,
-        false /* matchExactNumberOfRows*/,
-        devToolsPage,
-    );
+    const rows = await getDataGridRows(devToolsPage, 1 /* expectedNumberOfRows*/, undefined /* root*/,
+                                       false /* matchExactNumberOfRows*/);
     assert.isAtLeast(
         rows.length,
         1,
@@ -89,11 +85,7 @@ describe('The Performance panel', function() {
                                            devToolsPage,
                                            inspectedPage,
                                          }) => {
-    await navigateToPerformanceTab(
-        'selectorStats/slow-path-non-match',
-        devToolsPage,
-        inspectedPage,
-    );
+    await navigateToPerformanceTab(devToolsPage, inspectedPage, 'selectorStats/slow-path-non-match');
     await enableCSSSelectorStats(devToolsPage);
     await startRecording(devToolsPage);
 
@@ -111,18 +103,11 @@ describe('The Performance panel', function() {
     await selectorColumnHeader.click();
     await devToolsPage.timeout(100);
 
-    const dataGrid = await getDataGrid(undefined /* root*/, devToolsPage);
-    const dataGridText = await getInnerTextOfDataGridCells(
-        dataGrid,
-        2 /* expectedNumberOfRows */,
-        false /* matchExactNumberOfRows */,
-        devToolsPage,
-    );
+    const dataGrid = await getDataGrid(devToolsPage, undefined /* root*/);
+    const dataGridText = await getInnerTextOfDataGridCells(devToolsPage, dataGrid, 2 /* expectedNumberOfRows */,
+                                                           false /* matchExactNumberOfRows */);
 
-    const dataGridColumns = await getDataGridColumnNames(
-        undefined /* root*/,
-        devToolsPage,
-    );
+    const dataGridColumns = await getDataGridColumnNames(devToolsPage, undefined /* root*/);
     const selectorColumnIndex = dataGridColumns.indexOf('Selector');
     const slowPathColumnIndex = dataGridColumns.indexOf(
         '% of slow-path non-matches',
@@ -152,12 +137,8 @@ describe('The Performance panel', function() {
     // we are just checking whether any rows are rendered. This indicates that the trace events
     // we receive from the backend have the expected object structure. If the structure ever
     // changes, the data grid will fail to render and cause this test to fail.
-    const rows = await getDataGridRows(
-        1 /* expectedNumberOfRows*/,
-        undefined /* root*/,
-        false /* matchExactNumberOfRows*/,
-        devToolsPage,
-    );
+    const rows = await getDataGridRows(devToolsPage, 1 /* expectedNumberOfRows*/, undefined /* root*/,
+                                       false /* matchExactNumberOfRows*/);
     assert.isAtLeast(
         rows.length,
         1,
@@ -169,11 +150,7 @@ describe('The Performance panel', function() {
                                                       devToolsPage,
                                                       inspectedPage,
                                                     }) => {
-    await navigateToPerformanceTab(
-        'selectorStats/css-style-invalidation',
-        devToolsPage,
-        inspectedPage,
-    );
+    await navigateToPerformanceTab(devToolsPage, inspectedPage, 'selectorStats/css-style-invalidation');
     await enableCSSSelectorStats(devToolsPage);
     await startRecording(devToolsPage);
 
@@ -199,13 +176,9 @@ describe('The Performance panel', function() {
     await stopRecording(devToolsPage);
 
     await navigateToSelectorStatsTab(devToolsPage);
-    const dataGrid = await getDataGrid(undefined /* root*/, devToolsPage);
-    const dataGridText = await getInnerTextOfDataGridCells(
-        dataGrid,
-        1 /* expectedNumberOfRows */,
-        false /* matchExactNumberOfRows */,
-        devToolsPage,
-    );
+    const dataGrid = await getDataGrid(devToolsPage, undefined /* root*/);
+    const dataGridText = await getInnerTextOfDataGridCells(devToolsPage, dataGrid, 1 /* expectedNumberOfRows */,
+                                                           false /* matchExactNumberOfRows */);
 
     // the total number of CSS style invalidations
     assert.strictEqual(dataGridText[0][1], '75');

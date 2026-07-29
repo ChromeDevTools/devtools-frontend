@@ -25,7 +25,7 @@ export async function openNetworkTab(devToolsPage: DevToolsPage): Promise<void> 
 /**
  * Select the Network tab in DevTools
  */
-export async function navigateToNetworkTab(testName: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+export async function navigateToNetworkTab(devToolsPage: DevToolsPage, inspectedPage: InspectedPage, testName: string) {
   await inspectedPage.goToResource(`network/${testName}`);
   await openNetworkTab(devToolsPage);
 }
@@ -35,7 +35,7 @@ export async function navigateToNetworkTab(testName: string, devToolsPage: DevTo
  * @param numberOfRequests The expected number of requests to wait for.
  * @param selector Optional. The selector to use to get the list of requests.
  */
-export async function waitForSomeRequestsToAppear(numberOfRequests: number, devToolsPage: DevToolsPage) {
+export async function waitForSomeRequestsToAppear(devToolsPage: DevToolsPage, numberOfRequests: number) {
   await devToolsPage.waitForFunction(async () => {
     const requests = await getAllRequestNames(devToolsPage);
     return requests.length >= numberOfRequests && Boolean(requests.map(name => name ? name.trim() : '').join(''));
@@ -63,8 +63,8 @@ export async function getSelectedRequestName(devToolsPage: DevToolsPage) {
   });
 }
 
-export async function selectRequestByName(
-    name: string, clickOptions: puppeteer.ClickOptions = {}, devToolsPage: DevToolsPage) {
+export async function selectRequestByName(devToolsPage: DevToolsPage, name: string,
+                                          clickOptions: puppeteer.ClickOptions = {}) {
   await devToolsPage.waitForFunction(async () => {
     const requests = await getAllRequestNames(devToolsPage);
     return requests.some(request => request.trim() === name);
@@ -101,22 +101,22 @@ export async function selectRequestByName(
   await devToolsPage.page.mouse.click(x, y, clickOptions);
 }
 
-export async function waitForSelectedRequestChange(initialRequestName: string|null, devToolsPage: DevToolsPage) {
-  await devToolsPage.waitForFunction(async () => {
-    const name = await getSelectedRequestName(devToolsPage);
-    return name !== initialRequestName;
+export async function waitForSelectedRequestChange(devToolsPage: DevToolsPage, initialSelected: string|null) {
+  return await devToolsPage.waitForFunction(async () => {
+    const selected = await getSelectedRequestName(devToolsPage);
+    return selected !== initialSelected ? selected : undefined;
   });
 }
 
-export async function setKeepLog(persist: boolean, devToolsPage: DevToolsPage) {
-  await devToolsPage.setCheckBox('[title="Don’t clear log on page reload / navigation"]', persist);
+export async function setKeepLog(devToolsPage: DevToolsPage, enable: boolean) {
+  await devToolsPage.setCheckBox('[title*="clear log"]', enable);
 }
 
-export async function setCacheDisabled(disabled: boolean, devToolsPage: DevToolsPage): Promise<void> {
-  await devToolsPage.setCheckBox('[title^="Disable cache"]', disabled);
+export async function setCacheDisabled(devToolsPage: DevToolsPage, enable: boolean) {
+  await devToolsPage.setCheckBox('[title^="Disable cache"]', enable);
 }
 
-export async function setInvert(invert: boolean, devToolsPage: DevToolsPage) {
+export async function setInvert(devToolsPage: DevToolsPage, invert: boolean) {
   await devToolsPage.setCheckBox('[title="Invert"]', invert);
 }
 
@@ -130,7 +130,7 @@ export async function clearTimeWindow(devToolsPage: DevToolsPage): Promise<void>
   await overviewGridCursorArea.click({count: 2});
 }
 
-export async function setTextFilter(text: string, devToolsPage: DevToolsPage): Promise<void> {
+export async function setTextFilter(devToolsPage: DevToolsPage, text: string): Promise<void> {
   const toolbarHandle = await devToolsPage.waitFor('.text-filter');
   const input = await devToolsPage.waitForAria('Filter', toolbarHandle);
   await input.focus();
@@ -153,7 +153,7 @@ export async function clearTextFilter(devToolsPage: DevToolsPage): Promise<void>
   }
 }
 
-export async function getTextFromHeadersRow(row: puppeteer.ElementHandle<Element>, devToolsPage: DevToolsPage) {
+export async function getTextFromHeadersRow(devToolsPage: DevToolsPage, row: puppeteer.ElementHandle<Element>) {
   const headerNameElement = await row.waitForSelector('.header-name');
   assert.isOk(headerNameElement);
   const headerNameText = await headerNameElement.evaluate(el => el.textContent || '');

@@ -4,8 +4,8 @@
 
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
-export async function clickOnContextMenuItemFromTab(
-    tabId: string, menuItemSelector: string, devToolsPage: DevToolsPage) {
+export async function clickOnContextMenuItemFromTab(devToolsPage: DevToolsPage, tabId: string,
+                                                    menuItemSelector: string) {
   // Find the selected node, right click.
   await devToolsPage.click(tabId, {clickOptions: {button: 'right'}});
 
@@ -19,17 +19,17 @@ export const MAIN_PANEL_SELECTOR = 'div[class*="main-tabbed-pane"][slot*="main"]
 export const DRAWER_PANEL_SELECTOR = 'div[class*="drawer-tabbed-pane"][slot*="sidebar"]';
 export const TAB_HEADER_SELECTOR = 'div[class*="tabbed-pane-header"]';
 
-export async function tabExistsInMainPanel(tabId: string, devToolsPage: DevToolsPage) {
+export async function tabExistsInMainPanel(devToolsPage: DevToolsPage, tabId: string) {
   const mainPanel = await devToolsPage.waitFor(MAIN_PANEL_SELECTOR);
   await devToolsPage.waitFor(tabId, mainPanel);
 }
 
-export async function tabExistsInDrawer(tabId: string, devToolsPage: DevToolsPage) {
+export async function tabExistsInDrawer(devToolsPage: DevToolsPage, tabId: string) {
   const drawer = await devToolsPage.waitFor(DRAWER_PANEL_SELECTOR);
   await devToolsPage.waitFor(tabId, drawer);
 }
 
-export const checkIfTabExistsInDrawer = async (tabId: string, devToolsPage: DevToolsPage) => {
+export const checkIfTabExistsInDrawer = async (devToolsPage: DevToolsPage, tabId: string) => {
   const drawer = await devToolsPage.waitFor(DRAWER_PANEL_SELECTOR);
   const header = await devToolsPage.waitFor(TAB_HEADER_SELECTOR, drawer);
   const tab = await devToolsPage.waitFor(tabId, header);

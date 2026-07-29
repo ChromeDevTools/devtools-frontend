@@ -19,34 +19,31 @@ import type {InspectedPage} from '../shared/target-helper.js';
 
 async function openAFileWithQuickMenu(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
   await waitForSourceFiles(
-      SourceFileEvents.SOURCE_FILE_LOADED,
-      files => files.some(f => f.endsWith('hello-world.html')),
+      devToolsPage, SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith('hello-world.html')),
       async () => {
         await step('open quick open menu and select the first option', async () => {
           await inspectedPage.goToResource('pages/hello-world.html');
           await openFileQuickOpen(devToolsPage);
-          const firstItem = await getMenuItemAtPosition(0, devToolsPage);
+          const firstItem = await getMenuItemAtPosition(devToolsPage, 0);
           await devToolsPage.clickElement(firstItem);
         });
         await step('check the sources panel is open with the selected file', async () => {
           await devToolsPage.waitFor('.navigator-file-tree-item');
         });
-      },
-      devToolsPage,
-  );
+      });
 }
 
 describe('Quick Open menu', () => {
   it('lists available files', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('pages/hello-world.html');
     await openFileQuickOpen(devToolsPage);
-    const firstItemTitle = await getMenuItemTitleAtPosition(0, devToolsPage);
+    const firstItemTitle = await getMenuItemTitleAtPosition(devToolsPage, 0);
     assert.strictEqual(firstItemTitle, 'hello-world.html');
   });
 
   it('opens the sources panel when a file is selected', async ({devToolsPage, inspectedPage}) => {
     await openAFileWithQuickMenu(devToolsPage, inspectedPage);
-    await togglePreferenceInSettingsTab('Focus Sources panel when triggering a breakpoint', undefined, devToolsPage);
+    await togglePreferenceInSettingsTab(devToolsPage, 'Focus Sources panel when triggering a breakpoint', undefined);
     await openAFileWithQuickMenu(devToolsPage, inspectedPage);
   });
 
@@ -54,17 +51,17 @@ describe('Quick Open menu', () => {
     await inspectedPage.goToResource('sources/multi-workers-sourcemap.html');
     await openSourcesPanel(devToolsPage);
 
-    await typeIntoQuickOpen('mult', undefined, devToolsPage);
+    await typeIntoQuickOpen(devToolsPage, 'mult', undefined);
     const list = await readQuickOpenResults(devToolsPage);
     assert.deepEqual(list, ['multi-workers.js', 'multi-workers.min.js', 'multi-workers-sourcemap.html']);
   });
 
   it('sorts ignore listed below unignored', async ({devToolsPage, inspectedPage}) => {
-    await setIgnoreListPattern('mycode', devToolsPage);
+    await setIgnoreListPattern(devToolsPage, 'mycode');
     await inspectedPage.goToResource('sources/multi-files.html');
     await openSourcesPanel(devToolsPage);
 
-    await typeIntoQuickOpen('mult', undefined, devToolsPage);
+    await typeIntoQuickOpen(devToolsPage, 'mult', undefined);
     const list = await readQuickOpenResults(devToolsPage);
     assert.deepEqual(list, ['multi-files-thirdparty.js', 'multi-files.html', 'multi-files-mycode.js']);
   });
@@ -73,21 +70,21 @@ describe('Quick Open menu', () => {
     await inspectedPage.goToResource('sources/sourcemap-origin.html');
     await openSourcesPanel(devToolsPage);
 
-    await typeIntoQuickOpen('sourcemap-origin.clash.js', undefined, devToolsPage);
+    await typeIntoQuickOpen(devToolsPage, 'sourcemap-origin.clash.js', undefined);
     const list = await readQuickOpenResults(devToolsPage);
     assert.deepEqual(list, ['sourcemap-origin.clash.js', 'sourcemap-origin.clash.js']);
   });
 
   it('should not list network fetch requests (that are not overidden)', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('network/fetch-json.html');
-    await typeIntoQuickOpen('json', undefined, devToolsPage);
+    await typeIntoQuickOpen(devToolsPage, 'json', undefined);
     const list = await readQuickOpenResults(devToolsPage);
     assert.isFalse(list.includes('coffees.json'));
   });
 
   it('should not list network xhr requests (that are not overidden)', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('network/xhr-json.html');
-    await typeIntoQuickOpen('json', undefined, devToolsPage);
+    await typeIntoQuickOpen(devToolsPage, 'json', undefined);
     const list = await readQuickOpenResults(devToolsPage);
     assert.isFalse(list.includes('coffees.json'));
   });

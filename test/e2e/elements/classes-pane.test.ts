@@ -14,42 +14,42 @@ describe('The Classes pane', () => {
     await inspectedPage.goToResource('elements/simple-styled-page.html');
     await toggleClassesPane(devToolsPage);
 
-    await typeInClassesPaneInput('foo', devToolsPage);
-    await assertSelectedNodeClasses(['foo'], devToolsPage);
+    await typeInClassesPaneInput(devToolsPage, 'foo');
+    await assertSelectedNodeClasses(devToolsPage, ['foo']);
   });
 
   it('can add multiple classes at once', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/simple-styled-page.html');
     await toggleClassesPane(devToolsPage);
 
-    await typeInClassesPaneInput('foo bar', devToolsPage);
-    await assertSelectedNodeClasses(['foo', 'bar'], devToolsPage);
+    await typeInClassesPaneInput(devToolsPage, 'foo bar');
+    await assertSelectedNodeClasses(devToolsPage, ['foo', 'bar']);
   });
 
   it('can toggle classes', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/simple-styled-page.html');
     await toggleClassesPane(devToolsPage);
 
-    await typeInClassesPaneInput('on off', devToolsPage);
-    await assertSelectedNodeClasses(['on', 'off'], devToolsPage);
+    await typeInClassesPaneInput(devToolsPage, 'on off');
+    await assertSelectedNodeClasses(devToolsPage, ['on', 'off']);
 
-    await toggleClassesPaneCheckbox('off', devToolsPage);
-    await assertSelectedNodeClasses(['on'], devToolsPage);
+    await toggleClassesPaneCheckbox(devToolsPage, 'off');
+    await assertSelectedNodeClasses(devToolsPage, ['on']);
 
-    await toggleClassesPaneCheckbox('off', devToolsPage);
-    await assertSelectedNodeClasses(['on', 'off'], devToolsPage);
-    await toggleClassesPaneCheckbox('on', devToolsPage);
-    await assertSelectedNodeClasses(['off'], devToolsPage);
+    await toggleClassesPaneCheckbox(devToolsPage, 'off');
+    await assertSelectedNodeClasses(devToolsPage, ['on', 'off']);
+    await toggleClassesPaneCheckbox(devToolsPage, 'on');
+    await assertSelectedNodeClasses(devToolsPage, ['off']);
   });
 
   it('removes the previewed classes on ESC', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/simple-styled-page.html');
     await toggleClassesPane(devToolsPage);
 
-    await typeInClassesPaneInput('foo', devToolsPage);
-    await typeInClassesPaneInput('bar', devToolsPage, 'Escape', false);
-    await typeInClassesPaneInput('baz', devToolsPage);
+    await typeInClassesPaneInput(devToolsPage, 'foo');
+    await typeInClassesPaneInput(devToolsPage, 'bar', 'Escape', false);
+    await typeInClassesPaneInput(devToolsPage, 'baz');
 
-    await assertSelectedNodeClasses(['foo', 'baz'], devToolsPage);
+    await assertSelectedNodeClasses(devToolsPage, ['foo', 'baz']);
   });
 });

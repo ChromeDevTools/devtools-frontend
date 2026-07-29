@@ -14,7 +14,7 @@ describe('The Issues tab', () => {
        await expandIssue(devToolsPage);
        await revealViolatingSourcesLines(devToolsPage);
 
-       await waitForHighlightedLine(8, devToolsPage);
+       await waitForHighlightedLine(devToolsPage, 8);
      });
 
   it('should highlight the blocked eval call in the Sources panel when the link is clicked',
@@ -25,6 +25,6 @@ describe('The Issues tab', () => {
        await expandIssue(devToolsPage);
        await revealViolatingSourcesLines(devToolsPage);
 
-       await waitForHighlightedLine(8, devToolsPage);
+       await waitForHighlightedLine(devToolsPage, 8);
      });
 });

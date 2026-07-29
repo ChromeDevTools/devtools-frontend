@@ -13,15 +13,15 @@ describe('Browser', () => {
     await inspectedPage.goToResource('cross_tool/default.html');
 
     // Open a few closeable panels
-    await openPanelViaMoreTools('Animations', devToolsPage);
-    await openPanelViaMoreTools('Rendering', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Animations');
+    await openPanelViaMoreTools(devToolsPage, 'Rendering');
 
-    const messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+    const messages = await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined);
     await devToolsPage.closeAllCloseableTabs();
     await inspectedPage.reload();
 
     // Website logs the Date, so it shouldn't be the same
-    const newMessages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+    const newMessages = await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined);
 
     assert.notDeepEqual(messages, newMessages);
   });
@@ -33,8 +33,8 @@ describe('Browser', () => {
     await inspectedPage.goToResource(targetUrl);
 
     // Open a few closeable panels
-    await openPanelViaMoreTools('Animations', devToolsPage);
-    await openPanelViaMoreTools('Rendering', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Animations');
+    await openPanelViaMoreTools(devToolsPage, 'Rendering');
 
     await devToolsPage.closeAllCloseableTabs();
     // Navigate to a different website

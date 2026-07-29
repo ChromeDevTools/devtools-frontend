@@ -55,9 +55,9 @@ describe('Scope View', () => {
 
     await devToolsPage.waitFor(RESUME_BUTTON);
 
-    await inspectMemory('sharedMem', devToolsPage);
+    await inspectMemory(devToolsPage, 'sharedMem');
 
-    const drawerIsOpen = await checkIfTabExistsInDrawer(LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR, devToolsPage);
+    const drawerIsOpen = await checkIfTabExistsInDrawer(devToolsPage, LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR);
     assert.isTrue(drawerIsOpen);
 
     const lmiTabbedPane = await devToolsPage.waitFor(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR);
@@ -74,7 +74,7 @@ describe('Scope View', () => {
       throw new Error('Failed to get tab');
     }
 
-    await inspectMemory('memory2', devToolsPage);
+    await inspectMemory(devToolsPage, 'memory2');
     // Wait until two tabs are open
     await devToolsPage.waitFor(
         `${LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR} + ${LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR}`,
@@ -84,7 +84,7 @@ describe('Scope View', () => {
       return sharedBufferTab.evaluate(e => e.getAttribute('aria-selected') === 'false');
     });
 
-    await inspectMemory('sharedArray', devToolsPage);
+    await inspectMemory(devToolsPage, 'sharedArray');
     // Shared buffer should be selected again
     await devToolsPage.waitForFunction(() => {
       return sharedBufferTab.evaluate(e => e.getAttribute('aria-selected') === 'true');
@@ -103,7 +103,7 @@ describe('Scope View', () => {
     const scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
     assert.deepEqual(scriptLocation, 'memory-worker1.rawresponse:10');
 
-    await inspectMemory('memory1', devToolsPage);
+    await inspectMemory(devToolsPage, 'memory1');
     // Shared buffer tab no longer active
     await devToolsPage.waitForFunction(() => {
       return sharedBufferTab.evaluate(e => e.getAttribute('aria-selected') === 'false');
@@ -114,7 +114,7 @@ describe('Scope View', () => {
       return tabs.length === 3;
     });
 
-    await inspectMemory('sharedArr', devToolsPage);
+    await inspectMemory(devToolsPage, 'sharedArr');
     // Shared buffer tab active again
     await devToolsPage.waitForFunction(() => {
       return sharedBufferTab.evaluate(e => e.getAttribute('aria-selected') === 'true');
@@ -186,18 +186,18 @@ async function openLMI(devToolsPage: DevToolsPage, inspectedPage: InspectedPage)
   const breakpointLine = '0x039';
   const fileName = 'memory.wasm';
 
-  await openSourceCodeEditorForFile('memory.wasm', 'wasm/memory.html', devToolsPage, inspectedPage);
+  await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'memory.wasm', 'wasm/memory.html');
 
-  await addBreakpointForLine(breakpointLine, devToolsPage);
+  await addBreakpointForLine(devToolsPage, breakpointLine);
 
-  await reloadPageAndWaitForSourceFile(fileName, devToolsPage, inspectedPage);
+  await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
 
   await devToolsPage.click('[aria-label="Module"]');
   await devToolsPage.waitFor('[aria-label="Module"][aria-expanded="true"]');
 
   await devToolsPage.waitFor('[data-object-property-name-for-test="memories"][aria-expanded="true"]');
-  await inspectMemory('$imports.memory', devToolsPage);
+  await inspectMemory(devToolsPage, '$imports.memory');
 
-  const drawerIsOpen = await checkIfTabExistsInDrawer(LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR, devToolsPage);
+  const drawerIsOpen = await checkIfTabExistsInDrawer(devToolsPage, LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR);
   assert.isTrue(drawerIsOpen);
 }

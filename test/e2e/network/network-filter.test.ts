@@ -62,7 +62,7 @@ describe('The Network Tab', function() {
   this.timeout(20_000);
 
   it('can filter by text in the log view', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await devToolsPage.typeText('id=9');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
     assert.lengthOf(nodes, 1);
@@ -70,14 +70,14 @@ describe('The Network Tab', function() {
   });
 
   it('can match multiple requests by text in the log view', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await devToolsPage.typeText('svg');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
     assert.lengthOf(nodes, 10);
   });
 
   it('can filter by regex in the log view', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await devToolsPage.typeText('/id=8/');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
     assert.lengthOf(nodes, 1);
@@ -85,7 +85,7 @@ describe('The Network Tab', function() {
   });
 
   it('can match multiple requests by regex in the log view', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await devToolsPage.typeText('/.*/');
     let nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
     assert.isAtLeast(nodes.length, 11);
@@ -102,7 +102,7 @@ describe('The Network Tab', function() {
   });
 
   it('can match no requests by regex in the log view', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await devToolsPage.typeText('/NOTHINGTOMATCH/');
     await devToolsPage.waitForNone('.data-grid-data-grid-node > .name-column');
 
@@ -112,12 +112,12 @@ describe('The Network Tab', function() {
   });
 
   it('can filter by cache status in the log view', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab('resources-from-cache.html', devToolsPage, inspectedPage);
-    await setCacheDisabled(false, devToolsPage);
-    await waitForSomeRequestsToAppear(3, devToolsPage);
-    await setKeepLog(true, devToolsPage);
-    await navigateToNetworkTab('resources-from-cache.html', devToolsPage, inspectedPage);
-    await waitForSomeRequestsToAppear(6, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'resources-from-cache.html');
+    await setCacheDisabled(devToolsPage, false);
+    await waitForSomeRequestsToAppear(devToolsPage, 3);
+    await setKeepLog(devToolsPage, true);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'resources-from-cache.html');
+    await waitForSomeRequestsToAppear(devToolsPage, 6);
 
     await devToolsPage.typeText('-is:from-cache');
     let nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 3);
@@ -130,7 +130,7 @@ describe('The Network Tab', function() {
   });
 
   it('require operator to filter by scheme', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await devToolsPage.typeText('http');
     await devToolsPage.waitForNone('.data-grid-data-grid-node > .name-column');
 
@@ -147,7 +147,7 @@ describe('The Network Tab', function() {
   });
 
   it('can filter by domain without operator', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await devToolsPage.typeText('localhost');
     let nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
     assert.isAtLeast(nodes.length, 11);
@@ -159,7 +159,7 @@ describe('The Network Tab', function() {
   });
 
   it('can filter by partial URL in the log view', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await clearTextFilter(devToolsPage);
     await devToolsPage.typeText(`https://localhost:${inspectedPage.serverPort}`);
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
@@ -167,7 +167,7 @@ describe('The Network Tab', function() {
   });
 
   it('can reverse filter text in the log view', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await devToolsPage.typeText('-id=7');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 10);
     const output = [...RESULTS];
@@ -176,7 +176,7 @@ describe('The Network Tab', function() {
   });
 
   it('can reverse filter regex in the log view', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     await devToolsPage.typeText('-/id=6/');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 10);
     const output = [...RESULTS];
@@ -185,7 +185,7 @@ describe('The Network Tab', function() {
   });
 
   it('can invert text filters', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
     assert.isFalse(await checkboxIsChecked(invertCheckbox));
     await devToolsPage.typeText('id=5');
@@ -201,7 +201,7 @@ describe('The Network Tab', function() {
   });
 
   it('can invert regex filters', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
     assert.isFalse(await checkboxIsChecked(invertCheckbox));
     await devToolsPage.typeText('/id=4/');
@@ -217,7 +217,7 @@ describe('The Network Tab', function() {
   });
 
   it('can invert negated text filters', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
     assert.isFalse(await checkboxIsChecked(invertCheckbox));
     await devToolsPage.typeText('-num=10');
@@ -232,7 +232,7 @@ describe('The Network Tab', function() {
   });
 
   it('can invert negated regex filters', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
     assert.isFalse(await checkboxIsChecked(invertCheckbox));
     await devToolsPage.typeText('-/num=10/');
@@ -247,7 +247,7 @@ describe('The Network Tab', function() {
   });
 
   it('can persist the invert checkbox', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, SIMPLE_PAGE_URL);
     // Start with invert disabled, then enable it.
     {
       const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
@@ -274,12 +274,12 @@ describe('The Network Tab', function() {
 
 describe('The Network Tab', function() {
   it('can show only third-party requests', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab('empty.html', devToolsPage, inspectedPage);
-    await setCacheDisabled(true, devToolsPage);
-    await setKeepLog(false, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'empty.html');
+    await setCacheDisabled(devToolsPage, true);
+    await setKeepLog(devToolsPage, false);
 
-    await navigateToNetworkTab('third-party-resources.html', devToolsPage, inspectedPage);
-    await waitForSomeRequestsToAppear(4, devToolsPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'third-party-resources.html');
+    await waitForSomeRequestsToAppear(devToolsPage, 4);
 
     await openMoreFiltersDropdown(devToolsPage);
 

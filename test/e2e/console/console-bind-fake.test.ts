@@ -28,9 +28,9 @@ describe('The Console Tab', () => {
     // Evaluate 'foo' in the console.
     // Since the override was done in the page, it didn't produce a console message.
     // We expect 1 message after evaluating 'foo;'.
-    await typeIntoConsoleAndWaitForResult('foo;', 1, undefined, devToolsPage);
+    await typeIntoConsoleAndWaitForResult(devToolsPage, 'foo;', 1, undefined);
 
-    const messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+    const messages = await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined);
 
     assert.strictEqual(messages.at(-1), '\'fooValue\'');
   });

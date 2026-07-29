@@ -10,8 +10,8 @@ const LAST_ELEMENT_SELECTOR = '.cm-executionLine > span:last-child';
 
 describe('Sources Tab', function() {
   it('shows correct preview for `object.foo` member expressions', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile('popover.js', 'popover.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine(5, devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'popover.js', 'popover.html');
+    await addBreakpointForLine(devToolsPage, 5);
 
     const scriptEvaluation = inspectedPage.evaluate('f1();');
     await devToolsPage.hover(LAST_ELEMENT_SELECTOR);
@@ -26,8 +26,8 @@ describe('Sources Tab', function() {
   });
 
   it('shows correct preview for `array[1].foo` member expressions', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile('popover.js', 'popover.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine(9, devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'popover.js', 'popover.html');
+    await addBreakpointForLine(devToolsPage, 9);
 
     const scriptEvaluation = inspectedPage.evaluate('f2();');
     await devToolsPage.hover(LAST_ELEMENT_SELECTOR);
@@ -42,8 +42,8 @@ describe('Sources Tab', function() {
   });
 
   it('shows correct preview for `array[i][0]` member expressions', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile('popover.js', 'popover.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine(13, devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'popover.js', 'popover.html');
+    await addBreakpointForLine(devToolsPage, 13);
 
     const scriptEvaluation = inspectedPage.evaluate('f3(3);');
     await devToolsPage.hover(LAST_ELEMENT_SELECTOR);
@@ -58,8 +58,8 @@ describe('Sources Tab', function() {
   });
 
   it('shows correct preview for `this.#x` member expressions in TypeScript', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile('popover-typescript.ts', 'popover-typescript.html', devToolsPage, inspectedPage);
-    await addBreakpointForLine(5, devToolsPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'popover-typescript.ts', 'popover-typescript.html');
+    await addBreakpointForLine(devToolsPage, 5);
 
     const scriptEvaluation = inspectedPage.evaluate('test();');
     await devToolsPage.hover(LAST_ELEMENT_SELECTOR);

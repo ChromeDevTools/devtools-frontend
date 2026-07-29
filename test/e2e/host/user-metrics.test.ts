@@ -173,7 +173,7 @@ describe('User Metrics', () => {
 
   it('dispatches events for views', async ({devToolsPage, inspectedPage}) => {
     await setupInspectorFrontendHostStub(devToolsPage);
-    await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
+    await navigateToPerformanceTab(devToolsPage, inspectedPage, undefined);
 
     await assertHistogramEventsInclude(
         [
@@ -192,7 +192,7 @@ describe('User Metrics', () => {
 
   it('dispatches events for triple dot items', async ({devToolsPage}) => {
     await setupInspectorFrontendHostStub(devToolsPage);
-    await openPanelViaMoreTools('Animations', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Animations');
 
     await assertHistogramEventsInclude(
         [
@@ -207,7 +207,7 @@ describe('User Metrics', () => {
 
   it('dispatches events for opening issues drawer via hamburger menu', async ({devToolsPage}) => {
     await setupInspectorFrontendHostStub(devToolsPage);
-    await openPanelViaMoreTools('Issues', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Issues');
 
     await assertHistogramEventsInclude(
         [
@@ -322,7 +322,7 @@ describe('User Metrics', () => {
 
   it('dispatches an event when experiments are enabled and disabled', async ({devToolsPage}) => {
     await setupInspectorFrontendHostStub(devToolsPage);
-    await openSettingsTab('Experiments', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Experiments');
     const customThemeCheckbox = await devToolsPage.waitFor('[title="Protocol Monitor"]');
     // Enable the experiment
     await customThemeCheckbox.click();
@@ -483,7 +483,7 @@ describe('User metrics for CSS overview', () => {
 describe('User Metrics for Issue Panel', () => {
   it('dispatches an event when a SharedArrayBufferIssue is created', async ({devToolsPage, inspectedPage}) => {
     await setupInspectorFrontendHostStub(devToolsPage);
-    await openPanelViaMoreTools('Issues', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Issues');
     await inspectedPage.goToResource('issues/sab-issue.rawresponse');
     await devToolsPage.waitFor('.issue');
 
@@ -508,7 +508,7 @@ describe('User Metrics for Issue Panel', () => {
 
   it('dispatch events when a link to an element is clicked', async ({devToolsPage, inspectedPage}) => {
     await setupInspectorFrontendHostStub(devToolsPage);
-    await openPanelViaMoreTools('Issues', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Issues');
     await inspectedPage.goToResource('elements/element-reveal-inline-issue.html');
     await devToolsPage.click('.issue');
 
@@ -541,7 +541,7 @@ describe('User Metrics for Issue Panel', () => {
 
   it('dispatches events when Quirks Mode issues are created', async ({devToolsPage, inspectedPage}) => {
     await setupInspectorFrontendHostStub(devToolsPage);
-    await openPanelViaMoreTools('Issues', devToolsPage);
+    await openPanelViaMoreTools(devToolsPage, 'Issues');
     await inspectedPage.goToResource('elements/quirks-mode-iframes.html');
     await devToolsPage.waitFor('.issue');
 
@@ -563,7 +563,7 @@ describe('User Metrics for Issue Panel', () => {
   it('dispatches an event when a Client Hints are used with invalid origin for DelegateCH',
      async ({devToolsPage, inspectedPage}) => {
        await setupInspectorFrontendHostStub(devToolsPage);
-       await openPanelViaMoreTools('Issues', devToolsPage);
+       await openPanelViaMoreTools(devToolsPage, 'Issues');
        await inspectedPage.goToResource('issues/client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html');
        await devToolsPage.waitFor('.issue');
 
@@ -581,7 +581,7 @@ describe('User Metrics for Issue Panel', () => {
   it('dispatches an event when a Client Hints are modified by javascript for DelegateCH',
      async ({devToolsPage, inspectedPage}) => {
        await setupInspectorFrontendHostStub(devToolsPage);
-       await openPanelViaMoreTools('Issues', devToolsPage);
+       await openPanelViaMoreTools(devToolsPage, 'Issues');
        await inspectedPage.goToResource('issues/client-hint-issue-DelegateCH-MetaTagModifiedHTML.html');
        await devToolsPage.waitFor('.issue');
 
@@ -599,7 +599,7 @@ describe('User Metrics for Issue Panel', () => {
   it('dispatches an event when a ElementAccessibility DisallowedSelectChild issue is created',
      async ({devToolsPage, inspectedPage}) => {
        await setupInspectorFrontendHostStub(devToolsPage);
-       await openPanelViaMoreTools('Issues', devToolsPage);
+       await openPanelViaMoreTools(devToolsPage, 'Issues');
        await inspectedPage.goToResource('issues/select-element-accessibility-issue-DisallowedSelectChild.html');
        await devToolsPage.waitFor('.issue');
 
@@ -617,7 +617,7 @@ describe('User Metrics for Issue Panel', () => {
   it('dispatches an event when a ElementAccessibility DisallowedOptGroupChild issue is created',
      async ({devToolsPage, inspectedPage}) => {
        await setupInspectorFrontendHostStub(devToolsPage);
-       await openPanelViaMoreTools('Issues', devToolsPage);
+       await openPanelViaMoreTools(devToolsPage, 'Issues');
        await inspectedPage.goToResource('issues/select-element-accessibility-issue-DisallowedOptGroupChild.html');
        await devToolsPage.waitFor('.issue');
 
@@ -635,7 +635,7 @@ describe('User Metrics for Issue Panel', () => {
   it('dispatches an event when a ElementAccessibility NonPhrasingContentOptionChild issue is created',
      async ({devToolsPage, inspectedPage}) => {
        await setupInspectorFrontendHostStub(devToolsPage);
-       await openPanelViaMoreTools('Issues', devToolsPage);
+       await openPanelViaMoreTools(devToolsPage, 'Issues');
        await inspectedPage.goToResource('issues/select-element-accessibility-issue-NonPhrasingContentOptionChild.html');
        await devToolsPage.waitFor('.issue');
 
@@ -653,7 +653,7 @@ describe('User Metrics for Issue Panel', () => {
   it('dispatches an event when a ElementAccessibility InteractiveContentOptionChild issue is created',
      async ({devToolsPage, inspectedPage}) => {
        await setupInspectorFrontendHostStub(devToolsPage);
-       await openPanelViaMoreTools('Issues', devToolsPage);
+       await openPanelViaMoreTools(devToolsPage, 'Issues');
        await inspectedPage.goToResource('issues/select-element-accessibility-issue-InteractiveContentOptionChild.html');
        await devToolsPage.waitFor('.issue');
 
@@ -671,7 +671,7 @@ describe('User Metrics for Issue Panel', () => {
   it('dispatches an event when a ElementAccessibility InteractiveContentLegendChild issue is created',
      async ({devToolsPage, inspectedPage}) => {
        await setupInspectorFrontendHostStub(devToolsPage);
-       await openPanelViaMoreTools('Issues', devToolsPage);
+       await openPanelViaMoreTools(devToolsPage, 'Issues');
        await inspectedPage.goToResource('issues/select-element-accessibility-issue-InteractiveContentLegendChild.html');
        await devToolsPage.waitFor('.issue');
 
@@ -689,7 +689,7 @@ describe('User Metrics for Issue Panel', () => {
   it('dispatches an event when a ElementAccessibility InteractiveContentSummaryDescendant issue is created',
      async ({devToolsPage, inspectedPage}) => {
        await setupInspectorFrontendHostStub(devToolsPage);
-       await openPanelViaMoreTools('Issues', devToolsPage);
+       await openPanelViaMoreTools(devToolsPage, 'Issues');
        await inspectedPage.goToResource(
            'issues/summary-element-accessibility-issue-InteractiveContentSummaryDescendant.html');
        await devToolsPage.waitFor('.issue');
@@ -710,18 +710,18 @@ describe('User Metrics for CSS custom properties in the Styles pane', () => {
   async function setupTest(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await setupInspectorFrontendHostStub(devToolsPage);
     await inspectedPage.goToResource('elements/css-variables.html');
-    await navigateToSidePane('Styles', devToolsPage);
-    await waitForElementsStyleSection(undefined, devToolsPage);
+    await navigateToSidePane(devToolsPage, 'Styles');
+    await waitForElementsStyleSection(devToolsPage, undefined);
     await focusElementsTree(devToolsPage);
   }
 
   it('dispatch events when custom property link is clicked', async ({devToolsPage, inspectedPage}) => {
     await setupTest(devToolsPage, inspectedPage);
     await devToolsPage.page.keyboard.press('ArrowRight');
-    await waitForContentOfSelectedElementsNode(
-        '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage,
+                                               '<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
 
-    const testElementRule = await getStyleRule('#properties-to-inspect', devToolsPage);
+    const testElementRule = await getStyleRule(devToolsPage, '#properties-to-inspect');
     await devToolsPage.click('.link-swatch-link', {root: testElementRule});
     await assertHistogramEventsInclude(
         [
@@ -736,7 +736,7 @@ describe('User Metrics for CSS custom properties in the Styles pane', () => {
 
   it('dispatch events when a custom property value is edited', async ({devToolsPage, inspectedPage}) => {
     await setupTest(devToolsPage, inspectedPage);
-    await editCSSProperty('body, body', '--color', '#f06', devToolsPage);
+    await editCSSProperty(devToolsPage, 'body, body', '--color', '#f06');
     await assertHistogramEventsInclude(
         [
           {
@@ -825,7 +825,7 @@ describe('User Metrics for clicking stylesheet request initiators', () => {
           await element.evaluate(e => e.classList.contains('devtools-link')),
           'Clicked element was not a devtools link');
     }
-    await navigateToNetworkTab('stylesheet-resources.html', devToolsPage, inspectedPage);
+    await navigateToNetworkTab(devToolsPage, inspectedPage, 'stylesheet-resources.html');
 
     await clickOnInitiatorLink('missing.css');
     await waitForHistogramEvent(

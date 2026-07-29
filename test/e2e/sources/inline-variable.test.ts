@@ -19,7 +19,7 @@ async function waitForInlineVariables(devToolsPage: DevToolsPage, count: number)
 
 describe('Sources Tab', function() {
   it('shows correct inline variable at definition', async ({devToolsPage, inspectedPage}) => {
-    await openSourceCodeEditorForFile('inline-variable.js', 'inline-variable.html', devToolsPage, inspectedPage);
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'inline-variable.js', 'inline-variable.html');
 
     // For each step, which inline variables we expect CodeMirror to show.
     const expectedInlineVariables: string[][] = [
@@ -65,8 +65,8 @@ describe('Sources Tab', function() {
 
   it('shows correct inline variables for same-named variables in different functions',
      async ({devToolsPage, inspectedPage}) => {
-       await openSourceCodeEditorForFile(
-           'inline-variable-frames.js', 'inline-variable-frames.html', devToolsPage, inspectedPage);
+       await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'inline-variable-frames.js',
+                                         'inline-variable-frames.html');
 
        // For each step, which inline variables we expect CodeMirror to show.
        const expectedInlineVariables: string[][] = [

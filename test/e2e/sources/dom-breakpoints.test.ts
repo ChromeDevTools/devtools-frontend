@@ -30,14 +30,14 @@ async function waitForDOMBreakpointCount(expectedCount: number, devToolsPage: De
 describe('DOM Breakpoints', () => {
   it('persists subtree modifications DOM breakpoint state between page reloads',
      async ({devToolsPage, inspectedPage}) => {
-       await goToResourceAndWaitForStyleSection('sources/dom-breakpoints.html', devToolsPage, inspectedPage);
-       await findElementById('rootElement', devToolsPage);
-       await setDOMBreakpointOnSelectedNode('subtree modifications', devToolsPage);
+       await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'sources/dom-breakpoints.html');
+       await findElementById(devToolsPage, 'rootElement');
+       await setDOMBreakpointOnSelectedNode(devToolsPage, 'subtree modifications');
 
        await waitForElementsDOMBreakpointsSection(devToolsPage);
        await waitForDOMBreakpointCount(1, devToolsPage);
        const breakpoints = await devToolsPage.$$('.breakpoint-entry');
-       assert.isTrue(await isDOMBreakpointEnabled(breakpoints[0], devToolsPage));
+       assert.isTrue(await isDOMBreakpointEnabled(devToolsPage, breakpoints[0]));
 
        await inspectedPage.reload();
        await waitForElementsDOMBreakpointsSection(devToolsPage);
@@ -59,15 +59,15 @@ describe('DOM Breakpoints', () => {
 
   it('pauses on subtree modifications DOM breakpoint set on shadow root when a child is appended',
      async ({devToolsPage, inspectedPage}) => {
-       await goToResourceAndWaitForStyleSection('sources/dom-breakpoints.html', devToolsPage, inspectedPage);
-       await findElementById('outerElement', devToolsPage);
+       await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'sources/dom-breakpoints.html');
+       await findElementById(devToolsPage, 'outerElement');
        await devToolsPage.pressKey('ArrowUp');
-       await setDOMBreakpointOnSelectedNode('subtree modifications', devToolsPage);
+       await setDOMBreakpointOnSelectedNode(devToolsPage, 'subtree modifications');
 
        await waitForElementsDOMBreakpointsSection(devToolsPage);
        await waitForDOMBreakpointCount(1, devToolsPage);
        const breakpoints = await devToolsPage.$$('.breakpoint-entry');
-       assert.isTrue(await isDOMBreakpointEnabled(breakpoints[0], devToolsPage));
+       assert.isTrue(await isDOMBreakpointEnabled(devToolsPage, breakpoints[0]));
 
        const scriptPromise = inspectedPage.evaluate(() => {
          appendElementToOpenShadowRoot('childElement');
@@ -85,14 +85,14 @@ describe('DOM Breakpoints', () => {
      });
 
   it('persists shadow DOM breakpoints between page reloads', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('sources/dom-breakpoints.html', devToolsPage, inspectedPage);
-    await findElementById('outerElement', devToolsPage);
-    await setDOMBreakpointOnSelectedNode('subtree modifications', devToolsPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'sources/dom-breakpoints.html');
+    await findElementById(devToolsPage, 'outerElement');
+    await setDOMBreakpointOnSelectedNode(devToolsPage, 'subtree modifications');
 
     await waitForElementsDOMBreakpointsSection(devToolsPage);
     await waitForDOMBreakpointCount(1, devToolsPage);
     const breakpoints = await devToolsPage.$$('.breakpoint-entry');
-    assert.isTrue(await isDOMBreakpointEnabled(breakpoints[0], devToolsPage));
+    assert.isTrue(await isDOMBreakpointEnabled(devToolsPage, breakpoints[0]));
 
     await inspectedPage.reload();
     await waitForElementsDOMBreakpointsSection(devToolsPage);

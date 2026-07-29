@@ -58,11 +58,11 @@ describe('Cors Local Network issues', () => {
 
     await expandIssue(devToolsPage);
     const issueElement =
-        await getIssueByTitle('Ensure that local network requests are compatible with restrictions', devToolsPage);
+        await getIssueByTitle(devToolsPage, 'Ensure that local network requests are compatible with restrictions');
     assert.isOk(issueElement);
     const section =
-        await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+        await getResourcesElement(devToolsPage, '2 requests', issueElement, '.cors-issue-affected-resource-label');
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
 
     const expectedTableRows = [
       [
@@ -87,7 +87,7 @@ describe('Cors Local Network issues', () => {
         'insecure',
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 
   it('should display correct information for secure contexts', async ({devToolsPage, inspectedPage}) => {
@@ -134,11 +134,11 @@ describe('Cors Local Network issues', () => {
 
     await expandIssue(devToolsPage);
     const issueElement =
-        await getIssueByTitle('Ensure that local network requests are compatible with restrictions', devToolsPage);
+        await getIssueByTitle(devToolsPage, 'Ensure that local network requests are compatible with restrictions');
     assert.isOk(issueElement);
     const section =
-        await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
-    await ensureResourceSectionIsExpanded(section, devToolsPage);
+        await getResourcesElement(devToolsPage, '2 requests', issueElement, '.cors-issue-affected-resource-label');
+    await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [
       [
         'Request',
@@ -162,6 +162,6 @@ describe('Cors Local Network issues', () => {
         'secure',
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
+    await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
   });
 });

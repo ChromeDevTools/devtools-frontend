@@ -15,15 +15,15 @@ import type {InspectedPage} from '../shared/target-helper.js';
 describe('Event listeners in the elements sidebar', () => {
   const loadEventListenersAndSelectButtonNode = async (devToolsPage: DevToolsPage, inspectedPage: InspectedPage) => {
     await inspectedPage.goToResource('elements/sidebar-event-listeners.html');
-    await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForElementsStyleSection(devToolsPage, undefined);
 
     // Wait for element to be expanded
     await waitForSelectedNodeToBeExpanded(devToolsPage);
 
     // Select the button that has the events and make sure it's selected
     await devToolsPage.page.keyboard.press('ArrowRight');
-    await waitForContentOfSelectedElementsNode(
-        '<button id=\u200B"test-button">\u200Bhello world\u200B</button>\u200B', devToolsPage);
+    await waitForContentOfSelectedElementsNode(devToolsPage,
+                                               '<button id=\u200B"test-button">\u200Bhello world\u200B</button>\u200B');
   };
 
   const EVENT_LISTENERS_PANEL_LINK = '[aria-label="Event Listeners"]';

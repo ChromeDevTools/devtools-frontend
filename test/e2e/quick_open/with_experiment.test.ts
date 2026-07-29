@@ -12,11 +12,11 @@ describe('Quick Open menu with just-my-code setting', () => {
   setup({devToolsSettings: {'navigator-just-my-code': true}});
 
   it('does not list ignore-listed files', async ({devToolsPage, inspectedPage}) => {
-    await setIgnoreListPattern('workers.js', devToolsPage);
+    await setIgnoreListPattern(devToolsPage, 'workers.js');
     await inspectedPage.goToResource('sources/multi-workers-sourcemap.html');
     await openSourcesPanel(devToolsPage);
 
-    await typeIntoQuickOpen('mult', undefined, devToolsPage);
+    await typeIntoQuickOpen(devToolsPage, 'mult', undefined);
     const list = await readQuickOpenResults(devToolsPage);
     assert.deepEqual(list, ['multi-workers.min.js', 'multi-workers-sourcemap.html']);
   });

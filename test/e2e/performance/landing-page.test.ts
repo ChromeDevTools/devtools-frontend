@@ -124,7 +124,7 @@ describe('The Performance panel landing page', function() {
 
       // Reload DevTools to inject new listeners after content is loaded
       await devToolsPage.reload();
-      await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
+      await navigateToPerformanceTab(devToolsPage, inspectedPage, undefined);
 
       // An execution context will be created once the web vitals library has been injected
       await executionContextPromise;
@@ -424,8 +424,8 @@ describe('The Performance panel landing page', function() {
 
       await devToolsPage.click('.log-extra-details-button', {root: interaction});
 
-      await tabExistsInDrawer('#tab-console-view', devToolsPage);
-      const messages = await getCurrentConsoleMessages(undefined, undefined, undefined, devToolsPage);
+      await tabExistsInDrawer(devToolsPage, '#tab-console-view');
+      const messages = await getCurrentConsoleMessages(devToolsPage, undefined, undefined, undefined);
       assert.lengthOf(messages, 4);
       assert.match(messages[0], /^\[DevTools\] Long animation frames for \d+ms pointer interaction$/);
       assert.strictEqual(messages[1], 'Scripts:');
@@ -475,10 +475,10 @@ describe('The Performance panel landing page', function() {
 
       // For redundancy, ensure the button node is removed from the memory heap
       await navigateToMemoryTab(devToolsPage);
-      await takeHeapSnapshot(undefined, devToolsPage);
+      await takeHeapSnapshot(devToolsPage, undefined);
       await waitForNonEmptyHeapSnapshotData(devToolsPage);
-      await setClassFilter('Detached <button>', devToolsPage);
-      const row = await getCategoryRow('Detached <button>', false, devToolsPage);
+      await setClassFilter(devToolsPage, 'Detached <button>');
+      const row = await getCategoryRow(devToolsPage, 'Detached <button>', false);
       assert.isNull(row);
     } finally {
       await inspectedPageSession.detach();

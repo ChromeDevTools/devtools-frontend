@@ -31,7 +31,7 @@ describe('console.time', () => {
 
     await devToolsPage.waitForFunction(async function() {
       try {
-        let messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
+        let messages = await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined);
         messages = messages.map(message => message.replace(/\d+\.\d+ ?ms/, '<time>'));
         assert.deepEqual(messages, ['default: <time>', '42: <time>', '239: <time>', '[object Object]: <time>']);
         return true;

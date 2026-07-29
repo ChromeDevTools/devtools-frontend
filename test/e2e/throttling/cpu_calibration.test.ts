@@ -8,7 +8,7 @@ import {openSettingsTab} from '../helpers/settings-helpers.js';
 
 describe('CPU Calibration', () => {
   it('works', async ({devToolsPage}) => {
-    await openSettingsTab('Throttling', devToolsPage);
+    await openSettingsTab(devToolsPage, 'Throttling');
 
     assert.deepEqual(
         await devToolsPage.getAllTextContents('.cpu-preset-result'), ['Needs calibration', 'Needs calibration']);

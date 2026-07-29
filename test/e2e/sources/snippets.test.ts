@@ -23,7 +23,7 @@ describe('Snippets', function() {
     const treeItemNames = await Promise.all(treeItems.map(x => x.evaluate(y => y.textContent)));
     assert.deepEqual(treeItemNames, ['file@name']);
 
-    await openSoftContextMenuAndClickOnItem('[aria-label="file@name, file"]', 'Remove', devToolsPage);
+    await openSoftContextMenuAndClickOnItem(devToolsPage, '[aria-label="file@name, file"]', 'Remove');
 
     treeItems = await devToolsPage.$$('.navigator-file-tree-item');
     assert.lengthOf(treeItems, 0);

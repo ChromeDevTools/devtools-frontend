@@ -70,9 +70,9 @@ describe('The Application Tab', () => {
 
   it('shows details for a frame when clicked on in the frame tree', async ({devToolsPage, inspectedPage}) => {
     expectError('Request Network.enableDeviceBoundSessions failed. {"code":-32603,"message":"Internal error"}');
-    await navigateToApplicationTab('frame-tree', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'frame-tree');
     await devToolsPage.click('#tab-resources');
-    await navigateToFrame('top', devToolsPage);
+    await navigateToFrame(devToolsPage, 'top');
 
     const fieldValuesTextContent = await devToolsPage.waitForFunction(() => getFieldValuesTextContent(devToolsPage));
     const expected = [
@@ -95,16 +95,16 @@ describe('The Application Tab', () => {
 
   it('shows stack traces for OOPIF', async ({devToolsPage, inspectedPage}) => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
-    await navigateToApplicationTab('js-oopif', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'js-oopif');
     await devToolsPage.waitForFunction(async () => {
-      await navigateToFrame('top', devToolsPage);
-      await navigateToFrame('iframe.html', devToolsPage);
+      await navigateToFrame(devToolsPage, 'top');
+      await navigateToFrame(devToolsPage, 'iframe.html');
       return (await devToolsPage.$$(EXPAND_STACKTRACE_BUTTON_SELECTOR)).length === 1;
     });
     const stackTraceRowsTextContent = await devToolsPage.waitForFunction(async () => {
       await ensureApplicationPanel(devToolsPage);
       await devToolsPage.click(EXPAND_STACKTRACE_BUTTON_SELECTOR);
-      const stackTraceRows = await getTrimmedTextContent(STACKTRACE_ROW_SELECTOR, devToolsPage);
+      const stackTraceRows = await getTrimmedTextContent(devToolsPage, STACKTRACE_ROW_SELECTOR);
       // Make sure the length is equivalent to the expected value below
       if (stackTraceRows.length === 3) {
         return stackTraceRows;
@@ -123,11 +123,11 @@ describe('The Application Tab', () => {
      async ({devToolsPage, inspectedPage}) => {
        expectError(
            'Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
-       await setIgnoreListPattern('js-oopif.js', devToolsPage);
-       await navigateToApplicationTab('js-oopif', devToolsPage, inspectedPage);
+       await setIgnoreListPattern(devToolsPage, 'js-oopif.js');
+       await navigateToApplicationTab(devToolsPage, inspectedPage, 'js-oopif');
        await devToolsPage.waitForFunction(async () => {
-         await navigateToFrame('top', devToolsPage);
-         await navigateToFrame('iframe.html', devToolsPage);
+         await navigateToFrame(devToolsPage, 'top');
+         await navigateToFrame(devToolsPage, 'iframe.html');
          return (await devToolsPage.$$(EXPAND_STACKTRACE_BUTTON_SELECTOR)).length === 1;
        });
        let stackTraceRowsTextContent = await devToolsPage.waitForFunction(async () => {
@@ -187,9 +187,9 @@ describe('The Application Tab', () => {
 
   it('shows details for opened windows in the frame tree', async ({devToolsPage, inspectedPage}) => {
     expectError('Request Network.enableDeviceBoundSessions failed. {"code":-32603,"message":"Internal error"}');
-    await navigateToApplicationTab('frame-tree', devToolsPage, inspectedPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'frame-tree');
     await devToolsPage.click('#tab-resources');
-    await navigateToFrame('top', devToolsPage);
+    await navigateToFrame(devToolsPage, 'top');
 
     await inspectedPage.evaluate(() => {
       window.iFrameWindow = window.open('iframe.html');
@@ -204,7 +204,7 @@ describe('The Application Tab', () => {
     void devToolsPage.pressKey('ArrowDown');
 
     const fieldValuesTextContent = await devToolsPage.waitForFunction(async () => {
-      const fieldValues = await getTrimmedTextContent('.report-field-value', devToolsPage);
+      const fieldValues = await getTrimmedTextContent(devToolsPage, '.report-field-value');
       // Make sure the length is equivalent to the expected value below
       if (fieldValues.length === 3 && !fieldValues.includes('')) {
         return fieldValues;
@@ -226,8 +226,8 @@ describe('The Application Tab', () => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     expectError('Request Network.enableDeviceBoundSessions failed. {"code":-32603,"message":"Internal error"}');
     expectError('Request Network.enableDeviceBoundSessions failed. {"code":-32603,"message":"Internal error"}');
-    await navigateToApplicationTab('frame-tree', devToolsPage, inspectedPage);
-    await navigateToFrame('top', devToolsPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'frame-tree');
+    await navigateToFrame(devToolsPage, 'top');
     // DevTools is not ready yet when the worker is being initially attached.
     // We therefore need to reload the page to see the worker in DevTools.
     await inspectedPage.reload();
@@ -235,7 +235,7 @@ describe('The Application Tab', () => {
     void devToolsPage.pressKey('ArrowDown');
 
     const fieldValuesTextContent = await devToolsPage.waitForFunction(async () => {
-      const fieldValues = await getTrimmedTextContent('.report-field-value', devToolsPage);
+      const fieldValues = await getTrimmedTextContent(devToolsPage, '.report-field-value');
       // Make sure the length is equivalent to the expected value below
       if (fieldValues.length === 3 && fieldValues.every(field => field.trim() !== '')) {
         return fieldValues;
@@ -253,12 +253,12 @@ describe('The Application Tab', () => {
   it('shows service workers in the frame tree', async ({devToolsPage, inspectedPage}) => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     expectError('Request Network.enableDeviceBoundSessions failed. {"code":-32603,"message":"Internal error"}');
-    await navigateToApplicationTab('service-worker-network', devToolsPage, inspectedPage);
-    await navigateToFrameServiceWorkers('top', devToolsPage);
+    await navigateToApplicationTab(devToolsPage, inspectedPage, 'service-worker-network');
+    await navigateToFrameServiceWorkers(devToolsPage, 'top');
     void devToolsPage.pressKey('ArrowDown');
 
     const fieldValuesTextContent = await devToolsPage.waitForFunction(async () => {
-      const fieldValues = await getTrimmedTextContent('.report-field-value', devToolsPage);
+      const fieldValues = await getTrimmedTextContent(devToolsPage, '.report-field-value');
       // Make sure the length is equivalent to the expected value below
       if (fieldValues.length === 3 && fieldValues.every(field => field.trim() !== '')) {
         return fieldValues;
@@ -282,8 +282,8 @@ describe('The Application Tab', () => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     await inspectedPage.goToResource('application/main-frame.html');
     await devToolsPage.click('#tab-resources');
-    await navigateToFrame('top', devToolsPage);
-    await navigateToFrame('frameId (iframe.html)', devToolsPage);
+    await navigateToFrame(devToolsPage, 'top');
+    await navigateToFrame(devToolsPage, 'frameId (iframe.html)');
 
     // check iframe's URL after pageload
     const fieldValuesTextContent = await devToolsPage.waitForFunction(() => getFieldValuesTextContent(devToolsPage));
@@ -319,7 +319,7 @@ describe('The Application Tab', () => {
     });
 
     // check that iframe's URL has changed
-    await navigateToFrame('frameId (main-frame.html)', devToolsPage);
+    await navigateToFrame(devToolsPage, 'frameId (main-frame.html)');
     const fieldValuesTextContent2 = await devToolsPage.waitForFunction(() => getFieldValuesTextContent(devToolsPage));
     const expected2 = [
       `${inspectedPage.getResourcesPath()}/application/main-frame.html`,

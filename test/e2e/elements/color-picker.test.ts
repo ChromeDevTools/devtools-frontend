@@ -8,9 +8,9 @@ import {getColorSwatch, goToResourceAndWaitForStyleSection} from '../helpers/ele
 
 describe('ColorPicker', () => {
   it('scrolls to the bottom when previewing palettes', async ({devToolsPage, inspectedPage}) => {
-    await goToResourceAndWaitForStyleSection('elements/css-variables-many.html', devToolsPage, inspectedPage);
+    await goToResourceAndWaitForStyleSection(devToolsPage, inspectedPage, 'elements/css-variables-many.html');
 
-    const swatch = await devToolsPage.waitForFunction(() => getColorSwatch(/* parent*/ undefined, 0, devToolsPage));
+    const swatch = await devToolsPage.waitForFunction(() => getColorSwatch(devToolsPage, /* parent*/ undefined, 0));
     await devToolsPage.clickElement(swatch);
 
     const panel = await devToolsPage.waitFor('.palette-panel');

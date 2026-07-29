@@ -6,6 +6,7 @@ import {assert} from 'chai';
 
 import {
   assertElements,
+  assertScreenshot,
   getElementsWithinComponent,
   getElementWithinComponent,
   getEventPromise,
@@ -193,5 +194,34 @@ describe('LinearMemoryNavigator', () => {
         getElementWithinComponent(component, NAVIGATOR_REFRESH_BUTTON_SELECTOR, Buttons.Button.Button);
 
     assert.strictEqual(refreshButton.getAttribute('title'), 'Refresh');
+  });
+});
+
+describe('LinearMemoryNavigator Screenshots', () => {
+  setupLocaleHooks();
+  let component: LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator;
+
+  it('renders correctly', async () => {
+    component = new LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator();
+    renderElementIntoDOM(component, {
+      width: 400,
+      height: 'var(--sys-size-15)',
+      includeCommonStyles: true,
+    });
+
+    component.data = {
+      address: '20',
+      valid: true,
+      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.SUBMITTED,
+      error: undefined,
+      canGoBackInHistory: true,
+      canGoForwardInHistory: true,
+    };
+
+    const style = document.createElement('style');
+    style.textContent = 'input { font-family: ahem !important; }';
+    component.shadowRoot!.appendChild(style);
+
+    await assertScreenshot('linear_memory_inspector/navigator.png');
   });
 });

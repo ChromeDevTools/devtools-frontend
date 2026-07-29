@@ -3412,7 +3412,8 @@ var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate 
       if (align !== "center" && align !== "right") {
         align = void 0;
       }
-      const dataType = column.getAttribute("type") === "boolean" ? "Boolean" : "String";
+      const typeAttr = column.getAttribute("type");
+      const dataType = typeAttr === "boolean" ? "Boolean" : typeAttr === "numeric" ? "Number" : "String";
       const weight = parseFloat(column.getAttribute("weight") || "") ?? void 0;
       const editable = column.hasAttribute("editable");
       if (editable) {
@@ -3443,7 +3444,6 @@ var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate 
     const visibleColumns = new Set(this.#columns.map(({ id }) => id).filter((id) => !this.#hiddenColumns.has(id)));
     this.#dataGrid.setColumnsVisibility(visibleColumns);
     this.#dataGrid.setEditCallback(hasEditableColumn ? this.#editCallback.bind(this) : void 0, INTERNAL_TOKEN);
-    this.#dataGrid.deleteCallback = this.#deleteCallback.bind(this);
   }
   #needUpdateColumns(mutationList) {
     for (const mutation of mutationList) {
@@ -3637,6 +3637,9 @@ var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate 
     super.addEventListener(...args);
     if (args[0] === "refresh") {
       this.#dataGrid.refreshCallback = this.#refreshCallback.bind(this);
+    }
+    if (args[0] === "delete") {
+      this.#dataGrid.deleteCallback = this.#deleteCallback.bind(this);
     }
   }
   #refreshCallback() {

@@ -7,7 +7,6 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
@@ -91,10 +90,6 @@ const UIStringsNotTranslate = {
      */
     scrollToPrevious: 'Scroll to previous suggestions',
     /**
-     * @description The title of the button that copies the AI-generated response to the clipboard.
-     */
-    copyResponse: 'Copy response',
-    /**
      * @description The error message when the request to the LLM failed for some reason.
      */
     systemError: 'Something unforeseen happened and I can no longer continue. Try your request again and see if that resolves the issue. If this keeps happening, update Chrome to the latest version.',
@@ -126,14 +121,6 @@ const UIStringsNotTranslate = {
      * @description Button text that cancels code execution that may affect the page.
      */
     declineActionRequestApproval: 'Cancel',
-    /**
-     * @description The generic name of the AI agent (do not translate)
-     */
-    ai: 'AI',
-    /**
-     * @description Gemini (do not translate)
-     */
-    gemini: 'Gemini',
     /**
      * @description The fallback text when a step has no title yet
      */
@@ -420,7 +407,6 @@ const UIStringsNotTranslate = {
     inspectedFileNames: 'Inspected file names',
 };
 export const DEFAULT_VIEW = (input, output, target) => {
-    const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
     const message = input.message;
     if (message.entity === "user" /* ChatMessageEntity.USER */) {
         const imageInput = message.imageInput && 'inlineData' in message.imageInput ?
@@ -431,18 +417,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
             query: true,
             'is-last-message': input.isLastMessage,
             'is-first-message': input.isFirstMessage,
-            'ai-v2': hasAiV2,
-        });
-        const userQueryWrapperClasses = Lit.Directives.classMap({
-            // Don't need to style at all unless we are on the V2 flag.
-            // Once we ship this can be removed entirely.
-            'user-query-wrapper': hasAiV2,
         });
         // clang-format off
         Lit.render(html `
       <style>${Input.textInputStyles}</style>
       <style>${chatMessageStyles}</style>
-      <div class=${userQueryWrapperClasses}>
+      <div class="user-query-wrapper">
         <section class=${messageClasses} jslog=${VisualLogging.section('question')}>
           ${imageInput}
           <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
@@ -453,27 +433,18 @@ export const DEFAULT_VIEW = (input, output, target) => {
         return;
     }
     const steps = message.parts.filter(part => part.type === 'step').map(part => part.step);
-    const icon = AiAssistanceModel.AiUtils.getIconName();
     const messageClasses = Lit.Directives.classMap({
         'chat-message': true,
         answer: true,
         'is-last-message': input.isLastMessage,
         'is-first-message': input.isFirstMessage,
-        'ai-v2': hasAiV2,
     });
     // clang-format off
     Lit.render(html `
     <style>${Input.textInputStyles}</style>
     <style>${chatMessageStyles}</style>
     <section class=${messageClasses} jslog=${VisualLogging.section('answer')}>
-      ${hasAiV2 ? Lit.nothing : html `
-        <div class="message-info">
-          <devtools-icon name=${icon}></devtools-icon>
-          <div class="message-name">
-            <h2>${AiAssistanceModel.AiUtils.isGeminiBranding() ? lockedString(UIStringsNotTranslate.gemini) : lockedString(UIStringsNotTranslate.ai)}</h2>
-          </div>
-        </div>`}
-      ${hasAiV2 ? renderWalkthroughUI(input, steps) : Lit.nothing}
+      ${renderWalkthroughUI(input, steps)}
       <div class="answer-body-wrapper">
         ${Lit.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
         const isLastPart = index === message.parts.length - 1;
@@ -483,20 +454,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
         if (part.type === 'widget') {
             return html `${Lit.Directives.until(renderWidgets(part.widgets, { wrapperClass: 'main-widgets-wrapper' }))}`;
         }
-        if (!hasAiV2 && part.type === 'step') {
-            return renderStep({
-                step: part.step,
-                isLoading: input.isLoading,
-                markdownRenderer: input.markdownRenderer,
-                isLast: isLastPart,
-            });
-        }
         return Lit.nothing;
     })}
         ${renderError(message)}
         ${input.showActions ? renderActions(input, output) : Lit.nothing}
       </div>
-      ${hasAiV2 ? renderSideEffectStepsUI(input, steps) : Lit.nothing}
+      ${renderSideEffectStepsUI(input, steps)}
     </section>
   `, target);
     // clang-format on
@@ -530,7 +493,7 @@ export function titleForStep(step) {
     return step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
 }
 function renderTitle(step) {
-    const paused = step.requestApproval ?
+    const paused = step.requestApproval && !step.canceled ?
         html `<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` :
         Lit.nothing;
     return html `<h3 class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</h3>`;
@@ -720,14 +683,14 @@ function renderStepBadge({ step, isLoading, isLast }) {
     let iconName = 'checkmark';
     let ariaLabel = lockedString(UIStringsNotTranslate.completed);
     let role = 'button';
-    if (isLast && step.requestApproval) {
+    if (step.canceled) {
+        ariaLabel = lockedString(UIStringsNotTranslate.aborted);
+        iconName = 'cross';
+    }
+    else if (isLast && step.requestApproval) {
         role = undefined;
         ariaLabel = lockedString(UIStringsNotTranslate.paused);
         iconName = 'pause-circle';
-    }
-    else if (step.canceled) {
-        ariaLabel = lockedString(UIStringsNotTranslate.aborted);
-        iconName = 'cross';
     }
     return html `<devtools-icon
       class="indicator"
@@ -740,7 +703,7 @@ export function renderStep({ step, isLoading, markdownRenderer, isLast }) {
     const stepClasses = Lit.Directives.classMap({
         step: true,
         empty: !step.thought && !step.code && !step.contextDetails && !step.requestApproval,
-        paused: Boolean(step.requestApproval),
+        paused: Boolean(step.requestApproval && !step.canceled),
         canceled: Boolean(step.canceled),
     });
     // clang-format off
@@ -1433,7 +1396,7 @@ export function getDeduplicatedWidgetsMessage(message) {
     };
 }
 async function renderWidgets(widgets, options = {}) {
-    if (!Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || !widgets || widgets.length === 0) {
+    if (!widgets || widgets.length === 0) {
         return Lit.nothing;
     }
     const ui = await Promise.all(widgets.map(async (widgetData) => {
@@ -1498,7 +1461,7 @@ async function renderWidgets(widgets, options = {}) {
     return html `${ui}`;
 }
 function renderSideEffectConfirmationUi(step) {
-    if (!step.requestApproval) {
+    if (!step.requestApproval || step.canceled) {
         return Lit.nothing;
     }
     // clang-format off
@@ -1573,14 +1536,9 @@ function renderImageChatMessage(inlineData) {
     // clang-format on
 }
 function renderActions(input, output) {
-    const aiAssistanceV2 = Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
-    const rowClasses = Lit.Directives.classMap({
-        'ai-assistance-feedback-row': true,
-        'not-v2': !aiAssistanceV2,
-    });
     // clang-format off
     return html `
-    <div class=${rowClasses}>
+    <div class="ai-assistance-feedback-row">
       <div class="action-buttons">
         ${input.showRateButtons ? html `
           <devtools-button
@@ -1609,7 +1567,6 @@ function renderActions(input, output) {
     }}
             @click=${() => input.onRatingClick("NEGATIVE" /* Host.AidaClient.Rating.NEGATIVE */)}
           ></devtools-button>
-          ${aiAssistanceV2 ? Lit.nothing : html `<div class="vertical-separator"></div>`}
         ` : Lit.nothing}
         <devtools-button
           .data=${{
@@ -1621,20 +1578,7 @@ function renderActions(input, output) {
     }}
           @click=${input.onReportClick}
         ></devtools-button>
-        ${aiAssistanceV2 ? Lit.nothing : html `
-          <div class="vertical-separator"></div>
-          <devtools-button
-            .data=${{
-        variant: "icon" /* Buttons.Button.Variant.ICON */,
-        size: "SMALL" /* Buttons.Button.Size.SMALL */,
-        title: lockedString(UIStringsNotTranslate.copyResponse),
-        iconName: 'copy',
-        jslogContext: 'copy-ai-response',
-    }}
-            aria-label=${lockedString(UIStringsNotTranslate.copyResponse)}
-            @click=${input.onCopyResponseClick}></devtools-button>
-        `}
-        ${input.onExportClick && aiAssistanceV2 && input.isLastMessage ? html `
+        ${input.onExportClick && input.isLastMessage ? html `
           <devtools-button
             class="export-for-agents-button"
             .jslogContext=${'ai-export-for-agents'}

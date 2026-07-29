@@ -71,8 +71,10 @@ export const bindOutputStream = function (stream) {
     return _lastStreamId;
 };
 export const discardOutputStream = function (id) {
-    void _boundStreams[id].close();
-    delete _boundStreams[id];
+    if (_boundStreams[id]) {
+        void _boundStreams[id].close();
+        delete _boundStreams[id];
+    }
 };
 export const streamWrite = function (id, chunk) {
     void _boundStreams[id].write(chunk);

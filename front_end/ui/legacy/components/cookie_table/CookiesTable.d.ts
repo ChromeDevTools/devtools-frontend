@@ -10,7 +10,7 @@ export interface ViewInput {
     renderInline?: boolean;
     portBindingEnabled?: boolean;
     schemeBindingEnabled?: boolean;
-    onEdit: (data: CookieData, columnId: string, valueBeforeEditing: string, newText: string) => void;
+    onEdit: (data: CookieData, columnId: string, valueBeforeEditing: string | boolean, newText: string | boolean) => void;
     onCreate: (data: CookieData) => void;
     onRefresh: () => void;
     onDelete: (data: CookieData) => void;
@@ -22,7 +22,8 @@ export interface ViewInput {
 }
 type ViewFunction = (input: ViewInput, output: object, target: HTMLElement) => void;
 type AttributeWithIcon = SDK.Cookie.Attribute.NAME | SDK.Cookie.Attribute.VALUE | SDK.Cookie.Attribute.DOMAIN | SDK.Cookie.Attribute.PATH | SDK.Cookie.Attribute.SECURE | SDK.Cookie.Attribute.SAME_SITE;
-type CookieData = Partial<Record<SDK.Cookie.Attribute, string>> & {
+type BooleanAttributes = SDK.Cookie.Attribute.HTTP_ONLY | SDK.Cookie.Attribute.SECURE | SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR;
+type CookieData = Partial<Record<Exclude<SDK.Cookie.Attribute, BooleanAttributes>, string>> & Partial<Record<BooleanAttributes, string | boolean>> & {
     name: string;
     value: string;
 } & {

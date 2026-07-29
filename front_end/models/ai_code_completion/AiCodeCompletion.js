@@ -107,16 +107,13 @@ export class AiCodeCompletion {
     #renderingTimeout;
     #aidaRequestCache;
     #lastEmptyResponseText;
-    // TODO(b/445394511): Remove panel from the class
-    #panel;
     #callbacks;
     #sessionId = crypto.randomUUID();
     #aidaClient;
     #serverSideLoggingEnabled;
-    constructor(opts, panel, callbacks, stopSequences) {
+    constructor(opts, callbacks, stopSequences) {
         this.#aidaClient = opts.aidaClient;
         this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
-        this.#panel = panel;
         this.#stopSequences = stopSequences ?? [];
         this.#callbacks = callbacks;
     }
@@ -127,15 +124,7 @@ export class AiCodeCompletion {
         }
         // As a temporary fix for b/441221870 we are prepending a newline for each prefix.
         prefix = '\n' + prefix;
-        let additionalContextFiles = additionalFiles;
-        if (!additionalContextFiles) {
-            additionalContextFiles = this.#panel === "console" /* ContextFlavor.CONSOLE */ ? [{
-                    path: 'devtools-console-context.js',
-                    content: consoleAdditionalContextFileContent,
-                    included_reason: Host.AidaClient.Reason.RELATED_FILE,
-                }] :
-                undefined;
-        }
+        const additionalContextFiles = additionalFiles;
         return {
             client: Host.AidaClient.CLIENT_NAME,
             prefix,

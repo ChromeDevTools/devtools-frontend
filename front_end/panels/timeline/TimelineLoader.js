@@ -27,16 +27,16 @@ export class TimelineLoader {
     #traceIsCPUProfile;
     #collectedEvents = [];
     #metadata;
-    #traceFinalizedCallbackForTest;
-    #traceFinalizedPromiseForTest;
+    #traceLoadedCallback;
+    #traceLoadedPromise;
     constructor(client) {
         this.client = client;
         this.canceledCallback = null;
         this.filter = null;
         this.#traceIsCPUProfile = false;
         this.#metadata = null;
-        this.#traceFinalizedPromiseForTest = new Promise(resolve => {
-            this.#traceFinalizedCallbackForTest = resolve;
+        this.#traceLoadedPromise = new Promise(resolve => {
+            this.#traceLoadedCallback = resolve;
         });
     }
     static loadFromParsedJsonFile(contents, client) {
@@ -45,12 +45,11 @@ export class TimelineLoader {
             client.loadingStarted();
             try {
                 loader.#processParsedFile(contents);
-                await loader.close();
+                await loader.complete();
             }
             catch (e) {
-                await loader.close();
                 const message = e instanceof Error ? e.message : '';
-                return loader.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, { PH1: message }));
+                loader.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, { PH1: message }));
             }
         });
         return loader;
@@ -58,28 +57,44 @@ export class TimelineLoader {
     static loadFromEvents(events, client) {
         const loader = new TimelineLoader(client);
         window.setTimeout(async () => {
-            void loader.addEvents(events, null);
+            try {
+                await loader.addEvents(events, null);
+            }
+            catch (e) {
+                loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
+            }
         });
         return loader;
     }
     static loadFromTraceFile(traceFile, client) {
         const loader = new TimelineLoader(client);
         window.setTimeout(async () => {
-            void loader.addEvents(traceFile.traceEvents, traceFile.metadata);
+            try {
+                await loader.addEvents(traceFile.traceEvents, traceFile.metadata);
+            }
+            catch (e) {
+                loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
+            }
         });
         return loader;
     }
-    static loadFromCpuProfile(profile, client) {
+    static loadFromCpuProfile(profile, client, title) {
         const loader = new TimelineLoader(client);
         loader.#traceIsCPUProfile = true;
         try {
             const contents = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(profile, Trace.Types.Events.ThreadID(1));
             window.setTimeout(async () => {
-                void loader.addEvents(contents.traceEvents, null);
+                try {
+                    await loader.addEvents(contents.traceEvents, title ? { title } : null);
+                }
+                catch (e) {
+                    loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
+                }
             });
         }
         catch (e) {
-            console.error(e.stack);
+            console.error(e instanceof Error ? e.stack : e);
+            loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
         }
         return loader;
     }
@@ -97,10 +112,9 @@ export class TimelineLoader {
                 const txt = stream.data();
                 const trace = JSON.parse(txt);
                 loader.#processParsedFile(trace);
-                await loader.close();
+                await loader.complete();
             }
             catch (e) {
-                await loader.close();
                 const message = e instanceof Error ? e.message : '';
                 return loader.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, { PH1: message }));
             }
@@ -142,24 +156,29 @@ export class TimelineLoader {
         }
     }
     async addEvents(events, metadata) {
-        this.#metadata = metadata;
-        this.client?.loadingStarted();
-        /**
-         * See the `eventsPerChunk` comment in `models/trace/types/Configuration.ts`.
-         *
-         * This value is different though. Why? `The addEvents()` work below is different
-         * (and much faster!) than running `handleEvent()` on all handlers.
-         */
-        const eventsPerChunk = 150_000;
-        for (let i = 0; i < events.length; i += eventsPerChunk) {
-            const chunk = events.slice(i, i + eventsPerChunk);
-            this.#collectEvents(chunk);
-            this.client?.loadingProgress((i + chunk.length) / events.length);
-            await new Promise(r => window.setTimeout(r, 0)); // Yield event loop to paint.
+        try {
+            this.#metadata = metadata;
+            this.client?.loadingStarted();
+            /**
+             * See the `eventsPerChunk` comment in `models/trace/types/Configuration.ts`.
+             *
+             * This value is different though. Why? `The addEvents()` work below is different
+             * (and much faster!) than running `handleEvent()` on all handlers.
+             */
+            const eventsPerChunk = 150_000;
+            for (let i = 0; i < events.length; i += eventsPerChunk) {
+                const chunk = events.slice(i, i + eventsPerChunk);
+                this.#collectEvents(chunk);
+                this.client?.loadingProgress((i + chunk.length) / events.length);
+                await new Promise(r => window.setTimeout(r, 0)); // Yield event loop to paint.
+            }
+            await this.complete();
         }
-        void this.close();
+        catch (e) {
+            this.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
+        }
     }
-    async cancel() {
+    async #cleanup() {
         if (this.client) {
             await this.client.loadingComplete(
             /* collectedEvents */ [], /* exclusiveFilter= */ null, /* metadata= */ null);
@@ -169,28 +188,38 @@ export class TimelineLoader {
             this.canceledCallback();
         }
     }
+    async cancel() {
+        await this.#cleanup();
+        this.#traceLoadedCallback?.("CANCELLED" /* LoadingState.CANCELLED */);
+    }
     reportErrorAndCancelLoading(message) {
         if (message) {
             Common.Console.Console.instance().error(message);
         }
-        void this.cancel();
+        this.#traceLoadedCallback?.("ERROR" /* LoadingState.ERROR */);
+        void this.#cleanup();
     }
-    async close() {
+    async complete() {
         if (!this.client) {
             return;
         }
         this.client.processingStarted();
-        await this.finalizeTrace();
+        try {
+            await this.finalizeTrace();
+        }
+        catch (e) {
+            this.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
+        }
     }
     async finalizeTrace() {
         if (!this.#metadata && this.#traceIsCPUProfile) {
             this.#metadata = RecordingMetadata.forCPUProfile();
         }
         await this.client.loadingComplete(this.#collectedEvents, this.filter, this.#metadata);
-        this.#traceFinalizedCallbackForTest?.();
+        this.#traceLoadedCallback?.("SUCCESS" /* LoadingState.SUCCESS */);
     }
-    traceFinalizedForTest() {
-        return this.#traceFinalizedPromiseForTest;
+    traceLoaded() {
+        return this.#traceLoadedPromise;
     }
     #parseCPUProfileFormatFromFile(parsedTrace) {
         const traceFile = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(parsedTrace, Trace.Types.Events.ThreadID(1));

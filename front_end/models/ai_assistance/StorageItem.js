@@ -1,6 +1,7 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+export const EMPTY_ORIGIN = '';
 export class StorageItem {
     primaryTargetOrigin;
     origin;
@@ -11,12 +12,18 @@ export class StorageItem {
      */
     primaryTargetOrigin, 
     /**
-     * The origin of the selected storage or cookie item (if any).
-     * If no item is selected, this is the same as primaryTargetOrigin.
+     * The origin of the selected storage or cookie item.
+     * If empty (''), this represents a generic category-level context (e.g., all Local Storage or all Cookies).
      */
-    origin) {
+    origin = EMPTY_ORIGIN) {
         this.primaryTargetOrigin = primaryTargetOrigin;
         this.origin = origin;
+    }
+    get isGenericContext() {
+        return this.origin === EMPTY_ORIGIN;
+    }
+    static createGenericContext(primaryTargetOrigin, ..._args) {
+        return new StorageItem(primaryTargetOrigin, EMPTY_ORIGIN);
     }
 }
 export class DOMStorageItem extends StorageItem {
@@ -35,12 +42,18 @@ export class DOMStorageItem extends StorageItem {
         this.type = type;
         this.key = key;
     }
+    static createGenericContext(primaryTargetOrigin, type) {
+        return new DOMStorageItem(primaryTargetOrigin, EMPTY_ORIGIN, undefined, type);
+    }
 }
 export class CookieItem extends StorageItem {
     name;
     constructor(primaryTargetOrigin, origin, name) {
         super(primaryTargetOrigin, origin);
         this.name = name;
+    }
+    static createGenericContext(primaryTargetOrigin) {
+        return new CookieItem(primaryTargetOrigin, EMPTY_ORIGIN);
     }
 }
 //# sourceMappingURL=StorageItem.js.map

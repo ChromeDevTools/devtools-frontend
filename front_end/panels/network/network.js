@@ -7089,7 +7089,7 @@ import * as DataGrid4 from "./../../ui/legacy/components/data_grid/data_grid.js"
 import * as UI18 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/network/ResourceChunkView.js
+// gen/front_end/panels/network/OriginalResourceChunkView.js
 import * as Common11 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
@@ -7099,8 +7099,8 @@ import * as DataGrid2 from "./../../ui/legacy/components/data_grid/data_grid.js"
 import * as SourceFrame4 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
 
-// gen/front_end/panels/network/resourceChunkView.css.js
-var resourceChunkView_css_default = `/*
+// gen/front_end/panels/network/originalResourceChunkView.css.js
+var originalResourceChunkView_css_default = `/*
  * Copyright 2014 The Chromium Authors
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
@@ -7150,9 +7150,9 @@ var resourceChunkView_css_default = `/*
   border-bottom: 1px solid var(--sys-color-divider);
 }
 
-/*# sourceURL=${import.meta.resolve("./resourceChunkView.css")} */`;
+/*# sourceURL=${import.meta.resolve("./originalResourceChunkView.css")} */`;
 
-// gen/front_end/panels/network/ResourceChunkView.js
+// gen/front_end/panels/network/OriginalResourceChunkView.js
 var UIStrings16 = {
   /**
    * @description Text in Event Source Messages View of the Network panel
@@ -7191,10 +7191,6 @@ var UIStrings16 = {
    */
   copyMessage: "Copy message",
   /**
-   * @description Text to clear everything
-   */
-  clearAllL: "Clear all",
-  /**
    * @description Text for everything
    */
   all: "All",
@@ -7207,27 +7203,28 @@ var UIStrings16 = {
    */
   receive: "Receive"
 };
-var str_16 = i18n31.i18n.registerUIStrings("panels/network/ResourceChunkView.ts", UIStrings16);
+var str_16 = i18n31.i18n.registerUIStrings("panels/network/OriginalResourceChunkView.ts", UIStrings16);
 var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var i18nLazyString = i18n31.i18n.getLazilyComputedLocalizedString.bind(void 0, str_16);
-var ResourceChunkView = class extends UI17.Widget.VBox {
+var OriginalResourceChunkView = class extends UI17.Widget.VBox {
   splitWidget;
   dataGrid;
   timeComparator;
   mainToolbar;
   clearAllButton;
   filterTypeCombobox;
-  filterType;
+  filterType = null;
   filterTextInput;
-  filterRegex;
+  filterRegex = null;
   frameEmptyWidget;
   currentSelectedNode;
   request;
   messageFilterSetting;
+  sidebarWidget = null;
   constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint) {
     super();
     this.messageFilterSetting = Common11.Settings.Settings.instance().createSetting(messageFilterSettingKey, "");
-    this.registerRequiredCSS(resourceChunkView_css_default);
+    this.registerRequiredCSS(originalResourceChunkView_css_default);
     this.request = request;
     this.element.classList.add("resource-chunk-view");
     this.splitWidget = new UI17.SplitWidget.SplitWidget(false, true, splitWidgetSettingKey);
@@ -7237,7 +7234,7 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
       displayName: dataGridDisplayName,
       columns
     });
-    this.dataGrid.setRowContextMenuCallback(onRowContextMenu.bind(this));
+    this.dataGrid.setRowContextMenuCallback((menu, node) => this.onRowContextMenu(menu, node));
     this.dataGrid.setEnableAutoScrollToBottom(true);
     this.dataGrid.setCellClass("resource-chunk-view-td");
     this.timeComparator = resourceChunkNodeTimeComparator;
@@ -7253,20 +7250,18 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
     this.clearAllButton = new UI17.Toolbar.ToolbarButton(i18nString16(UIStrings16.clearAll), "clear");
     this.clearAllButton.addEventListener("Click", this.clearChunks, this);
     this.mainToolbar.appendToolbarItem(this.clearAllButton);
-    this.filterTypeCombobox = new UI17.Toolbar.ToolbarComboBox(this.updateFilterSetting.bind(this), i18nString16(UIStrings16.filter));
+    this.filterTypeCombobox = new UI17.Toolbar.ToolbarComboBox(this.onFilterTypeChanged.bind(this), i18nString16(UIStrings16.filter));
     for (const filterItem of FILTER_TYPES) {
       const option = this.filterTypeCombobox.createOption(filterItem.label(), filterItem.name);
       this.filterTypeCombobox.addOption(option);
     }
     this.mainToolbar.appendToolbarItem(this.filterTypeCombobox);
-    this.filterType = null;
     this.filterTextInput = new UI17.Toolbar.ToolbarFilter(filterUsingRegexHint, 0.4);
-    this.filterTextInput.addEventListener("TextChanged", this.updateFilterSetting, this);
+    this.filterTextInput.addEventListener("TextChanged", this.onFilterTextChanged, this);
     const filter = this.messageFilterSetting.get();
     if (filter) {
       this.filterTextInput.setValue(filter);
     }
-    this.filterRegex = null;
     this.mainToolbar.appendToolbarItem(this.filterTextInput);
     const mainContainer = new UI17.Widget.VBox();
     mainContainer.element.appendChild(this.mainToolbar);
@@ -7274,20 +7269,23 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
     mainContainer.setMinimumSize(0, 72);
     this.splitWidget.setMainWidget(mainContainer);
     this.frameEmptyWidget = new UI17.EmptyWidget.EmptyWidget(i18nString16(UIStrings16.noMessageSelected), i18nString16(UIStrings16.selectMessageToBrowseItsContent));
-    this.splitWidget.setSidebarWidget(this.frameEmptyWidget);
+    this.sidebarWidget = this.frameEmptyWidget;
+    this.splitWidget.setSidebarWidget(this.sidebarWidget);
     if (filter) {
       this.applyFilter(filter);
     }
-    function onRowContextMenu(contextMenu, genericNode) {
-      const node = genericNode;
-      const binaryView = node.binaryView();
-      if (binaryView) {
-        binaryView.addCopyToContextMenu(contextMenu, i18nString16(UIStrings16.copyMessageD));
-      } else {
-        contextMenu.clipboardSection().appendItem(i18nString16(UIStrings16.copyMessage), Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host9.InspectorFrontendHost.InspectorFrontendHostInstance, node.data.data), { jslogContext: "copy" });
-      }
-      contextMenu.footerSection().appendItem(i18nString16(UIStrings16.clearAllL), this.clearChunks.bind(this), { jslogContext: "clear-all" });
+  }
+  onRowContextMenu(contextMenu, node) {
+    const item = node;
+    const binaryView = item.binaryView();
+    if (binaryView) {
+      binaryView.addCopyToContextMenu(contextMenu, i18nString16(UIStrings16.copyMessageD));
+    } else {
+      const dataVal = item.data.data;
+      const textToCopy = typeof dataVal === "string" ? dataVal : item.dataText();
+      contextMenu.clipboardSection().appendItem(i18nString16(UIStrings16.copyMessage), Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host9.InspectorFrontendHost.InspectorFrontendHostInstance, textToCopy), { jslogContext: "copy" });
     }
+    contextMenu.footerSection().appendItem(i18nString16(UIStrings16.clearAll), this.clearChunks.bind(this), { jslogContext: "clear-all" });
   }
   getColumns() {
     return [
@@ -7310,15 +7308,19 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
   }
   clearChunks() {
     clearChunkOffsets.set(this.request, this.getRequestChunks().length);
-    this.refresh();
+    this.performUpdate();
   }
-  updateFilterSetting() {
+  onFilterTypeChanged() {
+    const val = this.filterTypeCombobox.selectedOption().value;
+    this.filterType = val === "all" ? null : val;
+    this.performUpdate();
+  }
+  onFilterTextChanged() {
     const text = this.filterTextInput.value();
     this.messageFilterSetting.set(text);
     this.applyFilter(text);
   }
   applyFilter(text) {
-    const type = this.filterTypeCombobox.selectedOption().value;
     if (text) {
       try {
         this.filterRegex = new RegExp(text, "i");
@@ -7328,35 +7330,54 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
     } else {
       this.filterRegex = null;
     }
-    this.filterType = type === "all" ? null : type;
-    this.refresh();
+    this.performUpdate();
   }
   async onChunkSelected(event) {
     this.currentSelectedNode = event.data;
+    await this.updateSidebar();
+  }
+  onChunkDeselected() {
+    this.currentSelectedNode = null;
+    void this.updateSidebar();
+  }
+  async updateSidebar() {
+    if (!this.currentSelectedNode) {
+      this.sidebarWidget = null;
+      this.updateSidebarWidget();
+      return;
+    }
     const content = this.currentSelectedNode.dataText();
     const binaryView = this.currentSelectedNode.binaryView();
     if (binaryView) {
-      this.splitWidget.setSidebarWidget(binaryView);
+      this.sidebarWidget = binaryView;
+      this.updateSidebarWidget();
       return;
     }
     const jsonView = await SourceFrame4.JSONView.JSONView.createView(content);
     if (jsonView) {
-      this.splitWidget.setSidebarWidget(jsonView);
+      this.sidebarWidget = jsonView;
+      this.updateSidebarWidget();
       return;
     }
-    this.splitWidget.setSidebarWidget(new SourceFrame4.ResourceSourceFrame.ResourceSourceFrame(TextUtils5.StaticContentProvider.StaticContentProvider.fromString(this.request.url(), this.request.resourceType(), content), ""));
+    this.sidebarWidget = new SourceFrame4.ResourceSourceFrame.ResourceSourceFrame(TextUtils5.StaticContentProvider.StaticContentProvider.fromString(this.request.url(), this.request.resourceType(), content), "");
+    this.updateSidebarWidget();
   }
-  onChunkDeselected() {
-    this.currentSelectedNode = null;
-    this.splitWidget.setSidebarWidget(this.frameEmptyWidget);
+  updateSidebarWidget() {
+    const activeSidebar = this.sidebarWidget || this.frameEmptyWidget;
+    if (this.splitWidget.sidebarWidget() !== activeSidebar) {
+      this.splitWidget.setSidebarWidget(activeSidebar);
+    }
   }
-  refresh() {
+  performUpdate() {
     this.dataGrid.rootNode().removeChildren();
     let chunks = this.getRequestChunks();
     const offset = clearChunkOffsets.get(this.request) || 0;
-    chunks = chunks.slice(offset);
-    chunks = chunks.filter(this.chunkFilter.bind(this));
+    chunks = chunks.slice(offset).filter(this.chunkFilter.bind(this));
     chunks.forEach((chunk) => this.dataGrid.insertChild(this.createGridItem(chunk)));
+    this.updateSidebarWidget();
+  }
+  refresh() {
+    this.performUpdate();
   }
   sortItems() {
     this.dataGrid.sortNodes(this.timeComparator, !this.dataGrid.isSortOrderAscending());
@@ -7422,7 +7443,7 @@ var UIStrings17 = {
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/network/ResourceDirectSocketChunkView.ts", UIStrings17);
 var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var ResourceDirectSocketChunkView = class extends ResourceChunkView {
+var ResourceDirectSocketChunkView = class extends OriginalResourceChunkView {
   constructor(request) {
     super(request, "network-direct-socket-chunk-filter", "resource-direct-socket-chunk-split-view-state", i18nString17(UIStrings17.directSocketChunk), i18nString17(UIStrings17.filterUsingRegex));
     this.element.setAttribute("jslog", `${VisualLogging11.pane("direct-socket-messages").track({ resize: true })}`);
@@ -7495,6 +7516,7 @@ var ResourceDirectSocketChunkView = class extends ResourceChunkView {
 var ResourceChunkNode = class extends DataGridItem {
   #binaryView = null;
   chunk;
+  isTextFrame = false;
   constructor(chunk, boundSocket) {
     const time = new Date(chunk.timestamp * 1e3);
     const timeText = ("0" + time.getHours()).substr(-2) + ":" + ("0" + time.getMinutes()).substr(-2) + ":" + ("0" + time.getSeconds()).substr(-2) + "." + ("00" + time.getMilliseconds()).substr(-3);
@@ -7610,7 +7632,7 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("panels/network/ResourceWebSocketFrameView.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var i18nLazyString2 = i18n35.i18n.getLazilyComputedLocalizedString.bind(void 0, str_18);
-var ResourceWebSocketFrameView = class extends ResourceChunkView {
+var ResourceWebSocketFrameView = class extends OriginalResourceChunkView {
   constructor(request) {
     super(request, "network-web-socket-message-filter", "resource-web-socket-frame-split-view-state", i18nString18(UIStrings18.webSocketFrame), i18nString18(UIStrings18.filterUsingRegex));
     this.element.setAttribute("jslog", `${VisualLogging12.pane("web-socket-messages").track({ resize: true })}`);
@@ -12213,6 +12235,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
       showPanel: "HidePanel"
       /* RequestPanelBehavior.HidePanel */
     });
+    this.dispatchEventToListeners("RequestSelected", null);
     this.setHoveredNode(null);
     this.columnsInternal.reset();
     this.timeFilter = null;

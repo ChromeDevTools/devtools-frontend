@@ -6,7 +6,6 @@ import '../../ui/components/tooltips/tooltips.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -58,94 +57,108 @@ const UIStringsNotTranslate = {
     dataIsBeingSentToGoogle: 'Data is being sent to Google',
 };
 const lockedString = i18n.i18n.lockedString;
-function getTooltipDisclaimerText(noLogging, panel) {
-    switch (panel) {
-        case "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */:
+function getTooltipDisclaimerText(noLogging, disclaimerTextVariant) {
+    switch (disclaimerTextVariant) {
+        case 'console':
             return noLogging ?
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole) :
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionInConsole);
-        case "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */:
+        case 'sources':
             return noLogging ?
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources) :
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionInSources);
-        case "styles" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES */:
+        case 'styles':
             return noLogging ? lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInStyles) :
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionInStyles);
     }
 }
 export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
     if (input.aidaAvailability !== "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */ || !input.disclaimerTooltipId ||
-        !input.spinnerTooltipId || !input.panel) {
+        !input.spinnerTooltipId || !input.disclaimerTextVariant) {
         render(nothing, target);
         return;
     }
-    const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.panel);
+    const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.disclaimerTextVariant);
     // clang-format off
     render(html `
-        <style>${styles}</style>
-        <div class="ai-code-completion-disclaimer"><devtools-spinner
-          .active=${false}
-          ${Directives.ref(el => {
+    <style>${styles}</style>
+    <div class="ai-code-completion-disclaimer">
+      <devtools-spinner
+        .active=${false}
+        ${Directives.ref(el => {
         if (el instanceof HTMLElement) {
             output.setLoading = (isLoading) => {
                 el.toggleAttribute('active', isLoading);
             };
         }
     })}
-          aria-details=${input.spinnerTooltipId}
-          aria-describedby=${input.spinnerTooltipId}></devtools-spinner>
-          <devtools-tooltip
-              id=${input.spinnerTooltipId}
-              variant="rich"
-              jslogContext="ai-code-completion-spinner-tooltip">
-          <div class="disclaimer-tooltip-container"><div class="tooltip-text">
+        aria-details=${input.spinnerTooltipId}
+        aria-describedby=${input.spinnerTooltipId}>
+      </devtools-spinner>
+      <devtools-tooltip
+        id=${input.spinnerTooltipId}
+        variant="rich"
+        jslogContext="ai-code-completion-spinner-tooltip"
+      >
+        <div class="disclaimer-tooltip-container">
+          <div class="tooltip-text">
             ${lockedString(UIStringsNotTranslate.tooltipTextForSpinner)}
-          </div></div></devtools-tooltip>
-          <span
-              tabIndex="0"
-              class="link"
-              role="link"
-              jslog=${VisualLogging.link('open-ai-settings').track({
+          </div>
+        </div>
+      </devtools-tooltip>
+      <span
+        tabIndex="0"
+        class="link"
+        role="link"
+        jslog=${VisualLogging.link('open-ai-settings').track({
         click: true,
     })}
-              aria-details=${input.disclaimerTooltipId}
-              aria-describedby=${input.disclaimerTooltipId}
-              @click=${() => {
+        aria-details=${input.disclaimerTooltipId}
+        aria-describedby=${input.disclaimerTooltipId}
+        @click=${() => {
         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
     }}
-          >${lockedString(UIStringsNotTranslate.relevantData)}</span>${lockedString(UIStringsNotTranslate.isSentToGoogle)}
-          <devtools-tooltip
-              id=${input.disclaimerTooltipId}
-              variant="rich"
-              jslogContext="ai-code-completion-disclaimer"
-              ${Directives.ref(el => {
+      >
+        ${lockedString(UIStringsNotTranslate.relevantData)}
+      </span>
+      ${lockedString(UIStringsNotTranslate.isSentToGoogle)}
+      <devtools-tooltip
+        id=${input.disclaimerTooltipId}
+        variant="rich"
+        jslogContext="ai-code-completion-disclaimer"
+        ${Directives.ref(el => {
         if (el instanceof HTMLElement) {
             output.hideTooltip = () => {
                 el.hidePopover();
             };
         }
-    })}>
-            <div class="disclaimer-tooltip-container"><div class="tooltip-text">
-                ${tooltipDisclaimerText}
-                </div>
-                <span
-                    tabIndex="0"
-                    class="link"
-                    role="link"
-                    jslog=${VisualLogging.link('open-ai-settings').track({
+    })}
+      >
+        <div class="disclaimer-tooltip-container">
+          <div class="tooltip-text">
+            ${tooltipDisclaimerText}
+          </div>
+          <span
+            tabIndex="0"
+            class="link"
+            role="link"
+            jslog=${VisualLogging.link('open-ai-settings').track({
         click: true,
         keydown: 'Enter',
     })}
-                    @click=${input.onManageInSettingsTooltipClick}
-                    @keydown=${(e) => {
+            @click=${input.onManageInSettingsTooltipClick}
+            @keydown=${(e) => {
         if (e.key === 'Enter') {
             e.consume(true);
             input.onManageInSettingsTooltipClick();
         }
     }}
-                >${lockedString(UIStringsNotTranslate.manageInSettings)}</span></div></devtools-tooltip>
-          </div>
-        `, target);
+          >
+            ${lockedString(UIStringsNotTranslate.manageInSettings)}
+          </span>
+        </div>
+      </devtools-tooltip>
+    </div>`, target);
     // clang-format on
 };
 const MINIMUM_LOADING_STATE_TIMEOUT = 1000;
@@ -158,7 +171,7 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
     #loading = false;
     #loadingStartTime = 0;
     #spinnerLoadingTimeout;
-    #panel;
+    #disclaimerTextVariant;
     #aidaAvailability;
     #boundOnAidaAvailabilityChange;
     constructor(element, view = DEFAULT_SUMMARY_TOOLBAR_VIEW) {
@@ -203,8 +216,8 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
             }, remainingTime);
         }
     }
-    set panel(panel) {
-        this.#panel = panel;
+    set disclaimerTextVariant(disclaimerTextVariant) {
+        this.#disclaimerTextVariant = disclaimerTextVariant;
         this.requestUpdate();
     }
     #updateAidaAvailability(aidaAvailability) {
@@ -227,7 +240,7 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
             noLogging: this.#noLogging,
             aidaAvailability: this.#aidaAvailability,
             onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
-            panel: this.#panel,
+            disclaimerTextVariant: this.#disclaimerTextVariant,
         }, this.#viewOutput, this.contentElement);
     }
     wasShown() {

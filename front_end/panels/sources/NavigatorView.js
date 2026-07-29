@@ -24,101 +24,101 @@ import navigatorViewStyles from './navigatorView.css.js';
 import { SearchSources } from './SearchSourcesView.js';
 const UIStrings = {
     /**
-     * @description Text in Navigator View of the Sources panel
+     * @description Text in Navigator view of the Sources panel.
      */
     searchInFolder: 'Search in folder',
     /**
-     * @description Search label in Navigator View of the Sources panel
+     * @description Search label in Navigator view of the Sources panel.
      */
     searchInAllFiles: 'Search in all files',
     /**
-     * @description Text in Navigator View of the Sources panel
+     * @description Text in Navigator view of the Sources panel.
      */
     noDomain: '(no domain)',
     /**
-     * @description Text in Navigator View of the Sources panel
+     * @description Text in Navigator view of the Sources panel.
      */
     authored: 'Authored',
     /**
-     * @description Text in Navigator View of the Sources panel
+     * @description Text in Navigator view of the Sources panel.
      */
     authoredTooltip: 'Contains original sources',
     /**
-     * @description Text in Navigator View of the Sources panel
+     * @description Text in Navigator view of the Sources panel.
      */
     deployed: 'Deployed',
     /**
-     * @description Text in Navigator View of the Sources panel
+     * @description Text in Navigator view of the Sources panel.
      */
     deployedTooltip: 'Contains final sources the browser sees',
     /**
-     * @description Text in Navigator View of the Sources panel
+     * @description Text in Navigator view of the Sources panel.
      */
     excludeThisFolder: 'Exclude this folder?',
     /**
-     * @description Text in a dialog which appears when users click on 'Exclude from Workspace' menu item
+     * @description Text in a dialog which appears when users click on 'Exclude from workspace' menu item.
      */
     folderWillNotBeShown: 'This folder and its contents will not be shown in workspace.',
     /**
-     * @description Text in Navigator View of the Sources panel
+     * @description Text in Navigator view of the Sources panel.
      */
     deleteThisFile: 'Delete this file?',
     /**
-     * @description A context menu item in the Navigator View of the Sources panel
+     * @description A context menu item in the Navigator view of the Sources panel.
      */
     rename: 'Rename…',
     /**
-     * @description A context menu item in the Navigator View of the Sources panel
+     * @description A context menu item in the Navigator view of the Sources panel.
      */
     makeACopy: 'Make a copy…',
     /**
-     * @description Text to delete something
+     * @description Text to delete something.
      */
     delete: 'Delete',
     /**
-     * @description A button text to confirm an action to remove a folder. This is not the same as delete. It removes the folder from UI but do not delete them.
+     * @description A button text to confirm an action to remove a folder. This is not the same as delete. It removes the folder from the UI but does not delete it.
      */
     remove: 'Remove',
     /**
-     * @description Text in Navigator View of the Sources panel
+     * @description Text in Navigator view of the Sources panel.
      */
     deleteFolder: 'Delete this folder and its contents?',
     /**
-     * @description Text in Navigator View of the Sources panel. A confirmation message on action to delete a folder or file.
+     * @description Text in Navigator view of the Sources panel. A confirmation message on action to delete a folder or file.
      */
     actionCannotBeUndone: 'This action cannot be undone.',
     /**
-     * @description A context menu item in the Navigator View of the Sources panel
+     * @description A context menu item in the Navigator view of the Sources panel.
      */
     openFolder: 'Open folder',
     /**
-     * @description A context menu item in the Navigator View of the Sources panel
+     * @description A context menu item in the Navigator view of the Sources panel.
      */
     newFile: 'New file',
     /**
-     * @description A context menu item in the Navigator View of the Sources panel to exclude a folder from workspace
+     * @description A context menu item in the Navigator view of the Sources panel to exclude a folder from workspace.
      */
     excludeFolder: 'Exclude from workspace',
     /**
-     * @description A context menu item in the Navigator View of the Sources panel
+     * @description A context menu item in the Navigator view of the Sources panel.
      */
     removeFolderFromWorkspace: 'Remove from workspace',
     /**
-     * @description Text in Navigator View of the Sources panel
+     * @description Text in Navigator view of the Sources panel.
      * @example {a-folder-name} PH1
      */
-    areYouSureYouWantToRemoveThis: 'Remove ‘{PH1}’ from Workspace?',
+    areYouSureYouWantToRemoveThis: 'Remove ‘{PH1}’ from workspace?',
     /**
-     * @description Text in Navigator View of the Sources panel. Warning message when user remove a folder.
+     * @description Text in Navigator view of the Sources panel. Warning message when user removes a folder.
      */
     workspaceStopSyncing: 'This will stop syncing changes from DevTools to your sources.',
     /**
-     * @description Name of an item from source map
+     * @description Name of an item from a source map.
      * @example {compile.html} PH1
      */
     sFromSourceMap: '{PH1} (from source map)',
     /**
-     * @description Name of an item that is on the ignore list
+     * @description Name of an item that is on the ignore list.
      * @example {compile.html} PH1
      */
     sIgnoreListed: '{PH1} (ignore listed)',
@@ -1590,7 +1590,10 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
             return;
         }
         const absoluteFileSystemPath = Common.ParsedURL.ParsedURL.concatenate(Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(this.project.id()), '/', this.folderPath);
-        const hasMappedFiles = Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
+        const isOverrides = Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === 'overrides';
+        const hasMappedFiles = isOverrides ?
+            Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').get() :
+            Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
         this.treeElement.listItemElement.classList.toggle('has-mapped-files', hasMappedFiles);
     }
     createTreeElement(title, node) {
@@ -1756,7 +1759,10 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
         }
         const fileSystemPath = Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(this.project.id());
         const wasActive = this.treeElement.listItemElement.classList.contains('has-mapped-files');
-        const isActive = Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
+        const isOverrides = Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === 'overrides';
+        const isActive = isOverrides ?
+            Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').get() :
+            Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
         if (wasActive === isActive) {
             return;
         }

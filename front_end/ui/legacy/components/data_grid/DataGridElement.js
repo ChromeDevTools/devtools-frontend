@@ -207,7 +207,8 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
             if (align !== "center" /* Align.CENTER */ && align !== "right" /* Align.RIGHT */) {
                 align = undefined;
             }
-            const dataType = column.getAttribute('type') === 'boolean' ? "Boolean" /* DataType.BOOLEAN */ : "String" /* DataType.STRING */;
+            const typeAttr = column.getAttribute('type');
+            const dataType = typeAttr === 'boolean' ? "Boolean" /* DataType.BOOLEAN */ : (typeAttr === 'numeric' ? "Number" /* DataType.NUMBER */ : "String" /* DataType.STRING */);
             const weight = parseFloat(column.getAttribute('weight') || '') ?? undefined;
             const editable = column.hasAttribute('editable');
             if (editable) {
@@ -240,7 +241,6 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
         const visibleColumns = new Set(this.#columns.map(({ id }) => id).filter(id => !this.#hiddenColumns.has(id)));
         this.#dataGrid.setColumnsVisibility(visibleColumns);
         this.#dataGrid.setEditCallback(hasEditableColumn ? this.#editCallback.bind(this) : undefined, INTERNAL_TOKEN);
-        this.#dataGrid.deleteCallback = this.#deleteCallback.bind(this);
     }
     #needUpdateColumns(mutationList) {
         for (const mutation of mutationList) {
@@ -447,6 +447,9 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
         super.addEventListener(...args);
         if (args[0] === 'refresh') {
             this.#dataGrid.refreshCallback = this.#refreshCallback.bind(this);
+        }
+        if (args[0] === 'delete') {
+            this.#dataGrid.deleteCallback = this.#deleteCallback.bind(this);
         }
     }
     #refreshCallback() {

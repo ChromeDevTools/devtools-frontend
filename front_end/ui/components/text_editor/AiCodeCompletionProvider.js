@@ -66,7 +66,8 @@ export class AiCodeCompletionProvider {
                 onSuggestionAccepted: this.#aiCodeCompletionConfig.onSuggestionAccepted.bind(this),
                 onRequestTriggered: this.#aiCodeCompletionConfig.onRequestTriggered.bind(this),
                 onResponseReceived: this.#aiCodeCompletionConfig.onResponseReceived.bind(this),
-                panel: this.#aiCodeCompletionConfig.panel,
+                disclaimerTooltipId: this.#aiCodeCompletionConfig.disclaimerTooltipId,
+                disclaimerTextVariant: this.#aiCodeCompletionConfig.disclaimerTextVariant,
             };
             this.#aiCodeGenerationProvider = AiCodeGenerationProvider.createInstance(this.#aiCodeGenerationConfig);
         }
@@ -101,7 +102,7 @@ export class AiCodeCompletionProvider {
         if (!this.#aiCodeCompletionSetting.get() && !this.#aiCodeCompletionTeaserDismissedSetting.get()) {
             this.#teaser = new PanelCommon.AiCodeCompletionTeaser({
                 onDetach: () => this.#detachTeaser.bind(this),
-                panel: this.#aiCodeCompletionConfig?.panel,
+                disclaimerTextVariant: this.#aiCodeCompletionConfig?.disclaimerTextVariant,
             });
             this.#editor.editor.dispatch({ effects: this.#teaserCompartment.reconfigure([aiCodeCompletionTeaserExtension(this.#teaser)]) });
         }
@@ -127,7 +128,7 @@ export class AiCodeCompletionProvider {
         this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({
             aidaClient: this.#aidaClient,
             serverSideLoggingEnabled: !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging,
-        }, this.#aiCodeCompletionConfig.panel, undefined, this.#aiCodeCompletionConfig.completionContext.stopSequences);
+        }, undefined, this.#aiCodeCompletionConfig.completionContext.stopSequences);
         this.#aiCodeCompletionConfig.onFeatureEnabled();
     }
     #cleanupAiCodeCompletion() {
@@ -262,11 +263,11 @@ export class AiCodeCompletionProvider {
         const startTime = performance.now();
         this.#aiCodeCompletionConfig?.onRequestTriggered();
         // Registering AiCodeCompletionRequestTriggered metric even if the request is served from cache
-        const panel = this.#aiCodeCompletionConfig?.panel;
-        if (panel === "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */) {
+        const disclaimerTextVariant = this.#aiCodeCompletionConfig?.disclaimerTextVariant;
+        if (disclaimerTextVariant === 'console') {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromConsole);
         }
-        else if (panel === "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */) {
+        else if (disclaimerTextVariant === 'sources') {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromSources);
         }
         try {

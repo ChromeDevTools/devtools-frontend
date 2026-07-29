@@ -42,7 +42,7 @@ export declare class AidaClient {
     completeCode(request: CompletionRequest): Promise<CompletionResponse | null>;
     generateCode(request: GenerateCodeRequest, options?: {
         signal?: AbortSignal;
-    }): Promise<GenerateCodeResponse | null>;
+    }): Promise<GenerateCodeResponse>;
 }
 export declare function convertToUserTierEnum(userTier: string | undefined): UserTier;
 export declare function getClientFeatureName(feature: ClientFeature): string;

@@ -51,7 +51,8 @@ export class AiCodeCompletionPlugin extends Plugin {
             onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
             onRequestTriggered: this.#onAiRequestTriggered.bind(this),
             onResponseReceived: this.#onAiResponseReceived.bind(this),
-            panel: "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */,
+            disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
+            disclaimerTextVariant: 'sources',
         };
         this.#aiCodeCompletionProvider =
             TextEditor.AiCodeCompletionProvider.AiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
@@ -89,7 +90,7 @@ export class AiCodeCompletionPlugin extends Plugin {
         this.#aiCodeCompletionDisclaimer = new PanelCommon.AiCodeCompletionDisclaimer();
         this.#aiCodeCompletionDisclaimer.disclaimerTooltipId = DISCLAIMER_TOOLTIP_ID;
         this.#aiCodeCompletionDisclaimer.spinnerTooltipId = SPINNER_TOOLTIP_ID;
-        this.#aiCodeCompletionDisclaimer.panel = "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */;
+        this.#aiCodeCompletionDisclaimer.disclaimerTextVariant = 'sources';
         this.#aiCodeCompletionDisclaimer.show(this.#aiCodeCompletionDisclaimerContainer, undefined, true);
     }
     #createAiCodeCompletionCitationsToolbar() {
@@ -100,7 +101,7 @@ export class AiCodeCompletionPlugin extends Plugin {
             new PanelCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar({
                 citationsTooltipId: CITATIONS_TOOLTIP_ID,
                 hasTopBorder: true,
-                panel: "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */,
+                disclaimerTextVariant: 'sources',
             });
         this.#aiCodeCompletionCitationsToolbar.show(this.#aiCodeCompletionCitationsToolbarContainer, undefined, true);
     }

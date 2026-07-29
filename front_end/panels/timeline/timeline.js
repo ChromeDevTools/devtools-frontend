@@ -4643,6 +4643,10 @@ var timelineHistoryManager_css_default = `/*
 
 .text-details .name {
   font: var(--sys-typescale-body4-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 240px;
 }
 
 .text-details .metadata {
@@ -4699,6 +4703,12 @@ var UIStrings14 = {
    * @example {2} PH2
    */
   sD: "{PH1} #{PH2}",
+  /**
+   * @description Text in Timeline History Manager showing custom title alongside domain sequence number
+   * @example {Custom Profile} PH1
+   * @example {example.com #2} PH2
+   */
+  customTitleWithSequence: "{PH1} ({PH2})",
   /**
    * @description Accessible label for the timeline session selection menu
    */
@@ -4908,21 +4918,23 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
     const parsedURL = Common7.ParsedURL.ParsedURL.fromString(parsedTrace.data.Meta.mainFrameURL);
     const domain = parsedURL ? parsedURL.host : "";
     const sequenceNumber = this.nextNumberByDomain.get(domain) || 1;
-    const titleWithSequenceNumber = i18nString14(UIStrings14.sD, { PH1: domain, PH2: sequenceNumber });
+    const titleWithSequenceNumber = domain ? i18nString14(UIStrings14.sD, { PH1: domain, PH2: sequenceNumber }) : `#${sequenceNumber}`;
     this.nextNumberByDomain.set(domain, sequenceNumber + 1);
     const preview = document.createElement("div");
     preview.classList.add("preview-item");
     preview.classList.add("vbox");
     preview.setAttribute("jslog", `${VisualLogging3.dropDown("timeline.history-item").track({ click: true })}`);
     preview.style.width = `${previewWidth}px`;
+    const customTitle = parsedTrace.metadata.title;
+    const title = customTitle ? i18nString14(UIStrings14.customTitleWithSequence, { PH1: customTitle, PH2: titleWithSequenceNumber }) : titleWithSequenceNumber;
     const data = {
       preview,
-      title: titleWithSequenceNumber,
+      title,
       lastUsed: Date.now()
     };
     parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
     render2(html2`
-      ${this.#renderTextDetails(parsedTrace.metadata, domain)}
+      ${this.#renderTextDetails(parsedTrace.metadata, title)}
       <div class="hbox">
         ${this.#renderScreenshotThumbnail(filmStrip)}
         ${this.#buildOverview(parsedTrace)}
@@ -5176,16 +5188,16 @@ var TimelineLoader = class _TimelineLoader {
   #traceIsCPUProfile;
   #collectedEvents = [];
   #metadata;
-  #traceFinalizedCallbackForTest;
-  #traceFinalizedPromiseForTest;
+  #traceLoadedCallback;
+  #traceLoadedPromise;
   constructor(client) {
     this.client = client;
     this.canceledCallback = null;
     this.filter = null;
     this.#traceIsCPUProfile = false;
     this.#metadata = null;
-    this.#traceFinalizedPromiseForTest = new Promise((resolve) => {
-      this.#traceFinalizedCallbackForTest = resolve;
+    this.#traceLoadedPromise = new Promise((resolve) => {
+      this.#traceLoadedCallback = resolve;
     });
   }
   static loadFromParsedJsonFile(contents, client) {
@@ -5194,11 +5206,10 @@ var TimelineLoader = class _TimelineLoader {
       client.loadingStarted();
       try {
         loader.#processParsedFile(contents);
-        await loader.close();
+        await loader.complete();
       } catch (e) {
-        await loader.close();
         const message = e instanceof Error ? e.message : "";
-        return loader.reportErrorAndCancelLoading(i18nString15(UIStrings15.malformedTimelineDataS, { PH1: message }));
+        loader.reportErrorAndCancelLoading(i18nString15(UIStrings15.malformedTimelineDataS, { PH1: message }));
       }
     });
     return loader;
@@ -5206,27 +5217,40 @@ var TimelineLoader = class _TimelineLoader {
   static loadFromEvents(events, client) {
     const loader = new _TimelineLoader(client);
     window.setTimeout(async () => {
-      void loader.addEvents(events, null);
+      try {
+        await loader.addEvents(events, null);
+      } catch (e) {
+        loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : void 0);
+      }
     });
     return loader;
   }
   static loadFromTraceFile(traceFile, client) {
     const loader = new _TimelineLoader(client);
     window.setTimeout(async () => {
-      void loader.addEvents(traceFile.traceEvents, traceFile.metadata);
+      try {
+        await loader.addEvents(traceFile.traceEvents, traceFile.metadata);
+      } catch (e) {
+        loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : void 0);
+      }
     });
     return loader;
   }
-  static loadFromCpuProfile(profile, client) {
+  static loadFromCpuProfile(profile, client, title) {
     const loader = new _TimelineLoader(client);
     loader.#traceIsCPUProfile = true;
     try {
       const contents = Trace17.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(profile, Trace17.Types.Events.ThreadID(1));
       window.setTimeout(async () => {
-        void loader.addEvents(contents.traceEvents, null);
+        try {
+          await loader.addEvents(contents.traceEvents, title ? { title } : null);
+        } catch (e) {
+          loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : void 0);
+        }
       });
     } catch (e) {
-      console.error(e.stack);
+      console.error(e instanceof Error ? e.stack : e);
+      loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : void 0);
     }
     return loader;
   }
@@ -5244,9 +5268,8 @@ var TimelineLoader = class _TimelineLoader {
         const txt = stream.data();
         const trace = JSON.parse(txt);
         loader.#processParsedFile(trace);
-        await loader.close();
+        await loader.complete();
       } catch (e) {
-        await loader.close();
         const message = e instanceof Error ? e.message : "";
         return loader.reportErrorAndCancelLoading(i18nString15(UIStrings15.malformedTimelineDataS, { PH1: message }));
       }
@@ -5276,18 +5299,22 @@ var TimelineLoader = class _TimelineLoader {
     }
   }
   async addEvents(events, metadata) {
-    this.#metadata = metadata;
-    this.client?.loadingStarted();
-    const eventsPerChunk = 15e4;
-    for (let i = 0; i < events.length; i += eventsPerChunk) {
-      const chunk = events.slice(i, i + eventsPerChunk);
-      this.#collectEvents(chunk);
-      this.client?.loadingProgress((i + chunk.length) / events.length);
-      await new Promise((r) => window.setTimeout(r, 0));
+    try {
+      this.#metadata = metadata;
+      this.client?.loadingStarted();
+      const eventsPerChunk = 15e4;
+      for (let i = 0; i < events.length; i += eventsPerChunk) {
+        const chunk = events.slice(i, i + eventsPerChunk);
+        this.#collectEvents(chunk);
+        this.client?.loadingProgress((i + chunk.length) / events.length);
+        await new Promise((r) => window.setTimeout(r, 0));
+      }
+      await this.complete();
+    } catch (e) {
+      this.reportErrorAndCancelLoading(e instanceof Error ? e.message : void 0);
     }
-    void this.close();
   }
-  async cancel() {
+  async #cleanup() {
     if (this.client) {
       await this.client.loadingComplete(
         /* collectedEvents */
@@ -5303,28 +5330,46 @@ var TimelineLoader = class _TimelineLoader {
       this.canceledCallback();
     }
   }
+  async cancel() {
+    await this.#cleanup();
+    this.#traceLoadedCallback?.(
+      "CANCELLED"
+      /* LoadingState.CANCELLED */
+    );
+  }
   reportErrorAndCancelLoading(message) {
     if (message) {
       Common8.Console.Console.instance().error(message);
     }
-    void this.cancel();
+    this.#traceLoadedCallback?.(
+      "ERROR"
+      /* LoadingState.ERROR */
+    );
+    void this.#cleanup();
   }
-  async close() {
+  async complete() {
     if (!this.client) {
       return;
     }
     this.client.processingStarted();
-    await this.finalizeTrace();
+    try {
+      await this.finalizeTrace();
+    } catch (e) {
+      this.reportErrorAndCancelLoading(e instanceof Error ? e.message : void 0);
+    }
   }
   async finalizeTrace() {
     if (!this.#metadata && this.#traceIsCPUProfile) {
       this.#metadata = forCPUProfile();
     }
     await this.client.loadingComplete(this.#collectedEvents, this.filter, this.#metadata);
-    this.#traceFinalizedCallbackForTest?.();
+    this.#traceLoadedCallback?.(
+      "SUCCESS"
+      /* LoadingState.SUCCESS */
+    );
   }
-  traceFinalizedForTest() {
-    return this.#traceFinalizedPromiseForTest;
+  traceLoaded() {
+    return this.#traceLoadedPromise;
   }
   #parseCPUProfileFormatFromFile(parsedTrace) {
     const traceFile = Trace17.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(parsedTrace, Trace17.Types.Events.ThreadID(1));
@@ -6551,7 +6596,17 @@ var UIStrings18 = {
   /**
    * @description Title of the shortcuts dialog shown to the user that lists keyboard shortcuts.
    */
-  shortcutsDialogTitle: "Keyboard shortcuts for flamechart"
+  shortcutsDialogTitle: "Keyboard shortcuts for flamechart",
+  /**
+   * @description Header for the confirmation dialog asking the user whether
+   * to load a CPU profile recorded by console.profile().
+   */
+  loadCpuProfileHeader: "Load CPU profile?",
+  /**
+   * @description Confirmation message asking the user whether to load a CPU profile recorded by console.profile().
+   * @example {Profile 1} PH1
+   */
+  loadCpuProfileConfirmation: 'Do you want to load the recorded CPU profile "{PH1}" into the Performance panel?'
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/timeline/TimelinePanel.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
@@ -7108,12 +7163,12 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       false
     );
   }
-  loadFromCpuProfile(profile) {
+  loadFromCpuProfile(profile, title) {
     if (this.state !== "Idle" || profile === null) {
       return;
     }
     this.prepareToLoadTimeline();
-    this.loader = TimelineLoader.loadFromCpuProfile(profile, this);
+    this.loader = TimelineLoader.loadFromCpuProfile(profile, this, title);
   }
   setState(state) {
     this.state = state;
@@ -8854,10 +8909,20 @@ var BottomUpProfileRevealer = class {
     panel.getFlameChart().selectDetailsViewTab(Tab.BottomUp, revealable.node ?? null);
   }
 };
-var ProfileFinishedRevealer = class {
+var ProfileFinishedRevealer = class _ProfileFinishedRevealer {
+  static #consoleProfilePromiseChain = Promise.resolve();
   async reveal(data) {
-    await UI8.ViewManager.ViewManager.instance().showView("timeline");
-    TimelinePanel.instance().loadFromCpuProfile(data.cpuProfile);
+    const taskPromise = _ProfileFinishedRevealer.#consoleProfilePromiseChain.then(async () => {
+      const title = data.title || "Untitled";
+      const confirmed = await UI8.UIUtils.ConfirmDialog.show(i18nString18(UIStrings18.loadCpuProfileConfirmation, { PH1: title }), i18nString18(UIStrings18.loadCpuProfileHeader), void 0, { jslogContext: "load-cpu-profile-confirmation" });
+      if (confirmed) {
+        await UI8.ViewManager.ViewManager.instance().showView("timeline");
+        TimelinePanel.instance().loadFromCpuProfile(data.cpuProfile, title);
+      }
+    });
+    _ProfileFinishedRevealer.#consoleProfilePromiseChain = taskPromise.catch(() => {
+    });
+    return await taskPromise;
   }
 };
 var ActionDelegate = class {

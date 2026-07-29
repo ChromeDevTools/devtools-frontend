@@ -9,15 +9,15 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import dialogStyles from './dialog.css.js';
 const UIStrings = {
     /**
-     * @description Text in Add Source Map URLDialog of the Sources panel
+     * @description Text in Add source map URL dialog of the Sources panel.
      */
     sourceMapUrl: 'Source map URL: ',
     /**
-     * @description Text in Add Debug Info URL Dialog of the Sources panel
+     * @description Text in Add debug info URL dialog of the Sources panel.
      */
     debugInfoUrl: 'DWARF symbols URL: ',
     /**
-     * @description Text to add something
+     * @description Text to add something.
      */
     add: 'Add',
 };

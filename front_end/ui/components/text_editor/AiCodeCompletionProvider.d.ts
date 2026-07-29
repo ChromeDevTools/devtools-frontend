@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
+import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import type { TextEditor } from './TextEditor.js';
 export declare enum AiCodeCompletionTeaserMode {
@@ -24,7 +24,8 @@ export interface AiCodeCompletionConfig {
     onSuggestionAccepted: (citations: Host.AidaClient.Citation[]) => void;
     onRequestTriggered: () => void;
     onResponseReceived: () => void;
-    panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+    disclaimerTooltipId: string;
+    disclaimerTextVariant: PanelCommon.DisclaimerTextVariant;
 }
 export declare const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export declare const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;

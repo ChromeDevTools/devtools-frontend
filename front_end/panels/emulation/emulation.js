@@ -2701,6 +2701,7 @@ var ActionDelegate = class {
             throw new Error(`Unable to get box model of the node: ${new Error().stack}`);
           }
           const nodeBorderQuad = nodeBoxModel.border;
+          const { minX, maxX, minY, maxY } = getQuadBoundingBox(nodeBorderQuad);
           const metrics = await node.domModel().target().pageAgent().invoke_getLayoutMetrics();
           if (metrics.getError()) {
             throw new Error(`Unable to get metrics: ${new Error().stack}`);
@@ -2709,10 +2710,10 @@ var ActionDelegate = class {
           const scrollY = metrics.cssVisualViewport.pageY;
           const { x: oopifOffsetX, y: oopifOffsetY } = await getOopifOffset(node.domModel().target());
           const clip = {
-            x: oopifOffsetX + scrollX + nodeBorderQuad[0],
-            y: oopifOffsetY + scrollY + nodeBorderQuad[1],
-            width: nodeBoxModel.width,
-            height: nodeBoxModel.height,
+            x: oopifOffsetX + scrollX + minX,
+            y: oopifOffsetY + scrollY + minY,
+            width: maxX - minX,
+            height: maxY - minY,
             scale: 1
           };
           const zoom = metrics.cssVisualViewport.zoom ?? 1;
@@ -2773,6 +2774,13 @@ async function getOopifOffset(target) {
     x: iframeContentX + scrollX + parentOffset.x,
     y: iframeContentY + scrollY + parentOffset.y
   };
+}
+function getQuadBoundingBox(quad) {
+  const minX = Math.min(quad[0], quad[2], quad[4], quad[6]);
+  const maxX = Math.max(quad[0], quad[2], quad[4], quad[6]);
+  const minY = Math.min(quad[1], quad[3], quad[5], quad[7]);
+  const maxY = Math.max(quad[1], quad[3], quad[5], quad[7]);
+  return { minX, maxX, minY, maxY };
 }
 
 // gen/front_end/panels/emulation/InspectedPagePlaceholder.js

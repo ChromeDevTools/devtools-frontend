@@ -144,7 +144,6 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
   #contentEncoded;
   #isKnownThirdParty = false;
   #isUnconditionallyIgnoreListed = false;
-  #containsAiChanges = false;
   constructor(project, url, contentType) {
     super();
     this.#project = project;
@@ -376,18 +375,11 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
   #resetWorkingCopy() {
     this.#workingCopy = null;
     this.#workingCopyGetter = null;
-    this.setContainsAiChanges(false);
   }
   setWorkingCopy(newWorkingCopy) {
     this.#workingCopy = newWorkingCopy;
     this.#workingCopyGetter = null;
     this.#workingCopyChanged();
-  }
-  setContainsAiChanges(containsAiChanges) {
-    this.#containsAiChanges = containsAiChanges;
-  }
-  containsAiChanges() {
-    return this.#containsAiChanges;
   }
   setContent(content, isBase64) {
     this.#contentEncoded = isBase64;

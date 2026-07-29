@@ -5,7 +5,6 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
-import * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
 import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
 import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
@@ -55,9 +54,8 @@ export class AiCodeGenerationProvider {
             throw new Error('AI code generation feature is not available.');
         }
         this.#generationTeaser = new PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser();
-        this.#generationTeaser.disclaimerTooltipId =
-            aiCodeGenerationConfig.panel + '-ai-code-generation-disclaimer-tooltip';
-        this.#generationTeaser.panel = aiCodeGenerationConfig.panel;
+        this.#generationTeaser.disclaimerTooltipId = aiCodeGenerationConfig.disclaimerTooltipId;
+        this.#generationTeaser.disclaimerTextVariant = aiCodeGenerationConfig.disclaimerTextVariant;
         this.#aiCodeGenerationConfig = aiCodeGenerationConfig;
     }
     static createInstance(aiCodeGenerationConfig) {
@@ -188,11 +186,11 @@ export class AiCodeGenerationProvider {
             return;
         }
         void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-generation.triggered');
-        if (this.#aiCodeGenerationConfig?.panel === "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */) {
+        if (this.#aiCodeGenerationConfig?.disclaimerTextVariant === 'console') {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggeredFromConsole);
             void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-generation.triggered-from-console');
         }
-        else if (this.#aiCodeGenerationConfig?.panel === "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */) {
+        else if (this.#aiCodeGenerationConfig?.disclaimerTextVariant === 'sources') {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggeredFromSources);
             void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-generation.triggered-from-sources');
         }
@@ -300,7 +298,7 @@ export class AiCodeGenerationProvider {
             if (this.#generationTeaser) {
                 this.#dismissTeaserAndSuggestion();
             }
-            if (!generationResponse || generationResponse.samples.length === 0) {
+            if (generationResponse.samples.length === 0) {
                 this.#aiCodeGenerationConfig.onResponseReceived();
                 return;
             }

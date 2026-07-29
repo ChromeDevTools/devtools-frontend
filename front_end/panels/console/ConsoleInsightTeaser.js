@@ -377,12 +377,8 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         this.requestUpdate();
     }
     #getConsoleInsightsEnabledSetting() {
-        try {
-            return Common.Settings.Settings.instance().moduleSetting('console-insights-enabled');
-        }
-        catch {
-            return;
-        }
+        const result = Common.Settings.Settings.instance().maybeResolve(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor);
+        return 'setting' in result ? result.setting : undefined;
     }
     #getOnboardingCompletedSetting() {
         return Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', true);

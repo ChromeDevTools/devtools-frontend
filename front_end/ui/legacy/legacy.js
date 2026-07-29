@@ -4393,6 +4393,7 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     }
   }
   clearMeasuredWidths() {
+    delete this.measuredDropDownButtonWidth;
     for (let i = 0; i < this.#tabs.length; ++i) {
       delete this.#tabs[i].measuredWidth;
     }
@@ -4688,7 +4689,7 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     this.#dispatchOverflowTabsChangedIfNeeded();
   }
   maybeShowDropDown(hasMoreTabs) {
-    const shouldShow = this.#trailingSlot.assignedElements().length === 0 && hasMoreTabs;
+    const shouldShow = this.#trailingSlot.assignedElements().length === 0 && hasMoreTabs && this.totalWidth() >= (this.measuredDropDownButtonWidth || 0);
     if (shouldShow && !this.dropDownButton.parentElement) {
       this.headerContentsElement.appendChild(this.dropDownButton);
     } else if (!shouldShow && this.dropDownButton.parentElement) {
@@ -4772,7 +4773,10 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     }
     this.dropDownButton.classList.add("measuring");
     this.headerContentsElement.appendChild(this.dropDownButton);
-    this.measuredDropDownButtonWidth = this.dropDownButton.getBoundingClientRect().width;
+    const width = this.dropDownButton.getBoundingClientRect().width;
+    if (width > 0) {
+      this.measuredDropDownButtonWidth = width;
+    }
     this.headerContentsElement.removeChild(this.dropDownButton);
     this.dropDownButton.classList.remove("measuring");
   }
@@ -17479,6 +17483,8 @@ var Dialog = class _Dialog extends Common16.ObjectWrapper.eventMixin(GlassPane) 
 };
 var DialogWidget = class extends Common16.ObjectWrapper.eventMixin(Widget) {
   #open = false;
+  #jslogContext = "";
+  #dialogStack = false;
   #content = nothing4;
   #dialog = new Dialog();
   constructor(element) {
@@ -17505,7 +17511,15 @@ var DialogWidget = class extends Common16.ObjectWrapper.eventMixin(Widget) {
       this.requestUpdate();
     }
   }
-  #jslogContext = "";
+  get dialogStack() {
+    return this.#dialogStack;
+  }
+  set dialogStack(dialogStack) {
+    if (this.#dialogStack !== dialogStack) {
+      this.#dialogStack = dialogStack;
+      this.requestUpdate();
+    }
+  }
   get content() {
     return this.#content;
   }
@@ -17539,7 +17553,7 @@ var DialogWidget = class extends Common16.ObjectWrapper.eventMixin(Widget) {
     if (this.open) {
       render7(this.#content ?? nothing4, this.#dialog.contentElement);
       if (!this.#dialog.isShowing()) {
-        this.#dialog.show(this.contentElement.ownerDocument);
+        this.#dialog.show(this.contentElement.ownerDocument, this.#dialogStack);
         this.#dialog.contentElement.focus();
       } else {
         this.#dialog.positionContent();

@@ -207,6 +207,8 @@ export class Dialog extends Common.ObjectWrapper.eventMixin(GlassPane) {
 }
 export class DialogWidget extends Common.ObjectWrapper.eventMixin(Widget) {
     #open = false;
+    #jslogContext = '';
+    #dialogStack = false;
     #content = nothing;
     #dialog = new Dialog();
     constructor(element) {
@@ -227,7 +229,15 @@ export class DialogWidget extends Common.ObjectWrapper.eventMixin(Widget) {
             this.requestUpdate();
         }
     }
-    #jslogContext = '';
+    get dialogStack() {
+        return this.#dialogStack;
+    }
+    set dialogStack(dialogStack) {
+        if (this.#dialogStack !== dialogStack) {
+            this.#dialogStack = dialogStack;
+            this.requestUpdate();
+        }
+    }
     get content() {
         return this.#content;
     }
@@ -262,7 +272,7 @@ export class DialogWidget extends Common.ObjectWrapper.eventMixin(Widget) {
             // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
             render(this.#content ?? nothing, this.#dialog.contentElement);
             if (!this.#dialog.isShowing()) {
-                this.#dialog.show(this.contentElement.ownerDocument);
+                this.#dialog.show(this.contentElement.ownerDocument, this.#dialogStack);
                 this.#dialog.contentElement.focus();
             }
             else {

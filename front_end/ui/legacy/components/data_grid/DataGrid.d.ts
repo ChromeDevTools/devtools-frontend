@@ -169,7 +169,8 @@ export declare const enum Align {
 }
 export declare const enum DataType {
     STRING = "String",
-    BOOLEAN = "Boolean"
+    BOOLEAN = "Boolean",
+    NUMBER = "Number"
 }
 export declare const ColumnResizePadding = 30;
 export declare const CenterResizerOverBorderAdjustment = 3;

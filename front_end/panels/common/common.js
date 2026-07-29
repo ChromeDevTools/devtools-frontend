@@ -69,7 +69,6 @@ import * as Host from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
-import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as AiCodeGeneration from "./../../models/ai_code_generation/ai_code_generation.js";
 import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
@@ -461,7 +460,7 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
   #boundOnAidaAvailabilityChange;
   #boundOnAiCodeCompletionSettingChanged;
   #onDetach;
-  #panel;
+  #disclaimerTextVariant;
   // Whether the user completed first run experience dialog or not.
   #aiCodeCompletionFreCompletedSetting = Common.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
   // Whether the user dismissed the teaser or not.
@@ -472,7 +471,7 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
     super();
     this.markAsExternallyManaged();
     this.#onDetach = config.onDetach;
-    this.#panel = config.panel;
+    this.#disclaimerTextVariant = config.disclaimerTextVariant;
     this.#view = view ?? DEFAULT_VIEW;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#boundOnAiCodeCompletionSettingChanged = this.#onAiCodeCompletionSettingChanged.bind(this);
@@ -549,9 +548,9 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
     });
     if (result) {
       this.#aiCodeCompletionFreCompletedSetting.set(true);
-      if (this.#panel === "console") {
+      if (this.#disclaimerTextVariant === "console") {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionFreCompletedFromConsole);
-      } else if (this.#panel === "sources") {
+      } else if (this.#disclaimerTextVariant === "sources") {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionFreCompletedFromSources);
       }
       this.detach();
@@ -607,7 +606,6 @@ import * as Common2 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
-import * as AiCodeCompletion2 from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import { Directives, html as html3, nothing as nothing2, render as render3 } from "./../../ui/lit/lit.js";
@@ -837,8 +835,8 @@ var AiCodeGenerationTeaserDisplayState;
   AiCodeGenerationTeaserDisplayState2["LOADING"] = "loading";
   AiCodeGenerationTeaserDisplayState2["GENERATED"] = "generated";
 })(AiCodeGenerationTeaserDisplayState || (AiCodeGenerationTeaserDisplayState = {}));
-function getTooltipDisclaimerText(noLogging, panel) {
-  switch (panel) {
+function getTooltipDisclaimerText(noLogging, disclaimerTextVariant) {
+  switch (disclaimerTextVariant) {
     case "console":
       return noLogging ? lockedString2(UIStringsNotTranslate2.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInConsole) : lockedString2(UIStringsNotTranslate2.tooltipDisclaimerTextForAiCodeGenerationInConsole);
     case "sources":
@@ -848,7 +846,7 @@ function getTooltipDisclaimerText(noLogging, panel) {
   }
 }
 var DEFAULT_VIEW2 = (input, output, target) => {
-  if (!input.panel) {
+  if (!input.disclaimerTextVariant) {
     render3(nothing2, target);
     return;
   }
@@ -871,7 +869,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
           <span>${lockedString2(UIStringsNotTranslate2.period)}</span>
         </span>&nbsp;${lockedString2(UIStringsNotTranslate2.toLearnHowYourDataIsBeingUsed)}`;
       const teaserText = input.showDataUsageTeaser ? html3`${toGenerateCode}.&nbsp;${toLearnHowYourDataIsBeingUsedVisible}` : toGenerateCode;
-      const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.panel);
+      const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.disclaimerTextVariant);
       teaserLabel = html3`<div class="ai-code-generation-teaser-trigger">
         <span aria-hidden="true">${teaserText}</span>
         <span class="ai-code-generation-teaser-screen-reader-only" aria-atomic="true" aria-live="assertive">
@@ -924,7 +922,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         break;
       }
       const newBadge = UI3.UIUtils.maybeCreateNewBadge(PROMOTION_ID2);
-      const teaserText = input.panel === "console" ? lockedString2(UIStringsNotTranslate2.writeACommentToGenerateCodeInConsole) : lockedString2(UIStringsNotTranslate2.writeACommentToGenerateCode);
+      const teaserText = input.disclaimerTextVariant === "console" ? lockedString2(UIStringsNotTranslate2.writeACommentToGenerateCodeInConsole) : lockedString2(UIStringsNotTranslate2.writeACommentToGenerateCode);
       teaserLabel = newBadge ? html3`${teaserText}&nbsp;${newBadge}` : nothing2;
       break;
     }
@@ -971,7 +969,7 @@ var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Wi
   #disclaimerTooltipId;
   #noLogging;
   // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
-  #panel;
+  #disclaimerTextVariant;
   #timerIntervalId;
   #loadStartTime;
   #aiCodeGenerationUsedSetting = Common2.Settings.Settings.instance().createSetting("ai-code-generation-used", false);
@@ -992,7 +990,7 @@ var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Wi
       noLogging: this.#noLogging,
       showDataUsageTeaser: _AiCodeGenerationTeaser.#showDataUsageTeaser,
       showDiscoveryTeaser: !this.#aiCodeGenerationUsedSetting.get() && !_AiCodeGenerationTeaser.#discoveryTeaserShownInSession,
-      panel: this.#panel
+      disclaimerTextVariant: this.#disclaimerTextVariant
     }, this.#viewOutput, this.contentElement);
   }
   willHide() {
@@ -1044,8 +1042,8 @@ var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Wi
     this.#disclaimerTooltipId = disclaimerTooltipId;
     this.requestUpdate();
   }
-  set panel(panel) {
-    this.#panel = panel;
+  set disclaimerTextVariant(disclaimerTextVariant) {
+    this.#disclaimerTextVariant = disclaimerTextVariant;
     this.requestUpdate();
   }
   #onManageInSettingsTooltipClick(event) {
@@ -1059,6 +1057,9 @@ var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Wi
   }
   static setDiscoveryTeaserShownInSessionForTest(value) {
     _AiCodeGenerationTeaser.#discoveryTeaserShownInSession = value;
+  }
+  static setShowDataUsageTeaserForTest(value) {
+    _AiCodeGenerationTeaser.#showDataUsageTeaser = value;
   }
 };
 
@@ -1818,7 +1819,6 @@ import "./../../ui/components/tooltips/tooltips.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root4 from "./../../core/root/root.js";
-import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html7, nothing as nothing3, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
@@ -1931,8 +1931,8 @@ var UIStringsNotTranslate4 = {
   dataIsBeingSentToGoogle: "Data is being sent to Google"
 };
 var lockedString4 = i18n13.i18n.lockedString;
-function getTooltipDisclaimerText2(noLogging, panel) {
-  switch (panel) {
+function getTooltipDisclaimerText2(noLogging, disclaimerTextVariant) {
+  switch (disclaimerTextVariant) {
     case "console":
       return noLogging ? lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole) : lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionInConsole);
     case "sources":
@@ -1942,76 +1942,90 @@ function getTooltipDisclaimerText2(noLogging, panel) {
   }
 }
 var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
-  if (input.aidaAvailability !== "available" || !input.disclaimerTooltipId || !input.spinnerTooltipId || !input.panel) {
+  if (input.aidaAvailability !== "available" || !input.disclaimerTooltipId || !input.spinnerTooltipId || !input.disclaimerTextVariant) {
     render7(nothing3, target);
     return;
   }
-  const tooltipDisclaimerText = getTooltipDisclaimerText2(input.noLogging, input.panel);
+  const tooltipDisclaimerText = getTooltipDisclaimerText2(input.noLogging, input.disclaimerTextVariant);
   render7(html7`
-        <style>${aiCodeCompletionDisclaimer_css_default}</style>
-        <div class="ai-code-completion-disclaimer"><devtools-spinner
-          .active=${false}
-          ${Directives2.ref((el) => {
+    <style>${aiCodeCompletionDisclaimer_css_default}</style>
+    <div class="ai-code-completion-disclaimer">
+      <devtools-spinner
+        .active=${false}
+        ${Directives2.ref((el) => {
     if (el instanceof HTMLElement) {
       output.setLoading = (isLoading) => {
         el.toggleAttribute("active", isLoading);
       };
     }
   })}
-          aria-details=${input.spinnerTooltipId}
-          aria-describedby=${input.spinnerTooltipId}></devtools-spinner>
-          <devtools-tooltip
-              id=${input.spinnerTooltipId}
-              variant="rich"
-              jslogContext="ai-code-completion-spinner-tooltip">
-          <div class="disclaimer-tooltip-container"><div class="tooltip-text">
+        aria-details=${input.spinnerTooltipId}
+        aria-describedby=${input.spinnerTooltipId}>
+      </devtools-spinner>
+      <devtools-tooltip
+        id=${input.spinnerTooltipId}
+        variant="rich"
+        jslogContext="ai-code-completion-spinner-tooltip"
+      >
+        <div class="disclaimer-tooltip-container">
+          <div class="tooltip-text">
             ${lockedString4(UIStringsNotTranslate4.tooltipTextForSpinner)}
-          </div></div></devtools-tooltip>
-          <span
-              tabIndex="0"
-              class="link"
-              role="link"
-              jslog=${VisualLogging4.link("open-ai-settings").track({
+          </div>
+        </div>
+      </devtools-tooltip>
+      <span
+        tabIndex="0"
+        class="link"
+        role="link"
+        jslog=${VisualLogging4.link("open-ai-settings").track({
     click: true
   })}
-              aria-details=${input.disclaimerTooltipId}
-              aria-describedby=${input.disclaimerTooltipId}
-              @click=${() => {
+        aria-details=${input.disclaimerTooltipId}
+        aria-describedby=${input.disclaimerTooltipId}
+        @click=${() => {
     void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
   }}
-          >${lockedString4(UIStringsNotTranslate4.relevantData)}</span>${lockedString4(UIStringsNotTranslate4.isSentToGoogle)}
-          <devtools-tooltip
-              id=${input.disclaimerTooltipId}
-              variant="rich"
-              jslogContext="ai-code-completion-disclaimer"
-              ${Directives2.ref((el) => {
+      >
+        ${lockedString4(UIStringsNotTranslate4.relevantData)}
+      </span>
+      ${lockedString4(UIStringsNotTranslate4.isSentToGoogle)}
+      <devtools-tooltip
+        id=${input.disclaimerTooltipId}
+        variant="rich"
+        jslogContext="ai-code-completion-disclaimer"
+        ${Directives2.ref((el) => {
     if (el instanceof HTMLElement) {
       output.hideTooltip = () => {
         el.hidePopover();
       };
     }
-  })}>
-            <div class="disclaimer-tooltip-container"><div class="tooltip-text">
-                ${tooltipDisclaimerText}
-                </div>
-                <span
-                    tabIndex="0"
-                    class="link"
-                    role="link"
-                    jslog=${VisualLogging4.link("open-ai-settings").track({
+  })}
+      >
+        <div class="disclaimer-tooltip-container">
+          <div class="tooltip-text">
+            ${tooltipDisclaimerText}
+          </div>
+          <span
+            tabIndex="0"
+            class="link"
+            role="link"
+            jslog=${VisualLogging4.link("open-ai-settings").track({
     click: true,
     keydown: "Enter"
   })}
-                    @click=${input.onManageInSettingsTooltipClick}
-                    @keydown=${(e) => {
+            @click=${input.onManageInSettingsTooltipClick}
+            @keydown=${(e) => {
     if (e.key === "Enter") {
       e.consume(true);
       input.onManageInSettingsTooltipClick();
     }
   }}
-                >${lockedString4(UIStringsNotTranslate4.manageInSettings)}</span></div></devtools-tooltip>
-          </div>
-        `, target);
+          >
+            ${lockedString4(UIStringsNotTranslate4.manageInSettings)}
+          </span>
+        </div>
+      </devtools-tooltip>
+    </div>`, target);
 };
 var MINIMUM_LOADING_STATE_TIMEOUT = 1e3;
 var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
@@ -2024,7 +2038,7 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
   #loading = false;
   #loadingStartTime = 0;
   #spinnerLoadingTimeout;
-  #panel;
+  #disclaimerTextVariant;
   #aidaAvailability;
   #boundOnAidaAvailabilityChange;
   constructor(element, view = DEFAULT_SUMMARY_TOOLBAR_VIEW) {
@@ -2067,8 +2081,8 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
       }, remainingTime);
     }
   }
-  set panel(panel) {
-    this.#panel = panel;
+  set disclaimerTextVariant(disclaimerTextVariant) {
+    this.#disclaimerTextVariant = disclaimerTextVariant;
     this.requestUpdate();
   }
   #updateAidaAvailability(aidaAvailability) {
@@ -2091,7 +2105,7 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
       noLogging: this.#noLogging,
       aidaAvailability: this.#aidaAvailability,
       onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
-      panel: this.#panel
+      disclaimerTextVariant: this.#disclaimerTextVariant
     }, this.#viewOutput, this.contentElement);
   }
   wasShown() {
@@ -2256,7 +2270,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
     disclaimerTooltipId: input.disclaimerTooltipId,
     spinnerTooltipId: input.spinnerTooltipId,
     loading: input.loading,
-    panel: input.panel
+    disclaimerTextVariant: input.disclaimerTextVariant
   })} class="disclaimer-widget"></devtools-widget>` : nothing4;
   const recitationNotice = input.citations && input.citations.size > 0 ? html8`<div class="ai-code-completion-recitation-notice">
                 ${lockedString5(UIStringsNotTranslate5.generatedCodeMayBeSubjectToALicense)}
@@ -2293,7 +2307,7 @@ var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
   #citations = /* @__PURE__ */ new Set();
   #loading = false;
   #hasTopBorder = false;
-  #panel;
+  #disclaimerTextVariant;
   #aidaAvailability;
   #boundOnAidaAvailabilityChange;
   constructor(props, view) {
@@ -2302,7 +2316,7 @@ var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
     this.#spinnerTooltipId = props.spinnerTooltipId;
     this.#citationsTooltipId = props.citationsTooltipId;
     this.#hasTopBorder = props.hasTopBorder ?? false;
-    this.#panel = props.panel;
+    this.#disclaimerTextVariant = props.disclaimerTextVariant;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#view = view ?? DEFAULT_SUMMARY_TOOLBAR_VIEW2;
     this.requestUpdate();
@@ -2337,7 +2351,7 @@ var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
       loading: this.#loading,
       hasTopBorder: this.#hasTopBorder,
       aidaAvailability: this.#aidaAvailability,
-      panel: this.#panel
+      disclaimerTextVariant: this.#disclaimerTextVariant
     }, void 0, this.contentElement);
   }
   wasShown() {

@@ -59,6 +59,10 @@ export default `/*
 
 .text-details .name {
   font: var(--sys-typescale-body4-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 240px;
 }
 
 .text-details .metadata {

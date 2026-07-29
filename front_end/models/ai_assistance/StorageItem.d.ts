@@ -1,3 +1,4 @@
+export declare const EMPTY_ORIGIN = "";
 export declare class StorageItem {
     /**
      * The origin of the top-level primary page target being inspected.
@@ -5,8 +6,8 @@ export declare class StorageItem {
      */
     readonly primaryTargetOrigin: string;
     /**
-     * The origin of the selected storage or cookie item (if any).
-     * If no item is selected, this is the same as primaryTargetOrigin.
+     * The origin of the selected storage or cookie item.
+     * If empty (''), this represents a generic category-level context (e.g., all Local Storage or all Cookies).
      */
     readonly origin: string;
     constructor(
@@ -16,27 +17,31 @@ export declare class StorageItem {
      */
     primaryTargetOrigin: string, 
     /**
-     * The origin of the selected storage or cookie item (if any).
-     * If no item is selected, this is the same as primaryTargetOrigin.
+     * The origin of the selected storage or cookie item.
+     * If empty (''), this represents a generic category-level context (e.g., all Local Storage or all Cookies).
      */
-    origin: string);
+    origin?: string);
+    get isGenericContext(): boolean;
+    static createGenericContext(primaryTargetOrigin: string, ..._args: unknown[]): StorageItem;
 }
 export declare class DOMStorageItem extends StorageItem {
     /** The storage key partition identifier used by the browser storage engine. */
-    readonly storageKey: string;
+    readonly storageKey: string | undefined;
     /** The sub-category of DOM storage: 'localStorage' or 'sessionStorage'. */
-    readonly type: string;
+    readonly type: 'localStorage' | 'sessionStorage';
     /** The optional specific key of the selected item in this storage partition. */
     readonly key?: string | undefined;
     constructor(primaryTargetOrigin: string, origin: string, 
     /** The storage key partition identifier used by the browser storage engine. */
-    storageKey: string, 
+    storageKey: string | undefined, 
     /** The sub-category of DOM storage: 'localStorage' or 'sessionStorage'. */
-    type: string, 
+    type: 'localStorage' | 'sessionStorage', 
     /** The optional specific key of the selected item in this storage partition. */
     key?: string | undefined);
+    static createGenericContext(primaryTargetOrigin: string, type: 'localStorage' | 'sessionStorage'): DOMStorageItem;
 }
 export declare class CookieItem extends StorageItem {
     readonly name?: string | undefined;
     constructor(primaryTargetOrigin: string, origin: string, name?: string | undefined);
+    static createGenericContext(primaryTargetOrigin: string): CookieItem;
 }

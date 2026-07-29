@@ -40,7 +40,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
             disclaimerTooltipId: input.disclaimerTooltipId,
             spinnerTooltipId: input.spinnerTooltipId,
             loading: input.loading,
-            panel: input.panel,
+            disclaimerTextVariant: input.disclaimerTextVariant,
         })} class="disclaimer-widget"></devtools-widget>` : nothing;
     const recitationNotice = input.citations && input.citations.size > 0 ?
         html `<div class="ai-code-completion-recitation-notice">
@@ -79,7 +79,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
     #citations = new Set();
     #loading = false;
     #hasTopBorder = false;
-    #panel;
+    #disclaimerTextVariant;
     #aidaAvailability;
     #boundOnAidaAvailabilityChange;
     constructor(props, view) {
@@ -88,7 +88,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
         this.#spinnerTooltipId = props.spinnerTooltipId;
         this.#citationsTooltipId = props.citationsTooltipId;
         this.#hasTopBorder = props.hasTopBorder ?? false;
-        this.#panel = props.panel;
+        this.#disclaimerTextVariant = props.disclaimerTextVariant;
         this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
         this.#view = view ?? DEFAULT_SUMMARY_TOOLBAR_VIEW;
         this.requestUpdate();
@@ -123,7 +123,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
             loading: this.#loading,
             hasTopBorder: this.#hasTopBorder,
             aidaAvailability: this.#aidaAvailability,
-            panel: this.#panel,
+            disclaimerTextVariant: this.#disclaimerTextVariant,
         }, undefined, this.contentElement);
     }
     wasShown() {

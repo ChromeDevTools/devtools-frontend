@@ -158,7 +158,7 @@ var UIStrings = {
    */
   removeBlock: "Remove this '`ApplyTo`'-section",
   /**
-   * @description Error message for files which cannot not be parsed.
+   * @description Error message for files which cannot be parsed.
    * @example {.headers} PH1
    */
   errorWhenParsing: "Error when parsing ''{PH1}''.",
@@ -172,7 +172,7 @@ var UIStrings = {
    */
   addOverrideRule: "Add override rule",
   /**
-   * @description Text which is a hyperlink to more documentation
+   * @description Text which is a hyperlink to more documentation.
    */
   learnMore: "Learn more"
 };

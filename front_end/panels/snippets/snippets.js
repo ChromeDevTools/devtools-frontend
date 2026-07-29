@@ -23,12 +23,12 @@ import * as Workspace from "./../../models/workspace/workspace.js";
 import * as UI from "./../../ui/legacy/legacy.js";
 var UIStrings = {
   /**
-   * @description Default snippet name when a new snippet is created in the Sources panel
+   * @description Default snippet name when a new snippet is created in the Sources panel.
    * @example {1} PH1
    */
   scriptSnippet: "Script snippet #{PH1}",
   /**
-   * @description Text to show something is linked to another
+   * @description Text to show something is linked to another.
    * @example {example.url} PH1
    */
   linkedTo: "Linked to {PH1}"
@@ -209,19 +209,19 @@ import * as QuickOpen from "./../../ui/legacy/components/quick_open/quick_open.j
 import { html } from "./../../ui/lit/lit.js";
 var UIStrings2 = {
   /**
-   * @description Text in Snippets Quick Open of the Sources panel when opening snippets
+   * @description Text in Snippets Quick Open of the Sources panel when opening snippets.
    */
   noSnippetsFound: "No snippets found.",
   /**
-   * @description Text for command prefix of run a code snippet
+   * @description Text for command prefix of running a code snippet.
    */
   run: "Run",
   /**
-   * @description Text for suggestion of run a code snippet
+   * @description Text for suggestion of running a code snippet.
    */
   snippet: "Snippet",
   /**
-   * @description Text for help title of run code snippet menu
+   * @description Text for help title of running a code snippet.
    */
   runSnippet: "Run snippet"
 };

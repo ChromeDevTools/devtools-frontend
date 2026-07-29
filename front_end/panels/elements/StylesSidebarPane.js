@@ -255,7 +255,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
                 onRequestTriggered: this.#onAiCodeCompletionRequestTriggered.bind(this),
                 onResponseReceived: this.#onAiCodeCompletionResponseReceived.bind(this),
-                panel: "styles" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES */,
+                disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
+                disclaimerTextVariant: 'styles',
             };
             this.aiCodeCompletionProvider =
                 StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
@@ -1322,7 +1323,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 citationsTooltipId: CITATIONS_TOOLTIP_ID,
                 disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
                 spinnerTooltipId: SPINNER_TOOLTIP_ID,
-                panel: "styles" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES */,
+                disclaimerTextVariant: 'styles',
             });
         const containingPane = this.contentElement.enclosingNodeOrSelfWithClass('style-panes-wrapper');
         this.#aiCodeCompletionSummaryToolbarContainer =

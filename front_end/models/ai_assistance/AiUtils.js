@@ -3,8 +3,62 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import { debugLog } from './debug.js';
+function isLocaleRestricted() {
+    try {
+        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+        return !devtoolsLocale.locale.startsWith('en-');
+    }
+    catch {
+        return false;
+    }
+}
+function isGeoRestricted(config) {
+    return config?.aidaAvailability?.blockedByGeo === true;
+}
+function isPolicyRestricted(config) {
+    return config?.aidaAvailability?.blockedByEnterprisePolicy === true;
+}
+function isConsoleInsightsFeatureEnabled(config) {
+    return config?.aidaAvailability?.enabled !== false && config?.devToolsConsoleInsights?.enabled === true;
+}
+export const consoleInsightsEnabledSettingDescriptor = {
+    name: 'console-insights-enabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    isAvailable: (config) => {
+        if (!isConsoleInsightsFeatureEnabled(config)) {
+            return {
+                status: 2 /* Common.Settings.SettingAvailability.UNAVAILABLE */,
+                reason: ["not-supported" /* DisabledReason.NOT_SUPPORTED */],
+            };
+        }
+        const reasons = [];
+        if (isGeoRestricted(config)) {
+            reasons.push("geo-restricted" /* DisabledReason.GEO_RESTRICTED */);
+        }
+        if (isPolicyRestricted(config)) {
+            reasons.push("policy-restricted" /* DisabledReason.POLICY_RESTRICTED */);
+        }
+        if (isLocaleRestricted()) {
+            reasons.push("wrong-locale" /* DisabledReason.WRONG_LOCALE */);
+        }
+        if (reasons.length > 0) {
+            return {
+                status: 3 /* Common.Settings.SettingAvailability.DISABLED */,
+                reason: reasons,
+            };
+        }
+        return {
+            status: 1 /* Common.Settings.SettingAvailability.AVAILABLE */,
+        };
+    },
+};
+export function isGeminiBranding() {
+    return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
+}
 /**
  * Returns the list of active preconditions currently preventing AI assistance from being enabled.
  * Checks local frontend constraints (e.g. incognito, age check) and combines them with the
@@ -25,9 +79,6 @@ export function getDisabledReasons(aidaAvailability) {
         reasons.push("age-restricted" /* FrontendAccessPrecondition.AGE_RESTRICTED */);
     }
     return reasons;
-}
-export function isGeminiBranding() {
-    return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }
 export function getIconName() {
     return isGeminiBranding() ? 'spark' : 'smart-assistant';

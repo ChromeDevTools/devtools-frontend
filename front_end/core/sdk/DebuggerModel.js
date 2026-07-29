@@ -9,7 +9,7 @@ import { Events as ResourceTreeModelEvents, ResourceTreeModel } from './Resource
 import { RuntimeModel } from './RuntimeModel.js';
 import { Script } from './Script.js';
 import { SDKModel } from './SDKModel.js';
-import { jsSourceMapsEnabledSettingDescriptor } from './SDKSettings.js';
+import { jsSourceMapsEnabledSettingDescriptor, pauseOnCaughtExceptionSettingDescriptor, pauseOnExceptionEnabledSettingDescriptor, } from './SDKSettings.js';
 import { SourceMap } from './SourceMap.js';
 import { SourceMapManager } from './SourceMapManager.js';
 const UIStrings = {
@@ -147,8 +147,10 @@ export class DebuggerModel extends SDKModel {
         this.#sourceMapManager =
             new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script) => new SourceMap(compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
         const settings = this.target().targetManager().settings;
-        settings.moduleSetting('pause-on-exception-enabled').addChangeListener(this.pauseOnExceptionStateChanged, this);
-        settings.moduleSetting('pause-on-caught-exception').addChangeListener(this.pauseOnExceptionStateChanged, this);
+        settings.resolve(pauseOnExceptionEnabledSettingDescriptor)
+            .addChangeListener(this.pauseOnExceptionStateChanged, this);
+        settings.resolve(pauseOnCaughtExceptionSettingDescriptor)
+            .addChangeListener(this.pauseOnExceptionStateChanged, this);
         settings.moduleSetting('pause-on-uncaught-exception').addChangeListener(this.pauseOnExceptionStateChanged, this);
         settings.moduleSetting('disable-async-stack-traces').addChangeListener(this.asyncStackTracesStateChanged, this);
         settings.moduleSetting('breakpoints-active').addChangeListener(this.breakpointsActiveChanged, this);
@@ -295,7 +297,7 @@ export class DebuggerModel extends SDKModel {
     }
     pauseOnExceptionStateChanged() {
         const settings = this.target().targetManager().settings;
-        const pauseOnCaughtEnabled = settings.moduleSetting('pause-on-caught-exception').get();
+        const pauseOnCaughtEnabled = settings.resolve(pauseOnCaughtExceptionSettingDescriptor).get();
         let state;
         const pauseOnUncaughtEnabled = settings.moduleSetting('pause-on-uncaught-exception').get();
         if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
@@ -719,8 +721,10 @@ export class DebuggerModel extends SDKModel {
             debuggerIdToModel.delete(this.#debuggerId);
         }
         const settings = this.target().targetManager().settings;
-        settings.moduleSetting('pause-on-exception-enabled').removeChangeListener(this.pauseOnExceptionStateChanged, this);
-        settings.moduleSetting('pause-on-caught-exception').removeChangeListener(this.pauseOnExceptionStateChanged, this);
+        settings.resolve(pauseOnExceptionEnabledSettingDescriptor)
+            .removeChangeListener(this.pauseOnExceptionStateChanged, this);
+        settings.resolve(pauseOnCaughtExceptionSettingDescriptor)
+            .removeChangeListener(this.pauseOnExceptionStateChanged, this);
         settings.moduleSetting('disable-async-stack-traces').removeChangeListener(this.asyncStackTracesStateChanged, this);
     }
     async suspendModel() {

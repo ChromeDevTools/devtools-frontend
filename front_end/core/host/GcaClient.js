@@ -51,13 +51,12 @@ export class GcaClient {
     async completeCode(request) {
         const gcaRequest = aidaCompletionRequestToGcaRequest(request);
         const result = await this.#requestContent(gcaRequest);
-        const aidaResult = result ? gcaResponseToAidaCompletionResponse(result) : null;
-        return aidaResult;
+        return gcaResponseToAidaCompletionResponse(result);
     }
     async generateCode(request, options) {
         const gcaRequest = aidaGenerateCodeRequestToGcaRequest(request);
         const result = await this.#requestContent(gcaRequest, options);
-        return result ? gcaResponseToAidaGenerateCodeResponse(result) : null;
+        return gcaResponseToAidaGenerateCodeResponse(result);
     }
     async #requestContent(request, options) {
         try {

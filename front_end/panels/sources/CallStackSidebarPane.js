@@ -43,11 +43,11 @@ import callStackSidebarPaneStyles from './callStackSidebarPane.css.js';
 import { QuickSourceView, SourcesPanel } from './SourcesPanel.js';
 const UIStrings = {
     /**
-     * @description Text in Call Stack Sidebar Pane of the Sources panel
+     * @description Text in the call stack sidebar of the Sources panel
      */
     callStack: 'Call Stack',
     /**
-     * @description Not paused message element text content in Call Stack Sidebar Pane of the Sources panel
+     * @description Not paused message element text content in the call stack sidebar of the Sources panel
      */
     notPaused: 'Not paused',
     /**
@@ -55,7 +55,7 @@ const UIStrings = {
      */
     onIgnoreList: 'on ignore list',
     /**
-     * @description Show all link text content in Call Stack Sidebar Pane of the Sources panel
+     * @description Show all link text content in the call stack sidebar of the Sources panel
      */
     showIgnorelistedFrames: 'Show ignore-listed frames',
     /**
@@ -63,11 +63,11 @@ const UIStrings = {
      */
     showMore: 'Show more',
     /**
-     * @description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+     * @description A context menu item in the call stack sidebar of the Sources panel
      */
     copyStackTrace: 'Copy stack trace',
     /**
-     * @description Text in Call Stack Sidebar Pane of the Sources panel when some call frames have warnings
+     * @description Text in the call stack sidebar of the Sources panel when some call frames have warnings
      */
     callFrameWarnings: 'Some call frames have warnings',
     /**
@@ -76,7 +76,7 @@ const UIStrings = {
      */
     debugFileNotFound: 'Failed to load debug file "{PH1}".',
     /**
-     * @description A context menu item in the Call Stack Sidebar Pane. "Restart" is a verb and
+     * @description A context menu item in the call stack sidebar pane. "Restart" is a verb and
      * "frame" is a noun. "Frame" refers to an individual item in the call stack, i.e. a call frame.
      * The user opens this context menu by selecting a specific call frame in the call stack sidebar pane.
      */

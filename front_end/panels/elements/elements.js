@@ -7927,7 +7927,7 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
     this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging
-    }, this.#aiCodeCompletionConfig.panel, void 0, stopSequences);
+    }, void 0, stopSequences);
     this.#aiCodeCompletionConfig.onFeatureEnabled();
   }
   #cleanupAiCodeCompletion() {
@@ -8676,7 +8676,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
         onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
         onRequestTriggered: this.#onAiCodeCompletionRequestTriggered.bind(this),
         onResponseReceived: this.#onAiCodeCompletionResponseReceived.bind(this),
-        panel: "styles"
+        disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
+        disclaimerTextVariant: "styles"
       };
       this.aiCodeCompletionProvider = StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
     }
@@ -9702,7 +9703,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       citationsTooltipId: CITATIONS_TOOLTIP_ID,
       disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
       spinnerTooltipId: SPINNER_TOOLTIP_ID,
-      panel: "styles"
+      disclaimerTextVariant: "styles"
     });
     const containingPane = this.contentElement.enclosingNodeOrSelfWithClass("style-panes-wrapper");
     this.#aiCodeCompletionSummaryToolbarContainer = containingPane.createChild("div", "ai-code-completion-summary-toolbar-container");

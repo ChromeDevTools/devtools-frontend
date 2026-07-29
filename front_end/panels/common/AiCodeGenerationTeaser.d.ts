@@ -1,6 +1,6 @@
 import '../../ui/components/tooltips/tooltips.js';
-import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type { DisclaimerTextVariant } from './AiCodeCompletionDisclaimer.js';
 export declare const PROMOTION_ID = "ai-code-generation";
 export declare enum AiCodeGenerationTeaserDisplayState {
     TRIGGER = "trigger",
@@ -15,7 +15,7 @@ export interface ViewInput {
     onManageInSettingsTooltipClick: (event: Event) => void;
     showDataUsageTeaser: boolean;
     showDiscoveryTeaser: boolean;
-    panel?: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+    disclaimerTextVariant?: DisclaimerTextVariant;
 }
 export interface ViewOutput {
     hideTooltip?: () => void;
@@ -32,7 +32,8 @@ export declare class AiCodeGenerationTeaser extends UI.Widget.Widget {
     get displayState(): AiCodeGenerationTeaserDisplayState;
     set displayState(displayState: AiCodeGenerationTeaserDisplayState);
     set disclaimerTooltipId(disclaimerTooltipId: string);
-    set panel(panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor);
+    set disclaimerTextVariant(disclaimerTextVariant: DisclaimerTextVariant);
     showTooltip(): void;
     static setDiscoveryTeaserShownInSessionForTest(value: boolean): void;
+    static setShowDataUsageTeaserForTest(value: boolean): void;
 }

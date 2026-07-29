@@ -45,6 +45,8 @@ export interface Props {
     emptyStateSuggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[];
     inputPlaceholder: Platform.UIString.LocalizedString;
     disclaimerText: Platform.UIString.LocalizedString;
+    textInputValue: string;
+    onTextChange: (text: string) => void;
     uploadImageInputEnabled?: boolean;
     markdownRenderer: MarkdownLitRenderer;
     generateConversationSummary: (markdown: string) => Promise<string>;

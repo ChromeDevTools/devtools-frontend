@@ -40,6 +40,12 @@ const UIStrings = {
      */
     sD: '{PH1} #{PH2}',
     /**
+     * @description Text in Timeline History Manager showing custom title alongside domain sequence number
+     * @example {Custom Profile} PH1
+     * @example {example.com #2} PH2
+     */
+    customTitleWithSequence: '{PH1} ({PH2})',
+    /**
      * @description Accessible label for the timeline session selection menu
      */
     selectTimelineSession: 'Select timeline session',
@@ -259,22 +265,26 @@ export class TimelineHistoryManager {
         const parsedURL = Common.ParsedURL.ParsedURL.fromString(parsedTrace.data.Meta.mainFrameURL);
         const domain = parsedURL ? parsedURL.host : '';
         const sequenceNumber = this.nextNumberByDomain.get(domain) || 1;
-        const titleWithSequenceNumber = i18nString(UIStrings.sD, { PH1: domain, PH2: sequenceNumber });
+        const titleWithSequenceNumber = domain ? i18nString(UIStrings.sD, { PH1: domain, PH2: sequenceNumber }) : `#${sequenceNumber}`;
         this.nextNumberByDomain.set(domain, sequenceNumber + 1);
         const preview = document.createElement('div');
         preview.classList.add('preview-item');
         preview.classList.add('vbox');
         preview.setAttribute('jslog', `${VisualLogging.dropDown('timeline.history-item').track({ click: true })}`);
         preview.style.width = `${previewWidth}px`;
+        const customTitle = parsedTrace.metadata.title;
+        const title = customTitle ?
+            i18nString(UIStrings.customTitleWithSequence, { PH1: customTitle, PH2: titleWithSequenceNumber }) :
+            titleWithSequenceNumber;
         const data = {
             preview,
-            title: titleWithSequenceNumber,
+            title,
             lastUsed: Date.now(),
         };
         parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
         // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
         render(html `
-      ${this.#renderTextDetails(parsedTrace.metadata, domain)}
+      ${this.#renderTextDetails(parsedTrace.metadata, title)}
       <div class="hbox">
         ${this.#renderScreenshotThumbnail(filmStrip)}
         ${this.#buildOverview(parsedTrace)}

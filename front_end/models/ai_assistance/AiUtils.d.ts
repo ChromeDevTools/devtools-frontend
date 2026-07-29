@@ -1,5 +1,14 @@
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
+export declare const enum DisabledReason {
+    GEO_RESTRICTED = "geo-restricted",
+    POLICY_RESTRICTED = "policy-restricted",
+    WRONG_LOCALE = "wrong-locale",
+    NOT_SUPPORTED = "not-supported"
+}
+export declare const consoleInsightsEnabledSettingDescriptor: Common.Settings.ConditionalSettingDescriptor<boolean, DisabledReason[]>;
+export declare function isGeminiBranding(): boolean;
 /**
  * Preconditions determined entirely on the DevTools frontend side (e.g. Incognito
  * mode or age restrictions) that prevent AI assistance features from running.
@@ -21,7 +30,6 @@ export type AccessPrecondition = Exclude<Host.AidaClient.AidaAccessPreconditions
  * provided AIDA service availability status.
  */
 export declare function getDisabledReasons(aidaAvailability: Host.AidaClient.AidaAccessPreconditions): AccessPrecondition[];
-export declare function isGeminiBranding(): boolean;
 export declare function getIconName(): string;
 export declare function isSameOrigin(url1: Platform.DevToolsPath.UrlString, url2: Platform.DevToolsPath.UrlString): boolean;
 export interface OneShotPromptRequest {

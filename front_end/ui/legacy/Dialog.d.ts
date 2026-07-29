@@ -74,6 +74,8 @@ export declare class DialogWidget extends DialogWidget_base {
     constructor(element?: HTMLElement);
     get open(): boolean;
     set open(open: boolean);
+    get dialogStack(): boolean;
+    set dialogStack(dialogStack: boolean);
     get content(): LitTemplate;
     set content(content: LitTemplate);
     get jslogContext(): string;

@@ -10,13 +10,14 @@ __export(AccessibilityAgent_exports, {
   AccessibilityAgent: () => AccessibilityAgent
 });
 import * as Host11 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as i18n14 from "./../../core/i18n/i18n.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/AiUtils.js
 var AiUtils_exports = {};
 __export(AiUtils_exports, {
+  consoleInsightsEnabledSettingDescriptor: () => consoleInsightsEnabledSettingDescriptor,
   getDisabledReasons: () => getDisabledReasons,
   getIconName: () => getIconName,
   isGeminiBranding: () => isGeminiBranding,
@@ -25,6 +26,7 @@ __export(AiUtils_exports, {
 });
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
+import * as i18n from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
 
 // gen/front_end/models/ai_assistance/debug.js
@@ -65,6 +67,70 @@ function setAiAssistanceStructuredLogEnabled(enabled) {
 globalThis.setAiAssistanceStructuredLogEnabled = setAiAssistanceStructuredLogEnabled;
 
 // gen/front_end/models/ai_assistance/AiUtils.js
+function isLocaleRestricted() {
+  try {
+    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+    return !devtoolsLocale.locale.startsWith("en-");
+  } catch {
+    return false;
+  }
+}
+function isGeoRestricted(config) {
+  return config?.aidaAvailability?.blockedByGeo === true;
+}
+function isPolicyRestricted(config) {
+  return config?.aidaAvailability?.blockedByEnterprisePolicy === true;
+}
+function isConsoleInsightsFeatureEnabled(config) {
+  return config?.aidaAvailability?.enabled !== false && config?.devToolsConsoleInsights?.enabled === true;
+}
+var consoleInsightsEnabledSettingDescriptor = {
+  name: "console-insights-enabled",
+  type: "boolean",
+  defaultValue: false,
+  isAvailable: (config) => {
+    if (!isConsoleInsightsFeatureEnabled(config)) {
+      return {
+        status: 2,
+        reason: [
+          "not-supported"
+          /* DisabledReason.NOT_SUPPORTED */
+        ]
+      };
+    }
+    const reasons = [];
+    if (isGeoRestricted(config)) {
+      reasons.push(
+        "geo-restricted"
+        /* DisabledReason.GEO_RESTRICTED */
+      );
+    }
+    if (isPolicyRestricted(config)) {
+      reasons.push(
+        "policy-restricted"
+        /* DisabledReason.POLICY_RESTRICTED */
+      );
+    }
+    if (isLocaleRestricted()) {
+      reasons.push(
+        "wrong-locale"
+        /* DisabledReason.WRONG_LOCALE */
+      );
+    }
+    if (reasons.length > 0) {
+      return {
+        status: 3,
+        reason: reasons
+      };
+    }
+    return {
+      status: 1
+    };
+  }
+};
+function isGeminiBranding() {
+  return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
+}
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
   if (Root.Runtime.hostConfig.isOffTheRecord) {
@@ -83,9 +149,6 @@ function getDisabledReasons(aidaAvailability) {
     );
   }
   return reasons;
-}
-function isGeminiBranding() {
-  return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }
 function getIconName() {
   return isGeminiBranding() ? "spark" : "smart-assistant";
@@ -1022,7 +1085,7 @@ import * as Root3 from "./../../core/root/root.js";
 
 // gen/front_end/models/ai_assistance/agents/ExecuteJavascript.js
 import * as Host2 from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
+import * as i18n2 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
@@ -1188,7 +1251,7 @@ ${result.message}`;
 };
 
 // gen/front_end/models/ai_assistance/agents/ExecuteJavascript.js
-var lockedString = i18n.i18n.lockedString;
+var lockedString = i18n2.i18n.lockedString;
 async function executeJsCode(functionDeclaration, { throwOnSideEffect, contextNode }) {
   if (!contextNode) {
     throw new Error("Cannot execute JavaScript because of missing context node");
@@ -1438,7 +1501,7 @@ __export(GetElementAccessibilityDetails_exports, {
   GetElementAccessibilityDetailsTool: () => GetElementAccessibilityDetailsTool
 });
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
+import * as i18n6 from "./../../core/i18n/i18n.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/contexts/DOMNodeContext.js
@@ -1446,7 +1509,7 @@ var DOMNodeContext_exports = {};
 __export(DOMNodeContext_exports, {
   DOMNodeContext: () => DOMNodeContext
 });
-import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as i18n4 from "./../../core/i18n/i18n.js";
 
 // gen/front_end/models/ai_assistance/agents/AiAgent.js
 var AiAgent_exports = {};
@@ -2127,7 +2190,7 @@ var UIStringsNotTranslate = {
    */
   dataUsed: "Data used"
 };
-var lockedString2 = i18n3.i18n.lockedString;
+var lockedString2 = i18n4.i18n.lockedString;
 var DOMNodeContext = class extends ConversationContext {
   #node;
   constructor(node) {
@@ -2363,8 +2426,8 @@ var GetElementAccessibilityDetailsTool = class {
         name: "DOM_TREE",
         data: {
           root: snapshot,
-          title: i18n5.i18n.lockedString("Element details"),
-          accessibleRevealLabel: i18n5.i18n.lockedString("Reveal element")
+          title: i18n6.i18n.lockedString("Element details"),
+          accessibleRevealLabel: i18n6.i18n.lockedString("Reveal element")
         }
       }]
     };
@@ -2474,7 +2537,7 @@ __export(GetNetworkRequestDetails_exports, {
   GetNetworkRequestDetailsTool: () => GetNetworkRequestDetailsTool
 });
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as i18n10 from "./../../core/i18n/i18n.js";
 import * as Logs2 from "./../logs/logs.js";
 import * as NetworkTimeCalculator2 from "./../network_time_calculator/network_time_calculator.js";
 
@@ -2485,7 +2548,7 @@ __export(RequestContext_exports, {
   getRequestContextOrigin: () => getRequestContextOrigin
 });
 import * as Common6 from "./../../core/common/common.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as i18n8 from "./../../core/i18n/i18n.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js
 var NetworkRequestFormatter_exports = {};
@@ -2843,7 +2906,7 @@ var UIStringsNotTranslate2 = {
   timing: "Timing",
   requestInitiatorChain: "Request initiator chain"
 };
-var lockedString3 = i18n7.i18n.lockedString;
+var lockedString3 = i18n8.i18n.lockedString;
 function getRequestContextOrigin(request) {
   const origin = extractContextOrigin(request.documentURL);
   if (request.isImportedHar()) {
@@ -2920,7 +2983,7 @@ ${formatter.formatStatus()}${formatter.formatFailureReasons()}`
 var UIStringsNotTranslate3 = {
   gettingNetworkRequestDetails: "Getting network request details"
 };
-var lockedString4 = i18n9.i18n.lockedString;
+var lockedString4 = i18n10.i18n.lockedString;
 var GetNetworkRequestDetailsTool = class {
   name = "getNetworkRequestDetails";
   description = "Retrieves the full headers, timing, status, and body details of a specific network request by ID.";
@@ -3104,12 +3167,12 @@ __export(ListNetworkRequests_exports, {
   ListNetworkRequestsTool: () => ListNetworkRequestsTool
 });
 import * as Host9 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as i18n12 from "./../../core/i18n/i18n.js";
 import * as Logs3 from "./../logs/logs.js";
 var UIStringsNotTranslate4 = {
   listingNetworkRequests: "Listing network requests"
 };
-var lockedString5 = i18n11.i18n.lockedString;
+var lockedString5 = i18n12.i18n.lockedString;
 var ListNetworkRequestsTool = class {
   name = "listNetworkRequests";
   description = "Gives a list of network requests including URL, status code, and duration.";
@@ -3444,7 +3507,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n13.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
+          title: i18n14.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
           action: `getLighthouseAudits('${params.categoryId}')`
         };
       },
@@ -3504,7 +3567,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n13.i18n.lockedString("Running accessibility audits"),
+          title: i18n14.i18n.lockedString("Running accessibility audits"),
           thought: params.explanation,
           action: "runAccessibilityAudits()"
         };
@@ -3678,8 +3741,8 @@ var AccessibilityAgent = class extends AiAgent {
           name: "DOM_TREE",
           data: {
             root: snapshot,
-            title: i18n13.i18n.lockedString("Element details"),
-            accessibleRevealLabel: i18n13.i18n.lockedString("Reveal element")
+            title: i18n14.i18n.lockedString("Element details"),
+            accessibleRevealLabel: i18n14.i18n.lockedString("Reveal element")
           }
         });
         return {
@@ -3710,7 +3773,7 @@ __export(ContextSelectionAgent_exports, {
 });
 import * as Common10 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as i18n18 from "./../../core/i18n/i18n.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as Logs5 from "./../logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
@@ -6519,17 +6582,25 @@ var StorageItem_exports = {};
 __export(StorageItem_exports, {
   CookieItem: () => CookieItem,
   DOMStorageItem: () => DOMStorageItem,
+  EMPTY_ORIGIN: () => EMPTY_ORIGIN,
   StorageItem: () => StorageItem
 });
-var StorageItem = class {
+var EMPTY_ORIGIN = "";
+var StorageItem = class _StorageItem {
   primaryTargetOrigin;
   origin;
-  constructor(primaryTargetOrigin, origin) {
+  constructor(primaryTargetOrigin, origin = EMPTY_ORIGIN) {
     this.primaryTargetOrigin = primaryTargetOrigin;
     this.origin = origin;
   }
+  get isGenericContext() {
+    return this.origin === EMPTY_ORIGIN;
+  }
+  static createGenericContext(primaryTargetOrigin, ..._args) {
+    return new _StorageItem(primaryTargetOrigin, EMPTY_ORIGIN);
+  }
 };
-var DOMStorageItem = class extends StorageItem {
+var DOMStorageItem = class _DOMStorageItem extends StorageItem {
   storageKey;
   type;
   key;
@@ -6539,12 +6610,18 @@ var DOMStorageItem = class extends StorageItem {
     this.type = type;
     this.key = key;
   }
+  static createGenericContext(primaryTargetOrigin, type) {
+    return new _DOMStorageItem(primaryTargetOrigin, EMPTY_ORIGIN, void 0, type);
+  }
 };
-var CookieItem = class extends StorageItem {
+var CookieItem = class _CookieItem extends StorageItem {
   name;
   constructor(primaryTargetOrigin, origin, name) {
     super(primaryTargetOrigin, origin);
     this.name = name;
+  }
+  static createGenericContext(primaryTargetOrigin) {
+    return new _CookieItem(primaryTargetOrigin, EMPTY_ORIGIN);
   }
 };
 
@@ -6559,10 +6636,10 @@ __export(StorageAgent_exports, {
 });
 import * as Common9 from "./../../core/common/common.js";
 import * as Host12 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as i18n16 from "./../../core/i18n/i18n.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
-var lockedString6 = i18n15.i18n.lockedString;
+var lockedString6 = i18n16.i18n.lockedString;
 var preamble2 = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
 
  You have access to the site's storage using tools like \`getStorageBreakdown\`, \`listPageOrigins\`, \`listStorageKeys\`, \`getStorageValues\`, \`listCookies\`, and \`getCookieValues\`.
@@ -7114,7 +7191,7 @@ function resolveDOMStorages(context, type, origin, targetManager, storageKey) {
 }
 
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
-var lockedString7 = i18n17.i18n.lockedString;
+var lockedString7 = i18n18.i18n.lockedString;
 var preamble3 = `
 You are an advanced Web Development Assistant and AI routing agent integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise. You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
 
@@ -7793,7 +7870,7 @@ __export(PerformanceAgent_exports, {
 });
 import * as Common11 from "./../../core/common/common.js";
 import * as Host16 from "./../../core/host/host.js";
-import * as i18n19 from "./../../core/i18n/i18n.js";
+import * as i18n20 from "./../../core/i18n/i18n.js";
 import * as Root10 from "./../../core/root/root.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
@@ -7810,7 +7887,7 @@ var UIStringsNotTranslated = {
    */
   mainThreadActivity: "Investigating main thread activity"
 };
-var lockedString8 = i18n19.i18n.lockedString;
+var lockedString8 = i18n20.i18n.lockedString;
 var preamble6 = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
 Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.

@@ -33,8 +33,6 @@ export declare class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<Eve
     workingCopyContentData(): TextUtils.ContentData.ContentData;
     resetWorkingCopy(): void;
     setWorkingCopy(newWorkingCopy: string): void;
-    setContainsAiChanges(containsAiChanges: boolean): void;
-    containsAiChanges(): boolean;
     setContent(content: string, isBase64: boolean): void;
     setWorkingCopyGetter(workingCopyGetter: () => string): void;
     removeWorkingCopyGetter(): void;

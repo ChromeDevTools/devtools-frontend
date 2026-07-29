@@ -397,7 +397,7 @@ export class ConsoleViewMessage {
                 case "clear" /* Protocol.Runtime.ConsoleAPICalledEventType.Clear */:
                     messageElement = document.createElement('span');
                     messageElement.classList.add('console-info');
-                    if (Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get()) {
+                    if (Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveConsoleLogSettingDescriptor).get()) {
                         messageElement.textContent = i18nString(UIStrings.consoleclearWasPreventedDueTo);
                     }
                     else {

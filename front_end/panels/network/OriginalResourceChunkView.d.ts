@@ -3,7 +3,7 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type { BinaryResourceView } from './BinaryResourceView.js';
-export declare abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
+export declare abstract class OriginalResourceChunkView<Chunk> extends UI.Widget.VBox {
     private readonly splitWidget;
     private dataGrid;
     private readonly timeComparator;
@@ -46,5 +46,5 @@ export declare abstract class DataGridItem extends DataGrid.SortableDataGrid.Sor
     abstract binaryView(): BinaryResourceView | null;
     abstract getTime(): number;
     abstract dataText(): string;
-    abstract readonly isTextFrame: boolean;
+    abstract isTextFrame?: boolean;
 }

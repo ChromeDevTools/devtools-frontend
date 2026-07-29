@@ -595,7 +595,7 @@ import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as Trace from "./../../../../models/trace/trace.js";
 import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
 import * as Buttons from "./../../../components/buttons/buttons.js";
-import { html, render } from "./../../../lit/lit.js";
+import { html, nothing, render } from "./../../../lit/lit.js";
 import * as UI3 from "./../../legacy.js";
 import * as ThemeSupport7 from "./../../theme_support/theme_support.js";
 
@@ -1369,7 +1369,7 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
   }
   hideHighlight() {
     if (this.#searchResultEntryIndex === null) {
-      this.popoverElement.removeChildren();
+      this.#renderPopover(nothing);
       this.lastPopoverState = {
         entryIndex: -1,
         groupIndex: -1,
@@ -1522,7 +1522,7 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
         this.viewportElement.style.cursor = "pointer";
         const iconTooltipElement = this.#prepareIconInfo(groupIndex, hoverType);
         if (iconTooltipElement) {
-          this.popoverElement.appendChild(iconTooltipElement);
+          this.#renderPopover(iconTooltipElement);
           this.updatePopoverOffset();
         }
         return;
@@ -1625,8 +1625,11 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
       hiddenEntriesPopover: isMouseOverRevealChildrenArrow
     };
   }
+  #renderPopover(content) {
+    render(html`${content}`, this.popoverElement);
+  }
   updatePopoverContents(popoverElement) {
-    render(html`${popoverElement}`, this.popoverElement);
+    this.#renderPopover(popoverElement);
     this.updatePopoverOffset();
     this.lastPopoverState.entryIndex = -1;
   }
@@ -1638,19 +1641,22 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
     if (groupIndex === this.lastPopoverState.groupIndex) {
       return this.updatePopoverOffset();
     }
-    this.popoverElement.removeChildren();
     const data = this.timelineData();
     if (!data) {
+      this.#renderPopover(nothing);
       return;
     }
     const group = data.groups.at(groupIndex);
     if (!group) {
+      this.#renderPopover(nothing);
       return;
     }
     const fullTrackName = group.fullTrackName;
     if (fullTrackName) {
-      this.popoverElement.innerText = fullTrackName;
+      this.#renderPopover(fullTrackName);
       this.updatePopoverOffset();
+    } else {
+      this.#renderPopover(nothing);
     }
     this.lastPopoverState = {
       groupIndex,

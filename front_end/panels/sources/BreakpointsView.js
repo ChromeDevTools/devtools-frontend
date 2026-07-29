@@ -26,7 +26,7 @@ const UIStrings = {
      */
     pauseOnUncaughtExceptions: 'Pause on uncaught exceptions',
     /**
-     * @description Label for a checkbox to toggling pausing on caught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an exception is thrown, but caught (handled) at runtime.
+     * @description Label for a checkbox to toggle pausing on caught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an exception is thrown, but caught (handled) at runtime.
      */
     pauseOnCaughtExceptions: 'Pause on caught exceptions',
     /**
@@ -47,43 +47,43 @@ const UIStrings = {
      */
     breakpointHit: '{PH1} breakpoint hit',
     /**
-     * @description Tooltip text that shows when hovered over a remove button that appears next to a filename in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint groups.
+     * @description Tooltip text that shows when hovered over a remove button that appears next to a filename in the breakpoint sidebar of the Sources panel. Also used in the context menu for breakpoint groups.
      */
     removeAllBreakpointsInFile: 'Remove all breakpoints in file',
     /**
-     * @description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that disables all breakpoints in a file.
+     * @description Context menu item in the breakpoint sidebar of the Sources panel that disables all breakpoints in a file.
      */
     disableAllBreakpointsInFile: 'Disable all breakpoints in file',
     /**
-     * @description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that enables all breakpoints in a file.
+     * @description Context menu item in the breakpoint sidebar of the Sources panel that enables all breakpoints in a file.
      */
     enableAllBreakpointsInFile: 'Enable all breakpoints in file',
     /**
-     * @description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint or conditional breakpoint in the breakpoint sidebar of the sources panel.
+     * @description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint or conditional breakpoint in the breakpoint sidebar of the Sources panel.
      */
     editCondition: 'Edit condition',
     /**
-     * @description Tooltip text that shows when hovered over an edit button that appears next to a logpoint in the breakpoint sidebar of the sources panel.
+     * @description Tooltip text that shows when hovered over an edit button that appears next to a logpoint in the breakpoint sidebar of the Sources panel.
      */
     editLogpoint: 'Edit logpoint',
     /**
-     * @description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that disables all breakpoints.
+     * @description Context menu item in the breakpoint sidebar of the Sources panel that disables all breakpoints.
      */
     disableAllBreakpoints: 'Disable all breakpoints',
     /**
-     * @description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that enables all breakpoints.
+     * @description Context menu item in the breakpoint sidebar of the Sources panel that enables all breakpoints.
      */
     enableAllBreakpoints: 'Enable all breakpoints',
     /**
-     * @description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint items.
+     * @description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the Sources panel. Also used in the context menu for breakpoint items.
      */
     removeBreakpoint: 'Remove breakpoint',
     /**
-     * @description Text to remove all breakpoints
+     * @description Text to remove all breakpoints.
      */
     removeAllBreakpoints: 'Remove all breakpoints',
     /**
-     * @description Text in Breakpoints Sidebar Pane of the Sources panel
+     * @description Text in the breakpoint sidebar of the Sources panel.
      */
     removeOtherBreakpoints: 'Remove other breakpoints',
     /**
@@ -91,12 +91,12 @@ const UIStrings = {
      */
     revealLocation: 'Reveal location',
     /**
-     * @description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the sources panel. It shows the condition, on which the breakpoint will stop.
+     * @description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the Sources panel. It shows the condition, on which the breakpoint will stop.
      * @example {x < 3} PH1
      */
     conditionCode: 'Condition: {PH1}',
     /**
-     * @description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the sources panel. It shows what is going to be printed in the console, if execution hits this breakpoint.
+     * @description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the Sources panel. It shows what is going to be printed in the console, if execution hits this breakpoint.
      * @example {'hello'} PH1
      */
     logpointCode: 'Logpoint: {PH1}',
@@ -129,7 +129,7 @@ export class BreakpointsSidebarController {
         this.#breakpointsActiveSetting.addChangeListener(this.update, this);
         this.#pauseOnUncaughtExceptionSetting = settings.moduleSetting('pause-on-uncaught-exception');
         this.#pauseOnUncaughtExceptionSetting.addChangeListener(this.update, this);
-        this.#pauseOnCaughtExceptionSetting = settings.moduleSetting('pause-on-caught-exception');
+        this.#pauseOnCaughtExceptionSetting = settings.resolve(SDK.SDKSettings.pauseOnCaughtExceptionSettingDescriptor);
         this.#pauseOnCaughtExceptionSetting.addChangeListener(this.update, this);
     }
     static instance({ forceNew, breakpointManager, settings } = {

@@ -6,7 +6,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
@@ -127,23 +126,23 @@ export var AiCodeGenerationTeaserDisplayState;
     AiCodeGenerationTeaserDisplayState["LOADING"] = "loading";
     AiCodeGenerationTeaserDisplayState["GENERATED"] = "generated";
 })(AiCodeGenerationTeaserDisplayState || (AiCodeGenerationTeaserDisplayState = {}));
-function getTooltipDisclaimerText(noLogging, panel) {
-    switch (panel) {
-        case "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */:
+function getTooltipDisclaimerText(noLogging, disclaimerTextVariant) {
+    switch (disclaimerTextVariant) {
+        case 'console':
             return noLogging ?
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInConsole) :
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationInConsole);
-        case "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */:
+        case 'sources':
             return noLogging ?
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources) :
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationInSources);
-        case "styles" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES */:
+        case 'styles':
             // TODO(476101019): update with string for styles pane
             return '';
     }
 }
 export const DEFAULT_VIEW = (input, output, target) => {
-    if (!input.panel) {
+    if (!input.disclaimerTextVariant) {
         render(nothing, target);
         return;
     }
@@ -172,7 +171,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             const teaserText = input.showDataUsageTeaser ?
                 html `${toGenerateCode}.&nbsp;${toLearnHowYourDataIsBeingUsedVisible}` :
                 toGenerateCode;
-            const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.panel);
+            const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.disclaimerTextVariant);
             // clang-format off
             teaserLabel = html `<div class="ai-code-generation-teaser-trigger">
         <span aria-hidden="true">${teaserText}</span>
@@ -228,7 +227,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                 break;
             }
             const newBadge = UI.UIUtils.maybeCreateNewBadge(PROMOTION_ID);
-            const teaserText = input.panel === "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */ ?
+            const teaserText = input.disclaimerTextVariant === 'console' ?
                 lockedString(UIStringsNotTranslate.writeACommentToGenerateCodeInConsole) :
                 lockedString(UIStringsNotTranslate.writeACommentToGenerateCode);
             teaserLabel = newBadge ? html `${teaserText}&nbsp;${newBadge}` : nothing;
@@ -282,7 +281,7 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
     #displayState = AiCodeGenerationTeaserDisplayState.DISCOVERY;
     #disclaimerTooltipId;
     #noLogging; // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
-    #panel;
+    #disclaimerTextVariant;
     #timerIntervalId;
     #loadStartTime;
     #aiCodeGenerationUsedSetting = Common.Settings.Settings.instance().createSetting('ai-code-generation-used', false);
@@ -304,7 +303,7 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
             noLogging: this.#noLogging,
             showDataUsageTeaser: AiCodeGenerationTeaser.#showDataUsageTeaser,
             showDiscoveryTeaser: !this.#aiCodeGenerationUsedSetting.get() && !AiCodeGenerationTeaser.#discoveryTeaserShownInSession,
-            panel: this.#panel,
+            disclaimerTextVariant: this.#disclaimerTextVariant,
         }, this.#viewOutput, this.contentElement);
     }
     willHide() {
@@ -358,8 +357,8 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
         this.#disclaimerTooltipId = disclaimerTooltipId;
         this.requestUpdate();
     }
-    set panel(panel) {
-        this.#panel = panel;
+    set disclaimerTextVariant(disclaimerTextVariant) {
+        this.#disclaimerTextVariant = disclaimerTextVariant;
         this.requestUpdate();
     }
     #onManageInSettingsTooltipClick(event) {
@@ -373,6 +372,9 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
     }
     static setDiscoveryTeaserShownInSessionForTest(value) {
         AiCodeGenerationTeaser.#discoveryTeaserShownInSession = value;
+    }
+    static setShowDataUsageTeaserForTest(value) {
+        AiCodeGenerationTeaser.#showDataUsageTeaser = value;
     }
 }
 //# sourceMappingURL=AiCodeGenerationTeaser.js.map

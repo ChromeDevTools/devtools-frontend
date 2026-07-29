@@ -27,7 +27,7 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { BinaryResourceView } from './BinaryResourceView.js';
-import { DataGridItem, ResourceChunkView } from './ResourceChunkView.js';
+import { DataGridItem, OriginalResourceChunkView } from './OriginalResourceChunkView.js';
 const UIStrings = {
     /**
      * @description Text in Resource Web Socket Frame View of the Network panel. Displays which Opcode
@@ -86,7 +86,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceWebSocketFrameView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-export class ResourceWebSocketFrameView extends ResourceChunkView {
+export class ResourceWebSocketFrameView extends OriginalResourceChunkView {
     constructor(request) {
         super(request, 'network-web-socket-message-filter', 'resource-web-socket-frame-split-view-state', i18nString(UIStrings.webSocketFrame), i18nString(UIStrings.filterUsingRegex));
         this.element.setAttribute('jslog', `${VisualLogging.pane('web-socket-messages').track({ resize: true })}`);

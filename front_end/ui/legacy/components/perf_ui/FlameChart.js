@@ -9,7 +9,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
-import { html, render } from '../../../lit/lit.js';
+import { html, nothing, render } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 import { drawExpansionArrow, drawIcon, horizontalLine } from './CanvasHelper.js';
@@ -444,7 +444,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
     }
     hideHighlight() {
         if (this.#searchResultEntryIndex === null) {
-            this.popoverElement.removeChildren();
+            this.#renderPopover(nothing);
             this.lastPopoverState = {
                 entryIndex: -1,
                 groupIndex: -1,
@@ -597,7 +597,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
                 this.viewportElement.style.cursor = 'pointer';
                 const iconTooltipElement = this.#prepareIconInfo(groupIndex, hoverType);
                 if (iconTooltipElement) {
-                    this.popoverElement.appendChild(iconTooltipElement);
+                    this.#renderPopover(iconTooltipElement);
                     this.updatePopoverOffset();
                 }
                 return;
@@ -714,9 +714,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
             hiddenEntriesPopover: isMouseOverRevealChildrenArrow,
         };
     }
-    updatePopoverContents(popoverElement) {
+    #renderPopover(content) {
         // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        render(html `${popoverElement}`, this.popoverElement);
+        render(html `${content}`, this.popoverElement);
+    }
+    updatePopoverContents(popoverElement) {
+        this.#renderPopover(popoverElement);
         // Must update the offset AFTER the new content has been added.
         this.updatePopoverOffset();
         this.lastPopoverState.entryIndex = -1;
@@ -730,13 +733,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
         if (groupIndex === this.lastPopoverState.groupIndex) {
             return this.updatePopoverOffset();
         }
-        this.popoverElement.removeChildren();
         const data = this.timelineData();
         if (!data) {
+            this.#renderPopover(nothing);
             return;
         }
         const group = data.groups.at(groupIndex);
         if (!group) {
+            this.#renderPopover(nothing);
             return;
         }
         // Only show a popover tooltip if the group has a pre-defined `fullTrackName`
@@ -744,8 +748,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
         // All other tracks have short, static titles that fit without truncation and do not need a tooltip.
         const fullTrackName = group.fullTrackName;
         if (fullTrackName) {
-            this.popoverElement.innerText = fullTrackName;
+            this.#renderPopover(fullTrackName);
             this.updatePopoverOffset();
+        }
+        else {
+            this.#renderPopover(nothing);
         }
         this.lastPopoverState = {
             groupIndex,

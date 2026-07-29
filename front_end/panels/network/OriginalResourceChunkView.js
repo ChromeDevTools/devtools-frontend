@@ -10,7 +10,7 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import viewStyles from './resourceChunkView.css.js';
+import viewStyles from './originalResourceChunkView.css.js';
 const UIStrings = {
     /**
      * @description Text in Event Source Messages View of the Network panel
@@ -61,10 +61,10 @@ const UIStrings = {
      */
     receive: 'Receive',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceChunkView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/OriginalResourceChunkView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-export class ResourceChunkView extends UI.Widget.VBox {
+export class OriginalResourceChunkView extends UI.Widget.VBox {
     splitWidget;
     dataGrid;
     timeComparator;
@@ -95,8 +95,7 @@ export class ResourceChunkView extends UI.Widget.VBox {
         this.dataGrid.setRowContextMenuCallback((menu, node) => this.onRowContextMenu(menu, node));
         this.dataGrid.setEnableAutoScrollToBottom(true);
         this.dataGrid.setCellClass('resource-chunk-view-td');
-        this.timeComparator =
-            resourceChunkNodeTimeComparator;
+        this.timeComparator = resourceChunkNodeTimeComparator;
         this.dataGrid.sortNodes(this.timeComparator, false);
         this.dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
         this.dataGrid.addEventListener("SortingChanged" /* DataGrid.DataGrid.Events.SORTING_CHANGED */, this.sortItems, this);
@@ -273,4 +272,4 @@ function resourceChunkNodeTimeComparator(a, b) {
     return a.getTime() - b.getTime();
 }
 const clearChunkOffsets = new WeakMap();
-//# sourceMappingURL=ResourceChunkView.js.map
+//# sourceMappingURL=OriginalResourceChunkView.js.map

@@ -4,6 +4,7 @@ duplicate.test.js
 global_after_hook_fail.test.js
 global_before_hook_fail.test.js
 hooks.test.js
+multi_logs.test.js
 screenshot_retry.test.js
 snapshot.test.js
 unit.test.js

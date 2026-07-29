@@ -21,7 +21,7 @@ export interface RequestActivatedEvent {
     tab?: NetworkForward.UIRequestLocation.UIRequestTabs;
 }
 export interface EventTypes {
-    [Events.RequestSelected]: SDK.NetworkRequest.NetworkRequest;
+    [Events.RequestSelected]: SDK.NetworkRequest.NetworkRequest | null;
     [Events.RequestActivated]: RequestActivatedEvent;
 }
 export interface NetworkLogViewInterface extends Common.EventTarget.EventTarget<EventTypes> {

@@ -32,6 +32,7 @@ export interface ViewInput {
     imageInput?: ImageInputData;
     uploadImageInputEnabled: boolean;
     isReadOnly: boolean;
+    textInputValue: string;
     textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
     onContextClick: () => void;
     onInspectElementClick: () => void;
@@ -68,8 +69,10 @@ export declare class ChatInput extends UI.Widget.Widget implements SDK.TargetMan
     multimodalInputEnabled: boolean;
     uploadImageInputEnabled: boolean;
     isReadOnly: boolean;
+    textInputValue: string;
     setInputValue(text: string): void;
     onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part, multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => void;
+    onTextChange: (text: string) => void;
     onContextClick: () => void;
     onInspectElementClick: () => void;
     onCancelClick: () => void;

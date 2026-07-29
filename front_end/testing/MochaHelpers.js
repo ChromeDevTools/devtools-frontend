@@ -15,6 +15,11 @@ export function duplicateTests(suite, repetitions) {
                 const cloned = test.clone();
                 cloned.pending = test.pending;
                 suite.addTest(cloned);
+                // @ts-expect-error _onlyTests is internal.
+                if (suite._onlyTests.includes(test)) {
+                    // @ts-expect-error _onlyTests is internal.
+                    suite._onlyTests.push(cloned);
+                }
             }
         }
     }

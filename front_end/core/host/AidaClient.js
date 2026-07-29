@@ -9,7 +9,7 @@ import { gcaChunkResponseToAidaChunkResponse } from './AidaGcaTranslation.js';
 import * as DispatchHttpRequestClient from './DispatchHttpRequestClient.js';
 import * as GcaClient from './GcaClient.js';
 import { InspectorFrontendHostInstance } from './InspectorFrontendHost.js';
-import { bindOutputStream } from './ResourceLoader.js';
+import { bindOutputStream, discardOutputStream } from './ResourceLoader.js';
 export * from './AidaClientTypes.js';
 export const CLIENT_NAME = 'CHROME_DEVTOOLS';
 export const SERVICE_NAME = 'aidaService';
@@ -111,53 +111,74 @@ export class AidaClient {
         if (!InspectorFrontendHostInstance.dispatchHttpRequest) {
             throw new Error('dispatchHttpRequest is not available');
         }
+        if (options?.signal?.aborted) {
+            throw new AidaAbortError();
+        }
         // Disable logging for now.
         // For context, see b/454563259#comment35.
         // We should be able to remove this ~end of April.
         if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
             request.metadata.disable_user_content_logging = true;
         }
-        const stream = (() => {
-            let { promise, resolve, reject } = Promise.withResolvers();
-            options?.signal?.addEventListener('abort', () => {
-                reject(new AidaAbortError());
-            }, { once: true });
-            return {
-                write: async (data) => {
-                    resolve(data);
-                    ({ promise, resolve, reject } = Promise.withResolvers());
-                },
-                close: async () => {
-                    resolve(null);
-                },
-                read: () => {
-                    return promise;
-                },
-                fail: (e) => reject(e),
-            };
-        })();
-        const streamId = bindOutputStream(stream);
-        let response;
-        if (this.#gcaClient.enabled()) {
-            // Inline and remove the else clause after migration
-            response = this.#gcaClient.conversationRequest(request, streamId, options);
+        let abortListener;
+        let streamId;
+        try {
+            const stream = (() => {
+                let { promise, resolve, reject } = Promise.withResolvers();
+                // Prevent unhandled promise rejections if stream.fail() is called after
+                // doConversation has already exited early (e.g. on recitation block or abort).
+                // Active readers calling await stream.read() will still receive the rejection.
+                promise.catch(() => { });
+                abortListener = () => {
+                    reject(new AidaAbortError());
+                };
+                options?.signal?.addEventListener('abort', abortListener, { once: true });
+                return {
+                    write: async (data) => {
+                        resolve(data);
+                        ({ promise, resolve, reject } = Promise.withResolvers());
+                        promise.catch(() => { });
+                    },
+                    close: async () => {
+                        resolve(null);
+                    },
+                    read: () => {
+                        return promise;
+                    },
+                    fail: (e) => reject(e),
+                };
+            })();
+            streamId = bindOutputStream(stream);
+            let response;
+            if (this.#gcaClient.enabled()) {
+                // Inline and remove the else clause after migration
+                response = this.#gcaClient.conversationRequest(request, streamId, options);
+            }
+            else {
+                response = DispatchHttpRequestClient.makeHttpRequest({
+                    service: SERVICE_NAME,
+                    path: '/v1/aida:doConversation',
+                    method: 'POST',
+                    body: JSON.stringify(request),
+                    streamId,
+                }, options);
+            }
+            response.then(() => {
+                void stream.close();
+            }, err => {
+                debugLog('doConversation failed with error:', JSON.stringify(err));
+                stream.fail(mapError(err));
+            });
+            yield* this.#handleResponseStream(stream);
         }
-        else {
-            response = DispatchHttpRequestClient.makeHttpRequest({
-                service: SERVICE_NAME,
-                path: '/v1/aida:doConversation',
-                method: 'POST',
-                body: JSON.stringify(request),
-                streamId,
-            }, options);
+        finally {
+            if (options?.signal && abortListener) {
+                options.signal.removeEventListener('abort', abortListener);
+            }
+            if (streamId !== undefined) {
+                discardOutputStream(streamId);
+            }
         }
-        response.then(() => {
-            void stream.close();
-        }, err => {
-            debugLog('doConversation failed with error:', JSON.stringify(err));
-            stream.fail(mapError(err));
-        });
-        await (yield* this.#handleResponseStream(stream));
     }
     async *#handleResponseStream(stream) {
         let chunk;

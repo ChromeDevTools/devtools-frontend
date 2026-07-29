@@ -4,7 +4,6 @@
 import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Root from '../../../core/root/root.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -32,11 +31,9 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 const SCROLL_ROUNDING_OFFSET = 1;
 const DEFAULT_VIEW = (input, output, target) => {
-    const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
     const chatUiClasses = classMap({
         'chat-ui': true,
         gemini: AiAssistanceModel.AiUtils.isGeminiBranding(),
-        'ai-v2': hasAiV2,
     });
     const inputWidgetClasses = classMap({
         'chat-input-widget': true,
@@ -117,6 +114,8 @@ const DEFAULT_VIEW = (input, output, target) => {
         conversationType: input.conversationType,
         uploadImageInputEnabled: input.uploadImageInputEnabled ?? false,
         isReadOnly: input.isReadOnly,
+        textInputValue: input.textInputValue,
+        onTextChange: input.onTextChange,
         onContextClick: input.onContextClick,
         onInspectElementClick: input.onInspectElementClick,
         onTextSubmit: input.onTextSubmit,

@@ -1369,6 +1369,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
     }
     reset() {
         this.dispatchEventToListeners("RequestActivated" /* Events.RequestActivated */, { showPanel: "HidePanel" /* RequestPanelBehavior.HidePanel */ });
+        this.dispatchEventToListeners("RequestSelected" /* Events.RequestSelected */, null);
         this.setHoveredNode(null);
         this.columnsInternal.reset();
         this.timeFilter = null;

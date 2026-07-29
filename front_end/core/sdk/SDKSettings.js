@@ -14,4 +14,20 @@ export const cssSourceMapsEnabledSettingDescriptor = {
     defaultValue: true,
     storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
 };
+export const preserveConsoleLogSettingDescriptor = {
+    name: 'preserve-console-log',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const pauseOnExceptionEnabledSettingDescriptor = {
+    name: 'pause-on-exception-enabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+};
+export const pauseOnCaughtExceptionSettingDescriptor = {
+    name: 'pause-on-caught-exception',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+};
 //# sourceMappingURL=SDKSettings.js.map

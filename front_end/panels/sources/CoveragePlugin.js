@@ -13,22 +13,22 @@ import { Plugin } from './Plugin.js';
 // Plugin that shows a gutter with coverage information when available.
 const UIStrings = {
     /**
-     * @description Text for Coverage Status Bar Item in Sources Panel
+     * @description Text for coverage status bar item in Sources panel.
      */
-    clickToShowCoveragePanel: 'Click to show Coverage Panel',
+    clickToShowCoveragePanel: 'Click to show Coverage panel',
     /**
-     * @description Text for Coverage Status Bar Item in Sources Panel
+     * @description Text for coverage status bar item in Sources panel.
      */
-    showDetails: 'Show Details',
+    showDetails: 'Show details',
     /**
-     * @description Text to show in the status bar if coverage data is available
+     * @description Text to show in the status bar if coverage data is available.
      * @example {12.3} PH1
      */
     coverageS: 'Coverage: {PH1}',
     /**
-     * @description Text to be shown in the status bar if no coverage data is available
+     * @description Text to be shown in the status bar if no coverage data is available.
      */
-    coverageNa: 'Coverage: n/a',
+    coverageNa: 'Coverage: N/A',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CoveragePlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

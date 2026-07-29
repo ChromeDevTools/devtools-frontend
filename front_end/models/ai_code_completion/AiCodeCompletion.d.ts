@@ -27,7 +27,7 @@ export declare const consoleAdditionalContextFileContent = "/**\n * This file de
  */
 export declare class AiCodeCompletion {
     #private;
-    constructor(opts: AgentOptions, panel: ContextFlavor, callbacks?: Callbacks, stopSequences?: string[]);
+    constructor(opts: AgentOptions, callbacks?: Callbacks, stopSequences?: string[]);
     registerUserImpression(rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number): void;
     registerUserAcceptance(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId?: number): void;
     clearCachedRequest(): void;
@@ -40,10 +40,5 @@ export declare class AiCodeCompletion {
     static isAiCodeCompletionEnabled(locale: string): boolean;
     static isAiCodeCompletionStylesAvailable(): boolean;
     static isAiCodeCompletionStylesEnabled(locale: string): boolean;
-}
-export declare const enum ContextFlavor {
-    CONSOLE = "console",// generated code can contain console specific APIs like `$0`.
-    SOURCES = "sources",
-    STYLES = "styles"
 }
 export {};

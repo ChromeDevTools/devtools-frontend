@@ -128,16 +128,13 @@ var AiCodeCompletion = class _AiCodeCompletion {
   #renderingTimeout;
   #aidaRequestCache;
   #lastEmptyResponseText;
-  // TODO(b/445394511): Remove panel from the class
-  #panel;
   #callbacks;
   #sessionId = crypto.randomUUID();
   #aidaClient;
   #serverSideLoggingEnabled;
-  constructor(opts, panel, callbacks, stopSequences) {
+  constructor(opts, callbacks, stopSequences) {
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
-    this.#panel = panel;
     this.#stopSequences = stopSequences ?? [];
     this.#callbacks = callbacks;
   }
@@ -147,14 +144,7 @@ var AiCodeCompletion = class _AiCodeCompletion {
       return typeof temperature === "number" && temperature >= 0 ? temperature : void 0;
     }
     prefix = "\n" + prefix;
-    let additionalContextFiles = additionalFiles;
-    if (!additionalContextFiles) {
-      additionalContextFiles = this.#panel === "console" ? [{
-        path: "devtools-console-context.js",
-        content: consoleAdditionalContextFileContent,
-        included_reason: Host.AidaClient.Reason.RELATED_FILE
-      }] : void 0;
-    }
+    const additionalContextFiles = additionalFiles;
     return {
       client: Host.AidaClient.CLIENT_NAME,
       prefix,

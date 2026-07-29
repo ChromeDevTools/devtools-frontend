@@ -51,6 +51,7 @@
     "../../../../../../front_end/panels/network/NetworkPanel.ts",
     "../../../../../../front_end/panels/network/NetworkSearchScope.ts",
     "../../../../../../front_end/panels/network/NetworkWaterfallColumn.ts",
+    "../../../../../../front_end/panels/network/OriginalResourceChunkView.ts",
     "../../../../../../front_end/panels/network/RequestConditionsDrawer.ts",
     "../../../../../../front_end/panels/network/RequestCookiesView.ts",
     "../../../../../../front_end/panels/network/RequestDeviceBoundSessionsView.ts",

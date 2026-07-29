@@ -907,8 +907,10 @@ var bindOutputStream = function(stream) {
   return _lastStreamId;
 };
 var discardOutputStream = function(id) {
-  void _boundStreams[id].close();
-  delete _boundStreams[id];
+  if (_boundStreams[id]) {
+    void _boundStreams[id].close();
+    delete _boundStreams[id];
+  }
 };
 var streamWrite = function(id, chunk) {
   void _boundStreams[id].write(chunk);
@@ -1621,13 +1623,12 @@ var GcaClient = class {
   async completeCode(request) {
     const gcaRequest = aidaCompletionRequestToGcaRequest(request);
     const result = await this.#requestContent(gcaRequest);
-    const aidaResult = result ? gcaResponseToAidaCompletionResponse(result) : null;
-    return aidaResult;
+    return gcaResponseToAidaCompletionResponse(result);
   }
   async generateCode(request, options) {
     const gcaRequest = aidaGenerateCodeRequestToGcaRequest(request);
     const result = await this.#requestContent(gcaRequest, options);
-    return result ? gcaResponseToAidaGenerateCodeResponse(result) : null;
+    return gcaResponseToAidaGenerateCodeResponse(result);
   }
   async #requestContent(request, options) {
     try {
@@ -1795,48 +1796,67 @@ var AidaClient = class {
     if (!InspectorFrontendHostInstance.dispatchHttpRequest) {
       throw new Error("dispatchHttpRequest is not available");
     }
+    if (options?.signal?.aborted) {
+      throw new AidaAbortError();
+    }
     if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
       request.metadata.disable_user_content_logging = true;
     }
-    const stream = (() => {
-      let { promise, resolve, reject } = Promise.withResolvers();
-      options?.signal?.addEventListener("abort", () => {
-        reject(new AidaAbortError());
-      }, { once: true });
-      return {
-        write: async (data) => {
-          resolve(data);
-          ({ promise, resolve, reject } = Promise.withResolvers());
-        },
-        close: async () => {
-          resolve(null);
-        },
-        read: () => {
-          return promise;
-        },
-        fail: (e) => reject(e)
-      };
-    })();
-    const streamId = bindOutputStream(stream);
-    let response;
-    if (this.#gcaClient.enabled()) {
-      response = this.#gcaClient.conversationRequest(request, streamId, options);
-    } else {
-      response = makeHttpRequest({
-        service: SERVICE_NAME2,
-        path: "/v1/aida:doConversation",
-        method: "POST",
-        body: JSON.stringify(request),
-        streamId
-      }, options);
+    let abortListener;
+    let streamId;
+    try {
+      const stream = (() => {
+        let { promise, resolve, reject } = Promise.withResolvers();
+        promise.catch(() => {
+        });
+        abortListener = () => {
+          reject(new AidaAbortError());
+        };
+        options?.signal?.addEventListener("abort", abortListener, { once: true });
+        return {
+          write: async (data) => {
+            resolve(data);
+            ({ promise, resolve, reject } = Promise.withResolvers());
+            promise.catch(() => {
+            });
+          },
+          close: async () => {
+            resolve(null);
+          },
+          read: () => {
+            return promise;
+          },
+          fail: (e) => reject(e)
+        };
+      })();
+      streamId = bindOutputStream(stream);
+      let response;
+      if (this.#gcaClient.enabled()) {
+        response = this.#gcaClient.conversationRequest(request, streamId, options);
+      } else {
+        response = makeHttpRequest({
+          service: SERVICE_NAME2,
+          path: "/v1/aida:doConversation",
+          method: "POST",
+          body: JSON.stringify(request),
+          streamId
+        }, options);
+      }
+      response.then(() => {
+        void stream.close();
+      }, (err) => {
+        debugLog("doConversation failed with error:", JSON.stringify(err));
+        stream.fail(mapError(err));
+      });
+      yield* this.#handleResponseStream(stream);
+    } finally {
+      if (options?.signal && abortListener) {
+        options.signal.removeEventListener("abort", abortListener);
+      }
+      if (streamId !== void 0) {
+        discardOutputStream(streamId);
+      }
     }
-    response.then(() => {
-      void stream.close();
-    }, (err) => {
-      debugLog("doConversation failed with error:", JSON.stringify(err));
-      stream.fail(mapError(err));
-    });
-    await (yield* this.#handleResponseStream(stream));
   }
   async *#handleResponseStream(stream) {
     let chunk;

@@ -1543,12 +1543,17 @@ function sanitizeThreads(processes2) {
 }
 function buildHierarchy(processes2, options) {
   const samplesData = data6();
+  for (const [pid, profilesByThread] of samplesData.profilesInProcess) {
+    const process = processes2.get(pid);
+    if (!process) {
+      continue;
+    }
+    for (const [tid] of profilesByThread) {
+      getOrCreateRendererThread(process, tid);
+    }
+  }
   for (const [pid, process] of processes2) {
     for (const [tid, thread] of process.threads) {
-      if (!thread.entries.length) {
-        thread.tree = Helpers6.TreeHelpers.makeEmptyTraceEntryTree();
-        continue;
-      }
       Helpers6.Trace.sortTraceEventsInPlace(thread.entries);
       const samplesDataForThread = samplesData.profilesInProcess.get(pid)?.get(tid);
       if (samplesDataForThread) {
@@ -1563,6 +1568,10 @@ function buildHierarchy(processes2, options) {
             thread.entries = Helpers6.Trace.mergeEventsInOrder(thread.entries, jsSamples);
           }
         }
+      }
+      if (!thread.entries.length) {
+        thread.tree = Helpers6.TreeHelpers.makeEmptyTraceEntryTree();
+        continue;
       }
       const treeData = Helpers6.TreeHelpers.treify(thread.entries, options);
       thread.tree = treeData.tree;

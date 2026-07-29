@@ -1,7 +1,7 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
-import { DataGridItem, ResourceChunkView } from './ResourceChunkView.js';
-export declare class ResourceDirectSocketChunkView extends ResourceChunkView<SDK.NetworkRequest.DirectSocketChunk> {
+import { DataGridItem, OriginalResourceChunkView } from './OriginalResourceChunkView.js';
+export declare class ResourceDirectSocketChunkView extends OriginalResourceChunkView<SDK.NetworkRequest.DirectSocketChunk> {
     constructor(request: SDK.NetworkRequest.NetworkRequest);
     getRequestChunks(): SDK.NetworkRequest.DirectSocketChunk[];
     chunkFilter(chunk: SDK.NetworkRequest.DirectSocketChunk): boolean;

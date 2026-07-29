@@ -39,7 +39,6 @@
   "files": [
     "../../../../../../front_end/panels/sources/AddSourceMapURLDialog.ts",
     "../../../../../../front_end/panels/sources/AiCodeCompletionPlugin.ts",
-    "../../../../../../front_end/panels/sources/AiWarningInfobarPlugin.ts",
     "../../../../../../front_end/panels/sources/BreakpointEditDialog.ts",
     "../../../../../../front_end/panels/sources/BreakpointsView.ts",
     "../../../../../../front_end/panels/sources/BreakpointsViewUtils.ts",

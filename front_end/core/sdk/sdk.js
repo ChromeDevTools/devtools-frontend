@@ -17891,7 +17891,10 @@ var CSSStyleSheetHeader = class {
 var SDKSettings_exports = {};
 __export(SDKSettings_exports, {
   cssSourceMapsEnabledSettingDescriptor: () => cssSourceMapsEnabledSettingDescriptor,
-  jsSourceMapsEnabledSettingDescriptor: () => jsSourceMapsEnabledSettingDescriptor
+  jsSourceMapsEnabledSettingDescriptor: () => jsSourceMapsEnabledSettingDescriptor,
+  pauseOnCaughtExceptionSettingDescriptor: () => pauseOnCaughtExceptionSettingDescriptor,
+  pauseOnExceptionEnabledSettingDescriptor: () => pauseOnExceptionEnabledSettingDescriptor,
+  preserveConsoleLogSettingDescriptor: () => preserveConsoleLogSettingDescriptor
 });
 import * as Common6 from "./../common/common.js";
 var jsSourceMapsEnabledSettingDescriptor = {
@@ -17905,6 +17908,22 @@ var cssSourceMapsEnabledSettingDescriptor = {
   type: "boolean",
   defaultValue: true,
   storageType: "Synced"
+};
+var preserveConsoleLogSettingDescriptor = {
+  name: "preserve-console-log",
+  type: "boolean",
+  defaultValue: false,
+  storageType: "Synced"
+};
+var pauseOnExceptionEnabledSettingDescriptor = {
+  name: "pause-on-exception-enabled",
+  type: "boolean",
+  defaultValue: false
+};
+var pauseOnCaughtExceptionSettingDescriptor = {
+  name: "pause-on-caught-exception",
+  type: "boolean",
+  defaultValue: false
 };
 
 // gen/front_end/core/sdk/SourceMapManager.js
@@ -26703,8 +26722,8 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     this.#runtimeModel = target.model(RuntimeModel);
     this.#sourceMapManager = new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script) => new SourceMap(compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
     const settings = this.target().targetManager().settings;
-    settings.moduleSetting("pause-on-exception-enabled").addChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.moduleSetting("pause-on-caught-exception").addChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.resolve(pauseOnExceptionEnabledSettingDescriptor).addChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.resolve(pauseOnCaughtExceptionSettingDescriptor).addChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting("pause-on-uncaught-exception").addChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting("disable-async-stack-traces").addChangeListener(this.asyncStackTracesStateChanged, this);
     settings.moduleSetting("breakpoints-active").addChangeListener(this.breakpointsActiveChanged, this);
@@ -26845,7 +26864,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
   }
   pauseOnExceptionStateChanged() {
     const settings = this.target().targetManager().settings;
-    const pauseOnCaughtEnabled = settings.moduleSetting("pause-on-caught-exception").get();
+    const pauseOnCaughtEnabled = settings.resolve(pauseOnCaughtExceptionSettingDescriptor).get();
     let state;
     const pauseOnUncaughtEnabled = settings.moduleSetting("pause-on-uncaught-exception").get();
     if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
@@ -27263,8 +27282,8 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       debuggerIdToModel.delete(this.#debuggerId);
     }
     const settings = this.target().targetManager().settings;
-    settings.moduleSetting("pause-on-exception-enabled").removeChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.moduleSetting("pause-on-caught-exception").removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.resolve(pauseOnExceptionEnabledSettingDescriptor).removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.resolve(pauseOnCaughtExceptionSettingDescriptor).removeChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting("disable-async-stack-traces").removeChangeListener(this.asyncStackTracesStateChanged, this);
   }
   async suspendModel() {
@@ -35932,14 +35951,14 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
   }
   clearIfNecessary() {
     const settings = this.target().targetManager().settings;
-    if (!settings.moduleSetting("preserve-console-log").get()) {
+    if (!settings.resolve(preserveConsoleLogSettingDescriptor).get()) {
       this.clear();
     }
     ++this.#pageLoadSequenceNumber;
   }
   primaryPageChanged(event) {
     const settings = this.target().targetManager().settings;
-    if (settings.moduleSetting("preserve-console-log").get()) {
+    if (settings.resolve(preserveConsoleLogSettingDescriptor).get()) {
       const { frame } = event.data;
       if (frame.backForwardCacheDetails.restoredFromCache) {
         this.#console.log(i18nString15(UIStrings15.bfcacheNavigation, { PH1: frame.url }));

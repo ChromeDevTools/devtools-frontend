@@ -16,7 +16,7 @@ export declare class AiCodeGeneration {
     registerUserAcceptance(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId?: number): void;
     generateCode(prompt: string, preamble: string, inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage, options?: {
         signal?: AbortSignal;
-    }): Promise<Host.AidaClient.GenerateCodeResponse | null>;
+    }): Promise<Host.AidaClient.GenerateCodeResponse>;
     static isAiCodeGenerationAvailable(): boolean;
     static isAiCodeGenerationEnabled(locale: string): boolean;
 }

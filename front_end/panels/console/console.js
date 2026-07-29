@@ -2185,7 +2185,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         case "clear":
           messageElement = document.createElement("span");
           messageElement.classList.add("console-info");
-          if (Common3.Settings.Settings.instance().moduleSetting("preserve-console-log").get()) {
+          if (Common3.Settings.Settings.instance().resolve(SDK3.SDKSettings.preserveConsoleLogSettingDescriptor).get()) {
             messageElement.textContent = i18nString2(UIStrings2.consoleclearWasPreventedDueTo);
           } else {
             messageElement.textContent = i18nString2(UIStrings2.consoleWasCleared);
@@ -4335,11 +4335,8 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
     this.requestUpdate();
   }
   #getConsoleInsightsEnabledSetting() {
-    try {
-      return Common4.Settings.Settings.instance().moduleSetting("console-insights-enabled");
-    } catch {
-      return;
-    }
+    const result = Common4.Settings.Settings.instance().maybeResolve(AiAssistanceModel3.AiUtils.consoleInsightsEnabledSettingDescriptor);
+    return "setting" in result ? result.setting : void 0;
   }
   #getOnboardingCompletedSetting() {
     return Common4.Settings.Settings.instance().createLocalSetting("console-insights-onboarding-finished", true);
@@ -6614,7 +6611,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     UI9.ARIAUtils.setLabel(settingsPane, i18nString5(UIStrings5.consoleSettings));
     UI9.ARIAUtils.markAsGroup(settingsPane);
     const consoleEagerEvalSetting = Common7.Settings.Settings.instance().moduleSetting("console-eager-eval");
-    const preserveConsoleLogSetting = Common7.Settings.Settings.instance().moduleSetting("preserve-console-log");
+    const preserveConsoleLogSetting = Common7.Settings.Settings.instance().resolve(SDK7.SDKSettings.preserveConsoleLogSettingDescriptor);
     const userActivationEvalSetting = Common7.Settings.Settings.instance().moduleSetting("console-user-activation-eval");
     settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.networkMessages), this.filter.networkMessagesSetting, this.filter.networkMessagesSetting.title()), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.logXMLHttpRequests), monitoringXHREnabledSetting), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.preserveLog), preserveConsoleLogSetting, i18nString5(UIStrings5.doNotClearLogOnPageReload)), SettingsUI.SettingsUI.createSettingCheckbox(consoleEagerEvalSetting.title(), consoleEagerEvalSetting, i18nString5(UIStrings5.eagerlyEvaluateTextInThePrompt)), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.selectedContextOnly), this.filter.filterByExecutionContextSetting, i18nString5(UIStrings5.onlyShowMessagesFromTheCurrentContext)), SettingsUI.SettingsUI.createSettingCheckbox(this.consoleHistoryAutocompleteSetting.title(), this.consoleHistoryAutocompleteSetting, i18nString5(UIStrings5.autocompleteFromHistory)), SettingsUI.SettingsUI.createSettingCheckbox(this.groupSimilarSetting.title(), this.groupSimilarSetting, i18nString5(UIStrings5.groupSimilarMessagesInConsole)), SettingsUI.SettingsUI.createSettingCheckbox(userActivationEvalSetting.title(), userActivationEvalSetting, i18nString5(UIStrings5.treatEvaluationAsUserActivation)), SettingsUI.SettingsUI.createSettingCheckbox(this.showCorsErrorsSetting.title(), this.showCorsErrorsSetting, i18nString5(UIStrings5.showCorsErrorsInConsole)));
     if (!this.showSettingsPaneSetting.get()) {
@@ -6678,7 +6675,8 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
       onRequestTriggered: this.#onAiCodeCompletionRequestTriggered.bind(this),
       onResponseReceived: this.#onAiCodeCompletionResponseReceived.bind(this),
-      panel: "console"
+      disclaimerTooltipId: "console-ai-code-generation-disclaimer-tooltip",
+      disclaimerTextVariant: "console"
     } : void 0;
     this.prompt = new ConsolePrompt(this.aiCodeCompletionConfig);
     this.prompt.show(this.promptElement);
@@ -6729,7 +6727,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       citationsTooltipId: CITATIONS_TOOLTIP_ID,
       disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
       spinnerTooltipId: SPINNER_TOOLTIP_ID,
-      panel: "console"
+      disclaimerTextVariant: "console"
     });
     this.aiCodeCompletionSummaryToolbarContainer = this.element.createChild("div", "ai-code-completion-summary-toolbar-container");
     this.aiCodeCompletionSummaryToolbar.show(this.aiCodeCompletionSummaryToolbarContainer, void 0, true);
@@ -6813,7 +6811,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     model.messages().forEach(this.addConsoleMessage, this);
   }
   modelRemoved(model) {
-    if (!Common7.Settings.Settings.instance().moduleSetting("preserve-console-log").get() && model.target().outermostTarget() === model.target()) {
+    if (!Common7.Settings.Settings.instance().resolve(SDK7.SDKSettings.preserveConsoleLogSettingDescriptor).get() && model.target().outermostTarget() === model.target()) {
       this.consoleCleared();
     }
   }

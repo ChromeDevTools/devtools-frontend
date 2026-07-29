@@ -12,6 +12,7 @@
         "networkPanel.css.js",
         "networkTimingTable.css.js",
         "networkWaterfallColumn.css.js",
+        "originalResourceChunkView.css.js",
         "requestConditionsDrawer.css.js",
         "requestCookiesView.css.js",
         "requestDeviceBoundSessionsView.css.js",

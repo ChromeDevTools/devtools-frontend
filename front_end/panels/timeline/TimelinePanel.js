@@ -287,6 +287,16 @@ const UIStrings = {
      * @description Title of the shortcuts dialog shown to the user that lists keyboard shortcuts.
      */
     shortcutsDialogTitle: 'Keyboard shortcuts for flamechart',
+    /**
+     * @description Header for the confirmation dialog asking the user whether
+     * to load a CPU profile recorded by console.profile().
+     */
+    loadCpuProfileHeader: 'Load CPU profile?',
+    /**
+     * @description Confirmation message asking the user whether to load a CPU profile recorded by console.profile().
+     * @example {Profile 1} PH1
+     */
+    loadCpuProfileConfirmation: 'Do you want to load the recorded CPU profile "{PH1}" into the Performance panel?',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -882,12 +892,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         const bounds = Trace.Helpers.Timing.traceWindowFromEvent(traceEvent);
         this.#minimapComponent.highlightBounds(bounds, /* withBracket */ false);
     }
-    loadFromCpuProfile(profile) {
+    loadFromCpuProfile(profile, title) {
         if (this.state !== "Idle" /* State.IDLE */ || profile === null) {
             return;
         }
         this.prepareToLoadTimeline();
-        this.loader = TimelineLoader.loadFromCpuProfile(profile, this);
+        this.loader = TimelineLoader.loadFromCpuProfile(profile, this, title);
     }
     setState(state) {
         this.state = state;
@@ -2724,9 +2734,18 @@ export class BottomUpProfileRevealer {
     }
 }
 export class ProfileFinishedRevealer {
+    static #consoleProfilePromiseChain = Promise.resolve();
     async reveal(data) {
-        await UI.ViewManager.ViewManager.instance().showView('timeline');
-        TimelinePanel.instance().loadFromCpuProfile(data.cpuProfile);
+        const taskPromise = ProfileFinishedRevealer.#consoleProfilePromiseChain.then(async () => {
+            const title = data.title || 'Untitled';
+            const confirmed = await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.loadCpuProfileConfirmation, { PH1: title }), i18nString(UIStrings.loadCpuProfileHeader), undefined, { jslogContext: 'load-cpu-profile-confirmation' });
+            if (confirmed) {
+                await UI.ViewManager.ViewManager.instance().showView('timeline');
+                TimelinePanel.instance().loadFromCpuProfile(data.cpuProfile, title);
+            }
+        });
+        ProfileFinishedRevealer.#consoleProfilePromiseChain = taskPromise.catch(() => { });
+        return await taskPromise;
     }
 }
 export class ActionDelegate {

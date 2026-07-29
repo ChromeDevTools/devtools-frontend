@@ -46,15 +46,15 @@ input[type="text"].add-source-map {
 // gen/front_end/panels/sources/AddSourceMapURLDialog.js
 var UIStrings = {
   /**
-   * @description Text in Add Source Map URLDialog of the Sources panel
+   * @description Text in Add source map URL dialog of the Sources panel.
    */
   sourceMapUrl: "Source map URL: ",
   /**
-   * @description Text in Add Debug Info URL Dialog of the Sources panel
+   * @description Text in Add debug info URL dialog of the Sources panel.
    */
   debugInfoUrl: "DWARF symbols URL: ",
   /**
-   * @description Text to add something
+   * @description Text to add something.
    */
   add: "Add"
 };
@@ -217,7 +217,8 @@ var AiCodeCompletionPlugin = class extends Plugin {
       onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
       onRequestTriggered: this.#onAiRequestTriggered.bind(this),
       onResponseReceived: this.#onAiResponseReceived.bind(this),
-      panel: "sources"
+      disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
+      disclaimerTextVariant: "sources"
     };
     this.#aiCodeCompletionProvider = TextEditor.AiCodeCompletionProvider.AiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
     this.#aiCodeCompletionDisclaimerContainer.classList.add("ai-code-completion-disclaimer-container");
@@ -254,7 +255,7 @@ var AiCodeCompletionPlugin = class extends Plugin {
     this.#aiCodeCompletionDisclaimer = new PanelCommon.AiCodeCompletionDisclaimer();
     this.#aiCodeCompletionDisclaimer.disclaimerTooltipId = DISCLAIMER_TOOLTIP_ID;
     this.#aiCodeCompletionDisclaimer.spinnerTooltipId = SPINNER_TOOLTIP_ID;
-    this.#aiCodeCompletionDisclaimer.panel = "sources";
+    this.#aiCodeCompletionDisclaimer.disclaimerTextVariant = "sources";
     this.#aiCodeCompletionDisclaimer.show(this.#aiCodeCompletionDisclaimerContainer, void 0, true);
   }
   #createAiCodeCompletionCitationsToolbar() {
@@ -264,7 +265,7 @@ var AiCodeCompletionPlugin = class extends Plugin {
     this.#aiCodeCompletionCitationsToolbar = new PanelCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar({
       citationsTooltipId: CITATIONS_TOOLTIP_ID,
       hasTopBorder: true,
-      panel: "sources"
+      disclaimerTextVariant: "sources"
     });
     this.#aiCodeCompletionCitationsToolbar.show(this.#aiCodeCompletionCitationsToolbarContainer, void 0, true);
   }
@@ -376,69 +377,6 @@ var AiCodeCompletionPlugin = class extends Plugin {
   }
 };
 
-// gen/front_end/panels/sources/AiWarningInfobarPlugin.js
-var AiWarningInfobarPlugin_exports = {};
-__export(AiWarningInfobarPlugin_exports, {
-  AiWarningInfobarPlugin: () => AiWarningInfobarPlugin
-});
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Workspace from "./../../models/workspace/workspace.js";
-import * as SourceFrame3 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
-var UIStrings2 = {
-  /**
-   * @description Infobar text announcing that the file contents have been changed by AI
-   */
-  aiContentWarning: "This file contains AI-generated content"
-};
-var str_2 = i18n3.i18n.registerUIStrings("panels/sources/AiWarningInfobarPlugin.ts", UIStrings2);
-var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
-var AiWarningInfobarPlugin = class extends Plugin {
-  #editor = void 0;
-  #aiWarningInfobar = null;
-  constructor(uiSourceCode) {
-    super(uiSourceCode);
-    this.uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#onWorkingCopyCommitted, this);
-  }
-  dispose() {
-    this.#aiWarningInfobar?.dispose();
-    this.#aiWarningInfobar = null;
-    this.uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#onWorkingCopyCommitted, this);
-    super.dispose();
-  }
-  static accepts(uiSourceCode) {
-    return uiSourceCode.contentType().hasScripts() || uiSourceCode.contentType().hasStyleSheets();
-  }
-  editorInitialized(editor) {
-    this.#editor = editor;
-    if (this.uiSourceCode.containsAiChanges()) {
-      this.#showAiWarningInfobar();
-    }
-  }
-  #onWorkingCopyCommitted() {
-    if (!this.uiSourceCode.containsAiChanges()) {
-      this.#aiWarningInfobar?.dispose();
-      this.#aiWarningInfobar = null;
-    }
-  }
-  #showAiWarningInfobar() {
-    const infobar = new UI3.Infobar.Infobar("warning", i18nString2(UIStrings2.aiContentWarning), void 0, void 0, "contains-ai-content-warning");
-    this.#aiWarningInfobar = infobar;
-    infobar.setCloseCallback(() => this.removeInfobar(this.#aiWarningInfobar));
-    this.attachInfobar(this.#aiWarningInfobar);
-  }
-  attachInfobar(bar) {
-    if (this.#editor) {
-      this.#editor.dispatch({ effects: SourceFrame3.SourceFrame.addSourceFrameInfobar.of({ element: bar.element }) });
-    }
-  }
-  removeInfobar(bar) {
-    if (this.#editor && bar) {
-      this.#editor.dispatch({ effects: SourceFrame3.SourceFrame.removeSourceFrameInfobar.of({ element: bar.element }) });
-    }
-  }
-};
-
 // gen/front_end/panels/sources/BreakpointEditDialog.js
 var BreakpointEditDialog_exports = {};
 __export(BreakpointEditDialog_exports, {
@@ -448,11 +386,11 @@ __export(BreakpointEditDialog_exports, {
 import "./../../ui/kit/kit.js";
 import "./../../ui/legacy/legacy.js";
 import * as Common from "./../../core/common/common.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
+import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as TextEditor2 from "./../../ui/components/text_editor/text_editor.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as UI3 from "./../../ui/legacy/legacy.js";
 import { Directives, html as html2, render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -528,53 +466,53 @@ var breakpointEditDialog_css_default = `/*
 // gen/front_end/panels/sources/BreakpointEditDialog.js
 var { ref } = Directives;
 var { Direction } = TextEditor2.TextEditorHistory;
-var UIStrings3 = {
+var UIStrings2 = {
   /**
-   * @description Screen reader label for a select box that chooses the breakpoint type in the Sources panel when editing a breakpoint
+   * @description Screen reader label for a select box that chooses the breakpoint type in the Sources panel when editing a breakpoint.
    */
   breakpointType: "Breakpoint type",
   /**
-   * @description Text in Breakpoint Edit Dialog of the Sources panel
+   * @description Text in Breakpoint edit dialog of the Sources panel.
    */
   breakpoint: "Breakpoint",
   /**
-   * @description Tooltip text in Breakpoint Edit Dialog of the Sources panel that shows up when hovering over the close icon
+   * @description Tooltip text in Breakpoint edit dialog of the Sources panel that shows up when hovering over the close icon.
    */
   closeDialog: "Close edit dialog and save changes",
   /**
-   * @description Text in Breakpoint Edit Dialog of the Sources panel
+   * @description Text in Breakpoint edit dialog of the Sources panel.
    */
   conditionalBreakpoint: "Conditional breakpoint",
   /**
-   * @description Text in Breakpoint Edit Dialog of the Sources panel
+   * @description Text in Breakpoint edit dialog of the Sources panel.
    */
   logpoint: "Logpoint",
   /**
-   * @description Text in Breakpoint Edit Dialog of the Sources panel
+   * @description Text in Breakpoint edit dialog of the Sources panel.
    */
   expressionToCheckBeforePausingEg: "Expression to check before pausing, e.g. x > 5",
   /**
-   * @description Type selector element title in Breakpoint Edit Dialog of the Sources panel
+   * @description Type selector element title in Breakpoint edit dialog of the Sources panel.
    */
   pauseOnlyWhenTheConditionIsTrue: "Pause only when the condition is true",
   /**
-   * @description Link text in the Breakpoint Edit Dialog of the Sources panel
+   * @description Link text in the Breakpoint edit dialog of the Sources panel.
    */
-  learnMoreOnBreakpointTypes: "Learn more: Breakpoint Types",
+  learnMoreOnBreakpointTypes: "Learn more: Breakpoint types",
   /**
-   * @description Text in Breakpoint Edit Dialog of the Sources panel. It is used as
-   *the placeholder for a text input field before the user enters text. Provides the user with
-   *an example on how to use Logpoints. 'Log' is a verb and 'message' is a noun.
-   *See: https://developer.chrome.com/blog/new-in-devtools-73/#logpoints
+   * @description Text in Breakpoint edit dialog of the Sources panel. It is used as
+   * the placeholder for a text input field before the user enters text. Provides the user with
+   * an example on how to use Logpoints. 'Log' is a verb and 'message' is a noun.
+   * See: https://developer.chrome.com/blog/new-in-devtools-73/#logpoints
    */
   logMessageEgXIsX: "Log message, e.g. `'x is', x`",
   /**
-   * @description Type selector element title in Breakpoint Edit Dialog of the Sources panel
+   * @description Type selector element title in Breakpoint edit dialog of the Sources panel.
    */
   logAMessageToConsoleDoNotBreak: "Log a message to Console, do not break"
 };
-var str_3 = i18n5.i18n.registerUIStrings("panels/sources/BreakpointEditDialog.ts", UIStrings3);
-var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
+var str_2 = i18n3.i18n.registerUIStrings("panels/sources/BreakpointEditDialog.ts", UIStrings2);
+var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var DEFAULT_VIEW2 = (input, output, target) => {
   const editorRef = (e) => {
     output.editor = e;
@@ -592,28 +530,28 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       <devtools-toolbar class=source-frame-breakpoint-toolbar>Line ${input.editorLineNumber + 1}:
         <select
           class=type-selector
-          title=${input.breakpointType === "LOGPOINT" ? i18nString3(UIStrings3.logAMessageToConsoleDoNotBreak) : i18nString3(UIStrings3.pauseOnlyWhenTheConditionIsTrue)}
-          aria-label=${i18nString3(UIStrings3.breakpointType)}
+          title=${input.breakpointType === "LOGPOINT" ? i18nString2(UIStrings2.logAMessageToConsoleDoNotBreak) : i18nString2(UIStrings2.pauseOnlyWhenTheConditionIsTrue)}
+          aria-label=${i18nString2(UIStrings2.breakpointType)}
           jslog=${VisualLogging2.dropDown("type").track({ change: true })}
           @change=${onTypeChanged}>
             <option value=${"REGULAR_BREAKPOINT"}>
-              ${i18nString3(UIStrings3.breakpoint)}
+              ${i18nString2(UIStrings2.breakpoint)}
             </option>
             <option
               value=${"CONDITIONAL_BREAKPOINT"}
               .selected=${input.breakpointType === "CONDITIONAL_BREAKPOINT"}>
-                ${i18nString3(UIStrings3.conditionalBreakpoint)}
+                ${i18nString2(UIStrings2.conditionalBreakpoint)}
             </option>
             <option
               value=${"LOGPOINT"}
               .selected=${input.breakpointType === "LOGPOINT"}>
-                ${i18nString3(UIStrings3.logpoint)}
+                ${i18nString2(UIStrings2.logpoint)}
             </option>
         </select>
       </devtools-toolbar>
       <devtools-icon
         name=cross
-        title=${i18nString3(UIStrings3.closeDialog)}
+        title=${i18nString2(UIStrings2.closeDialog)}
         jslog=${VisualLogging2.close().track({ click: true })}
         @click=${input.saveAndFinish}>
       </devtools-icon>
@@ -628,14 +566,14 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     <div class=link-wrapper>
       <devtools-icon name=open-externally class=link-icon></devtools-icon>
       <devtools-link class="devtools-link" href="https://goo.gle/devtools-loc"
-                                          jslogcontext="learn-more">${i18nString3(UIStrings3.learnMoreOnBreakpointTypes)}</devtools-link>
+                                          jslogcontext="learn-more">${i18nString2(UIStrings2.learnMoreOnBreakpointTypes)}</devtools-link>
     </div>
     `,
     // clang-format on
     target
   );
 };
-var BreakpointEditDialog = class extends UI4.Widget.Widget {
+var BreakpointEditDialog = class extends UI3.Widget.Widget {
   #view;
   #history = new TextEditor2.AutocompleteHistory.AutocompleteHistory(Common.Settings.Settings.instance().createLocalSetting("breakpoint-condition-history", []));
   #finished = false;
@@ -715,10 +653,10 @@ var BreakpointEditDialog = class extends UI4.Widget.Widget {
     }
     const getPlaceholder = () => {
       if (this.#breakpointType === "CONDITIONAL_BREAKPOINT") {
-        return CodeMirror.placeholder(i18nString3(UIStrings3.expressionToCheckBeforePausingEg));
+        return CodeMirror.placeholder(i18nString2(UIStrings2.expressionToCheckBeforePausingEg));
       }
       if (this.#breakpointType === "LOGPOINT") {
-        return CodeMirror.placeholder(i18nString3(UIStrings3.logMessageEgXIsX));
+        return CodeMirror.placeholder(i18nString2(UIStrings2.logMessageEgXIsX));
       }
       return [];
     };
@@ -809,17 +747,17 @@ __export(BreakpointsView_exports, {
 import "./../../ui/kit/kit.js";
 import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../core/platform/platform.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Breakpoints from "./../../models/breakpoints/breakpoints.js";
-import * as Workspace2 from "./../../models/workspace/workspace.js";
+import * as Workspace from "./../../models/workspace/workspace.js";
 import * as Input from "./../../ui/components/input/input.js";
 import * as RenderCoordinator from "./../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
+import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -1328,13 +1266,13 @@ function getDifferentiatingPathMap(titleInfos) {
 
 // gen/front_end/panels/sources/BreakpointsView.js
 var { html: html3, render: render3, Directives: { ifDefined, repeat, classMap, live } } = Lit;
-var UIStrings4 = {
+var UIStrings3 = {
   /**
    * @description Label for a checkbox to toggle pausing on uncaught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an uncaught exception is thrown at runtime.
    */
   pauseOnUncaughtExceptions: "Pause on uncaught exceptions",
   /**
-   * @description Label for a checkbox to toggling pausing on caught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an exception is thrown, but caught (handled) at runtime.
+   * @description Label for a checkbox to toggle pausing on caught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an exception is thrown, but caught (handled) at runtime.
    */
   pauseOnCaughtExceptions: "Pause on caught exceptions",
   /**
@@ -1355,43 +1293,43 @@ var UIStrings4 = {
    */
   breakpointHit: "{PH1} breakpoint hit",
   /**
-   * @description Tooltip text that shows when hovered over a remove button that appears next to a filename in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint groups.
+   * @description Tooltip text that shows when hovered over a remove button that appears next to a filename in the breakpoint sidebar of the Sources panel. Also used in the context menu for breakpoint groups.
    */
   removeAllBreakpointsInFile: "Remove all breakpoints in file",
   /**
-   * @description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that disables all breakpoints in a file.
+   * @description Context menu item in the breakpoint sidebar of the Sources panel that disables all breakpoints in a file.
    */
   disableAllBreakpointsInFile: "Disable all breakpoints in file",
   /**
-   * @description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that enables all breakpoints in a file.
+   * @description Context menu item in the breakpoint sidebar of the Sources panel that enables all breakpoints in a file.
    */
   enableAllBreakpointsInFile: "Enable all breakpoints in file",
   /**
-   * @description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint or conditional breakpoint in the breakpoint sidebar of the sources panel.
+   * @description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint or conditional breakpoint in the breakpoint sidebar of the Sources panel.
    */
   editCondition: "Edit condition",
   /**
-   * @description Tooltip text that shows when hovered over an edit button that appears next to a logpoint in the breakpoint sidebar of the sources panel.
+   * @description Tooltip text that shows when hovered over an edit button that appears next to a logpoint in the breakpoint sidebar of the Sources panel.
    */
   editLogpoint: "Edit logpoint",
   /**
-   * @description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that disables all breakpoints.
+   * @description Context menu item in the breakpoint sidebar of the Sources panel that disables all breakpoints.
    */
   disableAllBreakpoints: "Disable all breakpoints",
   /**
-   * @description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that enables all breakpoints.
+   * @description Context menu item in the breakpoint sidebar of the Sources panel that enables all breakpoints.
    */
   enableAllBreakpoints: "Enable all breakpoints",
   /**
-   * @description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint items.
+   * @description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the Sources panel. Also used in the context menu for breakpoint items.
    */
   removeBreakpoint: "Remove breakpoint",
   /**
-   * @description Text to remove all breakpoints
+   * @description Text to remove all breakpoints.
    */
   removeAllBreakpoints: "Remove all breakpoints",
   /**
-   * @description Text in Breakpoints Sidebar Pane of the Sources panel
+   * @description Text in the breakpoint sidebar of the Sources panel.
    */
   removeOtherBreakpoints: "Remove other breakpoints",
   /**
@@ -1399,18 +1337,18 @@ var UIStrings4 = {
    */
   revealLocation: "Reveal location",
   /**
-   * @description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the sources panel. It shows the condition, on which the breakpoint will stop.
+   * @description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the Sources panel. It shows the condition, on which the breakpoint will stop.
    * @example {x < 3} PH1
    */
   conditionCode: "Condition: {PH1}",
   /**
-   * @description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the sources panel. It shows what is going to be printed in the console, if execution hits this breakpoint.
+   * @description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the Sources panel. It shows what is going to be printed in the console, if execution hits this breakpoint.
    * @example {'hello'} PH1
    */
   logpointCode: "Logpoint: {PH1}"
 };
-var str_4 = i18n7.i18n.registerUIStrings("panels/sources/BreakpointsView.ts", UIStrings4);
-var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var str_3 = i18n5.i18n.registerUIStrings("panels/sources/BreakpointsView.ts", UIStrings3);
+var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var MAX_SNIPPET_LENGTH = 200;
 var breakpointsViewInstance = null;
 var breakpointsViewControllerInstance;
@@ -1437,7 +1375,7 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
     this.#breakpointsActiveSetting.addChangeListener(this.update, this);
     this.#pauseOnUncaughtExceptionSetting = settings.moduleSetting("pause-on-uncaught-exception");
     this.#pauseOnUncaughtExceptionSetting.addChangeListener(this.update, this);
-    this.#pauseOnCaughtExceptionSetting = settings.moduleSetting("pause-on-caught-exception");
+    this.#pauseOnCaughtExceptionSetting = settings.resolve(SDK2.SDKSettings.pauseOnCaughtExceptionSettingDescriptor);
     this.#pauseOnCaughtExceptionSetting.addChangeListener(this.update, this);
   }
   static instance({ forceNew, breakpointManager, settings } = {
@@ -1646,14 +1584,14 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
     return locations;
   }
   async #getHitUILocation() {
-    const details = UI5.Context.Context.instance().flavor(SDK2.DebuggerModel.DebuggerPausedDetails);
+    const details = UI4.Context.Context.instance().flavor(SDK2.DebuggerModel.DebuggerPausedDetails);
     if (details?.callFrames.length) {
       return await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(details.callFrames[0].location());
     }
     return null;
   }
   #getBreakpointLocations() {
-    const locations = this.#breakpointManager.allBreakpointLocations().filter((breakpointLocation) => breakpointLocation.uiLocation.uiSourceCode.project().type() !== Workspace2.Workspace.projectTypes.Debugger);
+    const locations = this.#breakpointManager.allBreakpointLocations().filter((breakpointLocation) => breakpointLocation.uiLocation.uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Debugger);
     locations.sort((item1, item2) => item1.uiLocation.compareTo(item2.uiLocation));
     const result = [];
     let lastBreakpoint = null;
@@ -1706,7 +1644,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
           data-first-pause>
         <label class='checkbox-label'>
           <input type='checkbox' tabindex=-1 class="small" ?checked=${input.pauseOnUncaughtExceptions} @change=${input.onPauseOnUncaughtExceptionsStateChanged} jslog=${VisualLogging3.toggle("pause-uncaught").track({ change: true })}>
-          <span>${i18nString4(UIStrings4.pauseOnUncaughtExceptions)}</span>
+          <span>${i18nString3(UIStrings3.pauseOnUncaughtExceptions)}</span>
         </label>
       </div>
       <div class='pause-on-caught-exceptions'
@@ -1718,7 +1656,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             data-last-pause>
           <label class='checkbox-label'>
             <input data-pause-on-caught-checkbox type='checkbox' class="small" tabindex=-1 ?checked=${input.pauseOnCaughtExceptions} @change=${input.onPauseOnCaughtExceptionsStateChanged.bind(void 0)} jslog=${VisualLogging3.toggle("pause-on-caught-exception").track({ change: true })}>
-            <span>${i18nString4(UIStrings4.pauseOnCaughtExceptions)}</span>
+            <span>${i18nString3(UIStrings3.pauseOnCaughtExceptions)}</span>
           </label>
       </div>
       <div role=tree>
@@ -1758,8 +1696,8 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                 <span class='group-hover-actions'>
                   <button data-remove-breakpoint
                           @click=${input.removeAllBreakpointsInFileClickHandler.bind(void 0, group.breakpointItems)}
-                          title=${i18nString4(UIStrings4.removeAllBreakpointsInFile)}
-                          aria-label=${i18nString4(UIStrings4.removeAllBreakpointsInFile)}
+                          title=${i18nString3(UIStrings3.removeAllBreakpointsInFile)}
+                          aria-label=${i18nString3(UIStrings3.removeAllBreakpointsInFile)}
                           jslog=${VisualLogging3.action("remove-breakpoint").track({ click: true })}>
                     <devtools-icon name="bin"></devtools-icon>
                   </button>
@@ -1797,14 +1735,14 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                   <span class='breakpoint-item-location-or-actions'>
                     ${group.editable ? html3`
                           <button data-edit-breakpoint @click=${input.itemEditClickHandler.bind(void 0, item)}
-                                  title=${item.type === "LOGPOINT" ? i18nString4(UIStrings4.editLogpoint) : i18nString4(UIStrings4.editCondition)}
+                                  title=${item.type === "LOGPOINT" ? i18nString3(UIStrings3.editLogpoint) : i18nString3(UIStrings3.editCondition)}
                                   jslog=${VisualLogging3.action("edit-breakpoint").track({ click: true })}>
                             <devtools-icon name="edit"></devtools-icon>
                           </button>` : Lit.nothing}
                     <button data-remove-breakpoint
                             @click=${input.itemRemoveClickHandler.bind(void 0, item)}
-                            title=${i18nString4(UIStrings4.removeBreakpoint)}
-                            aria-label=${i18nString4(UIStrings4.removeBreakpoint)}
+                            title=${i18nString3(UIStrings3.removeBreakpoint)}
+                            aria-label=${i18nString3(UIStrings3.removeBreakpoint)}
                             jslog=${VisualLogging3.action("remove-breakpoint").track({ click: true })}>
                       <devtools-icon name="bin"></devtools-icon>
                     </button>
@@ -1815,7 +1753,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
       </div>
     </div>`, target);
 };
-var BreakpointsView = class _BreakpointsView extends UI5.Widget.VBox {
+var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
   #view;
   #controller;
   static instance({ forceNew } = { forceNew: false }) {
@@ -2022,17 +1960,17 @@ var BreakpointsView = class _BreakpointsView extends UI5.Widget.VBox {
   }
   #onBreakpointGroupContextMenu(event, breakpointGroup) {
     const { breakpointItems } = breakpointGroup;
-    const menu = new UI5.ContextMenu.ContextMenu(event);
-    menu.defaultSection().appendItem(i18nString4(UIStrings4.removeAllBreakpointsInFile), () => {
+    const menu = new UI4.ContextMenu.ContextMenu(event);
+    menu.defaultSection().appendItem(i18nString3(UIStrings3.removeAllBreakpointsInFile), () => {
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.BreakpointsInFileRemovedFromContextMenu);
       void this.#controller.breakpointsRemoved(breakpointItems);
     }, { jslogContext: "remove-file-breakpoints" });
     const otherGroups = this.#breakpointGroups.filter((group) => group !== breakpointGroup);
-    menu.defaultSection().appendItem(i18nString4(UIStrings4.removeOtherBreakpoints), () => {
+    menu.defaultSection().appendItem(i18nString3(UIStrings3.removeOtherBreakpoints), () => {
       const breakpointItems2 = otherGroups.map(({ breakpointItems: breakpointItems3 }) => breakpointItems3).flat();
       void this.#controller.breakpointsRemoved(breakpointItems2);
     }, { disabled: otherGroups.length === 0, jslogContext: "remove-other-breakpoints" });
-    menu.defaultSection().appendItem(i18nString4(UIStrings4.removeAllBreakpoints), () => {
+    menu.defaultSection().appendItem(i18nString3(UIStrings3.removeAllBreakpoints), () => {
       const breakpointItems2 = this.#breakpointGroups.map(({ breakpointItems: breakpointItems3 }) => breakpointItems3).flat();
       void this.#controller.breakpointsRemoved(breakpointItems2);
     }, { jslogContext: "remove-all-breakpoints" });
@@ -2040,7 +1978,7 @@ var BreakpointsView = class _BreakpointsView extends UI5.Widget.VBox {
       (breakpointItem) => breakpointItem.status !== "ENABLED"
       /* BreakpointStatus.ENABLED */
     );
-    menu.debugSection().appendItem(i18nString4(UIStrings4.enableAllBreakpointsInFile), () => {
+    menu.debugSection().appendItem(i18nString3(UIStrings3.enableAllBreakpointsInFile), () => {
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.BreakpointsInFileEnabledDisabledFromContextMenu);
       for (const breakpointItem of notEnabledItems) {
         this.#controller.breakpointStateChanged(breakpointItem, true);
@@ -2050,7 +1988,7 @@ var BreakpointsView = class _BreakpointsView extends UI5.Widget.VBox {
       (breakpointItem) => breakpointItem.status !== "DISABLED"
       /* BreakpointStatus.DISABLED */
     );
-    menu.debugSection().appendItem(i18nString4(UIStrings4.disableAllBreakpointsInFile), () => {
+    menu.debugSection().appendItem(i18nString3(UIStrings3.disableAllBreakpointsInFile), () => {
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.BreakpointsInFileEnabledDisabledFromContextMenu);
       for (const breakpointItem of notDisabledItems) {
         this.#controller.breakpointStateChanged(breakpointItem, false);
@@ -2061,9 +1999,9 @@ var BreakpointsView = class _BreakpointsView extends UI5.Widget.VBox {
   #onBreakpointEntryContextMenu(event, breakpointItem, editable) {
     const items = this.#breakpointGroups.map(({ breakpointItems }) => breakpointItems).flat();
     const otherItems = items.filter((item) => item !== breakpointItem);
-    const menu = new UI5.ContextMenu.ContextMenu(event);
-    const editBreakpointText = breakpointItem.type === "LOGPOINT" ? i18nString4(UIStrings4.editLogpoint) : i18nString4(UIStrings4.editCondition);
-    menu.revealSection().appendItem(i18nString4(UIStrings4.revealLocation), () => {
+    const menu = new UI4.ContextMenu.ContextMenu(event);
+    const editBreakpointText = breakpointItem.type === "LOGPOINT" ? i18nString3(UIStrings3.editLogpoint) : i18nString3(UIStrings3.editCondition);
+    menu.revealSection().appendItem(i18nString3(UIStrings3.revealLocation), () => {
       void this.#controller.jumpToSource(breakpointItem);
     }, { jslogContext: "jump-to-breakpoint" });
     menu.editSection().appendItem(editBreakpointText, () => {
@@ -2073,28 +2011,28 @@ var BreakpointsView = class _BreakpointsView extends UI5.Widget.VBox {
         /* editButtonClicked */
       );
     }, { disabled: !editable, jslogContext: "edit-breakpoint" });
-    menu.defaultSection().appendItem(i18nString4(UIStrings4.enableAllBreakpoints), items.forEach.bind(items, (item) => this.#controller.breakpointStateChanged(item, true)), {
+    menu.defaultSection().appendItem(i18nString3(UIStrings3.enableAllBreakpoints), items.forEach.bind(items, (item) => this.#controller.breakpointStateChanged(item, true)), {
       disabled: items.every(
         (item) => item.status === "ENABLED"
         /* BreakpointStatus.ENABLED */
       ),
       jslogContext: "enable-all-breakpoints"
     });
-    menu.defaultSection().appendItem(i18nString4(UIStrings4.disableAllBreakpoints), items.forEach.bind(items, (item) => this.#controller.breakpointStateChanged(item, false)), {
+    menu.defaultSection().appendItem(i18nString3(UIStrings3.disableAllBreakpoints), items.forEach.bind(items, (item) => this.#controller.breakpointStateChanged(item, false)), {
       disabled: items.every(
         (item) => item.status === "DISABLED"
         /* BreakpointStatus.DISABLED */
       ),
       jslogContext: "disable-all-breakpoints"
     });
-    menu.footerSection().appendItem(i18nString4(UIStrings4.removeBreakpoint), () => {
+    menu.footerSection().appendItem(i18nString3(UIStrings3.removeBreakpoint), () => {
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.BreakpointRemovedFromContextMenu);
       void this.#controller.breakpointsRemoved([breakpointItem]);
     }, { jslogContext: "remove-breakpoint" });
-    menu.footerSection().appendItem(i18nString4(UIStrings4.removeOtherBreakpoints), () => {
+    menu.footerSection().appendItem(i18nString3(UIStrings3.removeOtherBreakpoints), () => {
       void this.#controller.breakpointsRemoved(otherItems);
     }, { disabled: otherItems.length === 0, jslogContext: "remove-other-breakpoints" });
-    menu.footerSection().appendItem(i18nString4(UIStrings4.removeAllBreakpoints), () => {
+    menu.footerSection().appendItem(i18nString3(UIStrings3.removeAllBreakpoints), () => {
       const breakpointItems = this.#breakpointGroups.map(({ breakpointItems: breakpointItems2 }) => breakpointItems2).flat();
       void this.#controller.breakpointsRemoved(breakpointItems);
     }, { jslogContext: "remove-all-breakpoints" });
@@ -2106,29 +2044,29 @@ var BreakpointsView = class _BreakpointsView extends UI5.Widget.VBox {
         return void 0;
       case "CONDITIONAL_BREAKPOINT":
         assertNotNullOrUndefined2(hoverText);
-        return i18nString4(UIStrings4.conditionCode, { PH1: hoverText });
+        return i18nString3(UIStrings3.conditionCode, { PH1: hoverText });
       case "LOGPOINT":
         assertNotNullOrUndefined2(hoverText);
-        return i18nString4(UIStrings4.logpointCode, { PH1: hoverText });
+        return i18nString3(UIStrings3.logpointCode, { PH1: hoverText });
     }
   }
   #getBreakpointItemDescription(breakpointItem) {
     let checkboxDescription;
     switch (breakpointItem.status) {
       case "ENABLED":
-        checkboxDescription = i18nString4(UIStrings4.checked);
+        checkboxDescription = i18nString3(UIStrings3.checked);
         break;
       case "DISABLED":
-        checkboxDescription = i18nString4(UIStrings4.unchecked);
+        checkboxDescription = i18nString3(UIStrings3.unchecked);
         break;
       case "INDETERMINATE":
-        checkboxDescription = i18nString4(UIStrings4.indeterminate);
+        checkboxDescription = i18nString3(UIStrings3.indeterminate);
         break;
     }
     if (!breakpointItem.isHit) {
       return checkboxDescription;
     }
-    return i18nString4(UIStrings4.breakpointHit, { PH1: checkboxDescription });
+    return i18nString3(UIStrings3.breakpointHit, { PH1: checkboxDescription });
   }
   #onCheckboxToggled(item, event) {
     const element = event.target;
@@ -2156,14 +2094,14 @@ __export(CallStackSidebarPane_exports, {
 });
 import * as Common13 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
-import * as i18n37 from "./../../core/i18n/i18n.js";
+import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
 import * as Bindings9 from "./../../models/bindings/bindings.js";
 import * as Persistence10 from "./../../models/persistence/persistence.js";
 import * as StackTrace5 from "./../../models/stack_trace/stack_trace.js";
-import * as Workspace24 from "./../../models/workspace/workspace.js";
+import * as Workspace23 from "./../../models/workspace/workspace.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
-import * as UI19 from "./../../ui/legacy/legacy.js";
+import * as UI18 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html7, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -2324,7 +2262,7 @@ __export(SourcesPanel_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common12 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
-import * as i18n35 from "./../../core/i18n/i18n.js";
+import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
 import * as Root from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
@@ -2332,11 +2270,11 @@ import * as Badges2 from "./../../models/badges/badges.js";
 import * as Bindings8 from "./../../models/bindings/bindings.js";
 import * as Breakpoints3 from "./../../models/breakpoints/breakpoints.js";
 import * as StackTrace3 from "./../../models/stack_trace/stack_trace.js";
-import * as Workspace22 from "./../../models/workspace/workspace.js";
+import * as Workspace21 from "./../../models/workspace/workspace.js";
 import * as PanelCommon3 from "./../common/common.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
-import * as UI18 from "./../../ui/legacy/legacy.js";
+import * as UI17 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 import * as Snippets4 from "./../snippets/snippets.js";
 
@@ -2346,9 +2284,9 @@ __export(DebuggerPausedMessage_exports, {
   BreakpointTypeNouns: () => BreakpointTypeNouns,
   DebuggerPausedMessage: () => DebuggerPausedMessage
 });
-import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
+import * as UI5 from "./../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "./../common/common.js";
@@ -2358,9 +2296,9 @@ var CategorizedBreakpointL10n_exports = {};
 __export(CategorizedBreakpointL10n_exports, {
   getLocalizedBreakpointName: () => getLocalizedBreakpointName
 });
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-var UIStrings5 = {
+var UIStrings4 = {
   /**
    * @description Name of a breakpoint type.
    * https://github.com/WICG/turtledove/blob/main/FLEDGE.md#32-on-device-bidding
@@ -2382,207 +2320,207 @@ var UIStrings5 = {
    */
   beforeSellerWorkletReportingStart: "Seller Reporting Phase Start",
   /**
-   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
    * @example {setTimeout} PH1
    */
   setTimeoutOrIntervalFired: "{PH1} fired",
   /**
-   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
    */
   scriptFirstStatement: "Script First Statement",
   /**
-   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
    */
   scriptBlockedByContentSecurity: "Script Blocked by Content Security Policy",
   /**
-   * @description Text for the request animation frame event
+   * @description Text for the request animation frame event.
    */
   requestAnimationFrame: "Request Animation Frame",
   /**
-   * @description Text to cancel the animation frame
+   * @description Text to cancel the animation frame.
    */
   cancelAnimationFrame: "Cancel Animation Frame",
   /**
-   * @description Text for the event that an animation frame is fired
+   * @description Text for the event that an animation frame is fired.
    */
   animationFrameFired: "Animation Frame Fired",
   /**
-   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
    */
   webglErrorFired: "WebGL Error Fired",
   /**
-   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
    */
   webglWarningFired: "WebGL Warning Fired",
   /**
-   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
    */
   setInnerhtml: "Set `innerHTML`",
   /**
-   * @description Name of a breakpoint type in the Sources Panel.
+   * @description Name of a breakpoint type in the Sources panel.
    */
   createCanvasContext: "Create canvas context",
   /**
-   * @description Name of a breakpoint type in the Sources Panel.
+   * @description Name of a breakpoint type in the Sources panel.
    */
   createAudiocontext: "Create `AudioContext`",
   /**
-   * @description Name of a breakpoint type in the Sources Panel. Close is a verb.
+   * @description Name of a breakpoint type in the Sources panel. Close is a verb.
    */
   closeAudiocontext: "Close `AudioContext`",
   /**
-   * @description Name of a breakpoint type in the Sources Panel. Resume is a verb.
+   * @description Name of a breakpoint type in the Sources panel. Resume is a verb.
    */
   resumeAudiocontext: "Resume `AudioContext`",
   /**
-   * @description Name of a breakpoint type in the Sources Panel.
+   * @description Name of a breakpoint type in the Sources panel.
    */
   suspendAudiocontext: "Suspend `AudioContext`",
   /**
    * @description Noun. Title for a checkbox that turns on breakpoints on Trusted Type sink violations.
    * "Trusted Types" is a Web API. A "Sink" (Noun, singular) is a special function, akin to a data sink, that expects
    * to receive data in a specific format. Should the data be in the wrong format, or something else
-   * go wrong, its called a "sink violation".
+   * go wrong, it's called a "sink violation".
    */
-  sinkViolations: "Sink Violations",
+  sinkViolations: "Sink violations",
   /**
-   * @description Title for a checkbox that turns on breakpoints on Trusted Type policy violations
+   * @description Title for a checkbox that turns on breakpoints on Trusted Type policy violations.
    */
-  policyViolations: "Policy Violations"
+  policyViolations: "Policy violations"
 };
-var str_5 = i18n9.i18n.registerUIStrings("panels/sources/CategorizedBreakpointL10n.ts", UIStrings5);
-var i18nLazyString = i18n9.i18n.getLazilyComputedLocalizedString.bind(void 0, str_5);
+var str_4 = i18n7.i18n.registerUIStrings("panels/sources/CategorizedBreakpointL10n.ts", UIStrings4);
+var i18nLazyString = i18n7.i18n.getLazilyComputedLocalizedString.bind(void 0, str_4);
 function getLocalizedBreakpointName(name) {
-  const l10nLazyName = LOCALIZED_NAMES.get(name) ?? i18n9.i18n.lockedLazyString(name);
+  const l10nLazyName = LOCALIZED_NAMES.get(name) ?? i18n7.i18n.lockedLazyString(name);
   return l10nLazyName();
 }
 var LOCALIZED_INSTRUMENTATION_NAMES = {
   [
     "beforeBidderWorkletBiddingStart"
     /* SDK.EventBreakpointsModel.InstrumentationNames.BEFORE_BIDDER_WORKLET_BIDDING_START */
-  ]: i18nLazyString(UIStrings5.beforeBidderWorkletBiddingStart),
+  ]: i18nLazyString(UIStrings4.beforeBidderWorkletBiddingStart),
   [
     "beforeBidderWorkletReportingStart"
     /* SDK.EventBreakpointsModel.InstrumentationNames.BEFORE_BIDDER_WORKLET_REPORTING_START */
-  ]: i18nLazyString(UIStrings5.beforeBidderWorkletReportingStart),
+  ]: i18nLazyString(UIStrings4.beforeBidderWorkletReportingStart),
   [
     "beforeSellerWorkletScoringStart"
     /* SDK.EventBreakpointsModel.InstrumentationNames.BEFORE_SELLER_WORKLET_SCORING_START */
-  ]: i18nLazyString(UIStrings5.beforeSellerWorkletScoringStart),
+  ]: i18nLazyString(UIStrings4.beforeSellerWorkletScoringStart),
   [
     "beforeSellerWorkletReportingStart"
     /* SDK.EventBreakpointsModel.InstrumentationNames.BEFORE_SELLER_WORKLET_REPORTING_START */
-  ]: i18nLazyString(UIStrings5.beforeSellerWorkletReportingStart),
+  ]: i18nLazyString(UIStrings4.beforeSellerWorkletReportingStart),
   [
     "setTimeout"
     /* SDK.EventBreakpointsModel.InstrumentationNames.SET_TIMEOUT */
-  ]: i18n9.i18n.lockedLazyString("setTimeout"),
+  ]: i18n7.i18n.lockedLazyString("setTimeout"),
   [
     "clearTimeout"
     /* SDK.EventBreakpointsModel.InstrumentationNames.CLEAR_TIMEOUT */
-  ]: i18n9.i18n.lockedLazyString("clearTimeout"),
+  ]: i18n7.i18n.lockedLazyString("clearTimeout"),
   [
     "setTimeout.callback"
     /* SDK.EventBreakpointsModel.InstrumentationNames.SET_TIMEOUT_CALLBACK */
-  ]: i18nLazyString(UIStrings5.setTimeoutOrIntervalFired, { PH1: "setTimeout" }),
+  ]: i18nLazyString(UIStrings4.setTimeoutOrIntervalFired, { PH1: "setTimeout" }),
   [
     "setInterval"
     /* SDK.EventBreakpointsModel.InstrumentationNames.SET_INTERVAL */
-  ]: i18n9.i18n.lockedLazyString("setInterval"),
+  ]: i18n7.i18n.lockedLazyString("setInterval"),
   [
     "clearInterval"
     /* SDK.EventBreakpointsModel.InstrumentationNames.CLEAR_INTERVAL */
-  ]: i18n9.i18n.lockedLazyString("clearInterval"),
+  ]: i18n7.i18n.lockedLazyString("clearInterval"),
   [
     "setInterval.callback"
     /* SDK.EventBreakpointsModel.InstrumentationNames.SET_INTERVAL_CALLBACK */
-  ]: i18nLazyString(UIStrings5.setTimeoutOrIntervalFired, { PH1: "setInterval" }),
+  ]: i18nLazyString(UIStrings4.setTimeoutOrIntervalFired, { PH1: "setInterval" }),
   [
     "scriptFirstStatement"
     /* SDK.EventBreakpointsModel.InstrumentationNames.SCRIPT_FIRST_STATEMENT */
-  ]: i18nLazyString(UIStrings5.scriptFirstStatement),
+  ]: i18nLazyString(UIStrings4.scriptFirstStatement),
   [
     "scriptBlockedByCSP"
     /* SDK.EventBreakpointsModel.InstrumentationNames.SCRIPT_BLOCKED_BY_CSP */
-  ]: i18nLazyString(UIStrings5.scriptBlockedByContentSecurity),
+  ]: i18nLazyString(UIStrings4.scriptBlockedByContentSecurity),
   [
     "sharedStorageWorkletScriptFirstStatement"
     /* SDK.EventBreakpointsModel.InstrumentationNames.SHARED_STORAGE_WORKLET_SCRIPT_FIRST_STATEMENT */
-  ]: i18nLazyString(UIStrings5.scriptFirstStatement),
+  ]: i18nLazyString(UIStrings4.scriptFirstStatement),
   [
     "requestAnimationFrame"
     /* SDK.EventBreakpointsModel.InstrumentationNames.REQUEST_ANIMATION_FRAME */
-  ]: i18nLazyString(UIStrings5.requestAnimationFrame),
+  ]: i18nLazyString(UIStrings4.requestAnimationFrame),
   [
     "cancelAnimationFrame"
     /* SDK.EventBreakpointsModel.InstrumentationNames.CANCEL_ANIMATION_FRAME */
-  ]: i18nLazyString(UIStrings5.cancelAnimationFrame),
+  ]: i18nLazyString(UIStrings4.cancelAnimationFrame),
   [
     "requestAnimationFrame.callback"
     /* SDK.EventBreakpointsModel.InstrumentationNames.REQUEST_ANIMATION_FRAME_CALLBACK */
-  ]: i18nLazyString(UIStrings5.animationFrameFired),
+  ]: i18nLazyString(UIStrings4.animationFrameFired),
   [
     "webglErrorFired"
     /* SDK.EventBreakpointsModel.InstrumentationNames.WEBGL_ERROR_FIRED */
-  ]: i18nLazyString(UIStrings5.webglErrorFired),
+  ]: i18nLazyString(UIStrings4.webglErrorFired),
   [
     "webglWarningFired"
     /* SDK.EventBreakpointsModel.InstrumentationNames.WEBGL_WARNING_FIRED */
-  ]: i18nLazyString(UIStrings5.webglWarningFired),
+  ]: i18nLazyString(UIStrings4.webglWarningFired),
   [
     "Element.setInnerHTML"
     /* SDK.EventBreakpointsModel.InstrumentationNames.ELEMENT_SET_INNER_HTML */
-  ]: i18nLazyString(UIStrings5.setInnerhtml),
+  ]: i18nLazyString(UIStrings4.setInnerhtml),
   [
     "canvasContextCreated"
     /* SDK.EventBreakpointsModel.InstrumentationNames.CANVAS_CONTEXT_CREATED */
-  ]: i18nLazyString(UIStrings5.createCanvasContext),
+  ]: i18nLazyString(UIStrings4.createCanvasContext),
   [
     "Geolocation.getCurrentPosition"
     /* SDK.EventBreakpointsModel.InstrumentationNames.GEOLOCATION_GET_CURRENT_POSITION */
-  ]: i18n9.i18n.lockedLazyString("getCurrentPosition"),
+  ]: i18n7.i18n.lockedLazyString("getCurrentPosition"),
   [
     "Geolocation.watchPosition"
     /* SDK.EventBreakpointsModel.InstrumentationNames.GEOLOCATION_WATCH_POSITION */
-  ]: i18n9.i18n.lockedLazyString("watchPosition"),
+  ]: i18n7.i18n.lockedLazyString("watchPosition"),
   [
     "Notification.requestPermission"
     /* SDK.EventBreakpointsModel.InstrumentationNames.NOTIFICATION_REQUEST_PERMISSION */
-  ]: i18n9.i18n.lockedLazyString("requestPermission"),
+  ]: i18n7.i18n.lockedLazyString("requestPermission"),
   [
     "DOMWindow.close"
     /* SDK.EventBreakpointsModel.InstrumentationNames.DOM_WINDOW_CLOSE */
-  ]: i18n9.i18n.lockedLazyString("window.close"),
+  ]: i18n7.i18n.lockedLazyString("window.close"),
   [
     "Document.write"
     /* SDK.EventBreakpointsModel.InstrumentationNames.DOCUMENT_WRITE */
-  ]: i18n9.i18n.lockedLazyString("document.write"),
+  ]: i18n7.i18n.lockedLazyString("document.write"),
   [
     "audioContextCreated"
     /* SDK.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_CREATED */
-  ]: i18nLazyString(UIStrings5.createAudiocontext),
+  ]: i18nLazyString(UIStrings4.createAudiocontext),
   [
     "audioContextClosed"
     /* SDK.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_CLOSED */
-  ]: i18nLazyString(UIStrings5.closeAudiocontext),
+  ]: i18nLazyString(UIStrings4.closeAudiocontext),
   [
     "audioContextResumed"
     /* SDK.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_RESUMED */
-  ]: i18nLazyString(UIStrings5.resumeAudiocontext),
+  ]: i18nLazyString(UIStrings4.resumeAudiocontext),
   [
     "audioContextSuspended"
     /* SDK.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_SUSPENDED */
-  ]: i18nLazyString(UIStrings5.suspendAudiocontext)
+  ]: i18nLazyString(UIStrings4.suspendAudiocontext)
 };
 var LOCALIZED_CSP_VIOLATION_TYPES = {
   [
     "trustedtype-policy-violation"
     /* Protocol.DOMDebugger.CSPViolationType.TrustedtypePolicyViolation */
-  ]: i18nLazyString(UIStrings5.policyViolations),
+  ]: i18nLazyString(UIStrings4.policyViolations),
   [
     "trustedtype-sink-violation"
     /* Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation */
-  ]: i18nLazyString(UIStrings5.sinkViolations)
+  ]: i18nLazyString(UIStrings4.sinkViolations)
 };
 var LOCALIZED_NAMES = new Map([
   ...Object.entries(LOCALIZED_INSTRUMENTATION_NAMES),
@@ -2646,117 +2584,117 @@ devtools-icon[name="cross-circle-filled"] {
 
 // gen/front_end/panels/sources/DebuggerPausedMessage.js
 var { html: html4, render: render4, nothing: nothing3, Directives: { ifDefined: ifDefined2 } } = Lit2;
-var UIStrings6 = {
+var UIStrings5 = {
   /**
-   * @description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit
+   * @description Text in the JavaScript Debugger sidebar of the Sources panel when a DOM breakpoint is hit.
    * @example {conditional breakpoint} PH1
    */
   pausedOnS: "Paused on {PH1}",
   /**
-   * @description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a child is added to the subtree
+   * @description Text in the JavaScript Debugger sidebar of the Sources panel when a DOM breakpoint is hit because a child is added to the subtree.
    * @example {node} PH1
    */
   childSAdded: "Child {PH1} added",
   /**
-   * @description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is added
+   * @description Text in the JavaScript Debugger sidebar of the Sources panel when a DOM breakpoint is hit because a descendant is added.
    * @example {node} PH1
    */
   descendantSAdded: "Descendant {PH1} added",
   /**
-   * @description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is removed
+   * @description Text in the JavaScript Debugger sidebar of the Sources panel when a DOM breakpoint is hit because a descendant is removed.
    * @example {node} PH1
    */
   descendantSRemoved: "Descendant {PH1} removed",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   pausedOnEventListener: "Paused on event listener",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   pausedOnXhrOrFetch: "Paused on XHR or fetch",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   pausedOnException: "Paused on exception",
   /**
    * @description We pause exactly when the promise rejection is happening, so that the user can see where in the code it comes from.
    * A Promise is a Web API object (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise),
    * that will either be 'fulfilled' or 'rejected' at some unknown time in the future.
-   * The subject of the term is omited but it is "Execution", that is, "Execution was paused on <event>".
+   * The subject of the term is omitted but it is "Execution", that is, "Execution was paused on <event>".
    */
   pausedOnPromiseRejection: "Paused on `promise` rejection",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   pausedOnAssertion: "Paused on assertion",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   pausedOnDebuggedFunction: "Paused on debugged function",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   pausedBeforePotentialOutofmemory: "Paused before potential out-of-memory crash",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   pausedOnCspViolation: "Paused on CSP violation",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel specifying cause of break
+   * @description Text in Debugger paused message of the Sources panel specifying cause of break.
    */
-  trustedTypeSinkViolation: "`Trusted Type` Sink Violation",
+  trustedTypeSinkViolation: "`Trusted Type` sink violation",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel specifying cause of break
+   * @description Text in Debugger paused message of the Sources panel specifying cause of break.
    */
-  trustedTypePolicyViolation: "`Trusted Type` Policy Violation",
+  trustedTypePolicyViolation: "`Trusted Type` policy violation",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   pausedOnBreakpoint: "Paused on breakpoint",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   debuggerPaused: "Debugger paused",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   subtreeModifications: "subtree modifications",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   attributeModifications: "attribute modifications",
   /**
-   * @description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger paused message of the Sources panel.
    */
   nodeRemoval: "node removal",
   /**
-   * @description Error message text
+   * @description Error message text.
    * @example {Snag Error} PH1
    */
   webglErrorFiredS: "WebGL Error Fired ({PH1})",
   /**
-   * @description Text in DOMDebugger Model
+   * @description Text in DOMDebugger model.
    * @example {"script-src 'self'"} PH1
    */
   scriptBlockedDueToContent: "Script blocked due to Content Security Policy directive: {PH1}"
 };
-var str_6 = i18n11.i18n.registerUIStrings("panels/sources/DebuggerPausedMessage.ts", UIStrings6);
-var i18nString5 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var i18nLazyString2 = i18n11.i18n.getLazilyComputedLocalizedString.bind(void 0, str_6);
-var i18nTemplate2 = Lit2.i18nTemplate.bind(void 0, str_6);
+var str_5 = i18n9.i18n.registerUIStrings("panels/sources/DebuggerPausedMessage.ts", UIStrings5);
+var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var i18nLazyString2 = i18n9.i18n.getLazilyComputedLocalizedString.bind(void 0, str_5);
+var i18nTemplate2 = Lit2.i18nTemplate.bind(void 0, str_5);
 function domBreakpointSubtext(data) {
   let message = Lit2.nothing;
   if (data.targetNode) {
     const targetNodeLink = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(data.targetNode);
     if (data.insertion) {
       if (data.targetNode === data.node) {
-        message = i18nTemplate2(UIStrings6.childSAdded, { PH1: html4`${targetNodeLink}` });
+        message = i18nTemplate2(UIStrings5.childSAdded, { PH1: html4`${targetNodeLink}` });
       } else {
-        message = i18nTemplate2(UIStrings6.descendantSAdded, { PH1: html4`${targetNodeLink}` });
+        message = i18nTemplate2(UIStrings5.descendantSAdded, { PH1: html4`${targetNodeLink}` });
       }
     } else {
-      message = i18nTemplate2(UIStrings6.descendantSRemoved, { PH1: html4`${targetNodeLink}` });
+      message = i18nTemplate2(UIStrings5.descendantSRemoved, { PH1: html4`${targetNodeLink}` });
     }
   }
   return html4`
@@ -2787,7 +2725,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     }
   });
 };
-var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI6.Widget.Widget {
+var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widget {
   view;
   #viewInput = null;
   constructor(element, view = DEFAULT_VIEW4) {
@@ -2811,7 +2749,7 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI6.Widget.Widg
     }
     const breakpointType = BreakpointTypeNouns.get(domBreakpointData.type);
     return {
-      mainText: i18nString5(UIStrings6.pausedOnS, { PH1: breakpointType ? breakpointType() : String(null) }),
+      mainText: i18nString4(UIStrings5.pausedOnS, { PH1: breakpointType ? breakpointType() : String(null) }),
       domBreakpointData,
       errorLike: false
     };
@@ -2823,10 +2761,10 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI6.Widget.Widg
     const { eventName, webglErrorName, directiveText, targetName } = detailsAuxData;
     if (eventName === "instrumentation:webglErrorFired" && webglErrorName) {
       const errorName = webglErrorName.replace(/^.*(0x[0-9a-f]+).*$/i, "$1");
-      return i18nString5(UIStrings6.webglErrorFiredS, { PH1: errorName });
+      return i18nString4(UIStrings5.webglErrorFiredS, { PH1: errorName });
     }
     if (eventName === "instrumentation:scriptBlockedByCSP" && directiveText) {
-      return i18nString5(UIStrings6.scriptBlockedDueToContent, { PH1: directiveText });
+      return i18nString4(UIStrings5.scriptBlockedDueToContent, { PH1: directiveText });
     }
     let breakpoint = SDK4.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpoint(detailsAuxData);
     if (breakpoint) {
@@ -2849,16 +2787,16 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI6.Widget.Widg
       this.#viewInput = await _DebuggerPausedMessage.createDOMBreakpointHitMessageDetails(details);
     } else if (details.reason === "EventListener") {
       const eventNameForUI = _DebuggerPausedMessage.#findEventNameForUi(details.auxData);
-      this.#viewInput = { mainText: i18nString5(UIStrings6.pausedOnEventListener), subText: eventNameForUI, errorLike };
+      this.#viewInput = { mainText: i18nString4(UIStrings5.pausedOnEventListener), subText: eventNameForUI, errorLike };
     } else if (details.reason === "XHR") {
       const auxData = details.auxData;
-      this.#viewInput = { mainText: i18nString5(UIStrings6.pausedOnXhrOrFetch), subText: auxData.url || "", errorLike };
+      this.#viewInput = { mainText: i18nString4(UIStrings5.pausedOnXhrOrFetch), subText: auxData.url || "", errorLike };
     } else if (details.reason === "exception") {
       const auxData = details.auxData;
       const description = auxData.description || auxData.value || "";
       const descriptionWithoutStack = _DebuggerPausedMessage.descriptionWithoutStack(description);
       this.#viewInput = {
-        mainText: i18nString5(UIStrings6.pausedOnException),
+        mainText: i18nString4(UIStrings5.pausedOnException),
         subText: descriptionWithoutStack,
         title: description,
         errorLike
@@ -2868,36 +2806,36 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI6.Widget.Widg
       const description = auxData.description || auxData.value || "";
       const descriptionWithoutStack = _DebuggerPausedMessage.descriptionWithoutStack(description);
       this.#viewInput = {
-        mainText: i18nString5(UIStrings6.pausedOnPromiseRejection),
+        mainText: i18nString4(UIStrings5.pausedOnPromiseRejection),
         subText: descriptionWithoutStack,
         title: description,
         errorLike
       };
     } else if (details.reason === "assert") {
-      this.#viewInput = { mainText: i18nString5(UIStrings6.pausedOnAssertion), errorLike };
+      this.#viewInput = { mainText: i18nString4(UIStrings5.pausedOnAssertion), errorLike };
     } else if (details.reason === "debugCommand") {
-      this.#viewInput = { mainText: i18nString5(UIStrings6.pausedOnDebuggedFunction), errorLike };
+      this.#viewInput = { mainText: i18nString4(UIStrings5.pausedOnDebuggedFunction), errorLike };
     } else if (details.reason === "OOM") {
-      this.#viewInput = { mainText: i18nString5(UIStrings6.pausedBeforePotentialOutofmemory), errorLike };
+      this.#viewInput = { mainText: i18nString4(UIStrings5.pausedBeforePotentialOutofmemory), errorLike };
     } else if (details.reason === "CSPViolation" && details.auxData?.["violationType"]) {
       const text = details.auxData["violationType"];
       if (text === "trustedtype-sink-violation") {
         this.#viewInput = {
-          mainText: i18nString5(UIStrings6.pausedOnCspViolation),
-          subText: i18nString5(UIStrings6.trustedTypeSinkViolation),
+          mainText: i18nString4(UIStrings5.pausedOnCspViolation),
+          subText: i18nString4(UIStrings5.trustedTypeSinkViolation),
           errorLike
         };
       } else if (text === "trustedtype-policy-violation") {
         this.#viewInput = {
-          mainText: i18nString5(UIStrings6.pausedOnCspViolation),
-          subText: i18nString5(UIStrings6.trustedTypePolicyViolation),
+          mainText: i18nString4(UIStrings5.pausedOnCspViolation),
+          subText: i18nString4(UIStrings5.trustedTypePolicyViolation),
           errorLike
         };
       }
     } else if (details.callFrames.length) {
       const uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location());
       const breakpoint = uiLocation ? breakpointManager.findBreakpoint(uiLocation) : null;
-      const defaultText = breakpoint ? i18nString5(UIStrings6.pausedOnBreakpoint) : i18nString5(UIStrings6.debuggerPaused);
+      const defaultText = breakpoint ? i18nString4(UIStrings5.pausedOnBreakpoint) : i18nString4(UIStrings5.debuggerPaused);
       this.#viewInput = { mainText: defaultText, errorLike };
     } else {
       this.#viewInput = null;
@@ -2910,9 +2848,9 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI6.Widget.Widg
   }
 };
 var BreakpointTypeNouns = /* @__PURE__ */ new Map([
-  ["subtree-modified", i18nLazyString2(UIStrings6.subtreeModifications)],
-  ["attribute-modified", i18nLazyString2(UIStrings6.attributeModifications)],
-  ["node-removed", i18nLazyString2(UIStrings6.nodeRemoval)]
+  ["subtree-modified", i18nLazyString2(UIStrings5.subtreeModifications)],
+  ["attribute-modified", i18nLazyString2(UIStrings5.attributeModifications)],
+  ["node-removed", i18nLazyString2(UIStrings5.nodeRemoval)]
 ]);
 
 // gen/front_end/panels/sources/NavigatorView.js
@@ -2930,18 +2868,18 @@ __export(NavigatorView_exports, {
 });
 import * as Common6 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as TextUtils4 from "./../../core/text_utils/text_utils.js";
 import * as AiAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
 import * as Persistence3 from "./../../models/persistence/persistence.js";
-import * as Workspace6 from "./../../models/workspace/workspace.js";
+import * as Workspace5 from "./../../models/workspace/workspace.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as Spinners from "./../../ui/components/spinners/spinners.js";
 import { createIcon } from "./../../ui/kit/kit.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
+import * as UI7 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 import * as Snippets from "./../snippets/snippets.js";
 import { PanelUtils } from "./../utils/utils.js";
@@ -3134,7 +3072,7 @@ __export(SearchSourcesView_exports, {
   SearchSourcesView: () => SearchSourcesView
 });
 import * as Common5 from "./../../core/common/common.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
+import * as UI6 from "./../../ui/legacy/legacy.js";
 import * as Search from "./../search/search.js";
 
 // gen/front_end/panels/sources/SourcesSearchScope.js
@@ -3148,7 +3086,7 @@ import * as Platform3 from "./../../core/platform/platform.js";
 import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as Persistence from "./../../models/persistence/persistence.js";
-import * as Workspace4 from "./../../models/workspace/workspace.js";
+import * as Workspace3 from "./../../models/workspace/workspace.js";
 var SourcesSearchScope = class _SourcesSearchScope {
   searchId;
   searchResultCandidates;
@@ -3169,8 +3107,8 @@ var SourcesSearchScope = class _SourcesSearchScope {
     if (!uiSourceCode1.isDirty() && uiSourceCode2.isDirty()) {
       return 1;
     }
-    const isFileSystem1 = uiSourceCode1.project().type() === Workspace4.Workspace.projectTypes.FileSystem && !Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode1);
-    const isFileSystem2 = uiSourceCode2.project().type() === Workspace4.Workspace.projectTypes.FileSystem && !Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode2);
+    const isFileSystem1 = uiSourceCode1.project().type() === Workspace3.Workspace.projectTypes.FileSystem && !Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode1);
+    const isFileSystem2 = uiSourceCode2.project().type() === Workspace3.Workspace.projectTypes.FileSystem && !Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode2);
     if (isFileSystem1 !== isFileSystem2) {
       return isFileSystem1 ? 1 : -1;
     }
@@ -3200,17 +3138,17 @@ var SourcesSearchScope = class _SourcesSearchScope {
   projects() {
     const searchInAnonymousAndContentScripts = Common4.Settings.Settings.instance().moduleSetting("search-in-anonymous-and-content-scripts").get();
     const localOverridesEnabled = Common4.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").get();
-    return Workspace4.Workspace.WorkspaceImpl.instance().projects().filter((project) => {
-      if (project.type() === Workspace4.Workspace.projectTypes.Service) {
+    return Workspace3.Workspace.WorkspaceImpl.instance().projects().filter((project) => {
+      if (project.type() === Workspace3.Workspace.projectTypes.Service) {
         return false;
       }
-      if (!searchInAnonymousAndContentScripts && project.isServiceProject() && project.type() !== Workspace4.Workspace.projectTypes.Formatter) {
+      if (!searchInAnonymousAndContentScripts && project.isServiceProject() && project.type() !== Workspace3.Workspace.projectTypes.Formatter) {
         return false;
       }
-      if (!searchInAnonymousAndContentScripts && project.type() === Workspace4.Workspace.projectTypes.ContentScripts) {
+      if (!searchInAnonymousAndContentScripts && project.type() === Workspace3.Workspace.projectTypes.ContentScripts) {
         return false;
       }
-      if (!localOverridesEnabled && project.type() === Workspace4.Workspace.projectTypes.FileSystem && Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) === "overrides") {
+      if (!localOverridesEnabled && project.type() === Workspace3.Workspace.projectTypes.FileSystem && Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) === "overrides") {
         return false;
       }
       return true;
@@ -3241,7 +3179,7 @@ var SourcesSearchScope = class _SourcesSearchScope {
       if (!uiSourceCode.contentType().isTextType()) {
         continue;
       }
-      if (Workspace4.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+      if (Workspace3.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
         continue;
       }
       const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
@@ -3367,7 +3305,7 @@ var FileBasedSearchResult = class {
   matchRevealable(index) {
     const { lineNumber, columnNumber, matchLength } = this.searchMatches[index];
     const range = new TextUtils2.TextRange.TextRange(lineNumber, columnNumber, lineNumber, columnNumber + matchLength);
-    return new Workspace4.UISourceCode.UILocationRange(this.uiSourceCode, range);
+    return new Workspace3.UISourceCode.UILocationRange(this.uiSourceCode, range);
   }
   matchLabel(index) {
     return String(this.searchMatches[index].lineNumber + 1);
@@ -3399,7 +3337,7 @@ var ActionDelegate = class {
   handleAction(_context, actionId) {
     switch (actionId) {
       case "sources.search": {
-        const selection = UI7.InspectorView.InspectorView.instance().element.window().getSelection();
+        const selection = UI6.InspectorView.InspectorView.instance().element.window().getSelection();
         const query = selection ? selection.toString().replace(/\r?\n.*/, "") : "";
         void Common5.Revealer.reveal(new SearchSources(query));
         return true;
@@ -3410,7 +3348,7 @@ var ActionDelegate = class {
 };
 var Revealer3 = class {
   async reveal({ query }, omitFocus) {
-    const viewManager = UI7.ViewManager.ViewManager.instance();
+    const viewManager = UI6.ViewManager.ViewManager.instance();
     await viewManager.showView("sources.search-sources-tab", true, omitFocus);
     const searchSourcesView = viewManager.materializedWidget("sources.search-sources-tab");
     if (searchSourcesView instanceof SearchSourcesView) {
@@ -3420,103 +3358,103 @@ var Revealer3 = class {
 };
 
 // gen/front_end/panels/sources/NavigatorView.js
-var UIStrings7 = {
+var UIStrings6 = {
   /**
-   * @description Text in Navigator View of the Sources panel
+   * @description Text in Navigator view of the Sources panel.
    */
   searchInFolder: "Search in folder",
   /**
-   * @description Search label in Navigator View of the Sources panel
+   * @description Search label in Navigator view of the Sources panel.
    */
   searchInAllFiles: "Search in all files",
   /**
-   * @description Text in Navigator View of the Sources panel
+   * @description Text in Navigator view of the Sources panel.
    */
   noDomain: "(no domain)",
   /**
-   * @description Text in Navigator View of the Sources panel
+   * @description Text in Navigator view of the Sources panel.
    */
   authored: "Authored",
   /**
-   * @description Text in Navigator View of the Sources panel
+   * @description Text in Navigator view of the Sources panel.
    */
   authoredTooltip: "Contains original sources",
   /**
-   * @description Text in Navigator View of the Sources panel
+   * @description Text in Navigator view of the Sources panel.
    */
   deployed: "Deployed",
   /**
-   * @description Text in Navigator View of the Sources panel
+   * @description Text in Navigator view of the Sources panel.
    */
   deployedTooltip: "Contains final sources the browser sees",
   /**
-   * @description Text in Navigator View of the Sources panel
+   * @description Text in Navigator view of the Sources panel.
    */
   excludeThisFolder: "Exclude this folder?",
   /**
-   * @description Text in a dialog which appears when users click on 'Exclude from Workspace' menu item
+   * @description Text in a dialog which appears when users click on 'Exclude from workspace' menu item.
    */
   folderWillNotBeShown: "This folder and its contents will not be shown in workspace.",
   /**
-   * @description Text in Navigator View of the Sources panel
+   * @description Text in Navigator view of the Sources panel.
    */
   deleteThisFile: "Delete this file?",
   /**
-   * @description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator view of the Sources panel.
    */
   rename: "Rename\u2026",
   /**
-   * @description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator view of the Sources panel.
    */
   makeACopy: "Make a copy\u2026",
   /**
-   * @description Text to delete something
+   * @description Text to delete something.
    */
   delete: "Delete",
   /**
-   * @description A button text to confirm an action to remove a folder. This is not the same as delete. It removes the folder from UI but do not delete them.
+   * @description A button text to confirm an action to remove a folder. This is not the same as delete. It removes the folder from the UI but does not delete it.
    */
   remove: "Remove",
   /**
-   * @description Text in Navigator View of the Sources panel
+   * @description Text in Navigator view of the Sources panel.
    */
   deleteFolder: "Delete this folder and its contents?",
   /**
-   * @description Text in Navigator View of the Sources panel. A confirmation message on action to delete a folder or file.
+   * @description Text in Navigator view of the Sources panel. A confirmation message on action to delete a folder or file.
    */
   actionCannotBeUndone: "This action cannot be undone.",
   /**
-   * @description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator view of the Sources panel.
    */
   openFolder: "Open folder",
   /**
-   * @description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator view of the Sources panel.
    */
   newFile: "New file",
   /**
-   * @description A context menu item in the Navigator View of the Sources panel to exclude a folder from workspace
+   * @description A context menu item in the Navigator view of the Sources panel to exclude a folder from workspace.
    */
   excludeFolder: "Exclude from workspace",
   /**
-   * @description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator view of the Sources panel.
    */
   removeFolderFromWorkspace: "Remove from workspace",
   /**
-   * @description Text in Navigator View of the Sources panel
+   * @description Text in Navigator view of the Sources panel.
    * @example {a-folder-name} PH1
    */
-  areYouSureYouWantToRemoveThis: "Remove \u2018{PH1}\u2019 from Workspace?",
+  areYouSureYouWantToRemoveThis: "Remove \u2018{PH1}\u2019 from workspace?",
   /**
-   * @description Text in Navigator View of the Sources panel. Warning message when user remove a folder.
+   * @description Text in Navigator view of the Sources panel. Warning message when user removes a folder.
    */
   workspaceStopSyncing: "This will stop syncing changes from DevTools to your sources.",
   /**
-   * @description Name of an item from source map
+   * @description Name of an item from a source map.
    * @example {compile.html} PH1
    */
   sFromSourceMap: "{PH1} (from source map)",
   /**
-   * @description Name of an item that is on the ignore list
+   * @description Name of an item that is on the ignore list.
    * @example {compile.html} PH1
    */
   sIgnoreListed: "{PH1} (ignore listed)",
@@ -3531,8 +3469,8 @@ var UIStrings7 = {
    */
   connectFolderToWorkspace: "Connect to workspace"
 };
-var str_7 = i18n13.i18n.registerUIStrings("panels/sources/NavigatorView.ts", UIStrings7);
-var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var str_6 = i18n11.i18n.registerUIStrings("panels/sources/NavigatorView.ts", UIStrings6);
+var i18nString5 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var Types = {
   Authored: "authored",
   AutomaticFileSystem: "automatic-fs",
@@ -3559,7 +3497,7 @@ var TYPE_ORDERS = /* @__PURE__ */ new Map([
   [Types.AutomaticFileSystem, 99],
   [Types.FileSystem, 100]
 ]);
-var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
+var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
   placeholder;
   scriptsTree;
   uiSourceCodeNodes;
@@ -3583,7 +3521,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     });
     this.registerRequiredCSS(navigatorView_css_default);
     this.placeholder = null;
-    this.scriptsTree = new UI8.TreeOutline.TreeOutlineInShadow(
+    this.scriptsTree = new UI7.TreeOutline.TreeOutlineInShadow(
       "NavigationTree"
       /* UI.TreeOutline.TreeVariant.NAVIGATION_TREE */
     );
@@ -3599,7 +3537,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     this.rootNode.populate();
     this.frameNodes = /* @__PURE__ */ new Map();
     this.contentElement.addEventListener("contextmenu", this.handleContextMenu.bind(this), false);
-    UI8.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this.contentElement, { "sources.rename": this.renameShortcut.bind(this) });
+    UI7.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this.contentElement, { "sources.rename": this.renameShortcut.bind(this) });
     this.navigatorGroupByFolderSetting = Common6.Settings.Settings.instance().moduleSetting("navigator-group-by-folder");
     this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
     this.navigatorJustMyCodeSetting = Common6.Settings.Settings.instance().moduleSetting("navigator-just-my-code");
@@ -3608,14 +3546,14 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
       this.navigatorGroupByAuthoredSetting = Common6.Settings.Settings.instance().moduleSetting("navigator-group-by-authored");
       this.navigatorGroupByAuthoredSetting.addChangeListener(this.groupingChanged.bind(this));
     }
-    Workspace6.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
+    Workspace5.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
     this.initGrouping();
     Persistence3.Persistence.PersistenceImpl.instance().addEventListener(Persistence3.Persistence.Events.BindingCreated, this.onBindingChanged, this);
     Persistence3.Persistence.PersistenceImpl.instance().addEventListener(Persistence3.Persistence.Events.BindingRemoved, this.onBindingChanged, this);
     Persistence3.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("RequestsForHeaderOverridesFileChanged", this.#onRequestsForHeaderOverridesFileChanged, this);
     SDK5.TargetManager.TargetManager.instance().addEventListener("NameChanged", this.targetNameChanged, this);
     SDK5.TargetManager.TargetManager.instance().observeTargets(this);
-    this.resetWorkspace(Workspace6.Workspace.WorkspaceImpl.instance());
+    this.resetWorkspace(Workspace5.Workspace.WorkspaceImpl.instance());
     this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
     networkProjectManager.addEventListener("FrameAttributionAdded", this.frameAttributionAdded, this);
     networkProjectManager.addEventListener("FrameAttributionRemoved", this.frameAttributionRemoved, this);
@@ -3641,7 +3579,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     return order;
   }
   static appendSearchItem(contextMenu, path) {
-    const searchLabel = path ? i18nString6(UIStrings7.searchInFolder) : i18nString6(UIStrings7.searchInAllFiles);
+    const searchLabel = path ? i18nString5(UIStrings6.searchInFolder) : i18nString5(UIStrings6.searchInAllFiles);
     const searchSources = new SearchSources(path && `file:${path}`);
     contextMenu.viewSection().appendItem(searchLabel, () => Common6.Revealer.reveal(searchSources), { jslogContext: path ? "search-in-folder" : "search-in-all-files" });
   }
@@ -3661,8 +3599,8 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     this.placeholder = placeholder2;
     placeholder2.show(this.contentElement, this.contentElement.firstChild);
     updateVisibility.call(this);
-    this.scriptsTree.addEventListener(UI8.TreeOutline.Events.ElementAttached, updateVisibility.bind(this));
-    this.scriptsTree.addEventListener(UI8.TreeOutline.Events.ElementsDetached, updateVisibility.bind(this));
+    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementAttached, updateVisibility.bind(this));
+    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementsDetached, updateVisibility.bind(this));
     function updateVisibility() {
       const showTree = this.scriptsTree.firstChild();
       if (showTree) {
@@ -3732,30 +3670,30 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
   }
   resetWorkspace(workspace) {
     if (this.#workspace) {
-      this.#workspace.removeEventListener(Workspace6.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback, this);
-      this.#workspace.removeEventListener(Workspace6.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemovedCallback, this);
-      this.#workspace.removeEventListener(Workspace6.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
-      this.#workspace.removeEventListener(Workspace6.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
+      this.#workspace.removeEventListener(Workspace5.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback, this);
+      this.#workspace.removeEventListener(Workspace5.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemovedCallback, this);
+      this.#workspace.removeEventListener(Workspace5.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
+      this.#workspace.removeEventListener(Workspace5.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
     }
     this.#workspace = workspace;
-    this.#workspace.addEventListener(Workspace6.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback, this);
-    this.#workspace.addEventListener(Workspace6.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemovedCallback, this);
-    this.#workspace.addEventListener(Workspace6.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
-    this.#workspace.addEventListener(Workspace6.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
+    this.#workspace.addEventListener(Workspace5.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback, this);
+    this.#workspace.addEventListener(Workspace5.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemovedCallback, this);
+    this.#workspace.addEventListener(Workspace5.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
+    this.#workspace.addEventListener(Workspace5.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
     this.#workspace.projects().forEach(this.projectAdded.bind(this));
     this.computeUniqueFileSystemProjectNames();
   }
   projectAddedCallback(event) {
     const project = event.data;
     this.projectAdded(project);
-    if (project.type() === Workspace6.Workspace.projectTypes.FileSystem) {
+    if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
       this.computeUniqueFileSystemProjectNames();
     }
   }
   projectRemovedCallback(event) {
     const project = event.data;
     this.removeProject(project);
-    if (project.type() === Workspace6.Workspace.projectTypes.FileSystem) {
+    if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
       this.computeUniqueFileSystemProjectNames();
     }
   }
@@ -3788,7 +3726,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     return this.acceptProject(uiSourceCode.project());
   }
   addUISourceCode(uiSourceCode) {
-    if (this.navigatorJustMyCodeSetting.get() && Workspace6.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+    if (this.navigatorJustMyCodeSetting.get() && Workspace5.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
       return;
     }
     if (!this.acceptsUISourceCode(uiSourceCode)) {
@@ -3810,7 +3748,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
   addUISourceCodeNode(uiSourceCode, frame) {
     const isFromSourceMap = uiSourceCode.contentType().isFromSourceMap();
     let path;
-    if (uiSourceCode.project().type() === Workspace6.Workspace.projectTypes.FileSystem) {
+    if (uiSourceCode.project().type() === Workspace5.Workspace.projectTypes.FileSystem) {
       path = Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.relativePath(uiSourceCode).slice(0, -1);
     } else {
       path = Common6.ParsedURL.ParsedURL.extractPath(uiSourceCode.url()).split("/").slice(1, -1);
@@ -3847,8 +3785,8 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
   projectAdded(project) {
     const rootOrDeployed = this.rootOrDeployedNode();
     const FILE_SYSTEM_TYPES = [
-      Workspace6.Workspace.projectTypes.ConnectableFileSystem,
-      Workspace6.Workspace.projectTypes.FileSystem
+      Workspace5.Workspace.projectTypes.ConnectableFileSystem,
+      Workspace5.Workspace.projectTypes.FileSystem
     ];
     if (!this.acceptProject(project) || !FILE_SYSTEM_TYPES.includes(project.type()) || Snippets.ScriptSnippetFileSystem.isSnippetsProject(project) || rootOrDeployed.child(project.id())) {
       return;
@@ -3869,7 +3807,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     }
   }
   computeUniqueFileSystemProjectNames() {
-    const fileSystemProjects = this.#workspace.projectsForType(Workspace6.Workspace.projectTypes.FileSystem);
+    const fileSystemProjects = this.#workspace.projectsForType(Workspace5.Workspace.projectTypes.FileSystem);
     if (!fileSystemProjects.length) {
       return;
     }
@@ -3902,7 +3840,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
   }
   removeProject(project) {
     this.removeUISourceCodes(project.uiSourceCodes());
-    if (project.type() !== Workspace6.Workspace.projectTypes.ConnectableFileSystem && project.type() !== Workspace6.Workspace.projectTypes.FileSystem) {
+    if (project.type() !== Workspace5.Workspace.projectTypes.ConnectableFileSystem && project.type() !== Workspace5.Workspace.projectTypes.FileSystem) {
       return;
     }
     const fileSystemNode = this.rootNode.child(project.id());
@@ -3912,7 +3850,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     this.rootNode.removeChild(fileSystemNode);
   }
   folderNodeId(project, target, frame, projectOrigin, isFromSourceMap, path) {
-    const projectId = project.type() === Workspace6.Workspace.projectTypes.FileSystem ? project.id() : "";
+    const projectId = project.type() === Workspace5.Workspace.projectTypes.FileSystem ? project.id() : "";
     let targetId = target && !(this.groupByAuthored && isFromSourceMap) ? target.id() : "";
     let frameId = this.groupByFrame && frame ? frame.id : "";
     if (this.groupByAuthored) {
@@ -3946,7 +3884,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     }
     const parentNode = this.folderNode(uiSourceCode, project, target, frame, projectOrigin, path.slice(0, -1), fromSourceMap);
     let type = Types.NetworkFolder;
-    if (project.type() === Workspace6.Workspace.projectTypes.FileSystem) {
+    if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
       type = Types.FileSystemFolder;
     }
     const name = Common6.ParsedURL.ParsedURL.encodedPathToRawPathString(path[path.length - 1]);
@@ -4007,7 +3945,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
   targetNode(project, target, isAuthored) {
     if (this.groupByAuthored && isAuthored) {
       if (!this.authoredNode) {
-        this.authoredNode = new NavigatorGroupTreeNode(this, null, "group:Authored", Types.Authored, i18nString6(UIStrings7.authored), i18nString6(UIStrings7.authoredTooltip));
+        this.authoredNode = new NavigatorGroupTreeNode(this, null, "group:Authored", Types.Authored, i18nString5(UIStrings6.authored), i18nString5(UIStrings6.authoredTooltip));
         this.rootNode.appendChild(this.authoredNode);
         this.authoredNode.treeNode().expand();
       }
@@ -4027,7 +3965,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
   rootOrDeployedNode() {
     if (this.groupByAuthored) {
       if (!this.deployedNode) {
-        this.deployedNode = new NavigatorGroupTreeNode(this, null, "group:Deployed", Types.Deployed, i18nString6(UIStrings7.deployed), i18nString6(UIStrings7.deployedTooltip));
+        this.deployedNode = new NavigatorGroupTreeNode(this, null, "group:Deployed", Types.Deployed, i18nString5(UIStrings6.deployed), i18nString5(UIStrings6.deployedTooltip));
         this.rootNode.appendChild(this.deployedNode);
       }
       return this.deployedNode;
@@ -4055,7 +3993,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
       return matchingContextName;
     }
     if (!projectOrigin) {
-      return i18nString6(UIStrings7.noDomain);
+      return i18nString5(UIStrings6.noDomain);
     }
     const parsedURL = new Common6.ParsedURL.ParsedURL(projectOrigin);
     const prettyURL = parsedURL.isValid ? parsedURL.host + (parsedURL.port ? ":" + parsedURL.port : "") : "";
@@ -4071,7 +4009,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
       return null;
     }
     if (this.scriptsTree.selectedTreeElement) {
-      if (UI8.UIUtils.isBeingEdited(this.scriptsTree.selectedTreeElement.treeOutline?.element)) {
+      if (UI7.UIUtils.isBeingEdited(this.scriptsTree.selectedTreeElement.treeOutline?.element)) {
         return null;
       }
       this.scriptsTree.selectedTreeElement.deselect();
@@ -4128,7 +4066,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
       if (!parentNode) {
         break;
       }
-      if ((parentNode === this.rootNode || parentNode === this.deployedNode) && project.type() === Workspace6.Workspace.projectTypes.FileSystem) {
+      if ((parentNode === this.rootNode || parentNode === this.deployedNode) && project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
         break;
       }
       if (!(currentNode instanceof NavigatorGroupTreeNode || currentNode instanceof NavigatorFolderTreeNode)) {
@@ -4167,7 +4105,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     this.authoredNode = void 0;
     this.deployedNode = void 0;
     if (!tearDownOnly) {
-      this.resetWorkspace(Workspace6.Workspace.WorkspaceImpl.instance());
+      this.resetWorkspace(Workspace5.Workspace.WorkspaceImpl.instance());
     }
   }
   handleContextMenu(_event) {
@@ -4193,33 +4131,33 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     this.rename(node, false);
   }
   async handleContextMenuExclude(project, path) {
-    const shouldExclude = await UI8.UIUtils.ConfirmDialog.show(i18nString6(UIStrings7.folderWillNotBeShown), i18nString6(UIStrings7.excludeThisFolder), void 0, { jslogContext: "exclude-folder-confirmation" });
+    const shouldExclude = await UI7.UIUtils.ConfirmDialog.show(i18nString5(UIStrings6.folderWillNotBeShown), i18nString5(UIStrings6.excludeThisFolder), void 0, { jslogContext: "exclude-folder-confirmation" });
     if (shouldExclude) {
-      UI8.UIUtils.startBatchUpdate();
+      UI7.UIUtils.startBatchUpdate();
       project.excludeFolder(Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.completeURL(project, path));
-      UI8.UIUtils.endBatchUpdate();
+      UI7.UIUtils.endBatchUpdate();
     }
   }
   async handleContextMenuDelete(uiSourceCode) {
-    const shouldDelete = await UI8.UIUtils.ConfirmDialog.show(i18nString6(UIStrings7.actionCannotBeUndone), i18nString6(UIStrings7.deleteThisFile), void 0, { jslogContext: "delete-file-confirmation" });
+    const shouldDelete = await UI7.UIUtils.ConfirmDialog.show(i18nString5(UIStrings6.actionCannotBeUndone), i18nString5(UIStrings6.deleteThisFile), void 0, { jslogContext: "delete-file-confirmation" });
     if (shouldDelete) {
       uiSourceCode.project().deleteFile(uiSourceCode);
     }
   }
   handleFileContextMenu(event, node) {
     const uiSourceCode = node.uiSourceCode();
-    const contextMenu = new UI8.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI7.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(uiSourceCode);
     const project = uiSourceCode.project();
-    if (project.type() === Workspace6.Workspace.projectTypes.FileSystem) {
-      contextMenu.editSection().appendItem(i18nString6(UIStrings7.rename), this.handleContextMenuRename.bind(this, node), { jslogContext: "rename" });
-      contextMenu.editSection().appendItem(i18nString6(UIStrings7.makeACopy), this.handleContextMenuCreate.bind(this, project, Platform5.DevToolsPath.EmptyEncodedPathString, uiSourceCode), { jslogContext: "make-a-copy" });
-      contextMenu.editSection().appendItem(i18nString6(UIStrings7.delete), this.handleContextMenuDelete.bind(this, uiSourceCode), { jslogContext: "delete" });
+    if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
+      contextMenu.editSection().appendItem(i18nString5(UIStrings6.rename), this.handleContextMenuRename.bind(this, node), { jslogContext: "rename" });
+      contextMenu.editSection().appendItem(i18nString5(UIStrings6.makeACopy), this.handleContextMenuCreate.bind(this, project, Platform5.DevToolsPath.EmptyEncodedPathString, uiSourceCode), { jslogContext: "make-a-copy" });
+      contextMenu.editSection().appendItem(i18nString5(UIStrings6.delete), this.handleContextMenuDelete.bind(this, uiSourceCode), { jslogContext: "delete" });
     }
     void contextMenu.show();
   }
   async handleDeleteFolder(node) {
-    const shouldRemove = await UI8.UIUtils.ConfirmDialog.show(i18nString6(UIStrings7.actionCannotBeUndone), i18nString6(UIStrings7.deleteFolder), void 0, { jslogContext: "delete-folder-confirmation" });
+    const shouldRemove = await UI7.UIUtils.ConfirmDialog.show(i18nString5(UIStrings6.actionCannotBeUndone), i18nString5(UIStrings6.deleteFolder), void 0, { jslogContext: "delete-folder-confirmation" });
     if (shouldRemove) {
       Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.OverrideTabDeleteFolderContextMenu);
       const topNode = this.findTopNonMergedNode(node);
@@ -4253,18 +4191,18 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
   handleFolderContextMenu(event, node) {
     const path = node.folderPath || Platform5.DevToolsPath.EmptyEncodedPathString;
     const project = node.project || null;
-    const contextMenu = new UI8.ContextMenu.ContextMenu(event);
-    if (project?.type() !== Workspace6.Workspace.projectTypes.ConnectableFileSystem) {
+    const contextMenu = new UI7.ContextMenu.ContextMenu(event);
+    if (project?.type() !== Workspace5.Workspace.projectTypes.ConnectableFileSystem) {
       _NavigatorView.appendSearchItem(contextMenu, path);
     }
     if (!project) {
       return;
     }
-    if (project.type() === Workspace6.Workspace.projectTypes.FileSystem) {
+    if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
       const folderPath = Common6.ParsedURL.ParsedURL.urlToRawPathString(Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.completeURL(project, path), Host3.Platform.isWin());
-      contextMenu.revealSection().appendItem(i18nString6(UIStrings7.openFolder), () => Host3.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(folderPath), { jslogContext: "open-folder" });
+      contextMenu.revealSection().appendItem(i18nString5(UIStrings6.openFolder), () => Host3.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(folderPath), { jslogContext: "open-folder" });
       if (project.canCreateFile()) {
-        contextMenu.defaultSection().appendItem(i18nString6(UIStrings7.newFile), () => {
+        contextMenu.defaultSection().appendItem(i18nString5(UIStrings6.newFile), () => {
           this.handleContextMenuCreate(project, path, void 0);
         }, { jslogContext: "new-file" });
       }
@@ -4275,18 +4213,18 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
         isKnownThirdParty: node.recursiveProperties.exclusivelyThirdParty || false,
         isCurrentlyIgnoreListed: node.recursiveProperties.exclusivelyIgnored || false
       };
-      for (const { text, callback, jslogContext } of Workspace6.IgnoreListManager.IgnoreListManager.instance().getIgnoreListFolderContextMenuItems(url, options)) {
+      for (const { text, callback, jslogContext } of Workspace5.IgnoreListManager.IgnoreListManager.instance().getIgnoreListFolderContextMenuItems(url, options)) {
         contextMenu.defaultSection().appendItem(text, callback, { jslogContext });
       }
     }
     if (project.canExcludeFolder(path)) {
-      contextMenu.defaultSection().appendItem(i18nString6(UIStrings7.excludeFolder), this.handleContextMenuExclude.bind(this, project, path), { jslogContext: "exclude-folder" });
+      contextMenu.defaultSection().appendItem(i18nString5(UIStrings6.excludeFolder), this.handleContextMenuExclude.bind(this, project, path), { jslogContext: "exclude-folder" });
     }
-    if (project.type() === Workspace6.Workspace.projectTypes.ConnectableFileSystem) {
+    if (project.type() === Workspace5.Workspace.projectTypes.ConnectableFileSystem) {
       const automaticFileSystemManager = Persistence3.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
       const { automaticFileSystem } = automaticFileSystemManager;
       if (automaticFileSystem?.state === "disconnected") {
-        contextMenu.defaultSection().appendItem(i18nString6(UIStrings7.connectFolderToWorkspace), async () => {
+        contextMenu.defaultSection().appendItem(i18nString5(UIStrings6.connectFolderToWorkspace), async () => {
           await automaticFileSystemManager.connectAutomaticFileSystem(
             /* addIfMissing= */
             true
@@ -4294,13 +4232,13 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
         }, { jslogContext: "automatic-workspace-folders.connect" });
       }
     }
-    if (project.type() === Workspace6.Workspace.projectTypes.FileSystem) {
+    if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
       if (Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== Persistence3.PlatformFileSystem.PlatformFileSystemType.OVERRIDES) {
         if (node instanceof NavigatorGroupTreeNode) {
-          contextMenu.defaultSection().appendItem(i18nString6(UIStrings7.removeFolderFromWorkspace), async () => {
-            const header = i18nString6(UIStrings7.areYouSureYouWantToRemoveThis, { PH1: node.title });
-            const shouldRemove = await UI8.UIUtils.ConfirmDialog.show(i18nString6(UIStrings7.workspaceStopSyncing), header, void 0, {
-              okButtonLabel: i18nString6(UIStrings7.remove),
+          contextMenu.defaultSection().appendItem(i18nString5(UIStrings6.removeFolderFromWorkspace), async () => {
+            const header = i18nString5(UIStrings6.areYouSureYouWantToRemoveThis, { PH1: node.title });
+            const shouldRemove = await UI7.UIUtils.ConfirmDialog.show(i18nString5(UIStrings6.workspaceStopSyncing), header, void 0, {
+              okButtonLabel: i18nString5(UIStrings6.remove),
               jslogContext: "remove-folder-from-workspace-confirmation"
             });
             if (shouldRemove) {
@@ -4309,7 +4247,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
           }, { jslogContext: "remove-folder-from-workspace" });
         }
       } else if (!(node instanceof NavigatorGroupTreeNode)) {
-        contextMenu.defaultSection().appendItem(i18nString6(UIStrings7.delete), this.handleDeleteFolder.bind(this, node), { jslogContext: "delete" });
+        contextMenu.defaultSection().appendItem(i18nString5(UIStrings6.delete), this.handleDeleteFolder.bind(this, node), { jslogContext: "delete" });
       }
     }
     void contextMenu.show();
@@ -4347,7 +4285,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
   groupingChanged() {
     this.reset(true);
     this.initGrouping();
-    this.resetWorkspace(Workspace6.Workspace.WorkspaceImpl.instance());
+    this.resetWorkspace(Workspace5.Workspace.WorkspaceImpl.instance());
     this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
   }
   ignoreListChanged() {
@@ -4405,7 +4343,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
   }
 };
 var boostOrderForNode = /* @__PURE__ */ new WeakSet();
-var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI8.TreeOutline.TreeElement {
+var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI7.TreeOutline.TreeElement {
   nodeType;
   navigatorView;
   hoverCallback;
@@ -4415,7 +4353,7 @@ var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI8.T
   constructor(navigatorView, type, title, hoverCallback, expandable = true) {
     super("", expandable, _NavigatorFolderTreeElement.#contextForType(type));
     this.listItemElement.classList.add("navigator-" + type + "-tree-item", "navigator-folder-tree-item");
-    UI8.ARIAUtils.setLabel(this.listItemElement, `${title}, ${type}`);
+    UI7.ARIAUtils.setLabel(this.listItemElement, `${title}, ${type}`);
     this.nodeType = type;
     this.title = title;
     this.tooltip = title;
@@ -4461,7 +4399,7 @@ var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI8.T
   setNode(node) {
     this.node = node;
     this.updateTooltip();
-    UI8.ARIAUtils.setLabel(this.listItemElement, `${this.title}, ${this.nodeType}`);
+    UI7.ARIAUtils.setLabel(this.listItemElement, `${this.title}, ${this.nodeType}`);
   }
   updateTooltip() {
     if (this.node.tooltip) {
@@ -4476,7 +4414,7 @@ var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI8.T
       paths.reverse();
       let tooltip = paths.join("/");
       if (this.isIgnoreListed) {
-        tooltip = i18nString6(UIStrings7.sIgnoreListed, { PH1: tooltip });
+        tooltip = i18nString5(UIStrings6.sIgnoreListed, { PH1: tooltip });
       }
       this.tooltip = tooltip;
     }
@@ -4518,7 +4456,7 @@ var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI8.T
     return "folder";
   }
 };
-var NavigatorSourceTreeElement = class extends UI8.TreeOutline.TreeElement {
+var NavigatorSourceTreeElement = class extends UI7.TreeOutline.TreeElement {
   nodeType;
   node;
   navigatorView;
@@ -4531,7 +4469,7 @@ var NavigatorSourceTreeElement = class extends UI8.TreeOutline.TreeElement {
     this.title = title;
     this.listItemElement.classList.add("navigator-" + uiSourceCode.contentType().name() + "-tree-item", "navigator-file-tree-item");
     this.tooltip = uiSourceCode.url();
-    UI8.ARIAUtils.setLabel(this.listItemElement, `${uiSourceCode.name()}, ${this.nodeType}`);
+    UI7.ARIAUtils.setLabel(this.listItemElement, `${uiSourceCode.name()}, ${this.nodeType}`);
     Common6.EventTarget.fireEvent("source-tree-file-added", uiSourceCode.fullDisplayName());
     this.navigatorView = navigatorView;
     this.#uiSourceCode = uiSourceCode;
@@ -4543,16 +4481,16 @@ var NavigatorSourceTreeElement = class extends UI8.TreeOutline.TreeElement {
     this.setLeadingIcons([icon]);
   }
   updateAccessibleName() {
-    UI8.ARIAUtils.setLabel(this.listItemElement, `${this.#uiSourceCode.name()}, ${this.nodeType}`);
+    UI7.ARIAUtils.setLabel(this.listItemElement, `${this.#uiSourceCode.name()}, ${this.nodeType}`);
   }
   createAiButton() {
-    if (!UI8.ActionRegistry.ActionRegistry.instance().hasAction("drjones.sources-floating-button")) {
+    if (!UI7.ActionRegistry.ActionRegistry.instance().hasAction("drjones.sources-floating-button")) {
       return;
     }
     if (!this.uiSourceCode.contentType().isTextType() || Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.uiSourceCode)) {
       return;
     }
-    const action3 = UI8.ActionRegistry.ActionRegistry.instance().getAction("drjones.sources-floating-button");
+    const action3 = UI7.ActionRegistry.ActionRegistry.instance().getAction("drjones.sources-floating-button");
     if (!this.aiButtonContainer) {
       this.aiButtonContainer = this.listItemElement.createChild("span", "ai-button-container");
       const icon = AiAssistance.AiUtils.getIconName();
@@ -4586,7 +4524,7 @@ var NavigatorSourceTreeElement = class extends UI8.TreeOutline.TreeElement {
       return false;
     }
     const isSelected = this === this.treeOutline.selectedTreeElement;
-    return isSelected && this.treeOutline.element.hasFocus() && !UI8.UIUtils.isBeingEdited(this.treeOutline.element);
+    return isSelected && this.treeOutline.element.hasFocus() && !UI7.UIUtils.isBeingEdited(this.treeOutline.element);
   }
   selectOnMouseDown(event) {
     if (event.which !== 1 || !this.shouldRenameOnMouseDown()) {
@@ -4778,7 +4716,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     this.recursiveProperties.exclusivelySourceMapped = uiSourceCode.contentType().isFromSourceMap();
     if (uiSourceCode.contentType().isScript()) {
       this.recursiveProperties.exclusivelyThirdParty = uiSourceCode.isKnownThirdParty();
-      this.recursiveProperties.exclusivelyContentScripts = uiSourceCode.project().type() === Workspace6.Workspace.projectTypes.ContentScripts;
+      this.recursiveProperties.exclusivelyContentScripts = uiSourceCode.project().type() === Workspace5.Workspace.projectTypes.ContentScripts;
     }
   }
   frame() {
@@ -4795,14 +4733,14 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     this.updateTitle();
     const updateTitleBound = this.updateTitle.bind(this, void 0);
     this.eventListeners = [
-      this.#uiSourceCode.addEventListener(Workspace6.UISourceCode.Events.TitleChanged, updateTitleBound),
-      this.#uiSourceCode.addEventListener(Workspace6.UISourceCode.Events.WorkingCopyChanged, updateTitleBound),
-      this.#uiSourceCode.addEventListener(Workspace6.UISourceCode.Events.WorkingCopyCommitted, updateTitleBound)
+      this.#uiSourceCode.addEventListener(Workspace5.UISourceCode.Events.TitleChanged, updateTitleBound),
+      this.#uiSourceCode.addEventListener(Workspace5.UISourceCode.Events.WorkingCopyChanged, updateTitleBound),
+      this.#uiSourceCode.addEventListener(Workspace5.UISourceCode.Events.WorkingCopyCommitted, updateTitleBound)
     ];
     return this.treeElement;
   }
   updateTitle(ignoreIsDirty) {
-    const isIgnoreListed = Workspace6.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(this.#uiSourceCode);
+    const isIgnoreListed = Workspace5.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(this.#uiSourceCode);
     if (this.#uiSourceCode.contentType().isScript() || isIgnoreListed) {
       this.recursiveProperties.exclusivelyIgnored = isIgnoreListed;
     }
@@ -4818,10 +4756,10 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     this.treeElement.listItemElement.classList.toggle("is-ignore-listed", isIgnoreListed);
     let tooltip = this.#uiSourceCode.url();
     if (this.#uiSourceCode.contentType().isFromSourceMap()) {
-      tooltip = i18nString6(UIStrings7.sFromSourceMap, { PH1: this.#uiSourceCode.displayName() });
+      tooltip = i18nString5(UIStrings6.sFromSourceMap, { PH1: this.#uiSourceCode.displayName() });
     }
     if (isIgnoreListed) {
-      tooltip = i18nString6(UIStrings7.sIgnoreListed, { PH1: tooltip });
+      tooltip = i18nString5(UIStrings6.sIgnoreListed, { PH1: tooltip });
     }
     this.treeElement.tooltip = tooltip;
     this.treeElement.updateAccessibleName();
@@ -4854,7 +4792,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
       return;
     }
     const treeOutlineElement = this.treeElement.treeOutline.element;
-    UI8.UIUtils.markBeingEdited(treeOutlineElement, true);
+    UI7.UIUtils.markBeingEdited(treeOutlineElement, true);
     const commitHandler = (_element, newTitle, oldTitle) => {
       if (newTitle !== oldTitle) {
         if (this.treeElement) {
@@ -4867,7 +4805,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     };
     const renameCallback = (success) => {
       if (!success) {
-        UI8.UIUtils.markBeingEdited(treeOutlineElement, false);
+        UI7.UIUtils.markBeingEdited(treeOutlineElement, false);
         this.updateTitle();
         this.rename(callback);
         return;
@@ -4883,14 +4821,14 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
       afterEditing(true);
     };
     const afterEditing = (committed) => {
-      UI8.UIUtils.markBeingEdited(treeOutlineElement, false);
+      UI7.UIUtils.markBeingEdited(treeOutlineElement, false);
       this.updateTitle();
       if (callback) {
         callback(committed);
       }
     };
     this.updateTitle(true);
-    this.treeElement.startEditingTitle(new UI8.InplaceEditor.Config(commitHandler, () => afterEditing(false), void 0));
+    this.treeElement.startEditingTitle(new UI7.InplaceEditor.Config(commitHandler, () => afterEditing(false), void 0));
   }
 };
 var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTreeNode {
@@ -4933,11 +4871,12 @@ var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTr
     }
     this.treeElement.setFromSourceMap(this.recursiveProperties.exclusivelySourceMapped || false);
     this.treeElement.setIgnoreListed(this.recursiveProperties.exclusivelyIgnored || false);
-    if (!this.project || this.project.type() !== Workspace6.Workspace.projectTypes.FileSystem) {
+    if (!this.project || this.project.type() !== Workspace5.Workspace.projectTypes.FileSystem) {
       return;
     }
     const absoluteFileSystemPath = Common6.ParsedURL.ParsedURL.concatenate(Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(this.project.id()), "/", this.folderPath);
-    const hasMappedFiles = Persistence3.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
+    const isOverrides = Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === "overrides";
+    const hasMappedFiles = isOverrides ? Common6.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").get() : Persistence3.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
     this.treeElement.listItemElement.classList.toggle("has-mapped-files", hasMappedFiles);
   }
   createTreeElement(title, node) {
@@ -5077,10 +5016,10 @@ var NavigatorGroupTreeNode = class extends NavigatorTreeNode {
           button.data = {
             variant: "outlined",
             size: "MICRO",
-            title: i18nString6(UIStrings7.connectFolderToWorkspace),
+            title: i18nString5(UIStrings6.connectFolderToWorkspace),
             jslogContext: "automatic-workspace-folders.connect"
           };
-          button.textContent = i18nString6(UIStrings7.connect);
+          button.textContent = i18nString5(UIStrings6.connect);
           button.addEventListener("click", async (event) => {
             event.consume();
             await automaticFileSystemManager.connectAutomaticFileSystem(
@@ -5099,12 +5038,13 @@ var NavigatorGroupTreeNode = class extends NavigatorTreeNode {
     this.updateTitle();
   }
   updateTitle() {
-    if (!this.treeElement || !this.project || this.project.type() !== Workspace6.Workspace.projectTypes.FileSystem) {
+    if (!this.treeElement || !this.project || this.project.type() !== Workspace5.Workspace.projectTypes.FileSystem) {
       return;
     }
     const fileSystemPath = Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(this.project.id());
     const wasActive = this.treeElement.listItemElement.classList.contains("has-mapped-files");
-    const isActive = Persistence3.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
+    const isOverrides = Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === "overrides";
+    const isActive = isOverrides ? Common6.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").get() : Persistence3.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
     if (wasActive === isActive) {
       return;
     }
@@ -5220,16 +5160,16 @@ __export(SourcesView_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common11 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n31 from "./../../core/i18n/i18n.js";
+import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Bindings7 from "./../../models/bindings/bindings.js";
 import * as Persistence9 from "./../../models/persistence/persistence.js";
-import * as Workspace20 from "./../../models/workspace/workspace.js";
+import * as Workspace19 from "./../../models/workspace/workspace.js";
 import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
 import * as QuickOpen from "./../../ui/legacy/components/quick_open/quick_open.js";
-import * as SourceFrame12 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI16 from "./../../ui/legacy/legacy.js";
+import * as SourceFrame10 from "./../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI15 from "./../../ui/legacy/legacy.js";
 import { render as render6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 import * as Components2 from "./components/components.js";
@@ -5240,8 +5180,8 @@ __export(EditingLocationHistoryManager_exports, {
   EditingLocationHistoryManager: () => EditingLocationHistoryManager,
   HistoryDepth: () => HistoryDepth
 });
-import * as Workspace8 from "./../../models/workspace/workspace.js";
-import * as SourceFrame5 from "./../../ui/legacy/components/source_frame/source_frame.js";
+import * as Workspace7 from "./../../models/workspace/workspace.js";
+import * as SourceFrame3 from "./../../ui/legacy/components/source_frame/source_frame.js";
 var HistoryDepth = 20;
 var EditingLocationHistoryManager = class {
   sourcesView;
@@ -5292,7 +5232,7 @@ var EditingLocationHistoryManager = class {
     }
   }
   reveal(entry) {
-    const uiSourceCode = Workspace8.Workspace.WorkspaceImpl.instance().uiSourceCode(entry.projectId, entry.url);
+    const uiSourceCode = Workspace7.Workspace.WorkspaceImpl.instance().uiSourceCode(entry.projectId, entry.url);
     if (uiSourceCode) {
       this.revealing = true;
       this.sourcesView.showSourceLocation(uiSourceCode, entry.position, false, true);
@@ -5387,16 +5327,16 @@ __export(TabbedEditorContainer_exports, {
   TabbedEditorContainer: () => TabbedEditorContainer
 });
 import * as Common10 from "./../../core/common/common.js";
-import * as i18n29 from "./../../core/i18n/i18n.js";
+import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as TextUtils10 from "./../../core/text_utils/text_utils.js";
 import * as Persistence7 from "./../../models/persistence/persistence.js";
-import * as Workspace18 from "./../../models/workspace/workspace.js";
+import * as Workspace17 from "./../../models/workspace/workspace.js";
 import * as Tooltips2 from "./../../ui/components/tooltips/tooltips.js";
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
 import { Icon as Icon2, Link } from "./../../ui/kit/kit.js";
-import * as SourceFrame10 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI15 from "./../../ui/legacy/legacy.js";
+import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI14 from "./../../ui/legacy/legacy.js";
 import { html as html5 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon2 from "./../common/common.js";
@@ -5409,7 +5349,7 @@ __export(UISourceCodeFrame_exports, {
 });
 import * as Common9 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
-import * as i18n27 from "./../../core/i18n/i18n.js";
+import * as i18n25 from "./../../core/i18n/i18n.js";
 import * as TextUtils8 from "./../../core/text_utils/text_utils.js";
 
 // gen/front_end/entrypoints/formatter_worker/FormatterActions.js
@@ -5427,47 +5367,47 @@ import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_co
 import * as Formatter2 from "./../../models/formatter/formatter.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as Persistence5 from "./../../models/persistence/persistence.js";
-import * as Workspace16 from "./../../models/workspace/workspace.js";
+import * as Workspace15 from "./../../models/workspace/workspace.js";
 import * as CodeMirror6 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as TextEditor5 from "./../../ui/components/text_editor/text_editor.js";
 import { Icon } from "./../../ui/kit/kit.js";
-import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI14 from "./../../ui/legacy/legacy.js";
+import * as SourceFrame6 from "./../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI13 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/sources/CoveragePlugin.js
 var CoveragePlugin_exports = {};
 __export(CoveragePlugin_exports, {
   CoveragePlugin: () => CoveragePlugin
 });
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
-import * as Workspace10 from "./../../models/workspace/workspace.js";
+import * as Workspace9 from "./../../models/workspace/workspace.js";
 import * as CodeMirror2 from "./../../third_party/codemirror.next/codemirror.next.js";
-import * as UI9 from "./../../ui/legacy/legacy.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
 import * as Coverage from "./../coverage/coverage.js";
-var UIStrings8 = {
+var UIStrings7 = {
   /**
-   * @description Text for Coverage Status Bar Item in Sources Panel
+   * @description Text for coverage status bar item in Sources panel.
    */
-  clickToShowCoveragePanel: "Click to show Coverage Panel",
+  clickToShowCoveragePanel: "Click to show Coverage panel",
   /**
-   * @description Text for Coverage Status Bar Item in Sources Panel
+   * @description Text for coverage status bar item in Sources panel.
    */
-  showDetails: "Show Details",
+  showDetails: "Show details",
   /**
-   * @description Text to show in the status bar if coverage data is available
+   * @description Text to show in the status bar if coverage data is available.
    * @example {12.3} PH1
    */
   coverageS: "Coverage: {PH1}",
   /**
-   * @description Text to be shown in the status bar if no coverage data is available
+   * @description Text to be shown in the status bar if no coverage data is available.
    */
-  coverageNa: "Coverage: n/a"
+  coverageNa: "Coverage: N/A"
 };
-var str_8 = i18n15.i18n.registerUIStrings("panels/sources/CoveragePlugin.ts", UIStrings8);
-var i18nString7 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
+var str_7 = i18n13.i18n.registerUIStrings("panels/sources/CoveragePlugin.ts", UIStrings7);
+var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var CoveragePlugin = class extends Plugin {
   originalSourceCode;
   infoInToolbar;
@@ -5478,10 +5418,10 @@ var CoveragePlugin = class extends Plugin {
     super(uiSourceCode);
     this.originalSourceCode = this.uiSourceCode;
     this.#transformer = transformer;
-    this.infoInToolbar = new UI9.Toolbar.ToolbarButton(i18nString7(UIStrings8.clickToShowCoveragePanel), void 0, void 0, "debugger.show-coverage");
+    this.infoInToolbar = new UI8.Toolbar.ToolbarButton(i18nString6(UIStrings7.clickToShowCoveragePanel), void 0, void 0, "debugger.show-coverage");
     this.infoInToolbar.setSecondary();
     this.infoInToolbar.addEventListener("Click", () => {
-      void UI9.ViewManager.ViewManager.instance().showView("coverage");
+      void UI8.ViewManager.ViewManager.instance().showView("coverage");
     });
     const mainTarget = SDK6.TargetManager.TargetManager.instance().primaryPageTarget();
     if (mainTarget) {
@@ -5516,15 +5456,15 @@ var CoveragePlugin = class extends Plugin {
   }
   updateStats() {
     if (this.coverage) {
-      this.infoInToolbar.setTitle(i18nString7(UIStrings8.showDetails));
-      const formatter = new Intl.NumberFormat(i18n15.DevToolsLocale.DevToolsLocale.instance().locale, {
+      this.infoInToolbar.setTitle(i18nString6(UIStrings7.showDetails));
+      const formatter = new Intl.NumberFormat(i18n13.DevToolsLocale.DevToolsLocale.instance().locale, {
         style: "percent",
         maximumFractionDigits: 1
       });
-      this.infoInToolbar.setText(i18nString7(UIStrings8.coverageS, { PH1: formatter.format(this.coverage.usedPercentage()) }));
+      this.infoInToolbar.setText(i18nString6(UIStrings7.coverageS, { PH1: formatter.format(this.coverage.usedPercentage()) }));
     } else {
-      this.infoInToolbar.setTitle(i18nString7(UIStrings8.clickToShowCoveragePanel));
-      this.infoInToolbar.setText(i18nString7(UIStrings8.coverageNa));
+      this.infoInToolbar.setTitle(i18nString6(UIStrings7.clickToShowCoveragePanel));
+      this.infoInToolbar.setText(i18nString6(UIStrings7.coverageNa));
     }
   }
   rightToolbarItems() {
@@ -5617,8 +5557,8 @@ function coverageGutter(url) {
     markers: (view) => view.state.field(coverageState),
     domEventHandlers: {
       click() {
-        void UI9.ViewManager.ViewManager.instance().showView("coverage").then(() => {
-          const view = UI9.ViewManager.ViewManager.instance().view("coverage");
+        void UI8.ViewManager.ViewManager.instance().showView("coverage").then(() => {
+          const view = UI8.ViewManager.ViewManager.instance().view("coverage");
           return view?.widget();
         }).then((widget) => {
           const matchFormattedSuffix = url.match(/(.*):formatted$/);
@@ -5656,19 +5596,19 @@ __export(CSSPlugin_exports, {
   cssBindings: () => cssBindings
 });
 import * as Common7 from "./../../core/common/common.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "./../../core/platform/platform.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Bindings4 from "./../../models/bindings/bindings.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
-import * as Workspace11 from "./../../models/workspace/workspace.js";
+import * as Workspace10 from "./../../models/workspace/workspace.js";
 import * as CodeMirror3 from "./../../third_party/codemirror.next/codemirror.next.js";
 import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as ColorPicker from "./../../ui/legacy/components/color_picker/color_picker.js";
 import * as InlineEditor from "./../../ui/legacy/components/inline_editor/inline_editor.js";
-import * as UI10 from "./../../ui/legacy/legacy.js";
+import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
-var UIStrings9 = {
+var UIStrings8 = {
   /**
    * @description Swatch icon element title in CSSPlugin of the Sources panel
    */
@@ -5682,8 +5622,8 @@ var UIStrings9 = {
    */
   addSourceMap: "Add source map\u2026"
 };
-var str_9 = i18n17.i18n.registerUIStrings("panels/sources/CSSPlugin.ts", UIStrings9);
-var i18nString8 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
+var str_8 = i18n15.i18n.registerUIStrings("panels/sources/CSSPlugin.ts", UIStrings8);
+var i18nString7 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var doNotCompleteIn = /* @__PURE__ */ new Set(["ColorLiteral", "NumberLiteral", "StringLiteral", "Comment", "Important"]);
 function findPropertyAt(node, pos) {
   if (doNotCompleteIn.has(node.name)) {
@@ -5778,7 +5718,7 @@ var ColorSwatchWidget = class extends CodeMirror3.WidgetType {
     return this.#color.equal(other.#color) && this.#text === other.#text && this.#from === other.#from;
   }
   toDOM(view) {
-    const swatch = new InlineEditor.ColorSwatch.ColorSwatch(i18nString8(UIStrings9.openColorPicker));
+    const swatch = new InlineEditor.ColorSwatch.ColorSwatch(i18nString7(UIStrings8.openColorPicker));
     swatch.renderColor(this.#color);
     const value2 = swatch.createChild("span");
     value2.textContent = this.#text;
@@ -5830,7 +5770,7 @@ var CurveSwatchWidget = class extends CodeMirror3.WidgetType {
     const icon = createIcon2("bezier-curve-filled", "bezier-swatch-icon");
     icon.setAttribute("jslog", `${VisualLogging6.showStyleEditor("bezier")}`);
     bezierText.append(this.text);
-    UI10.Tooltip.Tooltip.install(icon, i18nString8(UIStrings9.openCubicBezierEditor));
+    UI9.Tooltip.Tooltip.install(icon, i18nString7(UIStrings8.openCubicBezierEditor));
     icon.addEventListener("click", (event) => {
       event.consume(true);
       view.dispatch({
@@ -5987,7 +5927,7 @@ function modifyUnit(view, by) {
 }
 function cssBindings() {
   let currentView = null;
-  const listener = UI10.ShortcutRegistry.ShortcutRegistry.instance().getShortcutListener({
+  const listener = UI9.ShortcutRegistry.ShortcutRegistry.instance().getShortcutListener({
     "sources.increment-css": () => Promise.resolve(modifyUnit(currentView, 1)),
     "sources.increment-css-by-ten": () => Promise.resolve(modifyUnit(currentView, 10)),
     "sources.decrement-css": () => Promise.resolve(modifyUnit(currentView, -1)),
@@ -6045,8 +5985,8 @@ var CSSPlugin = class extends Plugin {
     }
     const cssModel = this.#cssModel;
     const url = this.uiSourceCode.url();
-    if (this.uiSourceCode.project().type() === Workspace11.Workspace.projectTypes.Network && cssModel && !Workspace11.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url)) {
-      const addSourceMapURLLabel = i18nString8(UIStrings9.addSourceMap);
+    if (this.uiSourceCode.project().type() === Workspace10.Workspace.projectTypes.Network && cssModel && !Workspace10.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url)) {
+      const addSourceMapURLLabel = i18nString7(UIStrings8.addSourceMap);
       contextMenu.debugSection().appendItem(addSourceMapURLLabel, () => addSourceMapURL(cssModel, url), { jslogContext: "add-source-map" });
     }
   }
@@ -6072,7 +6012,7 @@ __export(DebuggerPlugin_exports, {
 });
 import * as Common8 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
-import * as i18n19 from "./../../core/i18n/i18n.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
@@ -6082,134 +6022,134 @@ import * as Breakpoints2 from "./../../models/breakpoints/breakpoints.js";
 import * as Formatter from "./../../models/formatter/formatter.js";
 import * as SourceMapScopes from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as StackTrace from "./../../models/stack_trace/stack_trace.js";
-import * as Workspace13 from "./../../models/workspace/workspace.js";
+import * as Workspace12 from "./../../models/workspace/workspace.js";
 import * as CodeMirror4 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as TextEditor3 from "./../../ui/components/text_editor/text_editor.js";
 import * as Tooltips from "./../../ui/components/tooltips/tooltips.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as SourceFrame6 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI11 from "./../../ui/legacy/legacy.js";
+import * as SourceFrame4 from "./../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI10 from "./../../ui/legacy/legacy.js";
 import { render as render5 } from "./../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 var { EMPTY_BREAKPOINT_CONDITION, NEVER_PAUSE_HERE_CONDITION } = Breakpoints2.BreakpointManager;
-var UIStrings10 = {
+var UIStrings9 = {
   /**
-   * @description Text in Debugger Plugin of the Sources panel
+   * @description Text in Debugger plugin of the Sources panel.
    */
   thisScriptIsOnTheDebuggersIgnore: "This script is on the debugger\u2019s ignore list",
   /**
-   * @description Text to stop preventing the debugger from stepping into library code
+   * @description Text to stop preventing the debugger from stepping into library code.
    */
   removeFromIgnoreList: "Remove from ignore list",
   /**
-   * @description Text of a button in the Sources panel Debugger Plugin to configure ignore listing in Settings
+   * @description Text of a button in the Sources panel Debugger plugin to configure ignore listing in Settings.
    */
   configure: "Configure",
   /**
-   * @description Text to add a breakpoint
+   * @description Text to add a breakpoint.
    */
   addBreakpoint: "Add breakpoint",
   /**
-   * @description A context menu item in the Debugger Plugin of the Sources panel
+   * @description A context menu item in the Debugger plugin of the Sources panel.
    */
   addConditionalBreakpoint: "Add conditional breakpoint\u2026",
   /**
-   * @description A context menu item in the Debugger Plugin of the Sources panel
+   * @description A context menu item in the Debugger plugin of the Sources panel.
    */
   addLogpoint: "Add logpoint\u2026",
   /**
-   * @description A context menu item in the Debugger Plugin of the Sources panel
+   * @description A context menu item in the Debugger plugin of the Sources panel.
    */
   neverPauseHere: "Never pause here",
   /**
    * @description Context menu command to delete/remove a breakpoint that the user
-   *has set. One line of code can have multiple breakpoints. Always >= 1 breakpoint.
+   * has set. One line of code can have multiple breakpoints. Always >= 1 breakpoint.
    */
   removeBreakpoint: "{n, plural, =1 {Remove breakpoint} other {Remove all breakpoints in line}}",
   /**
-   * @description A context menu item in the Debugger Plugin of the Sources panel
+   * @description A context menu item in the Debugger plugin of the Sources panel.
    */
   editBreakpoint: "Edit breakpoint\u2026",
   /**
    * @description Context menu command to disable (but not delete) a breakpoint
-   *that the user has set. One line of code can have multiple breakpoints. Always
-   *>= 1 breakpoint.
+   * that the user has set. One line of code can have multiple breakpoints. Always
+   * >= 1 breakpoint.
    */
   disableBreakpoint: "{n, plural, =1 {Disable breakpoint} other {Disable all breakpoints in line}}",
   /**
    * @description Context menu command to enable a breakpoint that the user has
-   *set. One line of code can have multiple breakpoints. Always >= 1 breakpoint.
+   * set. One line of code can have multiple breakpoints. Always >= 1 breakpoint.
    */
   enableBreakpoint: "{n, plural, =1 {Enable breakpoint} other {Enable all breakpoints in line}}",
   /**
-   * @description Text in Debugger Plugin of the Sources panel
+   * @description Text in Debugger plugin of the Sources panel.
    */
   addSourceMap: "Add source map\u2026",
   /**
-   * @description Text in Debugger Plugin of the Sources panel
+   * @description Text in Debugger plugin of the Sources panel.
    */
   addWasmDebugInfo: "Add DWARF debug info\u2026",
   /**
-   * @description Text in Debugger Plugin of the Sources panel
+   * @description Text in Debugger plugin of the Sources panel.
    */
   sourceMapLoaded: "Source map loaded",
   /**
-   * @description Title of the Filtered List WidgetProvider of Quick Open
+   * @description Title of the filtered list widget provider of Quick Open.
    * @example {Ctrl+P Ctrl+O} PH1
    */
   associatedFilesAreAvailable: "Associated files are available via file tree or {PH1}.",
   /**
-   * @description Text in Debugger Plugin of the Sources panel
+   * @description Text in Debugger plugin of the Sources panel.
    */
   associatedFilesShouldBeAdded: "Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.",
   /**
-   * @description Text in Debugger Plugin of the Sources panel
+   * @description Text in Debugger plugin of the Sources panel.
    */
   theDebuggerWillSkipStepping: "The debugger will skip stepping through this script, and will not stop on exceptions.",
   /**
-   * @description Text in Debugger Plugin of the Sources panel
+   * @description Text in Debugger plugin of the Sources panel.
    */
   sourceMapSkipped: "Source map skipped for this file",
   /**
-   * @description Text in Debugger Plugin of the Sources panel
+   * @description Text in Debugger plugin of the Sources panel.
    */
   sourceMapFailed: "Source map failed to load",
   /**
-   * @description Text in Debugger Plugin of the Sources panel
+   * @description Text in Debugger plugin of the Sources panel.
    */
   debuggingPowerReduced: "DevTools can\u2019t show authored sources, but you can debug the deployed code.",
   /**
-   * @description Text in Debugger Plugin of the Sources panel
+   * @description Text in Debugger plugin of the Sources panel.
    */
   reloadForSourceMap: "To enable again, make sure the file isn\u2019t on the ignore list and reload.",
   /**
-   * @description Text in Debugger Plugin of the Sources panel
-   * @example {http://site.com/lib.js.map} PH1
+   * @description Text in Debugger plugin of the Sources panel.
+   * @example {https://example.com/lib.js.map} PH1
    * @example {HTTP error: status code 404, net::ERR_UNKNOWN_URL_SCHEME} PH2
    */
   errorLoading: "Error loading URL {PH1}: {PH2}",
   /**
-   * @description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
+   * @description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing.
    * @example {src/myapp.debug.wasm.dwp} PH1
    */
   debugFileNotFound: 'Failed to load debug file "{PH1}".',
   /**
-   * @description Error message that is displayed when no debug info could be loaded
+   * @description Error message that is displayed when no debug info could be loaded.
    * @example {app.wasm} PH1
    */
   debugInfoNotFound: "Failed to load any debug info for {PH1}",
   /**
-   * @description Text of a button to open up details on a request when no debug info could be loaded
+   * @description Text of a button to open up details on a request when no debug info could be loaded.
    */
   showRequest: "Show request",
   /**
-   * @description Tooltip text that shows on hovering over a button to see more details on a request
+   * @description Tooltip text that shows on hovering over a button to see more details on a request.
    */
-  openDeveloperResources: "Opens the request in the Developer resource panel"
+  openDeveloperResources: "Opens the request in the Developer resources panel"
 };
-var str_10 = i18n19.i18n.registerUIStrings("panels/sources/DebuggerPlugin.ts", UIStrings10);
-var i18nString9 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
+var str_9 = i18n17.i18n.registerUIStrings("panels/sources/DebuggerPlugin.ts", UIStrings9);
+var i18nString8 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
 var MAX_POSSIBLE_BREAKPOINT_LINE = 2500;
 var MAX_CODE_SIZE_FOR_VALUE_DECORATIONS = 1e4;
 var MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS = 500;
@@ -6262,14 +6202,14 @@ var DebuggerPlugin = class extends Plugin {
     this.breakpointManager = Breakpoints2.BreakpointManager.BreakpointManager.instance();
     this.breakpointManager.addEventListener(Breakpoints2.BreakpointManager.Events.BreakpointAdded, this.breakpointChange, this);
     this.breakpointManager.addEventListener(Breakpoints2.BreakpointManager.Events.BreakpointRemoved, this.breakpointChange, this);
-    this.uiSourceCode.addEventListener(Workspace13.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
-    this.uiSourceCode.addEventListener(Workspace13.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
+    this.uiSourceCode.addEventListener(Workspace12.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
+    this.uiSourceCode.addEventListener(Workspace12.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
     this.scriptFileForDebuggerModel = /* @__PURE__ */ new Map();
     this.loader = SDK8.PageResourceLoader.PageResourceLoader.instance();
     this.loader.addEventListener("Update", this.showSourceMapInfobarIfNeeded.bind(this), this);
     this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
-    Workspace13.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
-    UI11.Context.Context.instance().addFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
+    Workspace12.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
+    UI10.Context.Context.instance().addFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
     this.updateScriptFiles();
     this.muted = this.uiSourceCode.isDirty();
     this.initializedMuted = this.muted;
@@ -6309,14 +6249,14 @@ var DebuggerPlugin = class extends Plugin {
       valueDecorations.field,
       CodeMirror4.Prec.lowest(evalExpression.field),
       theme3,
-      this.uiSourceCode.project().type() === Workspace13.Workspace.projectTypes.Debugger ? CodeMirror4.EditorView.editorAttributes.of({ class: "source-frame-debugger-script" }) : []
+      this.uiSourceCode.project().type() === Workspace12.Workspace.projectTypes.Debugger ? CodeMirror4.EditorView.editorAttributes.of({ class: "source-frame-debugger-script" }) : []
     ];
   }
   shortcutHandlers() {
     const selectionLine = (editor) => {
       return editor.state.doc.lineAt(editor.state.selection.main.head);
     };
-    return UI11.ShortcutRegistry.ShortcutRegistry.instance().getShortcutListener({
+    return UI10.ShortcutRegistry.ShortcutRegistry.instance().getShortcutListener({
       "debugger.toggle-breakpoint": async () => {
         if (this.muted || !this.editor) {
           return false;
@@ -6358,7 +6298,7 @@ var DebuggerPlugin = class extends Plugin {
     this.editor = editor;
     computeNonBreakableLines(editor.state, this.transformer, this.uiSourceCode).then((linePositions) => {
       if (linePositions.length) {
-        editor.dispatch({ effects: SourceFrame6.SourceFrame.addNonBreakableLines.of(linePositions) });
+        editor.dispatch({ effects: SourceFrame4.SourceFrame.addNonBreakableLines.of(linePositions) });
       }
     }, console.error);
     if (this.ignoreListInfobar) {
@@ -6375,7 +6315,7 @@ var DebuggerPlugin = class extends Plugin {
     }
     void this.callFrameChanged();
     this.popoverHelper?.dispose();
-    this.popoverHelper = new UI11.PopoverHelper.PopoverHelper(editor, this.getPopoverRequest.bind(this), "sources.object-properties");
+    this.popoverHelper = new UI10.PopoverHelper.PopoverHelper(editor, this.getPopoverRequest.bind(this), "sources.object-properties");
     this.popoverHelper.setDisableOnClick(true);
     this.popoverHelper.setTimeout(250, 250);
   }
@@ -6387,7 +6327,7 @@ var DebuggerPlugin = class extends Plugin {
     if (!uiSourceCode.contentType().hasScripts()) {
       return;
     }
-    if (!Workspace13.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+    if (!Workspace12.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
       this.hideIgnoreListInfobar();
       return;
     }
@@ -6395,17 +6335,17 @@ var DebuggerPlugin = class extends Plugin {
       this.ignoreListInfobar.dispose();
     }
     function unIgnoreList() {
-      Workspace13.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiSourceCode);
+      Workspace12.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiSourceCode);
     }
-    const infobar = new UI11.Infobar.Infobar("warning", i18nString9(UIStrings10.thisScriptIsOnTheDebuggersIgnore), [
+    const infobar = new UI10.Infobar.Infobar("warning", i18nString8(UIStrings9.thisScriptIsOnTheDebuggersIgnore), [
       {
-        text: i18nString9(UIStrings10.configure),
-        delegate: UI11.ViewManager.ViewManager.instance().showView.bind(UI11.ViewManager.ViewManager.instance(), "blackbox"),
+        text: i18nString8(UIStrings9.configure),
+        delegate: UI10.ViewManager.ViewManager.instance().showView.bind(UI10.ViewManager.ViewManager.instance(), "blackbox"),
         dismiss: false,
         jslogContext: "configure"
       },
       {
-        text: i18nString9(UIStrings10.removeFromIgnoreList),
+        text: i18nString8(UIStrings9.removeFromIgnoreList),
         delegate: unIgnoreList,
         buttonVariant: "tonal",
         dismiss: true,
@@ -6414,17 +6354,17 @@ var DebuggerPlugin = class extends Plugin {
     ], void 0, "script-on-ignore-list");
     this.ignoreListInfobar = infobar;
     infobar.setCloseCallback(() => this.removeInfobar(this.ignoreListInfobar));
-    infobar.createDetailsRowMessage(i18nString9(UIStrings10.theDebuggerWillSkipStepping));
+    infobar.createDetailsRowMessage(i18nString8(UIStrings9.theDebuggerWillSkipStepping));
     this.attachInfobar(this.ignoreListInfobar);
   }
   attachInfobar(bar) {
     if (this.editor) {
-      this.editor.dispatch({ effects: SourceFrame6.SourceFrame.addSourceFrameInfobar.of({ element: bar.element }) });
+      this.editor.dispatch({ effects: SourceFrame4.SourceFrame.addSourceFrameInfobar.of({ element: bar.element }) });
     }
   }
   removeInfobar(bar) {
     if (this.editor && bar) {
-      this.editor.dispatch({ effects: SourceFrame6.SourceFrame.removeSourceFrameInfobar.of({ element: bar.element }) });
+      this.editor.dispatch({ effects: SourceFrame4.SourceFrame.removeSourceFrameInfobar.of({ element: bar.element }) });
     }
   }
   hideIgnoreListInfobar() {
@@ -6447,7 +6387,7 @@ var DebuggerPlugin = class extends Plugin {
     this.editBreakpointCondition({ line, breakpoint, location: null, isLogpoint: breakpoint.isLogpoint() });
   }
   populateLineGutterContextMenu(contextMenu, editorLineNumber) {
-    const uiLocation = new Workspace13.UISourceCode.UILocation(this.uiSourceCode, editorLineNumber, 0);
+    const uiLocation = new Workspace12.UISourceCode.UILocation(this.uiSourceCode, editorLineNumber, 0);
     this.scriptsPanel.appendUILocationItems(contextMenu, uiLocation);
     if (this.muted || !this.editor) {
       return;
@@ -6456,8 +6396,8 @@ var DebuggerPlugin = class extends Plugin {
     const breakpoints = this.lineBreakpoints(line);
     const supportsConditionalBreakpoints = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().supportsConditionalBreakpoints(this.uiSourceCode);
     if (!breakpoints.length) {
-      if (this.editor && SourceFrame6.SourceFrame.isBreakableLine(this.editor.state, line)) {
-        contextMenu.debugSection().appendItem(i18nString9(UIStrings10.addBreakpoint), this.createNewBreakpoint.bind(
+      if (this.editor && SourceFrame4.SourceFrame.isBreakableLine(this.editor.state, line)) {
+        contextMenu.debugSection().appendItem(i18nString8(UIStrings9.addBreakpoint), this.createNewBreakpoint.bind(
           this,
           line,
           EMPTY_BREAKPOINT_CONDITION,
@@ -6467,13 +6407,13 @@ var DebuggerPlugin = class extends Plugin {
           false
         ), { jslogContext: "add-breakpoint" });
         if (supportsConditionalBreakpoints) {
-          contextMenu.debugSection().appendItem(i18nString9(UIStrings10.addConditionalBreakpoint), () => {
+          contextMenu.debugSection().appendItem(i18nString8(UIStrings9.addConditionalBreakpoint), () => {
             this.editBreakpointCondition({ line, breakpoint: null, location: null, isLogpoint: false });
           }, { jslogContext: "add-cnd-breakpoint" });
-          contextMenu.debugSection().appendItem(i18nString9(UIStrings10.addLogpoint), () => {
+          contextMenu.debugSection().appendItem(i18nString8(UIStrings9.addLogpoint), () => {
             this.editBreakpointCondition({ line, breakpoint: null, location: null, isLogpoint: true });
           }, { jslogContext: "add-logpoint" });
-          contextMenu.debugSection().appendItem(i18nString9(UIStrings10.neverPauseHere), this.createNewBreakpoint.bind(
+          contextMenu.debugSection().appendItem(i18nString8(UIStrings9.neverPauseHere), this.createNewBreakpoint.bind(
             this,
             line,
             NEVER_PAUSE_HERE_CONDITION,
@@ -6485,24 +6425,24 @@ var DebuggerPlugin = class extends Plugin {
         }
       }
     } else {
-      const removeTitle = i18nString9(UIStrings10.removeBreakpoint, { n: breakpoints.length });
+      const removeTitle = i18nString8(UIStrings9.removeBreakpoint, { n: breakpoints.length });
       contextMenu.debugSection().appendItem(removeTitle, () => breakpoints.forEach((breakpoint) => {
         Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.BreakpointRemovedFromGutterContextMenu);
         void breakpoint.remove(false);
       }), { jslogContext: "remove-breakpoint" });
       if (breakpoints.length === 1 && supportsConditionalBreakpoints) {
-        contextMenu.debugSection().appendItem(i18nString9(UIStrings10.editBreakpoint), () => {
+        contextMenu.debugSection().appendItem(i18nString8(UIStrings9.editBreakpoint), () => {
           this.editBreakpointCondition({ line, breakpoint: breakpoints[0], location: null });
         }, { jslogContext: "edit-breakpoint" });
       }
       const hasEnabled = breakpoints.some((breakpoint) => breakpoint.enabled());
       if (hasEnabled) {
-        const title = i18nString9(UIStrings10.disableBreakpoint, { n: breakpoints.length });
+        const title = i18nString8(UIStrings9.disableBreakpoint, { n: breakpoints.length });
         contextMenu.debugSection().appendItem(title, () => breakpoints.forEach((breakpoint) => breakpoint.setEnabled(false)), { jslogContext: "enable-breakpoint" });
       }
       const hasDisabled = breakpoints.some((breakpoint) => !breakpoint.enabled());
       if (hasDisabled) {
-        const title = i18nString9(UIStrings10.enableBreakpoint, { n: breakpoints.length });
+        const title = i18nString8(UIStrings9.enableBreakpoint, { n: breakpoints.length });
         contextMenu.debugSection().appendItem(title, () => breakpoints.forEach((breakpoint) => breakpoint.setEnabled(true)), { jslogContext: "disable-breakpoint" });
       }
     }
@@ -6531,13 +6471,13 @@ var DebuggerPlugin = class extends Plugin {
         this.updateScriptFile(scriptFile.script?.debuggerModel);
       }
     }
-    if (this.uiSourceCode.project().type() === Workspace13.Workspace.projectTypes.Network && Common8.Settings.Settings.instance().resolve(SDK8.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get() && !Workspace13.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(this.uiSourceCode.url())) {
+    if (this.uiSourceCode.project().type() === Workspace12.Workspace.projectTypes.Network && Common8.Settings.Settings.instance().resolve(SDK8.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get() && !Workspace12.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(this.uiSourceCode.url())) {
       if (this.scriptFileForDebuggerModel.size) {
         const scriptFile = this.scriptFileForDebuggerModel.values().next().value;
-        const addSourceMapURLLabel = i18nString9(UIStrings10.addSourceMap);
+        const addSourceMapURLLabel = i18nString8(UIStrings9.addSourceMap);
         contextMenu.debugSection().appendItem(addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile), { jslogContext: "add-source-map" });
         if (scriptFile.script?.isWasm() && !Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager.hasPluginForScript(scriptFile.script)) {
-          contextMenu.debugSection().appendItem(i18nString9(UIStrings10.addWasmDebugInfo), addDebugInfoURL.bind(this, scriptFile), { jslogContext: "add-wasm-debug-info" });
+          contextMenu.debugSection().appendItem(i18nString8(UIStrings9.addWasmDebugInfo), addDebugInfoURL.bind(this, scriptFile), { jslogContext: "add-wasm-debug-info" });
         }
       }
     }
@@ -6589,16 +6529,16 @@ var DebuggerPlugin = class extends Plugin {
     if (event instanceof KeyboardEvent) {
       return null;
     }
-    if (UI11.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
+    if (UI10.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
       return null;
     }
-    const target = UI11.Context.Context.instance().flavor(SDK8.Target.Target);
+    const target = UI10.Context.Context.instance().flavor(SDK8.Target.Target);
     const debuggerModel = target ? target.model(SDK8.DebuggerModel.DebuggerModel) : null;
     const { editor } = this;
     if (!debuggerModel || !debuggerModel.isPaused() || !editor) {
       return null;
     }
-    const debuggableFrame = UI11.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+    const debuggableFrame = UI10.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
     if (!debuggableFrame) {
       return null;
     }
@@ -6655,7 +6595,7 @@ var DebuggerPlugin = class extends Plugin {
           return false;
         }
         objectPopoverHelper = await ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper.buildObjectPopover(result.object, popover);
-        const potentiallyUpdatedCallFrame = UI11.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+        const potentiallyUpdatedCallFrame = UI10.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
         if (!objectPopoverHelper || debuggableFrame !== potentiallyUpdatedCallFrame) {
           debuggerModel.runtimeModel().releaseObjectGroup("popover");
           if (objectPopoverHelper) {
@@ -6684,12 +6624,12 @@ var DebuggerPlugin = class extends Plugin {
     }
   }
   onWheel(event) {
-    if (this.executionLocation && UI11.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
+    if (this.executionLocation && UI10.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
       event.preventDefault();
     }
   }
   onKeyDown(event) {
-    const ctrlDown = UI11.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event);
+    const ctrlDown = UI10.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event);
     if (!ctrlDown) {
       this.setControlDown(false);
     }
@@ -6706,14 +6646,14 @@ var DebuggerPlugin = class extends Plugin {
     return false;
   }
   onMouseMove(event) {
-    if (this.executionLocation && this.controlDown && UI11.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
+    if (this.executionLocation && this.controlDown && UI10.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
       if (!this.continueToLocations) {
         void this.showContinueToLocations();
       }
     }
   }
   onMouseDown(event) {
-    if (!this.executionLocation || !UI11.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
+    if (!this.executionLocation || !UI10.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
       return;
     }
     if (!this.continueToLocations || !this.editor) {
@@ -6884,11 +6824,11 @@ var DebuggerPlugin = class extends Plugin {
     if (!Common8.Settings.Settings.instance().moduleSetting("inline-variable-values").get()) {
       return null;
     }
-    const executionContext = UI11.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
+    const executionContext = UI10.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
     if (!executionContext) {
       return null;
     }
-    const debuggableFrame = UI11.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+    const debuggableFrame = UI10.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
     if (!debuggableFrame) {
       return null;
     }
@@ -6941,11 +6881,11 @@ var DebuggerPlugin = class extends Plugin {
   // Control is held)
   async showContinueToLocations() {
     this.popoverHelper?.hidePopover();
-    const executionContext = UI11.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
+    const executionContext = UI10.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
     if (!executionContext || !this.editor) {
       return;
     }
-    const debuggableFrame = UI11.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+    const debuggableFrame = UI10.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
     if (!debuggableFrame) {
       return;
     }
@@ -7206,25 +7146,25 @@ var DebuggerPlugin = class extends Plugin {
     const editor = this.editor;
     const position = editor.editor.posAtDOM(event.target);
     const line = editor.state.doc.lineAt(position);
-    if (!SourceFrame6.SourceFrame.isBreakableLine(editor.state, line) || // Editing breakpoints only make sense for conditional breakpoints
+    if (!SourceFrame4.SourceFrame.isBreakableLine(editor.state, line) || // Editing breakpoints only make sense for conditional breakpoints
     // and logpoints.
     !Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().supportsConditionalBreakpoints(this.uiSourceCode)) {
       return;
     }
-    const contextMenu = new UI11.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI10.ContextMenu.ContextMenu(event);
     if (breakpoint) {
-      contextMenu.debugSection().appendItem(i18nString9(UIStrings10.editBreakpoint), () => {
+      contextMenu.debugSection().appendItem(i18nString8(UIStrings9.editBreakpoint), () => {
         this.editBreakpointCondition({ line, breakpoint, location: null });
       }, { jslogContext: "edit-breakpoint" });
     } else {
       const uiLocation = this.transformer.editorLocationToUILocation(line.number - 1, position - line.from);
-      contextMenu.debugSection().appendItem(i18nString9(UIStrings10.addConditionalBreakpoint), () => {
+      contextMenu.debugSection().appendItem(i18nString8(UIStrings9.addConditionalBreakpoint), () => {
         this.editBreakpointCondition({ line, breakpoint: null, location: uiLocation, isLogpoint: false });
       }, { jslogContext: "add-cnd-breakpoint" });
-      contextMenu.debugSection().appendItem(i18nString9(UIStrings10.addLogpoint), () => {
+      contextMenu.debugSection().appendItem(i18nString8(UIStrings9.addLogpoint), () => {
         this.editBreakpointCondition({ line, breakpoint: null, location: uiLocation, isLogpoint: true });
       }, { jslogContext: "add-logpoint" });
-      contextMenu.debugSection().appendItem(i18nString9(UIStrings10.neverPauseHere), () => this.setBreakpoint(
+      contextMenu.debugSection().appendItem(i18nString8(UIStrings9.neverPauseHere), () => this.setBreakpoint(
         uiLocation.lineNumber,
         uiLocation.columnNumber,
         NEVER_PAUSE_HERE_CONDITION,
@@ -7265,7 +7205,7 @@ var DebuggerPlugin = class extends Plugin {
     newScriptFile.checkMapping();
     void newScriptFile.missingSymbolFiles().then((resources) => {
       if (resources) {
-        const details = i18nString9(UIStrings10.debugInfoNotFound, { PH1: newScriptFile.uiSourceCode.url() });
+        const details = i18nString8(UIStrings9.debugInfoNotFound, { PH1: newScriptFile.uiSourceCode.url() });
         this.updateMissingDebugInfoInfobar({ resources, details });
       } else {
         this.updateMissingDebugInfoInfobar(null);
@@ -7281,16 +7221,16 @@ var DebuggerPlugin = class extends Plugin {
       this.missingDebugInfoBar = null;
       return;
     }
-    this.missingDebugInfoBar = UI11.Infobar.Infobar.create("error", warning.details, [], void 0, "missing-debug-info");
+    this.missingDebugInfoBar = UI10.Infobar.Infobar.create("error", warning.details, [], void 0, "missing-debug-info");
     if (!this.missingDebugInfoBar) {
       return;
     }
     for (const resource of warning.resources) {
-      const detailsRow = this.missingDebugInfoBar?.createDetailsRowMessage(i18nString9(UIStrings10.debugFileNotFound, { PH1: Common8.ParsedURL.ParsedURL.extractName(resource.resourceUrl) }));
+      const detailsRow = this.missingDebugInfoBar?.createDetailsRowMessage(i18nString8(UIStrings9.debugFileNotFound, { PH1: Common8.ParsedURL.ParsedURL.extractName(resource.resourceUrl) }));
       if (detailsRow) {
         const pageResourceKey = SDK8.PageResourceLoader.PageResourceLoader.makeExtensionKey(resource.resourceUrl, resource.initiator);
         if (SDK8.PageResourceLoader.PageResourceLoader.instance().getResourcesLoaded().get(pageResourceKey)) {
-          const showRequest = UI11.UIUtils.createTextButton(i18nString9(UIStrings10.showRequest), () => {
+          const showRequest = UI10.UIUtils.createTextButton(i18nString8(UIStrings9.showRequest), () => {
             void Common8.Revealer.reveal(new SDK8.PageResourceLoader.ResourceKey(pageResourceKey));
           }, {
             jslogContext: "show-request",
@@ -7298,7 +7238,7 @@ var DebuggerPlugin = class extends Plugin {
             /* Buttons.Button.Variant.TEXT */
           });
           showRequest.style.setProperty("margin-left", "10px");
-          showRequest.title = i18nString9(UIStrings10.openDeveloperResources);
+          showRequest.title = i18nString8(UIStrings9.openDeveloperResources);
           detailsRow.appendChild(showRequest);
         }
         detailsRow.classList.add("infobar-selectable");
@@ -7351,30 +7291,30 @@ var DebuggerPlugin = class extends Plugin {
       return;
     }
     if (!resource) {
-      this.sourceMapInfobar = UI11.Infobar.Infobar.create("info", i18nString9(UIStrings10.sourceMapSkipped), [], Common8.Settings.Settings.instance().createSetting("source-map-skipped-infobar-disabled", false), "source-map-skipped");
+      this.sourceMapInfobar = UI10.Infobar.Infobar.create("info", i18nString8(UIStrings9.sourceMapSkipped), [], Common8.Settings.Settings.instance().createSetting("source-map-skipped-infobar-disabled", false), "source-map-skipped");
       if (!this.sourceMapInfobar) {
         return;
       }
-      this.sourceMapInfobar.createDetailsRowMessage(i18nString9(UIStrings10.debuggingPowerReduced));
-      this.sourceMapInfobar.createDetailsRowMessage(i18nString9(UIStrings10.reloadForSourceMap));
+      this.sourceMapInfobar.createDetailsRowMessage(i18nString8(UIStrings9.debuggingPowerReduced));
+      this.sourceMapInfobar.createDetailsRowMessage(i18nString8(UIStrings9.reloadForSourceMap));
     } else if (resource.success) {
-      this.sourceMapInfobar = UI11.Infobar.Infobar.create("info", i18nString9(UIStrings10.sourceMapLoaded), [], Common8.Settings.Settings.instance().createSetting("source-map-infobar-disabled", false), "source-map-loaded");
+      this.sourceMapInfobar = UI10.Infobar.Infobar.create("info", i18nString8(UIStrings9.sourceMapLoaded), [], Common8.Settings.Settings.instance().createSetting("source-map-infobar-disabled", false), "source-map-loaded");
       if (!this.sourceMapInfobar) {
         return;
       }
-      this.sourceMapInfobar.createDetailsRowMessage(i18nString9(UIStrings10.associatedFilesShouldBeAdded));
-      this.sourceMapInfobar.createDetailsRowMessage(i18nString9(UIStrings10.associatedFilesAreAvailable, {
-        PH1: String(UI11.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("quick-open.show"))
+      this.sourceMapInfobar.createDetailsRowMessage(i18nString8(UIStrings9.associatedFilesShouldBeAdded));
+      this.sourceMapInfobar.createDetailsRowMessage(i18nString8(UIStrings9.associatedFilesAreAvailable, {
+        PH1: String(UI10.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("quick-open.show"))
       }));
     } else {
-      this.sourceMapInfobar = UI11.Infobar.Infobar.create("warning", i18nString9(UIStrings10.sourceMapFailed), [], void 0, "source-map-failed");
+      this.sourceMapInfobar = UI10.Infobar.Infobar.create("warning", i18nString8(UIStrings9.sourceMapFailed), [], void 0, "source-map-failed");
       if (!this.sourceMapInfobar) {
         return;
       }
-      this.sourceMapInfobar.createDetailsRowMessage(i18nString9(UIStrings10.debuggingPowerReduced));
+      this.sourceMapInfobar.createDetailsRowMessage(i18nString8(UIStrings9.debuggingPowerReduced));
       if (resource.errorMessage) {
-        this.sourceMapInfobar.createDetailsRowMessage(i18nString9(UIStrings10.errorLoading, {
-          PH1: Platform6.StringUtilities.trimMiddle(resource.url, UI11.UIUtils.MaxLengthForDisplayedURLs),
+        this.sourceMapInfobar.createDetailsRowMessage(i18nString8(UIStrings9.errorLoading, {
+          PH1: Platform6.StringUtilities.trimMiddle(resource.url, UI10.UIUtils.MaxLengthForDisplayedURLs),
           PH2: resource.errorMessage
         }));
       }
@@ -7440,7 +7380,7 @@ var DebuggerPlugin = class extends Plugin {
     return this.transformer.editorLocationToUILocation(line.number - 1);
   }
   async createNewBreakpoint(line, condition, enabled, isLogpoint) {
-    if (!this.editor || !SourceFrame6.SourceFrame.isBreakableLine(this.editor.state, line)) {
+    if (!this.editor || !SourceFrame4.SourceFrame.isBreakableLine(this.editor.state, line)) {
       return;
     }
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.ScriptsBreakpointSet);
@@ -7469,9 +7409,9 @@ var DebuggerPlugin = class extends Plugin {
   breakpointWasSetForTest(_lineNumber, _columnNumber, _condition, _enabled) {
   }
   async callFrameChanged() {
-    const frameFlavor = UI11.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+    const frameFlavor = UI10.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
     if (frameFlavor?.frame.uiSourceCode?.canonicalScriptId() === this.uiSourceCode.canonicalScriptId()) {
-      const uiLocation = new Workspace13.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
+      const uiLocation = new Workspace12.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
       this.setExecutionLocation(uiLocation);
       if (frameFlavor.frame.missingDebugInfo) {
         this.updateMissingDebugInfoInfobar(convertMissingDebugInfo(frameFlavor.frame.missingDebugInfo, frameFlavor.sdkFrame.functionName));
@@ -7525,14 +7465,14 @@ var DebuggerPlugin = class extends Plugin {
     this.setExecutionLocation(null);
     this.breakpointManager.removeEventListener(Breakpoints2.BreakpointManager.Events.BreakpointAdded, this.breakpointChange, this);
     this.breakpointManager.removeEventListener(Breakpoints2.BreakpointManager.Events.BreakpointRemoved, this.breakpointChange, this);
-    this.uiSourceCode.removeEventListener(Workspace13.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
-    this.uiSourceCode.removeEventListener(Workspace13.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
-    Workspace13.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.ignoreListCallback);
+    this.uiSourceCode.removeEventListener(Workspace12.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
+    this.uiSourceCode.removeEventListener(Workspace12.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
+    Workspace12.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.ignoreListCallback);
     debuggerPluginForUISourceCode.delete(this.uiSourceCode);
     super.dispose();
     window.clearTimeout(this.refreshBreakpointsTimeout);
     this.editor = void 0;
-    UI11.Context.Context.instance().removeFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
+    UI10.Context.Context.instance().removeFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
   }
   /**
    * Only records metrics once per DebuggerPlugin instance and must only be
@@ -7667,7 +7607,7 @@ var BreakpointGutterMarker = class _BreakpointGutterMarker extends CodeMirror4.G
     const div = document.createElement("div");
     div.setAttribute("jslog", `${VisualLogging7.breakpointMarker().track({ click: true })}`);
     const line = view.state.doc.lineAt(this.#position).number;
-    const formatNumber = view.state.facet(SourceFrame6.SourceFrame.LINE_NUMBER_FORMATTER);
+    const formatNumber = view.state.facet(SourceFrame4.SourceFrame.LINE_NUMBER_FORMATTER);
     div.textContent = formatNumber(line, view.state);
     if (!this.condition) {
       return div;
@@ -7739,10 +7679,10 @@ var ValueDecoration = class extends CodeMirror4.WidgetType {
       if (first) {
         first = false;
       } else {
-        UI11.UIUtils.createTextChild(widget, ", ");
+        UI10.UIUtils.createTextChild(widget, ", ");
       }
       const nameValuePair = widget.createChild("span");
-      UI11.UIUtils.createTextChild(nameValuePair, name + " = ");
+      UI10.UIUtils.createTextChild(nameValuePair, name + " = ");
       const propertyCount = value2.preview ? value2.preview.properties.length : 0;
       const entryCount = value2.preview?.entries ? value2.preview.entries.length : 0;
       if (value2.preview && propertyCount + entryCount < 10) {
@@ -8165,18 +8105,18 @@ function inlineLogpointArrow(color, outline2, opacity = "1") {
 }
 
 // gen/front_end/panels/sources/ProfilePlugin.js
-import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
-import * as Workspace15 from "./../../models/workspace/workspace.js";
+import * as Workspace14 from "./../../models/workspace/workspace.js";
 import * as CodeMirror5 from "./../../third_party/codemirror.next/codemirror.next.js";
-var UIStrings11 = {
+var UIStrings10 = {
   /**
-   * @description The milisecond unit
+   * @description The millisecond unit.
    */
   ms: "ms"
 };
-var str_11 = i18n21.i18n.registerUIStrings("panels/sources/ProfilePlugin.ts", UIStrings11);
-var i18nString10 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
+var str_10 = i18n19.i18n.registerUIStrings("panels/sources/ProfilePlugin.ts", UIStrings10);
+var i18nString9 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 var PerformanceMarker = class extends CodeMirror5.GutterMarker {
   value;
   constructor(value2) {
@@ -8194,7 +8134,7 @@ var PerformanceMarker = class extends CodeMirror5.GutterMarker {
     element.style.backgroundColor = `hsla(44, 100%, 50%, ${intensity.toFixed(3)})`;
     const span = document.createElement("span");
     span.className = "cm-units";
-    span.textContent = i18nString10(UIStrings11.ms);
+    span.textContent = i18nString9(UIStrings10.ms);
     element.appendChild(span);
     return element;
   }
@@ -8250,7 +8190,7 @@ var PerformanceProfilePlugin = class extends Plugin {
     if (!uiSourceCodeProfileMap) {
       return void 0;
     }
-    return Workspace15.UISourceCode.createMappedProfileData(uiSourceCodeProfileMap, (line, column) => {
+    return Workspace14.UISourceCode.createMappedProfileData(uiSourceCodeProfileMap, (line, column) => {
       const editorLocation = this.#transformer.uiLocationToEditorLocation(line, column);
       return [editorLocation.lineNumber, editorLocation.columnNumber];
     });
@@ -8301,12 +8241,12 @@ var ResourceOriginPlugin_exports = {};
 __export(ResourceOriginPlugin_exports, {
   ResourceOriginPlugin: () => ResourceOriginPlugin
 });
-import * as i18n23 from "./../../core/i18n/i18n.js";
+import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Bindings6 from "./../../models/bindings/bindings.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI12 from "./../../ui/legacy/legacy.js";
-var UIStrings12 = {
+import * as UI11 from "./../../ui/legacy/legacy.js";
+var UIStrings11 = {
   /**
    * @description Text in the bottom toolbar of the Sources panel that lists the source mapped origin scripts.
    * @example {bundle.min.js} PH1
@@ -8318,8 +8258,8 @@ var UIStrings12 = {
    */
   sourceMappedFromS: "(Source mapped from {PH1})"
 };
-var str_12 = i18n23.i18n.registerUIStrings("panels/sources/ResourceOriginPlugin.ts", UIStrings12);
-var i18nString11 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
+var str_11 = i18n21.i18n.registerUIStrings("panels/sources/ResourceOriginPlugin.ts", UIStrings11);
+var i18nString10 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
 var ResourceOriginPlugin = class extends Plugin {
   #linkifier = new Components.Linkifier.Linkifier();
   static accepts(uiSourceCode) {
@@ -8337,7 +8277,7 @@ var ResourceOriginPlugin = class extends Plugin {
         }
         const url = uiSourceCode.url();
         const text = Bindings6.ResourceUtils.displayNameForURL(url);
-        const title = i18nString11(UIStrings12.sourceMappedFromS, { PH1: text });
+        const title = i18nString10(UIStrings11.sourceMappedFromS, { PH1: text });
         links.push(Components.Linkifier.Linkifier.linkifyRevealable(uiSourceCode, text, url, title, void 0, "original-script-location"));
       }
       for (const originURL of Bindings6.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(this.uiSourceCode)) {
@@ -8353,12 +8293,12 @@ var ResourceOriginPlugin = class extends Plugin {
         }
         element.append(link);
       });
-      return [new UI12.Toolbar.ToolbarItem(uiI18n.getFormatLocalizedString(str_12, UIStrings12.fromS, { PH1: element }))];
+      return [new UI11.Toolbar.ToolbarItem(uiI18n.getFormatLocalizedString(str_11, UIStrings11.fromS, { PH1: element }))];
     }
     for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(this.uiSourceCode)) {
       if (script.originStackTrace?.callFrames.length) {
         const link = this.#linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
-        return [new UI12.Toolbar.ToolbarItem(uiI18n.getFormatLocalizedString(str_12, UIStrings12.fromS, { PH1: link }))];
+        return [new UI11.Toolbar.ToolbarItem(uiI18n.getFormatLocalizedString(str_11, UIStrings11.fromS, { PH1: link }))];
       }
     }
     return [];
@@ -8374,29 +8314,29 @@ __export(SnippetsPlugin_exports, {
   SnippetsPlugin: () => SnippetsPlugin
 });
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n25 from "./../../core/i18n/i18n.js";
+import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as TextEditor4 from "./../../ui/components/text_editor/text_editor.js";
-import * as UI13 from "./../../ui/legacy/legacy.js";
+import * as UI12 from "./../../ui/legacy/legacy.js";
 import * as Snippets2 from "./../snippets/snippets.js";
-var UIStrings13 = {
+var UIStrings12 = {
   /**
-   * @description Text in Snippets Plugin of the Sources panel
+   * @description Text in Snippets plugin of the Sources panel.
    */
   enter: "\u2318+Enter",
   /**
-   * @description Text in Snippets Plugin of the Sources panel
+   * @description Text in Snippets plugin of the Sources panel.
    */
   ctrlenter: "Ctrl+Enter"
 };
-var str_13 = i18n25.i18n.registerUIStrings("panels/sources/SnippetsPlugin.ts", UIStrings13);
-var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var str_12 = i18n23.i18n.registerUIStrings("panels/sources/SnippetsPlugin.ts", UIStrings12);
+var i18nString11 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
 var SnippetsPlugin = class extends Plugin {
   static accepts(uiSourceCode) {
     return Snippets2.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode);
   }
   rightToolbarItems() {
-    const runSnippet = UI13.Toolbar.Toolbar.createActionButton("debugger.run-snippet");
-    runSnippet.setText(Host5.Platform.isMac() ? i18nString12(UIStrings13.enter) : i18nString12(UIStrings13.ctrlenter));
+    const runSnippet = UI12.Toolbar.Toolbar.createActionButton("debugger.run-snippet");
+    runSnippet.setText(Host5.Platform.isMac() ? i18nString11(UIStrings12.enter) : i18nString11(UIStrings12.ctrlenter));
     runSnippet.setReducedFocusRing();
     return [runSnippet];
   }
@@ -8406,15 +8346,15 @@ var SnippetsPlugin = class extends Plugin {
 };
 
 // gen/front_end/panels/sources/UISourceCodeFrame.js
-var UIStrings14 = {
+var UIStrings13 = {
   /**
    * @description Title of the format button
    */
   format: "Format"
 };
-var str_14 = i18n27.i18n.registerUIStrings("panels/sources/UISourceCodeFrame.ts", UIStrings14);
-var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.eventMixin(SourceFrame8.SourceFrame.SourceFrameImpl) {
+var str_13 = i18n25.i18n.registerUIStrings("panels/sources/UISourceCodeFrame.ts", UIStrings13);
+var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.eventMixin(SourceFrame6.SourceFrame.SourceFrameImpl) {
   #uiSourceCode;
   #muteSourceCodeEvents = false;
   #persistenceBinding;
@@ -8433,7 +8373,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     this.#persistenceBinding = Persistence5.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     this.#boundOnBindingChanged = this.onBindingChanged.bind(this);
     Common9.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").addChangeListener(this.onNetworkPersistenceChanged, this);
-    this.#errorPopoverHelper = new UI14.PopoverHelper.PopoverHelper(this.textEditor.editor.contentDOM, this.getErrorPopoverContent.bind(this), "sources.error");
+    this.#errorPopoverHelper = new UI13.PopoverHelper.PopoverHelper(this.textEditor.editor.contentDOM, this.getErrorPopoverContent.bind(this), "sources.error");
     this.#errorPopoverHelper.setTimeout(100, 100);
     this.initializeUISourceCode();
   }
@@ -8454,28 +8394,28 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
   }
   onFocus() {
     super.onFocus();
-    UI14.Context.Context.instance().setFlavor(_UISourceCodeFrame, this);
+    UI13.Context.Context.instance().setFlavor(_UISourceCodeFrame, this);
   }
   onBlur() {
     super.onBlur();
-    UI14.Context.Context.instance().setFlavor(_UISourceCodeFrame, null);
+    UI13.Context.Context.instance().setFlavor(_UISourceCodeFrame, null);
   }
   installMessageAndDecorationListeners() {
     if (this.#persistenceBinding) {
       const networkSourceCode = this.#persistenceBinding.network;
       const fileSystemSourceCode = this.#persistenceBinding.fileSystem;
       this.#messageAndDecorationListeners = [
-        networkSourceCode.addEventListener(Workspace16.UISourceCode.Events.MessageAdded, this.onMessageAdded, this),
-        networkSourceCode.addEventListener(Workspace16.UISourceCode.Events.MessageRemoved, this.onMessageRemoved, this),
-        networkSourceCode.addEventListener(Workspace16.UISourceCode.Events.DecorationChanged, this.onDecorationChanged, this),
-        fileSystemSourceCode.addEventListener(Workspace16.UISourceCode.Events.MessageAdded, this.onMessageAdded, this),
-        fileSystemSourceCode.addEventListener(Workspace16.UISourceCode.Events.MessageRemoved, this.onMessageRemoved, this)
+        networkSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageAdded, this.onMessageAdded, this),
+        networkSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageRemoved, this.onMessageRemoved, this),
+        networkSourceCode.addEventListener(Workspace15.UISourceCode.Events.DecorationChanged, this.onDecorationChanged, this),
+        fileSystemSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageAdded, this.onMessageAdded, this),
+        fileSystemSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageRemoved, this.onMessageRemoved, this)
       ];
     } else {
       this.#messageAndDecorationListeners = [
-        this.#uiSourceCode.addEventListener(Workspace16.UISourceCode.Events.MessageAdded, this.onMessageAdded, this),
-        this.#uiSourceCode.addEventListener(Workspace16.UISourceCode.Events.MessageRemoved, this.onMessageRemoved, this),
-        this.#uiSourceCode.addEventListener(Workspace16.UISourceCode.Events.DecorationChanged, this.onDecorationChanged, this)
+        this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageAdded, this.onMessageAdded, this),
+        this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageRemoved, this.onMessageRemoved, this),
+        this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.DecorationChanged, this.onDecorationChanged, this)
       ];
     }
   }
@@ -8507,9 +8447,9 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
   }
   initializeUISourceCode() {
     this.#uiSourceCodeEventListeners = [
-      this.#uiSourceCode.addEventListener(Workspace16.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this),
-      this.#uiSourceCode.addEventListener(Workspace16.UISourceCode.Events.WorkingCopyCommitted, this.onWorkingCopyCommitted, this),
-      this.#uiSourceCode.addEventListener(Workspace16.UISourceCode.Events.TitleChanged, this.onTitleChanged, this)
+      this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this),
+      this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.WorkingCopyCommitted, this.onWorkingCopyCommitted, this),
+      this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.TitleChanged, this.onTitleChanged, this)
     ];
     Persistence5.Persistence.PersistenceImpl.instance().subscribeForBindingEvent(this.#uiSourceCode, this.#boundOnBindingChanged);
     this.installMessageAndDecorationListeners();
@@ -8530,7 +8470,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
       plugin.willHide();
     }
     super.willHide();
-    UI14.Context.Context.instance().setFlavor(_UISourceCodeFrame, null);
+    UI13.Context.Context.instance().setFlavor(_UISourceCodeFrame, null);
     this.#uiSourceCode.removeWorkingCopyGetter();
   }
   getContentType() {
@@ -8560,7 +8500,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     if (this.#uiSourceCode.contentType().isFromSourceMap()) {
       return false;
     }
-    if (this.#uiSourceCode.project().type() === Workspace16.Workspace.projectTypes.Network && Persistence5.NetworkPersistenceManager.NetworkPersistenceManager.instance().active()) {
+    if (this.#uiSourceCode.project().type() === Workspace15.Workspace.projectTypes.Network && Persistence5.NetworkPersistenceManager.NetworkPersistenceManager.instance().active()) {
       return true;
     }
     if (this.pretty && this.#uiSourceCode.contentType().hasScripts()) {
@@ -8657,8 +8597,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
       SnippetsPlugin,
       ResourceOriginPlugin,
       CoveragePlugin,
-      PerformanceProfilePlugin,
-      AiWarningInfobarPlugin
+      PerformanceProfilePlugin
     ];
     if (AiCodeCompletion3.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionAvailable()) {
       sourceFramePluginsList.push(AiCodeCompletionPlugin);
@@ -8712,7 +8651,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     super.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
     contextMenu.appendApplicableItems(this.#uiSourceCode);
     const location = this.editorLocationToUILocation(lineNumber, columnNumber);
-    contextMenu.appendApplicableItems(new Workspace16.UISourceCode.UILocation(this.#uiSourceCode, location.lineNumber, location.columnNumber));
+    contextMenu.appendApplicableItems(new Workspace15.UISourceCode.UILocation(this.#uiSourceCode, location.lineNumber, location.columnNumber));
     for (const plugin of this.plugins) {
       plugin.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
     }
@@ -8756,7 +8695,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     const isJavaScript = Common9.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
     const isInplaceFormattable = isEditable && isJavaScript;
     if (isInplaceFormattable) {
-      const formatButton = new UI14.Toolbar.ToolbarButton(i18nString13(UIStrings14.format), "brackets");
+      const formatButton = new UI13.Toolbar.ToolbarButton(i18nString12(UIStrings13.format), "brackets");
       formatButton.addEventListener("Click", () => {
         void this.#formatSourceInPlace();
       });
@@ -8770,7 +8709,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     if (!rightToolbarItems.length) {
       return leftToolbarItems;
     }
-    return [...leftToolbarItems, new UI14.Toolbar.ToolbarSeparator(true), ...rightToolbarItems];
+    return [...leftToolbarItems, new UI13.Toolbar.ToolbarSeparator(true), ...rightToolbarItems];
   }
   getErrorPopoverContent(event) {
     const mouseEvent = event;
@@ -9120,14 +9059,14 @@ function rowMessages(initialMessages) {
 }
 
 // gen/front_end/panels/sources/TabbedEditorContainer.js
-var UIStrings15 = {
+var UIStrings14 = {
   /**
-   * @description Text in Tabbed Editor Container of the Sources panel
-   * @example {example.file} PH1
+   * @description Text in Tabbed editor container of the Sources panel.
+   * @example {file.js} PH1
    */
   areYouSureYouWantToCloseUnsaved: "Are you sure you want to close unsaved file: {PH1}?",
   /**
-   * @description Error message for tooltip showing that a file in Sources could not be loaded
+   * @description Error message for tooltip showing that a file in the Sources panel could not be loaded.
    */
   unableToLoadThisContent: "Unable to load this content.",
   /**
@@ -9146,8 +9085,8 @@ var UIStrings15 = {
    */
   changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace: "Changes weren\u2019t saved to file system. To save, set up your {PH1}."
 };
-var str_15 = i18n29.i18n.registerUIStrings("panels/sources/TabbedEditorContainer.ts", UIStrings15);
-var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var str_14 = i18n27.i18n.registerUIStrings("panels/sources/TabbedEditorContainer.ts", UIStrings14);
+var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var tabId = 0;
 var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
   delegate;
@@ -9165,13 +9104,13 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
   constructor(delegate, setting, placeholderElement, focusedPlaceholderElement) {
     super();
     this.delegate = delegate;
-    this.tabbedPane = new UI15.TabbedPane.TabbedPane();
+    this.tabbedPane = new UI14.TabbedPane.TabbedPane();
     this.tabbedPane.setPlaceholderElement(placeholderElement, focusedPlaceholderElement);
     this.tabbedPane.setTabDelegate(new EditorContainerTabDelegate(this));
     this.tabbedPane.setCloseableTabs(true);
     this.tabbedPane.setAllowTabReorder(true, true);
-    this.tabbedPane.addEventListener(UI15.TabbedPane.Events.TabClosed, this.tabClosed, this);
-    this.tabbedPane.addEventListener(UI15.TabbedPane.Events.TabSelected, this.tabSelected, this);
+    this.tabbedPane.addEventListener(UI14.TabbedPane.Events.TabClosed, this.tabClosed, this);
+    this.tabbedPane.addEventListener(UI14.TabbedPane.Events.TabSelected, this.tabSelected, this);
     this.tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging8.toolbar("top").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`);
     Persistence7.Persistence.PersistenceImpl.instance().addEventListener(Persistence7.Persistence.Events.BindingCreated, this.onBindingCreated, this);
     Persistence7.Persistence.PersistenceImpl.instance().addEventListener(Persistence7.Persistence.Events.BindingRemoved, this.onBindingRemoved, this);
@@ -9243,7 +9182,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
   showFile(uiSourceCode) {
     const binding = Persistence7.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
-    const frame = UI15.Context.Context.instance().flavor(SourcesView);
+    const frame = UI14.Context.Context.instance().flavor(SourcesView);
     if (frame?.currentSourceFrame()?.contentSet && this.#currentFile === uiSourceCode && frame?.currentUISourceCode() === uiSourceCode) {
       Common10.EventTarget.fireEvent("source-file-loaded", uiSourceCode.displayName(true));
     } else {
@@ -9277,21 +9216,21 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
     this.tabbedPane.selectPrevTab();
   }
   addViewListeners() {
-    if (!this.currentView || !(this.currentView instanceof SourceFrame10.SourceFrame.SourceFrameImpl)) {
+    if (!this.currentView || !(this.currentView instanceof SourceFrame8.SourceFrame.SourceFrameImpl)) {
       return;
     }
     this.currentView.addEventListener("EditorUpdate", this.onEditorUpdate, this);
     this.currentView.addEventListener("EditorScroll", this.onScrollChanged, this);
   }
   removeViewListeners() {
-    if (!this.currentView || !(this.currentView instanceof SourceFrame10.SourceFrame.SourceFrameImpl)) {
+    if (!this.currentView || !(this.currentView instanceof SourceFrame8.SourceFrame.SourceFrameImpl)) {
       return;
     }
     this.currentView.removeEventListener("EditorUpdate", this.onEditorUpdate, this);
     this.currentView.removeEventListener("EditorScroll", this.onScrollChanged, this);
   }
   onScrollChanged() {
-    if (this.currentView instanceof SourceFrame10.SourceFrame.SourceFrameImpl) {
+    if (this.currentView instanceof SourceFrame8.SourceFrame.SourceFrameImpl) {
       if (this.scrollTimer) {
         clearTimeout(this.scrollTimer);
       }
@@ -9345,7 +9284,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
     this.addViewListeners();
     if (this.currentView instanceof UISourceCodeFrame && this.currentView.uiSourceCode() !== uiSourceCode) {
       this.delegate.recycleUISourceCodeFrame(this.currentView, uiSourceCode);
-      if (uiSourceCode.project().type() !== Workspace18.Workspace.projectTypes.FileSystem) {
+      if (uiSourceCode.project().type() !== Workspace17.Workspace.projectTypes.FileSystem) {
         uiSourceCode.disableEdit();
       }
     }
@@ -9371,7 +9310,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
       return false;
     }
     const shouldPrompt = uiSourceCode.isDirty() && uiSourceCode.project().canSetFileContent();
-    if (!shouldPrompt || confirm(i18nString14(UIStrings15.areYouSureYouWantToCloseUnsaved, { PH1: uiSourceCode.name() }))) {
+    if (!shouldPrompt || confirm(i18nString13(UIStrings14.areYouSureYouWantToCloseUnsaved, { PH1: uiSourceCode.name() }))) {
       uiSourceCode.resetWorkingCopy();
       if (nextTabId) {
         this.tabbedPane.selectTab(nextTabId, true);
@@ -9426,7 +9365,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
     const duplicated = canonicalSourceCode !== uiSourceCode;
     const binding = Persistence7.Persistence.PersistenceImpl.instance().binding(canonicalSourceCode);
     uiSourceCode = binding ? binding.fileSystem : canonicalSourceCode;
-    if (duplicated && uiSourceCode.project().type() !== Workspace18.Workspace.projectTypes.FileSystem) {
+    if (duplicated && uiSourceCode.project().type() !== Workspace17.Workspace.projectTypes.FileSystem) {
       uiSourceCode.disableEdit();
     }
     if (this.#currentFile?.canonicalScriptId() === uiSourceCode.canonicalScriptId()) {
@@ -9521,14 +9460,14 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
   }
   addLoadErrorIcon(tabId2) {
     const icon = html5`<devtools-icon class="small" name="cross-circle-filled"
-                                     title=${i18nString14(UIStrings15.unableToLoadThisContent)}>
+                                     title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
                       </devtools-icon>`;
     if (this.tabbedPane.tabView(tabId2)) {
       this.tabbedPane.setTrailingTabIcon(tabId2, icon);
     }
   }
   restoreEditorProperties(editorView, selection, firstLineNumber) {
-    const sourceFrame = editorView instanceof SourceFrame10.SourceFrame.SourceFrameImpl ? editorView : null;
+    const sourceFrame = editorView instanceof SourceFrame8.SourceFrame.SourceFrameImpl ? editorView : null;
     if (!sourceFrame) {
       return;
     }
@@ -9567,14 +9506,14 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
     }
   }
   addUISourceCodeListeners(uiSourceCode) {
-    uiSourceCode.addEventListener(Workspace18.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
-    uiSourceCode.addEventListener(Workspace18.UISourceCode.Events.WorkingCopyChanged, this.uiSourceCodeWorkingCopyChanged, this);
-    uiSourceCode.addEventListener(Workspace18.UISourceCode.Events.WorkingCopyCommitted, this.uiSourceCodeWorkingCopyCommitted, this);
+    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.WorkingCopyChanged, this.uiSourceCodeWorkingCopyChanged, this);
+    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.WorkingCopyCommitted, this.uiSourceCodeWorkingCopyCommitted, this);
   }
   removeUISourceCodeListeners(uiSourceCode) {
-    uiSourceCode.removeEventListener(Workspace18.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
-    uiSourceCode.removeEventListener(Workspace18.UISourceCode.Events.WorkingCopyChanged, this.uiSourceCodeWorkingCopyChanged, this);
-    uiSourceCode.removeEventListener(Workspace18.UISourceCode.Events.WorkingCopyCommitted, this.uiSourceCodeWorkingCopyCommitted, this);
+    uiSourceCode.removeEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+    uiSourceCode.removeEventListener(Workspace17.UISourceCode.Events.WorkingCopyChanged, this.uiSourceCodeWorkingCopyChanged, this);
+    uiSourceCode.removeEventListener(Workspace17.UISourceCode.Events.WorkingCopyCommitted, this.uiSourceCodeWorkingCopyCommitted, this);
   }
   updateFileTitle(uiSourceCode) {
     const tabId2 = this.tabIds.get(uiSourceCode);
@@ -9584,7 +9523,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
       this.tabbedPane.changeTabTitle(tabId2, title, tooltip);
       if (uiSourceCode.loadError()) {
         const icon = html5`<devtools-icon class="small" name="cross-circle-filled"
-                                         title=${i18nString14(UIStrings15.unableToLoadThisContent)}>
+                                         title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
                           </devtools-icon>`;
         this.tabbedPane.setTrailingTabIcon(tabId2, icon);
       } else if (Persistence7.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode)) {
@@ -9603,16 +9542,16 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
           link.textContent = Common10.ParsedURL.ParsedURL.extractName(automaticFileSystem.root);
           link.addEventListener("click", async (event) => {
             event.consume();
-            await UI15.ViewManager.ViewManager.instance().showView("navigator-files");
+            await UI14.ViewManager.ViewManager.instance().showView("navigator-files");
             await automaticFileSystemManager.connectAutomaticFileSystem(
               /* addIfMissing= */
               true
             );
           });
-          tooltip2.append(uiI18n2.getFormatLocalizedString(str_15, UIStrings15.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, { PH1: link }));
+          tooltip2.append(uiI18n2.getFormatLocalizedString(str_14, UIStrings14.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, { PH1: link }));
         } else {
           const link = Link.create("https://developer.chrome.com/docs/devtools/workspaces/", "Workspace");
-          tooltip2.append(uiI18n2.getFormatLocalizedString(str_15, UIStrings15.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, { PH1: link }));
+          tooltip2.append(uiI18n2.getFormatLocalizedString(str_14, UIStrings14.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, { PH1: link }));
         }
         suffixElement.append(icon, tooltip2);
         this.tabbedPane.setSuffixElement(tabId2, suffixElement);
@@ -9790,31 +9729,31 @@ var EditorContainerTabDelegate = class {
 };
 
 // gen/front_end/panels/sources/SourcesView.js
-var UIStrings16 = {
+var UIStrings15 = {
   /**
-   * @description Text to open a file
+   * @description Text to open a file.
    */
   openFile: "Open file",
   /**
-   * @description Text to run commands
+   * @description Text to run commands.
    */
   runCommand: "Run command",
   /**
-   * @description Text in Sources View of the Sources panel. This sentence follows by a list of actions.
+   * @description Text in Sources view of the Sources panel.
    */
   workspaceDropInAFolderToSyncSources: "To sync edits to the workspace, drop a folder with your sources here or",
   /**
-   * @description Text in Sources View of the Sources panel.
+   * @description Text in Sources view of the Sources panel.
    */
   selectFolder: "Select folder",
   /**
-   * @description Accessible label for Sources placeholder view actions list
+   * @description Accessible label for Sources placeholder view actions list.
    */
   sourceViewActions: "Source View Actions"
 };
-var str_16 = i18n31.i18n.registerUIStrings("panels/sources/SourcesView.ts", UIStrings16);
-var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(UI16.Widget.VBox) {
+var str_15 = i18n29.i18n.registerUIStrings("panels/sources/SourcesView.ts", UIStrings15);
+var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(UI15.Widget.VBox) {
   #searchableView;
   sourceViewByUISourceCode;
   editorContainer;
@@ -9830,8 +9769,8 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     this.registerRequiredCSS(sourcesView_css_default);
     this.element.id = "sources-panel-sources-view";
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
-    const workspace = Workspace20.Workspace.WorkspaceImpl.instance();
-    this.#searchableView = new UI16.SearchableView.SearchableView(this, this, "sources-view-search-config");
+    const workspace = Workspace19.Workspace.WorkspaceImpl.instance();
+    this.#searchableView = new UI15.SearchableView.SearchableView(this, this, "sources-view-search-config");
     this.#searchableView.setMinimalSearchQuerySize(0);
     this.#searchableView.show(this.element);
     this.sourceViewByUISourceCode = /* @__PURE__ */ new Map();
@@ -9846,19 +9785,19 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     this.#scriptViewToolbar.style.flex = "auto";
     this.#bottomToolbar = toolbarContainerElementInternal.createChild("devtools-toolbar");
     this.toolbarChangedListener = null;
-    UI16.UIUtils.startBatchUpdate();
+    UI15.UIUtils.startBatchUpdate();
     workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
-    UI16.UIUtils.endBatchUpdate();
-    workspace.addEventListener(Workspace20.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
-    workspace.addEventListener(Workspace20.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemoved, this);
-    workspace.addEventListener(Workspace20.Workspace.Events.ProjectRemoved, this.projectRemoved.bind(this), this);
+    UI15.UIUtils.endBatchUpdate();
+    workspace.addEventListener(Workspace19.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
+    workspace.addEventListener(Workspace19.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemoved, this);
+    workspace.addEventListener(Workspace19.Workspace.Events.ProjectRemoved, this.projectRemoved.bind(this), this);
     SDK9.TargetManager.TargetManager.instance().addScopeChangeListener(this.#onScopeChange.bind(this));
     function handleBeforeUnload(event) {
       if (event.returnValue) {
         return;
       }
       const unsavedSourceCodes = [];
-      const projects = Workspace20.Workspace.WorkspaceImpl.instance().projectsForType(Workspace20.Workspace.projectTypes.FileSystem);
+      const projects = Workspace19.Workspace.WorkspaceImpl.instance().projectsForType(Workspace19.Workspace.projectTypes.FileSystem);
       for (const project of projects) {
         for (const uiSourceCode of project.uiSourceCodes()) {
           if (uiSourceCode.isDirty()) {
@@ -9870,7 +9809,7 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
         return;
       }
       event.returnValue = true;
-      void UI16.ViewManager.ViewManager.instance().showView("sources");
+      void UI15.ViewManager.ViewManager.instance().showView("sources");
       for (const sourceCode of unsavedSourceCodes) {
         void Common11.Revealer.reveal(sourceCode);
       }
@@ -9887,27 +9826,27 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     const icon = createIcon3("sync", "sync-icon");
     workspaceElement.createChild("span", "icon-container").appendChild(icon);
     const text = workspaceElement.createChild("span");
-    text.textContent = UIStrings16.workspaceDropInAFolderToSyncSources;
+    text.textContent = UIStrings15.workspaceDropInAFolderToSyncSources;
     const browseButton = text.createChild("button");
-    browseButton.textContent = i18nString15(UIStrings16.selectFolder);
+    browseButton.textContent = i18nString14(UIStrings15.selectFolder);
     browseButton.addEventListener("click", this.addFileSystemClicked.bind(this));
     const shortcuts = [
-      { actionId: "quick-open.show", description: i18nString15(UIStrings16.openFile) },
-      { actionId: "quick-open.show-command-menu", description: i18nString15(UIStrings16.runCommand) }
+      { actionId: "quick-open.show", description: i18nString14(UIStrings15.openFile) },
+      { actionId: "quick-open.show-command-menu", description: i18nString14(UIStrings15.runCommand) }
     ];
     const list = placeholder2.createChild("div", "shortcuts-list");
     list.classList.add("tabbed-pane-placeholder-row");
-    UI16.ARIAUtils.markAsList(list);
-    UI16.ARIAUtils.setLabel(list, i18nString15(UIStrings16.sourceViewActions));
+    UI15.ARIAUtils.markAsList(list);
+    UI15.ARIAUtils.setLabel(list, i18nString14(UIStrings15.sourceViewActions));
     for (const shortcut of shortcuts) {
-      const shortcutKeys = UI16.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(shortcut.actionId);
+      const shortcutKeys = UI15.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(shortcut.actionId);
       const listItemElement = list.createChild("div");
       listItemElement.classList.add("shortcut-line");
-      UI16.ARIAUtils.markAsListitem(listItemElement);
+      UI15.ARIAUtils.markAsListitem(listItemElement);
       if (shortcutKeys?.[0]) {
         const button = listItemElement.createChild("button");
         button.textContent = shortcut.description;
-        const action3 = UI16.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
+        const action3 = UI15.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
         button.addEventListener("click", () => action3.execute());
         const shortcutElement = listItemElement.createChild("span", "shortcuts");
         const separator = Host7.Platform.isMac() ? "\u2004" : "\u200A+\u200A";
@@ -9925,11 +9864,11 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
       return;
     }
     Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.WorkspaceSelectFolder);
-    void UI16.ViewManager.ViewManager.instance().showView("navigator-files");
+    void UI15.ViewManager.ViewManager.instance().showView("navigator-files");
   }
   static defaultUISourceCodeScores() {
     const defaultScores = /* @__PURE__ */ new Map();
-    const sourcesView = UI16.Context.Context.instance().flavor(_SourcesView);
+    const sourcesView = UI15.Context.Context.instance().flavor(_SourcesView);
     if (sourcesView) {
       const uiSourceCodes = sourcesView.editorContainer.historyUISourceCodes();
       for (let i = 1; i < uiSourceCodes.length; ++i) {
@@ -9952,10 +9891,10 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
   }
   wasShown() {
     super.wasShown();
-    UI16.Context.Context.instance().setFlavor(_SourcesView, this);
+    UI15.Context.Context.instance().setFlavor(_SourcesView, this);
   }
   willHide() {
-    UI16.Context.Context.instance().setFlavor(_SourcesView, null);
+    UI15.Context.Context.instance().setFlavor(_SourcesView, null);
     super.willHide();
   }
   searchableView() {
@@ -9989,9 +9928,9 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     this.historyManager.rollover();
   }
   #onScopeChange() {
-    const workspace = Workspace20.Workspace.WorkspaceImpl.instance();
+    const workspace = Workspace19.Workspace.WorkspaceImpl.instance();
     for (const uiSourceCode of workspace.uiSourceCodes()) {
-      if (uiSourceCode.project().type() !== Workspace20.Workspace.projectTypes.Network) {
+      if (uiSourceCode.project().type() !== Workspace19.Workspace.projectTypes.Network) {
         continue;
       }
       const target = Bindings7.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
@@ -10012,13 +9951,13 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
       return;
     }
     switch (project.type()) {
-      case Workspace20.Workspace.projectTypes.FileSystem: {
+      case Workspace19.Workspace.projectTypes.FileSystem: {
         if (Persistence9.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) === "overrides") {
           return;
         }
         break;
       }
-      case Workspace20.Workspace.projectTypes.Network: {
+      case Workspace19.Workspace.projectTypes.Network: {
         const target = Bindings7.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
         if (!SDK9.TargetManager.TargetManager.instance().isInScope(target)) {
           return;
@@ -10045,7 +9984,7 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
   }
   updateScriptViewToolbarItems() {
     const view = this.visibleView();
-    if (view instanceof UI16.View.SimpleView) {
+    if (view instanceof UI15.View.SimpleView) {
       void view.toolbarItems().then((items) => {
         this.#scriptViewToolbar.removeToolbarItems();
         if (Array.isArray(items)) {
@@ -10054,7 +9993,7 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
           const wrapper = document.createElement("div");
           wrapper.style.display = "contents";
           render6(items, wrapper);
-          this.#scriptViewToolbar.appendToolbarItem(new UI16.Toolbar.ToolbarItem(wrapper));
+          this.#scriptViewToolbar.appendToolbarItem(new UI15.Toolbar.ToolbarItem(wrapper));
         }
       });
     }
@@ -10078,24 +10017,24 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     let sourceView;
     const contentType = uiSourceCode.contentType();
     if (contentType === Common11.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith("image/")) {
-      sourceView = new SourceFrame12.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
+      sourceView = new SourceFrame10.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
     } else if (contentType === Common11.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes("font")) {
-      sourceView = new SourceFrame12.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
+      sourceView = new SourceFrame10.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
     } else if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
       sourceView = new Components2.HeadersView.HeadersView(uiSourceCode);
     } else {
       sourceView = new UISourceCodeFrame(uiSourceCode);
       this.historyManager.trackSourceFrameCursorJumps(sourceView);
     }
-    uiSourceCode.addEventListener(Workspace20.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
+    uiSourceCode.addEventListener(Workspace19.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
     this.sourceViewByUISourceCode.set(uiSourceCode, sourceView);
     return sourceView;
   }
   #sourceViewTypeForWidget(widget) {
-    if (widget instanceof SourceFrame12.ImageView.ImageView) {
+    if (widget instanceof SourceFrame10.ImageView.ImageView) {
       return "ImageView";
     }
-    if (widget instanceof SourceFrame12.FontView.FontView) {
+    if (widget instanceof SourceFrame10.FontView.FontView) {
       return "FontView";
     }
     if (widget instanceof Components2.HeadersView.HeadersView) {
@@ -10134,11 +10073,11 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     return this.sourceViewByUISourceCode.get(uiSourceCode) || this.createSourceView(uiSourceCode);
   }
   recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
-    sourceFrame.uiSourceCode().removeEventListener(Workspace20.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
+    sourceFrame.uiSourceCode().removeEventListener(Workspace19.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
     this.sourceViewByUISourceCode.delete(sourceFrame.uiSourceCode());
     sourceFrame.setUISourceCode(uiSourceCode);
     this.sourceViewByUISourceCode.set(uiSourceCode, sourceFrame);
-    uiSourceCode.addEventListener(Workspace20.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
+    uiSourceCode.addEventListener(Workspace19.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
   }
   viewForFile(uiSourceCode) {
     return this.getOrCreateSourceView(uiSourceCode);
@@ -10149,7 +10088,7 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     if (sourceView && sourceView instanceof UISourceCodeFrame) {
       sourceView.dispose();
     }
-    uiSourceCode.removeEventListener(Workspace20.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
+    uiSourceCode.removeEventListener(Workspace19.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
   }
   editorClosed(event) {
     const uiSourceCode = event.data;
@@ -10378,9 +10317,9 @@ var ThreadsSidebarPane_exports = {};
 __export(ThreadsSidebarPane_exports, {
   ThreadsSidebarPane: () => ThreadsSidebarPane
 });
-import * as i18n33 from "./../../core/i18n/i18n.js";
+import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
-import * as UI17 from "./../../ui/legacy/legacy.js";
+import * as UI16 from "./../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
 import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -10454,14 +10393,14 @@ var threadsSidebarPane_css_default = `/*
 
 // gen/front_end/panels/sources/ThreadsSidebarPane.js
 var { html: html6, render: render7, nothing: nothing4 } = Lit3;
-var UIStrings17 = {
+var UIStrings16 = {
   /**
-   * @description Text in Threads Sidebar Pane of the Sources panel
+   * @description Text in Threads sidebar of the Sources panel.
    */
   paused: "paused"
 };
-var str_17 = i18n33.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings17);
-var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
+var str_16 = i18n31.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings16);
+var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var DEFAULT_VIEW5 = (input, _output, target) => {
   render7(html6`
     <style>${threadsSidebarPane_css_default}</style>
@@ -10475,23 +10414,23 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         role="option"
       >
         <div class="thread-item-title">${thread.name}</div>
-        <div class="thread-item-paused-state">${thread.paused ? i18nString16(UIStrings17.paused) : ""}</div>
+        <div class="thread-item-paused-state">${thread.paused ? i18nString15(UIStrings16.paused) : ""}</div>
         ${thread.selected ? html6`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing4}
       </button>
     `)}
     </div>
   `, target, { container: { attributes: { jslog: `${VisualLogging10.section("sources.threads")}` } } });
 };
-var ThreadsSidebarPane = class extends UI17.Widget.VBox {
+var ThreadsSidebarPane = class extends UI16.Widget.VBox {
   #debuggerModels = /* @__PURE__ */ new Set();
   #selectedModel;
   #view;
   constructor(element, view = DEFAULT_VIEW5) {
     super(element);
     this.#view = view;
-    const currentTarget = UI17.Context.Context.instance().flavor(SDK10.Target.Target);
+    const currentTarget = UI16.Context.Context.instance().flavor(SDK10.Target.Target);
     this.#selectedModel = currentTarget?.model(SDK10.DebuggerModel.DebuggerModel) ?? null;
-    UI17.Context.Context.instance().addFlavorChangeListener(SDK10.Target.Target, this.targetFlavorChanged, this);
+    UI16.Context.Context.instance().addFlavorChangeListener(SDK10.Target.Target, this.targetFlavorChanged, this);
     SDK10.TargetManager.TargetManager.instance().observeModels(SDK10.DebuggerModel.DebuggerModel, this);
   }
   static shouldBeShown() {
@@ -10506,7 +10445,7 @@ var ThreadsSidebarPane = class extends UI17.Widget.VBox {
     return executionContext?.label() || debuggerModel.target().name();
   }
   #handleThreadSelect(debuggerModel) {
-    UI17.Context.Context.instance().setFlavor(SDK10.Target.Target, debuggerModel.target());
+    UI16.Context.Context.instance().setFlavor(SDK10.Target.Target, debuggerModel.target());
   }
   #updatePausedState = () => {
     this.requestUpdate();
@@ -10550,22 +10489,22 @@ var ThreadsSidebarPane = class extends UI17.Widget.VBox {
 };
 
 // gen/front_end/panels/sources/SourcesPanel.js
-var UIStrings18 = {
+var UIStrings17 = {
   /**
-   * @description Text that appears when user drag and drop something (for example, a file) in Sources Panel of the Sources panel
+   * @description Text that appears when user drags and drops a folder in the Sources panel.
    */
   dropWorkspaceFolderHere: "Drop workspace folder here",
   /**
-   * @description Text to show more options
+   * @description Text to show more options.
    */
   moreOptions: "More options",
   /**
-   * @description Tooltip for the the navigator toggle in the Sources panel. Command to open/show the
+   * @description Tooltip for the navigator toggle in the Sources panel. Command to open or show the
    * sidebar containing the navigator tool.
    */
   showNavigator: "Show navigator",
   /**
-   * @description Tooltip for the the navigator toggle in the Sources panel. Command to close/hide
+   * @description Tooltip for the navigator toggle in the Sources panel. Command to close or hide
    * the sidebar containing the navigator tool.
    */
   hideNavigator: "Hide navigator",
@@ -10578,87 +10517,87 @@ var UIStrings18 = {
    */
   navigatorHidden: "Navigator sidebar hidden",
   /**
-   * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
+   * @description Screen reader announcement when the debugger sidebar is shown in the Sources panel.
    */
   debuggerShown: "Debugger sidebar shown",
   /**
-   * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
+   * @description Screen reader announcement when the debugger sidebar is hidden in the Sources panel.
    */
   debuggerHidden: "Debugger sidebar hidden",
   /**
-   * @description Tooltip for the the debugger toggle in the Sources panel. Command to open/show the
+   * @description Tooltip for the debugger toggle in the Sources panel. Command to open or show the
    * sidebar containing the debugger tool.
    */
   showDebugger: "Show debugger",
   /**
-   * @description Tooltip for the the debugger toggle in the Sources panel. Command to close/hide the
+   * @description Tooltip for the debugger toggle in the Sources panel. Command to close or hide the
    * sidebar containing the debugger tool.
    */
   hideDebugger: "Hide debugger",
   /**
-   * @description Text in Sources Panel of the Sources panel
+   * @description Text in Sources panel.
    */
   groupByFolder: "Group by folder",
   /**
-   * @description Text in Sources Panel of the Sources panel
+   * @description Text in Sources panel.
    */
-  groupByAuthored: "Group by Authored/Deployed",
+  groupByAuthored: "Group by authored/deployed",
   /**
-   * @description Text in Sources Panel of the Sources panel
+   * @description Text in Sources panel.
    */
   hideIgnoreListed: "Hide ignore-listed sources",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel
+   * @description Tooltip text that appears when hovering over the resume button in the Sources panel.
    */
   resumeWithAllPausesBlockedForMs: "Resume with all pauses blocked for 500 ms",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon terminate execution button in the Sources Panel of the Sources panel
+   * @description Tooltip text that appears when hovering over the terminate execution button in the Sources panel.
    */
   terminateCurrentJavascriptCall: "Terminate current JavaScript call",
   /**
-   * @description Text in Sources Panel of the Sources panel
+   * @description Text in Sources panel.
    */
   pauseOnCaughtExceptions: "Pause on caught exceptions",
   /**
-   * @description A context menu item in the Sources Panel of the Sources panel
+   * @description A context menu item in the Sources panel.
    */
   revealInSidebar: "Reveal in navigator sidebar",
   /**
-   * @description A context menu item in the Sources Panel of the Sources panel when debugging JS code.
+   * @description A context menu item in the Sources panel when debugging JavaScript code.
    * When clicked, the execution is resumed until it reaches the line specified by the right-click that
    * opened the context menu.
    */
   continueToHere: "Continue to here",
   /**
-   * @description A context menu item in the Console that stores selection as a temporary global variable
+   * @description A context menu item in the Console panel that stores selection as a temporary global variable.
    */
   storeAsGlobalVariable: "Store as global variable",
   /**
-   * @description A context menu item in the Console, Sources, and Network panel
+   * @description A context menu item in the Console, Sources, and Network panels.
    * @example {string} PH1
    */
   copyS: "Copy {PH1}",
   /**
-   * @description A context menu item for strings in the Console, Sources, and Network panel.
+   * @description A context menu item for strings in the Console, Sources, and Network panels.
    * When clicked, the raw contents of the string is copied to the clipboard.
    */
   copyStringContents: "Copy string contents",
   /**
-   * @description A context menu item for strings in the Console, Sources, and Network panel.
+   * @description A context menu item for strings in the Console, Sources, and Network panels.
    * When clicked, the string is copied to the clipboard as a valid JavaScript literal.
    */
   copyStringAsJSLiteral: "Copy string as JavaScript literal",
   /**
-   * @description A context menu item for strings in the Console, Sources, and Network panel.
+   * @description A context menu item for strings in the Console, Sources, and Network panels.
    * When clicked, the string is copied to the clipboard as a valid JSON literal.
    */
   copyStringAsJSONLiteral: "Copy string as JSON literal",
   /**
-   * @description A context menu item in the Sources Panel of the Sources panel
+   * @description A context menu item in the Sources panel.
    */
   showFunctionDefinition: "Show function definition",
   /**
-   * @description Text in Sources Panel of the Sources panel
+   * @description Text in Sources panel.
    */
   openInSourcesPanel: "Open in Sources panel",
   /**
@@ -10679,11 +10618,11 @@ var UIStrings18 = {
    */
   explainInputHandling: "Explain input handling"
 };
-var str_18 = i18n35.i18n.registerUIStrings("panels/sources/SourcesPanel.ts", UIStrings18);
-var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var str_17 = i18n33.i18n.registerUIStrings("panels/sources/SourcesPanel.ts", UIStrings17);
+var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var primitiveRemoteObjectTypes = /* @__PURE__ */ new Set(["number", "boolean", "bigint", "undefined"]);
 var sourcesPanelInstance;
-var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
+var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   workspace;
   togglePauseAction;
   stepOverAction;
@@ -10716,19 +10655,19 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   constructor() {
     super("sources");
     this.registerRequiredCSS(sourcesPanel_css_default);
-    new UI18.DropTarget.DropTarget(this.element, [UI18.DropTarget.Type.Folder], i18nString17(UIStrings18.dropWorkspaceFolderHere), this.handleDrop.bind(this));
-    this.workspace = Workspace22.Workspace.WorkspaceImpl.instance();
-    this.togglePauseAction = UI18.ActionRegistry.ActionRegistry.instance().getAction("debugger.toggle-pause");
-    this.stepOverAction = UI18.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-over");
-    this.stepIntoAction = UI18.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-into");
-    this.stepOutAction = UI18.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-out");
-    this.stepAction = UI18.ActionRegistry.ActionRegistry.instance().getAction("debugger.step");
-    this.toggleBreakpointsActiveAction = UI18.ActionRegistry.ActionRegistry.instance().getAction("debugger.toggle-breakpoints-active");
+    new UI17.DropTarget.DropTarget(this.element, [UI17.DropTarget.Type.Folder], i18nString16(UIStrings17.dropWorkspaceFolderHere), this.handleDrop.bind(this));
+    this.workspace = Workspace21.Workspace.WorkspaceImpl.instance();
+    this.togglePauseAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.toggle-pause");
+    this.stepOverAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-over");
+    this.stepIntoAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-into");
+    this.stepOutAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-out");
+    this.stepAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.step");
+    this.toggleBreakpointsActiveAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.toggle-breakpoints-active");
     this.debugToolbar = this.createDebugToolbar();
     this.debugToolbarDrawer = this.createDebugToolbarDrawer();
     this.debuggerPausedMessage = new DebuggerPausedMessage();
     const initialDebugSidebarWidth = 225;
-    this.splitWidget = new UI18.SplitWidget.SplitWidget(true, true, "sources-panel-split-view-state", initialDebugSidebarWidth);
+    this.splitWidget = new UI17.SplitWidget.SplitWidget(true, true, "sources-panel-split-view-state", initialDebugSidebarWidth);
     this.splitWidget.show(this.element);
     if (Root.Runtime.Runtime.isTraceApp()) {
       this.splitWidget.hideSidebar();
@@ -10736,24 +10675,24 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       this.splitWidget.enableShowModeSaving();
     }
     const initialNavigatorWidth = 225;
-    this.editorView = new UI18.SplitWidget.SplitWidget(true, false, "sources-panel-navigator-split-view-state", initialNavigatorWidth);
+    this.editorView = new UI17.SplitWidget.SplitWidget(true, false, "sources-panel-navigator-split-view-state", initialNavigatorWidth);
     this.editorView.enableShowModeSaving();
     this.splitWidget.setMainWidget(this.editorView);
-    this.navigatorTabbedLocation = UI18.ViewManager.ViewManager.instance().createTabbedLocation(this.revealNavigatorSidebar.bind(this), "navigator-view", true, true);
+    this.navigatorTabbedLocation = UI17.ViewManager.ViewManager.instance().createTabbedLocation(this.revealNavigatorSidebar.bind(this), "navigator-view", true, true);
     const tabbedPane = this.navigatorTabbedLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add("navigator-tabbed-pane");
     tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging11.toolbar("navigator").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`);
-    const navigatorMenuButton = new UI18.ContextMenu.MenuButton();
+    const navigatorMenuButton = new UI17.ContextMenu.MenuButton();
     navigatorMenuButton.populateMenuCall = this.populateNavigatorMenu.bind(this);
     navigatorMenuButton.jslogContext = "more-options";
     navigatorMenuButton.iconName = "dots-vertical";
-    navigatorMenuButton.title = i18nString17(UIStrings18.moreOptions);
-    tabbedPane.rightToolbar().appendToolbarItem(new UI18.Toolbar.ToolbarItem(navigatorMenuButton));
-    if (UI18.ViewManager.ViewManager.instance().hasViewsForLocation("run-view-sidebar")) {
-      const navigatorSplitWidget = new UI18.SplitWidget.SplitWidget(false, true, "source-panel-navigator-sidebar-split-view-state");
+    navigatorMenuButton.title = i18nString16(UIStrings17.moreOptions);
+    tabbedPane.rightToolbar().appendToolbarItem(new UI17.Toolbar.ToolbarItem(navigatorMenuButton));
+    if (UI17.ViewManager.ViewManager.instance().hasViewsForLocation("run-view-sidebar")) {
+      const navigatorSplitWidget = new UI17.SplitWidget.SplitWidget(false, true, "source-panel-navigator-sidebar-split-view-state");
       navigatorSplitWidget.setMainWidget(tabbedPane);
-      const runViewTabbedPane = UI18.ViewManager.ViewManager.instance().createTabbedLocation(this.revealNavigatorSidebar.bind(this), "run-view-sidebar").tabbedPane();
+      const runViewTabbedPane = UI17.ViewManager.ViewManager.instance().createTabbedLocation(this.revealNavigatorSidebar.bind(this), "run-view-sidebar").tabbedPane();
       navigatorSplitWidget.setSidebarWidget(runViewTabbedPane);
       navigatorSplitWidget.installResizer(runViewTabbedPane.headerElement());
       this.editorView.setSidebarWidget(navigatorSplitWidget);
@@ -10762,19 +10701,19 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     }
     this.#sourcesView = new SourcesView();
     this.#sourcesView.addEventListener("EditorSelected", this.editorSelected.bind(this));
-    this.toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(i18nString17(UIStrings18.showNavigator), i18nString17(UIStrings18.hideNavigator), i18nString17(UIStrings18.navigatorShown), i18nString17(UIStrings18.navigatorHidden), "navigator");
-    this.toggleDebuggerSidebarButton = this.splitWidget.createShowHideSidebarButton(i18nString17(UIStrings18.showDebugger), i18nString17(UIStrings18.hideDebugger), i18nString17(UIStrings18.debuggerShown), i18nString17(UIStrings18.debuggerHidden), "debugger");
+    this.toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(i18nString16(UIStrings17.showNavigator), i18nString16(UIStrings17.hideNavigator), i18nString16(UIStrings17.navigatorShown), i18nString16(UIStrings17.navigatorHidden), "navigator");
+    this.toggleDebuggerSidebarButton = this.splitWidget.createShowHideSidebarButton(i18nString16(UIStrings17.showDebugger), i18nString16(UIStrings17.hideDebugger), i18nString16(UIStrings17.debuggerShown), i18nString16(UIStrings17.debuggerHidden), "debugger");
     this.editorView.setMainWidget(this.#sourcesView);
     this.threadsSidebarPane = null;
-    this.watchSidebarPane = UI18.ViewManager.ViewManager.instance().view("sources.watch");
+    this.watchSidebarPane = UI17.ViewManager.ViewManager.instance().view("sources.watch");
     this.callstackPane = CallStackSidebarPane.instance();
     Common12.Settings.Settings.instance().moduleSetting("sidebar-position").addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
     void this.updateDebuggerButtonsAndStatus();
-    this.setTarget(UI18.Context.Context.instance().flavor(SDK11.Target.Target));
+    this.setTarget(UI17.Context.Context.instance().flavor(SDK11.Target.Target));
     Common12.Settings.Settings.instance().moduleSetting("breakpoints-active").addChangeListener(this.breakpointsActiveStateChanged, this);
-    UI18.Context.Context.instance().addFlavorChangeListener(SDK11.Target.Target, this.onCurrentTargetChanged, this);
-    UI18.Context.Context.instance().addFlavorChangeListener(StackTrace3.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
+    UI17.Context.Context.instance().addFlavorChangeListener(SDK11.Target.Target, this.onCurrentTargetChanged, this);
+    UI17.Context.Context.instance().addFlavorChangeListener(StackTrace3.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
     SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.DebuggerWasEnabled, this.debuggerWasEnabled, this);
     SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.DebuggerPaused, this.debuggerPaused, this);
     SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.DebugInfoAttached, this.debugInfoAttached, this);
@@ -10795,7 +10734,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     panel2.#sourcesView.leftToolbar().removeToolbarItems();
     panel2.#sourcesView.rightToolbar().removeToolbarItems();
     panel2.#sourcesView.bottomToolbar().removeToolbarItems();
-    const isInWrapper = UI18.Context.Context.instance().flavor(QuickSourceView) && !UI18.InspectorView.InspectorView.instance().isDrawerMinimized();
+    const isInWrapper = UI17.Context.Context.instance().flavor(QuickSourceView) && !UI17.InspectorView.InspectorView.instance().isDrawerMinimized();
     if (panel2.splitWidget.isVertical() || isInWrapper) {
       panel2.splitWidget.uninstallResizer(panel2.#sourcesView.scriptViewToolbar());
     } else {
@@ -10819,7 +10758,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   }
   showThreadsIfNeeded() {
     if (ThreadsSidebarPane.shouldBeShown() && !this.threadsSidebarPane) {
-      this.threadsSidebarPane = UI18.ViewManager.ViewManager.instance().view("sources.threads");
+      this.threadsSidebarPane = UI17.ViewManager.ViewManager.instance().view("sources.threads");
       if (this.sidebarPaneStack && this.threadsSidebarPane) {
         this.sidebarPaneStack.appendView(this.threadsSidebarPane, this.splitWidget.isVertical() ? this.watchSidebarPane : this.callstackPane);
       }
@@ -10848,10 +10787,10 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     return this.#paused || false;
   }
   wasShown() {
-    UI18.Context.Context.instance().setFlavor(_SourcesPanel, this);
+    UI17.Context.Context.instance().setFlavor(_SourcesPanel, this);
     super.wasShown();
-    if (UI18.Context.Context.instance().flavor(QuickSourceView)) {
-      UI18.InspectorView.InspectorView.instance().setDrawerMinimized(true);
+    if (UI17.Context.Context.instance().flavor(QuickSourceView)) {
+      UI17.InspectorView.InspectorView.instance().setDrawerMinimized(true);
       _SourcesPanel.updateResizerAndSidebarButtons(this);
     }
     this.editorView.setMainWidget(this.#sourcesView);
@@ -10859,11 +10798,11 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   }
   willHide() {
     super.willHide();
-    UI18.Context.Context.instance().setFlavor(_SourcesPanel, null);
-    const wrapperView = UI18.Context.Context.instance().flavor(QuickSourceView);
+    UI17.Context.Context.instance().setFlavor(_SourcesPanel, null);
+    const wrapperView = UI17.Context.Context.instance().flavor(QuickSourceView);
     if (wrapperView) {
       wrapperView.showViewInWrapper();
-      UI18.InspectorView.InspectorView.instance().setDrawerMinimized(false);
+      UI17.InspectorView.InspectorView.instance().setDrawerMinimized(false);
       _SourcesPanel.updateResizerAndSidebarButtons(this);
     }
   }
@@ -10874,13 +10813,13 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     return this.navigatorTabbedLocation;
   }
   ensureSourcesViewVisible() {
-    if (UI18.Context.Context.instance().flavor(QuickSourceView)) {
+    if (UI17.Context.Context.instance().flavor(QuickSourceView)) {
       return true;
     }
-    if (!UI18.InspectorView.InspectorView.instance().canSelectPanel("sources")) {
+    if (!UI17.InspectorView.InspectorView.instance().canSelectPanel("sources")) {
       return false;
     }
-    void UI18.ViewManager.ViewManager.instance().showView("sources");
+    void UI17.ViewManager.ViewManager.instance().showView("sources");
     return true;
   }
   onResize() {
@@ -10904,10 +10843,10 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     if (!this.#paused && Common12.Settings.Settings.instance().moduleSetting("auto-focus-on-debugger-paused-enabled").get()) {
       void this.setAsCurrentPanel();
     }
-    if (UI18.Context.Context.instance().flavor(SDK11.Target.Target) === debuggerModel.target()) {
+    if (UI17.Context.Context.instance().flavor(SDK11.Target.Target) === debuggerModel.target()) {
       this.showDebuggerPausedDetails(details);
     } else if (!this.#paused) {
-      UI18.Context.Context.instance().setFlavor(SDK11.Target.Target, debuggerModel.target());
+      UI17.Context.Context.instance().setFlavor(SDK11.Target.Target, debuggerModel.target());
     }
     Badges2.UserBadges.instance().recordAction(Badges2.BadgeAction.DEBUGGER_PAUSED);
   }
@@ -10917,14 +10856,14 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       return;
     }
     const details = debuggerModel.debuggerPausedDetails();
-    if (details && UI18.Context.Context.instance().flavor(SDK11.Target.Target) === debuggerModel.target()) {
+    if (details && UI17.Context.Context.instance().flavor(SDK11.Target.Target) === debuggerModel.target()) {
       this.showDebuggerPausedDetails(details);
     }
   }
   showDebuggerPausedDetails(details) {
     this.#paused = true;
     void this.updateDebuggerButtonsAndStatus();
-    UI18.Context.Context.instance().setFlavor(SDK11.DebuggerModel.DebuggerPausedDetails, details);
+    UI17.Context.Context.instance().setFlavor(SDK11.DebuggerModel.DebuggerPausedDetails, details);
     this.toggleDebuggerSidebarButton.setEnabled(false);
     this.revealDebuggerSidebar();
     const pausedTarget = details.debuggerModel.target();
@@ -10933,7 +10872,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     }
     window.focus();
     Host8.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-    const withOverlay = UI18.Context.Context.instance().flavor(SDK11.Target.Target)?.model(SDK11.OverlayModel.OverlayModel) && !Common12.Settings.Settings.instance().moduleSetting("disable-paused-state-overlay").get();
+    const withOverlay = UI17.Context.Context.instance().flavor(SDK11.Target.Target)?.model(SDK11.OverlayModel.OverlayModel) && !Common12.Settings.Settings.instance().moduleSetting("disable-paused-state-overlay").get();
     if (withOverlay && !this.overlayLoggables) {
       this.overlayLoggables = { debuggerPausedMessage: {}, resumeButton: {}, stepOverButton: {} };
       VisualLogging11.registerLoggable(this.overlayLoggables.debuggerPausedMessage, `${VisualLogging11.dialog("debugger-paused")}`, null, new DOMRect(0, 0, 200, 20));
@@ -10952,7 +10891,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
         return;
       }
       if (byOverlayButton) {
-        const details = UI18.Context.Context.instance().flavor(SDK11.DebuggerModel.DebuggerPausedDetails);
+        const details = UI17.Context.Context.instance().flavor(SDK11.DebuggerModel.DebuggerPausedDetails);
         VisualLogging11.logClick(this.#paused && details?.reason === "step" ? this.overlayLoggables.stepOverButton : this.overlayLoggables.resumeButton, new MouseEvent("click"));
       }
       if (!this.#paused) {
@@ -10964,7 +10903,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   debuggerResumed(debuggerModel) {
     this.maybeLogOverlayAction();
     const target = debuggerModel.target();
-    if (UI18.Context.Context.instance().flavor(SDK11.Target.Target) !== target) {
+    if (UI17.Context.Context.instance().flavor(SDK11.Target.Target) !== target) {
       return;
     }
     this.#paused = false;
@@ -10974,7 +10913,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   }
   debuggerWasEnabled(event) {
     const debuggerModel = event.data;
-    if (UI18.Context.Context.instance().flavor(SDK11.Target.Target) !== debuggerModel.target()) {
+    if (UI17.Context.Context.instance().flavor(SDK11.Target.Target) !== debuggerModel.target()) {
       return;
     }
     void this.updateDebuggerButtonsAndStatus();
@@ -10984,7 +10923,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   }
   showUISourceCode(uiSourceCode, location, omitFocus) {
     if (omitFocus) {
-      if (!this.isShowing() && !UI18.Context.Context.instance().flavor(QuickSourceView)) {
+      if (!this.isShowing() && !UI17.Context.Context.instance().flavor(QuickSourceView)) {
         return;
       }
     } else {
@@ -10993,7 +10932,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     this.#sourcesView.showSourceLocation(uiSourceCode, location, omitFocus);
   }
   showEditor() {
-    if (UI18.Context.Context.instance().flavor(QuickSourceView)) {
+    if (UI17.Context.Context.instance().flavor(QuickSourceView)) {
       return;
     }
     void this.setAsCurrentPanel();
@@ -11003,7 +10942,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     this.showUISourceCode(uiSourceCode, { lineNumber, columnNumber }, omitFocus);
   }
   async revealInNavigator(uiSourceCode, skipReveal) {
-    const viewManager = UI18.ViewManager.ViewManager.instance();
+    const viewManager = UI17.ViewManager.ViewManager.instance();
     for (const view of viewManager.viewsForLocation(
       "navigator-view"
       /* UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW */
@@ -11026,26 +10965,26 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   }
   populateNavigatorMenu(contextMenu) {
     contextMenu.appendItemsAtLocation("navigatorMenu");
-    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-folder", i18nString17(UIStrings18.groupByFolder));
-    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-authored", i18nString17(UIStrings18.groupByAuthored));
-    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-just-my-code", i18nString17(UIStrings18.hideIgnoreListed));
+    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-folder", i18nString16(UIStrings17.groupByFolder));
+    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-authored", i18nString16(UIStrings17.groupByAuthored));
+    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-just-my-code", i18nString16(UIStrings17.hideIgnoreListed));
   }
   updateLastModificationTime() {
     this.lastModificationTime = window.performance.now();
   }
   async callFrameChanged() {
-    const frameFlavor = UI18.Context.Context.instance().flavor(StackTrace3.StackTrace.DebuggableFrameFlavor);
+    const frameFlavor = UI17.Context.Context.instance().flavor(StackTrace3.StackTrace.DebuggableFrameFlavor);
     if (!frameFlavor?.frame.uiSourceCode) {
       return;
     }
-    const uiLocation = new Workspace22.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
+    const uiLocation = new Workspace21.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
     if (window.performance.now() - this.lastModificationTime < lastModificationTimeout) {
       return;
     }
     this.#sourcesView.showSourceLocation(uiLocation.uiSourceCode, uiLocation, void 0, true);
   }
   async updateDebuggerButtonsAndStatus() {
-    const currentTarget = UI18.Context.Context.instance().flavor(SDK11.Target.Target);
+    const currentTarget = UI17.Context.Context.instance().flavor(SDK11.Target.Target);
     const currentDebuggerModel = currentTarget ? currentTarget.model(SDK11.DebuggerModel.DebuggerModel) : null;
     const paused = this.#paused;
     const details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
@@ -11080,7 +11019,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   }
   clearInterface() {
     void this.updateDebuggerButtonsAndStatus();
-    UI18.Context.Context.instance().setFlavor(SDK11.DebuggerModel.DebuggerPausedDetails, null);
+    UI17.Context.Context.instance().setFlavor(SDK11.DebuggerModel.DebuggerPausedDetails, null);
     if (this.switchToPausedTargetTimeout) {
       clearTimeout(this.switchToPausedTargetTimeout);
     }
@@ -11092,7 +11031,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     }
     for (const debuggerModel2 of SDK11.TargetManager.TargetManager.instance().models(SDK11.DebuggerModel.DebuggerModel)) {
       if (debuggerModel2.isPaused()) {
-        UI18.Context.Context.instance().setFlavor(SDK11.Target.Target, debuggerModel2.target());
+        UI17.Context.Context.instance().setFlavor(SDK11.Target.Target, debuggerModel2.target());
         break;
       }
     }
@@ -11105,13 +11044,13 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   }
   editorSelected(event) {
     const uiSourceCode = event.data;
-    UI18.Context.Context.instance().setFlavor(Workspace22.UISourceCode.UISourceCode, uiSourceCode);
+    UI17.Context.Context.instance().setFlavor(Workspace21.UISourceCode.UISourceCode, uiSourceCode);
     if (this.editorView.mainWidget() && Common12.Settings.Settings.instance().moduleSetting("auto-reveal-in-navigator").get()) {
       void this.revealInNavigator(uiSourceCode, true);
     }
   }
   togglePause() {
-    const target = UI18.Context.Context.instance().flavor(SDK11.Target.Target);
+    const target = UI17.Context.Context.instance().flavor(SDK11.Target.Target);
     if (!target) {
       return true;
     }
@@ -11134,7 +11073,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     }
     this.#paused = false;
     this.clearInterface();
-    const target = UI18.Context.Context.instance().flavor(SDK11.Target.Target);
+    const target = UI17.Context.Context.instance().flavor(SDK11.Target.Target);
     return target ? target.model(SDK11.DebuggerModel.DebuggerModel) : null;
   }
   longResume() {
@@ -11180,7 +11119,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     return true;
   }
   async continueToLocation(uiLocation) {
-    const executionContext = UI18.Context.Context.instance().flavor(SDK11.RuntimeModel.ExecutionContext);
+    const executionContext = UI17.Context.Context.instance().flavor(SDK11.RuntimeModel.ExecutionContext);
     if (!executionContext) {
       return;
     }
@@ -11202,31 +11141,31 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     const debugToolbar = document.createElement("devtools-toolbar");
     debugToolbar.classList.add("scripts-debug-toolbar");
     debugToolbar.setAttribute("jslog", `${VisualLogging11.toolbar("debug").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`);
-    const longResumeButton = new UI18.Toolbar.ToolbarButton(i18nString17(UIStrings18.resumeWithAllPausesBlockedForMs), "play");
+    const longResumeButton = new UI17.Toolbar.ToolbarButton(i18nString16(UIStrings17.resumeWithAllPausesBlockedForMs), "play");
     longResumeButton.addEventListener("Click", this.longResume, this);
-    const terminateExecutionButton = new UI18.Toolbar.ToolbarButton(i18nString17(UIStrings18.terminateCurrentJavascriptCall), "stop");
+    const terminateExecutionButton = new UI17.Toolbar.ToolbarButton(i18nString16(UIStrings17.terminateCurrentJavascriptCall), "stop");
     terminateExecutionButton.addEventListener("Click", this.terminateExecution, this);
-    const pauseActionButton = UI18.Toolbar.Toolbar.createLongPressActionButton(this.togglePauseAction, [terminateExecutionButton, longResumeButton], []);
+    const pauseActionButton = UI17.Toolbar.Toolbar.createLongPressActionButton(this.togglePauseAction, [terminateExecutionButton, longResumeButton], []);
     pauseActionButton.toggleOnClick(false);
     debugToolbar.appendToolbarItem(pauseActionButton);
-    debugToolbar.appendToolbarItem(UI18.Toolbar.Toolbar.createActionButton(this.stepOverAction));
-    debugToolbar.appendToolbarItem(UI18.Toolbar.Toolbar.createActionButton(this.stepIntoAction));
-    debugToolbar.appendToolbarItem(UI18.Toolbar.Toolbar.createActionButton(this.stepOutAction));
-    debugToolbar.appendToolbarItem(UI18.Toolbar.Toolbar.createActionButton(this.stepAction));
+    debugToolbar.appendToolbarItem(UI17.Toolbar.Toolbar.createActionButton(this.stepOverAction));
+    debugToolbar.appendToolbarItem(UI17.Toolbar.Toolbar.createActionButton(this.stepIntoAction));
+    debugToolbar.appendToolbarItem(UI17.Toolbar.Toolbar.createActionButton(this.stepOutAction));
+    debugToolbar.appendToolbarItem(UI17.Toolbar.Toolbar.createActionButton(this.stepAction));
     debugToolbar.appendSeparator();
-    debugToolbar.appendToolbarItem(UI18.Toolbar.Toolbar.createActionButton(this.toggleBreakpointsActiveAction));
+    debugToolbar.appendToolbarItem(UI17.Toolbar.Toolbar.createActionButton(this.toggleBreakpointsActiveAction));
     return debugToolbar;
   }
   createDebugToolbarDrawer() {
     const debugToolbarDrawer = document.createElement("div");
     debugToolbarDrawer.classList.add("scripts-debug-toolbar-drawer");
-    const label = i18nString17(UIStrings18.pauseOnCaughtExceptions);
-    const setting = Common12.Settings.Settings.instance().moduleSetting("pause-on-caught-exception");
+    const label = i18nString16(UIStrings17.pauseOnCaughtExceptions);
+    const setting = Common12.Settings.Settings.instance().resolve(SDK11.SDKSettings.pauseOnCaughtExceptionSettingDescriptor);
     debugToolbarDrawer.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(label, setting));
     return debugToolbarDrawer;
   }
   appendApplicableItems(event, contextMenu, target) {
-    if (target instanceof Workspace22.UISourceCode.UISourceCode) {
+    if (target instanceof Workspace21.UISourceCode.UISourceCode) {
       this.appendUISourceCodeItems(event, contextMenu, target);
       return;
     }
@@ -11234,7 +11173,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       this.appendUISourceCodeFrameItems(contextMenu, target);
       return;
     }
-    if (target instanceof Workspace22.UISourceCode.UILocation) {
+    if (target instanceof Workspace21.UISourceCode.UILocation) {
       this.appendUILocationItems(contextMenu, target);
       return;
     }
@@ -11249,22 +11188,22 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       return;
     }
     const eventTarget = event.target;
-    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Common12.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace22.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
-      contextMenu.revealSection().appendItem(i18nString17(UIStrings18.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
+    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Common12.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace21.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
+      contextMenu.revealSection().appendItem(i18nString16(UIStrings17.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
         jslogContext: "sources.reveal-in-navigator-sidebar"
       });
     }
     const openAiAssistanceId = "drjones.sources-panel-context";
-    if (UI18.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+    if (UI17.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
       const editorElement = this.element.querySelector("devtools-text-editor");
       if (!eventTarget.isSelfOrDescendant(editorElement) && uiSourceCode.contentType().isTextType()) {
-        UI18.Context.Context.instance().setFlavor(Workspace22.UISourceCode.UISourceCode, uiSourceCode);
-        const action3 = UI18.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        UI17.Context.Context.instance().setFlavor(Workspace21.UISourceCode.UISourceCode, uiSourceCode);
+        const action3 = UI17.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action3.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction("drjones.sources-panel-context", i18nString17(UIStrings18.startAChat));
-        appendSubmenuPromptAction(submenu, action3, i18nString17(UIStrings18.assessPerformance), "Is this script optimized for performance?", openAiAssistanceId + ".performance");
-        appendSubmenuPromptAction(submenu, action3, i18nString17(UIStrings18.explainThisScript), "What does this script do?", openAiAssistanceId + ".script");
-        appendSubmenuPromptAction(submenu, action3, i18nString17(UIStrings18.explainInputHandling), "Does the script handle user input safely", openAiAssistanceId + ".input");
+        submenu.defaultSection().appendAction("drjones.sources-panel-context", i18nString16(UIStrings17.startAChat));
+        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.assessPerformance), "Is this script optimized for performance?", openAiAssistanceId + ".performance");
+        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.explainThisScript), "What does this script do?", openAiAssistanceId + ".script");
+        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.explainInputHandling), "Does the script handle user input safely", openAiAssistanceId + ".input");
       }
     }
     if (uiSourceCode.contentType().hasScripts() && Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(uiSourceCode).every((script) => script.isJavaScript())) {
@@ -11287,17 +11226,17 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     }
     const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
-      const target = UI18.Context.Context.instance().flavor(SDK11.Target.Target);
+      const target = UI17.Context.Context.instance().flavor(SDK11.Target.Target);
       const debuggerModel = target ? target.model(SDK11.DebuggerModel.DebuggerModel) : null;
       if (debuggerModel?.isPaused()) {
-        contextMenu.debugSection().appendItem(i18nString17(UIStrings18.continueToHere), this.continueToLocation.bind(this, uiLocation), { jslogContext: "continue-to-here" });
+        contextMenu.debugSection().appendItem(i18nString16(UIStrings17.continueToHere), this.continueToLocation.bind(this, uiLocation), { jslogContext: "continue-to-here" });
       }
       this.callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
     }
   }
   appendRemoteObjectItems(contextMenu, remoteObject) {
     const indent = Common12.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
-    const executionContext = UI18.Context.Context.instance().flavor(SDK11.RuntimeModel.ExecutionContext);
+    const executionContext = UI17.Context.Context.instance().flavor(SDK11.RuntimeModel.ExecutionContext);
     function getObjectTitle() {
       if (remoteObject.type === "wasm") {
         return remoteObject.subtype;
@@ -11308,21 +11247,21 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       return remoteObject.type;
     }
     const copyContextMenuTitle = getObjectTitle();
-    contextMenu.debugSection().appendItem(i18nString17(UIStrings18.storeAsGlobalVariable), () => executionContext?.target().model(SDK11.ConsoleModel.ConsoleModel)?.saveToTempVariable(executionContext, remoteObject), { jslogContext: "store-as-global-variable" });
+    contextMenu.debugSection().appendItem(i18nString16(UIStrings17.storeAsGlobalVariable), () => executionContext?.target().model(SDK11.ConsoleModel.ConsoleModel)?.saveToTempVariable(executionContext, remoteObject), { jslogContext: "store-as-global-variable" });
     const ctxMenuClipboardSection = contextMenu.clipboardSection();
     const inspectorFrontendHost = Host8.InspectorFrontendHost.InspectorFrontendHostInstance;
     if (remoteObject.type === "string") {
-      ctxMenuClipboardSection.appendItem(i18nString17(UIStrings18.copyStringContents), () => {
+      ctxMenuClipboardSection.appendItem(i18nString16(UIStrings17.copyStringContents), () => {
         inspectorFrontendHost.copyText(remoteObject.value);
       }, { jslogContext: "copy-string-contents" });
-      ctxMenuClipboardSection.appendItem(i18nString17(UIStrings18.copyStringAsJSLiteral), () => {
+      ctxMenuClipboardSection.appendItem(i18nString16(UIStrings17.copyStringAsJSLiteral), () => {
         inspectorFrontendHost.copyText(Platform12.StringUtilities.formatAsJSLiteral(remoteObject.value));
       }, { jslogContext: "copy-string-as-js-literal" });
-      ctxMenuClipboardSection.appendItem(i18nString17(UIStrings18.copyStringAsJSONLiteral), () => {
+      ctxMenuClipboardSection.appendItem(i18nString16(UIStrings17.copyStringAsJSONLiteral), () => {
         inspectorFrontendHost.copyText(JSON.stringify(remoteObject.value));
       }, { jslogContext: "copy-string-as-json-literal" });
     } else if (primitiveRemoteObjectTypes.has(remoteObject.type)) {
-      ctxMenuClipboardSection.appendItem(i18nString17(UIStrings18.copyS, { PH1: String(copyContextMenuTitle) }), () => {
+      ctxMenuClipboardSection.appendItem(i18nString16(UIStrings17.copyS, { PH1: String(copyContextMenuTitle) }), () => {
         inspectorFrontendHost.copyText(remoteObject.description);
       }, { jslogContext: "copy-primitive" });
     } else if (remoteObject.type === "object") {
@@ -11335,9 +11274,9 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
         }]);
         inspectorFrontendHost.copyText(result);
       };
-      ctxMenuClipboardSection.appendItem(i18nString17(UIStrings18.copyS, { PH1: String(copyContextMenuTitle) }), copyDecodedValueHandler, { jslogContext: "copy-object" });
+      ctxMenuClipboardSection.appendItem(i18nString16(UIStrings17.copyS, { PH1: String(copyContextMenuTitle) }), copyDecodedValueHandler, { jslogContext: "copy-object" });
     } else if (remoteObject.type === "function") {
-      contextMenu.debugSection().appendItem(i18nString17(UIStrings18.showFunctionDefinition), this.showFunctionDefinition.bind(this, remoteObject), { jslogContext: "show-function-definition" });
+      contextMenu.debugSection().appendItem(i18nString16(UIStrings17.showFunctionDefinition), this.showFunctionDefinition.bind(this, remoteObject), { jslogContext: "show-function-definition" });
     }
     function toStringForClipboard(data) {
       const subtype = data.subtype;
@@ -11376,7 +11315,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     if (!uiSourceCode) {
       return;
     }
-    const openText = i18nString17(UIStrings18.openInSourcesPanel);
+    const openText = i18nString16(UIStrings17.openInSourcesPanel);
     const callback = this.showUILocation.bind(this, uiSourceCode.uiLocation(0, 0));
     contextMenu.revealSection().appendItem(openText, callback, { jslogContext: "reveal-in-sources" });
   }
@@ -11428,11 +11367,11 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     if (Root.Runtime.Runtime.isTraceApp()) {
       return;
     }
-    const vbox = new UI18.Widget.VBox();
+    const vbox = new UI17.Widget.VBox();
     vbox.element.appendChild(this.debugToolbar);
     vbox.element.appendChild(this.debugToolbarDrawer);
     vbox.setMinimumAndPreferredSizes(minToolbarWidth, 25, minToolbarWidth, 100);
-    this.sidebarPaneStack = UI18.ViewManager.ViewManager.instance().createStackLocation(this.revealDebuggerSidebar.bind(this), void 0, "debug");
+    this.sidebarPaneStack = UI17.ViewManager.ViewManager.instance().createStackLocation(this.revealDebuggerSidebar.bind(this), void 0, "debug");
     this.sidebarPaneStack.widget().element.classList.add("y-overflow-only");
     this.sidebarPaneStack.widget().show(vbox.element);
     this.debuggerPausedMessage.show(this.sidebarPaneStack.widget().element);
@@ -11440,8 +11379,8 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     if (this.threadsSidebarPane) {
       this.sidebarPaneStack.appendView(this.threadsSidebarPane);
     }
-    const jsBreakpoints = UI18.ViewManager.ViewManager.instance().view("sources.js-breakpoints");
-    const scopeChainView = UI18.ViewManager.ViewManager.instance().view("sources.scope-chain");
+    const jsBreakpoints = UI17.ViewManager.ViewManager.instance().view("sources.js-breakpoints");
+    const scopeChainView = UI17.ViewManager.ViewManager.instance().view("sources.scope-chain");
     if (this.tabbedLocationHeader) {
       this.splitWidget.uninstallResizer(this.tabbedLocationHeader);
       this.tabbedLocationHeader = null;
@@ -11455,11 +11394,11 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       this.sidebarPaneView = vbox;
       this.splitWidget.uninstallResizer(this.debugToolbar);
     } else {
-      const splitWidget = new UI18.SplitWidget.SplitWidget(true, true, "sources-panel-debugger-sidebar-split-view-state", 0.5);
+      const splitWidget = new UI17.SplitWidget.SplitWidget(true, true, "sources-panel-debugger-sidebar-split-view-state", 0.5);
       splitWidget.setMainWidget(vbox);
       void this.sidebarPaneStack.showView(jsBreakpoints);
       void this.sidebarPaneStack.showView(this.callstackPane);
-      const tabbedLocation = UI18.ViewManager.ViewManager.instance().createTabbedLocation(this.revealDebuggerSidebar.bind(this), "sources-panel-debugger-sidebar");
+      const tabbedLocation = UI17.ViewManager.ViewManager.instance().createTabbedLocation(this.revealDebuggerSidebar.bind(this), "sources-panel-debugger-sidebar");
       splitWidget.setSidebarWidget(tabbedLocation.tabbedPane());
       this.tabbedLocationHeader = tabbedLocation.tabbedPane().headerElement();
       this.splitWidget.installResizer(this.tabbedLocationHeader);
@@ -11478,7 +11417,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     this.splitWidget.setSidebarWidget(this.sidebarPaneView);
   }
   setAsCurrentPanel() {
-    return UI18.ViewManager.ViewManager.instance().showView("sources");
+    return UI17.ViewManager.ViewManager.instance().showView("sources");
   }
   extensionSidebarPaneAdded(event) {
     this.addExtensionSidebarPane(event.data);
@@ -11500,7 +11439,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     if (entry?.isDirectory) {
       Host8.InspectorFrontendHost.InspectorFrontendHostInstance.upgradeDraggedFileSystemPermissions(entry.filesystem);
       Host8.userMetrics.actionTaken(Host8.UserMetrics.Action.WorkspaceDropFolder);
-      void UI18.ViewManager.ViewManager.instance().showView("navigator-files");
+      void UI17.ViewManager.ViewManager.instance().showView("navigator-files");
     }
   }
 };
@@ -11552,7 +11491,7 @@ var RevealingActionDelegate = class {
     }
     switch (actionId) {
       case "debugger.toggle-pause": {
-        const actionHandledInPausedOverlay = context.flavor(UI18.ShortcutRegistry.ForwardedShortcut) && !Common12.Settings.Settings.instance().moduleSetting("disable-paused-state-overlay").get();
+        const actionHandledInPausedOverlay = context.flavor(UI17.ShortcutRegistry.ForwardedShortcut) && !Common12.Settings.Settings.instance().moduleSetting("disable-paused-state-overlay").get();
         if (actionHandledInPausedOverlay) {
           return true;
         }
@@ -11637,7 +11576,7 @@ var ActionDelegate3 = class {
     return false;
   }
 };
-var QuickSourceView = class _QuickSourceView extends UI18.Widget.VBox {
+var QuickSourceView = class _QuickSourceView extends UI17.Widget.VBox {
   view;
   constructor() {
     super({ jslog: `${VisualLogging11.panel("sources.quick").track({ resize: true })}` });
@@ -11645,22 +11584,22 @@ var QuickSourceView = class _QuickSourceView extends UI18.Widget.VBox {
     this.view = SourcesPanel.instance().sourcesView();
   }
   wasShown() {
-    UI18.Context.Context.instance().setFlavor(_QuickSourceView, this);
+    UI17.Context.Context.instance().setFlavor(_QuickSourceView, this);
     super.wasShown();
     if (!SourcesPanel.instance().isShowing()) {
       this.showViewInWrapper();
     } else {
-      UI18.InspectorView.InspectorView.instance().setDrawerMinimized(true);
+      UI17.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
     SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance());
   }
   willHide() {
-    UI18.InspectorView.InspectorView.instance().setDrawerMinimized(false);
+    UI17.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     queueMicrotask(() => {
       SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance());
     });
     super.willHide();
-    UI18.Context.Context.instance().setFlavor(_QuickSourceView, null);
+    UI17.Context.Context.instance().setFlavor(_QuickSourceView, null);
   }
   showViewInWrapper() {
     this.view.show(this.element);
@@ -11668,13 +11607,13 @@ var QuickSourceView = class _QuickSourceView extends UI18.Widget.VBox {
 };
 
 // gen/front_end/panels/sources/CallStackSidebarPane.js
-var UIStrings19 = {
+var UIStrings18 = {
   /**
-   * @description Text in Call Stack Sidebar Pane of the Sources panel
+   * @description Text in the call stack sidebar of the Sources panel
    */
   callStack: "Call Stack",
   /**
-   * @description Not paused message element text content in Call Stack Sidebar Pane of the Sources panel
+   * @description Not paused message element text content in the call stack sidebar of the Sources panel
    */
   notPaused: "Not paused",
   /**
@@ -11682,7 +11621,7 @@ var UIStrings19 = {
    */
   onIgnoreList: "on ignore list",
   /**
-   * @description Show all link text content in Call Stack Sidebar Pane of the Sources panel
+   * @description Show all link text content in the call stack sidebar of the Sources panel
    */
   showIgnorelistedFrames: "Show ignore-listed frames",
   /**
@@ -11690,11 +11629,11 @@ var UIStrings19 = {
    */
   showMore: "Show more",
   /**
-   * @description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+   * @description A context menu item in the call stack sidebar of the Sources panel
    */
   copyStackTrace: "Copy stack trace",
   /**
-   * @description Text in Call Stack Sidebar Pane of the Sources panel when some call frames have warnings
+   * @description Text in the call stack sidebar of the Sources panel when some call frames have warnings
    */
   callFrameWarnings: "Some call frames have warnings",
   /**
@@ -11703,7 +11642,7 @@ var UIStrings19 = {
    */
   debugFileNotFound: 'Failed to load debug file "{PH1}".',
   /**
-   * @description A context menu item in the Call Stack Sidebar Pane. "Restart" is a verb and
+   * @description A context menu item in the call stack sidebar pane. "Restart" is a verb and
    * "frame" is a noun. "Frame" refers to an individual item in the call stack, i.e. a call frame.
    * The user opens this context menu by selecting a specific call frame in the call stack sidebar pane.
    */
@@ -11719,11 +11658,11 @@ var UIStrings19 = {
    */
   debugSymbolsIncomplete: "The debug information for function {PH1} is incomplete"
 };
-var str_19 = i18n37.i18n.registerUIStrings("panels/sources/CallStackSidebarPane.ts", UIStrings19);
-var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
+var str_18 = i18n35.i18n.registerUIStrings("panels/sources/CallStackSidebarPane.ts", UIStrings18);
+var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var { createRef, ref: ref2 } = Directives2;
 var callstackSidebarPaneInstance;
-var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleView {
+var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleView {
   ignoreListMessageElement;
   ignoreListCheckboxElement;
   notPausedMessageElement;
@@ -11740,7 +11679,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
   constructor() {
     super({
       jslog: `${VisualLogging12.section("sources.callstack")}`,
-      title: i18nString18(UIStrings19.callStack),
+      title: i18nString17(UIStrings18.callStack),
       viewId: "sources.callstack",
       useShadowDom: true
     });
@@ -11757,8 +11696,8 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
         this.refreshItem(item);
       }
     };
-    this.items = new UI19.ListModel.ListModel();
-    this.list = new UI19.ListControl.ListControl(this.items, this, UI19.ListControl.ListMode.NonViewport);
+    this.items = new UI18.ListModel.ListModel();
+    this.list = new UI18.ListControl.ListControl(this.items, this, UI18.ListControl.ListMode.NonViewport);
     this.list.element.addEventListener("contextmenu", this.onContextMenu.bind(this), false);
     self.onInvokeElement(this.list.element, (event) => {
       const item = this.list.itemForNode(event.target);
@@ -11777,19 +11716,19 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
         <label class='ignore-listed-message-label'>
           <input type='checkbox' tabindex=0 class='ignore-listed-checkbox'
               @change=${ignoreListCheckboxChanged} ${ref2(ignoreListCheckboxRef)} />
-          ${i18nString18(UIStrings19.showIgnorelistedFrames)}
+          ${i18nString17(UIStrings18.showIgnorelistedFrames)}
         </label>
       </div>
       <div class='gray-info-message' tabindex=-1 ${ref2(notPausedRef)}>
-        ${i18nString18(UIStrings19.notPaused)}
+        ${i18nString17(UIStrings18.notPaused)}
       </div>
       <div class='call-frame-warnings-message' tabindex=-1 ${ref2(warningRef)}>
         <devtools-icon .name=${"warning-filled"} class='call-frame-warning-icon small'></devtools-icon>
-        ${i18nString18(UIStrings19.callFrameWarnings)}
+        ${i18nString17(UIStrings18.callFrameWarnings)}
       </div>
       ${this.list.element}
       <div class='show-more-message hidden' ${ref2(showMoreRef)}>
-        <button class='link' @click=${onShowMoreClicked}>${i18nString18(UIStrings19.showMore)}</button>
+        <button class='link' @click=${onShowMoreClicked}>${i18nString17(UIStrings18.showMore)}</button>
       </div>
     `, this.contentElement);
     this.ignoreListMessageElement = ignoreListMessageRef.value;
@@ -11828,7 +11767,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
       this.ignoreListMessageElement.classList.add("hidden");
       this.showMoreMessageElement.classList.add("hidden");
       this.items.replaceAll([]);
-      UI19.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, null);
+      UI18.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, null);
       return;
     }
     this.notPausedMessageElement.classList.add("hidden");
@@ -11842,7 +11781,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     }
     if (uniqueWarnings.size) {
       this.callFrameWarningsElement.classList.remove("hidden");
-      UI19.Tooltip.Tooltip.install(this.callFrameWarningsElement, Array.from(uniqueWarnings).join("\n"));
+      UI18.Tooltip.Tooltip.install(this.callFrameWarningsElement, Array.from(uniqueWarnings).join("\n"));
     }
     let { maxAsyncStackChainDepth } = this;
     let hasMore = false;
@@ -11868,7 +11807,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
         /* center */
       );
       const selectedItem = this.list.selectedItem();
-      if (selectedItem && (UI19.Context.Context.instance().flavor(QuickSourceView) || UI19.Context.Context.instance().flavor(SourcesPanel))) {
+      if (selectedItem && (UI18.Context.Context.instance().flavor(QuickSourceView) || UI18.Context.Context.instance().flavor(SourcesPanel))) {
         this.activateItem(selectedItem);
       }
     }
@@ -11913,21 +11852,21 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     if (item.isAsyncHeader) {
       element.classList.add("async-header");
     } else {
-      UI19.Tooltip.Tooltip.install(titleElement, item.title);
+      UI18.Tooltip.Tooltip.install(titleElement, item.title);
       const linkElement = element.createChild("div", "call-frame-location");
       linkElement.textContent = Platform13.StringUtilities.trimMiddle(item.linkText, 30);
-      UI19.Tooltip.Tooltip.install(linkElement, item.linkText);
+      UI18.Tooltip.Tooltip.install(linkElement, item.linkText);
       element.classList.toggle("ignore-listed-call-frame", item.isIgnoreListed);
       if (item.isIgnoreListed) {
-        UI19.ARIAUtils.setDescription(element, i18nString18(UIStrings19.onIgnoreList));
+        UI18.ARIAUtils.setDescription(element, i18nString17(UIStrings18.onIgnoreList));
       }
       if (!item.frame) {
-        UI19.ARIAUtils.setDisabled(element, true);
+        UI18.ARIAUtils.setDisabled(element, true);
       }
     }
-    const isSelected = item.frame === UI19.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor)?.frame;
+    const isSelected = item.frame === UI18.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor)?.frame;
     element.classList.toggle("selected", isSelected);
-    UI19.ARIAUtils.setSelected(element, isSelected);
+    UI18.ARIAUtils.setSelected(element, isSelected);
     element.classList.toggle("hidden", !this.showIgnoreListed && item.isIgnoreListed);
     const icon = new Icon3();
     icon.name = "large-arrow-right-filled";
@@ -11939,8 +11878,8 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
       icon2.name = "warning-filled";
       icon2.classList.add("call-frame-warning-icon", "small");
       const { resources, details } = convertMissingDebugInfo(item.frame.missingDebugInfo, item.frame.sdkFrame.functionName);
-      const messages = resources.map((r) => i18nString18(UIStrings19.debugFileNotFound, { PH1: Common13.ParsedURL.ParsedURL.extractName(r.resourceUrl) }));
-      UI19.Tooltip.Tooltip.install(icon2, [details, ...messages].join("\n"));
+      const messages = resources.map((r) => i18nString17(UIStrings18.debugFileNotFound, { PH1: Common13.ParsedURL.ParsedURL.extractName(r.resourceUrl) }));
+      UI18.Tooltip.Tooltip.install(icon2, [details, ...messages].join("\n"));
       element.appendChild(icon2);
     }
     return element;
@@ -11972,15 +11911,15 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     if (!item) {
       return;
     }
-    const contextMenu = new UI19.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI18.ContextMenu.ContextMenu(event);
     const debuggerCallFrame = item.frame?.sdkFrame;
     if (debuggerCallFrame) {
-      contextMenu.defaultSection().appendItem(i18nString18(UIStrings19.restartFrame), () => {
+      contextMenu.defaultSection().appendItem(i18nString17(UIStrings18.restartFrame), () => {
         Host9.userMetrics.actionTaken(Host9.UserMetrics.Action.StackFrameRestarted);
         void debuggerCallFrame.restart();
       }, { disabled: !debuggerCallFrame.canBeRestarted, jslogContext: "restart-frame" });
     }
-    contextMenu.defaultSection().appendItem(i18nString18(UIStrings19.copyStackTrace), this.copyStackTrace.bind(this), { jslogContext: "copy-stack-trace" });
+    contextMenu.defaultSection().appendItem(i18nString17(UIStrings18.copyStackTrace), this.copyStackTrace.bind(this), { jslogContext: "copy-stack-trace" });
     if (item.uiLocation) {
       this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);
     }
@@ -11996,7 +11935,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     const oldItem = this.activeCallFrameItem();
     if (debuggerCallFrame) {
       debuggerCallFrame.sdkFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame.sdkFrame);
-      UI19.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, StackTrace5.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame));
+      UI18.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, StackTrace5.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame));
     } else {
       void Common13.Revealer.reveal(uiLocation);
     }
@@ -12008,7 +11947,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     }
   }
   activeCallFrameItem() {
-    const frameFlavor = UI19.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor);
+    const frameFlavor = UI18.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor);
     if (frameFlavor) {
       return this.items.find((callFrameItem) => callFrameItem.frame === frameFlavor.frame) || null;
     }
@@ -12023,7 +11962,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     if (menuSection.items.length > 0) {
       return;
     }
-    for (const { text, callback, jslogContext } of Workspace24.IgnoreListManager.IgnoreListManager.instance().getIgnoreListURLContextMenuItems(uiSourceCode)) {
+    for (const { text, callback, jslogContext } of Workspace23.IgnoreListManager.IgnoreListManager.instance().getIgnoreListURLContextMenuItems(uiSourceCode)) {
       menuSection.appendItem(text, callback, { jslogContext });
     }
   }
@@ -12093,7 +12032,7 @@ var Item = class _Item {
     return item;
   }
   static createForFrame(frame) {
-    const item = new _Item(UI19.UIUtils.beautifyFunctionName(frame.name ?? ""));
+    const item = new _Item(UI18.UIUtils.beautifyFunctionName(frame.name ?? ""));
     const uiSourceCode = frame.uiSourceCode;
     if (uiSourceCode) {
       item.isIgnoreListed = uiSourceCode.isIgnoreListed() ?? false;
@@ -12103,7 +12042,7 @@ var Item = class _Item {
     return item;
   }
   static createForAsyncHeader(stackTrace, fragment) {
-    const description = UI19.UIUtils.asyncFragmentLabel(stackTrace, fragment);
+    const description = UI18.UIUtils.asyncFragmentLabel(stackTrace, fragment);
     const item = new _Item(description);
     item.isAsyncHeader = true;
     return item;
@@ -12116,12 +12055,12 @@ function convertMissingDebugInfo(missingDebugInfo, functionName) {
   switch (missingDebugInfo.type) {
     case "PARTIAL_INFO":
       return {
-        details: i18nString18(UIStrings19.debugSymbolsIncomplete, { PH1: functionName ?? "" }),
+        details: i18nString17(UIStrings18.debugSymbolsIncomplete, { PH1: functionName ?? "" }),
         resources: missingDebugInfo.missingDebugFiles
       };
     case "NO_INFO":
       return {
-        details: i18nString18(UIStrings19.failedToLoadDebugSymbolsForFunction, { PH1: functionName ?? "" }),
+        details: i18nString17(UIStrings18.failedToLoadDebugSymbolsForFunction, { PH1: functionName ?? "" }),
         resources: []
       };
   }
@@ -12282,9 +12221,9 @@ __export(FilteredUISourceCodeListProvider_exports, {
 });
 import "./../../ui/components/highlighting/highlighting.js";
 import * as Common14 from "./../../core/common/common.js";
-import * as i18n39 from "./../../core/i18n/i18n.js";
+import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as Persistence12 from "./../../models/persistence/persistence.js";
-import * as Workspace25 from "./../../models/workspace/workspace.js";
+import * as Workspace24 from "./../../models/workspace/workspace.js";
 import * as QuickOpen3 from "./../../ui/legacy/components/quick_open/quick_open.js";
 import { Directives as Directives3, html as html8, nothing as nothing5 } from "./../../ui/lit/lit.js";
 
@@ -12345,13 +12284,13 @@ var filteredUISourceCodeListProvider_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./filteredUISourceCodeListProvider.css")} */`;
 
 // gen/front_end/panels/sources/FilteredUISourceCodeListProvider.js
-var UIStrings20 = {
+var UIStrings19 = {
   /**
-   * @description Text in Filtered UISource Code List Provider of the Sources panel
+   * @description Text in Filtered UISourceCode list provider of the Sources panel.
    */
   noFilesFound: "No files found",
   /**
-   * @description Name of an item that is on the ignore list
+   * @description Name of an item that is on the ignore list.
    * @example {compile.html} PH1
    */
   sIgnoreListed: "{PH1} (ignore listed)",
@@ -12360,8 +12299,8 @@ var UIStrings20 = {
    */
   workspace: "Workspace"
 };
-var str_20 = i18n39.i18n.registerUIStrings("panels/sources/FilteredUISourceCodeListProvider.ts", UIStrings20);
-var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
+var str_19 = i18n37.i18n.registerUIStrings("panels/sources/FilteredUISourceCodeListProvider.ts", UIStrings19);
+var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var { classMap: classMap2 } = Directives3;
 var FILE_SYSTEM_SCORE_BONUS = 1e6;
 var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidget.Provider {
@@ -12387,7 +12326,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
    */
   isFileSystemFile(uiSourceCode) {
     const projectType = uiSourceCode.project().type();
-    return projectType === Workspace25.Workspace.projectTypes.FileSystem || projectType === Workspace25.Workspace.projectTypes.ConnectableFileSystem;
+    return projectType === Workspace24.Workspace.projectTypes.FileSystem || projectType === Workspace24.Workspace.projectTypes.ConnectableFileSystem;
   }
   projectRemoved(event) {
     const project = event.data;
@@ -12397,7 +12336,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
   populate(skipProject) {
     this.uiSourceCodes = [];
     this.uiSourceCodeIds.clear();
-    for (const project of Workspace25.Workspace.WorkspaceImpl.instance().projects()) {
+    for (const project of Workspace24.Workspace.WorkspaceImpl.instance().projects()) {
       if (project !== skipProject && this.filterProject(project)) {
         for (const uiSourceCode of project.uiSourceCodes()) {
           if (this.filterUISourceCode(uiSourceCode)) {
@@ -12412,7 +12351,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (this.uiSourceCodeIds.has(uiSourceCode.canonicalScriptId())) {
       return false;
     }
-    if (Common14.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace25.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+    if (Common14.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
       return false;
     }
     if (uiSourceCode.isFetchXHR()) {
@@ -12451,7 +12390,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     }
     let multiplier = 10;
     const isSnippet = Common14.ParsedURL.schemeIs(uiSourceCode.url(), "snippet:");
-    const isUnboundLocalFile = uiSourceCode.project().type() === Workspace25.Workspace.projectTypes.FileSystem && !Persistence12.Persistence.PersistenceImpl.instance().binding(uiSourceCode) && !isSnippet;
+    const isUnboundLocalFile = uiSourceCode.project().type() === Workspace24.Workspace.projectTypes.FileSystem && !Persistence12.Persistence.PersistenceImpl.instance().binding(uiSourceCode) && !isSnippet;
     if (isUnboundLocalFile) {
       multiplier = 5;
     }
@@ -12460,7 +12399,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
       contentTypeBonus = 100;
     }
     if (uiSourceCode.contentType().isScript()) {
-      if (!Workspace25.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+      if (!Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
         contentTypeBonus += 50;
       }
     }
@@ -12474,10 +12413,10 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     const indexes = [];
     new FilePathScoreFunction(query).calculateScore(fullDisplayName, indexes);
     const fileNameIndex = fullDisplayName.lastIndexOf("/");
-    const isIgnoreListed = Workspace25.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode);
+    const isIgnoreListed = Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode);
     let tooltipText = fullDisplayName;
     if (isIgnoreListed) {
-      tooltipText = i18nString19(UIStrings20.sIgnoreListed, { PH1: tooltipText });
+      tooltipText = i18nString18(UIStrings19.sIgnoreListed, { PH1: tooltipText });
     }
     const titleRanges = [];
     const subtitleRanges = [];
@@ -12507,7 +12446,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
             class="filtered-ui-source-code-subtitle" title=${tooltipText}>
           ${this.renderSubtitleElement(fullDisplayName.substring(0, fileNameIndex + 1))}
         </devtools-highlight>
-        ${isFileSystem ? html8`<span class="tag">${i18nString19(UIStrings20.workspace)}</span>` : nothing5}
+        ${isFileSystem ? html8`<span class="tag">${i18nString18(UIStrings19.workspace)}</span>` : nothing5}
       </div>`;
   }
   renderSubtitleElement(text) {
@@ -12555,16 +12494,16 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     this.refresh();
   }
   notFoundText() {
-    return i18nString19(UIStrings20.noFilesFound);
+    return i18nString18(UIStrings19.noFilesFound);
   }
   attach() {
-    Workspace25.Workspace.WorkspaceImpl.instance().addEventListener(Workspace25.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
-    Workspace25.Workspace.WorkspaceImpl.instance().addEventListener(Workspace25.Workspace.Events.ProjectRemoved, this.projectRemoved, this);
+    Workspace24.Workspace.WorkspaceImpl.instance().addEventListener(Workspace24.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
+    Workspace24.Workspace.WorkspaceImpl.instance().addEventListener(Workspace24.Workspace.Events.ProjectRemoved, this.projectRemoved, this);
     this.populate();
   }
   detach() {
-    Workspace25.Workspace.WorkspaceImpl.instance().removeEventListener(Workspace25.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
-    Workspace25.Workspace.WorkspaceImpl.instance().removeEventListener(Workspace25.Workspace.Events.ProjectRemoved, this.projectRemoved, this);
+    Workspace24.Workspace.WorkspaceImpl.instance().removeEventListener(Workspace24.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
+    Workspace24.Workspace.WorkspaceImpl.instance().removeEventListener(Workspace24.Workspace.Events.ProjectRemoved, this.projectRemoved, this);
     this.queryLineNumberAndColumnNumber = "";
     this.defaultScores = null;
   }
@@ -12576,53 +12515,53 @@ __export(GoToLineQuickOpen_exports, {
   GoToLineQuickOpen: () => GoToLineQuickOpen
 });
 import "./../../ui/kit/kit.js";
-import * as i18n41 from "./../../core/i18n/i18n.js";
+import * as i18n39 from "./../../core/i18n/i18n.js";
 import * as QuickOpen4 from "./../../ui/legacy/components/quick_open/quick_open.js";
-import * as UI20 from "./../../ui/legacy/legacy.js";
+import * as UI19 from "./../../ui/legacy/legacy.js";
 import { html as html9 } from "./../../ui/lit/lit.js";
-var UIStrings21 = {
+var UIStrings20 = {
   /**
-   * @description Text in Go To Line Quick Open of the Sources panel
+   * @description Text in the go to line quick open menu of the Sources panel.
    */
   noFileSelected: "No file selected",
   /**
-   * @description Text to show no results have been found
+   * @description Text to show no results have been found.
    */
   noResultsFound: "No results found",
   /**
-   * @description Text in Go To Line Quick Open of the Sources panel
+   * @description Text in the go to line quick open menu of the Sources panel.
    */
   typeANumberToGoToThatLine: "Type a number to go to that line",
   /**
-   * @description Text in Go To Line Quick Open of the Sources panel
-   * @example {000} PH1
-   * @example {bbb} PH2
+   * @description Text in the go to line quick open menu of the Sources panel.
+   * @example {0000} PH1
+   * @example {ffff} PH2
    */
   currentPositionXsTypeAnOffset: "Type an offset between 0x{PH1} and 0x{PH2} to navigate to",
   /**
-   * @description Text in the GoToLine dialog of the Sources pane that describes the current line number, file line number range, and use of the GoToLine dialog
+   * @description Text in the go to line quick open menu of the Sources panel that describes the current line number, file line number range, and use of the go to line menu.
    * @example {100} PH1
    */
   currentLineSTypeALineNumber: "Type a line number between 1 and {PH1} to navigate to",
   /**
-   * @description Text in Go To Line Quick Open of the Sources panel
+   * @description Text in the go to line quick open menu of the Sources panel.
    * @example {abc} PH1
    */
   goToOffsetXs: "Go to offset 0x{PH1}",
   /**
-   * @description Text in Go To Line Quick Open of the Sources panel
+   * @description Text in the go to line quick open menu of the Sources panel.
    * @example {2} PH1
    * @example {2} PH2
    */
   goToLineSAndColumnS: "Go to line {PH1} and column {PH2}",
   /**
-   * @description Text in Go To Line Quick Open of the Sources panel
+   * @description Text in the go to line quick open menu of the Sources panel.
    * @example {2} PH1
    */
   goToLineS: "Go to line {PH1}"
 };
-var str_21 = i18n41.i18n.registerUIStrings("panels/sources/GoToLineQuickOpen.ts", UIStrings21);
-var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
+var str_20 = i18n39.i18n.registerUIStrings("panels/sources/GoToLineQuickOpen.ts", UIStrings20);
+var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
   #goToLineStrings = [];
   selectItem(_itemIndex, promptValue) {
@@ -12655,7 +12594,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
     const sourceFrame = this.currentSourceFrame();
     if (!position) {
       if (!sourceFrame) {
-        this.#goToLineStrings.push(i18nString20(UIStrings21.typeANumberToGoToThatLine));
+        this.#goToLineStrings.push(i18nString19(UIStrings20.typeANumberToGoToThatLine));
         return;
       }
       const editorState = sourceFrame.textEditor.state;
@@ -12663,34 +12602,34 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
       if (disassembly) {
         const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
         const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
-        this.#goToLineStrings.push(i18nString20(UIStrings21.currentPositionXsTypeAnOffset, {
+        this.#goToLineStrings.push(i18nString19(UIStrings20.currentPositionXsTypeAnOffset, {
           PH1: "0".padStart(bytecodeOffsetDigits, "0"),
           PH2: lastBytecodeOffset.toString(16)
         }));
         return;
       }
       const linesCount = sourceFrame.editorLocationToUILocation(editorState.doc.lines - 1).lineNumber + 1;
-      this.#goToLineStrings.push(i18nString20(UIStrings21.currentLineSTypeALineNumber, { PH1: linesCount }));
+      this.#goToLineStrings.push(i18nString19(UIStrings20.currentLineSTypeALineNumber, { PH1: linesCount }));
       return;
     }
     if (sourceFrame?.wasmDisassembly) {
-      this.#goToLineStrings.push(i18nString20(UIStrings21.goToOffsetXs, { PH1: (position.column - 1).toString(16) }));
+      this.#goToLineStrings.push(i18nString19(UIStrings20.goToOffsetXs, { PH1: (position.column - 1).toString(16) }));
       return;
     }
     if (position.column && position.column > 1) {
-      this.#goToLineStrings.push(i18nString20(UIStrings21.goToLineSAndColumnS, { PH1: position.line, PH2: position.column }));
+      this.#goToLineStrings.push(i18nString19(UIStrings20.goToLineSAndColumnS, { PH1: position.line, PH2: position.column }));
       return;
     }
     if (sourceFrame && position.line > sourceFrame.textEditor.state.doc.lines) {
       return;
     }
-    this.#goToLineStrings.push(i18nString20(UIStrings21.goToLineS, { PH1: position.line }));
+    this.#goToLineStrings.push(i18nString19(UIStrings20.goToLineS, { PH1: position.line }));
   }
   notFoundText(_query) {
     if (!this.currentSourceFrame()) {
-      return i18nString20(UIStrings21.noFileSelected);
+      return i18nString19(UIStrings20.noFileSelected);
     }
-    return i18nString20(UIStrings21.noResultsFound);
+    return i18nString19(UIStrings20.noResultsFound);
   }
   parsePosition(query) {
     const sourceFrame = this.currentSourceFrame();
@@ -12714,7 +12653,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
     return { line: Math.max(line | 0, 1), column: Math.max(column | 0, 1) };
   }
   currentSourceFrame() {
-    const sourcesView = UI20.Context.Context.instance().flavor(SourcesView);
+    const sourcesView = UI19.Context.Context.instance().flavor(SourcesView);
     if (!sourcesView) {
       return null;
     }
@@ -12768,27 +12707,27 @@ __export(OutlineQuickOpen_exports, {
 });
 import "./../../ui/kit/kit.js";
 import "./../../ui/components/highlighting/highlighting.js";
-import * as i18n43 from "./../../core/i18n/i18n.js";
+import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as CodeMirror7 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as QuickOpen5 from "./../../ui/legacy/components/quick_open/quick_open.js";
-import * as UI21 from "./../../ui/legacy/legacy.js";
+import * as UI20 from "./../../ui/legacy/legacy.js";
 import { html as html11, nothing as nothing6 } from "./../../ui/lit/lit.js";
-var UIStrings22 = {
+var UIStrings21 = {
   /**
-   * @description Text in Go To Line Quick Open of the Sources panel
+   * @description Text in Go to line Quick Open of the Sources panel.
    */
   noFileSelected: "No file selected.",
   /**
-   * @description Text in Outline Quick Open of the Sources panel
+   * @description Text in Outline Quick Open of the Sources panel.
    */
   openAJavascriptOrCssFileToSee: "Open a JavaScript or CSS file to see symbols",
   /**
-   * @description Text to show no results have been found
+   * @description Text to show no results have been found.
    */
   noResultsFound: "No results found"
 };
-var str_22 = i18n43.i18n.registerUIStrings("panels/sources/OutlineQuickOpen.ts", UIStrings22);
-var i18nString21 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
+var str_21 = i18n41.i18n.registerUIStrings("panels/sources/OutlineQuickOpen.ts", UIStrings21);
+var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 function outline(state) {
   function toLineColumn(offset) {
     offset = Math.max(0, Math.min(offset, state.doc.length));
@@ -13106,17 +13045,17 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     sourceFrame.revealPosition({ lineNumber: item.lineNumber, columnNumber: item.columnNumber }, true);
   }
   currentSourceFrame() {
-    const sourcesView = UI21.Context.Context.instance().flavor(SourcesView);
+    const sourcesView = UI20.Context.Context.instance().flavor(SourcesView);
     return sourcesView?.currentSourceFrame() ?? null;
   }
   notFoundText() {
     if (!this.currentSourceFrame()) {
-      return i18nString21(UIStrings22.noFileSelected);
+      return i18nString20(UIStrings21.noFileSelected);
     }
     if (!this.active) {
-      return i18nString21(UIStrings22.openAJavascriptOrCssFileToSee);
+      return i18nString20(UIStrings21.openAJavascriptOrCssFileToSee);
     }
-    return i18nString21(UIStrings22.noResultsFound);
+    return i18nString20(UIStrings21.noResultsFound);
   }
 };
 
@@ -13127,61 +13066,61 @@ __export(PersistenceActions_exports, {
 });
 import * as Common16 from "./../../core/common/common.js";
 import * as Host11 from "./../../core/host/host.js";
-import * as i18n45 from "./../../core/i18n/i18n.js";
+import * as i18n43 from "./../../core/i18n/i18n.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as TextUtils11 from "./../../core/text_utils/text_utils.js";
 import * as Bindings10 from "./../../models/bindings/bindings.js";
 import * as Persistence14 from "./../../models/persistence/persistence.js";
-import * as Workspace27 from "./../../models/workspace/workspace.js";
-import * as UI22 from "./../../ui/legacy/legacy.js";
-var UIStrings23 = {
+import * as Workspace26 from "./../../models/workspace/workspace.js";
+import * as UI21 from "./../../ui/legacy/legacy.js";
+var UIStrings22 = {
   /**
-   * @description Text to save content as a specific file type
+   * @description Text to save content as a specific file type.
    */
   saveAs: "Save as\u2026",
   /**
-   * @description Context menu item for saving an image
+   * @description Context menu item for saving an image.
    */
   saveImage: "Save image",
   /**
-   * @description Context menu item for showing all overridden files
+   * @description Context menu item for showing all overridden files.
    */
   showOverrides: "Show all overrides",
   /**
-   * @description A context menu item in the Persistence Actions of the Workspace settings in Settings
+   * @description A context menu item in the Persistence actions of the Workspace settings in Settings.
    */
   overrideContent: "Override content",
   /**
-   * @description A context menu item in the Persistence Actions of the Workspace settings in Settings
+   * @description A context menu item in the Persistence actions of the Workspace settings in Settings.
    */
   openInContainingFolder: "Open in containing folder",
   /**
-   * @description A message in a confirmation dialog in the Persistence Actions
+   * @description A message in a confirmation dialog in the Persistence actions.
    * @example {bundle.min.js} PH1
    */
   overrideSourceMappedFileWarning: "Override \u2018{PH1}\u2019 instead?",
   /**
-   * @description A message in a confirmation dialog to explain why the action is failed in the Persistence Actions
+   * @description A message in a confirmation dialog to explain why the action failed in the Persistence actions.
    * @example {index.ts} PH1
    */
   overrideSourceMappedFileExplanation: "\u2018{PH1}\u2019 is a source mapped file and cannot be overridden.",
   /**
-   * @description An error message shown in the DevTools console after the user clicked "Save as" in
+   * @description An error message shown in the DevTools Console after the user clicked "Save as" in
    * the context menu of a page resource.
    */
   saveFailed: "Failed to save file to disk.",
   /**
-   * @description An error message shown in the DevTools console after the user clicked "Save as" in
+   * @description An error message shown in the DevTools Console after the user clicked "Save as" in
    * the context menu of a WebAssembly file.
    */
   saveWasmFailed: "Unable to save WASM module to disk. Most likely the module is too large."
 };
-var str_23 = i18n45.i18n.registerUIStrings("panels/sources/PersistenceActions.ts", UIStrings23);
-var i18nString22 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
+var str_22 = i18n43.i18n.registerUIStrings("panels/sources/PersistenceActions.ts", UIStrings22);
+var i18nString21 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var ContextMenuProvider = class {
   appendApplicableItems(_event, contextMenu, contentProvider) {
     async function saveAs() {
-      if (contentProvider instanceof Workspace27.UISourceCode.UISourceCode) {
+      if (contentProvider instanceof Workspace26.UISourceCode.UISourceCode) {
         contentProvider.commitWorkingCopy();
       }
       const url = contentProvider.contentURL();
@@ -13199,7 +13138,7 @@ var ContextMenuProvider = class {
         } catch (e) {
           console.error(`Unable to convert WASM byte code for ${url} to base64. Not saving to disk`, e.stack);
           Common16.Console.Console.instance().error(
-            i18nString22(UIStrings23.saveWasmFailed),
+            i18nString21(UIStrings22.saveWasmFailed),
             /* show=*/
             false
           );
@@ -13210,7 +13149,7 @@ var ContextMenuProvider = class {
         if (TextUtils11.ContentData.ContentData.isError(contentDataOrError)) {
           console.error(`Failed to retrieve content for ${url}: ${contentDataOrError}`);
           Common16.Console.Console.instance().error(
-            i18nString22(UIStrings23.saveFailed),
+            i18nString21(UIStrings22.saveFailed),
             /* show=*/
             false
           );
@@ -13218,13 +13157,13 @@ var ContextMenuProvider = class {
         }
         contentData = contentDataOrError;
       }
-      await Workspace27.FileManager.FileManager.instance().save(
+      await Workspace26.FileManager.FileManager.instance().save(
         url,
         contentData,
         /* forceSaveAs=*/
         true
       );
-      Workspace27.FileManager.FileManager.instance().close(url);
+      Workspace26.FileManager.FileManager.instance().close(url);
     }
     async function saveImage() {
       const targetObject = contentProvider;
@@ -13236,22 +13175,22 @@ var ContextMenuProvider = class {
       link.click();
     }
     if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet()) {
-      contextMenu.saveSection().appendItem(i18nString22(UIStrings23.saveAs), saveAs, { jslogContext: "save-as" });
+      contextMenu.saveSection().appendItem(i18nString21(UIStrings22.saveAs), saveAs, { jslogContext: "save-as" });
     } else if (contentProvider instanceof SDK12.Resource.Resource && contentProvider.contentType().isImage()) {
-      contextMenu.saveSection().appendItem(i18nString22(UIStrings23.saveImage), saveImage, { jslogContext: "save-image" });
+      contextMenu.saveSection().appendItem(i18nString21(UIStrings22.saveImage), saveImage, { jslogContext: "save-image" });
     }
-    const uiSourceCode = Workspace27.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
+    const uiSourceCode = Workspace26.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
     const networkPersistenceManager = Persistence14.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     const binding = uiSourceCode && Persistence14.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
-    const fileSystemUISourceCode = binding ? binding.fileSystem : contentProvider instanceof Workspace27.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace27.Workspace.projectTypes.FileSystem ? contentProvider : uiSourceCode;
-    if (fileSystemUISourceCode && fileSystemUISourceCode.project().type() === Workspace27.Workspace.projectTypes.FileSystem) {
+    const fileSystemUISourceCode = binding ? binding.fileSystem : contentProvider instanceof Workspace26.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace26.Workspace.projectTypes.FileSystem ? contentProvider : uiSourceCode;
+    if (fileSystemUISourceCode && fileSystemUISourceCode.project().type() === Workspace26.Workspace.projectTypes.FileSystem) {
       const fileURL = fileSystemUISourceCode.contentURL();
       if (Common16.ParsedURL.schemeIs(fileURL, "file:")) {
         const path = Common16.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host11.Platform.isWin());
-        contextMenu.revealSection().appendItem(i18nString22(UIStrings23.openInContainingFolder), () => Host11.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path), { jslogContext: "open-in-containing-folder" });
+        contextMenu.revealSection().appendItem(i18nString21(UIStrings22.openInContainingFolder), () => Host11.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path), { jslogContext: "open-in-containing-folder" });
       }
     }
-    if (contentProvider instanceof Workspace27.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace27.Workspace.projectTypes.FileSystem) {
+    if (contentProvider instanceof Workspace26.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace26.Workspace.projectTypes.FileSystem) {
       return;
     }
     let disabled = true;
@@ -13269,10 +13208,10 @@ var ContextMenuProvider = class {
         }
       }
     }
-    contextMenu.overrideSection().appendItem(i18nString22(UIStrings23.overrideContent), handler, { disabled, jslogContext: "override-content" });
+    contextMenu.overrideSection().appendItem(i18nString21(UIStrings22.overrideContent), handler, { disabled, jslogContext: "override-content" });
     if (contentProvider instanceof SDK12.NetworkRequest.NetworkRequest) {
-      contextMenu.overrideSection().appendItem(i18nString22(UIStrings23.showOverrides), async () => {
-        await UI22.ViewManager.ViewManager.instance().showView("navigator-overrides");
+      contextMenu.overrideSection().appendItem(i18nString21(UIStrings22.showOverrides), async () => {
+        await UI21.ViewManager.ViewManager.instance().showView("navigator-overrides");
         Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.ShowAllOverridesFromNetworkContextMenu);
       }, { jslogContext: "show-overrides" });
     }
@@ -13285,7 +13224,7 @@ var ContextMenuProvider = class {
     }
     if (contentProvider instanceof SDK12.NetworkRequest.NetworkRequest) {
       Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.OverrideContentFromNetworkContextMenu);
-    } else if (contentProvider instanceof Workspace27.UISourceCode.UISourceCode) {
+    } else if (contentProvider instanceof Workspace26.UISourceCode.UISourceCode) {
       Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.OverrideContentFromSourcesContextMenu);
     }
     if (uiSourceCode.isFetchXHR()) {
@@ -13308,7 +13247,7 @@ var ContextMenuProvider = class {
     const deployedName = Bindings10.ResourceUtils.displayNameForURL(deployedUrl);
     const originalUrl = originalUiSourceCode.url();
     const originalName = Bindings10.ResourceUtils.displayNameForURL(originalUrl);
-    const shouldJumpToDeployedFile = await UI22.UIUtils.ConfirmDialog.show(i18nString22(UIStrings23.overrideSourceMappedFileExplanation, { PH1: originalName }), i18nString22(UIStrings23.overrideSourceMappedFileWarning, { PH1: deployedName }), void 0, { jslogContext: "override-source-mapped-file-warning" });
+    const shouldJumpToDeployedFile = await UI21.UIUtils.ConfirmDialog.show(i18nString21(UIStrings22.overrideSourceMappedFileExplanation, { PH1: originalName }), i18nString21(UIStrings22.overrideSourceMappedFileWarning, { PH1: deployedName }), void 0, { jslogContext: "override-source-mapped-file-warning" });
     if (shouldJumpToDeployedFile) {
       Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.OverrideContentContextMenuRedirectToDeployed);
       await this.handleOverrideContent(deployedUiSourceCode, deployedUiSourceCode);
@@ -13326,12 +13265,12 @@ var ContextMenuProvider = class {
     if (!deployedStylesUrl) {
       return null;
     }
-    const deployedUiSourceCode = Workspace27.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(deployedStylesUrl) || Workspace27.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(Common16.ParsedURL.ParsedURL.urlWithoutHash(deployedStylesUrl));
+    const deployedUiSourceCode = Workspace26.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(deployedStylesUrl) || Workspace26.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(Common16.ParsedURL.ParsedURL.urlWithoutHash(deployedStylesUrl));
     return deployedUiSourceCode;
   }
 };
 function getScript(contentProvider) {
-  if (!(contentProvider instanceof Workspace27.UISourceCode.UISourceCode)) {
+  if (!(contentProvider instanceof Workspace26.UISourceCode.UISourceCode)) {
     return null;
   }
   const target = Bindings10.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider);
@@ -13351,13 +13290,13 @@ __export(ScopeChainSidebarPane_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW6,
   ScopeChainSidebarPane: () => ScopeChainSidebarPane
 });
-import * as i18n47 from "./../../core/i18n/i18n.js";
+import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as Bindings11 from "./../../models/bindings/bindings.js";
 import * as SourceMapScopes2 from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as StackTrace7 from "./../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI23 from "./../../ui/legacy/legacy.js";
+import * as UI22 from "./../../ui/legacy/legacy.js";
 import { html as html12, nothing as nothing7, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -13407,37 +13346,37 @@ var scopeChainSidebarPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./scopeChainSidebarPane.css")} */`;
 
 // gen/front_end/panels/sources/ScopeChainSidebarPane.js
-var UIStrings24 = {
+var UIStrings23 = {
   /**
-   * @description Loading indicator in Scope Sidebar Pane of the Sources panel
+   * @description Loading indicator in the scope sidebar of the Sources panel.
    */
   loading: "Loading\u2026",
   /**
-   * @description Not paused message element text content in Call Stack Sidebar Pane of the Sources panel
+   * @description Not paused message element text content in the call stack sidebar of the Sources panel.
    */
   notPaused: "Not paused",
   /**
-   * @description Empty placeholder in Scope Chain Sidebar Pane of the Sources panel
+   * @description Empty placeholder in the scope chain sidebar of the Sources panel.
    */
   noVariables: "No variables",
   /**
-   * @description Text in the Sources panel Scope pane describing a closure scope.
+   * @description Text in the scope sidebar of the Sources panel describing a closure scope.
    * @example {func} PH1
    */
   closureS: "Closure ({PH1})",
   /**
-   * @description Text that refers to closure as a programming term
+   * @description Text that refers to closure as a programming term.
    */
   closure: "Closure"
 };
-var str_24 = i18n47.i18n.registerUIStrings("panels/sources/ScopeChainSidebarPane.ts", UIStrings24);
-var i18nString23 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
+var str_23 = i18n45.i18n.registerUIStrings("panels/sources/ScopeChainSidebarPane.ts", UIStrings23);
+var i18nString22 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var scopeChainSidebarPaneInstance;
 var DEFAULT_VIEW6 = (input, output, target) => {
   const createScopeSection = ({ scope, objectTree }) => {
     let emptyPlaceholder = null;
     if (scope.type() === "local" || scope.type() === "closure") {
-      emptyPlaceholder = i18nString23(UIStrings24.noVariables);
+      emptyPlaceholder = i18nString22(UIStrings23.noVariables);
     }
     const icon = scope.icon();
     const { title, subtitle } = scopeTitle(scope);
@@ -13451,7 +13390,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
       input.onToggle(objectTree, customEvent.detail.expanded);
     }}
               @contextmenu=${(e) => {
-      const contextMenu = new UI23.ContextMenu.ContextMenu(e);
+      const contextMenu = new UI22.ContextMenu.ContextMenu(e);
       input.onContextMenu(objectTree, contextMenu);
       void contextMenu.show();
     }}>
@@ -13479,7 +13418,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
           ${input.scopeChain?.map((item) => createScopeSection(item)) ?? nothing7}
         </ul>`}>
       </devtools-tree>` : html12`
-      <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString23(UIStrings24.loading) : i18nString23(UIStrings24.notPaused)}</div>`}
+      <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString22(UIStrings23.loading) : i18nString22(UIStrings23.notPaused)}</div>`}
     `,
     // clang-format on
     target
@@ -13490,9 +13429,9 @@ function scopeTitle(scope) {
   if (scope.type() === "closure") {
     const scopeName = scope.name();
     if (scopeName) {
-      title = i18nString23(UIStrings24.closureS, { PH1: UI23.UIUtils.beautifyFunctionName(scopeName) });
+      title = i18nString22(UIStrings23.closureS, { PH1: UI22.UIUtils.beautifyFunctionName(scopeName) });
     } else {
-      title = i18nString23(UIStrings24.closure);
+      title = i18nString22(UIStrings23.closure);
     }
   }
   let subtitle = scope.description();
@@ -13506,7 +13445,7 @@ function scopeKey(scope) {
   if (scope.type() === "closure") {
     const scopeName = scope.name();
     if (scopeName) {
-      title = `Closure: ${UI23.UIUtils.beautifyFunctionName(scopeName)}`;
+      title = `Closure: ${UI22.UIUtils.beautifyFunctionName(scopeName)}`;
     } else {
       title = "Closure";
     }
@@ -13517,7 +13456,7 @@ function scopeKey(scope) {
   }
   return title + (subtitle ? ":" + subtitle : "");
 }
-var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI23.Widget.VBox {
+var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBox {
   #linkifier;
   #expansionTrackers = /* @__PURE__ */ new Map();
   #scopeChainModel = null;
@@ -13529,7 +13468,7 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI23.Widget.VBo
       useShadowDom: true
     });
     this.#linkifier = new Components3.Linkifier.Linkifier();
-    this.flavorChanged(UI23.Context.Context.instance().flavor(StackTrace7.StackTrace.DebuggableFrameFlavor));
+    this.flavorChanged(UI22.Context.Context.instance().flavor(StackTrace7.StackTrace.DebuggableFrameFlavor));
     this.#view = view;
   }
   static instance() {
@@ -13637,16 +13576,16 @@ __export(SourcesNavigator_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common17 from "./../../core/common/common.js";
 import * as Host12 from "./../../core/host/host.js";
-import * as i18n49 from "./../../core/i18n/i18n.js";
+import * as i18n47 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as TextUtils12 from "./../../core/text_utils/text_utils.js";
 import * as Bindings12 from "./../../models/bindings/bindings.js";
 import * as Persistence16 from "./../../models/persistence/persistence.js";
-import * as Workspace29 from "./../../models/workspace/workspace.js";
+import * as Workspace28 from "./../../models/workspace/workspace.js";
 import * as uiI18n3 from "./../../ui/i18n/i18n.js";
 import { Link as Link2 } from "./../../ui/kit/kit.js";
-import * as UI24 from "./../../ui/legacy/legacy.js";
+import * as UI23 from "./../../ui/legacy/legacy.js";
 import * as Snippets5 from "./../snippets/snippets.js";
 
 // gen/front_end/panels/sources/sourcesNavigator.css.js
@@ -13677,69 +13616,69 @@ var sourcesNavigator_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./sourcesNavigator.css")} */`;
 
 // gen/front_end/panels/sources/SourcesNavigator.js
-var UIStrings25 = {
+var UIStrings24 = {
   /**
-   * @description Text to show if no workspaces are set up. https://goo.gle/devtools-workspace
+   * @description Text to show if no workspaces are set up. Learn more at https://goo.gle/devtools-workspace.
    */
   noWorkspace: "No workspaces set up",
   /**
-   * @description Text to explain the Workspace feature in the Sources panel. https://goo.gle/devtools-workspace
+   * @description Text to explain the workspace feature in the Sources panel. Learn more at https://goo.gle/devtools-workspace.
    */
   explainWorkspace: "Set up workspaces to sync edits directly to the sources you develop.",
   /**
-   * @description Text to show if no local overrides are set up. https://goo.gle/devtools-overrides
+   * @description Text to show if no local overrides are set up. Learn more at https://goo.gle/devtools-overrides.
    */
   noLocalOverrides: "No local overrides set up",
   /**
-   * @description Text to explain the Local Overrides feature. https://goo.gle/devtools-overrides
+   * @description Text to explain the local overrides feature. Learn more at https://goo.gle/devtools-overrides.
    */
   explainLocalOverrides: "Override network requests and web content locally to mock remote resources.",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon clear button in the Sources Navigator of the Sources panel
+   * @description Tooltip text that appears when hovering over the clear button in the Sources navigator of the Sources panel.
    */
   clearConfiguration: "Clear configuration",
   /**
-   * @description Text in Sources Navigator of the Sources panel
+   * @description Text in Sources navigator of the Sources panel.
    */
   selectFolderForOverrides: "Select folder for overrides",
   /**
-   * @description Text to show if no content scripts can be found in the Sources panel. https://developer.chrome.com/extensions/content_scripts
+   * @description Text to show if no content scripts can be found in the Sources panel. Learn more at https://developer.chrome.com/extensions/content_scripts.
    */
   noContentScripts: "No content scripts detected",
   /**
-   * @description Text to explain the content scripts pane in the Sources panel
+   * @description Text to explain the content scripts sidebar in the Sources panel.
    */
   explainContentScripts: "View content scripts served by extensions.",
   /**
-   * @description Text to show if no snippets were created and saved in the Sources panel https://goo.gle/devtools-snippets
+   * @description Text to show if no snippets were created and saved in the Sources panel. Learn more at https://goo.gle/devtools-snippets.
    */
   noSnippets: "No snippets saved",
   /**
-   * @description Text to explain the Snippets feature in the Sources panel https://goo.gle/devtools-snippets
+   * @description Text to explain the snippets feature in the Sources panel. Learn more at https://goo.gle/devtools-snippets.
    */
   explainSnippets: "Save the JavaScript code you run often in a snippet to run it again anytime.",
   /**
-   * @description Text in Sources Navigator of the Sources panel
+   * @description Text in Sources navigator of the Sources panel.
    */
   newSnippet: "New snippet",
   /**
-   * @description Title of an action in the sources tool to create snippet
+   * @description Title of an action in the sources tool to create a snippet.
    */
   createNewSnippet: "Create new snippet",
   /**
-   * @description A context menu item in the Sources Navigator of the Sources panel
+   * @description A context menu item in the Sources navigator of the Sources panel.
    */
   run: "Run",
   /**
-   * @description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator view of the Sources panel.
    */
   rename: "Rename\u2026",
   /**
-   * @description Label for an item to remove something
+   * @description Label for an item to remove something.
    */
   remove: "Remove",
   /**
-   * @description Text to save content as a specific file type
+   * @description Text to save content as a specific file type.
    */
   saveAs: "Save as\u2026",
   /**
@@ -13751,23 +13690,23 @@ var UIStrings25 = {
   /**
    * @description Message shown in the Workspace tab of the Sources panel to nudge
    *              developers into utilizing the Automatic Workspace Folders feature
-   *              in Chrome DevTools by setting up a `com.chrome.devtools.json`
-   *              file / endpoint in their project. This nudge is only shown when
+   *              in Chrome DevTools by setting up a com.chrome.devtools.json
+   *              file or endpoint in their project. This nudge is only shown when
    *              the feature is enabled and there's no automatic workspace folder
    *              detected.
    * @example {com.chrome.devtools.json} PH1
    */
   automaticWorkspaceNudge: "Use {PH1} to automatically connect your project folder"
 };
-var str_25 = i18n49.i18n.registerUIStrings("panels/sources/SourcesNavigator.ts", UIStrings25);
-var i18nString24 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
+var str_24 = i18n47.i18n.registerUIStrings("panels/sources/SourcesNavigator.ts", UIStrings24);
+var i18nString23 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
 var networkNavigatorViewInstance;
 var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
   constructor(networkProjectManager) {
     super("navigator-network", networkProjectManager, true);
     this.registerRequiredCSS(sourcesNavigator_css_default);
     SDK13.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
-    UI24.UIUserMetrics.UIUserMetrics.instance().panelLoaded("sources", "DevTools.Launch.Sources");
+    UI23.UIUserMetrics.UIUserMetrics.instance().panelLoaded("sources", "DevTools.Launch.Sources");
     SDK13.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
   }
   static instance(opts) {
@@ -13778,10 +13717,10 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     return networkNavigatorViewInstance;
   }
   acceptProject(project) {
-    return project.type() === Workspace29.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(Bindings12.NetworkProject.NetworkProject.getTargetForProject(project));
+    return project.type() === Workspace28.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(Bindings12.NetworkProject.NetworkProject.getTargetForProject(project));
   }
   onScopeChange() {
-    for (const project of Workspace29.Workspace.WorkspaceImpl.instance().projects()) {
+    for (const project of Workspace28.Workspace.WorkspaceImpl.instance().projects()) {
       if (!this.acceptProject(project)) {
         this.removeProject(project);
       } else {
@@ -13822,11 +13761,11 @@ var FilesNavigatorView = class extends NavigatorView {
   constructor(networkProjectManager) {
     super("navigator-files", networkProjectManager);
     this.registerRequiredCSS(sourcesNavigator_css_default);
-    const placeholder2 = new UI24.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noWorkspace), i18nString24(UIStrings25.explainWorkspace));
+    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noWorkspace), i18nString23(UIStrings24.explainWorkspace));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/workspaces/";
     const link = Link2.create("https://goo.gle/devtools-automatic-workspace-folders", "com.chrome.devtools.json");
-    this.#automaticFileSystemNudge = uiI18n3.getFormatLocalizedString(str_25, UIStrings25.automaticWorkspaceNudge, { PH1: link });
+    this.#automaticFileSystemNudge = uiI18n3.getFormatLocalizedString(str_24, UIStrings24.automaticWorkspaceNudge, { PH1: link });
     this.#automaticFileSystemNudge.classList.add("automatic-file-system-nudge");
     this.contentElement.insertBefore(this.#automaticFileSystemNudge, this.contentElement.firstChild);
     const toolbar4 = document.createElement("devtools-toolbar");
@@ -13855,13 +13794,13 @@ var FilesNavigatorView = class extends NavigatorView {
     super.sourceSelected(uiSourceCode, focusSource);
   }
   acceptProject(project) {
-    if (project.type() === Workspace29.Workspace.projectTypes.ConnectableFileSystem) {
+    if (project.type() === Workspace28.Workspace.projectTypes.ConnectableFileSystem) {
       return true;
     }
-    return project.type() === Workspace29.Workspace.projectTypes.FileSystem && Persistence16.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== "overrides" && !Snippets5.ScriptSnippetFileSystem.isSnippetsProject(project);
+    return project.type() === Workspace28.Workspace.projectTypes.FileSystem && Persistence16.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== "overrides" && !Snippets5.ScriptSnippetFileSystem.isSnippetsProject(project);
   }
   handleContextMenu(event) {
-    const contextMenu = new UI24.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI23.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendAction("sources.add-folder-to-workspace", void 0, true);
     void contextMenu.show();
   }
@@ -13879,15 +13818,16 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
   toolbar;
   constructor(networkProjectManager) {
     super("navigator-overrides", networkProjectManager);
-    const placeholder2 = new UI24.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noLocalOverrides), i18nString24(UIStrings25.explainLocalOverrides));
+    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noLocalOverrides), i18nString23(UIStrings24.explainLocalOverrides));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/overrides/";
     this.toolbar = document.createElement("devtools-toolbar");
     this.toolbar.classList.add("navigator-toolbar");
     this.contentElement.insertBefore(this.toolbar, this.contentElement.firstChild);
     Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("ProjectChanged", this.updateProjectAndUI, this);
-    this.workspace().addEventListener(Workspace29.Workspace.Events.ProjectAdded, this.onProjectAddOrRemoved, this);
-    this.workspace().addEventListener(Workspace29.Workspace.Events.ProjectRemoved, this.onProjectAddOrRemoved, this);
+    Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("LocalOverridesProjectUpdated", this.updateProjectAndUI, this);
+    this.workspace().addEventListener(Workspace28.Workspace.Events.ProjectAdded, this.onProjectAddOrRemoved, this);
+    this.workspace().addEventListener(Workspace28.Workspace.Events.ProjectRemoved, this.onProjectAddOrRemoved, this);
     this.updateProjectAndUI();
   }
   static instance(opts) {
@@ -13899,7 +13839,7 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
   }
   onProjectAddOrRemoved(event) {
     const project = event.data;
-    if (project && project.type() === Workspace29.Workspace.projectTypes.FileSystem && Persistence16.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== "overrides") {
+    if (project && project.type() === Workspace28.Workspace.projectTypes.FileSystem && Persistence16.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== "overrides") {
       return;
     }
     this.updateUI();
@@ -13916,10 +13856,10 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
     this.toolbar.removeToolbarItems();
     const project = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
     if (project) {
-      const enableCheckbox = new UI24.Toolbar.ToolbarSettingCheckbox(Common17.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled"));
+      const enableCheckbox = new UI23.Toolbar.ToolbarSettingCheckbox(Common17.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled"));
       this.toolbar.appendToolbarItem(enableCheckbox);
-      this.toolbar.appendToolbarItem(new UI24.Toolbar.ToolbarSeparator(true));
-      const clearButton = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings25.clearConfiguration), "clear");
+      this.toolbar.appendToolbarItem(new UI23.Toolbar.ToolbarSeparator(true));
+      const clearButton = new UI23.Toolbar.ToolbarButton(i18nString23(UIStrings24.clearConfiguration), "clear");
       clearButton.addEventListener("Click", () => {
         Common17.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(false);
         project.remove();
@@ -13927,8 +13867,8 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
       this.toolbar.appendToolbarItem(clearButton);
       return;
     }
-    const title = i18nString24(UIStrings25.selectFolderForOverrides);
-    const setupButton = new UI24.Toolbar.ToolbarButton(title, "plus", title);
+    const title = i18nString23(UIStrings24.selectFolderForOverrides);
+    const setupButton = new UI23.Toolbar.ToolbarButton(title, "plus", title);
     setupButton.addEventListener("Click", (_event) => {
       void _OverridesNavigatorView.setupNewWorkspace();
     }, this);
@@ -13952,23 +13892,23 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
 var ContentScriptsNavigatorView = class extends NavigatorView {
   constructor(networkProjectManager) {
     super("navigator-content-scripts", networkProjectManager);
-    const placeholder2 = new UI24.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noContentScripts), i18nString24(UIStrings25.explainContentScripts));
+    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noContentScripts), i18nString23(UIStrings24.explainContentScripts));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/extensions/content_scripts";
   }
   acceptProject(project) {
-    return project.type() === Workspace29.Workspace.projectTypes.ContentScripts;
+    return project.type() === Workspace28.Workspace.projectTypes.ContentScripts;
   }
 };
 var SnippetsNavigatorView = class extends NavigatorView {
   constructor(networkProjectManager) {
     super("navigator-snippets", networkProjectManager);
-    const placeholder2 = new UI24.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noSnippets), i18nString24(UIStrings25.explainSnippets));
+    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noSnippets), i18nString23(UIStrings24.explainSnippets));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/javascript/snippets/";
     const toolbar4 = document.createElement("devtools-toolbar");
     toolbar4.classList.add("navigator-toolbar");
-    const newButton = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings25.newSnippet), "plus", i18nString24(UIStrings25.newSnippet), "sources.new-snippet");
+    const newButton = new UI23.Toolbar.ToolbarButton(i18nString23(UIStrings24.newSnippet), "plus", i18nString23(UIStrings24.newSnippet), "sources.new-snippet");
     newButton.addEventListener("Click", (_event) => {
       void this.create(Snippets5.ScriptSnippetFileSystem.findSnippetsProject(), "");
     });
@@ -13979,17 +13919,17 @@ var SnippetsNavigatorView = class extends NavigatorView {
     return Snippets5.ScriptSnippetFileSystem.isSnippetsProject(project);
   }
   handleContextMenu(event) {
-    const contextMenu = new UI24.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(i18nString24(UIStrings25.createNewSnippet), () => this.create(Snippets5.ScriptSnippetFileSystem.findSnippetsProject(), ""), { jslogContext: "create-new-snippet" });
+    const contextMenu = new UI23.ContextMenu.ContextMenu(event);
+    contextMenu.headerSection().appendItem(i18nString23(UIStrings24.createNewSnippet), () => this.create(Snippets5.ScriptSnippetFileSystem.findSnippetsProject(), ""), { jslogContext: "create-new-snippet" });
     void contextMenu.show();
   }
   handleFileContextMenu(event, node) {
     const uiSourceCode = node.uiSourceCode();
-    const contextMenu = new UI24.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(i18nString24(UIStrings25.run), () => Snippets5.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode), { jslogContext: "run" });
-    contextMenu.editSection().appendItem(i18nString24(UIStrings25.rename), () => this.rename(node, false), { jslogContext: "rename" });
-    contextMenu.editSection().appendItem(i18nString24(UIStrings25.remove), () => uiSourceCode.project().deleteFile(uiSourceCode), { jslogContext: "remove" });
-    contextMenu.saveSection().appendItem(i18nString24(UIStrings25.saveAs), this.handleSaveAs.bind(this, uiSourceCode), { jslogContext: "save-as" });
+    const contextMenu = new UI23.ContextMenu.ContextMenu(event);
+    contextMenu.headerSection().appendItem(i18nString23(UIStrings24.run), () => Snippets5.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode), { jslogContext: "run" });
+    contextMenu.editSection().appendItem(i18nString23(UIStrings24.rename), () => this.rename(node, false), { jslogContext: "rename" });
+    contextMenu.editSection().appendItem(i18nString23(UIStrings24.remove), () => uiSourceCode.project().deleteFile(uiSourceCode), { jslogContext: "remove" });
+    contextMenu.saveSection().appendItem(i18nString23(UIStrings24.saveAs), this.handleSaveAs.bind(this, uiSourceCode), { jslogContext: "save-as" });
     void contextMenu.show();
   }
   async handleSaveAs(uiSourceCode) {
@@ -13998,19 +13938,19 @@ var SnippetsNavigatorView = class extends NavigatorView {
     if (TextUtils12.ContentData.ContentData.isError(contentData)) {
       console.error(`Failed to retrieve content for ${uiSourceCode.url()}: ${contentData}`);
       Common17.Console.Console.instance().error(
-        i18nString24(UIStrings25.saveAsFailed),
+        i18nString23(UIStrings24.saveAsFailed),
         /* show=*/
         false
       );
       return;
     }
-    await Workspace29.FileManager.FileManager.instance().save(
+    await Workspace28.FileManager.FileManager.instance().save(
       this.addJSExtension(uiSourceCode.url()),
       contentData,
       /* forceSaveAs=*/
       true
     );
-    Workspace29.FileManager.FileManager.instance().close(uiSourceCode.url());
+    Workspace28.FileManager.FileManager.instance().close(uiSourceCode.url());
   }
   addJSExtension(url) {
     return Common17.ParsedURL.ParsedURL.concatenate(url, ".js");
@@ -14039,7 +13979,7 @@ __export(WatchExpressionsSidebarPane_exports, {
 });
 import * as Common18 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
-import * as i18n51 from "./../../core/i18n/i18n.js";
+import * as i18n49 from "./../../core/i18n/i18n.js";
 import * as Platform16 from "./../../core/platform/platform.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as Bindings13 from "./../../models/bindings/bindings.js";
@@ -14160,7 +14100,7 @@ var objectValue_css_default = `/*
 
 // gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI25 from "./../../ui/legacy/legacy.js";
+import * as UI24 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives5, html as html13, nothing as nothing8, render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -14337,9 +14277,9 @@ li.watch-expression-editing::before {
 /*# sourceURL=${import.meta.resolve("./watchExpressionsSidebarPane.css")} */`;
 
 // gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
-var UIStrings26 = {
+var UIStrings25 = {
   /**
-   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+   * @description A context menu item in the watch expressions sidebar of the Sources panel.
    */
   addWatchExpression: "Add watch expression",
   /**
@@ -14347,50 +14287,50 @@ var UIStrings26 = {
    */
   refreshWatchExpressions: "Refresh watch expressions",
   /**
-   * @description Empty element text content in Watch Expressions Sidebar Pane of the Sources panel
+   * @description Empty element text content in watch expressions sidebar of the Sources panel.
    */
   noWatchExpressions: "No watch expressions",
   /**
-   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+   * @description A context menu item in the watch expressions sidebar of the Sources panel.
    */
   deleteAllWatchExpressions: "Delete all watch expressions",
   /**
-   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+   * @description A context menu item in the watch expressions sidebar of the Sources panel.
    */
   addPropertyPathToWatch: "Add property path to watch",
   /**
-   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+   * @description A context menu item in the watch expressions sidebar of the Sources panel.
    */
   deleteWatchExpression: "Delete watch expression",
   /**
-   * @description Value element text content in Watch Expressions Sidebar Pane of the Sources panel
+   * @description Value element text content in watch expressions sidebar of the Sources panel.
    */
   notAvailable: "<not available>",
   /**
-   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
+   * @description A context menu item in the watch expressions sidebar of the Sources panel and Network panel request.
    */
   copyValue: "Copy value"
 };
-var str_26 = i18n51.i18n.registerUIStrings("panels/sources/WatchExpressionsSidebarPane.ts", UIStrings26);
-var i18nString25 = i18n51.i18n.getLocalizedString.bind(void 0, str_26);
+var str_25 = i18n49.i18n.registerUIStrings("panels/sources/WatchExpressionsSidebarPane.ts", UIStrings25);
+var i18nString24 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
 var watchExpressionsSidebarPaneInstance;
 var { classMap: classMap3, ifDefined: ifDefined3 } = Directives5;
 var DEFAULT_VIEW7 = (input, output, target) => {
   const onContextMenu = (watchExpression, event) => {
-    const contextMenu = new UI25.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI24.ContextMenu.ContextMenu(event);
     const isEditing = input.watchExpressions.some((e) => e.editing);
     if (!isEditing) {
-      contextMenu.debugSection().appendItem(i18nString25(UIStrings26.addWatchExpression), input.onAddExpression, { jslogContext: "add-watch-expression" });
+      contextMenu.debugSection().appendItem(i18nString24(UIStrings25.addWatchExpression), input.onAddExpression, { jslogContext: "add-watch-expression" });
     }
     if (input.watchExpressions.length > 1) {
-      contextMenu.debugSection().appendItem(i18nString25(UIStrings26.deleteAllWatchExpressions), input.onDeleteAll, { jslogContext: "delete-all-watch-expressions" });
+      contextMenu.debugSection().appendItem(i18nString24(UIStrings25.deleteAllWatchExpressions), input.onDeleteAll, { jslogContext: "delete-all-watch-expressions" });
     }
     if (watchExpression) {
       if (!watchExpression.editing) {
-        contextMenu.editSection().appendItem(i18nString25(UIStrings26.deleteWatchExpression), () => input.onDelete(watchExpression), { jslogContext: "delete-watch-expression" });
+        contextMenu.editSection().appendItem(i18nString24(UIStrings25.deleteWatchExpression), () => input.onDelete(watchExpression), { jslogContext: "delete-watch-expression" });
       }
       if (!watchExpression.editing && watchExpression.result && (watchExpression.result.object.type === "number" || watchExpression.result.object.type === "string")) {
-        contextMenu.clipboardSection().appendItem(i18nString25(UIStrings26.copyValue), () => input.onCopyWatchExpression(watchExpression), { jslogContext: "copy-watch-expression-value" });
+        contextMenu.clipboardSection().appendItem(i18nString24(UIStrings25.copyValue), () => input.onCopyWatchExpression(watchExpression), { jslogContext: "copy-watch-expression-value" });
       }
       contextMenu.appendApplicableItems(watchExpression.result);
     }
@@ -14408,7 +14348,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
   };
   const renderNameElement = (e) => {
     const nameElement = ObjectUI4.ObjectPropertiesSection.ObjectPropertiesSection.createNameElement(e.expression);
-    UI25.Tooltip.Tooltip.install(nameElement, e.expression);
+    UI24.Tooltip.Tooltip.install(nameElement, e.expression);
     return nameElement;
   };
   const renderTreeElement = (e) => (
@@ -14450,12 +14390,12 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       jslogContext: "delete-watch-expression"
     }}
                 class=watch-expression-delete-button
-                title=${i18nString25(UIStrings26.deleteWatchExpression)}
+                title=${i18nString24(UIStrings25.deleteWatchExpression)}
                 @click=${() => input.onDelete(e)}></devtools-button>
               ${renderNameElement(e)}<span class=watch-expressions-separator>: </span>${e.exceptionDetails || !e.result ? html13`<span
                     class="watch-expression-error value"
                     title=${ifDefined3(e.exceptionDetails?.exception?.description)}
-                    >${i18nString25(UIStrings26.notAvailable)}</span>` : ObjectUI4.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValueWithCustomSupport(e.result.object, Boolean(e.exceptionDetails), false, input.linkifier)}
+                    >${i18nString24(UIStrings25.notAvailable)}</span>` : ObjectUI4.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValueWithCustomSupport(e.result.object, Boolean(e.exceptionDetails), false, input.linkifier)}
             </div>
           </div>
         </devtools-prompt>
@@ -14474,7 +14414,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     // clang-format off
     html13`
       ${input.watchExpressions.length === 0 ? html13`<div class=gray-info-message tabindex=-1 >
-        ${i18nString25(UIStrings26.noWatchExpressions)}
+        ${i18nString24(UIStrings25.noWatchExpressions)}
         </div>` : html13`<devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus toggle-on-click .template=${html13`
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI4.ObjectPropertiesSection.objectValueStyles}</style>
@@ -14490,14 +14430,14 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         classes: ["watch-expressions"],
         attributes: {
           jslog: `${VisualLogging14.section("sources.watch")}`,
-          "aria-label": i18nString25(UIStrings26.addWatchExpression)
+          "aria-label": i18nString24(UIStrings25.addWatchExpression)
         },
         listeners: { contextmenu: onContextMenu.bind(void 0, void 0) }
       }
     }
   );
 };
-var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI25.Widget.VBox {
+var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI24.Widget.VBox {
   #watchExpressions;
   #watchExpressionsSetting;
   linkifier;
@@ -14508,8 +14448,8 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     this.registerRequiredCSS(watchExpressionsSidebarPane_css_default, objectValue_css_default);
     this.#watchExpressions = [];
     this.#watchExpressionsSetting = Common18.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
-    UI25.Context.Context.instance().addFlavorChangeListener(SDK14.RuntimeModel.ExecutionContext, this.#refreshExpressions, this);
-    UI25.Context.Context.instance().addFlavorChangeListener(StackTrace9.StackTrace.DebuggableFrameFlavor, this.#refreshExpressions, this);
+    UI24.Context.Context.instance().addFlavorChangeListener(SDK14.RuntimeModel.ExecutionContext, this.#refreshExpressions, this);
+    UI24.Context.Context.instance().addFlavorChangeListener(StackTrace9.StackTrace.DebuggableFrameFlavor, this.#refreshExpressions, this);
     this.linkifier = new Components4.Linkifier.Linkifier();
     this.#view = DEFAULT_VIEW7;
     void this.#refreshExpressions();
@@ -14529,7 +14469,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
       variant: "toolbar",
       iconName: "plus",
       size: "SMALL",
-      title: i18nString25(UIStrings26.addWatchExpression),
+      title: i18nString24(UIStrings25.addWatchExpression),
       jslogContext: "add-watch-expression"
     }}
         @click=${(e) => this.addButtonClicked(e)}></devtools-button>
@@ -14537,7 +14477,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
       variant: "toolbar",
       iconName: "refresh",
       size: "SMALL",
-      title: i18nString25(UIStrings26.refreshWatchExpressions),
+      title: i18nString24(UIStrings25.refreshWatchExpressions),
       jslogContext: "refresh-watch-expressions"
     }}
         @click=${(e) => this.refreshButtonClicked(e)}></devtools-button>
@@ -14555,7 +14495,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
   }
   async addButtonClicked(event) {
     event?.consume(true);
-    await UI25.ViewManager.ViewManager.instance().showView("sources.watch");
+    await UI24.ViewManager.ViewManager.instance().showView("sources.watch");
     const watchExpression = new WatchExpression();
     this.#watchExpressions.push(watchExpression);
     watchExpression.editing = true;
@@ -14651,7 +14591,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     void this.#refreshExpressions();
   }
   async #focusAndAddExpressionToWatch(expression) {
-    await UI25.ViewManager.ViewManager.instance().showView("sources.watch");
+    await UI24.ViewManager.ViewManager.instance().showView("sources.watch");
     const watchExpression = new WatchExpression();
     await watchExpression.setExpression(expression, this.#getExpansionTracker(expression));
     this.watchExpressions.push(watchExpression);
@@ -14659,7 +14599,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     await this.#refreshExpressions();
   }
   handleAction(_context, _actionId) {
-    const frame = UI25.Context.Context.instance().flavor(UISourceCodeFrame);
+    const frame = UI24.Context.Context.instance().flavor(UISourceCodeFrame);
     if (!frame) {
       return false;
     }
@@ -14671,7 +14611,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
   appendApplicableItems(_event, contextMenu, target) {
     if (target instanceof ObjectUI4.ObjectPropertiesSection.ObjectPropertyTreeElement) {
       if (!target.property.property.synthetic) {
-        contextMenu.debugSection().appendItem(i18nString25(UIStrings26.addPropertyPathToWatch), () => this.#focusAndAddExpressionToWatch(target.path()), { jslogContext: "add-property-path-to-watch" });
+        contextMenu.debugSection().appendItem(i18nString24(UIStrings25.addPropertyPathToWatch), () => this.#focusAndAddExpressionToWatch(target.path()), { jslogContext: "add-property-path-to-watch" });
       }
       return;
     }
@@ -14698,7 +14638,7 @@ var WatchExpression = class _WatchExpression {
   async setExpression(expression, expandController) {
     this.#exceptionDetails = this.#result = void 0;
     this.#expression = expression;
-    const executionContext = UI25.Context.Context.instance().flavor(SDK14.RuntimeModel.ExecutionContext);
+    const executionContext = UI24.Context.Context.instance().flavor(SDK14.RuntimeModel.ExecutionContext);
     if (!expression || !executionContext) {
       return;
     }
@@ -14743,7 +14683,6 @@ var WatchExpression = class _WatchExpression {
 export {
   AddSourceMapURLDialog_exports as AddSourceMapURLDialog,
   AiCodeCompletionPlugin_exports as AiCodeCompletionPlugin,
-  AiWarningInfobarPlugin_exports as AiWarningInfobarPlugin,
   BreakpointEditDialog_exports as BreakpointEditDialog,
   BreakpointsView_exports as BreakpointsView,
   BreakpointsViewUtils_exports as BreakpointsViewUtils,

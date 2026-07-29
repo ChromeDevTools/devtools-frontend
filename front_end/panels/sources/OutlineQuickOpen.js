@@ -11,15 +11,15 @@ import { html, nothing } from '../../ui/lit/lit.js';
 import { SourcesView } from './SourcesView.js';
 const UIStrings = {
     /**
-     * @description Text in Go To Line Quick Open of the Sources panel
+     * @description Text in Go to line Quick Open of the Sources panel.
      */
     noFileSelected: 'No file selected.',
     /**
-     * @description Text in Outline Quick Open of the Sources panel
+     * @description Text in Outline Quick Open of the Sources panel.
      */
     openAJavascriptOrCssFileToSee: 'Open a JavaScript or CSS file to see symbols',
     /**
-     * @description Text to show no results have been found
+     * @description Text to show no results have been found.
      */
     noResultsFound: 'No results found',
 };

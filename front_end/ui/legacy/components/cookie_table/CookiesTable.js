@@ -141,6 +141,9 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/cookie_table/Cook
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 const expiresSessionValue = i18nLazyString(UIStrings.session);
+function isFlagAttribute(attribute) {
+    return attribute === "http-only" /* SDK.Cookie.Attribute.HTTP_ONLY */ || attribute === "secure" /* SDK.Cookie.Attribute.SECURE */;
+}
 export class CookiesTable extends UI.Widget.VBox {
     #saveCallback;
     #refreshCallback;
@@ -226,7 +229,7 @@ export class CookiesTable extends UI.Widget.VBox {
                 </th>` : ''}
               </tr>
               ${repeat(this.data, cookie => cookie.key, cookie => {
-                    const isHttpOnly = cookie['http-only'] === 'true';
+                    const isHttpOnly = Boolean(cookie['http-only']);
                     return html `
                 <tr ?selected=${cookie.key === input.selectedKey}
                     ?inactive=${cookie.inactive}
@@ -449,7 +452,15 @@ export class CookiesTable extends UI.Widget.VBox {
         for (const attribute of ["domain" /* SDK.Cookie.Attribute.DOMAIN */, "path" /* SDK.Cookie.Attribute.PATH */, "http-only" /* SDK.Cookie.Attribute.HTTP_ONLY */,
             "secure" /* SDK.Cookie.Attribute.SECURE */, "same-site" /* SDK.Cookie.Attribute.SAME_SITE */, "source-scheme" /* SDK.Cookie.Attribute.SOURCE_SCHEME */]) {
             if (attribute in data) {
-                cookie.addAttribute(attribute, data[attribute]);
+                const value = data[attribute];
+                if (isFlagAttribute(attribute)) {
+                    if (value === true) {
+                        cookie.addAttribute(attribute);
+                    }
+                }
+                else {
+                    cookie.addAttribute(attribute, value);
+                }
             }
         }
         if (data.expires && data.expires !== expiresSessionValue()) {
@@ -459,8 +470,7 @@ export class CookiesTable extends UI.Widget.VBox {
             cookie.addAttribute("source-port" /* SDK.Cookie.Attribute.SOURCE_PORT */, Number.parseInt(data["source-port" /* SDK.Cookie.Attribute.SOURCE_PORT */] || '', 10) || undefined);
         }
         if (data["partition-key-site" /* SDK.Cookie.Attribute.PARTITION_KEY_SITE */]) {
-            cookie.setPartitionKey(data["partition-key-site" /* SDK.Cookie.Attribute.PARTITION_KEY_SITE */], Boolean(data["has-cross-site-ancestor" /* SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR */] ? data["has-cross-site-ancestor" /* SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR */] :
-                false));
+            cookie.setPartitionKey(data["partition-key-site" /* SDK.Cookie.Attribute.PARTITION_KEY_SITE */], data["has-cross-site-ancestor" /* SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR */] === true);
         }
         cookie.setSize(data["name" /* SDK.Cookie.Attribute.NAME */].length + data["value" /* SDK.Cookie.Attribute.VALUE */].length);
         return cookie;
@@ -473,7 +483,12 @@ export class CookiesTable extends UI.Widget.VBox {
         for (const attribute of ["http-only" /* SDK.Cookie.Attribute.HTTP_ONLY */, "secure" /* SDK.Cookie.Attribute.SECURE */, "same-site" /* SDK.Cookie.Attribute.SAME_SITE */,
             "source-scheme" /* SDK.Cookie.Attribute.SOURCE_SCHEME */, "source-port" /* SDK.Cookie.Attribute.SOURCE_PORT */]) {
             if (cookie.hasAttribute(attribute)) {
-                data[attribute] = String(cookie.getAttribute(attribute) ?? true);
+                if (isFlagAttribute(attribute)) {
+                    data[attribute] = true;
+                }
+                else {
+                    data[attribute] = String(cookie.getAttribute(attribute) ?? true);
+                }
             }
         }
         data["domain" /* SDK.Cookie.Attribute.DOMAIN */] = cookie.domain() || (isRequest ? i18nString(UIStrings.na) : '');
@@ -491,7 +506,7 @@ export class CookiesTable extends UI.Widget.VBox {
         }
         data["partition-key-site" /* SDK.Cookie.Attribute.PARTITION_KEY_SITE */] =
             cookie.partitionKeyOpaque() ? i18nString(UIStrings.opaquePartitionKey).toString() : cookie.topLevelSite();
-        data["has-cross-site-ancestor" /* SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR */] = cookie.hasCrossSiteAncestor() ? 'true' : '';
+        data["has-cross-site-ancestor" /* SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR */] = cookie.hasCrossSiteAncestor();
         data["size" /* SDK.Cookie.Attribute.SIZE */] = String(cookie.size());
         data["priority" /* SDK.Cookie.Attribute.PRIORITY */] = cookie.priority();
         data.priorityValue = ['Low', 'Medium', 'High'].indexOf(cookie.priority());

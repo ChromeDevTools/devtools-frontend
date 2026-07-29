@@ -55,7 +55,7 @@ export class StylesAiCodeCompletionProvider {
         this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({
             aidaClient: this.#aidaClient,
             serverSideLoggingEnabled: !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging,
-        }, this.#aiCodeCompletionConfig.panel, undefined, stopSequences);
+        }, undefined, stopSequences);
         this.#aiCodeCompletionConfig.onFeatureEnabled();
     }
     #cleanupAiCodeCompletion() {

@@ -261,13 +261,22 @@ export function sanitizeThreads(processes) {
  *   |- Task C -|
  */
 export function buildHierarchy(processes, options) {
+    // Ensure threads that only contain V8 CPU profiler samples (such as WebAssembly
+    // background execution threads) are registered in their process before we iterate.
+    // These threads do not receive standard renderer trace events, so their RendererThread
+    // objects must be initialized here so SamplesIntegrator can inject profile calls.
     const samplesData = samplesHandlerData();
+    for (const [pid, profilesByThread] of samplesData.profilesInProcess) {
+        const process = processes.get(pid);
+        if (!process) {
+            continue;
+        }
+        for (const [tid] of profilesByThread) {
+            getOrCreateRendererThread(process, tid);
+        }
+    }
     for (const [pid, process] of processes) {
         for (const [tid, thread] of process.threads) {
-            if (!thread.entries.length) {
-                thread.tree = Helpers.TreeHelpers.makeEmptyTraceEntryTree();
-                continue;
-            }
             // Step 1. Massage the data.
             Helpers.Trace.sortTraceEventsInPlace(thread.entries);
             // Step 2. Inject profile calls from samples
@@ -286,6 +295,10 @@ export function buildHierarchy(processes, options) {
                         thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, jsSamples);
                     }
                 }
+            }
+            if (!thread.entries.length) {
+                thread.tree = Helpers.TreeHelpers.makeEmptyTraceEntryTree();
+                continue;
             }
             // Step 3. Build the tree.
             const treeData = Helpers.TreeHelpers.treify(thread.entries, options);

@@ -448,7 +448,7 @@ export class ConsoleView extends UI.Widget.VBox {
         UI.ARIAUtils.setLabel(settingsPane, i18nString(UIStrings.consoleSettings));
         UI.ARIAUtils.markAsGroup(settingsPane);
         const consoleEagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-eager-eval');
-        const preserveConsoleLogSetting = Common.Settings.Settings.instance().moduleSetting('preserve-console-log');
+        const preserveConsoleLogSetting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveConsoleLogSettingDescriptor);
         const userActivationEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-user-activation-eval');
         settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.networkMessages), this.filter.networkMessagesSetting, this.filter.networkMessagesSetting.title()), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.logXMLHttpRequests), monitoringXHREnabledSetting), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.preserveLog), preserveConsoleLogSetting, i18nString(UIStrings.doNotClearLogOnPageReload)), SettingsUI.SettingsUI.createSettingCheckbox(consoleEagerEvalSetting.title(), consoleEagerEvalSetting, i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.selectedContextOnly), this.filter.filterByExecutionContextSetting, i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)), SettingsUI.SettingsUI.createSettingCheckbox(this.consoleHistoryAutocompleteSetting.title(), this.consoleHistoryAutocompleteSetting, i18nString(UIStrings.autocompleteFromHistory)), SettingsUI.SettingsUI.createSettingCheckbox(this.groupSimilarSetting.title(), this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole)), SettingsUI.SettingsUI.createSettingCheckbox(userActivationEvalSetting.title(), userActivationEvalSetting, i18nString(UIStrings.treatEvaluationAsUserActivation)), SettingsUI.SettingsUI.createSettingCheckbox(this.showCorsErrorsSetting.title(), this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole)));
         if (!this.showSettingsPaneSetting.get()) {
@@ -517,7 +517,8 @@ export class ConsoleView extends UI.Widget.VBox {
                 onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
                 onRequestTriggered: this.#onAiCodeCompletionRequestTriggered.bind(this),
                 onResponseReceived: this.#onAiCodeCompletionResponseReceived.bind(this),
-                panel: "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */,
+                disclaimerTooltipId: 'console-ai-code-generation-disclaimer-tooltip',
+                disclaimerTextVariant: 'console',
             } :
             undefined;
         this.prompt = new ConsolePrompt(this.aiCodeCompletionConfig);
@@ -569,7 +570,7 @@ export class ConsoleView extends UI.Widget.VBox {
             citationsTooltipId: CITATIONS_TOOLTIP_ID,
             disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
             spinnerTooltipId: SPINNER_TOOLTIP_ID,
-            panel: "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */,
+            disclaimerTextVariant: 'console',
         });
         this.aiCodeCompletionSummaryToolbarContainer =
             this.element.createChild('div', 'ai-code-completion-summary-toolbar-container');
@@ -656,7 +657,7 @@ export class ConsoleView extends UI.Widget.VBox {
         model.messages().forEach(this.addConsoleMessage, this);
     }
     modelRemoved(model) {
-        if (!Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get() &&
+        if (!Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveConsoleLogSettingDescriptor).get() &&
             model.target().outermostTarget() === model.target()) {
             this.consoleCleared();
         }

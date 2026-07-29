@@ -530,12 +530,6 @@
   "core/sdk/sdk-meta.ts | doNotHighlightAdFrames": {
     "message": "Do not highlight ad frames"
   },
-  "core/sdk/sdk-meta.ts | doNotPauseOnExceptions": {
-    "message": "Do not pause on exceptions"
-  },
-  "core/sdk/sdk-meta.ts | doNotPreserveLogUponNavigation": {
-    "message": "Don’t keep log on navigation"
-  },
   "core/sdk/sdk-meta.ts | doNotShowGridNamedAreas": {
     "message": "Do not show grid named areas"
   },
@@ -700,12 +694,6 @@
   },
   "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "No emulation"
-  },
-  "core/sdk/sdk-meta.ts | pauseOnExceptions": {
-    "message": "Pause on exceptions"
-  },
-  "core/sdk/sdk-meta.ts | preserveLogUponNavigation": {
-    "message": "Keep log on navigation"
   },
   "core/sdk/sdk-meta.ts | print": {
     "message": "print"
@@ -3151,9 +3139,6 @@
   },
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Delete local chat"
-  },
-  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
-    "message": "Export conversation"
   },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Follow the steps above to ask a question"
@@ -6923,6 +6908,9 @@
   "panels/console/console-meta.ts | doNotGroupSimilarMessages": {
     "message": "Don’t group similar messages"
   },
+  "panels/console/console-meta.ts | doNotPreserveLogUponNavigation": {
+    "message": "Don’t keep log on navigation"
+  },
   "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
     "message": "Don’t show CORS errors in console"
   },
@@ -6955,6 +6943,9 @@
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Only show messages from the current context (top, iframe, worker, extension)"
+  },
+  "panels/console/console-meta.ts | preserveLogUponNavigation": {
+    "message": "Keep log on navigation"
   },
   "panels/console/console-meta.ts | selectedContextOnly": {
     "message": "Selected context only"
@@ -8818,15 +8809,6 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Understand this warning"
-  },
-  "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "This feature is unavailable in your region."
-  },
-  "panels/explain/explain-meta.ts | policyRestricted": {
-    "message": "This setting is managed by your administrator."
-  },
-  "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "To use this feature, set your language preference to English in DevTools settings."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blocked Resource"
@@ -11345,6 +11327,42 @@
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
+  "panels/network/OriginalResourceChunkView.ts | all": {
+    "message": "All"
+  },
+  "panels/network/OriginalResourceChunkView.ts | clearAll": {
+    "message": "Clear All"
+  },
+  "panels/network/OriginalResourceChunkView.ts | copyMessage": {
+    "message": "Copy message"
+  },
+  "panels/network/OriginalResourceChunkView.ts | copyMessageD": {
+    "message": "Copy message…"
+  },
+  "panels/network/OriginalResourceChunkView.ts | data": {
+    "message": "Data"
+  },
+  "panels/network/OriginalResourceChunkView.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/network/OriginalResourceChunkView.ts | length": {
+    "message": "Length"
+  },
+  "panels/network/OriginalResourceChunkView.ts | noMessageSelected": {
+    "message": "No message selected"
+  },
+  "panels/network/OriginalResourceChunkView.ts | receive": {
+    "message": "Receive"
+  },
+  "panels/network/OriginalResourceChunkView.ts | selectMessageToBrowseItsContent": {
+    "message": "Select message to browse its content."
+  },
+  "panels/network/OriginalResourceChunkView.ts | send": {
+    "message": "Send"
+  },
+  "panels/network/OriginalResourceChunkView.ts | time": {
+    "message": "Time"
+  },
   "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
     "message": "Add network request throttling or blocking pattern"
   },
@@ -11719,9 +11737,6 @@
   },
   "panels/network/ResourceChunkView.ts | clearAll": {
     "message": "Clear All"
-  },
-  "panels/network/ResourceChunkView.ts | clearAllL": {
-    "message": "Clear all"
   },
   "panels/network/ResourceChunkView.ts | copyMessage": {
     "message": "Copy message"
@@ -13646,19 +13661,19 @@
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Automatically generate titles for performance trace annotations"
   },
-  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescription": {
     "message": "Get context-aware help on the inspected page"
   },
-  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
-    "message": "To generate explanations, chat messages, data accessible for this site via DevTools panels and Web APIs, and items you select such as network requests, files, and performance traces are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right."
-  },
-  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsider": {
     "message": "To generate explanations, chat messages, data accessible for this site via DevTools panels and Web APIs, and items you select such as network requests, files, and performance traces are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right."
   },
-  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLogging": {
+    "message": "To generate explanations, chat messages, data accessible for this site via DevTools panels and Web APIs, and items you select such as network requests, files, and performance traces are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1": {
     "message": "Debug styling, network, performance, source code, accessibility and storage issues with DevTools AI assistance"
   },
-  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2": {
     "message": "Follow the agent’s reasoning step-by-step and quickly jump to the relevant source data"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
@@ -13712,24 +13727,6 @@
   "panels/settings/AISettingsTab.ts | explainConsole": {
     "message": "Get explanations for console warnings and errors"
   },
-  "panels/settings/AISettingsTab.ts | explainStyling": {
-    "message": "Understand CSS styles with AI-powered insights"
-  },
-  "panels/settings/AISettingsTab.ts | explainStylingAndNetworkRequest": {
-    "message": "Understand CSS styles and network activity with AI-powered insights"
-  },
-  "panels/settings/AISettingsTab.ts | explainStylingNetworkAndFile": {
-    "message": "Understand CSS styles, network activity, and file origins with AI-powered insights"
-  },
-  "panels/settings/AISettingsTab.ts | explainStylingNetworkPerformanceAndFile": {
-    "message": "Understand CSS styles, network activity, performance bottlenecks, and file origins with AI-powered insights"
-  },
-  "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "To generate explanations, your chat messages, any data the inspected page can see using Web APIs, and the items you select such as files, network requests, and performance traces are sent to Google. This data may be seen by human reviewers to improve this feature. Don’t use on pages with personal or sensitive information."
-  },
-  "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "To generate explanations, your chat messages, any data the inspected page can see using Web APIs, and the items you select such as files, network requests, and performance traces are sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time."
-  },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
     "message": "To generate annotation suggestions, your performance trace is sent to Google. This data may be seen by human reviewers to improve this feature."
   },
@@ -13745,18 +13742,6 @@
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Helps you understand and fix console warnings and errors"
   },
-  "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
-    "message": "Get help with understanding CSS styles"
-  },
-  "panels/settings/AISettingsTab.ts | helpUnderstandStylingAndNetworkRequest": {
-    "message": "Get help with understanding CSS styles and network requests"
-  },
-  "panels/settings/AISettingsTab.ts | helpUnderstandStylingNetworkAndFile": {
-    "message": "Get help with understanding CSS styles, network requests, and files"
-  },
-  "panels/settings/AISettingsTab.ts | helpUnderstandStylingNetworkPerformanceAndFile": {
-    "message": "Get help with understanding CSS styles, network requests, performance, and files"
-  },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "Learn more"
   },
@@ -13771,9 +13756,6 @@
   },
   "panels/settings/AISettingsTab.ts | privacyNotice": {
     "message": "Google Privacy Policy"
-  },
-  "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
-    "message": "Improve your development workflow with contextual explanations and suggestions"
   },
   "panels/settings/AISettingsTab.ts | receiveSuggestions": {
     "message": "Receive suggestions and code samples to address these issues"
@@ -14252,9 +14234,6 @@
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "Source map URL: "
   },
-  "panels/sources/AiWarningInfobarPlugin.ts | aiContentWarning": {
-    "message": "This file contains AI-generated content"
-  },
   "panels/sources/BreakpointEditDialog.ts | breakpoint": {
     "message": "Breakpoint"
   },
@@ -14271,7 +14250,7 @@
     "message": "Expression to check before pausing, e.g. x > 5"
   },
   "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
-    "message": "Learn more: Breakpoint Types"
+    "message": "Learn more: Breakpoint types"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Log a message to Console, do not break"
@@ -14403,7 +14382,7 @@
     "message": "Create canvas context"
   },
   "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
-    "message": "Policy Violations"
+    "message": "Policy violations"
   },
   "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
     "message": "Request Animation Frame"
@@ -14424,7 +14403,7 @@
     "message": "{PH1} fired"
   },
   "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
-    "message": "Sink Violations"
+    "message": "Sink violations"
   },
   "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
     "message": "Suspend AudioContext"
@@ -14457,16 +14436,16 @@
     "message": "Remove this header"
   },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
-    "message": "Click to show Coverage Panel"
+    "message": "Click to show Coverage panel"
   },
   "panels/sources/CoveragePlugin.ts | coverageNa": {
-    "message": "Coverage: n/a"
+    "message": "Coverage: N/A"
   },
   "panels/sources/CoveragePlugin.ts | coverageS": {
     "message": "Coverage: {PH1}"
   },
   "panels/sources/CoveragePlugin.ts | showDetails": {
-    "message": "Show Details"
+    "message": "Show details"
   },
   "panels/sources/CSSPlugin.ts | addSourceMap": {
     "message": "Add source map…"
@@ -14532,10 +14511,10 @@
     "message": "subtree modifications"
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypePolicyViolation": {
-    "message": "Trusted Type Policy Violation"
+    "message": "Trusted Type policy violation"
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
-    "message": "Trusted Type Sink Violation"
+    "message": "Trusted Type sink violation"
   },
   "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
     "message": "WebGL Error Fired ({PH1})"
@@ -14589,7 +14568,7 @@
     "message": "Never pause here"
   },
   "panels/sources/DebuggerPlugin.ts | openDeveloperResources": {
-    "message": "Opens the request in the Developer resource panel"
+    "message": "Opens the request in the Developer resources panel"
   },
   "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
     "message": "To enable again, make sure the file isn’t on the ignore list and reload."
@@ -14655,7 +14634,7 @@
     "message": "This action cannot be undone."
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
-    "message": "Remove ‘{PH1}’ from Workspace?"
+    "message": "Remove ‘{PH1}’ from workspace?"
   },
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Authored"
@@ -14900,6 +14879,9 @@
   "panels/sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
     "message": "Don’t show variable values inline"
   },
+  "panels/sources/sources-meta.ts | doNotPauseOnExceptions": {
+    "message": "Do not pause on exceptions"
+  },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
     "message": "Do not search in anonymous and content scripts"
   },
@@ -14980,6 +14962,9 @@
   },
   "panels/sources/sources-meta.ts | openFile": {
     "message": "Open file"
+  },
+  "panels/sources/sources-meta.ts | pauseOnExceptions": {
+    "message": "Pause on exceptions"
   },
   "panels/sources/sources-meta.ts | pauseScriptExecution": {
     "message": "Pause script execution"
@@ -15213,7 +15198,7 @@
     "message": "Explain this script"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "Group by Authored/Deployed"
+    "message": "Group by authored/deployed"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Group by folder"
@@ -16472,6 +16457,9 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Current session: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | customTitleWithSequence": {
+    "message": "{PH1} ({PH2})"
+  },
   "panels/timeline/TimelineHistoryManager.ts | dSlowdown": {
     "message": "{PH1}× slowdown"
   },
@@ -16555,6 +16543,12 @@
   },
   "panels/timeline/TimelinePanel.ts | learnMore": {
     "message": "Learn more"
+  },
+  "panels/timeline/TimelinePanel.ts | loadCpuProfileConfirmation": {
+    "message": "Do you want to load the recorded CPU profile \"{PH1}\" into the Performance panel?"
+  },
+  "panels/timeline/TimelinePanel.ts | loadCpuProfileHeader": {
+    "message": "Load CPU profile?"
   },
   "panels/timeline/TimelinePanel.ts | loadingTrace": {
     "message": "Loading trace…"

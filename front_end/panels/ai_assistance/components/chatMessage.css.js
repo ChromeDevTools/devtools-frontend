@@ -21,11 +21,6 @@ export default `/*
     overflow: hidden;
     mask-image: linear-gradient(to right, var(--ref-palette-neutral0) calc(100% - var(--sys-size-15)), transparent 100%);
 
-    &.not-v2 {
-      /* Can be removed when AIv2 ships */
-      gap: var(--sys-size-8);
-    }
-
     .action-buttons {
       display: flex;
       align-items: center;
@@ -149,10 +144,8 @@ export default `/*
     font-size: 12px;
     word-break: normal;
     overflow-wrap: anywhere;
-    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
-
-    &.query.ai-v2 {
+    &.query {
       width: fit-content;
       max-width: 80%;
       text-align: left;
@@ -170,22 +163,11 @@ export default `/*
       }
     }
 
-    &.ai-v2 {
-      border-bottom: none;
-    }
-
     .ai-css-change {
       margin: var(--sys-size-6) 0;
     }
 
-    &:not(.ai-v2) .answer-body-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: var(--sys-size-5);
-      width: 100%;
-    }
-
-    &.ai-v2 .answer-body-wrapper {
+    .answer-body-wrapper {
       @container(min-width: 700px) {
         /* Purposefully not using design system variables, this is a
          * specific size to indent the content in and align it with the

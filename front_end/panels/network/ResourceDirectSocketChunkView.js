@@ -11,7 +11,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { BinaryResourceView } from './BinaryResourceView.js';
-import { DataGridItem, ResourceChunkView } from './ResourceChunkView.js';
+import { DataGridItem, OriginalResourceChunkView } from './OriginalResourceChunkView.js';
 const UIStrings = {
     /**
      * @description Text in Event Source Messages View of the Network panel
@@ -44,7 +44,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceDirectSocketChunkView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class ResourceDirectSocketChunkView extends ResourceChunkView {
+export class ResourceDirectSocketChunkView extends OriginalResourceChunkView {
     constructor(request) {
         super(request, 'network-direct-socket-chunk-filter', 'resource-direct-socket-chunk-split-view-state', i18nString(UIStrings.directSocketChunk), i18nString(UIStrings.filterUsingRegex));
         this.element.setAttribute('jslog', `${VisualLogging.pane('direct-socket-messages').track({ resize: true })}`);
@@ -117,6 +117,7 @@ export class ResourceDirectSocketChunkView extends ResourceChunkView {
 class ResourceChunkNode extends DataGridItem {
     #binaryView = null;
     chunk;
+    isTextFrame = false;
     constructor(chunk, boundSocket) {
         const time = new Date(chunk.timestamp * 1000);
         const timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +

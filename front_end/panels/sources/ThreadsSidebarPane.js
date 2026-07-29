@@ -10,7 +10,7 @@ import threadsSidebarPaneStyles from './threadsSidebarPane.css.js';
 const { html, render, nothing } = Lit;
 const UIStrings = {
     /**
-     * @description Text in Threads Sidebar Pane of the Sources panel
+     * @description Text in Threads sidebar of the Sources panel.
      */
     paused: 'paused',
 };

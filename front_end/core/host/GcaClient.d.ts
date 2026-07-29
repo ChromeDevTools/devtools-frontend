@@ -7,8 +7,8 @@ export declare class GcaClient {
         signal?: AbortSignal;
     }): Promise<void>;
     registerClientEvent(clientEvent: AidaRegisterClientEvent): Promise<AidaClientResult>;
-    completeCode(request: CompletionRequest): Promise<CompletionResponse | null>;
+    completeCode(request: CompletionRequest): Promise<CompletionResponse>;
     generateCode(request: GenerateCodeRequest, options?: {
         signal?: AbortSignal;
-    }): Promise<GenerateCodeResponse | null>;
+    }): Promise<GenerateCodeResponse>;
 }

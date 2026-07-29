@@ -11,7 +11,7 @@ import { Plugin } from './Plugin.js';
 // gutter when available.
 const UIStrings = {
     /**
-     * @description The milisecond unit
+     * @description The millisecond unit.
      */
     ms: 'ms',
 };

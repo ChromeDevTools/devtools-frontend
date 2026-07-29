@@ -159,6 +159,9 @@ var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/cookie_table/Cookie
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(void 0, str_);
 var expiresSessionValue = i18nLazyString(UIStrings.session);
+function isFlagAttribute(attribute) {
+  return attribute === "http-only" || attribute === "secure";
+}
 var CookiesTable = class extends UI.Widget.VBox {
   #saveCallback;
   #refreshCallback;
@@ -243,7 +246,7 @@ var CookiesTable = class extends UI.Widget.VBox {
                 </th>` : ""}
               </tr>
               ${repeat(this.data, (cookie) => cookie.key, (cookie) => {
-          const isHttpOnly = cookie["http-only"] === "true";
+          const isHttpOnly = Boolean(cookie["http-only"]);
           return html`
                 <tr ?selected=${cookie.key === input.selectedKey}
                     ?inactive=${cookie.inactive}
@@ -514,7 +517,14 @@ var CookiesTable = class extends UI.Widget.VBox {
       /* SDK.Cookie.Attribute.SOURCE_SCHEME */
     ]) {
       if (attribute in data) {
-        cookie.addAttribute(attribute, data[attribute]);
+        const value = data[attribute];
+        if (isFlagAttribute(attribute)) {
+          if (value === true) {
+            cookie.addAttribute(attribute);
+          }
+        } else {
+          cookie.addAttribute(attribute, value);
+        }
       }
     }
     if (data.expires && data.expires !== expiresSessionValue()) {
@@ -536,13 +546,10 @@ var CookiesTable = class extends UI.Widget.VBox {
       cookie.setPartitionKey(data[
         "partition-key-site"
         /* SDK.Cookie.Attribute.PARTITION_KEY_SITE */
-      ], Boolean(data[
+      ], data[
         "has-cross-site-ancestor"
         /* SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR */
-      ] ? data[
-        "has-cross-site-ancestor"
-        /* SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR */
-      ] : false));
+      ] === true);
     }
     cookie.setSize(data[
       "name"
@@ -566,7 +573,11 @@ var CookiesTable = class extends UI.Widget.VBox {
       /* SDK.Cookie.Attribute.SOURCE_PORT */
     ]) {
       if (cookie.hasAttribute(attribute)) {
-        data[attribute] = String(cookie.getAttribute(attribute) ?? true);
+        if (isFlagAttribute(attribute)) {
+          data[attribute] = true;
+        } else {
+          data[attribute] = String(cookie.getAttribute(attribute) ?? true);
+        }
       }
     }
     data[
@@ -592,7 +603,7 @@ var CookiesTable = class extends UI.Widget.VBox {
     data[
       "has-cross-site-ancestor"
       /* SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR */
-    ] = cookie.hasCrossSiteAncestor() ? "true" : "";
+    ] = cookie.hasCrossSiteAncestor();
     data[
       "size"
       /* SDK.Cookie.Attribute.SIZE */

@@ -13,6 +13,7 @@ import { RemoteObject } from './RemoteObject.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel, } from './ResourceTreeModel.js';
 import { Events as RuntimeModelEvents, RuntimeModel, } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
+import { preserveConsoleLogSettingDescriptor } from './SDKSettings.js';
 import { Type } from './Target.js';
 export { FrontendMessageType } from './ConsoleModelTypes.js';
 const UIStrings = {
@@ -222,14 +223,14 @@ export class ConsoleModel extends SDKModel {
     }
     clearIfNecessary() {
         const settings = this.target().targetManager().settings;
-        if (!settings.moduleSetting('preserve-console-log').get()) {
+        if (!settings.resolve(preserveConsoleLogSettingDescriptor).get()) {
             this.clear();
         }
         ++this.#pageLoadSequenceNumber;
     }
     primaryPageChanged(event) {
         const settings = this.target().targetManager().settings;
-        if (settings.moduleSetting('preserve-console-log').get()) {
+        if (settings.resolve(preserveConsoleLogSettingDescriptor).get()) {
             const { frame } = event.data;
             if (frame.backForwardCacheDetails.restoredFromCache) {
                 this.#console.log(i18nString(UIStrings.bfcacheNavigation, { PH1: frame.url }));

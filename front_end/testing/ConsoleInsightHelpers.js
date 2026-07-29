@@ -3,9 +3,11 @@
 // found in the LICENSE file.
 import sinon from 'sinon';
 import * as Host from '../core/host/host.js';
+import * as Root from '../core/root/root.js';
 import * as Console from '../panels/console/console.js';
 import * as Explain from '../panels/explain/explain.js';
 import * as Lit from '../ui/lit/lit.js';
+import { updateHostConfig } from './EnvironmentHelpers.js';
 import { createViewFunctionStub } from './ViewFunctionHelpers.js';
 function getTestAidaClient() {
     return {
@@ -43,6 +45,16 @@ export async function createConsoleInsightWidget(options) {
         headerRef: options?.headerRef ?? Lit.Directives.createRef(),
         citationLinks: options?.citationLinks ?? [],
     };
+    updateHostConfig({
+        aidaAvailability: {
+            enabled: true,
+            ...Root.Runtime.hostConfig.aidaAvailability,
+        },
+        devToolsConsoleInsights: {
+            enabled: true,
+            ...Root.Runtime.hostConfig.devToolsConsoleInsights,
+        },
+    });
     const view = createViewFunctionStub(Explain.ConsoleInsight, output);
     let aidaAvailabilityForStub = options?.aidaAvailability ?? "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */;
     const checkAccessPreconditionsStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')

@@ -99,7 +99,7 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
      * @deprecated
      **/
     getTraceEngineRawTraceEventsForLayoutTests(): readonly Trace.Types.Events.Event[];
-    loadFromCpuProfile(profile: Protocol.Profiler.Profile | null): void;
+    loadFromCpuProfile(profile: Protocol.Profiler.Profile | null, title?: string): void;
     private setState;
     private createSettingCheckbox;
     /**
@@ -242,6 +242,7 @@ export declare class BottomUpProfileRevealer implements Common.Revealer.Revealer
     reveal(revealable: Utils.Helpers.RevealableBottomUpProfile): Promise<void>;
 }
 export declare class ProfileFinishedRevealer implements Common.Revealer.Revealer<SDK.CPUProfilerModel.ProfileFinishedData> {
+    #private;
     reveal(data: SDK.CPUProfilerModel.ProfileFinishedData): Promise<void>;
 }
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {

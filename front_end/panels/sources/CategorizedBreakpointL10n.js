@@ -31,73 +31,73 @@ const UIStrings = {
      */
     beforeSellerWorkletReportingStart: 'Seller Reporting Phase Start',
     /**
-     * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+     * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
      * @example {setTimeout} PH1
      */
     setTimeoutOrIntervalFired: '{PH1} fired',
     /**
-     * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+     * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
      */
     scriptFirstStatement: 'Script First Statement',
     /**
-     * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+     * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
      */
     scriptBlockedByContentSecurity: 'Script Blocked by Content Security Policy',
     /**
-     * @description Text for the request animation frame event
+     * @description Text for the request animation frame event.
      */
     requestAnimationFrame: 'Request Animation Frame',
     /**
-     * @description Text to cancel the animation frame
+     * @description Text to cancel the animation frame.
      */
     cancelAnimationFrame: 'Cancel Animation Frame',
     /**
-     * @description Text for the event that an animation frame is fired
+     * @description Text for the event that an animation frame is fired.
      */
     animationFrameFired: 'Animation Frame Fired',
     /**
-     * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+     * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
      */
     webglErrorFired: 'WebGL Error Fired',
     /**
-     * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+     * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
      */
     webglWarningFired: 'WebGL Warning Fired',
     /**
-     * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+     * @description Text in the Event Listener Breakpoints panel of the JavaScript Debugger in the Sources panel.
      */
     setInnerhtml: 'Set `innerHTML`',
     /**
-     * @description Name of a breakpoint type in the Sources Panel.
+     * @description Name of a breakpoint type in the Sources panel.
      */
     createCanvasContext: 'Create canvas context',
     /**
-     * @description Name of a breakpoint type in the Sources Panel.
+     * @description Name of a breakpoint type in the Sources panel.
      */
     createAudiocontext: 'Create `AudioContext`',
     /**
-     * @description Name of a breakpoint type in the Sources Panel. Close is a verb.
+     * @description Name of a breakpoint type in the Sources panel. Close is a verb.
      */
     closeAudiocontext: 'Close `AudioContext`',
     /**
-     * @description Name of a breakpoint type in the Sources Panel. Resume is a verb.
+     * @description Name of a breakpoint type in the Sources panel. Resume is a verb.
      */
     resumeAudiocontext: 'Resume `AudioContext`',
     /**
-     * @description Name of a breakpoint type in the Sources Panel.
+     * @description Name of a breakpoint type in the Sources panel.
      */
     suspendAudiocontext: 'Suspend `AudioContext`',
     /**
      * @description Noun. Title for a checkbox that turns on breakpoints on Trusted Type sink violations.
      * "Trusted Types" is a Web API. A "Sink" (Noun, singular) is a special function, akin to a data sink, that expects
      * to receive data in a specific format. Should the data be in the wrong format, or something else
-     * go wrong, its called a "sink violation".
+     * go wrong, it's called a "sink violation".
      */
-    sinkViolations: 'Sink Violations',
+    sinkViolations: 'Sink violations',
     /**
-     * @description Title for a checkbox that turns on breakpoints on Trusted Type policy violations
+     * @description Title for a checkbox that turns on breakpoints on Trusted Type policy violations.
      */
-    policyViolations: 'Policy Violations',
+    policyViolations: 'Policy violations',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CategorizedBreakpointL10n.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

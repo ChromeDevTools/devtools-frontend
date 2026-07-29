@@ -172,7 +172,7 @@ describe('StorageAgent', function() {
   it('can list cookies for the origin, excluding HttpOnly ones', async () => {
     const aidaClient = mockAidaClient([
       [{
-        functionCalls: [{name: 'listCookies', args: {origin: 'https://example.com'}}],
+        functionCalls: [{name: 'listCookies', args: {origins: ['https://example.com']}}],
         explanation: '',
       }],
       [{explanation: 'Here are the cookies.'}],
@@ -210,7 +210,7 @@ describe('StorageAgent', function() {
 
     const actionResponse = responses.find((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.exists(actionResponse, 'Expected an action response');
-    assert.strictEqual(actionResponse.code, 'listCookies(\'https://example.com\')');
+    assert.strictEqual(actionResponse.code, 'listCookies(["https://example.com"])');
     assert.include(actionResponse.output, 'session-cookie');
     assert.notInclude(actionResponse.output, 'session-value', 'Cookie values must be hidden in listCookies()');
     assert.notInclude(actionResponse.output, 'http-only-cookie', 'HttpOnly cookies must be strictly filtered out');
@@ -221,7 +221,7 @@ describe('StorageAgent', function() {
     const cookieName = 'session-cookie';
     const aidaClient = mockAidaClient([
       [{
-        functionCalls: [{name: 'getCookieValues', args: {cookieNames: [cookieName], origin: 'https://example.com'}}],
+        functionCalls: [{name: 'getCookieValues', args: {cookieNames: [cookieName], origins: ['https://example.com']}}],
         explanation: '',
       }],
       [{explanation: 'Here is the value.'}],
@@ -254,10 +254,10 @@ describe('StorageAgent', function() {
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.lengthOf(actionResponses, 2, 'Expected exactly two action responses for approval flow');
 
-    assert.strictEqual(actionResponses[0].code, 'getCookieValues(["session-cookie"], \'https://example.com\')');
+    assert.strictEqual(actionResponses[0].code, 'getCookieValues(["session-cookie"], ["https://example.com"])');
     assert.isUndefined(actionResponses[0].output, 'Pre-approval yield should not contain execution output');
 
-    assert.strictEqual(actionResponses[1].code, 'getCookieValues(["session-cookie"], \'https://example.com\')');
+    assert.strictEqual(actionResponses[1].code, 'getCookieValues(["session-cookie"], ["https://example.com"])');
     assert.include(actionResponses[1].output, 'session-value', 'Post-approval yield should contain cookie value');
     assert.include(
         actionResponses[1].output, 'example.com', 'Post-approval yield should contain cookie domain metadata');
@@ -269,7 +269,7 @@ describe('StorageAgent', function() {
     const cookieName = 'session-cookie';
     const aidaClient = mockAidaClient([
       [{
-        functionCalls: [{name: 'getCookieValues', args: {cookieNames: [cookieName], origin: 'https://example.com'}}],
+        functionCalls: [{name: 'getCookieValues', args: {cookieNames: [cookieName], origins: ['https://example.com']}}],
         explanation: '',
       }],
       [{explanation: 'Here are the values.'}],
@@ -307,7 +307,7 @@ describe('StorageAgent', function() {
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.lengthOf(actionResponses, 2, 'Expected exactly two action responses for approval flow');
 
-    assert.strictEqual(actionResponses[1].code, 'getCookieValues(["session-cookie"], \'https://example.com\')');
+    assert.strictEqual(actionResponses[1].code, 'getCookieValues(["session-cookie"], ["https://example.com"])');
     assert.include(actionResponses[1].output, 'value-host');
     assert.include(actionResponses[1].output, 'value-wildcard');
     assert.include(actionResponses[1].output, 'example.com');
@@ -320,7 +320,7 @@ describe('StorageAgent', function() {
       [{
         functionCalls: [{
           name: 'getCookieValues',
-          args: {cookieNames: ['secret-cookie', 'public-cookie'], origin: 'https://example.com'},
+          args: {cookieNames: ['secret-cookie', 'public-cookie'], origins: ['https://example.com']},
         }],
         explanation: '',
       }],
@@ -363,14 +363,116 @@ describe('StorageAgent', function() {
 
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.lengthOf(actionResponses, 2);
-    assert.strictEqual(
-        actionResponses[1].code, 'getCookieValues(["secret-cookie","public-cookie"], \'https://example.com\')');
+    assert.strictEqual(actionResponses[1].code,
+                       'getCookieValues(["secret-cookie","public-cookie"], ["https://example.com"])');
 
     // Verify that public cookie data is returned
     assert.include(actionResponses[1].output, 'public-value');
 
     // Verify that the secret/HttpOnly cookie's value is strictly filtered out
     assert.notInclude(actionResponses[1].output, 'secret-value');
+  });
+
+  it('supports listing cookies across multiple origins', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [{name: 'listCookies', args: {origins: ['https://example.com', 'https://other.com']}}],
+        explanation: '',
+      }],
+      [{explanation: 'Done listing.'}],
+    ]);
+
+    const target1 = universe.targetManager.primaryPageTarget();
+    assert.exists(target1);
+    const cookieModel1 = target1.model(SDK.CookieModel.CookieModel);
+    assert.exists(cookieModel1);
+
+    const mockCookie1 = new SDK.Cookie.Cookie('cookie-1', 'val-1');
+    sinon.stub(cookieModel1, 'getCookiesForDomain').withArgs('https://example.com').resolves([mockCookie1]);
+
+    const target2 = universe.createTarget({url: urlString`https://other.com/`});
+    const mainFrame2 = getMainFrame(target2);
+    navigate(mainFrame2, {securityOrigin: 'https://other.com'});
+    const cookieModel2 = target2.model(SDK.CookieModel.CookieModel);
+    assert.exists(cookieModel2);
+
+    const mockCookie2 = new SDK.Cookie.Cookie('cookie-2', 'val-2');
+    sinon.stub(cookieModel2, 'getCookiesForDomain').withArgs('https://other.com').resolves([mockCookie2]);
+
+    const agent = new AiAssistance.StorageAgent.StorageAgent({
+      aidaClient,
+      targetManager: universe.targetManager,
+    });
+    const context = new AiAssistance.StorageAgent.StorageContext(
+        new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com'));
+
+    assert.isTrue(AiAssistance.StorageAgent.isSamePageOrigin(target2.outermostTarget(), context));
+
+    const responses = await Array.fromAsync(agent.run('list cookies', {selected: context}));
+    const actionResponse = responses.find((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.exists(actionResponse);
+
+    const parsed = JSON.parse(actionResponse.output!);
+    assert.exists(parsed.cookieNamesByOrigin);
+    assert.deepEqual(parsed.cookieNamesByOrigin['https://example.com'].cookies, ['cookie-1']);
+    assert.deepEqual(parsed.cookieNamesByOrigin['https://other.com'].cookies, ['cookie-2']);
+  });
+
+  it('can get cookie values across multiple origins with user approval', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [
+          {
+            name: 'getCookieValues',
+            args: {cookieNames: ['sessId'], origins: ['https://example.com', 'https://other.com']},
+          },
+        ],
+        explanation: '',
+      }],
+      [{explanation: 'Done getting values.'}],
+    ]);
+
+    const target1 = universe.targetManager.primaryPageTarget();
+    assert.exists(target1);
+    const cookieModel1 = target1.model(SDK.CookieModel.CookieModel);
+    assert.exists(cookieModel1);
+
+    const cookie1 = new SDK.Cookie.Cookie('sessId', 'value-1');
+    cookie1.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'example.com');
+    cookie1.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+    sinon.stub(cookieModel1, 'getCookiesForDomain').withArgs('https://example.com').resolves([cookie1]);
+
+    const target2 = universe.createTarget({url: urlString`https://other.com/`});
+    const mainFrame2 = getMainFrame(target2);
+    navigate(mainFrame2, {securityOrigin: 'https://other.com'});
+    const cookieModel2 = target2.model(SDK.CookieModel.CookieModel);
+    assert.exists(cookieModel2);
+
+    const cookie2 = new SDK.Cookie.Cookie('sessId', 'value-2');
+    cookie2.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'other.com');
+    cookie2.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+    sinon.stub(cookieModel2, 'getCookiesForDomain').withArgs('https://other.com').resolves([cookie2]);
+
+    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const agent = new AiAssistance.StorageAgent.StorageAgent({
+      aidaClient,
+      confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
+      targetManager: universe.targetManager,
+    });
+    const context = new AiAssistance.StorageAgent.StorageContext(
+        new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com'));
+
+    assert.isTrue(AiAssistance.StorageAgent.isSamePageOrigin(target2.outermostTarget(), context));
+
+    sideEffectPromise.resolve(true);
+    const responses = await Array.fromAsync(agent.run('get cookie values', {selected: context}));
+    const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.lengthOf(actionResponses, 2, 'Expected exactly two action responses for approval flow');
+    assert.strictEqual(actionResponses[1].code,
+                       'getCookieValues(["sessId"], ["https://example.com","https://other.com"])');
+
+    assert.include(actionResponses[1].output, 'value-1');
+    assert.include(actionResponses[1].output, 'value-2');
   });
 
   it('getStorageValues truncates large values to 10000 characters', async () => {

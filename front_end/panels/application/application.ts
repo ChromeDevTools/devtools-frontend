@@ -31,11 +31,6 @@ import * as ServiceWorkerCacheTreeElement from './ServiceWorkerCacheTreeElement.
 import * as ServiceWorkerCacheViews from './ServiceWorkerCacheViews.js';
 import * as ServiceWorkersView from './ServiceWorkersView.js';
 import * as ServiceWorkerUpdateCycleView from './ServiceWorkerUpdateCycleView.js';
-import * as SharedStorageEventsView from './SharedStorageEventsView.js';
-import * as SharedStorageItemsView from './SharedStorageItemsView.js';
-import * as SharedStorageListTreeElement from './SharedStorageListTreeElement.js';
-import * as SharedStorageModel from './SharedStorageModel.js';
-import * as SharedStorageTreeElement from './SharedStorageTreeElement.js';
 import * as StorageBucketsTreeElement from './StorageBucketsTreeElement.js';
 import * as StorageItemsToolbar from './StorageItemsToolbar.js';
 import * as StorageView from './StorageView.js';
@@ -74,11 +69,6 @@ export {
   ServiceWorkerCacheViews,
   ServiceWorkersView,
   ServiceWorkerUpdateCycleView,
-  SharedStorageEventsView,
-  SharedStorageItemsView,
-  SharedStorageListTreeElement,
-  SharedStorageModel,
-  SharedStorageTreeElement,
   StorageBucketsTreeElement,
   StorageItemsToolbar,
   StorageView,

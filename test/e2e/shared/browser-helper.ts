@@ -214,10 +214,8 @@ export interface BrowserSettings {
 }
 
 export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
-  // LINT.IfChange(features)
   enabledFeatures: [
     'PartitionedCookies',
-    'SharedStorageAPI',
     'FencedFrames',
     'PrivacySandboxAdsAPIsOverride',
     'AutofillEnableDevtoolsIssues',
@@ -232,5 +230,4 @@ export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
     'ScriptSrcHashesV1',                           // crbug.com/443216445
     'RenderDocument',                              // crbug.com/444369637
   ],
-  // LINT.ThenChange(/test/conductor/hooks.ts:features)
 };

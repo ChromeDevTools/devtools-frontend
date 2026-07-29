@@ -161,38 +161,6 @@ export async function navigateToSessionStorageForTopDomain(devToolsPage: DevTool
                        undefined);
 }
 
-const SHARED_STORAGE_SELECTOR = '[aria-label="Shared storage"].parent';
-
-export async function navigateToSharedStorage(devToolsPage: DevToolsPage) {
-  await doubleClickTreeItem(devToolsPage, SHARED_STORAGE_SELECTOR);
-  await devToolsPage.waitFor('.empty-state');
-
-  await expectVeEvents(
-      devToolsPage,
-      [
-        veImpressionsUnder('Panel: resources',
-                           [veImpression('Pane', 'manifest', [veImpression('Section', 'empty-view')])]),
-      ],
-      undefined);
-}
-
-export async function navigateToSharedStorageForTopDomain(
-    devToolsPage: DevToolsPage,
-    inspectedPage: InspectedPage,
-) {
-  await navigateToSharedStorage(devToolsPage);
-  const DOMAIN_SELECTOR = `${SHARED_STORAGE_SELECTOR} + ol > [aria-label="${inspectedPage.domain()}"]`;
-  await doubleClickTreeItem(devToolsPage, DOMAIN_SELECTOR);
-  await expectVeEvents(
-      devToolsPage,
-      [
-        veClick(
-            'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: shared-storage > TreeItem: shared-storage-instance'),
-        veImpressionsUnder('Panel: resources', [veImpressionForSharedStorageView()]),
-      ],
-      undefined);
-}
-
 async function doubleClickTreeItem(devToolsPage: DevToolsPage, selector: string) {
   const element = await devToolsPage.waitFor(selector);
   await element.evaluate(el => el.scrollIntoView(true));
@@ -381,7 +349,6 @@ export function veImpressionForApplicationPanel() {
           veImpression('TreeItem', 'local-storage'),
           veImpression('TreeItem', 'private-state-tokens'),
           veImpression('TreeItem', 'session-storage'),
-          veImpression('TreeItem', 'shared-storage'),
           veImpression('TreeItem', 'storage-buckets'),
         ]),
         veImpression('TreeItem', 'background-services', [
@@ -460,16 +427,6 @@ function veImpressionForSessionStorageView() {
     veImpression('Pane', 'preview'),
     veImpression('TableHeader', 'key'),
     veImpression('TableHeader', 'value'),
-  ]);
-}
-
-function veImpressionForSharedStorageView() {
-  return veImpression('Pane', 'shared-storage-data', [
-    veImpressionForStorageViewToolbar(),
-    veImpression('TableHeader', 'key'),
-    veImpression('TableHeader', 'value'),
-    veImpression('Action', 'reset-entropy-budget'),
-    veImpression('Pane', 'preview', [veImpression('Section', 'empty-view')]),
   ]);
 }
 

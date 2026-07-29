@@ -137,8 +137,6 @@ const LOCALIZED_INSTRUMENTATION_NAMES:
           i18nLazyString(UIStrings.scriptFirstStatement),
       [SDK.EventBreakpointsModel.InstrumentationNames.SCRIPT_BLOCKED_BY_CSP]:
           i18nLazyString(UIStrings.scriptBlockedByContentSecurity),
-      [SDK.EventBreakpointsModel.InstrumentationNames.SHARED_STORAGE_WORKLET_SCRIPT_FIRST_STATEMENT]:
-          i18nLazyString(UIStrings.scriptFirstStatement),
       [SDK.EventBreakpointsModel.InstrumentationNames.REQUEST_ANIMATION_FRAME]:
           i18nLazyString(UIStrings.requestAnimationFrame),
       [SDK.EventBreakpointsModel.InstrumentationNames.CANCEL_ANIMATION_FRAME]:

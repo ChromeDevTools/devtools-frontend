@@ -80,9 +80,6 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
           this.#capabilitiesMask |= Capability.STORAGE;
         }
         break;
-      case Type.SHARED_STORAGE_WORKLET:
-        this.#capabilitiesMask = Capability.JS | Capability.LOG | Capability.INSPECTOR | Capability.EVENT_BREAKPOINTS;
-        break;
       case Type.Worker:
         this.#capabilitiesMask = Capability.JS | Capability.LOG | Capability.NETWORK | Capability.TARGET |
             Capability.IO | Capability.MEDIA | Capability.EMULATION | Capability.EVENT_BREAKPOINTS;
@@ -291,7 +288,6 @@ export enum Type {
   // eslint-disable-next-line @typescript-eslint/naming-convention -- Used by web_tests.
   Worker = 'worker',
   SHARED_WORKER = 'shared-worker',
-  SHARED_STORAGE_WORKLET = 'shared-storage-worklet',
   NODE = 'node',
   BROWSER = 'browser',
   AUCTION_WORKLET = 'auction-worklet',

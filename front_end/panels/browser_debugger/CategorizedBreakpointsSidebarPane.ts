@@ -90,10 +90,6 @@ const UIStrings = {
    */
   script: 'Script',
   /**
-   * @description Category of event listener breakpoints for shared storage worklet events.
-   */
-  sharedStorageWorklet: 'Shared storage worklet',
-  /**
    * @description Category of event listener breakpoints for timer events.
    */
   timer: 'Timer',
@@ -386,7 +382,6 @@ const LOCALIZED_CATEGORIES: Record<SDK.CategorizedBreakpoint.Category, () => Pla
   [SDK.CategorizedBreakpoint.Category.PICTURE_IN_PICTURE]: i18nLazyString(UIStrings.pictureinpicture),
   [SDK.CategorizedBreakpoint.Category.POINTER]: i18nLazyString(UIStrings.pointer),
   [SDK.CategorizedBreakpoint.Category.SCRIPT]: i18nLazyString(UIStrings.script),
-  [SDK.CategorizedBreakpoint.Category.SHARED_STORAGE_WORKLET]: i18nLazyString(UIStrings.sharedStorageWorklet),
   [SDK.CategorizedBreakpoint.Category.TIMER]: i18nLazyString(UIStrings.timer),
   [SDK.CategorizedBreakpoint.Category.TOUCH]: i18nLazyString(UIStrings.touch),
   [SDK.CategorizedBreakpoint.Category.TRUSTED_TYPE_VIOLATION]: i18nLazyString(UIStrings.trustedTypeViolations),

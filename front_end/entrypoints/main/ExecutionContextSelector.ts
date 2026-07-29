@@ -131,7 +131,6 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
 
     switch (event.data.target().type()) {
       case SDK.Target.Type.AUCTION_WORKLET:
-      case SDK.Target.Type.SHARED_STORAGE_WORKLET:
       case SDK.Target.Type.SHARED_WORKER:
       case SDK.Target.Type.ServiceWorker:
       case SDK.Target.Type.WORKLET:

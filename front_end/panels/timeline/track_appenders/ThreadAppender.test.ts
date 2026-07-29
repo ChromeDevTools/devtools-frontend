@@ -510,5 +510,15 @@ describeWithEnvironment('ThreadAppender', function() {
       assert.exists(finalFlamechartData.entryTotalTimes);
       Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').set(false);
     });
+
+    it('appends WASM profile calls to the flame chart data', async function() {
+      const {entryData, threadAppenders} = await renderThreadAppendersFromTrace(this, 'mainWasm_profile.json.gz');
+      const wasmCall = entryData.find(
+          entry => Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'mainWasm',
+      );
+      assert.exists(wasmCall);
+      const appender = threadAppenders.find(a => a.titleForEvent(wasmCall) === 'mainWasm');
+      assert.exists(appender);
+    });
   });
 });

@@ -8,7 +8,6 @@ import type * as puppeteer from 'puppeteer-core';
 import {
   BOTTOM_UP_SELECTOR,
   CALL_TREE_SELECTOR,
-  getTotalTimeFromPie,
   increaseTimeoutForPerfPanel,
   navigateToBottomUpTab,
   navigateToCallTreeTab,
@@ -80,13 +79,6 @@ describe('The Performance panel', function() {
     await devToolsPage.waitFor(SUMMARY_TAB_SELECTOR);
     await devToolsPage.waitFor(BOTTOM_UP_SELECTOR);
     await devToolsPage.waitFor(CALL_TREE_SELECTOR);
-  });
-
-  it('is able to display the execution time for a wasm function', async ({devToolsPage, inspectedPage}) => {
-    await setupPerformancePanel(devToolsPage, inspectedPage);
-
-    const totalTime = await getTotalTimeFromPie(devToolsPage);
-    assert.isAbove(totalTime, 0, 'mainWasm function execution time is displayed incorrectly');
   });
 
   it('is able to inspect the call stack for a wasm function from the bottom up',

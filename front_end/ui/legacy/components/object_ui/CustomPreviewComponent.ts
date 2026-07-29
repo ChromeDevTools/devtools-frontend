@@ -10,6 +10,7 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import {createIcon, type Icon} from '../../../kit/kit.js';
 import * as UI from '../../legacy.js';
 
+import {sanitizeStyle} from './CSSStyleSanitizer.js';
 import customPreviewComponentStyles from './customPreviewComponent.css.js';
 import {
   ObjectPropertiesMode,
@@ -108,7 +109,11 @@ export class CustomPreviewSection {
           continue;
         }
 
-        element.setAttribute(key, value);
+        const sanitizedStyle = new Map<string, {value: string, priority: string}>();
+        sanitizeStyle(sanitizedStyle, value);
+        for (const [property, {value: propertyValue, priority}] of sanitizedStyle) {
+          element.style.setProperty(property, propertyValue, priority);
+        }
       }
     }
 

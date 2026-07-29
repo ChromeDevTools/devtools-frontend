@@ -2721,6 +2721,7 @@ grd_files_unbundled_sources = [
   "front_end/ui/legacy/components/inline_editor/cssShadowSwatch.css.js",
   "front_end/ui/legacy/components/inline_editor/linkSwatch.css.js",
   "front_end/ui/legacy/components/inline_editor/swatchPopover.css.js",
+  "front_end/ui/legacy/components/object_ui/CSSStyleSanitizer.js",
   "front_end/ui/legacy/components/object_ui/CustomPreviewComponent.js",
   "front_end/ui/legacy/components/object_ui/JavaScriptREPL.js",
   "front_end/ui/legacy/components/object_ui/ObjectPopoverHelper.js",

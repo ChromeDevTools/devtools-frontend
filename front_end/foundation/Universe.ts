@@ -207,7 +207,7 @@ export class Universe {
     const javaScriptMetadata = new JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl();
     context.set(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl, javaScriptMetadata);
 
-    const liveMetrics = new LiveMetrics.LiveMetrics(targetManager, deviceModeModel);
+    const liveMetrics = new LiveMetrics.LiveMetrics(targetManager, settings, deviceModeModel);
     context.set(LiveMetrics.LiveMetrics, liveMetrics);
 
     const userBadges = new Badges.UserBadges(settings, gdpClient, options.inspectorFrontendHost);

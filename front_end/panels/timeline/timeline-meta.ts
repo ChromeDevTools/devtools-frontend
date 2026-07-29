@@ -5,7 +5,9 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import type * as Timeline from './timeline.js';
 
@@ -403,13 +405,9 @@ Common.Settings.registerSettingExtension({
   defaultValue: false,
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(LiveMetrics.timelineEnableSoftNavigationsSettingDescriptor, {
   category: Common.Settings.SettingCategory.PERFORMANCE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.enableSoftNavigations),
-  settingName: 'timeline-enable-soft-navigations',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 // IMPORTANT: if you are updating this, you should also update the setting in

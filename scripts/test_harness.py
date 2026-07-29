@@ -4,11 +4,13 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import subprocess
-import re
+import argparse
 import contextlib
-import sys
 import json
+import os
+import re
+import subprocess
+import sys
 import unittest
 
 # The goal of this test is to verify e2e behavior of our test harness w.r.t how
@@ -16,11 +18,14 @@ import unittest
 
 
 class DevToolsTestHarness(unittest.TestCase):
+    target_name = 'Default'
+    build_dir = 'out/Default'
+    gen_dir = 'out/Default/gen'
+    debug_mode = False
 
     @contextlib.contextmanager
     def _expectations_file(self, content):
         import tempfile
-        import os
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
             f.write(content)
             expectations_file = f.name
@@ -79,8 +84,6 @@ class DevToolsTestHarness(unittest.TestCase):
         return results, process.returncode
 
     def _resolve_test_file(self, test_file):
-        import os
-        import re
         if test_file.startswith("@"):
             rsp_path = test_file[1:]
             if os.path.isabs(rsp_path):
@@ -98,12 +101,12 @@ class DevToolsTestHarness(unittest.TestCase):
         if path_part.endswith(".ts"):
             path_part = path_part[:-3] + ".js"
 
-        if path_part.startswith("out/Default/"):
+        if path_part.startswith(f"{self.build_dir}/"):
             pass
         elif path_part.startswith("gen/"):
-            path_part = os.path.join("out/Default", path_part)
+            path_part = os.path.join(self.build_dir, path_part)
         else:
-            path_part = os.path.join("out/Default/gen", path_part)
+            path_part = os.path.join(self.gen_dir, path_part)
         return os.path.abspath(path_part) + suffix
 
     def run_unit_test(self, test_file):
@@ -115,14 +118,16 @@ class DevToolsTestHarness(unittest.TestCase):
         abs_test_files = [self._resolve_test_file(f) for f in test_files]
         cmd = [
             "node_modules/karma/bin/karma", "start",
-            "out/Default/gen/test/unit/karma.conf.js", "--"
+            os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--"
         ] + abs_test_files
         return self.run_test_with_rdb(cmd)
 
     def run_e2e_test(self, test_file):
         abs_test_file = self._resolve_test_file(test_file)
-        return self.run_test_with_rdb(
-            ["out/Default/gen/test/harness/run-mocha.js", abs_test_file])
+        return self.run_test_with_rdb([
+            os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
+            abs_test_file
+        ])
 
     def test_unit(self):
         results, exit_code = self.run_unit_test(
@@ -139,7 +144,6 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertTrue(results[0].get('expected'))
 
     def test_unit_artifacts(self):
-        import os
         results, exit_code = self.run_unit_test(
             "test/harness/unit/multi_logs.test.ts")
         self.assertEqual(exit_code, 0)
@@ -150,7 +154,7 @@ class DevToolsTestHarness(unittest.TestCase):
 
         test_id_1 = results[0].get('testId')
         safe_id_1 = re.sub(r'[^a-zA-Z0-9_.-]', '_', test_id_1)
-        log_path_1 = os.path.join('out', 'Default', 'artifacts', 'test-logs',
+        log_path_1 = os.path.join(self.build_dir, 'artifacts', 'test-logs',
                                   f"{safe_id_1}.log")
         self.assertTrue(os.path.exists(log_path_1),
                         f"Artifact file {log_path_1} does not exist")
@@ -161,7 +165,7 @@ class DevToolsTestHarness(unittest.TestCase):
 
         test_id_2 = results[1].get('testId')
         safe_id_2 = re.sub(r'[^a-zA-Z0-9_.-]', '_', test_id_2)
-        log_path_2 = os.path.join('out', 'Default', 'artifacts', 'test-logs',
+        log_path_2 = os.path.join(self.build_dir, 'artifacts', 'test-logs',
                                   f"{safe_id_2}.log")
         self.assertTrue(os.path.exists(log_path_2),
                         f"Artifact file {log_path_2} does not exist")
@@ -172,7 +176,6 @@ class DevToolsTestHarness(unittest.TestCase):
 
     def test_unit_response_file(self):
         import tempfile
-        import os
         abs_test_file_1 = self._resolve_test_file(
             "test/harness/unit/unit.test.ts")
         abs_test_file_2 = self._resolve_test_file(
@@ -325,8 +328,8 @@ class DevToolsTestHarness(unittest.TestCase):
                 "test/harness/unit/hooks.test.ts")
             results, exit_code = self.run_test_with_rdb([
                 "node_modules/karma/bin/karma", "start",
-                "out/Default/gen/test/unit/karma.conf.js", "--", abs_test_file,
-                f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
+                abs_test_file, f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 1)
             self.assertEqual(len(results), 3)
@@ -341,8 +344,8 @@ class DevToolsTestHarness(unittest.TestCase):
                 "test/harness/unit/unit.test.ts")
             results, exit_code = self.run_test_with_rdb([
                 "node_modules/karma/bin/karma", "start",
-                "out/Default/gen/test/unit/karma.conf.js", "--", abs_test_file,
-                f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
+                abs_test_file, f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 1)  # Unexpected pass means exit code 1
             self.assertEqual(len(results), 1)
@@ -358,8 +361,8 @@ class DevToolsTestHarness(unittest.TestCase):
                 "test/harness/unit/hooks.test.ts")
             results, exit_code = self.run_test_with_rdb([
                 "node_modules/karma/bin/karma", "start",
-                "out/Default/gen/test/unit/karma.conf.js", "--", abs_test_file,
-                f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
+                abs_test_file, f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 1)  # run_2 fails and is unexpected
             self.assertEqual(len(results), 3)
@@ -382,7 +385,8 @@ class DevToolsTestHarness(unittest.TestCase):
                 "test/harness/unit/unit_2.test.ts")
             results, exit_code = self.run_test_with_rdb([
                 "node_modules/karma/bin/karma", "start",
-                "out/Default/gen/test/unit/karma.conf.js", "--", abs_test_file,
+                os.path.join(self.gen_dir,
+                             "test/unit/karma.conf.js"), "--", abs_test_file,
                 abs_test_file_2, f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 0)
@@ -401,7 +405,8 @@ class DevToolsTestHarness(unittest.TestCase):
                 "test/harness/unit/unit_2.test.ts")
             results, exit_code = self.run_test_with_rdb([
                 "node_modules/karma/bin/karma", "start",
-                "out/Default/gen/test/unit/karma.conf.js", "--", abs_test_file,
+                os.path.join(self.gen_dir,
+                             "test/unit/karma.conf.js"), "--", abs_test_file,
                 abs_test_file_2, f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 0)
@@ -444,8 +449,8 @@ class DevToolsTestHarness(unittest.TestCase):
     def test_e2e_repeat(self):
         abs_test_file = self._resolve_test_file("test/harness/e2e/e2e.test.ts")
         results, exit_code = self.run_test_with_rdb([
-            "out/Default/gen/test/harness/run-mocha.js", abs_test_file, "--",
-            "--repeat=2"
+            os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
+            abs_test_file, "--", "--repeat=2"
         ])
         self.assertEqual(exit_code, 0)
         self.assertEqual(
@@ -472,8 +477,8 @@ class DevToolsTestHarness(unittest.TestCase):
             abs_test_file = self._resolve_test_file(
                 "test/harness/e2e/errors.test.ts")
             results, exit_code = self.run_test_with_rdb([
-                "out/Default/gen/test/harness/run-mocha.js", abs_test_file,
-                "--", f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
+                abs_test_file, "--", f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 0)
             self.assertEqual(len(results), 4)
@@ -487,8 +492,8 @@ class DevToolsTestHarness(unittest.TestCase):
             abs_test_file = self._resolve_test_file(
                 "test/harness/e2e/errors.test.ts")
             results, exit_code = self.run_test_with_rdb([
-                "out/Default/gen/test/harness/run-mocha.js", abs_test_file,
-                "--", f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
+                abs_test_file, "--", f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 1)
             self.assertEqual(len(results), 4)
@@ -505,8 +510,8 @@ class DevToolsTestHarness(unittest.TestCase):
             abs_test_file = self._resolve_test_file(
                 "test/harness/e2e/errors.test.ts")
             results, exit_code = self.run_test_with_rdb([
-                "out/Default/gen/test/harness/run-mocha.js", abs_test_file,
-                "--", f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
+                abs_test_file, "--", f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 1)
             self.assertEqual(len(results), 4)
@@ -528,8 +533,8 @@ class DevToolsTestHarness(unittest.TestCase):
             abs_test_file = self._resolve_test_file(
                 "test/harness/e2e/errors.test.ts")
             results, exit_code = self.run_test_with_rdb([
-                "out/Default/gen/test/harness/run-mocha.js", abs_test_file,
-                "--", f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
+                abs_test_file, "--", f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 0)
             self.assertEqual(len(results), 4)
@@ -543,8 +548,8 @@ class DevToolsTestHarness(unittest.TestCase):
             abs_test_file = self._resolve_test_file(
                 "test/harness/e2e/errors.test.ts")
             results, exit_code = self.run_test_with_rdb([
-                "out/Default/gen/test/harness/run-mocha.js", abs_test_file,
-                "--", f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
+                abs_test_file, "--", f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 1)
             self.assertEqual(len(results), 4)
@@ -567,8 +572,8 @@ class DevToolsTestHarness(unittest.TestCase):
             "test/harness/unit/screenshot_retry.test.ts")
         results, exit_code = self.run_test_with_rdb([
             "node_modules/karma/bin/karma", "start",
-            "out/Default/gen/test/unit/karma.conf.js", "--", abs_test_file,
-            "--retries=2"
+            os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
+            abs_test_file, "--retries=2"
         ])
         self.assertEqual(exit_code, 1)
         self.assertEqual(
@@ -593,8 +598,8 @@ class DevToolsTestHarness(unittest.TestCase):
             "test/harness/unit/unit.test.ts")
         results, exit_code = self.run_test_with_rdb([
             "node_modules/karma/bin/karma", "start",
-            "out/Default/gen/test/unit/karma.conf.js", "--", abs_test_file,
-            "--repeat=2"
+            os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
+            abs_test_file, "--repeat=2"
         ])
         self.assertEqual(exit_code, 0)
         self.assertEqual(
@@ -617,8 +622,8 @@ class DevToolsTestHarness(unittest.TestCase):
             "test/harness/unit/snapshot.test.ts")
         results, exit_code = self.run_test_with_rdb([
             "node_modules/karma/bin/karma", "start",
-            "out/Default/gen/test/unit/karma.conf.js", "--", abs_test_file,
-            "--repeat=2"
+            os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
+            abs_test_file, "--repeat=2"
         ])
         self.assertEqual(exit_code, 0)
         self.assertEqual(
@@ -636,8 +641,34 @@ class DevToolsTestHarness(unittest.TestCase):
         )
         self.assertEqual(results[1].get('status'), 'PASS')
 
+    def test_get_test_id(self):
+        cmd = [
+            "vpython3", "third_party/node/node.py", "--output",
+            "scripts/get_test_id.ts", "test/harness/unit/get_test_id.test.ts",
+            "8", "10"
+        ]
+        process = subprocess.run(cmd, capture_output=True, text=True)
+        self.assertEqual(process.returncode, 0,
+                         f"get_test_id failed: {process.stderr}")
+        expected_id = "test/harness/unit/get_test_id.test.ts:gettestid_fixture:nested_suite:target_test_case"
+        self.assertEqual(process.stdout.strip(), expected_id)
+
+
 if __name__ == '__main__':
-    if '--debug' in sys.argv:
-        DevToolsTestHarness.debug_mode = True
-        sys.argv.remove('--debug')
-    unittest.main()
+    parser = argparse.ArgumentParser(description='DevTools Test Harness')
+    parser.add_argument('-t',
+                        '--target',
+                        default='Default',
+                        help='Target build directory (default: Default)')
+    parser.add_argument('--debug',
+                        action='store_true',
+                        help='Enable debug mode')
+    args, unittest_args = parser.parse_known_args()
+
+    DevToolsTestHarness.target_name = args.target
+    DevToolsTestHarness.build_dir = os.path.join('out', args.target)
+    DevToolsTestHarness.gen_dir = os.path.join(DevToolsTestHarness.build_dir,
+                                               'gen')
+    DevToolsTestHarness.debug_mode = args.debug
+
+    unittest.main(argv=[sys.argv[0]] + unittest_args)

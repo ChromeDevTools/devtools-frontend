@@ -24,7 +24,6 @@ group("api_tests") {
     "api",
   ]
 }
-
 group("unittests") {
   deps = [
     "../front_end:test_inputs",

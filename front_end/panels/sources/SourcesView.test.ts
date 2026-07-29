@@ -68,7 +68,7 @@ describeWithEnvironment('SourcesView', () => {
             .resolves(null);
 
     // Wait for widget rendering/updates
-    await sourcesView.editorContainer.view.updateComplete;
+    await sourcesView.editorContainer?.view.updateComplete;
 
     // Find the TabbedPane element
     const tabbedPane = sourcesView.element.querySelector('.tabbed-pane');
@@ -120,10 +120,12 @@ describeWithEnvironment('SourcesView', () => {
 
     // Rename which changes contentType
     await uiSourceCode.rename('image.jpg' as Platform.DevToolsPath.RawPathString);
+    await sourcesView.updateComplete;
     assert.instanceOf(sourcesView.getSourceView(uiSourceCode), SourceFrame.ImageView.ImageView);
 
     // Rename which changes contentType
     await uiSourceCode.rename('font.woff' as Platform.DevToolsPath.RawPathString);
+    await sourcesView.updateComplete;
     assert.instanceOf(sourcesView.getSourceView(uiSourceCode), SourceFrame.FontView.FontView);
     workspace.removeProject(project);
     sourcesView.detach();
@@ -198,7 +200,7 @@ describeWithEnvironment('SourcesView', () => {
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
   });
 
-  it('creates editor tabs only for in-scope uiSourceCodes', () => {
+  it('creates editor tabs only for in-scope uiSourceCodes', async () => {
     const addUISourceCodeSpy =
         sinon.spy(Sources.TabbedEditorContainer.TabbedEditorContainer.prototype, 'addUISourceCode');
     const removeUISourceCodesSpy =
@@ -223,7 +225,10 @@ describeWithEnvironment('SourcesView', () => {
       target: target2,
     });
 
-    new Sources.SourcesView.SourcesView();
+    const sourcesView = new Sources.SourcesView.SourcesView();
+    renderElementIntoDOM(sourcesView);
+    await sourcesView.updateComplete;
+    await new Promise(resolve => setTimeout(resolve, 0));
     let addedURLs = addUISourceCodeSpy.args.map(args => args[0].url());
     assert.deepEqual(addedURLs, ['http://example.com/a.js', 'http://example.com/b.js']);
     sinon.assert.notCalled(removeUISourceCodesSpy);
@@ -236,7 +241,7 @@ describeWithEnvironment('SourcesView', () => {
     assert.deepEqual(removedURLs, ['http://example.com/a.js', 'http://example.com/b.js']);
   });
 
-  it('doesn\'t remove non-network UISourceCodes when changing the scope target', () => {
+  it('doesn\'t remove non-network UISourceCodes when changing the scope target', async () => {
     createFileSystemUISourceCode({
       url: urlString`snippet:///foo.js`,
       mimeType: 'application/javascript',
@@ -244,7 +249,10 @@ describeWithEnvironment('SourcesView', () => {
     });
 
     const sourcesView = new Sources.SourcesView.SourcesView();
-    const removeUISourceCodesSpy = sinon.spy(sourcesView.editorContainer, 'removeUISourceCodes');
+    renderElementIntoDOM(sourcesView);
+    await sourcesView.updateComplete;
+    const removeUISourceCodesSpy =
+        sinon.spy(Sources.TabbedEditorContainer.TabbedEditorContainer.prototype, 'removeUISourceCodes');
     target2.targetManager().setScopeTarget(target2);
     sinon.assert.notCalled(removeUISourceCodesSpy);
   });

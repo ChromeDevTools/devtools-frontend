@@ -60,7 +60,8 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     implements TabbedEditorContainerDelegate, UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
   readonly #searchableView: UI.SearchableView.SearchableView;
   private readonly sourceViewByUISourceCode: Map<Workspace.UISourceCode.UISourceCode, UI.Widget.Widget>;
-  editorContainer: TabbedEditorContainer;
+  editorContainer?: TabbedEditorContainer;
+  #uiSourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
   private readonly historyManager: EditingLocationHistoryManager;
   readonly #scriptViewToolbar: UI.Toolbar.Toolbar;
   readonly #bottomToolbar: UI.Toolbar.Toolbar;
@@ -84,6 +85,16 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
     this.sourceViewByUISourceCode = new Map();
 
+    const toolbarContainerElementInternal = this.element.createChild('div', 'sources-toolbar');
+    toolbarContainerElementInternal.setAttribute('jslog', `${VisualLogging.toolbar('bottom')}`);
+    this.#scriptViewToolbar = toolbarContainerElementInternal.createChild('devtools-toolbar') as UI.Toolbar.Toolbar;
+    this.#scriptViewToolbar.style.flex = 'auto';
+    this.#bottomToolbar = toolbarContainerElementInternal.createChild('devtools-toolbar') as UI.Toolbar.Toolbar;
+
+    this.toolbarChangedListener = null;
+
+    workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
+
     this.editorContainer = new TabbedEditorContainer(
         this, Common.Settings.Settings.instance().createLocalSetting('previously-viewed-files', []),
         this.placeholderElement(), this.focusedPlaceholderElement);
@@ -93,16 +104,8 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
     this.historyManager = new EditingLocationHistoryManager(this);
 
-    const toolbarContainerElementInternal = this.element.createChild('div', 'sources-toolbar');
-    toolbarContainerElementInternal.setAttribute('jslog', `${VisualLogging.toolbar('bottom')}`);
-    this.#scriptViewToolbar = toolbarContainerElementInternal.createChild('devtools-toolbar');
-    this.#scriptViewToolbar.style.flex = 'auto';
-    this.#bottomToolbar = toolbarContainerElementInternal.createChild('devtools-toolbar');
-
-    this.toolbarChangedListener = null;
-
     UI.UIUtils.startBatchUpdate();
-    workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
+    this.#uiSourceCodes.forEach(ui => this.editorContainer?.addUISourceCode(ui));
     UI.UIUtils.endBatchUpdate();
 
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
@@ -206,7 +209,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const defaultScores = new Map<Workspace.UISourceCode.UISourceCode, number>();
     const sourcesView = UI.Context.Context.instance().flavor(SourcesView);
     if (sourcesView) {
-      const uiSourceCodes = sourcesView.editorContainer.historyUISourceCodes();
+      const uiSourceCodes = sourcesView.editorContainer?.historyUISourceCodes() ?? [];
       for (let i = 1; i < uiSourceCodes.length; ++i)  // Skip current element
       {
         defaultScores.set(uiSourceCodes[i], uiSourceCodes.length - i);
@@ -216,10 +219,16 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   leftToolbar(): UI.Toolbar.Toolbar {
+    if (!this.editorContainer) {
+      throw new Error('editorContainer not initialized');
+    }
     return this.editorContainer.leftToolbar();
   }
 
   rightToolbar(): UI.Toolbar.Toolbar {
+    if (!this.editorContainer) {
+      throw new Error('editorContainer not initialized');
+    }
     return this.editorContainer.rightToolbar();
   }
 
@@ -246,7 +255,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   visibleView(): UI.Widget.Widget|null {
-    return this.editorContainer.visibleView as UI.Widget.Widget | null;
+    return (this.editorContainer?.visibleView ?? null) as UI.Widget.Widget | null;
   }
 
   currentSourceFrame(): UISourceCodeFrame|null {
@@ -258,15 +267,15 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   currentUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
-    return this.editorContainer.currentFile();
+    return this.editorContainer?.currentFile() ?? null;
   }
 
   onCloseEditorTab(): boolean {
-    const uiSourceCode = this.editorContainer.currentFile();
+    const uiSourceCode = this.editorContainer?.currentFile();
     if (!uiSourceCode) {
       return false;
     }
-    this.editorContainer.closeFile(uiSourceCode);
+    this.editorContainer?.closeFile(uiSourceCode);
     return true;
   }
 
@@ -317,7 +326,8 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
         }
       }
     }
-    this.editorContainer.addUISourceCode(uiSourceCode);
+    this.#uiSourceCodes.add(uiSourceCode);
+    this.editorContainer?.addUISourceCode(uiSourceCode);
   }
 
   private uiSourceCodeRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
@@ -326,7 +336,8 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   private removeUISourceCodes(uiSourceCodes: Workspace.UISourceCode.UISourceCode[]): void {
-    this.editorContainer.removeUISourceCodes(uiSourceCodes);
+    uiSourceCodes.forEach(ui => this.#uiSourceCodes.delete(ui));
+    this.editorContainer?.removeUISourceCodes(uiSourceCodes);
     for (let i = 0; i < uiSourceCodes.length; ++i) {
       this.removeSourceFrame(uiSourceCodes[i]);
       this.historyManager.removeHistoryForSourceCode(uiSourceCodes[i]);
@@ -357,15 +368,15 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     }
   }
 
-  showSourceLocation(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, location?: SourceFrame.SourceFrame.RevealPosition,
-      omitFocus?: boolean, omitHighlight?: boolean): void {
+  showSourceLocation(uiSourceCode: Workspace.UISourceCode.UISourceCode,
+                     location?: SourceFrame.SourceFrame.RevealPosition, omitFocus?: boolean,
+                     omitHighlight?: boolean): void {
     const currentFrame = this.currentSourceFrame();
     if (currentFrame) {
       this.historyManager.updateCurrentState(
           currentFrame.uiSourceCode(), currentFrame.textEditor.state.selection.main.head);
     }
-    this.editorContainer.showFile(uiSourceCode);
+    this.editorContainer?.showFile(uiSourceCode);
     const currentSourceFrame = this.currentSourceFrame();
     if (currentSourceFrame && location) {
       currentSourceFrame.revealPosition(location, !omitHighlight);
@@ -432,6 +443,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       if (this.#sourceViewTypeForWidget(widget) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
         // Remove the existing editor tab and create a new one of the correct type.
         this.removeUISourceCodes([uiSourceCode]);
+        this.#uiSourceCodes.add(uiSourceCode);
         this.showSourceLocation(uiSourceCode);
       }
     }
@@ -472,7 +484,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.historyManager.removeHistoryForSourceCode(uiSourceCode);
 
     let wasSelected = false;
-    if (!this.editorContainer.currentFile()) {
+    if (!this.editorContainer?.currentFile()) {
       wasSelected = true;
     }
 
@@ -503,7 +515,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.updateToolbarChangedListener();
     this.updateScriptViewToolbarItems();
 
-    const currentFile = this.editorContainer.currentFile();
+    const currentFile = this.editorContainer?.currentFile();
     if (currentFile) {
       this.dispatchEventToListeners(Events.EDITOR_SELECTED, currentFile);
     }
@@ -611,7 +623,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   showGoToLineQuickOpen(): void {
-    if (this.editorContainer.currentFile()) {
+    if (this.editorContainer?.currentFile()) {
       QuickOpen.QuickOpen.QuickOpenImpl.show(':');
     }
   }
@@ -621,7 +633,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   saveAll(): void {
-    const sourceFrames = this.editorContainer.fileViews();
+    const sourceFrames = this.editorContainer?.fileViews() ?? [];
     sourceFrames.forEach(this.saveSourceFrame.bind(this));
   }
 
@@ -634,7 +646,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   toggleBreakpointsActiveState(active: boolean): void {
-    this.editorContainer.view.element.classList.toggle('breakpoints-deactivated', !active);
+    this.editorContainer?.view.element.classList.toggle('breakpoints-deactivated', !active);
   }
 }
 
@@ -710,7 +722,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 
     switch (actionId) {
       case 'sources.close-all':
-        sourcesView.editorContainer.closeAllFiles();
+        sourcesView.editorContainer?.closeAllFiles();
         return true;
       case 'sources.jump-to-previous-location':
         sourcesView.onJumpToPreviousLocation();
@@ -719,10 +731,10 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         sourcesView.onJumpToNextLocation();
         return true;
       case 'sources.next-editor-tab':
-        sourcesView.editorContainer.selectNextTab();
+        sourcesView.editorContainer?.selectNextTab();
         return true;
       case 'sources.previous-editor-tab':
-        sourcesView.editorContainer.selectPrevTab();
+        sourcesView.editorContainer?.selectPrevTab();
         return true;
       case 'sources.close-editor-tab':
         return sourcesView.onCloseEditorTab();

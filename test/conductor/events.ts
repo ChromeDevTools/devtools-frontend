@@ -9,7 +9,6 @@
 
 /* eslint-disable no-console */
 
-import * as path from 'node:path';
 import type * as puppeteer from 'puppeteer-core';
 
 const ALLOWED_ASSERTION_FAILURES = [
@@ -17,6 +16,8 @@ const ALLOWED_ASSERTION_FAILURES = [
   'Session is unregistering, can\'t dispatch pending call to Debugger.setBlackboxPatterns',
   // Failure during shutdown. crbug.com/1199322
   'Session is unregistering, can\'t dispatch pending call to DOM.getDocument',
+  // Failure during shutdown.
+  'Connection is closed, can\'t dispatch pending call to Network.loadNetworkResource',
   // Expected failures in assertion.test.ts
   'expected failure 1',
   'expected failure 2',
@@ -104,9 +105,6 @@ export function installPageErrorHandlers(page: puppeteer.Page): void {
       throw new Error(`Page error in Frontend: ${error}`);
     }
 
-    if (error.message.includes(path.join('ui', 'components', 'docs'))) {
-      uiComponentDocErrors.push(error);
-    }
     const message = error.stack ?? error.message;
     if (isExpectedError(error)) {
       expectedErrors.push(message);
@@ -217,11 +215,6 @@ export function dumpCollectedErrors(): void {
   console.log('Expected errors: ' + expectedErrors.length);
   console.log('   Fatal errors: ' + fatalErrors.length);
 
-  if (uiComponentDocErrors.length) {
-    console.log(
-        '\nErrors from component examples during test run:\n', uiComponentDocErrors.map(e => e.message).join('\n  '));
-  }
-
   const allFatalErrors = fatalErrors.join('\n');
 
   expectedErrors = [];
@@ -235,9 +228,3 @@ export function dumpCollectedErrors(): void {
 const pendingErrorExpectations = new Set<ErrorExpectation>();
 let fatalErrors: string[] = [];
 export let expectedErrors: string[] = [];
-/**
- * Gathered separately so we can surface them during screenshot tests to help
- * give an idea of failures, rather than having to guess purely based on the
- * screenshot.
- **/
-const uiComponentDocErrors: Error[] = [];

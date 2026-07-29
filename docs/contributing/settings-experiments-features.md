@@ -147,12 +147,6 @@ in the DevTools repository. The label can be anything you like but make sure it 
 
 [Example CL](https://crrev.com/c/4915777)
 
-## Deprecated: DevTools experiments
-
-Previously, DevTools experiments that lacked a Chrome component were managed separately. This
-system is now deprecated. All legacy experiments are being migrated to the `base::Feature`
-framework to streamline development.
-
 ## A/B Testing with Finch and base::Feature
 
 `base::Feature` flags can be used with Finch to conduct A/B testing by toggling feature flags for a defined percentage of users. A/B testing can be a good way of testing the waters. However, since the time to get meaningful metrics may take a long time, it shouldn't be used to get feedback on options quickly.

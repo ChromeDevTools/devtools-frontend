@@ -50,12 +50,6 @@ export async function createTargetUniverse(
       isEnabled: RootModule.Runtime.hostConfig.devToolsInstrumentationBreakpoints?.enabled ?? false,
       requiresChromeRestart: false,
     });
-    Common.Settings.registerSettingExtension({
-      category: Common.Settings.SettingCategory.PERFORMANCE,
-      settingName: 'timeline-enable-soft-navigations',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: true,
-    });
   }
 
   const originalHostConfig = {...RootModule.Runtime.hostConfig};

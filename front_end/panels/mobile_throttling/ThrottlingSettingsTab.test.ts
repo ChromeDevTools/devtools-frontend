@@ -129,7 +129,7 @@ describe('ThrottlingSettingsTab', () => {
 
   it('renders default and custom profiles in separate cards with headers', async () => {
     const expectedHeaders = [
-      'Profile Name',
+      'Profile name',
       'Download',
       'Upload',
       'Latency',

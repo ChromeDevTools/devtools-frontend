@@ -384,7 +384,7 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
 
 export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTab {
   #experimentsSection: Card|undefined;
-  private readonly experimentToControl = new Map<Root.Runtime.Experiment|Root.Runtime.HostExperiment, HTMLElement>();
+  private readonly experimentToControl = new Map<Root.Runtime.HostExperiment, HTMLElement>();
   private readonly containerElement: HTMLElement;
 
   constructor() {
@@ -452,19 +452,16 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTa
     return subsection;
   }
 
-  private createExperimentCheckbox(experiment: Root.Runtime.Experiment|
-                                   Root.Runtime.HostExperiment): HTMLParagraphElement {
+  private createExperimentCheckbox(experiment: Root.Runtime.HostExperiment): HTMLParagraphElement {
     const checkbox =
         UI.UIUtils.CheckboxLabel.createWithStringLiteral(experiment.title, experiment.isEnabled(), experiment.name);
     checkbox.classList.add('experiment-label');
     checkbox.name = experiment.name;
     function listener(): void {
-      if (experiment instanceof Root.Runtime.HostExperiment) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.setChromeFlag(experiment.aboutFlag, checkbox.checked);
-      }
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.setChromeFlag(experiment.aboutFlag, checkbox.checked);
       experiment.setEnabled(checkbox.checked);
       Host.userMetrics.experimentChanged(experiment.name, experiment.isEnabled());
-      if (experiment instanceof Root.Runtime.HostExperiment && experiment.requiresChromeRestart) {
+      if (experiment.requiresChromeRestart) {
         UI.InspectorView.InspectorView.instance().displayChromeRestartRequiredWarning(
             i18nString(UIStrings.settingsChangedRestartChrome));
       } else {
@@ -507,7 +504,7 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTa
   }
 
   highlightObject(experiment: Object): void {
-    if (experiment instanceof Root.Runtime.Experiment || experiment instanceof Root.Runtime.HostExperiment) {
+    if (experiment instanceof Root.Runtime.HostExperiment) {
       const element = this.experimentToControl.get(experiment);
       if (element) {
         PanelUtils.highlightElement(element);
@@ -543,11 +540,10 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 }
 export class Revealer implements
-    Common.Revealer.Revealer<Root.Runtime.Experiment|Root.Runtime.HostExperiment|Common.Settings.Setting<unknown>> {
-  async reveal(object: Root.Runtime.Experiment|Root.Runtime.HostExperiment|
-               Common.Settings.Setting<unknown>): Promise<void> {
+    Common.Revealer.Revealer<Root.Runtime.HostExperiment|Common.Settings.Setting<unknown>> {
+  async reveal(object: Root.Runtime.HostExperiment|Common.Settings.Setting<unknown>): Promise<void> {
     const context = UI.Context.Context.instance();
-    if (object instanceof Root.Runtime.Experiment || object instanceof Root.Runtime.HostExperiment) {
+    if (object instanceof Root.Runtime.HostExperiment) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
       await SettingsScreen.showSettingsScreen({name: 'experiments'});
       const experimentsSettingsTab = context.flavor(ExperimentsSettingsTab);

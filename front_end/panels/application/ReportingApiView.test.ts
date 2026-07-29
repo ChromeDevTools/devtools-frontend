@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -228,6 +229,14 @@ describeWithEnvironment('ReportingApiView', () => {
     let stub: sinon.SinonStub;
 
     beforeEach(async () => {
+      Root.Runtime.experiments.registerHostExperiment({
+        name: Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
+        title: 'Protocol Monitor',
+        aboutFlag: 'devtools-protocol-monitor',
+        isEnabled: false,
+        requiresChromeRestart: false,
+      });
+
       const original = Date.prototype.toLocaleString;
       stub = sinon.stub(Date.prototype, 'toLocaleString').callsFake(function(this: Date) {
         return original.call(this, 'en-US', {timeZone: 'UTC'});

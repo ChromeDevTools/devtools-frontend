@@ -218,7 +218,7 @@ export class MainImpl {
       this.#universe.settings.moduleSetting('cache-disabled').setRequiresUserAction(true);
     }
 
-    Root.Runtime.experiments.cleanUpStaleExperiments();
+    Root.Runtime.experiments.removeAllExperimentsFromLocalStorage();
 
     await this.requestAndRegisterLocaleData();
 
@@ -345,6 +345,7 @@ export class MainImpl {
     return {syncedStorage, globalStorage, localStorage};
   }
 
+  // TODO(crbug.com/464173054) remove after M156
   #migrateValueFromLegacyToHostExperiment(
       legacyExperimentName: Root.ExperimentNames.ExperimentName, hostExperiment: Root.Runtime.HostExperiment): void {
     const value = Root.Runtime.experiments.getValueFromStorage(legacyExperimentName);
@@ -353,7 +354,7 @@ export class MainImpl {
       hostExperiment.setEnabled(value);
       // Set the chrome flag to the same value as the legacy experiment.
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.setChromeFlag(hostExperiment.aboutFlag, value);
-      // The legacy experiment will be cleaned up by `cleanUpStaleExperiments`.
+      // The legacy experiment will be cleaned up by `removeAllExperimentsFromLocalStorage`.
     }
   }
 
@@ -406,11 +407,6 @@ export class MainImpl {
       isEnabled: Root.Runtime.hostConfig.devToolsPlusButton?.enabled ?? false,
       requiresChromeRestart: false,
     });
-
-    const enabledExperiments = Root.Runtime.Runtime.queryParam('enabledExperiments');
-    if (enabledExperiments) {
-      Root.Runtime.experiments.setServerEnabledExperiments(enabledExperiments.split(';'));
-    }
 
     for (const experiment of Root.Runtime.experiments.allConfigurableExperiments()) {
       if (experiment.isEnabled()) {

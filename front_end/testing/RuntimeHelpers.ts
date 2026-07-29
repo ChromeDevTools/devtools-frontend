@@ -4,19 +4,17 @@
 
 import * as Root from '../core/root/root.js';
 
-/**
- * @deprecated we prefer using HostConfig to control DevTools features.
- */
-const REGISTERED_EXPERIMENTS = [
-  Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
-  Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
-];
-
 export function setupRuntime() {
   Root.Runtime.experiments.clearForTest();
-  for (const experimentName of REGISTERED_EXPERIMENTS) {
-    Root.Runtime.experiments.register(experimentName, '');
-  }
+
+  // The Instrumentation breakpoints experiment is used by the very universal BreakpointManager.
+  Root.Runtime.experiments.registerHostExperiment({
+    name: Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
+    title: 'Instrumentation breakpoints',
+    aboutFlag: 'devtools-instrumentation-breakpoints',
+    isEnabled: false,
+    requiresChromeRestart: false,
+  });
 }
 
 export function cleanupRuntime() {

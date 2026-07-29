@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -84,6 +85,13 @@ const makeFrame = (target: SDK.Target.Target) => {
 
 describeWithEnvironment('FrameDetailsView', () => {
   beforeEach(() => {
+    Root.Runtime.experiments.registerHostExperiment({
+      name: Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
+      title: 'Protocol Monitor',
+      aboutFlag: 'devtools-protocol-monitor',
+      isEnabled: false,
+      requiresChromeRestart: false,
+    });
     const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});

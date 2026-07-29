@@ -252,7 +252,6 @@ Common.Revealer.registerRevealer({
   contextTypes() {
     return [
       Common.Settings.Setting,
-      Root.Runtime.Experiment,
       Root.Runtime.HostExperiment,
     ];
   },

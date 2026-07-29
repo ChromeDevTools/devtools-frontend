@@ -531,6 +531,33 @@ describe('TimelineFlameChartView', function() {
     flameChartView.detach();
   });
 
+  it('can search for extension track entries by their tooltip text', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+    const mockViewDelegate = new MockViewDelegate();
+
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+    const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
+    flameChartView.setSearchableView(searchableView);
+    flameChartView.setModel(parsedTrace, new Map());
+
+    // This text is only present in the `tooltipText` of the entries on the
+    // 'An Extension Track' track; it is not part of their name.
+    const searchConfig = new UI.SearchableView.SearchConfig(
+        /* query */ 'This is a rendering task', /* caseSensitive */ false,
+        /* wholeWord */ false, /* isRegex */ false);
+    flameChartView.performSearch(searchConfig, true);
+
+    const results = flameChartView.getSearchResults();
+    assert.isOk(results);
+    assert.isNotEmpty(results);
+    for (const result of results) {
+      const event = flameChartView.getMainDataProvider().eventByIndex(result.index);
+      assert.isOk(event);
+      assert.isTrue(Trace.Types.Extensions.isSyntheticExtensionEntry(event));
+    }
+    flameChartView.detach();
+  });
+
   it('Adds Hidden Descendants Arrow as a decoration when a Context Menu action is applied on a node', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
     const mockViewDelegate = new MockViewDelegate();

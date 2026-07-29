@@ -469,6 +469,24 @@ describeWithEnvironment('TimelineUIUtils', function() {
       assert.isTrue(Timeline.TimelineUIUtils.TimelineUIUtils.testContentMatching(performConcurrentWorkEvent, /perfo/,
                                                                                  parsedTrace.data));
     });
+
+    it('matches extension track entries on their tooltip text and properties', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+      const extensionEntry =
+          parsedTrace.data.ExtensionTraceData.extensionTrackData[1].entriesByTrack['An Extension Track'][0];
+      assert.isOk(extensionEntry);
+      assert.strictEqual(extensionEntry.devtoolsObj.tooltipText, 'This is a rendering task');
+
+      // The tooltip text is what the user sees when hovering the entry, so it
+      // has to be searchable.
+      assert.isTrue(Timeline.TimelineUIUtils.TimelineUIUtils.testContentMatching(extensionEntry, /rendering task/,
+                                                                                 parsedTrace.data));
+      // Same for the properties shown in the details drawer.
+      assert.isTrue(Timeline.TimelineUIUtils.TimelineUIUtils.testContentMatching(
+          extensionEntry, /Do something about it/, parsedTrace.data));
+      assert.isFalse(Timeline.TimelineUIUtils.TimelineUIUtils.testContentMatching(extensionEntry, /not in this entry/,
+                                                                                  parsedTrace.data));
+    });
   });
 
   describe('traceEventDetails', function() {

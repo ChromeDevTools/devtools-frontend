@@ -157,6 +157,19 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       return false;
     }
 
+    // Validate duration at runtime to prevent code injection via interpolation.
+    const duration = Number(interaction.duration);
+    if (!Number.isFinite(duration)) {
+      return false;
+    }
+
+    // JSON.stringify escapes quotes. We concatenate safeInteractionType (which is
+    // wrapped in double quotes) instead of interpolating it directly inside the
+    // single-quoted template below. This avoids syntax errors if the value contains
+    // single quotes (e.g. "pointer'"), which would otherwise terminate the
+    // single-quoted template string.
+    const safeInteractionType = JSON.stringify(interaction.interactionType ?? 'unknown');
+
     const scriptsTable = [];
     for (const loaf of interaction.longAnimationFrameTimings) {
       for (const script of loaf.scripts) {
@@ -187,8 +200,8 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
           '';
       await this.#target.runtimeAgent().invoke_evaluate({
         expression: `
-          console.group('[DevTools] Long animation frames for ${interaction.duration}ms ${
-            interaction.interactionType} interaction');
+          console.group('[DevTools] Long animation frames for ${duration}ms ' + ${
+            safeInteractionType} + ' interaction');
           console.log('Scripts${scriptLimitText}:');
           console.table(${JSON.stringify(scriptsTable)});
           console.log('Intersecting long animation frame events${loafLimitText}:', ${
@@ -214,6 +227,12 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
    */
   async #resolveNodeRef(index: number, executionContextId: Protocol.Runtime.ExecutionContextId):
       Promise<SDK.DOMModel.DOMNode|null> {
+    // Validate index at runtime because the payload comes from an untrusted binding
+    // and could contain malicious strings if type casted.
+    if (!Number.isInteger(index)) {
+      return null;
+    }
+
     if (!this.#target) {
       return null;
     }
@@ -453,7 +472,10 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
     const resourceTreeModel = this.#target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     const primaryFrameId = resourceTreeModel?.mainFrame?.id;
-    return Boolean(primaryFrameId && executionContext.frameId === primaryFrameId);
+    // Ensure the context belongs to our isolated world and is not the default
+    // page context, to prevent the page from spoofing events.
+    return Boolean(primaryFrameId && executionContext.frameId === primaryFrameId &&
+                   executionContext.name === LIVE_METRICS_WORLD_NAME && !executionContext.isDefault);
   }
 
   async #onBindingCalled(event: {data: Protocol.Runtime.BindingCalledEvent}): Promise<void> {

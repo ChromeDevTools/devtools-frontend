@@ -22,10 +22,11 @@ describe('LiveMetrics', () => {
 
   let liveMetrics: LiveMetrics.LiveMetrics;
   let primaryTarget: SDK.Target.Target;
+  let connection: MockCDPConnection;
 
   beforeEach(async () => {
     const universe = new TestUniverse();
-    const connection = new MockCDPConnection([]);
+    connection = new MockCDPConnection([]);
     mockResourceTree(connection);
     const tabTarget = universe.createTarget({type: SDK.Target.Type.TAB, connection});
     primaryTarget = universe.createTarget({
@@ -129,7 +130,7 @@ describe('LiveMetrics', () => {
     });
 
     const emitBindingCalled =
-        async(executionContextId: Protocol.Runtime.ExecutionContextId, payload: Spec.WebVitalsEvent): Promise<void> => {
+        async(executionContextId: Protocol.Runtime.ExecutionContextId, payload: unknown): Promise<void> => {
       runtimeModel.bindingCalled({
         name: Spec.EVENT_BINDING_NAME,
         payload: JSON.stringify(payload),
@@ -149,6 +150,124 @@ describe('LiveMetrics', () => {
       await emitBindingCalled(childFrameExecutionContextId, lcpEvent(999));
 
       assert.strictEqual(liveMetrics.lcpValue?.value, 111);
+    });
+
+    it('ignores reset events from default context (main world)', async () => {
+      const resourceTreeModel = primaryTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(resourceTreeModel?.mainFrame);
+
+      // Create a default context with same frame ID
+      const defaultExecutionContextId = 10 as Protocol.Runtime.ExecutionContextId;
+      runtimeModel.executionContextCreated({
+        id: defaultExecutionContextId,
+        uniqueId: 'default-context',
+        origin: 'https://example.com',
+        name: '',  // default context has empty name
+        auxData: {
+          isDefault: true,
+          frameId: resourceTreeModel.mainFrame.id,
+        },
+      });
+
+      // Track evaluate calls
+      const evalExpressions: string[] = [];
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evalExpressions.push(params.expression);
+        return {
+          result: {
+            type: 'undefined',
+          } as Protocol.Runtime.RemoteObject,
+        } as Protocol.Runtime.EvaluateResponse;
+      });
+
+      // Emit reset from default context
+      await emitBindingCalled(defaultExecutionContextId, {name: 'reset'});
+
+      // Try to emit LCP from that default context - should be ignored because reset was ignored
+      await emitBindingCalled(defaultExecutionContextId, {
+        name: 'LCP',
+        value: 100 as Milli,
+        subparts: {
+          timeToFirstByte: 0 as Milli,
+          resourceLoadDelay: 0 as Milli,
+          resourceLoadTime: 0 as Milli,
+          elementRenderDelay: 0 as Milli,
+        },
+        startedHidden: false,
+        nodeIndex: 1,
+      });
+
+      // Since the context was ignored, we should NOT have resolved node (which calls evaluate)
+      assert.lengthOf(evalExpressions, 0);
+      assert.isUndefined(liveMetrics.lcpValue);
+    });
+
+    it('prevents code injection via nodeIndex in LCP', async () => {
+      // Emit reset from valid context to set lastResetContextId
+      await emitBindingCalled(primaryExecutionContextId, {name: 'reset'});
+
+      // Track evaluate calls
+      const evalExpressions: string[] = [];
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evalExpressions.push(params.expression);
+        return {
+          result: {
+            type: 'undefined',
+          } as Protocol.Runtime.RemoteObject,
+        } as Protocol.Runtime.EvaluateResponse;
+      });
+
+      // Emit LCP with malicious nodeIndex string (allowed because payload is unknown)
+      await emitBindingCalled(primaryExecutionContextId, {
+        name: 'LCP',
+        value: 100 as Milli,
+        subparts: {
+          timeToFirstByte: 0 as Milli,
+          resourceLoadDelay: 0 as Milli,
+          resourceLoadTime: 0 as Milli,
+          elementRenderDelay: 0 as Milli,
+        },
+        startedHidden: false,
+        nodeIndex: '0); alert(1); (0',
+      });
+
+      // The evaluate should not be called because it fails Number.isInteger validation
+      assert.lengthOf(evalExpressions, 0);
+    });
+
+    it('prevents code injection in logInteractionScripts', async () => {
+      // Emit reset from valid context to set lastResetContextId
+      await emitBindingCalled(primaryExecutionContextId, {name: 'reset'});
+
+      // Track evaluate calls
+      const evalExpressions: string[] = [];
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evalExpressions.push(params.expression);
+        return {
+          result: {
+            type: 'undefined',
+          } as Protocol.Runtime.RemoteObject,
+        } as Protocol.Runtime.EvaluateResponse;
+      });
+
+      const interaction = {
+        interactionId: 'interaction-1-1',
+        interactionType: 'pointer\'); alert(1); (//',  // Malicious type
+        eventNames: ['click'],
+        duration: 100,
+        startTime: 0,
+        subparts: {inputDelay: 10 as Milli, processingDuration: 80 as Milli, presentationDelay: 10 as Milli},
+        longAnimationFrameTimings: [],
+      } as unknown as LiveMetrics.Interaction;
+
+      const success = await liveMetrics.logInteractionScripts(interaction);
+      assert.isTrue(success);
+
+      assert.lengthOf(evalExpressions, 1);
+      const expr = evalExpressions[0];
+      // The interactionType should be safely stringified and concatenated
+      assert.include(expr, '\' + "pointer\'); alert(1); (//" + \' interaction\')');
+      assert.notInclude(expr, '100ms pointer\'); alert(1); (// interaction');
     });
   });
 

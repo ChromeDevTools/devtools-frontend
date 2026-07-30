@@ -1534,6 +1534,10 @@ var ChatInput = class extends UI.Widget.Widget {
       return;
     }
     const imageInput = !this.#imageInput?.isLoading && this.#imageInput?.data ? { inlineData: { data: this.#imageInput.data, mimeType: this.#imageInput.mimeType } } : void 0;
+    const text = this.#textAreaRef.value?.value?.trim() ?? "";
+    if (!text && !imageInput) {
+      return;
+    }
     this.onTextSubmit(this.#textAreaRef.value?.value ?? "", imageInput, this.#imageInput?.inputType);
     this.#imageInput = void 0;
     this.#historyOffset = -1;

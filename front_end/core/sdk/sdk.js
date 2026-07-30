@@ -19099,8 +19099,8 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
     const eligibleForLoadFromTarget = this.getLoadThroughTargetSetting().get() && parsedURL && parsedURL.scheme !== "file" && parsedURL.scheme !== "data" && parsedURL.scheme !== "devtools" && initiator.target;
     Host2.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
     if (eligibleForLoadFromTarget) {
-      let mustEnforceCSP = false;
       const isHttp = parsedURL.scheme === "http" || parsedURL.scheme === "https";
+      let mustEnforceCSP = isHttp;
       if (isHttp && initiator.target) {
         const networkManager = initiator.target.model(NetworkManager);
         if (networkManager) {
@@ -19108,14 +19108,9 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
           if (!status && initiator.frameId) {
             status = await networkManager.getSecurityIsolationStatus(null);
           }
-          if (status?.csp) {
-            for (const csp of status.csp) {
-              const directives = csp.effectiveDirectives;
-              if (directives.includes("connect-src") || directives.includes("default-src")) {
-                mustEnforceCSP = true;
-                break;
-              }
-            }
+          if (status) {
+            const csps = status.csp ?? [];
+            mustEnforceCSP = csps.some((csp) => csp.effectiveDirectives.includes("connect-src") || csp.effectiveDirectives.includes("default-src"));
           }
         }
       }
@@ -34624,7 +34619,8 @@ import * as Root11 from "./../root/root.js";
 var RehydratingConnection_exports = {};
 __export(RehydratingConnection_exports, {
   RehydratingConnectionTransport: () => RehydratingConnectionTransport,
-  RehydratingSession: () => RehydratingSession
+  RehydratingSession: () => RehydratingSession,
+  isTraceUrlAllowed: () => isTraceUrlAllowed
 });
 import * as Common33 from "./../common/common.js";
 import * as i18n27 from "./../i18n/i18n.js";
@@ -35012,12 +35008,37 @@ var UIStrings12 = {
 };
 var str_12 = i18n27.i18n.registerUIStrings("core/sdk/RehydratingConnection.ts", UIStrings12);
 var i18nString12 = i18n27.i18n.getLocalizedString.bind(void 0, str_12);
+function isTraceUrlAllowed(traceUrl) {
+  let url;
+  try {
+    url = new URL(traceUrl, window.location.href);
+  } catch {
+    return false;
+  }
+  if (url.protocol === "devtools:") {
+    return true;
+  }
+  if (url.origin === window.location.origin) {
+    return true;
+  }
+  if (url.protocol === "http:" || url.protocol === "https:") {
+    const host = url.hostname.toLowerCase();
+    return host === "localhost" || host === "127.0.0.1" || host === "[::1]";
+  }
+  return false;
+}
 var RehydratingConnectionTransport = class {
   rehydratingConnectionState = 1;
   onDisconnect = null;
   onMessage = null;
   trace = null;
   sessions = /* @__PURE__ */ new Map();
+  /**
+   * Set to the in-flight `traceURL` fetch (including its hydration/error handling) so tests can await
+   * the load deterministically. Stays `undefined` when loading via message passing, or when a
+   * disallowed URL is rejected without fetching.
+   */
+  fetchPromiseForTest;
   #onConnectionLost;
   #rehydratingWindow = window;
   #onReceiveHostWindowPayloadBound = this.onReceiveHostWindowPayload.bind(this);
@@ -35037,9 +35058,15 @@ var RehydratingConnectionTransport = class {
       }
     }
     if (traceUrl) {
-      void fetch(traceUrl).then((r) => r.arrayBuffer()).then((b) => Common33.Gzip.arrayBufferToString(b)).then((traceJson) => {
+      if (!isTraceUrlAllowed(traceUrl)) {
+        this.#onConnectionLost(i18nString12(UIStrings12.errorLoadingLog));
+        return true;
+      }
+      this.fetchPromiseForTest = fetch(traceUrl).then((r) => r.arrayBuffer()).then((b) => Common33.Gzip.arrayBufferToString(b)).then(async (traceJson) => {
         const trace = new TraceObject(JSON.parse(traceJson));
-        void this.startHydration(trace);
+        await this.startHydration(trace);
+      }).catch(() => {
+        this.#onConnectionLost(i18nString12(UIStrings12.errorLoadingLog));
       });
       return true;
     }

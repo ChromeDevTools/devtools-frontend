@@ -2,6 +2,5 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as SettingCheckbox from './SettingCheckbox.js';
-import * as SettingDeprecationWarning from './SettingDeprecationWarning.js';
-export { SettingCheckbox, SettingDeprecationWarning };
+export { SettingCheckbox };
 //# sourceMappingURL=settings.prebundle.js.map

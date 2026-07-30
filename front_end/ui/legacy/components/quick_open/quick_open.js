@@ -851,11 +851,7 @@ var UIStrings3 = {
   /**
    * @description Text for help title of run command menu
    */
-  runCommand: "Run command",
-  /**
-   * @description Hint text to indicate that a selected command is deprecated
-   */
-  deprecated: "\u2014 deprecated"
+  runCommand: "Run command"
 };
 var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/components/quick_open/CommandMenu.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
@@ -874,7 +870,7 @@ var CommandMenu = class _CommandMenu {
     return commandMenuInstance;
   }
   static createCommand(options) {
-    const { category, keys, title, shortcut, jslogContext, executeHandler, availableHandler, userActionCode, deprecationWarning, isPanelOrDrawer, featurePromotionId } = options;
+    const { category, keys, title, shortcut, jslogContext, executeHandler, availableHandler, userActionCode, isPanelOrDrawer, featurePromotionId } = options;
     let handler = executeHandler;
     if (userActionCode) {
       const actionCode = userActionCode;
@@ -883,7 +879,7 @@ var CommandMenu = class _CommandMenu {
         executeHandler();
       };
     }
-    return new Command(category, title, keys, shortcut, jslogContext, handler, availableHandler, deprecationWarning, isPanelOrDrawer, featurePromotionId);
+    return new Command(category, title, keys, shortcut, jslogContext, handler, availableHandler, isPanelOrDrawer, featurePromotionId);
   }
   static createSettingCommand(setting, title, value, settingUIDescriptor) {
     const uiDescriptor = settingUIDescriptor ?? SettingsUI.SettingUIRegistration.maybeResolve(setting.descriptor());
@@ -900,10 +896,6 @@ var CommandMenu = class _CommandMenu {
       shortcut: "",
       jslogContext: Platform2.StringUtilities.toKebabCase(`${setting.name}-${value}`),
       executeHandler: () => {
-        if (setting.deprecation?.disabled && (!setting.deprecation?.experiment || setting.deprecation.experiment.isEnabled())) {
-          void Common2.Revealer.reveal(setting);
-          return;
-        }
         setting.set(value);
         if (setting.name === "emulate-page-focus") {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.ToggleEmulateFocusedPageFromCommandMenu);
@@ -912,8 +904,7 @@ var CommandMenu = class _CommandMenu {
           UI2.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString3(UIStrings3.settingsChangedReloadDevTools));
         }
       },
-      availableHandler,
-      deprecationWarning: setting.deprecation?.warning
+      availableHandler
     });
     function availableHandler() {
       return setting.get() !== value;
@@ -1086,7 +1077,6 @@ var CommandMenuProvider = class extends Provider {
   renderItem(itemIndex, query) {
     const command = this.commands[itemIndex];
     const badge = command.featurePromotionId ? UI2.UIUtils.maybeCreateNewBadge(command.featurePromotionId) : void 0;
-    const deprecationWarning = command.deprecationWarning;
     return html`
       <devtools-icon name=${categoryIcons[command.category]}></devtools-icon>
       <div>
@@ -1095,10 +1085,6 @@ var CommandMenuProvider = class extends Provider {
         </devtools-highlight>
         ${badge ?? nothing2}
         <div>${command.shortcut}</div>
-        ${deprecationWarning ? html`
-          <span class="deprecated-tag" title=${deprecationWarning}>
-            ${i18nString3(UIStrings3.deprecated)}
-          </span>` : nothing2}
       </div>
       <span class="tag">${command.category}</span>`;
   }
@@ -1144,12 +1130,11 @@ var Command = class {
   key;
   shortcut;
   jslogContext;
-  deprecationWarning;
   isPanelOrDrawer;
   featurePromotionId;
   #executeHandler;
   #availableHandler;
-  constructor(category, title, key, shortcut, jslogContext, executeHandler, availableHandler, deprecationWarning, isPanelOrDrawer, featurePromotionId) {
+  constructor(category, title, key, shortcut, jslogContext, executeHandler, availableHandler, isPanelOrDrawer, featurePromotionId) {
     this.category = category;
     this.title = title;
     this.key = category + "\0" + title + "\0" + key;
@@ -1157,7 +1142,6 @@ var Command = class {
     this.jslogContext = jslogContext;
     this.#executeHandler = executeHandler;
     this.#availableHandler = availableHandler;
-    this.deprecationWarning = deprecationWarning;
     this.isPanelOrDrawer = isPanelOrDrawer;
     this.featurePromotionId = featurePromotionId;
   }

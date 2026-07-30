@@ -10,6 +10,12 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as CrUXManager from '../crux-manager/crux-manager.js';
 import * as Spec from './web-vitals-injected/spec/spec.js';
+export const timelineEnableSoftNavigationsSettingDescriptor = {
+    name: 'timeline-enable-soft-navigations',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+    defaultValue: true,
+};
 const UIStrings = {
     /**
      * @description Warning text indicating that the Largest Contentful Paint (LCP) performance metric was affected by the user changing the simulated device.
@@ -51,14 +57,15 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
     #mutex = new Common.Mutex.Mutex();
     #targetManager;
     #deviceModeModel;
-    constructor(targetManager, deviceModeModel) {
+    #settings;
+    constructor(targetManager, settings, deviceModeModel) {
         super();
         this.#targetManager = targetManager;
+        this.#settings = settings;
         this.#deviceModeModel = deviceModeModel;
         this.#targetManager.observeTargets(this, { scoped: true });
         this.#targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
-        Common.Settings.Settings.instance()
-            .moduleSetting('timeline-enable-soft-navigations')
+        this.#settings.resolve(timelineEnableSoftNavigationsSettingDescriptor)
             .addChangeListener(this.#onSettingChanged, this);
     }
     #onPrimaryPageChanged(event) {
@@ -83,7 +90,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
     static instance(opts = { forceNew: false }) {
         const { forceNew } = opts;
         if (!Root.DevToolsContext.globalInstance().has(LiveMetrics) || forceNew) {
-            Root.DevToolsContext.globalInstance().set(LiveMetrics, new LiveMetrics(SDK.TargetManager.TargetManager.instance(), EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance()));
+            Root.DevToolsContext.globalInstance().set(LiveMetrics, new LiveMetrics(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance(), EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance()));
         }
         return Root.DevToolsContext.globalInstance().get(LiveMetrics);
     }
@@ -457,7 +464,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
                 identifier: this.#scriptIdentifier,
             });
         }
-        const softNavsSettingValue = Common.Settings.Settings.instance().moduleSetting('timeline-enable-soft-navigations').get();
+        const softNavsSettingValue = this.#settings.resolve(timelineEnableSoftNavigationsSettingDescriptor).get();
         const source = `window.devToolsReportSoftNavs = ${softNavsSettingValue};\n` + await InjectedScript.get();
         // Inject the script
         const { identifier } = await this.#target.pageAgent().invoke_addScriptToEvaluateOnNewDocument({

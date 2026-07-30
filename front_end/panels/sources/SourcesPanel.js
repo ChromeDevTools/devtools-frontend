@@ -516,7 +516,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     get visibleView() {
         return this.#sourcesView.visibleView();
     }
-    showUISourceCode(uiSourceCode, location, omitFocus) {
+    async showUISourceCode(uiSourceCode, location, omitFocus) {
         if (omitFocus) {
             if (!this.isShowing() && !UI.Context.Context.instance().flavor(QuickSourceView)) {
                 return;
@@ -525,7 +525,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         else {
             this.showEditor();
         }
-        this.#sourcesView.showSourceLocation(uiSourceCode, location, omitFocus);
+        await this.#sourcesView.showSourceLocation(uiSourceCode, location, omitFocus);
     }
     showEditor() {
         if (UI.Context.Context.instance().flavor(QuickSourceView)) {
@@ -533,9 +533,9 @@ export class SourcesPanel extends UI.Panel.Panel {
         }
         void this.setAsCurrentPanel();
     }
-    showUILocation(uiLocation, omitFocus) {
+    async showUILocation(uiLocation, omitFocus) {
         const { uiSourceCode, lineNumber, columnNumber } = uiLocation;
-        this.showUISourceCode(uiSourceCode, { lineNumber, columnNumber }, omitFocus);
+        await this.showUISourceCode(uiSourceCode, { lineNumber, columnNumber }, omitFocus);
     }
     async revealInNavigator(uiSourceCode, skipReveal) {
         const viewManager = UI.ViewManager.ViewManager.instance();
@@ -574,7 +574,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         if (window.performance.now() - this.lastModificationTime < lastModificationTimeout) {
             return;
         }
-        this.#sourcesView.showSourceLocation(uiLocation.uiSourceCode, uiLocation, undefined, true);
+        await this.#sourcesView.showSourceLocation(uiLocation.uiSourceCode, uiLocation, undefined, true);
     }
     async updateDebuggerButtonsAndStatus() {
         const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
@@ -951,7 +951,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         }
         const uiLocation = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(response.location);
         if (uiLocation) {
-            this.showUILocation(uiLocation);
+            await this.showUILocation(uiLocation);
         }
     }
     revealNavigatorSidebar() {
@@ -1076,7 +1076,7 @@ export const lastModificationTimeout = 200;
 export const minToolbarWidth = 215;
 export class UILocationRevealer {
     async reveal(uiLocation, omitFocus) {
-        SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
+        await SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
     }
 }
 export class UILocationRangeRevealer {
@@ -1089,20 +1089,20 @@ export class UILocationRangeRevealer {
     }
     async reveal(uiLocationRange, omitFocus) {
         const { uiSourceCode, range: { start: from, end: to } } = uiLocationRange;
-        SourcesPanel.instance().showUISourceCode(uiSourceCode, { from, to }, omitFocus);
+        await SourcesPanel.instance().showUISourceCode(uiSourceCode, { from, to }, omitFocus);
     }
 }
 export class DebuggerLocationRevealer {
     async reveal(rawLocation, omitFocus) {
         const uiLocation = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
         if (uiLocation) {
-            SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
+            await SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
         }
     }
 }
 export class UISourceCodeRevealer {
     async reveal(uiSourceCode, omitFocus) {
-        SourcesPanel.instance().showUISourceCode(uiSourceCode, undefined, omitFocus);
+        await SourcesPanel.instance().showUISourceCode(uiSourceCode, undefined, omitFocus);
     }
 }
 export class DebuggerPausedDetailsRevealer {

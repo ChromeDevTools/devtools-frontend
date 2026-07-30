@@ -5393,7 +5393,6 @@ function getLocalizedSettingsCategory(category) {
 // gen/front_end/core/common/Settings.js
 var Settings_exports = {};
 __export(Settings_exports, {
-  Deprecation: () => Deprecation,
   InMemoryStorage: () => InMemoryStorage,
   RegExpSetting: () => RegExpSetting,
   Setting: () => Setting,
@@ -6472,19 +6471,6 @@ var SettingsStorage = class {
     }
   }
 };
-var Deprecation = class {
-  disabled;
-  warning;
-  experiment;
-  constructor({ deprecationNotice }) {
-    if (!deprecationNotice) {
-      throw new Error("Cannot create deprecation info for a non-deprecated setting");
-    }
-    this.disabled = deprecationNotice.disabled;
-    this.warning = deprecationNotice.warning();
-    this.experiment = deprecationNotice.experiment ? Root4.Runtime.experiments.allConfigurableExperiments().find((e) => e.name === deprecationNotice.experiment) : void 0;
-  }
-};
 var Setting = class {
   name;
   defaultValue;
@@ -6498,7 +6484,6 @@ var Setting = class {
   #serializer = JSON;
   #hadUserAction;
   #disabled;
-  #deprecation = null;
   #loggedInitialAccess = false;
   #logSettingAccess;
   #console;
@@ -6645,14 +6630,6 @@ var Setting = class {
     if (registration.settingType) {
       this.#type = registration.settingType;
     }
-    const { deprecationNotice } = registration;
-    if (deprecationNotice?.disabled) {
-      const experiment = deprecationNotice.experiment ? Root4.Runtime.experiments.allConfigurableExperiments().find((e) => e.name === deprecationNotice.experiment) : void 0;
-      if (!experiment || experiment.isEnabled()) {
-        this.set(this.defaultValue);
-        this.setDisabled(true);
-      }
-    }
   }
   type() {
     return this.#type ?? this.#registration?.settingType ?? null;
@@ -6700,15 +6677,6 @@ var Setting = class {
    */
   learnMore() {
     return this.#registration?.learnMore ?? null;
-  }
-  get deprecation() {
-    if (!this.#registration || !this.#registration.deprecationNotice) {
-      return null;
-    }
-    if (!this.#deprecation) {
-      this.#deprecation = new Deprecation(this.#registration);
-    }
-    return this.#deprecation;
   }
   printSettingsSavingError(message, value) {
     const errorMessage = "Error saving setting with name: " + this.name + ", value length: " + value.length + ". Error: " + message;

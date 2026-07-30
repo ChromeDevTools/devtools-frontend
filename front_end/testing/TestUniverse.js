@@ -127,7 +127,7 @@ export class TestUniverse {
         ],
         [
             LiveMetrics.LiveMetrics,
-            () => new LiveMetrics.LiveMetrics(this.targetManager, this.deviceModeModel),
+            () => new LiveMetrics.LiveMetrics(this.targetManager, this.settings, this.deviceModeModel),
         ],
         [
             Logs.LogManager.LogManager,

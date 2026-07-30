@@ -3,6 +3,5 @@
 // found in the LICENSE file.
 
 import * as SettingCheckbox from './SettingCheckbox.js';
-import * as SettingDeprecationWarning from './SettingDeprecationWarning.js';
 
-export {SettingCheckbox, SettingDeprecationWarning};
+export {SettingCheckbox};

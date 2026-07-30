@@ -302,6 +302,9 @@ export class AiAgent {
         }
         await this.preRun();
         const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, multimodalInput?.type);
+        if (!enhancedQuery.trim() && !multimodalInput) {
+            return;
+        }
         Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
         let query;
         query = multimodalInput ? [{ text: enhancedQuery }, multimodalInput.input] : [{ text: enhancedQuery }];

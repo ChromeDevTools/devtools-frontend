@@ -111,17 +111,6 @@ export interface SettingRegistration {
      */
     disabledCondition?: (config?: Root.Runtime.HostConfig) => DisabledConditionResult;
     /**
-     * If a setting is deprecated, define this notice to show an appropriate warning according to the `warning` property.
-     * If `disabled` is set, the setting will be disabled in the settings UI. In that case, `experiment` optionally can be
-     * set to link to an experiment (by experiment name). The information icon in the settings UI can then be clicked to
-     * jump to the experiment. If a setting is not disabled, the experiment entry will be ignored.
-     */
-    deprecationNotice?: {
-        disabled: boolean;
-        warning: () => Platform.UIString.LocalizedString;
-        experiment?: string;
-    };
-    /**
      * See {@link LearnMore} for more info.
      */
     learnMore?: LearnMore;

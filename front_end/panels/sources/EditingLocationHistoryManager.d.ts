@@ -6,7 +6,7 @@ export declare class EditingLocationHistoryManager {
     private readonly sourcesView;
     private readonly entries;
     private current;
-    private revealing;
+    private revealingCount;
     constructor(sourcesView: SourcesView);
     trackSourceFrameCursorJumps(sourceFrame: UISourceCodeFrame): void;
     private onEditorUpdate;

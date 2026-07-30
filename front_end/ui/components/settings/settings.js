@@ -10,62 +10,10 @@ __export(SettingCheckbox_exports, {
   SettingCheckbox: () => SettingCheckbox
 });
 import "./../tooltips/tooltips.js";
-
-// gen/front_end/ui/components/settings/SettingDeprecationWarning.js
-var SettingDeprecationWarning_exports = {};
-__export(SettingDeprecationWarning_exports, {
-  SettingDeprecationWarning: () => SettingDeprecationWarning
-});
-import "./../../kit/kit.js";
-import * as Common from "./../../../core/common/common.js";
-import * as Lit from "./../../lit/lit.js";
-
-// gen/front_end/ui/components/settings/settingDeprecationWarning.css.js
-var settingDeprecationWarning_css_default = `/*
- * Copyright 2022 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.clickable {
-  cursor: pointer;
-}
-
-devtools-icon {
-  vertical-align: text-bottom;
-  padding-left: 2px;
-}
-
-/*# sourceURL=${import.meta.resolve("./settingDeprecationWarning.css")} */`;
-
-// gen/front_end/ui/components/settings/SettingDeprecationWarning.js
-var { html } = Lit;
-var SettingDeprecationWarning = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  set data(data) {
-    this.#render(data);
-  }
-  #render({ disabled, warning, experiment }) {
-    const classes = { clickable: false, medium: true };
-    let onclick2;
-    if (disabled && experiment) {
-      classes.clickable = true;
-      onclick2 = () => {
-        void Common.Revealer.reveal(experiment);
-      };
-    }
-    Lit.render(html`
-        <style>${settingDeprecationWarning_css_default}</style>
-        <devtools-icon class=${Lit.Directives.classMap(classes)} name="info" title=${warning} @click=${onclick2}></devtools-icon>`, this.#shadow, { host: this });
-  }
-};
-customElements.define("devtools-setting-deprecation-warning", SettingDeprecationWarning);
-
-// gen/front_end/ui/components/settings/SettingCheckbox.js
 import "./../../kit/kit.js";
 import * as Host from "./../../../core/host/host.js";
 import * as i18n from "./../../../core/i18n/i18n.js";
-import * as Lit2 from "./../../lit/lit.js";
+import * as Lit from "./../../lit/lit.js";
 import * as SettingUIRegistration from "./../../settings/settings.js";
 import * as VisualLogging from "./../../visual_logging/visual_logging.js";
 import * as Buttons from "./../buttons/buttons.js";
@@ -126,7 +74,7 @@ p {
 /*# sourceURL=${import.meta.resolve("./settingCheckbox.css")} */`;
 
 // gen/front_end/ui/components/settings/SettingCheckbox.js
-var { html: html2, Directives: { ifDefined } } = Lit2;
+var { html, Directives: { ifDefined } } = Lit;
 var UIStrings = {
   /**
    * @description Text that is usually a hyperlink to more documentation.
@@ -155,9 +103,6 @@ var SettingCheckbox = class extends HTMLElement {
     if (!this.#setting) {
       return void 0;
     }
-    if (this.#setting.deprecation) {
-      return html2`<devtools-setting-deprecation-warning .data=${this.#setting.deprecation}></devtools-setting-deprecation-warning>`;
-    }
     const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(this.#setting.descriptor());
     const learnMore = uiDescriptor?.learnMore ?? this.#setting.learnMore();
     if (learnMore) {
@@ -171,7 +116,7 @@ var SettingCheckbox = class extends HTMLElement {
       const url = learnMore.url;
       if (learnMore.tooltip) {
         const id = `${this.#setting.name}-information`;
-        return html2`
+        return html`
           <devtools-button
             class="info-icon"
             aria-details=${id}
@@ -181,12 +126,12 @@ var SettingCheckbox = class extends HTMLElement {
           ></devtools-button>
           <devtools-tooltip id=${id} variant="rich">
             <span>${learnMore.tooltip()}</span><br />
-            ${url ? html2`<devtools-link
+            ${url ? html`<devtools-link
                   href=${url}
                   class="link"
                   .jslogContext=${jsLogContext}
                   >${i18nString(UIStrings.learnMore)}</devtools-link
-                >` : Lit2.nothing}
+                >` : Lit.nothing}
           </devtools-tooltip>
         `;
       }
@@ -197,7 +142,7 @@ var SettingCheckbox = class extends HTMLElement {
         };
         data.iconName = "help";
         data.title = i18nString(UIStrings.learnMore);
-        return html2`<devtools-button
+        return html`<devtools-button
           class="info-icon"
           @click=${handleClick}
           .data=${data}
@@ -222,10 +167,10 @@ var SettingCheckbox = class extends HTMLElement {
     const icon = this.icon();
     const title = learnMore?.tooltip?.() ?? "";
     const disabledReasons = this.#setting.disabledReasons();
-    const reason = disabledReasons.length ? html2`
+    const reason = disabledReasons.length ? html`
       <devtools-button class="disabled-reason" .iconName=${"info"} .variant=${"icon"} .size=${"SMALL"} title=${ifDefined(disabledReasons.join("\n"))} @click=${onclick}></devtools-button>
-    ` : Lit2.nothing;
-    Lit2.render(html2`
+    ` : Lit.nothing;
+    Lit.render(html`
       <style>${Input.checkboxStyles}</style>
       <style>${settingCheckbox_css_default}</style>
       <p>
@@ -253,7 +198,6 @@ var SettingCheckbox = class extends HTMLElement {
 };
 customElements.define("setting-checkbox", SettingCheckbox);
 export {
-  SettingCheckbox_exports as SettingCheckbox,
-  SettingDeprecationWarning_exports as SettingDeprecationWarning
+  SettingCheckbox_exports as SettingCheckbox
 };
 //# sourceMappingURL=settings.js.map

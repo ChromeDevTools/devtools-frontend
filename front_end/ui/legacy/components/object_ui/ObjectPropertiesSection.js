@@ -872,28 +872,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         }
         return 0;
     }
-    static createNameElement(name, isPrivate) {
-        const element = document.createElement('span');
-        element.classList.add('name');
-        if (name === null) {
-            return element;
-        }
-        const escapedName = Platform.StringUtilities.escapeUnicodeAsText(name);
-        if (/^\s|\s$|^$|\n/.test(escapedName)) {
-            element.textContent = `"${escapedName.replace(/\n/g, '\u21B5')}"`;
-            return element;
-        }
-        if (isPrivate) {
-            const privatePropertyHash = document.createElement('span');
-            privatePropertyHash.classList.add('private-property-hash');
-            privatePropertyHash.textContent = escapedName[0];
-            element.appendChild(privatePropertyHash);
-            element.appendChild(document.createTextNode(escapedName.substring(1)));
-            return element;
-        }
-        element.textContent = escapedName;
-        return element;
-    }
     static valueElementForFunctionDescription(description, includePreview, defaultName, className) {
         const contents = (description, defaultName) => {
             const text = description.replace(/^function [gs]et /, 'function ')
@@ -1243,6 +1221,19 @@ class RootElement extends UI.TreeOutline.TreeElement {
         const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
         return await ObjectPropertyTreeElement.populate(this, this.object, skipProto, false, this.linkifier, this.emptyPlaceholder);
     }
+}
+export function renderPropertyName(name, isPrivate, title) {
+    if (name === null) {
+        return html `<span class="name" title=${ifDefined(title)}></span>`;
+    }
+    const escapedName = Platform.StringUtilities.escapeUnicodeAsText(name);
+    if (/^\s|\s$|^$|\n/.test(escapedName)) {
+        return html `<span class="name" title=${ifDefined(title)}>"${escapedName.replace(/\n/g, '\u21B5')}"</span>`;
+    }
+    if (isPrivate) {
+        return html `<span class="name" title=${ifDefined(title)}><span class="private-property-hash">${escapedName[0]}</span>${escapedName.substring(1)}</span>`;
+    }
+    return html `<span class="name" title=${ifDefined(title)}>${escapedName}</span>`;
 }
 /**
  * Number of initially visible children in an ObjectPropertyTreeElement.

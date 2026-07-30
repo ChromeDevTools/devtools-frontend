@@ -2,6 +2,16 @@ import type * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import type { ProtocolMessage, RehydratingExecutionContext, RehydratingResource, RehydratingScript, RehydratingTarget, ServerMessage } from './RehydratingObject.js';
 import { TraceObject } from './TraceObject.js';
+/**
+ * The `traceURL` (and legacy `loadTimelineFromURL`) query parameter is attacker-controllable, and its
+ * fetched response is replayed into the trusted DevTools front-end as synthetic CDP events. Rather
+ * than relying solely on the page-wide `connect-src` CSP, restrict fetches to trusted locations:
+ *  - the same origin as the DevTools front-end,
+ *  - the `devtools:` scheme (bundled resources),
+ *  - a loopback address, the documented way to load a local trace while developing
+ *    (see front_end/panels/timeline/README.md).
+ */
+export declare function isTraceUrlAllowed(traceUrl: string): boolean;
 export interface RehydratingConnectionInterface {
     postToFrontend: (arg: ServerMessage) => void;
 }
@@ -17,6 +27,12 @@ export declare class RehydratingConnectionTransport implements ProtocolClient.Co
     onMessage: ((arg0: Object) => void) | null;
     trace: TraceObject | null;
     sessions: Map<number, RehydratingSessionBase>;
+    /**
+     * Set to the in-flight `traceURL` fetch (including its hydration/error handling) so tests can await
+     * the load deterministically. Stays `undefined` when loading via message passing, or when a
+     * disallowed URL is rejected without fetching.
+     */
+    fetchPromiseForTest?: Promise<void>;
     constructor(onConnectionLost: (message: Platform.UIString.LocalizedString) => void);
     /**
      * This is a callback for rehydrated session to receive payload from host window. Payload includes but not limited to

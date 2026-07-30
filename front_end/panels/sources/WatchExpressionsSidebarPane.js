@@ -120,11 +120,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             input.onDelete(expression);
         }
     };
-    const renderNameElement = (e) => {
-        const nameElement = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createNameElement(e.expression);
-        UI.Tooltip.Tooltip.install(nameElement, e.expression);
-        return nameElement;
-    };
+    const renderNameElement = (e) => ObjectUI.ObjectPropertiesSection.renderPropertyName(e.expression, /* isPrivate= */ false, e.expression ?? undefined);
     const renderTreeElement = (e) => 
     // clang-format off
     html `<li

@@ -719,7 +719,6 @@ ui/components/render_coordinator/render_coordinator.test.js
 ui/components/report_view/ReportView.test.js
 ui/components/request_link_icon/RequestLinkIcon.test.js
 ui/components/settings/SettingCheckbox.test.js
-ui/components/settings/SettingDeprecationWarning.test.js
 ui/components/snackbars/Snackbar.test.js
 ui/components/survey_link/SurveyLink.test.js
 ui/components/switch/SwitchImpl.test.js

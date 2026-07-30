@@ -27,7 +27,6 @@ export function getRegisteredSettings() {
                 tags: legacy.tags,
                 options: legacy.options,
                 reloadRequired: legacy.reloadRequired,
-                deprecationNotice: legacy.deprecationNotice,
                 learnMore: legacy.learnMore,
             },
         });

@@ -22,9 +22,10 @@ const preamble = `You are a Senior Software Engineer specializing in state audit
 
  # Tools & Workflow
 
- -   **Prioritize Top-Level Context**: Always initiate your investigation from the top-level page's storage. Explicitly state if you are analyzing storage from a different context (e.g., an iframe).
+ -   **Top-Level Context**: Generally, questions refer to the primary page target ("my page", "this page", etc.). If the user selects a general category or a specific selection, answers should refer to that particular selection, but follow-up questions may switch to the primary page target.
  -   **Storage Breakdown**: Calling \`getStorageBreakdown\` gives you the total usage and quota per storage for the top-level page.
  -   **Address Specific Selections**: The user can select individual storage items in the DevTools UI (provided in the '# Active Context' section of the prompt). If the query is about a selected item (e.g., "Why is this cookie set?"), focus your response on that specific item.
+ -   **General Category Selection**: If a general storage category (such as Cookies, Local Storage, or Session Storage) is selected in the active context (indicated by an empty context origin), your first step MUST be to look through all cookies or local/session storage entries across all active page origins (by calling \`listPageOrigins\` to discover origins, then passing all discovered origins to \`listCookies\`), unless the user's explicit request hints otherwise.
  -   **Expand Scope When Necessary**: For general questions or those implying a wider scope (e.g., "Check all storages," "Are there related cookies on subdomains?"), proactively use your tools to explore other relevant storage contexts, including iframes and different origins.
  -   **Discovery**: Start by calling \`listPageOrigins\` to discover all active, non-empty frame origins loaded by the page.
  -   **Storage Partitioning (LocalStorage / SessionStorage)**:
@@ -51,12 +52,19 @@ function isSamePrimaryPageOrigin(targetManager, context) {
     const primaryPageTarget = targetManager.primaryPageTarget();
     return isSamePageOrigin(primaryPageTarget, context);
 }
-function isSamePageOrigin(target, context) {
+export function isSamePageOrigin(target, context) {
     if (!target || !context) {
         return false;
     }
     const pageOrigin = Common.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL());
     return pageOrigin !== '' && context.isOriginAllowed(pageOrigin);
+}
+const MAX_TARGET_ORIGINS = 100;
+function resolveTargetOrigins(context, origins) {
+    const primaryOrigin = context?.getOrigin();
+    const rawList = (origins && origins.length > 0) ? origins : (primaryOrigin ? [primaryOrigin] : []);
+    const uniqueOrigins = Array.from(new Set(rawList));
+    return uniqueOrigins.slice(0, MAX_TARGET_ORIGINS);
 }
 export class StorageContext extends ConversationContext {
     #item;
@@ -72,7 +80,10 @@ export class StorageContext extends ConversationContext {
     }
     getTitle() {
         if (this.#item instanceof CookieItem) {
-            return `${this.#item.name ? `cookie: ${this.#item.name}` : 'cookies:'} ${this.#item.origin}`;
+            if (this.#item.name) {
+                return `cookie: ${this.#item.name}${this.#item.origin ? ` ${this.#item.origin}` : ''}`;
+            }
+            return `cookies${this.#item.isGenericContext ? '' : `: ${this.#item.origin}`}`;
         }
         if (this.#item instanceof DOMStorageItem) {
             return `${this.#item.key ? `entry: ${this.#item.key}` : 'storage:'} ${this.#item.origin}`;
@@ -142,7 +153,7 @@ export class StorageAgent extends AiAgent {
     constructor(opts) {
         super(opts);
         this.declareFunction('listPageOrigins', {
-            description: 'Lists all active, non-empty frame origins loaded by the page. Use this first to discover what other targets/iframes exist on the page for querying their storage.',
+            description: 'Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies, unless the user\'s explicit request hints at focusing only on the primary page.',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -313,24 +324,25 @@ export class StorageAgent extends AiAgent {
             },
         });
         this.declareFunction('listCookies', {
-            description: 'Lists all cookies for the requested origin, strictly excluding their values.',
+            description: 'Lists all cookies for requested origins, strictly excluding their values.',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
                 nullable: false,
                 properties: {
-                    origin: {
-                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'Origin to list cookies for.',
+                    origins: {
+                        type: 5 /* Host.AidaClient.ParametersTypes.ARRAY */,
+                        description: 'List of origins to list cookies for.',
+                        items: { type: 1 /* Host.AidaClient.ParametersTypes.STRING */, description: 'An origin URL.' },
                         nullable: false,
                     },
                 },
-                required: ['origin'],
+                required: ['origins'],
             },
             displayInfoFromArgs: args => {
                 return {
                     title: lockedString('Reading cookies'),
-                    action: `listCookies('${args.origin}')`,
+                    action: `listCookies(${JSON.stringify(args.origins)})`,
                 };
             },
             handler: async (args) => {
@@ -338,18 +350,24 @@ export class StorageAgent extends AiAgent {
                 if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
-                const frame = findFrameForOrigin(this.context, args.origin, this.targetManager);
-                if (!frame) {
-                    return { result: { cookies: [] } };
-                }
-                const target = frame.resourceTreeModel().target();
-                const cookies = await getCookiesForDomain(target, args.origin);
-                const uniqueNames = Array.from(new Set(cookies?.map(c => c.name())));
-                return { result: { cookies: uniqueNames } };
+                const targetOrigins = resolveTargetOrigins(this.context, args.origins);
+                const cookieNamesByOrigin = {};
+                await Promise.all(targetOrigins.map(async (origin) => {
+                    const frame = findFrameForOrigin(this.context, origin, this.targetManager);
+                    if (!frame) {
+                        cookieNamesByOrigin[origin] = { error: 'Frame not found or origin disallowed' };
+                        return;
+                    }
+                    const target = frame.resourceTreeModel().target();
+                    const cookies = await getCookiesForDomain(target, origin);
+                    const uniqueNames = Array.from(new Set(cookies?.map(c => c.name())));
+                    cookieNamesByOrigin[origin] = { cookies: uniqueNames };
+                }));
+                return { result: { cookieNamesByOrigin } };
             },
         });
         this.declareFunction('getCookieValues', {
-            description: 'Retrieve the values and detailed metadata of specific cookies by their names.',
+            description: 'Retrieve the values and detailed metadata of specific cookies by their names across origins.',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -361,18 +379,19 @@ export class StorageAgent extends AiAgent {
                         items: { type: 1 /* Host.AidaClient.ParametersTypes.STRING */, description: 'A cookie name.' },
                         nullable: false,
                     },
-                    origin: {
-                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'The specific origin the cookies belong to.',
+                    origins: {
+                        type: 5 /* Host.AidaClient.ParametersTypes.ARRAY */,
+                        description: 'List of origins the cookies belong to.',
+                        items: { type: 1 /* Host.AidaClient.ParametersTypes.STRING */, description: 'An origin URL.' },
                         nullable: false,
                     },
                 },
-                required: ['cookieNames', 'origin'],
+                required: ['cookieNames', 'origins'],
             },
             displayInfoFromArgs: args => {
                 return {
                     title: lockedString('Reading cookie values and metadata'),
-                    action: `getCookieValues(${JSON.stringify(args.cookieNames)}, '${args.origin}')`,
+                    action: `getCookieValues(${JSON.stringify(args.cookieNames)}, ${JSON.stringify(args.origins)})`,
                 };
             },
             handler: async (args, options) => {
@@ -380,40 +399,49 @@ export class StorageAgent extends AiAgent {
                 if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
-                const frame = findFrameForOrigin(this.context, args.origin, this.targetManager);
-                if (!frame) {
-                    return { result: { cookies: [] } };
-                }
-                const target = frame.resourceTreeModel().target();
+                const targetOrigins = resolveTargetOrigins(this.context, args.origins);
                 if (options?.approved !== true) {
                     return {
                         requiresApproval: true,
-                        description: lockedString(`The AI wants to access the value(s) and metadata of cookie(s) ${args.cookieNames.map(name => `\`${name}\``).join(', ')} on ${args.origin}.`),
+                        description: lockedString(`The AI wants to access the value(s) and metadata of cookie(s) ${args.cookieNames.map(name => `\`${name}\``).join(', ')} on ${targetOrigins.join(', ')}.`),
                     };
                 }
-                const cookies = await getCookiesForDomain(target, args.origin);
-                if (!cookies) {
-                    return { result: { cookies: [] } };
-                }
-                const matchingCookies = cookies.filter(c => args.cookieNames.includes(c.name()));
-                const cookieData = matchingCookies.map(cookie => {
-                    const value = cookie.value();
-                    const truncatedValue = value.length > MAX_NUM_CHAR_LENGTH ? value.substring(0, MAX_NUM_CHAR_LENGTH) + '... <truncated>' : value;
-                    return {
-                        value: truncatedValue,
-                        domain: cookie.domain(),
-                        path: cookie.path(),
-                        expires: cookie.expires(),
-                        size: cookie.size(),
-                        secure: cookie.secure(),
-                        sameSite: cookie.sameSite(),
-                        partitioned: cookie.partitioned(),
-                        priority: cookie.priority(),
-                        sourcePort: cookie.sourcePort(),
-                        sourceScheme: cookie.sourceScheme(),
-                    };
-                });
-                return { result: { cookies: cookieData } };
+                const cookiesByOrigin = {};
+                await Promise.all(targetOrigins.map(async (origin) => {
+                    const frame = findFrameForOrigin(this.context, origin, this.targetManager);
+                    if (!frame) {
+                        cookiesByOrigin[origin] = { error: 'Frame not found or origin disallowed' };
+                        return;
+                    }
+                    const target = frame.resourceTreeModel().target();
+                    const cookies = await getCookiesForDomain(target, origin);
+                    if (!cookies) {
+                        cookiesByOrigin[origin] = { cookies: [] };
+                        return;
+                    }
+                    const matchingCookies = cookies.filter(c => args.cookieNames.includes(c.name()));
+                    const cookieData = matchingCookies.map(cookie => {
+                        const value = cookie.value();
+                        const truncatedValue = value.length > MAX_NUM_CHAR_LENGTH ?
+                            value.substring(0, MAX_NUM_CHAR_LENGTH) + '... <truncated>' :
+                            value;
+                        return {
+                            value: truncatedValue,
+                            domain: cookie.domain(),
+                            path: cookie.path(),
+                            expires: cookie.expires(),
+                            size: cookie.size(),
+                            secure: cookie.secure(),
+                            sameSite: cookie.sameSite(),
+                            partitioned: cookie.partitioned(),
+                            priority: cookie.priority(),
+                            sourcePort: cookie.sourcePort(),
+                            sourceScheme: cookie.sourceScheme(),
+                        };
+                    });
+                    cookiesByOrigin[origin] = { cookies: cookieData };
+                }));
+                return { result: { cookiesByOrigin } };
             },
         });
         this.declareFunction('getStorageBreakdown', {

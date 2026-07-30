@@ -23,12 +23,47 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/RehydratingConnection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+/**
+ * The `traceURL` (and legacy `loadTimelineFromURL`) query parameter is attacker-controllable, and its
+ * fetched response is replayed into the trusted DevTools front-end as synthetic CDP events. Rather
+ * than relying solely on the page-wide `connect-src` CSP, restrict fetches to trusted locations:
+ *  - the same origin as the DevTools front-end,
+ *  - the `devtools:` scheme (bundled resources),
+ *  - a loopback address, the documented way to load a local trace while developing
+ *    (see front_end/panels/timeline/README.md).
+ */
+export function isTraceUrlAllowed(traceUrl) {
+    let url;
+    try {
+        url = new URL(traceUrl, window.location.href);
+    }
+    catch {
+        return false;
+    }
+    if (url.protocol === 'devtools:') {
+        return true;
+    }
+    if (url.origin === window.location.origin) {
+        return true;
+    }
+    if (url.protocol === 'http:' || url.protocol === 'https:') {
+        const host = url.hostname.toLowerCase();
+        return host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+    }
+    return false;
+}
 export class RehydratingConnectionTransport {
     rehydratingConnectionState = 1 /* RehydratingConnectionState.UNINITIALIZED */;
     onDisconnect = null;
     onMessage = null;
     trace = null;
     sessions = new Map();
+    /**
+     * Set to the in-flight `traceURL` fetch (including its hydration/error handling) so tests can await
+     * the load deterministically. Stays `undefined` when loading via message passing, or when a
+     * disallowed URL is rejected without fetching.
+     */
+    fetchPromiseForTest;
     #onConnectionLost;
     #rehydratingWindow = window;
     #onReceiveHostWindowPayloadBound = this.onReceiveHostWindowPayload.bind(this);
@@ -50,9 +85,22 @@ export class RehydratingConnectionTransport {
             }
         }
         if (traceUrl) {
-            void fetch(traceUrl).then(r => r.arrayBuffer()).then(b => Common.Gzip.arrayBufferToString(b)).then(traceJson => {
+            // `traceUrl` comes from the page query string and its response is replayed into the trusted
+            // front-end as synthetic CDP events. Only fetch from trusted origins instead of relying on the
+            // page CSP alone.
+            if (!isTraceUrlAllowed(traceUrl)) {
+                this.#onConnectionLost(i18nString(UIStrings.errorLoadingLog));
+                return true;
+            }
+            this.fetchPromiseForTest = fetch(traceUrl)
+                .then(r => r.arrayBuffer())
+                .then(b => Common.Gzip.arrayBufferToString(b))
+                .then(async (traceJson) => {
                 const trace = new TraceObject(JSON.parse(traceJson));
-                void this.startHydration(trace);
+                await this.startHydration(trace);
+            })
+                .catch(() => {
+                this.#onConnectionLost(i18nString(UIStrings.errorLoadingLog));
             });
             return true;
         }

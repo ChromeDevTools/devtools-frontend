@@ -4,7 +4,6 @@
         "outDir": "."
     },
     "files": [
-        "settingCheckbox.css.js",
-        "settingDeprecationWarning.css.js"
+        "settingCheckbox.css.js"
     ]
 }

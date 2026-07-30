@@ -308,21 +308,6 @@ export class SettingsStorage {
         }
     }
 }
-export class Deprecation {
-    disabled;
-    warning;
-    experiment;
-    constructor({ deprecationNotice }) {
-        if (!deprecationNotice) {
-            throw new Error('Cannot create deprecation info for a non-deprecated setting');
-        }
-        this.disabled = deprecationNotice.disabled;
-        this.warning = deprecationNotice.warning();
-        this.experiment = deprecationNotice.experiment ?
-            Root.Runtime.experiments.allConfigurableExperiments().find(e => e.name === deprecationNotice.experiment) :
-            undefined;
-    }
-}
 export class Setting {
     name;
     defaultValue;
@@ -336,7 +321,6 @@ export class Setting {
     #serializer = JSON;
     #hadUserAction;
     #disabled;
-    #deprecation = null;
     #loggedInitialAccess = false;
     #logSettingAccess;
     #console;
@@ -492,16 +476,6 @@ export class Setting {
         if (registration.settingType) {
             this.#type = registration.settingType;
         }
-        const { deprecationNotice } = registration;
-        if (deprecationNotice?.disabled) {
-            const experiment = deprecationNotice.experiment ?
-                Root.Runtime.experiments.allConfigurableExperiments().find(e => e.name === deprecationNotice.experiment) :
-                undefined;
-            if ((!experiment || experiment.isEnabled())) {
-                this.set(this.defaultValue);
-                this.setDisabled(true);
-            }
-        }
     }
     type() {
         return this.#type ?? this.#registration?.settingType ?? null;
@@ -550,15 +524,6 @@ export class Setting {
      */
     learnMore() {
         return this.#registration?.learnMore ?? null;
-    }
-    get deprecation() {
-        if (!this.#registration || !this.#registration.deprecationNotice) {
-            return null;
-        }
-        if (!this.#deprecation) {
-            this.#deprecation = new Deprecation(this.#registration);
-        }
-        return this.#deprecation;
     }
     printSettingsSavingError(message, value) {
         const errorMessage = 'Error saving setting with name: ' + this.name + ', value length: ' + value.length + '. Error: ' + message;

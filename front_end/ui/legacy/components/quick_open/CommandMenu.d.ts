@@ -40,7 +40,6 @@ export interface CreateCommandOptions {
     executeHandler: () => void;
     availableHandler?: () => boolean;
     userActionCode?: number;
-    deprecationWarning?: Platform.UIString.LocalizedString;
     isPanelOrDrawer?: PanelOrDrawer;
     featurePromotionId?: string;
 }
@@ -68,10 +67,9 @@ export declare class Command {
     readonly key: string;
     readonly shortcut: string;
     readonly jslogContext: string;
-    readonly deprecationWarning?: Platform.UIString.LocalizedString;
     readonly isPanelOrDrawer?: PanelOrDrawer;
     readonly featurePromotionId?: string;
-    constructor(category: Common.UIString.LocalizedString, title: Common.UIString.LocalizedString, key: string, shortcut: string, jslogContext: string, executeHandler: () => unknown, availableHandler?: () => boolean, deprecationWarning?: Platform.UIString.LocalizedString, isPanelOrDrawer?: PanelOrDrawer, featurePromotionId?: string);
+    constructor(category: Common.UIString.LocalizedString, title: Common.UIString.LocalizedString, key: string, shortcut: string, jslogContext: string, executeHandler: () => unknown, availableHandler?: () => boolean, isPanelOrDrawer?: PanelOrDrawer, featurePromotionId?: string);
     available(): boolean;
     execute(): unknown;
 }

@@ -213,8 +213,12 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             initiator.target;
         Host.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
         if (eligibleForLoadFromTarget) {
-            let mustEnforceCSP = false;
             const isHttp = parsedURL.scheme === 'http' || parsedURL.scheme === 'https';
+            // Default to enforcing CSP for http(s) resources (fail-closed). Only relax
+            // if the isolation-status query positively confirms no connect-src/default-src
+            // directive is present. A null/error response keeps the guard armed so that a
+            // detached-frame or protocol-error path cannot fall through to loadFromHostBindings.
+            let mustEnforceCSP = isHttp;
             if (isHttp && initiator.target) {
                 const networkManager = initiator.target.model(NetworkManager);
                 if (networkManager) {
@@ -222,14 +226,10 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
                     if (!status && initiator.frameId) {
                         status = await networkManager.getSecurityIsolationStatus(null);
                     }
-                    if (status?.csp) {
-                        for (const csp of status.csp) {
-                            const directives = csp.effectiveDirectives;
-                            if (directives.includes('connect-src') || directives.includes('default-src')) {
-                                mustEnforceCSP = true;
-                                break;
-                            }
-                        }
+                    if (status) {
+                        const csps = status.csp ?? [];
+                        mustEnforceCSP = csps.some(csp => csp.effectiveDirectives.includes('connect-src') ||
+                            csp.effectiveDirectives.includes('default-src'));
                     }
                 }
             }

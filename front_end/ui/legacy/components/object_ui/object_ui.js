@@ -68,7 +68,8 @@ __export(ObjectPropertiesSection_exports, {
   objectValueStyles: () => objectValue_css_default,
   populateObjectTreeContextMenu: () => populateObjectTreeContextMenu,
   renderObjectPropertiesSection: () => renderObjectPropertiesSection,
-  renderObjectTree: () => renderObjectTree
+  renderObjectTree: () => renderObjectTree,
+  renderPropertyName: () => renderPropertyName
 });
 import * as Common from "./../../../../core/common/common.js";
 import * as Host from "./../../../../core/host/host.js";
@@ -1469,28 +1470,6 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     }
     return 0;
   }
-  static createNameElement(name, isPrivate) {
-    const element = document.createElement("span");
-    element.classList.add("name");
-    if (name === null) {
-      return element;
-    }
-    const escapedName = Platform2.StringUtilities.escapeUnicodeAsText(name);
-    if (/^\s|\s$|^$|\n/.test(escapedName)) {
-      element.textContent = `"${escapedName.replace(/\n/g, "\u21B5")}"`;
-      return element;
-    }
-    if (isPrivate) {
-      const privatePropertyHash = document.createElement("span");
-      privatePropertyHash.classList.add("private-property-hash");
-      privatePropertyHash.textContent = escapedName[0];
-      element.appendChild(privatePropertyHash);
-      element.appendChild(document.createTextNode(escapedName.substring(1)));
-      return element;
-    }
-    element.textContent = escapedName;
-    return element;
-  }
   static valueElementForFunctionDescription(description, includePreview, defaultName, className) {
     const contents = (description2, defaultName2) => {
       const text = description2.replace(/^function [gs]et /, "function ").replace(/^function [gs]et\(/, "function(").replace(/^[gs]et /, "");
@@ -1826,6 +1805,19 @@ var RootElement = class extends UI2.TreeOutline.TreeElement {
     return await ObjectPropertyTreeElement.populate(this, this.object, skipProto, false, this.linkifier, this.emptyPlaceholder);
   }
 };
+function renderPropertyName(name, isPrivate, title) {
+  if (name === null) {
+    return html2`<span class="name" title=${ifDefined2(title)}></span>`;
+  }
+  const escapedName = Platform2.StringUtilities.escapeUnicodeAsText(name);
+  if (/^\s|\s$|^$|\n/.test(escapedName)) {
+    return html2`<span class="name" title=${ifDefined2(title)}>"${escapedName.replace(/\n/g, "\u21B5")}"</span>`;
+  }
+  if (isPrivate) {
+    return html2`<span class="name" title=${ifDefined2(title)}><span class="private-property-hash">${escapedName[0]}</span>${escapedName.substring(1)}</span>`;
+  }
+  return html2`<span class="name" title=${ifDefined2(title)}>${escapedName}</span>`;
+}
 var InitialVisibleChildrenLimit = 200;
 var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
   const { property } = input.node;

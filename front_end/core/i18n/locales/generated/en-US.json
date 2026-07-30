@@ -17939,9 +17939,6 @@
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Command"
   },
-  "ui/legacy/components/quick_open/CommandMenu.ts | deprecated": {
-    "message": "— deprecated"
-  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "No commands found"
   },

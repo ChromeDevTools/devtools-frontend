@@ -43,7 +43,7 @@ export interface Option {
 }
 export declare class ExperimentsSupport {
     #private;
-    allConfigurableExperiments(): Array<Experiment | HostExperiment>;
+    allConfigurableExperiments(): HostExperiment[];
     registerHostExperiment(params: {
         name: ExperimentName;
         title: string;
@@ -53,31 +53,14 @@ export declare class ExperimentsSupport {
         docLink?: Platform.DevToolsPath.UrlString;
         readonly feedbackLink?: Platform.DevToolsPath.UrlString;
     }): HostExperiment;
-    register(experimentName: ExperimentName, experimentTitle: string, docLink?: string, feedbackLink?: string): void;
     isEnabled(experimentName: ExperimentName): boolean;
     getValueFromStorage(experimentName: ExperimentName): boolean | undefined;
     setEnabled(experimentName: ExperimentName, enabled: boolean): void;
-    enableExperimentsByDefault(experimentNames: ExperimentName[]): void;
-    setServerEnabledExperiments(experiments: string[]): void;
     enableForTest(experimentName: ExperimentName): void;
     disableForTest(experimentName: ExperimentName): void;
     isEnabledForTest(experimentName: ExperimentName): boolean;
     clearForTest(): void;
-    cleanUpStaleExperiments(): void;
-}
-/**
- * @deprecated Experiments should not be used anymore, instead use base::Feature.
- * See docs/contributing/settings-experiments-features.md
- */
-export declare class Experiment {
-    #private;
-    name: ExperimentName;
-    title: string;
-    docLink?: Platform.DevToolsPath.UrlString;
-    readonly feedbackLink?: Platform.DevToolsPath.UrlString;
-    constructor(experiments: ExperimentsSupport, name: ExperimentName, title: string, docLink: Platform.DevToolsPath.UrlString, feedbackLink: Platform.DevToolsPath.UrlString);
-    isEnabled(): boolean;
-    setEnabled(enabled: boolean): void;
+    removeAllExperimentsFromLocalStorage(): void;
 }
 export declare class HostExperiment {
     #private;

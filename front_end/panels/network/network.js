@@ -4358,7 +4358,7 @@ var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
     const uiSourceCode = this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl());
     if (uiSourceCode) {
       revealHeadersFile = () => {
-        Sources.SourcesPanel.SourcesPanel.instance().showUISourceCode(uiSourceCode);
+        void Sources.SourcesPanel.SourcesPanel.instance().showUISourceCode(uiSourceCode);
         void Sources.SourcesPanel.SourcesPanel.instance().revealInNavigator(uiSourceCode);
       };
     }

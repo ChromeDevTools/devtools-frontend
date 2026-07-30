@@ -60,9 +60,9 @@ export declare class SourcesPanel extends UI.Panel.Panel implements UI.ContextMe
     private debuggerResumed;
     private debuggerWasEnabled;
     get visibleView(): UI.Widget.Widget | null;
-    showUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode, location?: SourceFrame.SourceFrame.RevealPosition, omitFocus?: boolean): void;
+    showUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode, location?: SourceFrame.SourceFrame.RevealPosition, omitFocus?: boolean): Promise<void>;
     private showEditor;
-    showUILocation(uiLocation: Workspace.UISourceCode.UILocation, omitFocus?: boolean): void;
+    showUILocation(uiLocation: Workspace.UISourceCode.UILocation, omitFocus?: boolean): Promise<void>;
     revealInNavigator(uiSourceCode: Workspace.UISourceCode.UISourceCode, skipReveal?: boolean): Promise<void>;
     private addSettingMenuItem;
     private populateNavigatorMenu;

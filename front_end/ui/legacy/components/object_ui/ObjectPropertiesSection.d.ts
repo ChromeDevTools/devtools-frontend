@@ -2,7 +2,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../../../generated/protocol.js';
-import { type DirectiveResult, type LitTemplate } from '../../../lit/lit.js';
+import { type DirectiveResult, type LitTemplate, type TemplateResult } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import type * as Components from '../utils/utils.js';
 import objectPropertiesSectionStyles from './objectPropertiesSection.css.js';
@@ -132,7 +132,6 @@ export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineI
     static defaultObjectPresentation(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): Element;
     static defaultObjectPropertiesSection(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): ObjectPropertiesSection;
     static compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, sortPropertiesAlphabetically?: boolean): number;
-    static createNameElement(name: string | null, isPrivate?: boolean): Element;
     static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string, className?: string): LitTemplate;
     static createPropertyValueWithCustomSupport(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean): HTMLElement;
     static getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate;
@@ -160,6 +159,7 @@ export declare const enum ObjectPropertiesMode {
 export declare function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu, object: ObjectTree, expandRecursively: () => void, collapseChildren: () => void, sortPropertiesAlphabetically: () => void, onShowAllToggled: () => void): void;
 export declare function renderObjectTree(objectTree: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): LitTemplate | DirectiveResult;
 export declare function renderObjectPropertiesSection(objectTree: ObjectTree, title: LitTemplate, linkifier?: Components.Linkifier.Linkifier): LitTemplate;
+export declare function renderPropertyName(name: string | null, isPrivate?: boolean, title?: string): TemplateResult;
 /**
  * Number of initially visible children in an ObjectPropertyTreeElement.
  * Remaining children are shown as soon as requested via a show more properties button.

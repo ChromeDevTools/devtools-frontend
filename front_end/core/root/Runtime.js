@@ -120,49 +120,24 @@ export class Runtime {
     }
 }
 export class ExperimentsSupport {
-    #experiments = [];
     #hostExperiments = new Map();
-    #experimentNames = new Set();
     #enabledForTests = new Set();
-    #enabledByDefault = new Set();
-    #serverEnabled = new Set();
     #storage = new ExperimentStorage();
     allConfigurableExperiments() {
-        return [...this.#experiments, ...this.#hostExperiments.values()];
+        return [...this.#hostExperiments.values()];
     }
     registerHostExperiment(params) {
-        if (this.#isHostExperiment(params.name) || this.#isExperiment(params.name)) {
+        if (this.#isHostExperiment(params.name)) {
             throw new Error(`Duplicate registration of experiment '${params.name}'`);
         }
         const hostExperiment = new HostExperiment({ ...params, experiments: this });
         this.#hostExperiments.set(params.name, hostExperiment);
         return hostExperiment;
     }
-    register(experimentName, experimentTitle, docLink, feedbackLink) {
-        if (this.#isHostExperiment(experimentName) || this.#isExperiment(experimentName)) {
-            throw new Error(`Duplicate registration of experiment '${experimentName}'`);
-        }
-        this.#experimentNames.add(experimentName);
-        this.#experiments.push(new Experiment(this, experimentName, experimentTitle, docLink ?? Platform.DevToolsPath.EmptyUrlString, feedbackLink ?? Platform.DevToolsPath.EmptyUrlString));
-    }
     isEnabled(experimentName) {
         if (this.#isHostExperiment(experimentName)) {
             return this.#enabledForTests.has(experimentName) ||
                 (this.#hostExperiments.get(experimentName)?.isEnabled() ?? false);
-        }
-        if (this.#isExperiment(experimentName)) {
-            // Check for explicitly disabled #experiments first - the code could call setEnable(false)
-            // on the experiment enabled by default and we should respect that.
-            if (this.#storage.get(experimentName) === false) {
-                return false;
-            }
-            if (this.#enabledForTests.has(experimentName) || this.#enabledByDefault.has(experimentName)) {
-                return true;
-            }
-            if (this.#serverEnabled.has(experimentName)) {
-                return true;
-            }
-            return Boolean(this.#storage.get(experimentName));
         }
         throw new Error(`Unknown experiment '${experimentName}'`);
     }
@@ -174,39 +149,16 @@ export class ExperimentsSupport {
             this.#hostExperiments.get(experimentName)?.setEnabled(enabled);
             return;
         }
-        if (this.#isExperiment(experimentName)) {
-            this.#storage.set(experimentName, enabled);
-            return;
-        }
         throw new Error(`Unknown experiment '${experimentName}'`);
     }
-    // Only applicable to legacy experiments.
-    enableExperimentsByDefault(experimentNames) {
-        for (const experimentName of experimentNames) {
-            if (!this.#isExperiment(experimentName)) {
-                throw new Error(`Unknown (legacy) experiment '${experimentName}'`);
-            }
-            this.#enabledByDefault.add(experimentName);
-        }
-    }
-    // Only applicable to legacy experiments.
-    setServerEnabledExperiments(experiments) {
-        for (const experiment of experiments) {
-            const experimentName = experiment;
-            if (!this.#isExperiment(experimentName)) {
-                throw new Error(`Unknown (legacy) experiment '${experimentName}'`);
-            }
-            this.#serverEnabled.add(experimentName);
-        }
-    }
     enableForTest(experimentName) {
-        if (!this.#isHostExperiment(experimentName) && !this.#isExperiment(experimentName)) {
+        if (!this.#isHostExperiment(experimentName)) {
             throw new Error(`Unknown experiment '${experimentName}'`);
         }
         this.#enabledForTests.add(experimentName);
     }
     disableForTest(experimentName) {
-        if (!this.#isHostExperiment(experimentName) && !this.#isExperiment(experimentName)) {
+        if (!this.#isHostExperiment(experimentName)) {
             throw new Error(`Unknown experiment '${experimentName}'`);
         }
         this.#enabledForTests.delete(experimentName);
@@ -215,23 +167,18 @@ export class ExperimentsSupport {
         return this.#enabledForTests.has(experimentName);
     }
     clearForTest() {
-        this.#experiments = [];
         this.#hostExperiments.clear();
-        this.#experimentNames.clear();
         this.#enabledForTests.clear();
-        this.#enabledByDefault.clear();
-        this.#serverEnabled.clear();
     }
-    cleanUpStaleExperiments() {
-        this.#storage.cleanUpStaleExperiments(this.#experimentNames);
+    // TODO(crbug.com/464173054) remove after M156
+    removeAllExperimentsFromLocalStorage() {
+        this.#storage.removeAllExperimentsFromLocalStorage();
     }
     #isHostExperiment(experimentName) {
         return this.#hostExperiments.has(experimentName);
     }
-    #isExperiment(experimentName) {
-        return this.#experimentNames.has(experimentName);
-    }
 }
+// TODO(crbug.com/464173054) remove after M156
 /** Manages the 'experiments' dictionary in globalThis.localStorage */
 class ExperimentStorage {
     #experiments = {};
@@ -255,44 +202,8 @@ class ExperimentStorage {
     get(experimentName) {
         return this.#experiments[experimentName];
     }
-    set(experimentName, enabled) {
-        this.#experiments[experimentName] = enabled;
-        this.#syncToLocalStorage();
-    }
-    cleanUpStaleExperiments(validExperiments) {
-        for (const [key] of Object.entries(this.#experiments)) {
-            if (!validExperiments.has(key)) {
-                delete this.#experiments[key];
-            }
-        }
-        this.#syncToLocalStorage();
-    }
-    #syncToLocalStorage() {
-        Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.setItem('experiments', JSON.stringify(this.#experiments));
-    }
-}
-/**
- * @deprecated Experiments should not be used anymore, instead use base::Feature.
- * See docs/contributing/settings-experiments-features.md
- */
-export class Experiment {
-    name;
-    title;
-    docLink;
-    feedbackLink;
-    #experiments;
-    constructor(experiments, name, title, docLink, feedbackLink) {
-        this.name = name;
-        this.title = title;
-        this.docLink = docLink;
-        this.feedbackLink = feedbackLink;
-        this.#experiments = experiments;
-    }
-    isEnabled() {
-        return this.#experiments.isEnabled(this.name);
-    }
-    setEnabled(enabled) {
-        this.#experiments.setEnabled(this.name, enabled);
+    removeAllExperimentsFromLocalStorage() {
+        Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.removeItem('experiments');
     }
 }
 export class HostExperiment {

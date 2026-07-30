@@ -8,7 +8,7 @@ export class EditingLocationHistoryManager {
     sourcesView;
     entries = [];
     current = -1;
-    revealing = false;
+    revealingCount = 0;
     constructor(sourcesView) {
         this.sourcesView = sourcesView;
     }
@@ -21,7 +21,7 @@ export class EditingLocationHistoryManager {
         }
         const prevPos = update.startState.selection.main;
         const newPos = update.state.selection.main;
-        const isJump = !this.revealing && prevPos.anchor !== newPos.anchor && update.transactions.some(tr => {
+        const isJump = this.revealingCount === 0 && prevPos.anchor !== newPos.anchor && update.transactions.some(tr => {
             return Boolean(tr.isUserEvent('select.pointer') || tr.isUserEvent('select.reveal') || tr.isUserEvent('select.search'));
         });
         if (isJump) {
@@ -38,7 +38,7 @@ export class EditingLocationHistoryManager {
         }
     }
     updateCurrentState(uiSourceCode, position) {
-        if (!this.revealing) {
+        if (this.revealingCount === 0) {
             const top = this.current >= 0 ? this.entries[this.current] : null;
             if (top?.matches(uiSourceCode)) {
                 top.position = position;
@@ -52,24 +52,28 @@ export class EditingLocationHistoryManager {
             }
         }
     }
-    reveal(entry) {
+    async reveal(entry) {
         const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(entry.projectId, entry.url);
         if (uiSourceCode) {
-            this.revealing = true;
-            this.sourcesView.showSourceLocation(uiSourceCode, entry.position, false, true);
-            this.revealing = false;
+            this.revealingCount++;
+            try {
+                await this.sourcesView.showSourceLocation(uiSourceCode, entry.position, false, true);
+            }
+            finally {
+                this.revealingCount--;
+            }
         }
     }
     rollback() {
         if (this.current > 0) {
             this.current--;
-            this.reveal(this.entries[this.current]);
+            void this.reveal(this.entries[this.current]);
         }
     }
     rollover() {
         if (this.current < this.entries.length - 1) {
             this.current++;
-            this.reveal(this.entries[this.current]);
+            void this.reveal(this.entries[this.current]);
         }
     }
     removeHistoryForSourceCode(uiSourceCode) {

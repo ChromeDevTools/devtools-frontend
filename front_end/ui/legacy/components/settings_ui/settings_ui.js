@@ -52,7 +52,6 @@ function renderSettingSelect(setting, subtitle) {
     raw: opt.raw
   })) ?? setting.options();
   const requiresReload = Boolean(uiDescriptor?.reloadRequired ?? setting.reloadRequired());
-  const { deprecation } = setting;
   const controlId = UI.ARIAUtils.nextId("labelledControl");
   const reloadWarningRef = createRef();
   const onSelectChange = (e) => {
@@ -71,7 +70,6 @@ function renderSettingSelect(setting, subtitle) {
         <label for=${controlId}>
           ${name}
           ${subtitle ? html`<p>${subtitle}</p>` : nothing}
-          ${deprecation ? html`<devtools-setting-deprecation-warning .data=${deprecation}></devtools-setting-deprecation-warning>` : nothing}
         </label>
         <select
           id=${controlId}

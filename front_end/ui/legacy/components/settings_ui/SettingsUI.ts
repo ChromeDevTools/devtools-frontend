@@ -42,7 +42,8 @@ export function createSettingCheckbox(
   return label;
 }
 
-export function renderSettingSelect(setting: Common.Settings.Setting<unknown>, subtitle?: string): TemplateResult {
+export function renderSettingSelect(setting: Common.Settings.Setting<unknown>, subtitle?: string,
+                                    disabled?: boolean): TemplateResult {
   const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
   const name = uiDescriptor?.title?.() ?? setting.title();
   const options = uiDescriptor?.options?.map(opt => ({
@@ -79,7 +80,7 @@ export function renderSettingSelect(setting: Common.Settings.Setting<unknown>, s
         <select
           id=${controlId}
           aria-label=${name}
-          .disabled=${setting.disabled()}
+          .disabled=${disabled ?? setting.disabled()}
           @change=${onSelectChange}
           jslog=${VisualLogging.dropDown().track({change: true}).context(setting.name)}
         >
@@ -108,8 +109,8 @@ export function renderSettingSelect(setting: Common.Settings.Setting<unknown>, s
   // clang-format on
 }
 
-export const renderControlForSetting = function(
-    setting: Common.Settings.Setting<unknown>, subtitle?: string): TemplateResult|typeof nothing {
+export const renderControlForSetting = function(setting: Common.Settings.Setting<unknown>, subtitle?: string,
+                                                disabled?: boolean): TemplateResult|typeof nothing {
   switch (setting.type()) {
     case Common.Settings.SettingType.BOOLEAN: {
       const onchange = (): void => {
@@ -122,10 +123,11 @@ export const renderControlForSetting = function(
       };
       return html`<setting-checkbox .data=${{
         setting: setting as Common.Settings.Setting<boolean>,
+        disabled,
       } as Settings.SettingCheckbox.SettingCheckboxData} @change=${onchange}></setting-checkbox>`;
     }
     case Common.Settings.SettingType.ENUM: {
-      return renderSettingSelect(setting, subtitle);
+      return renderSettingSelect(setting, subtitle, disabled);
     }
     default:
       console.error('Invalid setting type: ' + setting.type());
@@ -133,9 +135,9 @@ export const renderControlForSetting = function(
   }
 };
 
-export const createControlForSetting = function(
-    setting: Common.Settings.Setting<unknown>, subtitle?: string): HTMLElement|null {
-  const template = renderControlForSetting(setting, subtitle);
+export const createControlForSetting = function(setting: Common.Settings.Setting<unknown>, subtitle?: string,
+                                                disabled?: boolean): HTMLElement|null {
+  const template = renderControlForSetting(setting, subtitle, disabled);
   if (template === nothing) {
     return null;
   }

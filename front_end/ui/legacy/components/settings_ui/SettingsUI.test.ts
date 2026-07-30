@@ -55,6 +55,19 @@ describeWithEnvironment('SettingsUI', () => {
     assert.include(label.textContent || '', 'Test Setting');
   });
 
+  it('disables the select element when disabled is true', () => {
+    const setting = setup();
+
+    const template = SettingsUI.SettingsUI.renderSettingSelect(setting, undefined, true);
+    const container = document.createElement('div');
+    Lit.render(template, container);
+    renderElementIntoDOM(container);
+
+    const select = container.querySelector('select');
+    assert.isNotNull(select);
+    assert.isTrue(select.disabled);
+  });
+
   it('updates the setting when the select changes', () => {
     const setting = setup();
 

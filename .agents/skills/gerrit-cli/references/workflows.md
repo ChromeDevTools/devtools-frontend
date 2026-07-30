@@ -9,6 +9,7 @@ provided with a link or ID:
    ```bash
    vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
      changes \
+     --host https://chromium-review.googlesource.com \
      --query "change:<id>"
    ```
 2. **Fetch File Contents**: Retrieve the content of specific files modified in
@@ -16,6 +17,8 @@ provided with a link or ID:
    ```bash
    vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
      content \
+     --host https://chromium-review.googlesource.com \
+     --project <project> \
      --change <change_id> --revision current --path <file_path>
    ```
 3. **Analyze Local Modifications**: Inspect the fetched contents and local diffs
@@ -25,6 +28,7 @@ provided with a link or ID:
    ```bash
    vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
      addpatchsetcomment \
+     --host https://chromium-review.googlesource.com \
      --change <change_id> --revision current \
      --message "Review findings: ..."
    ```
@@ -38,12 +42,14 @@ Execute these steps in chronological order to approve and merge a Change List:
    ```bash
    vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
      relatedchanges \
+     --host https://chromium-review.googlesource.com \
      --change <change_id> --revision current
    ```
 2. **Vote on Review Labels**: Apply the required Code-Review approval vote:
    ```bash
    vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
      setlabel \
+     --host https://chromium-review.googlesource.com \
      --change <change_id> \
      --label Code-Review 1
    ```
@@ -52,5 +58,6 @@ Execute these steps in chronological order to approve and merge a Change List:
    ```bash
    vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
      submitchange \
+     --host https://chromium-review.googlesource.com \
      --change <change_id>
    ```

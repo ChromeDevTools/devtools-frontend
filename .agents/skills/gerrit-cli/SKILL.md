@@ -16,8 +16,6 @@ depot_tools.
 
 ## Prerequisites
 
-- **Environment**: Always execute the wrapper script using **`vpython3`** instead of `python3` to ensure all internal dependencies are satisfied.
-
 - Ensure `gerrit_client.py` is available in the system `PATH` (typically part of
   `depot_tools`). If `gerrit_client.py` is not available in your environment,
   stop execution immediately.
@@ -33,15 +31,11 @@ depot_tools.
 - Before querying public CLs, adding comments, voting, or submitting changes,
   read `references/workflows.md` for step-by-step procedures.
 
-## Global Flags
+## Gotchas & Environment Constraints
 
-The wrapper script includes DevTools-specific defaults for `--host` and
-`--project`. You do not need to provide them unless you are targeting a
-different host or project.
-
-- **Default Host**: `https://chromium-review.googlesource.com`
-- **Default Project**: `devtools/devtools-frontend`
-- **JSON Output**: Always use the `--json_file=<path>` flag when querying
+- **Specify Host**: Always supply the `--host` flag explicitly (e.g.
+  `--host https://chromium-review.googlesource.com`).
+- **Use JSON Output**: Always use the `--json_file=<path>` flag when querying
   changes or fetching metadata to obtain structured, machine-readable output.
 
 > [!CAUTION]

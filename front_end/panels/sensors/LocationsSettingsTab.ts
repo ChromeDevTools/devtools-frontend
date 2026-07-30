@@ -137,20 +137,20 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 function renderItemView(location: LocationDescription): LitTemplate {
   // clang-format off
   return html`
-    <div class="locations-list-item" role="row">
-      <div class="locations-list-text locations-list-title" role="cell">
+    <div class="locations-list-item">
+      <div class="locations-list-text locations-list-title">
         <div class="locations-list-title-text" title=${location.title}>${location.title}</div>
       </div>
       <div class="locations-list-separator"></div>
-      <div class="locations-list-text" role="cell">${location.lat}</div>
+      <div class="locations-list-text">${location.lat}</div>
       <div class="locations-list-separator"></div>
-      <div class="locations-list-text" role="cell">${location.long}</div>
+      <div class="locations-list-text">${location.long}</div>
       <div class="locations-list-separator"></div>
-      <div class="locations-list-text" role="cell">${location.timezoneId}</div>
+      <div class="locations-list-text">${location.timezoneId}</div>
       <div class="locations-list-separator"></div>
-      <div class="locations-list-text" role="cell">${location.locale}</div>
+      <div class="locations-list-text">${location.locale}</div>
       <div class="locations-list-separator"></div>
-      <div class="locations-list-text" role="cell">${
+      <div class="locations-list-text">${
           location.accuracy ?? SDK.EmulationModel.Location.DEFAULT_ACCURACY}</div>
     </div>`;
   // clang-format on

@@ -26,11 +26,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
-import {DataGridItem, OriginalResourceChunkView} from './OriginalResourceChunkView.js';
+import {DataGridItem, ResourceChunkView} from './ResourceChunkView.js';
 
 const UIStrings = {
   /**
@@ -91,7 +90,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceWebSocketFrameV
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-export class ResourceWebSocketFrameView extends OriginalResourceChunkView<SDK.NetworkRequest.WebSocketFrame> {
+export class ResourceWebSocketFrameView extends ResourceChunkView<SDK.NetworkRequest.WebSocketFrame> {
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super(
         request, 'network-web-socket-message-filter', 'resource-web-socket-frame-split-view-state',
@@ -115,7 +114,7 @@ export class ResourceWebSocketFrameView extends OriginalResourceChunkView<SDK.Ne
 
   override wasShown(): void {
     super.wasShown();
-    this.refresh();
+    this.requestUpdate();
     this.request.addEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.onWebSocketFrameAdded, this);
   }
 
@@ -161,16 +160,13 @@ class ResourceFrameNode extends DataGridItem {
   readonly frame: SDK.NetworkRequest.WebSocketFrame;
   override readonly isTextFrame: boolean;
   #dataText: string;
-  #binaryView: BinaryResourceView|null;
+  #binaryView: BinaryResourceView|null = null;
+  override readonly data: Record<string, string|HTMLElement>;
+  override readonly cssClass?: string;
 
   constructor(frame: SDK.NetworkRequest.WebSocketFrame) {
+    super();
     let length = String(frame.text.length);
-    const time = new Date(frame.time * 1000);
-    const timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +
-        ('0' + time.getSeconds()).substr(-2) + '.' + ('00' + time.getMilliseconds()).substr(-3);
-    const timeNode = document.createElement('div');
-    UI.UIUtils.createTextChild(timeNode, timeText);
-    UI.Tooltip.Tooltip.install(timeNode, time.toLocaleString());
 
     let dataText: string = frame.text;
     let description = ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
@@ -179,39 +175,31 @@ class ResourceFrameNode extends DataGridItem {
     if (frame.type === SDK.NetworkRequest.WebSocketFrameType.Error) {
       description = dataText;
       length = i18nString(UIStrings.na);
-
     } else if (isTextFrame) {
       description = dataText;
-
     } else if (frame.opCode === OpCodes.BINARY_FRAME) {
       length = i18n.ByteUtilities.bytesToString(Platform.StringUtilities.base64ToSize(frame.text));
       description = opCodeDescriptions[frame.opCode]();
-
     } else {
       dataText = description;
     }
-
-    super({data: description, length, time: timeNode});
 
     this.frame = frame;
     this.isTextFrame = isTextFrame;
     this.#dataText = dataText;
 
-    this.#binaryView = null;
-  }
+    this.data = {
+      data: description,
+      length,
+    };
 
-  override createCells(element: Element): void {
-    element.classList.toggle(
-        'resource-chunk-view-row-error', this.frame.type === SDK.NetworkRequest.WebSocketFrameType.Error);
-    element.classList.toggle(
-        'resource-chunk-view-row-send', this.frame.type === SDK.NetworkRequest.WebSocketFrameType.Send);
-    element.classList.toggle(
-        'resource-chunk-view-row-receive', this.frame.type === SDK.NetworkRequest.WebSocketFrameType.Receive);
-    super.createCells(element);
-  }
-
-  override nodeSelfHeight(): number {
-    return 21;
+    if (frame.type === SDK.NetworkRequest.WebSocketFrameType.Error) {
+      this.cssClass = 'resource-chunk-view-row-error';
+    } else if (frame.type === SDK.NetworkRequest.WebSocketFrameType.Send) {
+      this.cssClass = 'resource-chunk-view-row-send';
+    } else if (frame.type === SDK.NetworkRequest.WebSocketFrameType.Receive) {
+      this.cssClass = 'resource-chunk-view-row-receive';
+    }
   }
 
   override dataText(): string {

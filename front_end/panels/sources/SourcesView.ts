@@ -368,9 +368,9 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     }
   }
 
-  showSourceLocation(uiSourceCode: Workspace.UISourceCode.UISourceCode,
-                     location?: SourceFrame.SourceFrame.RevealPosition, omitFocus?: boolean,
-                     omitHighlight?: boolean): void {
+  async showSourceLocation(uiSourceCode: Workspace.UISourceCode.UISourceCode,
+                           location?: SourceFrame.SourceFrame.RevealPosition, omitFocus?: boolean,
+                           omitHighlight?: boolean): Promise<void> {
     const currentFrame = this.currentSourceFrame();
     if (currentFrame) {
       this.historyManager.updateCurrentState(
@@ -444,7 +444,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
         // Remove the existing editor tab and create a new one of the correct type.
         this.removeUISourceCodes([uiSourceCode]);
         this.#uiSourceCodes.add(uiSourceCode);
-        this.showSourceLocation(uiSourceCode);
+        void this.showSourceLocation(uiSourceCode);
       }
     }
   }
@@ -708,7 +708,7 @@ export class SwitchFileActionDelegate implements UI.ActionRegistration.ActionDel
     if (!nextUISourceCode) {
       return false;
     }
-    sourcesView.showSourceLocation(nextUISourceCode);
+    void sourcesView.showSourceLocation(nextUISourceCode);
     return true;
   }
 }

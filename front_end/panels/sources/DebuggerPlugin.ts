@@ -1773,7 +1773,7 @@ export class BreakpointLocationRevealer implements
   async reveal(breakpointLocation: Breakpoints.BreakpointManager.BreakpointLocation, omitFocus?: boolean|undefined):
       Promise<void> {
     const {uiLocation} = breakpointLocation;
-    SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
+    await SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
     const debuggerPlugin = debuggerPluginForUISourceCode.get(uiLocation.uiSourceCode);
     if (debuggerPlugin) {
       debuggerPlugin.editBreakpointLocation(breakpointLocation);

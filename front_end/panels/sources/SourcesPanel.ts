@@ -597,9 +597,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
     return this.#sourcesView.visibleView();
   }
 
-  showUISourceCode(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, location?: SourceFrame.SourceFrame.RevealPosition,
-      omitFocus?: boolean): void {
+  async showUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode,
+                         location?: SourceFrame.SourceFrame.RevealPosition, omitFocus?: boolean): Promise<void> {
     if (omitFocus) {
       if (!this.isShowing() && !UI.Context.Context.instance().flavor(QuickSourceView)) {
         return;
@@ -607,7 +606,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     } else {
       this.showEditor();
     }
-    this.#sourcesView.showSourceLocation(uiSourceCode, location, omitFocus);
+    await this.#sourcesView.showSourceLocation(uiSourceCode, location, omitFocus);
   }
 
   private showEditor(): void {
@@ -617,9 +616,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
     void this.setAsCurrentPanel();
   }
 
-  showUILocation(uiLocation: Workspace.UISourceCode.UILocation, omitFocus?: boolean): void {
+  async showUILocation(uiLocation: Workspace.UISourceCode.UILocation, omitFocus?: boolean): Promise<void> {
     const {uiSourceCode, lineNumber, columnNumber} = uiLocation;
-    this.showUISourceCode(uiSourceCode, {lineNumber, columnNumber}, omitFocus);
+    await this.showUISourceCode(uiSourceCode, {lineNumber, columnNumber}, omitFocus);
   }
 
   async revealInNavigator(uiSourceCode: Workspace.UISourceCode.UISourceCode, skipReveal?: boolean): Promise<void> {
@@ -670,7 +669,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     if (window.performance.now() - this.lastModificationTime < lastModificationTimeout) {
       return;
     }
-    this.#sourcesView.showSourceLocation(uiLocation.uiSourceCode, uiLocation, undefined, true);
+    await this.#sourcesView.showSourceLocation(uiLocation.uiSourceCode, uiLocation, undefined, true);
   }
 
   private async updateDebuggerButtonsAndStatus(): Promise<void> {
@@ -1140,7 +1139,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
             response.location);
     if (uiLocation) {
-      this.showUILocation(uiLocation);
+      await this.showUILocation(uiLocation);
     }
   }
 
@@ -1292,7 +1291,7 @@ export const minToolbarWidth = 215;
 
 export class UILocationRevealer implements Common.Revealer.Revealer<Workspace.UISourceCode.UILocation> {
   async reveal(uiLocation: Workspace.UISourceCode.UILocation, omitFocus?: boolean): Promise<void> {
-    SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
+    await SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
   }
 }
 
@@ -1307,7 +1306,7 @@ export class UILocationRangeRevealer implements Common.Revealer.Revealer<Workspa
 
   async reveal(uiLocationRange: Workspace.UISourceCode.UILocationRange, omitFocus?: boolean): Promise<void> {
     const {uiSourceCode, range: {start: from, end: to}} = uiLocationRange;
-    SourcesPanel.instance().showUISourceCode(uiSourceCode, {from, to}, omitFocus);
+    await SourcesPanel.instance().showUISourceCode(uiSourceCode, {from, to}, omitFocus);
   }
 }
 
@@ -1317,14 +1316,14 @@ export class DebuggerLocationRevealer implements Common.Revealer.Revealer<SDK.De
         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
             rawLocation);
     if (uiLocation) {
-      SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
+      await SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
     }
   }
 }
 
 export class UISourceCodeRevealer implements Common.Revealer.Revealer<Workspace.UISourceCode.UISourceCode> {
   async reveal(uiSourceCode: Workspace.UISourceCode.UISourceCode, omitFocus?: boolean): Promise<void> {
-    SourcesPanel.instance().showUISourceCode(uiSourceCode, undefined, omitFocus);
+    await SourcesPanel.instance().showUISourceCode(uiSourceCode, undefined, omitFocus);
   }
 }
 

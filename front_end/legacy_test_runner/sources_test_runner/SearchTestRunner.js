@@ -79,7 +79,7 @@ export const runSearchAndDumpResults = function(scope, searchConfig, callback) {
   }
 };
 
-export const replaceAndDumpChange = function(sourceFrame, searchConfig, replacement, replaceAll) {
+export const replaceAndDumpChange = async function(sourceFrame, searchConfig, replacement, replaceAll) {
   const modifiers = [];
 
   if (searchConfig.isRegex) {
@@ -104,7 +104,8 @@ export const replaceAndDumpChange = function(sourceFrame, searchConfig, replacem
     oldLines.push(editor.line(i));
   }
 
-  const searchableView = Sources.SourcesPanel.SourcesPanel.instance().sourcesView().searchableView();
+  const sourcesView = Sources.SourcesPanel.SourcesPanel.instance().sourcesView();
+  const searchableView = sourcesView.searchableView();
   searchableView.showSearchField();
   searchableView.caseSensitiveButton.setToggled(searchConfig.caseSensitive);
   searchableView.regexButton.setToggled(searchConfig.isRegex);
@@ -113,6 +114,8 @@ export const replaceAndDumpChange = function(sourceFrame, searchConfig, replacem
   searchableView.updateSecondRowVisibility();
   searchableView.replaceInputElement.value = replacement;
   searchableView.performSearch(true, true);
+
+  await sourcesView.updateComplete;
 
   if (replaceAll) {
     searchableView.replaceAll();

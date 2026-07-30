@@ -15,7 +15,7 @@ export const HistoryDepth = 20;
 export class EditingLocationHistoryManager {
   private readonly entries: EditingLocationHistoryEntry[] = [];
   private current = -1;
-  private revealing = false;
+  private revealingCount = 0;
 
   constructor(private readonly sourcesView: SourcesView) {
   }
@@ -31,7 +31,7 @@ export class EditingLocationHistoryManager {
     }
     const prevPos = update.startState.selection.main;
     const newPos = update.state.selection.main;
-    const isJump = !this.revealing && prevPos.anchor !== newPos.anchor && update.transactions.some(tr => {
+    const isJump = this.revealingCount === 0 && prevPos.anchor !== newPos.anchor && update.transactions.some(tr => {
       return Boolean(
           tr.isUserEvent('select.pointer') || tr.isUserEvent('select.reveal') || tr.isUserEvent('select.search'));
     });
@@ -50,7 +50,7 @@ export class EditingLocationHistoryManager {
   }
 
   updateCurrentState(uiSourceCode: Workspace.UISourceCode.UISourceCode, position: number): void {
-    if (!this.revealing) {
+    if (this.revealingCount === 0) {
       const top = this.current >= 0 ? this.entries[this.current] : null;
       if (top?.matches(uiSourceCode)) {
         top.position = position;
@@ -66,26 +66,29 @@ export class EditingLocationHistoryManager {
     }
   }
 
-  private reveal(entry: EditingLocationHistoryEntry): void {
+  private async reveal(entry: EditingLocationHistoryEntry): Promise<void> {
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(entry.projectId, entry.url);
     if (uiSourceCode) {
-      this.revealing = true;
-      this.sourcesView.showSourceLocation(uiSourceCode, entry.position, false, true);
-      this.revealing = false;
+      this.revealingCount++;
+      try {
+        await this.sourcesView.showSourceLocation(uiSourceCode, entry.position, false, true);
+      } finally {
+        this.revealingCount--;
+      }
     }
   }
 
   rollback(): void {
     if (this.current > 0) {
       this.current--;
-      this.reveal(this.entries[this.current]);
+      void this.reveal(this.entries[this.current]);
     }
   }
 
   rollover(): void {
     if (this.current < this.entries.length - 1) {
       this.current++;
-      this.reveal(this.entries[this.current]);
+      void this.reveal(this.entries[this.current]);
     }
   }
 

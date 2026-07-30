@@ -7,8 +7,12 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {createCSSStyle, getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as AiAssistance from './ai_assistance.js';
 
@@ -50,6 +54,9 @@ async function getSelector(
 }
 
 describe('ExtensionScope', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
   const MOCK_STYLE = [
     {
       name: 'color',
@@ -364,4 +371,38 @@ describe('ExtensionScope', () => {
     });
   });
 
+  describe('install', () => {
+    it('creates an isolated world with CSP', async () => {
+      const universe = new TestUniverse();
+      const target = universe.createTarget();
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+      const node = new SDK.DOMModel.DOMNode(domModel);
+      node.id = 1 as Protocol.DOM.NodeId;
+      sinon.stub(node, 'frameId').returns('main-frame-id' as Protocol.Page.FrameId);
+
+      const pageAgent = target.pageAgent();
+      const createIsolatedWorldStub = sinon.stub(pageAgent, 'invoke_createIsolatedWorld').resolves({
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+        getError: () => undefined,
+      });
+
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      const mockContext = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
+      mockContext.id = 1 as Protocol.Runtime.ExecutionContextId;
+      const mockRemoteObject = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
+      mockContext.evaluate.resolves({object: mockRemoteObject});
+      sinon.stub(runtimeModel, 'executionContext').returns(mockContext);
+
+      const changeManager = new AiAssistance.ChangeManager.ChangeManager();
+      const scope = new AiAssistance.ExtensionScope.ExtensionScope(changeManager, 'agent-id', node);
+
+      await scope.install();
+
+      sinon.assert.calledOnce(createIsolatedWorldStub);
+      assert.strictEqual(createIsolatedWorldStub.firstCall.args[0].contentSecurityPolicy,
+                         AiAssistance.Injected.FREESTYLER_WORLD_CSP);
+    });
+  });
 });

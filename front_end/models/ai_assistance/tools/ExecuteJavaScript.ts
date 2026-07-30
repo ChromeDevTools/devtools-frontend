@@ -33,7 +33,7 @@ export class ExecuteJavaScriptTool implements
   readonly name = ToolName.EXECUTE_JAVASCRIPT;
 
   readonly description =
-      'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.';
+      'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.';
 
   static async validateAndFormatCode(code: string): Promise<{formattedCode?: string, error?: string}> {
     try {
@@ -80,6 +80,7 @@ export class ExecuteJavaScriptTool implements
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
 * **CRITICAL** Consider that \`data\` variable from the previous function calls are not available in a new function call.
 * **CRITICAL** Keep code concise (max 40 lines and 2,500 characters). Split complex logic into multiple steps.
+* **CRITICAL** Network requests (e.g., fetch, XMLHttpRequest) are disabled and cannot be made.
 
 For example, the code to change element styles:
 

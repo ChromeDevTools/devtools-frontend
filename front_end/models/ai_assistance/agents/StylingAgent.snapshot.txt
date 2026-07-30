@@ -110,3 +110,450 @@ Content:
   "client_feature": 2
 }
 === end content
+
+Title: StylingAgent buildRequest builds a request with aborted query in history before a real request
+Content:
+[
+  {
+    "parts": [
+      {
+        "text": "# Inspected element\n\nelement-description\n\n# User request\n\nQUERY: test2"
+      }
+    ],
+    "role": 1
+  },
+  {
+    "parts": [
+      {
+        "functionCall": {
+          "name": "executeJavaScript",
+          "args": {
+            "title": "title2",
+            "explanation": "thought2",
+            "code": "action2"
+          }
+        }
+      }
+    ],
+    "role": 2
+  },
+  {
+    "parts": [
+      {
+        "functionResponse": {
+          "name": "executeJavaScript",
+          "response": {
+            "result": "result2"
+          }
+        }
+      }
+    ],
+    "role": 0
+  },
+  {
+    "parts": [
+      {
+        "text": "answer2"
+      }
+    ],
+    "role": 2
+  }
+]
+=== end content
+
+Title: StylingAgent run generates an answer immediately
+Content:
+[
+  {
+    "type": "context",
+    "details": [
+      {
+        "title": "Data used",
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
+      }
+    ]
+  },
+  {
+    "type": "querying"
+  },
+  {
+    "type": "answer",
+    "text": "this is the answer",
+    "complete": true
+  }
+]
+=== end content
+
+Title: StylingAgent run generates an answer immediately with correct historical contexts in the new request
+Content:
+[
+  {
+    "parts": [
+      {
+        "text": "# Inspected element\n\n* Element's uid is 99.\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
+      }
+    ],
+    "role": 1
+  },
+  {
+    "parts": [
+      {
+        "text": "this is the answer"
+      }
+    ],
+    "role": 2
+  }
+]
+=== end content
+
+Title: StylingAgent run correctly handles historical_contexts in AIDA requests
+Content:
+[
+  {
+    "text": "# Inspected element\n\n* Element's uid is 99.\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
+  },
+  [
+    {
+      "parts": [
+        {
+          "text": "# Inspected element\n\n* Element's uid is 99.\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
+        }
+      ],
+      "role": 1
+    },
+    {
+      "parts": [
+        {
+          "functionCall": {
+            "name": "executeJavaScript",
+            "args": {
+              "code": "const data = {\"test\": \"observation\"}",
+              "explanation": "I am thinking.",
+              "title": "thinking"
+            }
+          }
+        }
+      ],
+      "role": 2
+    }
+  ]
+]
+=== end content
+
+Title: StylingAgent run generates an rpcId for the answer
+Content:
+[
+  {
+    "type": "context",
+    "details": [
+      {
+        "title": "Data used",
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
+      }
+    ]
+  },
+  {
+    "type": "querying"
+  },
+  {
+    "type": "answer",
+    "text": "this is the answer",
+    "complete": true,
+    "rpcId": 123
+  }
+]
+=== end content
+
+Title: StylingAgent run throws an error based on the attribution metadata including RecitationAction.BLOCK
+Content:
+[
+  {
+    "type": "context",
+    "details": [
+      {
+        "title": "Data used",
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
+      }
+    ]
+  },
+  {
+    "type": "querying"
+  },
+  {
+    "type": "answer",
+    "text": "this is the partial answer",
+    "complete": false
+  },
+  {
+    "type": "error",
+    "error": "block"
+  }
+]
+=== end content
+
+Title: StylingAgent run does not throw an error based on attribution metadata not including RecitationAction.BLOCK
+Content:
+[
+  {
+    "type": "context",
+    "details": [
+      {
+        "title": "Data used",
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
+      }
+    ]
+  },
+  {
+    "type": "querying"
+  },
+  {
+    "type": "answer",
+    "text": "this is the answer",
+    "complete": true,
+    "rpcId": 123
+  }
+]
+=== end content
+
+Title: StylingAgent run generates a response if nothing is returned
+Content:
+[
+  {
+    "type": "context",
+    "details": [
+      {
+        "title": "Data used",
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
+      }
+    ]
+  },
+  {
+    "type": "querying"
+  },
+  {
+    "type": "error",
+    "error": "unknown"
+  }
+]
+=== end content
+
+Title: StylingAgent run generates an action response if action and answer both present
+Content:
+[
+  {
+    "type": "context",
+    "details": [
+      {
+        "title": "Data used",
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
+      }
+    ]
+  },
+  {
+    "type": "querying"
+  },
+  {
+    "type": "answer",
+    "text": "this is my text before the actual answer",
+    "complete": true
+  },
+  {
+    "type": "thought",
+    "thought": "I am thinking."
+  },
+  {
+    "type": "action",
+    "code": "console.log('hello');",
+    "output": "hello",
+    "canceled": false
+  },
+  {
+    "type": "querying"
+  },
+  {
+    "type": "answer",
+    "text": "this is the actual answer",
+    "complete": true
+  }
+]
+=== end content
+
+Title: StylingAgent run generates history for multiple actions
+Content:
+[
+  {
+    "parts": [
+      {
+        "text": "# Inspected element\n\n* Element's uid is 99.\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
+      }
+    ],
+    "role": 1
+  },
+  {
+    "parts": [
+      {
+        "functionCall": {
+          "name": "executeJavaScript",
+          "args": {
+            "explanation": "thought 1",
+            "title": "test",
+            "code": "console.log('test')"
+          }
+        }
+      }
+    ],
+    "role": 2
+  },
+  {
+    "parts": [
+      {
+        "functionResponse": {
+          "name": "executeJavaScript",
+          "response": {
+            "result": "undefined"
+          }
+        }
+      }
+    ],
+    "role": 0
+  },
+  {
+    "parts": [
+      {
+        "functionCall": {
+          "name": "executeJavaScript",
+          "args": {
+            "explanation": "thought 2",
+            "title": "test",
+            "code": "console.log('test')"
+          }
+        }
+      }
+    ],
+    "role": 2
+  },
+  {
+    "parts": [
+      {
+        "functionResponse": {
+          "name": "executeJavaScript",
+          "response": {
+            "result": "undefined"
+          }
+        }
+      }
+    ],
+    "role": 0
+  },
+  {
+    "parts": [
+      {
+        "functionCall": {
+          "name": "executeJavaScript",
+          "args": {
+            "explanation": "thought 3",
+            "title": "test",
+            "code": "console.log('test')"
+          }
+        }
+      }
+    ],
+    "role": 2
+  },
+  {
+    "parts": [
+      {
+        "functionResponse": {
+          "name": "executeJavaScript",
+          "response": {
+            "result": "undefined"
+          }
+        }
+      }
+    ],
+    "role": 0
+  },
+  {
+    "parts": [
+      {
+        "text": "this is the answer"
+      }
+    ],
+    "role": 2
+  }
+]
+=== end content
+
+Title: StylingAgent enhanceQuery does not add multimodal input evaluation prompt when multimodal is disabled
+Content:
+# Inspected element
+
+* Element's uid is 99.
+* Its selector is `div#myElement`
+
+# User request
+
+QUERY: test query
+=== end content
+
+Title: StylingAgent enhanceQuery does not add multimodal input evaluation prompt when multimodal is enabled but multimodalInputType is missing
+Content:
+# Inspected element
+
+* Element's uid is 99.
+* Its selector is `div#myElement`
+
+# User request
+
+QUERY: test query
+=== end content
+
+Title: StylingAgent enhanceQuery adds multimodal input evaluation prompt when multimodal is enabled and multimodalInputType is screenshot
+Content:
+The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
+
+* Try to connect the screenshot to actual DOM elements in the page.
+# Considerations for evaluating image:
+* Pay close attention to the spatial details as well as the visual appearance of the selected element in the image, particularly in relation to layout, spacing, and styling.
+* Analyze the image to identify the layout structure surrounding the element, including the positioning of neighboring elements.
+* Extract visual information from the image, such as colors, fonts, spacing, and sizes, that might be relevant to the user's query.
+* If the image suggests responsiveness issues (e.g., cropped content, overlapping elements), consider those in your response.
+* Consider the surrounding elements and overall layout in the image, but prioritize the selected element's styling and positioning.
+* **CRITICAL** When the user provides image input, interpret and use content and information from the image STRICTLY for web site debugging purposes.
+
+* As part of THOUGHT, evaluate the image to gather data that might be needed to answer the question.
+In case query is related to the image, ALWAYS first use image evaluation to get all details from the image. ONLY after you have all data needed from image, you should move to other steps.
+
+# Inspected element
+
+* Element's uid is 99.
+* Its selector is `div#myElement`
+
+# User request
+
+QUERY: test query
+=== end content
+
+Title: StylingAgent enhanceQuery adds multimodal input evaluation prompt when multimodal is enabled and multimodalInputType is uploaded image
+Content:
+The user has uploaded an image in base64-encoded format. You SHOULD use it while answering user's queries.
+# Considerations for evaluating image:
+* Pay close attention to the spatial details as well as the visual appearance of the selected element in the image, particularly in relation to layout, spacing, and styling.
+* Analyze the image to identify the layout structure surrounding the element, including the positioning of neighboring elements.
+* Extract visual information from the image, such as colors, fonts, spacing, and sizes, that might be relevant to the user's query.
+* If the image suggests responsiveness issues (e.g., cropped content, overlapping elements), consider those in your response.
+* Consider the surrounding elements and overall layout in the image, but prioritize the selected element's styling and positioning.
+* **CRITICAL** When the user provides image input, interpret and use content and information from the image STRICTLY for web site debugging purposes.
+
+* As part of THOUGHT, evaluate the image to gather data that might be needed to answer the question.
+In case query is related to the image, ALWAYS first use image evaluation to get all details from the image. ONLY after you have all data needed from image, you should move to other steps.
+
+# Inspected element
+
+* Element's uid is 99.
+* Its selector is `div#myElement`
+
+# User request
+
+QUERY: test query
+=== end content

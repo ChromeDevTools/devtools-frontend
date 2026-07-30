@@ -231,8 +231,9 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest, messageFilterSettingKey: string,
               splitWidgetSettingKey: string, dataGridDisplayName: Common.UIString.LocalizedString,
-              filterUsingRegexHint: Common.UIString.LocalizedString, view: View = DEFAULT_VIEW) {
-    super();
+              filterUsingRegexHint: Common.UIString.LocalizedString, opts?: UI.Widget.WidgetOptions,
+              view: View = DEFAULT_VIEW) {
+    super(opts);
     this.#view = view;
     this.messageFilterSetting = Common.Settings.Settings.instance().createSetting(messageFilterSettingKey, '');
     this.splitWidgetSettingKey = splitWidgetSettingKey;

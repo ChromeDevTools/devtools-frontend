@@ -1,7 +1,6 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -75,10 +74,9 @@ export class ResourceDirectSocketChunkView extends ResourceChunkView<SDK.Network
   }
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
-    super(
-        request, 'network-direct-socket-chunk-filter', 'resource-direct-socket-chunk-split-view-state',
-        i18nString(UIStrings.directSocketChunk), i18nString(UIStrings.filterUsingRegex));
-    this.element.setAttribute('jslog', `${VisualLogging.pane('direct-socket-messages').track({resize: true})}`);
+    super(request, 'network-direct-socket-chunk-filter', 'resource-direct-socket-chunk-split-view-state',
+          i18nString(UIStrings.directSocketChunk), i18nString(UIStrings.filterUsingRegex),
+          {jslog: `${VisualLogging.pane('direct-socket-messages').track({resize: true})}`});
   }
 
   override getRequestChunks(): SDK.NetworkRequest.DirectSocketChunk[] {

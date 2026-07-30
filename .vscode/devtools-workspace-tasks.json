@@ -6,7 +6,10 @@
       "label": "1-build_Debug",
       "type": "shell",
       "command": "npm run build",
-      "group": { "kind": "build", "isDefault": true },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "presentation": {
         "echo": true,
         "reveal": "always"
@@ -14,7 +17,10 @@
       "problemMatcher": [
         {
           "owner": "typescript",
-          "fileLocation": ["relative", "${workspaceRoot}"],
+          "fileLocation": [
+            "relative",
+            "${workspaceRoot}"
+          ],
           "pattern": {
             "regexp": "^([^\\s].*)\\((\\d+,\\d+)\\): error (TS\\d+):\\s*(.*)$",
             "file": 1,
@@ -25,33 +31,33 @@
         }
       ]
     },
-   {
-    "label": "Create Widget",
-    "type": "shell",
-    "command": "node",
-    "args": [
-      "${workspaceFolder}/scripts/scaffold/scaffold-widget.js",
-      "${input:widgetPath}",
-      "${input:widgetName}"
-    ],
-    "options": {
-      "cwd": "${workspaceFolder}"
+    {
+      "label": "Create Widget",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/scaffold/scaffold-widget.js",
+        "${input:widgetPath}",
+        "${input:widgetName}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
     },
-    "problemMatcher": [],
-    "presentation": {
-      "echo": true,
-      "reveal": "always",
-      "focus": false,
-      "panel": "shared",
-      "showReuseMessage": false,
-      "clear": false
-    },
-    "group": {
-      "kind": "build",
-      "isDefault": false
-    }
-  },
-  {
+    {
       "label": "Run unit tests",
       "type": "shell",
       "command": "npm run test -- --target=${input:target} ${input:testFile}",
@@ -65,7 +71,26 @@
         "clear": false
       },
       "problemMatcher": []
-  }],
+    },
+    {
+      "label": "Run DevTools Test at Cursor",
+      "type": "shell",
+      "command": "TEST_ID=$(vpython3 third_party/node/node.py --output --no-warnings scripts/get_test_id.ts \"${file}\" ${lineNumber} 1) || exit 1; if [ -z \"$TEST_ID\" ]; then echo \"Failed to compute test ID (empty output)\"; exit 1; fi; npm test -- \"$TEST_ID\"",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      }
+    }
+  ],
   "inputs": [
     {
       "id": "widgetPath",

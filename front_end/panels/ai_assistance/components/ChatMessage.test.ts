@@ -183,7 +183,7 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: false,
+              state: {type: 'completed'},
               widgets: [widget],
             },
           },
@@ -604,14 +604,13 @@ describeWithEnvironment('ChatMessage', () => {
   });
 
   describe('Walkthrough Rendering', () => {
-
     const stepMessage: AiAssistance.ChatMessage.ModelChatMessage = {
       entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
       parts: [
         {
           type: 'step',
           step: {
-            isLoading: false,
+            state: {type: 'completed'},
             title: 'Step 1',
             code: 'console.log("test")',
           },
@@ -677,7 +676,7 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: false,
+              state: {type: 'completed'},
               title: 'Step with widget',
               widgets: [
                 {
@@ -714,7 +713,7 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: true,
+              state: {type: 'in_progress'},
               title: 'Investigating XYZ',
               code: 'console.log("test")',
             },
@@ -745,7 +744,7 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: true,
+              state: {type: 'in_progress'},
               title: 'Investigating XYZ',
               code: 'console.log("test")',
             },
@@ -819,7 +818,7 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: true,
+              state: {type: 'in_progress'},
               title: 'Investigating XYZ',
               code: 'console.log("test")',
             },
@@ -866,7 +865,7 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: false,
+              state: {type: 'completed'},
               title: 'Investigating XYZ',
               code: 'console.log("test")',
             },
@@ -897,7 +896,7 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: false,
+              state: {type: 'completed'},
               title: 'Investigating XYZ',
               code: 'console.log("test")',
               // Don't need a proper widget for this test
@@ -958,13 +957,15 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: false,
+              state: {
+                type: 'needs_approval',
+                sideEffectDialog: {
+                  description: sideEffectDescription,
+                  onAnswer: () => {},
+                },
+              },
               title: 'Side Effect Step',
               code: 'doSomethingDangerous()',
-              requestApproval: {
-                description: sideEffectDescription,
-                onAnswer: () => {},
-              },
             },
           },
         ],
@@ -1013,13 +1014,15 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: false,
+              state: {
+                type: 'needs_approval',
+                sideEffectDialog: {
+                  description: sideEffectDescription,
+                  onAnswer: () => {},
+                },
+              },
               title: 'Side Effect Step',
               code: 'doSomethingDangerous()',
-              requestApproval: {
-                description: sideEffectDescription,
-                onAnswer: () => {},
-              },
             },
           },
         ],
@@ -1073,13 +1076,15 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: false,
+              state: {
+                type: 'needs_approval',
+                sideEffectDialog: {
+                  description: sideEffectDescription,
+                  onAnswer: () => {},
+                },
+              },
               title: 'Side Effect Step',
               code: 'doSomethingDangerous()',
-              requestApproval: {
-                description: sideEffectDescription,
-                onAnswer: () => {},
-              },
             },
           },
         ],
@@ -1117,13 +1122,15 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: false,
+              state: {
+                type: 'needs_approval',
+                sideEffectDialog: {
+                  description: 'Confirm!',
+                  onAnswer: () => {},
+                },
+              },
               title: 'Side Effect Step',
               code: 'doSomethingDangerous()',
-              requestApproval: {
-                description: 'Confirm!',
-                onAnswer: () => {},
-              },
             },
           },
         ],
@@ -1153,14 +1160,9 @@ describeWithEnvironment('ChatMessage', () => {
           {
             type: 'step',
             step: {
-              isLoading: false,
+              state: {type: 'canceled'},
               title: 'Side Effect Step',
               code: 'doSomethingDangerous()',
-              canceled: true,
-              requestApproval: {
-                description: 'Confirm!',
-                onAnswer: () => {},
-              },
             },
           },
         ],
@@ -1325,7 +1327,6 @@ describeWithEnvironment('ChatMessage', () => {
          exportButton.click();
          sinon.assert.calledOnce(onExportClick);
        });
-
   });
   describe('view', () => {
     it('renders a minimal model message', async () => {

@@ -87,14 +87,16 @@ describeWithEnvironment('ChatView', () => {
               {
                 type: 'step',
                 step: {
-                  isLoading: false,
+                  state: {
+                    type: 'needs_approval',
+                    sideEffectDialog: {
+                      description: null,
+                      onAnswer: () => {},
+                    },
+                  },
                   title: 'Updating element styles',
                   thought: 'Updating element styles',
                   code: '$0.style.background = "blue";',
-                  requestApproval: {
-                    description: null,
-                    onAnswer: () => {},
-                  },
                 },
               },
             ],

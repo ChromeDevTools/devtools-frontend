@@ -2770,7 +2770,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
           {
             type: 'step',
             step: {
-              isLoading: false,
+              state: {type: 'completed'},
               contextDetails: [
                 {title: 'Detail 1', text: '*Some markdown text'},
                 {title: 'Detail 2', text: 'Some text', codeLang: 'js'},
@@ -2780,7 +2780,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
           {
             type: 'step',
             step: {
-              isLoading: false,
+              state: {type: 'completed'},
               title: 'Step Title',
               thought: 'Step Thought',
               code: 'console.log("hello");',

@@ -423,21 +423,63 @@ const UIStringsNotTranslate = {
   inspectedFileNames: 'Inspected file names',
 } as const;
 
-export interface Step {
-  isLoading: boolean;
-  thought?: string;
-  title?: string;
-  code?: string;
-  output?: string;
-  widgets?: AiWidget[];
-  canceled?: boolean;
-  requestApproval?: ConfirmSideEffectDialog;
-  contextDetails?: [AiAssistanceModel.AiAgent.ContextDetail, ...AiAssistanceModel.AiAgent.ContextDetail[]];
+/**
+ * Payload and confirmation handler for side-effect operations requiring user approval.
+ */
+export interface ConfirmSideEffectDialog {
+  /**
+   * Human-readable description explaining the pending side-effect action, or null if omitted.
+   */
+  description: string|null;
+  /**
+   * Callback invoked when the user resolves the dialog (true to confirm, false to decline).
+   */
+  onAnswer: (result: boolean) => void;
 }
 
-export interface ConfirmSideEffectDialog {
-  description: string|null;
-  onAnswer: (result: boolean) => void;
+/**
+ * Represents the execution state of an individual agent action step:
+ * - `in_progress`: The step is actively querying context or parsing stream content.
+ * - `needs_approval`: The step is awaiting user confirmation for a side-effecting operation.
+ * - `canceled`: The step was canceled before execution.
+ * - `completed`: The step completed execution successfully.
+ */
+export type StepState = {
+  type: 'in_progress',
+}|{type: 'needs_approval', sideEffectDialog: ConfirmSideEffectDialog}|{type: 'canceled'}|{type: 'completed'};
+
+/**
+ * Represents an individual execution step within an agent response.
+ */
+export interface Step {
+  /**
+   * The current lifecycle state of this step.
+   */
+  state: StepState;
+  /**
+   * The agent's intermediate thought or rationale for taking this step.
+   */
+  thought?: string;
+  /**
+   * The human-readable title describing the step action.
+   */
+  title?: string;
+  /**
+   * Executable JavaScript code generated or executed in this step.
+   */
+  code?: string;
+  /**
+   * Raw string output or data returned by code execution.
+   */
+  output?: string;
+  /**
+   * Visual widgets rendered alongside this step (e.g. core web vitals, network traces).
+   */
+  widgets?: AiWidget[];
+  /**
+   * Context item details gathered or inspected during this step.
+   */
+  contextDetails?: [AiAssistanceModel.AiAgent.ContextDetail, ...AiAssistanceModel.AiAgent.ContextDetail[]];
 }
 
 export const enum ChatMessageEntity {
@@ -651,7 +693,7 @@ export function titleForStep(step: Step): string {
 }
 
 function renderTitle(step: Step): Lit.LitTemplate {
-  const paused = step.requestApproval && !step.canceled ?
+  const paused = step.state.type === 'needs_approval' ?
       html`<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` :
       Lit.nothing;
 
@@ -665,8 +707,9 @@ function renderStepCode(step: Step): Lit.LitTemplate {
 
   // If there is no "output" yet, it means we didn't execute the code yet (e.g. maybe it is still waiting for confirmation from the user)
   // thus we show "Code to execute" text rather than "Code executed" text on the heading of the code block.
-  const codeHeadingText = (step.output && !step.canceled) ? lockedString(UIStringsNotTranslate.codeExecuted) :
-                                                            lockedString(UIStringsNotTranslate.codeToExecute);
+  const codeHeadingText = (step.output && step.state.type !== 'canceled') ?
+      lockedString(UIStringsNotTranslate.codeExecuted) :
+      lockedString(UIStringsNotTranslate.codeToExecute);
 
   // If there is output, we don't show notice on this code block and instead show
   // it in the data returned code block.
@@ -705,7 +748,8 @@ function renderStepDetails({
   markdownRenderer: MarkdownLitRenderer,
   isLast: boolean,
 }): Lit.LitTemplate {
-  const sideEffects = isLast && step.requestApproval ? renderSideEffectConfirmationUi(step) : Lit.nothing;
+  const sideEffects =
+      isLast && step.state.type === 'needs_approval' ? renderSideEffectConfirmationUi(step) : Lit.nothing;
   const thought = step.thought ? html`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit.nothing;
 
   // clang-format off
@@ -781,12 +825,12 @@ function renderWalkthroughSidebarButton(
       <devtools-button
         .variant=${variant}
         .size=${Buttons.Button.Size.SMALL}
-        .title=${lastStep.isLoading ? titleForStep(lastStep) : title}
+        .title=${lastStep.state.type === 'in_progress' ? titleForStep(lastStep) : title}
         .accessibleLabel=${accessibleLabel}
         .jslogContext=${walkthrough.isExpanded ? 'ai-hide-walkthrough-sidebar' : 'ai-show-walkthrough-sidebar'}
         data-show-walkthrough
         @click=${() => {
-          if(walkthrough.activeSidebarMessage?.id === input.message.id && walkthrough.isExpanded) {
+          if (walkthrough.activeSidebarMessage?.id === input.message.id && walkthrough.isExpanded) {
             walkthrough.onToggle(false, message as ModelChatMessage);
           } else {
             // Can't just toggle the visibility here; we need to ensure we
@@ -848,7 +892,7 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
 }
 
 function renderSideEffectStepsUI(input: ChatMessageViewInput, steps: Step[]): Lit.LitTemplate {
-  const sideEffectSteps = steps.filter(s => s.requestApproval);
+  const sideEffectSteps = steps.filter(s => s.state.type === 'needs_approval' || s.state.type === 'canceled');
   if (sideEffectSteps.length === 0) {
     return Lit.nothing;
   }
@@ -858,7 +902,6 @@ function renderSideEffectStepsUI(input: ChatMessageViewInput, steps: Step[]): Li
       <div class="side-effect-container">
         ${renderStep({
            step,
-           isLoading: input.isLoading,
            markdownRenderer: input.markdownRenderer,
            isLast: true,
         })}
@@ -867,25 +910,27 @@ function renderSideEffectStepsUI(input: ChatMessageViewInput, steps: Step[]): Li
   // clang-format on
 }
 
-function renderStepBadge({step, isLoading, isLast}: {
+function renderStepBadge({step, isLast}: {
   step: Step,
-  isLoading: boolean,
   isLast: boolean,
 }): Lit.LitTemplate {
-  if (isLoading && isLast && !step.requestApproval) {
+  if (isLast && step.state.type === 'in_progress') {
     return html`<devtools-spinner aria-label=${lockedString(UIStringsNotTranslate.inProgress)}></devtools-spinner>`;
   }
 
   let iconName = 'checkmark';
   let ariaLabel: string|undefined = lockedString(UIStringsNotTranslate.completed);
   let role: 'button'|undefined = 'button';
-  if (step.canceled) {
-    ariaLabel = lockedString(UIStringsNotTranslate.aborted);
-    iconName = 'cross';
-  } else if (isLast && step.requestApproval) {
+  if (step.state.type === 'needs_approval') {
+    if (!isLast) {
+      console.error('A step in needs_approval state must be the last step.');
+    }
     role = undefined;
     ariaLabel = lockedString(UIStringsNotTranslate.paused);
     iconName = 'pause-circle';
+  } else if (step.state.type === 'canceled') {
+    ariaLabel = lockedString(UIStringsNotTranslate.aborted);
+    iconName = 'cross';
   }
 
   return html`<devtools-icon
@@ -896,26 +941,25 @@ function renderStepBadge({step, isLoading, isLast}: {
     ></devtools-icon>`;
 }
 
-export function renderStep({step, isLoading, markdownRenderer, isLast}: {
+export function renderStep({step, markdownRenderer, isLast}: {
   step: Step,
-  isLoading: boolean,
   markdownRenderer: MarkdownLitRenderer,
   isLast: boolean,
 }): Lit.LitTemplate {
   const stepClasses = Lit.Directives.classMap({
     step: true,
-    empty: !step.thought && !step.code && !step.contextDetails && !step.requestApproval,
-    paused: Boolean(step.requestApproval && !step.canceled),
-    canceled: Boolean(step.canceled),
+    empty: !step.thought && !step.code && !step.contextDetails && step.state.type !== 'needs_approval',
+    paused: step.state.type === 'needs_approval',
+    canceled: step.state.type === 'canceled',
   });
   // clang-format off
   return html`
     <details class=${stepClasses}
       jslog=${VisualLogging.expand('step').track({click: true})}
-      .open=${Boolean(step.requestApproval)}>
+      .open=${step.state.type === 'needs_approval'}>
       <summary>
         <div class="summary">
-          ${renderStepBadge({ step, isLoading, isLast })}
+          ${renderStepBadge({ step, isLast })}
           ${renderTitle(step)}
           <devtools-icon
             class="arrow"
@@ -1755,16 +1799,17 @@ async function renderWidgets(
 }
 
 function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
-  if (!step.requestApproval || step.canceled) {
+  if (step.state.type !== 'needs_approval') {
     return Lit.nothing;
   }
+  const dialog = step.state.sideEffectDialog;
 
   // clang-format off
   return html`<div
     class="side-effect-confirmation"
     jslog=${VisualLogging.section('side-effect-confirmation')}
   >
-    ${step.requestApproval.description ? html`<p>${step.requestApproval.description}</p>` : Lit.nothing}
+    ${dialog.description ? html`<p>${dialog.description}</p>` : Lit.nothing}
     <div class="side-effect-buttons-container">
       <devtools-button
         .data=${
@@ -1773,7 +1818,7 @@ function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
             jslogContext: 'decline-execute-code',
           } as Buttons.Button.ButtonData
         }
-        @click=${() => step.requestApproval?.onAnswer(false)}
+        @click=${() => dialog.onAnswer(false)}
       >${lockedString(
         UIStringsNotTranslate.declineActionRequestApproval,
       )}</devtools-button>
@@ -1785,7 +1830,7 @@ function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
             iconName: 'play',
           } as Buttons.Button.ButtonData
         }
-        @click=${() => step.requestApproval?.onAnswer(true)}
+        @click=${() => dialog.onAnswer(true)}
       >${
           lockedString(UIStringsNotTranslate.confirmActionRequestApproval)
       }</devtools-button>

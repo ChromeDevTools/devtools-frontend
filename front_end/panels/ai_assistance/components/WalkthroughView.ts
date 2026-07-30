@@ -206,7 +206,7 @@ export const DEFAULT_VIEW = (
   // Ensure that we render steps but not ones that need approval; a
   // step that needs approval is always rendered into the main chat
   // view regardless of if the walkthrough is open or not.
-  const renderableSteps = allSteps.filter(s => !s.requestApproval);
+  const renderableSteps = allSteps.filter(s => s.state.type !== 'needs_approval');
 
   // clang-format off
   const stepsOutput = renderableSteps.length > 0 ? html`
@@ -222,7 +222,6 @@ export const DEFAULT_VIEW = (
             <div class="step-wrapper">
               ${renderStep({
                 step,
-                isLoading: input.isLoading,
                 markdownRenderer: input.markdownRenderer,
                 isLast: index === renderableSteps.length - 1,
               })}

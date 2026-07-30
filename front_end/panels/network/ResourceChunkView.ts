@@ -416,6 +416,10 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
     };
     this.#view(input, undefined, this.contentElement);
   }
+
+  getSplitWidgetForTest(): UI.Widget.Widget|null {
+    return this.sidebarWidget;
+  }
 }
 
 const FILTER_TYPES: UI.FilterBar.Item[] = [

@@ -8,14 +8,10 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {dispatchClickEvent, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
-import {
-  setUpEnvironment,
-} from '../../testing/OverridesHelpers.js';
-import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Network from './network.js';
 
@@ -60,7 +56,6 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
   let chunkView: Network.ResourceDirectSocketChunkView.ResourceDirectSocketChunkView|undefined;
 
   beforeEach(() => {
-    setUpEnvironment();
     Common.Settings.Settings.instance().clearAll();
   });
 
@@ -74,13 +69,19 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
   async function renderView(request: SDK.NetworkRequest.NetworkRequest):
       Promise<Network.ResourceDirectSocketChunkView.ResourceDirectSocketChunkView> {
     const container = document.createElement('div');
-    renderElementIntoDOM(container);
+    container.style.width = '600px';
+    container.style.height = '400px';
+    renderElementIntoDOM(container, {includeCommonStyles: true});
 
     const view = new Network.ResourceDirectSocketChunkView.ResourceDirectSocketChunkView(request);
     view.markAsRoot();
     view.show(container);
+    await view.updateComplete;
 
-    view.getFilterInputForTest().setValue('', false);
+    const filterInput = getFilterInputForTest(view.contentElement) as HTMLInputElement;
+    filterInput.value = '';
+    filterInput.dispatchEvent(new Event('change'));
+    await view.updateComplete;
 
     return view;
   }
@@ -103,9 +104,9 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
       });
 
       chunkView = await renderView(request);
-      await RenderCoordinator.done();
+      await chunkView.updateComplete;
 
-      assertGridData(chunkView, [
+      await assertGridData(chunkView, [
         ['c29tZSBkYXRh', '9\xA0B', '22:13:20.123'],
         ['c29tZSBkYXRhIDI=', '11\xA0B', '22:13:21.456'],
       ]);
@@ -130,9 +131,9 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
     });
 
     chunkView = await renderView(request);
-    await RenderCoordinator.done();
+    await chunkView.updateComplete;
 
-    assertGridData(chunkView, [
+    await assertGridData(chunkView, [
       ['c29tZSBkYXRh', '192.168.0.1', '12345', '9\xA0B', '22:13:20.123'],
       ['c29tZSBkYXRhIDI=', '134.168.0.1', '54321', '11\xA0B', '22:13:21.456'],
     ]);
@@ -147,14 +148,18 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
     });
 
     chunkView = await renderView(request);
-    await RenderCoordinator.done();
+    await chunkView.updateComplete;
 
-    const dataGrid = chunkView.getDataGridForTest();
-    dataGrid.rootNode().children[0].select();
-    await RenderCoordinator.done();
+    const dataGrid = getDataGridForTest(chunkView.contentElement);
+    // The rows are rendered via Lit into a <template> tag's content within the DataGridElement.
+    const template = dataGrid.querySelector('template');
+    const root = template ? template.content : dataGrid;
+    const configRow = root.querySelector('tr[data-index]');
+    assert.exists(configRow);
+    configRow.dispatchEvent(new CustomEvent('select', {bubbles: true}));
+    await chunkView.updateComplete;
 
-    const splitWidget = chunkView.getSplitWidgetForTest();
-    const sidebarWidget = splitWidget.sidebarWidget();
+    const sidebarWidget = chunkView.getSplitWidgetForTest();
     assert.instanceOf(sidebarWidget, Network.BinaryResourceView.BinaryResourceView);
   });
 
@@ -167,15 +172,15 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
     });
 
     chunkView = await renderView(request);
-    await RenderCoordinator.done();
-    assertGridData(chunkView, [['c29tZSBkYXRh', '9\xA0B', '22:13:20.123']]);
+    await chunkView.updateComplete;
+    await assertGridData(chunkView, [['c29tZSBkYXRh', '9\xA0B', '22:13:20.123']]);
 
-    const clearButton = chunkView.getClearAllButtonForTest();
+    const clearButton = getClearAllButtonForTest(chunkView.contentElement);
 
-    dispatchClickEvent(clearButton.element);
-    await RenderCoordinator.done();
+    dispatchClickEvent(clearButton);
+    await chunkView.updateComplete;
 
-    assertGridData(chunkView, []);
+    await assertGridData(chunkView, []);
   });
 
   it('filters messages by regex', async () => {
@@ -198,18 +203,20 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
 
     chunkView = await renderView(request);
 
-    const filterInput = chunkView.getFilterInputForTest();
-    filterInput.setValue('c29tZ', true);
-    await RenderCoordinator.done();
+    const filterInput = getFilterInputForTest(chunkView.contentElement) as HTMLInputElement;
+    filterInput.value = 'c29tZ';
+    filterInput.dispatchEvent(new Event('change'));
+    await chunkView.updateComplete;
 
-    assertGridData(chunkView, [
+    await assertGridData(chunkView, [
       ['c29tZSBkYXRhIDE=', '11\xA0B', '22:13:20.123'],
       ['c29tZSBkYXRhIDM=', '11\xA0B', '22:13:22.789'],
     ]);
 
-    filterInput.setValue('b3Ro', true);
-    await RenderCoordinator.done();
-    assertGridData(chunkView, [
+    filterInput.value = 'b3Ro';
+    filterInput.dispatchEvent(new Event('change'));
+    await chunkView.updateComplete;
+    await assertGridData(chunkView, [
       ['b3RoZXIgZGF0YSAy', '12\xA0B', '22:13:21.456'],
     ]);
   });
@@ -228,25 +235,25 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
     });
 
     chunkView = await renderView(request);
-    const filterCombobox = chunkView.getFilterTypeComboboxForTest();
+    const filterCombobox = getFilterTypeComboboxForTest(chunkView.contentElement);
 
     // Filter by SEND.
-    filterCombobox.element.value = 'send';
-    filterCombobox.element.dispatchEvent(new Event('change'));
-    await RenderCoordinator.done();
-    assertGridData(chunkView, [['c2VuZA==', '4\xA0B', '22:13:20.123']]);
+    filterCombobox.value = 'send';
+    filterCombobox.dispatchEvent(new Event('change'));
+    await chunkView.updateComplete;
+    await assertGridData(chunkView, [['c2VuZA==', '4\xA0B', '22:13:20.123']]);
 
     // Filter by RECEIVE.
-    filterCombobox.element.value = 'receive';
-    filterCombobox.element.dispatchEvent(new Event('change'));
-    await RenderCoordinator.done();
-    assertGridData(chunkView, [['cmVjZWl2ZQ==', '7\xA0B', '22:13:21.456']]);
+    filterCombobox.value = 'receive';
+    filterCombobox.dispatchEvent(new Event('change'));
+    await chunkView.updateComplete;
+    await assertGridData(chunkView, [['cmVjZWl2ZQ==', '7\xA0B', '22:13:21.456']]);
 
     // Filter by ALL.
-    filterCombobox.element.value = 'all';
-    filterCombobox.element.dispatchEvent(new Event('change'));
-    await RenderCoordinator.done();
-    assertGridData(chunkView, [
+    filterCombobox.value = 'all';
+    filterCombobox.dispatchEvent(new Event('change'));
+    await chunkView.updateComplete;
+    await assertGridData(chunkView, [
       ['c2VuZA==', '4\xA0B', '22:13:20.123'],
       ['cmVjZWl2ZQ==', '7\xA0B', '22:13:21.456'],
     ]);
@@ -266,29 +273,30 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
     });
 
     chunkView = await renderView(request);
-    await RenderCoordinator.done();
+    await chunkView.updateComplete;
 
     // Initial sort is ASC by time.
-    assertGridData(chunkView, [
+    await assertGridData(chunkView, [
       ['Mg==', '1\xA0B', '22:13:20.456'],
       ['MQ==', '1\xA0B', '22:13:21.123'],
     ]);
 
     // Click time header to sort DESC.
-    const dataGrid = chunkView.getDataGridForTest();
-    const timeHeader = dataGrid.element.querySelector('th[jslog*="context: time"]');
+    const dataGrid = getDataGridForTest(chunkView.contentElement);
+    const timeHeader =
+        dataGrid.shadowRoot?.querySelector('th.time-column') ?? dataGrid.querySelector('th[jslog*="context: time"]');
     assert.instanceOf(timeHeader, HTMLTableCellElement);
     dispatchClickEvent(timeHeader);
-    await RenderCoordinator.done();
-    assertGridData(chunkView, [
+    await chunkView.updateComplete;
+    await assertGridData(chunkView, [
       ['MQ==', '1\xA0B', '22:13:21.123'],
       ['Mg==', '1\xA0B', '22:13:20.456'],
     ]);
 
     // Click time header to sort ASC again.
     dispatchClickEvent(timeHeader);
-    await RenderCoordinator.done();
-    assertGridData(chunkView, [
+    await chunkView.updateComplete;
+    await assertGridData(chunkView, [
       ['Mg==', '1\xA0B', '22:13:20.456'],
       ['MQ==', '1\xA0B', '22:13:21.123'],
     ]);
@@ -301,21 +309,21 @@ function assertTime(actual: string, expectedMillis: string): void {
 }
 
 function getInnerTextOfGrid(view: Network.ResourceDirectSocketChunkView.ResourceDirectSocketChunkView): string[][] {
-  const grid = view.getDataGridForTest();
-  return grid.rootNode().children.map(row => {
-    return Object.keys(row.data).map(key => {
-      const value = row.data[key];
-
-      if (value instanceof HTMLDivElement) {
-        return value.innerText.trim();
-      }
-      return value.toString().trim();
-    });
+  const grid = getDataGridForTest(view.contentElement);
+  const root = grid.shadowRoot ?? grid;
+  // DataGridImpl puts its rows in tbody with class 'data-grid-data-grid-node'
+  const rows = Array.from(root.querySelectorAll('tbody tr.data-grid-data-grid-node'));
+  return rows.map(row => {
+    // DataGridImpl creates tds with class 'xxx-column'
+    // Filter out the corner column that is sometimes added by DataGridImpl
+    const cells = Array.from(row.querySelectorAll('td')).filter(c => !c.classList.contains('corner'));
+    return cells.map(cell => (cell.innerText || cell.textContent || '').trim());
   });
 }
 
-function assertGridData(
-    view: Network.ResourceDirectSocketChunkView.ResourceDirectSocketChunkView, rowsExpected: string[][]): void {
+async function assertGridData(view: Network.ResourceDirectSocketChunkView.ResourceDirectSocketChunkView,
+                              rowsExpected: string[][]): Promise<void> {
+  await doubleRaf();
   const actualGridData = getInnerTextOfGrid(view);
   assert.lengthOf(actualGridData, rowsExpected.length, 'Number of rows should match');
 
@@ -334,4 +342,20 @@ function assertGridData(
       }
     }
   }
+}
+
+function getDataGridForTest(contentElement: HTMLElement): HTMLElement {
+  return contentElement.querySelector('devtools-data-grid') as HTMLElement;
+}
+
+function getFilterInputForTest(contentElement: HTMLElement): HTMLElement {
+  return contentElement.querySelector('devtools-toolbar-input') as HTMLElement;
+}
+
+function getClearAllButtonForTest(contentElement: HTMLElement): HTMLElement {
+  return contentElement.querySelector('devtools-button') as HTMLElement;
+}
+
+function getFilterTypeComboboxForTest(contentElement: HTMLElement): HTMLSelectElement {
+  return contentElement.querySelector('select') as HTMLSelectElement;
 }

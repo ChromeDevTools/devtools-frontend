@@ -50,7 +50,7 @@ describe('StorageAgent', function() {
   it('can list keys for local storage', async () => {
     const aidaClient = mockAidaClient([
       [{
-        functionCalls: [{name: 'listStorageKeys', args: {type: 'localStorage', origin: 'https://example.com'}}],
+        functionCalls: [{name: 'listStorageKeys', args: {type: 'localStorage', origins: ['https://example.com']}}],
         explanation: '',
       }],
       [{explanation: 'Here are the keys.'}],
@@ -67,7 +67,7 @@ describe('StorageAgent', function() {
 
     const actionResponse = responses.find((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.exists(actionResponse, 'Expected an action response');
-    assert.strictEqual(actionResponse.code, 'listStorageKeys(\'localStorage\', \'https://example.com\')');
+    assert.strictEqual(actionResponse.code, 'listStorageKeys(\'localStorage\', ["https://example.com"])');
     assert.include(actionResponse.output, 'key1');
     assert.include(actionResponse.output, 'key2');
   });
@@ -75,8 +75,9 @@ describe('StorageAgent', function() {
   it('can get storage item with approval', async () => {
     const aidaClient = mockAidaClient([
       [{
-        functionCalls:
-            [{name: 'getStorageValues', args: {type: 'localStorage', keys: ['key1'], origin: 'https://example.com'}}],
+        functionCalls: [
+          {name: 'getStorageValues', args: {type: 'localStorage', keys: ['key1'], origins: ['https://example.com']}},
+        ],
         explanation: '',
       }],
       [{explanation: 'Here is the value.'}],
@@ -98,19 +99,19 @@ describe('StorageAgent', function() {
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.lengthOf(actionResponses, 2, 'Expected exactly two action responses for approval flow');
 
-    assert.strictEqual(
-        actionResponses[0].code, 'getStorageValues(\'localStorage\', ["key1"], \'https://example.com\')');
+    assert.strictEqual(actionResponses[0].code,
+                       'getStorageValues(\'localStorage\', ["key1"], ["https://example.com"])');
     assert.isUndefined(actionResponses[0].output, 'Pre-approval yield should not contain execution output');
 
-    assert.strictEqual(
-        actionResponses[1].code, 'getStorageValues(\'localStorage\', ["key1"], \'https://example.com\')');
+    assert.strictEqual(actionResponses[1].code,
+                       'getStorageValues(\'localStorage\', ["key1"], ["https://example.com"])');
     assert.include(actionResponses[1].output, 'value1', 'Post-approval yield should contain storage values');
   });
 
   it('returns error when approval is denied', async () => {
     const aidaClient = mockAidaClient([[{
       functionCalls:
-          [{name: 'getStorageValues', args: {type: 'localStorage', keys: ['key1'], origin: 'https://example.com'}}],
+          [{name: 'getStorageValues', args: {type: 'localStorage', keys: ['key1'], origins: ['https://example.com']}}],
       explanation: '',
     }]]);
 
@@ -136,7 +137,7 @@ describe('StorageAgent', function() {
   it('can list keys for local storage when storageKey is specified in context', async () => {
     const aidaClient = mockAidaClient([
       [{
-        functionCalls: [{name: 'listStorageKeys', args: {type: 'localStorage', origin: 'https://example.com'}}],
+        functionCalls: [{name: 'listStorageKeys', args: {type: 'localStorage', origins: ['https://example.com']}}],
         explanation: '',
       }],
       [{explanation: 'Here are the keys.'}],
@@ -165,8 +166,53 @@ describe('StorageAgent', function() {
 
     const actionResponse = responses.find((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.exists(actionResponse, 'Expected an action response');
-    assert.strictEqual(actionResponse.code, 'listStorageKeys(\'localStorage\', \'https://example.com\')');
+    assert.strictEqual(actionResponse.code, 'listStorageKeys(\'localStorage\', ["https://example.com"])');
     assert.include(actionResponse.output, 'key1-keypass');
+  });
+
+  it('can list storage keys across multiple origins', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [
+          {name: 'listStorageKeys', args: {type: 'localStorage', origins: ['https://example.com', 'https://b.com']}},
+        ],
+        explanation: '',
+      }],
+      [{explanation: 'Here are the keys.'}],
+    ]);
+
+    const agent = new AiAssistance.StorageAgent.StorageAgent({aidaClient, targetManager: universe.targetManager});
+    const context = new AiAssistance.StorageAgent.StorageContext(
+        AiAssistance.StorageItem.DOMStorageItem.createGenericContext('https://example.com', 'localStorage'));
+
+    const target = universe.targetManager.primaryPageTarget();
+    assert.exists(target);
+
+    const mockStorageA = sinon.createStubInstance(SDK.DOMStorageModel.DOMStorage);
+    sinon.stub(mockStorageA, 'storageKey').get(() => 'https://example.com^0');
+    sinon.stub(mockStorageA, 'isLocalStorage').get(() => true);
+    mockStorageA.getItems.resolves([['keyA', 'valA']]);
+
+    const mockStorageB = sinon.createStubInstance(SDK.DOMStorageModel.DOMStorage);
+    sinon.stub(mockStorageB, 'storageKey').get(() => 'https://b.com^0');
+    sinon.stub(mockStorageB, 'isLocalStorage').get(() => true);
+    mockStorageB.getItems.resolves([['keyB', 'valB']]);
+
+    activeStorages = [mockStorageA, mockStorageB];
+
+    const responses = await Array.fromAsync(agent.run('list keys across origins', {selected: context}));
+
+    const actionResponse = responses.find((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.exists(actionResponse, 'Expected an action response');
+    assert.strictEqual(actionResponse.code,
+                       'listStorageKeys(\'localStorage\', ["https://example.com","https://b.com"])');
+
+    const parsed = JSON.parse(actionResponse.output!);
+    assert.exists(parsed.storageKeysByOrigin);
+    assert.deepEqual(parsed.storageKeysByOrigin['https://example.com'].partitions,
+                     [{storageKey: 'https://example.com^0', keys: ['keyA']}]);
+    assert.deepEqual(parsed.storageKeysByOrigin['https://b.com'].partitions,
+                     [{storageKey: 'https://b.com^0', keys: ['keyB']}]);
   });
 
   it('can list cookies for the origin, excluding HttpOnly ones', async () => {
@@ -475,11 +521,74 @@ describe('StorageAgent', function() {
     assert.include(actionResponses[1].output, 'value-2');
   });
 
+  it('can get storage values across multiple origins with user approval', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [
+          {
+            name: 'getStorageValues',
+            args: {type: 'localStorage', keys: ['keyA'], origins: ['https://example.com', 'https://b.com']},
+          },
+        ],
+        explanation: '',
+      }],
+      [{explanation: 'Done getting storage values.'}],
+    ]);
+
+    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const agent = new AiAssistance.StorageAgent.StorageAgent({
+      aidaClient,
+      confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
+      targetManager: universe.targetManager,
+    });
+    const context = new AiAssistance.StorageAgent.StorageContext(
+        AiAssistance.StorageItem.DOMStorageItem.createGenericContext('https://example.com', 'localStorage'));
+
+    const target = universe.targetManager.primaryPageTarget();
+    assert.exists(target);
+
+    const mockStorageA = sinon.createStubInstance(SDK.DOMStorageModel.DOMStorage);
+    sinon.stub(mockStorageA, 'storageKey').get(() => 'https://example.com^0');
+    sinon.stub(mockStorageA, 'isLocalStorage').get(() => true);
+    mockStorageA.getItems.resolves([['keyA', 'valA']]);
+
+    const mockStorageB = sinon.createStubInstance(SDK.DOMStorageModel.DOMStorage);
+    sinon.stub(mockStorageB, 'storageKey').get(() => 'https://b.com^0');
+    sinon.stub(mockStorageB, 'isLocalStorage').get(() => true);
+    mockStorageB.getItems.resolves([['keyA', 'valB']]);
+
+    activeStorages = [mockStorageA, mockStorageB];
+
+    sideEffectPromise.resolve(true);
+    const responses = await Array.fromAsync(agent.run('get storage values across origins', {selected: context}));
+    const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.lengthOf(actionResponses, 2, 'Expected exactly two action responses for approval flow');
+    assert.strictEqual(actionResponses[1].code,
+                       'getStorageValues(\'localStorage\', ["keyA"], ["https://example.com","https://b.com"])');
+
+    const parsed = JSON.parse(actionResponses[1].output!);
+    assert.exists(parsed.storageValuesByOrigin);
+    assert.deepEqual(parsed.storageValuesByOrigin['https://example.com'].items,
+                     [{storageKey: 'https://example.com^0', values: {keyA: 'valA'}}]);
+    assert.deepEqual(parsed.storageValuesByOrigin['https://b.com'].items,
+                     [{storageKey: 'https://b.com^0', values: {keyA: 'valB'}}]);
+  });
+
+  it('correctly formats the title for CookieItem without a name or origin', () => {
+    const context = new AiAssistance.StorageAgent.StorageContext(
+        new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com'));
+    assert.strictEqual(context.getTitle(), 'cookies: https://example.com');
+
+    const genericContext = new AiAssistance.StorageAgent.StorageContext(
+        new AiAssistance.StorageItem.CookieItem('https://example.com', ''));
+    assert.strictEqual(genericContext.getTitle(), 'cookies');
+  });
+
   it('getStorageValues truncates large values to 10000 characters', async () => {
     const aidaClient = mockAidaClient([
       [{
         functionCalls: [
-          {name: 'getStorageValues', args: {type: 'localStorage', keys: ['hugeKey'], origin: 'https://example.com'}},
+          {name: 'getStorageValues', args: {type: 'localStorage', keys: ['hugeKey'], origins: ['https://example.com']}},
         ],
         explanation: '',
       }],
@@ -730,17 +839,22 @@ describe('StorageAgent', function() {
 
   describe('StorageContext', () => {
     it('correctly formats the title for DOMStorageItem with a key', () => {
-      const item = new AiAssistance.StorageItem.DOMStorageItem(
-          'https://example.com', 'https://example.com', 'https://example.com/', 'localStorage', 'key1');
+      const item = new AiAssistance.StorageItem.DOMStorageItem('https://example.com', 'https://example.com',
+                                                               'https://example.com/', 'localStorage', 'key1');
       const context = new AiAssistance.StorageAgent.StorageContext(item);
       assert.strictEqual(context.getTitle(), 'entry: key1 https://example.com');
     });
 
     it('correctly formats the title for DOMStorageItem without a key', () => {
-      const item = new AiAssistance.StorageItem.DOMStorageItem(
-          'https://example.com', 'https://example.com', 'https://example.com/', 'localStorage');
+      const item = new AiAssistance.StorageItem.DOMStorageItem('https://example.com', 'https://example.com',
+                                                               'https://example.com/', 'localStorage');
       const context = new AiAssistance.StorageAgent.StorageContext(item);
-      assert.strictEqual(context.getTitle(), 'storage: https://example.com');
+      assert.strictEqual(context.getTitle(), 'local storage: https://example.com');
+
+      const sessionItem = new AiAssistance.StorageItem.DOMStorageItem('https://example.com', 'https://example.com',
+                                                                      'https://example.com/', 'sessionStorage');
+      const sessionContext = new AiAssistance.StorageAgent.StorageContext(sessionItem);
+      assert.strictEqual(sessionContext.getTitle(), 'session storage: https://example.com');
     });
 
     it('correctly formats the title for CookieItem with a name', () => {
@@ -857,7 +971,7 @@ describe('StorageAgent', function() {
 
     it('turns off server-side logging immediately upon accessing cookie ', async () => {
       const aidaClient = mockAidaClient([
-        [{functionCalls: [{name: 'listCookies', args: {origin: 'https://example.com'}}], explanation: ''}],
+        [{functionCalls: [{name: 'listCookies', args: {origins: ['https://example.com']}}], explanation: ''}],
         [{explanation: 'Here are the cookies.'}],
       ]);
       const item = new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com');
@@ -867,7 +981,8 @@ describe('StorageAgent', function() {
     it('turns off server-side logging immediately upon retrieving cookie values', async () => {
       const aidaClient = mockAidaClient([
         [{
-          functionCalls: [{name: 'getCookieValues', args: {cookieNames: ['cookie1'], origin: 'https://example.com'}}],
+          functionCalls:
+              [{name: 'getCookieValues', args: {cookieNames: ['cookie1'], origins: ['https://example.com']}}],
           explanation: '',
         }],
         [{explanation: 'Here are the cookie values.'}],
@@ -879,7 +994,7 @@ describe('StorageAgent', function() {
     it('turns off server-side logging immediately upon listing storage keys', async () => {
       const aidaClient = mockAidaClient([
         [{
-          functionCalls: [{name: 'listStorageKeys', args: {type: 'localStorage', origin: 'https://example.com'}}],
+          functionCalls: [{name: 'listStorageKeys', args: {type: 'localStorage', origins: ['https://example.com']}}],
           explanation: '',
         }],
         [{explanation: 'Here are the storage keys.'}],
@@ -894,7 +1009,7 @@ describe('StorageAgent', function() {
         [{
           functionCalls: [{
             name: 'getStorageValues',
-            args: {type: 'localStorage', keys: ['key1'], origin: 'https://example.com'},
+            args: {type: 'localStorage', keys: ['key1'], origins: ['https://example.com']},
           }],
           explanation: '',
         }],

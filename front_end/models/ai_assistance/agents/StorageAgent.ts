@@ -38,7 +38,7 @@ const preamble =
  -   **Top-Level Context**: Generally, questions refer to the primary page target ("my page", "this page", etc.). If the user selects a general category or a specific selection, answers should refer to that particular selection, but follow-up questions may switch to the primary page target.
  -   **Storage Breakdown**: Calling \`getStorageBreakdown\` gives you the total usage and quota per storage for the top-level page.
  -   **Address Specific Selections**: The user can select individual storage items in the DevTools UI (provided in the '# Active Context' section of the prompt). If the query is about a selected item (e.g., "Why is this cookie set?"), focus your response on that specific item.
- -   **General Category Selection**: If a general storage category (such as Cookies, Local Storage, or Session Storage) is selected in the active context (indicated by an empty context origin), your first step MUST be to look through all cookies or local/session storage entries across all active page origins (by calling \`listPageOrigins\` to discover origins, then passing all discovered origins to \`listCookies\`), unless the user's explicit request hints otherwise.
+ -   **General Category Selection**: If a general storage category (such as Cookies, Local Storage, or Session Storage) is selected in the active context (indicated by an empty context origin), your first step MUST be to look through all cookies or local/session storage entries across all active page origins (by calling \`listPageOrigins\` to discover origins, then passing all discovered origins to \`listCookies\` or \`listStorageKeys\`), unless the user's explicit request hints otherwise.
  -   **Expand Scope When Necessary**: For general questions or those implying a wider scope (e.g., "Check all storages," "Are there related cookies on subdomains?"), proactively use your tools to explore other relevant storage contexts, including iframes and different origins.
  -   **Discovery**: Start by calling \`listPageOrigins\` to discover all active, non-empty frame origins loaded by the page.
  -   **Storage Partitioning (LocalStorage / SessionStorage)**:
@@ -109,7 +109,11 @@ export class StorageContext extends ConversationContext<StorageItem> {
       return `cookies${this.#item.isGenericContext ? '' : `: ${this.#item.origin}`}`;
     }
     if (this.#item instanceof DOMStorageItem) {
-      return `${this.#item.key ? `entry: ${this.#item.key}` : 'storage:'} ${this.#item.origin}`;
+      if (this.#item.key) {
+        return `entry: ${this.#item.key}${this.#item.origin ? ` ${this.#item.origin}` : ''}`;
+      }
+      const prefix = this.#item.type === 'localStorage' ? 'local storage' : 'session storage';
+      return `${prefix}${this.#item.isGenericContext ? '' : `: ${this.#item.origin}`}`;
     }
     return `Storage: ${this.getOrigin()}`;
   }
@@ -199,7 +203,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
 
     this.declareFunction<Record<string, never>, {origins: string[]}>('listPageOrigins', {
       description:
-          'Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies, unless the user\'s explicit request hints at focusing only on the primary page.',
+          'Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies or listStorageKeys, unless the user\'s explicit request hints at focusing only on the primary page.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',
@@ -236,17 +240,15 @@ export class StorageAgent extends AiAgent<StorageItem> {
 
     this.declareFunction<{
       type: 'localStorage' | 'sessionStorage',
-      origin: string,
+      origins: string[],
       storageKey?: string,
     },
                          {
-                           partitions: Array<{
-                             storageKey: string,
-                             keys: string[],
-                           }>,
+                           storageKeysByOrigin: Record<
+                               string, {partitions?: Array<{storageKey: string, keys: string[]}>, error?: string}>,
                          }>('listStorageKeys', {
       description:
-          'Lists all keys for a given storage type for the requested origin. Returns keys grouped by storage partition.',
+          'Lists all keys for a given storage type for requested origins. Returns keys grouped by storage partition under their origin.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',
@@ -257,23 +259,24 @@ export class StorageAgent extends AiAgent<StorageItem> {
             description: 'Storage type: localStorage or sessionStorage',
             nullable: false,
           },
-          origin: {
-            type: Host.AidaClient.ParametersTypes.STRING,
-            description: 'Specific origin to list keys for.',
+          origins: {
+            type: Host.AidaClient.ParametersTypes.ARRAY,
+            description: 'List of origins to list keys for.',
+            items: {type: Host.AidaClient.ParametersTypes.STRING, description: 'An origin URL.'},
             nullable: false,
           },
           storageKey: {
             type: Host.AidaClient.ParametersTypes.STRING,
-            description: 'Optional. Specific storageKey to to list keys for.',
+            description: 'Optional. Specific storageKey to list keys for. Only applies if single origin is provided.',
             nullable: true,
           },
         },
-        required: ['type', 'origin'],
+        required: ['type', 'origins'],
       },
       displayInfoFromArgs: args => {
         return {
           title: lockedString('Reading storage keys'),
-          action: `listStorageKeys('${args.type}', '${args.origin}')`,
+          action: `listStorageKeys('${args.type}', ${JSON.stringify(args.origins)})`,
         };
       },
 
@@ -283,41 +286,47 @@ export class StorageAgent extends AiAgent<StorageItem> {
           return {error: 'No origin available or not allowed.'};
         }
 
-        const storages = resolveDOMStorages(this.context, args.type, args.origin, this.targetManager, args.storageKey);
+        const targetOrigins = resolveTargetOrigins(this.context, args.origins);
+        const storageKey = (targetOrigins.length === 1 && args.storageKey) ? args.storageKey : undefined;
+        const storageKeysByOrigin:
+            Record<string, {partitions?: Array<{storageKey: string, keys: string[]}>, error?: string}> = {};
 
-        const keyAndItems = await Promise.all(storages.map(async storage => {
-          const items = await storage.getItems();
-          return {storageKey: storage.storageKey, items};
+        await Promise.all(targetOrigins.map(async origin => {
+          const storages = resolveDOMStorages(this.context, args.type, origin, this.targetManager, storageKey);
+          const keyAndItems = await Promise.all(storages.map(async storage => {
+            const items = await storage.getItems();
+            return {storageKey: storage.storageKey, items};
+          }));
+
+          const partitions = [];
+          for (const {storageKey, items} of keyAndItems) {
+            if (!items) {
+              continue;
+            }
+            const keys = items.map(([key]) => key);
+            if (keys.length > 0) {
+              partitions.push({storageKey, keys});
+            }
+          }
+          storageKeysByOrigin[origin] = {partitions};
         }));
 
-        const partitionsResult = [];
-        for (const {storageKey, items} of keyAndItems) {
-          if (!items) {
-            continue;
-          }
-          const keys = items.map(([key]) => key);
-          if (keys.length > 0) {
-            partitionsResult.push({storageKey, keys});
-          }
-        }
-
-        return {result: {partitions: partitionsResult}};
+        return {result: {storageKeysByOrigin}};
       },
     });
 
-    this.declareFunction<{
-      type: 'localStorage' | 'sessionStorage',
-      keys: string[],
-      origin: string,
-      storageKey?: string,
-    },
-                         {
-                           items: Array<{
-                             storageKey: string,
-                             values: Record<string, string>,
-                           }>,
-                         }>('getStorageValues', {
-      description: 'Retrieve specific string values from storage partitions for requested keys.',
+    this.declareFunction<
+        {
+          type: 'localStorage' | 'sessionStorage',
+          keys: string[],
+          origins: string[],
+          storageKey?: string,
+        },
+        {
+          storageValuesByOrigin:
+              Record<string, {items?: Array<{storageKey: string, values: Record<string, string>}>, error?: string}>,
+        }>('getStorageValues', {
+      description: 'Retrieve specific string values from storage partitions for requested keys across origins.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',
@@ -334,23 +343,25 @@ export class StorageAgent extends AiAgent<StorageItem> {
             items: {type: Host.AidaClient.ParametersTypes.STRING, description: 'A storage key.'},
             nullable: false,
           },
-          origin: {
-            type: Host.AidaClient.ParametersTypes.STRING,
-            description: 'Specific origin to get values for.',
+          origins: {
+            type: Host.AidaClient.ParametersTypes.ARRAY,
+            description: 'List of origins to get values for.',
+            items: {type: Host.AidaClient.ParametersTypes.STRING, description: 'An origin URL.'},
             nullable: false,
           },
           storageKey: {
             type: Host.AidaClient.ParametersTypes.STRING,
-            description: 'Optional. Specific storageKey partition to get values for.',
+            description:
+                'Optional. Specific storageKey partition to get values for. Only applies if single origin is provided.',
             nullable: true,
           },
         },
-        required: ['type', 'keys', 'origin'],
+        required: ['type', 'keys', 'origins'],
       },
       displayInfoFromArgs: args => {
         return {
           title: lockedString('Reading storage values'),
-          action: `getStorageValues('${args.type}', ${JSON.stringify(args.keys)}, '${args.origin}'${
+          action: `getStorageValues('${args.type}', ${JSON.stringify(args.keys)}, ${JSON.stringify(args.origins)}${
               args.storageKey ? `, '${args.storageKey}'` : ''})`,
         };
       },
@@ -361,19 +372,26 @@ export class StorageAgent extends AiAgent<StorageItem> {
           return {error: 'No origin available or not allowed.'};
         }
 
-        const storages = resolveDOMStorages(this.context, args.type, args.origin, this.targetManager, args.storageKey);
-        if (storages.length === 0) {
+        const targetOrigins = resolveTargetOrigins(this.context, args.origins);
+        const storageKey = (targetOrigins.length === 1 && args.storageKey) ? args.storageKey : undefined;
+
+        const allStoragesMap: Record<string, SDK.DOMStorageModel.DOMStorage[]> = {};
+        let totalStoragesCount = 0;
+        for (const origin of targetOrigins) {
+          const storages = resolveDOMStorages(this.context, args.type, origin, this.targetManager, storageKey);
+          if (storages.length > 0) {
+            allStoragesMap[origin] = storages;
+            totalStoragesCount += storages.length;
+          }
+        }
+
+        if (totalStoragesCount === 0) {
           return {error: 'No matching storage partitions found.'};
         }
 
         if (options?.approved !== true) {
           const keyString = args.keys.map(k => `\`${k}\``).join(', ');
-
-          const uniqueTargetOrigins = Array.from(new Set(storages.map(storage => {
-            const parsed = SDK.StorageKeyManager.parseStorageKey(storage.storageKey || '');
-            return parsed.origin;
-          })));
-          const targetsDesc = uniqueTargetOrigins.join(', ');
+          const targetsDesc = Object.keys(allStoragesMap).join(', ');
 
           return {
             requiresApproval: true,
@@ -382,35 +400,42 @@ export class StorageAgent extends AiAgent<StorageItem> {
           };
         }
 
-        const itemsResult = [];
+        const storageValuesByOrigin:
+            Record<string, {items?: Array<{storageKey: string, values: Record<string, string>}>, error?: string}> = {};
 
-        const keyAndItems = await Promise.all(storages.map(async storage => {
-          const items = await storage.getItems();
-          return {storageKey: storage.storageKey, items};
-        }));
+        await Promise.all(targetOrigins.map(async origin => {
+          const storages = allStoragesMap[origin] || [];
+          const itemsResult = [];
 
-        for (const {storageKey, items} of keyAndItems) {
-          if (!items) {
-            continue;
-          }
-          const itemMap = new Map<string, string>(items as Array<[string, string]>);
-          const storageValues: Record<string, string> = {};
+          const keyAndItems = await Promise.all(storages.map(async storage => {
+            const items = await storage.getItems();
+            return {storageKey: storage.storageKey, items};
+          }));
 
-          for (const key of args.keys) {
-            const value = itemMap.get(key);
-            if (value === undefined) {
+          for (const {storageKey: partitionKey, items} of keyAndItems) {
+            if (!items) {
               continue;
             }
-            const truncatedValue = value.length > MAX_NUM_CHAR_LENGTH ?
-                value.substring(0, MAX_NUM_CHAR_LENGTH) + '... <truncated>' :
-                value;
-            storageValues[key] = truncatedValue;
+            const itemMap = new Map<string, string>(items as Array<[string, string]>);
+            const storageValues: Record<string, string> = {};
+
+            for (const key of args.keys) {
+              const value = itemMap.get(key);
+              if (value === undefined) {
+                continue;
+              }
+              const truncatedValue = value.length > MAX_NUM_CHAR_LENGTH ?
+                  value.substring(0, MAX_NUM_CHAR_LENGTH) + '... <truncated>' :
+                  value;
+              storageValues[key] = truncatedValue;
+            }
+
+            itemsResult.push({storageKey: partitionKey, values: storageValues});
           }
+          storageValuesByOrigin[origin] = {items: itemsResult};
+        }));
 
-          itemsResult.push({storageKey, values: storageValues});
-        }
-
-        return {result: {items: itemsResult}};
+        return {result: {storageValuesByOrigin}};
       },
     });
 
@@ -619,13 +644,15 @@ export class StorageAgent extends AiAgent<StorageItem> {
     if (item instanceof CookieItem) {
       const parsedURL = Common.ParsedURL.ParsedURL.fromString(item.origin);
       const domain = parsedURL ? parsedURL.host : item.origin;
-      return `${primaryTargetOrigin}\nUser-selected Context: Cookies\nDomain: ${domain}${
-          item.name ? `\nCookie Name: ${item.name}` : ''}`;
+      return `${primaryTargetOrigin}\nUser-selected Context: Cookies${
+          item.isGenericContext ? '' : `\nDomain: ${domain}`}${item.name ? `\nCookie Name: ${item.name}` : ''}`;
     }
 
     if (item instanceof DOMStorageItem) {
-      return `${primaryTargetOrigin}\nUser-selected Context: DOM Storage\n Type: ${item.type}\nStorageKey: ${
-          item.storageKey}\nOrigin: ${item.origin}${item.key ? `\nKey: ${item.key}` : ''}`;
+      return `${primaryTargetOrigin}\nUser-selected Context: DOM Storage\n Type: ${item.type}${
+          item.isGenericContext ?
+              '' :
+              `\nStorageKey: ${item.storageKey}\nOrigin: ${item.origin}`}${item.key ? `\nKey: ${item.key}` : ''}`;
     }
 
     return primaryTargetOrigin;

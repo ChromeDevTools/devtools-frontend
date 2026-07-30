@@ -66,25 +66,6 @@ An example `com.chrome.devtools.json` would look like this:
 Chromium DevTools will only attempt to load the `com.chrome.devtools.json` when
 the origin of the inspected page is `localhost`.
 
-## Setup
-
-In M-136, which is in Canary channel at the time of this writing, the relevant
-flags have been enabled by default (as of 2025-03-16). In earlier versions of
-M-136 and in M-135, this feature is disabled by default. To use it, you need to
-turn on two feature flags in `about:flags`:
-
--   [chrome://flags#devtools-project-settings](chrome://flags#devtools-project-settings)
--   [chrome://flags#devtools-automatic-workspace-folders](chrome://flags#devtools-automatic-workspace-folders)
-
-![](./images/automatic_workspace_folders_flags.png)
-
-Instead of enabling the feature via `about:flags`, you can instead also enable
-them from the command line:
-
-```bash
-google-chrome-canary --enable-features=DevToolsWellKnown,DevToolsAutomaticFileSystems
-```
-
 ## Usage
 
 To check if your setup is correct, you can try out Benedikt’s

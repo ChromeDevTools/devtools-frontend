@@ -35,7 +35,7 @@ const reports = [{
 
 describeWithEnvironment('ReportsGrid', () => {
   beforeEach(() => {
-    Root.Runtime.experiments.registerHostExperiment({
+    Root.Runtime.experiments.register({
       name: Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
       title: 'Protocol Monitor',
       aboutFlag: 'devtools-protocol-monitor',

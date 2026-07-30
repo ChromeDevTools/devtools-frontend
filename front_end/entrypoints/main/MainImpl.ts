@@ -346,14 +346,14 @@ export class MainImpl {
   }
 
   // TODO(crbug.com/464173054) remove after M156
-  #migrateValueFromLegacyToHostExperiment(
-      legacyExperimentName: Root.ExperimentNames.ExperimentName, hostExperiment: Root.Runtime.HostExperiment): void {
+  #migrateValueFromLegacyExperiment(legacyExperimentName: Root.ExperimentNames.ExperimentName,
+                                    experiment: Root.Runtime.Experiment): void {
     const value = Root.Runtime.experiments.getValueFromStorage(legacyExperimentName);
-    if (value !== undefined && hostExperiment.aboutFlag) {
-      // Set the host experiment to the same value as the legacy experiment.
-      hostExperiment.setEnabled(value);
+    if (value !== undefined && experiment.aboutFlag) {
+      // Set the experiment to the same value as the legacy experiment.
+      experiment.setEnabled(value);
       // Set the chrome flag to the same value as the legacy experiment.
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.setChromeFlag(hostExperiment.aboutFlag, value);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.setChromeFlag(experiment.aboutFlag, value);
       // The legacy experiment will be cleaned up by `removeAllExperimentsFromLocalStorage`.
     }
   }
@@ -361,7 +361,7 @@ export class MainImpl {
   #initializeExperiments(): void {
     const enableProtocolMonitor = (Root.Runtime.hostConfig.devToolsProtocolMonitor?.enabled ?? false) ||
         Boolean(Root.Runtime.Runtime.queryParam('isChromeForTesting'));
-    const protocolMonitorExperiment = Root.Runtime.experiments.registerHostExperiment({
+    const protocolMonitorExperiment = Root.Runtime.experiments.register({
       name: Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
       title: 'Protocol Monitor',
       aboutFlag: 'devtools-protocol-monitor',
@@ -370,21 +370,21 @@ export class MainImpl {
       docLink: 'https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor' as
           Platform.DevToolsPath.UrlString,
     });
-    this.#migrateValueFromLegacyToHostExperiment(
-        Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, protocolMonitorExperiment);
+    this.#migrateValueFromLegacyExperiment(Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
+                                           protocolMonitorExperiment);
 
     // Debugging
-    const instrumentationBreakpointsExperiment = Root.Runtime.experiments.registerHostExperiment({
+    const instrumentationBreakpointsExperiment = Root.Runtime.experiments.register({
       name: Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
       title: 'Instrumentation breakpoints',
       aboutFlag: 'devtools-instrumentation-breakpoints',
       isEnabled: Root.Runtime.hostConfig.devToolsInstrumentationBreakpoints?.enabled ?? false,
       requiresChromeRestart: false,
     });
-    this.#migrateValueFromLegacyToHostExperiment(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
-                                                 instrumentationBreakpointsExperiment);
+    this.#migrateValueFromLegacyExperiment(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
+                                           instrumentationBreakpointsExperiment);
 
-    Root.Runtime.experiments.registerHostExperiment({
+    Root.Runtime.experiments.register({
       name: Root.ExperimentNames.ExperimentName.DURABLE_MESSAGES,
       title: 'Durable Messages',
       aboutFlag: 'devtools-enable-durable-messages',
@@ -392,7 +392,7 @@ export class MainImpl {
       requiresChromeRestart: false,
     });
 
-    Root.Runtime.experiments.registerHostExperiment({
+    Root.Runtime.experiments.register({
       name: Root.ExperimentNames.ExperimentName.JPEG_XL,
       title: 'JPEG XL support',
       aboutFlag: 'enable-jxl-image-format',
@@ -400,7 +400,7 @@ export class MainImpl {
       requiresChromeRestart: true,
     });
 
-    Root.Runtime.experiments.registerHostExperiment({
+    Root.Runtime.experiments.register({
       name: Root.ExperimentNames.ExperimentName.PLUS_BUTTON,
       title: 'Show "+" button on the tab strip for adding tools',
       aboutFlag: 'devtools-plus-button',

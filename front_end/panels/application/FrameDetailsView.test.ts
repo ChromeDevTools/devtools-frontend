@@ -85,7 +85,7 @@ const makeFrame = (target: SDK.Target.Target) => {
 
 describeWithEnvironment('FrameDetailsView', () => {
   beforeEach(() => {
-    Root.Runtime.experiments.registerHostExperiment({
+    Root.Runtime.experiments.register({
       name: Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
       title: 'Protocol Monitor',
       aboutFlag: 'devtools-protocol-monitor',

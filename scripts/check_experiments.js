@@ -49,19 +49,10 @@ function findFunctionInClass(classNode, functionName) {
 }
 
 /**
- * Determines if AST Node is a call to register a DevtoolsExperiment
+ * Determines if AST Node is a call to register an Experiment
  */
 function isExperimentRegistrationCall(expression) {
-  return (expression && expression.type === 'CallExpression' && expression.callee.property.name === 'register');
-}
-
-/**
- * Determines if AST Node is a call to register a DevtoolsHostExperiment
- */
-function isHostExperimentRegistrationCall(expression) {
-  return (
-      expression && expression.type === 'CallExpression' &&
-      expression.callee.property.name === 'registerHostExperiment');
+  return (expression && expression.type === 'CallExpression' && expression.callee.property?.name === 'register');
 }
 
 /**
@@ -147,9 +138,6 @@ function getMainImplExperimentList(mainImplFile, experimentNames) {
 
     let experimentNameArg = '';
     if (isExperimentRegistrationCall(expression)) {
-      // Experiment name is first argument of registration call
-      experimentNameArg = expression.arguments[0];
-    } else if (isHostExperimentRegistrationCall(expression)) {
       // Experiment name is the value of the `name` property of the first
       // argument of registration call
       experimentNameArg = expression.arguments[0].properties.find(property => property.key.name === 'name').value;

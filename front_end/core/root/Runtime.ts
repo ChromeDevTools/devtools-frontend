@@ -173,15 +173,15 @@ export interface Option {
 }
 
 export class ExperimentsSupport {
-  #hostExperiments = new Map<ExperimentName, HostExperiment>();
+  #experiments = new Map<ExperimentName, Experiment>();
   readonly #enabledForTests = new Set<ExperimentName>();
   readonly #storage = new ExperimentStorage();
 
-  allConfigurableExperiments(): HostExperiment[] {
-    return [...this.#hostExperiments.values()];
+  allConfigurableExperiments(): Experiment[] {
+    return [...this.#experiments.values()];
   }
 
-  registerHostExperiment(params: {
+  register(params: {
     name: ExperimentName,
     title: string,
     aboutFlag: string,
@@ -189,19 +189,18 @@ export class ExperimentsSupport {
     requiresChromeRestart: boolean,
     docLink?: Platform.DevToolsPath.UrlString,
     readonly feedbackLink?: Platform.DevToolsPath.UrlString,
-  }): HostExperiment {
-    if (this.#isHostExperiment(params.name)) {
+  }): Experiment {
+    if (this.#isExperiment(params.name)) {
       throw new Error(`Duplicate registration of experiment '${params.name}'`);
     }
-    const hostExperiment = new HostExperiment({...params, experiments: this});
-    this.#hostExperiments.set(params.name, hostExperiment);
-    return hostExperiment;
+    const experiment = new Experiment({...params, experiments: this});
+    this.#experiments.set(params.name, experiment);
+    return experiment;
   }
 
   isEnabled(experimentName: ExperimentName): boolean {
-    if (this.#isHostExperiment(experimentName)) {
-      return this.#enabledForTests.has(experimentName) ||
-          (this.#hostExperiments.get(experimentName)?.isEnabled() ?? false);
+    if (this.#isExperiment(experimentName)) {
+      return this.#enabledForTests.has(experimentName) || (this.#experiments.get(experimentName)?.isEnabled() ?? false);
     }
     throw new Error(`Unknown experiment '${experimentName}'`);
   }
@@ -211,22 +210,22 @@ export class ExperimentsSupport {
   }
 
   setEnabled(experimentName: ExperimentName, enabled: boolean): void {
-    if (this.#isHostExperiment(experimentName)) {
-      this.#hostExperiments.get(experimentName)?.setEnabled(enabled);
+    if (this.#isExperiment(experimentName)) {
+      this.#experiments.get(experimentName)?.setEnabled(enabled);
       return;
     }
     throw new Error(`Unknown experiment '${experimentName}'`);
   }
 
   enableForTest(experimentName: ExperimentName): void {
-    if (!this.#isHostExperiment(experimentName)) {
+    if (!this.#isExperiment(experimentName)) {
       throw new Error(`Unknown experiment '${experimentName}'`);
     }
     this.#enabledForTests.add(experimentName);
   }
 
   disableForTest(experimentName: ExperimentName): void {
-    if (!this.#isHostExperiment(experimentName)) {
+    if (!this.#isExperiment(experimentName)) {
       throw new Error(`Unknown experiment '${experimentName}'`);
     }
     this.#enabledForTests.delete(experimentName);
@@ -237,7 +236,7 @@ export class ExperimentsSupport {
   }
 
   clearForTest(): void {
-    this.#hostExperiments.clear();
+    this.#experiments.clear();
     this.#enabledForTests.clear();
   }
 
@@ -246,8 +245,8 @@ export class ExperimentsSupport {
     this.#storage.removeAllExperimentsFromLocalStorage();
   }
 
-  #isHostExperiment(experimentName: ExperimentName): boolean {
-    return this.#hostExperiments.has(experimentName);
+  #isExperiment(experimentName: ExperimentName): boolean {
+    return this.#experiments.has(experimentName);
   }
 }
 
@@ -282,7 +281,7 @@ class ExperimentStorage {
   }
 }
 
-export class HostExperiment {
+export class Experiment {
   name: ExperimentName;
   title: string;
   readonly #experiments: ExperimentsSupport;

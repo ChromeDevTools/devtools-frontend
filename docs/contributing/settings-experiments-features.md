@@ -78,12 +78,12 @@ This step is optional. If you want the `base::Feature` to be controllable via th
 
 Prerequisite: The `base::Feature` needs to be have been added to `chrome://flags`.
 
-#### Step 1: Create a HostExperiment in the DevTools repository
+#### Step 1: Create an Experiment in the DevTools repository
 
 Register the experiment in [`MainImpl.ts`](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/entrypoints/main/MainImpl.ts;l=343)
 
 ```ts
-Root.Runtime.experiments.registerHostExperiment({
+Root.Runtime.experiments.register({
   name: Root.ExperimentNames.ExperimentName.DURABLE_MESSAGES,
   // Short description of the experiment, shown to users
   title: 'Durable Messages',

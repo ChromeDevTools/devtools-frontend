@@ -229,7 +229,7 @@ describeWithEnvironment('ReportingApiView', () => {
     let stub: sinon.SinonStub;
 
     beforeEach(async () => {
-      Root.Runtime.experiments.registerHostExperiment({
+      Root.Runtime.experiments.register({
         name: Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
         title: 'Protocol Monitor',
         aboutFlag: 'devtools-protocol-monitor',

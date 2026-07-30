@@ -43,7 +43,7 @@ export async function createTargetUniverse(
   if (!registeredExtensions) {
     registeredExtensions = true;
     // Register experiments expected by models
-    RootModule.Runtime.experiments.registerHostExperiment({
+    RootModule.Runtime.experiments.register({
       name: RootModule.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
       title: 'Instrumentation breakpoints',
       aboutFlag: 'devtools-instrumentation-breakpoints',

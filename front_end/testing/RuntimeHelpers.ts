@@ -8,7 +8,7 @@ export function setupRuntime() {
   Root.Runtime.experiments.clearForTest();
 
   // The Instrumentation breakpoints experiment is used by the very universal BreakpointManager.
-  Root.Runtime.experiments.registerHostExperiment({
+  Root.Runtime.experiments.register({
     name: Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
     title: 'Instrumentation breakpoints',
     aboutFlag: 'devtools-instrumentation-breakpoints',

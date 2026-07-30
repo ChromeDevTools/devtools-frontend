@@ -132,4 +132,13 @@ describe('SettingCheckbox', () => {
     assert.strictEqual(
         (component.shadowRoot!.querySelector('.disabled-reason') as HTMLElement).getAttribute('title'), 'reason');
   });
+
+  it('disables checkbox when disabled property is true', () => {
+    stubNoopSettings();
+    const setting = createFakeSetting<boolean>('setting', false);
+
+    const {checkbox} = renderSettingCheckbox({setting, disabled: true});
+
+    assert.isTrue(checkbox.disabled);
+  });
 });

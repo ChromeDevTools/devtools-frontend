@@ -121,7 +121,7 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
     return html`
       <div class="setting-checkbox-container">
         <setting-checkbox class="setting-checkbox"
-          .data=${{ setting: input.syncSetting } as SettingsComponents.SettingCheckbox.SettingCheckboxData}>
+          .data=${{ setting: input.syncSetting, disabled: input.checkboxDisabled } as SettingsComponents.SettingCheckbox.SettingCheckboxData}>
         </setting-checkbox>
         ${input.warningType ? html`
           <devtools-button
@@ -251,6 +251,7 @@ export interface SyncSectionData {
 export interface ViewInput {
   syncInfo: Host.InspectorFrontendHostAPI.SyncInformation;
   syncSetting: Common.Settings.Setting<boolean>;
+  checkboxDisabled: boolean;
   receiveBadgesSetting?: Common.Settings.Setting<boolean>;
   isEligibleToCreateGdpProfile: boolean;
   gdpProfile?: Host.GdpClient.Profile;
@@ -302,10 +303,7 @@ export class SyncSection extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
-    // TODO: this should not probably happen in render, instead, the setting
-    // should be disabled.
     const checkboxDisabled = !this.#syncInfo.isSyncActive || !this.#syncInfo.arePreferencesSynced;
-    this.#syncSetting?.setDisabled(checkboxDisabled);
 
     let warningType: WarningType|undefined;
     if (!this.#syncInfo.isSyncActive) {
@@ -317,6 +315,7 @@ export class SyncSection extends UI.Widget.Widget {
     const viewInput: ViewInput = {
       syncInfo: this.#syncInfo,
       syncSetting: this.#syncSetting,
+      checkboxDisabled,
       receiveBadgesSetting: this.#receiveBadgesSetting,
       gdpProfile: this.#gdpProfile,
       isEligibleToCreateGdpProfile: Host.GdpClient.isGdpProfilesAvailable() && this.#isEligibleToCreateGdpProfile,

@@ -31,6 +31,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface SettingCheckboxData {
   setting: Common.Settings.Setting<boolean>;
   textOverride?: string;
+  disabled?: boolean;
 }
 
 /**
@@ -42,6 +43,7 @@ export class SettingCheckbox extends HTMLElement {
   #setting?: Common.Settings.Setting<boolean>;
   #changeListenerDescriptor?: Common.EventTarget.EventDescriptor;
   #textOverride?: string;
+  #disabled?: boolean;
 
   set data(data: SettingCheckboxData) {
     if (this.#changeListenerDescriptor && this.#setting) {
@@ -50,6 +52,7 @@ export class SettingCheckbox extends HTMLElement {
 
     this.#setting = data.setting;
     this.#textOverride = data.textOverride;
+    this.#disabled = data.disabled;
 
     this.#changeListenerDescriptor = this.#setting.addChangeListener(() => {
       this.#render();
@@ -154,7 +157,7 @@ export class SettingCheckbox extends HTMLElement {
           <input
             type="checkbox"
             .checked=${this.checked}
-            ?disabled=${this.#setting.disabled()}
+            ?disabled=${this.#disabled || this.#setting.disabled()}
             @change=${this.#checkboxChanged}
             jslog=${VisualLogging.toggle().track({change: true}).context(this.#setting.name)}
             aria-label=${titleText}

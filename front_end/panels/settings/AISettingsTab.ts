@@ -235,6 +235,7 @@ interface SettingItem {
 
 interface AiSettingParams {
   settingName: Platform.UIString.LocalizedString;
+  setting?: Common.Settings.Setting<boolean>;
   iconName: string;
   settingDescription: Platform.UIString.LocalizedString;
   enableSettingText: Common.UIString.LocalizedString;
@@ -250,9 +251,9 @@ interface AiSettingParams {
 interface ViewInput {
   disabledReasons: string[];
   sharedDisclaimerBulletPoints: Array<{icon: string, text: Common.UIString.LocalizedString|Lit.LitTemplate}>;
-  settingToParams: Map<Common.Settings.Setting<boolean>, AiSettingParams>;
-  expandSetting(setting: Common.Settings.Setting<boolean>): void;
-  toggleSetting(setting: Common.Settings.Setting<boolean>, ev: Event): void;
+  settingToParams: Map<string, AiSettingParams>;
+  expandSetting(settingName: string): void;
+  toggleSetting(settingName: string, ev: Event): void;
 }
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -297,18 +298,15 @@ export const AI_SETTINGS_TAB_DEFAULT_VIEW: View = (input, _output, target): void
 
   const isDisabled = input.disabledReasons.length > 0;
   const disabledReasonsJoined = input.disabledReasons.join('\n') || undefined;
-  const settings = Array.from(input.settingToParams.keys()).map(setting => {
-    const settingData = input.settingToParams.get(setting);
-    if (!settingData) {
-      return nothing;
-    }
+  const settings = Array.from(input.settingToParams.entries()).map(([settingName, settingData]) => {
+    const isChecked = settingData.setting ? Boolean(settingData.setting.get()) : false;
     const detailsClasses = {
       'whole-row': true,
       open: settingData.settingExpandState.isSettingExpanded,
     };
     const tabindex = settingData.settingExpandState.isSettingExpanded ? '0' : '-1';
     return html`
-      <div class="accordion-header" @click=${input.expandSetting.bind(this, setting)}>
+      <div class="accordion-header" @click=${input.expandSetting.bind(this, settingName)}>
         <div class="icon-container centered">
           <devtools-icon name=${settingData.iconName}></devtools-icon>
         </div>
@@ -334,15 +332,15 @@ export const AI_SETTINGS_TAB_DEFAULT_VIEW: View = (input, _output, target): void
       <div class="divider"></div>
       <div class="toggle-container centered"
         title=${ifDefined(disabledReasonsJoined)}
-        @click=${input.toggleSetting.bind(this, setting)}
+        @click=${settingData.setting ? input.toggleSetting.bind(this, settingName) : nothing}
       >
         <devtools-switch
-          .checked=${Boolean(setting.get()) && !isDisabled}
-          .jslogContext=${setting.name || ''}
-          .disabled=${isDisabled}
+          .checked=${isChecked && !isDisabled}
+          .jslogContext=${settingName}
+          .disabled=${isDisabled || !settingData.setting}
           .label=${disabledReasonsJoined || settingData.enableSettingText}
           data-testid=${settingData.enableSettingText}
-          @switchchange=${input.toggleSetting.bind(this, setting)}
+          @switchchange=${settingData.setting ? input.toggleSetting.bind(this, settingName) : nothing}
         ></devtools-switch>
       </div>
       <div class=${classMap(detailsClasses)}>
@@ -394,17 +392,18 @@ export class AISettingsTab extends UI.Widget.VBox {
       (ev: Common.EventTarget.EventTargetEvent<Host.AidaClient.AidaAccessPreconditions>) => void;
   // Setting to parameters needed to display it in the UI.
   // To display a a setting, it needs to be added to this map.
-  #settingToParams = new Map<Common.Settings.Setting<boolean>, AiSettingParams>();
+  #settingToParams = new Map<string, AiSettingParams>();
 
   constructor(view?: View) {
     super();
     try {
-      this.#consoleInsightsSetting = Common.Settings.Settings.instance().moduleSetting('console-insights-enabled');
+      this.#consoleInsightsSetting =
+          Common.Settings.Settings.instance().moduleSetting<boolean>('console-insights-enabled');
     } catch {
       this.#consoleInsightsSetting = undefined;
     }
     try {
-      this.#aiAssistanceSetting = Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled');
+      this.#aiAssistanceSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('ai-assistance-enabled');
     } catch {
       this.#aiAssistanceSetting = undefined;
     }
@@ -488,6 +487,7 @@ export class AISettingsTab extends UI.Widget.VBox {
     if (this.#consoleInsightsSetting) {
       const consoleInsightsData: AiSettingParams = {
         settingName: i18n.i18n.lockedString('Console Insights'),
+        setting: this.#consoleInsightsSetting,
         iconName: 'lightbulb-spark',
         settingDescription: i18nString(UIStrings.helpUnderstandConsole),
         enableSettingText: i18nString(UIStrings.enableConsoleInsights),
@@ -510,13 +510,14 @@ export class AISettingsTab extends UI.Widget.VBox {
         },
       };
 
-      this.#settingToParams.set(this.#consoleInsightsSetting, consoleInsightsData);
+      this.#settingToParams.set('console-insights-enabled', consoleInsightsData);
     }
 
     if (this.#aiAssistanceSetting) {
       const aiAssistanceData: AiSettingParams = {
         settingName: i18n.i18n.lockedString(AiAssistanceModel.AiUtils.isGeminiBranding() ? 'Gemini in Chrome DevTools' :
                                                                                            'AI assistance'),
+        setting: this.#aiAssistanceSetting,
         iconName: AiAssistanceModel.AiUtils.getIconName(),
         settingDescription: this.#getAiAssistanceSettingDescription(),
         enableSettingText: i18nString(UIStrings.enableAiAssistance),
@@ -542,12 +543,13 @@ export class AISettingsTab extends UI.Widget.VBox {
         },
       };
 
-      this.#settingToParams.set(this.#aiAssistanceSetting, aiAssistanceData);
+      this.#settingToParams.set('ai-assistance-enabled', aiAssistanceData);
     }
 
     if (this.#aiAnnotationsSetting) {
       const aiAnnotationsData: AiSettingParams = {
         settingName: i18n.i18n.lockedString('Auto annotations'),
+        setting: this.#aiAnnotationsSetting,
         iconName: 'pen-spark',
         settingDescription: i18nString(UIStrings.aIAnnotationsFeatureDescription),
         enableSettingText: i18nString(UIStrings.enableAiSuggestedAnnotations),
@@ -569,7 +571,7 @@ export class AISettingsTab extends UI.Widget.VBox {
         },
       };
 
-      this.#settingToParams.set(this.#aiAnnotationsSetting, aiAnnotationsData);
+      this.#settingToParams.set('ai-annotations-enabled', aiAnnotationsData);
     }
 
     if (this.#aiCodeCompletionSetting) {
@@ -586,6 +588,7 @@ export class AISettingsTab extends UI.Widget.VBox {
 
       const aiCodeCompletionData: AiSettingParams = {
         settingName: i18n.i18n.lockedString('Code suggestions'),
+        setting: this.#aiCodeCompletionSetting,
         iconName: 'text-analysis',
         settingDescription: i18nString(UIStrings.helpUnderstandCodeSuggestions),
         enableSettingText: i18nString(UIStrings.enableAiCodeSuggestions),
@@ -605,7 +608,7 @@ export class AISettingsTab extends UI.Widget.VBox {
         },
       };
 
-      this.#settingToParams.set(this.#aiCodeCompletionSetting, aiCodeCompletionData);
+      this.#settingToParams.set('ai-code-completion-enabled', aiCodeCompletionData);
     }
   }
 
@@ -628,8 +631,8 @@ export class AISettingsTab extends UI.Widget.VBox {
     return i18nString(UIStrings.aiAssistanceWhenOnItem1);
   }
 
-  #expandSetting(setting: Common.Settings.Setting<boolean>): void {
-    const settingData = this.#settingToParams.get(setting);
+  #expandSetting(settingName: string): void {
+    const settingData = this.#settingToParams.get(settingName);
     if (!settingData) {
       return;
     }
@@ -637,18 +640,19 @@ export class AISettingsTab extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  #toggleSetting(setting: Common.Settings.Setting<boolean>, ev: Event): void {
+  #toggleSetting(settingName: string, ev: Event): void {
     // If the switch is being clicked, there is both a click- and a
     // change-event. Aborting on click avoids running this method twice.
     if (ev.target instanceof Switch.Switch.Switch && ev.type !== Switch.Switch.SwitchChangeEvent.eventName) {
       return;
     }
 
-    const settingData = this.#settingToParams.get(setting);
-    if (!settingData) {
+    const settingData = this.#settingToParams.get(settingName);
+    if (!settingData || !settingData.setting) {
       return;
     }
 
+    const setting = settingData.setting;
     const oldSettingValue = setting.get();
     setting.set(!oldSettingValue);
     if (!oldSettingValue && !settingData.settingExpandState.isSettingExpanded) {
@@ -656,7 +660,7 @@ export class AISettingsTab extends UI.Widget.VBox {
     }
 
     // Custom settings logic
-    if (setting.name === 'console-insights-enabled') {
+    if (settingName === 'console-insights-enabled') {
       if (oldSettingValue) {
         // If the user turns the feature off, we want them to go through the full onboarding flow should they later turn
         // the feature on again. We achieve this by resetting the onboardig setting.
@@ -669,7 +673,7 @@ export class AISettingsTab extends UI.Widget.VBox {
             .createSetting('console-insights-skip-reminder', true, Common.Settings.SettingStorageType.SESSION)
             .set(true);
       }
-    } else if (setting.name === 'ai-assistance-enabled') {
+    } else if (settingName === 'ai-assistance-enabled') {
       if (!setting.get()) {
         // If the "AI Assistance" is toggled off, we remove all the history entries related to the feature.
         void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();

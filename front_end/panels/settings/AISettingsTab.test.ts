@@ -132,7 +132,7 @@ describeWithEnvironment('AISettingsTab', () => {
     settingToParams.next();
     const explainThisResource = settingToParams.next();
     assert.exists(explainThisResource.value);
-    assert.isFalse(explainThisResource.value[0].disabled());
+    assert.isFalse(explainThisResource.value[1].setting?.disabled());
     assert.strictEqual(explainThisResource.value[1].settingDescription, 'Get context-aware help on the inspected page');
   });
 
@@ -342,5 +342,13 @@ describeWithEnvironment('AISettingsTab', () => {
 
     assert.isTrue(aiAssistanceEnabledSetting.get());
     assert.isTrue(v2OptInSeenSetting.get());
+  });
+
+  it('registers setting entries with string settingName keys', async () => {
+    const {view} = await setupWidget();
+
+    const settingNames = Array.from(view.input.settingToParams.keys());
+    assert.include(settingNames, 'console-insights-enabled');
+    assert.include(settingNames, 'ai-assistance-enabled');
   });
 });

@@ -90,7 +90,7 @@ export class AiAgent2 extends AiAgent<unknown> {
     this.declareFunction<{skills: SkillName[]}>('learnSkills', {
       description: () => {
         const unloadedSkills = Object.keys(SKILLS).filter(name => !this.#activeSkills.has(name as SkillName));
-        return `Loads the specified skills to gain access to their specialized tools. Call this if the user's query relates to an available skill that is not yet loaded. Available skills: ${
+        return `Loads the specified skills to gain access to their specialized tools. Call this ONLY for skills listed under Available skills that are not yet loaded. Do not call this for skills that are already loaded. Available skills that are not yet loaded: ${
             unloadedSkills.join(', ')}.`;
       },
       parameters: {
@@ -103,7 +103,7 @@ export class AiAgent2 extends AiAgent<unknown> {
               type: Host.AidaClient.ParametersTypes.STRING,
               description: 'Skill name',
             },
-            description: 'List of skill names to load',
+            description: 'List of unloaded skill names to load',
           },
         },
         required: ['skills'],
@@ -154,6 +154,7 @@ ${skillsManifest}
 
 You must call \`learnSkills\` to load a skill before you can use its tools.
 If the user's request requires a skill that is not currently loaded, you MUST call \`learnSkills\` to load that skill first, instead of attempting to solve the query using tools from other skills.
+Do NOT call \`learnSkills\` for skills that are already loaded.
 
 User query: ${enhancedQuery}`;
   }
@@ -182,7 +183,8 @@ User query: ${enhancedQuery}`;
       debugLog(`AiAgent2: Attempting to load skill ${name}`);
       if (this.#activeSkills.has(name)) {
         debugLog(`AiAgent2: Skill ${name} is already loaded`);
-        response += `Skill ${name} is already loaded.\n`;
+        response += `Error: Skill '${
+            name}' is already loaded. Call its tools directly instead of invoking learnSkills for '${name}' again.\n`;
         continue;
       }
 

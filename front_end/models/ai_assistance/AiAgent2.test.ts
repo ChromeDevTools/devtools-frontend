@@ -89,7 +89,9 @@ describeWithEnvironment('AiAgent2', () => {
     await agent.learnSkill(['styling']);
     const result = await agent.learnSkill(['styling']);
 
-    assert.isTrue(result.includes('already loaded'));
+    assert.strictEqual(
+        result,
+        'Error: Skill \'styling\' is already loaded. Call its tools directly instead of invoking learnSkills for \'styling\' again.');
   });
 
   it('handles invalid skill names gracefully', async () => {

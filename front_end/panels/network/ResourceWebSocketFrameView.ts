@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2012 Research In Motion Limited. All rights reserved.
@@ -92,10 +91,9 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 export class ResourceWebSocketFrameView extends ResourceChunkView<SDK.NetworkRequest.WebSocketFrame> {
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
-    super(
-        request, 'network-web-socket-message-filter', 'resource-web-socket-frame-split-view-state',
-        i18nString(UIStrings.webSocketFrame), i18nString(UIStrings.filterUsingRegex));
-    this.element.setAttribute('jslog', `${VisualLogging.pane('web-socket-messages').track({resize: true})}`);
+    super(request, 'network-web-socket-message-filter', 'resource-web-socket-frame-split-view-state',
+          i18nString(UIStrings.webSocketFrame), i18nString(UIStrings.filterUsingRegex),
+          {jslog: `${VisualLogging.pane('web-socket-messages').track({resize: true})}`});
   }
 
   override getRequestChunks(): SDK.NetworkRequest.WebSocketFrame[] {

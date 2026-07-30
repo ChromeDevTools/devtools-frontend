@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
-/* eslint-disable no-unused-private-class-members */
 
 import '../../../ui/kit/kit.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -101,14 +101,24 @@ export const enum Mode {
   INVALID_SUBMIT = 'InvalidSubmit',
 }
 
-export class LinearMemoryNavigator extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export class LinearMemoryNavigator extends UI.Widget.Widget {
   #address = '0';
   #error: string|undefined = undefined;
   #valid = true;
   #canGoBackInHistory = false;
   #canGoForwardInHistory = false;
   #mode = Mode.SUBMITTED;
+
+  constructor(element?: HTMLElement) {
+    super(element);
+    /* eslint-disable @devtools/no-imperative-dom-api */
+    if (!this.element.shadowRoot) {
+      this.element.attachShadow({mode: 'open'});
+    }
+    /* eslint-enable @devtools/no-imperative-dom-api */
+    this.element.classList.remove('vbox', 'flex-auto', 'widget');
+    this.element.classList.add('devtools-linear-memory-inspector-navigator');
+  }
 
   set data(data: LinearMemoryNavigatorData) {
     this.#address = data.address;
@@ -117,7 +127,24 @@ export class LinearMemoryNavigator extends HTMLElement {
     this.#canGoBackInHistory = data.canGoBackInHistory;
     this.#canGoForwardInHistory = data.canGoForwardInHistory;
     this.#mode = data.mode;
-    LinearMemoryNavigator.#render(data, this.#onAddressChange.bind(this), this.dispatchEvent.bind(this), this.#shadow);
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const shadowRoot = this.element.shadowRoot;
+    if (!shadowRoot) {
+      return;
+    }
+    LinearMemoryNavigator.#render({
+      address: this.#address,
+      error: this.#error,
+      valid: this.#valid,
+      canGoBackInHistory: this.#canGoBackInHistory,
+      canGoForwardInHistory: this.#canGoForwardInHistory,
+      mode: this.#mode,
+    },
+                                  this.#onAddressChange.bind(this), this.element.dispatchEvent.bind(this.element),
+                                  shadowRoot);
   }
 
   static #render(data: LinearMemoryNavigatorData, onAddressChange: (mode: Mode, event: Event) => void,
@@ -187,7 +214,7 @@ export class LinearMemoryNavigator extends HTMLElement {
 
   #onAddressChange(mode: Mode, event: Event): void {
     const addressInput = event.target as HTMLInputElement;
-    this.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
+    this.element.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
   }
 
   static #createButton(data: {icon: string, title: string, event: Event, enabled: boolean, jslogContext: string},
@@ -201,13 +228,5 @@ export class LinearMemoryNavigator extends HTMLElement {
         data-button=${data.event.type} title=${data.title}
         @click=${() => dispatchEvent(data.event)}
       ></devtools-button>`;
-  }
-}
-
-customElements.define('devtools-linear-memory-inspector-navigator', LinearMemoryNavigator);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-linear-memory-inspector-navigator': LinearMemoryNavigator;
   }
 }

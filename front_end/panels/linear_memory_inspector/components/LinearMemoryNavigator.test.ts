@@ -26,10 +26,9 @@ describe('LinearMemoryNavigator', () => {
   setupLocaleHooks();
   let component: LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator;
 
-  beforeEach(renderNavigator);
-
-  function renderNavigator() {
-    component = new LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator();
+  beforeEach(async () => {
+    const el = document.createElement('devtools-linear-memory-inspector-navigator');
+    component = new LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator(el);
     renderElementIntoDOM(component);
 
     component.data = {
@@ -40,10 +39,11 @@ describe('LinearMemoryNavigator', () => {
       canGoBackInHistory: true,
       canGoForwardInHistory: true,
     };
-  }
+    await component.updateComplete;
+  });
 
   async function assertNavigationEvents(eventType: string) {
-    const shadowRoot = component.shadowRoot;
+    const shadowRoot = component.element.shadowRoot;
     assert.isNotNull(shadowRoot);
     const pageNavigationButtons = shadowRoot.querySelectorAll(`[data-button=${eventType}]`);
     assertElements(pageNavigationButtons, Buttons.Button.Button);
@@ -52,7 +52,7 @@ describe('LinearMemoryNavigator', () => {
     const navigation = [];
     for (const button of pageNavigationButtons) {
       const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryNavigator.PageNavigationEvent>(
-          component, eventType);
+          component.element, eventType);
       button.click();
       const event = await eventPromise;
       navigation.push(event.data);
@@ -65,14 +65,14 @@ describe('LinearMemoryNavigator', () => {
   }
 
   it('renders navigator address', () => {
-    const shadowRoot = component.shadowRoot;
+    const shadowRoot = component.element.shadowRoot;
     assert.isNotNull(shadowRoot);
     const input = shadowRoot.querySelector(NAVIGATOR_ADDRESS_SELECTOR);
     assert.instanceOf(input, HTMLInputElement);
     assert.strictEqual(input.value, '20');
   });
 
-  it('re-renders address on address change', () => {
+  it('re-renders address on address change', async () => {
     component.data = {
       address: '16',
       valid: true,
@@ -81,8 +81,9 @@ describe('LinearMemoryNavigator', () => {
       canGoBackInHistory: false,
       canGoForwardInHistory: false,
     };
+    await component.updateComplete;
 
-    const shadowRoot = component.shadowRoot;
+    const shadowRoot = component.element.shadowRoot;
     assert.isNotNull(shadowRoot);
     const input = shadowRoot.querySelector(NAVIGATOR_ADDRESS_SELECTOR);
     assert.instanceOf(input, HTMLInputElement);
@@ -91,9 +92,9 @@ describe('LinearMemoryNavigator', () => {
 
   it('sends event when clicking on refresh', async () => {
     const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryNavigator.RefreshRequestedEvent>(
-        component, 'refreshrequested');
+        component.element, 'refreshrequested');
 
-    const shadowRoot = component.shadowRoot;
+    const shadowRoot = component.element.shadowRoot;
     assert.isNotNull(shadowRoot);
     const refreshButton = shadowRoot.querySelector(NAVIGATOR_REFRESH_BUTTON_SELECTOR);
     assert.instanceOf(refreshButton, Buttons.Button.Button);
@@ -110,7 +111,7 @@ describe('LinearMemoryNavigator', () => {
     await assertNavigationEvents('pagenavigation');
   });
 
-  it('disables the previous and next page buttons if specified as not navigatable', () => {
+  it('disables the previous and next page buttons if specified as not navigatable', async () => {
     component.data = {
       address: '0',
       valid: true,
@@ -119,8 +120,10 @@ describe('LinearMemoryNavigator', () => {
       canGoBackInHistory: false,
       canGoForwardInHistory: false,
     };
+    await component.updateComplete;
 
-    const buttons = getElementsWithinComponent(component, NAVIGATOR_HISTORY_BUTTON_SELECTOR, Buttons.Button.Button);
+    const buttons =
+        getElementsWithinComponent(component.element, NAVIGATOR_HISTORY_BUTTON_SELECTOR, Buttons.Button.Button);
     assert.lengthOf(buttons, 2);
     const historyBack = buttons[0];
     const historyForward = buttons[1];
@@ -130,11 +133,11 @@ describe('LinearMemoryNavigator', () => {
   });
 
   it('shows tooltip on hovering over address', () => {
-    const input = getElementWithinComponent(component, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
+    const input = getElementWithinComponent(component.element, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
     assert.strictEqual(input.title, 'Enter address');
   });
 
-  it('shows tooltip with error and selects all text on submitting invalid address input', () => {
+  it('shows tooltip with error and selects all text on submitting invalid address input', async () => {
     const error = 'Address is invalid';
     const invalidAddress = '60';
     component.data = {
@@ -145,7 +148,8 @@ describe('LinearMemoryNavigator', () => {
       canGoBackInHistory: false,
       canGoForwardInHistory: false,
     };
-    const input = getElementWithinComponent(component, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
+    await component.updateComplete;
+    const input = getElementWithinComponent(component.element, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
     assert.strictEqual(input.title, error);
     assert.isNotNull(input.selectionStart);
     assert.isNotNull(input.selectionEnd);
@@ -155,7 +159,7 @@ describe('LinearMemoryNavigator', () => {
     }
   });
 
-  it('shows tooltip with invalid address on hovering over address', () => {
+  it('shows tooltip with invalid address on hovering over address', async () => {
     const error = 'Address is invalid';
     component.data = {
       address: '60',
@@ -165,12 +169,14 @@ describe('LinearMemoryNavigator', () => {
       canGoBackInHistory: false,
       canGoForwardInHistory: false,
     };
-    const input = getElementWithinComponent(component, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
+    await component.updateComplete;
+    const input = getElementWithinComponent(component.element, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
     assert.strictEqual(input.title, error);
   });
 
   it('shows tooltip on page navigation buttons', () => {
-    const buttons = getElementsWithinComponent(component, NAVIGATOR_PAGE_BUTTON_SELECTOR, Buttons.Button.Button);
+    const buttons =
+        getElementsWithinComponent(component.element, NAVIGATOR_PAGE_BUTTON_SELECTOR, Buttons.Button.Button);
     assert.lengthOf(buttons, 2);
     const pageBack = buttons[0];
     const pageForward = buttons[1];
@@ -180,7 +186,8 @@ describe('LinearMemoryNavigator', () => {
   });
 
   it('shows tooltip on history navigation buttons', () => {
-    const buttons = getElementsWithinComponent(component, NAVIGATOR_HISTORY_BUTTON_SELECTOR, Buttons.Button.Button);
+    const buttons =
+        getElementsWithinComponent(component.element, NAVIGATOR_HISTORY_BUTTON_SELECTOR, Buttons.Button.Button);
     assert.lengthOf(buttons, 2);
     const historyBack = buttons[0];
     const historyForward = buttons[1];
@@ -191,7 +198,7 @@ describe('LinearMemoryNavigator', () => {
 
   it('shows tooltip on refresh button', () => {
     const refreshButton =
-        getElementWithinComponent(component, NAVIGATOR_REFRESH_BUTTON_SELECTOR, Buttons.Button.Button);
+        getElementWithinComponent(component.element, NAVIGATOR_REFRESH_BUTTON_SELECTOR, Buttons.Button.Button);
 
     assert.strictEqual(refreshButton.getAttribute('title'), 'Refresh');
   });
@@ -202,7 +209,8 @@ describe('LinearMemoryNavigator Screenshots', () => {
   let component: LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator;
 
   it('renders correctly', async () => {
-    component = new LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator();
+    const el = document.createElement('devtools-linear-memory-inspector-navigator');
+    component = new LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator(el);
     renderElementIntoDOM(component, {
       width: 400,
       height: 'var(--sys-size-15)',
@@ -217,10 +225,11 @@ describe('LinearMemoryNavigator Screenshots', () => {
       canGoBackInHistory: true,
       canGoForwardInHistory: true,
     };
+    await component.updateComplete;
 
     const style = document.createElement('style');
     style.textContent = 'input { font-family: ahem !important; }';
-    component.shadowRoot!.appendChild(style);
+    component.element.shadowRoot!.appendChild(style);
 
     await assertScreenshot('linear_memory_inspector/navigator.png');
   });

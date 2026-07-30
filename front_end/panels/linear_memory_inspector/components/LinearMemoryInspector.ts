@@ -15,6 +15,7 @@ import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import {
   type AddressInputChangedEvent,
   type HistoryNavigationEvent,
+  LinearMemoryNavigator,
   Mode,
   Navigation,
   type PageNavigationEvent,
@@ -148,20 +149,21 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
   render(html`
     <style>${linearMemoryInspectorStyles}</style>
     <div class="view">
-      <devtools-linear-memory-inspector-navigator
-        .data=${
-      {
-        address: navigatorAddressToShow,
-        valid: navigatorAddressIsValid,
-        mode: input.currentNavigatorMode,
-        error: errorMsg,
-        canGoBackInHistory: input.canGoBackInHistory,
-        canGoForwardInHistory: input.canGoForwardInHistory,
-      }}
+      <devtools-widget class="navigator-widget"
+        ${widget(LinearMemoryNavigator, {
+        data: {
+          address: navigatorAddressToShow,
+          valid: navigatorAddressIsValid,
+          mode: input.currentNavigatorMode,
+          error: errorMsg,
+          canGoBackInHistory: input.canGoBackInHistory,
+          canGoForwardInHistory: input.canGoForwardInHistory,
+        },
+      })}
         @refreshrequested=${input.onRefreshRequest}
         @addressinputchanged=${input.onAddressChange}
         @pagenavigation=${input.onNavigatePage}
-        @historynavigation=${input.onNavigateHistory}></devtools-linear-memory-inspector-navigator>
+        @historynavigation=${input.onNavigateHistory}></devtools-widget>
       ${widget(LinearMemoryHighlightChipList, {
         highlightInfos: highlightedMemoryAreas,
         focusedMemoryHighlight,

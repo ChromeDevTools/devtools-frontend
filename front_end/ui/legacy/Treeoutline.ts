@@ -35,6 +35,8 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
@@ -59,6 +61,23 @@ import {
   InterceptBindingDirective,
   isEditing,
 } from './UIUtils.js';
+
+const UIStrings = {
+  /**
+   * @description Screen reader announcement made when the user expands a tree item, such as a DOM
+   * node in the Elements panel. Uses a polite live region so the tree item's name, role, and
+   * position are announced before this state update.
+   */
+  expanded: 'expanded',
+  /**
+   * @description Screen reader announcement made when the user collapses a tree item, such as a DOM
+   * node in the Elements panel. Uses a polite live region so the tree item's name, role, and
+   * position are announced before this state update.
+   */
+  collapsed: 'collapsed',
+} as const;
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/Treeoutline.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const nodeToParentTreeElementMap = new WeakMap<Node, TreeElement>();
 const {render} = Lit;
@@ -953,17 +972,7 @@ export class TreeElement {
       return;
     }
 
-    if (this.expanded) {
-      if (event.altKey) {
-        this.collapseRecursively();
-      } else {
-        this.collapse();
-      }
-    } else if (event.altKey) {
-      void this.expandRecursively();
-    } else {
-      this.expand();
-    }
+    void this.#setExpandedFromUser(!this.expanded, event.altKey);
     void VisualLogging.logClick(this.expandLoggable, event);
     event.consume();
   }
@@ -998,7 +1007,30 @@ export class TreeElement {
       return;
     }
     if (this.expandable && !this.expanded) {
-      this.expand();
+      void this.#setExpandedFromUser(true, false);
+    }
+  }
+
+  async #setExpandedFromUser(shouldExpand: boolean, recursively: boolean): Promise<void> {
+    const wasExpanded = this.expanded;
+    if (shouldExpand) {
+      if (recursively) {
+        await this.expandRecursively();
+      } else {
+        this.expand();
+      }
+    } else if (recursively) {
+      this.collapseRecursively();
+    } else {
+      this.collapse();
+    }
+
+    // When a tree item stays focused, VoiceOver on macOS does not announce the updated
+    // `aria-expanded` state, leaving the user without feedback. Other screen readers announce it
+    // natively, so restrict this live-region announcement to macOS to avoid announcing the state
+    // twice elsewhere.
+    if (this.expanded !== wasExpanded && Host.Platform.isMac()) {
+      ARIAUtils.LiveAnnouncer.status(this.expanded ? i18nString(UIStrings.expanded) : i18nString(UIStrings.collapsed));
     }
   }
 
@@ -1094,11 +1126,7 @@ export class TreeElement {
 
   collapseOrAscend(altKey: boolean): boolean {
     if (this.expanded && this.collapsible) {
-      if (altKey) {
-        this.collapseRecursively();
-      } else {
-        this.collapse();
-      }
+      void this.#setExpandedFromUser(false, altKey);
       return true;
     }
 
@@ -1129,11 +1157,7 @@ export class TreeElement {
     }
 
     if (!this.expanded) {
-      if (altKey) {
-        void this.expandRecursively();
-      } else {
-        this.expand();
-      }
+      void this.#setExpandedFromUser(true, altKey);
       return true;
     }
 
@@ -1291,15 +1315,13 @@ export class TreeElement {
   }
 
   onenter(): boolean {
-    if (this.expandable && !this.expanded) {
-      this.expand();
-      return true;
+    // Expanding requires an expandable node; collapsing requires a collapsible one.
+    const canToggle = this.expanded ? this.collapsible : this.expandable;
+    if (!canToggle) {
+      return false;
     }
-    if (this.collapsible && this.expanded) {
-      this.collapse();
-      return true;
-    }
-    return false;
+    void this.#setExpandedFromUser(!this.expanded, false);
+    return true;
   }
 
   ondelete(): boolean {

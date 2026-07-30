@@ -38,7 +38,6 @@ DEFAULT_FEATURE_SET.enable('DevToolsFreestyler', {
   user_tier: 'TESTERS',
   function_calling: true,
 });
-DEFAULT_FEATURE_SET.enable('DevToolsWellKnown');
 DEFAULT_FEATURE_SET.enable('DevToolsVerticalDrawer');
 DEFAULT_FEATURE_SET.enable('DevToolsAiPromptApi');
 DEFAULT_FEATURE_SET.enable('DevToolsAiAssistanceContextSelectionAgent');

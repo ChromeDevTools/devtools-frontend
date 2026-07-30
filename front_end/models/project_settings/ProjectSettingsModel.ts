@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
 /** The security origin for all DevTools (front-end) resources. */
@@ -107,23 +106,20 @@ export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   constructor(
-      hostConfig: Root.Runtime.HostConfig,
       pageResourceLoader: SDK.PageResourceLoader.PageResourceLoader,
       targetManager: SDK.TargetManager.TargetManager,
   ) {
     super();
     this.#pageResourceLoader = pageResourceLoader;
     this.#targetManager = targetManager;
-    if (hostConfig.devToolsWellKnown?.enabled) {
-      this.#targetManager.addEventListener(
-          SDK.TargetManager.Events.INSPECTED_URL_CHANGED,
-          this.#inspectedURLChanged,
-          this,
-      );
-      const target = this.#targetManager.primaryPageTarget();
-      if (target !== null) {
-        this.#inspectedURLChanged({data: target});
-      }
+    this.#targetManager.addEventListener(
+        SDK.TargetManager.Events.INSPECTED_URL_CHANGED,
+        this.#inspectedURLChanged,
+        this,
+    );
+    const target = this.#targetManager.primaryPageTarget();
+    if (target !== null) {
+      this.#inspectedURLChanged({data: target});
     }
   }
 

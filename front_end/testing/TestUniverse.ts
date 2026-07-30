@@ -210,7 +210,6 @@ export class TestUniverse implements Foundation.Universe.Universe {
     [
       ProjectSettings.ProjectSettingsModel.ProjectSettingsModel,
       () => new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(
-          this.#creationOptions?.hostConfig ?? {} as Root.Runtime.HostConfig,
           this.pageResourceLoader,
           this.targetManager,
           ),

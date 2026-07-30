@@ -22,27 +22,15 @@ describe('ProjectSettingsModel', () => {
   });
 
   it('yields an empty configuration initially', () => {
-    const hostConfig = {devToolsWellKnown: {enabled: true}};
     const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
     const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
 
-    projectSettingsModel = new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager);
-
-    assert.deepEqual(projectSettingsModel.projectSettings, {});
-  });
-
-  it('yields an empty configuration if `devToolsWellKnown` is disabled', () => {
-    const hostConfig = {devToolsWellKnown: {enabled: false}};
-    const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
-    const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
-
-    projectSettingsModel = new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager);
+    projectSettingsModel = new ProjectSettingsModel(pageResourceLoader, targetManager);
 
     assert.deepEqual(projectSettingsModel.projectSettings, {});
   });
 
   it('doesn\'t load the devtools.json from non-local origins', async () => {
-    const hostConfig = {devToolsWellKnown: {enabled: true}};
     const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
     const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
 
@@ -57,14 +45,13 @@ describe('ProjectSettingsModel', () => {
     sinon.stub(frame, 'securityOriginDetails').get(() => ({isLocalhost: false}));
     sinon.stub(frame, 'url').get(() => urlString`http://www.example.com/`);
 
-    projectSettingsModel = new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager);
+    projectSettingsModel = new ProjectSettingsModel(pageResourceLoader, targetManager);
 
     const projectSettings = await projectSettingsModel.projectSettingsPromise;
     assert.deepEqual(projectSettings, {});
   });
 
   it('correctly loads the devtools.json from local origins', async () => {
-    const hostConfig = {devToolsWellKnown: {enabled: true}};
     const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
     const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
 
@@ -87,7 +74,7 @@ describe('ProjectSettingsModel', () => {
     pageResourceLoader.loadResource.withArgs(url, sinon.match({target, frameId, initiatorUrl}))
         .returns(Promise.resolve({content}));
 
-    projectSettingsModel = new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager);
+    projectSettingsModel = new ProjectSettingsModel(pageResourceLoader, targetManager);
 
     const projectSettings = await projectSettingsModel.projectSettingsPromise;
     assert.deepEqual(projectSettings, {
@@ -99,7 +86,6 @@ describe('ProjectSettingsModel', () => {
   });
 
   it('doesn\'t load the devtools.json from DevTools-on-DevTools (without --custom-devtools-frontend)', async () => {
-    const hostConfig = {devToolsWellKnown: {enabled: true}};
     const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
     const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
 
@@ -113,14 +99,13 @@ describe('ProjectSettingsModel', () => {
     resourceTreeModel.mainFrame = frame;
     sinon.stub(frame, 'url').get(() => urlString`devtools://devtools/bundled/devtools_app.html`);
 
-    projectSettingsModel = new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager);
+    projectSettingsModel = new ProjectSettingsModel(pageResourceLoader, targetManager);
 
     const projectSettings = await projectSettingsModel.projectSettingsPromise;
     assert.deepEqual(projectSettings, {});
   });
 
   it('correctly loads the devtools.json for DevTools-on-DevTools (with --custom-devtools-frontend)', async () => {
-    const hostConfig = {devToolsWellKnown: {enabled: true}};
     const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
     const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
 
@@ -142,7 +127,7 @@ describe('ProjectSettingsModel', () => {
     pageResourceLoader.loadResource.withArgs(url, sinon.match({target, frameId, initiatorUrl}))
         .returns(Promise.resolve({content}));
 
-    projectSettingsModel = new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager);
+    projectSettingsModel = new ProjectSettingsModel(pageResourceLoader, targetManager);
 
     const projectSettings = await projectSettingsModel.projectSettingsPromise;
     assert.deepEqual(projectSettings, {
@@ -154,37 +139,15 @@ describe('ProjectSettingsModel', () => {
   });
 
   it('listens for navigations', () => {
-    const hostConfig = {devToolsWellKnown: {enabled: true}};
     const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
     const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
 
-    projectSettingsModel = new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager);
+    projectSettingsModel = new ProjectSettingsModel(pageResourceLoader, targetManager);
 
     assert.isTrue(targetManager.addEventListener.calledOnceWith(SDK.TargetManager.Events.INSPECTED_URL_CHANGED));
   });
 
-  it('doesn\'t listen for navigations if `devToolsWellKnown` is disabled', () => {
-    const hostConfig = {devToolsWellKnown: {enabled: false}};
-    const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
-    const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
-
-    projectSettingsModel = new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager);
-
-    sinon.assert.notCalled(targetManager.addEventListener);
-  });
-
-  it('reports unavailable when `devToolsWellKnown` is disabled', () => {
-    const hostConfig = {devToolsWellKnown: {enabled: false}};
-    const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
-    const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
-
-    projectSettingsModel = new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager);
-
-    assert.strictEqual(projectSettingsModel.availability, 'unavailable');
-  });
-
   it('reports available for local origins', async () => {
-    const hostConfig = {devToolsWellKnown: {enabled: true}};
     const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
     const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
 
@@ -207,7 +170,7 @@ describe('ProjectSettingsModel', () => {
     pageResourceLoader.loadResource.withArgs(url, sinon.match({target, frameId, initiatorUrl}))
         .returns(Promise.resolve({content}));
 
-    projectSettingsModel = new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager);
+    projectSettingsModel = new ProjectSettingsModel(pageResourceLoader, targetManager);
     await projectSettingsModel.projectSettingsPromise;
 
     assert.strictEqual(projectSettingsModel.availability, 'available');

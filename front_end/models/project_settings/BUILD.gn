@@ -13,7 +13,6 @@ devtools_module("project_settings") {
   deps = [
     "../../core/common:bundle",
     "../../core/platform:bundle",
-    "../../core/root:bundle",
     "../../core/sdk:bundle",
   ]
 }

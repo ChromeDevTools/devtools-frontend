@@ -432,13 +432,6 @@ export interface HostConfigVeLogging {
   testing: boolean;
 }
 
-/**
- * @see https://goo.gle/devtools-json-design
- */
-export interface HostConfigWellKnown {
-  enabled: boolean;
-}
-
 export interface HostConfigPrivacyUI {
   enabled: boolean;
 }
@@ -574,7 +567,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAiCodeGeneration: HostConfigAiCodeGeneration,
   devToolsAiCodeCompletionStyles: HostConfigAiCodeCompletionStyles,
   devToolsVeLogging: HostConfigVeLogging,
-  devToolsWellKnown: HostConfigWellKnown,
   /**
    * OffTheRecord here indicates that the user's profile is either incognito,
    * or guest mode, rather than a "normal" profile.

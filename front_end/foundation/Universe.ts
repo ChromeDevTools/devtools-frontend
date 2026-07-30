@@ -91,7 +91,6 @@ export class Universe {
     context.set(SDK.PageResourceLoader.PageResourceLoader, pageResourceLoader);
 
     const projectSettingsModel = new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(
-        options.hostConfig,
         pageResourceLoader,
         targetManager,
     );

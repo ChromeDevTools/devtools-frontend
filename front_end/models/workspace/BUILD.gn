@@ -70,6 +70,7 @@ devtools_entrypoint("bundle") {
     "../ai_assistance/*",
     "../bindings/*",
     "../breakpoints/*",
+    "../emulation/*",
     "../extensions/*",
     "../formatter/*",
     "../issues_manager/*",

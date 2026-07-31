@@ -5,10 +5,13 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Geometry from '../geometry/geometry.js';
+import * as Workspace from '../workspace/workspace.js';
 
 import {
   type Cutout,
@@ -444,6 +447,14 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.#settings.createSetting('emulation.show-device-mode', false);
   }
 
+  isDeviceModeOn(): boolean {
+    return this.enabledSetting().get();
+  }
+
+  toggleDeviceMode(): void {
+    this.enabledSetting().set(!this.enabledSetting().get());
+  }
+
   scaleSetting(): Common.Settings.Setting<number> {
     return this.#scaleSetting;
   }
@@ -832,7 +843,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
   }
 
-  async captureScreenshot(fullSize: boolean, clip?: Protocol.Page.Viewport): Promise<string|null> {
+  async #captureScreenshot(fullSize: boolean, clip?: Protocol.Page.Viewport): Promise<string|null> {
     const screenCaptureModel =
         this.#emulationModel ? this.#emulationModel.target().model(SDK.ScreenCaptureModel.ScreenCaptureModel) : null;
     if (!screenCaptureModel) {
@@ -877,6 +888,122 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       overlayModel?.setShowViewportSizeOnResize(this.#type === Type.None);
       this.calculateAndEmulate(false);
     }
+  }
+
+  async captureScreenshot(): Promise<void> {
+    const screenshot = await this.#captureScreenshot(false);
+    if (screenshot === null) {
+      return;
+    }
+
+    const pageImage = new Image();
+    pageImage.src = 'data:image/png;base64,' + screenshot;
+    pageImage.onload = async () => {
+      const scale = pageImage.naturalWidth / this.screenRect().width;
+      const outlineRectFromModel = this.outlineRect();
+      if (!outlineRectFromModel) {
+        throw new Error('Unable to take screenshot: no outlineRect available.');
+      }
+      const outlineRect = outlineRectFromModel.scale(scale);
+      const screenRect = this.screenRect().scale(scale);
+      const visiblePageRect = this.visiblePageRect().scale(scale);
+      const contentLeft = screenRect.left + visiblePageRect.left - outlineRect.left;
+      const contentTop = screenRect.top + visiblePageRect.top - outlineRect.top;
+
+      const canvas = new OffscreenCanvas(Math.floor(outlineRect.width),
+                                         // Cap the height to not hit the GPU limit.
+                                         // https://crbug.com/1260828
+                                         Math.min((1 << 14), Math.floor(outlineRect.height)));
+      const ctx = canvas.getContext('2d', {willReadFrequently: true});
+      if (!ctx) {
+        throw new Error('Could not get 2d context from canvas.');
+      }
+      ctx.imageSmoothingEnabled = false;
+
+      if (this.outlineImage()) {
+        await this.paintImage(ctx, this.outlineImage(), outlineRect.relativeTo(outlineRect));
+      }
+      if (this.screenImage()) {
+        await this.paintImage(ctx, this.screenImage(), screenRect.relativeTo(outlineRect));
+      }
+      ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
+      void this.saveScreenshot(canvas);
+    };
+  }
+
+  async captureFullSizeScreenshot(): Promise<void> {
+    const screenshot = await this.#captureScreenshot(true);
+    if (screenshot === null) {
+      return;
+    }
+    return this.saveScreenshotBase64(screenshot);
+  }
+
+  async captureAreaScreenshot(clip?: Protocol.Page.Viewport): Promise<void> {
+    const screenshot = await this.#captureScreenshot(false, clip);
+    if (screenshot === null) {
+      return;
+    }
+    return this.saveScreenshotBase64(screenshot);
+  }
+
+  private saveScreenshotBase64(screenshot: string): void {
+    const pageImage = new Image();
+    pageImage.src = 'data:image/png;base64,' + screenshot;
+    pageImage.onload = () => {
+      const canvas = new OffscreenCanvas(pageImage.naturalWidth,
+                                         // Cap the height to not hit the GPU limit.
+                                         // https://crbug.com/1260828
+                                         Math.min((1 << 14), Math.floor(pageImage.naturalHeight)));
+      const ctx = canvas.getContext('2d', {willReadFrequently: true});
+      if (!ctx) {
+        throw new Error('Could not get 2d context for base64 screenshot.');
+      }
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(pageImage, 0, 0);
+      void this.saveScreenshot(canvas);
+    };
+  }
+
+  private paintImage(ctx: OffscreenCanvasRenderingContext2D|CanvasRenderingContext2D, src: string,
+                     rect: Rect): Promise<void> {
+    return new Promise(resolve => {
+      const image = new Image();
+      image.crossOrigin = 'Anonymous';
+      image.srcset = src;
+      image.onerror = () => resolve();
+      image.onload = () => {
+        ctx.drawImage(image, rect.left, rect.top, rect.width, rect.height);
+        resolve();
+      };
+    });
+  }
+
+  private async saveScreenshot(canvas: OffscreenCanvas): Promise<void> {
+    const url = this.inspectedURL();
+    let fileName = '';
+    if (url) {
+      const withoutFragment = Platform.StringUtilities.removeURLFragment(url);
+      fileName = Platform.StringUtilities.trimURL(withoutFragment);
+    }
+
+    const device = this.device();
+    if (device && this.type() === Type.Device) {
+      fileName += `(${device.title})`;
+    }
+    fileName += '.png';
+    const blob = await canvas.convertToBlob({type: 'image/png'});
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
+    const contentData = new TextUtils.ContentData.ContentData(base64, /* isBase64=*/ true, 'image/png');
+    await Workspace.FileManager.FileManager.instance().save(fileName as Platform.DevToolsPath.RawPathString,
+                                                            contentData, /* forceSaveAs=*/ true);
+    Workspace.FileManager.FileManager.instance().close(fileName as Platform.DevToolsPath.RawPathString);
   }
 
   private applyTouch(touchEnabled: boolean, mobile: boolean): void {

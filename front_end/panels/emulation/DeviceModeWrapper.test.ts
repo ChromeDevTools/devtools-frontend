@@ -68,10 +68,7 @@ describe('DeviceModeWrapper', () => {
     const context = UI.Context.Context.instance();
     context.setFlavor(SDK.DOMModel.DOMNode, node);
 
-    const placeholder = sinon.createStubInstance(Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder);
-    const wrapper =
-        Emulation.DeviceModeWrapper.DeviceModeWrapper.instance({forceNew: true, inspectedPagePlaceholder: placeholder});
-    const captureScreenshotStub = sinon.stub(wrapper, 'captureScreenshot');
+    const captureScreenshotStub = sinon.stub(Emulation.DeviceModeWrapper.DeviceModeWrapper, 'captureScreenshot');
 
     const actionDelegate = new Emulation.DeviceModeWrapper.ActionDelegate();
     actionDelegate.handleAction(context, 'emulation.capture-node-screenshot');

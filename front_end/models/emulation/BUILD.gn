@@ -20,6 +20,7 @@ devtools_module("emulation") {
     "../../core/sdk:bundle",
     "../../generated",
     "../geometry:bundle",
+    "../workspace:bundle",
   ]
 }
 

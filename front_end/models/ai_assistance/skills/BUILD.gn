@@ -16,6 +16,7 @@ action_foreach("generate_skills") {
   sources = [
     "accessibility.md",
     "network.md",
+    "performance.md",
     "styling.md",
   ]
 

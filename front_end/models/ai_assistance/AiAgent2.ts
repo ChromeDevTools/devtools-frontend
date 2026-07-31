@@ -4,6 +4,7 @@
 
 import * as Host from '../../core/host/host.js';
 import type * as LHModel from '../lighthouse/lighthouse.js';
+import type * as Trace from '../trace/trace.js';
 
 import {
   AiAgent,
@@ -28,6 +29,7 @@ const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
   styling: 'CSS and styling',
   network: 'Network requests',
   accessibility: 'Accessibility',
+  performance: 'Performance',
 };
 
 const preamble = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
@@ -59,6 +61,7 @@ If the user asks a question that requires an investigation or debugging, use thi
 
 export interface AiAgent2Options extends ExecuteJsAgentOptions {
   lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+  performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
 }
 
 export class AiAgent2 extends AiAgent<unknown> {
@@ -72,6 +75,7 @@ export class AiAgent2 extends AiAgent<unknown> {
   readonly #allowedOrigin?: () => AllowedOriginResult;
   readonly #lighthouseRecording?:
       (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+  readonly #performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
 
   get options(): RequestOptions {
     return {};
@@ -84,6 +88,7 @@ export class AiAgent2 extends AiAgent<unknown> {
     super(opts);
     this.#changes = opts.changeManager ?? new ChangeManager(opts.targetManager);
     this.#lighthouseRecording = opts.lighthouseRecording;
+    this.#performanceRecordAndReload = opts.performanceRecordAndReload;
     this.#execJs = opts.execJs ?? executeJsCode;
     this.#allowedOrigin = opts.allowedOrigin;
     this.#declaredTools.add('learnSkills');
@@ -236,6 +241,7 @@ User query: ${enhancedQuery}`;
           getTarget: () => this.targetManager.primaryPageTarget(),
           getEstablishedOrigin: () => this.#getConversationOrigin(),
           lighthouseRecording: this.#lighthouseRecording,
+          performanceRecordAndReload: this.#performanceRecordAndReload,
         };
         return tool.handler(args, context, options);
       },

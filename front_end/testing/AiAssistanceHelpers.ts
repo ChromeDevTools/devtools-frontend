@@ -359,6 +359,16 @@ export function assertRequiresApproval<T>(response: AiAssistance.AiAgent.Functio
   }
 }
 
+export function assertIsContext<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>): asserts response is {
+  context: AiAssistance.AiAgent.ConversationContext<unknown>,
+  description: string,
+  widgets?: AiAssistance.AiAgent.AiWidget[],
+} {
+  if (!('context' in response)) {
+    assert.fail(`Expected context response, but got: ${JSON.stringify(response)}`);
+  }
+}
+
 /**
  * Creates a dummy File object containing a solid red image with the given dimensions.
  *

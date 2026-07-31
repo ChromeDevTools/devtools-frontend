@@ -5,6 +5,7 @@
 import type * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
+import type * as Trace from '../../trace/trace.js';
 import type {ConversationContext, FunctionCallHandlerResult, FunctionHandlerOptions} from '../agents/AiAgent.js';
 import type {executeJsCode} from '../agents/ExecuteJavascript.js';
 import type {ChangeManager} from '../ChangeManager.js';
@@ -81,11 +82,18 @@ export interface LighthouseCapability {
 }
 
 /**
+ * Capability for tools that need to record performance traces.
+ */
+export interface PerformanceRecordingCapability {
+  performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
+}
+
+/**
  * Unified context interface providing all capabilities available in the project.
  * Used by the agent to pass a complete context to any tool type-safely.
  */
 export type AllToolsCapabilities = BaseToolCapability&PageExecutionCapability&StyleMutationCapability&TargetCapability&
-    OriginLockCapability&LighthouseCapability;
+    OriginLockCapability&LighthouseCapability&PerformanceRecordingCapability;
 
 /**
  * Base argument type for AI Tools.
@@ -100,6 +108,7 @@ export const enum ToolName {
   GET_LIGHTHOUSE_AUDITS = 'getLighthouseAudits',
   RESOLVE_DEVTOOLS_NODE_PATH = 'resolveDevtoolsNodePath',
   GET_ELEMENT_ACCESSIBILITY_DETAILS = 'getElementAccessibilityDetails',
+  RECORD_PERFORMANCE_TRACE = 'recordPerformanceTrace',
 }
 
 /**
@@ -117,14 +126,14 @@ export interface BaseTool {
 
 /**
  * Main generic interface for defining a Tool.
- * Binds the parameter schema properties and the handler implementation to a strict `Args` and `ContextType` contract.
+ * Binds the parameter schema properties and the handler implementation to a strict `Args` and `Capabilities` contract.
  *
  * @template Args - The expected object type for tool arguments. Must be an object type.
  * @template ReturnType - The type of data returned by the handler function.
- * @template ContextType - The interface defining the capabilities this tool requires. Defaults to `BaseToolCapability`.
+ * @template Capabilities - The interface defining the capabilities this tool requires. Defaults to `BaseToolCapability`.
  */
 export interface Tool<Args extends ToolArgs = ToolArgs, ReturnType = unknown,
-                                   ContextType extends BaseToolCapability = BaseToolCapability> extends BaseTool {
+                                   Capabilities extends BaseToolCapability = BaseToolCapability> extends BaseTool {
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof Args>;
   /**
    * Converts the tool arguments into user-friendly display information.
@@ -139,12 +148,12 @@ export interface Tool<Args extends ToolArgs = ToolArgs, ReturnType = unknown,
    * The implementation function called when the AI invokes this tool.
    *
    * @param args The arguments provided by the AI model matching the tool's parameter schema.
-   * @param context The context object providing the capabilities requested by `ContextType`.
+   * @param capabilities The context object providing the capabilities requested by `Capabilities`.
    * @param options Additional runtime options for the handler execution.
    */
   handler(
       args: Args,
-      context: ContextType,
+      capabilities: Capabilities,
       options?: FunctionHandlerOptions,
       ): Promise<FunctionCallHandlerResult<ReturnType>>;
 }

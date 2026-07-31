@@ -587,15 +587,12 @@ export class StorageAgent extends AiAgent<StorageItem> {
     });
 
     this.declareFunction<Record<string, never>, {
-      totalUsage: string,
-      totalQuota: string,
       usageBreakdown: Array<{
         storageType: string,
         usage: string,
       }>,
     }>('getStorageBreakdown', {
-      description:
-          'Retrieves the total storage usage, total storage quota, and a breakdown of active storage usage per storage type for the top-level page.',
+      description: 'Retrieves a breakdown of active storage usage per storage type for the top-level page.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',
@@ -615,23 +612,49 @@ export class StorageAgent extends AiAgent<StorageItem> {
           return {error: 'No origin available or not allowed.'};
         }
 
-        const origin = this.context.getOrigin();
+        const origin = this.context.getItem().primaryTargetOrigin;
         const response = await target.storageAgent().invoke_getUsageAndQuota({origin});
         if (response.getError()) {
           return {error: response.getError() || 'Unknown CDP error'};
         }
 
-        const usageBreakdown = response.usageBreakdown.filter(entry => entry.usage > 0)
-                                   .sort((a, b) => b.usage - a.usage)
-                                   .map(entry => ({
-                                          storageType: entry.storageType as string,
-                                          usage: bytes(entry.usage),
-                                        }));
+        const mainStorageKey = target.model(SDK.StorageKeyManager.StorageKeyManager)?.mainStorageKey() || undefined;
+        const localStorages =
+            resolveDOMStorages(this.context, 'localStorage', origin, this.targetManager, mainStorageKey);
+        const localStorageBytes = await calculateDOMStoragesUsage(localStorages);
+
+        const sessionStorages =
+            resolveDOMStorages(this.context, 'sessionStorage', origin, this.targetManager, mainStorageKey);
+        const sessionStorageBytes = await calculateDOMStoragesUsage(sessionStorages);
+
+        const cookies = await getCookiesForDomain(target, origin);
+        let cookieBytes = 0;
+        if (cookies) {
+          for (const cookie of cookies) {
+            cookieBytes += cookie.size();
+          }
+        }
+
+        const rawUsageBreakdown: Array<{storageType: string, rawUsage: number}> =
+            response.usageBreakdown.filter(entry => entry.usage > 0).map(entry => ({
+                                                                           storageType: entry.storageType as string,
+                                                                           rawUsage: entry.usage,
+                                                                         }));
+
+        rawUsageBreakdown.push(
+            {storageType: 'local_storage', rawUsage: localStorageBytes},
+            {storageType: 'session_storage', rawUsage: sessionStorageBytes},
+            {storageType: 'cookies', rawUsage: cookieBytes},
+        );
+
+        rawUsageBreakdown.sort((a, b) => b.rawUsage - a.rawUsage);
+        const usageBreakdown = rawUsageBreakdown.map(entry => ({
+                                                       storageType: entry.storageType,
+                                                       usage: bytes(entry.rawUsage),
+                                                     }));
 
         return {
           result: {
-            totalUsage: bytes(response.usage),
-            totalQuota: bytes(response.quota),
             usageBreakdown,
           },
         };
@@ -730,6 +753,21 @@ export function findFrameForOrigin(
   }
   return null;
 }
+
+async function calculateDOMStoragesUsage(storages: SDK.DOMStorageModel.DOMStorage[]): Promise<number> {
+  let totalBytes = 0;
+  for (const storage of storages) {
+    const items = await storage.getItems();
+    if (items) {
+      for (const [key, value] of items) {
+        // UTF-16 encoded strings use 2 bytes per character.
+        totalBytes += (key.length + value.length) * 2;
+      }
+    }
+  }
+  return totalBytes;
+}
+
 export function resolveDOMStorages(
     context: ConversationContext<StorageItem>|undefined, type: 'localStorage'|'sessionStorage', origin: string,
     targetManager: SDK.TargetManager.TargetManager, storageKey?: string): SDK.DOMStorageModel.DOMStorage[] {

@@ -677,6 +677,27 @@ describe('StorageAgent', function() {
     target.setInspectedURL(urlString`https://example.com`);
     (universe.targetManager.primaryPageTarget as unknown as sinon.SinonStub).returns(target);
 
+    const domStorageModel = target.model(SDK.DOMStorageModel.DOMStorageModel);
+    assert.exists(domStorageModel);
+
+    const mockLocalStorage = sinon.createStubInstance(SDK.DOMStorageModel.DOMStorage);
+    sinon.stub(mockLocalStorage, 'storageKey').get(() => 'https://example.com/');
+    sinon.stub(mockLocalStorage, 'isLocalStorage').get(() => true);
+    mockLocalStorage.getItems.resolves([['key1', 'value1']]);
+
+    const mockSessionStorage = sinon.createStubInstance(SDK.DOMStorageModel.DOMStorage);
+    sinon.stub(mockSessionStorage, 'storageKey').get(() => 'https://example.com/');
+    sinon.stub(mockSessionStorage, 'isLocalStorage').get(() => false);
+    mockSessionStorage.getItems.resolves([['foo', 'bar']]);
+
+    activeStorages = [mockLocalStorage, mockSessionStorage];
+
+    const cookieModel = target.model(SDK.CookieModel.CookieModel);
+    assert.exists(cookieModel);
+    const mockCookie = new SDK.Cookie.Cookie('cookie-name', 'cookie-value');
+    mockCookie.setSize(15);
+    sinon.stub(cookieModel, 'getCookiesForDomain').withArgs('https://example.com').resolves([mockCookie]);
+
     const aidaClient = mockAidaClient([
       [{
         functionCalls: [{name: 'getStorageBreakdown', args: {}}],
@@ -701,11 +722,12 @@ describe('StorageAgent', function() {
     const parsedOutput = JSON.parse(actionResponse.output!);
 
     assert.deepEqual(parsedOutput, {
-      totalUsage: AiAssistance.UnitFormatters.bytes(1000),
-      totalQuota: AiAssistance.UnitFormatters.bytes(10000),
       usageBreakdown: [
         {storageType: 'service_workers', usage: AiAssistance.UnitFormatters.bytes(800)},
         {storageType: 'indexeddb', usage: AiAssistance.UnitFormatters.bytes(200)},
+        {storageType: 'local_storage', usage: AiAssistance.UnitFormatters.bytes(20)},
+        {storageType: 'cookies', usage: AiAssistance.UnitFormatters.bytes(15)},
+        {storageType: 'session_storage', usage: AiAssistance.UnitFormatters.bytes(12)},
       ],
     });
   });

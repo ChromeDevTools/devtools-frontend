@@ -182,11 +182,17 @@ const DEFAULT_VIEW = (input: ViewInput|null, _output: undefined, target: Documen
 type View = typeof DEFAULT_VIEW;
 
 export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
+  static override readonly INJECT = [SDK.EventBreakpointsModel.EventBreakpointsManager] as const;
+
   #viewInput: ViewInput|null = null;
-  constructor(element?: HTMLElement, private readonly view: View = DEFAULT_VIEW) {
+  readonly #eventBreakpointsManager: SDK.EventBreakpointsModel.EventBreakpointsManager;
+  constructor(element: HTMLElement|undefined,
+              [eventBreakpointsManager]: UI.Widget.WidgetDependencies<typeof DebuggerPausedMessage>,
+              private readonly view: View = DEFAULT_VIEW) {
     super(element, {
       useShadowDom: 'pure',
     });
+    this.#eventBreakpointsManager = eventBreakpointsManager;
   }
 
   private static descriptionWithoutStack(description: string): string {
@@ -221,7 +227,7 @@ export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
     };
   }
 
-  static #findEventNameForUi(detailsAuxData?: SDK.DebuggerModel.EventListenerPausedDetailsAuxData): string {
+  #findEventNameForUi(detailsAuxData?: SDK.DebuggerModel.EventListenerPausedDetailsAuxData): string {
     if (!detailsAuxData) {
       return '';
     }
@@ -237,7 +243,7 @@ export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
     }
 
     let breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint|null =
-        SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpoint(detailsAuxData);
+        this.#eventBreakpointsManager.resolveEventListenerBreakpoint(detailsAuxData);
     if (breakpoint) {
       // EventBreakpointsManager breakpoints are the only ones with localized names.
       return getLocalizedBreakpointName(breakpoint.name);
@@ -269,8 +275,8 @@ export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
     if (details.reason === Protocol.Debugger.PausedEventReason.DOM) {
       this.#viewInput = await DebuggerPausedMessage.createDOMBreakpointHitMessageDetails(details);
     } else if (details.reason === Protocol.Debugger.PausedEventReason.EventListener) {
-      const eventNameForUI = DebuggerPausedMessage.#findEventNameForUi(
-          details.auxData as SDK.DebuggerModel.EventListenerPausedDetailsAuxData);
+      const eventNameForUI =
+          this.#findEventNameForUi(details.auxData as SDK.DebuggerModel.EventListenerPausedDetailsAuxData);
       this.#viewInput = {mainText: i18nString(UIStrings.pausedOnEventListener), subText: eventNameForUI, errorLike};
     } else if (details.reason === Protocol.Debugger.PausedEventReason.XHR) {
       const auxData = (details.auxData as PausedDetailsAuxData);

@@ -247,7 +247,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     this.debugToolbar = this.createDebugToolbar();
     this.debugToolbarDrawer = this.createDebugToolbarDrawer();
-    this.debuggerPausedMessage = new DebuggerPausedMessage();
+    this.debuggerPausedMessage =
+        new DebuggerPausedMessage(undefined, [SDK.EventBreakpointsModel.EventBreakpointsManager.instance()]);
 
     const initialDebugSidebarWidth = 225;
     this.splitWidget =

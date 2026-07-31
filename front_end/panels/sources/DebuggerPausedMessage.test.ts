@@ -30,7 +30,8 @@ describeWithEnvironment('DebuggerPausedMessage', () => {
       debuggerWorkspaceBinding,
       settings: universe.settings,
     });
-    pausedMessage = new Sources.DebuggerPausedMessage.DebuggerPausedMessage();
+    pausedMessage =
+        new Sources.DebuggerPausedMessage.DebuggerPausedMessage(undefined, [universe.eventBreakpointsManager]);
   });
 
   function getPausedMessageFromDOM(): {main: string, sub?: string} {

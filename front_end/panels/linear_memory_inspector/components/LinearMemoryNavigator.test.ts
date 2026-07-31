@@ -28,14 +28,12 @@ describe('LinearMemoryNavigator', () => {
     component = new LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator();
     renderElementIntoDOM(component);
 
-    component.data = {
-      address: '20',
-      valid: true,
-      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.SUBMITTED,
-      error: undefined,
-      canGoBackInHistory: true,
-      canGoForwardInHistory: true,
-    };
+    component.address = '20';
+    component.valid = true;
+    component.mode = LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.SUBMITTED;
+    component.error = undefined;
+    component.canGoBackInHistory = true;
+    component.canGoForwardInHistory = true;
   }
 
   async function assertNavigationEvents(eventType: 'page'|'history') {
@@ -76,14 +74,12 @@ describe('LinearMemoryNavigator', () => {
   });
 
   it('re-renders address on address change', async () => {
-    component.data = {
-      address: '16',
-      valid: true,
-      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.SUBMITTED,
-      error: undefined,
-      canGoBackInHistory: false,
-      canGoForwardInHistory: false,
-    };
+    component.address = '16';
+    component.valid = true;
+    component.mode = LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.SUBMITTED;
+    component.error = undefined;
+    component.canGoBackInHistory = false;
+    component.canGoForwardInHistory = false;
     await component.updateComplete;
 
     const shadowRoot = component.contentElement.shadowRoot;
@@ -120,14 +116,12 @@ describe('LinearMemoryNavigator', () => {
   });
 
   it('disables the previous and next page buttons if specified as not navigatable', async () => {
-    component.data = {
-      address: '0',
-      valid: true,
-      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.SUBMITTED,
-      error: undefined,
-      canGoBackInHistory: false,
-      canGoForwardInHistory: false,
-    };
+    component.address = '0';
+    component.valid = true;
+    component.mode = LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.SUBMITTED;
+    component.error = undefined;
+    component.canGoBackInHistory = false;
+    component.canGoForwardInHistory = false;
     await component.updateComplete;
 
     const shadowRoot = component.contentElement.shadowRoot;
@@ -150,14 +144,12 @@ describe('LinearMemoryNavigator', () => {
   it('shows tooltip with error and selects all text on submitting invalid address input', async () => {
     const error = 'Address is invalid';
     const invalidAddress = '60';
-    component.data = {
-      address: invalidAddress,
-      valid: false,
-      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.INVALID_SUBMIT,
-      error,
-      canGoBackInHistory: false,
-      canGoForwardInHistory: false,
-    };
+    component.address = invalidAddress;
+    component.valid = false;
+    component.mode = LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.INVALID_SUBMIT;
+    component.error = error;
+    component.canGoBackInHistory = false;
+    component.canGoForwardInHistory = false;
     await component.updateComplete;
     const input = component.contentElement.shadowRoot!.querySelector<HTMLInputElement>(NAVIGATOR_ADDRESS_SELECTOR);
     assert.isNotNull(input);
@@ -172,14 +164,12 @@ describe('LinearMemoryNavigator', () => {
 
   it('shows tooltip with invalid address on hovering over address', async () => {
     const error = 'Address is invalid';
-    component.data = {
-      address: '60',
-      valid: false,
-      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.EDIT,
-      error,
-      canGoBackInHistory: false,
-      canGoForwardInHistory: false,
-    };
+    component.address = '60';
+    component.valid = false;
+    component.mode = LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.EDIT;
+    component.error = error;
+    component.canGoBackInHistory = false;
+    component.canGoForwardInHistory = false;
     await component.updateComplete;
     const input = component.contentElement.shadowRoot!.querySelector<HTMLInputElement>(NAVIGATOR_ADDRESS_SELECTOR);
     assert.isNotNull(input);
@@ -233,14 +223,12 @@ describe('LinearMemoryNavigator Screenshots', () => {
       includeCommonStyles: true,
     });
 
-    component.data = {
-      address: '20',
-      valid: true,
-      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.SUBMITTED,
-      error: undefined,
-      canGoBackInHistory: true,
-      canGoForwardInHistory: true,
-    };
+    component.address = '20';
+    component.valid = true;
+    component.mode = LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.SUBMITTED;
+    component.error = undefined;
+    component.canGoBackInHistory = true;
+    component.canGoForwardInHistory = true;
     await component.updateComplete;
 
     const style = document.createElement('style');

@@ -120,13 +120,57 @@ export class LinearMemoryNavigator extends UI.Widget.Widget {
     }
   }
 
-  set data(data: LinearMemoryNavigatorData) {
-    this.#address = data.address;
-    this.#error = data.error;
-    this.#valid = data.valid;
-    this.#canGoBackInHistory = data.canGoBackInHistory;
-    this.#canGoForwardInHistory = data.canGoForwardInHistory;
-    this.#mode = data.mode;
+  get address(): string {
+    return this.#address;
+  }
+
+  set address(address: string) {
+    this.#address = address;
+    this.requestUpdate();
+  }
+
+  get error(): string|undefined {
+    return this.#error;
+  }
+
+  set error(error: string|undefined) {
+    this.#error = error;
+    this.requestUpdate();
+  }
+
+  get valid(): boolean {
+    return this.#valid;
+  }
+
+  set valid(valid: boolean) {
+    this.#valid = valid;
+    this.requestUpdate();
+  }
+
+  get canGoBackInHistory(): boolean {
+    return this.#canGoBackInHistory;
+  }
+
+  set canGoBackInHistory(canGoBackInHistory: boolean) {
+    this.#canGoBackInHistory = canGoBackInHistory;
+    this.requestUpdate();
+  }
+
+  get canGoForwardInHistory(): boolean {
+    return this.#canGoForwardInHistory;
+  }
+
+  set canGoForwardInHistory(canGoForwardInHistory: boolean) {
+    this.#canGoForwardInHistory = canGoForwardInHistory;
+    this.requestUpdate();
+  }
+
+  get mode(): Mode {
+    return this.#mode;
+  }
+
+  set mode(mode: Mode) {
+    this.#mode = mode;
     this.requestUpdate();
   }
 

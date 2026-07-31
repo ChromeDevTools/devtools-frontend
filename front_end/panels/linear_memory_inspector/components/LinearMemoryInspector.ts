@@ -148,14 +148,12 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
     <div class="view">
       <devtools-widget class="navigator-widget"
         ${widget(LinearMemoryNavigator, {
-        data: {
-          address: navigatorAddressToShow,
-          valid: navigatorAddressIsValid,
-          mode: input.currentNavigatorMode,
-          error: errorMsg,
-          canGoBackInHistory: input.canGoBackInHistory,
-          canGoForwardInHistory: input.canGoForwardInHistory,
-        },
+        address: navigatorAddressToShow,
+        valid: navigatorAddressIsValid,
+        mode: input.currentNavigatorMode,
+        error: errorMsg,
+        canGoBackInHistory: input.canGoBackInHistory,
+        canGoForwardInHistory: input.canGoForwardInHistory,
         onRefreshRequest: input.onRefreshRequest,
         onAddressChange: input.onAddressChange,
         onNavigatePage: input.onNavigatePage,

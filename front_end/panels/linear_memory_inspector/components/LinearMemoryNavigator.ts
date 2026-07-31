@@ -64,6 +64,92 @@ export const enum Mode {
   INVALID_SUBMIT = 'InvalidSubmit',
 }
 
+function renderNavigator(data: LinearMemoryNavigatorData,
+                         onAddressChange: ((address: string, mode: Mode) => void)|undefined,
+                         onNavigatePage: ((navigation: Navigation) => void)|undefined,
+                         onNavigateHistory: ((navigation: Navigation) => void)|undefined,
+                         onRefreshRequest: (() => void)|undefined, shadow: ShadowRoot): void {
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+  const result = html`
+    <style>${linearMemoryNavigatorStyles}</style>
+    <div class="navigator">
+      <div class="navigator-item">
+        ${createButton({icon: 'undo', title: i18nString(UIStrings.goBackInAddressHistory),
+            onClick: () => onNavigateHistory?.(Navigation.BACKWARD), enabled: data.canGoBackInHistory,
+            jslogContext:'linear-memory-inspector.history-back'})}
+        ${createButton({icon: 'redo', title: i18nString(UIStrings.goForwardInAddressHistory),
+            onClick: () => onNavigateHistory?.(Navigation.FORWARD), enabled: data.canGoForwardInHistory,
+            jslogContext:'linear-memory-inspector.history-forward'})}
+      </div>
+      <div class="navigator-item">
+        ${createButton({icon: 'chevron-left', title: i18nString(UIStrings.previousPage),
+            onClick: () => onNavigatePage?.(Navigation.BACKWARD), enabled: true,
+            jslogContext:'linear-memory-inspector.previous-page'})}
+        ${createAddressInput(data, onAddressChange)}
+        ${createButton({icon: 'chevron-right', title: i18nString(UIStrings.nextPage),
+            onClick: () => onNavigatePage?.(Navigation.FORWARD), enabled: true,
+            jslogContext:'linear-memory-inspector.next-page'})}
+      </div>
+      ${createButton({icon: 'refresh', title: i18nString(UIStrings.refresh),
+          onClick: () => onRefreshRequest?.(), enabled: true,
+          jslogContext:'linear-memory-inspector.refresh'})}
+    </div>
+    `;
+    render(result, shadow);
+  // clang-format on
+}
+
+function createAddressInput(data: LinearMemoryNavigatorData,
+                            onAddressChange: ((address: string, mode: Mode) => void)|undefined): Lit.TemplateResult {
+  const classMap = {
+    'address-input': true,
+    invalid: !data.valid,
+  };
+  return html`<input
+    class=${Lit.Directives.classMap(classMap)}
+    data-input="true"
+    .value=${data.address}
+    jslog=${VisualLogging.textField('linear-memory-inspector.address').track({
+    change: true,
+  })}
+    title=${
+      ifDefined(
+          data.valid ? i18nString(UIStrings.enterAddress) : data.error,
+          )}
+    @change=${(e: Event) => onAddressChange?.((e.target as HTMLInputElement).value, Mode.SUBMITTED)}
+    @input=${(e: Event) => onAddressChange?.((e.target as HTMLInputElement).value, Mode.EDIT)}
+    ${Lit.Directives.ref((el: Element|undefined) => {
+    if (el) {
+      const inputEl = el as HTMLInputElement;
+      if (data.mode === Mode.SUBMITTED) {
+        inputEl.blur();
+      } else if (data.mode === Mode.INVALID_SUBMIT) {
+        inputEl.select();
+      }
+    }
+  })}
+  />`;
+}
+
+function createButton(data: {
+  icon: string,
+  title: string,
+  onClick: () => void,
+  enabled: boolean,
+  jslogContext: string,
+}): Lit.TemplateResult {
+  return html`
+    <devtools-button class="navigator-button"
+      .data=${{variant: Buttons.Button.Variant.ICON,
+               iconName: data.icon,
+               disabled: !data.enabled} as Buttons.Button.ButtonData}
+      jslog=${VisualLogging.action().track({click: true, keydown: 'Enter'}).context(data.jslogContext)}
+      title=${data.title}
+      @click=${data.onClick}
+    ></devtools-button>`;
+}
+
 export class LinearMemoryNavigator extends UI.Widget.Widget {
   #address = '0';
   #error: string|undefined = undefined;
@@ -179,7 +265,7 @@ export class LinearMemoryNavigator extends UI.Widget.Widget {
     if (!shadowRoot) {
       return;
     }
-    LinearMemoryNavigator.#render({
+    renderNavigator({
       address: this.#address,
       error: this.#error,
       valid: this.#valid,
@@ -187,88 +273,7 @@ export class LinearMemoryNavigator extends UI.Widget.Widget {
       canGoForwardInHistory: this.#canGoForwardInHistory,
       mode: this.#mode,
     },
-                                  this.onAddressChange, this.onNavigatePage, this.onNavigateHistory,
-                                  this.onRefreshRequest, shadowRoot);
-  }
-
-  static #render(data: LinearMemoryNavigatorData, onAddressChange: ((address: string, mode: Mode) => void)|undefined,
-                 onNavigatePage: ((navigation: Navigation) => void)|undefined,
-                 onNavigateHistory: ((navigation: Navigation) => void)|undefined,
-                 onRefreshRequest: (() => void)|undefined, shadow: ShadowRoot): void {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    const result = html`
-      <style>${linearMemoryNavigatorStyles}</style>
-      <div class="navigator">
-        <div class="navigator-item">
-          ${LinearMemoryNavigator.#createButton({icon: 'undo', title: i18nString(UIStrings.goBackInAddressHistory),
-              onClick: () => onNavigateHistory?.(Navigation.BACKWARD), enabled: data.canGoBackInHistory,
-              jslogContext:'linear-memory-inspector.history-back'})}
-          ${LinearMemoryNavigator.#createButton({icon: 'redo', title: i18nString(UIStrings.goForwardInAddressHistory),
-              onClick: () => onNavigateHistory?.(Navigation.FORWARD), enabled: data.canGoForwardInHistory,
-              jslogContext:'linear-memory-inspector.history-forward'})}
-        </div>
-        <div class="navigator-item">
-          ${LinearMemoryNavigator.#createButton({icon: 'chevron-left', title: i18nString(UIStrings.previousPage),
-              onClick: () => onNavigatePage?.(Navigation.BACKWARD), enabled: true,
-              jslogContext:'linear-memory-inspector.previous-page'})}
-          ${LinearMemoryNavigator.#createAddressInput(data, onAddressChange)}
-          ${LinearMemoryNavigator.#createButton({icon: 'chevron-right', title: i18nString(UIStrings.nextPage),
-              onClick: () => onNavigatePage?.(Navigation.FORWARD), enabled: true,
-              jslogContext:'linear-memory-inspector.next-page'})}
-        </div>
-        ${LinearMemoryNavigator.#createButton({icon: 'refresh', title: i18nString(UIStrings.refresh),
-            onClick: () => onRefreshRequest?.(), enabled: true,
-            jslogContext:'linear-memory-inspector.refresh'})}
-      </div>
-      `;
-      render(result, shadow);
-    // clang-format on
-  }
-
-  static #createAddressInput(data: LinearMemoryNavigatorData,
-                             onAddressChange: ((address: string, mode: Mode) => void)|undefined): Lit.TemplateResult {
-    const classMap = {
-      'address-input': true,
-      invalid: !data.valid,
-    };
-    return html`<input
-      class=${Lit.Directives.classMap(classMap)}
-      data-input="true"
-      .value=${data.address}
-      jslog=${VisualLogging.textField('linear-memory-inspector.address').track({
-      change: true,
-    })}
-      title=${
-        ifDefined(
-            data.valid ? i18nString(UIStrings.enterAddress) : data.error,
-            )}
-      @change=${(e: Event) => onAddressChange?.((e.target as HTMLInputElement).value, Mode.SUBMITTED)}
-      @input=${(e: Event) => onAddressChange?.((e.target as HTMLInputElement).value, Mode.EDIT)}
-      ${Lit.Directives.ref((el: Element|undefined) => {
-      if (el) {
-        const inputEl = el as HTMLInputElement;
-        if (data.mode === Mode.SUBMITTED) {
-          inputEl.blur();
-        } else if (data.mode === Mode.INVALID_SUBMIT) {
-          inputEl.select();
-        }
-      }
-    })}
-    />`;
-  }
-
-  static #createButton(data:
-                           {icon: string, title: string, onClick: () => void, enabled: boolean, jslogContext: string}):
-      Lit.TemplateResult {
-    return html`
-      <devtools-button class="navigator-button"
-        .data=${{variant: Buttons.Button.Variant.ICON,
-                 iconName: data.icon,
-                 disabled: !data.enabled} as Buttons.Button.ButtonData}
-        jslog=${VisualLogging.action().track({click: true, keydown: 'Enter'}).context(data.jslogContext)}
-        title=${data.title}
-        @click=${data.onClick}
-      ></devtools-button>`;
+                    this.onAddressChange, this.onNavigatePage, this.onNavigateHistory, this.onRefreshRequest,
+                    shadowRoot);
   }
 }

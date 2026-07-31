@@ -9,11 +9,11 @@ import type * as Autofill from './autofill.js';
 
 const UIStrings = {
   /**
-   * @description Label for the autofill pane
+   * @description Label for the Autofill panel.
    */
   autofill: 'Autofill',
   /**
-   * @description Command for showing the 'Autofill' pane
+   * @description Command for showing the Autofill panel.
    */
   showAutofill: 'Show Autofill',
 } as const;

@@ -29,30 +29,30 @@ const UIStrings = {
    */
   noAutofill: 'No autofill detected',
   /**
-   * @description Explanation for how to populate the autofill panel with data. Shown when there is
+   * @description Explanation for how to populate the Autofill panel with data. Shown when there is
    * no data available.
    */
-  toStartDebugging: 'To start debugging autofill, use Chrome’s autofill menu to fill an address form.',
+  toStartDebugging: 'To start debugging autofill, use Chrome’s autofill menu to fill an address form',
   /**
-   * @description Column header for column containing form field values
+   * @description Column header for column containing form field values.
    */
   value: 'Value',
   /**
-   * @description Column header for column containing the predicted autofill categories
+   * @description Column header for column containing the predicted autofill categories.
    */
   predictedAutofillValue: 'Predicted autofill value',
   /**
-   * @description Column header for column containing the name/label/id of form fields
+   * @description Column header for column containing the name/label/id of form fields.
    */
   formField: 'Form field',
   /**
    * @description Tooltip for an adorner for form fields which have an autocomplete attribute
-   * (http://go/mdn/HTML/Attributes/autocomplete)
+   * (http://go/mdn/HTML/Attributes/autocomplete).
    */
   autocompleteAttribute: 'Autocomplete attribute',
   /**
    * @description Abbreviation of 'attribute'. Text content of an adorner for form fields which
-   * have an autocomplete attribute (http://go/mdn/HTML/Attributes/autocomplete)
+   * have an autocomplete attribute (http://go/mdn/HTML/Attributes/autocomplete).
    */
   attr: 'attr',
   /**
@@ -80,21 +80,21 @@ const UIStrings = {
    * @description Tooltip text for a checkbox label in the Autofill panel. If checked, this panel
    * will open automatically whenever a form is being autofilled.
    */
-  autoShowTooltip: 'Open the autofill panel automatically when an autofill activity is detected.',
+  autoShowTooltip: 'Open the Autofill panel automatically when an autofill activity is detected',
   /**
-   * @description Aria text for the section of the autofill view containing a preview of the autofilled address.
+   * @description Aria text for the section of the Autofill view containing a preview of the autofilled address.
    */
   addressPreview: 'Address preview',
   /**
-   * @description Aria text for the section of the autofill view containing the info about the autofilled form fields.
+   * @description Aria text for the section of the Autofill view containing the info about the autofilled form fields.
    */
   formInspector: 'Form inspector',
   /**
-   * @description Link text for a hyperlink to more documentation
+   * @description Link text for a hyperlink to more documentation.
    */
   learnMore: 'Learn more',
   /**
-   * @description Link text for a hyperlink to webpage for leaving user feedback
+   * @description Link text for a hyperlink to webpage for leaving user feedback.
    */
   sendFeedback: 'Send feedback',
 } as const;

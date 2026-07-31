@@ -328,8 +328,8 @@ describeWithEnvironment('AISettingsTab', () => {
   it('marks the V2 opt-in dialog as seen when turning on AI assistance', async () => {
     const aiAssistanceEnabledSetting = Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled');
     aiAssistanceEnabledSetting.set(false);
-    const v2OptInSeenSetting =
-        Common.Settings.Settings.instance().moduleSetting('ai-assistance-v2-opt-in-change-dialog-seen');
+    const v2OptInSeenSetting = Common.Settings.Settings.instance().resolve(
+        AiAssistanceModel.AiUtils.aiAssistanceV2OptInChangeDialogSeenSettingDescriptor);
     v2OptInSeenSetting.set(false);
 
     const {view} = await setupWidget();

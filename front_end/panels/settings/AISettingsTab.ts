@@ -680,7 +680,9 @@ export class AISettingsTab extends UI.Widget.VBox {
       }
 
       if (setting.get()) {
-        Common.Settings.Settings.instance().moduleSetting('ai-assistance-v2-opt-in-change-dialog-seen').set(true);
+        Common.Settings.Settings.instance()
+            .resolve(AiAssistanceModel.AiUtils.aiAssistanceV2OptInChangeDialogSeenSettingDescriptor)
+            .set(true);
       }
     }
     this.requestUpdate();

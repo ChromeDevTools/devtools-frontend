@@ -72,6 +72,12 @@ export const consoleInsightsEnabledSettingDescriptor:
   },
 };
 
+export const aiAssistanceV2OptInChangeDialogSeenSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'ai-assistance-v2-opt-in-change-dialog-seen',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};
+
 export function isGeminiBranding(): boolean {
   return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }

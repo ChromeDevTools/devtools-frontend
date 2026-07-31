@@ -196,7 +196,7 @@ var iconButton_css_default = `/*
 // gen/front_end/ui/components/icon_button/IconButton.js
 var { html: html2 } = Lit;
 var IconButton = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+  #shadow = this.attachShadow({ mode: "open", delegatesFocus: true });
   #clickHandler;
   #groups = [];
   #compact = false;

@@ -9,6 +9,7 @@ import { html, nothing, render } from '../../../ui/lit/lit.js';
 import { LinearMemoryHighlightChipList } from './LinearMemoryHighlightChipList.js';
 import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
 import { formatAddress, parseAddress } from './LinearMemoryInspectorUtils.js';
+import { LinearMemoryNavigator, } from './LinearMemoryNavigator.js';
 import { LinearMemoryValueInterpreter } from './LinearMemoryValueInterpreter.js';
 import { getDefaultValueTypeMapping, VALUE_INTEPRETER_MAX_NUM_BYTES, } from './ValueInterpreterDisplayUtils.js';
 const UIStrings = {
@@ -51,19 +52,21 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     render(html `
     <style>${linearMemoryInspectorStyles}</style>
     <div class="view">
-      <devtools-linear-memory-inspector-navigator
-        .data=${{
-        address: navigatorAddressToShow,
-        valid: navigatorAddressIsValid,
-        mode: input.currentNavigatorMode,
-        error: errorMsg,
-        canGoBackInHistory: input.canGoBackInHistory,
-        canGoForwardInHistory: input.canGoForwardInHistory,
-    }}
+      <devtools-widget class="navigator-widget"
+        ${widget(LinearMemoryNavigator, {
+        data: {
+            address: navigatorAddressToShow,
+            valid: navigatorAddressIsValid,
+            mode: input.currentNavigatorMode,
+            error: errorMsg,
+            canGoBackInHistory: input.canGoBackInHistory,
+            canGoForwardInHistory: input.canGoForwardInHistory,
+        },
+    })}
         @refreshrequested=${input.onRefreshRequest}
         @addressinputchanged=${input.onAddressChange}
         @pagenavigation=${input.onNavigatePage}
-        @historynavigation=${input.onNavigateHistory}></devtools-linear-memory-inspector-navigator>
+        @historynavigation=${input.onNavigateHistory}></devtools-widget>
       ${widget(LinearMemoryHighlightChipList, {
         highlightInfos: highlightedMemoryAreas,
         focusedMemoryHighlight,

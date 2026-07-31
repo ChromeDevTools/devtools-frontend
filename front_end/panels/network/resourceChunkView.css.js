@@ -9,48 +9,53 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.resource-chunk-view {
-  user-select: text;
-}
-
-.resource-chunk-view .data-grid {
-  flex: auto;
-  border: none;
-
-  .resource-chunk-view-td {
-    border-bottom: 1px solid var(--sys-color-divider);
+@scope to (devtools-widget > *) {
+  :scope {
+    overflow: auto;
+    height: 100%;
   }
 
-  & tr {
-    &.resource-chunk-view-row-send td:first-child::before {
-      content: "\\2B06";
-      color: var(--sys-color-tertiary);
-      padding-right: 4px;
-    }
+  .resource-chunk-view {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    user-select: text;
+  }
 
-    &.resource-chunk-view-row-receive td:first-child::before {
-      content: "\\2B07";
-      color: var(--sys-color-error);
-      padding-right: 4px;
-    }
+  devtools-split-view {
+    flex: auto;
+    height: 100%;
+  }
 
-    &.resource-chunk-view-row-send {
-      background-color: color-mix(in srgb, var(--sys-color-tertiary-container), transparent 50%);
-    }
+  .data-grid .data-container table.data {
+    tr.data-grid-data-grid-node {
+      td.resource-chunk-view-td {
+        border-bottom: 1px solid var(--sys-color-divider);
+      }
 
-    &.resource-chunk-view-row-error {
-      background-color: var(--sys-color-surface-error);
-      color: var(--sys-color-on-surface-error);
+      &.resource-chunk-view-row-send td:first-child::before {
+        content: "\\2B06";
+        color: var(--sys-color-tertiary);
+        padding-right: 4px;
+      }
+
+      &.resource-chunk-view-row-receive td:first-child::before {
+        content: "\\2B07";
+        color: var(--sys-color-error);
+        padding-right: 4px;
+      }
+
+      &.resource-chunk-view-row-send {
+        background-color: color-mix(in srgb, var(--sys-color-tertiary-container), transparent 50%);
+      }
+
+      &.resource-chunk-view-row-error {
+        background-color: var(--sys-color-surface-error);
+        color: var(--sys-color-on-surface-error);
+      }
     }
   }
-}
-
-.resource-chunk-view .data-grid .data {
-  background-image: none;
-}
-
-.resource-chunk-view devtools-toolbar {
-  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve('./resourceChunkView.css')} */`;

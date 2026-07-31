@@ -29,12 +29,14 @@ export class SettingCheckbox extends HTMLElement {
     #setting;
     #changeListenerDescriptor;
     #textOverride;
+    #disabled;
     set data(data) {
         if (this.#changeListenerDescriptor && this.#setting) {
             this.#setting.removeChangeListener(this.#changeListenerDescriptor.listener);
         }
         this.#setting = data.setting;
         this.#textOverride = data.textOverride;
+        this.#disabled = data.disabled;
         this.#changeListenerDescriptor = this.#setting.addChangeListener(() => {
             this.#render();
         });
@@ -127,7 +129,7 @@ export class SettingCheckbox extends HTMLElement {
           <input
             type="checkbox"
             .checked=${this.checked}
-            ?disabled=${this.#setting.disabled()}
+            ?disabled=${this.#disabled || this.#setting.disabled()}
             @change=${this.#checkboxChanged}
             jslog=${VisualLogging.toggle().track({ change: true }).context(this.#setting.name)}
             aria-label=${titleText}

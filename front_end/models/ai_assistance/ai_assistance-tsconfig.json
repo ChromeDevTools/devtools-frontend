@@ -136,6 +136,9 @@
       "path": "../emulation/bundle-tsconfig.json"
     },
     {
+      "path": "../formatter/bundle-tsconfig.json"
+    },
+    {
       "path": "../lighthouse/bundle-tsconfig.json"
     },
     {

@@ -5,6 +5,7 @@ import * as Lit from '../../lit/lit.js';
 export interface SettingCheckboxData {
     setting: Common.Settings.Setting<boolean>;
     textOverride?: string;
+    disabled?: boolean;
 }
 /**
  * A simple checkbox that is backed by a boolean setting.

@@ -1,6 +1,5 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 /**
  * The structure of the project settings.
@@ -41,7 +40,7 @@ export declare class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWra
      */
     get projectSettings(): ProjectSettings;
     get projectSettingsPromise(): Promise<ProjectSettings>;
-    constructor(hostConfig: Root.Runtime.HostConfig, pageResourceLoader: SDK.PageResourceLoader.PageResourceLoader, targetManager: SDK.TargetManager.TargetManager);
+    constructor(pageResourceLoader: SDK.PageResourceLoader.PageResourceLoader, targetManager: SDK.TargetManager.TargetManager);
     disposeForTest(): void;
 }
 /**

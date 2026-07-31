@@ -1,17 +1,17 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { BinaryResourceView } from './BinaryResourceView.js';
-import { DataGridItem, OriginalResourceChunkView } from './OriginalResourceChunkView.js';
+import { DataGridItem, defaultHeaderTemplate, ResourceChunkView } from './ResourceChunkView.js';
+const { html, } = Lit;
 const UIStrings = {
     /**
      * @description Text in Event Source Messages View of the Network panel
@@ -44,10 +44,28 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceDirectSocketChunkView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class ResourceDirectSocketChunkView extends OriginalResourceChunkView {
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+// clang-format off
+function udpBoundHeaderTemplate() {
+    return html `
+    <tr>
+      <th id="data" weight="63">${i18nLazyString(UIStrings.data)}</th>
+          <th id="address" align="right" weight="15">${i18nLazyString(UIStrings.address)}</th>
+          <th id="port" align="right" weight="10">${i18nLazyString(UIStrings.port)}</th>
+          <th id="length" align="right" weight="5">${i18nLazyString(UIStrings.length)}</th>
+          <th id="time" sortable sort="ascending" weight="7">${i18nLazyString(UIStrings.time)}</th>
+    </tr>`;
+}
+// clang-format on
+export class ResourceDirectSocketChunkView extends ResourceChunkView {
+    get headerTemplate() {
+        if (this.request.directSocketInfo?.type === SDK.NetworkRequest.DirectSocketType.UDP_BOUND) {
+            return udpBoundHeaderTemplate();
+        }
+        return defaultHeaderTemplate();
+    }
     constructor(request) {
-        super(request, 'network-direct-socket-chunk-filter', 'resource-direct-socket-chunk-split-view-state', i18nString(UIStrings.directSocketChunk), i18nString(UIStrings.filterUsingRegex));
-        this.element.setAttribute('jslog', `${VisualLogging.pane('direct-socket-messages').track({ resize: true })}`);
+        super(request, 'network-direct-socket-chunk-filter', 'resource-direct-socket-chunk-split-view-state', i18nString(UIStrings.directSocketChunk), i18nString(UIStrings.filterUsingRegex), { jslog: `${VisualLogging.pane('direct-socket-messages').track({ resize: true })}` });
     }
     getRequestChunks() {
         return this.request.directSocketChunks();
@@ -63,7 +81,7 @@ export class ResourceDirectSocketChunkView extends OriginalResourceChunkView {
     }
     wasShown() {
         super.wasShown();
-        this.refresh();
+        this.requestUpdate();
         this.request.addEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.onDirectSocketChunkAdded, this);
     }
     willHide() {
@@ -118,13 +136,10 @@ class ResourceChunkNode extends DataGridItem {
     #binaryView = null;
     chunk;
     isTextFrame = false;
+    data;
+    cssClass;
     constructor(chunk, boundSocket) {
-        const time = new Date(chunk.timestamp * 1000);
-        const timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +
-            ('0' + time.getSeconds()).substr(-2) + '.' + ('00' + time.getMilliseconds()).substr(-3);
-        const timeNode = document.createElement('div');
-        UI.UIUtils.createTextChild(timeNode, timeText);
-        UI.Tooltip.Tooltip.install(timeNode, time.toLocaleString());
+        super();
         let description;
         const length = i18n.ByteUtilities.bytesToString(Platform.StringUtilities.base64ToSize(chunk.data));
         const maxDisplayLen = 30;
@@ -135,20 +150,28 @@ class ResourceChunkNode extends DataGridItem {
             description = chunk.data;
         }
         if (boundSocket) {
-            super({ data: description, address: chunk.remoteAddress, port: chunk.remotePort, length, time: timeNode });
+            this.data = {
+                data: description,
+                address: chunk.remoteAddress ?? '',
+                port: chunk.remotePort?.toString() ?? '',
+                length,
+            };
         }
         else {
-            super({ data: description, length, time: timeNode });
+            this.data = {
+                data: description,
+                length,
+            };
         }
+        let cssClass = '';
+        if (chunk.type === SDK.NetworkRequest.DirectSocketChunkType.SEND) {
+            cssClass = 'resource-chunk-view-row-send';
+        }
+        else if (chunk.type === SDK.NetworkRequest.DirectSocketChunkType.RECEIVE) {
+            cssClass = 'resource-chunk-view-row-receive';
+        }
+        this.cssClass = cssClass;
         this.chunk = chunk;
-    }
-    createCells(element) {
-        element.classList.toggle('resource-chunk-view-row-send', this.chunk.type === SDK.NetworkRequest.DirectSocketChunkType.SEND);
-        element.classList.toggle('resource-chunk-view-row-receive', this.chunk.type === SDK.NetworkRequest.DirectSocketChunkType.RECEIVE);
-        super.createCells(element);
-    }
-    nodeSelfHeight() {
-        return 21;
     }
     dataText() {
         return this.chunk.data;

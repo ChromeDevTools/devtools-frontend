@@ -1,6 +1,6 @@
 import * as SDK from '../../core/sdk/sdk.js';
-import { DataGridItem, OriginalResourceChunkView } from './OriginalResourceChunkView.js';
-export declare class ResourceWebSocketFrameView extends OriginalResourceChunkView<SDK.NetworkRequest.WebSocketFrame> {
+import { DataGridItem, ResourceChunkView } from './ResourceChunkView.js';
+export declare class ResourceWebSocketFrameView extends ResourceChunkView<SDK.NetworkRequest.WebSocketFrame> {
     constructor(request: SDK.NetworkRequest.NetworkRequest);
     getRequestChunks(): SDK.NetworkRequest.WebSocketFrame[];
     createGridItem(frame: SDK.NetworkRequest.WebSocketFrame): DataGridItem;

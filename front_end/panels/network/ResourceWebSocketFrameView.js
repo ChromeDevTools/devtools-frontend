@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 /*
  * Copyright (C) 2012 Research In Motion Limited. All rights reserved.
  *
@@ -24,10 +23,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { BinaryResourceView } from './BinaryResourceView.js';
-import { DataGridItem, OriginalResourceChunkView } from './OriginalResourceChunkView.js';
+import { DataGridItem, ResourceChunkView } from './ResourceChunkView.js';
 const UIStrings = {
     /**
      * @description Text in Resource Web Socket Frame View of the Network panel. Displays which Opcode
@@ -86,10 +84,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceWebSocketFrameView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-export class ResourceWebSocketFrameView extends OriginalResourceChunkView {
+export class ResourceWebSocketFrameView extends ResourceChunkView {
     constructor(request) {
-        super(request, 'network-web-socket-message-filter', 'resource-web-socket-frame-split-view-state', i18nString(UIStrings.webSocketFrame), i18nString(UIStrings.filterUsingRegex));
-        this.element.setAttribute('jslog', `${VisualLogging.pane('web-socket-messages').track({ resize: true })}`);
+        super(request, 'network-web-socket-message-filter', 'resource-web-socket-frame-split-view-state', i18nString(UIStrings.webSocketFrame), i18nString(UIStrings.filterUsingRegex), { jslog: `${VisualLogging.pane('web-socket-messages').track({ resize: true })}` });
     }
     getRequestChunks() {
         return this.request.frames();
@@ -105,7 +102,7 @@ export class ResourceWebSocketFrameView extends OriginalResourceChunkView {
     }
     wasShown() {
         super.wasShown();
-        this.refresh();
+        this.requestUpdate();
         this.request.addEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.onWebSocketFrameAdded, this);
     }
     willHide() {
@@ -137,15 +134,12 @@ class ResourceFrameNode extends DataGridItem {
     frame;
     isTextFrame;
     #dataText;
-    #binaryView;
+    #binaryView = null;
+    data;
+    cssClass;
     constructor(frame) {
+        super();
         let length = String(frame.text.length);
-        const time = new Date(frame.time * 1000);
-        const timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +
-            ('0' + time.getSeconds()).substr(-2) + '.' + ('00' + time.getMilliseconds()).substr(-3);
-        const timeNode = document.createElement('div');
-        UI.UIUtils.createTextChild(timeNode, timeText);
-        UI.Tooltip.Tooltip.install(timeNode, time.toLocaleString());
         let dataText = frame.text;
         let description = ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
         const isTextFrame = frame.opCode === 1 /* OpCodes.TEXT_FRAME */;
@@ -163,20 +157,22 @@ class ResourceFrameNode extends DataGridItem {
         else {
             dataText = description;
         }
-        super({ data: description, length, time: timeNode });
         this.frame = frame;
         this.isTextFrame = isTextFrame;
         this.#dataText = dataText;
-        this.#binaryView = null;
-    }
-    createCells(element) {
-        element.classList.toggle('resource-chunk-view-row-error', this.frame.type === SDK.NetworkRequest.WebSocketFrameType.Error);
-        element.classList.toggle('resource-chunk-view-row-send', this.frame.type === SDK.NetworkRequest.WebSocketFrameType.Send);
-        element.classList.toggle('resource-chunk-view-row-receive', this.frame.type === SDK.NetworkRequest.WebSocketFrameType.Receive);
-        super.createCells(element);
-    }
-    nodeSelfHeight() {
-        return 21;
+        this.data = {
+            data: description,
+            length,
+        };
+        if (frame.type === SDK.NetworkRequest.WebSocketFrameType.Error) {
+            this.cssClass = 'resource-chunk-view-row-error';
+        }
+        else if (frame.type === SDK.NetworkRequest.WebSocketFrameType.Send) {
+            this.cssClass = 'resource-chunk-view-row-send';
+        }
+        else if (frame.type === SDK.NetworkRequest.WebSocketFrameType.Receive) {
+            this.cssClass = 'resource-chunk-view-row-receive';
+        }
     }
     dataText() {
         return this.#dataText;

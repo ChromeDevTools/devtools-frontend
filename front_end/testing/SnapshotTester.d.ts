@@ -12,18 +12,27 @@ declare class BaseSnapshotTester {
     assert(context: Mocha.Context, actual: string): void;
     finish(): Promise<void>;
     protected serializeSnapshotFileContent(): string;
-    protected checkIfUpdateMode(): Promise<boolean>;
+    protected checkIfUpdateMode(): Promise<{
+        updateMode: boolean;
+        isFiltered: boolean;
+    }>;
     protected postUpdate(): Promise<void>;
     protected loadSnapshot(_snapshotPath: string): Promise<string | undefined>;
 }
 declare class WebSnapshotTester extends BaseSnapshotTester {
-    protected checkIfUpdateMode(): Promise<boolean>;
+    protected checkIfUpdateMode(): Promise<{
+        updateMode: boolean;
+        isFiltered: boolean;
+    }>;
     protected postUpdate(): Promise<void>;
     protected loadSnapshot(snapshotPath: string): Promise<string | undefined>;
 }
 declare class NodeSnapshotTester extends BaseSnapshotTester {
     #private;
-    protected checkIfUpdateMode(): Promise<boolean>;
+    protected checkIfUpdateMode(): Promise<{
+        updateMode: boolean;
+        isFiltered: boolean;
+    }>;
     protected postUpdate(): Promise<void>;
     protected loadSnapshot(snapshotPath: string): Promise<string | undefined>;
 }

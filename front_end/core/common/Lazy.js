@@ -9,7 +9,7 @@ const ERROR_STATE = Symbol('error');
 export function lazy(producer) {
     let value = UNINITIALIZED;
     let error = new Error('Initial');
-    return () => {
+    return (...args) => {
         if (value === ERROR_STATE) {
             throw error;
         }
@@ -17,7 +17,7 @@ export function lazy(producer) {
             return value;
         }
         try {
-            value = producer();
+            value = producer(...args);
             return value;
         }
         catch (err) {

@@ -26,6 +26,7 @@ function assertSnapshotContent(actual, expected) {
  */
 class BaseSnapshotTester {
     static #updateMode = null;
+    static #isFiltered = false;
     snapshotPath;
     #expected = new Map();
     #actual = new Map();
@@ -52,7 +53,9 @@ class BaseSnapshotTester {
     }
     async load() {
         if (BaseSnapshotTester.#updateMode === null) {
-            BaseSnapshotTester.#updateMode = await this.checkIfUpdateMode();
+            const config = await this.checkIfUpdateMode();
+            BaseSnapshotTester.#updateMode = config.updateMode;
+            BaseSnapshotTester.#isFiltered = config.isFiltered;
         }
         const content = await this.loadSnapshot(this.snapshotPath);
         if (content) {
@@ -125,11 +128,19 @@ class BaseSnapshotTester {
         }
     }
     serializeSnapshotFileContent() {
-        if (!this.#actual.size) {
+        const merged = new Map(this.#actual);
+        if (BaseSnapshotTester.#isFiltered) {
+            for (const [title, content] of this.#expected) {
+                if (!merged.has(title)) {
+                    merged.set(title, content);
+                }
+            }
+        }
+        if (!merged.size) {
             return '';
         }
         const lines = [];
-        for (const [title, result] of this.#actual) {
+        for (const [title, result] of merged) {
             lines.push(`Title: ${title}`);
             lines.push(`Content:\n${result}`);
             lines.push('=== end content\n');
@@ -138,7 +149,7 @@ class BaseSnapshotTester {
         return lines.join('\n').trim() + '\n';
     }
     async checkIfUpdateMode() {
-        return false;
+        return { updateMode: false, isFiltered: false };
     }
     async postUpdate() {
         throw new Error(`Not implemented`);
@@ -151,7 +162,7 @@ class WebSnapshotTester extends BaseSnapshotTester {
     async checkIfUpdateMode() {
         const response = await fetch('/snapshot-update-mode');
         const data = await response.json();
-        return data.updateMode === true;
+        return { updateMode: data.updateMode === true, isFiltered: data.isFiltered === true };
     }
     async postUpdate() {
         const url = new URL('/update-snapshot', import.meta.url);
@@ -179,7 +190,7 @@ class WebSnapshotTester extends BaseSnapshotTester {
 class NodeSnapshotTester extends BaseSnapshotTester {
     async checkIfUpdateMode() {
         // cannot update in node mode yet.
-        return false;
+        return { updateMode: false, isFiltered: false };
     }
     async postUpdate() {
         const content = this.serializeSnapshotFileContent();

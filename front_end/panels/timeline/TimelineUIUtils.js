@@ -514,6 +514,21 @@ export class TimelineUIUtils {
                 tokens.push(url);
             }
         }
+        if (Trace.Types.Extensions.isSyntheticExtensionEntry(traceEvent)) {
+            // Extension entries are synthetic events that carry the text shown to the
+            // user on the event itself rather than in `args`, so gather it explicitly.
+            const { tooltipText, properties } = traceEvent.devtoolsObj;
+            if (tooltipText) {
+                tokens.push(tooltipText);
+            }
+            for (const [propertyName, propertyValue] of properties ?? []) {
+                tokens.push(propertyName);
+                appendObjectProperties({ propertyValue }, 3);
+            }
+            if (traceEvent.userDetail !== null) {
+                appendObjectProperties({ userDetail: traceEvent.userDetail }, 3);
+            }
+        }
         if (TimelineUIUtils.getGetDebugModeEnabled()) {
             // When in debug mode append top level properties (like timestamp)
             // and deeply nested properties.

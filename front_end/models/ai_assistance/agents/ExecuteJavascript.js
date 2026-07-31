@@ -8,9 +8,31 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import { debugLog } from '../debug.js';
 import { EvaluateAction, formatError, SideEffectError } from '../EvaluateAction.js';
-import { FREESTYLER_WORLD_NAME } from '../injected.js';
+import { FREESTYLER_WORLD_CSP, FREESTYLER_WORLD_NAME } from '../injected.js';
 const lockedString = i18n.i18n.lockedString;
-export async function executeJsCode(functionDeclaration, { throwOnSideEffect, contextNode }) {
+/**
+ * Creates or retrieves the DevTools AI Assistance isolated world for the given frame.
+ *
+ * Page.createIsolatedWorld is idempotent per frame when given a fixed worldName.
+ * If an isolated world with FREESTYLER_WORLD_NAME already exists on the frame,
+ * CDP returns its existing executionContextId rather than re-creating the world.
+ */
+export async function getOrCreateIsolatedWorld(target, frameId) {
+    const pageAgent = target.pageAgent();
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({
+        frameId,
+        worldName: FREESTYLER_WORLD_NAME,
+        contentSecurityPolicy: FREESTYLER_WORLD_CSP,
+    });
+    const executionContext = runtimeModel?.executionContext(executionContextId);
+    if (!executionContext) {
+        throw new Error('Execution context is not found for executing code');
+    }
+    return executionContext;
+}
+export async function executeJsCode(functionDeclaration, options) {
+    const { contextNode, throwOnSideEffect } = options;
     if (!contextNode) {
         throw new Error('Cannot execute JavaScript because of missing context node');
     }
@@ -23,22 +45,15 @@ export async function executeJsCode(functionDeclaration, { throwOnSideEffect, co
     if (!frameId) {
         throw new Error('Main frame is not found for executing code');
     }
-    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-    const pageAgent = target.pageAgent();
-    // This returns previously created world if it exists for the frame.
-    const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId, worldName: FREESTYLER_WORLD_NAME });
-    const executionContext = runtimeModel?.executionContext(executionContextId);
-    if (!executionContext) {
-        throw new Error('Execution context is not found for executing code');
-    }
+    const executionContext = await getOrCreateIsolatedWorld(target, frameId);
     if (executionContext.debuggerModel.selectedCallFrame()) {
         return formatError('Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
     }
-    const remoteObject = await contextNode.resolveToObject(undefined, executionContextId);
+    const remoteObject = await contextNode.resolveToObject(undefined, executionContext.id);
     if (!remoteObject) {
         throw new Error('Cannot execute JavaScript because remote object cannot be resolved');
     }
-    return await EvaluateAction.execute(functionDeclaration, [remoteObject], executionContext, { throwOnSideEffect });
+    return await EvaluateAction.execute(functionDeclaration, [remoteObject], executionContext, { throwOnSideEffect: !!throwOnSideEffect });
 }
 const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
 const OBSERVATION_TIMEOUT = 5_000;

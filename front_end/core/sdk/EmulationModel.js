@@ -126,12 +126,10 @@ export class EmulationModel extends SDKModel {
         const autoDarkModeSetting = settings.moduleSetting('emulate-auto-dark-mode');
         autoDarkModeSetting.addChangeListener(() => {
             const enabled = autoDarkModeSetting.get();
-            mediaFeaturePrefersColorSchemeSetting.setDisabled(enabled);
             mediaFeaturePrefersColorSchemeSetting.set(enabled ? 'dark' : '');
             void this.emulateAutoDarkMode(enabled);
         });
         if (autoDarkModeSetting.get()) {
-            mediaFeaturePrefersColorSchemeSetting.setDisabled(true);
             mediaFeaturePrefersColorSchemeSetting.set('dark');
             void this.emulateAutoDarkMode(true);
         }

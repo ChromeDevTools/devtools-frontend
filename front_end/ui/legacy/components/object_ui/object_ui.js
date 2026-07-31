@@ -4,13 +4,55 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
+// gen/front_end/ui/legacy/components/object_ui/CSSStyleSanitizer.js
+var CSSStyleSanitizer_exports = {};
+__export(CSSStyleSanitizer_exports, {
+  cssEscapeRegex: () => cssEscapeRegex,
+  sanitizeStyle: () => sanitizeStyle
+});
+import * as Common from "./../../../../core/common/common.js";
+function cssEscapeRegex(cssString) {
+  return [...cssString].map((char) => {
+    const charCodes = new Set([char.toLowerCase(), char.toUpperCase()].map((c) => c.charCodeAt(0).toString(16)));
+    const charCodeRegex = [...charCodes].map((charCode) => `\\\\0{0,${6 - charCode.length}}${charCode}[ \\n\\t]?`).join("|");
+    return `\\\\?(?:${charCodeRegex}|${char})`;
+  }).join("");
+}
+var ALLOWED_PROPERTY_PREFIXES = ["background", "border", "color", "font", "line", "margin", "padding", "text"];
+var URL_REGEX = new RegExp(`(?=${cssEscapeRegex("url")}\\(['"]?([^\\)]*))`, "gi");
+var IMAGESET_REGEX = new RegExp(`(?=(${cssEscapeRegex("image-set")}\\(.*))`, "gi");
+var GOOD_IMAGESET_REGEX = /^image-set\((?:(?:(?:url|type)\("[^\\"]*"\)|[\d.]+(?:x|dpi|dpcm|dppx)),?\s*)+\)/i;
+function sanitizeStyle(currentStyle, styleToAdd) {
+  currentStyle.clear();
+  const buffer = document.createElement("span");
+  buffer.setAttribute("style", styleToAdd);
+  for (const property of buffer.style) {
+    if (!ALLOWED_PROPERTY_PREFIXES.some((prefix) => property.startsWith(prefix) || property.startsWith(`-webkit-${prefix}`))) {
+      continue;
+    }
+    const value = buffer.style.getPropertyValue(property);
+    const imageSets = [...value.matchAll(IMAGESET_REGEX)];
+    if (imageSets.some((match) => !GOOD_IMAGESET_REGEX.test(match[1]))) {
+      continue;
+    }
+    const potentialUrls = [...value.matchAll(URL_REGEX)].map((match) => match[1]);
+    if (potentialUrls.some((potentialUrl) => !Common.ParsedURL.schemeIs(potentialUrl, "data:"))) {
+      continue;
+    }
+    currentStyle.set(property, {
+      value,
+      priority: buffer.style.getPropertyPriority(property)
+    });
+  }
+}
+
 // gen/front_end/ui/legacy/components/object_ui/CustomPreviewComponent.js
 var CustomPreviewComponent_exports = {};
 __export(CustomPreviewComponent_exports, {
   CustomPreviewComponent: () => CustomPreviewComponent,
   CustomPreviewSection: () => CustomPreviewSection
 });
-import * as Common2 from "./../../../../core/common/common.js";
+import * as Common3 from "./../../../../core/common/common.js";
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import { createIcon } from "./../../../kit/kit.js";
 import * as UI3 from "./../../legacy.js";
@@ -71,7 +113,7 @@ __export(ObjectPropertiesSection_exports, {
   renderObjectTree: () => renderObjectTree,
   renderPropertyName: () => renderPropertyName
 });
-import * as Common from "./../../../../core/common/common.js";
+import * as Common2 from "./../../../../core/common/common.js";
 import * as Host from "./../../../../core/host/host.js";
 import * as i18n3 from "./../../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../../core/platform/platform.js";
@@ -899,7 +941,7 @@ var ObjectTreeExpansionTracker = class _ObjectTreeExpansionTracker {
     }
   }
 };
-var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
+var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common2.ObjectWrapper.ObjectWrapper {
   parent;
   #children;
   options;
@@ -912,7 +954,7 @@ var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common.ObjectWrapper.
     this.parent = parent;
     this.filter = parent?.filter ?? null;
     this.options = { ...options };
-    this.#sortPropertiesAlphabeticallySetting = parent ? parent.#sortPropertiesAlphabeticallySetting : Common.Settings.Settings.instance().createSetting("object-properties-sort-alphabetically", true);
+    this.#sortPropertiesAlphabeticallySetting = parent ? parent.#sortPropertiesAlphabeticallySetting : Common2.Settings.Settings.instance().createSetting("object-properties-sort-alphabetically", true);
   }
   get isWasm() {
     return isWasmObject(this.object);
@@ -1547,7 +1589,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
       style="width: var(--sys-size-8); height: 13px; vertical-align: sub; cursor: pointer;"
       @click=${(event) => {
       event.consume();
-      void Common.Revealer.reveal(new SDK3.RemoteObject.LinearMemoryInspectable(object, expression));
+      void Common2.Revealer.reveal(new SDK3.RemoteObject.LinearMemoryInspectable(object, expression));
     }}
       jslog=${VisualLogging.action("open-memory-inspector").track({ click: true })}
       title=${i18nString2(UIStrings2.openInMemoryInpector)}
@@ -1589,7 +1631,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
       if (type === "object" && subtype === "node" && description) {
         return html2`<span class="value object-value-node"
             @click=${(event) => {
-          void Common.Revealer.reveal(value);
+          void Common2.Revealer.reveal(value);
           event.consume(true);
         }}
             @mousemove=${() => SDK3.OverlayModel.OverlayModel.highlightObjectAsDOMNode(value)}
@@ -1621,7 +1663,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
       if (linkify && response?.location) {
         element.classList.add("linkified");
         element.addEventListener("click", () => {
-          void Common.Revealer.reveal(response.location);
+          void Common2.Revealer.reveal(response.location);
           return false;
         });
       }
@@ -2618,12 +2660,12 @@ var CustomPreviewSection = class _CustomPreviewSection {
     try {
       headerJSON = JSON.parse(customPreview.header);
     } catch (e) {
-      Common2.Console.Console.instance().error("Broken formatter: header is invalid json " + e);
+      Common3.Console.Console.instance().error("Broken formatter: header is invalid json " + e);
       return;
     }
     this.header = this.renderJSONMLTag(headerJSON);
     if (this.header.nodeType === Node.TEXT_NODE) {
-      Common2.Console.Console.instance().error("Broken formatter: header should be an element node.");
+      Common3.Console.Console.instance().error("Broken formatter: header should be an element node.");
       return;
     }
     if (customPreview.bodyGetterId) {
@@ -2647,7 +2689,7 @@ var CustomPreviewSection = class _CustomPreviewSection {
       return this.renderElement(jsonML);
     }
     if (jsonML.length !== 2) {
-      Common2.Console.Console.instance().error("Broken formatter: object reference must contain exactly two elements");
+      Common3.Console.Console.instance().error("Broken formatter: object reference must contain exactly two elements");
       return document.createElement("span");
     }
     return this.layoutObjectTag(jsonML);
@@ -2657,7 +2699,7 @@ var CustomPreviewSection = class _CustomPreviewSection {
   renderElement(object) {
     const tagName = object.shift();
     if (!ALLOWED_TAGS.includes(tagName)) {
-      Common2.Console.Console.instance().error("Broken formatter: element " + tagName + " is not allowed!");
+      Common3.Console.Console.instance().error("Broken formatter: element " + tagName + " is not allowed!");
       return document.createElement("span");
     }
     const element = document.createElement(tagName);
@@ -2668,7 +2710,11 @@ var CustomPreviewSection = class _CustomPreviewSection {
         if (key !== "style" || typeof value !== "string") {
           continue;
         }
-        element.setAttribute(key, value);
+        const sanitizedStyle = /* @__PURE__ */ new Map();
+        sanitizeStyle(sanitizedStyle, value);
+        for (const [property, { value: propertyValue, priority }] of sanitizedStyle) {
+          element.style.setProperty(property, propertyValue, priority);
+        }
       }
     }
     this.appendJsonMLTags(element, object);
@@ -2952,6 +2998,7 @@ var ObjectPopoverHelper = class _ObjectPopoverHelper {
 };
 var MaxPopoverTextLength = 1e4;
 export {
+  CSSStyleSanitizer_exports as CSSStyleSanitizer,
   CustomPreviewComponent_exports as CustomPreviewComponent,
   JavaScriptREPL_exports as JavaScriptREPL,
   ObjectPopoverHelper_exports as ObjectPopoverHelper,

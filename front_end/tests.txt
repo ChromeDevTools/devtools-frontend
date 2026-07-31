@@ -379,11 +379,6 @@ panels/application/ServiceWorkerCacheTreeElement.test.js
 panels/application/ServiceWorkerCacheViews.test.js
 panels/application/ServiceWorkerUpdateCycleView.test.js
 panels/application/ServiceWorkersView.test.js
-panels/application/SharedStorageEventsView.test.js
-panels/application/SharedStorageItemsView.test.js
-panels/application/SharedStorageListTreeElement.test.js
-panels/application/SharedStorageModel.test.js
-panels/application/SharedStorageTreeElement.test.js
 panels/application/StorageBucketsTreeElement.test.js
 panels/application/StorageView.test.js
 panels/application/WebMCPView.test.js
@@ -396,8 +391,6 @@ panels/application/components/EndpointsGrid.test.js
 panels/application/components/ProtocolHandlersView.test.js
 panels/application/components/ReportsGrid.test.js
 panels/application/components/ServiceWorkerRouterView.test.js
-panels/application/components/SharedStorageAccessGrid.test.js
-panels/application/components/SharedStorageMetadataView.test.js
 panels/application/components/StorageMetadataView.test.js
 panels/application/components/TrustTokensView.test.js
 panels/application/preloading/components/MismatchedPreloadingGrid.test.js
@@ -788,6 +781,7 @@ ui/legacy/components/inline_editor/CSSShadowEditor.test.js
 ui/legacy/components/inline_editor/ColorMixSwatch.test.js
 ui/legacy/components/inline_editor/ColorSwatch.test.js
 ui/legacy/components/inline_editor/LinkSwatch.test.js
+ui/legacy/components/object_ui/CSSStyleSanitizer.test.js
 ui/legacy/components/object_ui/CustomPreviewComponent.test.js
 ui/legacy/components/object_ui/JavaScriptREPL.test.js
 ui/legacy/components/object_ui/ObjectPopoverHelper.test.js

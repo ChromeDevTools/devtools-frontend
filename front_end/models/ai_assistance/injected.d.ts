@@ -6,6 +6,7 @@
  */
 export declare const AI_ASSISTANCE_CSS_CLASS_NAME = "ai-style-change";
 export declare const FREESTYLER_WORLD_NAME = "DevTools AI Assistance";
+export declare const FREESTYLER_WORLD_CSP = "connect-src 'none'";
 export declare const FREESTYLER_BINDING_NAME = "__freestyler";
 export interface FreestyleCallbackArgs {
     method: string;

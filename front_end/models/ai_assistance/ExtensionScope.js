@@ -5,7 +5,8 @@ var _a;
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import { AI_ASSISTANCE_CSS_CLASS_NAME, FREESTYLER_BINDING_NAME, FREESTYLER_WORLD_NAME, freestylerBinding, injectedFunctions, } from './injected.js';
+import { getOrCreateIsolatedWorld } from './agents/ExecuteJavascript.js';
+import { AI_ASSISTANCE_CSS_CLASS_NAME, FREESTYLER_BINDING_NAME, freestylerBinding, injectedFunctions, } from './injected.js';
 /**
  * Injects Freestyler extension functions in to the isolated world.
  */
@@ -43,20 +44,14 @@ export class ExtensionScope {
         return resourceTreeModel.mainFrame.id;
     }
     async install() {
+        const isolatedWorldContext = await getOrCreateIsolatedWorld(this.target, this.frameId);
         const runtimeModel = this.target.model(SDK.RuntimeModel.RuntimeModel);
-        const pageAgent = this.target.pageAgent();
-        // This returns previously created world if it exists for the frame.
-        const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId: this.frameId, worldName: FREESTYLER_WORLD_NAME });
-        const isolatedWorldContext = runtimeModel?.executionContext(executionContextId);
-        if (!isolatedWorldContext) {
-            throw new Error('Execution context is not found for executing code');
-        }
         const handler = this.#bindingCalled.bind(this, isolatedWorldContext);
         runtimeModel?.addEventListener(SDK.RuntimeModel.Events.BindingCalled, handler);
         this.#listeners.push(handler);
         await this.target.runtimeAgent().invoke_addBinding({
             name: FREESTYLER_BINDING_NAME,
-            executionContextId,
+            executionContextId: isolatedWorldContext.id,
         });
         await this.#simpleEval(isolatedWorldContext, freestylerBinding);
         await this.#simpleEval(isolatedWorldContext, injectedFunctions);

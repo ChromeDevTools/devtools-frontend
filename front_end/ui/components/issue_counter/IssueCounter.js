@@ -68,7 +68,7 @@ export function getIssueCountsEnumeration(issuesManager, omitEmpty = true) {
     return listFormatter.format(phrases.filter((_, i) => omitEmpty ? counts[i] > 0 : true));
 }
 export class IssueCounter extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
+    #shadow = this.attachShadow({ mode: 'open', delegatesFocus: true });
     #clickHandler;
     #tooltipCallback;
     #leadingText = '';

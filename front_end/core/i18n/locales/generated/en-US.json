@@ -4457,63 +4457,6 @@
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Status"
   },
-  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
-    "message": "All shared storage events for this page."
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | eventMethod": {
-    "message": "Access Method"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
-    "message": "Optional Event Params"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | eventScope": {
-    "message": "Access Scope"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
-    "message": "Event Time"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | learnMore": {
-    "message": "Learn more"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
-    "message": "No shared storage events detected"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
-    "message": "Owner Origin"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | ownerSite": {
-    "message": "Owner Site"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Shared storage"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorageDescription": {
-    "message": "On this page you can view, add, edit and delete shared storage key-value pairs and view shared storage events."
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
-    "message": "Remaining data leakage allowed within a 24-hour period for this origin in bits of entropy"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creation": {
-    "message": "Creation Time"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
-    "message": "Entropy Budget for Fenced Frames"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
-    "message": "Not yet created"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | numBytesUsed": {
-    "message": "Number of Bytes Used"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
-    "message": "Number of Entries"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
-    "message": "Reset Budget"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
-    "message": "Shared storage"
-  },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Bucket name"
   },
@@ -6176,33 +6119,6 @@
   "panels/application/ServiceWorkerUpdateCycleView.ts | version": {
     "message": "Version"
   },
-  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
-    "message": "Click on any shared storage event to display the event parameters"
-  },
-  "panels/application/SharedStorageEventsView.ts | noEventSelected": {
-    "message": "No shared storage event selected"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorage": {
-    "message": "Shared storage"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
-    "message": "Shared Storage filtered items cleared"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItemDeleted": {
-    "message": "The storage item was deleted."
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEditCanceled": {
-    "message": "The storage item edit was canceled."
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
-    "message": "The storage item was edited."
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
-    "message": "Shared Storage items cleared"
-  },
-  "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
-    "message": "Shared storage"
-  },
   "panels/application/StorageBucketsTreeElement.ts | noStorageBuckets": {
     "message": "No storage buckets detected"
   },
@@ -6586,9 +6502,6 @@
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
     "message": "Script"
-  },
-  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
-    "message": "Shared storage worklet"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
     "message": "Timer"
@@ -11326,42 +11239,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/OriginalResourceChunkView.ts | all": {
-    "message": "All"
-  },
-  "panels/network/OriginalResourceChunkView.ts | clearAll": {
-    "message": "Clear All"
-  },
-  "panels/network/OriginalResourceChunkView.ts | copyMessage": {
-    "message": "Copy message"
-  },
-  "panels/network/OriginalResourceChunkView.ts | copyMessageD": {
-    "message": "Copy message…"
-  },
-  "panels/network/OriginalResourceChunkView.ts | data": {
-    "message": "Data"
-  },
-  "panels/network/OriginalResourceChunkView.ts | filter": {
-    "message": "Filter"
-  },
-  "panels/network/OriginalResourceChunkView.ts | length": {
-    "message": "Length"
-  },
-  "panels/network/OriginalResourceChunkView.ts | noMessageSelected": {
-    "message": "No message selected"
-  },
-  "panels/network/OriginalResourceChunkView.ts | receive": {
-    "message": "Receive"
-  },
-  "panels/network/OriginalResourceChunkView.ts | selectMessageToBrowseItsContent": {
-    "message": "Select message to browse its content."
-  },
-  "panels/network/OriginalResourceChunkView.ts | send": {
-    "message": "Send"
-  },
-  "panels/network/OriginalResourceChunkView.ts | time": {
-    "message": "Time"
   },
   "panels/network/RequestConditionsDrawer.ts | addPatternLabel": {
     "message": "Add network request throttling or blocking pattern"

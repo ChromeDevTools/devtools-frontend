@@ -22,7 +22,8 @@ type View = typeof DEFAULT_VIEW;
 export declare class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
     #private;
     private readonly view;
-    constructor(element?: HTMLElement, view?: View);
+    static readonly INJECT: readonly [typeof SDK.EventBreakpointsModel.EventBreakpointsManager];
+    constructor(element: HTMLElement | undefined, [eventBreakpointsManager]: UI.Widget.WidgetDependencies<typeof DebuggerPausedMessage>, view?: View);
     private static descriptionWithoutStack;
     private static createDOMBreakpointHitMessageDetails;
     render(details: SDK.DebuggerModel.DebuggerPausedDetails | null, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, breakpointManager: BreakpointManager.BreakpointManager.BreakpointManager): Promise<void>;

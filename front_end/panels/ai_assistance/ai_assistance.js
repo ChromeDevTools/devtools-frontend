@@ -2671,7 +2671,7 @@ function renderSidebarWalkthrough(input, stepsOutput, stepsCount) {
 }
 var DEFAULT_VIEW2 = (input, output, target) => {
   const allSteps = input.message?.parts.filter((t) => t.type === "step")?.map((p) => p.step) ?? [];
-  const renderableSteps = allSteps.filter((s) => !s.requestApproval);
+  const renderableSteps = allSteps.filter((s) => s.state.type !== "needs_approval");
   const stepsOutput = renderableSteps.length > 0 ? html5`
     <div class="steps-container" @scroll=${input.handleScroll} ${ref2((el) => {
     output.scrollContainer = el;
@@ -2685,7 +2685,6 @@ var DEFAULT_VIEW2 = (input, output, target) => {
             <div class="step-wrapper">
               ${renderStep({
     step,
-    isLoading: input.isLoading,
     markdownRenderer: input.markdownRenderer,
     isLast: index === renderableSteps.length - 1
   })}
@@ -3286,14 +3285,14 @@ function titleForStep(step) {
   return step.title ?? `${lockedString3(UIStringsNotTranslate2.investigating)}\u2026`;
 }
 function renderTitle(step) {
-  const paused = step.requestApproval && !step.canceled ? html6`<span class="paused">${lockedString3(UIStringsNotTranslate2.paused)}: </span>` : Lit6.nothing;
+  const paused = step.state.type === "needs_approval" ? html6`<span class="paused">${lockedString3(UIStringsNotTranslate2.paused)}: </span>` : Lit6.nothing;
   return html6`<h3 class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</h3>`;
 }
 function renderStepCode(step) {
   if (!step.code && !step.output) {
     return Lit6.nothing;
   }
-  const codeHeadingText = step.output && !step.canceled ? lockedString3(UIStringsNotTranslate2.codeExecuted) : lockedString3(UIStringsNotTranslate2.codeToExecute);
+  const codeHeadingText = step.output && step.state.type !== "canceled" ? lockedString3(UIStringsNotTranslate2.codeExecuted) : lockedString3(UIStringsNotTranslate2.codeToExecute);
   const code = step.code ? html6`<div class="action-result">
       <devtools-code-block
         .code=${step.code.trim()}
@@ -3315,7 +3314,7 @@ function renderStepCode(step) {
   return html6`<div class="step-code">${code}${output}</div>`;
 }
 function renderStepDetails({ step, markdownRenderer, isLast }) {
-  const sideEffects = isLast && step.requestApproval ? renderSideEffectConfirmationUi(step) : Lit6.nothing;
+  const sideEffects = isLast && step.state.type === "needs_approval" ? renderSideEffectConfirmationUi(step) : Lit6.nothing;
   const thought = step.thought ? html6`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit6.nothing;
   const contextDetails = step.contextDetails ? html6`${Lit6.Directives.repeat(step.contextDetails, (contextDetail) => {
     return html6`<div class="context-details">
@@ -3368,7 +3367,7 @@ function renderWalkthroughSidebarButton(input, steps) {
       <devtools-button
         .variant=${variant}
         .size=${"SMALL"}
-        .title=${lastStep.isLoading ? titleForStep(lastStep) : title}
+        .title=${lastStep.state.type === "in_progress" ? titleForStep(lastStep) : title}
         .accessibleLabel=${accessibleLabel}
         .jslogContext=${walkthrough.isExpanded ? "ai-hide-walkthrough-sidebar" : "ai-show-walkthrough-sidebar"}
         data-show-walkthrough
@@ -3410,7 +3409,7 @@ function renderWalkthroughUI(input, steps) {
   `;
 }
 function renderSideEffectStepsUI(input, steps) {
-  const sideEffectSteps = steps.filter((s) => s.requestApproval);
+  const sideEffectSteps = steps.filter((s) => s.state.type === "needs_approval" || s.state.type === "canceled");
   if (sideEffectSteps.length === 0) {
     return Lit6.nothing;
   }
@@ -3419,27 +3418,29 @@ function renderSideEffectStepsUI(input, steps) {
       <div class="side-effect-container">
         ${renderStep({
     step,
-    isLoading: input.isLoading,
     markdownRenderer: input.markdownRenderer,
     isLast: true
   })}
       </div> `)}
   `;
 }
-function renderStepBadge({ step, isLoading, isLast }) {
-  if (isLoading && isLast && !step.requestApproval) {
+function renderStepBadge({ step, isLast }) {
+  if (isLast && step.state.type === "in_progress") {
     return html6`<devtools-spinner aria-label=${lockedString3(UIStringsNotTranslate2.inProgress)}></devtools-spinner>`;
   }
   let iconName = "checkmark";
   let ariaLabel = lockedString3(UIStringsNotTranslate2.completed);
   let role = "button";
-  if (step.canceled) {
-    ariaLabel = lockedString3(UIStringsNotTranslate2.aborted);
-    iconName = "cross";
-  } else if (isLast && step.requestApproval) {
+  if (step.state.type === "needs_approval") {
+    if (!isLast) {
+      console.error("A step in needs_approval state must be the last step.");
+    }
     role = void 0;
     ariaLabel = lockedString3(UIStringsNotTranslate2.paused);
     iconName = "pause-circle";
+  } else if (step.state.type === "canceled") {
+    ariaLabel = lockedString3(UIStringsNotTranslate2.aborted);
+    iconName = "cross";
   }
   return html6`<devtools-icon
       class="indicator"
@@ -3448,20 +3449,20 @@ function renderStepBadge({ step, isLoading, isLast }) {
       .name=${iconName}
     ></devtools-icon>`;
 }
-function renderStep({ step, isLoading, markdownRenderer, isLast }) {
+function renderStep({ step, markdownRenderer, isLast }) {
   const stepClasses = Lit6.Directives.classMap({
     step: true,
-    empty: !step.thought && !step.code && !step.contextDetails && !step.requestApproval,
-    paused: Boolean(step.requestApproval && !step.canceled),
-    canceled: Boolean(step.canceled)
+    empty: !step.thought && !step.code && !step.contextDetails && step.state.type !== "needs_approval",
+    paused: step.state.type === "needs_approval",
+    canceled: step.state.type === "canceled"
   });
   return html6`
     <details class=${stepClasses}
       jslog=${VisualLogging3.expand("step").track({ click: true })}
-      .open=${Boolean(step.requestApproval)}>
+      .open=${step.state.type === "needs_approval"}>
       <summary>
         <div class="summary">
-          ${renderStepBadge({ step, isLoading, isLast })}
+          ${renderStepBadge({ step, isLast })}
           ${renderTitle(step)}
           <devtools-icon
             class="arrow"
@@ -4156,21 +4157,22 @@ async function renderWidgets(widgets, options = {}) {
   return html6`${ui}`;
 }
 function renderSideEffectConfirmationUi(step) {
-  if (!step.requestApproval || step.canceled) {
+  if (step.state.type !== "needs_approval") {
     return Lit6.nothing;
   }
+  const dialog3 = step.state.sideEffectDialog;
   return html6`<div
     class="side-effect-confirmation"
     jslog=${VisualLogging3.section("side-effect-confirmation")}
   >
-    ${step.requestApproval.description ? html6`<p>${step.requestApproval.description}</p>` : Lit6.nothing}
+    ${dialog3.description ? html6`<p>${dialog3.description}</p>` : Lit6.nothing}
     <div class="side-effect-buttons-container">
       <devtools-button
         .data=${{
     variant: "outlined",
     jslogContext: "decline-execute-code"
   }}
-        @click=${() => step.requestApproval?.onAnswer(false)}
+        @click=${() => dialog3.onAnswer(false)}
       >${lockedString3(UIStringsNotTranslate2.declineActionRequestApproval)}</devtools-button>
       <devtools-button
         .data=${{
@@ -4178,7 +4180,7 @@ function renderSideEffectConfirmationUi(step) {
     jslogContext: "accept-execute-code",
     iconName: "play"
   }}
-        @click=${() => step.requestApproval?.onAnswer(true)}
+        @click=${() => dialog3.onAnswer(true)}
       >${lockedString3(UIStringsNotTranslate2.confirmActionRequestApproval)}</devtools-button>
     </div>
   </div>`;
@@ -7738,12 +7740,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
         parts: [],
         id: crypto.randomUUID()
       };
-      let step = { isLoading: true };
+      let step = { state: { type: "in_progress" } };
       this.#isLoading = true;
       let announcedAnswerLoading = false;
       let announcedAnswerReady = false;
       for await (const data of items) {
-        step.requestApproval = void 0;
         switch (data.type) {
           case "user-query": {
             this.#messages.push({
@@ -7765,7 +7766,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             break;
           }
           case "querying": {
-            step = { isLoading: true };
+            step = { state: { type: "in_progress" } };
             if (!systemMessage.parts.length) {
               commitStep();
             }
@@ -7775,7 +7776,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             step.title = lockedString6(UIStringsNotTranslate5.analyzingData);
             step.contextDetails = data.details;
             step.widgets = data.widgets;
-            step.isLoading = false;
+            step.state = { type: "completed" };
             commitStep();
             break;
           }
@@ -7785,7 +7786,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             break;
           }
           case "thought": {
-            step.isLoading = false;
+            step.state = { type: "completed" };
             step.thought = data.thought;
             commitStep();
             break;
@@ -7804,24 +7805,25 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             break;
           }
           case "side-effect": {
-            step.isLoading = false;
             step.code ??= data.code;
-            step.requestApproval = {
-              description: data.description,
-              onAnswer: (result) => {
-                data.confirm(result);
-                step.requestApproval = void 0;
-                this.requestUpdate();
+            step.state = {
+              type: "needs_approval",
+              sideEffectDialog: {
+                description: data.description,
+                onAnswer: (result) => {
+                  data.confirm(result);
+                  step.state = { type: "completed" };
+                  this.requestUpdate();
+                }
               }
             };
             commitStep();
             break;
           }
           case "action": {
-            step.isLoading = false;
+            step.state = data.canceled ? { type: "canceled" } : { type: "completed" };
             step.code ??= data.code;
             step.output ??= data.output;
-            step.canceled = data.canceled;
             step.widgets ??= data.widgets;
             commitStep();
             break;
@@ -7852,11 +7854,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             }
             if (systemMessage.parts.length > 1) {
               const firstPart = systemMessage.parts[0];
-              if (firstPart.type === "step" && firstPart.step.isLoading && !firstPart.step.thought && !firstPart.step.code && !firstPart.step.contextDetails) {
+              if (firstPart.type === "step" && firstPart.step.state.type === "in_progress" && !firstPart.step.thought && !firstPart.step.code && !firstPart.step.contextDetails) {
                 systemMessage.parts.shift();
               }
             }
-            step.isLoading = false;
+            step.state = { type: "completed" };
             break;
           }
           case "error": {
@@ -7865,8 +7867,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             if (lastPart?.type === "step") {
               const lastStep = lastPart.step;
               if (data.error === "abort") {
-                lastStep.canceled = true;
-              } else if (lastStep.isLoading) {
+                lastStep.state = { type: "canceled" };
+              } else if (lastStep.state.type === "in_progress") {
                 systemMessage.parts.pop();
               }
             }
@@ -7880,10 +7882,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
           }
           case "context-change": {
             this.#handleConversationContextChange(data.context);
-            step.isLoading = false;
+            step.state = { type: "completed" };
             step.widgets = data.widgets;
             commitStep();
-            step = { isLoading: true };
+            step = { state: { type: "in_progress" } };
             break;
           }
         }

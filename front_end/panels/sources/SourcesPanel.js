@@ -229,7 +229,8 @@ export class SourcesPanel extends UI.Panel.Panel {
             UI.ActionRegistry.ActionRegistry.instance().getAction('debugger.toggle-breakpoints-active');
         this.debugToolbar = this.createDebugToolbar();
         this.debugToolbarDrawer = this.createDebugToolbarDrawer();
-        this.debuggerPausedMessage = new DebuggerPausedMessage();
+        this.debuggerPausedMessage =
+            new DebuggerPausedMessage(undefined, [SDK.EventBreakpointsModel.EventBreakpointsManager.instance()]);
         const initialDebugSidebarWidth = 225;
         this.splitWidget =
             new UI.SplitWidget.SplitWidget(true, true, 'sources-panel-split-view-state', initialDebugSidebarWidth);

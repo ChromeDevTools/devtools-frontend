@@ -1411,7 +1411,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 parts: [],
                 id: crypto.randomUUID(),
             };
-            let step = { isLoading: true };
+            let step = { state: { type: 'in_progress' } };
             /**
              * Commits the step to props only if necessary.
              */
@@ -1429,7 +1429,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             let announcedAnswerLoading = false;
             let announcedAnswerReady = false;
             for await (const data of items) {
-                step.requestApproval = undefined;
                 switch (data.type) {
                     case "user-query" /* AiAssistanceModel.AiAgent.ResponseType.USER_QUERY */: {
                         this.#messages.push({
@@ -1455,7 +1454,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         break;
                     }
                     case "querying" /* AiAssistanceModel.AiAgent.ResponseType.QUERYING */: {
-                        step = { isLoading: true };
+                        step = { state: { type: 'in_progress' } };
                         if (!systemMessage.parts.length) {
                             commitStep();
                         }
@@ -1465,7 +1464,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         step.title = lockedString(UIStringsNotTranslate.analyzingData);
                         step.contextDetails = data.details;
                         step.widgets = data.widgets;
-                        step.isLoading = false;
+                        step.state = { type: 'completed' };
                         commitStep();
                         break;
                     }
@@ -1475,7 +1474,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         break;
                     }
                     case "thought" /* AiAssistanceModel.AiAgent.ResponseType.THOUGHT */: {
-                        step.isLoading = false;
+                        step.state = { type: 'completed' };
                         step.thought = data.thought;
                         commitStep();
                         break;
@@ -1495,24 +1494,25 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         break;
                     }
                     case "side-effect" /* AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT */: {
-                        step.isLoading = false;
                         step.code ??= data.code;
-                        step.requestApproval = {
-                            description: data.description,
-                            onAnswer: (result) => {
-                                data.confirm(result);
-                                step.requestApproval = undefined;
-                                this.requestUpdate();
+                        step.state = {
+                            type: 'needs_approval',
+                            sideEffectDialog: {
+                                description: data.description,
+                                onAnswer: (result) => {
+                                    data.confirm(result);
+                                    step.state = { type: 'completed' };
+                                    this.requestUpdate();
+                                },
                             },
                         };
                         commitStep();
                         break;
                     }
                     case "action" /* AiAssistanceModel.AiAgent.ResponseType.ACTION */: {
-                        step.isLoading = false;
+                        step.state = data.canceled ? { type: 'canceled' } : { type: 'completed' };
                         step.code ??= data.code;
                         step.output ??= data.output;
-                        step.canceled = data.canceled;
                         step.widgets ??= data.widgets;
                         commitStep();
                         break;
@@ -1546,12 +1546,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         // TODO(crbug.com/463323934): Remove specially handling this case.
                         if (systemMessage.parts.length > 1) {
                             const firstPart = systemMessage.parts[0];
-                            if (firstPart.type === 'step' && firstPart.step.isLoading && !firstPart.step.thought &&
+                            if (firstPart.type === 'step' && firstPart.step.state.type === 'in_progress' && !firstPart.step.thought &&
                                 !firstPart.step.code && !firstPart.step.contextDetails) {
                                 systemMessage.parts.shift();
                             }
                         }
-                        step.isLoading = false;
+                        step.state = { type: 'completed' };
                         break;
                     }
                     case "error" /* AiAssistanceModel.AiAgent.ResponseType.ERROR */: {
@@ -1561,10 +1561,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                             const lastStep = lastPart.step;
                             // Mark the last step as cancelled to make the UI feel better.
                             if (data.error === "abort" /* AiAssistanceModel.AiAgent.ErrorType.ABORT */) {
-                                lastStep.canceled = true;
+                                lastStep.state = { type: 'canceled' };
                                 // If error happens while the step is still loading remove it.
                             }
-                            else if (lastStep.isLoading) {
+                            else if (lastStep.state.type === 'in_progress') {
                                 systemMessage.parts.pop();
                             }
                         }
@@ -1578,10 +1578,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     }
                     case "context-change" /* AiAssistanceModel.AiAgent.ResponseType.CONTEXT_CHANGE */: {
                         this.#handleConversationContextChange(data.context);
-                        step.isLoading = false;
+                        step.state = { type: 'completed' };
                         step.widgets = data.widgets;
                         commitStep();
-                        step = { isLoading: true };
+                        step = { state: { type: 'in_progress' } };
                         break;
                     }
                 }

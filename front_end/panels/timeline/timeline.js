@@ -9419,6 +9419,19 @@ var TimelineUIUtils = class _TimelineUIUtils {
         tokens.push(url);
       }
     }
+    if (Trace23.Types.Extensions.isSyntheticExtensionEntry(traceEvent)) {
+      const { tooltipText, properties } = traceEvent.devtoolsObj;
+      if (tooltipText) {
+        tokens.push(tooltipText);
+      }
+      for (const [propertyName, propertyValue] of properties ?? []) {
+        tokens.push(propertyName);
+        appendObjectProperties({ propertyValue }, 3);
+      }
+      if (traceEvent.userDetail !== null) {
+        appendObjectProperties({ userDetail: traceEvent.userDetail }, 3);
+      }
+    }
     if (_TimelineUIUtils.getGetDebugModeEnabled()) {
       appendObjectProperties(traceEvent, 4);
     } else {

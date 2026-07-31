@@ -3679,8 +3679,8 @@ import * as Platform10 from "./../../core/platform/platform.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as NetworkForward3 from "./forward/forward.js";
 import { Icon as Icon2 } from "./../../ui/kit/kit.js";
-import * as UI20 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
+import * as UI18 from "./../../ui/legacy/legacy.js";
+import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 import * as NetworkComponents2 from "./components/components.js";
 
 // gen/front_end/panels/network/RequestCookiesView.js
@@ -6023,12 +6023,12 @@ var RequestPreviewView = class extends UI14.Widget.VBox {
     if (!(view instanceof UI14.View.SimpleView)) {
       return view;
     }
-    const toolbar4 = this.element.createChild("devtools-toolbar", "network-item-preview-toolbar");
+    const toolbar5 = this.element.createChild("devtools-toolbar", "network-item-preview-toolbar");
     void view.toolbarItems().then((items) => {
       if (Array.isArray(items)) {
-        items.map((item) => toolbar4.appendToolbarItem(item));
+        items.map((item2) => toolbar5.appendToolbarItem(item2));
       } else {
-        render11(items, toolbar4);
+        render11(items, toolbar5);
       }
     });
     return view;
@@ -6988,8 +6988,8 @@ var DEFAULT_VIEW11 = (input, output, target) => {
          <td></td>
          <td>${i18nString15(UIStrings15.time)}</td>
        </tr>
-       ${repeat2(serverTimings.filter((item) => item.metric.toLowerCase() !== "total"), addServerTiming)}
-       ${repeat2(serverTimings.filter((item) => item.metric.toLowerCase() === "total"), addServerTiming)}
+       ${repeat2(serverTimings.filter((item2) => item2.metric.toLowerCase() !== "total"), addServerTiming)}
+       ${repeat2(serverTimings.filter((item2) => item2.metric.toLowerCase() === "total"), addServerTiming)}
        ${serverTimings.length === 0 ? html11`
          <tr>
            <td colspan=3>
@@ -7085,74 +7085,83 @@ import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
-import * as DataGrid4 from "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as UI18 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
+import * as DataGrid3 from "./../../ui/legacy/components/data_grid/data_grid.js";
+import * as Lit6 from "./../../ui/lit/lit.js";
+import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/network/OriginalResourceChunkView.js
+// gen/front_end/panels/network/ResourceChunkView.js
 import * as Common11 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
+import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
 import * as DataGrid2 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as SourceFrame4 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
+import * as Lit5 from "./../../ui/lit/lit.js";
+import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/network/originalResourceChunkView.css.js
-var originalResourceChunkView_css_default = `/*
+// gen/front_end/panels/network/resourceChunkView.css.js
+var resourceChunkView_css_default = `/*
  * Copyright 2014 The Chromium Authors
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
 
-.resource-chunk-view {
-  user-select: text;
-}
-
-.resource-chunk-view .data-grid {
-  flex: auto;
-  border: none;
-
-  .resource-chunk-view-td {
-    border-bottom: 1px solid var(--sys-color-divider);
+@scope to (devtools-widget > *) {
+  :scope {
+    overflow: auto;
+    height: 100%;
   }
 
-  & tr {
-    &.resource-chunk-view-row-send td:first-child::before {
-      content: "\\2B06";
-      color: var(--sys-color-tertiary);
-      padding-right: 4px;
-    }
+  .resource-chunk-view {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    user-select: text;
+  }
 
-    &.resource-chunk-view-row-receive td:first-child::before {
-      content: "\\2B07";
-      color: var(--sys-color-error);
-      padding-right: 4px;
-    }
+  devtools-split-view {
+    flex: auto;
+    height: 100%;
+  }
 
-    &.resource-chunk-view-row-send {
-      background-color: color-mix(in srgb, var(--sys-color-tertiary-container), transparent 50%);
-    }
+  .data-grid .data-container table.data {
+    tr.data-grid-data-grid-node {
+      td.resource-chunk-view-td {
+        border-bottom: 1px solid var(--sys-color-divider);
+      }
 
-    &.resource-chunk-view-row-error {
-      background-color: var(--sys-color-surface-error);
-      color: var(--sys-color-on-surface-error);
+      &.resource-chunk-view-row-send td:first-child::before {
+        content: "\\2B06";
+        color: var(--sys-color-tertiary);
+        padding-right: 4px;
+      }
+
+      &.resource-chunk-view-row-receive td:first-child::before {
+        content: "\\2B07";
+        color: var(--sys-color-error);
+        padding-right: 4px;
+      }
+
+      &.resource-chunk-view-row-send {
+        background-color: color-mix(in srgb, var(--sys-color-tertiary-container), transparent 50%);
+      }
+
+      &.resource-chunk-view-row-error {
+        background-color: var(--sys-color-surface-error);
+        color: var(--sys-color-on-surface-error);
+      }
     }
   }
 }
 
-.resource-chunk-view .data-grid .data {
-  background-image: none;
-}
+/*# sourceURL=${import.meta.resolve("./resourceChunkView.css")} */`;
 
-.resource-chunk-view devtools-toolbar {
-  border-bottom: 1px solid var(--sys-color-divider);
-}
-
-/*# sourceURL=${import.meta.resolve("./originalResourceChunkView.css")} */`;
-
-// gen/front_end/panels/network/OriginalResourceChunkView.js
+// gen/front_end/panels/network/ResourceChunkView.js
+var { html: html12, render: render14, Directives: { ifDefined: ifDefined3 } } = Lit5;
 var UIStrings16 = {
   /**
    * @description Text in Event Source Messages View of the Network panel
@@ -7203,86 +7212,140 @@ var UIStrings16 = {
    */
   receive: "Receive"
 };
-var str_16 = i18n31.i18n.registerUIStrings("panels/network/OriginalResourceChunkView.ts", UIStrings16);
+var str_16 = i18n31.i18n.registerUIStrings("panels/network/ResourceChunkView.ts", UIStrings16);
 var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var i18nLazyString = i18n31.i18n.getLazilyComputedLocalizedString.bind(void 0, str_16);
-var OriginalResourceChunkView = class extends UI17.Widget.VBox {
-  splitWidget;
-  dataGrid;
-  timeComparator;
-  mainToolbar;
-  clearAllButton;
-  filterTypeCombobox;
+function defaultHeaderTemplate() {
+  return html12`
+    <tr>
+      <th id="data" weight="88">${i18nString16(UIStrings16.data)}</th>
+      <th id="length" align="right" weight="5">${i18nString16(UIStrings16.length)}</th>
+      <th id="time" sortable sort="ascending" weight="7">${i18nString16(UIStrings16.time)}</th>
+    </tr>`;
+}
+var DEFAULT_VIEW12 = (input, _output, target) => {
+  render14(html12`
+      <style>${resourceChunkView_css_default}</style>
+      <div class="resource-chunk-view vbox">
+        <devtools-toolbar class="resource-chunk-view-toolbar" jslog=${VisualLogging11.toolbar()}>
+          <devtools-button
+              .data=${{
+    variant: "toolbar",
+    iconName: "clear",
+    title: i18nString16(UIStrings16.clearAll),
+    jslogContext: "network.clear-all"
+  }}
+              aria-label=${i18nString16(UIStrings16.clearAll)}
+              @click=${input.onClear}>
+          </devtools-button>
+          <select
+              class="chrome-select"
+              aria-label=${i18nString16(UIStrings16.filter)}
+              @change=${input.onFilterTypeChange}>
+            ${FILTER_TYPES.map((item2) => html12`
+              <option
+                  value=${item2.name}
+                  .selected=${input.selectedFilterType === item2.name}
+                  jslog=${VisualLogging11.item(item2.name).track({ click: true })}
+                  aria-label=${item2.label()}>
+                ${item2.label()}
+              </option>
+            `)}
+          </select>
+          <devtools-toolbar-input type="filter"
+              placeholder=${input.filterUsingRegexHint}
+              .value=${input.filterText}
+              @change=${input.onFilterTextChange}
+              style="flex-grow: 0.4">
+          </devtools-toolbar-input>
+        </devtools-toolbar>
+        <devtools-split-view direction="row" sidebar-position="second"
+            name=${input.splitWidgetSettingKey}>
+          <div slot="main" class="vbox flex-auto">
+            <devtools-data-grid autoscroll name=${input.dataGridDisplayName} striped autofocus
+                resize="last"
+                @deselect=${input.onDeselect}
+                .template=${html12`
+                  <style>${resourceChunkView_css_default}</style>
+                  <table>
+                    ${input.headerTemplate}
+                    ${Lit5.Directives.repeat(input.rows, (row) => row.chunk, (row) => html12`
+                      <tr class=${ifDefined3(row.cssClass)}
+                          ?selected=${row.selected}
+                          data-index=${row.index}
+                          @select=${input.onSelect}
+                          @contextmenu=${(e) => {
+    if (e instanceof CustomEvent && e.detail) {
+      input.onContextMenu(row.item, e.detail);
+    }
+  }}>
+                        ${input.columns.map((col) => {
+    const value = col.id === "time" ? row.timeText : row.item.data[col.id] ?? "";
+    const title = col.id === "time" ? row.timeTooltip : void 0;
+    return html12`
+                              <td class="resource-chunk-view-td" title=${ifDefined3(title)}
+                                  data-value=${ifDefined3(typeof value === "string" ? value : void 0)}>
+                                ${value}
+                              </td>`;
+  })}
+                      </tr>
+                    `)}
+                  </table>
+                `}>
+            </devtools-data-grid>
+          </div>
+          <div slot="sidebar" class="vbox flex-auto" jslog=${VisualLogging11.pane("preview").track({ resize: true })}>
+            ${input.sidebarWidget ? html12`
+              <devtools-widget class="vbox flex-auto">
+                ${input.sidebarWidget.element}
+              </devtools-widget>` : html12`
+              <devtools-widget
+                  ${UI17.Widget.widget(UI17.EmptyWidget.EmptyWidget, {
+    header: i18nString16(UIStrings16.noMessageSelected),
+    text: i18nString16(UIStrings16.selectMessageToBrowseItsContent)
+  })}>
+              </devtools-widget>
+            `}
+          </div>
+        </devtools-split-view>
+      </div>`, target);
+};
+var ResourceChunkView = class extends UI17.Widget.VBox {
+  #view;
   filterType = null;
-  filterTextInput;
+  filterText = "";
   filterRegex = null;
-  frameEmptyWidget;
+  selectedChunk = null;
   currentSelectedNode;
   request;
   messageFilterSetting;
   sidebarWidget = null;
-  constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint) {
-    super();
+  splitWidgetSettingKey;
+  dataGridDisplayName;
+  filterUsingRegexHint;
+  get headerTemplate() {
+    return defaultHeaderTemplate();
+  }
+  constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint, opts, view = DEFAULT_VIEW12) {
+    super(opts);
+    this.#view = view;
     this.messageFilterSetting = Common11.Settings.Settings.instance().createSetting(messageFilterSettingKey, "");
-    this.registerRequiredCSS(originalResourceChunkView_css_default);
+    this.splitWidgetSettingKey = splitWidgetSettingKey;
+    this.dataGridDisplayName = dataGridDisplayName;
+    this.filterUsingRegexHint = filterUsingRegexHint;
     this.request = request;
-    this.element.classList.add("resource-chunk-view");
-    this.splitWidget = new UI17.SplitWidget.SplitWidget(false, true, splitWidgetSettingKey);
-    this.splitWidget.show(this.element);
-    const columns = this.getColumns();
-    this.dataGrid = new DataGrid2.SortableDataGrid.SortableDataGrid({
-      displayName: dataGridDisplayName,
-      columns
-    });
-    this.dataGrid.setRowContextMenuCallback((menu, node) => this.onRowContextMenu(menu, node));
-    this.dataGrid.setEnableAutoScrollToBottom(true);
-    this.dataGrid.setCellClass("resource-chunk-view-td");
-    this.timeComparator = resourceChunkNodeTimeComparator;
-    this.dataGrid.sortNodes(this.timeComparator, false);
-    this.dataGrid.markColumnAsSortedBy("time", DataGrid2.DataGrid.Order.Ascending);
-    this.dataGrid.addEventListener("SortingChanged", this.sortItems, this);
-    this.dataGrid.setName(splitWidgetSettingKey + "_datagrid");
-    this.dataGrid.addEventListener("SelectedNode", (event) => {
-      void this.onChunkSelected(event);
-    }, this);
-    this.dataGrid.addEventListener("DeselectedNode", this.onChunkDeselected, this);
-    this.mainToolbar = document.createElement("devtools-toolbar");
-    this.clearAllButton = new UI17.Toolbar.ToolbarButton(i18nString16(UIStrings16.clearAll), "clear");
-    this.clearAllButton.addEventListener("Click", this.clearChunks, this);
-    this.mainToolbar.appendToolbarItem(this.clearAllButton);
-    this.filterTypeCombobox = new UI17.Toolbar.ToolbarComboBox(this.onFilterTypeChanged.bind(this), i18nString16(UIStrings16.filter));
-    for (const filterItem of FILTER_TYPES) {
-      const option = this.filterTypeCombobox.createOption(filterItem.label(), filterItem.name);
-      this.filterTypeCombobox.addOption(option);
-    }
-    this.mainToolbar.appendToolbarItem(this.filterTypeCombobox);
-    this.filterTextInput = new UI17.Toolbar.ToolbarFilter(filterUsingRegexHint, 0.4);
-    this.filterTextInput.addEventListener("TextChanged", this.onFilterTextChanged, this);
-    const filter = this.messageFilterSetting.get();
-    if (filter) {
-      this.filterTextInput.setValue(filter);
-    }
-    this.mainToolbar.appendToolbarItem(this.filterTextInput);
-    const mainContainer = new UI17.Widget.VBox();
-    mainContainer.element.appendChild(this.mainToolbar);
-    this.dataGrid.asWidget().show(mainContainer.element);
-    mainContainer.setMinimumSize(0, 72);
-    this.splitWidget.setMainWidget(mainContainer);
-    this.frameEmptyWidget = new UI17.EmptyWidget.EmptyWidget(i18nString16(UIStrings16.noMessageSelected), i18nString16(UIStrings16.selectMessageToBrowseItsContent));
-    this.sidebarWidget = this.frameEmptyWidget;
-    this.splitWidget.setSidebarWidget(this.sidebarWidget);
-    if (filter) {
-      this.applyFilter(filter);
+    const initialFilter = this.messageFilterSetting.get();
+    if (initialFilter) {
+      this.applyFilter(initialFilter);
     }
   }
   onRowContextMenu(contextMenu, node) {
-    const item = node;
-    const binaryView = item.binaryView();
+    const binaryView = node.binaryView();
     if (binaryView) {
       binaryView.addCopyToContextMenu(contextMenu, i18nString16(UIStrings16.copyMessageD));
     } else {
-      const dataVal = item.data.data;
-      const textToCopy = typeof dataVal === "string" ? dataVal : item.dataText();
+      const dataVal = node.data.data;
+      const textToCopy = typeof dataVal === "string" ? dataVal : node.dataText();
       contextMenu.clipboardSection().appendItem(i18nString16(UIStrings16.copyMessage), Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host9.InspectorFrontendHost.InspectorFrontendHostInstance, textToCopy), { jslogContext: "copy" });
     }
     contextMenu.footerSection().appendItem(i18nString16(UIStrings16.clearAll), this.clearChunks.bind(this), { jslogContext: "clear-all" });
@@ -7304,23 +7367,25 @@ var OriginalResourceChunkView = class extends UI17.Widget.VBox {
     if (!this.chunkFilter(chunk)) {
       return;
     }
-    this.dataGrid.insertChild(this.createGridItem(chunk));
+    this.requestUpdate();
   }
   clearChunks() {
     clearChunkOffsets.set(this.request, this.getRequestChunks().length);
-    this.performUpdate();
+    this.requestUpdate();
   }
-  onFilterTypeChanged() {
-    const val = this.filterTypeCombobox.selectedOption().value;
-    this.filterType = val === "all" ? null : val;
-    this.performUpdate();
+  onFilterTypeChanged(event) {
+    const select = event.target;
+    this.filterType = select.value === "all" ? null : select.value;
+    this.requestUpdate();
   }
-  onFilterTextChanged() {
-    const text = this.filterTextInput.value();
+  onFilterTextChanged(event) {
+    const target = event.target;
+    const text = target.value;
     this.messageFilterSetting.set(text);
     this.applyFilter(text);
   }
   applyFilter(text) {
+    this.filterText = text;
     if (text) {
       try {
         this.filterRegex = new RegExp(text, "i");
@@ -7330,72 +7395,97 @@ var OriginalResourceChunkView = class extends UI17.Widget.VBox {
     } else {
       this.filterRegex = null;
     }
-    this.performUpdate();
+    this.requestUpdate();
   }
-  async onChunkSelected(event) {
-    this.currentSelectedNode = event.data;
+  async onChunkSelected(chunk, item2) {
+    if (this.selectedChunk === chunk && this.currentSelectedNode === item2 && this.sidebarWidget) {
+      return;
+    }
+    this.selectedChunk = chunk;
+    this.currentSelectedNode = item2;
     await this.updateSidebar();
   }
   onChunkDeselected() {
+    if (this.selectedChunk === null && this.currentSelectedNode === null && this.sidebarWidget === null) {
+      return;
+    }
+    this.selectedChunk = null;
     this.currentSelectedNode = null;
     void this.updateSidebar();
   }
   async updateSidebar() {
-    if (!this.currentSelectedNode) {
+    const selectedNode = this.currentSelectedNode;
+    if (!selectedNode) {
       this.sidebarWidget = null;
-      this.updateSidebarWidget();
+      this.requestUpdate();
       return;
     }
-    const content = this.currentSelectedNode.dataText();
-    const binaryView = this.currentSelectedNode.binaryView();
+    const binaryView = selectedNode.binaryView();
     if (binaryView) {
       this.sidebarWidget = binaryView;
-      this.updateSidebarWidget();
+      this.requestUpdate();
       return;
     }
+    const content = selectedNode.dataText();
     const jsonView = await SourceFrame4.JSONView.JSONView.createView(content);
     if (jsonView) {
       this.sidebarWidget = jsonView;
-      this.updateSidebarWidget();
+      this.requestUpdate();
       return;
     }
     this.sidebarWidget = new SourceFrame4.ResourceSourceFrame.ResourceSourceFrame(TextUtils5.StaticContentProvider.StaticContentProvider.fromString(this.request.url(), this.request.resourceType(), content), "");
-    this.updateSidebarWidget();
-  }
-  updateSidebarWidget() {
-    const activeSidebar = this.sidebarWidget || this.frameEmptyWidget;
-    if (this.splitWidget.sidebarWidget() !== activeSidebar) {
-      this.splitWidget.setSidebarWidget(activeSidebar);
-    }
+    this.requestUpdate();
   }
   performUpdate() {
-    this.dataGrid.rootNode().removeChildren();
     let chunks = this.getRequestChunks();
     const offset = clearChunkOffsets.get(this.request) || 0;
     chunks = chunks.slice(offset).filter(this.chunkFilter.bind(this));
-    chunks.forEach((chunk) => this.dataGrid.insertChild(this.createGridItem(chunk)));
-    this.updateSidebarWidget();
-  }
-  refresh() {
-    this.performUpdate();
-  }
-  sortItems() {
-    this.dataGrid.sortNodes(this.timeComparator, !this.dataGrid.isSortOrderAscending());
-  }
-  getDataGridForTest() {
-    return this.dataGrid;
+    const rows = chunks.map((chunk, index) => {
+      const item2 = this.createGridItem(chunk);
+      const time = new Date(item2.getTime() * 1e3);
+      const timeText = ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2) + ":" + ("0" + time.getSeconds()).slice(-2) + "." + ("00" + time.getMilliseconds()).slice(-3);
+      return {
+        chunk,
+        item: item2,
+        selected: chunk === this.selectedChunk,
+        cssClass: item2.cssClass,
+        index,
+        timeTooltip: time.toLocaleString(),
+        timeText
+      };
+    });
+    const input = {
+      onClear: this.clearChunks.bind(this),
+      selectedFilterType: this.filterType ?? "all",
+      onFilterTypeChange: this.onFilterTypeChanged.bind(this),
+      filterUsingRegexHint: this.filterUsingRegexHint,
+      filterText: this.filterText,
+      onFilterTextChange: this.onFilterTextChanged.bind(this),
+      splitWidgetSettingKey: this.splitWidgetSettingKey,
+      dataGridDisplayName: this.dataGridDisplayName,
+      columns: this.getColumns(),
+      headerTemplate: this.headerTemplate,
+      rows,
+      onSelect: (e) => {
+        const target = e.target;
+        const index = target?.dataset.index;
+        if (index !== void 0) {
+          const row = rows[Number(index)];
+          if (row) {
+            void this.onChunkSelected(row.chunk, row.item);
+          }
+        }
+      },
+      onDeselect: this.onChunkDeselected.bind(this),
+      onContextMenu: (item2, menu) => {
+        this.onRowContextMenu(menu, item2);
+      },
+      sidebarWidget: this.sidebarWidget
+    };
+    this.#view(input, void 0, this.contentElement);
   }
   getSplitWidgetForTest() {
-    return this.splitWidget;
-  }
-  getFilterInputForTest() {
-    return this.filterTextInput;
-  }
-  getClearAllButtonForTest() {
-    return this.clearAllButton;
-  }
-  getFilterTypeComboboxForTest() {
-    return this.filterTypeCombobox;
+    return this.sidebarWidget;
   }
 };
 var FILTER_TYPES = [
@@ -7403,14 +7493,12 @@ var FILTER_TYPES = [
   { name: "send", label: i18nLazyString(UIStrings16.send), jslogContext: "send" },
   { name: "receive", label: i18nLazyString(UIStrings16.receive), jslogContext: "receive" }
 ];
-var DataGridItem = class extends DataGrid2.SortableDataGrid.SortableDataGridNode {
+var DataGridItem = class {
 };
-function resourceChunkNodeTimeComparator(a, b) {
-  return a.getTime() - b.getTime();
-}
 var clearChunkOffsets = /* @__PURE__ */ new WeakMap();
 
 // gen/front_end/panels/network/ResourceDirectSocketChunkView.js
+var { html: html13 } = Lit6;
 var UIStrings17 = {
   /**
    * @description Text in Event Source Messages View of the Network panel
@@ -7443,10 +7531,26 @@ var UIStrings17 = {
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/network/ResourceDirectSocketChunkView.ts", UIStrings17);
 var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var ResourceDirectSocketChunkView = class extends OriginalResourceChunkView {
+var i18nLazyString2 = i18n33.i18n.getLazilyComputedLocalizedString.bind(void 0, str_17);
+function udpBoundHeaderTemplate() {
+  return html13`
+    <tr>
+      <th id="data" weight="63">${i18nLazyString2(UIStrings17.data)}</th>
+          <th id="address" align="right" weight="15">${i18nLazyString2(UIStrings17.address)}</th>
+          <th id="port" align="right" weight="10">${i18nLazyString2(UIStrings17.port)}</th>
+          <th id="length" align="right" weight="5">${i18nLazyString2(UIStrings17.length)}</th>
+          <th id="time" sortable sort="ascending" weight="7">${i18nLazyString2(UIStrings17.time)}</th>
+    </tr>`;
+}
+var ResourceDirectSocketChunkView = class extends ResourceChunkView {
+  get headerTemplate() {
+    if (this.request.directSocketInfo?.type === SDK11.NetworkRequest.DirectSocketType.UDP_BOUND) {
+      return udpBoundHeaderTemplate();
+    }
+    return defaultHeaderTemplate();
+  }
   constructor(request) {
-    super(request, "network-direct-socket-chunk-filter", "resource-direct-socket-chunk-split-view-state", i18nString17(UIStrings17.directSocketChunk), i18nString17(UIStrings17.filterUsingRegex));
-    this.element.setAttribute("jslog", `${VisualLogging11.pane("direct-socket-messages").track({ resize: true })}`);
+    super(request, "network-direct-socket-chunk-filter", "resource-direct-socket-chunk-split-view-state", i18nString17(UIStrings17.directSocketChunk), i18nString17(UIStrings17.filterUsingRegex), { jslog: `${VisualLogging12.pane("direct-socket-messages").track({ resize: true })}` });
   }
   getRequestChunks() {
     return this.request.directSocketChunks();
@@ -7462,7 +7566,7 @@ var ResourceDirectSocketChunkView = class extends OriginalResourceChunkView {
   }
   wasShown() {
     super.wasShown();
-    this.refresh();
+    this.requestUpdate();
     this.request.addEventListener(SDK11.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.onDirectSocketChunkAdded, this);
   }
   willHide() {
@@ -7517,12 +7621,10 @@ var ResourceChunkNode = class extends DataGridItem {
   #binaryView = null;
   chunk;
   isTextFrame = false;
+  data;
+  cssClass;
   constructor(chunk, boundSocket) {
-    const time = new Date(chunk.timestamp * 1e3);
-    const timeText = ("0" + time.getHours()).substr(-2) + ":" + ("0" + time.getMinutes()).substr(-2) + ":" + ("0" + time.getSeconds()).substr(-2) + "." + ("00" + time.getMilliseconds()).substr(-3);
-    const timeNode = document.createElement("div");
-    UI18.UIUtils.createTextChild(timeNode, timeText);
-    UI18.Tooltip.Tooltip.install(timeNode, time.toLocaleString());
+    super();
     let description;
     const length = i18n33.ByteUtilities.bytesToString(Platform8.StringUtilities.base64ToSize(chunk.data));
     const maxDisplayLen = 30;
@@ -7532,19 +7634,26 @@ var ResourceChunkNode = class extends DataGridItem {
       description = chunk.data;
     }
     if (boundSocket) {
-      super({ data: description, address: chunk.remoteAddress, port: chunk.remotePort, length, time: timeNode });
+      this.data = {
+        data: description,
+        address: chunk.remoteAddress ?? "",
+        port: chunk.remotePort?.toString() ?? "",
+        length
+      };
     } else {
-      super({ data: description, length, time: timeNode });
+      this.data = {
+        data: description,
+        length
+      };
     }
+    let cssClass = "";
+    if (chunk.type === SDK11.NetworkRequest.DirectSocketChunkType.SEND) {
+      cssClass = "resource-chunk-view-row-send";
+    } else if (chunk.type === SDK11.NetworkRequest.DirectSocketChunkType.RECEIVE) {
+      cssClass = "resource-chunk-view-row-receive";
+    }
+    this.cssClass = cssClass;
     this.chunk = chunk;
-  }
-  createCells(element) {
-    element.classList.toggle("resource-chunk-view-row-send", this.chunk.type === SDK11.NetworkRequest.DirectSocketChunkType.SEND);
-    element.classList.toggle("resource-chunk-view-row-receive", this.chunk.type === SDK11.NetworkRequest.DirectSocketChunkType.RECEIVE);
-    super.createCells(element);
-  }
-  nodeSelfHeight() {
-    return 21;
   }
   dataText() {
     return this.chunk.data;
@@ -7572,8 +7681,7 @@ import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as TextUtils7 from "./../../core/text_utils/text_utils.js";
-import * as UI19 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings18 = {
   /**
    * @description Text in Resource Web Socket Frame View of the Network panel. Displays which Opcode
@@ -7631,11 +7739,10 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/network/ResourceWebSocketFrameView.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var i18nLazyString2 = i18n35.i18n.getLazilyComputedLocalizedString.bind(void 0, str_18);
-var ResourceWebSocketFrameView = class extends OriginalResourceChunkView {
+var i18nLazyString3 = i18n35.i18n.getLazilyComputedLocalizedString.bind(void 0, str_18);
+var ResourceWebSocketFrameView = class extends ResourceChunkView {
   constructor(request) {
-    super(request, "network-web-socket-message-filter", "resource-web-socket-frame-split-view-state", i18nString18(UIStrings18.webSocketFrame), i18nString18(UIStrings18.filterUsingRegex));
-    this.element.setAttribute("jslog", `${VisualLogging12.pane("web-socket-messages").track({ resize: true })}`);
+    super(request, "network-web-socket-message-filter", "resource-web-socket-frame-split-view-state", i18nString18(UIStrings18.webSocketFrame), i18nString18(UIStrings18.filterUsingRegex), { jslog: `${VisualLogging13.pane("web-socket-messages").track({ resize: true })}` });
   }
   getRequestChunks() {
     return this.request.frames();
@@ -7651,7 +7758,7 @@ var ResourceWebSocketFrameView = class extends OriginalResourceChunkView {
   }
   wasShown() {
     super.wasShown();
-    this.refresh();
+    this.requestUpdate();
     this.request.addEventListener(SDK12.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.onWebSocketFrameAdded, this);
   }
   willHide() {
@@ -7674,41 +7781,39 @@ var opCodeDescriptions = function() {
   map[
     0
     /* OpCodes.CONTINUATION_FRAME */
-  ] = i18nLazyString2(UIStrings18.continuationFrame);
+  ] = i18nLazyString3(UIStrings18.continuationFrame);
   map[
     1
     /* OpCodes.TEXT_FRAME */
-  ] = i18nLazyString2(UIStrings18.textMessage);
+  ] = i18nLazyString3(UIStrings18.textMessage);
   map[
     2
     /* OpCodes.BINARY_FRAME */
-  ] = i18nLazyString2(UIStrings18.binaryMessage);
+  ] = i18nLazyString3(UIStrings18.binaryMessage);
   map[
     8
     /* OpCodes.CONNECTION_CLOSE_FRAME */
-  ] = i18nLazyString2(UIStrings18.connectionCloseMessage);
+  ] = i18nLazyString3(UIStrings18.connectionCloseMessage);
   map[
     9
     /* OpCodes.PING_FRAME */
-  ] = i18nLazyString2(UIStrings18.pingMessage);
+  ] = i18nLazyString3(UIStrings18.pingMessage);
   map[
     10
     /* OpCodes.PONG_FRAME */
-  ] = i18nLazyString2(UIStrings18.pongMessage);
+  ] = i18nLazyString3(UIStrings18.pongMessage);
   return map;
 }();
 var ResourceFrameNode = class extends DataGridItem {
   frame;
   isTextFrame;
   #dataText;
-  #binaryView;
+  #binaryView = null;
+  data;
+  cssClass;
   constructor(frame) {
+    super();
     let length = String(frame.text.length);
-    const time = new Date(frame.time * 1e3);
-    const timeText = ("0" + time.getHours()).substr(-2) + ":" + ("0" + time.getMinutes()).substr(-2) + ":" + ("0" + time.getSeconds()).substr(-2) + "." + ("00" + time.getMilliseconds()).substr(-3);
-    const timeNode = document.createElement("div");
-    UI19.UIUtils.createTextChild(timeNode, timeText);
-    UI19.Tooltip.Tooltip.install(timeNode, time.toLocaleString());
     let dataText = frame.text;
     let description = ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
     const isTextFrame = frame.opCode === 1;
@@ -7723,20 +7828,20 @@ var ResourceFrameNode = class extends DataGridItem {
     } else {
       dataText = description;
     }
-    super({ data: description, length, time: timeNode });
     this.frame = frame;
     this.isTextFrame = isTextFrame;
     this.#dataText = dataText;
-    this.#binaryView = null;
-  }
-  createCells(element) {
-    element.classList.toggle("resource-chunk-view-row-error", this.frame.type === SDK12.NetworkRequest.WebSocketFrameType.Error);
-    element.classList.toggle("resource-chunk-view-row-send", this.frame.type === SDK12.NetworkRequest.WebSocketFrameType.Send);
-    element.classList.toggle("resource-chunk-view-row-receive", this.frame.type === SDK12.NetworkRequest.WebSocketFrameType.Receive);
-    super.createCells(element);
-  }
-  nodeSelfHeight() {
-    return 21;
+    this.data = {
+      data: description,
+      length
+    };
+    if (frame.type === SDK12.NetworkRequest.WebSocketFrameType.Error) {
+      this.cssClass = "resource-chunk-view-row-error";
+    } else if (frame.type === SDK12.NetworkRequest.WebSocketFrameType.Send) {
+      this.cssClass = "resource-chunk-view-row-send";
+    } else if (frame.type === SDK12.NetworkRequest.WebSocketFrameType.Receive) {
+      this.cssClass = "resource-chunk-view-row-receive";
+    }
   }
   dataText() {
     return this.#dataText;
@@ -7871,7 +7976,7 @@ var str_19 = i18n37.i18n.registerUIStrings("panels/network/NetworkItemView.ts", 
 var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var requestToResponseView = /* @__PURE__ */ new WeakMap();
 var requestToPreviewView = /* @__PURE__ */ new WeakMap();
-var NetworkItemView = class extends UI20.TabbedPane.TabbedPane {
+var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
   #request;
   #resourceViewTabSetting;
   #headersViewComponent;
@@ -7885,7 +7990,7 @@ var NetworkItemView = class extends UI20.TabbedPane.TabbedPane {
     super();
     this.#request = request;
     this.element.classList.add("network-item-view");
-    this.headerElement().setAttribute("jslog", `${VisualLogging13.toolbar("request-details").track({
+    this.headerElement().setAttribute("jslog", `${VisualLogging14.toolbar("request-details").track({
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
     if (request.resourceType() === Common14.ResourceType.resourceTypes.DirectSocket) {
@@ -7905,7 +8010,7 @@ var NetworkItemView = class extends UI20.TabbedPane.TabbedPane {
       this.setSuffixElement("headers-component", statusDot);
     }
     void this.maybeAppendPayloadPanel();
-    this.addEventListener(UI20.TabbedPane.Events.TabSelected, this.tabSelected, this);
+    this.addEventListener(UI18.TabbedPane.Events.TabSelected, this.tabSelected, this);
     if (request.resourceType() === Common14.ResourceType.resourceTypes.WebSocket) {
       const frameView = new ResourceWebSocketFrameView(request);
       this.appendTab("web-socket-frames", i18nString19(UIStrings19.messages), frameView, i18nString19(UIStrings19.websocketMessages));
@@ -7927,7 +8032,7 @@ var NetworkItemView = class extends UI20.TabbedPane.TabbedPane {
         const icon = new Icon2();
         icon.name = "cross-circle-filled";
         icon.classList.add("small");
-        UI20.Tooltip.Tooltip.install(icon, i18nString19(UIStrings19.signedexchangeError));
+        UI18.Tooltip.Tooltip.install(icon, i18nString19(UIStrings19.signedexchangeError));
         this.setTabIcon("preview", icon);
       }
       this.appendTab("response", i18nString19(UIStrings19.response), this.#responseView, i18nString19(UIStrings19.rawResponseData));
@@ -8094,9 +8199,9 @@ import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as NetworkForward4 from "./forward/forward.js";
 import * as Sources2 from "./../sources/sources.js";
 import * as Adorners from "./../../ui/components/adorners/adorners.js";
-import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
 import * as RenderCoordinator3 from "./../../ui/components/render_coordinator/render_coordinator.js";
-import * as DataGrid7 from "./../../ui/legacy/components/data_grid/data_grid.js";
+import * as DataGrid6 from "./../../ui/legacy/components/data_grid/data_grid.js";
 
 // gen/front_end/ui/legacy/components/data_grid/dataGridAiButton.css.js
 var dataGridAiButton_css_default = `/*
@@ -8125,8 +8230,8 @@ var dataGridAiButton_css_default = `/*
 // gen/front_end/panels/network/NetworkLogView.js
 import * as PerfUI4 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI25 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
+import * as UI23 from "./../../ui/legacy/legacy.js";
+import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/LinkPreloadGenerator.js
 var LinkPreloadGenerator_exports = {};
@@ -8203,7 +8308,7 @@ __export(NetworkFrameGrouper_exports, {
 import * as Common16 from "./../../core/common/common.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
 import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
-import * as UI21 from "./../../ui/legacy/legacy.js";
+import * as UI19 from "./../../ui/legacy/legacy.js";
 var NetworkFrameGrouper = class {
   parentView;
   activeGroups;
@@ -8243,8 +8348,8 @@ var FrameGroupNode = class extends NetworkGroupNode {
     if (columnIndex === 0) {
       const name = this.displayName();
       cell.appendChild(createIcon2("frame", "network-frame-group-icon"));
-      UI21.UIUtils.createTextChild(cell, name);
-      UI21.Tooltip.Tooltip.install(cell, name);
+      UI19.UIUtils.createTextChild(cell, name);
+      UI19.Tooltip.Tooltip.install(cell, name);
       this.setCellAccessibleName(cell.textContent || "", cell, columnId);
     }
   }
@@ -8734,11 +8839,11 @@ import * as Common18 from "./../../core/common/common.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as StackTrace3 from "./../../models/stack_trace/stack_trace.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
-import * as DataGrid5 from "./../../ui/legacy/components/data_grid/data_grid.js";
+import * as DataGrid4 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI24 from "./../../ui/legacy/legacy.js";
+import * as UI22 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport5 from "./../../ui/legacy/theme_support/theme_support.js";
-import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/NetworkManageCustomHeadersView.js
 var NetworkManageCustomHeadersView_exports = {};
@@ -8746,7 +8851,7 @@ __export(NetworkManageCustomHeadersView_exports, {
   NetworkManageCustomHeadersView: () => NetworkManageCustomHeadersView
 });
 import * as i18n39 from "./../../core/i18n/i18n.js";
-import * as UI22 from "./../../ui/legacy/legacy.js";
+import * as UI20 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/network/networkManageCustomHeadersView.css.js
 var networkManageCustomHeadersView_css_default = `/*
@@ -8808,7 +8913,7 @@ var UIStrings20 = {
 };
 var str_20 = i18n39.i18n.registerUIStrings("panels/network/NetworkManageCustomHeadersView.ts", UIStrings20);
 var i18nString20 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
-var NetworkManageCustomHeadersView = class extends UI22.Widget.VBox {
+var NetworkManageCustomHeadersView = class extends UI20.Widget.VBox {
   list;
   columnConfigs;
   addHeaderColumnCallback;
@@ -8819,7 +8924,7 @@ var NetworkManageCustomHeadersView = class extends UI22.Widget.VBox {
     super({ useShadowDom: true });
     this.registerRequiredCSS(networkManageCustomHeadersView_css_default);
     this.contentElement.createChild("div", "header").textContent = i18nString20(UIStrings20.manageHeaderColumns);
-    this.list = new UI22.ListWidget.ListWidget(this);
+    this.list = new UI20.ListWidget.ListWidget(this);
     this.list.registerRequiredCSS(networkManageCustomHeadersView_css_default);
     this.list.element.classList.add("custom-headers-list");
     const placeholder = document.createElement("div");
@@ -8827,7 +8932,7 @@ var NetworkManageCustomHeadersView = class extends UI22.Widget.VBox {
     placeholder.textContent = i18nString20(UIStrings20.noCustomHeaders);
     this.list.setEmptyPlaceholder(placeholder);
     this.list.show(this.contentElement);
-    this.contentElement.appendChild(UI22.UIUtils.createTextButton(i18nString20(UIStrings20.addCustomHeader), this.addButtonClicked.bind(this), {
+    this.contentElement.appendChild(UI20.UIUtils.createTextButton(i18nString20(UIStrings20.addCustomHeader), this.addButtonClicked.bind(this), {
       className: "add-button",
       jslogContext: "network.add-custom-header"
     }));
@@ -8849,45 +8954,45 @@ var NetworkManageCustomHeadersView = class extends UI22.Widget.VBox {
   addButtonClicked() {
     this.list.addNewItem(this.columnConfigs.size, { header: "" });
   }
-  renderItem(item, _editable) {
+  renderItem(item2, _editable) {
     const element = document.createElement("div");
     element.classList.add("custom-headers-list-item");
     const header = element.createChild("div", "custom-header-name");
-    header.textContent = item.header;
-    UI22.Tooltip.Tooltip.install(header, item.header);
+    header.textContent = item2.header;
+    UI20.Tooltip.Tooltip.install(header, item2.header);
     return element;
   }
-  removeItemRequested(item, _index) {
-    this.removeHeaderColumnCallback(item.header);
-    this.columnConfigs.delete(item.header.toLowerCase());
+  removeItemRequested(item2, _index) {
+    this.removeHeaderColumnCallback(item2.header);
+    this.columnConfigs.delete(item2.header.toLowerCase());
     this.headersUpdated();
   }
-  commitEdit(item, editor, isNew) {
+  commitEdit(item2, editor, isNew) {
     const headerId = editor.control("header").value.trim();
     let success;
     if (isNew) {
       success = this.addHeaderColumnCallback(headerId);
     } else {
-      success = this.changeHeaderColumnCallback(item.header, headerId);
+      success = this.changeHeaderColumnCallback(item2.header, headerId);
     }
     if (success && !isNew) {
-      this.columnConfigs.delete(item.header.toLowerCase());
+      this.columnConfigs.delete(item2.header.toLowerCase());
     }
     if (success) {
       this.columnConfigs.set(headerId.toLowerCase(), { title: headerId, editable: true });
     }
     this.headersUpdated();
   }
-  beginEdit(item) {
+  beginEdit(item2) {
     const editor = this.createEditor();
-    editor.control("header").value = item.header;
+    editor.control("header").value = item2.header;
     return editor;
   }
   createEditor() {
     if (this.editor) {
       return this.editor;
     }
-    const editor = new UI22.ListWidget.Editor();
+    const editor = new UI20.ListWidget.Editor();
     this.editor = editor;
     const content = editor.contentElement();
     const titles = content.createChild("div", "custom-headers-edit-row");
@@ -8895,10 +9000,10 @@ var NetworkManageCustomHeadersView = class extends UI22.Widget.VBox {
     const fields = content.createChild("div", "custom-headers-edit-row");
     fields.createChild("div", "custom-headers-header").appendChild(editor.createInput("header", "text", "x-custom-header", validateHeader.bind(this)));
     return editor;
-    function validateHeader(item, _index, _input) {
+    function validateHeader(item2, _index, _input) {
       let valid = true;
       const headerId = editor.control("header").value.trim().toLowerCase();
-      if (this.columnConfigs.has(headerId) && item.header !== headerId) {
+      if (this.columnConfigs.has(headerId) && item2.header !== headerId) {
         valid = false;
       }
       return {
@@ -8917,7 +9022,7 @@ import * as Common17 from "./../../core/common/common.js";
 import * as NetworkTimeCalculator3 from "./../../models/network_time_calculator/network_time_calculator.js";
 import * as RenderCoordinator2 from "./../../ui/components/render_coordinator/render_coordinator.js";
 import * as PerfUI3 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as UI23 from "./../../ui/legacy/legacy.js";
+import * as UI21 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../ui/legacy/theme_support/theme_support.js";
 
 // gen/front_end/panels/network/NetworkOverview.js
@@ -9308,7 +9413,7 @@ var networkWaterfallColumn_css_default = `/*
 
 // gen/front_end/panels/network/NetworkWaterfallColumn.js
 var BAR_SPACING = 1;
-var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.VBox {
+var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.VBox {
   canvas;
   canvasPosition;
   leftPadding;
@@ -9351,7 +9456,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
     this.offsetHeight = 0;
     this.startTime = this.calculator.minimumBoundary();
     this.endTime = this.calculator.maximumBoundary();
-    this.popoverHelper = new UI23.PopoverHelper.PopoverHelper(this.element, this.getPopoverRequest.bind(this), "network.timing");
+    this.popoverHelper = new UI21.PopoverHelper.PopoverHelper(this.element, this.getPopoverRequest.bind(this), "network.timing");
     this.popoverHelper.setTimeout(300, 300);
     this.nodes = [];
     this.hoveredNode = null;
@@ -10018,7 +10123,7 @@ var UIStrings21 = {
 };
 var str_21 = i18n41.i18n.registerUIStrings("panels/network/NetworkLogViewColumns.ts", UIStrings21);
 var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
-var i18nLazyString3 = i18n41.i18n.getLazilyComputedLocalizedString.bind(void 0, str_21);
+var i18nLazyString4 = i18n41.i18n.getLazilyComputedLocalizedString.bind(void 0, str_21);
 var NetworkLogViewColumns = class _NetworkLogViewColumns {
   networkLogView;
   persistentSettings;
@@ -10109,9 +10214,9 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       this.columns.push(columnConfig);
     }
     this.loadCustomColumnsAndSettings();
-    this.popoverHelper = new UI24.PopoverHelper.PopoverHelper(this.networkLogView.element, this.getPopoverRequest.bind(this), "network.initiator-stacktrace");
+    this.popoverHelper = new UI22.PopoverHelper.PopoverHelper(this.networkLogView.element, this.getPopoverRequest.bind(this), "network.initiator-stacktrace");
     this.popoverHelper.setTimeout(300, 300);
-    this.#dataGrid = new DataGrid5.SortableDataGrid.SortableDataGrid({
+    this.#dataGrid = new DataGrid4.SortableDataGrid.SortableDataGrid({
       displayName: i18nString21(UIStrings21.networkLog),
       columns: this.columns.map(_NetworkLogViewColumns.convertToDataGridDescriptor)
     });
@@ -10120,8 +10225,8 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.#dataGrid.addEventListener("SortingChanged", this.sortHandler, this);
     this.#dataGrid.setHeaderContextMenuCallback(this.#headerContextMenu.bind(this));
     this.activeWaterfallSortId = WaterfallSortIds.StartTime;
-    this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid5.DataGrid.Order.Ascending);
-    this.splitWidget = new UI24.SplitWidget.SplitWidget(true, true, "network-panel-split-view-waterfall", 200);
+    this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid4.DataGrid.Order.Ascending);
+    this.splitWidget = new UI22.SplitWidget.SplitWidget(true, true, "network-panel-split-view-waterfall", 200);
     const widget7 = this.#dataGrid.asWidget();
     widget7.setMinimumSize(150, 0);
     this.splitWidget.setMainWidget(widget7);
@@ -10158,7 +10263,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       if (!request) {
         return;
       }
-      const contextMenu = new UI24.ContextMenu.ContextMenu(event);
+      const contextMenu = new UI22.ContextMenu.ContextMenu(event);
       this.networkLogView.handleContextMenuForRequest(contextMenu, request);
       void contextMenu.show();
     }
@@ -10215,10 +10320,10 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
   }
   createWaterfallHeader() {
     this.waterfallHeaderElement = this.waterfallColumn.contentElement.createChild("div", "network-waterfall-header");
-    this.waterfallHeaderElement.setAttribute("jslog", `${VisualLogging14.tableHeader("waterfall").track({ click: true, resize: true })}`);
+    this.waterfallHeaderElement.setAttribute("jslog", `${VisualLogging15.tableHeader("waterfall").track({ click: true, resize: true })}`);
     this.waterfallHeaderElement.addEventListener("click", waterfallHeaderClicked.bind(this));
     this.waterfallHeaderElement.addEventListener("contextmenu", (event) => {
-      const contextMenu = new UI24.ContextMenu.ContextMenu(event);
+      const contextMenu = new UI22.ContextMenu.ContextMenu(event);
       this.#headerContextMenu(contextMenu);
       void contextMenu.show();
     });
@@ -10229,7 +10334,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.waterfallColumnSortIcon.className = "sort-order-icon";
     this.waterfallHeaderElement.createChild("div", "sort-order-icon-container").appendChild(this.waterfallColumnSortIcon);
     function waterfallHeaderClicked() {
-      const sortOrders = DataGrid5.DataGrid.Order;
+      const sortOrders = DataGrid4.DataGrid.Order;
       const wasSortedByWaterfall = this.#dataGrid.sortColumnId() === "waterfall";
       const wasSortedAscending = this.#dataGrid.isSortOrderAscending();
       const sortOrder = wasSortedByWaterfall && wasSortedAscending ? sortOrders.Descending : sortOrders.Ascending;
@@ -10260,7 +10365,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.splitWidget.show(element);
   }
   setHidden(value) {
-    UI24.ARIAUtils.setHidden(this.splitWidget.element, value);
+    UI22.ARIAUtils.setHidden(this.splitWidget.element, value);
   }
   dataGrid() {
     return this.#dataGrid;
@@ -10278,7 +10383,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.networkLogView.removeAllNodeHighlights();
     this.waterfallRequestsAreStale = true;
     if (columnId === "waterfall") {
-      if (this.#dataGrid.sortOrder() === DataGrid5.DataGrid.Order.Ascending) {
+      if (this.#dataGrid.sortOrder() === DataGrid4.DataGrid.Order.Ascending) {
         this.waterfallColumnSortIcon.name = "triangle-up";
       } else {
         this.waterfallColumnSortIcon.name = "triangle-down";
@@ -10391,9 +10496,9 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
   }
   makeHeaderFragment(title, subtitle) {
     const fragment = document.createDocumentFragment();
-    UI24.UIUtils.createTextChild(fragment, title);
+    UI22.UIUtils.createTextChild(fragment, title);
     const subtitleDiv = fragment.createChild("div", "network-header-subtitle");
-    UI24.UIUtils.createTextChild(subtitleDiv, subtitle);
+    UI22.UIUtils.createTextChild(subtitleDiv, subtitle);
     return fragment;
   }
   #headerContextMenu(contextMenu) {
@@ -10462,7 +10567,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       }
       this.networkLogView.setCalculator(calculator);
       this.activeWaterfallSortId = sortId;
-      this.#dataGrid.markColumnAsSortedBy("waterfall", DataGrid5.DataGrid.Order.Ascending);
+      this.#dataGrid.markColumnAsSortedBy("waterfall", DataGrid4.DataGrid.Order.Ascending);
       this.sortHandler();
     }
   }
@@ -10475,7 +10580,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       }
     }
     const manageCustomHeadersRequest = new NetworkManageCustomHeadersView(customHeadersRequest, (headerTitle) => Boolean(this.addCustomHeader(headerTitle, `request-header-${headerTitle}`)), (oldHeaderId, headerTitle) => Boolean(this.changeCustomHeader(`request-header-${oldHeaderId}`, headerTitle, `request-header-${headerTitle}`)), (headerTitle) => Boolean(this.removeCustomHeader(`request-header-${headerTitle}`)));
-    const dialogRequest = new UI24.Dialog.Dialog("manage-custom-request-headers");
+    const dialogRequest = new UI22.Dialog.Dialog("manage-custom-request-headers");
     manageCustomHeadersRequest.show(dialogRequest.contentElement);
     dialogRequest.setSizeBehavior(
       "MeasureContent"
@@ -10492,7 +10597,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       }
     }
     const manageCustomHeadersResponse = new NetworkManageCustomHeadersView(customHeadersResponse, (headerTitle) => Boolean(this.addCustomHeader(headerTitle, `response-header-${headerTitle}`)), (oldHeaderId, headerTitle) => Boolean(this.changeCustomHeader(`response-header-${oldHeaderId}`, headerTitle, `response-header-${headerTitle}`)), (headerTitle) => Boolean(this.removeCustomHeader(`response-header-${headerTitle}`)));
-    const dialogResponse = new UI24.Dialog.Dialog("manage-custom-response-headers");
+    const dialogResponse = new UI22.Dialog.Dialog("manage-custom-response-headers");
     manageCustomHeadersResponse.show(dialogResponse.contentElement);
     dialogResponse.setSizeBehavior(
       "MeasureContent"
@@ -10658,14 +10763,14 @@ var DEFAULT_COLUMN_CONFIG = {
 var DEFAULT_COLUMNS = [
   {
     id: "request-number",
-    title: i18nLazyString3(UIStrings21.requestNumber),
+    title: i18nLazyString4(UIStrings21.requestNumber),
     align: "right",
     sortingFunction: NetworkRequestNode.RequestNumberComparator
   },
   {
     id: "name",
-    title: i18nLazyString3(UIStrings21.name),
-    subtitle: i18nLazyString3(UIStrings21.path),
+    title: i18nLazyString4(UIStrings21.name),
+    subtitle: i18nLazyString4(UIStrings21.path),
     visible: true,
     weight: 20,
     hideable: true,
@@ -10674,111 +10779,111 @@ var DEFAULT_COLUMNS = [
   },
   {
     id: "path",
-    title: i18nLazyString3(UIStrings21.path),
+    title: i18nLazyString4(UIStrings21.path),
     hideable: true,
     hideableGroup: "path",
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, "pathname")
   },
   {
     id: "url",
-    title: i18nLazyString3(UIStrings21.url),
+    title: i18nLazyString4(UIStrings21.url),
     hideable: true,
     hideableGroup: "path",
     sortingFunction: NetworkRequestNode.RequestURLComparator
   },
   {
     id: "method",
-    title: i18nLazyString3(UIStrings21.method),
+    title: i18nLazyString4(UIStrings21.method),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, "requestMethod")
   },
   {
     id: "status",
-    title: i18nLazyString3(UIStrings21.status),
+    title: i18nLazyString4(UIStrings21.status),
     visible: true,
-    subtitle: i18nLazyString3(UIStrings21.text),
+    subtitle: i18nLazyString4(UIStrings21.text),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, "statusCode")
   },
   {
     id: "protocol",
-    title: i18nLazyString3(UIStrings21.protocol),
+    title: i18nLazyString4(UIStrings21.protocol),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, "protocol")
   },
   {
     id: "scheme",
-    title: i18nLazyString3(UIStrings21.scheme),
+    title: i18nLazyString4(UIStrings21.scheme),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, "scheme")
   },
   {
     id: "domain",
-    title: i18nLazyString3(UIStrings21.domain),
+    title: i18nLazyString4(UIStrings21.domain),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, "domain")
   },
   {
     id: "remote-address",
-    title: i18nLazyString3(UIStrings21.remoteAddress),
+    title: i18nLazyString4(UIStrings21.remoteAddress),
     weight: 10,
     align: "right",
     sortingFunction: NetworkRequestNode.RemoteAddressComparator
   },
   {
     id: "remote-address-space",
-    title: i18nLazyString3(UIStrings21.remoteAddressSpace),
+    title: i18nLazyString4(UIStrings21.remoteAddressSpace),
     visible: false,
     weight: 10,
     sortingFunction: NetworkRequestNode.RemoteAddressSpaceComparator
   },
   {
     id: "type",
-    title: i18nLazyString3(UIStrings21.type),
+    title: i18nLazyString4(UIStrings21.type),
     visible: true,
     sortingFunction: NetworkRequestNode.TypeComparator
   },
   {
     id: "initiator",
-    title: i18nLazyString3(UIStrings21.initiator),
+    title: i18nLazyString4(UIStrings21.initiator),
     visible: true,
     weight: 10,
     sortingFunction: NetworkRequestNode.InitiatorComparator
   },
   {
     id: "initiator-address-space",
-    title: i18nLazyString3(UIStrings21.initiatorAddressSpace),
+    title: i18nLazyString4(UIStrings21.initiatorAddressSpace),
     visible: false,
     weight: 10,
     sortingFunction: NetworkRequestNode.InitiatorAddressSpaceComparator
   },
   {
     id: "cookies",
-    title: i18nLazyString3(UIStrings21.cookies),
+    title: i18nLazyString4(UIStrings21.cookies),
     align: "right",
     sortingFunction: NetworkRequestNode.RequestCookiesCountComparator
   },
   {
     id: "set-cookies",
-    title: i18nLazyString3(UIStrings21.setCookies),
+    title: i18nLazyString4(UIStrings21.setCookies),
     align: "right",
     sortingFunction: NetworkRequestNode.ResponseCookiesCountComparator
   },
   {
     id: "size",
-    title: i18nLazyString3(UIStrings21.size),
+    title: i18nLazyString4(UIStrings21.size),
     visible: true,
-    subtitle: i18nLazyString3(UIStrings21.content),
+    subtitle: i18nLazyString4(UIStrings21.content),
     align: "right",
     sortingFunction: NetworkRequestNode.SizeComparator
   },
   {
     id: "time",
-    title: i18nLazyString3(UIStrings21.time),
+    title: i18nLazyString4(UIStrings21.time),
     visible: true,
-    subtitle: i18nLazyString3(UIStrings21.latency),
+    subtitle: i18nLazyString4(UIStrings21.latency),
     align: "right",
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, "duration")
   },
-  { id: "priority", title: i18nLazyString3(UIStrings21.priority), sortingFunction: NetworkRequestNode.PriorityComparator },
+  { id: "priority", title: i18nLazyString4(UIStrings21.priority), sortingFunction: NetworkRequestNode.PriorityComparator },
   {
     id: "connection-id",
-    title: i18nLazyString3(UIStrings21.connectionId),
+    title: i18nLazyString4(UIStrings21.connectionId),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, "connectionId")
   },
   {
@@ -10814,7 +10919,7 @@ var DEFAULT_COLUMNS = [
   },
   {
     id: "has-overrides",
-    title: i18nLazyString3(UIStrings21.hasOverrides),
+    title: i18nLazyString4(UIStrings21.hasOverrides),
     sortingFunction: NetworkRequestNode.OverrideTypesComparator
   },
   {
@@ -10897,28 +11002,28 @@ var DEFAULT_COLUMNS = [
   },
   {
     id: "is-ad-related",
-    title: i18nLazyString3(UIStrings21.isAdRelated),
+    title: i18nLazyString4(UIStrings21.isAdRelated),
     sortingFunction: NetworkRequestNode.IsAdRelatedComparator
   },
   {
     id: "render-blocking",
-    title: i18nLazyString3(UIStrings21.renderBlocking),
+    title: i18nLazyString4(UIStrings21.renderBlocking),
     sortingFunction: NetworkRequestNode.RenderBlockingComparator
   },
   {
     id: "is-preloaded",
-    title: i18nLazyString3(UIStrings21.isPreloaded),
+    title: i18nLazyString4(UIStrings21.isPreloaded),
     sortingFunction: NetworkRequestNode.IsPreloadedComparator
   },
   {
     id: "execution-context",
-    title: i18nLazyString3(UIStrings21.executionContext),
+    title: i18nLazyString4(UIStrings21.executionContext),
     sortingFunction: NetworkRequestNode.ExecutionContextComparator
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
   {
     id: "waterfall",
-    title: i18nLazyString3(UIStrings21.waterfall),
+    title: i18nLazyString4(UIStrings21.waterfall),
     allowInSortByEvenWhenHidden: true
   }
 ];
@@ -11375,7 +11480,7 @@ var UIStrings22 = {
 };
 var str_22 = i18n43.i18n.registerUIStrings("panels/network/NetworkLogView.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
-var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventMixin(UI25.Widget.VBox) {
+var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventMixin(UI23.Widget.VBox) {
   networkInvertFilterSetting;
   networkHideDataURLSetting;
   networkHideChromeExtensions;
@@ -11461,12 +11566,12 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     this.groupLookups = /* @__PURE__ */ new Map();
     this.groupLookups.set("Frame", new NetworkFrameGrouper(this));
     this.activeGroupLookup = null;
-    this.textFilterUI = new UI25.FilterBar.TextFilterUI();
+    this.textFilterUI = new UI23.FilterBar.TextFilterUI();
     this.textFilterUI.addEventListener("FilterChanged", this.filterChanged, this);
     filterBar.addFilter(this.textFilterUI);
-    this.invertFilterUI = new UI25.FilterBar.CheckboxFilterUI(i18nString22(UIStrings22.invertFilter), true, this.networkInvertFilterSetting, "invert-filter");
+    this.invertFilterUI = new UI23.FilterBar.CheckboxFilterUI(i18nString22(UIStrings22.invertFilter), true, this.networkInvertFilterSetting, "invert-filter");
     this.invertFilterUI.addEventListener("FilterChanged", this.filterChanged.bind(this), this);
-    UI25.Tooltip.Tooltip.install(this.invertFilterUI.element(), i18nString22(UIStrings22.invertsFilter));
+    UI23.Tooltip.Tooltip.install(this.invertFilterUI.element(), i18nString22(UIStrings22.invertsFilter));
     filterBar.addFilter(this.invertFilterUI);
     filterBar.addDivider();
     const filterItems = Object.entries(Common19.ResourceType.resourceCategories).map(([key, category]) => ({
@@ -11478,12 +11583,12 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     this.moreFiltersDropDownUI = new MoreFiltersDropDownUI();
     this.moreFiltersDropDownUI.addEventListener("FilterChanged", this.filterChanged, this);
     filterBar.addFilter(this.moreFiltersDropDownUI);
-    this.resourceCategoryFilterUI = new UI25.FilterBar.NamedBitSetFilterUI(filterItems, this.networkResourceTypeFiltersSetting);
-    UI25.ARIAUtils.setLabel(this.resourceCategoryFilterUI.element(), i18nString22(UIStrings22.requestTypesToInclude));
+    this.resourceCategoryFilterUI = new UI23.FilterBar.NamedBitSetFilterUI(filterItems, this.networkResourceTypeFiltersSetting);
+    UI23.ARIAUtils.setLabel(this.resourceCategoryFilterUI.element(), i18nString22(UIStrings22.requestTypesToInclude));
     this.resourceCategoryFilterUI.addEventListener("FilterChanged", this.filterChanged.bind(this), this);
     filterBar.addFilter(this.resourceCategoryFilterUI);
     this.filterParser = new TextUtils8.TextUtils.FilterParser(searchKeys);
-    this.suggestionBuilder = new UI25.FilterSuggestionBuilder.FilterSuggestionBuilder(searchKeys, _NetworkLogView.sortSearchValues);
+    this.suggestionBuilder = new UI23.FilterSuggestionBuilder.FilterSuggestionBuilder(searchKeys, _NetworkLogView.sortSearchValues);
     this.resetSuggestionBuilder();
     this.dataGrid = this.columnsInternal.dataGrid();
     this.setupDataGrid();
@@ -11495,7 +11600,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     ));
     this.summaryToolbarInternal = this.element.createChild("devtools-toolbar", "network-summary-bar");
     this.summaryToolbarInternal.setAttribute("role", "status");
-    new UI25.DropTarget.DropTarget(this.element, [UI25.DropTarget.Type.File], i18nString22(UIStrings22.dropHarFilesHere), this.handleDrop.bind(this));
+    new UI23.DropTarget.DropTarget(this.element, [UI23.DropTarget.Type.File], i18nString22(UIStrings22.dropHarFilesHere), this.handleDrop.bind(this));
     Common19.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").addChangeListener(this.invalidateAllItems.bind(this, false), this);
     SDK16.TargetManager.TargetManager.instance().observeModels(SDK16.NetworkManager.NetworkManager, this, { scoped: true });
     Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.RequestAdded, this.onRequestUpdated, this);
@@ -11841,10 +11946,10 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
   }
   showRecordingHint() {
     this.hideRecordingHint();
-    const actionRegistry = UI25.ActionRegistry.ActionRegistry.instance();
+    const actionRegistry = UI23.ActionRegistry.ActionRegistry.instance();
     const actionName = this.recording ? "inspector-main.reload" : "network.toggle-recording";
     const action2 = actionRegistry.hasAction(actionName) ? actionRegistry.getAction(actionName) : null;
-    const shortcutTitle = UI25.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(actionName) ?? "";
+    const shortcutTitle = UI23.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(actionName) ?? "";
     const header = this.recording ? i18nString22(UIStrings22.recordingNetworkActivity) : i18nString22(UIStrings22.noNetworkActivityRecorded);
     const instruction = this.recording ? UIStrings22.performARequestOrHitSToRecordThe : UIStrings22.recordToDisplayNetworkActivity;
     const buttonText = this.recording ? i18nString22(UIStrings22.reloadPage) : i18nString22(UIStrings22.startRecording);
@@ -11852,11 +11957,11 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
       PH1: buttonText,
       PH2: shortcutTitle
     });
-    this.recordingHint = new UI25.EmptyWidget.EmptyWidget(header, shortcutTitle ? description : "");
+    this.recordingHint = new UI23.EmptyWidget.EmptyWidget(header, shortcutTitle ? description : "");
     this.recordingHint.element.classList.add("network-status-pane");
     this.recordingHint.link = "https://developer.chrome.com/docs/devtools/network/";
     if (shortcutTitle && action2) {
-      const button = UI25.UIUtils.createTextButton(buttonText, () => action2.execute(), {
+      const button = UI23.UIUtils.createTextButton(buttonText, () => action2.execute(), {
         jslogContext: actionName,
         variant: "tonal"
       });
@@ -11871,12 +11976,12 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
       this.recordingHint.detach();
       this.recordingHint = null;
     }
-    UI25.ARIAUtils.LiveAnnouncer.alert(i18nString22(UIStrings22.networkDataAvailable));
+    UI23.ARIAUtils.LiveAnnouncer.alert(i18nString22(UIStrings22.networkDataAvailable));
   }
   setHidden(value) {
     this.columnsInternal.setHidden(value);
     this.dataGrid.setInert(value);
-    UI25.ARIAUtils.setHidden(this.summaryToolbarInternal, value);
+    UI23.ARIAUtils.setHidden(this.summaryToolbarInternal, value);
   }
   elementsToRestoreScrollPositionsFor() {
     if (!this.dataGrid) {
@@ -11923,7 +12028,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
         }
         if (SDK16.NetworkManager.NetworkManager.canResendRequest(request)) {
           SDK16.NetworkManager.NetworkManager.replayRequest(request);
-          void VisualLogging15.logKeyDown(this.dataGrid.selectedNode.element(), event, "resend");
+          void VisualLogging16.logKeyDown(this.dataGrid.selectedNode.element(), event, "resend");
         }
       }
     });
@@ -11988,7 +12093,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     }
     this.summaryToolbarInternal.removeToolbarItems();
     const appendChunk = (chunk, title) => {
-      const toolbarText = new UI25.Toolbar.ToolbarText(chunk);
+      const toolbarText = new UI23.Toolbar.ToolbarText(chunk);
       toolbarText.setTitle(title ? title : chunk);
       this.summaryToolbarInternal.appendToolbarItem(toolbarText);
       return toolbarText.element;
@@ -12357,12 +12462,12 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString22(UIStrings22.copy), false, "copy");
     if (request) {
       const openAiAssistanceId = "drjones.network-panel-context";
-      if (UI25.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+      if (UI23.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
         let appendSubmenuPromptAction = function(submenu2, action3, label, prompt, jslogContext) {
           submenu2.defaultSection().appendItem(label, () => action3.execute({ prompt }), { disabled: !action3.enabled(), jslogContext });
         };
-        UI25.Context.Context.instance().setFlavor(SDK16.NetworkRequest.NetworkRequest, request);
-        const action2 = UI25.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        UI23.Context.Context.instance().setFlavor(SDK16.NetworkRequest.NetworkRequest, request);
+        const action2 = UI23.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action2.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString22(UIStrings22.startAChat));
         appendSubmenuPromptAction(submenu, action2, i18nString22(UIStrings22.explainPurpose), "What is the purpose of this request?", openAiAssistanceId + ".purpose");
@@ -12447,7 +12552,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
         const entry = manager.requestConditions.findCondition(pattern.constructorString);
         if (entry) {
           manager.requestConditions.delete(entry);
-          void UI25.ViewManager.ViewManager.instance().showView("network.blocked-urls");
+          void UI23.ViewManager.ViewManager.instance().showView("network.blocked-urls");
         }
       }, addRequestCondition = function(pattern, conditions) {
         const entry = manager.requestConditions.findCondition(pattern.constructorString);
@@ -12457,7 +12562,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
           manager.requestConditions.add(SDK16.NetworkManager.RequestCondition.create(pattern, conditions));
         }
         manager.requestConditions.conditionsEnabled = true;
-        void UI25.ViewManager.ViewManager.instance().showView("network.blocked-urls");
+        void UI23.ViewManager.ViewManager.instance().showView("network.blocked-urls");
       };
       const maxBlockedURLLength = 20;
       const manager = SDK16.NetworkManager.MultitargetNetworkManager.instance();
@@ -12605,7 +12710,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
       await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
       await Common19.Revealer.reveal(requestLocation);
     } else {
-      UI25.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
+      UI23.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
         await Sources2.SourcesNavigator.OverridesNavigatorView.setupNewWorkspace();
         await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
         await Common19.Revealer.reveal(requestLocation);
@@ -12816,7 +12921,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     }
   }
   highlightNode(node) {
-    UI25.UIUtils.runCSSAnimationOnce(node.element(), "highlighted-row");
+    UI23.UIUtils.runCSSAnimationOnce(node.element(), "highlighted-row");
     this.highlightedNode = node;
   }
   filterOutBlobRequests(requests) {
@@ -13079,7 +13184,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
 function computeStackTraceText(stackTrace) {
   let stackTraceText = "";
   for (const frame of stackTrace.callFrames) {
-    const functionName = UI25.UIUtils.beautifyFunctionName(frame.functionName);
+    const functionName = UI23.UIUtils.beautifyFunctionName(frame.functionName);
     stackTraceText += `${functionName} @ ${frame.url}:${frame.lineNumber + 1}
 `;
   }
@@ -13124,14 +13229,14 @@ var MoreFiltersDropDownUI = class extends Common19.ObjectWrapper.ObjectWrapper {
     this.networkOnlyThirdPartySetting = Common19.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
     this.filterElement = document.createElement("div");
     this.filterElement.setAttribute("aria-label", "Show only/hide requests dropdown");
-    this.filterElement.setAttribute("jslog", `${VisualLogging15.dropDown("more-filters").track({ click: true })}`);
+    this.filterElement.setAttribute("jslog", `${VisualLogging16.dropDown("more-filters").track({ click: true })}`);
     this.activeFiltersCountAdorner = new Adorners.Adorner.Adorner();
     this.activeFiltersCountAdorner.name = "countWrapper";
     this.activeFiltersCount = document.createElement("span");
     this.activeFiltersCountAdorner.append(this.activeFiltersCount);
     this.activeFiltersCountAdorner.classList.add("active-filters-count");
     this.updateActiveFiltersCount();
-    this.dropDownButton = new UI25.Toolbar.ToolbarMenuButton(
+    this.dropDownButton = new UI23.Toolbar.ToolbarMenuButton(
       this.showMoreFiltersContextMenu.bind(this),
       /* isIconDropdown=*/
       false,
@@ -13409,8 +13514,8 @@ import * as NetworkForward6 from "./forward/forward.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as PerfUI5 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as SettingsUI3 from "./../../ui/legacy/components/settings_ui/settings_ui.js";
-import * as UI26 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
+import * as UI24 from "./../../ui/legacy/legacy.js";
+import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling3 from "./../mobile_throttling/mobile_throttling.js";
 import * as Search from "./../search/search.js";
 
@@ -13728,7 +13833,7 @@ var UIStrings24 = {
 var str_24 = i18n47.i18n.registerUIStrings("panels/network/NetworkPanel.ts", UIStrings24);
 var i18nString24 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
 var networkPanelInstance;
-var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
+var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
   networkLogShowOverviewSetting;
   networkLogLargeRowsSetting;
   networkRecordFilmStripSetting;
@@ -13765,21 +13870,21 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.networkLogShowOverviewSetting = Common20.Settings.Settings.instance().createSetting("network-log-show-overview", true);
     this.networkLogLargeRowsSetting = Common20.Settings.Settings.instance().createSetting("network-log-large-rows", false);
     this.networkRecordFilmStripSetting = Common20.Settings.Settings.instance().createSetting("network-record-film-strip-setting", false);
-    this.toggleRecordAction = UI26.ActionRegistry.ActionRegistry.instance().getAction("network.toggle-recording");
+    this.toggleRecordAction = UI24.ActionRegistry.ActionRegistry.instance().getAction("network.toggle-recording");
     this.networkItemView = null;
     this.filmStripView = null;
     this.filmStripRecorder = null;
     this.currentRequest = null;
-    const panel3 = new UI26.Widget.VBox();
+    const panel3 = new UI24.Widget.VBox();
     const networkToolbarContainer = panel3.contentElement.createChild("div", "network-toolbar-container");
     networkToolbarContainer.role = "toolbar";
     this.panelToolbar = networkToolbarContainer.createChild("devtools-toolbar");
     this.panelToolbar.role = "presentation";
     this.panelToolbar.wrappable = true;
-    this.panelToolbar.setAttribute("jslog", `${VisualLogging16.toolbar("network-main")}`);
+    this.panelToolbar.setAttribute("jslog", `${VisualLogging17.toolbar("network-main")}`);
     this.rightToolbar = networkToolbarContainer.createChild("devtools-toolbar");
     this.rightToolbar.role = "presentation";
-    this.filterBar = new UI26.FilterBar.FilterBar("network-panel", true);
+    this.filterBar = new UI24.FilterBar.FilterBar("network-panel", true);
     this.filterBar.show(panel3.contentElement);
     this.filterBar.addEventListener("Changed", this.handleFilterChanged.bind(this));
     const settingsPane = panel3.contentElement.createChild("div", "network-settings-pane");
@@ -13795,17 +13900,17 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.overviewPane.setOverviewControls([this.networkOverview]);
     this.overviewPlaceholderElement = panel3.contentElement.createChild("div");
     this.calculator = new NetworkTimeCalculator5.NetworkTransferTimeCalculator();
-    this.splitWidget = new UI26.SplitWidget.SplitWidget(true, false, "network-panel-split-view-state");
+    this.splitWidget = new UI24.SplitWidget.SplitWidget(true, false, "network-panel-split-view-state");
     this.splitWidget.hideMain();
     this.splitWidget.show(panel3.contentElement);
     panel3.setDefaultFocusedChild(this.filterBar);
     const initialSidebarWidth = 225;
-    const splitWidget = new UI26.SplitWidget.SplitWidget(true, false, "network-panel-sidebar-state", initialSidebarWidth);
+    const splitWidget = new UI24.SplitWidget.SplitWidget(true, false, "network-panel-sidebar-state", initialSidebarWidth);
     splitWidget.hideSidebar();
     splitWidget.enableShowModeSaving();
     splitWidget.show(this.element);
-    this.sidebarLocation = UI26.ViewManager.ViewManager.instance().createTabbedLocation(async () => {
-      void UI26.ViewManager.ViewManager.instance().showView("network");
+    this.sidebarLocation = UI24.ViewManager.ViewManager.instance().createTabbedLocation(async () => {
+      void UI24.ViewManager.ViewManager.instance().showView("network");
       splitWidget.showBoth();
     }, "network-sidebar", true);
     const tabbedPane = this.sidebarLocation.tabbedPane();
@@ -13817,11 +13922,11 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
       }
       splitWidget.hideSidebar();
       event.consume();
-      void VisualLogging16.logKeyDown(event.currentTarget, event, "hide-sidebar");
+      void VisualLogging17.logKeyDown(event.currentTarget, event, "hide-sidebar");
     });
-    const closeSidebar = new UI26.Toolbar.ToolbarButton(i18nString24(UIStrings24.close), "cross");
+    const closeSidebar = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings24.close), "cross");
     closeSidebar.addEventListener("Click", () => splitWidget.hideSidebar());
-    closeSidebar.element.setAttribute("jslog", `${VisualLogging16.close().track({ click: true })}`);
+    closeSidebar.element.setAttribute("jslog", `${VisualLogging17.close().track({ click: true })}`);
     tabbedPane.rightToolbar().appendToolbarItem(closeSidebar);
     splitWidget.setSidebarWidget(tabbedPane);
     splitWidget.setMainWidget(panel3);
@@ -13830,14 +13935,14 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.progressBarContainer = document.createElement("div");
     this.networkLogView = new NetworkLogView(this.filterBar, this.progressBarContainer, this.networkLogLargeRowsSetting);
     this.splitWidget.setSidebarWidget(this.networkLogView);
-    this.fileSelectorElement = UI26.UIUtils.createFileSelectorElement(this.networkLogView.onLoadFromFile.bind(this.networkLogView));
+    this.fileSelectorElement = UI24.UIUtils.createFileSelectorElement(this.networkLogView.onLoadFromFile.bind(this.networkLogView));
     panel3.element.appendChild(this.fileSelectorElement);
-    this.detailsWidget = new UI26.Widget.VBox();
+    this.detailsWidget = new UI24.Widget.VBox();
     this.detailsWidget.element.classList.add("network-details-view");
     this.splitWidget.setMainWidget(this.detailsWidget);
     this.closeButtonElement = document.createElement("dt-close-button");
     this.closeButtonElement.addEventListener("click", async () => {
-      const action2 = UI26.ActionRegistry.ActionRegistry.instance().getAction("network.hide-request-details");
+      const action2 = UI24.ActionRegistry.ActionRegistry.instance().getAction("network.hide-request-details");
       await action2.execute();
     }, false);
     this.closeButtonElement.style.margin = "0 5px";
@@ -13878,7 +13983,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
         filterString += `${filter.filterValue} `;
       }
     }
-    await UI26.ViewManager.ViewManager.instance().showView("network");
+    await UI24.ViewManager.ViewManager.instance().showView("network");
     panel3.networkLogView.setTextFilterValue(filterString);
     panel3.filterBar.setting().set(true);
     panel3.filterBar.focus();
@@ -13896,11 +14001,11 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     }
   }
   async searchToggleClick() {
-    const action2 = UI26.ActionRegistry.ActionRegistry.instance().getAction("network.search");
+    const action2 = UI24.ActionRegistry.ActionRegistry.instance().getAction("network.search");
     await action2.execute();
   }
   setupToolbarButtons(splitWidget) {
-    const searchToggle = new UI26.Toolbar.ToolbarToggle(i18nString24(UIStrings24.search), "search", void 0, "search");
+    const searchToggle = new UI24.Toolbar.ToolbarToggle(i18nString24(UIStrings24.search), "search", void 0, "search");
     function updateSidebarToggle() {
       const isSidebarShowing = splitWidget.showMode() !== "OnlyMain";
       searchToggle.setToggled(isSidebarShowing);
@@ -13908,8 +14013,8 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
         searchToggle.element.focus();
       }
     }
-    this.panelToolbar.appendToolbarItem(UI26.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
-    this.panelToolbar.appendToolbarItem(UI26.Toolbar.Toolbar.createActionButton("network.clear"));
+    this.panelToolbar.appendToolbarItem(UI24.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
+    this.panelToolbar.appendToolbarItem(UI24.Toolbar.Toolbar.createActionButton("network.clear"));
     this.panelToolbar.appendSeparator();
     this.panelToolbar.appendToolbarItem(this.filterBar.filterButton());
     updateSidebarToggle();
@@ -13919,31 +14024,31 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     });
     this.panelToolbar.appendToolbarItem(searchToggle);
     this.panelToolbar.appendSeparator();
-    this.panelToolbar.appendToolbarItem(new UI26.Toolbar.ToolbarSettingCheckbox(this.preserveLogSetting, i18nString24(UIStrings24.doNotClearLogOnPageReload), i18nString24(UIStrings24.preserveLog)));
+    this.panelToolbar.appendToolbarItem(new UI24.Toolbar.ToolbarSettingCheckbox(this.preserveLogSetting, i18nString24(UIStrings24.doNotClearLogOnPageReload), i18nString24(UIStrings24.preserveLog)));
     this.panelToolbar.appendSeparator();
-    const disableCacheCheckbox = new UI26.Toolbar.ToolbarSettingCheckbox(Common20.Settings.Settings.instance().moduleSetting("cache-disabled"), i18nString24(UIStrings24.disableCacheWhileDevtoolsIsOpen), i18nString24(UIStrings24.disableCache));
+    const disableCacheCheckbox = new UI24.Toolbar.ToolbarSettingCheckbox(Common20.Settings.Settings.instance().moduleSetting("cache-disabled"), i18nString24(UIStrings24.disableCacheWhileDevtoolsIsOpen), i18nString24(UIStrings24.disableCache));
     this.panelToolbar.appendToolbarItem(disableCacheCheckbox);
     this.panelToolbar.appendToolbarItem(this.throttlingSelect);
-    const networkConditionsButton = new UI26.Toolbar.ToolbarButton(i18nString24(UIStrings24.moreNetworkConditions), "network-settings", void 0, "network-conditions");
+    const networkConditionsButton = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings24.moreNetworkConditions), "network-settings", void 0, "network-conditions");
     networkConditionsButton.addEventListener("Click", () => {
-      void UI26.ViewManager.ViewManager.instance().showView("network.config");
+      void UI24.ViewManager.ViewManager.instance().showView("network.config");
     }, this);
     this.panelToolbar.appendToolbarItem(networkConditionsButton);
-    this.rightToolbar.appendToolbarItem(new UI26.Toolbar.ToolbarItem(this.progressBarContainer));
+    this.rightToolbar.appendToolbarItem(new UI24.Toolbar.ToolbarItem(this.progressBarContainer));
     this.rightToolbar.appendSeparator();
-    this.rightToolbar.appendToolbarItem(new UI26.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString24(UIStrings24.networkSettings), "gear-filled", "network-settings"));
+    this.rightToolbar.appendToolbarItem(new UI24.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString24(UIStrings24.networkSettings), "gear-filled", "network-settings"));
     const exportHarContextMenu = (contextMenu) => {
       contextMenu.defaultSection().appendItem(i18nString24(UIStrings24.exportHarSanitized), this.networkLogView.exportAll.bind(this.networkLogView, { sanitize: true }), { jslogContext: "export-har" });
       contextMenu.defaultSection().appendItem(i18nString24(UIStrings24.exportHarWithSensitiveData), this.networkLogView.exportAll.bind(this.networkLogView, { sanitize: false }), { jslogContext: "export-har-with-sensitive-data" });
     };
     this.panelToolbar.appendSeparator();
-    const importHarButton = new UI26.Toolbar.ToolbarButton(i18nString24(UIStrings24.importHarFile), "import", void 0, "import-har");
+    const importHarButton = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings24.importHarFile), "import", void 0, "import-har");
     importHarButton.addEventListener("Click", () => this.fileSelectorElement.click(), this);
     this.panelToolbar.appendToolbarItem(importHarButton);
-    const exportHarButton = new UI26.Toolbar.ToolbarButton(i18nString24(UIStrings24.exportHarSanitized), "download", void 0, "export-har");
+    const exportHarButton = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings24.exportHarSanitized), "download", void 0, "export-har");
     exportHarButton.addEventListener("Click", this.networkLogView.exportAll.bind(this.networkLogView, { sanitize: true }), this);
     this.panelToolbar.appendToolbarItem(exportHarButton);
-    const exportHarMenuButton = new UI26.Toolbar.ToolbarMenuButton(
+    const exportHarMenuButton = new UI24.Toolbar.ToolbarMenuButton(
       exportHarContextMenu,
       /* isIconDropdown */
       true,
@@ -13964,7 +14069,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     updateShowOptionsToGenerateHarWithSensitiveData();
   }
   createThrottlingConditionsSelect() {
-    const toolbarItem = new UI26.Toolbar.ToolbarItem(document.createElement("div"));
+    const toolbarItem = new UI24.Toolbar.ToolbarItem(document.createElement("div"));
     toolbarItem.setMaxWidth(160);
     MobileThrottling3.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(toolbarItem.element, i18nString24(UIStrings24.throttling));
     return toolbarItem;
@@ -14038,7 +14143,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     if (toggled && !this.filmStripRecorder) {
       this.filmStripView = new PerfUI5.FilmStripView.FilmStripView();
       this.filmStripView.element.classList.add("network-film-strip");
-      this.filmStripView.element.setAttribute("jslog", `${VisualLogging16.section("film-strip")}`);
+      this.filmStripView.element.setAttribute("jslog", `${VisualLogging17.section("film-strip")}`);
       this.filmStripRecorder = new FilmStripRecorder(this.networkLogView.timeCalculator(), this.filmStripView);
       this.filmStripView.show(this.filmStripPlaceholderElement);
       this.filmStripView.addEventListener("FrameSelected", this.onFilmFrameSelected, this);
@@ -14055,7 +14160,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     }
   }
   resetFilmStripView() {
-    const reloadShortcut = UI26.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction("inspector-main.reload")[0];
+    const reloadShortcut = UI24.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction("inspector-main.reload")[0];
     if (this.filmStripView) {
       this.filmStripView.reset();
       if (reloadShortcut) {
@@ -14068,11 +14173,11 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
   }
   wasShown() {
     super.wasShown();
-    UI26.Context.Context.instance().setFlavor(_NetworkPanel, this);
-    UI26.UIUserMetrics.UIUserMetrics.instance().panelLoaded("network", "DevTools.Launch.Network");
+    UI24.Context.Context.instance().setFlavor(_NetworkPanel, this);
+    UI24.UIUserMetrics.UIUserMetrics.instance().panelLoaded("network", "DevTools.Launch.Network");
   }
   willHide() {
-    UI26.Context.Context.instance().setFlavor(_NetworkPanel, null);
+    UI24.Context.Context.instance().setFlavor(_NetworkPanel, null);
     super.willHide();
   }
   revealAndHighlightRequest(request) {
@@ -14088,7 +14193,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     }
   }
   async selectAndActivateRequest(request, shownTab, options) {
-    await UI26.ViewManager.ViewManager.instance().showView("network");
+    await UI24.ViewManager.ViewManager.instance().showView("network");
     this.networkLogView.selectRequest(request, options);
     this.showRequestPanel(shownTab);
     this.networkLogView.revealAndHighlightRequest(request);
@@ -14102,7 +14207,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.currentRequest = request;
     this.networkOverview.setHighlightedRequest(request);
     this.updateNetworkItemView();
-    UI26.Context.Context.instance().setFlavor(SDK17.NetworkRequest.NetworkRequest, request);
+    UI24.Context.Context.instance().setFlavor(SDK17.NetworkRequest.NetworkRequest, request);
   }
   onRequestActivated(event) {
     const { showPanel, tab, takeFocus } = event.data;
@@ -14148,7 +14253,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
       return;
     }
     this.networkItemView = new NetworkItemView(this.currentRequest, this.networkLogView.timeCalculator(), initialTab);
-    this.networkItemView.leftToolbar().appendToolbarItem(new UI26.Toolbar.ToolbarItem(this.closeButtonElement));
+    this.networkItemView.leftToolbar().appendToolbarItem(new UI24.Toolbar.ToolbarItem(this.closeButtonElement));
     this.networkItemView.show(this.detailsWidget.element);
     this.splitWidget.showBoth();
     return this.networkItemView;
@@ -14163,7 +14268,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
   }
   appendApplicableItems(event, contextMenu, target) {
     const appendRevealItem = (request) => {
-      contextMenu.revealSection().appendItem(i18nString24(UIStrings24.openInNetworkPanel), () => UI26.ViewManager.ViewManager.instance().showView("network").then(this.networkLogView.resetFilter.bind(this.networkLogView)).then(this.revealAndHighlightRequest.bind(this, request)), { jslogContext: "reveal-in-network" });
+      contextMenu.revealSection().appendItem(i18nString24(UIStrings24.openInNetworkPanel), () => UI24.ViewManager.ViewManager.instance().showView("network").then(this.networkLogView.resetFilter.bind(this.networkLogView)).then(this.revealAndHighlightRequest.bind(this, request)), { jslogContext: "reveal-in-network" });
     };
     const appendRevealItemMissingData = () => {
       contextMenu.revealSection().appendItem(i18nString24(UIStrings24.openInNetworkPanelMissingRequest), () => {
@@ -14173,7 +14278,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
       });
     };
     const appendRevealItemAndSelect = (request) => {
-      contextMenu.revealSection().appendItem(i18nString24(UIStrings24.openInNetworkPanel), () => UI26.ViewManager.ViewManager.instance().showView("network").then(this.networkLogView.resetFilter.bind(this.networkLogView)).then(this.selectAndActivateRequest.bind(
+      contextMenu.revealSection().appendItem(i18nString24(UIStrings24.openInNetworkPanel), () => UI24.ViewManager.ViewManager.instance().showView("network").then(this.networkLogView.resetFilter.bind(this.networkLogView)).then(this.selectAndActivateRequest.bind(
         this,
         request.networkRequest,
         "headers-component",
@@ -14239,13 +14344,13 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
 var RequestRevealer = class {
   reveal(request) {
     const panel3 = NetworkPanel.instance();
-    return UI26.ViewManager.ViewManager.instance().showView("network").then(panel3.revealAndHighlightRequest.bind(panel3, request));
+    return UI24.ViewManager.ViewManager.instance().showView("network").then(panel3.revealAndHighlightRequest.bind(panel3, request));
   }
 };
 var RequestIdRevealer = class {
   reveal(requestId) {
     const panel3 = NetworkPanel.instance();
-    return UI26.ViewManager.ViewManager.instance().showView("network").then(panel3.revealAndHighlightRequestWithId.bind(panel3, requestId));
+    return UI24.ViewManager.ViewManager.instance().showView("network").then(panel3.revealAndHighlightRequestWithId.bind(panel3, requestId));
   }
 };
 var NetworkLogWithFilterRevealer = class {
@@ -14348,7 +14453,7 @@ var ActionDelegate2 = class {
         return true;
       }
       case "network.search": {
-        const selection = UI26.InspectorView.InspectorView.instance().element.window().getSelection();
+        const selection = UI24.InspectorView.InspectorView.instance().element.window().getSelection();
         if (!selection) {
           return false;
         }
@@ -14399,7 +14504,7 @@ var SearchNetworkView = class _SearchNetworkView extends Search.SearchView.Searc
     return searchNetworkViewInstance;
   }
   static async openSearch(query, searchImmediately) {
-    await UI26.ViewManager.ViewManager.instance().showView("network.search-network-tab");
+    await UI24.ViewManager.ViewManager.instance().showView("network.search-network-tab");
     const searchView = _SearchNetworkView.instance();
     searchView.toggle(query, Boolean(searchImmediately));
     return searchView;

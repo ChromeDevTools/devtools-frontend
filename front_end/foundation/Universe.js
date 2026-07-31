@@ -65,7 +65,7 @@ export class Universe {
         }
         const pageResourceLoader = new SDK.PageResourceLoader.PageResourceLoader(targetManager, settings, multitargetNetworkManager, null);
         context.set(SDK.PageResourceLoader.PageResourceLoader, pageResourceLoader);
-        const projectSettingsModel = new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(options.hostConfig, pageResourceLoader, targetManager);
+        const projectSettingsModel = new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(pageResourceLoader, targetManager);
         context.set(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel, projectSettingsModel);
         const automaticFileSystemManager = new Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager(options.inspectorFrontendHost, projectSettingsModel);
         context.set(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager, automaticFileSystemManager);

@@ -70,9 +70,6 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
                     this.#capabilitiesMask |= 8192 /* Capability.STORAGE */;
                 }
                 break;
-            case Type.SHARED_STORAGE_WORKLET:
-                this.#capabilitiesMask = 4 /* Capability.JS */ | 8 /* Capability.LOG */ | 2048 /* Capability.INSPECTOR */ | 524288 /* Capability.EVENT_BREAKPOINTS */;
-                break;
             case Type.Worker:
                 this.#capabilitiesMask = 4 /* Capability.JS */ | 8 /* Capability.LOG */ | 16 /* Capability.NETWORK */ | 32 /* Capability.TARGET */ |
                     131072 /* Capability.IO */ | 262144 /* Capability.MEDIA */ | 256 /* Capability.EMULATION */ | 524288 /* Capability.EVENT_BREAKPOINTS */;
@@ -252,7 +249,6 @@ export var Type;
     // eslint-disable-next-line @typescript-eslint/naming-convention -- Used by web_tests.
     Type["Worker"] = "worker";
     Type["SHARED_WORKER"] = "shared-worker";
-    Type["SHARED_STORAGE_WORKLET"] = "shared-storage-worklet";
     Type["NODE"] = "node";
     Type["BROWSER"] = "browser";
     Type["AUCTION_WORKLET"] = "auction-worklet";

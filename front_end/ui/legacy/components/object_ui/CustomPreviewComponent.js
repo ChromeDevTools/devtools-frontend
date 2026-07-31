@@ -6,6 +6,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import { createIcon } from '../../../kit/kit.js';
 import * as UI from '../../legacy.js';
+import { sanitizeStyle } from './CSSStyleSanitizer.js';
 import customPreviewComponentStyles from './customPreviewComponent.css.js';
 import { ObjectPropertiesSection, ObjectPropertiesSectionsTreeOutline, ObjectPropertyTreeElement, ObjectTree, } from './ObjectPropertiesSection.js';
 const UIStrings = {
@@ -88,7 +89,11 @@ export class CustomPreviewSection {
                 if ((key !== 'style') || (typeof value !== 'string')) {
                     continue;
                 }
-                element.setAttribute(key, value);
+                const sanitizedStyle = new Map();
+                sanitizeStyle(sanitizedStyle, value);
+                for (const [property, { value: propertyValue, priority }] of sanitizedStyle) {
+                    element.style.setProperty(property, propertyValue, priority);
+                }
             }
         }
         this.appendJsonMLTags(element, object);

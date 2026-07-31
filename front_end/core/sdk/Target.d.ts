@@ -36,7 +36,6 @@ export declare enum Type {
     ServiceWorker = "service-worker",
     Worker = "worker",
     SHARED_WORKER = "shared-worker",
-    SHARED_STORAGE_WORKLET = "shared-storage-worklet",
     NODE = "node",
     BROWSER = "browser",
     AUCTION_WORKLET = "auction-worklet",

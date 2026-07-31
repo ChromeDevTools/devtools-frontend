@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
-/* eslint-disable no-unused-private-class-members */
 import '../../../ui/kit/kit.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import linearMemoryNavigatorStyles from './linearMemoryNavigator.css.js';
@@ -68,14 +68,23 @@ export class RefreshRequestedEvent extends Event {
         super(RefreshRequestedEvent.eventName, {});
     }
 }
-export class LinearMemoryNavigator extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
+export class LinearMemoryNavigator extends UI.Widget.Widget {
     #address = '0';
     #error = undefined;
     #valid = true;
     #canGoBackInHistory = false;
     #canGoForwardInHistory = false;
     #mode = "Submitted" /* Mode.SUBMITTED */;
+    constructor(element) {
+        super(element);
+        /* eslint-disable @devtools/no-imperative-dom-api */
+        if (!this.element.shadowRoot) {
+            this.element.attachShadow({ mode: 'open' });
+        }
+        /* eslint-enable @devtools/no-imperative-dom-api */
+        this.element.classList.remove('vbox', 'flex-auto', 'widget');
+        this.element.classList.add('devtools-linear-memory-inspector-navigator');
+    }
     set data(data) {
         this.#address = data.address;
         this.#error = data.error;
@@ -83,7 +92,21 @@ export class LinearMemoryNavigator extends HTMLElement {
         this.#canGoBackInHistory = data.canGoBackInHistory;
         this.#canGoForwardInHistory = data.canGoForwardInHistory;
         this.#mode = data.mode;
-        LinearMemoryNavigator.#render(data, this.#onAddressChange.bind(this), this.dispatchEvent.bind(this), this.#shadow);
+        this.requestUpdate();
+    }
+    performUpdate() {
+        const shadowRoot = this.element.shadowRoot;
+        if (!shadowRoot) {
+            return;
+        }
+        LinearMemoryNavigator.#render({
+            address: this.#address,
+            error: this.#error,
+            valid: this.#valid,
+            canGoBackInHistory: this.#canGoBackInHistory,
+            canGoForwardInHistory: this.#canGoForwardInHistory,
+            mode: this.#mode,
+        }, this.#onAddressChange.bind(this), this.element.dispatchEvent.bind(this.element), shadowRoot);
     }
     static #render(data, onAddressChange, dispatchEvent, shadow) {
         // Disabled until https://crbug.com/1079231 is fixed.
@@ -146,7 +169,7 @@ export class LinearMemoryNavigator extends HTMLElement {
     }
     #onAddressChange(mode, event) {
         const addressInput = event.target;
-        this.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
+        this.element.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
     }
     static #createButton(data, dispatchEvent) {
         return html `
@@ -160,5 +183,4 @@ export class LinearMemoryNavigator extends HTMLElement {
       ></devtools-button>`;
     }
 }
-customElements.define('devtools-linear-memory-inspector-navigator', LinearMemoryNavigator);
 //# sourceMappingURL=LinearMemoryNavigator.js.map

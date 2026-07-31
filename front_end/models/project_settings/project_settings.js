@@ -58,16 +58,14 @@ var ProjectSettingsModel = class extends Common.ObjectWrapper.ObjectWrapper {
   get projectSettingsPromise() {
     return this.#promise.then(() => this.#projectSettings);
   }
-  constructor(hostConfig, pageResourceLoader, targetManager) {
+  constructor(pageResourceLoader, targetManager) {
     super();
     this.#pageResourceLoader = pageResourceLoader;
     this.#targetManager = targetManager;
-    if (hostConfig.devToolsWellKnown?.enabled) {
-      this.#targetManager.addEventListener("InspectedURLChanged", this.#inspectedURLChanged, this);
-      const target = this.#targetManager.primaryPageTarget();
-      if (target !== null) {
-        this.#inspectedURLChanged({ data: target });
-      }
+    this.#targetManager.addEventListener("InspectedURLChanged", this.#inspectedURLChanged, this);
+    const target = this.#targetManager.primaryPageTarget();
+    if (target !== null) {
+      this.#inspectedURLChanged({ data: target });
     }
   }
   disposeForTest() {

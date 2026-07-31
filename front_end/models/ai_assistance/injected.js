@@ -9,6 +9,7 @@
  */
 export const AI_ASSISTANCE_CSS_CLASS_NAME = 'ai-style-change';
 export const FREESTYLER_WORLD_NAME = 'DevTools AI Assistance';
+export const FREESTYLER_WORLD_CSP = 'connect-src \'none\'';
 export const FREESTYLER_BINDING_NAME = '__freestyler';
 /**
  * Please see fileoverview

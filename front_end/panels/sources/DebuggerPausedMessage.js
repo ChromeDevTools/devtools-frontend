@@ -157,12 +157,15 @@ const DEFAULT_VIEW = (input, _output, target) => {
 };
 export class DebuggerPausedMessage extends UI.Widget.Widget {
     view;
+    static INJECT = [SDK.EventBreakpointsModel.EventBreakpointsManager];
     #viewInput = null;
-    constructor(element, view = DEFAULT_VIEW) {
+    #eventBreakpointsManager;
+    constructor(element, [eventBreakpointsManager], view = DEFAULT_VIEW) {
         super(element, {
             useShadowDom: 'pure',
         });
         this.view = view;
+        this.#eventBreakpointsManager = eventBreakpointsManager;
     }
     static descriptionWithoutStack(description) {
         const firstCallFrame = /^\s+at\s/m.exec(description);
@@ -185,7 +188,7 @@ export class DebuggerPausedMessage extends UI.Widget.Widget {
             errorLike: false,
         };
     }
-    static #findEventNameForUi(detailsAuxData) {
+    #findEventNameForUi(detailsAuxData) {
         if (!detailsAuxData) {
             return '';
         }
@@ -198,7 +201,7 @@ export class DebuggerPausedMessage extends UI.Widget.Widget {
         if (eventName === 'instrumentation:scriptBlockedByCSP' && directiveText) {
             return i18nString(UIStrings.scriptBlockedDueToContent, { PH1: directiveText });
         }
-        let breakpoint = SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpoint(detailsAuxData);
+        let breakpoint = this.#eventBreakpointsManager.resolveEventListenerBreakpoint(detailsAuxData);
         if (breakpoint) {
             // EventBreakpointsManager breakpoints are the only ones with localized names.
             return getLocalizedBreakpointName(breakpoint.name);
@@ -224,7 +227,7 @@ export class DebuggerPausedMessage extends UI.Widget.Widget {
             this.#viewInput = await DebuggerPausedMessage.createDOMBreakpointHitMessageDetails(details);
         }
         else if (details.reason === "EventListener" /* Protocol.Debugger.PausedEventReason.EventListener */) {
-            const eventNameForUI = DebuggerPausedMessage.#findEventNameForUi(details.auxData);
+            const eventNameForUI = this.#findEventNameForUi(details.auxData);
             this.#viewInput = { mainText: i18nString(UIStrings.pausedOnEventListener), subText: eventNameForUI, errorLike };
         }
         else if (details.reason === "XHR" /* Protocol.Debugger.PausedEventReason.XHR */) {

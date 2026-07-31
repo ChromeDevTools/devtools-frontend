@@ -163,7 +163,7 @@ export class TestUniverse {
         ],
         [
             ProjectSettings.ProjectSettingsModel.ProjectSettingsModel,
-            () => new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(this.#creationOptions?.hostConfig ?? {}, this.pageResourceLoader, this.targetManager),
+            () => new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(this.pageResourceLoader, this.targetManager),
         ],
         [
             SDK.CPUThrottlingManager.CPUThrottlingManager,

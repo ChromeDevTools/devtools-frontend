@@ -9,7 +9,6 @@ application/resource-tree.test.js
 application/service-worker-network.test.js
 application/service-worker-update.test.js
 application/session-storage.test.js
-application/shared-storage.test.js
 application/storage-metadata.test.js
 application/storage.test.js
 application/window-controls.test.js

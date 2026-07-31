@@ -1,4 +1,5 @@
 import '../../../ui/kit/kit.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 export declare const enum Navigation {
     BACKWARD = "Backward",
     FORWARD = "Forward"
@@ -38,12 +39,9 @@ export declare const enum Mode {
     SUBMITTED = "Submitted",
     INVALID_SUBMIT = "InvalidSubmit"
 }
-export declare class LinearMemoryNavigator extends HTMLElement {
+export declare class LinearMemoryNavigator extends UI.Widget.Widget {
     #private;
+    constructor(element?: HTMLElement);
     set data(data: LinearMemoryNavigatorData);
-}
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-linear-memory-inspector-navigator': LinearMemoryNavigator;
-    }
+    performUpdate(): void;
 }

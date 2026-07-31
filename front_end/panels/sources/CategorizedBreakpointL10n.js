@@ -118,7 +118,6 @@ const LOCALIZED_INSTRUMENTATION_NAMES = {
     ["setInterval.callback" /* SDK.EventBreakpointsModel.InstrumentationNames.SET_INTERVAL_CALLBACK */]: i18nLazyString(UIStrings.setTimeoutOrIntervalFired, { PH1: 'setInterval' }),
     ["scriptFirstStatement" /* SDK.EventBreakpointsModel.InstrumentationNames.SCRIPT_FIRST_STATEMENT */]: i18nLazyString(UIStrings.scriptFirstStatement),
     ["scriptBlockedByCSP" /* SDK.EventBreakpointsModel.InstrumentationNames.SCRIPT_BLOCKED_BY_CSP */]: i18nLazyString(UIStrings.scriptBlockedByContentSecurity),
-    ["sharedStorageWorkletScriptFirstStatement" /* SDK.EventBreakpointsModel.InstrumentationNames.SHARED_STORAGE_WORKLET_SCRIPT_FIRST_STATEMENT */]: i18nLazyString(UIStrings.scriptFirstStatement),
     ["requestAnimationFrame" /* SDK.EventBreakpointsModel.InstrumentationNames.REQUEST_ANIMATION_FRAME */]: i18nLazyString(UIStrings.requestAnimationFrame),
     ["cancelAnimationFrame" /* SDK.EventBreakpointsModel.InstrumentationNames.CANCEL_ANIMATION_FRAME */]: i18nLazyString(UIStrings.cancelAnimationFrame),
     ["requestAnimationFrame.callback" /* SDK.EventBreakpointsModel.InstrumentationNames.REQUEST_ANIMATION_FRAME_CALLBACK */]: i18nLazyString(UIStrings.animationFrameFired),

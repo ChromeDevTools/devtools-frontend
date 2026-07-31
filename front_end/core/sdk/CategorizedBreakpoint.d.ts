@@ -17,7 +17,6 @@ export declare const enum Category {
     PICTURE_IN_PICTURE = "picture-in-picture",
     POINTER = "pointer",
     SCRIPT = "script",
-    SHARED_STORAGE_WORKLET = "shared-storage-worklet",
     TIMER = "timer",
     TOUCH = "touch",
     TRUSTED_TYPE_VIOLATION = "trusted-type-violation",

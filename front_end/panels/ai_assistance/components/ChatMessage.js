@@ -493,7 +493,7 @@ export function titleForStep(step) {
     return step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
 }
 function renderTitle(step) {
-    const paused = step.requestApproval && !step.canceled ?
+    const paused = step.state.type === 'needs_approval' ?
         html `<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` :
         Lit.nothing;
     return html `<h3 class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</h3>`;
@@ -504,7 +504,8 @@ function renderStepCode(step) {
     }
     // If there is no "output" yet, it means we didn't execute the code yet (e.g. maybe it is still waiting for confirmation from the user)
     // thus we show "Code to execute" text rather than "Code executed" text on the heading of the code block.
-    const codeHeadingText = (step.output && !step.canceled) ? lockedString(UIStringsNotTranslate.codeExecuted) :
+    const codeHeadingText = (step.output && step.state.type !== 'canceled') ?
+        lockedString(UIStringsNotTranslate.codeExecuted) :
         lockedString(UIStringsNotTranslate.codeToExecute);
     // If there is output, we don't show notice on this code block and instead show
     // it in the data returned code block.
@@ -533,7 +534,7 @@ function renderStepCode(step) {
     // clang-format on
 }
 function renderStepDetails({ step, markdownRenderer, isLast, }) {
-    const sideEffects = isLast && step.requestApproval ? renderSideEffectConfirmationUi(step) : Lit.nothing;
+    const sideEffects = isLast && step.state.type === 'needs_approval' ? renderSideEffectConfirmationUi(step) : Lit.nothing;
     const thought = step.thought ? html `<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit.nothing;
     // clang-format off
     const contextDetails = step.contextDetails ?
@@ -595,7 +596,7 @@ function renderWalkthroughSidebarButton(input, steps) {
       <devtools-button
         .variant=${variant}
         .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
-        .title=${lastStep.isLoading ? titleForStep(lastStep) : title}
+        .title=${lastStep.state.type === 'in_progress' ? titleForStep(lastStep) : title}
         .accessibleLabel=${accessibleLabel}
         .jslogContext=${walkthrough.isExpanded ? 'ai-hide-walkthrough-sidebar' : 'ai-show-walkthrough-sidebar'}
         data-show-walkthrough
@@ -658,7 +659,7 @@ function renderWalkthroughUI(input, steps) {
     // clang-format on
 }
 function renderSideEffectStepsUI(input, steps) {
-    const sideEffectSteps = steps.filter(s => s.requestApproval);
+    const sideEffectSteps = steps.filter(s => s.state.type === 'needs_approval' || s.state.type === 'canceled');
     if (sideEffectSteps.length === 0) {
         return Lit.nothing;
     }
@@ -668,7 +669,6 @@ function renderSideEffectStepsUI(input, steps) {
       <div class="side-effect-container">
         ${renderStep({
         step,
-        isLoading: input.isLoading,
         markdownRenderer: input.markdownRenderer,
         isLast: true,
     })}
@@ -676,21 +676,24 @@ function renderSideEffectStepsUI(input, steps) {
   `;
     // clang-format on
 }
-function renderStepBadge({ step, isLoading, isLast }) {
-    if (isLoading && isLast && !step.requestApproval) {
+function renderStepBadge({ step, isLast }) {
+    if (isLast && step.state.type === 'in_progress') {
         return html `<devtools-spinner aria-label=${lockedString(UIStringsNotTranslate.inProgress)}></devtools-spinner>`;
     }
     let iconName = 'checkmark';
     let ariaLabel = lockedString(UIStringsNotTranslate.completed);
     let role = 'button';
-    if (step.canceled) {
-        ariaLabel = lockedString(UIStringsNotTranslate.aborted);
-        iconName = 'cross';
-    }
-    else if (isLast && step.requestApproval) {
+    if (step.state.type === 'needs_approval') {
+        if (!isLast) {
+            console.error('A step in needs_approval state must be the last step.');
+        }
         role = undefined;
         ariaLabel = lockedString(UIStringsNotTranslate.paused);
         iconName = 'pause-circle';
+    }
+    else if (step.state.type === 'canceled') {
+        ariaLabel = lockedString(UIStringsNotTranslate.aborted);
+        iconName = 'cross';
     }
     return html `<devtools-icon
       class="indicator"
@@ -699,21 +702,21 @@ function renderStepBadge({ step, isLoading, isLast }) {
       .name=${iconName}
     ></devtools-icon>`;
 }
-export function renderStep({ step, isLoading, markdownRenderer, isLast }) {
+export function renderStep({ step, markdownRenderer, isLast }) {
     const stepClasses = Lit.Directives.classMap({
         step: true,
-        empty: !step.thought && !step.code && !step.contextDetails && !step.requestApproval,
-        paused: Boolean(step.requestApproval && !step.canceled),
-        canceled: Boolean(step.canceled),
+        empty: !step.thought && !step.code && !step.contextDetails && step.state.type !== 'needs_approval',
+        paused: step.state.type === 'needs_approval',
+        canceled: step.state.type === 'canceled',
     });
     // clang-format off
     return html `
     <details class=${stepClasses}
       jslog=${VisualLogging.expand('step').track({ click: true })}
-      .open=${Boolean(step.requestApproval)}>
+      .open=${step.state.type === 'needs_approval'}>
       <summary>
         <div class="summary">
-          ${renderStepBadge({ step, isLoading, isLast })}
+          ${renderStepBadge({ step, isLast })}
           ${renderTitle(step)}
           <devtools-icon
             class="arrow"
@@ -1461,22 +1464,23 @@ async function renderWidgets(widgets, options = {}) {
     return html `${ui}`;
 }
 function renderSideEffectConfirmationUi(step) {
-    if (!step.requestApproval || step.canceled) {
+    if (step.state.type !== 'needs_approval') {
         return Lit.nothing;
     }
+    const dialog = step.state.sideEffectDialog;
     // clang-format off
     return html `<div
     class="side-effect-confirmation"
     jslog=${VisualLogging.section('side-effect-confirmation')}
   >
-    ${step.requestApproval.description ? html `<p>${step.requestApproval.description}</p>` : Lit.nothing}
+    ${dialog.description ? html `<p>${dialog.description}</p>` : Lit.nothing}
     <div class="side-effect-buttons-container">
       <devtools-button
         .data=${{
         variant: "outlined" /* Buttons.Button.Variant.OUTLINED */,
         jslogContext: 'decline-execute-code',
     }}
-        @click=${() => step.requestApproval?.onAnswer(false)}
+        @click=${() => dialog.onAnswer(false)}
       >${lockedString(UIStringsNotTranslate.declineActionRequestApproval)}</devtools-button>
       <devtools-button
         .data=${{
@@ -1484,7 +1488,7 @@ function renderSideEffectConfirmationUi(step) {
         jslogContext: 'accept-execute-code',
         iconName: 'play',
     }}
-        @click=${() => step.requestApproval?.onAnswer(true)}
+        @click=${() => dialog.onAnswer(true)}
       >${lockedString(UIStringsNotTranslate.confirmActionRequestApproval)}</devtools-button>
     </div>
   </div>`;

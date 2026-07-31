@@ -42,7 +42,7 @@ function createSettingCheckbox(name, setting, tooltip) {
   }
   return label;
 }
-function renderSettingSelect(setting, subtitle) {
+function renderSettingSelect(setting, subtitle, disabled) {
   const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
   const name = uiDescriptor?.title?.() ?? setting.title();
   const options = uiDescriptor?.options?.map((opt) => ({
@@ -74,7 +74,7 @@ function renderSettingSelect(setting, subtitle) {
         <select
           id=${controlId}
           aria-label=${name}
-          .disabled=${setting.disabled()}
+          .disabled=${disabled ?? setting.disabled()}
           @change=${onSelectChange}
           jslog=${VisualLogging.dropDown().track({ change: true }).context(setting.name)}
         >
@@ -101,7 +101,7 @@ function renderSettingSelect(setting, subtitle) {
     </div>
   `;
 }
-var renderControlForSetting = function(setting, subtitle) {
+var renderControlForSetting = function(setting, subtitle, disabled) {
   switch (setting.type()) {
     case "boolean": {
       const onchange = () => {
@@ -112,19 +112,20 @@ var renderControlForSetting = function(setting, subtitle) {
         }
       };
       return html`<setting-checkbox .data=${{
-        setting
+        setting,
+        disabled
       }} @change=${onchange}></setting-checkbox>`;
     }
     case "enum": {
-      return renderSettingSelect(setting, subtitle);
+      return renderSettingSelect(setting, subtitle, disabled);
     }
     default:
       console.error("Invalid setting type: " + setting.type());
       return nothing;
   }
 };
-var createControlForSetting = function(setting, subtitle) {
-  const template = renderControlForSetting(setting, subtitle);
+var createControlForSetting = function(setting, subtitle, disabled) {
+  const template = renderControlForSetting(setting, subtitle, disabled);
   if (template === nothing) {
     return null;
   }

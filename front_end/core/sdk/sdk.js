@@ -18281,9 +18281,6 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
           this.#capabilitiesMask |= 8192;
         }
         break;
-      case Type2.SHARED_STORAGE_WORKLET:
-        this.#capabilitiesMask = 4 | 8 | 2048 | 524288;
-        break;
       case Type2.Worker:
         this.#capabilitiesMask = 4 | 8 | 16 | 32 | 131072 | 262144 | 256 | 524288;
         if (parentTarget?.type() !== Type2.FRAME) {
@@ -18450,7 +18447,6 @@ var Type2;
   Type3["ServiceWorker"] = "service-worker";
   Type3["Worker"] = "worker";
   Type3["SHARED_WORKER"] = "shared-worker";
-  Type3["SHARED_STORAGE_WORKLET"] = "shared-storage-worklet";
   Type3["NODE"] = "node";
   Type3["BROWSER"] = "browser";
   Type3["AUCTION_WORKLET"] = "auction-worklet";
@@ -34484,8 +34480,6 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
       type = Type2.WORKLET;
     } else if (targetInfo.type === "shared_worker") {
       type = Type2.SHARED_WORKER;
-    } else if (targetInfo.type === "shared_storage_worklet") {
-      type = Type2.SHARED_STORAGE_WORKLET;
     } else if (targetInfo.type === "service_worker") {
       type = Type2.ServiceWorker;
     } else if (targetInfo.type === "auction_worklet") {
@@ -36497,12 +36491,10 @@ var EmulationModel = class extends SDKModel {
     const autoDarkModeSetting = settings.moduleSetting("emulate-auto-dark-mode");
     autoDarkModeSetting.addChangeListener(() => {
       const enabled = autoDarkModeSetting.get();
-      mediaFeaturePrefersColorSchemeSetting.setDisabled(enabled);
       mediaFeaturePrefersColorSchemeSetting.set(enabled ? "dark" : "");
       void this.emulateAutoDarkMode(enabled);
     });
     if (autoDarkModeSetting.get()) {
-      mediaFeaturePrefersColorSchemeSetting.setDisabled(true);
       mediaFeaturePrefersColorSchemeSetting.set("dark");
       void this.emulateAutoDarkMode(true);
     }
@@ -37884,9 +37876,6 @@ var EventBreakpointsManager = class _EventBreakpointsManager {
     this.createInstrumentationBreakpoints("script", [
       "scriptFirstStatement",
       "scriptBlockedByCSP"
-    ]);
-    this.createInstrumentationBreakpoints("shared-storage-worklet", [
-      "sharedStorageWorkletScriptFirstStatement"
     ]);
     this.createInstrumentationBreakpoints("timer", [
       "setTimeout",

@@ -6,20 +6,68 @@ import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.
 import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
-export interface Step {
-    isLoading: boolean;
-    thought?: string;
-    title?: string;
-    code?: string;
-    output?: string;
-    widgets?: AiWidget[];
-    canceled?: boolean;
-    requestApproval?: ConfirmSideEffectDialog;
-    contextDetails?: [AiAssistanceModel.AiAgent.ContextDetail, ...AiAssistanceModel.AiAgent.ContextDetail[]];
-}
+/**
+ * Payload and confirmation handler for side-effect operations requiring user approval.
+ */
 export interface ConfirmSideEffectDialog {
+    /**
+     * Human-readable description explaining the pending side-effect action, or null if omitted.
+     */
     description: string | null;
+    /**
+     * Callback invoked when the user resolves the dialog (true to confirm, false to decline).
+     */
     onAnswer: (result: boolean) => void;
+}
+/**
+ * Represents the execution state of an individual agent action step:
+ * - `in_progress`: The step is actively querying context or parsing stream content.
+ * - `needs_approval`: The step is awaiting user confirmation for a side-effecting operation.
+ * - `canceled`: The step was canceled before execution.
+ * - `completed`: The step completed execution successfully.
+ */
+export type StepState = {
+    type: 'in_progress';
+} | {
+    type: 'needs_approval';
+    sideEffectDialog: ConfirmSideEffectDialog;
+} | {
+    type: 'canceled';
+} | {
+    type: 'completed';
+};
+/**
+ * Represents an individual execution step within an agent response.
+ */
+export interface Step {
+    /**
+     * The current lifecycle state of this step.
+     */
+    state: StepState;
+    /**
+     * The agent's intermediate thought or rationale for taking this step.
+     */
+    thought?: string;
+    /**
+     * The human-readable title describing the step action.
+     */
+    title?: string;
+    /**
+     * Executable JavaScript code generated or executed in this step.
+     */
+    code?: string;
+    /**
+     * Raw string output or data returned by code execution.
+     */
+    output?: string;
+    /**
+     * Visual widgets rendered alongside this step (e.g. core web vitals, network traces).
+     */
+    widgets?: AiWidget[];
+    /**
+     * Context item details gathered or inspected during this step.
+     */
+    contextDetails?: [AiAssistanceModel.AiAgent.ContextDetail, ...AiAssistanceModel.AiAgent.ContextDetail[]];
 }
 export declare const enum ChatMessageEntity {
     MODEL = "model",
@@ -115,9 +163,8 @@ export interface MessageInput {
 export declare const DEFAULT_VIEW: (input: ChatMessageViewInput, output: ViewOutput, target: HTMLElement) => void;
 export type View = typeof DEFAULT_VIEW;
 export declare function titleForStep(step: Step): string;
-export declare function renderStep({ step, isLoading, markdownRenderer, isLast }: {
+export declare function renderStep({ step, markdownRenderer, isLast }: {
     step: Step;
-    isLoading: boolean;
     markdownRenderer: MarkdownLitRenderer;
     isLast: boolean;
 }): Lit.LitTemplate;

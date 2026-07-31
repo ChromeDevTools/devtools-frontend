@@ -34,7 +34,7 @@ export default `/*
     justify-content: center;
   }
 
-  devtools-linear-memory-inspector-navigator + devtools-linear-memory-inspector-viewer {
+  .navigator-widget ~ devtools-linear-memory-inspector-viewer {
     margin-top: 12px;
   }
 

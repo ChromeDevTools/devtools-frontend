@@ -2444,10 +2444,6 @@ var LOCALIZED_INSTRUMENTATION_NAMES = {
     /* SDK.EventBreakpointsModel.InstrumentationNames.SCRIPT_BLOCKED_BY_CSP */
   ]: i18nLazyString(UIStrings4.scriptBlockedByContentSecurity),
   [
-    "sharedStorageWorkletScriptFirstStatement"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.SHARED_STORAGE_WORKLET_SCRIPT_FIRST_STATEMENT */
-  ]: i18nLazyString(UIStrings4.scriptFirstStatement),
-  [
     "requestAnimationFrame"
     /* SDK.EventBreakpointsModel.InstrumentationNames.REQUEST_ANIMATION_FRAME */
   ]: i18nLazyString(UIStrings4.requestAnimationFrame),
@@ -2727,12 +2723,15 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
 };
 var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widget {
   view;
+  static INJECT = [SDK4.EventBreakpointsModel.EventBreakpointsManager];
   #viewInput = null;
-  constructor(element, view = DEFAULT_VIEW4) {
+  #eventBreakpointsManager;
+  constructor(element, [eventBreakpointsManager], view = DEFAULT_VIEW4) {
     super(element, {
       useShadowDom: "pure"
     });
     this.view = view;
+    this.#eventBreakpointsManager = eventBreakpointsManager;
   }
   static descriptionWithoutStack(description) {
     const firstCallFrame = /^\s+at\s/m.exec(description);
@@ -2754,7 +2753,7 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widg
       errorLike: false
     };
   }
-  static #findEventNameForUi(detailsAuxData) {
+  #findEventNameForUi(detailsAuxData) {
     if (!detailsAuxData) {
       return "";
     }
@@ -2766,7 +2765,7 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widg
     if (eventName === "instrumentation:scriptBlockedByCSP" && directiveText) {
       return i18nString4(UIStrings5.scriptBlockedDueToContent, { PH1: directiveText });
     }
-    let breakpoint = SDK4.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpoint(detailsAuxData);
+    let breakpoint = this.#eventBreakpointsManager.resolveEventListenerBreakpoint(detailsAuxData);
     if (breakpoint) {
       return getLocalizedBreakpointName(breakpoint.name);
     }
@@ -2786,7 +2785,7 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widg
     if (details.reason === "DOM") {
       this.#viewInput = await _DebuggerPausedMessage.createDOMBreakpointHitMessageDetails(details);
     } else if (details.reason === "EventListener") {
-      const eventNameForUI = _DebuggerPausedMessage.#findEventNameForUi(details.auxData);
+      const eventNameForUI = this.#findEventNameForUi(details.auxData);
       this.#viewInput = { mainText: i18nString4(UIStrings5.pausedOnEventListener), subText: eventNameForUI, errorLike };
     } else if (details.reason === "XHR") {
       const auxData = details.auxData;
@@ -10679,7 +10678,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     this.toggleBreakpointsActiveAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.toggle-breakpoints-active");
     this.debugToolbar = this.createDebugToolbar();
     this.debugToolbarDrawer = this.createDebugToolbarDrawer();
-    this.debuggerPausedMessage = new DebuggerPausedMessage();
+    this.debuggerPausedMessage = new DebuggerPausedMessage(void 0, [SDK11.EventBreakpointsModel.EventBreakpointsManager.instance()]);
     const initialDebugSidebarWidth = 225;
     this.splitWidget = new UI17.SplitWidget.SplitWidget(true, true, "sources-panel-split-view-state", initialDebugSidebarWidth);
     this.splitWidget.show(this.element);

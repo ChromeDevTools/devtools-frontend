@@ -7,7 +7,7 @@ import * as Lit from '../../lit/lit.js';
 import iconButtonStyles from './iconButton.css.js';
 const { html } = Lit;
 export class IconButton extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
+    #shadow = this.attachShadow({ mode: 'open', delegatesFocus: true });
     #clickHandler;
     #groups = [];
     #compact = false;

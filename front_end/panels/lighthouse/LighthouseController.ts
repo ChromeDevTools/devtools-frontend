@@ -10,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 
 import type {LighthouseRun as LighthouseRunType, ProtocolService} from './LighthouseProtocolService.js';
@@ -297,6 +298,11 @@ class LighthouseRun {
     } else if (this.flags.formFactor === 'mobile') {
       emulationModel.enabledSetting().set(true);
       emulationModel.deviceOutlineSetting().set(true);
+
+      // The emulation model is currently coupled to the UI.
+      // We must wait for the device mode view to render so that it can
+      // initialize the model with the available spatial constraints.
+      await UI.Widget.Widget.allUpdatesComplete;
 
       for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
         if (device.title === 'Moto G Power') {

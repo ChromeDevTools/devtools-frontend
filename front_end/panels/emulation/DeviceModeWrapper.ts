@@ -1,7 +1,6 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import type * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
@@ -10,56 +9,44 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 
 import {DeviceModeView} from './DeviceModeView.js';
 import {InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
 
-let deviceModeWrapperInstance: DeviceModeWrapper;
+const {widget} = UI.Widget;
+interface ViewInput {
+  showDeviceMode: boolean;
+}
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  // clang-format off
+    render(input.showDeviceMode ?
+      html`<devtools-widget ${widget(DeviceModeView)}>
+        ${widget(() => InspectedPagePlaceholder.instance(), {minimumSize: new Geometry.Size(1, 1)})}
+      </devtools-widget>` :
+      widget(() => InspectedPagePlaceholder.instance(), {minimumSize: new Geometry.Size(150, 150)}),
+      target);
+  // clang-format on
+};
 
 export class DeviceModeWrapper extends UI.Widget.VBox {
-  private readonly inspectedPagePlaceholder: InspectedPagePlaceholder;
-  private deviceModeView: DeviceModeView|null;
   private readonly toggleDeviceModeAction: UI.ActionRegistration.Action;
   private showDeviceModeSetting: Common.Settings.Setting<boolean>;
+  readonly #view: View;
 
-  private constructor(inspectedPagePlaceholder: InspectedPagePlaceholder) {
-    super();
-    this.inspectedPagePlaceholder = inspectedPagePlaceholder;
-    this.deviceModeView = null;
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
     this.toggleDeviceModeAction = UI.ActionRegistry.ActionRegistry.instance().getAction('emulation.toggle-device-mode');
     const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
     this.showDeviceModeSetting = model.enabledSetting();
     this.showDeviceModeSetting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam('hasOtherClients')));
-    this.showDeviceModeSetting.addChangeListener(this.update.bind(this, false));
+    this.showDeviceModeSetting.addChangeListener(this.requestUpdate.bind(this));
     SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel,
                                                                 SDK.OverlayModel.Events.SCREENSHOT_REQUESTED,
                                                                 this.screenshotRequestedFromOverlay, this);
-    this.update(true);
-  }
-
-  static instance(opts: {
-    forceNew: boolean|null,
-    inspectedPagePlaceholder: InspectedPagePlaceholder|null,
-  } = {forceNew: null, inspectedPagePlaceholder: null}): DeviceModeWrapper {
-    const {forceNew, inspectedPagePlaceholder} = opts;
-    if (!deviceModeWrapperInstance || forceNew) {
-      if (!inspectedPagePlaceholder) {
-        throw new Error(
-            `Unable to create DeviceModeWrapper: inspectedPagePlaceholder must be provided: ${new Error().stack}`);
-      }
-
-      deviceModeWrapperInstance = new DeviceModeWrapper(inspectedPagePlaceholder);
-    }
-
-    return deviceModeWrapperInstance;
-  }
-
-  toggleDeviceMode(): void {
-    this.showDeviceModeSetting.set(!this.showDeviceModeSetting.get());
-  }
-
-  isDeviceModeOn(): boolean {
-    return this.showDeviceModeSetting.get();
+    this.requestUpdate();
   }
 
   static #setNonEmulatedAvailableSize(): void {
@@ -67,6 +54,7 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
     if (model.type() !== EmulationModel.DeviceModeModel.Type.None) {
       return;
     }
+
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     const rect = InspectedPagePlaceholder.instance().element.getBoundingClientRect();
     const availableSize =
@@ -93,29 +81,10 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
     DeviceModeWrapper.captureScreenshot(false, clip);
   }
 
-  update(force?: boolean): void {
+  override performUpdate(): void {
     this.toggleDeviceModeAction.setToggled(this.showDeviceModeSetting.get());
 
-    const shouldShow = this.showDeviceModeSetting.get();
-    if (!force && shouldShow === this.deviceModeView?.isShowing()) {
-      return;
-    }
-
-    if (shouldShow) {
-      if (!this.deviceModeView) {
-        this.deviceModeView = new DeviceModeView();
-      }
-      this.deviceModeView.show(this.element);
-      this.inspectedPagePlaceholder.clearMinimumSize();
-      this.inspectedPagePlaceholder.show(this.deviceModeView.element);
-    } else {
-      if (this.deviceModeView) {
-        this.deviceModeView.exitHingeMode();
-        this.deviceModeView.detach();
-      }
-      this.inspectedPagePlaceholder.restoreMinimumSize();
-      this.inspectedPagePlaceholder.show(this.element);
-    }
+    this.#view({showDeviceMode: this.showDeviceModeSetting.get()}, undefined, this.contentElement);
   }
 }
 
@@ -191,9 +160,11 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'emulation.capture-full-height-screenshot':
         return DeviceModeWrapper.captureScreenshot(true);
 
-      case 'emulation.toggle-device-mode':
-        DeviceModeWrapper.instance().toggleDeviceMode();
+      case 'emulation.toggle-device-mode': {
+        const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+        model.toggleDeviceMode();
         return true;
+      }
     }
     return false;
   }

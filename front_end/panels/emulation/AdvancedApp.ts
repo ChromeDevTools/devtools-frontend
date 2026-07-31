@@ -58,8 +58,7 @@ export class AdvancedApp implements UI.App.App {
 
     this.inspectedPagePlaceholder = InspectedPagePlaceholder.instance();
     this.inspectedPagePlaceholder.addEventListener(Events.UPDATE, this.onSetInspectedPageBounds.bind(this), this);
-    this.deviceModeView =
-        DeviceModeWrapper.instance({inspectedPagePlaceholder: this.inspectedPagePlaceholder, forceNew: false});
+    this.deviceModeView = new DeviceModeWrapper();
 
     UI.DockController.DockController.instance().addEventListener(
         UI.DockController.Events.BEFORE_DOCK_SIDE_CHANGED, this.onBeforeDockSideChange, this);

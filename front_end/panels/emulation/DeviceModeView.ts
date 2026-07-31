@@ -286,8 +286,8 @@ export class DeviceModeView extends UI.Widget.VBox {
   #lastScreenImageSrc?: string;
   #view: DeviceModeViewView;
 
-  constructor(view: DeviceModeViewView = DEFAULT_DEVICE_MODE_VIEW) {
-    super({useShadowDom: true});
+  constructor(element?: HTMLElement, view: DeviceModeViewView = DEFAULT_DEVICE_MODE_VIEW) {
+    super(element, {useShadowDom: true});
     this.#view = view;
 
     this.setMinimumSize(150, 150);

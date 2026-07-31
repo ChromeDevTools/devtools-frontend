@@ -1,14 +1,16 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as Elements from '../elements/elements.js';
+
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -79,7 +81,7 @@ export class HeapDetachedElementsDataGridNode extends DataGrid.DataGrid.DataGrid
 
       case 'detached-node-count': {
         const size = this.#getNodeSize(this.detachedElementInfo);
-        UI.UIUtils.createTextChild(cell, size.toString());
+        render(html`${size}`, cell);
         return cell;
       }
     }
@@ -111,14 +113,21 @@ export class HeapDetachedElementsDataGridNode extends DataGrid.DataGrid.DataGrid
 
   // FIXME: is it a partial dupe of front_end/panels/elements/ElementsTreeOutlineRenderer.ts?
   #renderNode(node: SDK.DOMModel.DOMNode, target: HTMLElement): void {
-    const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget();
-    domTree.omitRootDOMNode = false;
-    domTree.selectEnabled = true;
-    domTree.hideGutter = true;
-    domTree.rootDOMNode = node;
-    domTree.showSelectionOnKeyboardFocus = true;
-    domTree.preventTabOrder = true;
-    domTree.deindentSingleNode = true;
-    domTree.show(target, undefined, true);
+    render(
+        html`
+          <devtools-widget
+            ${widget(Elements.ElementsTreeOutline.DOMTreeWidget, {
+          omitRootDOMNode: false,
+          selectEnabled: true,
+          hideGutter: true,
+          rootDOMNode: node,
+          showSelectionOnKeyboardFocus: true,
+          preventTabOrder: true,
+          deindentSingleNode: true,
+        })}
+          ></devtools-widget>
+        `,
+        target,
+    );
   }
 }

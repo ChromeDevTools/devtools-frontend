@@ -102,7 +102,10 @@ devtools_entrypoint("meta") {
 devtools_ui_module("unittests") {
   testonly = true
 
-  sources = [ "HeapProfileView.test.ts" ]
+  sources = [
+    "HeapDetachedElementsDataGrid.test.ts",
+    "HeapProfileView.test.ts",
+  ]
 
   deps = [
     ":bundle",

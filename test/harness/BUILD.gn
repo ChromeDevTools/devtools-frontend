@@ -45,6 +45,7 @@ devtools_ui_module("unit_fixtures") {
     "unit/global_before_hook_fail.test.ts",
     "unit/hooks.test.ts",
     "unit/multi_logs.test.ts",
+    "unit/screenshot_diff.test.ts",
     "unit/screenshot_retry.test.ts",
     "unit/snapshot.test.ts",
     "unit/unit.test.ts",

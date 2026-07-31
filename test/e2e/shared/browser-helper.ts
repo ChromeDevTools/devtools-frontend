@@ -160,7 +160,7 @@ export class Launcher {
     const opts: puppeteer.LaunchOptions = {
       headless,
       executablePath,
-      dumpio: !headless || Boolean(process.env['LUCI_CONTEXT']),
+      dumpio: !headless || TestConfig.isLuci,
       protocolTimeout,
       networkEnabled: false,
       enableExtensions: true,

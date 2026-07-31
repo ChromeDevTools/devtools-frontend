@@ -593,6 +593,53 @@ class DevToolsTestHarness(unittest.TestCase):
         )
         self.assertEqual(results[1].get('status'), 'FAIL')
 
+    def test_unit_screenshot_diff(self):
+        import sys
+        if sys.platform != 'linux':
+            return
+        abs_test_file = self._resolve_test_file(
+            "test/harness/unit/screenshot_diff.test.ts")
+        results, exit_code = self.run_test_with_rdb([
+            "node_modules/karma/bin/karma", "start",
+            os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
+            abs_test_file
+        ])
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(
+            len(results), 1,
+            f"Expected exactly 1 test results, got {len(results)}")
+
+        self.assertEqual(
+            results[0].get('testId'),
+            'test/harness/unit/screenshot_diff.test.ts:screenshot_test_with_diff:should_fail_with_screenshot_diff'
+        )
+        self.assertEqual(results[0].get('status'), 'FAIL')
+
+        # Verify artifacts
+        list_artifacts_cmd = [
+            "rdb", "rpc", "luci.resultdb.v1.ResultDB", "ListArtifacts"
+        ]
+        query_process = subprocess.run(list_artifacts_cmd,
+                                       input=json.dumps(
+                                           {"parent": results[0].get('name')}),
+                                       capture_output=True,
+                                       text=True)
+        self.assertEqual(query_process.returncode, 0,
+                         f"rdb rpc failed: {query_process.stderr}")
+
+        # We need to extract JSON past the Terms of Service warning if present
+        stdout = query_process.stdout.strip()
+        if stdout.startswith('Use of LUCI'):
+            stdout = stdout.split('\n', 2)[-1]
+
+        artifacts_resp = json.loads(stdout)
+        artifacts = [
+            a['artifactId'] for a in artifacts_resp.get('artifacts', [])
+        ]
+        self.assertIn('actual_image', artifacts)
+        self.assertIn('expected_image', artifacts)
+        self.assertIn('image_diff', artifacts)
+
     def test_unit_repeat(self):
         abs_test_file = self._resolve_test_file(
             "test/harness/unit/unit.test.ts")

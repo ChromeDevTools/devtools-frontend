@@ -36,6 +36,7 @@ interface Config {
   shardNumber: number;
   shardBias: number;
   isAiAgent: boolean;
+  isLuci: boolean;
   isPerfTest: boolean;
   expectationsFile?: string;
 }
@@ -147,6 +148,7 @@ export const TestConfig: Config = {
     'AI_AGENT',
     'ANTIGRAVITY_AGENT',
   ].some(agent => agent in process.env),
+  isLuci: process.env['LUCI_CONTEXT'] !== undefined,
   isPerfTest: false,
   expectationsFile: options['expectations-file'],
 };

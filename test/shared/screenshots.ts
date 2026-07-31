@@ -156,19 +156,13 @@ const assertScreenshotUnchanged = async (options: ScreenshotAssertionOptions) =>
   // In the event that a golden does not exist, assume the generated screenshot is the new golden.
   if (!fs.existsSync(goldenScreenshotPath)) {
     // LUCI_CONTEXT is an environment variable present on the bots.
-    if (process.env.LUCI_CONTEXT !== undefined && !shouldUpdate) {
+    if (TestConfig.isLuci && !shouldUpdate) {
       // If the image is missing, there's no point retrying the test N more times.
       onBotAndImageNotFound = true;
       throw ScreenshotError.fromGeneratedScreenshot(
-          `Failing test: in an environment with LUCI_CONTEXT and did not find a golden screenshot.
-
-        Here's the image that this test generated as a base64:
-
-        data:image/png;base64,${fs.readFileSync(generatedScreenshotPath, {
-            encoding: 'base64',
-          })}
-        `,
-          generatedScreenshotPath);
+          'Failing test: in an environment with LUCI_CONTEXT and did not find a golden screenshot.',
+          generatedScreenshotPath,
+      );
     }
 
     console.log('Golden does not exist, using generated screenshot.');
@@ -182,8 +176,10 @@ const assertScreenshotUnchanged = async (options: ScreenshotAssertionOptions) =>
   try {
     await compare(goldenScreenshotPath, generatedScreenshotPath, maximumDiffThreshold, shouldUpdate);
   } catch (compareError) {
-    if (!onBotAndImageNotFound) {
-      console.log(`=> Test failed. Retrying (retry ${retryCount} of ${maximumRetries} maximum).`);
+    if (!onBotAndImageNotFound && maximumRetries > 1) {
+      console.log(
+          `=> Test failed. Retrying (retry ${retryCount} of ${maximumRetries} maximum).`,
+      );
     }
 
     if (retryCount === maximumRetries || onBotAndImageNotFound) {
@@ -267,54 +263,34 @@ async function execImageDiffCommand(cmd: string) {
 }
 
 async function compare(golden: string, generated: string, maximumDiffThreshold: number, isInDiffUpdateMode: boolean) {
-  const isOnBot = process.env.LUCI_CONTEXT !== undefined;
-  if (!isOnBot && process.env.SKIP_SCREENSHOT_COMPARISONS_FOR_FAST_COVERAGE) {
-    // When checking test coverage locally the tests get sped up significantly
-    // if we do not do the actual image comparison. Obviously this makes the
-    // tests all pass, but it is useful to quickly get coverage stats.
-    // Therefore you can pass this flag to skip all screenshot comparisions. We
-    // make sure this is only possible if not on a CQ bot and 99.9% of the time
-    // this should not be used!
-    return;
-  }
-
   const {rawMisMatchPercentage, diffPath} = await imageDiff(golden, generated);
 
-  const base64TestGeneratedImageLog = `Here's the image the test generated as a base64:
-    data:image/png;base64,${fs.readFileSync(generated, {
-    encoding: 'base64',
-  })}`;
-
-  const base64DiffImageLog = `And here's the diff image as base64:\n
-    data:image/png;base64,${
-      diffPath ? fs.readFileSync(diffPath, {
-        encoding: 'base64',
-      }) :
-                 ''}`;
-
   let debugInfo = '';
-  if (isOnBot) {
-    debugInfo = `${base64TestGeneratedImageLog}\n${base64DiffImageLog}\n`;
+  if (TestConfig.isLuci) {
+    debugInfo = '\nPlease check LUCI artifacts for the images.';
   } else if (!isInDiffUpdateMode) {
-    debugInfo = `Run the tests again with --on-diff=update to update all tests that fail.
-  Only do this if you expected this screenshot to have changed!
-
-  Diff image generated at:
-  => ${path.relative(testRunnerCWD, diffPath)}\n`;
+    const newImage = path.relative(testRunnerCWD, generated);
+    const diffImage = path.relative(testRunnerCWD, diffPath);
+    debugInfo = `
+  => New image at ${newImage}
+  => Diff image at ${diffImage}`;
   }
 
-  try {
-    assert.isAtMost(
-        rawMisMatchPercentage, maximumDiffThreshold,
-        `There is a ${rawMisMatchPercentage}% difference between the golden and generated image.
+  const error = `Image assertion failed with ${rawMisMatchPercentage}% difference.${debugInfo}`;
+  assert.isAtMost;
+  if (rawMisMatchPercentage > maximumDiffThreshold) {
+    throw ScreenshotError.fromScreenshotAssertionError(
+        new Error(error),
+        golden,
+        generated,
+        diffPath,
+    );
+  }
 
-    ${debugInfo}`);
-    if (rawMisMatchPercentage > 0) {
-      console.log(`test passed with difference of ${rawMisMatchPercentage}%`);
-    }
-
-  } catch (assertionError) {
-    throw ScreenshotError.fromScreenshotAssertionError(assertionError, golden, generated, diffPath);
+  if (rawMisMatchPercentage > 0) {
+    console.log(
+        `Image assertion passed with ${rawMisMatchPercentage}% difference`,
+    );
   }
 }
 

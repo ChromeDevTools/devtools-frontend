@@ -6,14 +6,14 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import type {FunctionCallHandlerResult} from '../agents/AiAgent.js';
 import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
 
 import {
   type BaseToolCapability,
+  type DataHandlerResult,
+  type DataTool,
   type OriginLockCapability,
   type TargetCapability,
-  type Tool,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -34,7 +34,7 @@ export interface GetElementAccessibilityDetailsArgs extends ToolArgs {
  * for a resolved element backend node ID. It also returns a DOM snapshot of the element's subtree.
  */
 export class GetElementAccessibilityDetailsTool implements
-    Tool<GetElementAccessibilityDetailsArgs, string, BaseToolCapability&TargetCapability&OriginLockCapability> {
+    DataTool<GetElementAccessibilityDetailsArgs, string, BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name = ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS;
   readonly description =
       'Get detailed accessibility information for an element on the inspected page by its backend node ID.';
@@ -79,7 +79,7 @@ export class GetElementAccessibilityDetailsTool implements
   async handler(
       params: GetElementAccessibilityDetailsArgs,
       context: BaseToolCapability&TargetCapability&OriginLockCapability,
-      ): Promise<FunctionCallHandlerResult<string>> {
+      ): Promise<DataHandlerResult<string>> {
     const establishedOrigin = context.getEstablishedOrigin();
     if (!establishedOrigin) {
       return {error: 'Error: Origin lock is not established.'};

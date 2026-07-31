@@ -5,15 +5,16 @@
 import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import type {ComputedStyleAiWidget, FunctionCallHandlerResult, FunctionHandlerOptions} from '../agents/AiAgent.js';
+import type {ComputedStyleAiWidget, FunctionHandlerOptions} from '../agents/AiAgent.js';
 import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
 import {debugLog} from '../debug.js';
 
 import {
   type BaseToolCapability,
+  type DataHandlerResult,
+  type DataTool,
   type OriginLockCapability,
   type TargetCapability,
-  type Tool,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -25,7 +26,7 @@ export interface GetStylesArgs extends ToolArgs {
 }
 
 export class GetStylesTool implements
-    Tool<GetStylesArgs, unknown, BaseToolCapability&TargetCapability&OriginLockCapability> {
+    DataTool<GetStylesArgs, unknown, BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name = ToolName.GET_STYLES;
   readonly description =
       `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
@@ -81,7 +82,7 @@ export class GetStylesTool implements
       params: GetStylesArgs,
       context: BaseToolCapability&TargetCapability&OriginLockCapability,
       _options?: FunctionHandlerOptions,
-      ): Promise<FunctionCallHandlerResult<unknown>> {
+      ): Promise<DataHandlerResult<unknown>> {
     const widgets: ComputedStyleAiWidget[] = [];
     const result:
         Record<string, {computed: Record<string, string|undefined>, authored: Record<string, string|undefined>}> = {};

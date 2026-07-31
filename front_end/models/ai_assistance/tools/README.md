@@ -25,7 +25,7 @@ The Agent (e.g., `AiAgent2`) builds the complete dependency union (`AllToolsCapa
 
 ## Returning UI Widgets
 
-Tools can return rich UI components (widgets) to be rendered directly in the AI Assistance panel alongside text results. To do this, include the widget payload in the `widgets` field of the returned `FunctionCallHandlerResult`:
+Tools can return rich UI components (widgets) to be rendered directly in the AI Assistance panel alongside text results. To do this, include the widget payload in the `widgets` field of the returned `ToolDataResult` or `ToolContextResult`:
 
 ```typescript
 return {

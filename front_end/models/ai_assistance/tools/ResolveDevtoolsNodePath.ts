@@ -4,14 +4,14 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import type {FunctionCallHandlerResult} from '../agents/AiAgent.js';
 import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
 
 import {
   type BaseToolCapability,
+  type DataHandlerResult,
+  type DataTool,
   type OriginLockCapability,
   type TargetCapability,
-  type Tool,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -36,8 +36,8 @@ export interface ResolveDevtoolsNodePathArgs extends ToolArgs {
  * Lighthouse reports or other sources using node paths. It ensures the resolved node
  * belongs to the locked origin.
  */
-export class ResolveDevtoolsNodePathTool implements Tool<ResolveDevtoolsNodePathArgs, {backendNodeId: number},
-                                                         BaseToolCapability&TargetCapability&OriginLockCapability> {
+export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNodePathArgs, {backendNodeId: number},
+                                                             BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name = ToolName.RESOLVE_DEVTOOLS_NODE_PATH;
   readonly description = 'Resolves a DevTools node path to a backend node ID.';
 
@@ -82,7 +82,7 @@ export class ResolveDevtoolsNodePathTool implements Tool<ResolveDevtoolsNodePath
   async handler(
       params: ResolveDevtoolsNodePathArgs,
       context: BaseToolCapability&TargetCapability&OriginLockCapability,
-      ): Promise<FunctionCallHandlerResult<{backendNodeId: number}>> {
+      ): Promise<DataHandlerResult<{backendNodeId: number}>> {
     const establishedOrigin = context.getEstablishedOrigin();
     if (!establishedOrigin) {
       return {error: 'Error: Origin lock is not established.'};

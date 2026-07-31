@@ -30,11 +30,11 @@ import {
   type AiWidget,
   type ContextResponse,
   type ConversationContext,
-  type FunctionCallHandlerResult,
   type ParsedResponse,
   type RequestOptions,
   type ResponseData,
   ResponseType,
+  type ToolResult,
 } from './AiAgent.js';
 
 const UIStringsNotTranslated = {
@@ -730,7 +730,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       focus: AgentFocus,
       functionName: string,
       cacheKey: string,
-      ): Promise<FunctionCallHandlerResult<{summary: string}>> {
+      ): Promise<ToolResult<{summary: string}>> {
     const formatter = this.#formatter;
     if (!formatter) {
       throw new Error('missing formatter');

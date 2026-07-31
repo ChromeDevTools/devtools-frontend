@@ -6,15 +6,15 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
-import type {FunctionCallHandlerResult} from '../agents/AiAgent.js';
 import {isOpaqueOrigin} from '../AiOrigins.js';
 import {getRequestContextOrigin} from '../contexts/RequestContext.js';
 import {NetworkRequestFormatter} from '../data_formatters/NetworkRequestFormatter.js';
 
 import {
   type BaseToolCapability,
+  type DataHandlerResult,
+  type DataTool,
   type OriginLockCapability,
-  type Tool,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -33,7 +33,7 @@ export interface GetNetworkRequestDetailsArgs extends ToolArgs {
  * The details include request/response headers, status code, timings, and the response body.
  */
 export class GetNetworkRequestDetailsTool implements
-    Tool<GetNetworkRequestDetailsArgs, unknown, BaseToolCapability&OriginLockCapability> {
+    DataTool<GetNetworkRequestDetailsArgs, unknown, BaseToolCapability&OriginLockCapability> {
   readonly name = ToolName.GET_NETWORK_REQUEST_DETAILS;
   readonly description =
       'Retrieves the full headers, timing, status, and body details of a specific network request by ID.';
@@ -75,7 +75,7 @@ export class GetNetworkRequestDetailsTool implements
   async handler(
       args: GetNetworkRequestDetailsArgs,
       context: BaseToolCapability&OriginLockCapability,
-      ): Promise<FunctionCallHandlerResult<unknown>> {
+      ): Promise<DataHandlerResult<unknown>> {
     // A conversation is locked to an origin once the first query is made.
     // We only allow inspecting requests matching the conversation's established origin.
     const origin = context.getEstablishedOrigin();

@@ -6,14 +6,15 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as Formatter from '../../formatter/formatter.js';
-import type {FunctionCallHandlerResult, FunctionHandlerOptions} from '../agents/AiAgent.js';
+import type {FunctionHandlerOptions} from '../agents/AiAgent.js';
 import {JavascriptExecutor} from '../agents/ExecuteJavascript.js';
 
 import {
   type BaseToolCapability,
+  type DataHandlerResult,
+  type DataTool,
   type PageExecutionCapability,
   type StyleMutationCapability,
-  type Tool,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -29,7 +30,7 @@ export interface ExecuteJavaScriptArgs extends ToolArgs {
 }
 
 export class ExecuteJavaScriptTool implements
-    Tool<ExecuteJavaScriptArgs, unknown, BaseToolCapability&PageExecutionCapability&StyleMutationCapability> {
+    DataTool<ExecuteJavaScriptArgs, unknown, BaseToolCapability&PageExecutionCapability&StyleMutationCapability> {
   readonly name = ToolName.EXECUTE_JAVASCRIPT;
 
   readonly description =
@@ -145,7 +146,7 @@ const data = {
       params: ExecuteJavaScriptArgs,
       context: BaseToolCapability&PageExecutionCapability&StyleMutationCapability,
       options?: FunctionHandlerOptions,
-      ): Promise<FunctionCallHandlerResult<unknown>> {
+      ): Promise<DataHandlerResult<unknown>> {
     const executionNode = context.getExecutionContextNode();
     if (!executionNode) {
       return {error: 'Error: Could not find the context node for execution.'};

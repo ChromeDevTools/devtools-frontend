@@ -6,15 +6,15 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
-import type {FunctionCallHandlerResult} from '../agents/AiAgent.js';
 import {isOpaqueOrigin} from '../AiOrigins.js';
 import {getRequestContextOrigin} from '../contexts/RequestContext.js';
 import {formatBytesToKb, seconds} from '../data_formatters/UnitFormatters.js';
 
 import {
   type BaseToolCapability,
+  type DataHandlerResult,
+  type DataTool,
   type OriginLockCapability,
-  type Tool,
   ToolName,
 } from './Tool.js';
 
@@ -37,7 +37,7 @@ interface NetworkRequestSummary {
  * Filters the list by the conversation's established origin to prevent cross-origin data exposure.
  */
 export class ListNetworkRequestsTool implements
-    Tool<Record<string, never>, unknown, BaseToolCapability&OriginLockCapability> {
+    DataTool<Record<string, never>, unknown, BaseToolCapability&OriginLockCapability> {
   readonly name = ToolName.LIST_NETWORK_REQUESTS;
   readonly description = 'Gives a list of network requests including URL, status code, and duration.';
 
@@ -72,7 +72,7 @@ export class ListNetworkRequestsTool implements
   async handler(
       _params: Record<string, never>,
       context: BaseToolCapability&OriginLockCapability,
-      ): Promise<FunctionCallHandlerResult<unknown>> {
+      ): Promise<DataHandlerResult<unknown>> {
     const requests: NetworkRequestSummary[] = [];
     // A conversation is locked to an origin once the first query is made.
     // We only allow inspecting requests matching the conversation's established origin.

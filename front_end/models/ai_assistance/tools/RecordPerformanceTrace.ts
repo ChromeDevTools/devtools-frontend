@@ -4,10 +4,16 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import type {FunctionCallHandlerResult} from '../agents/AiAgent.js';
 import {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
+import type {AgentFocus} from '../performance/AIContext.js';
 
-import {type BaseToolCapability, type PerformanceRecordingCapability, type Tool, ToolName} from './Tool.js';
+import {
+  type BaseToolCapability,
+  type ContextHandlerResult,
+  type ContextTool,
+  type PerformanceRecordingCapability,
+  ToolName,
+} from './Tool.js';
 
 const UIStringsNotTranslate = {
   recordingPerformanceTrace: 'Recording a performance trace',
@@ -16,7 +22,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 
 export class RecordPerformanceTraceTool implements
-    Tool<Record<string, never>, unknown, BaseToolCapability&PerformanceRecordingCapability> {
+    ContextTool<Record<string, never>, AgentFocus, BaseToolCapability&PerformanceRecordingCapability> {
   readonly name = ToolName.RECORD_PERFORMANCE_TRACE;
   readonly description = 'Records a new performance trace to measure, analyze, and debug page performance.';
 
@@ -39,7 +45,7 @@ export class RecordPerformanceTraceTool implements
   }
 
   async handler(_params: Record<string, never>, capabilities: BaseToolCapability&PerformanceRecordingCapability):
-      Promise<FunctionCallHandlerResult<unknown>> {
+      Promise<ContextHandlerResult<AgentFocus>> {
     if (!capabilities.performanceRecordAndReload) {
       return {error: 'Performance recording is not available.'};
     }

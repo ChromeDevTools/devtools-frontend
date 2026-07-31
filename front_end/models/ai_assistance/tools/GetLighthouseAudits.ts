@@ -4,17 +4,17 @@
 
 import * as Host from '../../../core/host/host.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
-import type {FunctionCallHandlerResult} from '../agents/AiAgent.js';
 import {AccessibilityContext} from '../contexts/AccessibilityContext.js';
 import {LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
 
-import {type BaseToolCapability, type Tool, type ToolArgs, ToolName} from './Tool.js';
+import {type BaseToolCapability, type DataHandlerResult, type DataTool, type ToolArgs, ToolName} from './Tool.js';
 
 export interface GetLighthouseAuditsArgs extends ToolArgs {
   categoryId: LHModel.RunTypes.CategoryId;
 }
 
-export class GetLighthouseAuditsTool implements Tool<GetLighthouseAuditsArgs, {audits: string}, BaseToolCapability> {
+export class GetLighthouseAuditsTool implements
+    DataTool<GetLighthouseAuditsArgs, {audits: string}, BaseToolCapability> {
   readonly name = ToolName.GET_LIGHTHOUSE_AUDITS;
   readonly description = 'Returns the audits for a specific Lighthouse category.';
 
@@ -40,7 +40,7 @@ export class GetLighthouseAuditsTool implements Tool<GetLighthouseAuditsArgs, {a
   }
 
   async handler(params: GetLighthouseAuditsArgs,
-                context: BaseToolCapability): Promise<FunctionCallHandlerResult<{audits: string}>> {
+                context: BaseToolCapability): Promise<DataHandlerResult<{audits: string}>> {
     if (!(context.conversationContext instanceof AccessibilityContext)) {
       return {error: 'Error: Active context is not a Lighthouse report.'};
     }

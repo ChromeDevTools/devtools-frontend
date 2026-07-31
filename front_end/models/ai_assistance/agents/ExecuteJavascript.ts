@@ -12,8 +12,9 @@ import type {ChangeManager} from '../ChangeManager.js';
 import {debugLog} from '../debug.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
 import {FREESTYLER_WORLD_CSP, FREESTYLER_WORLD_NAME} from '../injected.js';
+import type {DataHandlerResult} from '../tools/Tool.js';
 
-import type {AgentOptions as BaseAgentOptions, FunctionCallHandlerResult, FunctionHandlerOptions} from './AiAgent.js';
+import type {AgentOptions as BaseAgentOptions, FunctionHandlerOptions} from './AiAgent.js';
 
 const lockedString = i18n.i18n.lockedString;
 
@@ -113,7 +114,7 @@ export class JavascriptExecutor {
     this.#execJs = execJs;
   }
 
-  async executeAction(action: string, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<unknown>> {
+  async executeAction(action: string, options?: FunctionHandlerOptions): Promise<DataHandlerResult<unknown>> {
     debugLog(`Action to execute: ${action}`);
 
     if (options?.approved === false) {

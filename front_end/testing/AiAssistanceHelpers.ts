@@ -338,32 +338,37 @@ export function createTestFilesystem(fileSystemPath: string, files?: Array<{
   return {project, uiSourceCode};
 }
 
-export function assertIsError<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>):
-    asserts response is {error: string} {
+export function assertIsError<T>(
+    response: AiAssistance.Tool.DataHandlerResult<T>|AiAssistance.Tool.ContextHandlerResult<T>|
+    AiAssistance.AiAgent.ToolResult<T>,
+    ): asserts response is AiAssistance.Tool.ToolErrorResult {
   if (!('error' in response)) {
     assert.fail(`Expected error response, but got: ${JSON.stringify(response)}`);
   }
 }
 
-export function assertIsResult<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>):
-    asserts response is {result: T, widgets?: AiAssistance.AiAgent.AiWidget[]} {
+export function assertIsResult<T>(
+    response: AiAssistance.Tool.DataHandlerResult<T>|AiAssistance.Tool.ContextHandlerResult<T>|
+    AiAssistance.AiAgent.ToolResult<T>,
+    ): asserts response is AiAssistance.Tool.ToolDataResult<T> {
   if (!('result' in response)) {
     assert.fail(`Expected success result response, but got: ${JSON.stringify(response)}`);
   }
 }
 
-export function assertRequiresApproval<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>):
-    asserts response is {requiresApproval: true, description: string | null} {
+export function assertRequiresApproval<T>(
+    response: AiAssistance.Tool.DataHandlerResult<T>|AiAssistance.Tool.ContextHandlerResult<T>|
+    AiAssistance.AiAgent.ToolResult<T>,
+    ): asserts response is AiAssistance.Tool.ToolApprovalResult {
   if (!('requiresApproval' in response)) {
     assert.fail(`Expected response requiring approval, but got: ${JSON.stringify(response)}`);
   }
 }
 
-export function assertIsContext<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>): asserts response is {
-  context: AiAssistance.AiAgent.ConversationContext<unknown>,
-  description: string,
-  widgets?: AiAssistance.AiAgent.AiWidget[],
-} {
+export function assertIsContext<T>(
+    response: AiAssistance.Tool.DataHandlerResult<T>|AiAssistance.Tool.ContextHandlerResult<T>|
+    AiAssistance.AiAgent.ToolResult<T>,
+    ): asserts response is AiAssistance.Tool.ToolContextResult<T> {
   if (!('context' in response)) {
     assert.fail(`Expected context response, but got: ${JSON.stringify(response)}`);
   }

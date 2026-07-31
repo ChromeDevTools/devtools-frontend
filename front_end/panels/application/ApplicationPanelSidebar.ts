@@ -725,6 +725,15 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
     if (frame.isOutermostFrame()) {
       this.reset();
+      const selectedElement = this.sidebarTree.selectedTreeElement;
+      if (selectedElement instanceof ExpandableApplicationPanelTreeElement) {
+        // Only update AI Assistance storage context for expandable category headers,
+        // as all other tree elements are re-rendered on reset.
+        const item = selectedElement.createGenericStorageAiContext();
+        if (item) {
+          UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item);
+        }
+      }
     }
     this.addCookieDocument(frame);
   }

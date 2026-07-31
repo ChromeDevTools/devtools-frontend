@@ -133,7 +133,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     this.categoryDescription = categoryDescription;
   }
 
-  protected createGenericStorageAiContext(): AiAssistance.StorageItem.StorageItem|null {
+  createGenericStorageAiContext(): AiAssistance.StorageItem.StorageItem|null {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     const mainPageOrigin =
         target?.inspectedURL() ? Common.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : '';

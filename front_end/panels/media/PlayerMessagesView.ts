@@ -10,10 +10,12 @@ import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import playerMessagesViewStyles from './playerMessagesView.css.js';
+
+const {classMap} = Directives;
 
 const UIStrings = {
   /**
@@ -104,7 +106,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
   readonly #defaultTitle: Common.UIString.LocalizedString;
   private readonly customTitle: Common.UIString.LocalizedString;
   private readonly allTitle: Common.UIString.LocalizedString;
-  elementsForItems: WeakMap<SelectableLevel, HTMLElement>;
+  elementsForItems: WeakMap<SelectableLevel, ShadowRoot>;
 
   constructor(items: UI.ListModel.ListModel<SelectableLevel>, view: PlayerMessagesView) {
     this.items = items;
@@ -131,65 +133,85 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
   }
 
   populate(): void {
-    this.items.insert(this.items.length, {
+    const defaultLevel = {
       title: this.#defaultTitle,
       overwrite: true,
       stringValue: '',
       value: MessageLevelBitfield.DEFAULT,
+    };
+    this.items.insert(this.items.length, defaultLevel);
+    this.itemMap.set(defaultLevel.value, defaultLevel);
 
-    });
-
-    this.items.insert(this.items.length, {
+    const allLevel = {
       title: this.allTitle,
       overwrite: true,
       stringValue: '',
       value: MessageLevelBitfield.ALL,
+    };
+    this.items.insert(this.items.length, allLevel);
+    this.itemMap.set(allLevel.value, allLevel);
 
-    });
-
-    this.items.insert(this.items.length, {
+    const errorLevel = {
       title: i18nString(UIStrings.error),
       overwrite: false,
       stringValue: 'error',
       value: MessageLevelBitfield.ERROR,
+    };
+    this.items.insert(this.items.length, errorLevel);
+    this.itemMap.set(errorLevel.value, errorLevel);
 
-    });
-
-    this.items.insert(this.items.length, {
+    const warningLevel = {
       title: i18nString(UIStrings.warning),
       overwrite: false,
       stringValue: 'warning',
       value: MessageLevelBitfield.WARNING,
-    });
+    };
+    this.items.insert(this.items.length, warningLevel);
+    this.itemMap.set(warningLevel.value, warningLevel);
 
-    this.items.insert(this.items.length, {
+    const infoLevel = {
       title: i18nString(UIStrings.info),
       overwrite: false,
       stringValue: 'info',
       value: MessageLevelBitfield.INFO,
-    });
+    };
+    this.items.insert(this.items.length, infoLevel);
+    this.itemMap.set(infoLevel.value, infoLevel);
 
-    this.items.insert(this.items.length, {
+    const debugLevel = {
       title: i18nString(UIStrings.debug),
       overwrite: false,
       stringValue: 'debug',
       value: MessageLevelBitfield.DEBUG,
+    };
+    this.items.insert(this.items.length, debugLevel);
+    this.itemMap.set(debugLevel.value, debugLevel);
+  }
 
-    });
+  #renderItem(item: SelectableLevel, target: ShadowRoot|HTMLElement): void {
+    const checked = Boolean(item.value & this.bitFieldValue);
+    // clang-format off
+    render(html`
+      <div class="media-messages-level-dropdown-element">
+        <div class="media-messages-level-dropdown-checkbox">
+          ${!item.overwrite && checked ? html`<div>✓</div>` : nothing}
+        </div>
+        <span class="media-messages-level-dropdown-text">${item.title}</span>
+      </div>
+    `, target, {host: this});
+    // clang-format on
   }
 
   private updateCheckMarks(): void {
     this.hiddenLevels = [];
     for (const [key, item] of this.itemMap) {
       if (!item.overwrite) {
-        const elementForItem = this.elementsForItems.get(item);
-        if (elementForItem?.firstChild) {
-          elementForItem.firstChild.remove();
-        }
-        if (elementForItem && key & this.bitFieldValue) {
-          UI.UIUtils.createTextChild(elementForItem.createChild('div'), '✓');
-        } else {
+        if (!(key & this.bitFieldValue)) {
           this.hiddenLevels.push(item.stringValue);
+        }
+        const target = this.elementsForItems.get(item);
+        if (target) {
+          this.#renderItem(item, target);
         }
       }
     }
@@ -223,12 +245,9 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
   createElementForItem(item: SelectableLevel): Element {
     const element = document.createElement('div');
     const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: playerMessagesViewStyles});
-    const container = shadowRoot.createChild('div', 'media-messages-level-dropdown-element');
-    const checkBox = container.createChild('div', 'media-messages-level-dropdown-checkbox');
-    const text = container.createChild('span', 'media-messages-level-dropdown-text');
-    UI.UIUtils.createTextChild(text, item.title);
-    this.elementsForItems.set(item, checkBox);
+    this.elementsForItems.set(item, shadowRoot);
     this.itemMap.set(item.value, item);
+    this.#renderItem(item, shadowRoot);
     this.updateCheckMarks();
     this.view.regenerateMessageDisplayCss(this.hiddenLevels);
     return element;
@@ -249,10 +268,29 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
   }
 }
 
+interface MessageItem {
+  type: 'message';
+  level: string;
+  message: Protocol.Media.PlayerMessage;
+}
+
+interface ErrorItem {
+  type: 'error';
+  level: 'error';
+  error: Protocol.Media.PlayerError;
+}
+
+type MessageOrErrorItem = MessageItem|ErrorItem;
+
 export class PlayerMessagesView extends UI.Widget.VBox {
   private readonly headerPanel: HTMLElement;
   private readonly bodyPanel: HTMLElement;
   private messageLevelSelector?: MessageLevelSelector;
+  #items: MessageOrErrorItem[] = [];
+  #hiddenLevels: string[] = [];
+  #filterString = '';
+  #dropDownItem?: UI.Toolbar.ToolbarItem;
+  #filterInput?: UI.Toolbar.ToolbarInput;
 
   constructor() {
     super({jslog: `${VisualLogging.pane('messages')}`});
@@ -261,15 +299,9 @@ export class PlayerMessagesView extends UI.Widget.VBox {
     this.headerPanel = this.contentElement.createChild('div', 'media-messages-header');
     this.bodyPanel = this.contentElement.createChild('div', 'media-messages-body');
 
-    this.buildToolbar();
-  }
-
-  private buildToolbar(): void {
-    const toolbar = this.headerPanel.createChild('devtools-toolbar', 'media-messages-toolbar');
-    toolbar.appendText(i18nString(UIStrings.logLevel));
-    toolbar.appendToolbarItem(this.createDropdown());
-    toolbar.appendSeparator();
-    toolbar.appendToolbarItem(this.createFilterInput());
+    this.#dropDownItem = this.createDropdown();
+    this.#filterInput = this.createFilterInput();
+    this.performUpdate();
   }
 
   private createDropdown(): UI.Toolbar.ToolbarItem {
@@ -300,45 +332,92 @@ export class PlayerMessagesView extends UI.Widget.VBox {
     return filterInput;
   }
 
-  regenerateMessageDisplayCss(hiddenLevels: string[]): void {
-    const messages = this.bodyPanel.getElementsByClassName('media-messages-message-container');
-    for (const message of messages) {
-      if (this.matchesHiddenLevels(message, hiddenLevels)) {
-        message.classList.add('media-messages-message-unselected');
-      } else {
-        message.classList.remove('media-messages-message-unselected');
-      }
-    }
+  override performUpdate(): void {
+    this.#renderToolbar();
+    this.#renderMessages();
   }
 
-  private matchesHiddenLevels(element: Element, hiddenLevels: string[]): boolean {
-    for (const level of hiddenLevels) {
-      if (element.classList.contains('media-message-' + level)) {
+  #renderToolbar(): void {
+    // clang-format off
+    render(html`
+      <devtools-toolbar class="media-messages-toolbar">
+        <div class="toolbar-text">${i18nString(UIStrings.logLevel)}</div>
+        ${this.#dropDownItem?.element}
+        <div class="toolbar-divider"></div>
+        ${this.#filterInput?.element}
+      </devtools-toolbar>
+    `, this.headerPanel, {host: this});
+    // clang-format on
+  }
+
+  #renderMessages(): void {
+    // clang-format off
+    render(html`
+      ${this.#items.map(item => {
+        const isUnselected = this.#isLevelHidden(item.level);
+        let isFiltered = false;
+        if (this.#filterString !== '') {
+          if (item.type === 'message') {
+            isFiltered = !item.message.message.includes(this.#filterString);
+          } else {
+            isFiltered = !this.#errorMatchesFilter(item.error, this.#filterString);
+          }
+        }
+        const classes = {
+          'media-messages-message-container': true,
+          [`media-message-${item.level}`]: true,
+          'media-messages-message-unselected': isUnselected,
+          'media-messages-message-filtered': isFiltered,
+        };
+        return html`
+          <div class=${classMap(classes)}>
+            ${item.type === 'message' ? item.message.message : this.renderError(item.error)}
+          </div>
+        `;
+      })}
+    `, this.bodyPanel, {host: this});
+    // clang-format on
+  }
+
+  #isLevelHidden(level: string): boolean {
+    return this.#hiddenLevels.includes(level);
+  }
+
+  #errorMatchesFilter(error: Protocol.Media.PlayerError, filter: string): boolean {
+    if (error.errorType.includes(filter) || error.code.toString().includes(filter)) {
+      return true;
+    }
+    for (const [key, value] of Object.entries(error.data)) {
+      if (`${key}: ${value}`.includes(filter)) {
+        return true;
+      }
+    }
+    for (const stackEntry of error.stack) {
+      if (`${stackEntry.file}:${stackEntry.line}`.includes(filter)) {
+        return true;
+      }
+    }
+    for (const cause of error.cause) {
+      if (this.#errorMatchesFilter(cause, filter)) {
         return true;
       }
     }
     return false;
   }
 
-  private filterByString(userStringData: {data: string}): void {
-    const userString = userStringData.data;
-    const messages = this.bodyPanel.getElementsByClassName('media-messages-message-container');
+  regenerateMessageDisplayCss(hiddenLevels: string[]): void {
+    this.#hiddenLevels = hiddenLevels;
+    this.performUpdate();
+  }
 
-    for (const message of messages) {
-      if (userString === '') {
-        message.classList.remove('media-messages-message-filtered');
-      } else if (message.textContent?.includes(userString)) {
-        message.classList.remove('media-messages-message-filtered');
-      } else {
-        message.classList.add('media-messages-message-filtered');
-      }
-    }
+  private filterByString(userStringData: {data: string}): void {
+    this.#filterString = userStringData.data;
+    this.performUpdate();
   }
 
   addMessage(message: Protocol.Media.PlayerMessage): void {
-    const container =
-        this.bodyPanel.createChild('div', 'media-messages-message-container media-message-' + message.level);
-    UI.UIUtils.createTextChild(container, message.message);
+    this.#items.push({type: 'message', level: message.level, message});
+    this.performUpdate();
   }
 
   private renderError(error: Protocol.Media.PlayerError): LitTemplate {
@@ -393,7 +472,9 @@ export class PlayerMessagesView extends UI.Widget.VBox {
                   <span class="status-error-field-label"
                     >${i18nString(UIStrings.errorCauseLabel)}</span
                   >
-                  ${this.renderError(error.cause[0])}
+                  <div>
+                    ${error.cause.map(cause => this.renderError(cause))}
+                  </div>
                 `
               : nothing
           }
@@ -404,7 +485,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   }
 
   addError(error: Protocol.Media.PlayerError): void {
-    const container = this.bodyPanel.createChild('div', 'media-messages-message-container media-message-error');
-    render(this.renderError(error), container);
+    this.#items.push({type: 'error', level: 'error', error});
+    this.performUpdate();
   }
 }

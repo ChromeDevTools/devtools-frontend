@@ -27,6 +27,12 @@ describeWithEnvironment('AISettingsTab', () => {
         sinon.stub(AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.prototype, 'deleteAll');
     AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance({forceNew: true});
     updateHostConfig({
+      aidaAvailability: {
+        enabled: true,
+      },
+      devToolsFreestyler: {
+        enabled: true,
+      },
       devToolsAiGeneratedTimelineLabels: {
         enabled: true,
       },
@@ -250,26 +256,19 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('updates disabled reason', async () => {
-    Common.Settings.Settings.instance().moduleSetting('console-insights-enabled').setRegistration({
-      settingName: 'console-insights-enabled',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-      disabledCondition: () => {
-        return {disabled: true, reasons: ['some reason' as Platform.UIString.LocalizedString]};
-      },
-    });
-    Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').setRegistration({
-      settingName: 'ai-assistance-enabled',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: true,
-      disabledCondition: () => {
-        return {disabled: true, reasons: ['some reason' as Platform.UIString.LocalizedString]};
-      },
-    });
+    const isAvailableStub =
+        sinon.stub(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor, 'isAvailable').returns({
+          status: Common.Settings.SettingAvailability.DISABLED,
+          reason: [AiAssistanceModel.AiUtils.DisabledReason.WRONG_LOCALE],
+        });
 
     const {view} = await setupWidget();
 
-    assert.deepEqual(view.input.disabledReasons, ['some reason']);
+    assert.deepEqual(view.input.disabledReasons, [
+      'To use this feature, set your language preference to English in DevTools settings.' as
+          Platform.UIString.LocalizedString,
+    ]);
+    isAvailableStub.restore();
   });
 
   it('can turn feature off and clear history', async () => {
@@ -310,6 +309,7 @@ describeWithEnvironment('AISettingsTab', () => {
   it('shows AI assistance setting strings when logging is disabled', async () => {
     updateHostConfig({
       aidaAvailability: {
+        enabled: true,
         enterprisePolicyValue: 1,  // ALLOW_WITHOUT_LOGGING
       },
     });

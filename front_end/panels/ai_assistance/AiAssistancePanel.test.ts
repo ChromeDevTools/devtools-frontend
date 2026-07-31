@@ -81,7 +81,12 @@ describeWithEnvironment('AI Assistance Panel', () => {
         ...acc,
       };
     }, {});
-    updateHostConfig(featureFlags);
+    updateHostConfig({
+      aidaAvailability: {
+        enabled: true,
+      },
+      ...featureFlags,
+    });
   }
 
   beforeEach(() => {
@@ -99,6 +104,21 @@ describeWithEnvironment('AI Assistance Panel', () => {
       'network.toggle-recording',
       'network.clear',
     ]);
+
+    updateHostConfig({
+      aidaAvailability: {
+        enabled: true,
+      },
+      devToolsFreestyler: {
+        enabled: true,
+      },
+      devToolsAiAssistanceNetworkAgent: {
+        enabled: true,
+      },
+      devToolsAiAssistanceFileAgent: {
+        enabled: true,
+      },
+    });
 
     UI.Context.Context.instance().setFlavor(
         Timeline.TimelinePanel.TimelinePanel,
@@ -223,6 +243,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
     it('should allow logging if configured', async () => {
       updateHostConfig({
         aidaAvailability: {
+          enabled: true,
           disallowLogging: false,
         },
       });
@@ -2597,6 +2618,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
         await enableAllFeatureAndSetting();
         updateHostConfig({
           aidaAvailability: {
+            enabled: true,
             enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING,
           },
         });

@@ -224,6 +224,21 @@ const UIStrings = {
    * @description Text informing the user that AI assistance isn't available in Incognito mode or Guest mode.
    */
   notAvailableInIncognitoMode: 'AI assistance isn’t available in Incognito mode or Guest mode.',
+  /**
+   * @description Message shown to the user if the DevTools locale is not
+   * supported.
+   */
+  wrongLocale: 'To use this feature, set your language preference to English in DevTools settings.',
+  /**
+   * @description Message shown to the user if the user's region is not
+   * supported.
+   */
+  geoRestricted: 'This feature is unavailable in your region.',
+  /**
+   * @description Message shown to the user if the enterprise policy does
+   * not allow this feature.
+   */
+  policyRestricted: 'This setting is managed by your administrator.',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/AISettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -424,6 +439,26 @@ export class AISettingsTab extends UI.Widget.VBox {
     this.#view = view ?? AI_SETTINGS_TAB_DEFAULT_VIEW;
   }
 
+  #mapSettingDisabledReasons(reasons: AiAssistanceModel.AiUtils.DisabledReason[]): Platform.UIString.LocalizedString[] {
+    const mappedReasons: Platform.UIString.LocalizedString[] = [];
+    for (const reason of reasons) {
+      switch (reason) {
+        case AiAssistanceModel.AiUtils.DisabledReason.GEO_RESTRICTED:
+          mappedReasons.push(i18nString(UIStrings.geoRestricted));
+          break;
+        case AiAssistanceModel.AiUtils.DisabledReason.POLICY_RESTRICTED:
+          mappedReasons.push(i18nString(UIStrings.policyRestricted));
+          break;
+        case AiAssistanceModel.AiUtils.DisabledReason.WRONG_LOCALE:
+          mappedReasons.push(i18nString(UIStrings.wrongLocale));
+          break;
+        case AiAssistanceModel.AiUtils.DisabledReason.NOT_SUPPORTED:
+          break;
+      }
+    }
+    return mappedReasons;
+  }
+
   #getDisabledReasons(): Platform.UIString.LocalizedString[] {
     const preconditions = AiAssistanceModel.AiUtils.getDisabledReasons(this.#aidaAvailability);
     const mappedReasons: Platform.UIString.LocalizedString[] = [];
@@ -446,8 +481,11 @@ export class AISettingsTab extends UI.Widget.VBox {
           Platform.assertNever(precondition, `Unknown precondition: ${precondition}`);
       }
     }
-    const settingDisabledReasons =
-        Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').disabledReasons();
+    const availability =
+        AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor.isAvailable(Root.Runtime.hostConfig);
+    const settingDisabledReasons = availability.status === Common.Settings.SettingAvailability.DISABLED ?
+        this.#mapSettingDisabledReasons(availability.reason) :
+        [];
     return [...mappedReasons, ...settingDisabledReasons];
   }
 

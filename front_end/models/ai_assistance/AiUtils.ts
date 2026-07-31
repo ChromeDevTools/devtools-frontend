@@ -72,6 +72,47 @@ export const consoleInsightsEnabledSettingDescriptor:
   },
 };
 
+function isAiAssistanceFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
+  return Boolean(config?.aidaAvailability?.enabled &&
+                 (config?.devToolsFreestyler?.enabled || config?.devToolsAiAssistanceNetworkAgent?.enabled ||
+                  config?.devToolsAiAssistancePerformanceAgent?.enabled ||
+                  config?.devToolsAiAssistanceFileAgent?.enabled || config?.devToolsAiAssistanceStorageAgent?.enabled));
+}
+
+export const aiAssistanceEnabledSettingDescriptor:
+    Common.Settings.ConditionalSettingDescriptor<boolean, DisabledReason[]> = {
+  name: 'ai-assistance-enabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  isAvailable: (config?: Root.Runtime.HostConfig): Common.Settings.SettingAvailabilityStatus<DisabledReason[]> => {
+    if (!isAiAssistanceFeatureAvailable(config)) {
+      return {
+        status: Common.Settings.SettingAvailability.UNAVAILABLE,
+        reason: [DisabledReason.NOT_SUPPORTED],
+      };
+    }
+    const reasons: DisabledReason[] = [];
+    if (isGeoRestricted(config)) {
+      reasons.push(DisabledReason.GEO_RESTRICTED);
+    }
+    if (isPolicyRestricted(config)) {
+      reasons.push(DisabledReason.POLICY_RESTRICTED);
+    }
+    if (isLocaleRestricted()) {
+      reasons.push(DisabledReason.WRONG_LOCALE);
+    }
+    if (reasons.length > 0) {
+      return {
+        status: Common.Settings.SettingAvailability.DISABLED,
+        reason: reasons,
+      };
+    }
+    return {
+      status: Common.Settings.SettingAvailability.AVAILABLE,
+    };
+  },
+};
+
 export const aiAssistanceV2OptInChangeDialogSeenSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
   name: 'ai-assistance-v2-opt-in-change-dialog-seen',
   type: Common.Settings.SettingType.BOOLEAN,

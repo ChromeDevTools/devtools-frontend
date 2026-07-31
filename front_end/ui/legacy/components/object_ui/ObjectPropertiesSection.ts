@@ -1053,7 +1053,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   }
 
   static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string,
-                                            className?: string): LitTemplate {
+                                            details?: SDK.DebuggerModel.FunctionDetails|null,
+                                            linkify?: boolean): LitTemplate {
     const contents =
         (description: string, defaultName: string): {prefix: string, abbreviation: string, body: string} => {
           const text = description.replace(/^function [gs]et /, 'function ')
@@ -1110,10 +1111,23 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 
     const {prefix, body, abbreviation} = contents(description ?? '', defaultName ?? '');
     const maxFunctionBodyLength = 200;
+
+    const location = details?.location;
+    const clickHandler = linkify && location ? (event: Event) => {
+      void Common.Revealer.reveal(location);
+      event.consume(true);
+    } : undefined;
+
+    const classes = classMap({
+      'object-value-function': true,
+      linkified: Boolean(linkify && location),
+    });
+    const title = description ? Platform.StringUtilities.trimEndWithMaxLength(description, 500) : undefined;
+
     return html`<span
-      class="object-value-function ${className ?? ''}"
-      title=${Platform.StringUtilities.trimEndWithMaxLength(description ?? '', 500)}>${
-        prefix && html`<span class=object-value-function-prefix>${prefix} </span>`}${
+      class=${classes}
+      @click=${clickHandler || nothing}
+      title=${ifDefined(title)}>${prefix && html`<span class=object-value-function-prefix>${prefix} </span>`}${
         includePreview ? Platform.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength) :
                          abbreviation.replace(/\n/g, ' ')}</span>`;
 
@@ -1199,7 +1213,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
             tooLong ? widget(ExpandableTextPropertyValue, {text}) : renderTrustedType(description, className)}</span>`;
       }
       if (type === 'function') {
-        return ObjectPropertiesSection.valueElementForFunctionDescription(description, undefined, undefined, 'value');
+        return html`<span class="value">${
+            ObjectPropertiesSection.valueElementForFunctionDescription(description)}</span>`;
       }
       if (type === 'object' && subtype === 'node' && description) {
         return html`<span class="value object-value-node"
@@ -1239,32 +1254,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       throw new Error('Expected an HTML element');
     }
     return child;
-  }
-
-  static formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject, element: Element, linkify: boolean,
-                                includePreview?: boolean): Promise<void> {
-    return func.debuggerModel().functionDetailsPromise(func).then(didGetDetails);
-
-    function didGetDetails(response: SDK.DebuggerModel.FunctionDetails|null): void {
-      if (linkify && response?.location) {
-        element.classList.add('linkified');
-        element.addEventListener('click', () => {
-          void Common.Revealer.reveal(response.location);
-          return false;
-        });
-      }
-
-      // The includePreview flag is false for formats such as console.dir().
-      let defaultName: string|('' | 'anonymous') = includePreview ? '' : 'anonymous';
-      if (response?.functionName) {
-        defaultName = response.functionName;
-      }
-      const valueElement = document.createDocumentFragment();
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName),
-             valueElement);
-      element.appendChild(valueElement);
-    }
   }
 
   static isDisplayableProperty(property: SDK.RemoteObject.RemoteObjectProperty,
@@ -1523,6 +1512,17 @@ export function renderPropertyName(name: string|null, isPrivate?: boolean, title
         escapedName[0]}</span>${escapedName.substring(1)}</span>`;
   }
   return html`<span class="name" title=${ifDefined(title)}>${escapedName}</span>`;
+}
+
+export async function formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject, linkify: boolean,
+                                             includePreview?: boolean): Promise<LitTemplate> {
+  const details = await func.debuggerModel().functionDetailsPromise(func);
+
+  // The includePreview flag is false for formats such as console.dir().
+  const defaultName = details?.functionName ?? (includePreview ? '' : 'anonymous');
+
+  return ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName,
+                                                                    details, linkify);
 }
 
 /**

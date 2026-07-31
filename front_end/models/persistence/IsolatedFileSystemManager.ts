@@ -18,10 +18,10 @@ import {
 
 const UIStrings = {
   /**
-   * @description Text in Isolated File System Manager of the Workspace settings in Settings
+   * @description Text in isolated file system manager of workspace settings in Settings.
    * @example {folder does not exist} PH1
    */
-  unableToAddFilesystemS: 'Unable to add filesystem: {PH1}',
+  unableToAddFilesystemS: 'Can’t add file system: {PH1}',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/IsolatedFileSystemManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

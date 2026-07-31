@@ -7,36 +7,36 @@ import * as i18n from '../../core/i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting under the Persistence category in Settings
+   * @description Title of a setting under the Persistence category in Settings.
    */
   localOverrides: 'Local overrides',
   /**
-   * @description A tag of Enable Local Overrides setting that can be searched in the command menu
+   * @description A tag of enable local overrides setting that can be searched in the command menu.
    */
   interception: 'interception',
   /**
-   * @description A tag of Enable Local Overrides setting that can be searched in the command menu
+   * @description A tag of enable local overrides setting that can be searched in the command menu.
    */
   override: 'override',
   /**
-   * @description A tag of Group Network by frame setting that can be searched in the command menu
+   * @description A tag of group network by frame setting that can be searched in the command menu.
    */
   network: 'network',
   /**
-   * @description A tag of Enable Local Overrides setting that can be searched in the command menu
+   * @description A tag of enable local overrides setting that can be searched in the command menu.
    */
   rewrite: 'rewrite',
   /**
-   * @description A tag of Enable Local Overrides setting that can be searched in the command menu.
-   *Noun for network request.
+   * @description A tag of enable local overrides setting that can be searched in the command menu.
+   * Noun for network request.
    */
   request: 'request',
   /**
-   * @description Title of an option under the Persistence category that can be invoked through the Command Menu
+   * @description Title of an option under the Persistence category that can be invoked through the command menu.
    */
   enableOverrideNetworkRequests: 'Enable override network requests',
   /**
-   * @description Title of an option under the Persistence category that can be invoked through the Command Menu
+   * @description Title of an option under the Persistence category that can be invoked through the command menu.
    */
   disableOverrideNetworkRequests: 'Disable override network requests',
 } as const;

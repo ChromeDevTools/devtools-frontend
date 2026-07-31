@@ -85,6 +85,7 @@ describe('AiConversation', () => {
         Common.ResourceType.resourceTypes.Script);
     sinon.stub(workspace, 'projects').returns([project]);
 
+    const nextId = AiAssistance.ContextSelectionAgent.ContextSelectionAgent.lastSourceId + 1;
     const conversation = new AiAssistance.AiConversation.AiConversation({
       type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
       data: [],
@@ -95,7 +96,7 @@ describe('AiConversation', () => {
           functionCalls: [{
             name: 'selectSourceFile',
             args: {
-              id: 1,
+              id: nextId,
             },
           }],
           explanation: '',

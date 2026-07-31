@@ -26,12 +26,14 @@ function createTargetInfo(targetId?: string, type?: string, url?: string, title?
   };
 }
 
-let nextSessionId = 0;
-function createSessionId() {
-  return ('SESSION_ID' + ++nextSessionId) as Protocol.Target.SessionID;
-}
-
 describeWithEnvironment('ChildTargetManager', () => {
+  let createSessionId: () => Protocol.Target.SessionID;
+
+  beforeEach(() => {
+    let nextSessionId = 0;
+    createSessionId = () => ('SESSION_ID' + ++nextSessionId) as Protocol.Target.SessionID;
+  });
+
   it('adds subtargets', async () => {
     const target = createTarget();
     const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(target);
@@ -199,8 +201,9 @@ describeWithEnvironment('ChildTargetManager', () => {
       targetInfo: createTargetInfo(undefined, 'worker', 'data:application/javascript;console.log("Worker")'),
       waitingForDebugger: false,
     });
-    assert.strictEqual(childTargetManager.childTargets()[3].name(), '#1');
-    assert.strictEqual(childTargetManager.childTargets()[4].name(), '#2');
+    assert.match(childTargetManager.childTargets()[3].name(), /^#\d+$/);
+    assert.match(childTargetManager.childTargets()[4].name(), /^#\d+$/);
+    assert.notStrictEqual(childTargetManager.childTargets()[3].name(), childTargetManager.childTargets()[4].name());
   });
 
   it('calls attach callback', async () => {

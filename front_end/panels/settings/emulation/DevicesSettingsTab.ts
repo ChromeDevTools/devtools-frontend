@@ -74,9 +74,56 @@ const UIStrings = {
    * @description Error message in the Devices settings tab shown when the user agent string is empty.
    */
   userAgentStringCannotBeEmpty: 'User agent string can’t be empty.',
+  /**
+   * @description Label for portrait safe-area values on a custom device.
+   */
+  portraitSafeArea: 'Portrait safe area',
+  /**
+   * @description Label for landscape safe-area values on a custom device.
+   */
+  landscapeSafeArea: 'Landscape safe area',
+  /**
+   * @description Placeholder text for a custom device safe-area left inset field.
+   */
+  safeAreaLeft: 'Left inset',
+  /**
+   * @description Placeholder text for a custom device safe-area top inset field.
+   */
+  safeAreaTop: 'Top inset',
+  /**
+   * @description Placeholder text for a custom device safe-area right inset field.
+   */
+  safeAreaRight: 'Right inset',
+  /**
+   * @description Placeholder text for a custom device safe-area bottom inset field.
+   */
+  safeAreaBottom: 'Bottom inset',
+  /**
+   * @description Error message shown when a custom device safe-area value is invalid.
+   * @example {Portrait safe area} PH1
+   * @example {Top inset} PH2
+   * @example {9999} PH3
+   */
+  safeAreaValueMustBeInRange: '{PH1}: {PH2} must be an integer from 0 to {PH3}.',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/DevicesSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+function parseOptionalNonNegativeInteger(value: string): number|null {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) {
+    return 0;
+  }
+  if (!/^\d+$/.test(trimmedValue)) {
+    return null;
+  }
+  const parsedValue = Number(trimmedValue);
+  if (!Number.isSafeInteger(parsedValue) || parsedValue < 0 ||
+      parsedValue > EmulationModel.DeviceModeModel.MaxDeviceSize) {
+    return null;
+  }
+  return parsedValue;
+}
 
 export class DevicesSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<EmulationModel.EmulatedDevices.EmulatedDevice> {
@@ -214,6 +261,21 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     return value ? String(value) : '';
   }
 
+  private verticalMode(device: EmulationModel.EmulatedDevices.EmulatedDevice): EmulationModel.EmulatedDevices.Mode
+      |null {
+    return device.modes.find(mode => mode.orientation === EmulationModel.EmulatedDevices.Vertical) || null;
+  }
+
+  private horizontalMode(device: EmulationModel.EmulatedDevices.EmulatedDevice): EmulationModel.EmulatedDevices.Mode
+      |null {
+    return device.modes.find(mode => mode.orientation === EmulationModel.EmulatedDevices.Horizontal) || null;
+  }
+
+  private editorIntegerValue(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
+                             controlName: string): number {
+    return parseOptionalNonNegativeInteger(editor.control(controlName).value) ?? 0;
+  }
+
   renderItem(device: EmulationModel.EmulatedDevices.EmulatedDevice, editable: boolean): Element {
     const label = document.createElement('label');
     label.classList.add('devices-list-item');
@@ -251,18 +313,28 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     device.deviceScaleFactor = editor.control('scale').value ? parseFloat(editor.control('scale').value) : 0;
     device.userAgent = editor.control('user-agent').value;
     device.modes = [];
-    device.modes.push({
+    const verticalMode: EmulationModel.EmulatedDevices.Mode = {
       title: '',
       orientation: EmulationModel.EmulatedDevices.Vertical,
       insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
       image: null,
-    });
-    device.modes.push({
+    };
+    const safeAreaInsets = this.safeAreaInsetsFromEditor(editor);
+    if (safeAreaInsets) {
+      verticalMode.safeAreaInsets = safeAreaInsets;
+    }
+    device.modes.push(verticalMode);
+    const horizontalMode: EmulationModel.EmulatedDevices.Mode = {
       title: '',
       orientation: EmulationModel.EmulatedDevices.Horizontal,
       insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
       image: null,
-    });
+    };
+    const landscapeSafeAreaInsets = this.safeAreaInsetsFromEditor(editor, 'landscape-');
+    if (landscapeSafeAreaInsets) {
+      horizontalMode.safeAreaInsets = landscapeSafeAreaInsets;
+    }
+    device.modes.push(horizontalMode);
     device.capabilities = [];
     const uaType = editor.control('ua-type').value;
     if (uaType === EmulationModel.DeviceModeModel.UA.MOBILE ||
@@ -306,6 +378,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     editor.control('height').value = this.toNumericInputValue(device.vertical.height);
     editor.control('scale').value = this.toNumericInputValue(device.deviceScaleFactor);
     editor.control('user-agent').value = device.userAgent;
+    this.populateSafeAreaEditor(editor, device);
     let uaType;
     if (device.mobile()) {
       uaType =
@@ -319,6 +392,33 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
      UI.ListWidget.CustomEditorControl<EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsFormData>)
         .value = {metaData: device.userAgentMetadata || undefined};
     return editor;
+  }
+
+  private safeAreaInsetsFromEditor(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
+                                   controlPrefix = ''): EmulationModel.DeviceModeModel.Insets|null {
+    const left = this.editorIntegerValue(editor, `${controlPrefix}safe-area-left`);
+    const top = this.editorIntegerValue(editor, `${controlPrefix}safe-area-top`);
+    const right = this.editorIntegerValue(editor, `${controlPrefix}safe-area-right`);
+    const bottom = this.editorIntegerValue(editor, `${controlPrefix}safe-area-bottom`);
+    if (!left && !top && !right && !bottom) {
+      return null;
+    }
+    return new EmulationModel.DeviceModeModel.Insets(left, top, right, bottom);
+  }
+
+  private populateSafeAreaEditor(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
+                                 device: EmulationModel.EmulatedDevices.EmulatedDevice): void {
+    const safeAreaInsets = this.verticalMode(device)?.safeAreaInsets;
+    editor.control('safe-area-left').value = this.toNumericInputValue(safeAreaInsets?.left || 0);
+    editor.control('safe-area-top').value = this.toNumericInputValue(safeAreaInsets?.top || 0);
+    editor.control('safe-area-right').value = this.toNumericInputValue(safeAreaInsets?.right || 0);
+    editor.control('safe-area-bottom').value = this.toNumericInputValue(safeAreaInsets?.bottom || 0);
+
+    const landscapeSafeAreaInsets = this.horizontalMode(device)?.safeAreaInsets;
+    editor.control('landscape-safe-area-left').value = this.toNumericInputValue(landscapeSafeAreaInsets?.left || 0);
+    editor.control('landscape-safe-area-top').value = this.toNumericInputValue(landscapeSafeAreaInsets?.top || 0);
+    editor.control('landscape-safe-area-right').value = this.toNumericInputValue(landscapeSafeAreaInsets?.right || 0);
+    editor.control('landscape-safe-area-bottom').value = this.toNumericInputValue(landscapeSafeAreaInsets?.bottom || 0);
   }
 
   private createEditor(): UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice> {
@@ -341,6 +441,11 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     const dpr = editor.createInput('scale', 'text', i18nString(UIStrings.devicePixelRatio), scaleValidator);
     dpr.classList.add('device-edit-fixed');
     screen.appendChild(dpr);
+
+    this.appendSafeAreaFields(editor, deviceFields, i18nString(UIStrings.portraitSafeArea), '',
+                              portraitSafeAreaValidator);
+    this.appendSafeAreaFields(editor, deviceFields, i18nString(UIStrings.landscapeSafeArea), 'landscape-',
+                              landscapeSafeAreaValidator);
 
     const uaStringFields = content.createChild('div', 'devices-edit-fields');
     UI.UIUtils.createTextChild(uaStringFields.createChild('b'), i18nString(UIStrings.userAgentString));
@@ -418,5 +523,53 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
         input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       return EmulationModel.DeviceModeModel.DeviceModeModel.scaleValidator(input.value);
     }
+
+    function safeAreaValidator(orientationLabel: string,
+                               input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      if (parseOptionalNonNegativeInteger(input.value) !== null) {
+        return {valid: true};
+      }
+
+      return {
+        valid: false,
+        errorMessage: i18nString(UIStrings.safeAreaValueMustBeInRange, {
+          PH1: orientationLabel,
+          PH2: input.getAttribute('aria-label') || input.getAttribute('placeholder') || '',
+          PH3: EmulationModel.DeviceModeModel.MaxDeviceSize,
+        }),
+      };
+    }
+
+    function portraitSafeAreaValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                                       input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      return safeAreaValidator(i18nString(UIStrings.portraitSafeArea), input);
+    }
+
+    function landscapeSafeAreaValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                                        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      return safeAreaValidator(i18nString(UIStrings.landscapeSafeArea), input);
+    }
+  }
+
+  private appendSafeAreaFields(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
+                               deviceFields: HTMLElement, title: string, controlPrefix: string,
+                               safeAreaValidator:
+                                   (item: EmulationModel.EmulatedDevices.EmulatedDevice, index: number,
+                                    input: UI.ListWidget.EditorControl) => UI.ListWidget.ValidatorResult): void {
+    const safeAreaGroup = deviceFields.createChild('div', 'devices-edit-safe-area-group');
+    UI.ARIAUtils.markAsGroup(safeAreaGroup);
+    const heading = safeAreaGroup.createChild('b');
+    heading.id = UI.ARIAUtils.nextId('safe-area-heading-');
+    UI.UIUtils.createTextChild(heading, title);
+    safeAreaGroup.setAttribute('aria-labelledby', heading.id);
+    const safeAreaRow = safeAreaGroup.createChild('div', 'hbox');
+    safeAreaRow.appendChild(editor.createInput(`${controlPrefix}safe-area-left`, 'text',
+                                               i18nString(UIStrings.safeAreaLeft), safeAreaValidator));
+    safeAreaRow.appendChild(editor.createInput(`${controlPrefix}safe-area-top`, 'text',
+                                               i18nString(UIStrings.safeAreaTop), safeAreaValidator));
+    safeAreaRow.appendChild(editor.createInput(`${controlPrefix}safe-area-right`, 'text',
+                                               i18nString(UIStrings.safeAreaRight), safeAreaValidator));
+    safeAreaRow.appendChild(editor.createInput(`${controlPrefix}safe-area-bottom`, 'text',
+                                               i18nString(UIStrings.safeAreaBottom), safeAreaValidator));
   }
 }

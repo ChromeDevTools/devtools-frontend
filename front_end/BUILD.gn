@@ -194,6 +194,7 @@ group("unittests") {
     "panels/sensors:unittests",
     "panels/settings:unittests",
     "panels/settings/components:unittests",
+    "panels/settings/emulation:unittests",
     "panels/settings/emulation/components:unittests",
     "panels/settings/emulation/utils:unittests",
     "panels/snippets:unittests",

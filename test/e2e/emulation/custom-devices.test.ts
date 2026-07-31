@@ -20,6 +20,14 @@ import type {InspectedPage} from '../shared/target-helper.js';
 const ADD_DEVICE_BUTTON_SELECTOR = '#custom-device-add-button';
 const FOCUSED_DEVICE_NAME_FIELD_SELECTOR = '#custom-device-name-field:focus';
 const EDITOR_ADD_BUTTON_SELECTOR = '.editor-buttons > devtools-button:nth-of-type(2)';
+const UA_INPUT_SELECTOR = 'input[aria-label="User agent string"]';
+const FULL_BROWSER_VERSION_INPUT_SELECTOR = 'input[placeholder="Full browser version (e.g. 87.0.4280.88)"]';
+
+interface NavigatorWithUserAgentData extends Navigator {
+  userAgentData?: {
+    getHighEntropyValues(hints: string[]): Promise<{uaFullVersion?: string}>,
+  };
+}
 
 async function elementTextContent(element: puppeteer.ElementHandle): Promise<string> {
   return await element.evaluate(node => node.textContent || '');
@@ -29,6 +37,25 @@ async function targetTextContent(selector: string, inspectedPage: InspectedPage)
   const handle = await inspectedPage.waitForSelector(selector);
   assert.isOk(handle, `targetTextContent: could not find element for ${selector}`);
   return await elementTextContent(handle);
+}
+
+async function setInputValue(selector: string, value: string, devToolsPage: DevToolsPage): Promise<void> {
+  const input = await devToolsPage.waitFor(selector);
+  await input.focus();
+  await input.evaluate((element, newValue) => {
+    (element as HTMLInputElement).value = newValue;
+    element.dispatchEvent(new Event('input', {bubbles: true}));
+  }, value);
+}
+
+async function waitForUserAgentOverride(expectedUserAgent: string, expectedFullVersion: string,
+                                        inspectedPage: InspectedPage): Promise<void> {
+  await inspectedPage.waitForStrictEqual(expectedUserAgent, () => inspectedPage.evaluate(() => navigator.userAgent));
+  await inspectedPage.waitForStrictEqual(expectedFullVersion, () => inspectedPage.evaluate(async () => {
+    const userAgentData = (navigator as NavigatorWithUserAgentData).userAgentData;
+    const values = await userAgentData?.getHighEntropyValues(['uaFullVersion']);
+    return values?.uaFullVersion;
+  }));
 }
 
 describe('Custom devices', () => {
@@ -50,8 +77,7 @@ describe('Custom devices', () => {
     await devToolsPage.tabForward();  // Focus DPR.
     await devToolsPage.typeText('1.0');
 
-    await devToolsPage.tabForward();  // Focus UA string.
-    await devToolsPage.typeText('Test device browser 1.0');
+    await setInputValue(UA_INPUT_SELECTOR, 'Test device browser 1.0', devToolsPage);
 
     await devToolsPage.tabForward();  // Focus device type.
     await devToolsPage.tabForward();  // Focus folder.
@@ -121,11 +147,12 @@ describe('Custom devices', () => {
 
     // Select the device in the menu.
     await selectTestDevice(devToolsPage);
+    await waitForUserAgentOverride('Test device browser 1.0', '1.1.2345', inspectedPage);
 
     // Reload the test page, and verify things working.
     await inspectedPage.reload();
 
-    void waitForDomNodeToBeVisible(inspectedPage, '#res-dump-done');
+    await waitForDomNodeToBeVisible(inspectedPage, '#res-dump-done');
     assert.strictEqual(await targetTextContent('#res-ua', inspectedPage), 'Test device browser 1.0');
     assert.strictEqual(await targetTextContent('#res-mobile', inspectedPage), 'true');
     assert.strictEqual(await targetTextContent('#res-num-brands', inspectedPage), '2');
@@ -156,16 +183,7 @@ describe('Custom devices', () => {
     // Make sure the device name field is what's focused.
     await devToolsPage.waitFor(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
 
-    // Skip over to the version field.
-    for (let i = 0; i < 20; ++i) {
-      if (i === 7) {
-        await devToolsPage.pressKey('ArrowRight');
-      }
-      await devToolsPage.tabForward();
-    }
-
-    // Change the value.
-    await devToolsPage.typeText('1.1.5');
+    await setInputValue(FULL_BROWSER_VERSION_INPUT_SELECTOR, '1.1.5', devToolsPage);
 
     // Move to form factor Desktop checkbox, uncheck it.
     await devToolsPage.tabForward();
@@ -173,11 +191,12 @@ describe('Custom devices', () => {
 
     // Save the changes.
     await devToolsPage.pressKey('Enter');
+    await waitForUserAgentOverride('Test device browser 1.0', '1.1.5', inspectedPage);
 
     // Reload the test page, and verify things working.
     await inspectedPage.reload();
 
-    void waitForDomNodeToBeVisible(inspectedPage, '#res-dump-done');
+    await waitForDomNodeToBeVisible(inspectedPage, '#res-dump-done');
     assert.strictEqual(await targetTextContent('#res-ua', inspectedPage), 'Test device browser 1.0');
     assert.strictEqual(await targetTextContent('#res-mobile', inspectedPage), 'true');
     assert.strictEqual(await targetTextContent('#res-num-brands', inspectedPage), '2');
@@ -210,8 +229,7 @@ describe('Custom devices', () => {
     await devToolsPage.typeText('1223');
     await devToolsPage.tabForward();  // Focus DPR.
     await devToolsPage.typeText('1.0');
-    await devToolsPage.tabForward();  // Focus UA string.
-    await devToolsPage.typeText('Test device browser 1.0');
+    await setInputValue(UA_INPUT_SELECTOR, 'Test device browser 1.0', devToolsPage);
 
     const finishAdd = await devToolsPage.waitFor(EDITOR_ADD_BUTTON_SELECTOR);
     const finishAddText = await elementTextContent(finishAdd);
@@ -243,8 +261,7 @@ describe('Custom devices', () => {
     await devToolsPage.typeText('400');
     await devToolsPage.tabForward();  // Focus DPR.
     await devToolsPage.typeText('zzz.213213');
-    await devToolsPage.tabForward();  // Focus UA string.
-    await devToolsPage.typeText('Test device browser 1.0');
+    await setInputValue(UA_INPUT_SELECTOR, 'Test device browser 1.0', devToolsPage);
 
     const error = await devToolsPage.waitFor('.list-widget-input-validation-error');
     const errorText = await error.evaluate(element => element.textContent);

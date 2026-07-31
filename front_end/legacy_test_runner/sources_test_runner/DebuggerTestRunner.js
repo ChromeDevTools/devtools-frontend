@@ -10,7 +10,6 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as BrowserDebugger from '../../panels/browser_debugger/browser_debugger.js';
 import * as Sources from '../../panels/sources/sources.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {TestRunner} from '../test_runner/test_runner.js';
@@ -644,8 +643,6 @@ export const debuggerPlugin = function(sourceFrame) {
 };
 
 export const setEventListenerBreakpoint = function(id, enabled, targetName) {
-  const pane = BrowserDebugger.EventListenerBreakpointsSidebarPane.EventListenerBreakpointsSidebarPane.instance();
-
   const auxData = {eventName: id};
 
   if (targetName) {
@@ -659,7 +656,6 @@ export const setEventListenerBreakpoint = function(id, enabled, targetName) {
 
   if (breakpoint.enabled() !== enabled) {
     breakpoint.setEnabled(enabled);
-    pane.update();
   }
 };
 

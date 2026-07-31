@@ -358,4 +358,20 @@ describeWithEnvironment('DeviceModeToolbar', () => {
                        'Should display Show device frame when disabled');
     assert.isFalse(item.buildDescriptor().enabled, 'Should be disabled when no frame available');
   });
+
+  it('renders standard devices grouped into optgroups by form factor', async () => {
+    deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+    toolbar.requestUpdate();
+    await toolbar.updateComplete;
+
+    const deviceSelect = toolbar.element.querySelector<HTMLSelectElement>('select[aria-label="Device type"]');
+    assert.exists(deviceSelect);
+
+    const optgroups = deviceSelect.querySelectorAll('optgroup');
+    const labels = [...optgroups].map(og => og.label);
+    assert.include(labels, 'Mobile');
+    assert.include(labels, 'Foldables');
+    assert.include(labels, 'Tablets & Desktops');
+    assert.include(labels, 'Smart Displays');
+  });
 });

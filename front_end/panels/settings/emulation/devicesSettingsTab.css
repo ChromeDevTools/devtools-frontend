@@ -9,6 +9,19 @@
   padding-right: 0;
 }
 
+.device-group-container {
+  margin-bottom: 8px;
+}
+
+.device-group-title {
+  font-weight: 600;
+  color: var(--sys-color-on-surface-subtle);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 12px 0 4px;
+}
+
 .list {
   &:has(div) {
     border: none;

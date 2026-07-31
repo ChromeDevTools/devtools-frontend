@@ -106,5 +106,6 @@ devtools_ui_module("unittests") {
     "../../models/persistence:bundle",
     "../../testing",
     "../../ui/components/switch:bundle",
+    "./emulation:unittests",
   ]
 }

@@ -261,4 +261,29 @@ describeWithEnvironment('emulatedDevices', () => {
     assert.deepEqual(json.modes[0].cutout, {shape: 'rectangle', x: 126, y: 0, width: 141, height: 45});
   });
 
+  it('correctly categorizes devices into form factors', () => {
+    const phoneDevice = new EmulationModel.EmulatedDevices.EmulatedDevice();
+    phoneDevice.title = 'iPhone 16';
+    phoneDevice.type = EmulationModel.EmulatedDevices.Type.Phone;
+    assert.strictEqual(EmulationModel.EmulatedDevices.deviceCategory(phoneDevice),
+                       EmulationModel.EmulatedDevices.Category.MOBILE);
+
+    const foldableDevice = new EmulationModel.EmulatedDevices.EmulatedDevice();
+    foldableDevice.title = 'Pixel Fold';
+    foldableDevice.isFoldableScreen = true;
+    assert.strictEqual(EmulationModel.EmulatedDevices.deviceCategory(foldableDevice),
+                       EmulationModel.EmulatedDevices.Category.FOLDABLE);
+
+    const tabletDevice = new EmulationModel.EmulatedDevices.EmulatedDevice();
+    tabletDevice.title = 'iPad Pro 13"';
+    tabletDevice.type = EmulationModel.EmulatedDevices.Type.Tablet;
+    assert.strictEqual(EmulationModel.EmulatedDevices.deviceCategory(tabletDevice),
+                       EmulationModel.EmulatedDevices.Category.TABLET_DESKTOP);
+
+    const smartDisplayDevice = new EmulationModel.EmulatedDevices.EmulatedDevice();
+    smartDisplayDevice.title = 'Nest Hub Max';
+    smartDisplayDevice.type = EmulationModel.EmulatedDevices.Type.SmartDisplay;
+    assert.strictEqual(EmulationModel.EmulatedDevices.deviceCategory(smartDisplayDevice),
+                       EmulationModel.EmulatedDevices.Category.SMART_DISPLAY);
+  });
 });

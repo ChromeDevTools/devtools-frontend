@@ -84,7 +84,10 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
   private readonly addCustomButton: Buttons.Button.Button;
   private readonly ariaSuccessMessageElement: HTMLElement;
   readonly #customDeviceList: UI.ListWidget.ListWidget<EmulationModel.EmulatedDevices.EmulatedDevice>;
-  readonly #defaultDeviceList: UI.ListWidget.ListWidget<EmulationModel.EmulatedDevices.EmulatedDevice>;
+  readonly #defaultDeviceLists = new Map<EmulationModel.EmulatedDevices.Category, {
+    container: HTMLElement,
+    list: UI.ListWidget.ListWidget<EmulationModel.EmulatedDevices.EmulatedDevice>,
+  }>();
   private muteUpdate: boolean;
   private emulatedDevicesList: EmulationModel.EmulatedDevices.EmulatedDevicesList;
   private editor?: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>;
@@ -96,10 +99,6 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     this.containerElement =
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
     this.containerElement.classList.add('settings-card-container', 'ignore-list-settings');
-
-    this.#defaultDeviceList = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
-    this.#defaultDeviceList.registerRequiredCSS(devicesSettingsTabStyles);
-    this.#defaultDeviceList.element.classList.add('devices-list', 'device-card-content');
 
     this.muteUpdate = false;
     this.emulatedDevicesList = EmulationModel.EmulatedDevices.EmulatedDevicesList.instance();
@@ -132,7 +131,23 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
 
     const defaultDevicesCard = this.containerElement.createChild('devtools-card');
     defaultDevicesCard.heading = i18nString(UIStrings.defaultDevices);
-    defaultDevicesCard.append(this.#defaultDeviceList.element);
+
+    for (const category of EmulationModel.EmulatedDevices.CATEGORY_ORDER) {
+      const groupContainer = document.createElement('div');
+      groupContainer.classList.add('device-group-container');
+
+      const groupTitle = groupContainer.createChild('div', 'device-group-title');
+      groupTitle.textContent = EmulationModel.EmulatedDevices.getCategoryTitle(category);
+
+      defaultDevicesCard.append(groupContainer);
+
+      const listWidget = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
+      listWidget.registerRequiredCSS(devicesSettingsTabStyles);
+      listWidget.element.classList.add('devices-list', 'device-card-content');
+      listWidget.show(groupContainer);
+
+      this.#defaultDeviceLists.set(category, {container: groupContainer, list: listWidget});
+    }
   }
 
   override wasShown(): void {
@@ -145,18 +160,32 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       return;
     }
 
-    this.#defaultDeviceList.clear();
+    for (const {list} of this.#defaultDeviceLists.values()) {
+      list.clear();
+    }
     this.#customDeviceList.clear();
 
-    let devices = this.emulatedDevicesList.custom().slice();
-    for (let i = 0; i < devices.length; ++i) {
-      this.#customDeviceList.appendItem(devices[i], true);
+    const customDevices = this.emulatedDevicesList.custom().slice();
+    for (let i = 0; i < customDevices.length; ++i) {
+      this.#customDeviceList.appendItem(customDevices[i], true);
     }
 
-    devices = this.emulatedDevicesList.standard().slice();
-    devices.sort(EmulationModel.EmulatedDevices.EmulatedDevice.deviceComparator);
-    for (let i = 0; i < devices.length; ++i) {
-      this.#defaultDeviceList.appendItem(devices[i], false);
+    const standardDevices = this.emulatedDevicesList.standard().slice();
+    standardDevices.sort(EmulationModel.EmulatedDevices.EmulatedDevice.deviceComparator);
+
+    const categoryItemCounts = new Map<EmulationModel.EmulatedDevices.Category, number>();
+    for (const device of standardDevices) {
+      const cat = EmulationModel.EmulatedDevices.deviceCategory(device);
+      const group = this.#defaultDeviceLists.get(cat);
+      if (group) {
+        group.list.appendItem(device, false);
+        categoryItemCounts.set(cat, (categoryItemCounts.get(cat) || 0) + 1);
+      }
+    }
+
+    for (const [cat, group] of this.#defaultDeviceLists.entries()) {
+      const count = categoryItemCounts.get(cat) || 0;
+      group.container.style.display = count > 0 ? '' : 'none';
     }
   }
 

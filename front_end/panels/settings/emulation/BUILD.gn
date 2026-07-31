@@ -17,6 +17,7 @@ devtools_ui_module("emulation") {
   deps = [
     "../../../core/i18n:bundle",
     "../../../models/emulation:bundle",
+    "../../../panels/emulation:bundle",
     "../../../ui/components/buttons:bundle",
     "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",
@@ -53,5 +54,18 @@ devtools_entrypoint("meta") {
   visibility = [
     "../*",
     "../../../entrypoints/*",
+  ]
+}
+
+devtools_ui_module("unittests") {
+  testonly = true
+
+  sources = [ "DevicesSettingsTab.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../models/emulation:bundle",
+    "../../../testing",
+    "../../../ui/legacy:bundle",
   ]
 }

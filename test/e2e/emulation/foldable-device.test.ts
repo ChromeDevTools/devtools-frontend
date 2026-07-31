@@ -14,8 +14,8 @@ import {
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
-const ZENBOOK_VERTICAL_SPANNED_WIDTH = '1706';
-const ZENBOOK_VERTICAL_WIDTH = '853';
+const PIXEL_9_PRO_FOLD_VERTICAL_SPANNED_WIDTH = '836';
+const PIXEL_9_PRO_FOLD_VERTICAL_WIDTH = '412';
 
 /**
  * The test needs to be adapted from a browser test to an e2e test.
@@ -34,13 +34,13 @@ describe('Test the Device Posture API support', () => {
   it('User can change the posture of a foldable device', async ({devToolsPage, inspectedPage}) => {
     await setup(devToolsPage, inspectedPage);
     await selectFoldableDevice(devToolsPage);
-    await waitForWidthOfDevice(devToolsPage, ZENBOOK_VERTICAL_WIDTH);
+    await waitForWidthOfDevice(devToolsPage, PIXEL_9_PRO_FOLD_VERTICAL_WIDTH);
 
     await clickDevicePosture(devToolsPage, 'Folded');
-    await waitForWidthOfDevice(devToolsPage, ZENBOOK_VERTICAL_SPANNED_WIDTH);
+    await waitForWidthOfDevice(devToolsPage, PIXEL_9_PRO_FOLD_VERTICAL_SPANNED_WIDTH);
 
     await clickDevicePosture(devToolsPage, 'Continuous');
-    await waitForWidthOfDevice(devToolsPage, ZENBOOK_VERTICAL_WIDTH);
+    await waitForWidthOfDevice(devToolsPage, PIXEL_9_PRO_FOLD_VERTICAL_WIDTH);
   });
 
   it('User may not change the posture for a non-foldable screen device', async ({devToolsPage, inspectedPage}) => {

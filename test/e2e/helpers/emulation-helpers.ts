@@ -6,6 +6,8 @@ import type * as puppeteer from 'puppeteer-core';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
+import {closeSettings} from './settings-helpers.js';
+
 const DEVICE_TOOLBAR_TOGGLER_SELECTOR = '[aria-label="Toggle device toolbar"]';
 const DEVICE_TOOLBAR_SELECTOR = '.device-mode-toolbar';
 const DEVICE_TOOLBAR_OPTIONS_SELECTOR = '.device-mode-toolbar .device-mode-toolbar-options';
@@ -75,6 +77,9 @@ const selectOption = async (devToolsPage: DevToolsPage, element: puppeteer.Eleme
     if (option) {
       select.value = option.value;
       select.dispatchEvent(new Event('change'));
+    } else {
+      throw new Error(`Option "${text}" not found. Available options: ${
+          Array.from(select.options).map(o => o.text || o.value).join(', ')}`);
     }
   }, value);
 };
@@ -114,13 +119,42 @@ export const selectTestDevice = async (devToolsPage: DevToolsPage) => {
   await selectDeviceItem(devToolsPage, 'Test device');
 };
 
+export const enableEmulationDevice = async (devToolsPage: DevToolsPage, deviceName: string) => {
+  await selectEdit(devToolsPage);
+  await devToolsPage.waitFor('.devices-list-item');
+  const items = await devToolsPage.$$('.devices-list-item');
+  let found = false;
+  for (const item of items) {
+    const titleEl = await devToolsPage.$('.device-name', item);
+    if (titleEl) {
+      const title = await titleEl.evaluate(el => el.textContent?.trim());
+      if (title === deviceName) {
+        const checkbox = await devToolsPage.$('input.devices-list-checkbox', item);
+        if (checkbox) {
+          const checked = await checkbox.evaluate(el => (el as HTMLInputElement).checked);
+          if (!checked) {
+            await checkbox.click();
+          }
+        }
+        found = true;
+        break;
+      }
+    }
+  }
+  if (!found) {
+    throw new Error(`Device "${deviceName}" not found in Settings.`);
+  }
+  await closeSettings(devToolsPage);
+};
+
 /** Test if span button works when emulating a dual screen device. **/
 export const selectDualScreen = async (devToolsPage: DevToolsPage) => {
+  await enableEmulationDevice(devToolsPage, 'Surface Duo');
   await selectDeviceItem(devToolsPage, 'Surface Duo');
 };
 
 export const selectFoldableDevice = async (devToolsPage: DevToolsPage) => {
-  await selectDeviceItem(devToolsPage, 'Asus Zenbook Fold');
+  await selectDeviceItem(devToolsPage, 'Pixel 9 Pro Fold');
 };
 const waitForNotExpanded = async (selector: string, devToolsPage: DevToolsPage) => {
   const toolbar = await devToolsPage.waitFor(DEVICE_TOOLBAR_SELECTOR);
@@ -180,5 +214,5 @@ export const waitForZoom = async (devToolsPage: DevToolsPage, expectedZoom: stri
 };
 
 export const selectNonDualScreenDevice = async (devToolsPage: DevToolsPage) => {
-  await selectDeviceItem(devToolsPage, 'iPad');
+  await selectDeviceItem(devToolsPage, 'iPad Pro 13"');
 };

@@ -8,6 +8,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Main from '../../entrypoints/main/main.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Sources from '../../panels/sources/sources.js';
@@ -651,7 +652,7 @@ export const setEventListenerBreakpoint = function(id, enabled, targetName) {
 
   let breakpoint = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpoint(auxData);
   if (!breakpoint) {
-    breakpoint = SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpoint(auxData);
+    breakpoint = Main.MainImpl.MainImpl.universeForTest.eventBreakpointsManager.resolveEventListenerBreakpoint(auxData);
   }
 
   if (breakpoint.enabled() !== enabled) {

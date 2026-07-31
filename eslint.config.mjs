@@ -693,8 +693,8 @@ export default defineConfig([
     },
   },
   {
-    name: 'Front-end core files',
-    files: ['front_end/core/**/*.ts'],
+    name: 'Front-end core and models files',
+    files: ['front_end/core/**/*.ts', 'front_end/models/**/*.ts'],
     rules: {
       '@devtools/no-instance-of-migrated-singletons': 'error',
     },

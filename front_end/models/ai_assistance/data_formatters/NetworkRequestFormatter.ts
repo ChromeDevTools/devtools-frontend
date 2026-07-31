@@ -136,6 +136,7 @@ export class NetworkRequestFormatter {
   constructor(
       request: SDK.NetworkRequest.NetworkRequest,
       calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator,
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       networkLog: Logs.NetworkLog.NetworkLog = Logs.NetworkLog.NetworkLog.instance(),
   ) {
     this.#request = request;

@@ -33,6 +33,7 @@ describeWithEnvironment('FileSystemWorkspaceBinding', () => {
       mimeType: 'text/javascript',
     });
 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
     // Ensure the UISourceCodes are added to the workspace
@@ -98,6 +99,7 @@ describeWithEnvironment('FileSystemWorkspaceBinding', () => {
     const contentTypeStub = sinon.stub(platformFileSystem, 'contentType');
     contentTypeStub.returns(Common.ResourceType.resourceTypes.Script);
 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const addedPromise = new Promise<Workspace.UISourceCode.UISourceCode>(
         resolve => {
@@ -155,6 +157,7 @@ describeWithEnvironment('FileSystemWorkspaceBinding', () => {
       assert.lengthOf([...project.uiSourceCodes()], 1);
       assert.strictEqual([...project.uiSourceCodes()][0], uiSourceCode);
 
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       const workspace = Workspace.Workspace.WorkspaceImpl.instance();
       const uiSourceCodeRemovedPromise = new Promise<void>(resolve => {
         const listener = (

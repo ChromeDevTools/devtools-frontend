@@ -103,11 +103,17 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
           NetworkPersistenceManager,
           new NetworkPersistenceManager(
               workspace,
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               PersistenceImpl.instance(),
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               Breakpoints.BreakpointManager.BreakpointManager.instance(),
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               SDK.TargetManager.TargetManager.instance(),
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               Common.Settings.Settings.instance(),
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               IsolatedFileSystemManager.instance(),
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               SDK.NetworkManager.MultitargetNetworkManager.instance(),
               ),
       );

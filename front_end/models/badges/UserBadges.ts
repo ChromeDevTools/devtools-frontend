@@ -92,7 +92,9 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       Root.DevToolsContext.globalInstance().set(
           UserBadges,
           new UserBadges(
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               Common.Settings.Settings.instance(),
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               Host.GdpClient.GdpClient.instance(),
               Host.InspectorFrontendHost.InspectorFrontendHostInstance,
               ),

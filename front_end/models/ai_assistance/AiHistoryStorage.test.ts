@@ -77,6 +77,7 @@ describe('AiHistoryStorage', () => {
       },
       register(_setting) {},
     });
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Common.Settings.Settings.instance({
       forceNew: true,
       syncedStorage: dummyStorage,

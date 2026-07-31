@@ -46,7 +46,9 @@ export class SourceMapsResolver extends EventTarget {
       parsedTrace: Trace.TraceModel.ParsedTrace,
       entityMapper?: Trace.EntityMapper.EntityMapper,
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding =
-          Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       targetManager: SDK.TargetManager.TargetManager = SDK.TargetManager.TargetManager.instance(),
   ) {
     super();

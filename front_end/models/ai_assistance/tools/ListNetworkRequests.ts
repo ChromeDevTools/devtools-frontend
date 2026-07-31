@@ -85,6 +85,7 @@ export class ListNetworkRequestsTool implements
       };
     }
 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
     let hasCrossOriginRequest = false;
     const requestsToShow: SDK.NetworkRequest.NetworkRequest[] = [];

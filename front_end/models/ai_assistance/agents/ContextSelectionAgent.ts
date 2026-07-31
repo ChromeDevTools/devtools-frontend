@@ -114,7 +114,9 @@ export class ContextSelectionAgent extends AiAgent<never> {
 
   constructor(opts: ContextSelectionAgentOptions) {
     super(opts);
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     this.#networkLog = opts.networkLog ?? Logs.NetworkLog.NetworkLog.instance();
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     this.#workspace = opts.workspace ?? Workspace.Workspace.WorkspaceImpl.instance();
     this.#performanceRecordAndReload = opts.performanceRecordAndReload;
     this.#lighthouseRecording = opts.lighthouseRecording;
@@ -562,6 +564,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
    * coming from SourceMaps (usually only one) as that has simple code and
    * usually is what the user authored.
    */
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   static getUISourceCodes(workspace: Workspace.Workspace.WorkspaceImpl = Workspace.Workspace.WorkspaceImpl.instance()):
       Workspace.UISourceCode.UISourceCode[] {
     const projects =

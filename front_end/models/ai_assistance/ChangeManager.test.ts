@@ -187,6 +187,7 @@ describeWithEnvironment('ChangeManager', () => {
   });
 
   it('disposes targetManager and cssModel listeners on dispose', async () => {
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const removeModelListenerSpy = sinon.spy(targetManager, 'removeModelListener');
     const changeManager = new AiAssistanceModel.ChangeManager.ChangeManager(targetManager);

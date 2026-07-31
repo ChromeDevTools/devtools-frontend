@@ -92,7 +92,9 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       Root.DevToolsContext.globalInstance().set(
           IgnoreListManager,
           new IgnoreListManager(
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               opts.settings ?? Common.Settings.Settings.instance(),
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               opts.targetManager ?? SDK.TargetManager.TargetManager.instance()));
     }
 

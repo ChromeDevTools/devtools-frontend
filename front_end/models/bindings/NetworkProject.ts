@@ -120,6 +120,7 @@ export class NetworkProject {
     }
 
     const data = {uiSourceCode, frame};
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     NetworkProjectManager.instance().dispatchEventToListeners(Events.FRAME_ATTRIBUTION_ADDED, data);
   }
 
@@ -140,18 +141,22 @@ export class NetworkProject {
     }
     frameAttribution.delete(frameId);
     const data = {uiSourceCode, frame: attributionInfo.frame};
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     NetworkProjectManager.instance().dispatchEventToListeners(Events.FRAME_ATTRIBUTION_REMOVED, data);
   }
 
   static targetForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Target.Target|null {
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     return NetworkProjectManager.instance().getTargetForUISourceCode(uiSourceCode);
   }
 
   static setTargetForProject(project: Workspace.Workspace.Project, target: SDK.Target.Target): void {
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     NetworkProjectManager.instance().setTargetForProject(project, target);
   }
 
   static getTargetForProject(project: Workspace.Workspace.Project): SDK.Target.Target|null {
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     return NetworkProjectManager.instance().getTargetForProject(project);
   }
 

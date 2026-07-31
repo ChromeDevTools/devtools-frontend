@@ -112,6 +112,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     if (!Root.DevToolsContext.globalInstance().has(LiveMetrics) || forceNew) {
       Root.DevToolsContext.globalInstance().set(
           LiveMetrics,
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
           new LiveMetrics(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance(),
                           EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance()));
     }
@@ -439,7 +440,9 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         this.#clearMetrics();
         this.#navigationType = webVitalsEvent.navigationType;
         if (webVitalsEvent.url) {
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
           CrUXManager.CrUXManager.instance().setMainDocumentURL(webVitalsEvent.url);
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
           void CrUXManager.CrUXManager.instance().refresh();
         }
         break;

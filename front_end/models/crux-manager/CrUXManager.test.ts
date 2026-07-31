@@ -360,6 +360,7 @@ describe('CrUXManager', () => {
       target.setInspectedURL(urlString`https://example.com/inspected`);
       resourceTreeModel =
           target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
 
       getFieldDataMock = sinon.stub(cruxManager, 'getFieldDataForPage');
@@ -522,8 +523,10 @@ describe('CrUXManager', () => {
       await cruxManager.refresh();
       assert.strictEqual(cruxManager.getSelectedDeviceScope(), 'DESKTOP');
 
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
         if (device.title === 'Moto G Power') {
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
           EmulationModel.DeviceModeModel.DeviceModeModel.instance().emulate(
               EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 1);
         }

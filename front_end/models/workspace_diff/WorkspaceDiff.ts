@@ -326,9 +326,13 @@ export function workspaceDiff({forceNew}: {forceNew?: boolean} = {}): WorkspaceD
     Root.DevToolsContext.globalInstance().set(
         WorkspaceDiffImpl,
         new WorkspaceDiffImpl(
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
             Workspace.Workspace.WorkspaceImpl.instance(),
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
             Persistence.Persistence.PersistenceImpl.instance(),
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
             Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(),
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
             Common.Settings.Settings.instance(),
             ));
   }

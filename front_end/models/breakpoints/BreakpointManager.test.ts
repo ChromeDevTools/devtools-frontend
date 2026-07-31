@@ -113,6 +113,7 @@ describeWithEnvironment('BreakpointManager', () => {
     mockResourceTree(backend.cdpConnection);
     await getInitializedResourceTreeModel(target);
 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
       targetManager,
@@ -820,6 +821,7 @@ describeWithEnvironment('BreakpointManager', () => {
       isLogpoint: false,
     }];
     backend.universe.settings.createLocalSetting('breakpoints', breakpoints).set(breakpoints);
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding, settings: backend.universe.settings});
 
@@ -857,6 +859,7 @@ describeWithEnvironment('BreakpointManager', () => {
       }],
     }];
     backend.universe.settings.createLocalSetting('breakpoints', breakpoints).set(breakpoints);
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding, settings: backend.universe.settings});
 
@@ -881,6 +884,7 @@ describeWithEnvironment('BreakpointManager', () => {
     assert.exists(debuggerModel);
     const breakpoints: Breakpoints.BreakpointManager.BreakpointStorageState[] = [];
     const setting = backend.universe.settings.createLocalSetting('breakpoints', breakpoints);
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Breakpoints.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
       targetManager,
@@ -975,6 +979,7 @@ describeWithEnvironment('BreakpointManager', () => {
       const setting = backend.universe.settings.createLocalSetting('breakpoints', breakpoints);
       setting.set(breakpoints);
       // Create the breakpoint manager, request placing on the two latest breakpoints in the backend.
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       Breakpoints.BreakpointManager.BreakpointManager.instance({
         forceNew: true,
         targetManager,
@@ -993,6 +998,7 @@ describeWithEnvironment('BreakpointManager', () => {
   describe('with instrumentation breakpoints turned on', () => {
     beforeEach(() => {
       Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
         forceNew: true,
         targetManager,
@@ -1594,6 +1600,7 @@ describeWithEnvironment('BreakpointManager', () => {
     });
 
     it('can move breakpoints to network files that are set in matching file system files', async () => {
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
       const fileName = Common.ParsedURL.ParsedURL.extractName(scriptDescription.url);
 
@@ -1604,7 +1611,9 @@ describeWithEnvironment('BreakpointManager', () => {
     });
 
     it('can move breakpoints to network files that are set in override files', async () => {
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
 
       const fileSystemPath = urlString`file://path/to/overrides`;
@@ -1670,7 +1679,9 @@ describeWithEnvironment('BreakpointManager', () => {
     const resolvedBreakpointLine = 1;
 
     const persistence =
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
 
     // Create a file system project and source code.
@@ -1720,7 +1731,9 @@ describeWithEnvironment('BreakpointManager', () => {
   it('Breakpoints are set only into network project', async () => {
     const breakpointLine = 0;
     const persistence =
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
 
     // Create a file system project and source code.

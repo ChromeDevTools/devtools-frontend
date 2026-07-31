@@ -128,6 +128,7 @@ export class AiConversation {
       networkTimeCalculator,
       lighthouseRecording,
       aiHistoryStorage = AiHistoryStorage.instance(),
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       targetManager = SDK.TargetManager.TargetManager.instance(),
     } = options;
     this.#changeManager = changeManager;

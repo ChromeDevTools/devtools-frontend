@@ -63,6 +63,7 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
   });
 
   it('can create an overridden file with Local Overrides folder set up but disabled', async () => {
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(false);
 
     const url = 'http://www.example.com/list-xhr.json';
@@ -664,6 +665,7 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
   });
 
   it('is aware of which \'.headers\' files are currently active', done => {
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const project = {
       type: () => Workspace.Workspace.projectTypes.Network,
@@ -727,6 +729,7 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
     const {networkPersistenceManager} = setUpEnvironment();
     const {project} = createFileSystemUISourceCode({url: urlString`file:///tmp`, mimeType: 'text/plain'});
     await networkPersistenceManager.setProject(project);
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const targetManager = SDK.TargetManager.TargetManager.instance();
     assert.isNull(targetManager.rootTarget());
     assert.isFalse(networkPersistenceManager.active());

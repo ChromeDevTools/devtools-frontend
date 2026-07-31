@@ -39,6 +39,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../workspace/workspace.js';
 
 export function resourceForURL(url: Platform.DevToolsPath.UrlString): SDK.Resource.Resource|null {
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   return SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK.TargetManager.TargetManager.instance(), url);
 }
 
@@ -47,6 +48,7 @@ export function displayNameForURL(url: Platform.DevToolsPath.UrlString): string 
     return '';
   }
 
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
   if (uiSourceCode) {
     return uiSourceCode.displayName();
@@ -57,6 +59,7 @@ export function displayNameForURL(url: Platform.DevToolsPath.UrlString): string 
     return resource.displayName;
   }
 
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   const inspectedURL = SDK.TargetManager.TargetManager.instance().inspectedURL();
   if (!inspectedURL) {
     return Platform.StringUtilities.trimURL(url, '');

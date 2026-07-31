@@ -56,6 +56,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   static instance(): NetworkLog {
     if (!Root.DevToolsContext.globalInstance().has(NetworkLog)) {
       Root.DevToolsContext.globalInstance().set(
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
           NetworkLog, new NetworkLog(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance()));
     }
 

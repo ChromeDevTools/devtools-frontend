@@ -199,12 +199,16 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   static instance(opts?: {forceNew: boolean}): DeviceModeModel {
     if (!Root.DevToolsContext.globalInstance().has(DeviceModeModel) || opts?.forceNew) {
-      Root.DevToolsContext.globalInstance().set(DeviceModeModel,
-                                                new DeviceModeModel(
-                                                    SDK.TargetManager.TargetManager.instance(),
-                                                    Common.Settings.Settings.instance(),
-                                                    SDK.NetworkManager.MultitargetNetworkManager.instance(),
-                                                    ));
+      Root.DevToolsContext.globalInstance().set(
+          DeviceModeModel,
+          new DeviceModeModel(
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+              SDK.TargetManager.TargetManager.instance(),
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+              Common.Settings.Settings.instance(),
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+              SDK.NetworkManager.MultitargetNetworkManager.instance(),
+              ));
     }
 
     return Root.DevToolsContext.globalInstance().get(DeviceModeModel);
@@ -1001,8 +1005,10 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     });
     const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
     const contentData = new TextUtils.ContentData.ContentData(base64, /* isBase64=*/ true, 'image/png');
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     await Workspace.FileManager.FileManager.instance().save(fileName as Platform.DevToolsPath.RawPathString,
                                                             contentData, /* forceSaveAs=*/ true);
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Workspace.FileManager.FileManager.instance().close(fileName as Platform.DevToolsPath.RawPathString);
   }
 

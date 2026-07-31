@@ -599,6 +599,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
   static instance(): EmulatedDevicesList {
     if (!Root.DevToolsContext.globalInstance().has(EmulatedDevicesList)) {
       Root.DevToolsContext.globalInstance().set(EmulatedDevicesList,
+                                                // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
                                                 new EmulatedDevicesList(Common.Settings.Settings.instance()));
     }
     return Root.DevToolsContext.globalInstance().get(EmulatedDevicesList);

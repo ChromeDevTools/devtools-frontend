@@ -166,6 +166,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     if (!Root.DevToolsContext.globalInstance().has(CrUXManager) || forceNew) {
       Root.DevToolsContext.globalInstance().set(
           CrUXManager,
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
           new CrUXManager(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance()));
     }
 

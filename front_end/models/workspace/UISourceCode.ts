@@ -503,6 +503,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.#disableEdit;
   }
 
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   isIgnoreListed(ignoreListManager: IgnoreListManager = IgnoreListManager.instance()): boolean {
     return ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(this);
   }
@@ -608,6 +609,7 @@ export class UILocation {
     return this.columnNumber - other.columnNumber;
   }
 
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   isIgnoreListed(ignoreListManager: IgnoreListManager = IgnoreListManager.instance()): boolean {
     return this.uiSourceCode.isIgnoreListed(ignoreListManager);
   }

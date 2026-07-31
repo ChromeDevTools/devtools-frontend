@@ -31,6 +31,7 @@ export class ChangeManager {
       new Map<SDK.CSSModel.CSSModel, Map<Protocol.Page.FrameId, Protocol.DOM.StyleSheetId>>();
   readonly #stylesheetChanges = new Map<Protocol.DOM.StyleSheetId, Change[]>();
 
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   constructor(targetManager: SDK.TargetManager.TargetManager = SDK.TargetManager.TargetManager.instance()) {
     this.#targetManager = targetManager;
     this.#targetManager.addModelListener(

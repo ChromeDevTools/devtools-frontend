@@ -31,10 +31,12 @@ import {AgentFocus} from '../performance/AIContext.js';
 export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   static fromParsedTrace(
       parsedTrace: Trace.TraceModel.ParsedTrace,
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       targetManager: SDK.TargetManager.TargetManager = SDK.TargetManager.TargetManager.instance(),
       freshRecordingTracker: Tracing.FreshRecording.Tracker = Tracing.FreshRecording.Tracker.instance(),
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding =
-          Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()): PerformanceTraceContext {
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()): PerformanceTraceContext {
     return new PerformanceTraceContext(
         AgentFocus.fromParsedTrace(parsedTrace),
         targetManager,
@@ -44,11 +46,12 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   }
 
   static fromInsight(parsedTrace: Trace.TraceModel.ParsedTrace, insight: Trace.Insights.Types.InsightModel,
+                     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
                      targetManager: SDK.TargetManager.TargetManager = SDK.TargetManager.TargetManager.instance(),
                      freshRecordingTracker: Tracing.FreshRecording.Tracker = Tracing.FreshRecording.Tracker.instance(),
                      debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding =
-                         Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()):
-      PerformanceTraceContext {
+                         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+                     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()): PerformanceTraceContext {
     return new PerformanceTraceContext(
         AgentFocus.fromInsight(parsedTrace, insight),
         targetManager,
@@ -58,11 +61,12 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   }
 
   static fromCallTree(callTree: AICallTree,
+                      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
                       targetManager: SDK.TargetManager.TargetManager = SDK.TargetManager.TargetManager.instance(),
                       freshRecordingTracker: Tracing.FreshRecording.Tracker = Tracing.FreshRecording.Tracker.instance(),
                       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding =
-                          Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()):
-      PerformanceTraceContext {
+                          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+                      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()): PerformanceTraceContext {
     return new PerformanceTraceContext(
         AgentFocus.fromCallTree(callTree),
         targetManager,
@@ -77,10 +81,12 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   readonly #debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
 
   constructor(focus: AgentFocus,
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               targetManager: SDK.TargetManager.TargetManager = SDK.TargetManager.TargetManager.instance(),
               freshRecordingTracker: Tracing.FreshRecording.Tracker = Tracing.FreshRecording.Tracker.instance(),
               debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding =
-                  Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+                  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+              Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
     super();
     this.#focus = focus;
     this.#targetManager = targetManager;

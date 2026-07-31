@@ -33,6 +33,7 @@ export class AICallTree {
       public selectedNode: Trace.Extras.TraceTree.Node|null,
       public rootNode: Trace.Extras.TraceTree.TopDownRootNode,
       public parsedTrace: Trace.TraceModel.ParsedTrace,
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       public workspace: Workspace.Workspace.WorkspaceImpl = Workspace.Workspace.WorkspaceImpl.instance(),
   ) {
   }

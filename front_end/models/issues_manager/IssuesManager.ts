@@ -173,6 +173,7 @@ export function isIssueCodeSupported(code: Protocol.Audits.InspectorIssueCode): 
  */
 export function createIssuesFromProtocolIssue(
     issuesModel: SDK.IssuesModel.IssuesModel|null, inspectorIssue: Protocol.Audits.InspectorIssue,
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     frameManager: SDK.FrameManager.FrameManager = SDK.FrameManager.FrameManager.instance()): Issue[] {
   const handler = issueCodeHandlers.get(inspectorIssue.code);
   if (handler) {
@@ -203,6 +204,7 @@ export function defaultHideIssueByCodeSetting(): HideIssueMenuSetting {
   return setting;
 }
 
+// eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
 export function getHideIssueByCodeSetting(settings: Common.Settings.Settings = Common.Settings.Settings.instance()):
     Common.Settings.Setting<HideIssueMenuSetting> {
   return settings.createSetting('hide-issue-by-code-setting-experiment-2021', defaultHideIssueByCodeSetting());
@@ -235,13 +237,18 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   constructor(
       private readonly showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>,
       private readonly hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting>,
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       frameManager: SDK.FrameManager.FrameManager = SDK.FrameManager.FrameManager.instance(),
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       targetManager: SDK.TargetManager.TargetManager = SDK.TargetManager.TargetManager.instance(),
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       workspace: Workspace.Workspace.WorkspaceImpl = Workspace.Workspace.WorkspaceImpl.instance(),
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding =
-          Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
       cssWorkspaceBinding: Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding =
-          Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance(),
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+      Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance(),
   ) {
     super();
     this.#frameManager = frameManager;
@@ -523,6 +530,7 @@ export interface EventTypes {
 
 // @ts-expect-error
 globalThis.addIssueForTest = (issue: Protocol.Audits.InspectorIssue) => {
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
   const issuesModel = mainTarget?.model(SDK.IssuesModel.IssuesModel);
   issuesModel?.issueAdded({issue});

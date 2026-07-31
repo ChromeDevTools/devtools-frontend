@@ -248,6 +248,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   constructor(opts: PerformanceAgentOptions) {
     super(opts);
     this.#tracker = opts.tracker ?? Tracing.FreshRecording.Tracker.instance();
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     this.#networkLog = opts.networkLog ?? Logs.NetworkLog.NetworkLog.instance();
   }
   #formatter: PerformanceTraceFormatter|null = null;

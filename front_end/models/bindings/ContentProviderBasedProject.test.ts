@@ -13,6 +13,7 @@ type UrlString = Platform.DevToolsPath.UrlString;
 
 describe('ContentProviderBasedProject', () => {
   beforeEach(() => {
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
   });
 

@@ -408,6 +408,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
     if (!exceptionDetails) {
       // TODO(crbug.com/1334484): Instead of to the console, report these errors in an "info bar" at the bottom
       //                          of the text editor, similar to e.g. source mapping errors.
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       Common.Console.Console.instance().addMessage(
           i18nString(UIStrings.liveEditFailed, {PH1: getErrorText(status)}), Common.Console.MessageLevel.WARNING);
       return;
@@ -508,6 +509,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
     if (!this.script) {
       return;
     }
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const {pluginManager} = DebuggerWorkspaceBinding.instance();
     pluginManager.setDebugInfoURL(this.script, debugInfoURL);
   }

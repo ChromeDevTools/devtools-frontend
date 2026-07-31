@@ -38,6 +38,7 @@ export class ExecuteJavaScriptTool implements
   static async validateAndFormatCode(code: string): Promise<{formattedCode?: string, error?: string}> {
     try {
       const formatted = await Formatter.ScriptFormatter.formatScriptContent(
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
           Common.Settings.Settings.instance(),
           'text/javascript',
           code,

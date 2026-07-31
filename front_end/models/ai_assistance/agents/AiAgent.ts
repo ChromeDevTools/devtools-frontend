@@ -521,6 +521,7 @@ export abstract class AiAgent<T> {
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     this.#history = opts.history ?? [];
     this.#allowedOrigin = opts.allowedOrigin;
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     this.#targetManager = opts.targetManager ?? SDK.TargetManager.TargetManager.instance();
   }
 

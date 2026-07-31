@@ -55,6 +55,7 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper<EventTy
   #maxStorageSize: number;
 
   constructor(
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       settings: Common.Settings.Settings = Common.Settings.Settings.instance(),
       maxStorageSize = DEFAULT_MAX_STORAGE_SIZE,
   ) {
@@ -232,11 +233,13 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper<EventTy
       ): AiHistoryStorage {
     const {forceNew, maxStorageSize, settings} = opts;
     if (!Root.DevToolsContext.globalInstance().has(AiHistoryStorage) || forceNew) {
-      Root.DevToolsContext.globalInstance().set(AiHistoryStorage,
-                                                new AiHistoryStorage(
-                                                    settings ?? Common.Settings.Settings.instance(),
-                                                    maxStorageSize,
-                                                    ));
+      Root.DevToolsContext.globalInstance().set(
+          AiHistoryStorage,
+          new AiHistoryStorage(
+              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+              settings ?? Common.Settings.Settings.instance(),
+              maxStorageSize,
+              ));
     }
     return Root.DevToolsContext.globalInstance().get(AiHistoryStorage);
   }

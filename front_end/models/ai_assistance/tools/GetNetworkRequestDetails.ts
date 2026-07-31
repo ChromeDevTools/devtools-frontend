@@ -87,6 +87,7 @@ export class GetNetworkRequestDetailsTool implements
       };
     }
 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
     const request = networkLog.requests().find(req => {
       if (req.requestId() !== args.id) {

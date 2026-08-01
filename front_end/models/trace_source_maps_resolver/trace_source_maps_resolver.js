@@ -24,7 +24,10 @@ var SourceMapsResolver = class extends EventTarget {
   // workers, we would also need to gather up the DebuggerModel instances for
   // those workers too.
   #debuggerModelsToListen = /* @__PURE__ */ new Set();
-  constructor(parsedTrace, entityMapper, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), targetManager = SDK.TargetManager.TargetManager.instance()) {
+  constructor(parsedTrace, entityMapper, debuggerWorkspaceBinding = (
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+  ), targetManager = SDK.TargetManager.TargetManager.instance()) {
     super();
     this.#parsedTrace = parsedTrace;
     this.#entityMapper = entityMapper ?? null;

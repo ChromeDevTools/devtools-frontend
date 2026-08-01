@@ -5,8 +5,10 @@
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { DeviceModeView } from './DeviceModeView.js';
+import { InspectedPagePlaceholder } from './InspectedPagePlaceholder.js';
 let deviceModeWrapperInstance;
 export class DeviceModeWrapper extends UI.Widget.VBox {
     inspectedPagePlaceholder;
@@ -41,25 +43,33 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
     isDeviceModeOn() {
         return this.showDeviceModeSetting.get();
     }
-    captureScreenshot(fullSize, clip) {
-        if (!this.deviceModeView) {
-            this.deviceModeView = new DeviceModeView();
+    static #setNonEmulatedAvailableSize() {
+        const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+        if (model.type() !== EmulationModel.DeviceModeModel.Type.None) {
+            return;
         }
-        this.deviceModeView.setNonEmulatedAvailableSize(this.inspectedPagePlaceholder.element);
+        const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
+        const rect = InspectedPagePlaceholder.instance().element.getBoundingClientRect();
+        const availableSize = new Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
+        model.setAvailableSize(availableSize, availableSize);
+    }
+    static captureScreenshot(fullSize, clip) {
+        const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+        this.#setNonEmulatedAvailableSize();
         if (fullSize) {
-            void this.deviceModeView.captureFullSizeScreenshot();
+            void model.captureFullSizeScreenshot();
         }
         else if (clip) {
-            void this.deviceModeView.captureAreaScreenshot(clip);
+            void model.captureAreaScreenshot(clip);
         }
         else {
-            void this.deviceModeView.captureScreenshot();
+            void model.captureScreenshot();
         }
         return true;
     }
     screenshotRequestedFromOverlay(event) {
         const clip = event.data;
-        this.captureScreenshot(false, clip);
+        DeviceModeWrapper.captureScreenshot(false, clip);
     }
     update(force) {
         this.toggleDeviceModeAction.setToggled(this.showDeviceModeSetting.get());
@@ -89,7 +99,7 @@ export class ActionDelegate {
     handleAction(context, actionId) {
         switch (actionId) {
             case 'emulation.capture-screenshot':
-                return DeviceModeWrapper.instance().captureScreenshot();
+                return DeviceModeWrapper.captureScreenshot();
             case 'emulation.capture-node-screenshot': {
                 const node = context.flavor(SDK.DOMModel.DOMNode);
                 if (!node) {
@@ -140,13 +150,13 @@ export class ActionDelegate {
                     clip.y *= zoom;
                     clip.width *= zoom;
                     clip.height *= zoom;
-                    DeviceModeWrapper.instance().captureScreenshot(false, clip);
+                    DeviceModeWrapper.captureScreenshot(false, clip);
                 }
                 void captureClip();
                 return true;
             }
             case 'emulation.capture-full-height-screenshot':
-                return DeviceModeWrapper.instance().captureScreenshot(true);
+                return DeviceModeWrapper.captureScreenshot(true);
             case 'emulation.toggle-device-mode':
                 DeviceModeWrapper.instance().toggleDeviceMode();
                 return true;

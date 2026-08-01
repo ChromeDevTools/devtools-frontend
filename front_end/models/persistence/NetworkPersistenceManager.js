@@ -71,7 +71,19 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
             if (!workspace) {
                 throw new Error('Missing workspace for NetworkPersistenceManager');
             }
-            Root.DevToolsContext.globalInstance().set(NetworkPersistenceManager, new NetworkPersistenceManager(workspace, PersistenceImpl.instance(), Breakpoints.BreakpointManager.BreakpointManager.instance(), SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance(), IsolatedFileSystemManager.instance(), SDK.NetworkManager.MultitargetNetworkManager.instance()));
+            Root.DevToolsContext.globalInstance().set(NetworkPersistenceManager, new NetworkPersistenceManager(workspace, 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            PersistenceImpl.instance(), 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            Breakpoints.BreakpointManager.BreakpointManager.instance(), 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            SDK.TargetManager.TargetManager.instance(), 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            Common.Settings.Settings.instance(), 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            IsolatedFileSystemManager.instance(), 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            SDK.NetworkManager.MultitargetNetworkManager.instance()));
         }
         return Root.DevToolsContext.globalInstance().get(NetworkPersistenceManager);
     }

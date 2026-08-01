@@ -104,6 +104,7 @@ __export(ObjectPropertiesSection_exports, {
   ObjectTreeNode: () => ObjectTreeNode,
   ObjectTreeNodeBase: () => ObjectTreeNodeBase,
   Renderer: () => Renderer,
+  formatObjectAsFunction: () => formatObjectAsFunction,
   getObjectPropertiesSectionFrom: () => getObjectPropertiesSectionFrom,
   isWasmObject: () => isWasmObject,
   objectPropertiesSectionStyles: () => objectPropertiesSection_css_default,
@@ -1512,7 +1513,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     }
     return 0;
   }
-  static valueElementForFunctionDescription(description, includePreview, defaultName, className) {
+  static valueElementForFunctionDescription(description, includePreview, defaultName, details, linkify) {
     const contents = (description2, defaultName2) => {
       const text = description2.replace(/^function [gs]et /, "function ").replace(/^function [gs]et\(/, "function(").replace(/^[gs]et /, "");
       const asyncMatch = text.match(/^(async\s+function)/);
@@ -1525,11 +1526,11 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
       if (isClass) {
         const body2 = text.substring("class".length);
         const classNameMatch = /^[^{\s]+/.exec(body2.trim());
-        let className2 = defaultName2;
+        let className = defaultName2;
         if (classNameMatch) {
-          className2 = classNameMatch[0].trim() || defaultName2;
+          className = classNameMatch[0].trim() || defaultName2;
         }
-        return { prefix: "class", body: body2, abbreviation: className2 };
+        return { prefix: "class", body: body2, abbreviation: className };
       }
       if (asyncMatch) {
         const body2 = text.substring(asyncMatch[1].length);
@@ -1561,9 +1562,20 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     };
     const { prefix, body, abbreviation } = contents(description ?? "", defaultName ?? "");
     const maxFunctionBodyLength = 200;
+    const location = details?.location;
+    const clickHandler = linkify && location ? (event) => {
+      void Common2.Revealer.reveal(location);
+      event.consume(true);
+    } : void 0;
+    const classes = classMap({
+      "object-value-function": true,
+      linkified: Boolean(linkify && location)
+    });
+    const title = description ? Platform2.StringUtilities.trimEndWithMaxLength(description, 500) : void 0;
     return html2`<span
-      class="object-value-function ${className ?? ""}"
-      title=${Platform2.StringUtilities.trimEndWithMaxLength(description ?? "", 500)}>${prefix && html2`<span class=object-value-function-prefix>${prefix} </span>`}${includePreview ? Platform2.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength) : abbreviation.replace(/\n/g, " ")}</span>`;
+      class=${classes}
+      @click=${clickHandler || nothing2}
+      title=${ifDefined2(title)}>${prefix && html2`<span class=object-value-function-prefix>${prefix} </span>`}${includePreview ? Platform2.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength) : abbreviation.replace(/\n/g, " ")}</span>`;
     function nameAndArguments(contents2) {
       const startOfArgumentsIndex = contents2.indexOf("(");
       const endOfArgumentsMatch = contents2.match(/\)\s*{/);
@@ -1626,7 +1638,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
         return html2`<span class="value object-value-trustedtype" title=${ifDefined2(tooLong ? void 0 : text)}>${tooLong ? widget(ExpandableTextPropertyValue, { text }) : renderTrustedType(description, className)}</span>`;
       }
       if (type === "function") {
-        return _ObjectPropertiesSection.valueElementForFunctionDescription(description, void 0, void 0, "value");
+        return html2`<span class="value">${_ObjectPropertiesSection.valueElementForFunctionDescription(description)}</span>`;
       }
       if (type === "object" && subtype === "node" && description) {
         return html2`<span class="value object-value-node"
@@ -1656,25 +1668,6 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
       throw new Error("Expected an HTML element");
     }
     return child;
-  }
-  static formatObjectAsFunction(func, element, linkify, includePreview) {
-    return func.debuggerModel().functionDetailsPromise(func).then(didGetDetails);
-    function didGetDetails(response) {
-      if (linkify && response?.location) {
-        element.classList.add("linkified");
-        element.addEventListener("click", () => {
-          void Common2.Revealer.reveal(response.location);
-          return false;
-        });
-      }
-      let defaultName = includePreview ? "" : "anonymous";
-      if (response?.functionName) {
-        defaultName = response.functionName;
-      }
-      const valueElement = document.createDocumentFragment();
-      render2(_ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName), valueElement);
-      element.appendChild(valueElement);
-    }
   }
   static isDisplayableProperty(property, parentProperty) {
     if (!parentProperty?.synthetic) {
@@ -1859,6 +1852,11 @@ function renderPropertyName(name, isPrivate, title) {
     return html2`<span class="name" title=${ifDefined2(title)}><span class="private-property-hash">${escapedName[0]}</span>${escapedName.substring(1)}</span>`;
   }
   return html2`<span class="name" title=${ifDefined2(title)}>${escapedName}</span>`;
+}
+async function formatObjectAsFunction(func, linkify, includePreview) {
+  const details = await func.debuggerModel().functionDetailsPromise(func);
+  const defaultName = details?.functionName ?? (includePreview ? "" : "anonymous");
+  return ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName, details, linkify);
 }
 var InitialVisibleChildrenLimit = 200;
 var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {

@@ -85,17 +85,10 @@ export declare function createTestFilesystem(fileSystemPath: string, files?: Arr
     project: Persistence.FileSystemWorkspaceBinding.FileSystem;
     uiSourceCode: Workspace.UISourceCode.UISourceCode;
 };
-export declare function assertIsError<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>): asserts response is {
-    error: string;
-};
-export declare function assertIsResult<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>): asserts response is {
-    result: T;
-    widgets?: AiAssistance.AiAgent.AiWidget[];
-};
-export declare function assertRequiresApproval<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>): asserts response is {
-    requiresApproval: true;
-    description: string | null;
-};
+export declare function assertIsError<T>(response: AiAssistance.Tool.DataHandlerResult<T> | AiAssistance.Tool.ContextHandlerResult<T> | AiAssistance.AiAgent.ToolResult<T>): asserts response is AiAssistance.Tool.ToolErrorResult;
+export declare function assertIsResult<T>(response: AiAssistance.Tool.DataHandlerResult<T> | AiAssistance.Tool.ContextHandlerResult<T> | AiAssistance.AiAgent.ToolResult<T>): asserts response is AiAssistance.Tool.ToolDataResult<T>;
+export declare function assertRequiresApproval<T>(response: AiAssistance.Tool.DataHandlerResult<T> | AiAssistance.Tool.ContextHandlerResult<T> | AiAssistance.AiAgent.ToolResult<T>): asserts response is AiAssistance.Tool.ToolApprovalResult;
+export declare function assertIsContext<T>(response: AiAssistance.Tool.DataHandlerResult<T> | AiAssistance.Tool.ContextHandlerResult<T> | AiAssistance.AiAgent.ToolResult<T>): asserts response is AiAssistance.Tool.ToolContextResult<T>;
 /**
  * Creates a dummy File object containing a solid red image with the given dimensions.
  *

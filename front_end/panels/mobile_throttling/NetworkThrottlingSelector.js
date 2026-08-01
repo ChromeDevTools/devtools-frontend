@@ -14,38 +14,38 @@ import { ThrottlingManager } from './ThrottlingManager.js';
 const { render, html, Directives } = Lit;
 const UIStrings = {
     /**
-     * @description Text to indicate something is not enabled
+     * @description Text to indicate something is not enabled.
      */
     disabled: 'Disabled',
     /**
-     * @description Title for a group of configuration options
+     * @description Title for a group of configuration options.
      */
     presets: 'Presets',
     /**
-     * @description Text in Network Throttling Selector of the Network panel
+     * @description Text in network throttling selector of the Network panel.
      */
     custom: 'Custom',
     /**
-     * @description  Title for a network throttling group containing the request blocking option
+     * @description Title for a network throttling group containing the request blocking option.
      */
     blockingGroup: 'Blocking',
     /**
-     *@description Text with two placeholders separated by a colon
-     *@example {Node removed} PH1
-     *@example {div#id1} PH2
+     * @description Text with two placeholders separated by a colon.
+     * @example {Node removed} PH1
+     * @example {div#id1} PH2
      */
     sS: '{PH1}: {PH2}',
     /**
-     *@description Accessibility label for custom add network throttling option
-     *@example {Custom} PH1
+     * @description Accessibility label for custom add network throttling option.
+     * @example {Custom} PH1
      */
     addS: 'Add {PH1}',
     /**
-     *@description Text in Throttling Manager of the Network panel
+     * @description Text in throttling manager of the Network panel.
      */
     add: 'Add…',
     /**
-     * @description Text label for a selection box showing that a specific option is recommended for CPU or Network throttling.
+     * @description Text label for a selection box showing that a specific option is recommended for CPU or network throttling.
      * @example {Fast 4G} PH1
      * @example {4x slowdown} PH1
      */

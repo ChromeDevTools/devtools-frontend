@@ -16,110 +16,110 @@ import { ThrottlingPresets } from './ThrottlingPresets.js';
 import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
 const UIStrings = {
     /**
-     * @description Title for default network throttling profiles card
+     * @description Title for default network throttling profiles card.
      */
     defaultProfiles: 'Default profiles',
     /**
-     * @description Title for custom network throttling profiles card
+     * @description Title for custom network throttling profiles card.
      */
     customProfiles: 'Custom profiles',
     /**
-     * @description Text of add conditions button in Throttling Settings Tab of the Network panel
+     * @description Text of add conditions button in throttling settings tab of the Network panel.
      */
     addCustomProfile: 'Add profile',
     /**
-     * @description A value in milliseconds
+     * @description A value in milliseconds.
      * @example {3} PH1
      */
     dms: '{PH1} `ms`',
     /**
-     * @description Text in Throttling Settings Tab of the Network panel
+     * @description Text in throttling settings tab of the Network panel.
      */
-    profileName: 'Profile Name',
+    profileName: 'Profile name',
     /**
-     * @description Label for a textbox that sets the download speed in the Throttling Settings Tab.
+     * @description Label for a textbox that sets the download speed in the throttling settings tab.
      * Noun, short for 'download speed'.
      */
     download: 'Download',
     /**
-     * @description Label for a textbox that sets the upload speed in the Throttling Settings Tab.
+     * @description Label for a textbox that sets the upload speed in the throttling settings tab.
      * Noun, short for 'upload speed'.
      */
     upload: 'Upload',
     /**
-     * @description Label for a textbox that sets the latency in the Throttling Settings Tab.
+     * @description Label for a textbox that sets the latency in the throttling settings tab.
      */
     latency: 'Latency',
     /**
-     * @description Label for a textbox that sets the packet loss percentage for real-time networks in the Throttling Settings Tab.
+     * @description Label for a textbox that sets the packet loss percentage for real-time networks in the throttling settings tab.
      */
     packetLoss: 'Packet Loss',
     /**
-     * @description Label for a textbox that sets the maximum packet queue length for real-time networks in the Throttling Settings Tab.
+     * @description Label for a textbox that sets the maximum packet queue length for real-time networks in the throttling settings tab.
      */
     packetQueueLength: 'Packet Queue Length',
     /**
-     * @description Label for a checkbox that allows packet reordering in the Throttling Settings Tab.
+     * @description Label for a checkbox that allows packet reordering in the throttling settings tab.
      */
     packetReordering: 'Packet Reordering',
     /**
-     * @description Label for a textbox serving as a unit in the Throttling Settings Tab for the field Packet Queue Length column.
+     * @description Label for a textbox serving as a unit in the throttling settings tab for the field packet queue length column.
      */
     packet: 'packet',
     /**
-     * @description Text in Throttling Settings Tab of the Network panel
+     * @description Text in throttling settings tab of the Network panel.
      */
     optional: 'optional',
     /**
-     * @description Error message for Profile Name input in Throtting pane of the Settings
+     * @description Error message for profile name input in throttling pane of the Settings panel.
      * @example {49} PH1
      */
-    profileNameCharactersLengthMust: 'Profile Name characters length must be between 1 to {PH1} inclusive',
+    profileNameCharactersLengthMust: 'Profile name length must be between 1 and {PH1} characters',
     /**
-     * @description Error message for Download and Upload inputs in Throttling pane of the Settings
+     * @description Error message for download and upload inputs in throttling pane of the Settings panel.
      * @example {Download} PH1
      * @example {0} PH2
      * @example {10000000} PH3
      */
     sMustBeANumberBetweenSkbsToSkbs: '{PH1} must be a number between {PH2} `kbit/s` to {PH3} `kbit/s` inclusive',
     /**
-     * @description Error message for Latency input in Throttling pane of the Settings
+     * @description Error message for latency input in throttling pane of the Settings panel.
      * @example {0} PH1
      * @example {1000000} PH2
      */
     latencyMustBeAnIntegerBetweenSms: 'Latency must be an integer between {PH1} `ms` to {PH2} `ms` inclusive',
     /**
-     * @description Error message for Packet Loss input in Throttling pane of the Settings
+     * @description Error message for packet loss input in throttling pane of the Settings panel.
      * @example {0} PH1
      * @example {100} PH2
      */
     packetLossMustBeAnIntegerBetweenSpct: 'Packet Loss must be a number between {PH1} `%` to {PH2} `%` inclusive',
     /**
-     * @description Error message for Packet Queue Length input in Throttling pane of the Settings
+     * @description Error message for packet queue length input in throttling pane of the Settings panel.
      */
-    packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero: 'Packet Queue Length must be greater or equal to 0',
+    packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero: 'Packet queue length must be greater than or equal to 0',
     /**
-     * @description Text in Throttling Settings Tab of the Network panel, indicating the download or
+     * @description Text in throttling settings tab of the Network panel, indicating the download or
      * upload speed that will be applied in kilobits per second.
      * @example {25} PH1
      */
     dskbits: '{PH1} `kbit/s`',
     /**
-     * @description Text in Throttling Settings Tab of the Network panel, indicating the download or
+     * @description Text in throttling settings tab of the Network panel, indicating the download or
      * upload speed that will be applied in megabits per second.
      * @example {25.4} PH1
      */
     fsmbits: '{PH1} `Mbit/s`',
     /**
-     * @description Label for the column Packet Reordering to indicate it is enabled in the Throttling Settings Tab.
+     * @description Label for the column packet reordering to indicate it is enabled in the throttling settings tab.
      */
     on: 'On',
     /**
-     * @description Label for the column Packet Reordering to indicate it is disabled in the Throttling Settings Tab.
+     * @description Label for the column packet reordering to indicate it is disabled in the throttling settings tab.
      */
     off: 'Off',
     /**
-     * @description Text in Throttling Settings Tab of the Settings panel
+     * @description Text in throttling settings tab of the Settings panel.
      */
     cpuThrottlingPresets: 'CPU throttling presets',
     /**
@@ -161,11 +161,11 @@ const UIStrings = {
     /**
      * @description Text to explain an issue that may impact the CPU calibration process.
      */
-    calibrationWarningRunningOnBattery: 'Device is running on battery, please plug in charger for best results',
+    calibrationWarningRunningOnBattery: 'Device is running on battery. Plug in charger for best results',
     /**
      * @description Text to explain an issue that may impact the CPU calibration process.
      */
-    calibrationWarningLowBattery: 'Device battery is low (<20%), results may be impacted by CPU throttling',
+    calibrationWarningLowBattery: 'Device battery is low (<20%). Results may be impacted by CPU throttling',
     /**
      * @description Text label for a menu item indicating that a specific slowdown multiplier is applied.
      * @example {2} PH1

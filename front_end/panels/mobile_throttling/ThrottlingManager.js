@@ -15,43 +15,43 @@ import { MobileThrottlingSelector } from './MobileThrottlingSelector.js';
 import { ThrottlingPresets, } from './ThrottlingPresets.js';
 const UIStrings = {
     /**
-     *@description Text to indicate the network connectivity is offline
+     * @description Text to indicate the network connectivity is offline.
      */
     offline: 'Offline',
     /**
-     *@description Text in Throttling Manager of the Network panel
+     * @description Text in throttling manager of the Network panel.
      */
     forceDisconnectedFromNetwork: 'Force disconnected from network',
     /**
-     * @description Text for throttling the network
+     * @description Text for throttling the network.
      */
     throttling: 'Throttling',
     /**
-     * @description Icon title in Throttling Manager of the Network panel
+     * @description Icon title in throttling manager of the Network panel.
      */
     cpuThrottlingIsEnabled: 'CPU throttling is enabled',
     /**
-     * @description Screen reader label for a select box that chooses the CPU throttling speed in the Performance panel
+     * @description Screen reader label for a select box that chooses the CPU throttling speed in the Performance panel.
      */
     cpuThrottling: 'CPU throttling',
     /**
-     * @description Tooltip text in Throttling Manager of the Performance panel
+     * @description Tooltip text in throttling manager of the Performance panel.
      */
     excessConcurrency: 'Exceeding the default value may degrade system performance.',
     /**
-     * @description Tooltip text in Throttling Manager of the Performance panel
+     * @description Tooltip text in throttling manager of the Performance panel.
      */
     resetConcurrency: 'Reset to the default value',
     /**
-     * @description Label for an check box that neables overriding navigator.hardwareConcurrency
+     * @description Label for a checkbox that enables overriding navigator.hardwareConcurrency.
      */
     hardwareConcurrency: 'Hardware concurrency',
     /**
-     * @description Tooltip text for an input box that overrides navigator.hardwareConcurrency on the page
+     * @description Tooltip text for an input box that overrides navigator.hardwareConcurrency on the page.
      */
-    hardwareConcurrencySettingLabel: 'Override the value reported by navigator.hardwareConcurrency',
+    hardwareConcurrencySettingLabel: 'Override the value reported by `navigator.hardwareConcurrency`',
     /**
-     * @description Text label for a selection box showing that a specific option is recommended for CPU or Network throttling.
+     * @description Text label for a selection box showing that a specific option is recommended for CPU or network throttling.
      * @example {Fast 4G} PH1
      * @example {4x slowdown} PH1
      */
@@ -77,9 +77,9 @@ const UIStrings = {
      */
     saveDataOff: '\'Save-Data\': off',
     /**
-     * @description Tooltip text for an select element that overrides navigator.connection.saveData on the page
+     * @description Tooltip text for a select element that overrides navigator.connection.saveData on the page.
      */
-    saveDataSettingTooltip: 'Override the value reported by navigator.connection.saveData on the page',
+    saveDataSettingTooltip: 'Override the value reported by `navigator.connection.saveData` on the page',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

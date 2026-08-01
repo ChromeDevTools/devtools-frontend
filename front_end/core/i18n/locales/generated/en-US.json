@@ -1562,6 +1562,9 @@
   "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
     "message": "Width must be less than or equal to {PH1}."
   },
+  "models/emulation/EmulatedDevices.ts | foldablesGroup": {
+    "message": "Foldables"
+  },
   "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
     "message": "Laptop with HiDPI screen"
   },
@@ -1570,6 +1573,15 @@
   },
   "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
     "message": "Laptop with touch"
+  },
+  "models/emulation/EmulatedDevices.ts | mobileGroup": {
+    "message": "Mobile"
+  },
+  "models/emulation/EmulatedDevices.ts | smartDisplaysGroup": {
+    "message": "Smart Displays"
+  },
+  "models/emulation/EmulatedDevices.ts | tabletsAndDesktopsGroup": {
+    "message": "Tablets & Desktops"
   },
   "models/har/Writer.ts | collectingContent": {
     "message": "Collecting content…"
@@ -9915,7 +9927,7 @@
     "message": "Video playback roughness"
   },
   "panels/mobile_throttling/CalibrationController.ts | runningCalibration": {
-    "message": "Running CPU calibration, please do not leave this tab or close DevTools."
+    "message": "Running CPU calibration, don’t leave this tab or close DevTools."
   },
   "panels/mobile_throttling/mobile_throttling-meta.ts | device": {
     "message": "device"
@@ -9951,16 +9963,16 @@
     "message": "Presets"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "The set of accepted Content-Encoding headers has been modified by DevTools, see the Network conditions panel"
+    "message": "The set of accepted Content-Encoding headers has been changed by DevTools. See the Network conditions panel"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Network throttling is enabled"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
-    "message": "Requests may be blocked, see the Network request blocking panel"
+    "message": "Requests may be blocked. See the Network request blocking panel"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
-    "message": "Requests may be overridden locally, see the Sources panel"
+    "message": "Requests may be overridden locally. See the Sources panel"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
     "message": "Add…"
@@ -10080,10 +10092,10 @@
     "message": "CPU utilization is too high"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationWarningLowBattery": {
-    "message": "Device battery is low (<20%), results may be impacted by CPU throttling"
+    "message": "Device battery is low (<20%). Results may be impacted by CPU throttling"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationWarningRunningOnBattery": {
-    "message": "Device is running on battery, please plug in charger for best results"
+    "message": "Device is running on battery. Plug in charger for best results"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | cancel": {
     "message": "Cancel"
@@ -10149,16 +10161,16 @@
     "message": "Packet Queue Length"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero": {
-    "message": "Packet Queue Length must be greater or equal to 0"
+    "message": "Packet queue length must be greater than or equal to 0"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Packet Reordering"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
-    "message": "Profile Name"
+    "message": "Profile name"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileNameCharactersLengthMust": {
-    "message": "Profile Name characters length must be between 1 to {PH1} inclusive"
+    "message": "Profile name length must be between 1 and {PH1} characters"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | recalibrate": {
     "message": "Recalibrate"
@@ -13610,6 +13622,9 @@
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
     "message": "To generate annotation suggestions, your performance trace is sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time."
   },
+  "panels/settings/AISettingsTab.ts | geoRestricted": {
+    "message": "This feature is unavailable in your region."
+  },
   "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
     "message": "Helps you annotate your performance trace with auto-generated labels"
   },
@@ -13630,6 +13645,9 @@
   },
   "panels/settings/AISettingsTab.ts | offline": {
     "message": "This feature is only available with an active internet connection."
+  },
+  "panels/settings/AISettingsTab.ts | policyRestricted": {
+    "message": "This setting is managed by your administrator."
   },
   "panels/settings/AISettingsTab.ts | privacyNotice": {
     "message": "Google Privacy Policy"
@@ -13666,6 +13684,9 @@
   },
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "When on"
+  },
+  "panels/settings/AISettingsTab.ts | wrongLocale": {
+    "message": "To use this feature, set your language preference to English in DevTools settings."
   },
   "panels/settings/components/SyncSection.ts | dataDisclaimer": {
     "message": "({PH1} is sent to Google)"
@@ -18289,6 +18310,12 @@
   },
   "ui/legacy/Toolbar.ts | useRegularExpression": {
     "message": "Use regular expression"
+  },
+  "ui/legacy/Treeoutline.ts | collapsed": {
+    "message": "collapsed"
+  },
+  "ui/legacy/Treeoutline.ts | expanded": {
+    "message": "expanded"
   },
   "ui/legacy/UIUtils.ts | anonymous": {
     "message": "(anonymous)"

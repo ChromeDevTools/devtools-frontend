@@ -2536,9 +2536,12 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (includePreview && obj.preview) {
       renderPreview(true);
     } else if (obj.type === "function") {
-      const functionElement = titleElement.createChild("span");
-      void ObjectUI2.ObjectPropertiesSection.ObjectPropertiesSection.formatObjectAsFunction(obj, functionElement, false);
       titleElement.classList.add("object-value-function");
+      void ObjectUI2.ObjectPropertiesSection.formatObjectAsFunction(obj, false).then((t) => {
+        const fragment = document.createDocumentFragment();
+        render3(t, fragment, { host: this });
+        titleElement.insertBefore(fragment, titleElement.firstChild);
+      });
     } else if (obj.subtype === "trustedtype") {
       titleElement.appendChild(this.formatParameterAsTrustedType(obj));
     } else {
@@ -2569,15 +2572,18 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     void SDK3.RemoteObject.RemoteFunction.objectAsFunction(originalFunction).targetFunction().then(formatTargetFunction.bind(this));
     return result;
     function formatTargetFunction(targetFunction) {
-      const functionElement = document.createElement("span");
-      const promise = ObjectUI2.ObjectPropertiesSection.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, functionElement, true, includePreview);
-      result.appendChild(functionElement);
+      const promise = ObjectUI2.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, true, includePreview);
       if (targetFunction !== originalFunction) {
         const note = result.createChild("span", "object-state-note info-note");
         UI3.Tooltip.Tooltip.install(note, i18nString2(UIStrings2.functionWasResolvedFromBound));
       }
       result.addEventListener("contextmenu", this.contextMenuEventFired.bind(this, originalFunction), false);
-      void promise.then(() => this.formattedParameterAsFunctionForTest());
+      void promise.then((t) => {
+        const fragment = document.createDocumentFragment();
+        render3(t, fragment, { host: this });
+        result.insertBefore(fragment, result.firstChild);
+        this.formattedParameterAsFunctionForTest();
+      });
     }
   }
   formattedParameterAsFunctionForTest() {

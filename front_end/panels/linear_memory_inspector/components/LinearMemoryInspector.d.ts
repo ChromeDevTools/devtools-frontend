@@ -1,7 +1,7 @@
 import './LinearMemoryViewer.js';
 import * as Common from '../../../core/common/common.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import { type AddressInputChangedEvent, type HistoryNavigationEvent, Mode, type PageNavigationEvent } from './LinearMemoryNavigator.js';
+import { Mode, Navigation } from './LinearMemoryNavigator.js';
 import type { ByteSelectedEvent, ResizeEvent } from './LinearMemoryViewer.js';
 import type { HighlightInfo } from './LinearMemoryViewerUtils.js';
 import { Endianness, type ValueType, type ValueTypeMode } from './ValueInterpreterDisplayUtils.js';
@@ -58,9 +58,9 @@ export interface ViewInput {
     canGoBackInHistory: boolean;
     canGoForwardInHistory: boolean;
     onRefreshRequest: () => void;
-    onAddressChange: (e: AddressInputChangedEvent) => void;
-    onNavigatePage: (e: PageNavigationEvent) => void;
-    onNavigateHistory: (e: HistoryNavigationEvent) => boolean;
+    onAddressChange: (address: string, mode: Mode) => void;
+    onNavigatePage: (navigation: Navigation) => void;
+    onNavigateHistory: (navigation: Navigation) => boolean;
     onJumpToAddress: (address: number) => void;
     onDeleteMemoryHighlight: (info: HighlightInfo) => void;
     onByteSelected: (e: ByteSelectedEvent) => void;

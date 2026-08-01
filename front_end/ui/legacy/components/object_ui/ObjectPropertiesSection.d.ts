@@ -132,12 +132,11 @@ export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineI
     static defaultObjectPresentation(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): Element;
     static defaultObjectPropertiesSection(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): ObjectPropertiesSection;
     static compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, sortPropertiesAlphabetically?: boolean): number;
-    static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string, className?: string): LitTemplate;
+    static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string, details?: SDK.DebuggerModel.FunctionDetails | null, linkify?: boolean): LitTemplate;
     static createPropertyValueWithCustomSupport(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean): HTMLElement;
     static getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate;
     static appendMemoryIcon(element: Element, object: SDK.RemoteObject.RemoteObject, expression?: string): void;
     static createPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean): HTMLElement;
-    static formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject, element: Element, linkify: boolean, includePreview?: boolean): Promise<void>;
     static isDisplayableProperty(property: SDK.RemoteObject.RemoteObjectProperty, parentProperty?: SDK.RemoteObject.RemoteObjectProperty): boolean;
     skipProto(): void;
     expand(): void;
@@ -160,6 +159,7 @@ export declare function populateObjectTreeContextMenu(contextMenu: UI.ContextMen
 export declare function renderObjectTree(objectTree: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): LitTemplate | DirectiveResult;
 export declare function renderObjectPropertiesSection(objectTree: ObjectTree, title: LitTemplate, linkifier?: Components.Linkifier.Linkifier): LitTemplate;
 export declare function renderPropertyName(name: string | null, isPrivate?: boolean, title?: string): TemplateResult;
+export declare function formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject, linkify: boolean, includePreview?: boolean): Promise<LitTemplate>;
 /**
  * Number of initially visible children in an ObjectPropertyTreeElement.
  * Remaining children are shown as soon as requested via a show more properties button.

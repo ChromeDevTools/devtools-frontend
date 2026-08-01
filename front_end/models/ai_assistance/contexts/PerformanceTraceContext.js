@@ -18,20 +18,36 @@ import { AgentFocus } from '../performance/AIContext.js';
  * the context data for the LLM prompt and user-facing accordion disclosures.
  */
 export class PerformanceTraceContext extends ConversationContext {
-    static fromParsedTrace(parsedTrace, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+    static fromParsedTrace(parsedTrace, 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
         return new PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
     }
-    static fromInsight(parsedTrace, insight, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+    static fromInsight(parsedTrace, insight, 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
         return new PerformanceTraceContext(AgentFocus.fromInsight(parsedTrace, insight), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
     }
-    static fromCallTree(callTree, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+    static fromCallTree(callTree, 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
         return new PerformanceTraceContext(AgentFocus.fromCallTree(callTree), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
     }
     #focus;
     #targetManager;
     #freshRecordingTracker;
     #debuggerWorkspaceBinding;
-    constructor(focus, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+    constructor(focus, 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
         super();
         this.#focus = focus;
         this.#targetManager = targetManager;

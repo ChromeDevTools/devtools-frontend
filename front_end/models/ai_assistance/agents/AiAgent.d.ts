@@ -7,6 +7,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as Trace from '../../trace/trace.js';
 import type * as Workspace from '../../workspace/workspace.js';
+import type { ContextHandlerResult, DataHandlerResult } from '../tools/Tool.js';
 export declare const enum ResponseType {
     CONTEXT = "context",
     TITLE = "title",
@@ -303,23 +304,11 @@ export interface SourceCodeAiWidget {
     };
 }
 export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget | TimelineEventSummaryAiWidget | NetworkRequestGeneralHeadersAiWidget | SourceCodeAiWidget | SourceFilesListAiWidget | NetworkRequestsListAiWidget | NetworkTrackAiWidget;
-export type FunctionCallHandlerResult<Result> = {
-    requiresApproval: true;
-    /**
-     * Provides extra description of what the required
-     * approval is requesting.
-     */
-    description: string | null;
-} | {
-    result: Result;
-    widgets?: AiWidget[];
-} | {
-    context: ConversationContext<unknown>;
-    description: string;
-    widgets?: AiWidget[];
-} | {
-    error: string;
-};
+/**
+ * @deprecated Used for v1 agents. Once v2 is shipped, this can be removed.
+ * Use `DataHandlerResult` or `ContextHandlerResult` from `Tool.js` instead.
+ */
+export type ToolResult<ResultType> = DataHandlerResult<ResultType> | ContextHandlerResult;
 export interface FunctionHandlerOptions {
     /**
      * Shows that the user approved
@@ -353,7 +342,7 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
     /**
      * Function implementation that the LLM will try to execute,
      */
-    handler(args: Args, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<ReturnType>>;
+    handler(args: Args, options?: FunctionHandlerOptions): Promise<ToolResult<ReturnType>>;
 }
 /**
  * AiAgent is a base class for implementing an interaction with AIDA

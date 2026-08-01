@@ -68,7 +68,9 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper {
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
         if (!Root.DevToolsContext.globalInstance().has(CrUXManager) || forceNew) {
-            Root.DevToolsContext.globalInstance().set(CrUXManager, new CrUXManager(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance()));
+            Root.DevToolsContext.globalInstance().set(CrUXManager, 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            new CrUXManager(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance()));
         }
         return Root.DevToolsContext.globalInstance().get(CrUXManager);
     }

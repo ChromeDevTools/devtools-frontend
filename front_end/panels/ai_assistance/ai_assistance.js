@@ -2420,7 +2420,7 @@ var walkthroughView_css_default = `/*
 
   .inline-wrapper {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--sys-size-2);
     justify-content: flex-start;
 
@@ -6964,7 +6964,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
               Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceQuerySubmitted);
               void this.#startConversation(text, imageInput, multimodalInputType);
             };
-            const seenSetting = Common5.Settings.Settings.instance().moduleSetting("ai-assistance-v2-opt-in-change-dialog-seen");
+            const seenSetting = Common5.Settings.Settings.instance().resolve(AiAssistanceModel8.AiUtils.aiAssistanceV2OptInChangeDialogSeenSettingDescriptor);
             if (!seenSetting.get()) {
               OptInChangeDialog.show({
                 onGotIt: () => {

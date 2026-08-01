@@ -1,7 +1,8 @@
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type { InspectedPagePlaceholder } from './InspectedPagePlaceholder.js';
+import { InspectedPagePlaceholder } from './InspectedPagePlaceholder.js';
 export declare class DeviceModeWrapper extends UI.Widget.VBox {
+    #private;
     private readonly inspectedPagePlaceholder;
     private deviceModeView;
     private readonly toggleDeviceModeAction;
@@ -13,7 +14,7 @@ export declare class DeviceModeWrapper extends UI.Widget.VBox {
     }): DeviceModeWrapper;
     toggleDeviceMode(): void;
     isDeviceModeOn(): boolean;
-    captureScreenshot(fullSize?: boolean, clip?: Protocol.Page.Viewport): boolean;
+    static captureScreenshot(fullSize?: boolean, clip?: Protocol.Page.Viewport): boolean;
     private screenshotRequestedFromOverlay;
     update(force?: boolean): void;
 }

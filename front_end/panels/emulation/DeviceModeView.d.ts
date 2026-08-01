@@ -1,6 +1,4 @@
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export interface DeviceModeViewInput {
@@ -69,18 +67,11 @@ export declare class DeviceModeView extends UI.Widget.VBox {
     exitHingeMode(): void;
     private onResizeEnd;
     private updateUI;
-    setNonEmulatedAvailableSize(element: Element): void;
     private contentAreaResized;
     private zoomChanged;
     onResize(): void;
     wasShown(): void;
     willHide(): void;
-    captureScreenshot(): Promise<void>;
-    captureFullSizeScreenshot(): Promise<void>;
-    captureAreaScreenshot(clip?: Protocol.Page.Viewport): Promise<void>;
-    private saveScreenshotBase64;
-    private paintImage;
-    private saveScreenshot;
 }
 export interface RulerViewInput {
     horizontal: boolean;
@@ -101,7 +92,7 @@ declare const Ruler_base: (new (...args: any[]) => {
     once<T extends RulerEvents.MARKER_SELECTED>(eventType: T): Promise<RulerEventTypes[T]>;
     removeEventListener<T extends RulerEvents.MARKER_SELECTED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<RulerEventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: RulerEvents.MARKER_SELECTED): boolean;
-    dispatchEventToListeners<T extends RulerEvents.MARKER_SELECTED>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<RulerEventTypes, T>): void;
+    dispatchEventToListeners<T extends RulerEvents.MARKER_SELECTED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<RulerEventTypes, T>): void;
     dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.Widget;
 export declare class Ruler extends Ruler_base {

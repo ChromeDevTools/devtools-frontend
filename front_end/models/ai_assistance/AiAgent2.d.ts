@@ -1,10 +1,12 @@
 import * as Host from '../../core/host/host.js';
 import type * as LHModel from '../lighthouse/lighthouse.js';
+import type * as Trace from '../trace/trace.js';
 import { AiAgent, type ContextResponse, type ConversationContext, type MultimodalInputType, type RequestOptions } from './agents/AiAgent.js';
 import { type ExecuteJsAgentOptions } from './agents/ExecuteJavascript.js';
 import type { Skill, SkillName } from './skills/Skill.js';
 export interface AiAgent2Options extends ExecuteJsAgentOptions {
     lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON | null>;
+    performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
 }
 export declare class AiAgent2 extends AiAgent<unknown> {
     #private;

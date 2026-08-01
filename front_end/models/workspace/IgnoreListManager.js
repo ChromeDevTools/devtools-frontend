@@ -61,7 +61,11 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper {
     }) {
         const { forceNew } = opts;
         if (forceNew) {
-            Root.DevToolsContext.globalInstance().set(IgnoreListManager, new IgnoreListManager(opts.settings ?? Common.Settings.Settings.instance(), opts.targetManager ?? SDK.TargetManager.TargetManager.instance()));
+            Root.DevToolsContext.globalInstance().set(IgnoreListManager, new IgnoreListManager(
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            opts.settings ?? Common.Settings.Settings.instance(), 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            opts.targetManager ?? SDK.TargetManager.TargetManager.instance()));
         }
         return Root.DevToolsContext.globalInstance().get(IgnoreListManager);
     }

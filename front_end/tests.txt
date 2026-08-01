@@ -202,6 +202,7 @@ models/ai_assistance/tools/GetLighthouseAudits.test.js
 models/ai_assistance/tools/GetNetworkRequestDetails.test.js
 models/ai_assistance/tools/GetStyles.test.js
 models/ai_assistance/tools/ListNetworkRequests.test.js
+models/ai_assistance/tools/RecordPerformanceTrace.test.js
 models/ai_assistance/tools/ResolveDevtoolsNodePath.test.js
 models/ai_assistance/tools/ToolRegistry.test.js
 models/ai_code_completion/AiCodeCompletion.test.js
@@ -531,6 +532,7 @@ panels/network/components/RequestHeaderSection.test.js
 panels/network/components/RequestTrustTokensView.test.js
 panels/network/components/ResponseHeaderSection.test.js
 panels/performance_monitor/PerformanceMonitor.test.js
+panels/profiler/HeapDetachedElementsDataGrid.test.js
 panels/profiler/HeapProfileView.test.js
 panels/protocol_monitor/JSONEditor.test.js
 panels/protocol_monitor/ProtocolMonitor.test.js
@@ -562,6 +564,7 @@ panels/security/SecurityModel.test.js
 panels/security/SecurityPanel.test.js
 panels/sensors/LocationsSettingsTab.test.js
 panels/sensors/SensorsView.test.js
+panels/settings/emulation/DevicesSettingsTab.test.js
 panels/settings/AISettingsTab.test.js
 panels/settings/EditFileSystemView.test.js
 panels/settings/FrameworkIgnoreListSettingsTab.test.js

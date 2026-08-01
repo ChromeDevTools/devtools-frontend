@@ -13,7 +13,9 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper {
     #recentPromptsSetting;
     #mutex = new Common.Mutex.Mutex();
     #maxStorageSize;
-    constructor(settings = Common.Settings.Settings.instance(), maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
+    constructor(
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    settings = Common.Settings.Settings.instance(), maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
         super();
         this.#historySetting = settings.createSetting('ai-assistance-history-entries', []);
         this.#imageHistorySettings = settings.createSetting('ai-assistance-history-images', []);
@@ -162,7 +164,9 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper {
     static instance(opts = { forceNew: false, maxStorageSize: DEFAULT_MAX_STORAGE_SIZE }) {
         const { forceNew, maxStorageSize, settings } = opts;
         if (!Root.DevToolsContext.globalInstance().has(AiHistoryStorage) || forceNew) {
-            Root.DevToolsContext.globalInstance().set(AiHistoryStorage, new AiHistoryStorage(settings ?? Common.Settings.Settings.instance(), maxStorageSize));
+            Root.DevToolsContext.globalInstance().set(AiHistoryStorage, new AiHistoryStorage(
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            settings ?? Common.Settings.Settings.instance(), maxStorageSize));
         }
         return Root.DevToolsContext.globalInstance().get(AiHistoryStorage);
     }

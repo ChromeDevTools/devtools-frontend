@@ -53,7 +53,11 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
     }
     static instance({ forceNew } = { forceNew: false }) {
         if (!Root.DevToolsContext.globalInstance().has(UserBadges) || forceNew) {
-            Root.DevToolsContext.globalInstance().set(UserBadges, new UserBadges(Common.Settings.Settings.instance(), Host.GdpClient.GdpClient.instance(), Host.InspectorFrontendHost.InspectorFrontendHostInstance));
+            Root.DevToolsContext.globalInstance().set(UserBadges, new UserBadges(
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            Common.Settings.Settings.instance(), 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            Host.GdpClient.GdpClient.instance(), Host.InspectorFrontendHost.InspectorFrontendHostInstance));
         }
         return Root.DevToolsContext.globalInstance().get(UserBadges);
     }

@@ -10080,16 +10080,16 @@ function cssMetadata() {
   return cssMetadataInstance;
 }
 var imageValuePresetMap = /* @__PURE__ */ new Map([
-  ["linear-gradient()", "linear-gradient(|45deg, black, transparent|)"],
-  ["radial-gradient()", "radial-gradient(|black, transparent|)"],
-  ["conic-gradient()", "conic-gradient(|from 45deg, red, orange, yellow, green, teal, blue, purple|)"],
-  ["repeating-linear-gradient()", "repeating-linear-gradient(|45deg, black, transparent 100px|)"],
-  ["repeating-radial-gradient()", "repeating-radial-gradient(|black, transparent 100px|)"],
-  ["repeating-conic-gradient()", "repeating-conic-gradient(|black 0deg 25%, white 0deg 50%|)"],
+  ["linear-gradient", "linear-gradient(|45deg, black, transparent|)"],
+  ["radial-gradient", "radial-gradient(|black, transparent|)"],
+  ["conic-gradient", "conic-gradient(|from 45deg, red, orange, yellow, green, teal, blue, purple|)"],
+  ["repeating-linear-gradient", "repeating-linear-gradient(|45deg, black, transparent 100px|)"],
+  ["repeating-radial-gradient", "repeating-radial-gradient(|black, transparent 100px|)"],
+  ["repeating-conic-gradient", "repeating-conic-gradient(|black 0deg 25%, white 0deg 50%|)"],
   // Checkerboard
-  ["url()", "url(||)"],
-  ["image-set()", 'image-set(|url("") 1x, url("") 2x|)'],
-  ["cross-fade()", 'cross-fade(|url("") 50%, url("") 50%|)']
+  ["url", "url(||)"],
+  ["image-set", 'image-set(|url("") 1x, url("") 2x|)'],
+  ["cross-fade", 'cross-fade(|url("") 50%, url("") 50%|)']
 ]);
 var filterValuePresetMap = /* @__PURE__ */ new Map([
   ["blur", "blur(|1px|)"],
@@ -10117,7 +10117,7 @@ var valuePresets = /* @__PURE__ */ new Map([
   ["-webkit-mask-image", imageValuePresetMap],
   ["list-style", imageValuePresetMap],
   ["list-style-image", imageValuePresetMap],
-  ["border-image", imageValuePresetMap],
+  ["border-image", new Map([...imageValuePresetMap, ["fill", "fill 10%"]])],
   ["border-image-source", imageValuePresetMap],
   [
     "transform",
@@ -10208,6 +10208,12 @@ var valuePresets = /* @__PURE__ */ new Map([
     /* @__PURE__ */ new Map([
       ["cap", "cap alphabetic"],
       ["ex", "ex alphabetic"]
+    ])
+  ],
+  [
+    "border-image-slice",
+    /* @__PURE__ */ new Map([
+      ["fill", "fill 10%"]
     ])
   ]
 ]);
@@ -10493,19 +10499,17 @@ var extraPropertyValues = /* @__PURE__ */ new Map([
       "stretch",
       "space",
       "round",
-      "auto",
-      // border-image-width
       "fill",
       // border-image-slice
-      "linear-gradient()",
-      "radial-gradient()",
-      "conic-gradient()",
-      "repeating-linear-gradient()",
-      "repeating-radial-gradient()",
-      "repeating-conic-gradient()",
-      "image-set()",
-      "cross-fade()",
-      "url()"
+      "linear-gradient",
+      "radial-gradient",
+      "conic-gradient",
+      "repeating-linear-gradient",
+      "repeating-radial-gradient",
+      "repeating-conic-gradient",
+      "image-set",
+      "cross-fade",
+      "url"
     ])
   ],
   ["border-image-width", /* @__PURE__ */ new Set(["auto"])],
@@ -10514,15 +10518,15 @@ var extraPropertyValues = /* @__PURE__ */ new Map([
     "border-image-source",
     /* @__PURE__ */ new Set([
       "none",
-      "linear-gradient()",
-      "radial-gradient()",
-      "conic-gradient()",
-      "repeating-linear-gradient()",
-      "repeating-radial-gradient()",
-      "repeating-conic-gradient()",
-      "image-set()",
-      "cross-fade()",
-      "url()"
+      "linear-gradient",
+      "radial-gradient",
+      "conic-gradient",
+      "repeating-linear-gradient",
+      "repeating-radial-gradient",
+      "repeating-conic-gradient",
+      "image-set",
+      "cross-fade",
+      "url"
     ])
   ],
   [
@@ -10856,29 +10860,29 @@ var extraPropertyValues = /* @__PURE__ */ new Map([
       "padding-box",
       "text",
       // background-clip
-      "linear-gradient()",
-      "radial-gradient()",
-      "conic-gradient()",
-      "repeating-linear-gradient()",
-      "repeating-radial-gradient()",
-      "repeating-conic-gradient()",
-      "image-set()",
-      "cross-fade()",
-      "url()"
+      "linear-gradient",
+      "radial-gradient",
+      "conic-gradient",
+      "repeating-linear-gradient",
+      "repeating-radial-gradient",
+      "repeating-conic-gradient",
+      "image-set",
+      "cross-fade",
+      "url"
     ])
   ],
   [
     "background-image",
     /* @__PURE__ */ new Set([
-      "linear-gradient()",
-      "radial-gradient()",
-      "conic-gradient()",
-      "repeating-linear-gradient()",
-      "repeating-radial-gradient()",
-      "repeating-conic-gradient()",
-      "image-set()",
-      "cross-fade()",
-      "url()"
+      "linear-gradient",
+      "radial-gradient",
+      "conic-gradient",
+      "repeating-linear-gradient",
+      "repeating-radial-gradient",
+      "repeating-conic-gradient",
+      "image-set",
+      "cross-fade",
+      "url"
     ])
   ],
   ["background-position", /* @__PURE__ */ new Set(["top", "bottom", "left", "right", "center"])],
@@ -11134,29 +11138,29 @@ var extraPropertyValues = /* @__PURE__ */ new Map([
   [
     "mask-image",
     /* @__PURE__ */ new Set([
-      "linear-gradient()",
-      "radial-gradient()",
-      "conic-gradient()",
-      "repeating-linear-gradient()",
-      "repeating-radial-gradient()",
-      "repeating-conic-gradient()",
-      "image-set()",
-      "cross-fade()",
-      "url()"
+      "linear-gradient",
+      "radial-gradient",
+      "conic-gradient",
+      "repeating-linear-gradient",
+      "repeating-radial-gradient",
+      "repeating-conic-gradient",
+      "image-set",
+      "cross-fade",
+      "url"
     ])
   ],
   [
     "-webkit-mask-image",
     /* @__PURE__ */ new Set([
-      "linear-gradient()",
-      "radial-gradient()",
-      "conic-gradient()",
-      "repeating-linear-gradient()",
-      "repeating-radial-gradient()",
-      "repeating-conic-gradient()",
-      "image-set()",
-      "cross-fade()",
-      "url()"
+      "linear-gradient",
+      "radial-gradient",
+      "conic-gradient",
+      "repeating-linear-gradient",
+      "repeating-radial-gradient",
+      "repeating-conic-gradient",
+      "image-set",
+      "cross-fade",
+      "url"
     ])
   ],
   ["-webkit-mask-origin", /* @__PURE__ */ new Set(["border", "border-box", "content", "content-box", "padding", "padding-box"])],

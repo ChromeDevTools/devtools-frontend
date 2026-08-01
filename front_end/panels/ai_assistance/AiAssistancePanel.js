@@ -578,7 +578,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
                             void this.#startConversation(text, imageInput, multimodalInputType);
                         };
-                        const seenSetting = Common.Settings.Settings.instance().moduleSetting('ai-assistance-v2-opt-in-change-dialog-seen');
+                        const seenSetting = Common.Settings.Settings.instance().resolve(AiAssistanceModel.AiUtils.aiAssistanceV2OptInChangeDialogSeenSettingDescriptor);
                         if (!seenSetting.get()) {
                             OptInChangeDialog.show({
                                 onGotIt: () => {

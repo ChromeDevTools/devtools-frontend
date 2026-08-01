@@ -35,12 +35,14 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 export function resourceForURL(url) {
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     return SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK.TargetManager.TargetManager.instance(), url);
 }
 export function displayNameForURL(url) {
     if (!url) {
         return '';
     }
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     if (uiSourceCode) {
         return uiSourceCode.displayName();
@@ -49,6 +51,7 @@ export function displayNameForURL(url) {
     if (resource) {
         return resource.displayName;
     }
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const inspectedURL = SDK.TargetManager.TargetManager.instance().inspectedURL();
     if (!inspectedURL) {
         return Platform.StringUtilities.trimURL(url, '');

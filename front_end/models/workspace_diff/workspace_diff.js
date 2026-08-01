@@ -247,7 +247,16 @@ var UISourceCodeDiff = class extends Common.ObjectWrapper.ObjectWrapper {
 };
 function workspaceDiff({ forceNew } = {}) {
   if (!Root.DevToolsContext.globalInstance().has(WorkspaceDiffImpl) || forceNew) {
-    Root.DevToolsContext.globalInstance().set(WorkspaceDiffImpl, new WorkspaceDiffImpl(Workspace.Workspace.WorkspaceImpl.instance(), Persistence.Persistence.PersistenceImpl.instance(), Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(), Common.Settings.Settings.instance()));
+    Root.DevToolsContext.globalInstance().set(WorkspaceDiffImpl, new WorkspaceDiffImpl(
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+      Workspace.Workspace.WorkspaceImpl.instance(),
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+      Persistence.Persistence.PersistenceImpl.instance(),
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+      Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(),
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+      Common.Settings.Settings.instance()
+    ));
   }
   return Root.DevToolsContext.globalInstance().get(WorkspaceDiffImpl);
 }

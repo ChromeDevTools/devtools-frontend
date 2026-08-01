@@ -38,36 +38,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryNavigator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { render, html, Directives: { ifDefined } } = Lit;
-export class AddressInputChangedEvent extends Event {
-    static eventName = 'addressinputchanged';
-    data;
-    constructor(address, mode) {
-        super(AddressInputChangedEvent.eventName);
-        this.data = { address, mode };
-    }
-}
-export class PageNavigationEvent extends Event {
-    static eventName = 'pagenavigation';
-    data;
-    constructor(navigation) {
-        super(PageNavigationEvent.eventName, {});
-        this.data = navigation;
-    }
-}
-export class HistoryNavigationEvent extends Event {
-    static eventName = 'historynavigation';
-    data;
-    constructor(navigation) {
-        super(HistoryNavigationEvent.eventName, {});
-        this.data = navigation;
-    }
-}
-export class RefreshRequestedEvent extends Event {
-    static eventName = 'refreshrequested';
-    constructor() {
-        super(RefreshRequestedEvent.eventName, {});
-    }
-}
 export class LinearMemoryNavigator extends UI.Widget.Widget {
     #address = '0';
     #error = undefined;
@@ -75,23 +45,84 @@ export class LinearMemoryNavigator extends UI.Widget.Widget {
     #canGoBackInHistory = false;
     #canGoForwardInHistory = false;
     #mode = "Submitted" /* Mode.SUBMITTED */;
+    #onRefreshRequest;
+    #onAddressChange;
+    #onNavigatePage;
+    #onNavigateHistory;
+    get onRefreshRequest() {
+        return this.#onRefreshRequest;
+    }
+    set onRefreshRequest(callback) {
+        this.#onRefreshRequest = callback;
+        this.performUpdate();
+    }
+    get onAddressChange() {
+        return this.#onAddressChange;
+    }
+    set onAddressChange(callback) {
+        this.#onAddressChange = callback;
+        this.performUpdate();
+    }
+    get onNavigatePage() {
+        return this.#onNavigatePage;
+    }
+    set onNavigatePage(callback) {
+        this.#onNavigatePage = callback;
+        this.performUpdate();
+    }
+    get onNavigateHistory() {
+        return this.#onNavigateHistory;
+    }
+    set onNavigateHistory(callback) {
+        this.#onNavigateHistory = callback;
+        this.performUpdate();
+    }
     constructor(element) {
         super(element);
-        /* eslint-disable @devtools/no-imperative-dom-api */
         if (!this.element.shadowRoot) {
             this.element.attachShadow({ mode: 'open' });
         }
-        /* eslint-enable @devtools/no-imperative-dom-api */
-        this.element.classList.remove('vbox', 'flex-auto', 'widget');
-        this.element.classList.add('devtools-linear-memory-inspector-navigator');
     }
-    set data(data) {
-        this.#address = data.address;
-        this.#error = data.error;
-        this.#valid = data.valid;
-        this.#canGoBackInHistory = data.canGoBackInHistory;
-        this.#canGoForwardInHistory = data.canGoForwardInHistory;
-        this.#mode = data.mode;
+    get address() {
+        return this.#address;
+    }
+    set address(address) {
+        this.#address = address;
+        this.requestUpdate();
+    }
+    get error() {
+        return this.#error;
+    }
+    set error(error) {
+        this.#error = error;
+        this.requestUpdate();
+    }
+    get valid() {
+        return this.#valid;
+    }
+    set valid(valid) {
+        this.#valid = valid;
+        this.requestUpdate();
+    }
+    get canGoBackInHistory() {
+        return this.#canGoBackInHistory;
+    }
+    set canGoBackInHistory(canGoBackInHistory) {
+        this.#canGoBackInHistory = canGoBackInHistory;
+        this.requestUpdate();
+    }
+    get canGoForwardInHistory() {
+        return this.#canGoForwardInHistory;
+    }
+    set canGoForwardInHistory(canGoForwardInHistory) {
+        this.#canGoForwardInHistory = canGoForwardInHistory;
+        this.requestUpdate();
+    }
+    get mode() {
+        return this.#mode;
+    }
+    set mode(mode) {
+        this.#mode = mode;
         this.requestUpdate();
     }
     performUpdate() {
@@ -106,9 +137,9 @@ export class LinearMemoryNavigator extends UI.Widget.Widget {
             canGoBackInHistory: this.#canGoBackInHistory,
             canGoForwardInHistory: this.#canGoForwardInHistory,
             mode: this.#mode,
-        }, this.#onAddressChange.bind(this), this.element.dispatchEvent.bind(this.element), shadowRoot);
+        }, this.onAddressChange, this.onNavigatePage, this.onNavigateHistory, this.onRefreshRequest, shadowRoot);
     }
-    static #render(data, onAddressChange, dispatchEvent, shadow) {
+    static #render(data, onAddressChange, onNavigatePage, onNavigateHistory, onRefreshRequest, shadow) {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
         const result = html `
@@ -116,27 +147,27 @@ export class LinearMemoryNavigator extends UI.Widget.Widget {
       <div class="navigator">
         <div class="navigator-item">
           ${LinearMemoryNavigator.#createButton({ icon: 'undo', title: i18nString(UIStrings.goBackInAddressHistory),
-            event: new HistoryNavigationEvent("Backward" /* Navigation.BACKWARD */), enabled: data.canGoBackInHistory,
-            jslogContext: 'linear-memory-inspector.history-back' }, dispatchEvent)}
+            onClick: () => onNavigateHistory?.("Backward" /* Navigation.BACKWARD */), enabled: data.canGoBackInHistory,
+            jslogContext: 'linear-memory-inspector.history-back' })}
           ${LinearMemoryNavigator.#createButton({ icon: 'redo', title: i18nString(UIStrings.goForwardInAddressHistory),
-            event: new HistoryNavigationEvent("Forward" /* Navigation.FORWARD */), enabled: data.canGoForwardInHistory,
-            jslogContext: 'linear-memory-inspector.history-forward' }, dispatchEvent)}
+            onClick: () => onNavigateHistory?.("Forward" /* Navigation.FORWARD */), enabled: data.canGoForwardInHistory,
+            jslogContext: 'linear-memory-inspector.history-forward' })}
         </div>
         <div class="navigator-item">
           ${LinearMemoryNavigator.#createButton({ icon: 'chevron-left', title: i18nString(UIStrings.previousPage),
-            event: new PageNavigationEvent("Backward" /* Navigation.BACKWARD */), enabled: true,
-            jslogContext: 'linear-memory-inspector.previous-page' }, dispatchEvent)}
+            onClick: () => onNavigatePage?.("Backward" /* Navigation.BACKWARD */), enabled: true,
+            jslogContext: 'linear-memory-inspector.previous-page' })}
           ${LinearMemoryNavigator.#createAddressInput(data, onAddressChange)}
           ${LinearMemoryNavigator.#createButton({ icon: 'chevron-right', title: i18nString(UIStrings.nextPage),
-            event: new PageNavigationEvent("Forward" /* Navigation.FORWARD */), enabled: true,
-            jslogContext: 'linear-memory-inspector.next-page' }, dispatchEvent)}
+            onClick: () => onNavigatePage?.("Forward" /* Navigation.FORWARD */), enabled: true,
+            jslogContext: 'linear-memory-inspector.next-page' })}
         </div>
         ${LinearMemoryNavigator.#createButton({ icon: 'refresh', title: i18nString(UIStrings.refresh),
-            event: new RefreshRequestedEvent(), enabled: true,
-            jslogContext: 'linear-memory-inspector.refresh' }, dispatchEvent)}
+            onClick: () => onRefreshRequest?.(), enabled: true,
+            jslogContext: 'linear-memory-inspector.refresh' })}
       </div>
       `;
-        render(result, shadow, { host: shadow.host });
+        render(result, shadow);
         // clang-format on
     }
     static #createAddressInput(data, onAddressChange) {
@@ -152,8 +183,8 @@ export class LinearMemoryNavigator extends UI.Widget.Widget {
             change: true,
         })}
       title=${ifDefined(data.valid ? i18nString(UIStrings.enterAddress) : data.error)}
-      @change=${(e) => onAddressChange("Submitted" /* Mode.SUBMITTED */, e)}
-      @input=${(e) => onAddressChange("Edit" /* Mode.EDIT */, e)}
+      @change=${(e) => onAddressChange?.(e.target.value, "Submitted" /* Mode.SUBMITTED */)}
+      @input=${(e) => onAddressChange?.(e.target.value, "Edit" /* Mode.EDIT */)}
       ${Lit.Directives.ref((el) => {
             if (el) {
                 const inputEl = el;
@@ -167,19 +198,15 @@ export class LinearMemoryNavigator extends UI.Widget.Widget {
         })}
     />`;
     }
-    #onAddressChange(mode, event) {
-        const addressInput = event.target;
-        this.element.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
-    }
-    static #createButton(data, dispatchEvent) {
+    static #createButton(data) {
         return html `
       <devtools-button class="navigator-button"
         .data=${{ variant: "icon" /* Buttons.Button.Variant.ICON */,
             iconName: data.icon,
             disabled: !data.enabled }}
         jslog=${VisualLogging.action().track({ click: true, keydown: 'Enter' }).context(data.jslogContext)}
-        data-button=${data.event.type} title=${data.title}
-        @click=${() => dispatchEvent(data.event)}
+        title=${data.title}
+        @click=${data.onClick}
       ></devtools-button>`;
     }
 }

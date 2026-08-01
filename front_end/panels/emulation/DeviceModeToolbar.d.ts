@@ -8,6 +8,10 @@ export interface DeviceModeOption {
     selected: boolean;
     jslogContext: string;
 }
+export interface DeviceGroup {
+    category: EmulationModel.EmulatedDevices.Category;
+    options: DeviceModeOption[];
+}
 export interface ViewInput {
     isResponsive: boolean;
     isFullHeight: boolean;
@@ -24,7 +28,7 @@ export interface ViewInput {
             selected: boolean;
             jslogContext: string;
         };
-        standard: DeviceModeOption[];
+        standard: DeviceGroup[];
         custom: DeviceModeOption[];
         edit: {
             title: string;

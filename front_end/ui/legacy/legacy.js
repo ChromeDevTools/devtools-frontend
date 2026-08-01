@@ -21816,7 +21816,9 @@ __export(Treeoutline_exports, {
   treeElementBylistItemNode: () => treeElementBylistItemNode
 });
 import * as Common19 from "./../../core/common/common.js";
-import * as Platform23 from "./../../core/platform/platform.js";
+import * as Host13 from "./../../core/host/host.js";
+import * as i18n43 from "./../../core/i18n/i18n.js";
+import * as Platform24 from "./../../core/platform/platform.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Highlighting from "./../components/highlighting/highlighting.js";
 import * as Lit3 from "./../lit/lit.js";
@@ -22146,6 +22148,22 @@ ol.tree-outline.tree-variant-navigation:not(.hide-selection-when-blurred) li.sel
 /*# sourceURL=${import.meta.resolve("./treeoutline.css")} */`;
 
 // gen/front_end/ui/legacy/Treeoutline.js
+var UIStrings22 = {
+  /**
+   * @description Screen reader announcement made when the user expands a tree item, such as a DOM
+   * node in the Elements panel. Uses a polite live region so the tree item's name, role, and
+   * position are announced before this state update.
+   */
+  expanded: "expanded",
+  /**
+   * @description Screen reader announcement made when the user collapses a tree item, such as a DOM
+   * node in the Elements panel. Uses a polite live region so the tree item's name, role, and
+   * position are announced before this state update.
+   */
+  collapsed: "collapsed"
+};
+var str_22 = i18n43.i18n.registerUIStrings("ui/legacy/Treeoutline.ts", UIStrings22);
+var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
 var { render: render12 } = Lit3;
 var Events2;
@@ -22393,7 +22411,7 @@ var TreeOutline = class extends Common19.ObjectWrapper.ObjectWrapper {
       let scrollParentElement = this.element;
       while (getComputedStyle(scrollParentElement).overflow === "visible" && scrollParentElement.parentElementOrShadowHost()) {
         const parent = scrollParentElement.parentElementOrShadowHost();
-        Platform23.assertNotNullOrUndefined(parent);
+        Platform24.assertNotNullOrUndefined(parent);
         scrollParentElement = parent;
       }
       const viewRect = scrollParentElement.getBoundingClientRect();
@@ -22593,9 +22611,9 @@ var TreeElement = class {
     }
     let insertionIndex;
     if (comparator) {
-      insertionIndex = Platform23.ArrayUtilities.lowerBound(this.childrenInternal, child, comparator);
+      insertionIndex = Platform24.ArrayUtilities.lowerBound(this.childrenInternal, child, comparator);
     } else if (this.treeOutline?.comparator) {
-      insertionIndex = Platform23.ArrayUtilities.lowerBound(this.childrenInternal, child, this.treeOutline.comparator);
+      insertionIndex = Platform24.ArrayUtilities.lowerBound(this.childrenInternal, child, this.treeOutline.comparator);
     } else {
       insertionIndex = this.childrenInternal.length;
     }
@@ -22892,17 +22910,7 @@ var TreeElement = class {
     if (!toggleOnClick && !isInTriangle) {
       return;
     }
-    if (this.expanded) {
-      if (event.altKey) {
-        this.collapseRecursively();
-      } else {
-        this.collapse();
-      }
-    } else if (event.altKey) {
-      void this.expandRecursively();
-    } else {
-      this.expand();
-    }
+    void this.#setExpandedFromUser(!this.expanded, event.altKey);
     void VisualLogging26.logClick(this.expandLoggable, event);
     event.consume();
   }
@@ -22932,7 +22940,24 @@ var TreeElement = class {
       return;
     }
     if (this.expandable && !this.expanded) {
-      this.expand();
+      void this.#setExpandedFromUser(true, false);
+    }
+  }
+  async #setExpandedFromUser(shouldExpand, recursively) {
+    const wasExpanded = this.expanded;
+    if (shouldExpand) {
+      if (recursively) {
+        await this.expandRecursively();
+      } else {
+        this.expand();
+      }
+    } else if (recursively) {
+      this.collapseRecursively();
+    } else {
+      this.collapse();
+    }
+    if (this.expanded !== wasExpanded && Host13.Platform.isMac()) {
+      LiveAnnouncer.status(this.expanded ? i18nString22(UIStrings22.expanded) : i18nString22(UIStrings22.collapsed));
     }
   }
   detach() {
@@ -23012,11 +23037,7 @@ var TreeElement = class {
   }
   collapseOrAscend(altKey) {
     if (this.expanded && this.collapsible) {
-      if (altKey) {
-        this.collapseRecursively();
-      } else {
-        this.collapse();
-      }
+      void this.#setExpandedFromUser(false, altKey);
       return true;
     }
     if (!this.parent || this.parent.root) {
@@ -23041,11 +23062,7 @@ var TreeElement = class {
       return false;
     }
     if (!this.expanded) {
-      if (altKey) {
-        void this.expandRecursively();
-      } else {
-        this.expand();
-      }
+      void this.#setExpandedFromUser(true, altKey);
       return true;
     }
     let nextSelectedElement = this.firstChild();
@@ -23176,15 +23193,12 @@ var TreeElement = class {
   async onpopulate() {
   }
   onenter() {
-    if (this.expandable && !this.expanded) {
-      this.expand();
-      return true;
+    const canToggle = this.expanded ? this.collapsible : this.expandable;
+    if (!canToggle) {
+      return false;
     }
-    if (this.collapsible && this.expanded) {
-      this.collapse();
-      return true;
-    }
-    return false;
+    void this.#setExpandedFromUser(!this.expanded, false);
+    return true;
   }
   ondelete() {
     return false;
@@ -23331,7 +23345,7 @@ var TreeSearch = class extends Common19.ObjectWrapper.ObjectWrapper {
     view.updateCurrentMatchIndex(this.#currentMatchIndex);
   }
   next() {
-    this.#currentMatchIndex = Platform23.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
+    this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
     this.dispatchEventToListeners(
       "SearchChanged"
       /* TreeSearch.Events.SEARCH_CHANGED */
@@ -23339,7 +23353,7 @@ var TreeSearch = class extends Common19.ObjectWrapper.ObjectWrapper {
     return this.currentMatch();
   }
   prev() {
-    this.#currentMatchIndex = Platform23.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
+    this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
     this.dispatchEventToListeners(
       "SearchChanged"
       /* TreeSearch.Events.SEARCH_CHANGED */
@@ -23388,7 +23402,7 @@ var TreeSearch = class extends Common19.ObjectWrapper.ObjectWrapper {
     this.#reset();
     for (const _ of this.#innerSearch(node, currentMatch, jumpBackwards, match)) {
     }
-    this.#currentMatchIndex = Platform23.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
+    this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
     this.dispatchEventToListeners(
       "SearchChanged"
       /* TreeSearch.Events.SEARCH_CHANGED */
@@ -23809,7 +23823,7 @@ var View_exports = {};
 __export(View_exports, {
   SimpleView: () => SimpleView
 });
-import * as Platform24 from "./../../core/platform/platform.js";
+import * as Platform25 from "./../../core/platform/platform.js";
 var SimpleView = class extends VBox {
   #title;
   #viewId;
@@ -23823,7 +23837,7 @@ var SimpleView = class extends VBox {
     super(options);
     this.#title = options.title;
     this.#viewId = options.viewId;
-    if (!Platform24.StringUtilities.isExtendedKebabCase(this.#viewId)) {
+    if (!Platform25.StringUtilities.isExtendedKebabCase(this.#viewId)) {
       throw new TypeError(`Invalid view ID '${this.#viewId}'`);
     }
   }

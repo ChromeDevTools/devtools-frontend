@@ -4,11 +4,8 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
-import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Geometry from '../../models/geometry/geometry.js';
-import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -413,15 +410,6 @@ export class DeviceModeView extends UI.Widget.VBox {
             this.contentAreaResized();
         }
     }
-    setNonEmulatedAvailableSize(element) {
-        if (this.model.type() !== EmulationModel.DeviceModeModel.Type.None) {
-            return;
-        }
-        const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
-        const rect = element.getBoundingClientRect();
-        const availableSize = new Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
-        this.model.setAvailableSize(availableSize, availableSize);
-    }
     contentAreaResized() {
         const contentArea = this.contentElement.querySelector('.device-mode-content-area');
         if (!contentArea) {
@@ -451,110 +439,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     willHide() {
         super.willHide();
         this.model.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
-    }
-    async captureScreenshot() {
-        const screenshot = await this.model.captureScreenshot(false);
-        if (screenshot === null) {
-            return;
-        }
-        const pageImage = new Image();
-        pageImage.src = 'data:image/png;base64,' + screenshot;
-        pageImage.onload = async () => {
-            const scale = pageImage.naturalWidth / this.model.screenRect().width;
-            const outlineRectFromModel = this.model.outlineRect();
-            if (!outlineRectFromModel) {
-                throw new Error('Unable to take screenshot: no outlineRect available.');
-            }
-            const outlineRect = outlineRectFromModel.scale(scale);
-            const screenRect = this.model.screenRect().scale(scale);
-            const visiblePageRect = this.model.visiblePageRect().scale(scale);
-            const contentLeft = screenRect.left + visiblePageRect.left - outlineRect.left;
-            const contentTop = screenRect.top + visiblePageRect.top - outlineRect.top;
-            const canvas = new OffscreenCanvas(Math.floor(outlineRect.width), 
-            // Cap the height to not hit the GPU limit.
-            // https://crbug.com/1260828
-            Math.min((1 << 14), Math.floor(outlineRect.height)));
-            const ctx = canvas.getContext('2d', { willReadFrequently: true });
-            if (!ctx) {
-                throw new Error('Could not get 2d context from canvas.');
-            }
-            ctx.imageSmoothingEnabled = false;
-            if (this.model.outlineImage()) {
-                await this.paintImage(ctx, this.model.outlineImage(), outlineRect.relativeTo(outlineRect));
-            }
-            if (this.model.screenImage()) {
-                await this.paintImage(ctx, this.model.screenImage(), screenRect.relativeTo(outlineRect));
-            }
-            ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
-            void this.saveScreenshot(canvas);
-        };
-    }
-    async captureFullSizeScreenshot() {
-        const screenshot = await this.model.captureScreenshot(true);
-        if (screenshot === null) {
-            return;
-        }
-        return this.saveScreenshotBase64(screenshot);
-    }
-    async captureAreaScreenshot(clip) {
-        const screenshot = await this.model.captureScreenshot(false, clip);
-        if (screenshot === null) {
-            return;
-        }
-        return this.saveScreenshotBase64(screenshot);
-    }
-    saveScreenshotBase64(screenshot) {
-        const pageImage = new Image();
-        pageImage.src = 'data:image/png;base64,' + screenshot;
-        pageImage.onload = () => {
-            const canvas = new OffscreenCanvas(pageImage.naturalWidth, 
-            // Cap the height to not hit the GPU limit.
-            // https://crbug.com/1260828
-            Math.min((1 << 14), Math.floor(pageImage.naturalHeight)));
-            const ctx = canvas.getContext('2d', { willReadFrequently: true });
-            if (!ctx) {
-                throw new Error('Could not get 2d context for base64 screenshot.');
-            }
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(pageImage, 0, 0);
-            void this.saveScreenshot(canvas);
-        };
-    }
-    paintImage(ctx, src, rect) {
-        return new Promise(resolve => {
-            const image = new Image();
-            image.crossOrigin = 'Anonymous';
-            image.srcset = src;
-            image.onerror = () => resolve();
-            image.onload = () => {
-                ctx.drawImage(image, rect.left, rect.top, rect.width, rect.height);
-                resolve();
-            };
-        });
-    }
-    async saveScreenshot(canvas) {
-        const url = this.model.inspectedURL();
-        let fileName = '';
-        if (url) {
-            const withoutFragment = Platform.StringUtilities.removeURLFragment(url);
-            fileName = Platform.StringUtilities.trimURL(withoutFragment);
-        }
-        const device = this.model.device();
-        if (device && this.model.type() === EmulationModel.DeviceModeModel.Type.Device) {
-            fileName += `(${device.title})`;
-        }
-        fileName += '.png';
-        const blob = await canvas.convertToBlob({ type: 'image/png' });
-        const dataUrl = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-        });
-        const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
-        const contentData = new TextUtils.ContentData.ContentData(base64, /* isBase64=*/ true, 'image/png');
-        await Workspace.FileManager.FileManager.instance().save(fileName, contentData, /* forceSaveAs=*/ true);
-        Workspace.FileManager.FileManager.instance().close(fileName);
+        this.model.exitHingeMode();
     }
 }
 export const DEFAULT_RULER_VIEW = (input, output, target) => {

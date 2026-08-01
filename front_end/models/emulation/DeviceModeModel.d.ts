@@ -58,6 +58,8 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     isFullHeight(): boolean;
     isMobile(): boolean;
     enabledSetting(): Common.Settings.Setting<boolean>;
+    isDeviceModeOn(): boolean;
+    toggleDeviceMode(): void;
     scaleSetting(): Common.Settings.Setting<number>;
     uaSetting(): Common.Settings.Setting<UA>;
     deviceScaleFactorSetting(): Common.Settings.Setting<number>;
@@ -90,7 +92,12 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     private applyUserAgent;
     private applyDeviceMetrics;
     exitHingeMode(): void;
-    captureScreenshot(fullSize: boolean, clip?: Protocol.Page.Viewport): Promise<string | null>;
+    captureScreenshot(): Promise<void>;
+    captureFullSizeScreenshot(): Promise<void>;
+    captureAreaScreenshot(clip?: Protocol.Page.Viewport): Promise<void>;
+    private saveScreenshotBase64;
+    private paintImage;
+    private saveScreenshot;
     private applyTouch;
     private showDeviceOverlaysIfApplicable;
     private currentDisplayCutout;

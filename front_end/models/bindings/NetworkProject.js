@@ -74,6 +74,7 @@ export class NetworkProject {
             return;
         }
         const data = { uiSourceCode, frame };
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         NetworkProjectManager.instance().dispatchEventToListeners("FrameAttributionAdded" /* Events.FRAME_ATTRIBUTION_ADDED */, data);
     }
     static removeFrameAttribution(uiSourceCode, frameId) {
@@ -92,15 +93,19 @@ export class NetworkProject {
         }
         frameAttribution.delete(frameId);
         const data = { uiSourceCode, frame: attributionInfo.frame };
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         NetworkProjectManager.instance().dispatchEventToListeners("FrameAttributionRemoved" /* Events.FRAME_ATTRIBUTION_REMOVED */, data);
     }
     static targetForUISourceCode(uiSourceCode) {
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         return NetworkProjectManager.instance().getTargetForUISourceCode(uiSourceCode);
     }
     static setTargetForProject(project, target) {
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         NetworkProjectManager.instance().setTargetForProject(project, target);
     }
     static getTargetForProject(project) {
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         return NetworkProjectManager.instance().getTargetForProject(project);
     }
     static framesForUISourceCode(uiSourceCode) {

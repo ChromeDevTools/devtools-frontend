@@ -7,6 +7,7 @@ import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
 import { GetStylesTool } from './GetStyles.js';
 import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
+import { RecordPerformanceTraceTool } from './RecordPerformanceTrace.js';
 import { ResolveDevtoolsNodePathTool } from './ResolveDevtoolsNodePath.js';
 /**
  * Plain object registry containing concrete instantiated tools.
@@ -24,6 +25,7 @@ export const TOOLS = {
     ["getLighthouseAudits" /* ToolName.GET_LIGHTHOUSE_AUDITS */]: new GetLighthouseAuditsTool(),
     ["resolveDevtoolsNodePath" /* ToolName.RESOLVE_DEVTOOLS_NODE_PATH */]: new ResolveDevtoolsNodePathTool(),
     ["getElementAccessibilityDetails" /* ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS */]: new GetElementAccessibilityDetailsTool(),
+    ["recordPerformanceTrace" /* ToolName.RECORD_PERFORMANCE_TRACE */]: new RecordPerformanceTraceTool(),
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

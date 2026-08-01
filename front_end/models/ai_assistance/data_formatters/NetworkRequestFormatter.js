@@ -96,7 +96,9 @@ export class NetworkRequestFormatter {
         return lines.length > 0 ? `${lines.join('\n')}\n` : '';
     }
     #networkLog;
-    constructor(request, calculator, networkLog = Logs.NetworkLog.NetworkLog.instance()) {
+    constructor(request, calculator, 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    networkLog = Logs.NetworkLog.NetworkLog.instance()) {
         this.#request = request;
         this.#calculator = calculator;
         this.#networkLog = networkLog;

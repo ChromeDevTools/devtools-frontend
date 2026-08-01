@@ -14,7 +14,9 @@ export class ExecuteJavaScriptTool {
     description = 'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.';
     static async validateAndFormatCode(code) {
         try {
-            const formatted = await Formatter.ScriptFormatter.formatScriptContent(Common.Settings.Settings.instance(), 'text/javascript', code, '  ');
+            const formatted = await Formatter.ScriptFormatter.formatScriptContent(
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            Common.Settings.Settings.instance(), 'text/javascript', code, '  ');
             const formattedCode = formatted.formattedContent;
             const lines = formattedCode.split('\n');
             const maxLineLen = Math.max(...lines.map(line => line.length));

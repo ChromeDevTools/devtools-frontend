@@ -46,7 +46,11 @@ export class FileFormatter {
     #file;
     #debuggerWorkspaceBinding;
     #networkLog;
-    constructor(file, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), networkLog = Logs.NetworkLog.NetworkLog.instance()) {
+    constructor(file, debuggerWorkspaceBinding = 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    networkLog = Logs.NetworkLog.NetworkLog.instance()) {
         this.#file = file;
         this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
         this.#networkLog = networkLog;

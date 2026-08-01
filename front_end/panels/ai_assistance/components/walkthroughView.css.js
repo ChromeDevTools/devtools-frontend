@@ -104,7 +104,7 @@ export default `/*
 
   .inline-wrapper {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--sys-size-2);
     justify-content: flex-start;
 

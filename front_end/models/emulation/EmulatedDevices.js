@@ -21,9 +21,26 @@ const UIStrings = {
      * @description Title of the Laptop with MDPI screen device.
      */
     laptopWithMDPIScreen: 'Laptop with MDPI screen',
+    /**
+     * @description Label for mobile category in emulation devices.
+     */
+    mobileGroup: 'Mobile',
+    /**
+     * @description Label for foldables category in emulation devices.
+     */
+    foldablesGroup: 'Foldables',
+    /**
+     * @description Label for tablets and desktops category in emulation devices.
+     */
+    tabletsAndDesktopsGroup: 'Tablets & Desktops',
+    /**
+     * @description Label for smart displays category in emulation devices.
+     */
+    smartDisplaysGroup: 'Smart Displays',
 };
 const str_ = i18n.i18n.registerUIStrings('models/emulation/EmulatedDevices.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export function computeRelativeImageURL(cssURLValue) {
     return cssURLValue.replace(/@url\(([^\)]*?)\)/g, (_match, url) => {
         return new URL(`../../emulated_devices/${url}`, import.meta.url).toString();
@@ -483,16 +500,48 @@ export const Horizontal = 'horizontal';
 export const Vertical = 'vertical';
 export const HorizontalSpanned = 'horizontal-spanned';
 export const VerticalSpanned = 'vertical-spanned';
-var Type;
+export var Type;
 (function (Type) {
     /* eslint-disable @typescript-eslint/naming-convention -- Indexed access. */
     Type["Phone"] = "phone";
     Type["Tablet"] = "tablet";
     Type["Notebook"] = "notebook";
     Type["Desktop"] = "desktop";
+    Type["Foldable"] = "foldable";
+    Type["SmartDisplay"] = "smart-display";
     Type["Unknown"] = "unknown";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Type || (Type = {}));
+export function deviceCategory(device) {
+    if (device.type === Type.Foldable || device.isFoldableScreen || device.isDualScreen) {
+        return "foldable" /* Category.FOLDABLE */;
+    }
+    if (device.type === Type.SmartDisplay) {
+        return "smart_display" /* Category.SMART_DISPLAY */;
+    }
+    if (device.type === Type.Tablet || device.type === Type.Notebook || device.type === Type.Desktop) {
+        return "tablet_desktop" /* Category.TABLET_DESKTOP */;
+    }
+    return "mobile" /* Category.MOBILE */;
+}
+export const CATEGORY_ORDER = [
+    "mobile" /* Category.MOBILE */,
+    "foldable" /* Category.FOLDABLE */,
+    "tablet_desktop" /* Category.TABLET_DESKTOP */,
+    "smart_display" /* Category.SMART_DISPLAY */,
+];
+export function getCategoryTitle(category) {
+    switch (category) {
+        case "mobile" /* Category.MOBILE */:
+            return i18nString(UIStrings.mobileGroup);
+        case "foldable" /* Category.FOLDABLE */:
+            return i18nString(UIStrings.foldablesGroup);
+        case "tablet_desktop" /* Category.TABLET_DESKTOP */:
+            return i18nString(UIStrings.tabletsAndDesktopsGroup);
+        case "smart_display" /* Category.SMART_DISPLAY */:
+            return i18nString(UIStrings.smartDisplaysGroup);
+    }
+}
 var Show;
 (function (Show) {
     /* eslint-disable @typescript-eslint/naming-convention -- Indexed access. */
@@ -520,7 +569,9 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
     }
     static instance() {
         if (!Root.DevToolsContext.globalInstance().has(EmulatedDevicesList)) {
-            Root.DevToolsContext.globalInstance().set(EmulatedDevicesList, new EmulatedDevicesList(Common.Settings.Settings.instance()));
+            Root.DevToolsContext.globalInstance().set(EmulatedDevicesList, 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            new EmulatedDevicesList(Common.Settings.Settings.instance()));
         }
         return Root.DevToolsContext.globalInstance().get(EmulatedDevicesList);
     }
@@ -631,7 +682,7 @@ const emulatedDevices = [
     },
     {
         'order': 12,
-        'show-by-default': true,
+        'show-by-default': false,
         'title': 'iPhone XR',
         'screen': {
             'horizontal': {
@@ -666,7 +717,7 @@ const emulatedDevices = [
     },
     {
         'order': 14,
-        'show-by-default': true,
+        'show-by-default': false,
         'title': 'iPhone 12 Pro',
         'screen': {
             'horizontal': {
@@ -806,7 +857,7 @@ const emulatedDevices = [
     },
     {
         'order': 18,
-        'show-by-default': true,
+        'show-by-default': false,
         'title': 'iPhone 14 Pro Max',
         'screen': {
             'horizontal': {
@@ -946,7 +997,7 @@ const emulatedDevices = [
     },
     {
         'order': 22,
-        'show-by-default': true,
+        'show-by-default': false,
         'title': 'iPhone 15 Pro Max',
         'screen': {
             'horizontal': {
@@ -1016,7 +1067,7 @@ const emulatedDevices = [
     },
     {
         'order': 24,
-        'show-by-default': false,
+        'show-by-default': true,
         'title': 'iPhone 16',
         'screen': {
             'horizontal': {
@@ -1155,43 +1206,8 @@ const emulatedDevices = [
         ],
     },
     {
-        'order': 28,
-        'show-by-default': false,
-        'title': 'Pixel 3 XL',
-        'screen': {
-            'horizontal': {
-                'width': 786,
-                'height': 393,
-            },
-            'device-pixel-ratio': 2.75,
-            'vertical': {
-                'width': 393,
-                'height': 786,
-            },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 11; Pixel 3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '11', 'architecture': '', 'model': 'Pixel 3', 'mobile': true },
-        'type': 'phone',
-        'modes': [
-            {
-                'title': 'default',
-                'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
-                'safe-area-insets': { 'left': 0, 'top': 45, 'right': 0, 'bottom': 0 },
-                'cutout': { 'shape': 'rectangle', 'x': 126, 'y': 0, 'width': 141, 'height': 45 },
-            },
-            {
-                'title': 'default',
-                'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
-                'safe-area-insets': { 'left': 0, 'top': 0, 'right': 45, 'bottom': 0 },
-            },
-        ],
-    },
-    {
         'order': 30,
-        'show-by-default': true,
+        'show-by-default': false,
         'title': 'Pixel 7',
         'screen': {
             'horizontal': {
@@ -1226,7 +1242,7 @@ const emulatedDevices = [
     },
     {
         'order': 31,
-        'show-by-default': true,
+        'show-by-default': false,
         'title': 'Pixel 8',
         'screen': {
             'horizontal': {
@@ -1366,7 +1382,7 @@ const emulatedDevices = [
     },
     {
         'order': 35,
-        'show-by-default': false,
+        'show-by-default': true,
         'title': 'Pixel 9 Pro',
         'screen': {
             'horizontal': {
@@ -1471,7 +1487,7 @@ const emulatedDevices = [
     },
     {
         'order': 38,
-        'show-by-default': true,
+        'show-by-default': false,
         'title': 'Samsung Galaxy S8+',
         'screen': {
             'horizontal': {
@@ -1491,7 +1507,7 @@ const emulatedDevices = [
     },
     {
         'order': 39,
-        'show-by-default': true,
+        'show-by-default': false,
         'title': 'Samsung Galaxy S20 Ultra',
         'screen': {
             'horizontal': {
@@ -1508,6 +1524,25 @@ const emulatedDevices = [
         'user-agent': 'Mozilla/5.0 (Linux; Android 13; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
         'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '13', 'architecture': '', 'model': 'SM-G981B', 'mobile': true },
         'type': 'phone',
+    },
+    {
+        'order': 43,
+        'show-by-default': false,
+        'title': 'Surface Pro 7',
+        'screen': {
+            'horizontal': {
+                'width': 1368,
+                'height': 912,
+            },
+            'device-pixel-ratio': 2,
+            'vertical': {
+                'width': 912,
+                'height': 1368,
+            },
+        },
+        'capabilities': ['touch', 'mobile'],
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36',
+        'type': 'tablet',
     },
     {
         'order': 40,
@@ -1530,38 +1565,18 @@ const emulatedDevices = [
         'type': 'tablet',
     },
     {
-        'order': 41,
-        'show-by-default': true,
-        'title': 'iPad Air',
-        'screen': {
-            'horizontal': {
-                'width': 1180,
-                'height': 820,
-            },
-            'device-pixel-ratio': 2,
-            'vertical': {
-                'width': 820,
-                'height': 1180,
-            },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Safari/605.1.15',
-        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '18.5', 'architecture': '', 'model': 'iPad', 'mobile': true },
-        'type': 'tablet',
-    },
-    {
         'order': 42,
         'show-by-default': true,
-        'title': 'iPad Pro',
+        'title': 'iPad Pro 13"',
         'screen': {
             'horizontal': {
-                'width': 1366,
-                'height': 1024,
+                'width': 1376,
+                'height': 1032,
             },
             'device-pixel-ratio': 2,
             'vertical': {
-                'width': 1024,
-                'height': 1366,
+                'width': 1032,
+                'height': 1376,
             },
         },
         'capabilities': ['touch', 'mobile'],
@@ -1572,16 +1587,16 @@ const emulatedDevices = [
     {
         'order': 43,
         'show-by-default': true,
-        'title': 'Surface Pro 7',
+        'title': 'Surface Pro 10',
         'screen': {
             'horizontal': {
-                'width': 1368,
-                'height': 912,
+                'width': 1440,
+                'height': 960,
             },
             'device-pixel-ratio': 2,
             'vertical': {
-                'width': 912,
-                'height': 1368,
+                'width': 960,
+                'height': 1440,
             },
         },
         'capabilities': ['touch', 'mobile'],
@@ -1590,7 +1605,7 @@ const emulatedDevices = [
     },
     {
         'order': 44,
-        'show-by-default': true,
+        'show-by-default': false,
         'dual-screen': true,
         'title': 'Surface Duo',
         'screen': {
@@ -1624,8 +1639,126 @@ const emulatedDevices = [
         ],
     },
     {
+        'order': 38,
+        'show-by-default': true,
+        'title': 'Samsung Galaxy A55',
+        'screen': {
+            'horizontal': { 'width': 800, 'height': 360 },
+            'device-pixel-ratio': 2.25,
+            'vertical': { 'width': 360, 'height': 800 },
+        },
+        'capabilities': ['touch', 'mobile'],
+        'user-agent': 'Mozilla/5.0 (Linux; Android 14; SM-A556B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
+        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '14', 'architecture': '', 'model': 'SM-A556B', 'mobile': true },
+        'type': 'phone',
+    },
+    {
+        'order': 45,
+        'show-by-default': true,
+        'foldable-screen': true,
+        'title': 'Pixel 9 Pro Fold',
+        'screen': {
+            'horizontal': { 'width': 922, 'height': 412 },
+            'device-pixel-ratio': 2.625,
+            'vertical': { 'width': 412, 'height': 922 },
+            'vertical-spanned': {
+                'width': 836,
+                'height': 842,
+                'hinge': {
+                    'width': 0,
+                    'height': 842,
+                    'x': 418,
+                    'y': 0,
+                    'contentColor': { 'r': 38, 'g': 38, 'b': 38, 'a': 0.2 },
+                    'outlineColor': { 'r': 38, 'g': 38, 'b': 38, 'a': 0.7 },
+                },
+            },
+            'horizontal-spanned': {
+                'width': 842,
+                'height': 836,
+                'hinge': {
+                    'width': 842,
+                    'height': 0,
+                    'x': 0,
+                    'y': 418,
+                    'contentColor': { 'r': 38, 'g': 38, 'b': 38, 'a': 0.2 },
+                    'outlineColor': { 'r': 38, 'g': 38, 'b': 38, 'a': 0.7 },
+                },
+            },
+        },
+        'capabilities': ['touch', 'mobile'],
+        'user-agent': 'Mozilla/5.0 (Linux; Android 14; Pixel 9 Pro Fold) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
+        'user-agent-metadata': {
+            'platform': 'Android',
+            'platformVersion': '14',
+            'architecture': '',
+            'model': 'Pixel 9 Pro Fold',
+            'mobile': true,
+        },
+        'type': 'phone',
+        'modes': [
+            { 'title': 'default', 'orientation': 'vertical', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
+            { 'title': 'default', 'orientation': 'horizontal', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
+            { 'title': 'spanned', 'orientation': 'vertical-spanned', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
+            {
+                'title': 'spanned',
+                'orientation': 'horizontal-spanned',
+                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
+            },
+        ],
+    },
+    {
         'order': 46,
         'show-by-default': true,
+        'foldable-screen': true,
+        'title': 'Galaxy Z Fold 6',
+        'screen': {
+            'horizontal': { 'width': 968, 'height': 412 },
+            'device-pixel-ratio': 2.625,
+            'vertical': { 'width': 412, 'height': 968 },
+            'vertical-spanned': {
+                'width': 744,
+                'height': 860,
+                'hinge': {
+                    'width': 0,
+                    'height': 860,
+                    'x': 372,
+                    'y': 0,
+                    'contentColor': { 'r': 38, 'g': 38, 'b': 38, 'a': 0.2 },
+                    'outlineColor': { 'r': 38, 'g': 38, 'b': 38, 'a': 0.7 },
+                },
+            },
+            'horizontal-spanned': {
+                'width': 860,
+                'height': 744,
+                'hinge': {
+                    'width': 860,
+                    'height': 0,
+                    'x': 0,
+                    'y': 372,
+                    'contentColor': { 'r': 38, 'g': 38, 'b': 38, 'a': 0.2 },
+                    'outlineColor': { 'r': 38, 'g': 38, 'b': 38, 'a': 0.7 },
+                },
+            },
+        },
+        'capabilities': ['touch', 'mobile'],
+        'user-agent': 'Mozilla/5.0 (Linux; Android 14; SM-F956U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
+        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '14', 'architecture': '', 'model': 'SM-F956U', 'mobile': true },
+        'type': 'phone',
+        'modes': [
+            { 'title': 'default', 'orientation': 'vertical', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
+            { 'title': 'default', 'orientation': 'horizontal', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
+            { 'title': 'spanned', 'orientation': 'vertical-spanned', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
+            {
+                'title': 'spanned',
+                'orientation': 'horizontal-spanned',
+                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
+            },
+        ],
+    },
+    {
+        'order': 46,
+        'show-by-default': false,
         'foldable-screen': true,
         'title': 'Galaxy Z Fold 5',
         'screen': {
@@ -1674,7 +1807,7 @@ const emulatedDevices = [
     },
     {
         'order': 47,
-        'show-by-default': true,
+        'show-by-default': false,
         'foldable-screen': true,
         'title': 'Asus Zenbook Fold',
         'screen': {
@@ -1727,7 +1860,7 @@ const emulatedDevices = [
     },
     {
         'order': 48,
-        'show-by-default': true,
+        'show-by-default': false,
         'title': 'Samsung Galaxy A51/71',
         'screen': {
             'horizontal': {
@@ -1766,511 +1899,8 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36 CrKey/1.54.250320',
-        'type': 'tablet',
+        'type': 'smart-display',
         'modes': [{ 'title': 'default', 'orientation': 'horizontal' }],
-    },
-    {
-        'order': 50,
-        'show-by-default': true,
-        'title': 'Nest Hub',
-        'screen': {
-            'horizontal': {
-                'outline': {
-                    'image': '@url(optimized/google-nest-hub-horizontal.avif)',
-                    'insets': { 'left': 82, 'top': 74, 'right': 83, 'bottom': 222 },
-                },
-                'width': 1024,
-                'height': 600,
-            },
-            'device-pixel-ratio': 2,
-            'vertical': {
-                'width': 1024,
-                'height': 600,
-            },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36 CrKey/1.54.248666',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '', 'architecture': '', 'model': '', 'mobile': false },
-        'type': 'tablet',
-        'modes': [{ 'title': 'default', 'orientation': 'horizontal' }],
-    },
-    {
-        'order': 129,
-        'show-by-default': false,
-        'title': 'iPhone 4',
-        'screen': {
-            'horizontal': { 'width': 480, 'height': 320 },
-            'device-pixel-ratio': 2,
-            'vertical': { 'width': 320, 'height': 480 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53',
-        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '7.1.2', 'architecture': '', 'model': 'iPhone', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'order': 130,
-        'show-by-default': false,
-        'title': 'iPhone 5/SE',
-        'screen': {
-            'horizontal': {
-                'outline': {
-                    'image': '@url(optimized/iPhone5-landscape.avif)',
-                    'insets': { 'left': 115, 'top': 25, 'right': 115, 'bottom': 28 },
-                },
-                'width': 568,
-                'height': 320,
-            },
-            'device-pixel-ratio': 2,
-            'vertical': {
-                'outline': {
-                    'image': '@url(optimized/iPhone5-portrait.avif)',
-                    'insets': { 'left': 29, 'top': 105, 'right': 25, 'bottom': 111 },
-                },
-                'width': 320,
-                'height': 568,
-            },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1',
-        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '10.3.1', 'architecture': '', 'model': 'iPhone', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'order': 131,
-        'show-by-default': false,
-        'title': 'iPhone 6/7/8',
-        'screen': {
-            'horizontal': {
-                'outline': {
-                    'image': '@url(optimized/iPhone6-landscape.avif)',
-                    'insets': { 'left': 106, 'top': 28, 'right': 106, 'bottom': 28 },
-                },
-                'width': 667,
-                'height': 375,
-            },
-            'device-pixel-ratio': 2,
-            'vertical': {
-                'outline': {
-                    'image': '@url(optimized/iPhone6-portrait.avif)',
-                    'insets': { 'left': 28, 'top': 105, 'right': 28, 'bottom': 105 },
-                },
-                'width': 375,
-                'height': 667,
-            },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
-        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '13.2.3', 'architecture': '', 'model': 'iPhone', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'order': 132,
-        'show-by-default': false,
-        'title': 'iPhone 6/7/8 Plus',
-        'screen': {
-            'horizontal': {
-                'outline': {
-                    'image': '@url(optimized/iPhone6Plus-landscape.avif)',
-                    'insets': { 'left': 109, 'top': 29, 'right': 109, 'bottom': 27 },
-                },
-                'width': 736,
-                'height': 414,
-            },
-            'device-pixel-ratio': 3,
-            'vertical': {
-                'outline': {
-                    'image': '@url(optimized/iPhone6Plus-portrait.avif)',
-                    'insets': { 'left': 26, 'top': 107, 'right': 30, 'bottom': 111 },
-                },
-                'width': 414,
-                'height': 736,
-            },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
-        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '13.2.3', 'architecture': '', 'model': 'iPhone', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'order': 133,
-        'show-by-default': false,
-        'title': 'iPhone X',
-        'screen': {
-            'horizontal': { 'width': 812, 'height': 375 },
-            'device-pixel-ratio': 3,
-            'vertical': { 'width': 375, 'height': 812 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
-        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '13.2.3', 'architecture': '', 'model': 'iPhone', 'mobile': true },
-        'type': 'phone',
-        'modes': [
-            {
-                'title': 'default',
-                'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
-                'safe-area-insets': { 'left': 0, 'top': 44, 'right': 0, 'bottom': 34 },
-                'cutout': { 'shape': 'notch', 'x': 85, 'y': 0, 'width': 204, 'height': 30, 'upper-radius': 8, 'lower-radius': 19 },
-            },
-            {
-                'title': 'default',
-                'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
-                'safe-area-insets': { 'left': 44, 'top': 0, 'right': 44, 'bottom': 21 },
-            },
-        ],
-    },
-    {
-        'show-by-default': false,
-        'title': 'BlackBerry Z30',
-        'screen': {
-            'horizontal': { 'width': 640, 'height': 360 },
-            'device-pixel-ratio': 2,
-            'vertical': { 'width': 360, 'height': 640 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/10.0.9.2372 Mobile Safari/537.10+',
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Nexus 4',
-        'screen': {
-            'horizontal': { 'width': 640, 'height': 384 },
-            'device-pixel-ratio': 2,
-            'vertical': { 'width': 384, 'height': 640 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '4.4.2', 'architecture': '', 'model': 'Nexus 4', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'title': 'Nexus 5',
-        'type': 'phone',
-        'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '6.0', 'architecture': '', 'model': 'Nexus 5', 'mobile': true },
-        'capabilities': ['touch', 'mobile'],
-        'show-by-default': false,
-        'screen': {
-            'device-pixel-ratio': 3,
-            'vertical': { 'width': 360, 'height': 640 },
-            'horizontal': { 'width': 640, 'height': 360 },
-        },
-        'modes': [
-            {
-                'title': 'default',
-                'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 25, 'right': 0, 'bottom': 48 },
-                'image': '@url(optimized/google-nexus-5-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-default-2x.avif) 2x',
-            },
-            {
-                'title': 'navigation bar',
-                'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 80, 'right': 0, 'bottom': 48 },
-                'image': '@url(optimized/google-nexus-5-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-navigation-2x.avif) 2x',
-            },
-            {
-                'title': 'keyboard',
-                'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 80, 'right': 0, 'bottom': 312 },
-                'image': '@url(optimized/google-nexus-5-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-keyboard-2x.avif) 2x',
-            },
-            {
-                'title': 'default',
-                'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 25, 'right': 42, 'bottom': 0 },
-                'image': '@url(optimized/google-nexus-5-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-default-2x.avif) 2x',
-            },
-            {
-                'title': 'navigation bar',
-                'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 80, 'right': 42, 'bottom': 0 },
-                'image': '@url(optimized/google-nexus-5-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-navigation-2x.avif) 2x',
-            },
-            {
-                'title': 'keyboard',
-                'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 80, 'right': 42, 'bottom': 202 },
-                'image': '@url(optimized/google-nexus-5-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-keyboard-2x.avif) 2x',
-            },
-        ],
-    },
-    {
-        'title': 'Nexus 5X',
-        'type': 'phone',
-        'user-agent': 'Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '8.0.0', 'architecture': '', 'model': 'Nexus 5X', 'mobile': true },
-        'capabilities': ['touch', 'mobile'],
-        'show-by-default': false,
-        'screen': {
-            'device-pixel-ratio': 2.625,
-            'vertical': {
-                'outline': {
-                    'image': '@url(optimized/Nexus5X-portrait.avif)',
-                    'insets': { 'left': 18, 'top': 88, 'right': 22, 'bottom': 98 },
-                },
-                'width': 412,
-                'height': 732,
-            },
-            'horizontal': {
-                'outline': {
-                    'image': '@url(optimized/Nexus5X-landscape.avif)',
-                    'insets': { 'left': 88, 'top': 21, 'right': 98, 'bottom': 19 },
-                },
-                'width': 732,
-                'height': 412,
-            },
-        },
-        'modes': [
-            {
-                'title': 'default',
-                'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 24, 'right': 0, 'bottom': 48 },
-                'image': '@url(optimized/google-nexus-5x-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-default-2x.avif) 2x',
-            },
-            {
-                'title': 'navigation bar',
-                'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 80, 'right': 0, 'bottom': 48 },
-                'image': '@url(optimized/google-nexus-5x-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-navigation-2x.avif) 2x',
-            },
-            {
-                'title': 'keyboard',
-                'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 80, 'right': 0, 'bottom': 342 },
-                'image': '@url(optimized/google-nexus-5x-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-keyboard-2x.avif) 2x',
-            },
-            {
-                'title': 'default',
-                'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 24, 'right': 48, 'bottom': 0 },
-                'image': '@url(optimized/google-nexus-5x-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-default-2x.avif) 2x',
-            },
-            {
-                'title': 'navigation bar',
-                'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 80, 'right': 48, 'bottom': 0 },
-                'image': '@url(optimized/google-nexus-5x-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-navigation-2x.avif) 2x',
-            },
-            {
-                'title': 'keyboard',
-                'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 80, 'right': 48, 'bottom': 222 },
-                'image': '@url(optimized/google-nexus-5x-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-keyboard-2x.avif) 2x',
-            },
-        ],
-    },
-    {
-        'show-by-default': false,
-        'title': 'Nexus 6',
-        'screen': {
-            'horizontal': { 'width': 732, 'height': 412 },
-            'device-pixel-ratio': 3.5,
-            'vertical': { 'width': 412, 'height': 732 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '7.1.1', 'architecture': '', 'model': 'Nexus 6', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Nexus 6P',
-        'screen': {
-            'horizontal': {
-                'outline': {
-                    'image': '@url(optimized/Nexus6P-landscape.avif)',
-                    'insets': { 'left': 94, 'top': 17, 'right': 88, 'bottom': 17 },
-                },
-                'width': 732,
-                'height': 412,
-            },
-            'device-pixel-ratio': 3.5,
-            'vertical': {
-                'outline': {
-                    'image': '@url(optimized/Nexus6P-portrait.avif)',
-                    'insets': { 'left': 16, 'top': 94, 'right': 16, 'bottom': 88 },
-                },
-                'width': 412,
-                'height': 732,
-            },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '8.0.0', 'architecture': '', 'model': 'Nexus 6P', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'order': 120,
-        'show-by-default': false,
-        'title': 'Pixel 2',
-        'screen': {
-            'horizontal': { 'width': 731, 'height': 411 },
-            'device-pixel-ratio': 2.625,
-            'vertical': { 'width': 411, 'height': 731 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '8.0', 'architecture': '', 'model': 'Pixel 2', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'order': 121,
-        'show-by-default': false,
-        'title': 'Pixel 2 XL',
-        'screen': {
-            'horizontal': { 'width': 823, 'height': 411 },
-            'device-pixel-ratio': 3.5,
-            'vertical': { 'width': 411, 'height': 823 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '8.0.0', 'architecture': '', 'model': 'Pixel 2 XL', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Pixel 3',
-        'screen': {
-            'horizontal': { 'width': 786, 'height': 393 },
-            'device-pixel-ratio': 2.75,
-            'vertical': { 'width': 393, 'height': 786 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 9; Pixel 3 Build/PQ1A.181105.017.A1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '9', 'architecture': '', 'model': 'Pixel 3', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Pixel 4',
-        'screen': {
-            'horizontal': { 'width': 745, 'height': 353 },
-            'device-pixel-ratio': 3,
-            'vertical': { 'width': 353, 'height': 745 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '10', 'architecture': '', 'model': 'Pixel 4', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'LG Optimus L70',
-        'screen': {
-            'horizontal': { 'width': 640, 'height': 384 },
-            'device-pixel-ratio': 1.25,
-            'vertical': { 'width': 384, 'height': 640 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '4.4.2', 'architecture': '', 'model': 'LGMS323', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Nokia N9',
-        'screen': {
-            'horizontal': { 'width': 854, 'height': 480 },
-            'device-pixel-ratio': 1,
-            'vertical': { 'width': 480, 'height': 854 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13',
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Nokia Lumia 520',
-        'screen': {
-            'horizontal': { 'width': 533, 'height': 320 },
-            'device-pixel-ratio': 1.5,
-            'vertical': { 'width': 320, 'height': 533 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 520)',
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Microsoft Lumia 550',
-        'screen': {
-            'horizontal': { 'width': 640, 'height': 360 },
-            'device-pixel-ratio': 2,
-            'vertical': { 'width': 640, 'height': 360 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 550) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36 Edge/14.14263',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '4.2.1', 'architecture': '', 'model': 'Lumia 550', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Microsoft Lumia 950',
-        'screen': {
-            'horizontal': { 'width': 640, 'height': 360 },
-            'device-pixel-ratio': 4,
-            'vertical': { 'width': 360, 'height': 640 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36 Edge/14.14263',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '4.2.1', 'architecture': '', 'model': 'Lumia 950', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Galaxy S III',
-        'screen': {
-            'horizontal': { 'width': 640, 'height': 360 },
-            'device-pixel-ratio': 2,
-            'vertical': { 'width': 360, 'height': 640 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '4.0', 'architecture': '', 'model': 'GT-I9300', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'order': 110,
-        'show-by-default': false,
-        'title': 'Galaxy S5',
-        'screen': {
-            'horizontal': { 'width': 640, 'height': 360 },
-            'device-pixel-ratio': 3,
-            'vertical': { 'width': 360, 'height': 640 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '5.0', 'architecture': '', 'model': 'SM-G900P', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Galaxy S8',
-        'screen': {
-            'horizontal': { 'width': 740, 'height': 360 },
-            'device-pixel-ratio': 3,
-            'vertical': { 'width': 360, 'height': 740 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 7.0; SM-G950U Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '7.0', 'architecture': '', 'model': 'SM-G950U', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Galaxy S9+',
-        'screen': {
-            'horizontal': { 'width': 658, 'height': 320 },
-            'device-pixel-ratio': 4.5,
-            'vertical': { 'width': 320, 'height': 658 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 8.0.0; SM-G965U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '8.0.0', 'architecture': '', 'model': 'SM-G965U', 'mobile': true },
-        'type': 'phone',
     },
     {
         'show-by-default': false,
@@ -2303,124 +1933,6 @@ const emulatedDevices = [
             'model': 'LYF/F300B/LYF-F300B-001-01-15-130718-i',
             'mobile': true,
         },
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Kindle Fire HDX',
-        'screen': {
-            'horizontal': { 'width': 1280, 'height': 800 },
-            'device-pixel-ratio': 2,
-            'vertical': { 'width': 800, 'height': 1280 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true',
-        'type': 'tablet',
-    },
-    {
-        'order': 140,
-        'show-by-default': false,
-        'title': 'iPad',
-        'screen': {
-            'horizontal': {
-                'outline': {
-                    'image': '@url(optimized/iPad-landscape.avif)',
-                    'insets': { 'left': 112, 'top': 56, 'right': 116, 'bottom': 52 },
-                },
-                'width': 1024,
-                'height': 768,
-            },
-            'device-pixel-ratio': 2,
-            'vertical': {
-                'outline': {
-                    'image': '@url(optimized/iPad-portrait.avif)',
-                    'insets': { 'left': 52, 'top': 114, 'right': 55, 'bottom': 114 },
-                },
-                'width': 768,
-                'height': 1024,
-            },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1',
-        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '11.0', 'architecture': '', 'model': 'iPad', 'mobile': true },
-        'type': 'tablet',
-    },
-    {
-        'order': 141,
-        'show-by-default': false,
-        'title': 'iPad Pro',
-        'screen': {
-            'horizontal': { 'width': 1366, 'height': 1024 },
-            'device-pixel-ratio': 2,
-            'vertical': { 'width': 1024, 'height': 1366 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1',
-        'user-agent-metadata': { 'platform': 'iOS', 'platformVersion': '11.0', 'architecture': '', 'model': 'iPad', 'mobile': true },
-        'type': 'tablet',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Blackberry PlayBook',
-        'screen': {
-            'horizontal': { 'width': 1024, 'height': 600 },
-            'device-pixel-ratio': 1,
-            'vertical': { 'width': 600, 'height': 1024 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+',
-        'type': 'tablet',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Nexus 10',
-        'screen': {
-            'horizontal': { 'width': 1280, 'height': 800 },
-            'device-pixel-ratio': 2,
-            'vertical': { 'width': 800, 'height': 1280 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '6.0.1', 'architecture': '', 'model': 'Nexus 10', 'mobile': false },
-        'type': 'tablet',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Nexus 7',
-        'screen': {
-            'horizontal': { 'width': 960, 'height': 600 },
-            'device-pixel-ratio': 2,
-            'vertical': { 'width': 600, 'height': 960 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '6.0.1', 'architecture': '', 'model': 'Nexus 7', 'mobile': false },
-        'type': 'tablet',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Galaxy Note 3',
-        'screen': {
-            'horizontal': { 'width': 640, 'height': 360 },
-            'device-pixel-ratio': 3,
-            'vertical': { 'width': 360, 'height': 640 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; U; Android 4.3; en-us; SM-N900T Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '4.3', 'architecture': '', 'model': 'SM-N900T', 'mobile': true },
-        'type': 'phone',
-    },
-    {
-        'show-by-default': false,
-        'title': 'Galaxy Note II',
-        'screen': {
-            'horizontal': { 'width': 640, 'height': 360 },
-            'device-pixel-ratio': 2,
-            'vertical': { 'width': 360, 'height': 640 },
-        },
-        'capabilities': ['touch', 'mobile'],
-        'user-agent': 'Mozilla/5.0 (Linux; U; Android 4.1; en-us; GT-N7100 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '4.1', 'architecture': '', 'model': 'GT-N7100', 'mobile': true },
         'type': 'phone',
     },
     {

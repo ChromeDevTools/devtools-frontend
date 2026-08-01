@@ -52,7 +52,11 @@ var CrUXManager = class _CrUXManager extends Common.ObjectWrapper.ObjectWrapper 
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
     if (!Root.DevToolsContext.globalInstance().has(_CrUXManager) || forceNew) {
-      Root.DevToolsContext.globalInstance().set(_CrUXManager, new _CrUXManager(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance()));
+      Root.DevToolsContext.globalInstance().set(
+        _CrUXManager,
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        new _CrUXManager(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance())
+      );
     }
     return Root.DevToolsContext.globalInstance().get(_CrUXManager);
   }

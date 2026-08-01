@@ -4,9 +4,12 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Geometry from '../geometry/geometry.js';
+import * as Workspace from '../workspace/workspace.js';
 import { Horizontal, HorizontalSpanned, Vertical, VerticalSpanned, } from './EmulatedDevices.js';
 const UIStrings = {
     /**
@@ -165,7 +168,13 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     }
     static instance(opts) {
         if (!Root.DevToolsContext.globalInstance().has(DeviceModeModel) || opts?.forceNew) {
-            Root.DevToolsContext.globalInstance().set(DeviceModeModel, new DeviceModeModel(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance(), SDK.NetworkManager.MultitargetNetworkManager.instance()));
+            Root.DevToolsContext.globalInstance().set(DeviceModeModel, new DeviceModeModel(
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            SDK.TargetManager.TargetManager.instance(), 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            Common.Settings.Settings.instance(), 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            SDK.NetworkManager.MultitargetNetworkManager.instance()));
         }
         return Root.DevToolsContext.globalInstance().get(DeviceModeModel);
     }
@@ -370,6 +379,12 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     }
     enabledSetting() {
         return this.#settings.createSetting('emulation.show-device-mode', false);
+    }
+    isDeviceModeOn() {
+        return this.enabledSetting().get();
+    }
+    toggleDeviceMode() {
+        this.enabledSetting().set(!this.enabledSetting().get());
     }
     scaleSetting() {
         return this.#scaleSetting;
@@ -694,7 +709,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             overlayModel.showHingeForDualScreen(null);
         }
     }
-    async captureScreenshot(fullSize, clip) {
+    async #captureScreenshot(fullSize, clip) {
         const screenCaptureModel = this.#emulationModel ? this.#emulationModel.target().model(SDK.ScreenCaptureModel.ScreenCaptureModel) : null;
         if (!screenCaptureModel) {
             return null;
@@ -736,6 +751,112 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             overlayModel?.setShowViewportSizeOnResize(this.#type === Type.None);
             this.calculateAndEmulate(false);
         }
+    }
+    async captureScreenshot() {
+        const screenshot = await this.#captureScreenshot(false);
+        if (screenshot === null) {
+            return;
+        }
+        const pageImage = new Image();
+        pageImage.src = 'data:image/png;base64,' + screenshot;
+        pageImage.onload = async () => {
+            const scale = pageImage.naturalWidth / this.screenRect().width;
+            const outlineRectFromModel = this.outlineRect();
+            if (!outlineRectFromModel) {
+                throw new Error('Unable to take screenshot: no outlineRect available.');
+            }
+            const outlineRect = outlineRectFromModel.scale(scale);
+            const screenRect = this.screenRect().scale(scale);
+            const visiblePageRect = this.visiblePageRect().scale(scale);
+            const contentLeft = screenRect.left + visiblePageRect.left - outlineRect.left;
+            const contentTop = screenRect.top + visiblePageRect.top - outlineRect.top;
+            const canvas = new OffscreenCanvas(Math.floor(outlineRect.width), 
+            // Cap the height to not hit the GPU limit.
+            // https://crbug.com/1260828
+            Math.min((1 << 14), Math.floor(outlineRect.height)));
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            if (!ctx) {
+                throw new Error('Could not get 2d context from canvas.');
+            }
+            ctx.imageSmoothingEnabled = false;
+            if (this.outlineImage()) {
+                await this.paintImage(ctx, this.outlineImage(), outlineRect.relativeTo(outlineRect));
+            }
+            if (this.screenImage()) {
+                await this.paintImage(ctx, this.screenImage(), screenRect.relativeTo(outlineRect));
+            }
+            ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
+            void this.saveScreenshot(canvas);
+        };
+    }
+    async captureFullSizeScreenshot() {
+        const screenshot = await this.#captureScreenshot(true);
+        if (screenshot === null) {
+            return;
+        }
+        return this.saveScreenshotBase64(screenshot);
+    }
+    async captureAreaScreenshot(clip) {
+        const screenshot = await this.#captureScreenshot(false, clip);
+        if (screenshot === null) {
+            return;
+        }
+        return this.saveScreenshotBase64(screenshot);
+    }
+    saveScreenshotBase64(screenshot) {
+        const pageImage = new Image();
+        pageImage.src = 'data:image/png;base64,' + screenshot;
+        pageImage.onload = () => {
+            const canvas = new OffscreenCanvas(pageImage.naturalWidth, 
+            // Cap the height to not hit the GPU limit.
+            // https://crbug.com/1260828
+            Math.min((1 << 14), Math.floor(pageImage.naturalHeight)));
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            if (!ctx) {
+                throw new Error('Could not get 2d context for base64 screenshot.');
+            }
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(pageImage, 0, 0);
+            void this.saveScreenshot(canvas);
+        };
+    }
+    paintImage(ctx, src, rect) {
+        return new Promise(resolve => {
+            const image = new Image();
+            image.crossOrigin = 'Anonymous';
+            image.srcset = src;
+            image.onerror = () => resolve();
+            image.onload = () => {
+                ctx.drawImage(image, rect.left, rect.top, rect.width, rect.height);
+                resolve();
+            };
+        });
+    }
+    async saveScreenshot(canvas) {
+        const url = this.inspectedURL();
+        let fileName = '';
+        if (url) {
+            const withoutFragment = Platform.StringUtilities.removeURLFragment(url);
+            fileName = Platform.StringUtilities.trimURL(withoutFragment);
+        }
+        const device = this.device();
+        if (device && this.type() === Type.Device) {
+            fileName += `(${device.title})`;
+        }
+        fileName += '.png';
+        const blob = await canvas.convertToBlob({ type: 'image/png' });
+        const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+        const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
+        const contentData = new TextUtils.ContentData.ContentData(base64, /* isBase64=*/ true, 'image/png');
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        await Workspace.FileManager.FileManager.instance().save(fileName, contentData, /* forceSaveAs=*/ true);
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        Workspace.FileManager.FileManager.instance().close(fileName);
     }
     applyTouch(touchEnabled, mobile) {
         this.#touchEnabled = touchEnabled;

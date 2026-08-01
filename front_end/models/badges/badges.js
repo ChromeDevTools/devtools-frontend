@@ -220,7 +220,13 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
   }
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root.DevToolsContext.globalInstance().has(_UserBadges) || forceNew) {
-      Root.DevToolsContext.globalInstance().set(_UserBadges, new _UserBadges(Common3.Settings.Settings.instance(), Host.GdpClient.GdpClient.instance(), Host.InspectorFrontendHost.InspectorFrontendHostInstance));
+      Root.DevToolsContext.globalInstance().set(_UserBadges, new _UserBadges(
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        Common3.Settings.Settings.instance(),
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        Host.GdpClient.GdpClient.instance(),
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance
+      ));
     }
     return Root.DevToolsContext.globalInstance().get(_UserBadges);
   }

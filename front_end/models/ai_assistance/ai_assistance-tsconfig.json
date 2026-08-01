@@ -82,6 +82,7 @@
     "../../../../../../front_end/models/ai_assistance/tools/GetNetworkRequestDetails.ts",
     "../../../../../../front_end/models/ai_assistance/tools/GetStyles.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ListNetworkRequests.ts",
+    "../../../../../../front_end/models/ai_assistance/tools/RecordPerformanceTrace.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ResolveDevtoolsNodePath.ts",
     "../../../../../../front_end/models/ai_assistance/tools/Tool.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ToolRegistry.ts",

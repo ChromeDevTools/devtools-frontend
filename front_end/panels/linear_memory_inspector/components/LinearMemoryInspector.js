@@ -54,19 +54,17 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     <div class="view">
       <devtools-widget class="navigator-widget"
         ${widget(LinearMemoryNavigator, {
-        data: {
-            address: navigatorAddressToShow,
-            valid: navigatorAddressIsValid,
-            mode: input.currentNavigatorMode,
-            error: errorMsg,
-            canGoBackInHistory: input.canGoBackInHistory,
-            canGoForwardInHistory: input.canGoForwardInHistory,
-        },
-    })}
-        @refreshrequested=${input.onRefreshRequest}
-        @addressinputchanged=${input.onAddressChange}
-        @pagenavigation=${input.onNavigatePage}
-        @historynavigation=${input.onNavigateHistory}></devtools-widget>
+        address: navigatorAddressToShow,
+        valid: navigatorAddressIsValid,
+        mode: input.currentNavigatorMode,
+        error: errorMsg,
+        canGoBackInHistory: input.canGoBackInHistory,
+        canGoForwardInHistory: input.canGoForwardInHistory,
+        onRefreshRequest: input.onRefreshRequest,
+        onAddressChange: input.onAddressChange,
+        onNavigatePage: input.onNavigatePage,
+        onNavigateHistory: input.onNavigateHistory,
+    })}></devtools-widget>
       ${widget(LinearMemoryHighlightChipList, {
         highlightInfos: highlightedMemoryAreas,
         focusedMemoryHighlight,
@@ -266,8 +264,7 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin(UI.Wi
         this.dispatchEventToListeners("SettingsChanged" /* Events.SETTINGS_CHANGED */, this.#createSettings());
         void this.requestUpdate();
     }
-    #onAddressChange(e) {
-        const { address, mode } = e.data;
+    #onAddressChange(address, mode) {
         const isValid = isValidAddress(address, this.#outerMemoryLength);
         const newAddress = parseAddress(address);
         this.#currentNavigatorAddressLine = address;
@@ -303,11 +300,12 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin(UI.Wi
         this.dispatchEventToListeners("SettingsChanged" /* Events.SETTINGS_CHANGED */, this.#createSettings());
         void this.requestUpdate();
     }
-    #navigateHistory(e) {
-        return e.data === "Forward" /* Navigation.FORWARD */ ? this.#history.rollover() : this.#history.rollback();
+    #navigateHistory(navigation) {
+        return navigation === "Forward" /* Navigation.FORWARD */ ? this.#history.rollover() : this.#history.rollback();
     }
-    #navigatePage(e) {
-        const newAddress = e.data === "Forward" /* Navigation.FORWARD */ ? this.#address + this.#numBytesPerPage : this.#address - this.#numBytesPerPage;
+    #navigatePage(navigation) {
+        const newAddress = navigation === "Forward" /* Navigation.FORWARD */ ? this.#address + this.#numBytesPerPage :
+            this.#address - this.#numBytesPerPage;
         const addressInRange = Math.max(0, Math.min(newAddress, this.#outerMemoryLength - 1));
         this.#jumpToAddress(addressInRange);
     }

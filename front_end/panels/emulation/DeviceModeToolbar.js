@@ -258,11 +258,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           <option value="Responsive" ?selected=${input.deviceModeOptions.responsive.selected} jslog=${VisualLogging.item(input.deviceModeOptions.responsive.jslogContext).track({ click: true })}>
             ${input.deviceModeOptions.responsive.title}
           </option>
-          ${input.deviceModeOptions.standard.length > 0 ? html `
-            <optgroup label="Standard">
-              ${input.deviceModeOptions.standard.map(o => html `<option value=${o.title} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
+          ${input.deviceModeOptions.standard.map(group => html `
+            <optgroup label=${EmulationModel.EmulatedDevices.getCategoryTitle(group.category)}>
+              ${group.options.map(o => html `<option value=${o.title} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
             </optgroup>
-          ` : ''}
+          `)}
           ${input.deviceModeOptions.custom.length > 0 ? html `
             <optgroup label="Custom">
               ${input.deviceModeOptions.custom.map(o => html `<option value=${o.title} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
@@ -486,9 +486,10 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         const dprOptions = this.getDeviceScaleFactorOptions();
         const uaOptions = this.getUserAgentOptions();
         const postureOptions = this.getDevicePostureOptions();
+        const standardOptions = deviceModeOptions.standard.flatMap(g => g.options);
         const selectedDeviceOption = [
             deviceModeOptions.responsive,
-            ...deviceModeOptions.standard,
+            ...standardOptions,
             ...deviceModeOptions.custom,
         ].find(o => o.selected);
         const deviceText = selectedDeviceOption ? selectedDeviceOption.title : deviceModeOptions.responsive.title;
@@ -755,18 +756,36 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
                 edit: { title: i18nString(UIStrings.edit), jslogContext: 'edit' },
             };
         }
+        const currentDevice = this.model.device();
+        const optionsByCategory = new Map();
+        for (const device of this.standardDevices()) {
+            const cat = EmulationModel.EmulatedDevices.deviceCategory(device);
+            let list = optionsByCategory.get(cat);
+            if (!list) {
+                list = [];
+                optionsByCategory.set(cat, list);
+            }
+            list.push({
+                device,
+                title: device.title,
+                selected: currentDevice === device,
+                jslogContext: Platform.StringUtilities.toKebabCase(device.title),
+            });
+        }
+        const groupedStandard = [];
+        for (const category of EmulationModel.EmulatedDevices.CATEGORY_ORDER) {
+            const options = optionsByCategory.get(category);
+            if (options && options.length > 0) {
+                groupedStandard.push({ category, options });
+            }
+        }
         return {
             responsive: {
                 title: i18nString(UIStrings.responsive),
                 selected: this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive,
                 jslogContext: 'responsive',
             },
-            standard: this.standardDevices().map(device => ({
-                device,
-                title: device.title,
-                selected: this.model?.device() === device,
-                jslogContext: Platform.StringUtilities.toKebabCase(device.title),
-            })),
+            standard: groupedStandard,
             custom: this.customDevices().map(device => ({
                 device,
                 title: device.title,

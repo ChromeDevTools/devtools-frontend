@@ -76,7 +76,9 @@ export class AiConversation {
     #aiHistoryStorage;
     #targetManager;
     constructor(options) {
-        const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, aiHistoryStorage = AiHistoryStorage.instance(), targetManager = SDK.TargetManager.TargetManager.instance(), } = options;
+        const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, aiHistoryStorage = AiHistoryStorage.instance(), 
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        targetManager = SDK.TargetManager.TargetManager.instance(), } = options;
         this.#changeManager = changeManager;
         this.#aidaClient = aidaClient;
         this.#performanceRecordAndReload = performanceRecordAndReload;

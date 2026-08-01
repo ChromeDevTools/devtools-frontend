@@ -14,6 +14,7 @@ const SKILL_DISPLAY_NAMES = {
     styling: 'CSS and styling',
     network: 'Network requests',
     accessibility: 'Accessibility',
+    performance: 'Performance',
 };
 const preamble = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
 Your role is to help web developers debug, analyze, and optimize web applications by learning specialized skills and utilizing tools.
@@ -50,6 +51,7 @@ export class AiAgent2 extends AiAgent {
     #execJs;
     #allowedOrigin;
     #lighthouseRecording;
+    #performanceRecordAndReload;
     get options() {
         return {};
     }
@@ -59,13 +61,14 @@ export class AiAgent2 extends AiAgent {
         super(opts);
         this.#changes = opts.changeManager ?? new ChangeManager(opts.targetManager);
         this.#lighthouseRecording = opts.lighthouseRecording;
+        this.#performanceRecordAndReload = opts.performanceRecordAndReload;
         this.#execJs = opts.execJs ?? executeJsCode;
         this.#allowedOrigin = opts.allowedOrigin;
         this.#declaredTools.add('learnSkills');
         this.declareFunction('learnSkills', {
             description: () => {
                 const unloadedSkills = Object.keys(SKILLS).filter(name => !this.#activeSkills.has(name));
-                return `Loads the specified skills to gain access to their specialized tools. Call this if the user's query relates to an available skill that is not yet loaded. Available skills: ${unloadedSkills.join(', ')}.`;
+                return `Loads the specified skills to gain access to their specialized tools. Call this ONLY for skills listed under Available skills that are not yet loaded. Do not call this for skills that are already loaded. Available skills that are not yet loaded: ${unloadedSkills.join(', ')}.`;
             },
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
@@ -77,7 +80,7 @@ export class AiAgent2 extends AiAgent {
                             type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
                             description: 'Skill name',
                         },
-                        description: 'List of skill names to load',
+                        description: 'List of unloaded skill names to load',
                     },
                 },
                 required: ['skills'],
@@ -121,6 +124,7 @@ ${skillsManifest}
 
 You must call \`learnSkills\` to load a skill before you can use its tools.
 If the user's request requires a skill that is not currently loaded, you MUST call \`learnSkills\` to load that skill first, instead of attempting to solve the query using tools from other skills.
+Do NOT call \`learnSkills\` for skills that are already loaded.
 
 User query: ${enhancedQuery}`;
     }
@@ -145,7 +149,7 @@ User query: ${enhancedQuery}`;
             debugLog(`AiAgent2: Attempting to load skill ${name}`);
             if (this.#activeSkills.has(name)) {
                 debugLog(`AiAgent2: Skill ${name} is already loaded`);
-                response += `Skill ${name} is already loaded.\n`;
+                response += `Error: Skill '${name}' is already loaded. Call its tools directly instead of invoking learnSkills for '${name}' again.\n`;
                 continue;
             }
             const skillObj = skills[name];
@@ -195,6 +199,7 @@ User query: ${enhancedQuery}`;
                     getTarget: () => this.targetManager.primaryPageTarget(),
                     getEstablishedOrigin: () => this.#getConversationOrigin(),
                     lighthouseRecording: this.#lighthouseRecording,
+                    performanceRecordAndReload: this.#performanceRecordAndReload,
                 };
                 return tool.handler(args, context, options);
             },

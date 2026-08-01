@@ -21,7 +21,9 @@ export class AICallTree {
     // Note: ideally this is passed in (or lived on ParsedTrace), but this class is
     // stateless (mostly, there's a cache for some stuff) so it doesn't match much.
     #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
-    constructor(selectedNode, rootNode, parsedTrace, workspace = Workspace.Workspace.WorkspaceImpl.instance()) {
+    constructor(selectedNode, rootNode, parsedTrace, 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    workspace = Workspace.Workspace.WorkspaceImpl.instance()) {
         this.selectedNode = selectedNode;
         this.rootNode = rootNode;
         this.parsedTrace = parsedTrace;

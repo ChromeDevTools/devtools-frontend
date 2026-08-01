@@ -154,7 +154,9 @@ export function isIssueCodeSupported(code) {
  * Each issue reported by the backend can result in multiple `Issue` instances.
  * Handlers are simple functions hard-coded into a map.
  */
-export function createIssuesFromProtocolIssue(issuesModel, inspectorIssue, frameManager = SDK.FrameManager.FrameManager.instance()) {
+export function createIssuesFromProtocolIssue(issuesModel, inspectorIssue, 
+// eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+frameManager = SDK.FrameManager.FrameManager.instance()) {
     const handler = issueCodeHandlers.get(inspectorIssue.code);
     if (handler) {
         return handler(issuesModel, inspectorIssue, frameManager);
@@ -166,6 +168,7 @@ export function defaultHideIssueByCodeSetting() {
     const setting = {};
     return setting;
 }
+// eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
 export function getHideIssueByCodeSetting(settings = Common.Settings.Settings.instance()) {
     return settings.createSetting('hide-issue-by-code-setting-experiment-2021', defaultHideIssueByCodeSetting());
 }
@@ -193,7 +196,17 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     #issuesByOutermostTarget = new Map();
     #frameManager;
     #targetManager;
-    constructor(showThirdPartyIssuesSetting, hideIssueSetting, frameManager = SDK.FrameManager.FrameManager.instance(), targetManager = SDK.TargetManager.TargetManager.instance(), workspace = Workspace.Workspace.WorkspaceImpl.instance(), debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()) {
+    constructor(showThirdPartyIssuesSetting, hideIssueSetting, 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    frameManager = SDK.FrameManager.FrameManager.instance(), 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    targetManager = SDK.TargetManager.TargetManager.instance(), 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    workspace = Workspace.Workspace.WorkspaceImpl.instance(), debuggerWorkspaceBinding = 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), cssWorkspaceBinding = 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()) {
         super();
         this.showThirdPartyIssuesSetting = showThirdPartyIssuesSetting;
         this.hideIssueSetting = hideIssueSetting;
@@ -425,6 +438,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
 }
 // @ts-expect-error
 globalThis.addIssueForTest = (issue) => {
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     const issuesModel = mainTarget?.model(SDK.IssuesModel.IssuesModel);
     issuesModel?.issueAdded({ issue });

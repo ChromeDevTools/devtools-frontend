@@ -3,10 +3,12 @@
 // found in the LICENSE file.
 import { skill as accessibilitySkill } from './accessibility.skill.js';
 import { skill as networkSkill } from './network.skill.js';
+import { skill as performanceSkill } from './performance.skill.js';
 import { skill as stylingSkill } from './styling.skill.js';
 export const SKILLS = {
     styling: stylingSkill,
     network: networkSkill,
     accessibility: accessibilitySkill,
+    performance: performanceSkill,
 };
 //# sourceMappingURL=SkillRegistry.js.map

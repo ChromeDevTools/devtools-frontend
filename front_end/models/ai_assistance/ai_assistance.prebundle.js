@@ -43,8 +43,9 @@ import * as GetLighthouseAudits from './tools/GetLighthouseAudits.js';
 import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
 import * as GetStyles from './tools/GetStyles.js';
 import * as ListNetworkRequests from './tools/ListNetworkRequests.js';
+import * as RecordPerformanceTrace from './tools/RecordPerformanceTrace.js';
 import * as ResolveDevtoolsNodePath from './tools/ResolveDevtoolsNodePath.js';
 import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
-export { AccessibilityAgent, AccessibilityContext, AiAgent, AiAgent2, AICallTree, AIContext, AiConversation, AiHistoryStorage, AiOrigins, AIQueries, AiUtils, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummary, Debug, DOMNodeContext, EvaluateAction, ExecuteJavaScript, ExtensionScope, FileAgent, FileContext, FileFormatter, GetElementAccessibilityDetails, GetLighthouseAudits, GetNetworkRequestDetails, GetStyles, Injected, LighthouseFormatter, ListNetworkRequests, NetworkAgent, NetworkRequestFormatter, PerformanceAgent, PerformanceAnnotations, PerformanceInsightFormatter, PerformanceTraceContext, PerformanceTraceFormatter, RequestContext, ResolveDevtoolsNodePath, StorageAgent, StorageItem, StylingAgent, Tool, ToolRegistry, UnitFormatters, };
+export { AccessibilityAgent, AccessibilityContext, AiAgent, AiAgent2, AICallTree, AIContext, AiConversation, AiHistoryStorage, AiOrigins, AIQueries, AiUtils, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummary, Debug, DOMNodeContext, EvaluateAction, ExecuteJavaScript, ExtensionScope, FileAgent, FileContext, FileFormatter, GetElementAccessibilityDetails, GetLighthouseAudits, GetNetworkRequestDetails, GetStyles, Injected, LighthouseFormatter, ListNetworkRequests, NetworkAgent, NetworkRequestFormatter, PerformanceAgent, PerformanceAnnotations, PerformanceInsightFormatter, PerformanceTraceContext, PerformanceTraceFormatter, RecordPerformanceTrace, RequestContext, ResolveDevtoolsNodePath, StorageAgent, StorageItem, StylingAgent, Tool, ToolRegistry, UnitFormatters, };
 //# sourceMappingURL=ai_assistance.prebundle.js.map

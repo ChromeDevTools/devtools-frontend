@@ -56,6 +56,49 @@ export const consoleInsightsEnabledSettingDescriptor = {
         };
     },
 };
+function isAiAssistanceFeatureAvailable(config) {
+    return Boolean(config?.aidaAvailability?.enabled &&
+        (config?.devToolsFreestyler?.enabled || config?.devToolsAiAssistanceNetworkAgent?.enabled ||
+            config?.devToolsAiAssistancePerformanceAgent?.enabled ||
+            config?.devToolsAiAssistanceFileAgent?.enabled || config?.devToolsAiAssistanceStorageAgent?.enabled));
+}
+export const aiAssistanceEnabledSettingDescriptor = {
+    name: 'ai-assistance-enabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    isAvailable: (config) => {
+        if (!isAiAssistanceFeatureAvailable(config)) {
+            return {
+                status: 2 /* Common.Settings.SettingAvailability.UNAVAILABLE */,
+                reason: ["not-supported" /* DisabledReason.NOT_SUPPORTED */],
+            };
+        }
+        const reasons = [];
+        if (isGeoRestricted(config)) {
+            reasons.push("geo-restricted" /* DisabledReason.GEO_RESTRICTED */);
+        }
+        if (isPolicyRestricted(config)) {
+            reasons.push("policy-restricted" /* DisabledReason.POLICY_RESTRICTED */);
+        }
+        if (isLocaleRestricted()) {
+            reasons.push("wrong-locale" /* DisabledReason.WRONG_LOCALE */);
+        }
+        if (reasons.length > 0) {
+            return {
+                status: 3 /* Common.Settings.SettingAvailability.DISABLED */,
+                reason: reasons,
+            };
+        }
+        return {
+            status: 1 /* Common.Settings.SettingAvailability.AVAILABLE */,
+        };
+    },
+};
+export const aiAssistanceV2OptInChangeDialogSeenSettingDescriptor = {
+    name: 'ai-assistance-v2-opt-in-change-dialog-seen',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+};
 export function isGeminiBranding() {
     return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }

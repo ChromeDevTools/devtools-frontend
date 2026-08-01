@@ -503,6 +503,7 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
   editDisabled() {
     return this.#disableEdit;
   }
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   isIgnoreListed(ignoreListManager = IgnoreListManager.instance()) {
     return ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(this);
   }
@@ -578,6 +579,7 @@ var UILocation = class {
     }
     return this.columnNumber - other.columnNumber;
   }
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   isIgnoreListed(ignoreListManager = IgnoreListManager.instance()) {
     return this.uiSourceCode.isIgnoreListed(ignoreListManager);
   }
@@ -904,7 +906,12 @@ var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.O
   }) {
     const { forceNew } = opts;
     if (forceNew) {
-      Root3.DevToolsContext.globalInstance().set(_IgnoreListManager, new _IgnoreListManager(opts.settings ?? Common4.Settings.Settings.instance(), opts.targetManager ?? SDK.TargetManager.TargetManager.instance()));
+      Root3.DevToolsContext.globalInstance().set(_IgnoreListManager, new _IgnoreListManager(
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        opts.settings ?? Common4.Settings.Settings.instance(),
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        opts.targetManager ?? SDK.TargetManager.TargetManager.instance()
+      ));
     }
     return Root3.DevToolsContext.globalInstance().get(_IgnoreListManager);
   }

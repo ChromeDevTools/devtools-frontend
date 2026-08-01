@@ -661,11 +661,7 @@ var linearMemoryInspector_css_default = `/*
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryNavigator.js
 var LinearMemoryNavigator_exports = {};
 __export(LinearMemoryNavigator_exports, {
-  AddressInputChangedEvent: () => AddressInputChangedEvent,
-  HistoryNavigationEvent: () => HistoryNavigationEvent,
-  LinearMemoryNavigator: () => LinearMemoryNavigator,
-  PageNavigationEvent: () => PageNavigationEvent,
-  RefreshRequestedEvent: () => RefreshRequestedEvent
+  LinearMemoryNavigator: () => LinearMemoryNavigator
 });
 import "./../../../ui/kit/kit.js";
 import * as i18n3 from "./../../../core/i18n/i18n.js";
@@ -770,36 +766,6 @@ var UIStrings2 = {
 var str_2 = i18n3.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryNavigator.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var { render: render3, html: html3, Directives: { ifDefined } } = Lit2;
-var AddressInputChangedEvent = class _AddressInputChangedEvent extends Event {
-  static eventName = "addressinputchanged";
-  data;
-  constructor(address, mode) {
-    super(_AddressInputChangedEvent.eventName);
-    this.data = { address, mode };
-  }
-};
-var PageNavigationEvent = class _PageNavigationEvent extends Event {
-  static eventName = "pagenavigation";
-  data;
-  constructor(navigation) {
-    super(_PageNavigationEvent.eventName, {});
-    this.data = navigation;
-  }
-};
-var HistoryNavigationEvent = class _HistoryNavigationEvent extends Event {
-  static eventName = "historynavigation";
-  data;
-  constructor(navigation) {
-    super(_HistoryNavigationEvent.eventName, {});
-    this.data = navigation;
-  }
-};
-var RefreshRequestedEvent = class _RefreshRequestedEvent extends Event {
-  static eventName = "refreshrequested";
-  constructor() {
-    super(_RefreshRequestedEvent.eventName, {});
-  }
-};
 var LinearMemoryNavigator = class _LinearMemoryNavigator extends UI2.Widget.Widget {
   #address = "0";
   #error = void 0;
@@ -807,21 +773,84 @@ var LinearMemoryNavigator = class _LinearMemoryNavigator extends UI2.Widget.Widg
   #canGoBackInHistory = false;
   #canGoForwardInHistory = false;
   #mode = "Submitted";
+  #onRefreshRequest;
+  #onAddressChange;
+  #onNavigatePage;
+  #onNavigateHistory;
+  get onRefreshRequest() {
+    return this.#onRefreshRequest;
+  }
+  set onRefreshRequest(callback) {
+    this.#onRefreshRequest = callback;
+    this.performUpdate();
+  }
+  get onAddressChange() {
+    return this.#onAddressChange;
+  }
+  set onAddressChange(callback) {
+    this.#onAddressChange = callback;
+    this.performUpdate();
+  }
+  get onNavigatePage() {
+    return this.#onNavigatePage;
+  }
+  set onNavigatePage(callback) {
+    this.#onNavigatePage = callback;
+    this.performUpdate();
+  }
+  get onNavigateHistory() {
+    return this.#onNavigateHistory;
+  }
+  set onNavigateHistory(callback) {
+    this.#onNavigateHistory = callback;
+    this.performUpdate();
+  }
   constructor(element) {
     super(element);
     if (!this.element.shadowRoot) {
       this.element.attachShadow({ mode: "open" });
     }
-    this.element.classList.remove("vbox", "flex-auto", "widget");
-    this.element.classList.add("devtools-linear-memory-inspector-navigator");
   }
-  set data(data) {
-    this.#address = data.address;
-    this.#error = data.error;
-    this.#valid = data.valid;
-    this.#canGoBackInHistory = data.canGoBackInHistory;
-    this.#canGoForwardInHistory = data.canGoForwardInHistory;
-    this.#mode = data.mode;
+  get address() {
+    return this.#address;
+  }
+  set address(address) {
+    this.#address = address;
+    this.requestUpdate();
+  }
+  get error() {
+    return this.#error;
+  }
+  set error(error) {
+    this.#error = error;
+    this.requestUpdate();
+  }
+  get valid() {
+    return this.#valid;
+  }
+  set valid(valid) {
+    this.#valid = valid;
+    this.requestUpdate();
+  }
+  get canGoBackInHistory() {
+    return this.#canGoBackInHistory;
+  }
+  set canGoBackInHistory(canGoBackInHistory) {
+    this.#canGoBackInHistory = canGoBackInHistory;
+    this.requestUpdate();
+  }
+  get canGoForwardInHistory() {
+    return this.#canGoForwardInHistory;
+  }
+  set canGoForwardInHistory(canGoForwardInHistory) {
+    this.#canGoForwardInHistory = canGoForwardInHistory;
+    this.requestUpdate();
+  }
+  get mode() {
+    return this.#mode;
+  }
+  set mode(mode) {
+    this.#mode = mode;
     this.requestUpdate();
   }
   performUpdate() {
@@ -836,9 +865,9 @@ var LinearMemoryNavigator = class _LinearMemoryNavigator extends UI2.Widget.Widg
       canGoBackInHistory: this.#canGoBackInHistory,
       canGoForwardInHistory: this.#canGoForwardInHistory,
       mode: this.#mode
-    }, this.#onAddressChange.bind(this), this.element.dispatchEvent.bind(this.element), shadowRoot);
+    }, this.onAddressChange, this.onNavigatePage, this.onNavigateHistory, this.onRefreshRequest, shadowRoot);
   }
-  static #render(data, onAddressChange, dispatchEvent, shadow) {
+  static #render(data, onAddressChange, onNavigatePage, onNavigateHistory, onRefreshRequest, shadow) {
     const result = html3`
       <style>${linearMemoryNavigator_css_default}</style>
       <div class="navigator">
@@ -846,57 +875,57 @@ var LinearMemoryNavigator = class _LinearMemoryNavigator extends UI2.Widget.Widg
           ${_LinearMemoryNavigator.#createButton({
       icon: "undo",
       title: i18nString2(UIStrings2.goBackInAddressHistory),
-      event: new HistoryNavigationEvent(
+      onClick: () => onNavigateHistory?.(
         "Backward"
         /* Navigation.BACKWARD */
       ),
       enabled: data.canGoBackInHistory,
       jslogContext: "linear-memory-inspector.history-back"
-    }, dispatchEvent)}
+    })}
           ${_LinearMemoryNavigator.#createButton({
       icon: "redo",
       title: i18nString2(UIStrings2.goForwardInAddressHistory),
-      event: new HistoryNavigationEvent(
+      onClick: () => onNavigateHistory?.(
         "Forward"
         /* Navigation.FORWARD */
       ),
       enabled: data.canGoForwardInHistory,
       jslogContext: "linear-memory-inspector.history-forward"
-    }, dispatchEvent)}
+    })}
         </div>
         <div class="navigator-item">
           ${_LinearMemoryNavigator.#createButton({
       icon: "chevron-left",
       title: i18nString2(UIStrings2.previousPage),
-      event: new PageNavigationEvent(
+      onClick: () => onNavigatePage?.(
         "Backward"
         /* Navigation.BACKWARD */
       ),
       enabled: true,
       jslogContext: "linear-memory-inspector.previous-page"
-    }, dispatchEvent)}
+    })}
           ${_LinearMemoryNavigator.#createAddressInput(data, onAddressChange)}
           ${_LinearMemoryNavigator.#createButton({
       icon: "chevron-right",
       title: i18nString2(UIStrings2.nextPage),
-      event: new PageNavigationEvent(
+      onClick: () => onNavigatePage?.(
         "Forward"
         /* Navigation.FORWARD */
       ),
       enabled: true,
       jslogContext: "linear-memory-inspector.next-page"
-    }, dispatchEvent)}
+    })}
         </div>
         ${_LinearMemoryNavigator.#createButton({
       icon: "refresh",
       title: i18nString2(UIStrings2.refresh),
-      event: new RefreshRequestedEvent(),
+      onClick: () => onRefreshRequest?.(),
       enabled: true,
       jslogContext: "linear-memory-inspector.refresh"
-    }, dispatchEvent)}
+    })}
       </div>
       `;
-    render3(result, shadow, { host: shadow.host });
+    render3(result, shadow);
   }
   static #createAddressInput(data, onAddressChange) {
     const classMap2 = {
@@ -911,8 +940,16 @@ var LinearMemoryNavigator = class _LinearMemoryNavigator extends UI2.Widget.Widg
       change: true
     })}
       title=${ifDefined(data.valid ? i18nString2(UIStrings2.enterAddress) : data.error)}
-      @change=${(e) => onAddressChange("Submitted", e)}
-      @input=${(e) => onAddressChange("Edit", e)}
+      @change=${(e) => onAddressChange?.(
+      e.target.value,
+      "Submitted"
+      /* Mode.SUBMITTED */
+    )}
+      @input=${(e) => onAddressChange?.(
+      e.target.value,
+      "Edit"
+      /* Mode.EDIT */
+    )}
       ${Lit2.Directives.ref((el) => {
       if (el) {
         const inputEl = el;
@@ -925,11 +962,7 @@ var LinearMemoryNavigator = class _LinearMemoryNavigator extends UI2.Widget.Widg
     })}
     />`;
   }
-  #onAddressChange(mode, event) {
-    const addressInput = event.target;
-    this.element.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
-  }
-  static #createButton(data, dispatchEvent) {
+  static #createButton(data) {
     return html3`
       <devtools-button class="navigator-button"
         .data=${{
@@ -938,8 +971,8 @@ var LinearMemoryNavigator = class _LinearMemoryNavigator extends UI2.Widget.Widg
       disabled: !data.enabled
     }}
         jslog=${VisualLogging3.action().track({ click: true, keydown: "Enter" }).context(data.jslogContext)}
-        data-button=${data.event.type} title=${data.title}
-        @click=${() => dispatchEvent(data.event)}
+        title=${data.title}
+        @click=${data.onClick}
       ></devtools-button>`;
   }
 };
@@ -1834,19 +1867,17 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     <div class="view">
       <devtools-widget class="navigator-widget"
         ${widget2(LinearMemoryNavigator, {
-    data: {
-      address: navigatorAddressToShow,
-      valid: navigatorAddressIsValid,
-      mode: input.currentNavigatorMode,
-      error: errorMsg,
-      canGoBackInHistory: input.canGoBackInHistory,
-      canGoForwardInHistory: input.canGoForwardInHistory
-    }
-  })}
-        @refreshrequested=${input.onRefreshRequest}
-        @addressinputchanged=${input.onAddressChange}
-        @pagenavigation=${input.onNavigatePage}
-        @historynavigation=${input.onNavigateHistory}></devtools-widget>
+    address: navigatorAddressToShow,
+    valid: navigatorAddressIsValid,
+    mode: input.currentNavigatorMode,
+    error: errorMsg,
+    canGoBackInHistory: input.canGoBackInHistory,
+    canGoForwardInHistory: input.canGoForwardInHistory,
+    onRefreshRequest: input.onRefreshRequest,
+    onAddressChange: input.onAddressChange,
+    onNavigatePage: input.onNavigatePage,
+    onNavigateHistory: input.onNavigateHistory
+  })}></devtools-widget>
       ${widget2(LinearMemoryHighlightChipList, {
     highlightInfos: highlightedMemoryAreas,
     focusedMemoryHighlight,
@@ -2033,8 +2064,7 @@ var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI6.Wi
     this.dispatchEventToListeners("SettingsChanged", this.#createSettings());
     void this.requestUpdate();
   }
-  #onAddressChange(e) {
-    const { address, mode } = e.data;
+  #onAddressChange(address, mode) {
     const isValid = isValidAddress(address, this.#outerMemoryLength);
     const newAddress = parseAddress(address);
     this.#currentNavigatorAddressLine = address;
@@ -2068,11 +2098,11 @@ var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI6.Wi
     this.dispatchEventToListeners("SettingsChanged", this.#createSettings());
     void this.requestUpdate();
   }
-  #navigateHistory(e) {
-    return e.data === "Forward" ? this.#history.rollover() : this.#history.rollback();
+  #navigateHistory(navigation) {
+    return navigation === "Forward" ? this.#history.rollover() : this.#history.rollback();
   }
-  #navigatePage(e) {
-    const newAddress = e.data === "Forward" ? this.#address + this.#numBytesPerPage : this.#address - this.#numBytesPerPage;
+  #navigatePage(navigation) {
+    const newAddress = navigation === "Forward" ? this.#address + this.#numBytesPerPage : this.#address - this.#numBytesPerPage;
     const addressInRange = Math.max(0, Math.min(newAddress, this.#outerMemoryLength - 1));
     this.#jumpToAddress(addressInRange);
   }

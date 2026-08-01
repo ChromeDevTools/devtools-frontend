@@ -8,6 +8,8 @@ export declare const enum DisabledReason {
     NOT_SUPPORTED = "not-supported"
 }
 export declare const consoleInsightsEnabledSettingDescriptor: Common.Settings.ConditionalSettingDescriptor<boolean, DisabledReason[]>;
+export declare const aiAssistanceEnabledSettingDescriptor: Common.Settings.ConditionalSettingDescriptor<boolean, DisabledReason[]>;
+export declare const aiAssistanceV2OptInChangeDialogSeenSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare function isGeminiBranding(): boolean;
 /**
  * Preconditions determined entirely on the DevTools frontend side (e.g. Incognito

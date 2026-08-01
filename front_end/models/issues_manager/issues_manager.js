@@ -5015,7 +5015,13 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
   #issuesByOutermostTarget = /* @__PURE__ */ new Map();
   #frameManager;
   #targetManager;
-  constructor(showThirdPartyIssuesSetting, hideIssueSetting, frameManager = SDK2.FrameManager.FrameManager.instance(), targetManager = SDK2.TargetManager.TargetManager.instance(), workspace = Workspace2.Workspace.WorkspaceImpl.instance(), debuggerWorkspaceBinding = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), cssWorkspaceBinding = Bindings2.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()) {
+  constructor(showThirdPartyIssuesSetting, hideIssueSetting, frameManager = SDK2.FrameManager.FrameManager.instance(), targetManager = SDK2.TargetManager.TargetManager.instance(), workspace = Workspace2.Workspace.WorkspaceImpl.instance(), debuggerWorkspaceBinding = (
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+  ), cssWorkspaceBinding = (
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Bindings2.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()
+  )) {
     super();
     this.showThirdPartyIssuesSetting = showThirdPartyIssuesSetting;
     this.hideIssueSetting = hideIssueSetting;

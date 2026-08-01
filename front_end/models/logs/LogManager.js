@@ -16,7 +16,11 @@ export class LogManager {
     }
     static instance({ forceNew } = { forceNew: false }) {
         if (!Root.DevToolsContext.globalInstance().has(LogManager) || forceNew) {
-            Root.DevToolsContext.globalInstance().set(LogManager, new LogManager(SDK.TargetManager.TargetManager.instance(), NetworkLog.instance()));
+            Root.DevToolsContext.globalInstance().set(LogManager, new LogManager(
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            SDK.TargetManager.TargetManager.instance(), 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            NetworkLog.instance()));
         }
         return Root.DevToolsContext.globalInstance().get(LogManager);
     }

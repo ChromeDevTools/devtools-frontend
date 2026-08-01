@@ -62,7 +62,11 @@ var NetworkLog = class _NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
   }
   static instance() {
     if (!Root.DevToolsContext.globalInstance().has(_NetworkLog)) {
-      Root.DevToolsContext.globalInstance().set(_NetworkLog, new _NetworkLog(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance()));
+      Root.DevToolsContext.globalInstance().set(
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        _NetworkLog,
+        new _NetworkLog(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance())
+      );
     }
     return Root.DevToolsContext.globalInstance().get(_NetworkLog);
   }
@@ -493,7 +497,12 @@ var LogManager = class _LogManager {
   }
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root2.DevToolsContext.globalInstance().has(_LogManager) || forceNew) {
-      Root2.DevToolsContext.globalInstance().set(_LogManager, new _LogManager(SDK2.TargetManager.TargetManager.instance(), NetworkLog.instance()));
+      Root2.DevToolsContext.globalInstance().set(_LogManager, new _LogManager(
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        SDK2.TargetManager.TargetManager.instance(),
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        NetworkLog.instance()
+      ));
     }
     return Root2.DevToolsContext.globalInstance().get(_LogManager);
   }

@@ -4,28 +4,6 @@ export declare const enum Navigation {
     BACKWARD = "Backward",
     FORWARD = "Forward"
 }
-export declare class AddressInputChangedEvent extends Event {
-    static readonly eventName = "addressinputchanged";
-    data: {
-        address: string;
-        mode: Mode;
-    };
-    constructor(address: string, mode: Mode);
-}
-export declare class PageNavigationEvent extends Event {
-    static readonly eventName = "pagenavigation";
-    data: Navigation;
-    constructor(navigation: Navigation);
-}
-export declare class HistoryNavigationEvent extends Event {
-    static readonly eventName = "historynavigation";
-    data: Navigation;
-    constructor(navigation: Navigation);
-}
-export declare class RefreshRequestedEvent extends Event {
-    static readonly eventName = "refreshrequested";
-    constructor();
-}
 export interface LinearMemoryNavigatorData {
     address: string;
     mode: Mode;
@@ -41,7 +19,26 @@ export declare const enum Mode {
 }
 export declare class LinearMemoryNavigator extends UI.Widget.Widget {
     #private;
+    get onRefreshRequest(): (() => void) | undefined;
+    set onRefreshRequest(callback: (() => void) | undefined);
+    get onAddressChange(): ((address: string, mode: Mode) => void) | undefined;
+    set onAddressChange(callback: ((address: string, mode: Mode) => void) | undefined);
+    get onNavigatePage(): ((navigation: Navigation) => void) | undefined;
+    set onNavigatePage(callback: ((navigation: Navigation) => void) | undefined);
+    get onNavigateHistory(): ((navigation: Navigation) => void) | undefined;
+    set onNavigateHistory(callback: ((navigation: Navigation) => void) | undefined);
     constructor(element?: HTMLElement);
-    set data(data: LinearMemoryNavigatorData);
+    get address(): string;
+    set address(address: string);
+    get error(): string | undefined;
+    set error(error: string | undefined);
+    get valid(): boolean;
+    set valid(valid: boolean);
+    get canGoBackInHistory(): boolean;
+    set canGoBackInHistory(canGoBackInHistory: boolean);
+    get canGoForwardInHistory(): boolean;
+    set canGoForwardInHistory(canGoForwardInHistory: boolean);
+    get mode(): Mode;
+    set mode(mode: Mode);
     performUpdate(): void;
 }

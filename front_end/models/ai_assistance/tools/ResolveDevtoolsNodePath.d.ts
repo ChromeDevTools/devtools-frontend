@@ -1,6 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import type { FunctionCallHandlerResult } from '../agents/AiAgent.js';
-import { type BaseToolCapability, type OriginLockCapability, type TargetCapability, type Tool, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, type TargetCapability, type ToolArgs, ToolName } from './Tool.js';
 /**
  * Arguments for resolving a DevTools node path to a backend node ID.
  */
@@ -20,7 +19,7 @@ export interface ResolveDevtoolsNodePathArgs extends ToolArgs {
  * Lighthouse reports or other sources using node paths. It ensures the resolved node
  * belongs to the locked origin.
  */
-export declare class ResolveDevtoolsNodePathTool implements Tool<ResolveDevtoolsNodePathArgs, {
+export declare class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNodePathArgs, {
     backendNodeId: number;
 }, BaseToolCapability & TargetCapability & OriginLockCapability> {
     readonly name = ToolName.RESOLVE_DEVTOOLS_NODE_PATH;
@@ -38,7 +37,7 @@ export declare class ResolveDevtoolsNodePathTool implements Tool<ResolveDevtools
      * that the node's origin matches the established origin lock to prevent
      * access to nodes from other origins.
      */
-    handler(params: ResolveDevtoolsNodePathArgs, context: BaseToolCapability & TargetCapability & OriginLockCapability): Promise<FunctionCallHandlerResult<{
+    handler(params: ResolveDevtoolsNodePathArgs, context: BaseToolCapability & TargetCapability & OriginLockCapability): Promise<DataHandlerResult<{
         backendNodeId: number;
     }>>;
 }

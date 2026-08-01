@@ -17,6 +17,7 @@ export class ChangeManager {
     #stylesheetMutex = new Common.Mutex.Mutex();
     #cssModelToStylesheetId = new Map();
     #stylesheetChanges = new Map();
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     constructor(targetManager = SDK.TargetManager.TargetManager.instance()) {
         this.#targetManager = targetManager;
         this.#targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);

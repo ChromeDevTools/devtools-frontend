@@ -29,6 +29,7 @@ export class PerformanceTraceFormatter {
             // In environments outside DevTools (like the MCP server or some tests),
             // CrUXManager.instance() can fail due to uninitialized global settings/storage.
             try {
+                // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
                 this.#cruxManager = CrUXManager.CrUXManager.instance();
             }
             catch {

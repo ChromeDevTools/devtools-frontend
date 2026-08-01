@@ -275,6 +275,11 @@ export function assertRequiresApproval(response) {
         assert.fail(`Expected response requiring approval, but got: ${JSON.stringify(response)}`);
     }
 }
+export function assertIsContext(response) {
+    if (!('context' in response)) {
+        assert.fail(`Expected context response, but got: ${JSON.stringify(response)}`);
+    }
+}
 /**
  * Creates a dummy File object containing a solid red image with the given dimensions.
  *

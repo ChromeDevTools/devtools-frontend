@@ -54,12 +54,61 @@ function requestValidation(editor: UI.ListWidget.Editor<EmulationModel.EmulatedD
   editor.requestValidation();
 }
 
+function select(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
+                name: string): HTMLSelectElement {
+  return editor.control(name) as HTMLSelectElement;
+}
+
 function fillFields(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
                     fieldValues: Record<string, string>): void {
   for (const [controlName, value] of Object.entries(fieldValues)) {
     input(editor, controlName).value = value;
   }
 }
+
+interface CutoutCase {
+  cutout: EmulationModel.EmulatedDevices.Cutout;
+  fields: Record<string, string>;
+}
+
+const CUTOUT_CASES: CutoutCase[] = [
+  {
+    cutout: {
+      shape: EmulationModel.EmulatedDevices.CutoutShape.PILL,
+      x: 134,
+      y: 11,
+      width: 125,
+      height: 37,
+      borderRadius: 19,
+    },
+    fields: {
+      'cutout-x': '134',
+      'cutout-y': '11',
+      'cutout-width': '125',
+      'cutout-height': '37',
+      'cutout-border-radius': '19',
+    },
+  },
+  {
+    cutout: {
+      shape: EmulationModel.EmulatedDevices.CutoutShape.NOTCH,
+      x: 114,
+      y: 0,
+      width: 162,
+      height: 34,
+      upperRadius: 5,
+      lowerRadius: 22,
+    },
+    fields: {
+      'cutout-x': '114',
+      'cutout-y': '0',
+      'cutout-width': '162',
+      'cutout-height': '34',
+      'cutout-upper-radius': '5',
+      'cutout-lower-radius': '22',
+    },
+  },
+];
 
 describeWithEnvironment('DevicesSettingsTab', () => {
   it('instantiates and renders categorized device groups without orphan node errors', () => {
@@ -161,6 +210,40 @@ describeWithEnvironment('DevicesSettingsTab', () => {
     }
   });
 
+  for (const {cutout, fields} of CUTOUT_CASES) {
+    it(`saves a ${cutout.shape} cutout with only its shape-specific fields`, () => {
+      const tab = new DevicesSettingsTab();
+      const device = createCustomDevice();
+      const editor = tab.beginEdit(device);
+
+      select(editor, 'cutout-shape').value = cutout.shape;
+      fillFields(editor, {
+        'cutout-border-radius': '99',
+        'cutout-upper-radius': '99',
+        'cutout-lower-radius': '99',
+        ...fields,
+      });
+
+      tab.commitEdit(device, editor, false);
+
+      assert.deepEqual(device.modes[0].cutout, cutout);
+      assert.isUndefined(device.modes[1].cutout);
+    });
+
+    it(`populates a saved ${cutout.shape} cutout`, () => {
+      const tab = new DevicesSettingsTab();
+      const device = createCustomDevice();
+      device.modes[0].cutout = cutout;
+
+      const editor = tab.beginEdit(device);
+
+      assert.strictEqual(select(editor, 'cutout-shape').value, cutout.shape);
+      for (const [controlName, expectedValue] of Object.entries(fields)) {
+        assert.strictEqual(input(editor, controlName).value, expectedValue);
+      }
+    });
+  }
+
   it('populates saved safe-area values when editing a custom device', () => {
     const tab = new DevicesSettingsTab();
     const device = createCustomDevice();
@@ -187,7 +270,92 @@ describeWithEnvironment('DevicesSettingsTab', () => {
         ['47', '', '47', '21']);
   });
 
-  it('provides accessible names and orientation groups for safe-area fields', () => {
+  it('omits cutout data when no cutout is selected', () => {
+    const tab = new DevicesSettingsTab();
+    const device = createCustomDevice();
+    device.modes[0].cutout = CUTOUT_CASES[0].cutout;
+    const editor = tab.beginEdit(device);
+
+    select(editor, 'cutout-shape').value = 'none';
+    tab.commitEdit(device, editor, false);
+
+    assert.isUndefined(device.modes[0].cutout);
+  });
+
+  it('exposes the supported basic cutout shapes', () => {
+    const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+
+    assert.deepEqual([...select(editor, 'cutout-shape').options].map(option => [option.value, option.textContent]), [
+      ['none', 'No cutout'],
+      [EmulationModel.EmulatedDevices.CutoutShape.PILL, 'Pill'],
+      [EmulationModel.EmulatedDevices.CutoutShape.NOTCH, 'Notch'],
+    ]);
+  });
+
+  it('shows only fields that apply to the selected basic cutout shape', () => {
+    const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    const shape = select(editor, 'cutout-shape');
+    const rectRow = input(editor, 'cutout-x').closest('.devices-edit-cutout-rect-row') as HTMLElement;
+    const radiusRow = input(editor, 'cutout-border-radius').closest('.devices-edit-cutout-radius-row') as HTMLElement;
+    const shapeSpecificControls = ['cutout-border-radius', 'cutout-upper-radius', 'cutout-lower-radius'];
+
+    function showShape(value: string): void {
+      shape.value = value;
+      shape.dispatchEvent(new Event('input'));
+    }
+
+    function visibleShapeSpecificControls(): string[] {
+      return shapeSpecificControls.filter(controlName => !input(editor, controlName).hidden);
+    }
+
+    assert.isTrue(rectRow.hidden);
+    assert.isTrue(radiusRow.hidden);
+    assert.deepEqual(visibleShapeSpecificControls(), []);
+
+    const expectations = [
+      [EmulationModel.EmulatedDevices.CutoutShape.PILL, ['cutout-border-radius']],
+      [EmulationModel.EmulatedDevices.CutoutShape.NOTCH, ['cutout-upper-radius', 'cutout-lower-radius']],
+    ] as const;
+    for (const [shapeValue, visibleControls] of expectations) {
+      showShape(shapeValue);
+      assert.isFalse(rectRow.hidden);
+      assert.isFalse(radiusRow.hidden);
+      assert.deepEqual(visibleShapeSpecificControls(), [...visibleControls]);
+    }
+
+    showShape('none');
+    assert.isTrue(rectRow.hidden);
+    assert.isTrue(radiusRow.hidden);
+    assert.deepEqual(visibleShapeSpecificControls(), []);
+  });
+
+  it('populates the validation alert once when the cutout shape changes', () => {
+    const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    const shape = select(editor, 'cutout-shape');
+    fillFields(editor, {
+      'cutout-x': '0',
+      'cutout-y': '0',
+      'cutout-width': '125',
+      'cutout-height': '37',
+      'cutout-border-radius': '19',
+      'user-agent': '',
+    });
+    const validationAlert = editor.element.querySelector<HTMLElement>('.list-widget-input-validation-error');
+    assert.isNotNull(validationAlert);
+    const observer = new MutationObserver(() => {});
+    observer.observe(validationAlert, {childList: true});
+
+    shape.value = EmulationModel.EmulatedDevices.CutoutShape.PILL;
+    shape.dispatchEvent(new Event('input'));
+
+    const alertPopulationCount = observer.takeRecords().filter(mutation => mutation.addedNodes.length > 0).length;
+    observer.disconnect();
+    assert.strictEqual(alertPopulationCount, 1);
+    assert.include(validationAlert.textContent || '', 'User agent string can’t be empty.');
+    assert.isFalse(input(editor, 'cutout-border-radius').hidden);
+  });
+
+  it('provides accessible names and orientation groups for safe-area and cutout fields', () => {
     const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
 
     assert.strictEqual(input(editor, 'safe-area-top').getAttribute('aria-label'), 'Top inset');
@@ -200,5 +368,11 @@ describeWithEnvironment('DevicesSettingsTab', () => {
     assert.strictEqual(landscapeGroup?.querySelector('b')?.textContent, 'Landscape safe area');
     assert.notStrictEqual(portraitGroup?.getAttribute('aria-labelledby'),
                           landscapeGroup?.getAttribute('aria-labelledby'));
+    const cutoutShape = select(editor, 'cutout-shape');
+    const cutoutGroup = cutoutShape.closest('[role="group"]');
+    assert.strictEqual(cutoutGroup?.getAttribute('aria-labelledby'), cutoutGroup?.querySelector('b')?.id);
+    assert.strictEqual(cutoutGroup?.querySelector('b')?.textContent, 'Display cutout');
+    assert.strictEqual(cutoutShape.getAttribute('aria-label'), 'Display cutout');
+    assert.strictEqual(input(editor, 'cutout-width').getAttribute('aria-label'), 'Cutout width');
   });
 });

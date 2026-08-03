@@ -71,6 +71,10 @@ export const clickZoomDropDown = async (devToolsPage: DevToolsPage) => {
 };
 
 const selectOption = async (devToolsPage: DevToolsPage, element: puppeteer.ElementHandle, value: string) => {
+  await devToolsPage.waitForFunction(() => element.evaluate((el, text) => {
+    const select = el as HTMLSelectElement;
+    return Array.from(select.options).some(option => option.text === text || option.value === text);
+  }, value), undefined, `Waiting for the ${value} option`);
   await element.evaluate((el, text) => {
     const select = el as HTMLSelectElement;
     const option = Array.from(select.options).find(o => o.text === text || o.value === text);

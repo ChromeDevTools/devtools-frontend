@@ -105,6 +105,50 @@ const UIStrings = {
    * @example {9999} PH3
    */
   safeAreaValueMustBeInRange: '{PH1}: {PH2} must be an integer from 0 to {PH3}.',
+  /**
+   * @description Label for display cutout values on a custom device.
+   */
+  displayCutout: 'Display cutout',
+  /**
+   * @description Option shown when a custom device has no display cutout.
+   */
+  noDisplayCutout: 'No cutout',
+  /**
+   * @description Option shown for pill-shaped display cutouts such as Dynamic Island.
+   */
+  pillDisplayCutout: 'Pill',
+  /**
+   * @description Option shown for classic notch display cutouts.
+   */
+  notchDisplayCutout: 'Notch',
+  /**
+   * @description Placeholder text for a custom device display cutout x coordinate field.
+   */
+  cutoutX: 'Cutout x',
+  /**
+   * @description Placeholder text for a custom device display cutout y coordinate field.
+   */
+  cutoutY: 'Cutout y',
+  /**
+   * @description Placeholder text for a custom device display cutout width field.
+   */
+  cutoutWidth: 'Cutout width',
+  /**
+   * @description Placeholder text for a custom device display cutout height field.
+   */
+  cutoutHeight: 'Cutout height',
+  /**
+   * @description Placeholder text for a custom device pill-shaped display cutout radius field.
+   */
+  cutoutBorderRadius: 'Pill radius',
+  /**
+   * @description Placeholder text for a custom device notch upper radius field.
+   */
+  cutoutUpperRadius: 'Upper radius',
+  /**
+   * @description Placeholder text for a custom device notch lower radius field.
+   */
+  cutoutLowerRadius: 'Lower radius',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/DevicesSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -124,6 +168,8 @@ function parseOptionalNonNegativeInteger(value: string): number|null {
   }
   return parsedValue;
 }
+
+const NO_CUSTOM_CUTOUT = 'none';
 
 export class DevicesSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<EmulationModel.EmulatedDevices.EmulatedDevice> {
@@ -323,6 +369,10 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     if (safeAreaInsets) {
       verticalMode.safeAreaInsets = safeAreaInsets;
     }
+    const cutout = this.cutoutFromEditor(editor);
+    if (cutout) {
+      verticalMode.cutout = cutout;
+    }
     device.modes.push(verticalMode);
     const horizontalMode: EmulationModel.EmulatedDevices.Mode = {
       title: '',
@@ -379,6 +429,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     editor.control('scale').value = this.toNumericInputValue(device.deviceScaleFactor);
     editor.control('user-agent').value = device.userAgent;
     this.populateSafeAreaEditor(editor, device);
+    this.populateCutoutEditor(editor, device);
     let uaType;
     if (device.mobile()) {
       uaType =
@@ -406,6 +457,34 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     return new EmulationModel.DeviceModeModel.Insets(left, top, right, bottom);
   }
 
+  private cutoutFromEditor(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>):
+      EmulationModel.EmulatedDevices.Cutout|null {
+    const shape = editor.control('cutout-shape').value;
+    const baseCutout = {
+      x: this.editorIntegerValue(editor, 'cutout-x'),
+      y: this.editorIntegerValue(editor, 'cutout-y'),
+      width: this.editorIntegerValue(editor, 'cutout-width'),
+      height: this.editorIntegerValue(editor, 'cutout-height'),
+    };
+    switch (shape) {
+      case EmulationModel.EmulatedDevices.CutoutShape.PILL:
+        return {
+          shape,
+          ...baseCutout,
+          borderRadius: this.editorIntegerValue(editor, 'cutout-border-radius'),
+        };
+      case EmulationModel.EmulatedDevices.CutoutShape.NOTCH:
+        return {
+          shape,
+          ...baseCutout,
+          upperRadius: this.editorIntegerValue(editor, 'cutout-upper-radius'),
+          lowerRadius: this.editorIntegerValue(editor, 'cutout-lower-radius'),
+        };
+      default:
+        return null;
+    }
+  }
+
   private populateSafeAreaEditor(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
                                  device: EmulationModel.EmulatedDevices.EmulatedDevice): void {
     const safeAreaInsets = this.verticalMode(device)?.safeAreaInsets;
@@ -419,6 +498,43 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     editor.control('landscape-safe-area-top').value = this.toNumericInputValue(landscapeSafeAreaInsets?.top || 0);
     editor.control('landscape-safe-area-right').value = this.toNumericInputValue(landscapeSafeAreaInsets?.right || 0);
     editor.control('landscape-safe-area-bottom').value = this.toNumericInputValue(landscapeSafeAreaInsets?.bottom || 0);
+  }
+
+  private populateCutoutEditor(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
+                               device: EmulationModel.EmulatedDevices.EmulatedDevice): void {
+    const cutout = this.verticalMode(device)?.cutout;
+    editor.control('cutout-shape').value = cutout?.shape || NO_CUSTOM_CUTOUT;
+    editor.control('cutout-x').value = String(cutout?.x ?? '');
+    editor.control('cutout-y').value = String(cutout?.y ?? '');
+    editor.control('cutout-width').value = String(cutout?.width ?? '');
+    editor.control('cutout-height').value = String(cutout?.height ?? '');
+    editor.control('cutout-border-radius').value =
+        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.PILL ? cutout.borderRadius : '');
+    editor.control('cutout-upper-radius').value =
+        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH ? cutout.upperRadius : '');
+    editor.control('cutout-lower-radius').value =
+        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH ? cutout.lowerRadius : '');
+    this.updateCutoutFieldsVisibility(editor);
+  }
+
+  private updateCutoutFieldsVisibility(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>):
+      void {
+    const shape = editor.control('cutout-shape').value;
+    const noCutout = shape === NO_CUSTOM_CUTOUT;
+    const isPill = shape === EmulationModel.EmulatedDevices.CutoutShape.PILL;
+    const isNotch = shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH;
+    const content = editor.contentElement();
+    const rectRow = content.querySelector<HTMLElement>('.devices-edit-cutout-rect-row');
+    const radiusRow = content.querySelector<HTMLElement>('.devices-edit-cutout-radius-row');
+    if (rectRow) {
+      rectRow.hidden = noCutout;
+    }
+    if (radiusRow) {
+      radiusRow.hidden = noCutout || !(isPill || isNotch);
+    }
+    (editor.control('cutout-border-radius') as HTMLElement).hidden = !isPill;
+    (editor.control('cutout-upper-radius') as HTMLElement).hidden = !isNotch;
+    (editor.control('cutout-lower-radius') as HTMLElement).hidden = !isNotch;
   }
 
   private createEditor(): UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice> {
@@ -446,6 +562,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
                               portraitSafeAreaValidator);
     this.appendSafeAreaFields(editor, deviceFields, i18nString(UIStrings.landscapeSafeArea), 'landscape-',
                               landscapeSafeAreaValidator);
+    this.appendCutoutFields(editor, content, cutoutShapeValidator, cutoutValidator);
 
     const uaStringFields = content.createChild('div', 'devices-edit-fields');
     UI.UIUtils.createTextChild(uaStringFields.createChild('b'), i18nString(UIStrings.userAgentString));
@@ -549,6 +666,14 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
                                         input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       return safeAreaValidator(i18nString(UIStrings.landscapeSafeArea), input);
     }
+
+    function cutoutShapeValidator(): UI.ListWidget.ValidatorResult {
+      return {valid: true};
+    }
+
+    function cutoutValidator(): UI.ListWidget.ValidatorResult {
+      return {valid: true};
+    }
   }
 
   private appendSafeAreaFields(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
@@ -571,5 +696,48 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
                                                i18nString(UIStrings.safeAreaRight), safeAreaValidator));
     safeAreaRow.appendChild(editor.createInput(`${controlPrefix}safe-area-bottom`, 'text',
                                                i18nString(UIStrings.safeAreaBottom), safeAreaValidator));
+  }
+
+  private appendCutoutFields(
+      editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>, content: Element,
+      cutoutShapeValidator: (item: EmulationModel.EmulatedDevices.EmulatedDevice, index: number,
+                             input: UI.ListWidget.EditorControl) => UI.ListWidget.ValidatorResult,
+      cutoutValidator: (item: EmulationModel.EmulatedDevices.EmulatedDevice, index: number,
+                        input: UI.ListWidget.EditorControl) => UI.ListWidget.ValidatorResult): void {
+    const cutoutFields = content.createChild('div', 'devices-edit-fields');
+    cutoutFields.classList.add('devices-edit-cutout-fields');
+    UI.ARIAUtils.markAsGroup(cutoutFields);
+    const heading = cutoutFields.createChild('b');
+    heading.id = UI.ARIAUtils.nextId('cutout-heading-');
+    UI.UIUtils.createTextChild(heading, i18nString(UIStrings.displayCutout));
+    cutoutFields.setAttribute('aria-labelledby', heading.id);
+    const shapeOptions = [
+      NO_CUSTOM_CUTOUT,
+      EmulationModel.EmulatedDevices.CutoutShape.PILL,
+      EmulationModel.EmulatedDevices.CutoutShape.NOTCH,
+    ];
+    const shapeControl =
+        editor.createSelect('cutout-shape', shapeOptions, cutoutShapeValidator, i18nString(UIStrings.displayCutout));
+    shapeControl.options[0].textContent = i18nString(UIStrings.noDisplayCutout);
+    shapeControl.options[1].textContent = i18nString(UIStrings.pillDisplayCutout);
+    shapeControl.options[2].textContent = i18nString(UIStrings.notchDisplayCutout);
+    cutoutFields.createChild('div', 'hbox').appendChild(shapeControl);
+    shapeControl.addEventListener('input', () => this.updateCutoutFieldsVisibility(editor), false);
+
+    const rectRow = cutoutFields.createChild('div', 'hbox devices-edit-cutout-rect-row');
+    rectRow.appendChild(editor.createInput('cutout-x', 'text', i18nString(UIStrings.cutoutX), cutoutValidator));
+    rectRow.appendChild(editor.createInput('cutout-y', 'text', i18nString(UIStrings.cutoutY), cutoutValidator));
+    rectRow.appendChild(editor.createInput('cutout-width', 'text', i18nString(UIStrings.cutoutWidth), cutoutValidator));
+    rectRow.appendChild(
+        editor.createInput('cutout-height', 'text', i18nString(UIStrings.cutoutHeight), cutoutValidator));
+
+    const radiusRow = cutoutFields.createChild('div', 'hbox devices-edit-cutout-radius-row');
+    radiusRow.appendChild(
+        editor.createInput('cutout-border-radius', 'text', i18nString(UIStrings.cutoutBorderRadius), cutoutValidator));
+    radiusRow.appendChild(
+        editor.createInput('cutout-upper-radius', 'text', i18nString(UIStrings.cutoutUpperRadius), cutoutValidator));
+    radiusRow.appendChild(
+        editor.createInput('cutout-lower-radius', 'text', i18nString(UIStrings.cutoutLowerRadius), cutoutValidator));
+    this.updateCutoutFieldsVisibility(editor);
   }
 }

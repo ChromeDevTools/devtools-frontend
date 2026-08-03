@@ -20,10 +20,7 @@ describe('LinearMemoryInspector', () => {
     dockingMode: 'undocked',
   });
 
-  // TestExpectations is broken for CXX
-  // crbug.com/542040594
-  // eslint-disable-next-line @devtools/check-test-definitions
-  it.skip('can show variables', async ({inspectedPage, devToolsPage}) => {
+  it('can show variables', async ({inspectedPage, devToolsPage}) => {
     const test =
         'extensions/cxx_debugging/e2e/resources/scope-view-primitives__Scope_view_formats_primitive_types_correctly_0.html';
     await openTestSuiteResourceInSourcesPanel(
@@ -53,6 +50,7 @@ describe('LinearMemoryInspector', () => {
     const localVariable = await devToolsPage.waitFor(
         '[data-object-property-name-for-test="d"]',
     );
+    await localVariable.hover();
     await devToolsPage.click('[title="Open in Memory inspector panel"]', {
       root: localVariable,
     });

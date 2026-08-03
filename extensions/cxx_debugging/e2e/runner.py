@@ -397,7 +397,9 @@ class Init(RunnerCommand):
             'slow':
             15000,
             'timeout':
-            0 if options.debug else 120000
+            0 if options.debug else 120000,
+            'retries':
+            4
         }
         with open(repo_path(test_suite_dir, '.mocharc.js'), 'w') as mocharc:
             mocharc.write('module.exports = {};'.format(

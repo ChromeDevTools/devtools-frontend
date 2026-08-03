@@ -56,13 +56,54 @@ describeWithEnvironment('SourcesView', () => {
   it('renders the placeholder correctly', async () => {
     const sourcesView = new Sources.SourcesView.SourcesView();
     renderElementIntoDOM(sourcesView, {includeCommonStyles: true});
+    await sourcesView.updateComplete;
     await assertScreenshot('sources/sources-view-placeholder.png');
     sourcesView.detach();
+  });
+
+  it('renders shortcuts in DEFAULT_VIEW and calls onClick', async () => {
+    const onClickStub = sinon.stub();
+    const input = {
+      placeholderElement: document.createElement('div'),
+      scriptViewToolbar: document.createElement('devtools-toolbar') as UI.Toolbar.Toolbar,
+      bottomToolbar: document.createElement('devtools-toolbar') as UI.Toolbar.Toolbar,
+      leftToolbarItems: [],
+      rightToolbarItems: [],
+      searchableView: sinon.createStubInstance(UI.SearchableView.SearchableView),
+      editorContainer: {
+        view: document.createElement('div'),
+      } as unknown as Sources.TabbedEditorContainer.TabbedEditorContainer,
+      shortcuts: [
+        {description: 'Open file', onClick: onClickStub, keys: ['Ctrl', 'P']},
+        {description: 'Empty shortcut', onClick: sinon.stub(), keys: []},
+      ],
+    };
+    const output = {
+      onSelectFolderClicked: sinon.stub(),
+    };
+
+    const target = document.createElement('div');
+    Sources.SourcesView.DEFAULT_VIEW(input, output, target);
+
+    const shortcutLines = input.placeholderElement.querySelectorAll('.shortcut-line');
+    assert.lengthOf(shortcutLines, 2);
+
+    const button = shortcutLines[0].querySelector('button');
+    assert.exists(button);
+    assert.strictEqual(button.textContent, 'Open file');
+    button.click();
+    sinon.assert.calledOnce(onClickStub);
+
+    const keys = Array.from(shortcutLines[0].querySelectorAll('.keybinds-key span')).map(span => span.textContent);
+    assert.deepEqual(keys, ['Ctrl', 'P']);
+
+    assert.notExists(shortcutLines[1].querySelector('button'));
   });
 
   it('triggers addFileSystem when select folder button is clicked', async () => {
     const sourcesView = new Sources.SourcesView.SourcesView();
     renderElementIntoDOM(sourcesView, {includeCommonStyles: true});
+    await sourcesView.updateComplete;
     const addFileSystemStub =
         sinon.stub(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(), 'addFileSystem')
             .resolves(null);
@@ -89,6 +130,7 @@ describeWithEnvironment('SourcesView', () => {
   it('creates new source view of updated type when renamed file requires a different viewer', async () => {
     const sourcesView = new Sources.SourcesView.SourcesView();
     renderElementIntoDOM(sourcesView);
+    await sourcesView.updateComplete;
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const {uiSourceCode, project} = createFileSystemUISourceCode({
       url: urlString`file:///path/to/overrides/example.html`,
@@ -116,6 +158,7 @@ describeWithEnvironment('SourcesView', () => {
 
     // Rename, but contentType stays the same
     await uiSourceCode.rename('newName.html' as Platform.DevToolsPath.RawPathString);
+    await sourcesView.updateComplete;
     assert.instanceOf(sourcesView.getSourceView(uiSourceCode), Sources.UISourceCodeFrame.UISourceCodeFrame);
 
     // Rename which changes contentType
@@ -133,17 +176,20 @@ describeWithEnvironment('SourcesView', () => {
 
   it('creates a HeadersView when the filename is \'.headers\'', async () => {
     const sourcesView = new Sources.SourcesView.SourcesView();
+    await sourcesView.updateComplete;
     const uiSourceCode = new Workspace.UISourceCode.UISourceCode(
         {} as Persistence.FileSystemWorkspaceBinding.FileSystem,
         urlString`file:///path/to/overrides/www.example.com/.headers`, Common.ResourceType.resourceTypes.Document);
     sinon.stub(uiSourceCode, 'mimeType').returns('text/plain');
     sourcesView.viewForFile(uiSourceCode);
     assert.instanceOf(sourcesView.getSourceView(uiSourceCode), SourcesComponents.HeadersView.HeadersView);
+    sourcesView.detach();
   });
 
   describe('viewForFile', () => {
     it('records the correct media type in the DevTools.SourcesPanelFileOpened metric', async () => {
       const sourcesView = new Sources.SourcesView.SourcesView();
+      await sourcesView.updateComplete;
       const {uiSourceCode} = createFileSystemUISourceCode({
         url: urlString`file:///path/to/project/example.ts`,
         mimeType: 'text/typescript',
@@ -162,6 +208,7 @@ describeWithEnvironment('SourcesView', () => {
       await contentLoadedPromise;
 
       sinon.assert.calledWithExactly(sourcesPanelFileOpenedSpy, 'text/typescript');
+      sourcesView.detach();
     });
   });
 });
@@ -228,17 +275,18 @@ describeWithEnvironment('SourcesView', () => {
     const sourcesView = new Sources.SourcesView.SourcesView();
     renderElementIntoDOM(sourcesView);
     await sourcesView.updateComplete;
-    await new Promise(resolve => setTimeout(resolve, 0));
     let addedURLs = addUISourceCodeSpy.args.map(args => args[0].url());
     assert.deepEqual(addedURLs, ['http://example.com/a.js', 'http://example.com/b.js']);
     sinon.assert.notCalled(removeUISourceCodesSpy);
 
     addUISourceCodeSpy.resetHistory();
     target2.targetManager().setScopeTarget(target2);
+    await sourcesView.updateComplete;
     addedURLs = addUISourceCodeSpy.args.map(args => args[0].url());
     assert.deepEqual(addedURLs, ['http://foo.com/script.js']);
     const removedURLs = removeUISourceCodesSpy.args.map(args => args[0][0].url());
     assert.deepEqual(removedURLs, ['http://example.com/a.js', 'http://example.com/b.js']);
+    sourcesView.detach();
   });
 
   it('doesn\'t remove non-network UISourceCodes when changing the scope target', async () => {
@@ -251,9 +299,9 @@ describeWithEnvironment('SourcesView', () => {
     const sourcesView = new Sources.SourcesView.SourcesView();
     renderElementIntoDOM(sourcesView);
     await sourcesView.updateComplete;
-    const removeUISourceCodesSpy =
-        sinon.spy(Sources.TabbedEditorContainer.TabbedEditorContainer.prototype, 'removeUISourceCodes');
+    const removeUISourceCodesSpy = sinon.spy(sourcesView.editorContainer!, 'removeUISourceCodes');
     target2.targetManager().setScopeTarget(target2);
     sinon.assert.notCalled(removeUISourceCodesSpy);
+    sourcesView.detach();
   });
 });

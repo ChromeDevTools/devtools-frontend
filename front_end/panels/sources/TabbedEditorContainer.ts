@@ -73,13 +73,12 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
   private currentView!: UI.Widget.Widget|null;
   private scrollTimer?: number;
   private reentrantShow: boolean;
-  constructor(
-      delegate: TabbedEditorContainerDelegate, setting: Common.Settings.Setting<SerializedHistoryItem[]>,
-      placeholderElement: Element, focusedPlaceholderElement?: Element) {
+  constructor(delegate: TabbedEditorContainerDelegate, setting: Common.Settings.Setting<SerializedHistoryItem[]>,
+              placeholderElement: Element, focusedPlaceholderElement?: Element, element?: HTMLElement) {
     super();
     this.delegate = delegate;
 
-    this.tabbedPane = new UI.TabbedPane.TabbedPane();
+    this.tabbedPane = new UI.TabbedPane.TabbedPane(element);
     this.tabbedPane.setPlaceholderElement(placeholderElement, focusedPlaceholderElement);
     this.tabbedPane.setTabDelegate(new EditorContainerTabDelegate(this));
 

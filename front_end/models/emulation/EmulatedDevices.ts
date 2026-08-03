@@ -1803,7 +1803,7 @@ const emulatedDevices = [
   {
     'order': 42,
     'show-by-default': true,
-    'title': 'iPad Pro 13"',
+    'title': 'iPad Pro 13',
     'screen': {
       'horizontal': {
         'width': 1376,

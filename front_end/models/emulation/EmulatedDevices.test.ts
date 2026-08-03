@@ -275,7 +275,7 @@ describeWithEnvironment('emulatedDevices', () => {
                        EmulationModel.EmulatedDevices.Category.FOLDABLE);
 
     const tabletDevice = new EmulationModel.EmulatedDevices.EmulatedDevice();
-    tabletDevice.title = 'iPad Pro 13"';
+    tabletDevice.title = 'iPad Pro 13';
     tabletDevice.type = EmulationModel.EmulatedDevices.Type.Tablet;
     assert.strictEqual(EmulationModel.EmulatedDevices.deviceCategory(tabletDevice),
                        EmulationModel.EmulatedDevices.Category.TABLET_DESKTOP);

@@ -214,5 +214,5 @@ export const waitForZoom = async (devToolsPage: DevToolsPage, expectedZoom: stri
 };
 
 export const selectNonDualScreenDevice = async (devToolsPage: DevToolsPage) => {
-  await selectDeviceItem(devToolsPage, 'iPad Pro 13"');
+  await selectDeviceItem(devToolsPage, 'iPad Pro 13');
 };

@@ -1334,6 +1334,7 @@ export namespace Audits {
     TooManyRequests = 'TooManyRequests',
     WellKnownHttpNotFound = 'WellKnownHttpNotFound',
     WellKnownNoResponse = 'WellKnownNoResponse',
+    WellKnownBlockedByConnectionAllowlist = 'WellKnownBlockedByConnectionAllowlist',
     WellKnownInvalidResponse = 'WellKnownInvalidResponse',
     WellKnownListEmpty = 'WellKnownListEmpty',
     WellKnownInvalidContentType = 'WellKnownInvalidContentType',
@@ -1341,6 +1342,7 @@ export namespace Audits {
     WellKnownTooBig = 'WellKnownTooBig',
     ConfigHttpNotFound = 'ConfigHttpNotFound',
     ConfigNoResponse = 'ConfigNoResponse',
+    ConfigBlockedByConnectionAllowlist = 'ConfigBlockedByConnectionAllowlist',
     ConfigInvalidResponse = 'ConfigInvalidResponse',
     ConfigInvalidContentType = 'ConfigInvalidContentType',
     IdpNotPotentiallyTrustworthy = 'IdpNotPotentiallyTrustworthy',
@@ -1350,11 +1352,13 @@ export namespace Audits {
     InvalidSigninResponse = 'InvalidSigninResponse',
     AccountsHttpNotFound = 'AccountsHttpNotFound',
     AccountsNoResponse = 'AccountsNoResponse',
+    AccountsBlockedByConnectionAllowlist = 'AccountsBlockedByConnectionAllowlist',
     AccountsInvalidResponse = 'AccountsInvalidResponse',
     AccountsListEmpty = 'AccountsListEmpty',
     AccountsInvalidContentType = 'AccountsInvalidContentType',
     IdTokenHttpNotFound = 'IdTokenHttpNotFound',
     IdTokenNoResponse = 'IdTokenNoResponse',
+    IdTokenBlockedByConnectionAllowlist = 'IdTokenBlockedByConnectionAllowlist',
     IdTokenInvalidResponse = 'IdTokenInvalidResponse',
     IdTokenIdpErrorResponse = 'IdTokenIdpErrorResponse',
     IdTokenCrossSiteIdpErrorResponse = 'IdTokenCrossSiteIdpErrorResponse',
@@ -10271,11 +10275,6 @@ export namespace Network {
   export type RequestId = OpaqueIdentifier<string, 'Protocol.Network.RequestId'>;
 
   /**
-   * Unique intercepted request identifier.
-   */
-  export type InterceptionId = OpaqueIdentifier<string, 'Protocol.Network.InterceptionId'>;
-
-  /**
    * Network level fetch failure reason.
    */
   export const enum ErrorReason {
@@ -11385,34 +11384,6 @@ export namespace Network {
   }
 
   /**
-   * Stages of the interception to begin intercepting. Request will intercept before the request is
-   * sent. Response will intercept after the response is received.
-   */
-  export const enum InterceptionStage {
-    Request = 'Request',
-    HeadersReceived = 'HeadersReceived',
-  }
-
-  /**
-   * Request pattern for interception.
-   */
-  export interface RequestPattern {
-    /**
-     * Wildcards (`'*'` -> zero or more, `'?'` -> exactly one) are allowed. Escape character is
-     * backslash. Omitting is equivalent to `"*"`.
-     */
-    urlPattern?: string;
-    /**
-     * If set, only requests for matching resource types will be intercepted.
-     */
-    resourceType?: ResourceType;
-    /**
-     * Stage at which to begin intercepting requests. Default is Request.
-     */
-    interceptionStage?: InterceptionStage;
-  }
-
-  /**
    * Information about a signed exchange signature.
    * https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-impl.html#rfc.section.3.1
    */
@@ -12144,6 +12115,7 @@ export namespace Network {
     SigningQuotaExceeded = 'SigningQuotaExceeded',
     RefreshedAsWaiter = 'RefreshedAsWaiter',
     TransientSigningError = 'TransientSigningError',
+    InScopeRefreshNotYetNeeded = 'InScopeRefreshNotYetNeeded',
   }
 
   /**
@@ -12152,9 +12124,11 @@ export namespace Network {
   export interface RefreshEventDetails {
     /**
      * The result of a refresh.
+     * LINT_SKIP.IfChange(DeviceBoundSessionRefreshResult)
      */
     refreshResult: RefreshEventDetailsRefreshResult;
     /**
+     * LINT_SKIP.ThenChange(//net/device_bound_sessions/refresh_result.h:DeviceBoundSessionRefreshResult,//content/browser/devtools/protocol/network_handler.cc:DeviceBoundSessionRefreshResult)
      * If there was a fetch attempt, the result of that.
      */
     fetchResult?: DeviceBoundSessionFetchResult;
@@ -12273,44 +12247,6 @@ export namespace Network {
      * True if emulation of network conditions is supported.
      */
     result: boolean;
-  }
-
-  export interface ContinueInterceptedRequestRequest {
-    interceptionId: InterceptionId;
-    /**
-     * If set this causes the request to fail with the given reason. Passing `Aborted` for requests
-     * marked with `isNavigationRequest` also cancels the navigation. Must not be set in response
-     * to an authChallenge.
-     */
-    errorReason?: ErrorReason;
-    /**
-     * If set the requests completes using with the provided base64 encoded raw response, including
-     * HTTP status line and headers etc... Must not be set in response to an authChallenge.
-     */
-    rawResponse?: binary;
-    /**
-     * If set the request url will be modified in a way that's not observable by page. Must not be
-     * set in response to an authChallenge.
-     */
-    url?: string;
-    /**
-     * If set this allows the request method to be overridden. Must not be set in response to an
-     * authChallenge.
-     */
-    method?: string;
-    /**
-     * If set this allows postData to be set. Must not be set in response to an authChallenge.
-     */
-    postData?: string;
-    /**
-     * If set this allows the request headers to be changed. Must not be set in response to an
-     * authChallenge.
-     */
-    headers?: Headers;
-    /**
-     * Response to a requestIntercepted with an authChallenge. Must not be set otherwise.
-     */
-    authChallengeResponse?: AuthChallengeResponse;
   }
 
   export interface DeleteCookiesRequest {
@@ -12533,32 +12469,6 @@ export namespace Network {
     base64Encoded: boolean;
   }
 
-  export interface GetResponseBodyForInterceptionRequest {
-    /**
-     * Identifier for the intercepted request to get body for.
-     */
-    interceptionId: InterceptionId;
-  }
-
-  export interface GetResponseBodyForInterceptionResponse extends ProtocolResponseWithError {
-    /**
-     * Response body.
-     */
-    body: string;
-    /**
-     * True, if content was sent as base64.
-     */
-    base64Encoded: boolean;
-  }
-
-  export interface TakeResponseBodyForInterceptionAsStreamRequest {
-    interceptionId: InterceptionId;
-  }
-
-  export interface TakeResponseBodyForInterceptionAsStreamResponse extends ProtocolResponseWithError {
-    stream: IO.StreamHandle;
-  }
-
   export interface ReplayXHRRequest {
     /**
      * Identifier of XHR to replay.
@@ -12704,14 +12614,6 @@ export namespace Network {
      * Whether to attach a page script stack for debugging purpose.
      */
     enabled: boolean;
-  }
-
-  export interface SetRequestInterceptionRequest {
-    /**
-     * Requests matching any of these patterns will be forwarded and wait for the corresponding
-     * continueInterceptedRequest call.
-     */
-    patterns: RequestPattern[];
   }
 
   export interface SetUserAgentOverrideRequest {
@@ -12919,68 +12821,6 @@ export namespace Network {
      * Total number of bytes received for this request.
      */
     encodedDataLength: number;
-  }
-
-  /**
-   * Details of an intercepted HTTP request, which must be either allowed, blocked, modified or
-   * mocked.
-   * Deprecated, use Fetch.requestPaused instead.
-   * @deprecated
-   */
-  export interface RequestInterceptedEvent {
-    /**
-     * Each request the page makes will have a unique id, however if any redirects are encountered
-     * while processing that fetch, they will be reported with the same id as the original fetch.
-     * Likewise if HTTP authentication is needed then the same fetch id will be used.
-     */
-    interceptionId: InterceptionId;
-    request: Request;
-    /**
-     * The id of the frame that initiated the request.
-     */
-    frameId: Page.FrameId;
-    /**
-     * How the requested resource will be used.
-     */
-    resourceType: ResourceType;
-    /**
-     * Whether this is a navigation request, which can abort the navigation completely.
-     */
-    isNavigationRequest: boolean;
-    /**
-     * Set if the request is a navigation that will result in a download.
-     * Only present after response is received from the server (i.e. HeadersReceived stage).
-     */
-    isDownload?: boolean;
-    /**
-     * Redirect location, only sent if a redirect was intercepted.
-     */
-    redirectUrl?: string;
-    /**
-     * Details of the Authorization Challenge encountered. If this is set then
-     * continueInterceptedRequest must contain an authChallengeResponse.
-     */
-    authChallenge?: AuthChallenge;
-    /**
-     * Response error if intercepted at response stage or if redirect occurred while intercepting
-     * request.
-     */
-    responseErrorReason?: ErrorReason;
-    /**
-     * Response code if intercepted at response stage or if redirect occurred while intercepting
-     * request or auth retry occurred.
-     */
-    responseStatusCode?: integer;
-    /**
-     * Response headers if intercepted at the response stage or if redirect occurred while
-     * intercepting request or auth retry occurred.
-     */
-    responseHeaders?: Headers;
-    /**
-     * If the intercepted request had a corresponding requestWillBeSent event fired for it, then
-     * this requestId will be the same as the requestId present in the requestWillBeSent event.
-     */
-    requestId?: RequestId;
   }
 
   /**
@@ -13334,7 +13174,7 @@ export namespace Network {
    */
   export interface DirectTCPSocketAbortedEvent {
     identifier: RequestId;
-    errorMessage: string;
+    errorMessage: ErrorReason;
     timestamp: MonotonicTime;
   }
 
@@ -13407,7 +13247,7 @@ export namespace Network {
    */
   export interface DirectUDPSocketAbortedEvent {
     identifier: RequestId;
-    errorMessage: string;
+    errorMessage: ErrorReason;
     timestamp: MonotonicTime;
   }
 

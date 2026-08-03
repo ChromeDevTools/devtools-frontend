@@ -323,7 +323,7 @@ describe('NetworkManager', () => {
 
         networkDispatcher.directTCPSocketAborted({
           identifier: 'mockId' as Protocol.Network.RequestId,
-          errorMessage: 'mock error message',
+          errorMessage: Protocol.Network.ErrorReason.Failed,
           timestamp: 1000,
         });
 
@@ -342,7 +342,7 @@ describe('NetworkManager', () => {
 
         networkDispatcher.directTCPSocketAborted({
           identifier: 'mockId' as Protocol.Network.RequestId,
-          errorMessage: 'mock error message',
+          errorMessage: Protocol.Network.ErrorReason.Failed,
           timestamp: 1000,
         });
 
@@ -375,7 +375,7 @@ describe('NetworkManager', () => {
         // update the request and check all fields are filled as necessary
         networkDispatcher.directTCPSocketAborted({
           identifier: 'mockId' as Protocol.Network.RequestId,
-          errorMessage: 'mock error message',
+          errorMessage: Protocol.Network.ErrorReason.Failed,
           timestamp: 1000,
         });
         assert.lengthOf(finishedRequests, 1);
@@ -387,7 +387,7 @@ describe('NetworkManager', () => {
         assert.deepEqual(req.directSocketInfo, {
           type: SDK.NetworkRequest.DirectSocketType.TCP,
           status: SDK.NetworkRequest.DirectSocketStatus.ABORTED,
-          errorMessage: 'mock error message',
+          errorMessage: Protocol.Network.ErrorReason.Failed,
           createOptions: {
             remoteAddr: 'example.com',
             remotePort: 1001,
@@ -907,7 +907,7 @@ describe('NetworkManager', () => {
 
         networkDispatcher.directUDPSocketAborted({
           identifier: 'mockUdpId' as Protocol.Network.RequestId,
-          errorMessage: 'mock udp error',
+          errorMessage: Protocol.Network.ErrorReason.Failed,
           timestamp: 2000,
         });
 
@@ -926,7 +926,7 @@ describe('NetworkManager', () => {
 
         networkDispatcher.directUDPSocketAborted({
           identifier: 'mockUdpId' as Protocol.Network.RequestId,
-          errorMessage: 'mock udp error',
+          errorMessage: Protocol.Network.ErrorReason.Failed,
           timestamp: 2000,
         });
 
@@ -953,7 +953,7 @@ describe('NetworkManager', () => {
 
         networkDispatcher.directUDPSocketAborted({
           identifier: 'mockUdpId' as Protocol.Network.RequestId,
-          errorMessage: 'UDP aborted by peer',
+          errorMessage: Protocol.Network.ErrorReason.Failed,
           timestamp: 2050,
         });
         assert.lengthOf(finishedRequests, 1);
@@ -964,7 +964,7 @@ describe('NetworkManager', () => {
         assert.isTrue(req.finished);
         assert.strictEqual(req.endTime, 2050);
         assert.deepEqual(req.directSocketInfo?.status, SDK.NetworkRequest.DirectSocketStatus.ABORTED);
-        assert.strictEqual(req.directSocketInfo?.errorMessage, 'UDP aborted by peer');
+        assert.strictEqual(req.directSocketInfo?.errorMessage, Protocol.Network.ErrorReason.Failed);
       });
     });
 

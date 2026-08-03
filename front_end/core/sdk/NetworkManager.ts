@@ -1207,9 +1207,6 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     networkRequest.addEventSourceMessage(time, eventName, eventId, data);
   }
 
-  requestIntercepted({}: Protocol.Network.RequestInterceptedEvent): void {
-  }
-
   requestWillBeSentExtraInfo({
     requestId,
     associatedCookies,

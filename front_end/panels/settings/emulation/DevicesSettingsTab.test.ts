@@ -108,6 +108,42 @@ const CUTOUT_CASES: CutoutCase[] = [
       'cutout-lower-radius': '22',
     },
   },
+  {
+    cutout: {
+      shape: EmulationModel.EmulatedDevices.CutoutShape.CIRCLE,
+      x: 183,
+      y: 0,
+      width: 55,
+      height: 52,
+      cx: 206,
+      cy: 26,
+      radius: 13,
+    },
+    fields: {
+      'cutout-x': '183',
+      'cutout-y': '0',
+      'cutout-width': '55',
+      'cutout-height': '52',
+      'cutout-cx': '206',
+      'cutout-cy': '26',
+      'cutout-radius': '13',
+    },
+  },
+  {
+    cutout: {
+      shape: EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE,
+      x: 126,
+      y: 0,
+      width: 141,
+      height: 45,
+    },
+    fields: {
+      'cutout-x': '126',
+      'cutout-y': '0',
+      'cutout-width': '141',
+      'cutout-height': '45',
+    },
+  },
 ];
 
 describeWithEnvironment('DevicesSettingsTab', () => {
@@ -221,6 +257,9 @@ describeWithEnvironment('DevicesSettingsTab', () => {
         'cutout-border-radius': '99',
         'cutout-upper-radius': '99',
         'cutout-lower-radius': '99',
+        'cutout-cx': '99',
+        'cutout-cy': '99',
+        'cutout-radius': '99',
         ...fields,
       });
 
@@ -282,22 +321,31 @@ describeWithEnvironment('DevicesSettingsTab', () => {
     assert.isUndefined(device.modes[0].cutout);
   });
 
-  it('exposes the supported basic cutout shapes', () => {
+  it('exposes every supported cutout shape', () => {
     const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
 
     assert.deepEqual([...select(editor, 'cutout-shape').options].map(option => [option.value, option.textContent]), [
       ['none', 'No cutout'],
       [EmulationModel.EmulatedDevices.CutoutShape.PILL, 'Pill'],
       [EmulationModel.EmulatedDevices.CutoutShape.NOTCH, 'Notch'],
+      [EmulationModel.EmulatedDevices.CutoutShape.CIRCLE, 'Circle'],
+      [EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE, 'Rectangle'],
     ]);
   });
 
-  it('shows only fields that apply to the selected basic cutout shape', () => {
+  it('shows only fields that apply to the selected cutout shape', () => {
     const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
     const shape = select(editor, 'cutout-shape');
     const rectRow = input(editor, 'cutout-x').closest('.devices-edit-cutout-rect-row') as HTMLElement;
     const radiusRow = input(editor, 'cutout-border-radius').closest('.devices-edit-cutout-radius-row') as HTMLElement;
-    const shapeSpecificControls = ['cutout-border-radius', 'cutout-upper-radius', 'cutout-lower-radius'];
+    const shapeSpecificControls = [
+      'cutout-border-radius',
+      'cutout-upper-radius',
+      'cutout-lower-radius',
+      'cutout-cx',
+      'cutout-cy',
+      'cutout-radius',
+    ];
 
     function showShape(value: string): void {
       shape.value = value;
@@ -313,13 +361,15 @@ describeWithEnvironment('DevicesSettingsTab', () => {
     assert.deepEqual(visibleShapeSpecificControls(), []);
 
     const expectations = [
-      [EmulationModel.EmulatedDevices.CutoutShape.PILL, ['cutout-border-radius']],
-      [EmulationModel.EmulatedDevices.CutoutShape.NOTCH, ['cutout-upper-radius', 'cutout-lower-radius']],
+      [EmulationModel.EmulatedDevices.CutoutShape.PILL, ['cutout-border-radius'], false],
+      [EmulationModel.EmulatedDevices.CutoutShape.NOTCH, ['cutout-upper-radius', 'cutout-lower-radius'], false],
+      [EmulationModel.EmulatedDevices.CutoutShape.CIRCLE, ['cutout-cx', 'cutout-cy', 'cutout-radius'], false],
+      [EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE, [], true],
     ] as const;
-    for (const [shapeValue, visibleControls] of expectations) {
+    for (const [shapeValue, visibleControls, radiusRowHidden] of expectations) {
       showShape(shapeValue);
       assert.isFalse(rectRow.hidden);
-      assert.isFalse(radiusRow.hidden);
+      assert.strictEqual(radiusRow.hidden, radiusRowHidden);
       assert.deepEqual(visibleShapeSpecificControls(), [...visibleControls]);
     }
 
@@ -374,5 +424,6 @@ describeWithEnvironment('DevicesSettingsTab', () => {
     assert.strictEqual(cutoutGroup?.querySelector('b')?.textContent, 'Display cutout');
     assert.strictEqual(cutoutShape.getAttribute('aria-label'), 'Display cutout');
     assert.strictEqual(input(editor, 'cutout-width').getAttribute('aria-label'), 'Cutout width');
+    assert.strictEqual(input(editor, 'cutout-cx').getAttribute('aria-label'), 'Center x');
   });
 });

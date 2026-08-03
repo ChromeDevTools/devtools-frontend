@@ -122,6 +122,14 @@ const UIStrings = {
    */
   notchDisplayCutout: 'Notch',
   /**
+   * @description Option shown for circular display cutouts such as hole-punch cameras.
+   */
+  circleDisplayCutout: 'Circle',
+  /**
+   * @description Option shown for rectangular display cutouts.
+   */
+  rectangleDisplayCutout: 'Rectangle',
+  /**
    * @description Placeholder text for a custom device display cutout x coordinate field.
    */
   cutoutX: 'Cutout x',
@@ -149,6 +157,18 @@ const UIStrings = {
    * @description Placeholder text for a custom device notch lower radius field.
    */
   cutoutLowerRadius: 'Lower radius',
+  /**
+   * @description Placeholder text for a custom device circular display cutout center x coordinate field.
+   */
+  cutoutCenterX: 'Center x',
+  /**
+   * @description Placeholder text for a custom device circular display cutout center y coordinate field.
+   */
+  cutoutCenterY: 'Center y',
+  /**
+   * @description Placeholder text for a custom device circular display cutout radius field.
+   */
+  cutoutRadius: 'Radius',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/DevicesSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -480,6 +500,16 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
           upperRadius: this.editorIntegerValue(editor, 'cutout-upper-radius'),
           lowerRadius: this.editorIntegerValue(editor, 'cutout-lower-radius'),
         };
+      case EmulationModel.EmulatedDevices.CutoutShape.CIRCLE:
+        return {
+          shape,
+          ...baseCutout,
+          cx: this.editorIntegerValue(editor, 'cutout-cx'),
+          cy: this.editorIntegerValue(editor, 'cutout-cy'),
+          radius: this.editorIntegerValue(editor, 'cutout-radius'),
+        };
+      case EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE:
+        return {shape, ...baseCutout};
       default:
         return null;
     }
@@ -514,6 +544,12 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
         String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH ? cutout.upperRadius : '');
     editor.control('cutout-lower-radius').value =
         String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH ? cutout.lowerRadius : '');
+    editor.control('cutout-cx').value =
+        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE ? cutout.cx : '');
+    editor.control('cutout-cy').value =
+        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE ? cutout.cy : '');
+    editor.control('cutout-radius').value =
+        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE ? cutout.radius : '');
     this.updateCutoutFieldsVisibility(editor);
   }
 
@@ -523,6 +559,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     const noCutout = shape === NO_CUSTOM_CUTOUT;
     const isPill = shape === EmulationModel.EmulatedDevices.CutoutShape.PILL;
     const isNotch = shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH;
+    const isCircle = shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE;
     const content = editor.contentElement();
     const rectRow = content.querySelector<HTMLElement>('.devices-edit-cutout-rect-row');
     const radiusRow = content.querySelector<HTMLElement>('.devices-edit-cutout-radius-row');
@@ -530,11 +567,14 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       rectRow.hidden = noCutout;
     }
     if (radiusRow) {
-      radiusRow.hidden = noCutout || !(isPill || isNotch);
+      radiusRow.hidden = noCutout || !(isPill || isNotch || isCircle);
     }
     (editor.control('cutout-border-radius') as HTMLElement).hidden = !isPill;
     (editor.control('cutout-upper-radius') as HTMLElement).hidden = !isNotch;
     (editor.control('cutout-lower-radius') as HTMLElement).hidden = !isNotch;
+    (editor.control('cutout-cx') as HTMLElement).hidden = !isCircle;
+    (editor.control('cutout-cy') as HTMLElement).hidden = !isCircle;
+    (editor.control('cutout-radius') as HTMLElement).hidden = !isCircle;
   }
 
   private createEditor(): UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice> {
@@ -715,12 +755,16 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       NO_CUSTOM_CUTOUT,
       EmulationModel.EmulatedDevices.CutoutShape.PILL,
       EmulationModel.EmulatedDevices.CutoutShape.NOTCH,
+      EmulationModel.EmulatedDevices.CutoutShape.CIRCLE,
+      EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE,
     ];
     const shapeControl =
         editor.createSelect('cutout-shape', shapeOptions, cutoutShapeValidator, i18nString(UIStrings.displayCutout));
     shapeControl.options[0].textContent = i18nString(UIStrings.noDisplayCutout);
     shapeControl.options[1].textContent = i18nString(UIStrings.pillDisplayCutout);
     shapeControl.options[2].textContent = i18nString(UIStrings.notchDisplayCutout);
+    shapeControl.options[3].textContent = i18nString(UIStrings.circleDisplayCutout);
+    shapeControl.options[4].textContent = i18nString(UIStrings.rectangleDisplayCutout);
     cutoutFields.createChild('div', 'hbox').appendChild(shapeControl);
     shapeControl.addEventListener('input', () => this.updateCutoutFieldsVisibility(editor), false);
 
@@ -738,6 +782,12 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
         editor.createInput('cutout-upper-radius', 'text', i18nString(UIStrings.cutoutUpperRadius), cutoutValidator));
     radiusRow.appendChild(
         editor.createInput('cutout-lower-radius', 'text', i18nString(UIStrings.cutoutLowerRadius), cutoutValidator));
+    radiusRow.appendChild(
+        editor.createInput('cutout-cx', 'text', i18nString(UIStrings.cutoutCenterX), cutoutValidator));
+    radiusRow.appendChild(
+        editor.createInput('cutout-cy', 'text', i18nString(UIStrings.cutoutCenterY), cutoutValidator));
+    radiusRow.appendChild(
+        editor.createInput('cutout-radius', 'text', i18nString(UIStrings.cutoutRadius), cutoutValidator));
     this.updateCutoutFieldsVisibility(editor);
   }
 }

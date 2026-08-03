@@ -45,6 +45,8 @@ const ALLOWED_ASSERTION_FAILURES = [
   'Hash of blocked script',
   // CXX debugging extension dummy icon error.
   'Failed to load resource: net::ERR_INVALID_URL',
+  // Extension server error that can happen during debugging tests.
+  'Extension server error: Operation failed: Failed',
 ];
 
 const FILTERED_LOGS = ['Autofocus processing was blocked because a document already has a focused element'];

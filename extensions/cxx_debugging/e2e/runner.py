@@ -133,6 +133,7 @@ class Test(object):
             f'-fdebug-prefix-map={os.path.dirname(self.source_file)}/='
         ]
         self.flags = [f + extra_flag for f in test_data['flags']]
+        self.test_flags = test_data['flags']
 
         input_basename, _ = os.path.splitext(self.source_file)
         output_file_name = input_basename + '__' + Test.__replace_special_characters(
@@ -335,7 +336,7 @@ class Init(RunnerCommand):
         for idx, output_file in enumerate(test.output_files):
             tests.append({
                 "name":
-                f"{test.name} ({' '.join(test.flags[idx])})",
+                f"{test.name} ({' '.join(test.test_flags[idx])})",
                 "test":
                 os.path.relpath(
                     os.path.join(test.output_directory, output_file),

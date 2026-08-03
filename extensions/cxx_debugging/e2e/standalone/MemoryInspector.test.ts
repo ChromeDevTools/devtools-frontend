@@ -17,12 +17,20 @@ import {
 describe('LinearMemoryInspector', () => {
   setup({
     extensions: [CXX_DEBUGGING_EXTENSION_PATH],
+    dockingMode: 'undocked',
   });
 
-  it('can show variables', async ({inspectedPage, devToolsPage}) => {
+  // TestExpectations is broken for CXX
+  // crbug.com/542040594
+  // eslint-disable-next-line @devtools/check-test-definitions
+  it.skip('can show variables', async ({inspectedPage, devToolsPage}) => {
     const test =
         'extensions/cxx_debugging/e2e/resources/scope-view-primitives__Scope_view_formats_primitive_types_correctly_0.html';
-    await openTestSuiteResourceInSourcesPanel(test, inspectedPage, devToolsPage);
+    await openTestSuiteResourceInSourcesPanel(
+        test,
+        inspectedPage,
+        devToolsPage,
+    );
     await devToolsPage.installEventListener('DevTools.DebuggerPaused');
 
     const file = 'scope-view-primitives.c';
@@ -32,31 +40,63 @@ describe('LinearMemoryInspector', () => {
 
     await inspectedPage.reload();
     await devToolsPage.waitForFunction(
-        async () => ((await devToolsPage.getPendingEvents('DevTools.DebuggerPaused')) || []).length > 0);
+        async () => ((await devToolsPage.getPendingEvents('DevTools.DebuggerPaused')) || []).length > 0,
+    );
 
     const stopped = await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
-    const stoppedText =
-        await devToolsPage.waitForFunction(async () => await stopped.evaluate(node => node.textContent));
+    const stoppedText = await devToolsPage.waitForFunction(
+        async () => await stopped.evaluate(node => node.textContent),
+    );
 
     assert.strictEqual(stoppedText, 'Paused on breakpoint');
 
-    const localVariable = await devToolsPage.waitFor('[data-object-property-name-for-test="d"]');
+    const localVariable = await devToolsPage.waitFor(
+        '[data-object-property-name-for-test="d"]',
+    );
     await devToolsPage.click('[title="Open in Memory inspector panel"]', {
       root: localVariable,
     });
 
     const byteHighlightText = await devToolsPage.waitForFunction(async () => {
-      const byteHighlights = await devToolsPage.waitForMany('.byte-cell.highlight-area', 8);
-      const byteHighlightText = await Promise.all(byteHighlights.map(cell => cell.evaluate(cell => cell.textContent)));
+      const byteHighlights = await devToolsPage.waitForMany(
+          '.byte-cell.highlight-area',
+          8,
+      );
+      const byteHighlightText = await Promise.all(
+          byteHighlights.map(cell => cell.evaluate(cell => cell.textContent)),
+      );
       if (byteHighlightText[0] === '33' && byteHighlightText[7] === '3F') {
         return byteHighlightText;
       }
       return false;
     });
-    assert.deepEqual(byteHighlightText, ['33', '33', '33', '33', '33', '33', 'F3', '3F']);
+    assert.deepEqual(byteHighlightText, [
+      '33',
+      '33',
+      '33',
+      '33',
+      '33',
+      '33',
+      'F3',
+      '3F',
+    ]);
 
-    const valueHighlights = await devToolsPage.waitForMany('.text-cell.highlight-area', 8);
-    const valueHighlightText = await Promise.all(valueHighlights.map(cell => cell.evaluate(cell => cell.textContent)));
-    assert.deepEqual(valueHighlightText, ['3', '3', '3', '3', '3', '3', '.', '?']);
+    const valueHighlights = await devToolsPage.waitForMany(
+        '.text-cell.highlight-area',
+        8,
+    );
+    const valueHighlightText = await Promise.all(
+        valueHighlights.map(cell => cell.evaluate(cell => cell.textContent)),
+    );
+    assert.deepEqual(valueHighlightText, [
+      '3',
+      '3',
+      '3',
+      '3',
+      '3',
+      '3',
+      '.',
+      '?',
+    ]);
   });
 });

@@ -4,9 +4,7 @@
 
 import {assert} from 'chai';
 
-import {
-  CXX_DEBUGGING_EXTENSION_PATH,
-} from './cxx-debugging-extension-helpers.js';
+import {CXX_DEBUGGING_EXTENSION_PATH} from './cxx-debugging-extension-helpers.js';
 
 // These tests abuse the test suite rigging a little, because we will interact with the options page directly instead of
 // through the frontend.

@@ -9,6 +9,7 @@ import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupUserMetricHooks} from '../../testing/UserMetricsHelpers.js';
 
 import * as UI from './legacy.js';
 
@@ -101,6 +102,7 @@ function makeContext(overrides: Partial<UI.PlusButton.PlusButtonMenuContext>&{ta
 }
 
 describeWithEnvironment('PlusButton', () => {
+  setupUserMetricHooks();
   describe('populatePlusButtonMenu', () => {
     it('lists addable views (not currently shown as tabs) sorted alphabetically', () => {
       const tabbedPane = makeStubTabbedPane({visible: ['shown']});

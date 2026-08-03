@@ -8,12 +8,13 @@ import * as Host from '../../core/host/host.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {StubIssue} from '../../testing/StubIssue.js';
-import {recordedMetricsContain} from '../../testing/UserMetricsHelpers.js';
+import {recordedMetricsContain, setupUserMetricHooks} from '../../testing/UserMetricsHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Issues from './issues.js';
 
 describeWithEnvironment('IssueView', () => {
+  setupUserMetricHooks();
   it('records metrics when an issue is expanded', () => {
     const aggregationKey = 'key' as unknown as IssuesManager.IssueAggregator.AggregationKey;
     const issue = StubIssue.createFromRequestIds(['id1', 'id2']);

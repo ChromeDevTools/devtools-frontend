@@ -26,6 +26,7 @@ import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js
 import {
   recordedMetricsContain,
   resetRecordedMetrics,
+  setupUserMetricHooks,
 } from '../../testing/UserMetricsHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -112,6 +113,7 @@ const getRowHighlightStatus = (container: HTMLDetailsElement) => {
 };
 
 describeWithEnvironment('RequestHeadersView', () => {
+  setupUserMetricHooks();
   let component: Network.RequestHeadersView.RequestHeadersView|null|undefined = null;
 
   beforeEach(() => {

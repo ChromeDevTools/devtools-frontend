@@ -72,6 +72,93 @@ async function setupInspectorFrontendHostStub(devToolsPage: DevToolsPage) {
       // @ts-expect-error
       globalThis.InspectorFrontendHost[method] = stub[method];
     }
+
+    // @ts-expect-error
+    globalThis.DevToolsMetrics = {
+      Action: {
+        WindowDocked: 1,
+        WindowUndocked: 2,
+        CustomPropertyLinkClicked: 47,
+        CustomPropertyEdited: 48,
+        StyleRuleEdited: 14,
+        StyleSheetInitiatorLinkClicked: 80,
+        CaptureCssOverviewClicked: 41,
+        MAX_VALUE: 1000,
+      },
+      PanelCodes: {
+        elements: 1,
+        sources: 4,
+        network: 3,
+        timeline: 5,
+        'console-view': 10,
+        animations: 11,
+        'settings-preferences': 29,
+        'settings-experiments': 31,
+        'settings-keybinds': 38,
+        'issues-pane': 37,
+        cssoverview: 39,
+        MAX_VALUE: 1000,
+      },
+      KeyboardShortcutAction: {
+        OtherShortcut: 0,
+        'quick-open.show-command-menu': 1,
+        'main.toggle-drawer': 17,
+        'settings.show': 22,
+        'debugger.toggle-breakpoints-active': 35,
+        'main.toggle-drawer-orientation': 119,
+        MAX_VALUE: 1000,
+      },
+      DeveloperResourceLoaded: {
+        LOAD_THROUGH_PAGE_VIA_TARGET: 0,
+        MAX_VALUE: 1000,
+      },
+      IssueCreated: {
+        'ElementAccessibilityIssue::InteractiveContentSummaryDescendant': 113,
+        'SharedArrayBufferIssue::CreationIssue': 37,
+        DeprecationIssue: 60,
+        'SharedArrayBufferIssue::TransferIssue': 36,
+        'ContentSecurityPolicyIssue::kInlineViolation': 1,
+        'QuirksModeIssue::QuirksMode': 58,
+        'QuirksModeIssue::LimitedQuirksMode': 59,
+        'ClientHintIssue::MetaTagAllowListInvalidOrigin': 61,
+        'ClientHintIssue::MetaTagModifiedHTML': 62,
+        'ElementAccessibilityIssue::DisallowedSelectChild': 86,
+        'ElementAccessibilityIssue::DisallowedOptGroupChild': 87,
+        'ElementAccessibilityIssue::NonPhrasingContentOptionChild': 88,
+        'ElementAccessibilityIssue::InteractiveContentOptionChild': 89,
+        'ElementAccessibilityIssue::InteractiveContentLegendChild': 90,
+        MAX_VALUE: 1000,
+      },
+      DevtoolsExperiments: {
+        'protocol-monitor': 13,
+        MAX_VALUE: 1000,
+      },
+      Language: {
+        'en-US': 17,
+        MAX_VALUE: 1000,
+      },
+      SyncSetting: {
+        CHROME_SYNC_DISABLED: 1,
+        MAX_VALUE: 1000,
+      },
+      KeybindSetSettings: {
+        vsCode: 1,
+        MAX_VALUE: 1000,
+      },
+      IssueOpener: {
+        HAMBURGER_MENU: 3,
+        COMMAND_MENU: 5,
+        MAX_VALUE: 1000,
+      },
+      IssueExpanded: {
+        ContentSecurityPolicy: 4,
+        MAX_VALUE: 1000,
+      },
+      IssueResourceOpened: {
+        ContentSecurityPolicyElement: 7,
+        MAX_VALUE: 1000,
+      },
+    };
   };
 
   await devToolsPage.evaluate(evaluate);

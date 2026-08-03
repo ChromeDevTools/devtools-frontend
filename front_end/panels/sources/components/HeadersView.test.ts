@@ -27,6 +27,7 @@ import {createFileSystemUISourceCode} from '../../../testing/UISourceCodeHelpers
 import {
   recordedMetricsContain,
   resetRecordedMetrics,
+  setupUserMetricHooks,
 } from '../../../testing/UserMetricsHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
@@ -35,6 +36,7 @@ import * as SourcesComponents from './components.js';
 const {urlString} = Platform.DevToolsPath;
 
 describe('HeadersView', () => {
+  setupUserMetricHooks();
   const commitWorkingCopySpy = sinon.spy();
 
   before(async () => {

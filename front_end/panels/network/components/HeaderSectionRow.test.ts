@@ -17,6 +17,7 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {setupUserMetricHooks} from '../../../testing/UserMetricsHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
@@ -66,6 +67,7 @@ const hasReloadPrompt = (shadowRoot: ShadowRoot) => {
 };
 
 describeWithEnvironment('HeaderSectionRow', () => {
+  setupUserMetricHooks();
   it('emits UMA event when a header value is being copied', async () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
       name: Platform.StringUtilities.toLowerCaseString('some-header-name'),

@@ -14,6 +14,7 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {setupUserMetricHooks} from '../../../testing/UserMetricsHelpers.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as Console from '../../console/console.js';
@@ -22,6 +23,7 @@ import * as Explain from '../explain.js';
 type Insight = Extract<Explain.ViewInput['state'], {type: Explain.State.INSIGHT}>;
 
 describeWithEnvironment('ConsoleInsight', () => {
+  setupUserMetricHooks();
   let component: Explain.ConsoleInsight|undefined;
 
   const containerCss = `

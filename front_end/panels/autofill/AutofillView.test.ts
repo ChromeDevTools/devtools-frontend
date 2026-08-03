@@ -12,12 +12,14 @@ import * as AutofillManager from '../../models/autofill_manager/autofill_manager
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import {setupUserMetricHooks} from '../../testing/UserMetricsHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Autofill from './autofill.js';
 
 describeWithEnvironment('AutofillView', () => {
+  setupUserMetricHooks();
   let universe: TestUniverse;
 
   beforeEach(() => {

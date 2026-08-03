@@ -271,7 +271,7 @@ function main() {
       'front_end',
       'core',
       'host',
-      'UserMetrics.ts',
+      'UserMetricsEnums.d.ts',
   );
   const userMetricsFile = fs.readFileSync(userMetricsPath, 'utf-8');
 

@@ -190,14 +190,6 @@ export const enum Pages {
   RECORDING_PAGE = 'RecordingPage',
 }
 
-const CONVERTER_ID_TO_METRIC: Record<string, Host.UserMetrics.RecordingExported|undefined> = {
-  [Models.ConverterIds.ConverterIds.JSON]: Host.UserMetrics.RecordingExported.TO_JSON,
-  [Models.ConverterIds.ConverterIds.REPLAY]: Host.UserMetrics.RecordingExported.TO_PUPPETEER_REPLAY,
-  [Models.ConverterIds.ConverterIds.PUPPETEER]: Host.UserMetrics.RecordingExported.TO_PUPPETEER,
-  [Models.ConverterIds.ConverterIds.PUPPETEER_FIREFOX]: Host.UserMetrics.RecordingExported.TO_PUPPETEER,
-  [Models.ConverterIds.ConverterIds.LIGHTHOUSE]: Host.UserMetrics.RecordingExported.TO_LIGHTHOUSE,
-};
-
 /** Provide some defaults to prevent OOM issues like crbug.com/491027421 */
 function verifyFlowSize(flow: Models.Schema.UserFlow): void {
   if (flow.steps.length > 4096) {
@@ -1615,14 +1607,14 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
     }
     const id = event.itemValue;
     const byId = (converter: Converters.Converter.Converter): boolean => converter.getId() === id;
+    const isBuiltIn = this.#builtInConverters.some(byId);
     const converter = this.#builtInConverters.find(byId) || this.extensionConverters.find(byId);
     if (!converter) {
       throw new Error('No recording selected');
     }
     const [content] = await converter.stringify(this.currentRecording.flow);
     await this.#exportContent(converter.getFilename(this.currentRecording.flow), content);
-    const builtInMetric = CONVERTER_ID_TO_METRIC[converter.getId()];
-    if (builtInMetric) {
+    if (isBuiltIn) {
       UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.recordingExported));
     } else if (converter.getId().startsWith(Converters.ExtensionConverter.EXTENSION_PREFIX)) {
       UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.recordingExported));

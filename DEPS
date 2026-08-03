@@ -12,13 +12,13 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '3620d8e4509bf7c5ab2a57cbd8156aa13f3f8adc',
+  'build_revision': 'e7f0a9741b3265558be75f2320014b32b606d319',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': '0d8a204ff274ee12fa9ace5e3ffd8e5fbcb54926',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'c0148d63d4909b3f27c9df5b6273efc496bc4459',
+  'depot_tools_revision': 'db395c47f653b18d647fd238e3fd0b1487da793b',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': 'abf68efce04686abcc440119ae984572c2f98381',
@@ -27,12 +27,12 @@ vars = {
   'chromium_browser_protocol_revision' : 'fe1995d8b7274469cee69789f61558af8582b430',
 
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
-  'clang_format_revision': '6eddfb5ec5f92127a531eda66c568d3a11e7ec11',
+  'clang_format_revision': '70510081984cfcdb14a15b3e08dfe9776dc7ed37',
 
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:641ace93dd9560e75e7add0d08f77b446fbb3b78',
+  'gn_version': 'git_revision:17b0057970fa2b07a20cbb4289ab78cf93565f35',
 
   'cmake_version': 'version:2@3.21.3',
 
@@ -62,7 +62,7 @@ vars = {
   'non_git_source': 'True',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:7bc9a0bfe050ef97e1712ff61c6f11952799e951',
+  'siso_version': 'git_revision:cb6ccf7181532ce7ca0d533152a68747d1a885c3',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

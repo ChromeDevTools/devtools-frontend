@@ -7,7 +7,6 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -1376,10 +1375,6 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     });
 
     it('popover adorner click is no-op', () => {
-      // Force allow popover for test
-      const originalDevToolsAllowPopoverForcing = Root.Runtime.hostConfig.devToolsAllowPopoverForcing;
-      Root.Runtime.hostConfig.devToolsAllowPopoverForcing = {enabled: true};
-
       treeElement.updateAdorners();
       treeElement.performUpdate();
 
@@ -1390,9 +1385,6 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
       const agentSpy = sinon.spy(domModel.agent, 'invoke_forceShowPopover');
       popoverAdorner!.dispatchEvent(new Event('click'));
       sinon.assert.notCalled(agentSpy);
-
-      // Restore
-      Root.Runtime.hostConfig.devToolsAllowPopoverForcing = originalDevToolsAllowPopoverForcing;
     });
 
     it('top-layer adorner click is no-op', () => {

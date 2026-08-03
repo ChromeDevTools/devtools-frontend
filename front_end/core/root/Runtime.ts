@@ -453,10 +453,6 @@ interface AiGeneratedTimelineLabels {
   enabled: boolean;
 }
 
-interface AllowPopoverForcing {
-  enabled: boolean;
-}
-
 interface GlobalAiButton {
   enabled: boolean;
   promotionEnabled: boolean;
@@ -576,7 +572,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAnimationStylesInStylesTab: HostConfigAnimationStylesInStylesTab,
   devToolsJpegXlImageFormat: HostConfigJpegXlImageFormat,
   devToolsAiGeneratedTimelineLabels: AiGeneratedTimelineLabels,
-  devToolsAllowPopoverForcing: AllowPopoverForcing,
   devToolsGlobalAiButton: GlobalAiButton,
   devToolsGdpProfiles: GdpProfiles,
   devToolsGdpProfilesAvailability: GdpProfilesAvailability,

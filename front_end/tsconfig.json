@@ -1,9 +1,9 @@
 {
   "extends": "../config/typescript/tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "ignored",
     "rootDir": ".",
     "target": "ES2023",
+    "noEmit": true,
     "lib": [
       "ES2023",
       "ES2024.Promise",

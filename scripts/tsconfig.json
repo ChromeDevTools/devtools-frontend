@@ -4,7 +4,8 @@
     "moduleResolution": "nodenext",
     "module": "NodeNext",
     "target": "ESNext",
-    "outDir": "ignored",
+    "noEmit": true,
+    "composite": false,
     "noImplicitAny": false,
     "erasableSyntaxOnly": true
   }

@@ -3,9 +3,8 @@
   "compilerOptions": {
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext"],
     "types": ["node", "mocha"],
-    "outDir": "ignored",
     "rootDir": ".",
     "checkJs": true,
     "noEmit": true,

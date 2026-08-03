@@ -1,7 +1,13 @@
 {
   "extends": "../config/typescript/tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["esnext", "dom", "dom.iterable", "webworker", "webworker.iterable"],
-    "outDir": "ignored-for-vscode"
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "webworker",
+      "webworker.iterable"
+    ],
+    "noEmit": true
   }
 }

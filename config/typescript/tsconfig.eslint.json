@@ -13,7 +13,7 @@
       "webworker",
       "webworker.iterable"
     ],
-    "outDir": "ignored-for-vscode"
+    "noEmit": true
   },
   "include": [
     "../../front_end/**/*.ts",

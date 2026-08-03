@@ -20,7 +20,7 @@ const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
-   * @description Bottom resizer element title in Device Mode View of the Device Toolbar
+   * @description Title of the bottom resizer element in the device mode view of the device mode toolbar.
    */
   doubleclickForFullHeight: 'Double-click for full height',
   /**

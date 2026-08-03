@@ -20,6 +20,7 @@ import {
   TEST_ID_REGEX,
   TestId,
 } from './conductor/paths.js';
+import {isAIAgent} from './conductor/test_config.js';
 
 const options =
     commandLineArgs(yargs(expandResponseFiles(process.argv.slice(2))))
@@ -365,7 +366,7 @@ function main() {
           'third_party/devtools-frontend/src/scripts/hosted_mode:hosted_mode',
         ] :
         [];
-    const {status} = ninja('inherit', ...targets);
+    const {status} = ninja(isAIAgent() ? 'pipe' : 'inherit', ...targets);
     if (status) {
       return status;
     }

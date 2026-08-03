@@ -21,10 +21,6 @@ NODE_MODULES_DIRECTORY = path.join(ROOT_DIRECTORY_OF_REPOSITORY,
                                    'node_modules')
 TSC_LOCATION = path.join(NODE_MODULES_DIRECTORY, 'typescript', 'bin', 'tsc')
 
-# Assuming a full chromium checkout.
-TSGO_BASE_LOCATION = path.join(ROOT_DIRECTORY_OF_REPOSITORY, '..', '..',
-                               'typescript')
-
 try:
     old_sys_path = sys.path[:]
     sys.path.append(path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'scripts'))
@@ -55,24 +51,19 @@ logging.basicConfig(
     level=logging.DEBUG if os.environ.get('TSC_DEBUG') else logging.WARNING)
 
 
-# Based on //third_party/typescript/typescript.py
-def tsgoPath():
-    if platform.machine() == 'arm64':
-        darwin_path = 'mac-arm64'
-    else:
-        darwin_path = 'mac-amd64'
-
-    return path.normpath(
-        path.join(
-            TSGO_BASE_LOCATION, *{
-                'Darwin': (darwin_path, 'src', 'lib', 'tsc'),
-                'Linux': ('linux-amd64', 'src', 'lib', 'tsc'),
-                'Windows': ('windows-amd64', 'src', 'lib', 'tsc.exe'),
-            }[platform.system()]))
-
-
 def runTsc(tsconfig_location, use_typescript_go=False):
-    cmd = [tsgoPath()] if use_typescript_go else [NODE_LOCATION, TSC_LOCATION]
+    if use_typescript_go:
+        sys.path.append(
+            path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'third_party',
+                      'typescript'))
+        import typescript
+        logging.info("runTsc (tsgo): -p %s", tsconfig_location)
+        returncode, stdout, stderr = typescript.RunTypeScriptRaw(
+            ['--project', tsconfig_location])
+        # TypeScript does not correctly write to stderr because of https://github.com/microsoft/TypeScript/issues/33849
+        return returncode, stdout + stderr
+
+    cmd = [NODE_LOCATION, TSC_LOCATION]
     cmd += ['-p', tsconfig_location]
     logging.info("runTsc: %s", ' '.join(cmd))
     process = subprocess.Popen(cmd,

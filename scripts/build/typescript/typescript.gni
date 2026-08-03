@@ -18,9 +18,6 @@ declare_args() {
 assert(!devtools_skip_typecheck || !is_official_build,
        "Official build should not skip typecheck")
 
-assert(!devtools_use_typescript_go || build_with_chromium,
-       "TSGo is only available in full Chromium checkouts")
-
 # Defines a target that compiles .ts files using TypeScript.
 # A temporary tsconfig.json is generated which uses the
 # tsconfig.json in this folder as basis.

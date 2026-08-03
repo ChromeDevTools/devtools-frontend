@@ -308,6 +308,48 @@ deps = {
       'dep_type': 'cipd',
       'condition': 'non_git_source',
   },
+
+  'third_party/typescript/linux-amd64/src': {
+      'dep_type': 'cipd',
+      'condition': 'host_os == "linux" and build_with_chromium == False and non_git_source',
+      'packages': [
+          {
+              'package': 'chromium/third_party/typescript/linux-amd64',
+              'version': 'version:2@7.0.2',
+          },
+      ],
+  },
+
+  'third_party/typescript/mac-amd64/src': {
+      'dep_type': 'cipd',
+      'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu != "arm64" and non_git_source',
+      'packages': [
+          {
+              'package': 'chromium/third_party/typescript/mac-amd64',
+              'version': 'version:2@7.0.2',
+          },
+      ],
+  },
+  'third_party/typescript/mac-arm64/src': {
+      'dep_type': 'cipd',
+            'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu == "arm64" and non_git_source',
+      'packages': [
+          {
+              'package': 'chromium/third_party/typescript/mac-arm64',
+              'version': 'version:2@7.0.2',
+          },
+      ],
+  },
+  'third_party/typescript/windows-amd64/src': {
+      'dep_type': 'cipd',
+      'condition': 'host_os == "win" and build_with_chromium == False and non_git_source',
+      'packages': [
+          {
+              'package': 'chromium/third_party/typescript/windows-amd64',
+              'version': 'version:2@7.0.2',
+          },
+      ],
+  },
 }
 
 hooks = [

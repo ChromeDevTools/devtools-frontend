@@ -45,7 +45,6 @@ npm-debug.log
 !/third_party/i18n
 !/third_party/image_diff
 !/third_party/pyjson5
-!/third_party/typescript
 
 test/screenshots/.generated
 test/perf/.generated

@@ -456,13 +456,14 @@ export class ColorMixMatcher extends matcherBase(ColorMixMatch) {
       return null;
     }
     const computedValueArgs = ASTUtils.callArgs(value);
-    if (computedValueArgs.length !== 3) {
+    if (computedValueArgs.length !== 2 && computedValueArgs.length !== 3) {
       return null;
     }
 
-    const [space, color1, color2] = computedValueArgs;
-    // Verify that all arguments are there, and that the space starts with a literal `in`.
-    if (space.length < 2 || computedValueTree.text(ASTUtils.stripComments(space).next().value) !== 'in' ||
+    const [space, color1, color2] = computedValueArgs.length === 3 ? computedValueArgs : [[], ...computedValueArgs];
+    // Verify that all arguments are there, and that an optional interpolation method starts with a literal `in`.
+    if ((space.length > 0 &&
+         (space.length < 2 || computedValueTree.text(ASTUtils.stripComments(space).next().value) !== 'in')) ||
         color1.length < 1 || color2.length < 1) {
       return null;
     }
@@ -483,10 +484,11 @@ export class ColorMixMatcher extends matcherBase(ColorMixMatch) {
     }
 
     const args = ASTUtils.callArgs(node);
-    if (args.length !== 3) {
+    if (args.length !== computedValueArgs.length) {
       return null;
     }
-    return new ColorMixMatch(matching.ast.text(node), node, args[0], args[1], args[2]);
+    const [authoredSpace, authoredColor1, authoredColor2] = args.length === 3 ? args : [[], ...args];
+    return new ColorMixMatch(matching.ast.text(node), node, authoredSpace, authoredColor1, authoredColor2);
   }
 }
 

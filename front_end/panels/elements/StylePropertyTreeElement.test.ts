@@ -230,6 +230,15 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         assert.exists(colorSwatches.find(colorSwatch => colorSwatch.nextElementSibling?.textContent === 'blue'));
       });
 
+      it('should show color mix swatch without an interpolation method', () => {
+        const stylePropertyTreeElement = getTreeElement('color', 'color-mix(red, blue)');
+        stylePropertyTreeElement.updateTitle();
+
+        const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+        assert.exists(colorMixSwatch);
+        assert.strictEqual(colorMixSwatch.getText(), 'color-mix(red, blue)');
+      });
+
       it('should show color mix swatch when color-mix is used with a known variable as color', () => {
         const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, var(--a), var(--b))');
         stylePropertyTreeElement.updateTitle();

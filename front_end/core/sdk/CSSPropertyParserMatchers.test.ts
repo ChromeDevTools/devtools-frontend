@@ -220,6 +220,14 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     checkFailure('insrgb shorter hue', 'red 35%', 'blue');
     checkFailure('/*asd*/srgb in', 'red 35%', 'blue');
     checkFailure('in srgb', '0% red', 'blue 0%');
+
+    const {ast, match, text} =
+        matchSingleValue('color', 'color-mix(red, blue)', new SDK.CSSPropertyParserMatchers.ColorMixMatcher());
+    assert.exists(ast, text);
+    assert.exists(match, text);
+    assert.isEmpty(match.space, text);
+    assert.strictEqual(match.color1.map(n => ast.text(n)).join(' '), 'red', text);
+    assert.strictEqual(match.color2.map(n => ast.text(n)).join(' '), 'blue', text);
   });
 
   it('parses contrast-color', () => {

@@ -71,6 +71,10 @@ export const assertElementScreenshotUnchanged = async (
   // Only assert screenshots on Linux. We don't observe platform-specific differences enough to justify
   // the costs of asserting 3 platforms per screenshot.
   if (platform !== 'linux') {
+    if (TestConfig.onDiff.update) {
+      throw new Error(
+          'Cannot update screenshots on non-Linux platforms. You must use a Linux machine or use the hosted screenshot bot to update screenshots.');
+    }
     // Extra new line to work with the progress-diff karma reporter that
     // replaces the previous line.
     console.warn('Screenshot assertions are only supported on Linux\n');

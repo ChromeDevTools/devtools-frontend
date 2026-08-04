@@ -315,6 +315,13 @@ export class TestUniverse implements Foundation.Universe.Universe {
     return createTarget({...options, targetManager: this.targetManager});
   }
 
+  // eslint-disable-next-line @devtools/enforce-test-universe-return-types
+  dispose(): void {
+    if (this.#context.has(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager)) {
+      this.isolatedFileSystemManager.dispose();
+    }
+  }
+
   get aiHistoryStorage(): AiAssistance.AiHistoryStorage.AiHistoryStorage {
     return this.get(AiAssistance.AiHistoryStorage.AiHistoryStorage);
   }

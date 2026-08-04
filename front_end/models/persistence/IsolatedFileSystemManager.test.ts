@@ -8,6 +8,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as Persistence from './persistence.js';
 
@@ -86,5 +87,32 @@ describeWithEnvironment('IsolatedFileSystemManager', () => {
 
     assert.deepEqual(addedFiles, []);
     assert.deepEqual(changedFiles, ['file:///var/www/friendlyFile']);
+  });
+
+  it('unregisters event listeners on dispose', () => {
+    const universe = new TestUniverse();
+    const manager =
+        new Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager(universe.settings, universe.console);
+    const events = Host.InspectorFrontendHost.InspectorFrontendHostInstance.events;
+
+    const registeredEvents = [
+      Host.InspectorFrontendHostAPI.Events.FileSystemRemoved,
+      Host.InspectorFrontendHostAPI.Events.FileSystemAdded,
+      Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
+      Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated,
+      Host.InspectorFrontendHostAPI.Events.IndexingWorked,
+      Host.InspectorFrontendHostAPI.Events.IndexingDone,
+      Host.InspectorFrontendHostAPI.Events.SearchCompleted,
+    ];
+
+    for (const event of registeredEvents) {
+      assert.isTrue(events.hasEventListeners(event), `Expected listener for ${event} to be registered`);
+    }
+
+    manager.dispose();
+
+    for (const event of registeredEvents) {
+      assert.isFalse(events.hasEventListeners(event), `Expected listener for ${event} to be unregistered`);
+    }
   });
 });

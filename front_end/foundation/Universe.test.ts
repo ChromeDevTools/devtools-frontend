@@ -198,4 +198,18 @@ describe('Universe', () => {
                     `Unexpected CDP command '${method}' was called during target bootstrapping.`);
     }
   });
+
+  it('cleans up IsolatedFileSystemManager on dispose', () => {
+    const universe = new Foundation.Universe.Universe({
+      settingsCreationOptions: createSettingsCreationOptions(),
+      hostConfig: {} as Root.Runtime.HostConfig,
+      inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+      supportsEmulation: false,
+    });
+
+    const disposeSpy = sinon.spy(universe.isolatedFileSystemManager, 'dispose');
+    universe.dispose();
+
+    sinon.assert.calledOnce(disposeSpy);
+  });
 });

@@ -47,9 +47,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.onFileSystemRemoved, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.FileSystemAdded, event => {
-          this.onFileSystemAdded(event);
-        }, this);
+        Host.InspectorFrontendHostAPI.Events.FileSystemAdded, this.onFileSystemAdded, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this.onFileSystemFilesChanged, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
@@ -99,6 +97,24 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
 
     this.fileSystemRequestResolve = null;
     this.fileSystemsLoadedPromise = this.requestFileSystems();
+  }
+
+  // TODO(crbug.com/542394587): Should be `Symbol.dispsoe`
+  dispose(): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+        Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.onFileSystemRemoved, this);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+        Host.InspectorFrontendHostAPI.Events.FileSystemAdded, this.onFileSystemAdded, this);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+        Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this.onFileSystemFilesChanged, this);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+        Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this.onIndexingTotalWorkCalculated, this);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+        Host.InspectorFrontendHostAPI.Events.IndexingWorked, this.onIndexingWorked, this);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+        Host.InspectorFrontendHostAPI.Events.IndexingDone, this.onIndexingDone, this);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+        Host.InspectorFrontendHostAPI.Events.SearchCompleted, this.onSearchCompleted, this);
   }
 
   static instance(opts: {

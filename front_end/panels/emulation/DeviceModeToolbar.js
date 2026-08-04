@@ -53,163 +53,160 @@ class AutoWidthSelectDirective extends Directive.Directive {
 const autoWidthSelect = Directive.directive(AutoWidthSelectDirective);
 const UIStrings = {
     /**
-     * @description Title of the device dimensions selection item in the Device Mode Toolbar.
-     * webpage in pixels.
+     * @description Title of the device dimensions selection item in the device mode toolbar.
      * @example {Responsive} PH1
      */
     dimensions: 'Dimensions: {PH1}',
     /**
-     * @description Title of the device pixel ratio selection item in the Device Mode Toolbar.
+     * @description Title of the device pixel ratio selection item in the device mode toolbar.
      * @example {2.0} PH1
      */
     dpr: 'DPR: {PH1}',
     /**
-     * @description Title of the width input textbox in the Device Mode Toolbar, for the width of the
+     * @description Title of the width input textbox in the device mode toolbar, for the width of the
      * webpage in pixels.
      */
     width: 'Width',
     /**
-     * @description Title of the height input textbox in the Device Mode Toolbar, for the height of the
+     * @description Title of the height input textbox in the device mode toolbar, for the height of the
      * webpage in pixels. 'leave empty for full' is an instruction to the user - the webpage will be
      * full-height if this textbox is left empty.
      */
     heightLeaveEmptyForFull: 'Height (leave empty for full)',
     /**
-     * @description Tooltip text for a drop-down menu where the user can select the zoom percentage of
+     * @description Tooltip for a drop-down menu where the user can select the zoom percentage of
      * the webpage preview.
      */
     zoom: 'Zoom',
     /**
-     * @description Tooltip tip for a drop-down menu where the user can select the device pixel ratio
-     * (the ratio between the physical pixels on a screen and CSS logical pixels) of the webpage
+     * @description Tooltip for a drop-down menu where the user can select the device pixel ratio
+     * (the ratio between physical pixels on a screen and CSS logical pixels) of the webpage
      * preview.
      */
     devicePixelRatio: 'Device pixel ratio',
     /**
-     * @description Tooltip tip for a drop-down menu where the user can select the device type e.g.
-     * Mobile, Desktop.
+     * @description Tooltip for a drop-down menu where the user can select the device type (e.g.
+     * Mobile or Desktop).
      */
     deviceType: 'Device type',
     /**
-     * @description Tooltip text for a 'three dots' style menu button which shows an expanded set of options.
+     * @description Tooltip text for a three dots menu button which shows an expanded set of options.
      */
     moreOptions: 'More options',
     /**
      * @description A menu item in the drop-down box that allows the user to select the zoom level.
-     * Labels the option to automatically fit the preview to the available window space. In the Device Mode Toolbar.
+     * Labels the option to automatically fit the preview to the available window space in the device mode toolbar.
      */
     fitToWindow: 'Fit to window',
     /**
      * @description A menu item in the drop-down box that allows the user to select the device pixel
      * ratio. Labels the default value which varies between device types, represented by the
-     * placeholder, which is a number. In the Device Mode Toolbar.
+     * placeholder, which is a number, in the device mode toolbar.
      * @example {4.3} PH1
      */
     defaultF: '{PH1} (default)',
     /**
-     * @description Command to hide the frame (like a picture frame) around the mobile device screen.
+     * @description Command to hide the frame around the mobile device screen.
      */
     hideDeviceFrame: 'Hide device frame',
     /**
-     * @description Command to show the frame (like a picture frame) around the mobile device screen.
+     * @description Command to show the frame around the mobile device screen.
      */
     showDeviceFrame: 'Show device frame',
     /**
-     * @description Command to hide a display in the Device Mode Toolbar that shows the different media
+     * @description Command to hide a display in the device mode toolbar that shows the different media
      * queries for the device, above the device screen.
-     * https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
+     * https://web.dev/learn/design/media-queries
      */
     hideMediaQueries: 'Hide media queries',
     /**
-     * @description Command to show a display in the Device Mode Toolbar that shows the different media
+     * @description Command to show a display in the device mode toolbar that shows the different media
      * queries for the device, above the device screen.
-     * https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
+     * https://web.dev/learn/design/media-queries
      */
     showMediaQueries: 'Show media queries',
     /**
-     * @description Command in the Device Mode Toolbar to hide a virtual ruler (for measuring),
+     * @description Command in the device mode toolbar to hide a virtual ruler,
      * displayed above and next to the device screen.
      */
     hideRulers: 'Hide rulers',
     /**
-     * @description Command in the Device Mode Toolbar to show a virtual ruler (for measuring),
+     * @description Command in the device mode toolbar to show a virtual ruler,
      * displayed above and next to the device screen.
      */
     showRulers: 'Show rulers',
     /**
-     * @description Command in the Device Mode Toolbar to remove the drop-down menu from the toolbar
+     * @description Command in the device mode toolbar to remove the drop-down menu from the toolbar
      * that lets the user override the device pixel ratio of the emulated device.
      */
     removeDevicePixelRatio: 'Remove device pixel ratio',
     /**
-     * @description Command in the Device Mode Toolbar to add the drop-down menu to the toolbar
+     * @description Command in the device mode toolbar to add the drop-down menu to the toolbar
      * that lets the user override the device pixel ratio of the emulated device.
      */
     addDevicePixelRatio: 'Add device pixel ratio',
     /**
-     * @description Command in the Device Mode Toolbar to add the drop-down menu to the toolbar
+     * @description Command in the device mode toolbar to remove the drop-down menu from the toolbar
      * that lets the user set the device type (e.g. Desktop or Mobile).
      */
     removeDeviceType: 'Remove device type',
     /**
-     * @description Command in the Device Mode Toolbar to add the drop-down menu to the toolbar
-     * that lets the user add the device type (e.g. Desktop or Mobile).
+     * @description Command in the device mode toolbar to add the drop-down menu to the toolbar
+     * that lets the user set the device type (e.g. Desktop or Mobile).
      */
     addDeviceType: 'Add device type',
     /**
-     * @description A context menu item in the Device Mode Toolbar that resets all settings back to
+     * @description A context menu item in the device mode toolbar that resets all settings back to
      * their default values.
      */
     resetToDefaults: 'Reset to defaults',
     /**
-     * @description A menu command in the Device Mode Toolbar that closes DevTools.
+     * @description A menu command in the device mode toolbar that closes DevTools.
      */
     closeDevtools: 'Close DevTools',
     /**
-     * @description Title of the device selected in the Device Mode Toolbar. The 'response' device is
-     * not a specific phone/tablet model but a virtual device that can change its height and width
-     * dynamically by clicking and dragging the sides. 'Response' refers to response design:
-     * https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design
+     * @description Title of the device selected in the device mode toolbar. The responsive device is
+     * not a specific phone or tablet model but a virtual device that can change its height and width
+     * dynamically by clicking and dragging the sides. Responsive refers to responsive design:
+     * https://web.dev/learn/design
      */
     responsive: 'Responsive',
     /**
-     * @description A context menu item in the Device Mode Toolbar that takes the user to a new screen
-     * where they can add/edit/remove custom devices.
+     * @description A context menu item in the device mode toolbar that takes the user to a screen
+     * where they can add, edit, or remove custom devices.
      */
     edit: 'Edit…',
     /**
-     * @description Text describing the current orientation of the phone/device (vs. landscape).
+     * @description Text describing the portrait orientation of the emulated device.
      */
     portrait: 'Portrait',
     /**
-     * @description Text describing the current orientation of the phone/device (vs. portrait).
+     * @description Text describing the landscape orientation of the emulated device.
      */
     landscape: 'Landscape',
     /**
-     * @description Title of button in the Device Mode Toolbar which rotates the device 90 degrees.
+     * @description Title of a button in the device mode toolbar which rotates the device 90 degrees.
      */
     rotate: 'Rotate',
     /**
-     * @description Tooltip of the rotate/screen orientation button.
+     * @description Tooltip of the rotate screen orientation button.
      */
     screenOrientationOptions: 'Screen orientation options',
     /**
-     * @description Tooltip shown on the rotate button when screen orientation is locked by the page
-     * via screen.orientation.lock().
+     * @description Tooltip shown on the rotate button when screen orientation is locked by the page.
      */
     screenOrientationLocked: 'Screen orientation is locked by the page',
     /**
-     * @description Tooltip for a button which turns on/off dual-screen mode, which emulates devices
-     * like tablets which have two screens.
+     * @description Tooltip for a button which toggles dual-screen mode to emulate devices with two screens.
      */
     toggleDualscreenMode: 'Toggle dual-screen mode',
     /**
-     * @description Tooltip tip for a drop-down menu where the user can select the device
-     * posture e.g. Continuous, Folded.
+     * @description Tooltip for a drop-down menu where the user can select the device
+     * posture (e.g. Continuous or Folded).
      */
     devicePosture: 'Device posture',
     /**
-     * @description Title of the network throttling selection in the Device Mode Toolbar.
+     * @description Title of the network throttling selection in the device mode toolbar.
      */
     throttling: 'Throttling',
 };

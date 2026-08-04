@@ -5514,10 +5514,7 @@ var PlusButtonPresenter = class {
         isPreviewFeature: view.isPreviewFeature(),
         action: () => {
           if (isIssuesPane) {
-            Host4.userMetrics.issuesPanelOpenedFrom(
-              6
-              /* Host.UserMetrics.IssueOpener.MORE_TOOLS_MENU */
-            );
+            Host4.userMetrics.issuesPanelOpenedFrom(Host4.UserMetrics.IssueOpener.MORE_TOOLS_MENU);
           }
           this.#context.showView(view);
         }
@@ -6480,10 +6477,7 @@ var TabbedLocation = class _TabbedLocation extends Location {
       const title = view.title();
       if (view.viewId() === "issues-pane") {
         contextMenu.defaultSection().appendItem(title, () => {
-          Host5.userMetrics.issuesPanelOpenedFrom(
-            3
-            /* Host.UserMetrics.IssueOpener.HAMBURGER_MENU */
-          );
+          Host5.userMetrics.issuesPanelOpenedFrom(Host5.UserMetrics.IssueOpener.HAMBURGER_MENU);
           void this.showView(view, void 0, true);
         }, { jslogContext: "issues-pane" });
         continue;

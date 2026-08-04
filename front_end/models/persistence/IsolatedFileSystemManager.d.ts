@@ -10,6 +10,7 @@ export declare class IsolatedFileSystemManager extends Common.ObjectWrapper.Obje
     private fileSystemRequestResolve;
     private readonly fileSystemsLoadedPromise;
     constructor(settings: Common.Settings.Settings, console: Common.Console.Console);
+    dispose(): void;
     static instance(opts?: {
         forceNew?: boolean | null;
         settings?: Common.Settings.Settings | null;

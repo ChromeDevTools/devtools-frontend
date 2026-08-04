@@ -16,7 +16,7 @@ const { classMap, ref, styleMap } = Directives;
 const { widget } = UI.Widget;
 const UIStrings = {
     /**
-     * @description Bottom resizer element title in Device Mode View of the Device Toolbar
+     * @description Title of the bottom resizer element in the device mode view of the device mode toolbar.
      */
     doubleclickForFullHeight: 'Double-click for full height',
     /**
@@ -232,8 +232,8 @@ export class DeviceModeView extends UI.Widget.VBox {
     #screenImageLoaded = false;
     #lastScreenImageSrc;
     #view;
-    constructor(view = DEFAULT_DEVICE_MODE_VIEW) {
-        super({ useShadowDom: true });
+    constructor(element, view = DEFAULT_DEVICE_MODE_VIEW) {
+        super(element, { useShadowDom: true });
         this.#view = view;
         this.setMinimumSize(150, 150);
         this.registerRequiredCSS(deviceModeViewStyles);

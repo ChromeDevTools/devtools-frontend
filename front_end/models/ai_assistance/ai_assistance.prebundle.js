@@ -13,6 +13,7 @@ import * as AiAgent2 from './AiAgent2.js';
 import * as AiConversation from './AiConversation.js';
 import * as AiHistoryStorage from './AiHistoryStorage.js';
 import * as AiOrigins from './AiOrigins.js';
+import * as AiSetting from './AiSetting.js';
 import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
@@ -47,5 +48,5 @@ import * as RecordPerformanceTrace from './tools/RecordPerformanceTrace.js';
 import * as ResolveDevtoolsNodePath from './tools/ResolveDevtoolsNodePath.js';
 import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
-export { AccessibilityAgent, AccessibilityContext, AiAgent, AiAgent2, AICallTree, AIContext, AiConversation, AiHistoryStorage, AiOrigins, AIQueries, AiUtils, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummary, Debug, DOMNodeContext, EvaluateAction, ExecuteJavaScript, ExtensionScope, FileAgent, FileContext, FileFormatter, GetElementAccessibilityDetails, GetLighthouseAudits, GetNetworkRequestDetails, GetStyles, Injected, LighthouseFormatter, ListNetworkRequests, NetworkAgent, NetworkRequestFormatter, PerformanceAgent, PerformanceAnnotations, PerformanceInsightFormatter, PerformanceTraceContext, PerformanceTraceFormatter, RecordPerformanceTrace, RequestContext, ResolveDevtoolsNodePath, StorageAgent, StorageItem, StylingAgent, Tool, ToolRegistry, UnitFormatters, };
+export { AccessibilityAgent, AccessibilityContext, AiAgent, AiAgent2, AICallTree, AIContext, AiConversation, AiHistoryStorage, AiOrigins, AIQueries, AiSetting, AiUtils, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummary, Debug, DOMNodeContext, EvaluateAction, ExecuteJavaScript, ExtensionScope, FileAgent, FileContext, FileFormatter, GetElementAccessibilityDetails, GetLighthouseAudits, GetNetworkRequestDetails, GetStyles, Injected, LighthouseFormatter, ListNetworkRequests, NetworkAgent, NetworkRequestFormatter, PerformanceAgent, PerformanceAnnotations, PerformanceInsightFormatter, PerformanceTraceContext, PerformanceTraceFormatter, RecordPerformanceTrace, RequestContext, ResolveDevtoolsNodePath, StorageAgent, StorageItem, StylingAgent, Tool, ToolRegistry, UnitFormatters, };
 //# sourceMappingURL=ai_assistance.prebundle.js.map

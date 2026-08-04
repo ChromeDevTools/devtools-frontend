@@ -198,38 +198,38 @@ Your instructions are as follows:
         if (this.#hasGpu) {
             switch (this.#availability) {
                 case "unavailable" /* LanguageModelAvailability.UNAVAILABLE */:
-                    Host.userMetrics.builtInAiAvailability(0 /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU */);
+                    Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU);
                     break;
                 case "downloadable" /* LanguageModelAvailability.DOWNLOADABLE */:
-                    Host.userMetrics.builtInAiAvailability(1 /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU */);
+                    Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU);
                     break;
                 case "downloading" /* LanguageModelAvailability.DOWNLOADING */:
-                    Host.userMetrics.builtInAiAvailability(2 /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU */);
+                    Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU);
                     break;
                 case "available" /* LanguageModelAvailability.AVAILABLE */:
-                    Host.userMetrics.builtInAiAvailability(3 /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU */);
+                    Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU);
                     break;
                 case "disabled" /* LanguageModelAvailability.DISABLED */:
-                    Host.userMetrics.builtInAiAvailability(4 /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU */);
+                    Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU);
                     break;
             }
         }
         else {
             switch (this.#availability) {
                 case "unavailable" /* LanguageModelAvailability.UNAVAILABLE */:
-                    Host.userMetrics.builtInAiAvailability(5 /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU */);
+                    Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU);
                     break;
                 case "downloadable" /* LanguageModelAvailability.DOWNLOADABLE */:
-                    Host.userMetrics.builtInAiAvailability(6 /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU */);
+                    Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU);
                     break;
                 case "downloading" /* LanguageModelAvailability.DOWNLOADING */:
-                    Host.userMetrics.builtInAiAvailability(7 /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU */);
+                    Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU);
                     break;
                 case "available" /* LanguageModelAvailability.AVAILABLE */:
-                    Host.userMetrics.builtInAiAvailability(8 /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU */);
+                    Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU);
                     break;
                 case "disabled" /* LanguageModelAvailability.DISABLED */:
-                    Host.userMetrics.builtInAiAvailability(9 /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU */);
+                    Host.userMetrics.builtInAiAvailability(Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU);
                     break;
             }
         }

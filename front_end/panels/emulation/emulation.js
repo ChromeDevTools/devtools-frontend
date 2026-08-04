@@ -18,6 +18,7 @@ import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js"
 var DeviceModeWrapper_exports = {};
 __export(DeviceModeWrapper_exports, {
   ActionDelegate: () => ActionDelegate,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   DeviceModeWrapper: () => DeviceModeWrapper
 });
 import * as Root from "./../../core/root/root.js";
@@ -25,6 +26,7 @@ import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as EmulationModel3 from "./../../models/emulation/emulation.js";
 import * as Geometry2 from "./../../models/geometry/geometry.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
+import { html as html4, render as render4 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/emulation/DeviceModeView.js
 var DeviceModeView_exports = {};
@@ -98,163 +100,160 @@ var AutoWidthSelectDirective = class _AutoWidthSelectDirective extends Directive
 var autoWidthSelect = Directive.directive(AutoWidthSelectDirective);
 var UIStrings = {
   /**
-   * @description Title of the device dimensions selection item in the Device Mode Toolbar.
-   * webpage in pixels.
+   * @description Title of the device dimensions selection item in the device mode toolbar.
    * @example {Responsive} PH1
    */
   dimensions: "Dimensions: {PH1}",
   /**
-   * @description Title of the device pixel ratio selection item in the Device Mode Toolbar.
+   * @description Title of the device pixel ratio selection item in the device mode toolbar.
    * @example {2.0} PH1
    */
   dpr: "DPR: {PH1}",
   /**
-   * @description Title of the width input textbox in the Device Mode Toolbar, for the width of the
+   * @description Title of the width input textbox in the device mode toolbar, for the width of the
    * webpage in pixels.
    */
   width: "Width",
   /**
-   * @description Title of the height input textbox in the Device Mode Toolbar, for the height of the
+   * @description Title of the height input textbox in the device mode toolbar, for the height of the
    * webpage in pixels. 'leave empty for full' is an instruction to the user - the webpage will be
    * full-height if this textbox is left empty.
    */
   heightLeaveEmptyForFull: "Height (leave empty for full)",
   /**
-   * @description Tooltip text for a drop-down menu where the user can select the zoom percentage of
+   * @description Tooltip for a drop-down menu where the user can select the zoom percentage of
    * the webpage preview.
    */
   zoom: "Zoom",
   /**
-   * @description Tooltip tip for a drop-down menu where the user can select the device pixel ratio
-   * (the ratio between the physical pixels on a screen and CSS logical pixels) of the webpage
+   * @description Tooltip for a drop-down menu where the user can select the device pixel ratio
+   * (the ratio between physical pixels on a screen and CSS logical pixels) of the webpage
    * preview.
    */
   devicePixelRatio: "Device pixel ratio",
   /**
-   * @description Tooltip tip for a drop-down menu where the user can select the device type e.g.
-   * Mobile, Desktop.
+   * @description Tooltip for a drop-down menu where the user can select the device type (e.g.
+   * Mobile or Desktop).
    */
   deviceType: "Device type",
   /**
-   * @description Tooltip text for a 'three dots' style menu button which shows an expanded set of options.
+   * @description Tooltip text for a three dots menu button which shows an expanded set of options.
    */
   moreOptions: "More options",
   /**
    * @description A menu item in the drop-down box that allows the user to select the zoom level.
-   * Labels the option to automatically fit the preview to the available window space. In the Device Mode Toolbar.
+   * Labels the option to automatically fit the preview to the available window space in the device mode toolbar.
    */
   fitToWindow: "Fit to window",
   /**
    * @description A menu item in the drop-down box that allows the user to select the device pixel
    * ratio. Labels the default value which varies between device types, represented by the
-   * placeholder, which is a number. In the Device Mode Toolbar.
+   * placeholder, which is a number, in the device mode toolbar.
    * @example {4.3} PH1
    */
   defaultF: "{PH1} (default)",
   /**
-   * @description Command to hide the frame (like a picture frame) around the mobile device screen.
+   * @description Command to hide the frame around the mobile device screen.
    */
   hideDeviceFrame: "Hide device frame",
   /**
-   * @description Command to show the frame (like a picture frame) around the mobile device screen.
+   * @description Command to show the frame around the mobile device screen.
    */
   showDeviceFrame: "Show device frame",
   /**
-   * @description Command to hide a display in the Device Mode Toolbar that shows the different media
+   * @description Command to hide a display in the device mode toolbar that shows the different media
    * queries for the device, above the device screen.
-   * https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
+   * https://web.dev/learn/design/media-queries
    */
   hideMediaQueries: "Hide media queries",
   /**
-   * @description Command to show a display in the Device Mode Toolbar that shows the different media
+   * @description Command to show a display in the device mode toolbar that shows the different media
    * queries for the device, above the device screen.
-   * https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
+   * https://web.dev/learn/design/media-queries
    */
   showMediaQueries: "Show media queries",
   /**
-   * @description Command in the Device Mode Toolbar to hide a virtual ruler (for measuring),
+   * @description Command in the device mode toolbar to hide a virtual ruler,
    * displayed above and next to the device screen.
    */
   hideRulers: "Hide rulers",
   /**
-   * @description Command in the Device Mode Toolbar to show a virtual ruler (for measuring),
+   * @description Command in the device mode toolbar to show a virtual ruler,
    * displayed above and next to the device screen.
    */
   showRulers: "Show rulers",
   /**
-   * @description Command in the Device Mode Toolbar to remove the drop-down menu from the toolbar
+   * @description Command in the device mode toolbar to remove the drop-down menu from the toolbar
    * that lets the user override the device pixel ratio of the emulated device.
    */
   removeDevicePixelRatio: "Remove device pixel ratio",
   /**
-   * @description Command in the Device Mode Toolbar to add the drop-down menu to the toolbar
+   * @description Command in the device mode toolbar to add the drop-down menu to the toolbar
    * that lets the user override the device pixel ratio of the emulated device.
    */
   addDevicePixelRatio: "Add device pixel ratio",
   /**
-   * @description Command in the Device Mode Toolbar to add the drop-down menu to the toolbar
+   * @description Command in the device mode toolbar to remove the drop-down menu from the toolbar
    * that lets the user set the device type (e.g. Desktop or Mobile).
    */
   removeDeviceType: "Remove device type",
   /**
-   * @description Command in the Device Mode Toolbar to add the drop-down menu to the toolbar
-   * that lets the user add the device type (e.g. Desktop or Mobile).
+   * @description Command in the device mode toolbar to add the drop-down menu to the toolbar
+   * that lets the user set the device type (e.g. Desktop or Mobile).
    */
   addDeviceType: "Add device type",
   /**
-   * @description A context menu item in the Device Mode Toolbar that resets all settings back to
+   * @description A context menu item in the device mode toolbar that resets all settings back to
    * their default values.
    */
   resetToDefaults: "Reset to defaults",
   /**
-   * @description A menu command in the Device Mode Toolbar that closes DevTools.
+   * @description A menu command in the device mode toolbar that closes DevTools.
    */
   closeDevtools: "Close DevTools",
   /**
-   * @description Title of the device selected in the Device Mode Toolbar. The 'response' device is
-   * not a specific phone/tablet model but a virtual device that can change its height and width
-   * dynamically by clicking and dragging the sides. 'Response' refers to response design:
-   * https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design
+   * @description Title of the device selected in the device mode toolbar. The responsive device is
+   * not a specific phone or tablet model but a virtual device that can change its height and width
+   * dynamically by clicking and dragging the sides. Responsive refers to responsive design:
+   * https://web.dev/learn/design
    */
   responsive: "Responsive",
   /**
-   * @description A context menu item in the Device Mode Toolbar that takes the user to a new screen
-   * where they can add/edit/remove custom devices.
+   * @description A context menu item in the device mode toolbar that takes the user to a screen
+   * where they can add, edit, or remove custom devices.
    */
   edit: "Edit\u2026",
   /**
-   * @description Text describing the current orientation of the phone/device (vs. landscape).
+   * @description Text describing the portrait orientation of the emulated device.
    */
   portrait: "Portrait",
   /**
-   * @description Text describing the current orientation of the phone/device (vs. portrait).
+   * @description Text describing the landscape orientation of the emulated device.
    */
   landscape: "Landscape",
   /**
-   * @description Title of button in the Device Mode Toolbar which rotates the device 90 degrees.
+   * @description Title of a button in the device mode toolbar which rotates the device 90 degrees.
    */
   rotate: "Rotate",
   /**
-   * @description Tooltip of the rotate/screen orientation button.
+   * @description Tooltip of the rotate screen orientation button.
    */
   screenOrientationOptions: "Screen orientation options",
   /**
-   * @description Tooltip shown on the rotate button when screen orientation is locked by the page
-   * via screen.orientation.lock().
+   * @description Tooltip shown on the rotate button when screen orientation is locked by the page.
    */
   screenOrientationLocked: "Screen orientation is locked by the page",
   /**
-   * @description Tooltip for a button which turns on/off dual-screen mode, which emulates devices
-   * like tablets which have two screens.
+   * @description Tooltip for a button which toggles dual-screen mode to emulate devices with two screens.
    */
   toggleDualscreenMode: "Toggle dual-screen mode",
   /**
-   * @description Tooltip tip for a drop-down menu where the user can select the device
-   * posture e.g. Continuous, Folded.
+   * @description Tooltip for a drop-down menu where the user can select the device
+   * posture (e.g. Continuous or Folded).
    */
   devicePosture: "Device posture",
   /**
-   * @description Title of the network throttling selection in the Device Mode Toolbar.
+   * @description Title of the network throttling selection in the device mode toolbar.
    */
   throttling: "Throttling"
 };
@@ -1527,8 +1526,8 @@ var mediaQueryInspector_css_default = `/*
 // gen/front_end/panels/emulation/MediaQueryInspector.js
 var UIStrings2 = {
   /**
-   * @description A context menu item/command in the Media Query Inspector of the Device Toolbar.
-   * Takes the user to the source code where this media query actually came from.
+   * @description A context menu item in the media query inspector of the device mode toolbar.
+   * Takes the user to the source code where this media query came from.
    */
   revealInSourceCode: "Reveal in source code"
 };
@@ -1966,7 +1965,7 @@ var { classMap: classMap2, ref, styleMap } = Directives3;
 var { widget: widget2 } = UI3.Widget;
 var UIStrings3 = {
   /**
-   * @description Bottom resizer element title in Device Mode View of the Device Toolbar
+   * @description Title of the bottom resizer element in the device mode view of the device mode toolbar.
    */
   doubleclickForFullHeight: "Double-click for full height",
   /**
@@ -2179,8 +2178,8 @@ var DeviceModeView = class extends UI3.Widget.VBox {
   #screenImageLoaded = false;
   #lastScreenImageSrc;
   #view;
-  constructor(view = DEFAULT_DEVICE_MODE_VIEW) {
-    super({ useShadowDom: true });
+  constructor(element, view = DEFAULT_DEVICE_MODE_VIEW) {
+    super(element, { useShadowDom: true });
     this.#view = view;
     this.setMinimumSize(150, 150);
     this.registerRequiredCSS(deviceModeView_css_default);
@@ -2572,39 +2571,26 @@ var InspectedPagePlaceholder = class _InspectedPagePlaceholder extends Common4.O
 };
 
 // gen/front_end/panels/emulation/DeviceModeWrapper.js
-var deviceModeWrapperInstance;
+var { widget: widget3 } = UI5.Widget;
+var DEFAULT_VIEW3 = (input, output, target) => {
+  render4(input.showDeviceMode ? html4`<devtools-widget ${widget3(DeviceModeView)}>
+        ${widget3(() => InspectedPagePlaceholder.instance(), { minimumSize: new Geometry2.Size(1, 1) })}
+      </devtools-widget>` : widget3(() => InspectedPagePlaceholder.instance(), { minimumSize: new Geometry2.Size(150, 150) }), target);
+};
 var DeviceModeWrapper = class _DeviceModeWrapper extends UI5.Widget.VBox {
-  inspectedPagePlaceholder;
-  deviceModeView;
   toggleDeviceModeAction;
   showDeviceModeSetting;
-  constructor(inspectedPagePlaceholder) {
-    super();
-    this.inspectedPagePlaceholder = inspectedPagePlaceholder;
-    this.deviceModeView = null;
+  #view;
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element);
+    this.#view = view;
     this.toggleDeviceModeAction = UI5.ActionRegistry.ActionRegistry.instance().getAction("emulation.toggle-device-mode");
     const model = EmulationModel3.DeviceModeModel.DeviceModeModel.instance();
     this.showDeviceModeSetting = model.enabledSetting();
     this.showDeviceModeSetting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam("hasOtherClients")));
-    this.showDeviceModeSetting.addChangeListener(this.update.bind(this, false));
+    this.showDeviceModeSetting.addChangeListener(this.requestUpdate.bind(this));
     SDK2.TargetManager.TargetManager.instance().addModelListener(SDK2.OverlayModel.OverlayModel, "ScreenshotRequested", this.screenshotRequestedFromOverlay, this);
-    this.update(true);
-  }
-  static instance(opts = { forceNew: null, inspectedPagePlaceholder: null }) {
-    const { forceNew, inspectedPagePlaceholder } = opts;
-    if (!deviceModeWrapperInstance || forceNew) {
-      if (!inspectedPagePlaceholder) {
-        throw new Error(`Unable to create DeviceModeWrapper: inspectedPagePlaceholder must be provided: ${new Error().stack}`);
-      }
-      deviceModeWrapperInstance = new _DeviceModeWrapper(inspectedPagePlaceholder);
-    }
-    return deviceModeWrapperInstance;
-  }
-  toggleDeviceMode() {
-    this.showDeviceModeSetting.set(!this.showDeviceModeSetting.get());
-  }
-  isDeviceModeOn() {
-    return this.showDeviceModeSetting.get();
+    this.requestUpdate();
   }
   static #setNonEmulatedAvailableSize() {
     const model = EmulationModel3.DeviceModeModel.DeviceModeModel.instance();
@@ -2632,27 +2618,9 @@ var DeviceModeWrapper = class _DeviceModeWrapper extends UI5.Widget.VBox {
     const clip = event.data;
     _DeviceModeWrapper.captureScreenshot(false, clip);
   }
-  update(force) {
+  performUpdate() {
     this.toggleDeviceModeAction.setToggled(this.showDeviceModeSetting.get());
-    const shouldShow = this.showDeviceModeSetting.get();
-    if (!force && shouldShow === this.deviceModeView?.isShowing()) {
-      return;
-    }
-    if (shouldShow) {
-      if (!this.deviceModeView) {
-        this.deviceModeView = new DeviceModeView();
-      }
-      this.deviceModeView.show(this.element);
-      this.inspectedPagePlaceholder.clearMinimumSize();
-      this.inspectedPagePlaceholder.show(this.deviceModeView.element);
-    } else {
-      if (this.deviceModeView) {
-        this.deviceModeView.exitHingeMode();
-        this.deviceModeView.detach();
-      }
-      this.inspectedPagePlaceholder.restoreMinimumSize();
-      this.inspectedPagePlaceholder.show(this.element);
-    }
+    this.#view({ showDeviceMode: this.showDeviceModeSetting.get() }, void 0, this.contentElement);
   }
 };
 var ActionDelegate = class {
@@ -2705,9 +2673,11 @@ var ActionDelegate = class {
       }
       case "emulation.capture-full-height-screenshot":
         return DeviceModeWrapper.captureScreenshot(true);
-      case "emulation.toggle-device-mode":
-        DeviceModeWrapper.instance().toggleDeviceMode();
+      case "emulation.toggle-device-mode": {
+        const model = EmulationModel3.DeviceModeModel.DeviceModeModel.instance();
+        model.toggleDeviceMode();
         return true;
+      }
     }
     return false;
   }
@@ -2798,7 +2768,7 @@ var AdvancedApp = class _AdvancedApp {
     UI6.InspectorView.InspectorView.instance().setOwnerSplit(this.rootSplitWidget);
     this.inspectedPagePlaceholder = InspectedPagePlaceholder.instance();
     this.inspectedPagePlaceholder.addEventListener("Update", this.onSetInspectedPageBounds.bind(this), this);
-    this.deviceModeView = DeviceModeWrapper.instance({ inspectedPagePlaceholder: this.inspectedPagePlaceholder, forceNew: false });
+    this.deviceModeView = new DeviceModeWrapper();
     UI6.DockController.DockController.instance().addEventListener("BeforeDockSideChanged", this.onBeforeDockSideChange, this);
     UI6.DockController.DockController.instance().addEventListener("DockSideChanged", this.onDockSideChange, this);
     UI6.DockController.DockController.instance().addEventListener("AfterDockSideChanged", this.onAfterDockSideChange, this);

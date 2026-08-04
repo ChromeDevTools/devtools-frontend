@@ -1796,10 +1796,7 @@ var ResponseHeaderSection = class extends ResponseHeaderSectionBase {
       if (headerWithIssues) {
         if (IssuesManager.RelatedIssue.hasIssueOfCategory(this.#request, "CrossOriginEmbedderPolicy", IssuesManager.IssuesManager.IssuesManager.instance())) {
           const followLink = () => {
-            Host3.userMetrics.issuesPanelOpenedFrom(
-              1
-              /* Host.UserMetrics.IssueOpener.LEARN_MORE_LINK_COEP */
-            );
+            Host3.userMetrics.issuesPanelOpenedFrom(Host3.UserMetrics.IssueOpener.LEARN_MORE_LINK_COEP);
             if (this.#request) {
               void IssuesManager.RelatedIssue.reveal(
                 this.#request,

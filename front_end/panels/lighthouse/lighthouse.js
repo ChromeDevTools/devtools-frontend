@@ -235,6 +235,7 @@ import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as EmulationModel from "./../../models/emulation/emulation.js";
+import * as UI from "./../../ui/legacy/legacy.js";
 import * as Emulation from "./../emulation/emulation.js";
 var UIStrings = {
   /**
@@ -483,6 +484,7 @@ var LighthouseRun = class {
     } else if (this.flags.formFactor === "mobile") {
       emulationModel.enabledSetting().set(true);
       emulationModel.deviceOutlineSetting().set(true);
+      await UI.Widget.Widget.allUpdatesComplete;
       for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
         if (device.title === "Moto G Power") {
           emulationModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 1);
@@ -724,22 +726,13 @@ var LighthouseController = class extends Common.ObjectWrapper.ObjectWrapper {
     }
     switch (flags.mode) {
       case "navigation":
-        Host.userMetrics.lighthouseModeRun(
-          0
-          /* Host.UserMetrics.LighthouseModeRun.NAVIGATION */
-        );
+        Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.NAVIGATION);
         break;
       case "timespan":
-        Host.userMetrics.lighthouseModeRun(
-          1
-          /* Host.UserMetrics.LighthouseModeRun.TIMESPAN */
-        );
+        Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.TIMESPAN);
         break;
       case "snapshot":
-        Host.userMetrics.lighthouseModeRun(
-          2
-          /* Host.UserMetrics.LighthouseModeRun.SNAPSHOT */
-        );
+        Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.SNAPSHOT);
         break;
     }
   }
@@ -808,7 +801,7 @@ function getPresets() {
         title: i18nLazyString(UIStrings.performance),
         description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),
         supportedModes: ["navigation", "timespan", "snapshot"],
-        userMetric: 0
+        userMetric: Host.UserMetrics.LighthouseCategoryUsed.PERFORMANCE
       },
       {
         setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-a11y"),
@@ -816,7 +809,7 @@ function getPresets() {
         title: i18nLazyString(UIStrings.accessibility),
         description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
         supportedModes: ["navigation", "snapshot"],
-        userMetric: 1
+        userMetric: Host.UserMetrics.LighthouseCategoryUsed.ACCESSIBILITY
       },
       {
         setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-best-practices"),
@@ -824,7 +817,7 @@ function getPresets() {
         title: i18nLazyString(UIStrings.bestPractices),
         description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),
         supportedModes: ["navigation", "timespan", "snapshot"],
-        userMetric: 2
+        userMetric: Host.UserMetrics.LighthouseCategoryUsed.BEST_PRACTICES
       },
       {
         setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-seo"),
@@ -832,7 +825,7 @@ function getPresets() {
         title: i18nLazyString(UIStrings.seo),
         description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
         supportedModes: ["navigation", "snapshot"],
-        userMetric: 3
+        userMetric: Host.UserMetrics.LighthouseCategoryUsed.SEO
       },
       {
         setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-agentic-browsing"),
@@ -840,7 +833,7 @@ function getPresets() {
         title: i18nLazyString(UIStrings.agenticBrowsing),
         description: i18nLazyString(UIStrings.agenticBrowsingDescription),
         supportedModes: ["navigation", "snapshot"],
-        userMetric: 6
+        userMetric: Host.UserMetrics.LighthouseCategoryUsed.AGENTIC_BROWSING
       }
     ];
   }
@@ -960,7 +953,7 @@ __export(LighthousePanel_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common6 from "./../../core/common/common.js";
 import * as i18n12 from "./../../core/i18n/i18n.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/lighthouse/lighthousePanel.css.js
@@ -1350,7 +1343,7 @@ import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as LighthouseReport from "./../../third_party/lighthouse/report/report.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI from "./../../ui/legacy/legacy.js";
+import * as UI2 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js";
 import { html, nothing, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
@@ -1477,7 +1470,7 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer {
         continue;
       }
       const element = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, { tooltip: detailsItem.snippet, preventKeyboardFocus: void 0 });
-      UI.Tooltip.Tooltip.install(origHTMLElement, "");
+      UI2.Tooltip.Tooltip.install(origHTMLElement, "");
       const screenshotElement = origHTMLElement.querySelector(".lh-element-screenshot");
       origHTMLElement.textContent = "";
       render(html`${screenshotElement ?? nothing}${element}`, origHTMLElement);
@@ -1499,7 +1492,7 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer {
         showColumnNumber: false,
         maxLength: MaxLengthForLinks
       });
-      UI.Tooltip.Tooltip.install(origHTMLElement, "");
+      UI2.Tooltip.Tooltip.install(origHTMLElement, "");
       origHTMLElement.textContent = "";
       origHTMLElement.appendChild(element);
     }
@@ -1548,7 +1541,7 @@ __export(LighthouseReportSelector_exports, {
 });
 import * as Common4 from "./../../core/common/common.js";
 import * as i18n4 from "./../../core/i18n/i18n.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
+import * as UI3 from "./../../ui/legacy/legacy.js";
 var UIStrings2 = {
   /**
    * @description Title of combo box in the Lighthouse report selector.
@@ -1569,7 +1562,7 @@ var ReportSelector = class {
   constructor(renderNewLighthouseView) {
     this.renderNewLighthouseView = renderNewLighthouseView;
     this.newLighthouseItem = document.createElement("option");
-    this.#comboBox = new UI2.Toolbar.ToolbarComboBox(this.handleChange.bind(this), i18nString2(UIStrings2.reports), "lighthouse-report");
+    this.#comboBox = new UI3.Toolbar.ToolbarComboBox(this.handleChange.bind(this), i18nString2(UIStrings2.reports), "lighthouse-report");
     this.itemByOptionElement = /* @__PURE__ */ new Map();
     this.setEmptyState();
   }
@@ -1669,7 +1662,7 @@ import "./../../ui/legacy/legacy.js";
 import * as i18n6 from "./../../core/i18n/i18n.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import { Link } from "./../../ui/kit/kit.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as UI5 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html3, render as render3 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/lighthouse/lighthouseStartView.css.js
@@ -1843,7 +1836,7 @@ var RadioSetting_exports = {};
 __export(RadioSetting_exports, {
   RadioSetting: () => RadioSetting
 });
-import * as UI3 from "./../../ui/legacy/legacy.js";
+import * as UI4 from "./../../ui/legacy/legacy.js";
 import { Directives, html as html2, render as render2 } from "./../../ui/lit/lit.js";
 var { ifDefined } = Directives;
 var RadioSetting = class {
@@ -1857,8 +1850,8 @@ var RadioSetting = class {
     this.setting = setting;
     this.options = options;
     this.element = document.createElement("div");
-    UI3.ARIAUtils.setDescription(this.element, description);
-    UI3.ARIAUtils.markAsRadioGroup(this.element);
+    UI4.ARIAUtils.setDescription(this.element, description);
+    UI4.ARIAUtils.markAsRadioGroup(this.element);
     this.radioElements = [];
     render2(html2`
         ${this.options.map((option) => {
@@ -2006,7 +1999,7 @@ var renderStartView = (_input, output, target) => {
       </form>
     `, target);
 };
-var StartView = class extends UI4.Widget.Widget {
+var StartView = class extends UI5.Widget.Widget {
   controller;
   panel;
   #settingsToolbar;
@@ -2039,14 +2032,14 @@ var StartView = class extends UI4.Widget.Widget {
     parentElement.appendChild(labelEl);
     const control = new RadioSetting(runtimeSetting.options, runtimeSetting.setting, runtimeSetting.description());
     parentElement.appendChild(control.element);
-    UI4.ARIAUtils.setLabel(control.element, label);
+    UI5.ARIAUtils.setLabel(control.element, label);
   }
   populateRuntimeSettingAsToolbarCheckbox(settingName, toolbar2) {
     const runtimeSetting = getRuntimeSettings().find((item2) => item2.setting.name === settingName);
     if (!runtimeSetting?.title) {
       throw new Error(`${settingName} is not a setting with a title`);
     }
-    const control = new UI4.Toolbar.ToolbarSettingCheckbox(runtimeSetting.setting, runtimeSetting.description(), runtimeSetting.title());
+    const control = new UI5.Toolbar.ToolbarSettingCheckbox(runtimeSetting.setting, runtimeSetting.description(), runtimeSetting.title());
     toolbar2.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
       const link = Link.create(runtimeSetting.learnMore, i18nString3(UIStrings3.learnMore), "lighthouse-learn-more", "learn-more");
@@ -2060,7 +2053,7 @@ var StartView = class extends UI4.Widget.Widget {
       throw new Error(`${settingName} is not a setting with a title`);
     }
     const options = runtimeSetting.options?.map((option) => ({ label: option.label(), value: option.value })) || [];
-    const control = new UI4.Toolbar.ToolbarSettingComboBox(options, runtimeSetting.setting, runtimeSetting.title());
+    const control = new UI5.Toolbar.ToolbarSettingComboBox(options, runtimeSetting.setting, runtimeSetting.title());
     control.setTitle(runtimeSetting.description());
     toolbar2.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
@@ -2068,14 +2061,14 @@ var StartView = class extends UI4.Widget.Widget {
       link.style.marginLeft = "5px";
       link.style.display = "inline-flex";
       link.style.height = "revert";
-      toolbar2.appendToolbarItem(new UI4.Toolbar.ToolbarItem(link));
+      toolbar2.appendToolbarItem(new UI5.Toolbar.ToolbarItem(link));
     }
   }
   populateFormControls(deviceTypeFormElements, categoryFormElements, mode) {
     this.populateRuntimeSettingAsRadio("lighthouse.device-type", i18nString3(UIStrings3.device), deviceTypeFormElements);
     this.checkboxes = [];
     for (const preset of getPresets()) {
-      const checkbox = new UI4.Toolbar.ToolbarSettingCheckbox(preset.setting, preset.description(), preset.title());
+      const checkbox = new UI5.Toolbar.ToolbarSettingCheckbox(preset.setting, preset.description(), preset.title());
       const row = categoryFormElements.createChild("div", "vbox lighthouse-launcher-row");
       row.appendChild(checkbox.element);
       checkbox.element.setAttribute("data-lh-category", preset.configID);
@@ -2133,7 +2126,7 @@ var StartView = class extends UI4.Widget.Widget {
     const startButtonContainer = this.contentElement.querySelector(".lighthouse-start-button-container");
     if (startButtonContainer) {
       startButtonContainer.textContent = "";
-      this.startButton = UI4.UIUtils.createTextButton(buttonLabel, callback, { variant: "primary", jslogContext: "lighthouse.start" });
+      this.startButton = UI5.UIUtils.createTextButton(buttonLabel, callback, { variant: "primary", jslogContext: "lighthouse.start" });
       startButtonContainer.append(this.startButton);
     }
   }
@@ -2209,7 +2202,7 @@ import * as Common5 from "./../../core/common/common.js";
 import * as i18n8 from "./../../core/i18n/i18n.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
+import * as UI6 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/lighthouse/lighthouseDialog.css.js
@@ -2549,7 +2542,7 @@ var StatusView = class {
     this.fastFactsQueued = FastFacts.map((lazyString) => lazyString());
     this.currentPhase = null;
     this.scheduledFastFactTimeout = null;
-    this.dialog = new UI5.Dialog.Dialog();
+    this.dialog = new UI6.Dialog.Dialog();
     this.dialog.setDimmed(true);
     this.dialog.setCloseOnEscape(false);
     this.dialog.setOutsideClickCallback((event) => event.consume(true));
@@ -2564,7 +2557,7 @@ var StatusView = class {
   }
   render() {
     if (!this.dialogRoot) {
-      this.dialogRoot = UI5.UIUtils.createShadowRootWithCoreStyles(this.dialog.contentElement, { cssFile: lighthouseDialog_css_default });
+      this.dialogRoot = UI6.UIUtils.createShadowRootWithCoreStyles(this.dialog.contentElement, { cssFile: lighthouseDialog_css_default });
       this.dialog.setSizeBehavior(
         "SetExactWidthMaxHeight"
         /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
@@ -2799,7 +2792,7 @@ __export(LighthouseTimespanView_exports, {
 import * as i18n10 from "./../../core/i18n/i18n.js";
 import * as Geometry2 from "./../../models/geometry/geometry.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
+import * as UI7 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives4, html as html5, render as render5 } from "./../../ui/lit/lit.js";
 var UIStrings5 = {
   /**
@@ -2846,7 +2839,7 @@ var renderTimespanView = (input, output, target) => {
       </div>
     `, target);
 };
-var TimespanView = class extends UI6.Dialog.Dialog {
+var TimespanView = class extends UI7.Dialog.Dialog {
   panel;
   statusHeader;
   contentContainer;
@@ -2882,9 +2875,9 @@ var TimespanView = class extends UI6.Dialog.Dialog {
     }
   }
   render() {
-    const dialogRoot = UI6.UIUtils.createShadowRootWithCoreStyles(this.contentElement, { cssFile: lighthouseDialog_css_default });
-    this.endButton = UI6.UIUtils.createTextButton(i18nString5(UIStrings5.endTimespan), this.endTimespan.bind(this), { variant: "primary", jslogContext: "lighthouse.end-time-span", className: "end-timespan" });
-    const cancelButton = UI6.UIUtils.createTextButton(i18nString5(UIStrings5.cancel), this.cancel.bind(this), {
+    const dialogRoot = UI7.UIUtils.createShadowRootWithCoreStyles(this.contentElement, { cssFile: lighthouseDialog_css_default });
+    this.endButton = UI7.UIUtils.createTextButton(i18nString5(UIStrings5.endTimespan), this.endTimespan.bind(this), { variant: "primary", jslogContext: "lighthouse.end-time-span", className: "end-timespan" });
+    const cancelButton = UI7.UIUtils.createTextButton(i18nString5(UIStrings5.cancel), this.cancel.bind(this), {
       className: "cancel",
       jslogContext: "lighthouse.cancel"
     });
@@ -2953,7 +2946,7 @@ var ActiveLighthouseReport = class {
     this.report = report;
   }
 };
-var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
+var LighthousePanel = class _LighthousePanel extends UI8.Panel.Panel {
   controller;
   startView;
   statusView;
@@ -2978,7 +2971,7 @@ var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
     this.warningText = null;
     this.unauditableExplanation = null;
     this.cachedRenderedReports = /* @__PURE__ */ new Map();
-    new UI7.DropTarget.DropTarget(this.contentElement, [UI7.DropTarget.Type.File], i18nString6(UIStrings6.dropLighthouseJsonHere), this.handleDrop.bind(this));
+    new UI8.DropTarget.DropTarget(this.contentElement, [UI8.DropTarget.Type.File], i18nString6(UIStrings6.dropLighthouseJsonHere), this.handleDrop.bind(this));
     this.controller.addEventListener(Events.PageAuditabilityChanged, this.refreshStartAuditUI.bind(this));
     this.controller.addEventListener(Events.PageWarningsChanged, this.refreshWarningsUI.bind(this));
     this.controller.addEventListener(Events.AuditProgressChanged, this.refreshStatusUI.bind(this));
@@ -2987,7 +2980,7 @@ var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
     this.auditResultsElement.addEventListener("keydown", this.onKeyDown.bind(this));
     this.renderStartView();
     this.controller.recomputePageAuditability();
-    UI7.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
+    UI8.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
   }
   static instance(opts) {
     if (!lighthousePanelInstace || opts?.forceNew) {
@@ -3028,7 +3021,7 @@ var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
       return { report: lhr };
     } catch (err) {
       this.handleError(err);
-      UI7.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
+      UI8.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
       return { report: null };
     }
   }
@@ -3079,16 +3072,16 @@ var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
     lighthouseToolbarContainer.role = "toolbar";
     const toolbar2 = lighthouseToolbarContainer.createChild("devtools-toolbar");
     toolbar2.role = "presentation";
-    this.newButton = new UI7.Toolbar.ToolbarButton(i18nString6(UIStrings6.performAnAudit), "plus");
+    this.newButton = new UI8.Toolbar.ToolbarButton(i18nString6(UIStrings6.performAnAudit), "plus");
     toolbar2.appendToolbarItem(this.newButton);
     this.newButton.addEventListener("Click", this.renderStartView.bind(this));
     toolbar2.appendSeparator();
     this.reportSelector = new ReportSelector(() => this.renderStartView());
     toolbar2.appendToolbarItem(this.reportSelector.comboBox());
-    this.clearButton = new UI7.Toolbar.ToolbarButton(i18nString6(UIStrings6.clearAll), "clear");
+    this.clearButton = new UI8.Toolbar.ToolbarButton(i18nString6(UIStrings6.clearAll), "clear");
     toolbar2.appendToolbarItem(this.clearButton);
     this.clearButton.addEventListener("Click", this.clearAll.bind(this));
-    this.settingsPane = new UI7.Widget.HBox();
+    this.settingsPane = new UI8.Widget.HBox();
     this.settingsPane.show(this.contentElement);
     this.settingsPane.element.classList.add("lighthouse-settings-pane");
     this.settingsPane.element.appendChild(this.startView.settingsToolbar());
@@ -3101,7 +3094,7 @@ var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
     this.rightToolbar = lighthouseToolbarContainer.createChild("devtools-toolbar");
     this.rightToolbar.role = "presentation";
     this.rightToolbar.appendSeparator();
-    this.rightToolbar.appendToolbarItem(new UI7.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString6(UIStrings6.lighthouseSettings), "gear-filled"));
+    this.rightToolbar.appendToolbarItem(new UI8.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString6(UIStrings6.lighthouseSettings), "gear-filled"));
     this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
     this.updateSettingsPaneVisibility();
     this.refreshToolbarUI();
@@ -3118,7 +3111,7 @@ var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
     this.auditResultsElement.removeChildren();
     this.statusView.hide();
     this.reportSelector.selectNewReport();
-    UI7.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
+    UI8.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
     this.contentElement.classList.toggle("in-progress", false);
     this.startView.show(this.contentElement);
     this.toggleSettingsDisplay(true);
@@ -3156,7 +3149,7 @@ var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
     this.auditResultsElement.removeChildren();
     this.newButton.setEnabled(true);
     this.refreshToolbarUI();
-    UI7.Context.Context.instance().setFlavor(ActiveLighthouseReport, new ActiveLighthouseReport(lighthouseResult));
+    UI8.Context.Context.instance().setFlavor(ActiveLighthouseReport, new ActiveLighthouseReport(lighthouseResult));
     const cachedRenderedReport = this.cachedRenderedReports.get(lighthouseResult);
     if (cachedRenderedReport) {
       this.auditResultsElement.appendChild(cachedRenderedReport);
@@ -3220,14 +3213,14 @@ var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
   }
   static async executeLighthouseRecording(overrides) {
     const panel = _LighthousePanel.instance();
-    await UI7.ViewManager.ViewManager.instance().showView("lighthouse");
+    await UI8.ViewManager.ViewManager.instance().showView("lighthouse");
     const { report } = await panel.handleCompleteRun(overrides);
     return report;
   }
 };
 var ReportRevealer = class {
   async reveal(report) {
-    await UI7.ViewManager.ViewManager.instance().showView("lighthouse");
+    await UI8.ViewManager.ViewManager.instance().showView("lighthouse");
     LighthousePanel.instance().selectReport(report.report);
   }
 };

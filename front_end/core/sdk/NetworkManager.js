@@ -986,8 +986,6 @@ export class NetworkDispatcher {
         }
         networkRequest.addEventSourceMessage(time, eventName, eventId, data);
     }
-    requestIntercepted({}) {
-    }
     requestWillBeSentExtraInfo({ requestId, associatedCookies, headers, deviceBoundSessionUsages, clientSecurityState, connectTiming, siteHasCookieInOtherPartition, appliedNetworkConditionsId, }) {
         const blockedRequestCookies = [];
         const includedRequestCookies = [];

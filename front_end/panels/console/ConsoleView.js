@@ -428,7 +428,7 @@ export class ConsoleView extends UI.Widget.VBox {
         const issuesToolbarItem = new UI.Toolbar.ToolbarItem(this.issueCounter);
         this.issueCounter.data = {
             clickHandler: () => {
-                Host.userMetrics.issuesPanelOpenedFrom(2 /* Host.UserMetrics.IssueOpener.STATUS_BAR_ISSUES_COUNTER */);
+                Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.STATUS_BAR_ISSUES_COUNTER);
                 void UI.ViewManager.ViewManager.instance().showView('issues-pane');
             },
             issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),

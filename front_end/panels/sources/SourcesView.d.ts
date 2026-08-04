@@ -6,6 +6,26 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 import { TabbedEditorContainer, type TabbedEditorContainerDelegate } from './TabbedEditorContainer.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
+export interface Shortcut {
+    description: string;
+    onClick: () => void;
+    keys: string[];
+}
+export interface ViewInput {
+    placeholderElement: HTMLElement;
+    scriptViewToolbar: UI.Toolbar.Toolbar;
+    bottomToolbar: UI.Toolbar.Toolbar;
+    leftToolbarItems: UI.Toolbar.ToolbarItem[];
+    rightToolbarItems: UI.Toolbar.ToolbarItem[];
+    searchableView: UI.SearchableView.SearchableView;
+    editorContainer: TabbedEditorContainer;
+    shortcuts: Shortcut[];
+}
+export interface ViewOutput {
+    onSelectFolderClicked: () => void;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 declare const SourcesView_base: (new (...args: any[]) => {
     __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
@@ -25,11 +45,14 @@ export declare class SourcesView extends SourcesView_base implements TabbedEdito
     private searchView?;
     private searchConfig?;
     constructor();
-    private placeholderElement;
+    performUpdate(): void;
+    onDetach(): void;
     private addFileSystemClicked;
     static defaultUISourceCodeScores(): Map<Workspace.UISourceCode.UISourceCode, number>;
-    leftToolbar(): UI.Toolbar.Toolbar;
-    rightToolbar(): UI.Toolbar.Toolbar;
+    set leftToolbarItems(items: UI.Toolbar.ToolbarItem[]);
+    get leftToolbarItems(): UI.Toolbar.ToolbarItem[];
+    set rightToolbarItems(items: UI.Toolbar.ToolbarItem[]);
+    get rightToolbarItems(): UI.Toolbar.ToolbarItem[];
     bottomToolbar(): UI.Toolbar.Toolbar;
     scriptViewToolbar(): UI.Toolbar.Toolbar;
     wasShown(): void;

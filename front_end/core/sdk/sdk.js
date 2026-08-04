@@ -730,6 +730,7 @@ var generatedProperties = [
       "math-shift",
       "math-style",
       "max-block-size",
+      "max-content-sizing",
       "max-height",
       "max-inline-size",
       "max-lines",
@@ -3976,6 +3977,15 @@ var generatedProperties = [
       "none"
     ],
     "name": "max-block-size"
+  },
+  {
+    "keywords": [
+      "auto",
+      "shrink-to-fit"
+    ],
+    "name": "max-content-sizing",
+    "runtime_flag": "CssMaxContentSizing",
+    "runtime_flag_status": "test"
   },
   {
     "keywords": [
@@ -8106,6 +8116,12 @@ var generatedPropertyValues = {
   "max-block-size": {
     "values": [
       "none"
+    ]
+  },
+  "max-content-sizing": {
+    "values": [
+      "auto",
+      "shrink-to-fit"
     ]
   },
   "max-height": {
@@ -19115,18 +19131,12 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
         }
       }
       try {
-        Host2.userMetrics.developerResourceLoaded(
-          0
-          /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET */
-        );
+        Host2.userMetrics.developerResourceLoaded(Host2.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET);
         const result2 = await this.loadFromTarget(initiator.target, initiator.frameId, url, isBinary);
         return result2;
       } catch (e) {
         if (e instanceof Error) {
-          Host2.userMetrics.developerResourceLoaded(
-            2
-            /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE */
-          );
+          Host2.userMetrics.developerResourceLoaded(Host2.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);
           if (mustEnforceCSP || e.message.includes("CSP violation")) {
             return {
               success: false,
@@ -19139,20 +19149,14 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
           }
         }
       }
-      Host2.userMetrics.developerResourceLoaded(
-        3
-        /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK */
-      );
+      Host2.userMetrics.developerResourceLoaded(Host2.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK);
     } else {
-      const code = this.getLoadThroughTargetSetting().get() ? 6 : 5;
+      const code = this.getLoadThroughTargetSetting().get() ? Host2.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_PROTOCOL : Host2.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_OVERRIDE;
       Host2.userMetrics.developerResourceLoaded(code);
     }
     const result = await this.loadFromHostBindings(url);
     if (eligibleForLoadFromTarget && !result.success) {
-      Host2.userMetrics.developerResourceLoaded(
-        7
-        /* Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE */
-      );
+      Host2.userMetrics.developerResourceLoaded(Host2.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE);
     }
     if (failureReason) {
       result.errorDescription.message = `Fetch through target failed: ${failureReason}; Fallback: ${result.errorDescription.message}`;
@@ -19161,22 +19165,22 @@ var PageResourceLoader = class _PageResourceLoader extends Common11.ObjectWrappe
   }
   getDeveloperResourceScheme(parsedURL) {
     if (!parsedURL || parsedURL.scheme === "") {
-      return 1;
+      return Host2.UserMetrics.DeveloperResourceScheme.UKNOWN;
     }
     const isLocalhost = parsedURL.host === "localhost" || parsedURL.host.endsWith(".localhost");
     switch (parsedURL.scheme) {
       case "file":
-        return 7;
+        return Host2.UserMetrics.DeveloperResourceScheme.FILE;
       case "data":
-        return 6;
+        return Host2.UserMetrics.DeveloperResourceScheme.DATA;
       case "blob":
-        return 8;
+        return Host2.UserMetrics.DeveloperResourceScheme.BLOB;
       case "http":
-        return isLocalhost ? 4 : 2;
+        return isLocalhost ? Host2.UserMetrics.DeveloperResourceScheme.HTTP_LOCALHOST : Host2.UserMetrics.DeveloperResourceScheme.HTTP;
       case "https":
-        return isLocalhost ? 5 : 3;
+        return isLocalhost ? Host2.UserMetrics.DeveloperResourceScheme.HTTPS_LOCALHOST : Host2.UserMetrics.DeveloperResourceScheme.HTTPS;
     }
-    return 0;
+    return Host2.UserMetrics.DeveloperResourceScheme.OTHER;
   }
   async loadFromTarget(target, frameId, url, isBinary) {
     const networkManager = target.model(NetworkManager);
@@ -29306,8 +29310,6 @@ var NetworkDispatcher = class {
       return;
     }
     networkRequest.addEventSourceMessage(time, eventName, eventId, data);
-  }
-  requestIntercepted({}) {
   }
   requestWillBeSentExtraInfo({ requestId, associatedCookies, headers, deviceBoundSessionUsages, clientSecurityState, connectTiming, siteHasCookieInOtherPartition, appliedNetworkConditionsId }) {
     const blockedRequestCookies = [];

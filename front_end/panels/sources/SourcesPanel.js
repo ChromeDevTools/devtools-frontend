@@ -308,8 +308,8 @@ export class SourcesPanel extends UI.Panel.Panel {
         return sourcesPanelInstance;
     }
     static updateResizerAndSidebarButtons(panel) {
-        panel.#sourcesView.leftToolbar().removeToolbarItems();
-        panel.#sourcesView.rightToolbar().removeToolbarItems();
+        const leftItems = [];
+        const rightItems = [];
         panel.#sourcesView.bottomToolbar().removeToolbarItems();
         const isInWrapper = UI.Context.Context.instance().flavor(QuickSourceView) &&
             !UI.InspectorView.InspectorView.instance().isDrawerMinimized();
@@ -320,16 +320,18 @@ export class SourcesPanel extends UI.Panel.Panel {
             panel.splitWidget.installResizer(panel.#sourcesView.scriptViewToolbar());
         }
         if (!isInWrapper) {
-            panel.#sourcesView.leftToolbar().appendToolbarItem(panel.toggleNavigatorSidebarButton);
+            leftItems.push(panel.toggleNavigatorSidebarButton);
             if (!Root.Runtime.Runtime.isTraceApp()) {
                 if (panel.splitWidget.isVertical()) {
-                    panel.#sourcesView.rightToolbar().appendToolbarItem(panel.toggleDebuggerSidebarButton);
+                    rightItems.push(panel.toggleDebuggerSidebarButton);
                 }
                 else {
                     panel.#sourcesView.bottomToolbar().appendToolbarItem(panel.toggleDebuggerSidebarButton);
                 }
             }
         }
+        panel.#sourcesView.leftToolbarItems = leftItems;
+        panel.#sourcesView.rightToolbarItems = rightItems;
     }
     targetAdded(_target) {
         this.showThreadsIfNeeded();

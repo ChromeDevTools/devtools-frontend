@@ -66,7 +66,7 @@ export class PlusButtonPresenter {
                     if (isIssuesPane) {
                         // Distinct from `HAMBURGER_MENU` so plus-button opens are
                         // not conflated with three-dot-menu opens in the dashboard.
-                        Host.userMetrics.issuesPanelOpenedFrom(6 /* Host.UserMetrics.IssueOpener.MORE_TOOLS_MENU */);
+                        Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.MORE_TOOLS_MENU);
                     }
                     this.#context.showView(view);
                 },

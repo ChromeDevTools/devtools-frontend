@@ -667,6 +667,7 @@ export const generatedProperties = [
             "math-shift",
             "math-style",
             "max-block-size",
+            "max-content-sizing",
             "max-height",
             "max-inline-size",
             "max-lines",
@@ -3913,6 +3914,15 @@ export const generatedProperties = [
             "none"
         ],
         "name": "max-block-size"
+    },
+    {
+        "keywords": [
+            "auto",
+            "shrink-to-fit"
+        ],
+        "name": "max-content-sizing",
+        "runtime_flag": "CssMaxContentSizing",
+        "runtime_flag_status": "test"
     },
     {
         "keywords": [
@@ -8043,6 +8053,12 @@ export const generatedPropertyValues = {
     "max-block-size": {
         "values": [
             "none"
+        ]
+    },
+    "max-content-sizing": {
+        "values": [
+            "auto",
+            "shrink-to-fit"
         ]
     },
     "max-height": {

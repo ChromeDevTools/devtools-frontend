@@ -21,7 +21,7 @@ export declare class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWr
     private currentView;
     private scrollTimer?;
     private reentrantShow;
-    constructor(delegate: TabbedEditorContainerDelegate, setting: Common.Settings.Setting<SerializedHistoryItem[]>, placeholderElement: Element, focusedPlaceholderElement?: Element);
+    constructor(delegate: TabbedEditorContainerDelegate, setting: Common.Settings.Setting<SerializedHistoryItem[]>, placeholderElement: Element, focusedPlaceholderElement?: Element, element?: HTMLElement);
     private onBindingCreated;
     private onBindingRemoved;
     get view(): UI.Widget.Widget;

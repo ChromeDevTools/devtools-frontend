@@ -173,6 +173,7 @@ models/ai_assistance/AiAgent2.test.js
 models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
 models/ai_assistance/AiOrigins.test.js
+models/ai_assistance/AiSetting.test.js
 models/ai_assistance/AiUtils.test.js
 models/ai_assistance/BuiltInAi.test.js
 models/ai_assistance/ChangeManager.test.js

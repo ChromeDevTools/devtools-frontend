@@ -2845,11 +2845,11 @@ var FlexGridRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers
     function getSwatchType(layoutType) {
       switch (layoutType) {
         case "flex":
-          return 6;
+          return Host.UserMetrics.SwatchType.FLEX;
         case "grid":
-          return 5;
+          return Host.UserMetrics.SwatchType.GRID;
         case "grid-lanes":
-          return 12;
+          return Host.UserMetrics.SwatchType.GRID_LANES;
       }
     }
     const button = StyleEditorWidget.createTriggerButton(this.#stylesContainer, this.#treeElement.section(), getEditorClass(match.layoutType), getButtonTitle(match.layoutType), key2);
@@ -2899,10 +2899,7 @@ var CSSWideKeywordRenderer = class extends rendererBase(SDK5.CSSPropertyParserMa
 };
 function handleVarDefinitionActivate(variable, stylesContainer) {
   Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
-  Host.userMetrics.swatchActivated(
-    0
-    /* Host.UserMetrics.SwatchType.VAR_LINK */
-  );
+  Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VAR_LINK);
   if (typeof variable === "string") {
     stylesContainer.jumpToProperty(variable) || stylesContainer.jumpToProperty("initial-value", variable, REGISTERED_PROPERTY_SECTION_NAME);
   } else if (variable.declaration instanceof SDK5.CSSProperty.CSSProperty) {
@@ -3108,10 +3105,7 @@ var AttributeRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatcher
       return;
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AttributeLinkClicked);
-    Host.userMetrics.swatchActivated(
-      11
-      /* Host.UserMetrics.SwatchType.ATTR_LINK */
-    );
+    Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ATTR_LINK);
     ElementsPanel.instance().highlightNodeAttribute(node, attribute);
   }
 };
@@ -3285,10 +3279,7 @@ var ColorRenderer = class _ColorRenderer extends rendererBase(SDK5.CSSPropertyPa
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
       };
       swatch.addEventListener(InlineEditor2.ColorSwatch.ClickEvent.eventName, () => {
-        Host.userMetrics.swatchActivated(
-          2
-          /* Host.UserMetrics.SwatchType.COLOR */
-        );
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.COLOR);
       });
       swatch.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, onColorChanged);
       swatch.addEventListener(InlineEditor2.ColorSwatch.ColorFormatChangedEvent.eventName, onColorFormatChanged);
@@ -3577,10 +3568,7 @@ var AngleRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.An
       if (data.open) {
         treeElement.stylesContainer().hideAllPopovers();
         treeElement.stylesContainer().activeCSSAngle = cssAngle;
-        Host.userMetrics.swatchActivated(
-          7
-          /* Host.UserMetrics.SwatchType.ANGLE */
-        );
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANGLE);
       }
       section5.element.classList.toggle("has-open-popover", data.open);
       treeElement.stylesContainer().setEditingStyle(data.open);
@@ -3614,7 +3602,7 @@ var LinkableNameRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatc
       case "animation-name":
         return {
           jslogContext: "css-animation-name",
-          metric: 1,
+          metric: Host.UserMetrics.SwatchType.ANIMATION_NAME_LINK,
           ruleBlock: "@keyframes",
           isDefined: Boolean(this.#matchedStyles.keyframes().find((kf) => kf.name().text === match.text))
         };
@@ -3639,7 +3627,7 @@ var LinkableNameRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatc
       case "position-try-fallbacks":
         return {
           jslogContext: "css-position-try",
-          metric: 10,
+          metric: Host.UserMetrics.SwatchType.POSITION_TRY_LINK,
           ruleBlock: "@position-try",
           isDefined: Boolean(this.#matchedStyles.positionTryRules().find((pt) => pt.name().text === match.text))
         };
@@ -3707,10 +3695,7 @@ var BezierRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.B
     icon.setAttribute("jslog", `${VisualLogging3.showStyleEditor("bezier")}`);
     icon.tabIndex = -1;
     icon.addEventListener("click", () => {
-      Host.userMetrics.swatchActivated(
-        3
-        /* Host.UserMetrics.SwatchType.ANIMATION_TIMING */
-      );
+      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANIMATION_TIMING);
     });
     const bezierText = document.createElement("span");
     bezierText.append(...nodes);
@@ -3989,10 +3974,7 @@ var ShadowRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.S
       const swatch = new InlineEditor2.Swatches.CSSShadowSwatch(model);
       swatch.setAttribute("jslog", `${VisualLogging3.showStyleEditor("css-shadow").track({ click: true })}`);
       swatch.iconElement().addEventListener("click", () => {
-        Host.userMetrics.swatchActivated(
-          4
-          /* Host.UserMetrics.SwatchType.SHADOW */
-        );
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.SHADOW);
       });
       const contents = document.createElement("span");
       model.renderContents(contents);

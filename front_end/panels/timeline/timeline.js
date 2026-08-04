@@ -7304,16 +7304,10 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     const currentNavSetting = Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").get();
     if (currentNavSetting === "classic") {
       this.#classicNavRadioButton.radio.checked = true;
-      Host2.userMetrics.navigationSettingAtFirstTimelineLoad(
-        2
-        /* Host.UserMetrics.TimelineNavigationSetting.SWITCHED_TO_CLASSIC */
-      );
+      Host2.userMetrics.navigationSettingAtFirstTimelineLoad(Host2.UserMetrics.TimelineNavigationSetting.SWITCHED_TO_CLASSIC);
     } else if (currentNavSetting === "modern") {
       this.#modernNavRadioButton.radio.checked = true;
-      Host2.userMetrics.navigationSettingAtFirstTimelineLoad(
-        3
-        /* Host.UserMetrics.TimelineNavigationSetting.SWITCHED_TO_MODERN */
-      );
+      Host2.userMetrics.navigationSettingAtFirstTimelineLoad(Host2.UserMetrics.TimelineNavigationSetting.SWITCHED_TO_MODERN);
     }
   }
   #getShortcutsInfo(isNavClassic) {
@@ -8191,15 +8185,9 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     if (this.#traceEngineModel.size() === 1) {
       this.#setupNavigationSetting();
       if (Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").get() === "classic") {
-        Host2.userMetrics.navigationSettingAtFirstTimelineLoad(
-          0
-          /* Host.UserMetrics.TimelineNavigationSetting.CLASSIC_AT_SESSION_FIRST_TRACE */
-        );
+        Host2.userMetrics.navigationSettingAtFirstTimelineLoad(Host2.UserMetrics.TimelineNavigationSetting.CLASSIC_AT_SESSION_FIRST_TRACE);
       } else {
-        Host2.userMetrics.navigationSettingAtFirstTimelineLoad(
-          1
-          /* Host.UserMetrics.TimelineNavigationSetting.MODERN_AT_SESSION_FIRST_TRACE */
-        );
+        Host2.userMetrics.navigationSettingAtFirstTimelineLoad(Host2.UserMetrics.TimelineNavigationSetting.MODERN_AT_SESSION_FIRST_TRACE);
       }
     }
     if (parsedTrace.metadata.dataOrigin !== "CPUProfile") {

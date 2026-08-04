@@ -145,7 +145,6 @@ export declare class NetworkDispatcher implements ProtocolProxyApi.NetworkDispat
     webSocketFrameError({ requestId, timestamp: time, errorMessage }: Protocol.Network.WebSocketFrameErrorEvent): void;
     webSocketClosed({ requestId, timestamp: time }: Protocol.Network.WebSocketClosedEvent): void;
     eventSourceMessageReceived({ requestId, timestamp: time, eventName, eventId, data }: Protocol.Network.EventSourceMessageReceivedEvent): void;
-    requestIntercepted({}: Protocol.Network.RequestInterceptedEvent): void;
     requestWillBeSentExtraInfo({ requestId, associatedCookies, headers, deviceBoundSessionUsages, clientSecurityState, connectTiming, siteHasCookieInOtherPartition, appliedNetworkConditionsId, }: Protocol.Network.RequestWillBeSentExtraInfoEvent): void;
     responseReceivedEarlyHints({ requestId, headers, }: Protocol.Network.ResponseReceivedEarlyHintsEvent): void;
     responseReceivedExtraInfo({ requestId, blockedCookies, headers, headersText, resourceIPAddressSpace, statusCode, cookiePartitionKey, cookiePartitionKeyOpaque, exemptedCookies, }: Protocol.Network.ResponseReceivedExtraInfoEvent): void;

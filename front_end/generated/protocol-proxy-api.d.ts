@@ -2567,16 +2567,6 @@ declare namespace ProtocolProxyApi {
     invoke_clearBrowserCookies(): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Response to Network.requestIntercepted which either modifies the request to continue with any
-     * modifications, or blocks it, or completes it with the provided response bytes. If a network
-     * fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted
-     * event will be sent with the same InterceptionId.
-     * Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failRequest instead.
-     * @deprecated
-     */
-    invoke_continueInterceptedRequest(params: Protocol.Network.ContinueInterceptedRequestRequest): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
      * Deletes browser cookies with matching name and url or domain/path/partitionKey pair.
      */
     invoke_deleteCookies(params: Protocol.Network.DeleteCookiesRequest): Promise<Protocol.ProtocolResponseWithError>;
@@ -2647,19 +2637,6 @@ declare namespace ProtocolProxyApi {
     invoke_getRequestPostData(params: Protocol.Network.GetRequestPostDataRequest): Promise<Protocol.Network.GetRequestPostDataResponse>;
 
     /**
-     * Returns content served for the given currently intercepted request.
-     */
-    invoke_getResponseBodyForInterception(params: Protocol.Network.GetResponseBodyForInterceptionRequest): Promise<Protocol.Network.GetResponseBodyForInterceptionResponse>;
-
-    /**
-     * Returns a handle to the stream representing the response body. Note that after this command,
-     * the intercepted request can't be continued as is -- you either need to cancel it or to provide
-     * the response body. The stream only supports sequential read, IO.read will fail if the position
-     * is specified.
-     */
-    invoke_takeResponseBodyForInterceptionAsStream(params: Protocol.Network.TakeResponseBodyForInterceptionAsStreamRequest): Promise<Protocol.Network.TakeResponseBodyForInterceptionAsStreamResponse>;
-
-    /**
      * This method sends a new XMLHttpRequest which is identical to the original one. The following
      * parameters should be identical: method, url, async, request body, extra headers, withCredentials
      * attribute, user, password.
@@ -2705,13 +2682,6 @@ declare namespace ProtocolProxyApi {
      * Specifies whether to attach a page script stack id in requests
      */
     invoke_setAttachDebugStack(params: Protocol.Network.SetAttachDebugStackRequest): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Sets the requests to intercept that match the provided patterns and optionally resource types.
-     * Deprecated, please use Fetch.enable instead.
-     * @deprecated
-     */
-    invoke_setRequestInterception(params: Protocol.Network.SetRequestInterceptionRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Allows overriding user agent with the given string.
@@ -2782,14 +2752,6 @@ declare namespace ProtocolProxyApi {
      * Fired when HTTP request has finished loading.
      */
     loadingFinished(params: Protocol.Network.LoadingFinishedEvent): void;
-
-    /**
-     * Details of an intercepted HTTP request, which must be either allowed, blocked, modified or
-     * mocked.
-     * Deprecated, use Fetch.requestPaused instead.
-     * @deprecated
-     */
-    requestIntercepted(params: Protocol.Network.RequestInterceptedEvent): void;
 
     /**
      * Fired if request ended up loading from cache.

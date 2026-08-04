@@ -17,6 +17,14 @@ export declare const enum Mode {
     SUBMITTED = "Submitted",
     INVALID_SUBMIT = "InvalidSubmit"
 }
+export interface ViewInput extends LinearMemoryNavigatorData {
+    onAddressChange?: (address: string, mode: Mode) => void;
+    onNavigatePage?: (navigation: Navigation) => void;
+    onNavigateHistory?: (navigation: Navigation) => void;
+    onRefreshRequest?: () => void;
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement | ShadowRoot) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class LinearMemoryNavigator extends UI.Widget.Widget {
     #private;
     get onRefreshRequest(): (() => void) | undefined;
@@ -27,7 +35,7 @@ export declare class LinearMemoryNavigator extends UI.Widget.Widget {
     set onNavigatePage(callback: ((navigation: Navigation) => void) | undefined);
     get onNavigateHistory(): ((navigation: Navigation) => void) | undefined;
     set onNavigateHistory(callback: ((navigation: Navigation) => void) | undefined);
-    constructor(element?: HTMLElement);
+    constructor(element?: HTMLElement, view?: View);
     get address(): string;
     set address(address: string);
     get error(): string | undefined;

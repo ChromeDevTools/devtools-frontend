@@ -57,7 +57,7 @@ export declare class DeviceModeView extends UI.Widget.VBox {
     private cachedMediaInspectorVisible?;
     private cachedShowRulers?;
     private cachedScale?;
-    constructor(view?: DeviceModeViewView);
+    constructor(element?: HTMLElement, view?: DeviceModeViewView);
     performUpdate(): void;
     private onOutlineImageLoaded;
     private onScreenImageLoaded;

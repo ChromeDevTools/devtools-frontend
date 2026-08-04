@@ -6559,10 +6559,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     const issuesToolbarItem = new UI9.Toolbar.ToolbarItem(this.issueCounter);
     this.issueCounter.data = {
       clickHandler: () => {
-        Host4.userMetrics.issuesPanelOpenedFrom(
-          2
-          /* Host.UserMetrics.IssueOpener.STATUS_BAR_ISSUES_COUNTER */
-        );
+        Host4.userMetrics.issuesPanelOpenedFrom(Host4.UserMetrics.IssueOpener.STATUS_BAR_ISSUES_COUNTER);
         void UI9.ViewManager.ViewManager.instance().showView("issues-pane");
       },
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),

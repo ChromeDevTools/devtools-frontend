@@ -6,6 +6,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 const UIStrings = {
     /**
@@ -257,6 +258,10 @@ class LighthouseRun {
         else if (this.flags.formFactor === 'mobile') {
             emulationModel.enabledSetting().set(true);
             emulationModel.deviceOutlineSetting().set(true);
+            // The emulation model is currently coupled to the UI.
+            // We must wait for the device mode view to render so that it can
+            // initialize the model with the available spatial constraints.
+            await UI.Widget.Widget.allUpdatesComplete;
             for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
                 if (device.title === 'Moto G Power') {
                     emulationModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 1);
@@ -533,13 +538,13 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
         }
         switch (flags.mode) {
             case 'navigation':
-                Host.userMetrics.lighthouseModeRun(0 /* Host.UserMetrics.LighthouseModeRun.NAVIGATION */);
+                Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.NAVIGATION);
                 break;
             case 'timespan':
-                Host.userMetrics.lighthouseModeRun(1 /* Host.UserMetrics.LighthouseModeRun.TIMESPAN */);
+                Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.TIMESPAN);
                 break;
             case 'snapshot':
-                Host.userMetrics.lighthouseModeRun(2 /* Host.UserMetrics.LighthouseModeRun.SNAPSHOT */);
+                Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.SNAPSHOT);
                 break;
         }
     }
@@ -608,7 +613,7 @@ export function getPresets() {
                 title: i18nLazyString(UIStrings.performance),
                 description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),
                 supportedModes: ['navigation', 'timespan', 'snapshot'],
-                userMetric: 0 /* Host.UserMetrics.LighthouseCategoryUsed.PERFORMANCE */,
+                userMetric: Host.UserMetrics.LighthouseCategoryUsed.PERFORMANCE,
             },
             {
                 setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-a11y'),
@@ -616,7 +621,7 @@ export function getPresets() {
                 title: i18nLazyString(UIStrings.accessibility),
                 description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
                 supportedModes: ['navigation', 'snapshot'],
-                userMetric: 1 /* Host.UserMetrics.LighthouseCategoryUsed.ACCESSIBILITY */,
+                userMetric: Host.UserMetrics.LighthouseCategoryUsed.ACCESSIBILITY,
             },
             {
                 setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-best-practices'),
@@ -624,7 +629,7 @@ export function getPresets() {
                 title: i18nLazyString(UIStrings.bestPractices),
                 description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),
                 supportedModes: ['navigation', 'timespan', 'snapshot'],
-                userMetric: 2 /* Host.UserMetrics.LighthouseCategoryUsed.BEST_PRACTICES */,
+                userMetric: Host.UserMetrics.LighthouseCategoryUsed.BEST_PRACTICES,
             },
             {
                 setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-seo'),
@@ -632,7 +637,7 @@ export function getPresets() {
                 title: i18nLazyString(UIStrings.seo),
                 description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
                 supportedModes: ['navigation', 'snapshot'],
-                userMetric: 3 /* Host.UserMetrics.LighthouseCategoryUsed.SEO */,
+                userMetric: Host.UserMetrics.LighthouseCategoryUsed.SEO,
             },
             {
                 setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-agentic-browsing'),
@@ -640,7 +645,7 @@ export function getPresets() {
                 title: i18nLazyString(UIStrings.agenticBrowsing),
                 description: i18nLazyString(UIStrings.agenticBrowsingDescription),
                 supportedModes: ['navigation', 'snapshot'],
-                userMetric: 6 /* Host.UserMetrics.LighthouseCategoryUsed.AGENTIC_BROWSING */,
+                userMetric: Host.UserMetrics.LighthouseCategoryUsed.AGENTIC_BROWSING,
             },
         ];
     }

@@ -945,10 +945,7 @@ var CommandMenu = class _CommandMenu {
     }
     const executeHandler = () => {
       if (id === "issues-pane") {
-        Host.userMetrics.issuesPanelOpenedFrom(
-          5
-          /* Host.UserMetrics.IssueOpener.COMMAND_MENU */
-        );
+        Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.COMMAND_MENU);
       }
       if (featurePromotionId) {
         UI2.UIUtils.PromotionManager.instance().recordFeatureInteraction(featurePromotionId);

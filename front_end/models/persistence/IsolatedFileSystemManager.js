@@ -34,9 +34,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
         this.callbacks = new Map();
         this.progresses = new Map();
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.onFileSystemRemoved, this);
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.FileSystemAdded, event => {
-            this.onFileSystemAdded(event);
-        }, this);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.FileSystemAdded, this.onFileSystemAdded, this);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this.onFileSystemFilesChanged, this);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this.onIndexingTotalWorkCalculated, this);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.IndexingWorked, this.onIndexingWorked, this);
@@ -80,6 +78,16 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
         this.#workspaceFolderExcludePatternSetting = this.#settings.createRegExpSetting('workspace-folder-exclude-pattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
         this.fileSystemRequestResolve = null;
         this.fileSystemsLoadedPromise = this.requestFileSystems();
+    }
+    // TODO(crbug.com/542394587): Should be `Symbol.dispsoe`
+    dispose() {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.onFileSystemRemoved, this);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.FileSystemAdded, this.onFileSystemAdded, this);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this.onFileSystemFilesChanged, this);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this.onIndexingTotalWorkCalculated, this);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.IndexingWorked, this.onIndexingWorked, this);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.IndexingDone, this.onIndexingDone, this);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.SearchCompleted, this.onSearchCompleted, this);
     }
     static instance(opts = {}) {
         const forceNew = opts.forceNew ?? null;

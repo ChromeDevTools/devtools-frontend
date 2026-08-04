@@ -125,7 +125,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
             if (headerWithIssues) {
                 if (IssuesManager.RelatedIssue.hasIssueOfCategory(this.#request, "CrossOriginEmbedderPolicy" /* IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY */, IssuesManager.IssuesManager.IssuesManager.instance())) {
                     const followLink = () => {
-                        Host.userMetrics.issuesPanelOpenedFrom(1 /* Host.UserMetrics.IssueOpener.LEARN_MORE_LINK_COEP */);
+                        Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.LEARN_MORE_LINK_COEP);
                         if (this.#request) {
                             void IssuesManager.RelatedIssue.reveal(this.#request, IssuesManager.IssuesManager.IssuesManager.instance(), "CrossOriginEmbedderPolicy" /* IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY */);
                         }

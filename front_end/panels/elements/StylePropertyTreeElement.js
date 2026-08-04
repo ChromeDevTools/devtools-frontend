@@ -211,11 +211,11 @@ export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         function getSwatchType(layoutType) {
             switch (layoutType) {
                 case "flex" /* SDK.CSSPropertyParserMatchers.LayoutType.FLEX */:
-                    return 6 /* Host.UserMetrics.SwatchType.FLEX */;
+                    return Host.UserMetrics.SwatchType.FLEX;
                 case "grid" /* SDK.CSSPropertyParserMatchers.LayoutType.GRID */:
-                    return 5 /* Host.UserMetrics.SwatchType.GRID */;
+                    return Host.UserMetrics.SwatchType.GRID;
                 case "grid-lanes" /* SDK.CSSPropertyParserMatchers.LayoutType.GRID_LANES */:
-                    return 12 /* Host.UserMetrics.SwatchType.GRID_LANES */;
+                    return Host.UserMetrics.SwatchType.GRID_LANES;
             }
         }
         const button = StyleEditorWidget.createTriggerButton(this.#stylesContainer, this.#treeElement.section(), getEditorClass(match.layoutType), getButtonTitle(match.layoutType), key);
@@ -267,7 +267,7 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
 }
 export function handleVarDefinitionActivate(variable, stylesContainer) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
-    Host.userMetrics.swatchActivated(0 /* Host.UserMetrics.SwatchType.VAR_LINK */);
+    Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VAR_LINK);
     if (typeof variable === 'string') {
         stylesContainer.jumpToProperty(variable) ||
             stylesContainer.jumpToProperty('initial-value', variable, REGISTERED_PROPERTY_SECTION_NAME);
@@ -494,7 +494,7 @@ export class AttributeRenderer extends rendererBase(SDK.CSSPropertyParserMatcher
             return;
         }
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AttributeLinkClicked);
-        Host.userMetrics.swatchActivated(11 /* Host.UserMetrics.SwatchType.ATTR_LINK */);
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ATTR_LINK);
         ElementsPanel.instance().highlightNodeAttribute(node, attribute);
     }
 }
@@ -662,7 +662,7 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
                 void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
             };
             swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, () => {
-                Host.userMetrics.swatchActivated(2 /* Host.UserMetrics.SwatchType.COLOR */);
+                Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.COLOR);
             });
             swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, onColorChanged);
             swatch.addEventListener(InlineEditor.ColorSwatch.ColorFormatChangedEvent.eventName, onColorFormatChanged);
@@ -954,7 +954,7 @@ export class AngleRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.An
             if (data.open) {
                 treeElement.stylesContainer().hideAllPopovers();
                 treeElement.stylesContainer().activeCSSAngle = cssAngle;
-                Host.userMetrics.swatchActivated(7 /* Host.UserMetrics.SwatchType.ANGLE */);
+                Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANGLE);
             }
             section.element.classList.toggle('has-open-popover', data.open);
             treeElement.stylesContainer().setEditingStyle(data.open);
@@ -990,7 +990,7 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
             case "animation-name" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.ANIMATION_NAME */:
                 return {
                     jslogContext: 'css-animation-name',
-                    metric: 1 /* Host.UserMetrics.SwatchType.ANIMATION_NAME_LINK */,
+                    metric: Host.UserMetrics.SwatchType.ANIMATION_NAME_LINK,
                     ruleBlock: '@keyframes',
                     isDefined: Boolean(this.#matchedStyles.keyframes().find(kf => kf.name().text === match.text)),
                 };
@@ -1013,7 +1013,7 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
             case "position-try-fallbacks" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY_FALLBACKS */:
                 return {
                     jslogContext: 'css-position-try',
-                    metric: 10 /* Host.UserMetrics.SwatchType.POSITION_TRY_LINK */,
+                    metric: Host.UserMetrics.SwatchType.POSITION_TRY_LINK,
                     ruleBlock: '@position-try',
                     isDefined: Boolean(this.#matchedStyles.positionTryRules().find(pt => pt.name().text === match.text)),
                 };
@@ -1088,7 +1088,7 @@ export class BezierRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.B
         icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
         icon.tabIndex = -1;
         icon.addEventListener('click', () => {
-            Host.userMetrics.swatchActivated(3 /* Host.UserMetrics.SwatchType.ANIMATION_TIMING */);
+            Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANIMATION_TIMING);
         });
         const bezierText = document.createElement('span');
         bezierText.append(...nodes);
@@ -1362,7 +1362,7 @@ export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
             const swatch = new InlineEditor.Swatches.CSSShadowSwatch(model);
             swatch.setAttribute('jslog', `${VisualLogging.showStyleEditor('css-shadow').track({ click: true })}`);
             swatch.iconElement().addEventListener('click', () => {
-                Host.userMetrics.swatchActivated(4 /* Host.UserMetrics.SwatchType.SHADOW */);
+                Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.SHADOW);
             });
             const contents = document.createElement('span');
             model.renderContents(contents);

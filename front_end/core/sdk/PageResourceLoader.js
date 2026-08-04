@@ -234,13 +234,13 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
                 }
             }
             try {
-                Host.userMetrics.developerResourceLoaded(0 /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET */);
+                Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET);
                 const result = await this.loadFromTarget(initiator.target, initiator.frameId, url, isBinary);
                 return result;
             }
             catch (e) {
                 if (e instanceof Error) {
-                    Host.userMetrics.developerResourceLoaded(2 /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE */);
+                    Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);
                     if (mustEnforceCSP || e.message.includes('CSP violation')) {
                         return {
                             success: false,
@@ -253,17 +253,17 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
                     }
                 }
             }
-            Host.userMetrics.developerResourceLoaded(3 /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK */);
+            Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK);
         }
         else {
             const code = this.getLoadThroughTargetSetting().get() ?
-                6 /* Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_PROTOCOL */ :
-                5 /* Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_OVERRIDE */;
+                Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_PROTOCOL :
+                Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_OVERRIDE;
             Host.userMetrics.developerResourceLoaded(code);
         }
         const result = await this.loadFromHostBindings(url);
         if (eligibleForLoadFromTarget && !result.success) {
-            Host.userMetrics.developerResourceLoaded(7 /* Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE */);
+            Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE);
         }
         if (failureReason) {
             // In case we have a success, add a note about why the load through the target failed.
@@ -274,24 +274,24 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     }
     getDeveloperResourceScheme(parsedURL) {
         if (!parsedURL || parsedURL.scheme === '') {
-            return 1 /* Host.UserMetrics.DeveloperResourceScheme.UKNOWN */;
+            return Host.UserMetrics.DeveloperResourceScheme.UKNOWN;
         }
         const isLocalhost = parsedURL.host === 'localhost' || parsedURL.host.endsWith('.localhost');
         switch (parsedURL.scheme) {
             case 'file':
-                return 7 /* Host.UserMetrics.DeveloperResourceScheme.FILE */;
+                return Host.UserMetrics.DeveloperResourceScheme.FILE;
             case 'data':
-                return 6 /* Host.UserMetrics.DeveloperResourceScheme.DATA */;
+                return Host.UserMetrics.DeveloperResourceScheme.DATA;
             case 'blob':
-                return 8 /* Host.UserMetrics.DeveloperResourceScheme.BLOB */;
+                return Host.UserMetrics.DeveloperResourceScheme.BLOB;
             case 'http':
-                return isLocalhost ? 4 /* Host.UserMetrics.DeveloperResourceScheme.HTTP_LOCALHOST */ :
-                    2 /* Host.UserMetrics.DeveloperResourceScheme.HTTP */;
+                return isLocalhost ? Host.UserMetrics.DeveloperResourceScheme.HTTP_LOCALHOST :
+                    Host.UserMetrics.DeveloperResourceScheme.HTTP;
             case 'https':
-                return isLocalhost ? 5 /* Host.UserMetrics.DeveloperResourceScheme.HTTPS_LOCALHOST */ :
-                    3 /* Host.UserMetrics.DeveloperResourceScheme.HTTPS */;
+                return isLocalhost ? Host.UserMetrics.DeveloperResourceScheme.HTTPS_LOCALHOST :
+                    Host.UserMetrics.DeveloperResourceScheme.HTTPS;
         }
-        return 0 /* Host.UserMetrics.DeveloperResourceScheme.OTHER */;
+        return Host.UserMetrics.DeveloperResourceScheme.OTHER;
     }
     async loadFromTarget(target, frameId, url, isBinary) {
         const networkManager = target.model(NetworkManager);

@@ -60,10 +60,10 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
     currentView;
     scrollTimer;
     reentrantShow;
-    constructor(delegate, setting, placeholderElement, focusedPlaceholderElement) {
+    constructor(delegate, setting, placeholderElement, focusedPlaceholderElement, element) {
         super();
         this.delegate = delegate;
-        this.tabbedPane = new UI.TabbedPane.TabbedPane();
+        this.tabbedPane = new UI.TabbedPane.TabbedPane(element);
         this.tabbedPane.setPlaceholderElement(placeholderElement, focusedPlaceholderElement);
         this.tabbedPane.setTabDelegate(new EditorContainerTabDelegate(this));
         this.tabbedPane.setCloseableTabs(true);

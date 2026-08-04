@@ -45,8 +45,7 @@ export class AdvancedApp {
         UI.InspectorView.InspectorView.instance().setOwnerSplit(this.rootSplitWidget);
         this.inspectedPagePlaceholder = InspectedPagePlaceholder.instance();
         this.inspectedPagePlaceholder.addEventListener("Update" /* Events.UPDATE */, this.onSetInspectedPageBounds.bind(this), this);
-        this.deviceModeView =
-            DeviceModeWrapper.instance({ inspectedPagePlaceholder: this.inspectedPagePlaceholder, forceNew: false });
+        this.deviceModeView = new DeviceModeWrapper();
         UI.DockController.DockController.instance().addEventListener("BeforeDockSideChanged" /* UI.DockController.Events.BEFORE_DOCK_SIDE_CHANGED */, this.onBeforeDockSideChange, this);
         UI.DockController.DockController.instance().addEventListener("DockSideChanged" /* UI.DockController.Events.DOCK_SIDE_CHANGED */, this.onDockSideChange, this);
         UI.DockController.DockController.instance().addEventListener("AfterDockSideChanged" /* UI.DockController.Events.AFTER_DOCK_SIDE_CHANGED */, this.onAfterDockSideChange, this);

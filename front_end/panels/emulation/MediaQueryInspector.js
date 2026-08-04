@@ -12,8 +12,8 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import mediaQueryInspectorStyles from './mediaQueryInspector.css.js';
 const UIStrings = {
     /**
-     * @description A context menu item/command in the Media Query Inspector of the Device Toolbar.
-     * Takes the user to the source code where this media query actually came from.
+     * @description A context menu item in the media query inspector of the device mode toolbar.
+     * Takes the user to the source code where this media query came from.
      */
     revealInSourceCode: 'Reveal in source code',
 };

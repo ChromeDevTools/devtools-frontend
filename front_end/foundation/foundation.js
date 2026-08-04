@@ -131,6 +131,10 @@ var Universe = class {
     this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
     context.set(AutofillManager.AutofillManager.AutofillManager, this.autofillManager);
   }
+  // TODO(crbug.com/542394587): Should be `Symbol.dispose`
+  dispose() {
+    this.context.get(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager).dispose();
+  }
   get automaticFileSystemManager() {
     return this.context.get(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager);
   }

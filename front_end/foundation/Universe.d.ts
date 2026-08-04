@@ -28,6 +28,7 @@ export declare class Universe {
     readonly supportsEmulation: boolean;
     readonly fileSystemWorkspaceBinding: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding;
     constructor(options: CreationOptions);
+    dispose(): void;
     get automaticFileSystemManager(): Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager;
     get automaticFileSystemWorkspaceBinding(): Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding;
     get aiHistoryStorage(): AiAssistance.AiHistoryStorage.AiHistoryStorage;

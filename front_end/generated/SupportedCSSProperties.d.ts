@@ -1047,6 +1047,9 @@ export const generatedPropertyValues: {
     "max-block-size": {
         values: string[];
     };
+    "max-content-sizing": {
+        values: string[];
+    };
     "max-height": {
         values: string[];
     };

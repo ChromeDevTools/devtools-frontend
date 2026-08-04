@@ -8601,7 +8601,7 @@
     "message": "Hide media queries"
   },
   "panels/emulation/emulation-meta.ts | hideRulers": {
-    "message": "Hide rulers in the Device Mode toolbar"
+    "message": "Hide rulers in the device mode toolbar"
   },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Show device frame"
@@ -8610,7 +8610,7 @@
     "message": "Show media queries"
   },
   "panels/emulation/emulation-meta.ts | showRulers": {
-    "message": "Show rulers in the Device Mode toolbar"
+    "message": "Show rulers in the device mode toolbar"
   },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Toggle device toolbar"
@@ -13882,6 +13882,27 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | height": {
     "message": "Height"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | landscapeSafeArea": {
+    "message": "Landscape safe area"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | portraitSafeArea": {
+    "message": "Portrait safe area"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaBottom": {
+    "message": "Bottom inset"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaLeft": {
+    "message": "Left inset"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaRight": {
+    "message": "Right inset"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaTop": {
+    "message": "Top inset"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaValueMustBeInRange": {
+    "message": "{PH1}: {PH2} must be an integer from 0 to {PH3}."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "User agent string"

@@ -2414,16 +2414,37 @@ function setFontFamilyForTests(family) {
 var UserMetrics_exports = {};
 __export(UserMetrics_exports, {
   Action: () => Action,
+  AnimationsPlaybackRate: () => AnimationsPlaybackRate,
+  BadgeType: () => BadgeType,
+  BuiltInAiAvailability: () => BuiltInAiAvailability,
+  DeveloperResourceLoaded: () => DeveloperResourceLoaded,
+  DeveloperResourceScheme: () => DeveloperResourceScheme,
   DevtoolsExperiments: () => DevtoolsExperiments,
   IssueCreated: () => IssueCreated,
   IssueExpanded: () => IssueExpanded,
+  IssueOpener: () => IssueOpener,
   IssueResourceOpened: () => IssueResourceOpened,
   KeybindSetSettings: () => KeybindSetSettings,
   KeyboardShortcutAction: () => KeyboardShortcutAction,
   Language: () => Language2,
+  LighthouseCategoryUsed: () => LighthouseCategoryUsed,
+  LighthouseModeRun: () => LighthouseModeRun,
   ManifestSectionCodes: () => ManifestSectionCodes,
   MediaTypes: () => MediaTypes,
   PanelCodes: () => PanelCodes,
+  RecordingAssertion: () => RecordingAssertion,
+  RecordingCodeToggled: () => RecordingCodeToggled,
+  RecordingCopiedToClipboard: () => RecordingCopiedToClipboard,
+  RecordingEdited: () => RecordingEdited,
+  RecordingExported: () => RecordingExported,
+  RecordingReplayFinished: () => RecordingReplayFinished,
+  RecordingReplaySpeed: () => RecordingReplaySpeed,
+  RecordingReplayStarted: () => RecordingReplayStarted,
+  RecordingToggled: () => RecordingToggled,
+  ResendRequestType: () => ResendRequestType,
+  SwatchType: () => SwatchType,
+  SyncSetting: () => SyncSetting,
+  TimelineNavigationSetting: () => TimelineNavigationSetting,
   UserMetrics: () => UserMetrics,
   resendRequestType: () => resendRequestType
 });
@@ -2445,12 +2466,7 @@ var UserMetrics = class {
     InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ActionTaken", action, Action.MAX_VALUE);
   }
   resendRequest(resourceType) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.ResendRequest",
-      resourceType,
-      16
-      /* ResendRequestType.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ResendRequest", resourceType, ResendRequestType.MAX_VALUE);
   }
   keybindSetSettingChanged(keybindSet) {
     const value = KeybindSetSettings[keybindSet] || 0;
@@ -2461,12 +2477,7 @@ var UserMetrics = class {
     InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.KeyboardShortcutFired", action, KeyboardShortcutAction.MAX_VALUE);
   }
   issuesPanelOpenedFrom(issueOpener) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.IssuesPanelOpenedFrom",
-      issueOpener,
-      7
-      /* IssueOpener.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.IssuesPanelOpenedFrom", issueOpener, IssueOpener.MAX_VALUE);
   }
   issuesPanelIssueExpanded(issueExpandedCategory) {
     if (issueExpandedCategory === void 0) {
@@ -2501,12 +2512,7 @@ var UserMetrics = class {
     InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ExperimentEnabledAtLaunch", experiment, DevtoolsExperiments.MAX_VALUE);
   }
   navigationSettingAtFirstTimelineLoad(state) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.TimelineNavigationSettingState",
-      state,
-      4
-      /* TimelineNavigationSetting.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.TimelineNavigationSettingState", state, TimelineNavigationSetting.MAX_VALUE);
   }
   experimentDisabledAtLaunch(experimentId) {
     const experiment = DevtoolsExperiments[experimentId];
@@ -2524,26 +2530,16 @@ var UserMetrics = class {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(actionName, experiment, DevtoolsExperiments.MAX_VALUE);
   }
   developerResourceLoaded(developerResourceLoaded) {
-    if (developerResourceLoaded >= 8) {
+    if (developerResourceLoaded >= DeveloperResourceLoaded.MAX_VALUE) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.DeveloperResourceLoaded",
-      developerResourceLoaded,
-      8
-      /* DeveloperResourceLoaded.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.DeveloperResourceLoaded", developerResourceLoaded, DeveloperResourceLoaded.MAX_VALUE);
   }
   developerResourceScheme(developerResourceScheme) {
-    if (developerResourceScheme >= 9) {
+    if (developerResourceScheme >= DeveloperResourceScheme.MAX_VALUE) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.DeveloperResourceScheme",
-      developerResourceScheme,
-      9
-      /* DeveloperResourceScheme.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.DeveloperResourceScheme", developerResourceScheme, DeveloperResourceScheme.MAX_VALUE);
   }
   language(language) {
     const languageCode = Language2[language];
@@ -2554,67 +2550,32 @@ var UserMetrics = class {
   }
   syncSetting(devtoolsSyncSettingEnabled) {
     InspectorFrontendHostInstance.getSyncInformation((syncInfo) => {
-      let settingValue = 1;
+      let settingValue = SyncSetting.CHROME_SYNC_DISABLED;
       if (syncInfo.isSyncActive && !syncInfo.arePreferencesSynced) {
-        settingValue = 2;
+        settingValue = SyncSetting.CHROME_SYNC_SETTINGS_DISABLED;
       } else if (syncInfo.isSyncActive && syncInfo.arePreferencesSynced) {
-        settingValue = devtoolsSyncSettingEnabled ? 4 : 3;
+        settingValue = devtoolsSyncSettingEnabled ? SyncSetting.DEVTOOLS_SYNC_SETTING_ENABLED : SyncSetting.DEVTOOLS_SYNC_SETTING_DISABLED;
       }
-      InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        "DevTools.SyncSetting",
-        settingValue,
-        5
-        /* SyncSetting.MAX_VALUE */
-      );
+      InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SyncSetting", settingValue, SyncSetting.MAX_VALUE);
     });
   }
   recordingToggled(value) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.RecordingToggled",
-      value,
-      3
-      /* RecordingToggled.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.RecordingToggled", value, RecordingToggled.MAX_VALUE);
   }
   recordingReplayFinished(value) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.RecordingReplayFinished",
-      value,
-      5
-      /* RecordingReplayFinished.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.RecordingReplayFinished", value, RecordingReplayFinished.MAX_VALUE);
   }
   recordingReplayStarted(value) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.RecordingReplayStarted",
-      value,
-      4
-      /* RecordingReplayStarted.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.RecordingReplayStarted", value, RecordingReplayStarted.MAX_VALUE);
   }
   lighthouseModeRun(type) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.LighthouseModeRun",
-      type,
-      4
-      /* LighthouseModeRun.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.LighthouseModeRun", type, LighthouseModeRun.MAX_VALUE);
   }
   lighthouseCategoryUsed(type) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.LighthouseCategoryUsed",
-      type,
-      7
-      /* LighthouseCategoryUsed.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.LighthouseCategoryUsed", type, LighthouseCategoryUsed.MAX_VALUE);
   }
   swatchActivated(swatch) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.SwatchActivated",
-      swatch,
-      13
-      /* SwatchType.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SwatchActivated", swatch, SwatchType.MAX_VALUE);
   }
   workspacesPopulated(wallClockTimeInMilliseconds) {
     InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Workspaces.PopulateWallClocktime", wallClockTimeInMilliseconds);
@@ -2629,12 +2590,7 @@ var UserMetrics = class {
     InspectorFrontendHostInstance.recordCountHistogram("DevTools.Freestyler.EvalResponseSize", bytes, 0, 1e5, 100);
   }
   builtInAiAvailability(availability) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.BuiltInAiAvailability",
-      availability,
-      10
-      /* BuiltInAiAvailability.MAX_VALUE */
-    );
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.BuiltInAiAvailability", availability, BuiltInAiAvailability.MAX_VALUE);
   }
   consoleInsightTeaserGenerated(timeInMilliseconds) {
     InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.TeaserGenerationTime", timeInMilliseconds);
@@ -2664,757 +2620,117 @@ var UserMetrics = class {
     InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.ShortTeaserGenerationTime", timeInMilliseconds);
   }
 };
-var Action;
-(function(Action2) {
-  Action2[Action2["WindowDocked"] = 1] = "WindowDocked";
-  Action2[Action2["WindowUndocked"] = 2] = "WindowUndocked";
-  Action2[Action2["ScriptsBreakpointSet"] = 3] = "ScriptsBreakpointSet";
-  Action2[Action2["TimelineStarted"] = 4] = "TimelineStarted";
-  Action2[Action2["ProfilesCPUProfileTaken"] = 5] = "ProfilesCPUProfileTaken";
-  Action2[Action2["ProfilesHeapProfileTaken"] = 6] = "ProfilesHeapProfileTaken";
-  Action2[Action2["ConsoleEvaluated"] = 8] = "ConsoleEvaluated";
-  Action2[Action2["FileSavedInWorkspace"] = 9] = "FileSavedInWorkspace";
-  Action2[Action2["DeviceModeEnabled"] = 10] = "DeviceModeEnabled";
-  Action2[Action2["AnimationsPlaybackRateChanged"] = 11] = "AnimationsPlaybackRateChanged";
-  Action2[Action2["RevisionApplied"] = 12] = "RevisionApplied";
-  Action2[Action2["FileSystemDirectoryContentReceived"] = 13] = "FileSystemDirectoryContentReceived";
-  Action2[Action2["StyleRuleEdited"] = 14] = "StyleRuleEdited";
-  Action2[Action2["CommandEvaluatedInConsolePanel"] = 15] = "CommandEvaluatedInConsolePanel";
-  Action2[Action2["DOMPropertiesExpanded"] = 16] = "DOMPropertiesExpanded";
-  Action2[Action2["ResizedViewInResponsiveMode"] = 17] = "ResizedViewInResponsiveMode";
-  Action2[Action2["TimelinePageReloadStarted"] = 18] = "TimelinePageReloadStarted";
-  Action2[Action2["ConnectToNodeJSFromFrontend"] = 19] = "ConnectToNodeJSFromFrontend";
-  Action2[Action2["ConnectToNodeJSDirectly"] = 20] = "ConnectToNodeJSDirectly";
-  Action2[Action2["CpuThrottlingEnabled"] = 21] = "CpuThrottlingEnabled";
-  Action2[Action2["CpuProfileNodeFocused"] = 22] = "CpuProfileNodeFocused";
-  Action2[Action2["CpuProfileNodeExcluded"] = 23] = "CpuProfileNodeExcluded";
-  Action2[Action2["SelectFileFromFilePicker"] = 24] = "SelectFileFromFilePicker";
-  Action2[Action2["SelectCommandFromCommandMenu"] = 25] = "SelectCommandFromCommandMenu";
-  Action2[Action2["ChangeInspectedNodeInElementsPanel"] = 26] = "ChangeInspectedNodeInElementsPanel";
-  Action2[Action2["StyleRuleCopied"] = 27] = "StyleRuleCopied";
-  Action2[Action2["CoverageStarted"] = 28] = "CoverageStarted";
-  Action2[Action2["LighthouseStarted"] = 29] = "LighthouseStarted";
-  Action2[Action2["LighthouseFinished"] = 30] = "LighthouseFinished";
-  Action2[Action2["ShowedThirdPartyBadges"] = 31] = "ShowedThirdPartyBadges";
-  Action2[Action2["LighthouseViewTrace"] = 32] = "LighthouseViewTrace";
-  Action2[Action2["FilmStripStartedRecording"] = 33] = "FilmStripStartedRecording";
-  Action2[Action2["CoverageReportFiltered"] = 34] = "CoverageReportFiltered";
-  Action2[Action2["CoverageStartedPerBlock"] = 35] = "CoverageStartedPerBlock";
-  Action2[Action2["SettingsOpenedFromGear-deprecated"] = 36] = "SettingsOpenedFromGear-deprecated";
-  Action2[Action2["SettingsOpenedFromMenu-deprecated"] = 37] = "SettingsOpenedFromMenu-deprecated";
-  Action2[Action2["SettingsOpenedFromCommandMenu-deprecated"] = 38] = "SettingsOpenedFromCommandMenu-deprecated";
-  Action2[Action2["TabMovedToDrawer"] = 39] = "TabMovedToDrawer";
-  Action2[Action2["TabMovedToMainPanel"] = 40] = "TabMovedToMainPanel";
-  Action2[Action2["CaptureCssOverviewClicked"] = 41] = "CaptureCssOverviewClicked";
-  Action2[Action2["VirtualAuthenticatorEnvironmentEnabled"] = 42] = "VirtualAuthenticatorEnvironmentEnabled";
-  Action2[Action2["SourceOrderViewActivated"] = 43] = "SourceOrderViewActivated";
-  Action2[Action2["UserShortcutAdded"] = 44] = "UserShortcutAdded";
-  Action2[Action2["ShortcutRemoved"] = 45] = "ShortcutRemoved";
-  Action2[Action2["ShortcutModified"] = 46] = "ShortcutModified";
-  Action2[Action2["CustomPropertyLinkClicked"] = 47] = "CustomPropertyLinkClicked";
-  Action2[Action2["CustomPropertyEdited"] = 48] = "CustomPropertyEdited";
-  Action2[Action2["ServiceWorkerNetworkRequestClicked"] = 49] = "ServiceWorkerNetworkRequestClicked";
-  Action2[Action2["ServiceWorkerNetworkRequestClosedQuickly"] = 50] = "ServiceWorkerNetworkRequestClosedQuickly";
-  Action2[Action2["NetworkPanelServiceWorkerRespondWith"] = 51] = "NetworkPanelServiceWorkerRespondWith";
-  Action2[Action2["NetworkPanelCopyValue"] = 52] = "NetworkPanelCopyValue";
-  Action2[Action2["ConsoleSidebarOpened"] = 53] = "ConsoleSidebarOpened";
-  Action2[Action2["PerfPanelTraceImported"] = 54] = "PerfPanelTraceImported";
-  Action2[Action2["PerfPanelTraceExported"] = 55] = "PerfPanelTraceExported";
-  Action2[Action2["StackFrameRestarted"] = 56] = "StackFrameRestarted";
-  Action2[Action2["CaptureTestProtocolClicked"] = 57] = "CaptureTestProtocolClicked";
-  Action2[Action2["BreakpointRemovedFromRemoveButton"] = 58] = "BreakpointRemovedFromRemoveButton";
-  Action2[Action2["BreakpointGroupExpandedStateChanged"] = 59] = "BreakpointGroupExpandedStateChanged";
-  Action2[Action2["HeaderOverrideFileCreated"] = 60] = "HeaderOverrideFileCreated";
-  Action2[Action2["HeaderOverrideEnableEditingClicked"] = 61] = "HeaderOverrideEnableEditingClicked";
-  Action2[Action2["HeaderOverrideHeaderAdded"] = 62] = "HeaderOverrideHeaderAdded";
-  Action2[Action2["HeaderOverrideHeaderEdited"] = 63] = "HeaderOverrideHeaderEdited";
-  Action2[Action2["HeaderOverrideHeaderRemoved"] = 64] = "HeaderOverrideHeaderRemoved";
-  Action2[Action2["HeaderOverrideHeadersFileEdited"] = 65] = "HeaderOverrideHeadersFileEdited";
-  Action2[Action2["PersistenceNetworkOverridesEnabled"] = 66] = "PersistenceNetworkOverridesEnabled";
-  Action2[Action2["PersistenceNetworkOverridesDisabled"] = 67] = "PersistenceNetworkOverridesDisabled";
-  Action2[Action2["BreakpointRemovedFromContextMenu"] = 68] = "BreakpointRemovedFromContextMenu";
-  Action2[Action2["BreakpointsInFileRemovedFromRemoveButton"] = 69] = "BreakpointsInFileRemovedFromRemoveButton";
-  Action2[Action2["BreakpointsInFileRemovedFromContextMenu"] = 70] = "BreakpointsInFileRemovedFromContextMenu";
-  Action2[Action2["BreakpointsInFileCheckboxToggled"] = 71] = "BreakpointsInFileCheckboxToggled";
-  Action2[Action2["BreakpointsInFileEnabledDisabledFromContextMenu"] = 72] = "BreakpointsInFileEnabledDisabledFromContextMenu";
-  Action2[Action2["BreakpointConditionEditedFromSidebar"] = 73] = "BreakpointConditionEditedFromSidebar";
-  Action2[Action2["WorkspaceTabAddFolder"] = 74] = "WorkspaceTabAddFolder";
-  Action2[Action2["WorkspaceTabRemoveFolder"] = 75] = "WorkspaceTabRemoveFolder";
-  Action2[Action2["OverrideTabAddFolder"] = 76] = "OverrideTabAddFolder";
-  Action2[Action2["OverrideTabRemoveFolder"] = 77] = "OverrideTabRemoveFolder";
-  Action2[Action2["WorkspaceSourceSelected"] = 78] = "WorkspaceSourceSelected";
-  Action2[Action2["OverridesSourceSelected"] = 79] = "OverridesSourceSelected";
-  Action2[Action2["StyleSheetInitiatorLinkClicked"] = 80] = "StyleSheetInitiatorLinkClicked";
-  Action2[Action2["BreakpointRemovedFromGutterContextMenu"] = 81] = "BreakpointRemovedFromGutterContextMenu";
-  Action2[Action2["BreakpointRemovedFromGutterToggle"] = 82] = "BreakpointRemovedFromGutterToggle";
-  Action2[Action2["StylePropertyInsideKeyframeEdited"] = 83] = "StylePropertyInsideKeyframeEdited";
-  Action2[Action2["OverrideContentFromSourcesContextMenu"] = 84] = "OverrideContentFromSourcesContextMenu";
-  Action2[Action2["OverrideContentFromNetworkContextMenu"] = 85] = "OverrideContentFromNetworkContextMenu";
-  Action2[Action2["OverrideScript"] = 86] = "OverrideScript";
-  Action2[Action2["OverrideStyleSheet"] = 87] = "OverrideStyleSheet";
-  Action2[Action2["OverrideDocument"] = 88] = "OverrideDocument";
-  Action2[Action2["OverrideFetchXHR"] = 89] = "OverrideFetchXHR";
-  Action2[Action2["OverrideImage"] = 90] = "OverrideImage";
-  Action2[Action2["OverrideFont"] = 91] = "OverrideFont";
-  Action2[Action2["OverrideContentContextMenuSetup"] = 92] = "OverrideContentContextMenuSetup";
-  Action2[Action2["OverrideContentContextMenuAbandonSetup"] = 93] = "OverrideContentContextMenuAbandonSetup";
-  Action2[Action2["OverrideContentContextMenuActivateDisabled"] = 94] = "OverrideContentContextMenuActivateDisabled";
-  Action2[Action2["OverrideContentContextMenuOpenExistingFile"] = 95] = "OverrideContentContextMenuOpenExistingFile";
-  Action2[Action2["OverrideContentContextMenuSaveNewFile"] = 96] = "OverrideContentContextMenuSaveNewFile";
-  Action2[Action2["ShowAllOverridesFromSourcesContextMenu"] = 97] = "ShowAllOverridesFromSourcesContextMenu";
-  Action2[Action2["ShowAllOverridesFromNetworkContextMenu"] = 98] = "ShowAllOverridesFromNetworkContextMenu";
-  Action2[Action2["AnimationGroupsCleared"] = 99] = "AnimationGroupsCleared";
-  Action2[Action2["AnimationsPaused"] = 100] = "AnimationsPaused";
-  Action2[Action2["AnimationsResumed"] = 101] = "AnimationsResumed";
-  Action2[Action2["AnimatedNodeDescriptionClicked"] = 102] = "AnimatedNodeDescriptionClicked";
-  Action2[Action2["AnimationGroupScrubbed"] = 103] = "AnimationGroupScrubbed";
-  Action2[Action2["AnimationGroupReplayed"] = 104] = "AnimationGroupReplayed";
-  Action2[Action2["OverrideTabDeleteFolderContextMenu"] = 105] = "OverrideTabDeleteFolderContextMenu";
-  Action2[Action2["WorkspaceDropFolder"] = 107] = "WorkspaceDropFolder";
-  Action2[Action2["WorkspaceSelectFolder"] = 108] = "WorkspaceSelectFolder";
-  Action2[Action2["OverrideContentContextMenuSourceMappedWarning"] = 109] = "OverrideContentContextMenuSourceMappedWarning";
-  Action2[Action2["OverrideContentContextMenuRedirectToDeployed"] = 110] = "OverrideContentContextMenuRedirectToDeployed";
-  Action2[Action2["NewStyleRuleAdded"] = 111] = "NewStyleRuleAdded";
-  Action2[Action2["TraceExpanded"] = 112] = "TraceExpanded";
-  Action2[Action2["InsightConsoleMessageShown"] = 113] = "InsightConsoleMessageShown";
-  Action2[Action2["InsightRequestedViaContextMenu"] = 114] = "InsightRequestedViaContextMenu";
-  Action2[Action2["InsightRequestedViaHoverButton"] = 115] = "InsightRequestedViaHoverButton";
-  Action2[Action2["InsightRatedPositive"] = 117] = "InsightRatedPositive";
-  Action2[Action2["InsightRatedNegative"] = 118] = "InsightRatedNegative";
-  Action2[Action2["InsightClosed"] = 119] = "InsightClosed";
-  Action2[Action2["InsightErrored"] = 120] = "InsightErrored";
-  Action2[Action2["InsightHoverButtonShown"] = 121] = "InsightHoverButtonShown";
-  Action2[Action2["SelfXssWarningConsoleMessageShown"] = 122] = "SelfXssWarningConsoleMessageShown";
-  Action2[Action2["SelfXssWarningDialogShown"] = 123] = "SelfXssWarningDialogShown";
-  Action2[Action2["SelfXssAllowPastingInConsole"] = 124] = "SelfXssAllowPastingInConsole";
-  Action2[Action2["SelfXssAllowPastingInDialog"] = 125] = "SelfXssAllowPastingInDialog";
-  Action2[Action2["ToggleEmulateFocusedPageFromStylesPaneOn"] = 126] = "ToggleEmulateFocusedPageFromStylesPaneOn";
-  Action2[Action2["ToggleEmulateFocusedPageFromStylesPaneOff"] = 127] = "ToggleEmulateFocusedPageFromStylesPaneOff";
-  Action2[Action2["ToggleEmulateFocusedPageFromRenderingTab"] = 128] = "ToggleEmulateFocusedPageFromRenderingTab";
-  Action2[Action2["ToggleEmulateFocusedPageFromCommandMenu"] = 129] = "ToggleEmulateFocusedPageFromCommandMenu";
-  Action2[Action2["InsightGenerated"] = 130] = "InsightGenerated";
-  Action2[Action2["InsightErroredApi"] = 131] = "InsightErroredApi";
-  Action2[Action2["InsightErroredMarkdown"] = 132] = "InsightErroredMarkdown";
-  Action2[Action2["ToggleShowWebVitals"] = 133] = "ToggleShowWebVitals";
-  Action2[Action2["InsightErroredPermissionDenied"] = 134] = "InsightErroredPermissionDenied";
-  Action2[Action2["InsightErroredCannotSend"] = 135] = "InsightErroredCannotSend";
-  Action2[Action2["InsightErroredRequestFailed"] = 136] = "InsightErroredRequestFailed";
-  Action2[Action2["InsightErroredCannotParseChunk"] = 137] = "InsightErroredCannotParseChunk";
-  Action2[Action2["InsightErroredUnknownChunk"] = 138] = "InsightErroredUnknownChunk";
-  Action2[Action2["InsightErroredOther"] = 139] = "InsightErroredOther";
-  Action2[Action2["AutofillReceived"] = 140] = "AutofillReceived";
-  Action2[Action2["AutofillReceivedAndTabAutoOpened"] = 141] = "AutofillReceivedAndTabAutoOpened";
-  Action2[Action2["AnimationGroupSelected"] = 142] = "AnimationGroupSelected";
-  Action2[Action2["ScrollDrivenAnimationGroupSelected"] = 143] = "ScrollDrivenAnimationGroupSelected";
-  Action2[Action2["ScrollDrivenAnimationGroupScrubbed"] = 144] = "ScrollDrivenAnimationGroupScrubbed";
-  Action2[Action2["AiAssistanceOpenedFromElementsPanel"] = 145] = "AiAssistanceOpenedFromElementsPanel";
-  Action2[Action2["AiAssistanceOpenedFromStylesTab"] = 146] = "AiAssistanceOpenedFromStylesTab";
-  Action2[Action2["ConsoleFilterByContext"] = 147] = "ConsoleFilterByContext";
-  Action2[Action2["ConsoleFilterBySource"] = 148] = "ConsoleFilterBySource";
-  Action2[Action2["ConsoleFilterByUrl"] = 149] = "ConsoleFilterByUrl";
-  Action2[Action2["InsightConsentReminderShown"] = 150] = "InsightConsentReminderShown";
-  Action2[Action2["InsightConsentReminderCanceled"] = 151] = "InsightConsentReminderCanceled";
-  Action2[Action2["InsightConsentReminderConfirmed"] = 152] = "InsightConsentReminderConfirmed";
-  Action2[Action2["InsightsOnboardingShown"] = 153] = "InsightsOnboardingShown";
-  Action2[Action2["InsightsOnboardingCanceledOnPage1"] = 154] = "InsightsOnboardingCanceledOnPage1";
-  Action2[Action2["InsightsOnboardingCanceledOnPage2"] = 155] = "InsightsOnboardingCanceledOnPage2";
-  Action2[Action2["InsightsOnboardingConfirmed"] = 156] = "InsightsOnboardingConfirmed";
-  Action2[Action2["InsightsOnboardingNextPage"] = 157] = "InsightsOnboardingNextPage";
-  Action2[Action2["InsightsOnboardingPrevPage"] = 158] = "InsightsOnboardingPrevPage";
-  Action2[Action2["InsightsOnboardingFeatureDisabled"] = 159] = "InsightsOnboardingFeatureDisabled";
-  Action2[Action2["InsightsOptInTeaserShown"] = 160] = "InsightsOptInTeaserShown";
-  Action2[Action2["InsightsOptInTeaserSettingsLinkClicked"] = 161] = "InsightsOptInTeaserSettingsLinkClicked";
-  Action2[Action2["InsightsOptInTeaserConfirmedInSettings"] = 162] = "InsightsOptInTeaserConfirmedInSettings";
-  Action2[Action2["InsightsReminderTeaserShown"] = 163] = "InsightsReminderTeaserShown";
-  Action2[Action2["InsightsReminderTeaserConfirmed"] = 164] = "InsightsReminderTeaserConfirmed";
-  Action2[Action2["InsightsReminderTeaserCanceled"] = 165] = "InsightsReminderTeaserCanceled";
-  Action2[Action2["InsightsReminderTeaserSettingsLinkClicked"] = 166] = "InsightsReminderTeaserSettingsLinkClicked";
-  Action2[Action2["InsightsReminderTeaserAbortedInSettings"] = 167] = "InsightsReminderTeaserAbortedInSettings";
-  Action2[Action2["GeneratingInsightWithoutDisclaimer"] = 168] = "GeneratingInsightWithoutDisclaimer";
-  Action2[Action2["AiAssistanceOpenedFromElementsPanelFloatingButton"] = 169] = "AiAssistanceOpenedFromElementsPanelFloatingButton";
-  Action2[Action2["AiAssistanceOpenedFromNetworkPanel"] = 170] = "AiAssistanceOpenedFromNetworkPanel";
-  Action2[Action2["AiAssistanceOpenedFromSourcesPanel"] = 171] = "AiAssistanceOpenedFromSourcesPanel";
-  Action2[Action2["AiAssistanceOpenedFromSourcesPanelFloatingButton"] = 172] = "AiAssistanceOpenedFromSourcesPanelFloatingButton";
-  Action2[Action2["AiAssistanceOpenedFromPerformancePanelCallTree"] = 173] = "AiAssistanceOpenedFromPerformancePanelCallTree";
-  Action2[Action2["AiAssistanceOpenedFromNetworkPanelFloatingButton"] = 174] = "AiAssistanceOpenedFromNetworkPanelFloatingButton";
-  Action2[Action2["AiAssistancePanelOpened"] = 175] = "AiAssistancePanelOpened";
-  Action2[Action2["AiAssistanceQuerySubmitted"] = 176] = "AiAssistanceQuerySubmitted";
-  Action2[Action2["AiAssistanceAnswerReceived"] = 177] = "AiAssistanceAnswerReceived";
-  Action2[Action2["AiAssistanceDynamicSuggestionClicked"] = 178] = "AiAssistanceDynamicSuggestionClicked";
-  Action2[Action2["AiAssistanceSideEffectConfirmed"] = 179] = "AiAssistanceSideEffectConfirmed";
-  Action2[Action2["AiAssistanceSideEffectRejected"] = 180] = "AiAssistanceSideEffectRejected";
-  Action2[Action2["AiAssistanceError"] = 181] = "AiAssistanceError";
-  Action2[Action2["AiCodeCompletionResponseServedFromCache"] = 184] = "AiCodeCompletionResponseServedFromCache";
-  Action2[Action2["AiCodeCompletionRequestTriggered"] = 185] = "AiCodeCompletionRequestTriggered";
-  Action2[Action2["AiCodeCompletionSuggestionDisplayed"] = 186] = "AiCodeCompletionSuggestionDisplayed";
-  Action2[Action2["AiCodeCompletionSuggestionAccepted"] = 187] = "AiCodeCompletionSuggestionAccepted";
-  Action2[Action2["AiCodeCompletionError"] = 188] = "AiCodeCompletionError";
-  Action2[Action2["AttributeLinkClicked"] = 189] = "AttributeLinkClicked";
-  Action2[Action2["InsightRequestedViaTeaser"] = 190] = "InsightRequestedViaTeaser";
-  Action2[Action2["InsightTeaserGenerationStarted"] = 191] = "InsightTeaserGenerationStarted";
-  Action2[Action2["InsightTeaserGenerationCompleted"] = 192] = "InsightTeaserGenerationCompleted";
-  Action2[Action2["InsightTeaserGenerationAborted"] = 193] = "InsightTeaserGenerationAborted";
-  Action2[Action2["InsightTeaserGenerationErrored"] = 194] = "InsightTeaserGenerationErrored";
-  Action2[Action2["AiCodeGenerationSuggestionDisplayed"] = 195] = "AiCodeGenerationSuggestionDisplayed";
-  Action2[Action2["AiCodeGenerationSuggestionAccepted"] = 196] = "AiCodeGenerationSuggestionAccepted";
-  Action2[Action2["InsightTeaserModelDownloadStarted"] = 197] = "InsightTeaserModelDownloadStarted";
-  Action2[Action2["InsightTeaserModelDownloadCompleted"] = 198] = "InsightTeaserModelDownloadCompleted";
-  Action2[Action2["AiCodeGenerationError"] = 199] = "AiCodeGenerationError";
-  Action2[Action2["AiCodeGenerationRequestTriggered"] = 200] = "AiCodeGenerationRequestTriggered";
-  Action2[Action2["AiCodeCompletionRequestTriggeredFromConsole"] = 201] = "AiCodeCompletionRequestTriggeredFromConsole";
-  Action2[Action2["AiCodeCompletionRequestTriggeredFromSources"] = 202] = "AiCodeCompletionRequestTriggeredFromSources";
-  Action2[Action2["AiCodeCompletionRequestTriggeredFromStyles"] = 203] = "AiCodeCompletionRequestTriggeredFromStyles";
-  Action2[Action2["AiCodeGenerationRequestTriggeredFromConsole"] = 204] = "AiCodeGenerationRequestTriggeredFromConsole";
-  Action2[Action2["AiCodeGenerationRequestTriggeredFromSources"] = 205] = "AiCodeGenerationRequestTriggeredFromSources";
-  Action2[Action2["AiCodeCompletionFreCompletedFromConsole"] = 206] = "AiCodeCompletionFreCompletedFromConsole";
-  Action2[Action2["AiCodeCompletionFreCompletedFromSources"] = 207] = "AiCodeCompletionFreCompletedFromSources";
-  Action2[Action2["AiAssistanceOpenedFromApplicationPanelFloatingButton"] = 208] = "AiAssistanceOpenedFromApplicationPanelFloatingButton";
-  Action2[Action2["AiAssistanceOpenedFromApplicationPanel"] = 209] = "AiAssistanceOpenedFromApplicationPanel";
-  Action2[Action2["MAX_VALUE"] = 210] = "MAX_VALUE";
-})(Action || (Action = {}));
-var PanelCodes;
-(function(PanelCodes2) {
-  PanelCodes2[PanelCodes2["elements"] = 1] = "elements";
-  PanelCodes2[PanelCodes2["resources"] = 2] = "resources";
-  PanelCodes2[PanelCodes2["network"] = 3] = "network";
-  PanelCodes2[PanelCodes2["sources"] = 4] = "sources";
-  PanelCodes2[PanelCodes2["timeline"] = 5] = "timeline";
-  PanelCodes2[PanelCodes2["heap-profiler"] = 6] = "heap-profiler";
-  PanelCodes2[PanelCodes2["console"] = 8] = "console";
-  PanelCodes2[PanelCodes2["layers"] = 9] = "layers";
-  PanelCodes2[PanelCodes2["console-view"] = 10] = "console-view";
-  PanelCodes2[PanelCodes2["animations"] = 11] = "animations";
-  PanelCodes2[PanelCodes2["network.config"] = 12] = "network.config";
-  PanelCodes2[PanelCodes2["rendering"] = 13] = "rendering";
-  PanelCodes2[PanelCodes2["sensors"] = 14] = "sensors";
-  PanelCodes2[PanelCodes2["sources.search"] = 15] = "sources.search";
-  PanelCodes2[PanelCodes2["security"] = 16] = "security";
-  PanelCodes2[PanelCodes2["js-profiler"] = 17] = "js-profiler";
-  PanelCodes2[PanelCodes2["lighthouse"] = 18] = "lighthouse";
-  PanelCodes2[PanelCodes2["coverage"] = 19] = "coverage";
-  PanelCodes2[PanelCodes2["protocol-monitor"] = 20] = "protocol-monitor";
-  PanelCodes2[PanelCodes2["remote-devices"] = 21] = "remote-devices";
-  PanelCodes2[PanelCodes2["web-audio"] = 22] = "web-audio";
-  PanelCodes2[PanelCodes2["changes.changes"] = 23] = "changes.changes";
-  PanelCodes2[PanelCodes2["performance.monitor"] = 24] = "performance.monitor";
-  PanelCodes2[PanelCodes2["release-note"] = 25] = "release-note";
-  PanelCodes2[PanelCodes2["sources.quick"] = 27] = "sources.quick";
-  PanelCodes2[PanelCodes2["network.blocked-urls"] = 28] = "network.blocked-urls";
-  PanelCodes2[PanelCodes2["settings-preferences"] = 29] = "settings-preferences";
-  PanelCodes2[PanelCodes2["settings-workspace"] = 30] = "settings-workspace";
-  PanelCodes2[PanelCodes2["settings-experiments"] = 31] = "settings-experiments";
-  PanelCodes2[PanelCodes2["settings-blackbox"] = 32] = "settings-blackbox";
-  PanelCodes2[PanelCodes2["settings-devices"] = 33] = "settings-devices";
-  PanelCodes2[PanelCodes2["settings-throttling-conditions"] = 34] = "settings-throttling-conditions";
-  PanelCodes2[PanelCodes2["settings-emulation-locations"] = 35] = "settings-emulation-locations";
-  PanelCodes2[PanelCodes2["settings-shortcuts"] = 36] = "settings-shortcuts";
-  PanelCodes2[PanelCodes2["issues-pane"] = 37] = "issues-pane";
-  PanelCodes2[PanelCodes2["settings-keybinds"] = 38] = "settings-keybinds";
-  PanelCodes2[PanelCodes2["cssoverview"] = 39] = "cssoverview";
-  PanelCodes2[PanelCodes2["chrome-recorder"] = 40] = "chrome-recorder";
-  PanelCodes2[PanelCodes2["trust-tokens"] = 41] = "trust-tokens";
-  PanelCodes2[PanelCodes2["reporting-api"] = 42] = "reporting-api";
-  PanelCodes2[PanelCodes2["interest-groups"] = 43] = "interest-groups";
-  PanelCodes2[PanelCodes2["back-forward-cache"] = 44] = "back-forward-cache";
-  PanelCodes2[PanelCodes2["service-worker-cache"] = 45] = "service-worker-cache";
-  PanelCodes2[PanelCodes2["background-service-background-fetch"] = 46] = "background-service-background-fetch";
-  PanelCodes2[PanelCodes2["background-service-background-sync"] = 47] = "background-service-background-sync";
-  PanelCodes2[PanelCodes2["background-service-push-messaging"] = 48] = "background-service-push-messaging";
-  PanelCodes2[PanelCodes2["background-service-notifications"] = 49] = "background-service-notifications";
-  PanelCodes2[PanelCodes2["background-service-payment-handler"] = 50] = "background-service-payment-handler";
-  PanelCodes2[PanelCodes2["background-service-periodic-background-sync"] = 51] = "background-service-periodic-background-sync";
-  PanelCodes2[PanelCodes2["service-workers"] = 52] = "service-workers";
-  PanelCodes2[PanelCodes2["app-manifest"] = 53] = "app-manifest";
-  PanelCodes2[PanelCodes2["storage"] = 54] = "storage";
-  PanelCodes2[PanelCodes2["cookies"] = 55] = "cookies";
-  PanelCodes2[PanelCodes2["frame-details"] = 56] = "frame-details";
-  PanelCodes2[PanelCodes2["frame-resource"] = 57] = "frame-resource";
-  PanelCodes2[PanelCodes2["frame-window"] = 58] = "frame-window";
-  PanelCodes2[PanelCodes2["frame-worker"] = 59] = "frame-worker";
-  PanelCodes2[PanelCodes2["dom-storage"] = 60] = "dom-storage";
-  PanelCodes2[PanelCodes2["indexed-db"] = 61] = "indexed-db";
-  PanelCodes2[PanelCodes2["web-sql"] = 62] = "web-sql";
-  PanelCodes2[PanelCodes2["performance-insights"] = 63] = "performance-insights";
-  PanelCodes2[PanelCodes2["preloading"] = 64] = "preloading";
-  PanelCodes2[PanelCodes2["bounce-tracking-mitigations"] = 65] = "bounce-tracking-mitigations";
-  PanelCodes2[PanelCodes2["developer-resources"] = 66] = "developer-resources";
-  PanelCodes2[PanelCodes2["autofill-view"] = 67] = "autofill-view";
-  PanelCodes2[PanelCodes2["freestyler"] = 68] = "freestyler";
-  PanelCodes2[PanelCodes2["ads"] = 69] = "ads";
-  PanelCodes2[PanelCodes2["MAX_VALUE"] = 70] = "MAX_VALUE";
-})(PanelCodes || (PanelCodes = {}));
-var MediaTypes;
-(function(MediaTypes2) {
-  MediaTypes2[MediaTypes2["Unknown"] = 0] = "Unknown";
-  MediaTypes2[MediaTypes2["text/css"] = 2] = "text/css";
-  MediaTypes2[MediaTypes2["text/html"] = 3] = "text/html";
-  MediaTypes2[MediaTypes2["application/xml"] = 4] = "application/xml";
-  MediaTypes2[MediaTypes2["application/wasm"] = 5] = "application/wasm";
-  MediaTypes2[MediaTypes2["application/manifest+json"] = 6] = "application/manifest+json";
-  MediaTypes2[MediaTypes2["application/x-aspx"] = 7] = "application/x-aspx";
-  MediaTypes2[MediaTypes2["application/jsp"] = 8] = "application/jsp";
-  MediaTypes2[MediaTypes2["text/x-c++src"] = 9] = "text/x-c++src";
-  MediaTypes2[MediaTypes2["text/x-coffeescript"] = 10] = "text/x-coffeescript";
-  MediaTypes2[MediaTypes2["application/vnd.dart"] = 11] = "application/vnd.dart";
-  MediaTypes2[MediaTypes2["text/typescript"] = 12] = "text/typescript";
-  MediaTypes2[MediaTypes2["text/typescript-jsx"] = 13] = "text/typescript-jsx";
-  MediaTypes2[MediaTypes2["application/json"] = 14] = "application/json";
-  MediaTypes2[MediaTypes2["text/x-csharp"] = 15] = "text/x-csharp";
-  MediaTypes2[MediaTypes2["text/x-java"] = 16] = "text/x-java";
-  MediaTypes2[MediaTypes2["text/x-less"] = 17] = "text/x-less";
-  MediaTypes2[MediaTypes2["application/x-httpd-php"] = 18] = "application/x-httpd-php";
-  MediaTypes2[MediaTypes2["text/x-python"] = 19] = "text/x-python";
-  MediaTypes2[MediaTypes2["text/x-sh"] = 20] = "text/x-sh";
-  MediaTypes2[MediaTypes2["text/x-gss"] = 21] = "text/x-gss";
-  MediaTypes2[MediaTypes2["text/x-sass"] = 22] = "text/x-sass";
-  MediaTypes2[MediaTypes2["text/x-scss"] = 23] = "text/x-scss";
-  MediaTypes2[MediaTypes2["text/markdown"] = 24] = "text/markdown";
-  MediaTypes2[MediaTypes2["text/x-clojure"] = 25] = "text/x-clojure";
-  MediaTypes2[MediaTypes2["text/jsx"] = 26] = "text/jsx";
-  MediaTypes2[MediaTypes2["text/x-go"] = 27] = "text/x-go";
-  MediaTypes2[MediaTypes2["text/x-kotlin"] = 28] = "text/x-kotlin";
-  MediaTypes2[MediaTypes2["text/x-scala"] = 29] = "text/x-scala";
-  MediaTypes2[MediaTypes2["text/x.svelte"] = 30] = "text/x.svelte";
-  MediaTypes2[MediaTypes2["text/javascript+plain"] = 31] = "text/javascript+plain";
-  MediaTypes2[MediaTypes2["text/javascript+minified"] = 32] = "text/javascript+minified";
-  MediaTypes2[MediaTypes2["text/javascript+sourcemapped"] = 33] = "text/javascript+sourcemapped";
-  MediaTypes2[MediaTypes2["text/x.angular"] = 34] = "text/x.angular";
-  MediaTypes2[MediaTypes2["text/x.vue"] = 35] = "text/x.vue";
-  MediaTypes2[MediaTypes2["text/javascript+snippet"] = 36] = "text/javascript+snippet";
-  MediaTypes2[MediaTypes2["text/javascript+eval"] = 37] = "text/javascript+eval";
-  MediaTypes2[MediaTypes2["MAX_VALUE"] = 38] = "MAX_VALUE";
-})(MediaTypes || (MediaTypes = {}));
-var KeybindSetSettings;
-(function(KeybindSetSettings2) {
-  KeybindSetSettings2[KeybindSetSettings2["devToolsDefault"] = 0] = "devToolsDefault";
-  KeybindSetSettings2[KeybindSetSettings2["vsCode"] = 1] = "vsCode";
-  KeybindSetSettings2[KeybindSetSettings2["MAX_VALUE"] = 2] = "MAX_VALUE";
-})(KeybindSetSettings || (KeybindSetSettings = {}));
-var KeyboardShortcutAction;
-(function(KeyboardShortcutAction2) {
-  KeyboardShortcutAction2[KeyboardShortcutAction2["OtherShortcut"] = 0] = "OtherShortcut";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["quick-open.show-command-menu"] = 1] = "quick-open.show-command-menu";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["console.clear"] = 2] = "console.clear";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["console.toggle"] = 3] = "console.toggle";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.step"] = 4] = "debugger.step";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.step-into"] = 5] = "debugger.step-into";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.step-out"] = 6] = "debugger.step-out";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.step-over"] = 7] = "debugger.step-over";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.toggle-breakpoint"] = 8] = "debugger.toggle-breakpoint";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.toggle-breakpoint-enabled"] = 9] = "debugger.toggle-breakpoint-enabled";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.toggle-pause"] = 10] = "debugger.toggle-pause";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["elements.edit-as-html"] = 11] = "elements.edit-as-html";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["elements.hide-element"] = 12] = "elements.hide-element";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["elements.redo"] = 13] = "elements.redo";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["elements.toggle-element-search"] = 14] = "elements.toggle-element-search";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["elements.undo"] = 15] = "elements.undo";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.search-in-panel.find"] = 16] = "main.search-in-panel.find";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.toggle-drawer"] = 17] = "main.toggle-drawer";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["network.hide-request-details"] = 18] = "network.hide-request-details";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["network.search"] = 19] = "network.search";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["network.toggle-recording"] = 20] = "network.toggle-recording";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["quick-open.show"] = 21] = "quick-open.show";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["settings.show"] = 22] = "settings.show";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.search"] = 23] = "sources.search";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["background-service.toggle-recording"] = 24] = "background-service.toggle-recording";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["components.collect-garbage"] = 25] = "components.collect-garbage";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["console.clear.history"] = 26] = "console.clear.history";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["console.create-pin"] = 27] = "console.create-pin";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["coverage.start-with-reload"] = 28] = "coverage.start-with-reload";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["coverage.toggle-recording"] = 29] = "coverage.toggle-recording";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.breakpoint-input-window"] = 30] = "debugger.breakpoint-input-window";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.evaluate-selection"] = 31] = "debugger.evaluate-selection";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.next-call-frame"] = 32] = "debugger.next-call-frame";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.previous-call-frame"] = 33] = "debugger.previous-call-frame";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.run-snippet"] = 34] = "debugger.run-snippet";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["debugger.toggle-breakpoints-active"] = 35] = "debugger.toggle-breakpoints-active";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["elements.capture-area-screenshot"] = 36] = "elements.capture-area-screenshot";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["emulation.capture-full-height-screenshot"] = 37] = "emulation.capture-full-height-screenshot";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["emulation.capture-node-screenshot"] = 38] = "emulation.capture-node-screenshot";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["emulation.capture-screenshot"] = 39] = "emulation.capture-screenshot";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["emulation.show-sensors"] = 40] = "emulation.show-sensors";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["emulation.toggle-device-mode"] = 41] = "emulation.toggle-device-mode";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["help.release-notes"] = 42] = "help.release-notes";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["help.report-issue"] = 43] = "help.report-issue";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["input.start-replaying"] = 44] = "input.start-replaying";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["input.toggle-pause"] = 45] = "input.toggle-pause";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["input.toggle-recording"] = 46] = "input.toggle-recording";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["inspector-main.focus-debuggee"] = 47] = "inspector-main.focus-debuggee";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["inspector-main.hard-reload"] = 48] = "inspector-main.hard-reload";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["inspector-main.reload"] = 49] = "inspector-main.reload";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.debug-reload"] = 52] = "main.debug-reload";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.next-tab"] = 53] = "main.next-tab";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.previous-tab"] = 54] = "main.previous-tab";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.search-in-panel.cancel"] = 55] = "main.search-in-panel.cancel";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.search-in-panel.find-next"] = 56] = "main.search-in-panel.find-next";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.search-in-panel.find-previous"] = 57] = "main.search-in-panel.find-previous";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.toggle-dock"] = 58] = "main.toggle-dock";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.zoom-in"] = 59] = "main.zoom-in";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.zoom-out"] = 60] = "main.zoom-out";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.zoom-reset"] = 61] = "main.zoom-reset";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["network-conditions.network-low-end-mobile"] = 62] = "network-conditions.network-low-end-mobile";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["network-conditions.network-mid-tier-mobile"] = 63] = "network-conditions.network-mid-tier-mobile";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["network-conditions.network-offline"] = 64] = "network-conditions.network-offline";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["network-conditions.network-online"] = 65] = "network-conditions.network-online";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["profiler.heap-toggle-recording"] = 66] = "profiler.heap-toggle-recording";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["profiler.js-toggle-recording"] = 67] = "profiler.js-toggle-recording";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["resources.clear"] = 68] = "resources.clear";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["settings.documentation"] = 69] = "settings.documentation";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["settings.shortcuts"] = 70] = "settings.shortcuts";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.add-folder-to-workspace"] = 71] = "sources.add-folder-to-workspace";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.add-to-watch"] = 72] = "sources.add-to-watch";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.close-all"] = 73] = "sources.close-all";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.close-editor-tab"] = 74] = "sources.close-editor-tab";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.create-snippet"] = 75] = "sources.create-snippet";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.go-to-line"] = 76] = "sources.go-to-line";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.go-to-member"] = 77] = "sources.go-to-member";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.jump-to-next-location"] = 78] = "sources.jump-to-next-location";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.jump-to-previous-location"] = 79] = "sources.jump-to-previous-location";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.rename"] = 80] = "sources.rename";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.save"] = 81] = "sources.save";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.save-all"] = 82] = "sources.save-all";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.switch-file"] = 83] = "sources.switch-file";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["timeline.jump-to-next-frame"] = 84] = "timeline.jump-to-next-frame";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["timeline.jump-to-previous-frame"] = 85] = "timeline.jump-to-previous-frame";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["timeline.load-from-file"] = 86] = "timeline.load-from-file";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["timeline.next-recording"] = 87] = "timeline.next-recording";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["timeline.previous-recording"] = 88] = "timeline.previous-recording";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["timeline.record-reload"] = 89] = "timeline.record-reload";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["timeline.save-to-file"] = 90] = "timeline.save-to-file";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["timeline.show-history"] = 91] = "timeline.show-history";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["timeline.toggle-recording"] = 92] = "timeline.toggle-recording";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.increment-css"] = 93] = "sources.increment-css";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.increment-css-by-ten"] = 94] = "sources.increment-css-by-ten";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.decrement-css"] = 95] = "sources.decrement-css";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["sources.decrement-css-by-ten"] = 96] = "sources.decrement-css-by-ten";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["layers.reset-view"] = 97] = "layers.reset-view";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["layers.pan-mode"] = 98] = "layers.pan-mode";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["layers.rotate-mode"] = 99] = "layers.rotate-mode";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["layers.zoom-in"] = 100] = "layers.zoom-in";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["layers.zoom-out"] = 101] = "layers.zoom-out";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["layers.up"] = 102] = "layers.up";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["layers.down"] = 103] = "layers.down";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["layers.left"] = 104] = "layers.left";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["layers.right"] = 105] = "layers.right";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["help.report-translation-issue"] = 106] = "help.report-translation-issue";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["rendering.toggle-prefers-color-scheme"] = 107] = "rendering.toggle-prefers-color-scheme";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["chrome-recorder.start-recording"] = 108] = "chrome-recorder.start-recording";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["chrome-recorder.replay-recording"] = 109] = "chrome-recorder.replay-recording";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["chrome-recorder.toggle-code-view"] = 110] = "chrome-recorder.toggle-code-view";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["chrome-recorder.copy-recording-or-step"] = 111] = "chrome-recorder.copy-recording-or-step";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["elements.new-style-rule"] = 114] = "elements.new-style-rule";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["elements.refresh-event-listeners"] = 115] = "elements.refresh-event-listeners";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["coverage.clear"] = 116] = "coverage.clear";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["coverage.export"] = 117] = "coverage.export";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["timeline.dim-third-parties"] = 118] = "timeline.dim-third-parties";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["main.toggle-drawer-orientation"] = 119] = "main.toggle-drawer-orientation";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["MAX_VALUE"] = 120] = "MAX_VALUE";
-})(KeyboardShortcutAction || (KeyboardShortcutAction = {}));
-var DevtoolsExperiments;
-(function(DevtoolsExperiments2) {
-  DevtoolsExperiments2[DevtoolsExperiments2["protocol-monitor"] = 13] = "protocol-monitor";
-  DevtoolsExperiments2[DevtoolsExperiments2["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
-  DevtoolsExperiments2[DevtoolsExperiments2["durable-messages"] = 110] = "durable-messages";
-  DevtoolsExperiments2[DevtoolsExperiments2["jpeg-xl"] = 111] = "jpeg-xl";
-  DevtoolsExperiments2[DevtoolsExperiments2["plus-button"] = 112] = "plus-button";
-  DevtoolsExperiments2[DevtoolsExperiments2["MAX_VALUE"] = 113] = "MAX_VALUE";
-})(DevtoolsExperiments || (DevtoolsExperiments = {}));
-var IssueExpanded;
-(function(IssueExpanded2) {
-  IssueExpanded2[IssueExpanded2["CrossOriginEmbedderPolicy"] = 0] = "CrossOriginEmbedderPolicy";
-  IssueExpanded2[IssueExpanded2["MixedContent"] = 1] = "MixedContent";
-  IssueExpanded2[IssueExpanded2["SameSiteCookie"] = 2] = "SameSiteCookie";
-  IssueExpanded2[IssueExpanded2["HeavyAd"] = 3] = "HeavyAd";
-  IssueExpanded2[IssueExpanded2["ContentSecurityPolicy"] = 4] = "ContentSecurityPolicy";
-  IssueExpanded2[IssueExpanded2["Other"] = 5] = "Other";
-  IssueExpanded2[IssueExpanded2["Generic"] = 6] = "Generic";
-  IssueExpanded2[IssueExpanded2["ThirdPartyPhaseoutCookie"] = 7] = "ThirdPartyPhaseoutCookie";
-  IssueExpanded2[IssueExpanded2["GenericCookie"] = 8] = "GenericCookie";
-  IssueExpanded2[IssueExpanded2["MAX_VALUE"] = 9] = "MAX_VALUE";
-})(IssueExpanded || (IssueExpanded = {}));
-var IssueResourceOpened;
-(function(IssueResourceOpened2) {
-  IssueResourceOpened2[IssueResourceOpened2["CrossOriginEmbedderPolicyRequest"] = 0] = "CrossOriginEmbedderPolicyRequest";
-  IssueResourceOpened2[IssueResourceOpened2["CrossOriginEmbedderPolicyElement"] = 1] = "CrossOriginEmbedderPolicyElement";
-  IssueResourceOpened2[IssueResourceOpened2["MixedContentRequest"] = 2] = "MixedContentRequest";
-  IssueResourceOpened2[IssueResourceOpened2["SameSiteCookieCookie"] = 3] = "SameSiteCookieCookie";
-  IssueResourceOpened2[IssueResourceOpened2["SameSiteCookieRequest"] = 4] = "SameSiteCookieRequest";
-  IssueResourceOpened2[IssueResourceOpened2["HeavyAdElement"] = 5] = "HeavyAdElement";
-  IssueResourceOpened2[IssueResourceOpened2["ContentSecurityPolicyDirective"] = 6] = "ContentSecurityPolicyDirective";
-  IssueResourceOpened2[IssueResourceOpened2["ContentSecurityPolicyElement"] = 7] = "ContentSecurityPolicyElement";
-  IssueResourceOpened2[IssueResourceOpened2["MAX_VALUE"] = 13] = "MAX_VALUE";
-})(IssueResourceOpened || (IssueResourceOpened = {}));
-var IssueCreated;
-(function(IssueCreated2) {
-  IssueCreated2[IssueCreated2["MixedContentIssue"] = 0] = "MixedContentIssue";
-  IssueCreated2[IssueCreated2["ContentSecurityPolicyIssue::kInlineViolation"] = 1] = "ContentSecurityPolicyIssue::kInlineViolation";
-  IssueCreated2[IssueCreated2["ContentSecurityPolicyIssue::kEvalViolation"] = 2] = "ContentSecurityPolicyIssue::kEvalViolation";
-  IssueCreated2[IssueCreated2["ContentSecurityPolicyIssue::kURLViolation"] = 3] = "ContentSecurityPolicyIssue::kURLViolation";
-  IssueCreated2[IssueCreated2["ContentSecurityPolicyIssue::kTrustedTypesSinkViolation"] = 4] = "ContentSecurityPolicyIssue::kTrustedTypesSinkViolation";
-  IssueCreated2[IssueCreated2["ContentSecurityPolicyIssue::kTrustedTypesPolicyViolation"] = 5] = "ContentSecurityPolicyIssue::kTrustedTypesPolicyViolation";
-  IssueCreated2[IssueCreated2["HeavyAdIssue::NetworkTotalLimit"] = 6] = "HeavyAdIssue::NetworkTotalLimit";
-  IssueCreated2[IssueCreated2["HeavyAdIssue::CpuTotalLimit"] = 7] = "HeavyAdIssue::CpuTotalLimit";
-  IssueCreated2[IssueCreated2["HeavyAdIssue::CpuPeakLimit"] = 8] = "HeavyAdIssue::CpuPeakLimit";
-  IssueCreated2[IssueCreated2["CrossOriginEmbedderPolicyIssue::CoepFrameResourceNeedsCoepHeader"] = 9] = "CrossOriginEmbedderPolicyIssue::CoepFrameResourceNeedsCoepHeader";
-  IssueCreated2[IssueCreated2["CrossOriginEmbedderPolicyIssue::CoopSandboxedIFrameCannotNavigateToCoopPage"] = 10] = "CrossOriginEmbedderPolicyIssue::CoopSandboxedIFrameCannotNavigateToCoopPage";
-  IssueCreated2[IssueCreated2["CrossOriginEmbedderPolicyIssue::CorpNotSameOrigin"] = 11] = "CrossOriginEmbedderPolicyIssue::CorpNotSameOrigin";
-  IssueCreated2[IssueCreated2["CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep"] = 12] = "CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep";
-  IssueCreated2[IssueCreated2["CrossOriginEmbedderPolicyIssue::CorpNotSameSite"] = 13] = "CrossOriginEmbedderPolicyIssue::CorpNotSameSite";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeSameSiteNoneInsecure::ReadCookie"] = 14] = "CookieIssue::ExcludeSameSiteNoneInsecure::ReadCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeSameSiteNoneInsecure::SetCookie"] = 15] = "CookieIssue::ExcludeSameSiteNoneInsecure::SetCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnSameSiteNoneInsecure::ReadCookie"] = 16] = "CookieIssue::WarnSameSiteNoneInsecure::ReadCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnSameSiteNoneInsecure::SetCookie"] = 17] = "CookieIssue::WarnSameSiteNoneInsecure::SetCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie"] = 30] = "CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie"] = 31] = "CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie"] = 32] = "CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie"] = 33] = "CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie"] = 34] = "CookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie"] = 35] = "CookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie";
-  IssueCreated2[IssueCreated2["SharedArrayBufferIssue::TransferIssue"] = 36] = "SharedArrayBufferIssue::TransferIssue";
-  IssueCreated2[IssueCreated2["SharedArrayBufferIssue::CreationIssue"] = 37] = "SharedArrayBufferIssue::CreationIssue";
-  IssueCreated2[IssueCreated2["CorsIssue::InsecureLocalNetwork"] = 42] = "CorsIssue::InsecureLocalNetwork";
-  IssueCreated2[IssueCreated2["CorsIssue::InvalidHeaders"] = 44] = "CorsIssue::InvalidHeaders";
-  IssueCreated2[IssueCreated2["CorsIssue::WildcardOriginWithCredentials"] = 45] = "CorsIssue::WildcardOriginWithCredentials";
-  IssueCreated2[IssueCreated2["CorsIssue::PreflightResponseInvalid"] = 46] = "CorsIssue::PreflightResponseInvalid";
-  IssueCreated2[IssueCreated2["CorsIssue::OriginMismatch"] = 47] = "CorsIssue::OriginMismatch";
-  IssueCreated2[IssueCreated2["CorsIssue::AllowCredentialsRequired"] = 48] = "CorsIssue::AllowCredentialsRequired";
-  IssueCreated2[IssueCreated2["CorsIssue::MethodDisallowedByPreflightResponse"] = 49] = "CorsIssue::MethodDisallowedByPreflightResponse";
-  IssueCreated2[IssueCreated2["CorsIssue::HeaderDisallowedByPreflightResponse"] = 50] = "CorsIssue::HeaderDisallowedByPreflightResponse";
-  IssueCreated2[IssueCreated2["CorsIssue::RedirectContainsCredentials"] = 51] = "CorsIssue::RedirectContainsCredentials";
-  IssueCreated2[IssueCreated2["CorsIssue::DisallowedByMode"] = 52] = "CorsIssue::DisallowedByMode";
-  IssueCreated2[IssueCreated2["CorsIssue::CorsDisabledScheme"] = 53] = "CorsIssue::CorsDisabledScheme";
-  IssueCreated2[IssueCreated2["CorsIssue::PreflightMissingAllowExternal"] = 54] = "CorsIssue::PreflightMissingAllowExternal";
-  IssueCreated2[IssueCreated2["CorsIssue::PreflightInvalidAllowExternal"] = 55] = "CorsIssue::PreflightInvalidAllowExternal";
-  IssueCreated2[IssueCreated2["CorsIssue::NoCorsRedirectModeNotFollow"] = 57] = "CorsIssue::NoCorsRedirectModeNotFollow";
-  IssueCreated2[IssueCreated2["QuirksModeIssue::QuirksMode"] = 58] = "QuirksModeIssue::QuirksMode";
-  IssueCreated2[IssueCreated2["QuirksModeIssue::LimitedQuirksMode"] = 59] = "QuirksModeIssue::LimitedQuirksMode";
-  IssueCreated2[IssueCreated2["DeprecationIssue"] = 60] = "DeprecationIssue";
-  IssueCreated2[IssueCreated2["ClientHintIssue::MetaTagAllowListInvalidOrigin"] = 61] = "ClientHintIssue::MetaTagAllowListInvalidOrigin";
-  IssueCreated2[IssueCreated2["ClientHintIssue::MetaTagModifiedHTML"] = 62] = "ClientHintIssue::MetaTagModifiedHTML";
-  IssueCreated2[IssueCreated2["GenericIssue::CrossOriginPortalPostMessageError"] = 64] = "GenericIssue::CrossOriginPortalPostMessageError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormLabelForNameError"] = 65] = "GenericIssue::FormLabelForNameError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormDuplicateIdForInputError"] = 66] = "GenericIssue::FormDuplicateIdForInputError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormInputWithNoLabelError"] = 67] = "GenericIssue::FormInputWithNoLabelError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormAutocompleteAttributeEmptyError"] = 68] = "GenericIssue::FormAutocompleteAttributeEmptyError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormEmptyIdAndNameAttributesForInputError"] = 69] = "GenericIssue::FormEmptyIdAndNameAttributesForInputError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormAriaLabelledByToNonExistingIdError"] = 70] = "GenericIssue::FormAriaLabelledByToNonExistingIdError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormInputAssignedAutocompleteValueToIdOrNameAttributeError"] = 71] = "GenericIssue::FormInputAssignedAutocompleteValueToIdOrNameAttributeError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormLabelHasNeitherForNorNestedInputError"] = 72] = "GenericIssue::FormLabelHasNeitherForNorNestedInputError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormLabelForMatchesNonExistingIdError"] = 73] = "GenericIssue::FormLabelForMatchesNonExistingIdError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormHasPasswordFieldWithoutUsernameFieldError"] = 74] = "GenericIssue::FormHasPasswordFieldWithoutUsernameFieldError";
-  IssueCreated2[IssueCreated2["GenericIssue::FormInputHasWrongButWellIntendedAutocompleteValueError"] = 75] = "GenericIssue::FormInputHasWrongButWellIntendedAutocompleteValueError";
-  IssueCreated2[IssueCreated2["StylesheetLoadingIssue::LateImportRule"] = 76] = "StylesheetLoadingIssue::LateImportRule";
-  IssueCreated2[IssueCreated2["StylesheetLoadingIssue::RequestFailed"] = 77] = "StylesheetLoadingIssue::RequestFailed";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnThirdPartyPhaseout::ReadCookie"] = 82] = "CookieIssue::WarnThirdPartyPhaseout::ReadCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnThirdPartyPhaseout::SetCookie"] = 83] = "CookieIssue::WarnThirdPartyPhaseout::SetCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeThirdPartyPhaseout::ReadCookie"] = 84] = "CookieIssue::ExcludeThirdPartyPhaseout::ReadCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeThirdPartyPhaseout::SetCookie"] = 85] = "CookieIssue::ExcludeThirdPartyPhaseout::SetCookie";
-  IssueCreated2[IssueCreated2["ElementAccessibilityIssue::DisallowedSelectChild"] = 86] = "ElementAccessibilityIssue::DisallowedSelectChild";
-  IssueCreated2[IssueCreated2["ElementAccessibilityIssue::DisallowedOptGroupChild"] = 87] = "ElementAccessibilityIssue::DisallowedOptGroupChild";
-  IssueCreated2[IssueCreated2["ElementAccessibilityIssue::NonPhrasingContentOptionChild"] = 88] = "ElementAccessibilityIssue::NonPhrasingContentOptionChild";
-  IssueCreated2[IssueCreated2["ElementAccessibilityIssue::InteractiveContentOptionChild"] = 89] = "ElementAccessibilityIssue::InteractiveContentOptionChild";
-  IssueCreated2[IssueCreated2["ElementAccessibilityIssue::InteractiveContentLegendChild"] = 90] = "ElementAccessibilityIssue::InteractiveContentLegendChild";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::MissingSignatureHeader"] = 91] = "SRIMessageSignatureIssue::MissingSignatureHeader";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::MissingSignatureInputHeader"] = 92] = "SRIMessageSignatureIssue::MissingSignatureInputHeader";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::InvalidSignatureHeader"] = 93] = "SRIMessageSignatureIssue::InvalidSignatureHeader";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::InvalidSignatureInputHeader"] = 94] = "SRIMessageSignatureIssue::InvalidSignatureInputHeader";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureHeaderValueIsNotByteSequence"] = 95] = "SRIMessageSignatureIssue::SignatureHeaderValueIsNotByteSequence";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureHeaderValueIsParameterized"] = 96] = "SRIMessageSignatureIssue::SignatureHeaderValueIsParameterized";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureHeaderValueIsIncorrectLength"] = 97] = "SRIMessageSignatureIssue::SignatureHeaderValueIsIncorrectLength";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureInputHeaderMissingLabel"] = 98] = "SRIMessageSignatureIssue::SignatureInputHeaderMissingLabel";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureInputHeaderValueNotInnerList"] = 99] = "SRIMessageSignatureIssue::SignatureInputHeaderValueNotInnerList";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureInputHeaderValueMissingComponents"] = 100] = "SRIMessageSignatureIssue::SignatureInputHeaderValueMissingComponents";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureInputHeaderInvalidComponentType"] = 101] = "SRIMessageSignatureIssue::SignatureInputHeaderInvalidComponentType";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureInputHeaderInvalidComponentName"] = 102] = "SRIMessageSignatureIssue::SignatureInputHeaderInvalidComponentName";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureInputHeaderInvalidHeaderComponentParameter"] = 103] = "SRIMessageSignatureIssue::SignatureInputHeaderInvalidHeaderComponentParameter";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureInputHeaderInvalidDerivedComponentParameter"] = 104] = "SRIMessageSignatureIssue::SignatureInputHeaderInvalidDerivedComponentParameter";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureInputHeaderKeyIdLength"] = 105] = "SRIMessageSignatureIssue::SignatureInputHeaderKeyIdLength";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureInputHeaderInvalidParameter"] = 106] = "SRIMessageSignatureIssue::SignatureInputHeaderInvalidParameter";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::SignatureInputHeaderMissingRequiredParameters"] = 107] = "SRIMessageSignatureIssue::SignatureInputHeaderMissingRequiredParameters";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::ValidationFailedSignatureExpired"] = 108] = "SRIMessageSignatureIssue::ValidationFailedSignatureExpired";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::ValidationFailedInvalidLength"] = 109] = "SRIMessageSignatureIssue::ValidationFailedInvalidLength";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::ValidationFailedSignatureMismatch"] = 110] = "SRIMessageSignatureIssue::ValidationFailedSignatureMismatch";
-  IssueCreated2[IssueCreated2["CorsIssue::LocalNetworkAccessPermissionDenied"] = 111] = "CorsIssue::LocalNetworkAccessPermissionDenied";
-  IssueCreated2[IssueCreated2["SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch"] = 112] = "SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch";
-  IssueCreated2[IssueCreated2["ElementAccessibilityIssue::InteractiveContentSummaryDescendant"] = 113] = "ElementAccessibilityIssue::InteractiveContentSummaryDescendant";
-  IssueCreated2[IssueCreated2["CorsIssue::InvalidLocalNetworkAccess"] = 114] = "CorsIssue::InvalidLocalNetworkAccess";
-  IssueCreated2[IssueCreated2["MAX_VALUE"] = 115] = "MAX_VALUE";
-})(IssueCreated || (IssueCreated = {}));
-var Language2;
-(function(Language3) {
-  Language3[Language3["af"] = 1] = "af";
-  Language3[Language3["am"] = 2] = "am";
-  Language3[Language3["ar"] = 3] = "ar";
-  Language3[Language3["as"] = 4] = "as";
-  Language3[Language3["az"] = 5] = "az";
-  Language3[Language3["be"] = 6] = "be";
-  Language3[Language3["bg"] = 7] = "bg";
-  Language3[Language3["bn"] = 8] = "bn";
-  Language3[Language3["bs"] = 9] = "bs";
-  Language3[Language3["ca"] = 10] = "ca";
-  Language3[Language3["cs"] = 11] = "cs";
-  Language3[Language3["cy"] = 12] = "cy";
-  Language3[Language3["da"] = 13] = "da";
-  Language3[Language3["de"] = 14] = "de";
-  Language3[Language3["el"] = 15] = "el";
-  Language3[Language3["en-GB"] = 16] = "en-GB";
-  Language3[Language3["en-US"] = 17] = "en-US";
-  Language3[Language3["es-419"] = 18] = "es-419";
-  Language3[Language3["es"] = 19] = "es";
-  Language3[Language3["et"] = 20] = "et";
-  Language3[Language3["eu"] = 21] = "eu";
-  Language3[Language3["fa"] = 22] = "fa";
-  Language3[Language3["fi"] = 23] = "fi";
-  Language3[Language3["fil"] = 24] = "fil";
-  Language3[Language3["fr-CA"] = 25] = "fr-CA";
-  Language3[Language3["fr"] = 26] = "fr";
-  Language3[Language3["gl"] = 27] = "gl";
-  Language3[Language3["gu"] = 28] = "gu";
-  Language3[Language3["he"] = 29] = "he";
-  Language3[Language3["hi"] = 30] = "hi";
-  Language3[Language3["hr"] = 31] = "hr";
-  Language3[Language3["hu"] = 32] = "hu";
-  Language3[Language3["hy"] = 33] = "hy";
-  Language3[Language3["id"] = 34] = "id";
-  Language3[Language3["is"] = 35] = "is";
-  Language3[Language3["it"] = 36] = "it";
-  Language3[Language3["ja"] = 37] = "ja";
-  Language3[Language3["ka"] = 38] = "ka";
-  Language3[Language3["kk"] = 39] = "kk";
-  Language3[Language3["km"] = 40] = "km";
-  Language3[Language3["kn"] = 41] = "kn";
-  Language3[Language3["ko"] = 42] = "ko";
-  Language3[Language3["ky"] = 43] = "ky";
-  Language3[Language3["lo"] = 44] = "lo";
-  Language3[Language3["lt"] = 45] = "lt";
-  Language3[Language3["lv"] = 46] = "lv";
-  Language3[Language3["mk"] = 47] = "mk";
-  Language3[Language3["ml"] = 48] = "ml";
-  Language3[Language3["mn"] = 49] = "mn";
-  Language3[Language3["mr"] = 50] = "mr";
-  Language3[Language3["ms"] = 51] = "ms";
-  Language3[Language3["my"] = 52] = "my";
-  Language3[Language3["ne"] = 53] = "ne";
-  Language3[Language3["nl"] = 54] = "nl";
-  Language3[Language3["no"] = 55] = "no";
-  Language3[Language3["or"] = 56] = "or";
-  Language3[Language3["pa"] = 57] = "pa";
-  Language3[Language3["pl"] = 58] = "pl";
-  Language3[Language3["pt-PT"] = 59] = "pt-PT";
-  Language3[Language3["pt"] = 60] = "pt";
-  Language3[Language3["ro"] = 61] = "ro";
-  Language3[Language3["ru"] = 62] = "ru";
-  Language3[Language3["si"] = 63] = "si";
-  Language3[Language3["sk"] = 64] = "sk";
-  Language3[Language3["sl"] = 65] = "sl";
-  Language3[Language3["sq"] = 66] = "sq";
-  Language3[Language3["sr-Latn"] = 67] = "sr-Latn";
-  Language3[Language3["sr"] = 68] = "sr";
-  Language3[Language3["sv"] = 69] = "sv";
-  Language3[Language3["sw"] = 70] = "sw";
-  Language3[Language3["ta"] = 71] = "ta";
-  Language3[Language3["te"] = 72] = "te";
-  Language3[Language3["th"] = 73] = "th";
-  Language3[Language3["tr"] = 74] = "tr";
-  Language3[Language3["uk"] = 75] = "uk";
-  Language3[Language3["ur"] = 76] = "ur";
-  Language3[Language3["uz"] = 77] = "uz";
-  Language3[Language3["vi"] = 78] = "vi";
-  Language3[Language3["zh"] = 79] = "zh";
-  Language3[Language3["zh-HK"] = 80] = "zh-HK";
-  Language3[Language3["zh-TW"] = 81] = "zh-TW";
-  Language3[Language3["zu"] = 82] = "zu";
-  Language3[Language3["MAX_VALUE"] = 83] = "MAX_VALUE";
-})(Language2 || (Language2 = {}));
-var ManifestSectionCodes;
-(function(ManifestSectionCodes2) {
-  ManifestSectionCodes2[ManifestSectionCodes2["OtherSection"] = 0] = "OtherSection";
-  ManifestSectionCodes2[ManifestSectionCodes2["Identity"] = 1] = "Identity";
-  ManifestSectionCodes2[ManifestSectionCodes2["Presentation"] = 2] = "Presentation";
-  ManifestSectionCodes2[ManifestSectionCodes2["Protocol Handlers"] = 3] = "Protocol Handlers";
-  ManifestSectionCodes2[ManifestSectionCodes2["Icons"] = 4] = "Icons";
-  ManifestSectionCodes2[ManifestSectionCodes2["Window Controls Overlay"] = 5] = "Window Controls Overlay";
-  ManifestSectionCodes2[ManifestSectionCodes2["MAX_VALUE"] = 6] = "MAX_VALUE";
-})(ManifestSectionCodes || (ManifestSectionCodes = {}));
+function createDynamicEnumProxy(enumName) {
+  return new Proxy({}, {
+    get(_target, prop) {
+      if (typeof prop === "symbol") {
+        return Reflect.get(_target, prop);
+      }
+      const metrics = (
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        globalThis.DevToolsMetrics
+      );
+      const enumObj = metrics && metrics[enumName];
+      if (enumObj && prop in enumObj) {
+        return enumObj[prop];
+      }
+      if (typeof prop === "string" && /^\d+$/.test(prop)) {
+        const value = Number(prop);
+        for (const [key, val] of Object.entries(enumObj || {})) {
+          if (val === value) {
+            return key;
+          }
+        }
+      }
+      return void 0;
+    },
+    has(_target, prop) {
+      const metrics = (
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        globalThis.DevToolsMetrics
+      );
+      const enumObj = metrics && metrics[enumName];
+      if (enumObj && prop in enumObj) {
+        return true;
+      }
+      if (typeof prop === "string" && /^\d+$/.test(prop)) {
+        return Object.values(enumObj || {}).includes(Number(prop));
+      }
+      return false;
+    },
+    ownKeys(_target) {
+      const metrics = (
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        globalThis.DevToolsMetrics
+      );
+      const enumObj = metrics && metrics[enumName];
+      return enumObj ? Reflect.ownKeys(enumObj) : [];
+    },
+    getOwnPropertyDescriptor(_target, prop) {
+      const metrics = (
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        globalThis.DevToolsMetrics
+      );
+      const enumObj = metrics && metrics[enumName];
+      if (!enumObj) {
+        return void 0;
+      }
+      return Reflect.getOwnPropertyDescriptor(enumObj, prop);
+    }
+  });
+}
+var Action = createDynamicEnumProxy("Action");
+var PanelCodes = createDynamicEnumProxy("PanelCodes");
+var MediaTypes = createDynamicEnumProxy("MediaTypes");
+var KeybindSetSettings = createDynamicEnumProxy("KeybindSetSettings");
+var KeyboardShortcutAction = createDynamicEnumProxy("KeyboardShortcutAction");
+var IssueOpener = createDynamicEnumProxy("IssueOpener");
+var DevtoolsExperiments = createDynamicEnumProxy("DevtoolsExperiments");
+var IssueExpanded = createDynamicEnumProxy("IssueExpanded");
+var IssueResourceOpened = createDynamicEnumProxy("IssueResourceOpened");
+var IssueCreated = createDynamicEnumProxy("IssueCreated");
+var DeveloperResourceLoaded = createDynamicEnumProxy("DeveloperResourceLoaded");
+var DeveloperResourceScheme = createDynamicEnumProxy("DeveloperResourceScheme");
+var Language2 = createDynamicEnumProxy("Language");
+var SyncSetting = createDynamicEnumProxy("SyncSetting");
+var RecordingToggled = createDynamicEnumProxy("RecordingToggled");
+var RecordingAssertion = createDynamicEnumProxy("RecordingAssertion");
+var RecordingReplayFinished = createDynamicEnumProxy("RecordingReplayFinished");
+var RecordingReplaySpeed = createDynamicEnumProxy("RecordingReplaySpeed");
+var RecordingReplayStarted = createDynamicEnumProxy("RecordingReplayStarted");
+var RecordingEdited = createDynamicEnumProxy("RecordingEdited");
+var RecordingExported = createDynamicEnumProxy("RecordingExported");
+var RecordingCodeToggled = createDynamicEnumProxy("RecordingCodeToggled");
+var RecordingCopiedToClipboard = createDynamicEnumProxy("RecordingCopiedToClipboard");
+var ManifestSectionCodes = createDynamicEnumProxy("ManifestSectionCodes");
+var LighthouseModeRun = createDynamicEnumProxy("LighthouseModeRun");
+var LighthouseCategoryUsed = createDynamicEnumProxy("LighthouseCategoryUsed");
+var SwatchType = createDynamicEnumProxy("SwatchType");
+var BadgeType = createDynamicEnumProxy("BadgeType");
+var AnimationsPlaybackRate = createDynamicEnumProxy("AnimationsPlaybackRate");
+var TimelineNavigationSetting = createDynamicEnumProxy("TimelineNavigationSetting");
+var BuiltInAiAvailability = createDynamicEnumProxy("BuiltInAiAvailability");
+var ResendRequestType = createDynamicEnumProxy("ResendRequestType");
 var resendRequestTypeMap = /* @__PURE__ */ new Map([
-  [
-    Common5.ResourceType.resourceTypes.XHR,
-    0
-    /* ResendRequestType.XHR */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.Fetch,
-    1
-    /* ResendRequestType.FETCH */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.Script,
-    2
-    /* ResendRequestType.SCRIPT */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.Stylesheet,
-    3
-    /* ResendRequestType.STYLESHEET */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.Image,
-    4
-    /* ResendRequestType.IMAGE */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.Media,
-    5
-    /* ResendRequestType.MEDIA */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.Font,
-    6
-    /* ResendRequestType.FONT */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.Wasm,
-    7
-    /* ResendRequestType.WASM */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.Manifest,
-    8
-    /* ResendRequestType.MANIFEST */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.TextTrack,
-    9
-    /* ResendRequestType.TEXT_TRACK */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.SourceMapScript,
-    10
-    /* ResendRequestType.SOURCE_MAP_SCRIPT */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.SourceMapStyleSheet,
-    11
-    /* ResendRequestType.SOURCE_MAP_STYLE_SHEET */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.Document,
-    12
-    /* ResendRequestType.DOCUMENT */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.Prefetch,
-    13
-    /* ResendRequestType.PREFETCH */
-  ],
-  [
-    Common5.ResourceType.resourceTypes.Ping,
-    14
-    /* ResendRequestType.PING */
-  ]
+  [Common5.ResourceType.resourceTypes.XHR, "XHR"],
+  [Common5.ResourceType.resourceTypes.Fetch, "FETCH"],
+  [Common5.ResourceType.resourceTypes.Script, "SCRIPT"],
+  [Common5.ResourceType.resourceTypes.Stylesheet, "STYLESHEET"],
+  [Common5.ResourceType.resourceTypes.Image, "IMAGE"],
+  [Common5.ResourceType.resourceTypes.Media, "MEDIA"],
+  [Common5.ResourceType.resourceTypes.Font, "FONT"],
+  [Common5.ResourceType.resourceTypes.Wasm, "WASM"],
+  [Common5.ResourceType.resourceTypes.Manifest, "MANIFEST"],
+  [Common5.ResourceType.resourceTypes.TextTrack, "TEXT_TRACK"],
+  [Common5.ResourceType.resourceTypes.SourceMapScript, "SOURCE_MAP_SCRIPT"],
+  [Common5.ResourceType.resourceTypes.SourceMapStyleSheet, "SOURCE_MAP_STYLE_SHEET"],
+  [Common5.ResourceType.resourceTypes.Document, "DOCUMENT"],
+  [Common5.ResourceType.resourceTypes.Prefetch, "PREFETCH"],
+  [Common5.ResourceType.resourceTypes.Ping, "PING"]
 ]);
 function resendRequestType(resourceType) {
-  return resendRequestTypeMap.get(resourceType) ?? 15;
+  const key = resendRequestTypeMap.get(resourceType);
+  return (key ? ResendRequestType[key] : void 0) ?? ResendRequestType.OTHER;
 }
 
 // gen/front_end/core/host/host.prebundle.js

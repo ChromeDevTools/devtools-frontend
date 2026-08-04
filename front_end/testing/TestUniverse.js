@@ -258,6 +258,12 @@ export class TestUniverse {
     createTarget(options = {}) {
         return createTarget({ ...options, targetManager: this.targetManager });
     }
+    // eslint-disable-next-line @devtools/enforce-test-universe-return-types
+    dispose() {
+        if (this.#context.has(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager)) {
+            this.isolatedFileSystemManager.dispose();
+        }
+    }
     get aiHistoryStorage() {
         return this.get(AiAssistance.AiHistoryStorage.AiHistoryStorage);
     }

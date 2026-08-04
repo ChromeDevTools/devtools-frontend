@@ -75,9 +75,9 @@ async function getConnectionTransport(options) {
         };
     }
     else if (browserURL) {
-        const connectionURL = await getWSEndpoint(browserURL);
+        const connectionURL = await getWSEndpoint(browserURL, headers);
         const WebSocketClass = await getWebSocketTransportClass();
-        const connectionTransport = await WebSocketClass.create(connectionURL);
+        const connectionTransport = await WebSocketClass.create(connectionURL, headers);
         return {
             connectionTransport: connectionTransport,
             endpointUrl: connectionURL,
@@ -126,11 +126,12 @@ async function getConnectionTransport(options) {
     }
     throw new Error('Invalid connection options');
 }
-async function getWSEndpoint(browserURL) {
+async function getWSEndpoint(browserURL, headers) {
     const endpointURL = new URL('/json/version', browserURL);
     try {
         const result = await globalThis.fetch(endpointURL.toString(), {
             method: 'GET',
+            headers,
         });
         if (!result.ok) {
             throw new Error(`HTTP ${result.statusText}`);

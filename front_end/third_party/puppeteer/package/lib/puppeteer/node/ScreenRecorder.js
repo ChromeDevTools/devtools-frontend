@@ -48,13 +48,12 @@ import { dirname } from 'node:path';
 import { PassThrough } from 'node:stream';
 import { bufferCount, concatMap, filter, from, fromEvent, lastValueFrom, map, takeUntil, tap, } from '../../third_party/rxjs/rxjs.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
-import { debug } from '../common/Debug.js';
+import { debug, DEBUG_PREFIXES } from '../common/Debug.js';
 import { fromEmitterEvent, debugCatchError } from '../common/util.js';
 import { guarded } from '../util/decorators.js';
 import { asyncDisposeSymbol } from '../util/disposable.js';
 const CRF_VALUE = 30;
 const DEFAULT_FPS = 30;
-const debugFfmpeg = debug('puppeteer:ffmpeg');
 /**
  * Computes how many encoder frames to emit for a captured frame that spans
  * `[previousTimestamp, timestamp]`, so that the cumulative number of emitted
@@ -107,11 +106,13 @@ let ScreenRecorder = (() => {
         #controller = new AbortController();
         #lastFrame;
         #fps;
+        #debugFfmpeg;
         /**
          * @internal
          */
-        constructor(page, width, height, { ffmpegPath, speed, scale, crop, format, fps, loop, delay, quality, colors, path, overwrite, } = {}) {
+        constructor(page, width, height, { ffmpegPath, speed, scale, crop, format, fps, loop, delay, quality, colors, path, overwrite, } = {}, logger = debug) {
             super({ allowHalfOpen: false });
+            this.#debugFfmpeg = logger(DEBUG_PREFIXES.ffmpeg);
             ffmpegPath ??= 'ffmpeg';
             format ??= 'webm';
             fps ??= DEFAULT_FPS;
@@ -191,7 +192,7 @@ let ScreenRecorder = (() => {
             ].flat(), { stdio: ['pipe', 'pipe', 'pipe'] });
             this.#process.stdout.pipe(this);
             this.#process.stderr.on('data', (data) => {
-                debugFfmpeg?.(data.toString('utf8'));
+                this.#debugFfmpeg?.(data.toString('utf8'));
             });
             this.#page = page;
             const { client } = this.#page.mainFrame();

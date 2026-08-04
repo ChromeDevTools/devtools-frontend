@@ -43,18 +43,58 @@ import type { WebWorker } from './WebWorker.js';
  * @public
  */
 export interface Metrics {
+    /**
+     * The timestamp when the metrics sample was taken, in monotonic time
+     * (seconds since an arbitrary point in the past).
+     */
     Timestamp?: number;
+    /**
+     * Number of documents in the page.
+     */
     Documents?: number;
+    /**
+     * Number of frames in the page.
+     */
     Frames?: number;
+    /**
+     * Number of events in the page.
+     */
     JSEventListeners?: number;
+    /**
+     * Number of DOM nodes in the page.
+     */
     Nodes?: number;
+    /**
+     * Total number of full or partial page layouts.
+     */
     LayoutCount?: number;
+    /**
+     * Total number of page style recalculations.
+     */
     RecalcStyleCount?: number;
+    /**
+     * Combined duration of all page layouts, in seconds.
+     */
     LayoutDuration?: number;
+    /**
+     * Combined duration of all page style recalculations, in seconds.
+     */
     RecalcStyleDuration?: number;
+    /**
+     * Combined duration of JavaScript execution, in seconds.
+     */
     ScriptDuration?: number;
+    /**
+     * Combined duration of all tasks performed by the browser, in seconds.
+     */
     TaskDuration?: number;
+    /**
+     * Used JavaScript heap size, in bytes.
+     */
     JSHeapUsedSize?: number;
+    /**
+     * Total JavaScript heap size, in bytes.
+     */
     JSHeapTotalSize?: number;
 }
 /**
@@ -1398,7 +1438,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @returns
      *
-     * - `Timestamp` : The timestamp when the metrics sample was taken.
+     * - `Timestamp` : The timestamp when the metrics sample was taken, in
+     *   monotonic time (seconds).
      *
      * - `Documents` : Number of documents in the page.
      *
@@ -1412,18 +1453,20 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * - `RecalcStyleCount` : Total number of page style recalculations.
      *
-     * - `LayoutDuration` : Combined durations of all page layouts.
+     * - `LayoutDuration` : Combined durations of all page layouts, in seconds.
      *
      * - `RecalcStyleDuration` : Combined duration of all page style
-     *   recalculations.
+     *   recalculations, in seconds.
      *
-     * - `ScriptDuration` : Combined duration of JavaScript execution.
+     * - `ScriptDuration` : Combined duration of JavaScript execution, in
+     *   seconds.
      *
-     * - `TaskDuration` : Combined duration of all tasks performed by the browser.
+     * - `TaskDuration` : Combined duration of all tasks performed by the
+     *   browser, in seconds.
      *
-     * - `JSHeapUsedSize` : Used JavaScript heap size.
+     * - `JSHeapUsedSize` : Used JavaScript heap size, in bytes.
      *
-     * - `JSHeapTotalSize` : Total JavaScript heap size.
+     * - `JSHeapTotalSize` : Total JavaScript heap size, in bytes.
      *
      * @remarks
      * All timestamps are in monotonic time: monotonically increasing time

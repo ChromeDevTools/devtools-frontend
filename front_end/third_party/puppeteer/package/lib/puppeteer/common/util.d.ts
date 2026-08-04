@@ -11,14 +11,14 @@ import type { ParsedPDFOptions, PDFOptions } from './PDFOptions.js';
 /**
  * @internal
  */
-export declare const debugError: ((...args: unknown[]) => void) | undefined;
+export declare const debugError: import("./Debug.js").LoggerFunction | undefined;
 /**
  * @internal
  *
  * Use this instead of debugError so the catch functions
  * don't re-throw the error.
  */
-export declare const debugCatchError: (...args: unknown[]) => void;
+export declare const debugCatchError: import("./Debug.js").LoggerFunction;
 /**
  * @internal
  */

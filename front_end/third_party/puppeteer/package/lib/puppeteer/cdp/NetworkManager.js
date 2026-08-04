@@ -31,6 +31,7 @@ export class NetworkManager extends EventEmitter {
     #userAgentMetadata;
     #platform;
     #acceptLanguage;
+    #userAgentOverrideApplied = false;
     #handlers = [
         ['Fetch.requestPaused', this.#onRequestPaused],
         ['Fetch.authRequired', this.#onAuthRequired],
@@ -198,6 +199,14 @@ export class NetworkManager extends EventEmitter {
         await this.#applyToAllClients(this.#applyUserAgent.bind(this));
     }
     async #applyUserAgent(client) {
+        const nothingToEmulate = this.#userAgent === undefined &&
+            this.#userAgentMetadata === undefined &&
+            this.#acceptLanguage === undefined &&
+            this.#platform === undefined;
+        // Still need to send once to reset a previously-applied override.
+        if (nothingToEmulate && !this.#userAgentOverrideApplied) {
+            return;
+        }
         const userAgent = this.#userAgent ??
             (await this.#frameManager.page().browser().userAgent());
         if (userAgent === undefined) {
@@ -210,6 +219,7 @@ export class NetworkManager extends EventEmitter {
                 userAgentMetadata: this.#userAgentMetadata,
                 platform: this.#platform,
             });
+            this.#userAgentOverrideApplied = !nothingToEmulate;
         }
         catch (error) {
             if (this.#canIgnoreError(error)) {

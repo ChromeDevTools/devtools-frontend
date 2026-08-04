@@ -12,12 +12,17 @@ export class CdpDialog extends Dialog {
     constructor(client, type, message, defaultValue = '') {
         super(type, message, defaultValue);
         this.#client = client;
+        client.once('Page.javascriptDialogClosed', this.#onDialogClosed);
     }
     async handle(options) {
         await this.#client.send('Page.handleJavaScriptDialog', {
             accept: options.accept,
             promptText: options.text,
         });
+        this.#client.off('Page.javascriptDialogClosed', this.#onDialogClosed);
     }
+    #onDialogClosed = () => {
+        this.handled = true;
+    };
 }
 //# sourceMappingURL=Dialog.js.map

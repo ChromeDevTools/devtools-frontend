@@ -2924,7 +2924,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.4.0';
+  const packageVersion = '25.5.0';
   // x-release-please-end
 
   /**
@@ -2932,6 +2932,17 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2020 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
+  /**
+   * @internal
+   */
+  const DEBUG_PREFIXES = {
+    cdpSend: 'puppeteer:protocol:SEND ►',
+    cdpReceive: 'puppeteer:protocol:RECV ◀',
+    bidiSend: 'puppeteer:webDriverBiDi:SEND ►',
+    bidiReceive: 'puppeteer:webDriverBiDi:RECV ◀',
+    error: 'puppeteer:error',
+    ffmpeg: 'puppeteer:ffmpeg'
+  };
   /**
    * A debug function that can be used in any environment.
    *
@@ -2959,7 +2970,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @example
    *
    * ```
-   * const log = debug('Page');
+   * const log = debug(DEBUG_PREFIXES.error);
    *
    * log('new page created')
    * // logs "Page: new page created"
@@ -3250,7 +3261,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const debugError = debug('puppeteer:error');
+  const debugError = debug(DEBUG_PREFIXES.error);
   /**
    * @internal
    *
@@ -14046,8 +14057,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  const debugProtocolSend = debug('puppeteer:protocol:SEND ►');
-  const debugProtocolReceive = debug('puppeteer:protocol:RECV ◀');
   /**
    * @public
    */
@@ -14062,9 +14071,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _callbacks3 = /*#__PURE__*/new WeakMap();
   var _rawErrors2 = /*#__PURE__*/new WeakMap();
   var _idGenerator2 = /*#__PURE__*/new WeakMap();
+  var _debugProtocolSend = /*#__PURE__*/new WeakMap();
+  var _debugProtocolReceive = /*#__PURE__*/new WeakMap();
   var _Connection_brand = /*#__PURE__*/new WeakSet();
   class Connection extends EventEmitter {
-    constructor(url, transport, delay = 0, timeout, rawErrors = false, idGenerator = createIncrementalIdGenerator()) {
+    /**
+     * @internal
+     */
+    constructor(url, transport, delay = 0, timeout, rawErrors = false, idGenerator = createIncrementalIdGenerator(), logger = debug) {
       super();
       _classPrivateMethodInitSpec(this, _Connection_brand);
       _classPrivateFieldInitSpec(this, _url2, void 0);
@@ -14078,10 +14092,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _callbacks3, void 0);
       _classPrivateFieldInitSpec(this, _rawErrors2, false);
       _classPrivateFieldInitSpec(this, _idGenerator2, void 0);
+      _classPrivateFieldInitSpec(this, _debugProtocolSend, void 0);
+      _classPrivateFieldInitSpec(this, _debugProtocolReceive, void 0);
       _classPrivateFieldSet(_rawErrors2, this, rawErrors);
       _classPrivateFieldSet(_idGenerator2, this, idGenerator);
       _classPrivateFieldSet(_callbacks3, this, new CallbackRegistry(idGenerator));
       _classPrivateFieldSet(_url2, this, url);
+      _classPrivateFieldSet(_debugProtocolSend, this, logger(DEBUG_PREFIXES.cdpSend));
+      _classPrivateFieldSet(_debugProtocolReceive, this, logger(DEBUG_PREFIXES.cdpReceive));
       _classPrivateFieldSet(_delay2, this, delay);
       _classPrivateFieldSet(_timeout2, this, timeout ?? 180_000);
       _classPrivateFieldSet(_transport, this, transport);
@@ -14169,7 +14187,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           id,
           sessionId
         });
-        debugProtocolSend?.(stringifiedMessage);
+        _classPrivateFieldGet(_debugProtocolSend, this)?.call(this, stringifiedMessage);
         _classPrivateFieldGet(_transport, this).send(stringifiedMessage);
       });
     }
@@ -14188,7 +14206,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           return setTimeout(r, _classPrivateFieldGet(_delay2, this));
         });
       }
-      debugProtocolReceive?.(message);
+      _classPrivateFieldGet(_debugProtocolReceive, this)?.call(this, message);
       const object = JSON.parse(message);
       if (object.method === 'Target.attachedToTarget') {
         const sessionId = object.params.sessionId;
@@ -14715,17 +14733,23 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   var _client4 = /*#__PURE__*/new WeakMap();
+  var _onDialogClosed = /*#__PURE__*/new WeakMap();
   class CdpDialog extends Dialog {
     constructor(client, type, message, defaultValue = '') {
       super(type, message, defaultValue);
       _classPrivateFieldInitSpec(this, _client4, void 0);
+      _classPrivateFieldInitSpec(this, _onDialogClosed, () => {
+        this.handled = true;
+      });
       _classPrivateFieldSet(_client4, this, client);
+      client.once('Page.javascriptDialogClosed', _classPrivateFieldGet(_onDialogClosed, this));
     }
     async handle(options) {
       await _classPrivateFieldGet(_client4, this).send('Page.handleJavaScriptDialog', {
         accept: options.accept,
         promptText: options.text
       });
+      _classPrivateFieldGet(_client4, this).off('Page.javascriptDialogClosed', _classPrivateFieldGet(_onDialogClosed, this));
     }
   }
   var __runInitializers$2 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
@@ -18340,6 +18364,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _userAgentMetadata = /*#__PURE__*/new WeakMap();
   var _platform = /*#__PURE__*/new WeakMap();
   var _acceptLanguage = /*#__PURE__*/new WeakMap();
+  var _userAgentOverrideApplied = /*#__PURE__*/new WeakMap();
   var _handlers3 = /*#__PURE__*/new WeakMap();
   var _clients = /*#__PURE__*/new WeakMap();
   var _networkEnabled = /*#__PURE__*/new WeakMap();
@@ -18361,6 +18386,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _userAgentMetadata, void 0);
       _classPrivateFieldInitSpec(this, _platform, void 0);
       _classPrivateFieldInitSpec(this, _acceptLanguage, void 0);
+      _classPrivateFieldInitSpec(this, _userAgentOverrideApplied, false);
       _classPrivateFieldInitSpec(this, _handlers3, [['Fetch.requestPaused', _assertClassBrand(_NetworkManager_brand, this, _onRequestPaused)], ['Fetch.authRequired', _assertClassBrand(_NetworkManager_brand, this, _onAuthRequired)], ['Network.requestWillBeSent', _assertClassBrand(_NetworkManager_brand, this, _onRequestWillBeSent)], ['Network.requestWillBeSentExtraInfo', _assertClassBrand(_NetworkManager_brand, this, _onRequestWillBeSentExtraInfo)], ['Network.requestServedFromCache', _assertClassBrand(_NetworkManager_brand, this, _onRequestServedFromCache)], ['Network.responseReceived', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceived)], ['Network.loadingFinished', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFinished)], ['Network.loadingFailed', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFailed)], ['Network.responseReceivedExtraInfo', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceivedExtraInfo)], [exports.CDPSessionEvent.Disconnected, _assertClassBrand(_NetworkManager_brand, this, _removeClient)]]);
       _classPrivateFieldInitSpec(this, _clients, new Map());
       _classPrivateFieldInitSpec(this, _networkEnabled, void 0);
@@ -18515,6 +18541,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
   }
   async function _applyUserAgent(client) {
+    const nothingToEmulate = _classPrivateFieldGet(_userAgent, this) === undefined && _classPrivateFieldGet(_userAgentMetadata, this) === undefined && _classPrivateFieldGet(_acceptLanguage, this) === undefined && _classPrivateFieldGet(_platform, this) === undefined;
+    // Still need to send once to reset a previously-applied override.
+    if (nothingToEmulate && !_classPrivateFieldGet(_userAgentOverrideApplied, this)) {
+      return;
+    }
     const userAgent = _classPrivateFieldGet(_userAgent, this) ?? (await _classPrivateFieldGet(_frameManager, this).page().browser().userAgent());
     if (userAgent === undefined) {
       return;
@@ -18526,6 +18557,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         userAgentMetadata: _classPrivateFieldGet(_userAgentMetadata, this),
         platform: _classPrivateFieldGet(_platform, this)
       });
+      _classPrivateFieldSet(_userAgentOverrideApplied, this, !nothingToEmulate);
     } catch (error) {
       if (_assertClassBrand(_NetworkManager_brand, this, _canIgnoreError).call(this, error)) {
         return;
@@ -24677,6 +24709,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _handleDevToolsAsPage = /*#__PURE__*/new WeakMap();
   var _extensions = /*#__PURE__*/new WeakMap();
   var _version2 = /*#__PURE__*/new WeakMap();
+  var _hasNetworkRestrictions = /*#__PURE__*/new WeakMap();
   var _emitDisconnected = /*#__PURE__*/new WeakMap();
   var _CdpBrowser_brand = /*#__PURE__*/new WeakSet();
   var _createTarget = /*#__PURE__*/new WeakMap();
@@ -24720,6 +24753,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _handleDevToolsAsPage, false);
       _classPrivateFieldInitSpec(this, _extensions, new Map());
       _classPrivateFieldInitSpec(this, _version2, void 0);
+      _classPrivateFieldInitSpec(this, _hasNetworkRestrictions, false);
       _classPrivateFieldInitSpec(this, _emitDisconnected, () => {
         this.emit("disconnected" /* BrowserEvent.Disconnected */, undefined);
       });
@@ -24780,7 +24814,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }));
       _classPrivateFieldSet(_handleDevToolsAsPage, this, handleDevToolsAsPage);
       _assertClassBrand(_CdpBrowser_brand, this, _setIsPageTargetCallback).call(this, _isPageTargetCallback2);
-      connection.rejectEmulateNetworkConditionsCalls = Boolean(blocklist && blocklist.length > 0 || allowlist && allowlist.length > 0);
+      _classPrivateFieldSet(_hasNetworkRestrictions, this, Boolean(blocklist && blocklist.length > 0 || allowlist && allowlist.length > 0));
+      connection.rejectEmulateNetworkConditionsCalls = _classPrivateFieldGet(_hasNetworkRestrictions, this);
       _classPrivateFieldSet(_targetManager3, this, new TargetManager(connection, _classPrivateFieldGet(_createTarget, this), _classPrivateFieldGet(_targetFilterCallback2, this), waitForInitiallyDiscoveredTargets, blocklist, allowlist));
       _classPrivateFieldSet(_defaultContext, this, new CdpBrowserContext(_classPrivateFieldGet(_connection5, this), this));
       for (const contextId of contextIds) {
@@ -24954,6 +24989,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldGet(_extensions, this).delete(id);
     }
     async installPWA(options) {
+      if (_classPrivateFieldGet(_hasNetworkRestrictions, this)) {
+        throw new Error('PWA APIs are not supported when network restrictions are configured.');
+      }
       await _classPrivateFieldGet(_connection5, this).send('PWA.install', {
         manifestId: options.manifestId,
         installUrlOrBundleUrl: options.installUrlOrBundleUrl
@@ -24967,11 +25005,17 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return options.manifestId;
     }
     async uninstallPWA(options) {
+      if (_classPrivateFieldGet(_hasNetworkRestrictions, this)) {
+        throw new Error('PWA APIs are not supported when network restrictions are configured.');
+      }
       await _classPrivateFieldGet(_connection5, this).send('PWA.uninstall', {
         manifestId: options.manifestId
       });
     }
     async launchPWA(options) {
+      if (_classPrivateFieldGet(_hasNetworkRestrictions, this)) {
+        throw new Error('PWA APIs are not supported when network restrictions are configured.');
+      }
       // `PWA.launch` resolves with the id of the launched *tab* target (see the
       // CDP `PWA.LaunchResponse` docs). Tab targets sit above page targets in the
       // target hierarchy and are not exposed through `browser.targets()`, so the
@@ -25003,6 +25047,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return page;
     }
     async getPWAState(options) {
+      if (_classPrivateFieldGet(_hasNetworkRestrictions, this)) {
+        throw new Error('PWA APIs are not supported when network restrictions are configured.');
+      }
       const {
         badgeCount,
         fileHandlers
@@ -27101,9 +27148,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         endpointUrl: browserWSEndpoint
       };
     } else if (browserURL) {
-      const connectionURL = await getWSEndpoint(browserURL);
+      const connectionURL = await getWSEndpoint(browserURL, headers);
       const WebSocketClass = await getWebSocketTransportClass();
-      const connectionTransport = await WebSocketClass.create(connectionURL);
+      const connectionTransport = await WebSocketClass.create(connectionURL, headers);
       return {
         connectionTransport: connectionTransport,
         endpointUrl: connectionURL
@@ -27155,11 +27202,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     throw new Error('Invalid connection options');
   }
-  async function getWSEndpoint(browserURL) {
+  async function getWSEndpoint(browserURL, headers) {
     const endpointURL = new URL('/json/version', browserURL);
     try {
       const result = await globalThis.fetch(endpointURL.toString(), {
-        method: 'GET'
+        method: 'GET',
+        headers
       });
       if (!result.ok) {
         throw new Error(`HTTP ${result.statusText}`);
@@ -27305,9 +27353,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '151.0.7922.47',
-    'chrome-headless-shell': '151.0.7922.47',
-    firefox: 'stable_152.0.5'
+    chrome: '151.0.7922.71',
+    'chrome-headless-shell': '151.0.7922.71',
+    firefox: 'stable_153.0.1'
   });
 
   /**
@@ -27366,6 +27414,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.ConsoleMessage = ConsoleMessage;
   exports.Coverage = Coverage;
   exports.CustomQueryHandlerRegistry = CustomQueryHandlerRegistry;
+  exports.DEBUG_PREFIXES = DEBUG_PREFIXES;
   exports.DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = DEFAULT_INTERCEPT_RESOLUTION_PRIORITY;
   exports.DEFAULT_VIEWPORT = DEFAULT_VIEWPORT;
   exports.Deferred = Deferred;

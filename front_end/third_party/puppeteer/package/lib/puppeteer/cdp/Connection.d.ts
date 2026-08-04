@@ -9,6 +9,7 @@ import type { CommandOptions } from '../api/CDPSession.js';
 import { type CDPSession, type CDPSessionEvents } from '../api/CDPSession.js';
 import { CallbackRegistry } from '../common/CallbackRegistry.js';
 import type { ConnectionTransport } from '../common/ConnectionTransport.js';
+import { type Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { type GetIdFn } from '../util/incremental-id-generator.js';
 import { CdpCDPSession } from './CdpSession.js';
@@ -17,7 +18,10 @@ import { CdpCDPSession } from './CdpSession.js';
  */
 export declare class Connection extends EventEmitter<CDPSessionEvents> {
     #private;
-    constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number, rawErrors?: boolean, idGenerator?: () => number);
+    /**
+     * @internal
+     */
+    constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number, rawErrors?: boolean, idGenerator?: () => number, logger?: Logger);
     static fromSession(session: CDPSession): Connection | undefined;
     /**
      * @internal

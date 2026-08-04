@@ -6,6 +6,7 @@
 import { PassThrough } from 'node:stream';
 import type { BoundingBox } from '../api/ElementHandle.js';
 import type { Page, VideoFormat } from '../api/Page.js';
+import { type Logger } from '../common/Debug.js';
 import { asyncDisposeSymbol } from '../util/disposable.js';
 /**
  * Computes how many encoder frames to emit for a captured frame that spans
@@ -52,7 +53,7 @@ export declare class ScreenRecorder extends PassThrough {
     /**
      * @internal
      */
-    constructor(page: Page, width: number, height: number, { ffmpegPath, speed, scale, crop, format, fps, loop, delay, quality, colors, path, overwrite, }?: ScreenRecorderOptions);
+    constructor(page: Page, width: number, height: number, { ffmpegPath, speed, scale, crop, format, fps, loop, delay, quality, colors, path, overwrite, }?: ScreenRecorderOptions, logger?: Logger);
     /**
      * Stops the recorder.
      *

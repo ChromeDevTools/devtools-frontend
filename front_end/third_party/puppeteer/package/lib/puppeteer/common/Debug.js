@@ -5,6 +5,17 @@
  */
 import { isNode, environment } from '../environment.js';
 /**
+ * @internal
+ */
+export const DEBUG_PREFIXES = {
+    cdpSend: 'puppeteer:protocol:SEND ►',
+    cdpReceive: 'puppeteer:protocol:RECV ◀',
+    bidiSend: 'puppeteer:webDriverBiDi:SEND ►',
+    bidiReceive: 'puppeteer:webDriverBiDi:RECV ◀',
+    error: 'puppeteer:error',
+    ffmpeg: 'puppeteer:ffmpeg',
+};
+/**
  * A debug function that can be used in any environment.
  *
  * @remarks
@@ -31,7 +42,7 @@ import { isNode, environment } from '../environment.js';
  * @example
  *
  * ```
- * const log = debug('Page');
+ * const log = debug(DEBUG_PREFIXES.error);
  *
  * log('new page created')
  * // logs "Page: new page created"

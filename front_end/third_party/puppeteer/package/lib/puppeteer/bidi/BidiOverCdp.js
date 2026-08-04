@@ -7,13 +7,13 @@ import { BidiMapper } from 'chromium-bidi';
 import { debug } from '../common/Debug.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { BidiConnection } from './Connection.js';
-const bidiServerLogger = (prefix) => {
-    return debug(`bidi:${prefix}`);
-};
 /**
  * @internal
  */
-export async function connectBidiOverCdp(cdp) {
+export async function connectBidiOverCdp(cdp, logger = debug) {
+    const bidiServerLogger = (prefix) => {
+        return logger(`bidi:${prefix}`);
+    };
     const transportBiDi = new NoOpTransport();
     const cdpConnectionAdapter = new CdpConnectionAdapter(cdp);
     const pptrTransport = {
@@ -34,7 +34,7 @@ export async function connectBidiOverCdp(cdp) {
         // Forwards a BiDi event sent by BidiServer to Puppeteer.
         pptrTransport.onmessage(JSON.stringify(message));
     });
-    const pptrBiDiConnection = new BidiConnection(cdp.url(), pptrTransport, cdp._idGenerator, cdp.delay, cdp.timeout);
+    const pptrBiDiConnection = new BidiConnection(cdp.url(), pptrTransport, cdp._idGenerator, cdp.delay, cdp.timeout, logger);
     const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, cdpConnectionAdapter.browserClient(), 
     /* selfTargetId= */ '', undefined, bidiServerLogger);
     return pptrBiDiConnection;

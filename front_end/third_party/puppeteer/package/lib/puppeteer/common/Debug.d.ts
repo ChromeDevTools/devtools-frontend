@@ -7,6 +7,31 @@ declare global {
     const __PUPPETEER_DEBUG: string;
 }
 /**
+ * @internal
+ */
+export declare const DEBUG_PREFIXES: {
+    readonly cdpSend: "puppeteer:protocol:SEND ►";
+    readonly cdpReceive: "puppeteer:protocol:RECV ◀";
+    readonly bidiSend: "puppeteer:webDriverBiDi:SEND ►";
+    readonly bidiReceive: "puppeteer:webDriverBiDi:RECV ◀";
+    readonly error: "puppeteer:error";
+    readonly ffmpeg: "puppeteer:ffmpeg";
+};
+/**
+ * @internal
+ */
+export type DebugPrefix = (typeof DEBUG_PREFIXES)[keyof typeof DEBUG_PREFIXES];
+/**
+ * @public
+ * @experimental
+ */
+export type LoggerFunction = (...args: unknown[]) => void;
+/**
+ * @public
+ * @experimental
+ */
+export type Logger = (prefix: string) => LoggerFunction | undefined;
+/**
  * A debug function that can be used in any environment.
  *
  * @remarks
@@ -33,7 +58,7 @@ declare global {
  * @example
  *
  * ```
- * const log = debug('Page');
+ * const log = debug(DEBUG_PREFIXES.error);
  *
  * log('new page created')
  * // logs "Page: new page created"
@@ -44,7 +69,7 @@ declare global {
  *
  * @internal
  */
-export declare const debug: (prefix: string) => ((...args: unknown[]) => void) | undefined;
+export declare const debug: Logger;
 /**
  * @internal
  */

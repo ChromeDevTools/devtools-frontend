@@ -139,6 +139,8 @@ export class ChromeLauncher extends BrowserLauncher {
             'MediaRouter',
             'OptimizationHints',
             'WebUIReloadButton',
+            'WebUIOmniboxPopup',
+            'WebUIOmniboxAimPopup',
             ...(turnOnExperimentalFeaturesForTesting
                 ? []
                 : [

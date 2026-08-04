@@ -52,6 +52,7 @@ export class CdpBrowser extends BrowserBase {
     #handleDevToolsAsPage = false;
     #extensions = new Map();
     #version;
+    #hasNetworkRestrictions = false;
     constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blocklist, allowlist) {
         super();
         this.#networkEnabled = networkEnabled;
@@ -67,8 +68,10 @@ export class CdpBrowser extends BrowserBase {
                 });
         this.#handleDevToolsAsPage = handleDevToolsAsPage;
         this.#setIsPageTargetCallback(isPageTargetCallback);
-        connection.rejectEmulateNetworkConditionsCalls = Boolean((blocklist && blocklist.length > 0) ||
+        this.#hasNetworkRestrictions = Boolean((blocklist && blocklist.length > 0) ||
             (allowlist && allowlist.length > 0));
+        connection.rejectEmulateNetworkConditionsCalls =
+            this.#hasNetworkRestrictions;
         this.#targetManager = new TargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets, blocklist, allowlist);
         this.#defaultContext = new CdpBrowserContext(this.#connection, this);
         for (const contextId of contextIds) {
@@ -298,6 +301,9 @@ export class CdpBrowser extends BrowserBase {
         this.#extensions.delete(id);
     }
     async installPWA(options) {
+        if (this.#hasNetworkRestrictions) {
+            throw new Error('PWA APIs are not supported when network restrictions are configured.');
+        }
         await this.#connection.send('PWA.install', {
             manifestId: options.manifestId,
             installUrlOrBundleUrl: options.installUrlOrBundleUrl,
@@ -311,11 +317,17 @@ export class CdpBrowser extends BrowserBase {
         return options.manifestId;
     }
     async uninstallPWA(options) {
+        if (this.#hasNetworkRestrictions) {
+            throw new Error('PWA APIs are not supported when network restrictions are configured.');
+        }
         await this.#connection.send('PWA.uninstall', {
             manifestId: options.manifestId,
         });
     }
     async launchPWA(options) {
+        if (this.#hasNetworkRestrictions) {
+            throw new Error('PWA APIs are not supported when network restrictions are configured.');
+        }
         // `PWA.launch` resolves with the id of the launched *tab* target (see the
         // CDP `PWA.LaunchResponse` docs). Tab targets sit above page targets in the
         // target hierarchy and are not exposed through `browser.targets()`, so the
@@ -343,6 +355,9 @@ export class CdpBrowser extends BrowserBase {
         return page;
     }
     async getPWAState(options) {
+        if (this.#hasNetworkRestrictions) {
+            throw new Error('PWA APIs are not supported when network restrictions are configured.');
+        }
         const { badgeCount, fileHandlers } = await this.#connection.send('PWA.getOsAppState', { manifestId: options.manifestId });
         return { badgeCount, fileHandlers };
     }

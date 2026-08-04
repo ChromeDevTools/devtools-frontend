@@ -72,6 +72,8 @@ interface ViewInput {
 }
 export type ViewFunction = (input: ViewInput, output: object, target: HTMLSelectElement) => void;
 
+const optionsMap = new WeakMap<HTMLOptionElement, SDK.NetworkManager.ThrottlingConditions>();
+
 export const DEFAULT_VIEW: ViewFunction = (input, output, target) => {
   // The title is usually an i18nLazyString except for custom values that are stored in the local storage in the form of a string.
   const title = (conditions: SDK.NetworkManager.ThrottlingConditions): string =>
@@ -82,7 +84,7 @@ export const DEFAULT_VIEW: ViewFunction = (input, output, target) => {
               .item(Platform.StringUtilities.toKebabCase(
                   ('i18nTitleKey' in condition && condition.i18nTitleKey) || title(condition)))
               .track({click: true})}`;
-  const optionsMap = new WeakMap<HTMLOptionElement, SDK.NetworkManager.ThrottlingConditions>();
+
   let selectedConditions = input.selectedConditions;
   function onSelect(event: Event): void {
     const element = (event.target as HTMLSelectElement | null);

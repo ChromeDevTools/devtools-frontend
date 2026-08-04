@@ -342,8 +342,8 @@ export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
     return [...completions];
   }
 
-  private async buildClassNameCompletions(expression: string, prefix: string, force?: boolean):
-      Promise<UI.SuggestBox.Suggestions> {
+  private async buildClassNameCompletions(expression: string, prefix: string,
+                                          force?: boolean): Promise<UI.SuggestBox.Suggestions> {
     if (!prefix || force) {
       this.classNamesPromise = null;
     }

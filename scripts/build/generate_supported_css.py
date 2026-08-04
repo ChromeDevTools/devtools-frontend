@@ -17,7 +17,7 @@ import json5  # pylint: disable=import-error
 
 ROOT_DIRECTORY = path.join(path.dirname(__file__), '..', '..')
 GENERATED_LOCATION = path.join(ROOT_DIRECTORY, 'front_end', 'generated',
-                               'SupportedCSSProperties.js')
+                               'SupportedCSSProperties.ts')
 READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'renderer',
                           'core', 'css', 'css_properties.json5')
 RUNTIME_FLAGS_READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink',

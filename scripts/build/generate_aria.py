@@ -18,7 +18,7 @@ import json5  # pylint: disable=import-error
 
 ROOT_DIRECTORY = path.join(path.dirname(__file__), '..', '..')
 GENERATED_LOCATION = path.join(ROOT_DIRECTORY, 'front_end', 'generated',
-                               'ARIAProperties.js')
+                               'ARIAProperties.ts')
 READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'renderer',
                           'core', 'html', 'aria_properties.json5')
 

@@ -29,7 +29,7 @@ export default defineConfig([
     'front_end/diff/diff_match_patch.js',
     'front_end/models/javascript_metadata/NativeFunctions.js',
     // All of these scripts are auto-generated so don't lint them.
-    'front_end/generated/ARIAProperties.js',
+    'front_end/generated/ARIAProperties.ts',
     'front_end/generated/Deprecation.ts',
     'front_end/generated/InspectorBackendCommands.ts',
     'front_end/generated/protocol-mapping.d.ts',
@@ -197,7 +197,7 @@ export default defineConfig([
       radix: 'error',
       'valid-typeof': 'error',
       'no-return-assign': ['error', 'always'],
-      'no-implicit-coercion': ['error', { allow: ['!!'] }],
+      'no-implicit-coercion': ['error', {allow: ['!!']}],
 
       'no-array-constructor': 'error',
 
@@ -833,7 +833,7 @@ export default defineConfig([
   },
   {
     name: 'Supported CSS properties rules',
-    files: ['front_end/generated/SupportedCSSProperties.js'],
+    files: ['front_end/generated/SupportedCSSProperties.ts'],
     rules: {
       '@devtools/jslog-context-list': 'error',
     },

@@ -221,8 +221,6 @@ template("ts_library") {
                            # TODO: Migrate the files below to TypeScript
                            # and remove them from this list.
                            "*ahem.js",
-                           "*ARIAProperties.js",
-                           "*SupportedCSSProperties.js",
                          ])
 
       args += [ "--sources" ] + rebase_path(sources, root_build_dir)

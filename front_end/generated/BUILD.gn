@@ -7,10 +7,10 @@ import("../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_module("generated") {
   sources = [
-    "ARIAProperties.js",
+    "ARIAProperties.ts",
     "Deprecation.ts",
     "InspectorBackendCommands.ts",
-    "SupportedCSSProperties.js",
+    "SupportedCSSProperties.ts",
     "protocol.ts",
   ]
 

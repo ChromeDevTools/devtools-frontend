@@ -80,16 +80,17 @@ export async function createTargetUniverse(
     overrideAutoStartModels: options?.overrideAutoStartModels,
   });
 
+  const connection = new PuppeteerDevToolsConnection(session as unknown as
+                                                     ConstructorParameters<typeof PuppeteerDevToolsConnection>[0]);
+
   const cleanup = () => {
+    connection.dispose('Target universe cleanup');
     for (const key of Object.keys(RootModule.Runtime.hostConfig)) {
       delete (RootModule.Runtime.hostConfig as Record<string, unknown>)[key];
     }
     Object.assign(RootModule.Runtime.hostConfig, originalHostConfig);
     Host.InspectorFrontendHost.installInspectorFrontendHost(originalInspectorFrontendHost);
   };
-
-  const connection = new PuppeteerDevToolsConnection(session as unknown as
-                                                     ConstructorParameters<typeof PuppeteerDevToolsConnection>[0]);
   const targetManager = universe.context.get(SDKModule.TargetManager.TargetManager);
 
   const target = targetManager.createTarget(

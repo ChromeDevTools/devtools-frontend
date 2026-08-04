@@ -2708,6 +2708,7 @@ export const knownContextValues = new Set([
   'math-shift',
   'math-style',
   'max-block-size',
+  'max-content-sizing',
   'max-height',
   'max-inline-size',
   'max-lines',

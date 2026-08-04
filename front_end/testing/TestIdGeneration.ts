@@ -8,10 +8,9 @@ const replacements: Record<string, string|undefined> = {
   '\t': '_tab_',
   '\x00': '_null_',
   '\x07': '_bell_',
-  '"': '_dblquote_',
 };
 
-const nonPrintRegex = /\p{C}|"/gu;
+const nonPrintRegex = /[^\x20-\x7E]/ug;
 
 function replaceNonPrintable(str: string) {
   return str.replace(nonPrintRegex, match => {
@@ -20,7 +19,7 @@ function replaceNonPrintable(str: string) {
 }
 
 export function escapeTestIdBlock(block: string): string {
-  return replaceNonPrintable(block.toLowerCase().replace(/\s+/g, '_').replace(/:/g, '_'));
+  return replaceNonPrintable(block.toLowerCase()).replace(/"/g, '_dblquote_').replace(/\s+/g, '_').replace(/:/g, '_');
 }
 
 /**
@@ -34,8 +33,16 @@ export function computeBuildTestId(file: string, titlePath: string[]) {
   return exactTestId;
 }
 
-export function generateExactTestId(genDir: string, file: string, titlePath: string[]):
-    {exactTestId: string, coarseName: string, fineName: string, caseName: string} {
+export function generateExactTestId(
+    genDir: string,
+    file: string,
+    titlePath: string[],
+    ): {
+  exactTestId: string,
+  coarseName: string,
+  fineName: string,
+  caseName: string,
+} {
   const blocks = titlePath.map(escapeTestIdBlock);
   const caseName = blocks.join(':');
 

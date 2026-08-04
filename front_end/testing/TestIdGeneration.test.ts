@@ -26,12 +26,11 @@ describe('TestIdGeneration', () => {
 
     it('replaces specific non-printable characters', () => {
       // \n, \r, and \t are matched by \s+ and replaced by underscore before replaceNonPrintable
-      assert.strictEqual(escapeTestIdBlock('a\nb'), 'a_b');
-      assert.strictEqual(escapeTestIdBlock('a\rb'), 'a_b');
-      assert.strictEqual(escapeTestIdBlock('a\tb'), 'a_b');
+      assert.strictEqual(escapeTestIdBlock('a\nb'), 'a_lf_b');
+      assert.strictEqual(escapeTestIdBlock('a\rb'), 'a_cr_b');
+      assert.strictEqual(escapeTestIdBlock('a\tb'), 'a_tab_b');
       assert.strictEqual(escapeTestIdBlock('a\x00b'), 'a_null_b');
       assert.strictEqual(escapeTestIdBlock('a\x07b'), 'a_bell_b');
-      assert.strictEqual(escapeTestIdBlock('a"b'), 'a_dblquote_b');
     });
 
     it('strips other non-printable characters', () => {
@@ -39,8 +38,19 @@ describe('TestIdGeneration', () => {
       assert.strictEqual(escapeTestIdBlock('a\x08b'), 'ab');
     });
 
+    it('replaces double quote characters', () => {
+      assert.strictEqual(escapeTestIdBlock('a"b'), 'a_dblquote_b');
+    });
+
     it('handles combinations of replacements', () => {
-      assert.strictEqual(escapeTestIdBlock('  HELLO: world\n'), '_hello__world_');
+      assert.strictEqual(escapeTestIdBlock('  HELLO: world\n'), '_hello__world_lf_');
+    });
+
+    it('handles strange dashes correctly', () => {
+      assert.strictEqual(escapeTestIdBlock('PerformanceAgent – call tree focus'), 'performanceagent_call_tree_focus');
+      assert.strictEqual(escapeTestIdBlock('PerformanceAgent — call tree focus'), 'performanceagent_call_tree_focus');
+      assert.strictEqual(escapeTestIdBlock('PerformanceAgent ⸺ call tree focus'), 'performanceagent_call_tree_focus');
+      assert.strictEqual(escapeTestIdBlock('PerformanceAgent ⸻ call tree focus'), 'performanceagent_call_tree_focus');
     });
   });
 

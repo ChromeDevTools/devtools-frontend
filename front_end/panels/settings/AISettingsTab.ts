@@ -250,7 +250,8 @@ interface SettingItem {
 
 interface AiSettingParams {
   settingName: Platform.UIString.LocalizedString;
-  setting?: Common.Settings.Setting<boolean>;
+  setting?: Common.Settings.Setting<boolean>|AiAssistanceModel.AiSetting.AiSetting<boolean>;
+  disabledReasons?: Platform.UIString.LocalizedString[];
   iconName: string;
   settingDescription: Platform.UIString.LocalizedString;
   enableSettingText: Common.UIString.LocalizedString;
@@ -320,6 +321,9 @@ export const AI_SETTINGS_TAB_DEFAULT_VIEW: View = (input, _output, target): void
       open: settingData.settingExpandState.isSettingExpanded,
     };
     const tabindex = settingData.settingExpandState.isSettingExpanded ? '0' : '-1';
+    const isSettingDisabled = isDisabled ||
+        Boolean(settingData.disabledReasons?.length) ||
+        Boolean(typeof settingData.setting?.disabled === 'function' ? settingData.setting.disabled() : settingData.setting?.disabled);
     return html`
       <div class="accordion-header" @click=${input.expandSetting.bind(this, settingName)}>
         <div class="icon-container centered">
@@ -350,9 +354,9 @@ export const AI_SETTINGS_TAB_DEFAULT_VIEW: View = (input, _output, target): void
         @click=${settingData.setting ? input.toggleSetting.bind(this, settingName) : nothing}
       >
         <devtools-switch
-          .checked=${isChecked && !isDisabled}
+          .checked=${isChecked && !isSettingDisabled}
           .jslogContext=${settingName}
-          .disabled=${isDisabled || !settingData.setting}
+          .disabled=${isSettingDisabled || !settingData.setting}
           .label=${disabledReasonsJoined || settingData.enableSettingText}
           data-testid=${settingData.enableSettingText}
           @switchchange=${settingData.setting ? input.toggleSetting.bind(this, settingName) : nothing}
@@ -400,7 +404,7 @@ export class AISettingsTab extends UI.Widget.VBox {
   #view: View;
   #consoleInsightsSetting?: Common.Settings.Setting<boolean>;
   #aiAnnotationsSetting?: Common.Settings.Setting<boolean>;
-  #aiAssistanceSetting?: Common.Settings.Setting<boolean>;
+  #aiAssistanceSetting: AiAssistanceModel.AiSetting.AiSetting<boolean>;
   #aiCodeCompletionSetting?: Common.Settings.Setting<boolean>;
   #aidaAvailability = Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL;
   #boundOnAidaAvailabilityChange:
@@ -417,11 +421,11 @@ export class AISettingsTab extends UI.Widget.VBox {
     } catch {
       this.#consoleInsightsSetting = undefined;
     }
-    try {
-      this.#aiAssistanceSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('ai-assistance-enabled');
-    } catch {
-      this.#aiAssistanceSetting = undefined;
-    }
+    this.#aiAssistanceSetting = new AiAssistanceModel.AiSetting.AiSetting(
+        AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor,
+        Host.AidaClient.HostConfigTracker.instance(),
+        Common.Settings.Settings.instance(),
+    );
 
     if (Root.Runtime.hostConfig.devToolsAiGeneratedTimelineLabels?.enabled) {
       // Get an existing setting or, if it does not exist, create a new one.
@@ -481,11 +485,7 @@ export class AISettingsTab extends UI.Widget.VBox {
           Platform.assertNever(precondition, `Unknown precondition: ${precondition}`);
       }
     }
-    const availability =
-        AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor.isAvailable(Root.Runtime.hostConfig);
-    const settingDisabledReasons = availability.status === Common.Settings.SettingAvailability.DISABLED ?
-        this.#mapSettingDisabledReasons(availability.reason) :
-        [];
+    const settingDisabledReasons = this.#mapSettingDisabledReasons(this.#aiAssistanceSetting.disabledReasons);
     return [...mappedReasons, ...settingDisabledReasons];
   }
 
@@ -551,11 +551,12 @@ export class AISettingsTab extends UI.Widget.VBox {
       this.#settingToParams.set('console-insights-enabled', consoleInsightsData);
     }
 
-    if (this.#aiAssistanceSetting) {
+    if (!this.#aiAssistanceSetting.unavailable) {
       const aiAssistanceData: AiSettingParams = {
         settingName: i18n.i18n.lockedString(AiAssistanceModel.AiUtils.isGeminiBranding() ? 'Gemini in Chrome DevTools' :
                                                                                            'AI assistance'),
         setting: this.#aiAssistanceSetting,
+        disabledReasons: this.#mapSettingDisabledReasons(this.#aiAssistanceSetting.disabledReasons),
         iconName: AiAssistanceModel.AiUtils.getIconName(),
         settingDescription: this.#getAiAssistanceSettingDescription(),
         enableSettingText: i18nString(UIStrings.enableAiAssistance),

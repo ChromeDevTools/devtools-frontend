@@ -594,7 +594,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #conversationSummary?: AiAssistanceModel.ConversationSummary.ConversationSummary;
   #viewOutput: PanelViewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
-  #aiAssistanceEnabledSetting: Common.Settings.Setting<boolean>|undefined;
+  #aiAssistanceEnabledSetting: AiAssistanceModel.AiSetting.AiSetting<boolean>;
   #changeManager = new AiAssistanceModel.ChangeManager.ChangeManager();
   #mutex = new Common.Mutex.Mutex();
 
@@ -860,13 +860,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.requestUpdate();
   }
 
-  #getAiAssistanceEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
-    try {
-      return Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled') as
-          Common.Settings.Setting<boolean>;
-    } catch {
-      return;
-    }
+  #getAiAssistanceEnabledSetting(): AiAssistanceModel.AiSetting.AiSetting<boolean> {
+    return new AiAssistanceModel.AiSetting.AiSetting(
+        AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor,
+        Host.AidaClient.HostConfigTracker.instance(),
+        Common.Settings.Settings.instance(),
+    );
   }
 
   static async instance(opts: {
@@ -1061,7 +1060,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().addEventListener(
         AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED, this.#onHistoryDeleted, this);
-    this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
+    this.#aiAssistanceEnabledSetting.addEventListener(AiAssistanceModel.AiSetting.Events.CHANGED, this.requestUpdate,
+                                                      this);
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
     const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
@@ -1107,7 +1107,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     super.willHide();
     AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().removeEventListener(
         AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED, this.#onHistoryDeleted, this);
-    this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
+    this.#aiAssistanceEnabledSetting.removeEventListener(AiAssistanceModel.AiSetting.Events.CHANGED, this.requestUpdate,
+                                                         this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.removeEventListener(

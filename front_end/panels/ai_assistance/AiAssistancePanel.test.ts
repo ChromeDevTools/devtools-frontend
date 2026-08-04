@@ -187,10 +187,13 @@ describeWithEnvironment('AI Assistance Panel', () => {
 
     it('should render the disabled view when the setting is disabled', async () => {
       Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').set(true);
-      Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').setDisabled(true);
+      const stub = sinon.stub(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor, 'isAvailable').returns({
+        status: Common.Settings.SettingAvailability.DISABLED,
+        reason: [AiAssistanceModel.AiUtils.DisabledReason.POLICY_RESTRICTED],
+      });
       const {view} = await createAiAssistancePanel();
       assert(view.input.state === AiAssistancePanel.ViewState.DISABLED_VIEW);
-      Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').setDisabled(false);
+      stub.restore();
     });
 
     it('should render the disabled view when blocked by age', async () => {
@@ -670,11 +673,22 @@ describeWithEnvironment('AI Assistance Panel', () => {
 
       nextInput.props.onTextChange('test text');
 
-      Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').setDisabled(true);
+      const stub = sinon.stub(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor, 'isAvailable').returns({
+        status: Common.Settings.SettingAvailability.DISABLED,
+        reason: [AiAssistanceModel.AiUtils.DisabledReason.POLICY_RESTRICTED],
+      });
+      Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
+          Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+          Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      );
       nextInput = await view.nextInput;
       assert(nextInput.state === AiAssistancePanel.ViewState.DISABLED_VIEW);
 
-      Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').setDisabled(false);
+      stub.restore();
+      Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
+          Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+          Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      );
       nextInput = await view.nextInput;
       assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
       assert.strictEqual(nextInput.props.textInputValue, 'test text');
@@ -914,12 +928,17 @@ describeWithEnvironment('AI Assistance Panel', () => {
 
     it('should not show chat, delete history and export conversation actions when ai assistance enabled setting is disabled',
        async () => {
-         Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').setDisabled(true);
+         const stub =
+             sinon.stub(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor, 'isAvailable').returns({
+               status: Common.Settings.SettingAvailability.DISABLED,
+               reason: [AiAssistanceModel.AiUtils.DisabledReason.POLICY_RESTRICTED],
+             });
 
          const {view} = await createAiAssistancePanel();
 
          assert.isFalse(view.input.showChatActions);
          assert.isFalse(view.input.showActiveConversationActions);
+         stub.restore();
        });
 
     it('should not show chat, delete history and export conversation actions when ai assistance setting is marked as false',

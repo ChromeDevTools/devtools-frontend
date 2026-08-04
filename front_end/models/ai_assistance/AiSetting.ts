@@ -152,6 +152,14 @@ export class AiSetting<ValueT> extends Common.ObjectWrapper.ObjectWrapper<EventT
     this.#setting?.set(value);
   }
 
+  get(): ValueT|undefined {
+    return this.getIfNotDisabled();
+  }
+
+  set(value: ValueT): void {
+    this.setIfNotDisabled(value);
+  }
+
   #onSettingChanged(): void {
     this.dispatchEventToListeners(Events.CHANGED);
   }

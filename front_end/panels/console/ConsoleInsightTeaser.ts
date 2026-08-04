@@ -468,8 +468,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
 
   #onTellMeMoreClick(event: Event): void {
     event.stopPropagation();
-    if (this.#getConsoleInsightsEnabledSetting()?.getIfNotDisabled() &&
-        this.#getOnboardingCompletedSetting()?.getIfNotDisabled()) {
+    if (this.#getConsoleInsightsEnabledSetting()?.getIfNotDisabled() && this.#getOnboardingCompletedSetting()?.get()) {
       this.#executeConsoleInsightAction();
       return;
     }

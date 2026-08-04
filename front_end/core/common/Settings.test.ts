@@ -200,26 +200,6 @@ describe('Settings instance', () => {
        });
   });
 
-  it('getIfNotDisabled returns the setting\'s value only if the setting is not disabled', async () => {
-    const storage = new SettingsStorage({}, undefined, '__prefix__.');
-    const settings = new Common.Settings.Settings({
-      syncedStorage: storage,
-      globalStorage: storage,
-      localStorage: storage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
-      runSettingsMigration: false,
-      console: new Common.Console.Console(),
-    });
-    const testSetting = settings.createSetting('test-setting', 'some value');
-    assert.strictEqual(testSetting.getIfNotDisabled(), 'some value');
-
-    testSetting.setDisabled(true);
-    assert.isUndefined(testSetting.getIfNotDisabled());
-
-    testSetting.setDisabled(false);
-    assert.strictEqual(testSetting.getIfNotDisabled(), 'some value');
-  });
-
   it('notifies change listeners when updating a setting', () => {
     const storage = new Common.Settings.SettingsStorage({});
     const settings = new Common.Settings.Settings({

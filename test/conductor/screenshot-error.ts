@@ -137,7 +137,7 @@ export class ScreenshotError extends Error {
    */
   private static stashArtifact(originalFile: string, tag: string): string {
     if (!TestConfig.isLuci) {
-      return '';
+      return originalFile;
     }
     const stashedFileName = tag + '-' + path.basename(originalFile);
 

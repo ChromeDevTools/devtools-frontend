@@ -640,6 +640,30 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertIn('expected_image', artifacts)
         self.assertIn('image_diff', artifacts)
 
+    def test_unit_screenshot_diff_local(self):
+        import sys
+        if sys.platform != 'linux':
+            return
+        abs_test_file = self._resolve_test_file(
+            "test/harness/unit/screenshot_diff.test.ts")
+        cmd = [
+            "node_modules/karma/bin/karma", "start",
+            os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
+            abs_test_file
+        ]
+        process = subprocess.run(cmd, capture_output=True, text=True)
+        self.assertEqual(process.returncode, 1)
+
+        errors_js_path = os.path.join(self.gen_dir,
+                                      "test/.generated/errors.js")
+        self.assertTrue(os.path.exists(errors_js_path),
+                        "errors.js should exist")
+        with open(errors_js_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        self.assertIn("window.SCREENSHOT_ERRORS =", content)
+        self.assertNotIn('"filePath":""', content,
+                         "Screenshot error file paths should not be empty")
+
     def test_unit_repeat(self):
         abs_test_file = self._resolve_test_file(
             "test/harness/unit/unit.test.ts")

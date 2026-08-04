@@ -1248,7 +1248,7 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
       }
     } catch {
       // in the hosted mode, when the DeviceMode toolbar is not supported,
-      // Emulation.DeviceModeWrapper.DeviceModeWrapper.instance throws an exception.
+      // Emulation.DeviceModeView.DeviceModeView.instance throws an exception.
     }
   }
 

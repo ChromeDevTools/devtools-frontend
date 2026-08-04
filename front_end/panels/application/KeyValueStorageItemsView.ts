@@ -280,6 +280,7 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
       },
     };
     this.#view(viewInput, viewOutput, this.contentElement);
+    this.doResize();
   }
 
   protected isAiButtonEnabled(): boolean {

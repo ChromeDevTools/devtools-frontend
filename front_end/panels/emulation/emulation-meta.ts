@@ -79,7 +79,7 @@ UI.ActionRegistration.registerActionExtension({
   toggleable: true,
   async loadActionDelegate() {
     const Emulation = await loadEmulationModule();
-    return new Emulation.DeviceModeWrapper.ActionDelegate();
+    return new Emulation.DeviceModeView.ActionDelegate();
   },
   condition: Root.Runtime.conditions.canDock,
   title: i18nLazyString(UIStrings.toggleDeviceToolbar),
@@ -101,7 +101,7 @@ UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.SCREENSHOT,
   async loadActionDelegate() {
     const Emulation = await loadEmulationModule();
-    return new Emulation.DeviceModeWrapper.ActionDelegate();
+    return new Emulation.DeviceModeView.ActionDelegate();
   },
   condition: Root.Runtime.conditions.canDock,
   title: i18nLazyString(UIStrings.captureScreenshot),
@@ -112,7 +112,7 @@ UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.SCREENSHOT,
   async loadActionDelegate() {
     const Emulation = await loadEmulationModule();
-    return new Emulation.DeviceModeWrapper.ActionDelegate();
+    return new Emulation.DeviceModeView.ActionDelegate();
   },
   condition: Root.Runtime.conditions.canDock,
   title: i18nLazyString(UIStrings.captureFullSizeScreenshot),
@@ -123,7 +123,7 @@ UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.SCREENSHOT,
   async loadActionDelegate() {
     const Emulation = await loadEmulationModule();
-    return new Emulation.DeviceModeWrapper.ActionDelegate();
+    return new Emulation.DeviceModeView.ActionDelegate();
   },
   condition: Root.Runtime.conditions.canDock,
   title: i18nLazyString(UIStrings.captureNodeScreenshot),

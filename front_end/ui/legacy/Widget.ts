@@ -1144,8 +1144,12 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
   }
 
   setMinimumAndPreferredSizes(width: number, height: number, preferredWidth: number, preferredHeight: number): void {
-    this.#constraints =
+    const newConstraints =
         new Geometry.Constraints(new Geometry.Size(width, height), new Geometry.Size(preferredWidth, preferredHeight));
+    if (this.#constraints?.isEqual(newConstraints)) {
+      return;
+    }
+    this.#constraints = newConstraints;
     this.invalidateConstraints();
   }
 
@@ -1154,7 +1158,11 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
   }
 
   set minimumSize(size: Geometry.Size) {
-    this.#constraints = new Geometry.Constraints(size);
+    const newConstraints = new Geometry.Constraints(size);
+    if (this.#constraints?.isEqual(newConstraints)) {
+      return;
+    }
+    this.#constraints = newConstraints;
     this.invalidateConstraints();
   }
 

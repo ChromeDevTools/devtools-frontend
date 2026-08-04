@@ -9,14 +9,14 @@ import type * as Foundation from '../../foundation/foundation.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {DeviceModeWrapper} from './DeviceModeWrapper.js';
+import {DeviceModeView} from './DeviceModeView.js';
 import {type Bounds, Events, InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
 
 let appInstance: AdvancedApp|null = null;
 
 export class AdvancedApp implements UI.App.App {
   private rootSplitWidget!: UI.SplitWidget.SplitWidget;
-  private deviceModeView!: DeviceModeWrapper;
+  private deviceModeView!: DeviceModeView;
   private inspectedPagePlaceholder!: InspectedPagePlaceholder;
   private toolboxWindow?: Window|null;
   private toolboxRootView?: UI.RootView.RootView;
@@ -58,7 +58,7 @@ export class AdvancedApp implements UI.App.App {
 
     this.inspectedPagePlaceholder = InspectedPagePlaceholder.instance();
     this.inspectedPagePlaceholder.addEventListener(Events.UPDATE, this.onSetInspectedPageBounds.bind(this), this);
-    this.deviceModeView = new DeviceModeWrapper();
+    this.deviceModeView = new DeviceModeView();
 
     UI.DockController.DockController.instance().addEventListener(
         UI.DockController.Events.BEFORE_DOCK_SIDE_CHANGED, this.onBeforeDockSideChange, this);

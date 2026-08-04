@@ -1708,7 +1708,6 @@ grd_files_unbundled_sources = [
   "front_end/panels/emulation/AdvancedApp.js",
   "front_end/panels/emulation/DeviceModeToolbar.js",
   "front_end/panels/emulation/DeviceModeView.js",
-  "front_end/panels/emulation/DeviceModeWrapper.js",
   "front_end/panels/emulation/InspectedPagePlaceholder.js",
   "front_end/panels/emulation/MediaQueryInspector.js",
   "front_end/panels/emulation/deviceModeView.css.js",

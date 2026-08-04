@@ -2369,7 +2369,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     contextMenu.viewSection().appendItem(i18nString(UIStrings.switchToAccessibilityTree),
                                          () => ElementsPanel.instance().toggleAccessibilityTree(),
                                          {jslogContext: 'switch-to-accessibility-tree'});
-    const deviceModeWrapperAction = new Emulation.DeviceModeWrapper.ActionDelegate();
+    const deviceModeWrapperAction = new Emulation.DeviceModeView.ActionDelegate();
     contextMenu.viewSection().appendItem(
         i18nString(UIStrings.captureNodeScreenshot),
         deviceModeWrapperAction.handleAction.bind(

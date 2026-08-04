@@ -20,7 +20,7 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<Ev
   }
 
   static instance(opts: {
-    forceNew: null,
+    forceNew: boolean|null,
   } = {forceNew: null}): InspectedPagePlaceholder {
     const {forceNew} = opts;
     if (!inspectedPagePlaceholderInstance || forceNew) {

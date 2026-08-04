@@ -71,6 +71,16 @@ function fillFields(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.
   }
 }
 
+function fillCutoutRect(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
+                        values: {x?: string, y?: string, width?: string, height?: string} = {}): void {
+  fillFields(editor, {
+    'cutout-x': values.x ?? '0',
+    'cutout-y': values.y ?? '0',
+    'cutout-width': values.width ?? '162',
+    'cutout-height': values.height ?? '34',
+  });
+}
+
 interface CutoutCase {
   cutout: EmulationModel.EmulatedDevices.Cutout;
   fields: Record<string, string>;
@@ -288,6 +298,31 @@ describeWithEnvironment('DevicesSettingsTab', () => {
     });
   }
 
+  it('keeps a saved zero-valued cutout valid through the editor lifecycle', () => {
+    const tab = new DevicesSettingsTab();
+    const device = createCustomDevice();
+    device.modes[0].cutout = {
+      shape: EmulationModel.EmulatedDevices.CutoutShape.NOTCH,
+      x: 0,
+      y: 0,
+      width: 162,
+      height: 34,
+      upperRadius: 0,
+      lowerRadius: 0,
+    };
+
+    const editor = tab.beginEdit(device);
+    requestValidation(editor, device);
+
+    assert.deepEqual(
+        ['cutout-x', 'cutout-y', 'cutout-upper-radius', 'cutout-lower-radius'].map(name => input(editor, name).value),
+        ['0', '0', '0', '0']);
+    assert.strictEqual(validationErrorCount(editor), 0);
+    const commitButton =
+        editor.element.querySelector('.editor-buttons devtools-button:last-child') as HTMLElement & {disabled: boolean};
+    assert.isFalse(commitButton.disabled);
+  });
+
   it('populates saved safe-area values when editing a custom device', () => {
     const tab = new DevicesSettingsTab();
     const device = createCustomDevice();
@@ -321,8 +356,13 @@ describeWithEnvironment('DevicesSettingsTab', () => {
     const editor = tab.beginEdit(device);
 
     select(editor, 'cutout-shape').value = 'none';
+    fillFields(editor, {'cutout-x': '-1', 'cutout-radius': '-1'});
+    requestValidation(editor, device);
     tab.commitEdit(device, editor, false);
 
+    assert.notInclude(editor.element.textContent || '', 'must be an integer from 0 to 9999.');
+    assert.isUndefined(device.modes[0].safeAreaInsets);
+    assert.isUndefined(device.modes[1].safeAreaInsets);
     assert.isUndefined(device.modes[0].cutout);
   });
 
@@ -502,5 +542,228 @@ describeWithEnvironment('DevicesSettingsTab', () => {
     assert.strictEqual(validationErrorCount(editor), 2);
     assert.strictEqual(input(editor, 'safe-area-right').getAttribute('aria-invalid'), 'true');
     assert.strictEqual(input(editor, 'landscape-safe-area-bottom').getAttribute('aria-invalid'), 'true');
+  });
+
+  it('requires the base and shape-specific fields for an enabled cutout', () => {
+    const baseEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    select(baseEditor, 'cutout-shape').value = EmulationModel.EmulatedDevices.CutoutShape.PILL;
+    requestValidation(baseEditor);
+    assert.include(baseEditor.element.textContent || '', 'Cutout x is required when display cutout is enabled.');
+
+    const shapeCases: Array<{
+      shape: EmulationModel.EmulatedDevices.CutoutShape,
+      fields: Record<string, string>,
+      expectedError: string,
+    }> =
+        [
+          {
+            shape: EmulationModel.EmulatedDevices.CutoutShape.PILL,
+            fields: {},
+            expectedError: 'Pill radius is required when display cutout is enabled.',
+          },
+          {
+            shape: EmulationModel.EmulatedDevices.CutoutShape.NOTCH,
+            fields: {'cutout-lower-radius': '22'},
+            expectedError: 'Upper radius is required when display cutout is enabled.',
+          },
+          {
+            shape: EmulationModel.EmulatedDevices.CutoutShape.NOTCH,
+            fields: {'cutout-upper-radius': '5'},
+            expectedError: 'Lower radius is required when display cutout is enabled.',
+          },
+          {
+            shape: EmulationModel.EmulatedDevices.CutoutShape.CIRCLE,
+            fields: {'cutout-cy': '26', 'cutout-radius': '13'},
+            expectedError: 'Center x is required when display cutout is enabled.',
+          },
+          {
+            shape: EmulationModel.EmulatedDevices.CutoutShape.CIRCLE,
+            fields: {'cutout-cx': '27', 'cutout-radius': '13'},
+            expectedError: 'Center y is required when display cutout is enabled.',
+          },
+          {
+            shape: EmulationModel.EmulatedDevices.CutoutShape.CIRCLE,
+            fields: {'cutout-cx': '27', 'cutout-cy': '26'},
+            expectedError: 'Radius is required when display cutout is enabled.',
+          },
+        ];
+    for (const shapeCase of shapeCases) {
+      const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+      select(editor, 'cutout-shape').value = shapeCase.shape;
+      fillCutoutRect(editor);
+      fillFields(editor, shapeCase.fields);
+      requestValidation(editor);
+      assert.include(editor.element.textContent || '', shapeCase.expectedError);
+    }
+
+    const rectangleEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    select(rectangleEditor, 'cutout-shape').value = EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE;
+    fillCutoutRect(rectangleEditor);
+    fillFields(rectangleEditor, {
+      'cutout-border-radius': '-1',
+      'cutout-upper-radius': '-1',
+      'cutout-lower-radius': '-1',
+      'cutout-cx': '-1',
+      'cutout-cy': '-1',
+      'cutout-radius': '-1',
+    });
+    requestValidation(rectangleEditor);
+    assert.notInclude(rectangleEditor.element.textContent || '', 'is required when display cutout is enabled.');
+    assert.notInclude(rectangleEditor.element.textContent || '', 'must be an integer from 0 to 9999.');
+  });
+
+  it('requires positive cutout dimensions and circle radius', () => {
+    const widthEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    select(widthEditor, 'cutout-shape').value = EmulationModel.EmulatedDevices.CutoutShape.PILL;
+    fillCutoutRect(widthEditor, {width: '0', height: '37'});
+    input(widthEditor, 'cutout-border-radius').value = '19';
+    requestValidation(widthEditor);
+    assert.include(widthEditor.element.textContent || '', 'Cutout width must be a positive integer.');
+
+    const heightEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    select(heightEditor, 'cutout-shape').value = EmulationModel.EmulatedDevices.CutoutShape.PILL;
+    fillCutoutRect(heightEditor, {width: '125', height: '0'});
+    input(heightEditor, 'cutout-border-radius').value = '19';
+    requestValidation(heightEditor);
+    assert.include(heightEditor.element.textContent || '', 'Cutout height must be a positive integer.');
+
+    const circleEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    select(circleEditor, 'cutout-shape').value = EmulationModel.EmulatedDevices.CutoutShape.CIRCLE;
+    fillCutoutRect(circleEditor, {width: '55', height: '52'});
+    fillFields(circleEditor, {'cutout-cx': '27', 'cutout-cy': '26', 'cutout-radius': '0'});
+    requestValidation(circleEditor);
+    assert.include(circleEditor.element.textContent || '', 'Radius must be a positive integer.');
+  });
+
+  it('rejects invalid and out-of-range cutout values', () => {
+    const unsafeInteger = String(Number.MAX_SAFE_INTEGER + 1);
+    const infiniteInteger = '9'.repeat(309);
+    assert.isFalse(Number.isSafeInteger(Number(unsafeInteger)));
+    assert.strictEqual(Number(infiniteInteger), Infinity);
+    const invalidValues = [
+      ['cutout-x', '-1', 'Cutout x must be an integer from 0 to 9999.'],
+      ['cutout-width', '1.5', 'Cutout width must be an integer from 0 to 9999.'],
+      ['cutout-border-radius', 'not-a-number', 'Pill radius must be an integer from 0 to 9999.'],
+      ['cutout-border-radius', '10000', 'Pill radius must be an integer from 0 to 9999.'],
+      ['cutout-border-radius', unsafeInteger, 'Pill radius must be an integer from 0 to 9999.'],
+      ['cutout-upper-radius', infiniteInteger, 'Upper radius must be an integer from 0 to 9999.'],
+    ];
+    for (const [controlName, invalidValue, expectedError] of invalidValues) {
+      const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+      const shape = controlName === 'cutout-upper-radius' ? EmulationModel.EmulatedDevices.CutoutShape.NOTCH :
+                                                            EmulationModel.EmulatedDevices.CutoutShape.PILL;
+      select(editor, 'cutout-shape').value = shape;
+      fillCutoutRect(editor, {width: '125', height: '37'});
+      input(editor, 'cutout-border-radius').value = '19';
+      fillFields(editor, {'cutout-upper-radius': '5', 'cutout-lower-radius': '22'});
+      input(editor, controlName).value = invalidValue;
+      requestValidation(editor);
+      assert.include(editor.element.textContent || '', expectedError);
+      assert.strictEqual(input(editor, controlName).getAttribute('aria-invalid'), 'true');
+      const commitButton = editor.element.querySelector('.editor-buttons devtools-button:last-child') as HTMLElement &
+          {disabled: boolean};
+      assert.isTrue(commitButton.disabled);
+    }
+  });
+
+  it('clears errors from fields that become inactive after a shape change', () => {
+    const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    const shape = select(editor, 'cutout-shape');
+    shape.value = EmulationModel.EmulatedDevices.CutoutShape.CIRCLE;
+    fillCutoutRect(editor, {width: '55', height: '52'});
+    fillFields(editor, {
+      'cutout-border-radius': '19',
+      'cutout-cx': '27',
+      'cutout-cy': '26',
+      'cutout-radius': '10000',
+    });
+    requestValidation(editor);
+    assert.strictEqual(input(editor, 'cutout-radius').getAttribute('aria-invalid'), 'true');
+    assert.strictEqual(validationErrorCount(editor), 1);
+
+    shape.value = EmulationModel.EmulatedDevices.CutoutShape.PILL;
+    shape.dispatchEvent(new Event('input'));
+
+    assert.isTrue(input(editor, 'cutout-radius').hidden);
+    assert.isNull(input(editor, 'cutout-radius').getAttribute('aria-invalid'));
+    assert.strictEqual(validationErrorCount(editor), 0);
+  });
+
+  it('validates cutout geometry against the portrait device and circle cutout bounds', () => {
+    const deviceEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    select(deviceEditor, 'cutout-shape').value = EmulationModel.EmulatedDevices.CutoutShape.NOTCH;
+    fillCutoutRect(deviceEditor, {x: '300'});
+    fillFields(deviceEditor, {'cutout-upper-radius': '5', 'cutout-lower-radius': '22'});
+    requestValidation(deviceEditor);
+    assert.include(deviceEditor.element.textContent || '', 'Cutout x plus width must not exceed the device width.');
+    assert.strictEqual(validationErrorCount(deviceEditor), 1);
+    assert.strictEqual(input(deviceEditor, 'cutout-width').getAttribute('aria-invalid'), 'true');
+    assert.isNull(select(deviceEditor, 'cutout-shape').getAttribute('aria-invalid'));
+    for (const controlName of ['cutout-x', 'cutout-y', 'cutout-height', 'cutout-upper-radius', 'cutout-lower-radius']) {
+      assert.isNull(input(deviceEditor, controlName).getAttribute('aria-invalid'));
+    }
+
+    const verticalOverflowEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    select(verticalOverflowEditor, 'cutout-shape').value = EmulationModel.EmulatedDevices.CutoutShape.NOTCH;
+    fillCutoutRect(verticalOverflowEditor, {y: '820', width: '125', height: '37'});
+    fillFields(verticalOverflowEditor, {'cutout-upper-radius': '5', 'cutout-lower-radius': '22'});
+    requestValidation(verticalOverflowEditor);
+    assert.include(verticalOverflowEditor.element.textContent || '',
+                   'Cutout y plus height must not exceed the device height.');
+    assert.strictEqual(validationErrorCount(verticalOverflowEditor), 1);
+    assert.strictEqual(input(verticalOverflowEditor, 'cutout-height').getAttribute('aria-invalid'), 'true');
+    assert.isNull(input(verticalOverflowEditor, 'cutout-width').getAttribute('aria-invalid'));
+    assert.isNull(select(verticalOverflowEditor, 'cutout-shape').getAttribute('aria-invalid'));
+
+    const circleCases = [
+      {'cutout-cx': '100', 'cutout-cy': '26', 'cutout-radius': '13'},
+      {'cutout-cx': '27', 'cutout-cy': '26', 'cutout-radius': '28'},
+    ];
+    for (const circleFields of circleCases) {
+      const circleEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+      select(circleEditor, 'cutout-shape').value = EmulationModel.EmulatedDevices.CutoutShape.CIRCLE;
+      fillCutoutRect(circleEditor, {width: '55', height: '52'});
+      fillFields(circleEditor, circleFields);
+      requestValidation(circleEditor);
+      assert.include(circleEditor.element.textContent || '', 'Circle must fit within the cutout bounds.');
+      assert.notInclude(circleEditor.element.textContent || '',
+                        'Cutout x plus width must not exceed the device width.');
+      assert.notInclude(circleEditor.element.textContent || '',
+                        'Cutout y plus height must not exceed the device height.');
+      assert.strictEqual(validationErrorCount(circleEditor), 1);
+      assert.strictEqual(input(circleEditor, 'cutout-radius').getAttribute('aria-invalid'), 'true');
+      assert.isNull(select(circleEditor, 'cutout-shape').getAttribute('aria-invalid'));
+      for (const controlName of ['cutout-x', 'cutout-y', 'cutout-width', 'cutout-height', 'cutout-cx', 'cutout-cy']) {
+        assert.isNull(input(circleEditor, controlName).getAttribute('aria-invalid'));
+      }
+    }
+
+    for (const {cutout, fields} of CUTOUT_CASES) {
+      const oversizedDimensions: Array<Record<string, string>> = [{'cutout-width': '391'}, {'cutout-height': '845'}];
+      for (const oversizedDimension of oversizedDimensions) {
+        const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+        select(editor, 'cutout-shape').value = cutout.shape;
+        fillFields(editor, {...fields, ...oversizedDimension});
+        requestValidation(editor);
+        const expectedInvalidControl = 'cutout-width' in oversizedDimension ? 'cutout-width' : 'cutout-height';
+        const expectedError = 'cutout-width' in oversizedDimension ?
+            'Cutout x plus width must not exceed the device width.' :
+            'Cutout y plus height must not exceed the device height.';
+        assert.include(editor.element.textContent || '', expectedError);
+        assert.strictEqual(validationErrorCount(editor), 1);
+        assert.strictEqual(input(editor, expectedInvalidControl).getAttribute('aria-invalid'), 'true');
+        assert.isNull(select(editor, 'cutout-shape').getAttribute('aria-invalid'));
+      }
+    }
+
+    const bothAxesEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    select(bothAxesEditor, 'cutout-shape').value = EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE;
+    fillCutoutRect(bothAxesEditor, {x: '300', y: '800', width: '125', height: '100'});
+    requestValidation(bothAxesEditor);
+    assert.include(bothAxesEditor.element.textContent || '', 'Cutout x plus width must not exceed the device width.');
+    assert.include(bothAxesEditor.element.textContent || '', 'Cutout y plus height must not exceed the device height.');
+    assert.strictEqual(validationErrorCount(bothAxesEditor), 2);
+    assert.strictEqual(input(bothAxesEditor, 'cutout-width').getAttribute('aria-invalid'), 'true');
+    assert.strictEqual(input(bothAxesEditor, 'cutout-height').getAttribute('aria-invalid'), 'true');
   });
 });

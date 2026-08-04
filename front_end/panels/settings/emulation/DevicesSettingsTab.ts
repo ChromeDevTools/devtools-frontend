@@ -179,6 +179,34 @@ const UIStrings = {
    * @description Placeholder text for a custom device circular display cutout radius field.
    */
   cutoutRadius: 'Radius',
+  /**
+   * @description Error message shown when a custom display cutout field is required.
+   * @example {Cutout width} PH1
+   */
+  cutoutFieldRequired: '{PH1} is required when display cutout is enabled.',
+  /**
+   * @description Error message shown when a custom display cutout field is outside its supported integer range.
+   * @example {Cutout x} PH1
+   * @example {9999} PH2
+   */
+  cutoutValueMustBeInRange: '{PH1} must be an integer from 0 to {PH2}.',
+  /**
+   * @description Error message shown when a custom display cutout field must be positive.
+   * @example {Cutout width} PH1
+   */
+  cutoutValueMustBePositiveInteger: '{PH1} must be a positive integer.',
+  /**
+   * @description Error message shown when a custom display cutout's x coordinate plus its width exceeds the device width.
+   */
+  cutoutXAndWidthExceedDeviceWidth: 'Cutout x plus width must not exceed the device width.',
+  /**
+   * @description Error message shown when a custom display cutout's y coordinate plus its height exceeds the device height.
+   */
+  cutoutYAndHeightExceedDeviceHeight: 'Cutout y plus height must not exceed the device height.',
+  /**
+   * @description Error message shown when a circular display cutout is outside its cutout bounds.
+   */
+  circleMustFitCutoutBounds: 'Circle must fit within the cutout bounds.',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/DevicesSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -200,6 +228,23 @@ function parseOptionalNonNegativeInteger(value: string): number|null {
 }
 
 const NO_CUSTOM_CUTOUT = 'none';
+
+type DeviceEditorValidator = (item: EmulationModel.EmulatedDevices.EmulatedDevice, index: number,
+                              input: UI.ListWidget.EditorControl) => UI.ListWidget.ValidatorResult;
+
+interface CutoutFieldValidators {
+  shape: DeviceEditorValidator;
+  x: DeviceEditorValidator;
+  y: DeviceEditorValidator;
+  width: DeviceEditorValidator;
+  height: DeviceEditorValidator;
+  pillRadius: DeviceEditorValidator;
+  notchUpperRadius: DeviceEditorValidator;
+  notchLowerRadius: DeviceEditorValidator;
+  circleCenterX: DeviceEditorValidator;
+  circleCenterY: DeviceEditorValidator;
+  circleRadius: DeviceEditorValidator;
+}
 
 export class DevicesSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<EmulationModel.EmulatedDevices.EmulatedDevice> {
@@ -612,7 +657,19 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
                               portraitSafeAreaValidator);
     this.appendSafeAreaFields(editor, deviceFields, i18nString(UIStrings.landscapeSafeArea), 'landscape-',
                               landscapeSafeAreaValidator);
-    this.appendCutoutFields(editor, content, cutoutShapeValidator, cutoutValidator);
+    this.appendCutoutFields(editor, content, {
+      shape: cutoutShapeValidator,
+      x: cutoutXValidator,
+      y: cutoutYValidator,
+      width: cutoutWidthValidator,
+      height: cutoutHeightValidator,
+      pillRadius: cutoutPillRadiusValidator,
+      notchUpperRadius: cutoutNotchUpperRadiusValidator,
+      notchLowerRadius: cutoutNotchLowerRadiusValidator,
+      circleCenterX: cutoutCircleCenterXValidator,
+      circleCenterY: cutoutCircleCenterYValidator,
+      circleRadius: cutoutCircleRadiusValidator,
+    });
 
     const uaStringFields = content.createChild('div', 'devices-edit-fields');
     UI.UIUtils.createTextChild(uaStringFields.createChild('b'), i18nString(UIStrings.userAgentString));
@@ -700,6 +757,15 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       return value && value > 0 ? value : null;
     }
 
+    function requiredIntegerValue(controlName: string): number|null {
+      const value = editor.control(controlName).value.trim();
+      return value ? parseOptionalNonNegativeInteger(value) : null;
+    }
+
+    function controlLabel(input: UI.ListWidget.EditorControl): string {
+      return input.getAttribute('aria-label') || input.getAttribute('placeholder') || '';
+    }
+
     function safeAreaValidator(controlPrefix: string, orientationLabel: string, widthControlName: string,
                                heightControlName: string,
                                input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
@@ -752,7 +818,135 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       return {valid: true};
     }
 
-    function cutoutValidator(): UI.ListWidget.ValidatorResult {
+    function cutoutValueValidator(input: UI.ListWidget.EditorControl,
+                                  mustBePositive = false): UI.ListWidget.ValidatorResult {
+      const label = controlLabel(input);
+      const value = input.value.trim();
+      if (!value) {
+        return {valid: false, errorMessage: i18nString(UIStrings.cutoutFieldRequired, {PH1: label})};
+      }
+      const numericValue = parseOptionalNonNegativeInteger(value);
+      if (numericValue === null) {
+        return {
+          valid: false,
+          errorMessage: i18nString(UIStrings.cutoutValueMustBeInRange, {
+            PH1: label,
+            PH2: EmulationModel.DeviceModeModel.MaxDeviceSize,
+          }),
+        };
+      }
+      if (mustBePositive && numericValue === 0) {
+        return {valid: false, errorMessage: i18nString(UIStrings.cutoutValueMustBePositiveInteger, {PH1: label})};
+      }
+      return {valid: true};
+    }
+
+    function isCutoutFieldActive(shape?: EmulationModel.EmulatedDevices.CutoutShape): boolean {
+      const selectedShape = editor.control('cutout-shape').value;
+      return selectedShape !== NO_CUSTOM_CUTOUT && (shape === undefined || selectedShape === shape);
+    }
+
+    function cutoutXValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                              input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      return isCutoutFieldActive() ? cutoutValueValidator(input) : {valid: true};
+    }
+
+    function cutoutYValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                              input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      return isCutoutFieldActive() ? cutoutValueValidator(input) : {valid: true};
+    }
+
+    function cutoutWidthValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                                  input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      if (!isCutoutFieldActive()) {
+        return {valid: true};
+      }
+      const validation = cutoutValueValidator(input, true);
+      if (!validation.valid) {
+        return validation;
+      }
+
+      const cutoutX = requiredIntegerValue('cutout-x');
+      const cutoutWidth = positiveIntegerValue('cutout-width');
+      const width = positiveIntegerValue('width');
+      if (width !== null && cutoutX !== null && cutoutWidth !== null && cutoutX + cutoutWidth > width) {
+        return {valid: false, errorMessage: i18nString(UIStrings.cutoutXAndWidthExceedDeviceWidth)};
+      }
+      return {valid: true};
+    }
+
+    function cutoutHeightValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                                   input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      if (!isCutoutFieldActive()) {
+        return {valid: true};
+      }
+      const validation = cutoutValueValidator(input, true);
+      if (!validation.valid) {
+        return validation;
+      }
+
+      const cutoutY = requiredIntegerValue('cutout-y');
+      const cutoutHeight = positiveIntegerValue('cutout-height');
+      const height = positiveIntegerValue('height');
+      if (height !== null && cutoutY !== null && cutoutHeight !== null && cutoutY + cutoutHeight > height) {
+        return {valid: false, errorMessage: i18nString(UIStrings.cutoutYAndHeightExceedDeviceHeight)};
+      }
+      return {valid: true};
+    }
+
+    function cutoutPillRadiusValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                                       input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      return isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.PILL) ? cutoutValueValidator(input) :
+                                                                                    {valid: true};
+    }
+
+    function cutoutNotchUpperRadiusValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                                             input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      return isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.NOTCH) ? cutoutValueValidator(input) :
+                                                                                     {valid: true};
+    }
+
+    function cutoutNotchLowerRadiusValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                                             input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      return isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.NOTCH) ? cutoutValueValidator(input) :
+                                                                                     {valid: true};
+    }
+
+    function cutoutCircleCenterXValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                                          input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      return isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.CIRCLE) ? cutoutValueValidator(input) :
+                                                                                      {valid: true};
+    }
+
+    function cutoutCircleCenterYValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                                          input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      return isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.CIRCLE) ? cutoutValueValidator(input) :
+                                                                                      {valid: true};
+    }
+
+    function cutoutCircleRadiusValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
+                                         input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      if (!isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.CIRCLE)) {
+        return {valid: true};
+      }
+      const validation = cutoutValueValidator(input, true);
+      if (!validation.valid) {
+        return validation;
+      }
+
+      const cutoutX = requiredIntegerValue('cutout-x');
+      const cutoutY = requiredIntegerValue('cutout-y');
+      const cutoutWidth = positiveIntegerValue('cutout-width');
+      const cutoutHeight = positiveIntegerValue('cutout-height');
+      const centerX = requiredIntegerValue('cutout-cx');
+      const centerY = requiredIntegerValue('cutout-cy');
+      const radius = positiveIntegerValue('cutout-radius');
+      if (cutoutX !== null && cutoutY !== null && cutoutWidth !== null && cutoutHeight !== null && centerX !== null &&
+          centerY !== null && radius !== null &&
+          (centerX - radius < cutoutX || centerX + radius > cutoutX + cutoutWidth || centerY - radius < cutoutY ||
+           centerY + radius > cutoutY + cutoutHeight)) {
+        return {valid: false, errorMessage: i18nString(UIStrings.circleMustFitCutoutBounds)};
+      }
       return {valid: true};
     }
   }
@@ -779,12 +973,8 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
                                                i18nString(UIStrings.safeAreaBottom), safeAreaValidator));
   }
 
-  private appendCutoutFields(
-      editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>, content: Element,
-      cutoutShapeValidator: (item: EmulationModel.EmulatedDevices.EmulatedDevice, index: number,
-                             input: UI.ListWidget.EditorControl) => UI.ListWidget.ValidatorResult,
-      cutoutValidator: (item: EmulationModel.EmulatedDevices.EmulatedDevice, index: number,
-                        input: UI.ListWidget.EditorControl) => UI.ListWidget.ValidatorResult): void {
+  private appendCutoutFields(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
+                             content: Element, validators: CutoutFieldValidators): void {
     const cutoutFields = content.createChild('div', 'devices-edit-fields');
     cutoutFields.classList.add('devices-edit-cutout-fields');
     UI.ARIAUtils.markAsGroup(cutoutFields);
@@ -800,7 +990,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE,
     ];
     const shapeControl =
-        editor.createSelect('cutout-shape', shapeOptions, cutoutShapeValidator, i18nString(UIStrings.displayCutout));
+        editor.createSelect('cutout-shape', shapeOptions, validators.shape, i18nString(UIStrings.displayCutout));
     shapeControl.options[0].textContent = i18nString(UIStrings.noDisplayCutout);
     shapeControl.options[1].textContent = i18nString(UIStrings.pillDisplayCutout);
     shapeControl.options[2].textContent = i18nString(UIStrings.notchDisplayCutout);
@@ -810,25 +1000,26 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     shapeControl.addEventListener('input', () => this.updateCutoutFieldsVisibility(editor), false);
 
     const rectRow = cutoutFields.createChild('div', 'hbox devices-edit-cutout-rect-row');
-    rectRow.appendChild(editor.createInput('cutout-x', 'text', i18nString(UIStrings.cutoutX), cutoutValidator));
-    rectRow.appendChild(editor.createInput('cutout-y', 'text', i18nString(UIStrings.cutoutY), cutoutValidator));
-    rectRow.appendChild(editor.createInput('cutout-width', 'text', i18nString(UIStrings.cutoutWidth), cutoutValidator));
+    rectRow.appendChild(editor.createInput('cutout-x', 'text', i18nString(UIStrings.cutoutX), validators.x));
+    rectRow.appendChild(editor.createInput('cutout-y', 'text', i18nString(UIStrings.cutoutY), validators.y));
     rectRow.appendChild(
-        editor.createInput('cutout-height', 'text', i18nString(UIStrings.cutoutHeight), cutoutValidator));
+        editor.createInput('cutout-width', 'text', i18nString(UIStrings.cutoutWidth), validators.width));
+    rectRow.appendChild(
+        editor.createInput('cutout-height', 'text', i18nString(UIStrings.cutoutHeight), validators.height));
 
     const radiusRow = cutoutFields.createChild('div', 'hbox devices-edit-cutout-radius-row');
+    radiusRow.appendChild(editor.createInput('cutout-border-radius', 'text', i18nString(UIStrings.cutoutBorderRadius),
+                                             validators.pillRadius));
+    radiusRow.appendChild(editor.createInput('cutout-upper-radius', 'text', i18nString(UIStrings.cutoutUpperRadius),
+                                             validators.notchUpperRadius));
+    radiusRow.appendChild(editor.createInput('cutout-lower-radius', 'text', i18nString(UIStrings.cutoutLowerRadius),
+                                             validators.notchLowerRadius));
     radiusRow.appendChild(
-        editor.createInput('cutout-border-radius', 'text', i18nString(UIStrings.cutoutBorderRadius), cutoutValidator));
+        editor.createInput('cutout-cx', 'text', i18nString(UIStrings.cutoutCenterX), validators.circleCenterX));
     radiusRow.appendChild(
-        editor.createInput('cutout-upper-radius', 'text', i18nString(UIStrings.cutoutUpperRadius), cutoutValidator));
+        editor.createInput('cutout-cy', 'text', i18nString(UIStrings.cutoutCenterY), validators.circleCenterY));
     radiusRow.appendChild(
-        editor.createInput('cutout-lower-radius', 'text', i18nString(UIStrings.cutoutLowerRadius), cutoutValidator));
-    radiusRow.appendChild(
-        editor.createInput('cutout-cx', 'text', i18nString(UIStrings.cutoutCenterX), cutoutValidator));
-    radiusRow.appendChild(
-        editor.createInput('cutout-cy', 'text', i18nString(UIStrings.cutoutCenterY), cutoutValidator));
-    radiusRow.appendChild(
-        editor.createInput('cutout-radius', 'text', i18nString(UIStrings.cutoutRadius), cutoutValidator));
+        editor.createInput('cutout-radius', 'text', i18nString(UIStrings.cutoutRadius), validators.circleRadius));
     this.updateCutoutFieldsVisibility(editor);
   }
 }

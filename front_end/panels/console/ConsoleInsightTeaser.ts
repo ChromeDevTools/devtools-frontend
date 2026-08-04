@@ -437,10 +437,12 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #getConsoleInsightsEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
-    const result = Common.Settings.Settings.instance().maybeResolve(
-        AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor);
-    return 'setting' in result ? (result.setting as Common.Settings.Setting<boolean>) : undefined;
+  #getConsoleInsightsEnabledSetting(): AiAssistanceModel.AiSetting.AiSetting<boolean> {
+    return new AiAssistanceModel.AiSetting.AiSetting(
+        AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor,
+        Host.AidaClient.HostConfigTracker.instance(),
+        Common.Settings.Settings.instance(),
+    );
   }
 
   #getOnboardingCompletedSetting(): Common.Settings.Setting<boolean> {

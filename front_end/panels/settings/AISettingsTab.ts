@@ -402,7 +402,7 @@ export const AI_SETTINGS_TAB_DEFAULT_VIEW: View = (input, _output, target): void
 
 export class AISettingsTab extends UI.Widget.VBox {
   #view: View;
-  #consoleInsightsSetting?: Common.Settings.Setting<boolean>;
+  #consoleInsightsSetting: AiAssistanceModel.AiSetting.AiSetting<boolean>;
   #aiAnnotationsSetting?: Common.Settings.Setting<boolean>;
   #aiAssistanceSetting: AiAssistanceModel.AiSetting.AiSetting<boolean>;
   #aiCodeCompletionSetting?: Common.Settings.Setting<boolean>;
@@ -415,12 +415,11 @@ export class AISettingsTab extends UI.Widget.VBox {
 
   constructor(view?: View) {
     super();
-    try {
-      this.#consoleInsightsSetting =
-          Common.Settings.Settings.instance().moduleSetting<boolean>('console-insights-enabled');
-    } catch {
-      this.#consoleInsightsSetting = undefined;
-    }
+    this.#consoleInsightsSetting = new AiAssistanceModel.AiSetting.AiSetting(
+        AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor,
+        Host.AidaClient.HostConfigTracker.instance(),
+        Common.Settings.Settings.instance(),
+    );
     this.#aiAssistanceSetting = new AiAssistanceModel.AiSetting.AiSetting(
         AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor,
         Host.AidaClient.HostConfigTracker.instance(),
@@ -485,7 +484,10 @@ export class AISettingsTab extends UI.Widget.VBox {
           Platform.assertNever(precondition, `Unknown precondition: ${precondition}`);
       }
     }
-    const settingDisabledReasons = this.#mapSettingDisabledReasons(this.#aiAssistanceSetting.disabledReasons);
+    const settingDisabledReasons = Array.from(new Set([
+      ...this.#mapSettingDisabledReasons(this.#consoleInsightsSetting.disabledReasons),
+      ...this.#mapSettingDisabledReasons(this.#aiAssistanceSetting.disabledReasons),
+    ]));
     return [...mappedReasons, ...settingDisabledReasons];
   }
 
@@ -522,10 +524,11 @@ export class AISettingsTab extends UI.Widget.VBox {
     const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
 
-    if (this.#consoleInsightsSetting) {
+    if (!this.#consoleInsightsSetting.unavailable) {
       const consoleInsightsData: AiSettingParams = {
         settingName: i18n.i18n.lockedString('Console Insights'),
         setting: this.#consoleInsightsSetting,
+        disabledReasons: this.#mapSettingDisabledReasons(this.#consoleInsightsSetting.disabledReasons),
         iconName: 'lightbulb-spark',
         settingDescription: i18nString(UIStrings.helpUnderstandConsole),
         enableSettingText: i18nString(UIStrings.enableConsoleInsights),

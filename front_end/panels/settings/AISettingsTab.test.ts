@@ -30,6 +30,9 @@ describeWithEnvironment('AISettingsTab', () => {
       aidaAvailability: {
         enabled: true,
       },
+      devToolsConsoleInsights: {
+        enabled: true,
+      },
       devToolsFreestyler: {
         enabled: true,
       },

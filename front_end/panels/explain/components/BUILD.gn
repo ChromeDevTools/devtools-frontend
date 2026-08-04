@@ -21,6 +21,7 @@ devtools_ui_module("unittests") {
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/platform:bundle",
+    "../../../models/ai_assistance:bundle",
     "../../../testing",
     "../../../ui/components/markdown_view:bundle",
     "../../../ui/lit:bundle",

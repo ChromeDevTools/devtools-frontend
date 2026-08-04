@@ -7,7 +7,7 @@ import sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import {createConsoleInsightWidget} from '../../../testing/ConsoleInsightHelpers.js';
 import {
   assertScreenshot,
@@ -91,14 +91,9 @@ describeWithEnvironment('ConsoleInsight', () => {
   });
 
   it('shows opt-in teaser when setting is disabled via disabledCondition', async () => {
-    const setting = Common.Settings.Settings.instance().settingForTest('console-insights-enabled');
-    setting.setRegistration({
-      settingName: 'console-insights-enabled',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: true,
-      disabledCondition: () => {
-        return {disabled: true, reasons: ['disabled for test' as Platform.UIString.LocalizedString]};
-      },
+    const stub = sinon.stub(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor, 'isAvailable').returns({
+      status: Common.Settings.SettingAvailability.DISABLED,
+      reason: [AiAssistanceModel.AiUtils.DisabledReason.POLICY_RESTRICTED],
     });
 
     const {view, component} = await createConsoleInsightWidget();
@@ -109,12 +104,7 @@ describeWithEnvironment('ConsoleInsight', () => {
     const nextInput = await view.nextInput;
 
     assert.strictEqual(nextInput.state.type, Explain.State.SETTING_IS_NOT_TRUE);
-
-    setting.setRegistration({
-      settingName: 'console-insights-enabled',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-    });
+    stub.restore();
   });
 
   it('shows reminder on first run of console insights', async () => {

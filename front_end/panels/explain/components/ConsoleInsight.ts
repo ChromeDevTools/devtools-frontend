@@ -780,7 +780,7 @@ export class ConsoleInsight extends UI.Widget.Widget {
   // Rating sub-form state.
   #selectedRating?: boolean;
 
-  #consoleInsightsEnabledSetting: Common.Settings.Setting<boolean>|undefined;
+  #consoleInsightsEnabledSetting: AiAssistanceModel.AiSetting.AiSetting<boolean>;
   #aidaPreconditions: Host.AidaClient.AidaAccessPreconditions;
   #boundOnAidaAvailabilityChange:
       (ev: Common.EventTarget.EventTargetEvent<Host.AidaClient.AidaAccessPreconditions>) => void;
@@ -861,10 +861,12 @@ export class ConsoleInsight extends UI.Widget.Widget {
 
   // off -> entrypoints are shown, and point to the AI setting panel where the setting can be turned on
   // on -> entrypoints are shown, and console insights can be generated
-  #getConsoleInsightsEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
-    const result = Common.Settings.Settings.instance().maybeResolve(
-        AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor);
-    return 'setting' in result ? (result.setting as Common.Settings.Setting<boolean>) : undefined;
+  #getConsoleInsightsEnabledSetting(): AiAssistanceModel.AiSetting.AiSetting<boolean> {
+    return new AiAssistanceModel.AiSetting.AiSetting(
+        AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor,
+        Host.AidaClient.HostConfigTracker.instance(),
+        Common.Settings.Settings.instance(),
+    );
   }
 
   // off -> consent reminder is shown, unless the 'console-insights-enabled'-setting has been enabled in the current DevTools session
@@ -876,7 +878,8 @@ export class ConsoleInsight extends UI.Widget.Widget {
   override wasShown(): void {
     super.wasShown();
     this.focus();
-    this.#consoleInsightsEnabledSetting?.addChangeListener(this.#onConsoleInsightsSettingChanged, this);
+    this.#consoleInsightsEnabledSetting.addEventListener(AiAssistanceModel.AiSetting.Events.CHANGED,
+                                                         this.#onConsoleInsightsSettingChanged, this);
     const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (this.#state.type === State.LOADING && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true &&
         !blockedByAge && this.#state.consentOnboardingCompleted) {
@@ -899,7 +902,8 @@ export class ConsoleInsight extends UI.Widget.Widget {
 
   override willHide(): void {
     super.willHide();
-    this.#consoleInsightsEnabledSetting?.removeChangeListener(this.#onConsoleInsightsSettingChanged, this);
+    this.#consoleInsightsEnabledSetting.removeEventListener(AiAssistanceModel.AiSetting.Events.CHANGED,
+                                                            this.#onConsoleInsightsSettingChanged, this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
   }

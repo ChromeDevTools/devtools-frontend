@@ -8,7 +8,7 @@ import sinon from 'sinon';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, registerActions} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -42,6 +42,11 @@ describeWithEnvironment('BackgroundServiceView', () => {
       category: UI.ActionRegistration.ActionCategory.BACKGROUND_SERVICES,
       title: () => 'mock' as Platform.UIString.LocalizedString,
       toggleable: true,
+      iconClass: UI.ActionRegistration.IconClass.START_RECORDING,
+      toggledIconClass: UI.ActionRegistration.IconClass.STOP_RECORDING,
+      async loadActionDelegate() {
+        return new Resources.BackgroundServiceView.ActionDelegate();
+      },
     }]);
 
     sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({
@@ -139,7 +144,9 @@ describeWithEnvironment('BackgroundServiceView', () => {
     assert.deepEqual(header, 'No recording yet');
   });
 
-  it('shows metadata in preview', async () => {
+  it('shows metadata in preview and renders a screenshot', async () => {
+    renderElementIntoDOM(view, {width: 800, height: 800, includeCommonStyles: true});
+
     backgroundServiceModel?.backgroundServiceEventReceived({backgroundServiceEvent: BACKGROUND_SERVICE_EVENT});
 
     const eventWithMetadata = {
@@ -160,5 +167,10 @@ describeWithEnvironment('BackgroundServiceView', () => {
     view.getDataGrid().asWidget().dataGrid.rootNode().children[1].select();
     metadata = view.contentElement.querySelector('.background-service-metadata-entry');
     assert.deepEqual(metadata?.textContent, 'key: value');
+
+    // Focus the datagrid to ensure consistent focused styling across test runs
+    view.getDataGrid().asWidget().dataGrid.element.focus();
+
+    await assertScreenshot('application/background_service_view.png');
   });
 });

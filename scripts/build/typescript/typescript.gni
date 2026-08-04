@@ -12,7 +12,7 @@ import("../ninja/vars.gni")
 
 declare_args() {
   devtools_skip_typecheck = build_with_chromium && !is_official_build
-  devtools_use_typescript_go = false
+  devtools_use_typescript_go = true
 }
 
 assert(!devtools_skip_typecheck || !is_official_build,
@@ -79,7 +79,10 @@ template("ts_library") {
     # When use_remoteexec=true, node actions run on remote Linux worker.
     # So it should include linux node binary in inputs.
     if (use_remoteexec) {
-      inputs += [ "//third_party/node/linux/node-linux-x64/bin/node" ]
+      inputs += [
+        "//third_party/node/linux/node-linux-x64/bin/node",
+        "//third_party/typescript/linux-amd64/src/lib/tsc",
+      ]
     }
 
     args = [

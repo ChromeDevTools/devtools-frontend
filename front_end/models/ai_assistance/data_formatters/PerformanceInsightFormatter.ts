@@ -14,8 +14,8 @@ import {bytes, millis} from './UnitFormatters.js';
 /**
  * For a given frame ID and navigation ID, returns the LCP Event and the LCP Request, if the resource was an image.
  */
-function getLCPData(
-    parsedTrace: Trace.TraceModel.ParsedTrace, frameId: string, navigation: Trace.Types.Events.NavigationStart): {
+function getLCPData(parsedTrace: Trace.TraceModel.ParsedTrace, frameId: string,
+                    navigation: Trace.Types.Events.NavigationStart|Trace.Types.Events.SoftNavigationStart): {
   lcpEvent: Trace.Types.Events.LargestContentfulPaintCandidate,
   metricScore: Trace.Handlers.ModelHandlers.PageLoadMetrics.LCPMetricScore,
   lcpRequest?: Trace.Types.Events.SyntheticNetworkRequest,
@@ -34,7 +34,8 @@ function getLCPData(
     return null;
   }
 
-  const navigationId = navigation.args.data?.navigationId;
+  const navigationId =
+      Trace.Types.Events.isSoftNavigationStart(navigation) ? undefined : navigation.args.data?.navigationId;
 
   return {
     lcpEvent,

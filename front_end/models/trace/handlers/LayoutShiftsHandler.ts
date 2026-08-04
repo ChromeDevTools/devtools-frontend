@@ -39,7 +39,6 @@ import type {HandlerName} from './types.js';
 
 interface LayoutShiftsData {
   clusters: readonly Types.Events.SyntheticLayoutShiftCluster[];
-  clustersByNavigationId: Map<Types.Events.NavigationId, Types.Events.SyntheticLayoutShiftCluster[]>;
   sessionMaxScore: number;
   // The session window which contains the SessionMaxScore
   clsWindowID: number;
@@ -110,7 +109,6 @@ let sessionMaxScore = 0;
 let clsWindowID = -1;
 
 let clusters: Types.Events.SyntheticLayoutShiftCluster[] = [];
-let clustersByNavigationId = new Map<Types.Events.NavigationId, Types.Events.SyntheticLayoutShiftCluster[]>();
 
 /**
  * Represents a point in time in which a  LS score change
@@ -141,7 +139,6 @@ export function reset(): void {
   sessionMaxScore = 0;
   scoreRecords = [];
   clsWindowID = -1;
-  clustersByNavigationId = new Map();
 }
 
 export function handleEvent(event: Types.Events.Event): void {
@@ -292,8 +289,9 @@ export async function finalize(): Promise<void> {
 }
 
 async function buildLayoutShiftsClusters(): Promise<void> {
-  const {navigationsByFrameId, mainFrameId, traceBounds} = metaHandlerData();
-  const navigations = navigationsByFrameId.get(mainFrameId) || [];
+  const {navigationsByFrameId, mainFrameId, traceBounds, softNavigationsById} = metaHandlerData();
+  const navigations: Types.Events.Event[] =
+      [...(navigationsByFrameId.get(mainFrameId) || []), ...softNavigationsById.values()].sort((a, b) => a.ts - b.ts);
   if (layoutShiftEvents.length === 0) {
     return;
   }
@@ -348,13 +346,15 @@ async function buildLayoutShiftsClusters(): Promise<void> {
       // If this cluster happened after a navigation, set the navigationId to
       // the current navigation. This lets us easily group clusters by
       // navigation.
-      const navigationId = currentShiftNavigation === null ?
-          Types.Events.NO_NAVIGATION :
-          navigations[currentShiftNavigation].args.data?.navigationId;
-      // TODO: `navigationId` is `string | undefined`, but the undefined portion
-      // comes from `data.navigationId`. I don't think that is possible for this
-      // event type. Can we make this typing stronger? In the meantime, we allow
-      // `navigationId` to include undefined values.
+      let navigationId: string|undefined = undefined;
+      if (currentShiftNavigation !== null) {
+        const nav = navigations[currentShiftNavigation];
+        if (Types.Events.isNavigationStart(nav)) {
+          navigationId = nav.args.data?.navigationId;
+        }
+      } else {
+        navigationId = Types.Events.NO_NAVIGATION;
+      }
 
       clusters.push(Helpers.SyntheticEvents.SyntheticEventsManager
                         .registerSyntheticEvent<Types.Events.SyntheticLayoutShiftCluster>({
@@ -519,12 +519,6 @@ async function buildLayoutShiftsClusters(): Promise<void> {
       sessionMaxScore = weightedScore;
     }
 
-    if (cluster.navigationId) {
-      const clustersForId = Platform.MapUtilities.getWithDefault(clustersByNavigationId, cluster.navigationId, () => {
-        return [];
-      });
-      clustersForId.push(cluster);
-    }
   }
 }
 
@@ -543,7 +537,6 @@ export function data(): LayoutShiftsData {
     remoteFonts,
     scoreRecords,
     backendNodeIds,
-    clustersByNavigationId,
     paintImageEvents,
   };
 }

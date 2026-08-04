@@ -178,7 +178,7 @@ function finalize(partialModel: PartialInsightModel<RenderBlockingInsightModel>)
 
 export function generateInsight(
     data: Handlers.Types.HandlerData, context: InsightSetContext): RenderBlockingInsightModel {
-  if (!context.navigation) {
+  if (!context.navigation || !('navigationId' in context)) {
     return finalize({
       renderBlockingRequests: [],
     });

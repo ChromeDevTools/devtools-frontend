@@ -191,7 +191,7 @@ function finalize(partialModel: PartialInsightModel<DocumentLatencyInsightModel>
 
 export function generateInsight(
     data: Handlers.Types.HandlerData, context: InsightSetContext): DocumentLatencyInsightModel {
-  if (!context.navigation) {
+  if (!context.navigation || !('navigationId' in context)) {
     return finalize({});
   }
 

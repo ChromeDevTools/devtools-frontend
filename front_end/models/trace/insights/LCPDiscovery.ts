@@ -101,7 +101,7 @@ function finalize(partialModel: PartialInsightModel<LCPDiscoveryInsightModel>): 
 
 export function generateInsight(
     data: Handlers.Types.HandlerData, context: InsightSetContext): LCPDiscoveryInsightModel {
-  if (!context.navigation) {
+  if (!context.navigation || !('navigationId' in context)) {
     return finalize({});
   }
 

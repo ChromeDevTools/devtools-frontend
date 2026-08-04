@@ -574,7 +574,7 @@ The following is a list of insight sets. An insight set covers a specific part o
 ## insight set id: NAVIGATION_0
 
 URL: http://localhost:8080/render-blocking
-Bounds: {min: 171607579779µs, max: 171613750571µs}
+Bounds: {min: 171607579779µs, max: 171613750570µs}
 Metrics (lab / observed):
   - LCP: 1317 ms, event: (eventKey: r-6686, ts: 171608897210), nodeId: 10
   - LCP breakdown:

@@ -674,7 +674,7 @@ export function isNetworkDependencyTreeInsight(model: InsightModel): model is Ne
 
 export function generateInsight(
     data: Handlers.Types.HandlerData, context: InsightSetContext): NetworkDependencyTreeInsightModel {
-  if (!context.navigation) {
+  if (!context.navigation || !('navigationId' in context)) {
     return finalize({
       rootNodes: [],
       maxTime: 0 as Types.Timing.Micro,

@@ -599,8 +599,7 @@ export function generateInsight(data: Handlers.Types.HandlerData, context: Insig
   const domLoadingEvents = data.LayoutShifts.domLoadingEvents.filter(isWithinContext);
   const unsizedImageEvents = data.LayoutShifts.layoutImageUnsizedEvents.filter(isWithinContext);
 
-  const clusterKey = context.navigation ? context.navigationId : Types.Events.NO_NAVIGATION;
-  const clusters = data.LayoutShifts.clustersByNavigationId.get(clusterKey) ?? [];
+  const clusters = data.LayoutShifts.clusters.filter(isWithinContext);
   const clustersByScore = clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore);
   const worstCluster = clustersByScore.at(0);
   const layoutShifts = clusters.flatMap(cluster => cluster.events);

@@ -160,7 +160,26 @@ export function getFieldMetricsForInsightSet(
     return null;
   }
 
-  const pageResult = getPageResult(cruxFieldData, insightSet.url.href, insightSet.url.origin, scope);
+  let pageResult = getPageResult(cruxFieldData, insightSet.url.href, insightSet.url.origin, scope);
+
+  if (!pageResult && insightSet.navigation && Types.Events.isSoftNavigationStart(insightSet.navigation)) {
+    pageResult = cruxFieldData.find(result => {
+      const key = scope ? result[`${scope.pageScope}-${scope.deviceScope}`]?.record.key :
+                          (result['url-ALL'] || result['origin-ALL'])?.record.key;
+      if (!key) {
+        return false;
+      }
+      if (key.url) {
+        try {
+          return new URL(key.url).origin === insightSet.url.origin;
+        } catch {
+          return false;
+        }
+      }
+      return key.origin === insightSet.url.origin;
+    });
+  }
+
   if (!pageResult) {
     return null;
   }
@@ -266,7 +285,7 @@ function estimateSavingsWithGraphs(
  */
 export function metricSavingsForWastedBytes(
     wastedBytesByRequestId: Map<string, number>, context: InsightSetContext): MetricSavings|undefined {
-  if (!context.navigation || !context.lantern) {
+  if (!context.navigation || !('lantern' in context) || !context.lantern) {
     return;
   }
 

@@ -6,7 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party-web.js';
 import * as Extras from '../extras/extras.js';
 import * as Handlers from '../handlers/handlers.js';
-import type * as Types from '../types/types.js';
+import * as Types from '../types/types.js';
 
 import {
   InsightCategory,
@@ -82,7 +82,10 @@ export function generateInsight(
     data: Handlers.Types.HandlerData, context: InsightSetContext): ThirdPartiesInsightModel {
   const entitySummaries = Extras.ThirdParties.summarizeByThirdParty(data as Handlers.Types.HandlerData, context.bounds);
 
-  const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? data.Meta.mainFrameURL;
+  let firstPartyUrl = data.Meta.mainFrameURL;
+  if (context.navigation && !Types.Events.isSoftNavigationStart(context.navigation)) {
+    firstPartyUrl = context.navigation.args.data?.documentLoaderURL ?? firstPartyUrl;
+  }
   const firstPartyEntity = ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) ||
       Handlers.Helpers.makeUpEntity(data.Renderer.entityMappings.createdEntityCache, firstPartyUrl);
 

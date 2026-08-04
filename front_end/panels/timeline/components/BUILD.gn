@@ -132,6 +132,7 @@ devtools_ui_module("unittests") {
   sources = [
     "BreadcrumbsUI.test.ts",
     "CPUThrottlingSelector.test.ts",
+    "CWVMetrics.test.ts",
     "ExportTraceOptions.test.ts",
     "FieldSettingsDialog.test.ts",
     "IgnoreListSetting.test.ts",

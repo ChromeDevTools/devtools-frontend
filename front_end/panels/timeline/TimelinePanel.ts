@@ -767,6 +767,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const config = Trace.Types.Configuration.defaults();
     config.showAllEvents = Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get();
     config.debugMode = Common.Settings.Settings.instance().moduleSetting('timeline-debug-mode').get() as boolean;
+    config.enableSoftNavigation =
+        Common.Settings.Settings.instance().moduleSetting('timeline-enable-soft-navigations').get() as boolean;
 
     const traceEngineModel = Trace.TraceModel.Model.createWithAllHandlers(config);
 

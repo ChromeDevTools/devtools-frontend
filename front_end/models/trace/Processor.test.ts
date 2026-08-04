@@ -345,6 +345,44 @@ describeWithEnvironment('TraceProcessor', function() {
       assert.lengthOf(insightSets[3].model.RenderBlocking.renderBlockingRequests, 1);
     });
 
+    it('returns insights for soft navigations', async function() {
+      const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+      const file = await TraceLoader.rawEvents(this, 'soft-navs.json.gz');
+
+      await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
+      if (!processor.insights) {
+        throw new Error('No insights');
+      }
+
+      assert.deepEqual([...processor.insights.keys()], [
+        Trace.Types.Events.NO_NAVIGATION,
+        'NAVIGATION_1',
+        'NAVIGATION_2',
+        'NAVIGATION_3',
+      ]);
+
+      const insightSets = Array.from(processor.insights.values());
+      assert.isTrue(Trace.Types.Events.isSoftNavigationStart(insightSets[1].navigation as Trace.Types.Events.Event));
+      assert.isTrue(Trace.Types.Events.isSoftNavigationStart(insightSets[2].navigation as Trace.Types.Events.Event));
+      assert.isTrue(Trace.Types.Events.isSoftNavigationStart(insightSets[3].navigation as Trace.Types.Events.Event));
+    });
+
+    it('does not return insights for soft navigations if they are disabled via config', async function() {
+      const config = Trace.Types.Configuration.defaults();
+      config.enableSoftNavigation = false;
+      const processor = new Trace.Processor.TraceProcessor(Trace.Handlers.ModelHandlers, config);
+      const file = await TraceLoader.rawEvents(this, 'soft-navs.json.gz');
+
+      await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
+      if (!processor.insights) {
+        throw new Error('No insights');
+      }
+
+      assert.deepEqual([...processor.insights.keys()], [
+        Trace.Types.Events.NO_NAVIGATION,
+      ]);
+    });
+
     it('sorts insights by estimated savings and field data', async function() {
       const getInsightOrder = async (includeMetadata: boolean) => {
         const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();

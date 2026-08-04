@@ -127,7 +127,7 @@ function metaCharsetLabel(disposition: Types.Events.MetaCharsetDisposition|undef
 
 export function generateInsight(
     data: Handlers.Types.HandlerData, context: InsightSetContext): CharacterSetInsightModel {
-  if (!context.navigation) {
+  if (!context.navigation || !('navigationId' in context)) {
     return finalize({});
   }
 

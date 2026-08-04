@@ -42,6 +42,55 @@ describe('LayoutShiftsHandler', function() {
     assert.strictEqual(layoutShifts.clusters[0].clusterCumulativeScore, 0.29522728495836237);
   });
 
+  it('clusters soft navigations correctly', async function() {
+    Trace.Handlers.ModelHandlers.Meta.reset();
+    Trace.Handlers.ModelHandlers.LayoutShifts.reset();
+
+    const events = await TraceLoader.rawEvents(this, 'soft-navs.json.gz');
+    const layoutShiftEvents = await TraceLoader.rawEvents(this, 'cls-single-frame.json.gz');
+    const shiftEvent = layoutShiftEvents.find(e => e.name === 'LayoutShift');
+    if (!shiftEvent) {
+      throw new Error('No LayoutShift event found in cls-single-frame.json.gz');
+    }
+
+    // Find a soft navigation event.
+    const softNavEvent = events.find(e => e.name === 'SoftNavigationStart');
+    if (!softNavEvent) {
+      throw new Error('No soft navigation event found in soft-navs.json.gz');
+    }
+
+    // Clone the shift event to before and after the soft nav.
+    const shiftBefore = JSON.parse(JSON.stringify(shiftEvent));
+    shiftBefore.ts = softNavEvent.ts - 1000;
+    shiftBefore.args.data.had_recent_input = false;
+
+    const shiftAfter = JSON.parse(JSON.stringify(shiftEvent));
+    shiftAfter.ts = softNavEvent.ts + 1000;
+    shiftAfter.args.data.had_recent_input = false;
+
+    // Another shift after to ensure we don't just create clusters for single shifts
+    const shiftAfter2 = JSON.parse(JSON.stringify(shiftEvent));
+    shiftAfter2.ts = softNavEvent.ts + 2000;
+    shiftAfter2.args.data.had_recent_input = false;
+
+    const mutableEvents = [...events, shiftBefore, shiftAfter, shiftAfter2];
+    mutableEvents.sort((a, b) => a.ts - b.ts);
+
+    for (const event of mutableEvents) {
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event as Trace.Types.Events.Event);
+      Trace.Handlers.ModelHandlers.Screenshots.handleEvent(event as Trace.Types.Events.Event);
+      Trace.Handlers.ModelHandlers.LayoutShifts.handleEvent(event as Trace.Types.Events.Event);
+    }
+    await Trace.Handlers.ModelHandlers.Meta.finalize();
+    await Trace.Handlers.ModelHandlers.Screenshots.finalize();
+    await Trace.Handlers.ModelHandlers.LayoutShifts.finalize();
+
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
+    assert.lengthOf(layoutShifts.clusters, 2);
+    assert.lengthOf(layoutShifts.clusters[0].events, 1);
+    assert.lengthOf(layoutShifts.clusters[1].events, 2);
+  });
+
   it('creates a cluster after the maximum time gap between shifts', async function() {
     await processTrace(this, 'cls-cluster-max-timeout.json.gz');
 

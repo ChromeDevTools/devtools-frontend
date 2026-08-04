@@ -105,3 +105,7 @@
     cursor: pointer;
   }
 }
+
+.soft-nav-badge-row {
+  display: contents;
+}

@@ -440,7 +440,12 @@ export class TraceProcessor extends EventTarget {
     let id, urlString, navigation;
     if (context.navigation) {
       id = `NAVIGATION_${this.#insights.size}`;
-      urlString = data.Meta.finalDisplayUrlByNavigationId.get(context.navigationId) ?? data.Meta.mainFrameURL;
+      if (Types.Events.isSoftNavigationStart(context.navigation)) {
+        urlString = context.navigation.args.context.URL;
+      } else {
+        urlString = data.Meta.finalDisplayUrlByNavigationId.get(context.navigation.args.data?.navigationId ?? '') ??
+            data.Meta.mainFrameURL;
+      }
       navigation = context.navigation;
     } else {
       id = Types.Events.NO_NAVIGATION;
@@ -523,17 +528,28 @@ export class TraceProcessor extends EventTarget {
 
     // Filter main frame navigations to those that have the necessary data (frameId and navigationId).
     // TODO(cjamcl): Does this filtering makes the "use the next nav as the end time" logic potentially broken? Are navs without nav id or frame even real?
-    const navigations = data.Meta.mainFrameNavigations.filter(
-        navigation => navigation.args.frame && navigation.args.data?.navigationId);
+    const hardNavigations = data.Meta.mainFrameNavigations.filter(navigation => navigation.args.frame &&
+                                                                      navigation.args.data?.navigationId);
+
+    const softNavigations =
+        this.#modelConfiguration.enableSoftNavigation ? Array.from(data.Meta.softNavigationsById.values()) : [];
+    const navigations = [...hardNavigations, ...softNavigations].sort((a, b) => a.ts - b.ts);
 
     this.#computeInsightsForInitialTracePeriod(data, navigations, options);
 
     for (const [index, navigation] of navigations.entries()) {
       const min = navigation.ts;
-      // Use trace end for the last navigation, otherwise use the start of the next navigation.
-      const max = index + 1 < navigations.length ? navigations[index + 1].ts : data.Meta.traceBounds.max;
+      // Use trace end for the last navigation, otherwise use the start of the next navigation (minus 1 to avoid overlap).
+      let max = index + 1 < navigations.length ? navigations[index + 1].ts : data.Meta.traceBounds.max;
+      if (index + 1 < navigations.length) {
+        max = Types.Timing.Micro(max - 1);
+      }
       const bounds = Helpers.Timing.traceWindowFromMicroSeconds(min, max);
-      this.#computeInsightsForNavigation(navigation, bounds, data, traceEvents, options);
+      if (Types.Events.isSoftNavigationStart(navigation)) {
+        this.#computeInsightsForSoftNavigation(navigation, bounds, data, options);
+      } else {
+        this.#computeInsightsForNavigation(navigation, bounds, data, traceEvents, options);
+      }
     }
   }
 
@@ -541,12 +557,13 @@ export class TraceProcessor extends EventTarget {
    * Computes insights for the period before the first navigation, or for the entire trace if no navigations exist.
    */
   #computeInsightsForInitialTracePeriod(
-      data: Handlers.Types.HandlerData, navigations: readonly Types.Events.NavigationStart[],
+      data: Handlers.Types.HandlerData,
+      navigations: ReadonlyArray<Types.Events.NavigationStart|Types.Events.SoftNavigationStart>,
       options: Types.Configuration.ParseOptions): void {
     // Determine bounds: Use the period before the first navigation if navigations exist, otherwise use the entire trace bounds.
-    const bounds = navigations.length > 0 ?
-        Helpers.Timing.traceWindowFromMicroSeconds(data.Meta.traceBounds.min, navigations[0].ts) :
-        data.Meta.traceBounds;
+    const bounds = navigations.length > 0 ? Helpers.Timing.traceWindowFromMicroSeconds(
+                                                data.Meta.traceBounds.min, Types.Timing.Micro(navigations[0].ts - 1)) :
+                                            data.Meta.traceBounds;
 
     const context: Insights.Types.InsightSetContext = {
       options,
@@ -606,6 +623,21 @@ export class TraceProcessor extends EventTarget {
       navigation,
       navigationId,
       lantern,
+    };
+    this.#computeInsightSet(data, context);
+  }
+
+  /**
+   * Computes insights for a specific soft navigation event.
+   */
+  #computeInsightsForSoftNavigation(navigation: Types.Events.SoftNavigationStart, bounds: Types.Timing.TraceWindowMicro,
+                                    data: Handlers.Types.HandlerData, options: Types.Configuration.ParseOptions): void {
+    const frameId = navigation.args.frame;
+    const context: Insights.Types.InsightSetContextWithSoftNavigation = {
+      options,
+      bounds,
+      frameId,
+      navigation,
     };
     this.#computeInsightSet(data, context);
   }

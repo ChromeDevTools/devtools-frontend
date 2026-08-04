@@ -20,6 +20,7 @@ devtools_module("host") {
     "Platform.ts",
     "ResourceLoader.ts",
     "UserMetrics.ts",
+    "UserMetricsEnums.ts",
   ]
 
   deps = [

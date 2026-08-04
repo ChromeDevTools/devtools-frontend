@@ -31,11 +31,6 @@ describe('The Network Tab', () => {
     return await devToolsPage.waitFor(sectionClassName);
   }
 
-  async function assertDisabled(checkbox: ElementHandle<HTMLInputElement>, expected: boolean) {
-    const disabled = await checkbox.evaluate(el => el.disabled);
-    assert.strictEqual(disabled, expected);
-  }
-
   async function assertChecked(checkbox: ElementHandle<HTMLInputElement>, expected: boolean) {
     const checked = await checkbox.evaluate(el => el.checked);
     assert.strictEqual(checked, expected);
@@ -61,51 +56,6 @@ describe('The Network Tab', () => {
     const getUserAgentMetaDataStr = `(${getUserAgentMetaData.toString()})()`;
     return await target.evaluate(getUserAgentMetaDataStr);
   }
-
-  it('can change accepted content encodings', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(devToolsPage, inspectedPage, 'empty.html');
-    const section = await openNetworkConditions(devToolsPage, '.network-config-accepted-encoding');
-    const autoCheckbox = await (await devToolsPage.waitForAria('Use browser default', section)).toElement('input');
-    const deflateCheckbox = await (await devToolsPage.waitForAria('deflate', section)).toElement('input');
-    const gzipCheckbox = await (await devToolsPage.waitForAria('gzip', section)).toElement('input');
-    const brotliCheckbox = await (await devToolsPage.waitForAria('br', section)).toElement('input');
-    await brotliCheckbox.evaluate(el => el.scrollIntoView(true));
-    await assertChecked(autoCheckbox, true);
-    await assertChecked(deflateCheckbox, true);
-    await assertChecked(gzipCheckbox, true);
-    await assertChecked(brotliCheckbox, true);
-    await assertDisabled(autoCheckbox, false);
-    await assertDisabled(deflateCheckbox, true);
-    await assertDisabled(gzipCheckbox, true);
-    await assertDisabled(brotliCheckbox, true);
-    await autoCheckbox.click();
-    await assertChecked(autoCheckbox, false);
-    await assertChecked(deflateCheckbox, true);
-    await assertChecked(gzipCheckbox, true);
-    await assertChecked(brotliCheckbox, true);
-    await assertDisabled(autoCheckbox, false);
-    await assertDisabled(deflateCheckbox, false);
-    await assertDisabled(gzipCheckbox, false);
-    await assertDisabled(brotliCheckbox, false);
-    await brotliCheckbox.click();
-    await assertChecked(autoCheckbox, false);
-    await assertChecked(deflateCheckbox, true);
-    await assertChecked(gzipCheckbox, true);
-    await assertChecked(brotliCheckbox, false);
-    await assertDisabled(autoCheckbox, false);
-    await assertDisabled(deflateCheckbox, false);
-    await assertDisabled(gzipCheckbox, false);
-    await assertDisabled(brotliCheckbox, false);
-    await autoCheckbox.click();
-    await assertChecked(autoCheckbox, true);
-    await assertChecked(deflateCheckbox, true);
-    await assertChecked(gzipCheckbox, true);
-    await assertChecked(brotliCheckbox, false);
-    await assertDisabled(autoCheckbox, false);
-    await assertDisabled(deflateCheckbox, true);
-    await assertDisabled(gzipCheckbox, true);
-    await assertDisabled(brotliCheckbox, true);
-  });
 
   it('can override userAgentMetadata', async ({browser, devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(devToolsPage, inspectedPage, 'empty.html');

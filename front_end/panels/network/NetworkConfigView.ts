@@ -7,7 +7,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Protocol from '../../generated/protocol.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -50,11 +50,6 @@ const UIStrings = {
    */
   selectAutomatically: 'Use browser default',
   /**
-   * @description Title of a section in the Network conditions panel that includes
-   * a set of checkboxes to override the content encodings supported by the browser.
-   */
-  acceptedEncoding: 'Accepted `Content-Encoding`s',
-  /**
    * @description Status text displayed after updating user agent client hints.
    */
   clientHintsStatusText: 'User agent updated.',
@@ -83,8 +78,6 @@ export class NetworkConfigView extends UI.Widget.VBox {
     this.createNetworkThrottlingSection();
     this.contentElement.createChild('div').classList.add('panel-section-separator');
     this.createUserAgentSection();
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
-    this.createAcceptedEncodingSection();
   }
 
   static instance(opts: {
@@ -301,69 +294,6 @@ export class NetworkConfigView extends UI.Widget.VBox {
     }
   }
 
-  private createAcceptedEncodingSection(): void {
-    const useCustomAcceptedEncodingSetting =
-        Common.Settings.Settings.instance().createSetting('use-custom-accepted-encodings', false);
-    const customAcceptedEncodingSetting = Common.Settings.Settings.instance().createSetting(
-        'custom-accepted-encodings',
-        `${Protocol.Network.ContentEncoding.Gzip},${Protocol.Network.ContentEncoding.Br},${
-            Protocol.Network.ContentEncoding.Deflate}`);
-
-    const title = i18nString(UIStrings.acceptedEncoding);
-    const section = this.createSection(title, 'network-config-accepted-encoding');
-    const autoCheckbox = UI.UIUtils.CheckboxLabel.create(
-        i18nString(UIStrings.selectAutomatically), true, undefined, useCustomAcceptedEncodingSetting.name);
-    section.appendChild(autoCheckbox);
-
-    function onSettingChange(): void {
-      if (!useCustomAcceptedEncodingSetting.get()) {
-        SDK.NetworkManager.MultitargetNetworkManager.instance().clearCustomAcceptedEncodingsOverride();
-      } else {
-        SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomAcceptedEncodingsOverride(
-            customAcceptedEncodingSetting.get() === '' ?
-                [] :
-                customAcceptedEncodingSetting.get().split(',') as Protocol.Network.ContentEncoding[]);
-      }
-    }
-
-    customAcceptedEncodingSetting.addChangeListener(onSettingChange);
-    useCustomAcceptedEncodingSetting.addChangeListener(onSettingChange);
-
-    const encodingsSection = section.createChild('div', 'network-config-accepted-encoding-custom');
-    encodingsSection.setAttribute('jslog', `${VisualLogging.section().context(customAcceptedEncodingSetting.name)}`);
-    autoCheckbox.checked = !useCustomAcceptedEncodingSetting.get();
-    autoCheckbox.addEventListener('change', acceptedEncodingsChanged);
-    const checkboxes = new Map<Protocol.Network.ContentEncoding, UI.UIUtils.CheckboxLabel>();
-    const contentEncodings: Protocol.EnumerableEnum<typeof Protocol.Network.ContentEncoding> = {
-      Deflate: Protocol.Network.ContentEncoding.Deflate,
-      Gzip: Protocol.Network.ContentEncoding.Gzip,
-      Br: Protocol.Network.ContentEncoding.Br,
-      Zstd: Protocol.Network.ContentEncoding.Zstd,
-    };
-    for (const encoding of Object.values(contentEncodings)) {
-      const checkbox = UI.UIUtils.CheckboxLabel.createWithStringLiteral(encoding, true, encoding);
-      encodingsSection.appendChild(checkbox);
-      checkboxes.set(encoding, checkbox);
-    }
-    for (const [encoding, checkbox] of checkboxes) {
-      checkbox.checked = customAcceptedEncodingSetting.get().includes(encoding);
-      checkbox.addEventListener('change', acceptedEncodingsChanged);
-    }
-
-    acceptedEncodingsChanged();
-
-    function acceptedEncodingsChanged(): void {
-      useCustomAcceptedEncodingSetting.set(!autoCheckbox.checked);
-      const encodings = [];
-      for (const [encoding, checkbox] of checkboxes) {
-        checkbox.disabled = autoCheckbox.checked;
-        if (checkbox.checked) {
-          encodings.push(encoding);
-        }
-      }
-      customAcceptedEncodingSetting.set(encodings.join(','));
-    }
-  }
   override wasShown(): void {
     super.wasShown();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.networkConditionsPanelShown));

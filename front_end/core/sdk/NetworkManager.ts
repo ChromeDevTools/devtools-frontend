@@ -2180,7 +2180,6 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   readonly #targetManager: TargetManager;
   #userAgentOverride = '';
   #userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null = null;
-  #customAcceptedEncodings: Protocol.Network.ContentEncoding[]|null = null;
   readonly #networkAgents = new Set<ProtocolProxyApi.NetworkApi>();
   readonly #fetchAgents = new Set<ProtocolProxyApi.FetchApi>();
   readonly inflightMainResourceRequests = new Map<string, NetworkRequest>();
@@ -2283,11 +2282,6 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     if (this.isIntercepting()) {
       void fetchAgent.invoke_enable({patterns: this.#urlsForRequestInterceptor.valuesArray()});
     }
-    if (this.#customAcceptedEncodings === null) {
-      void networkAgent.invoke_clearAcceptedEncodingsOverride();
-    } else {
-      void networkAgent.invoke_setAcceptedEncodings({encodings: this.#customAcceptedEncodings});
-    }
     this.#networkAgents.add(networkAgent);
     this.#fetchAgents.add(fetchAgent);
   }
@@ -2386,33 +2380,6 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     this.#customUserAgent = userAgent;
     this.#userAgentMetadataOverride = userAgentMetadataOverride;
     this.updateUserAgentOverride();
-  }
-
-  setCustomAcceptedEncodingsOverride(acceptedEncodings: Protocol.Network.ContentEncoding[]): void {
-    this.#customAcceptedEncodings = acceptedEncodings;
-    this.updateAcceptedEncodingsOverride();
-    this.dispatchEventToListeners(MultitargetNetworkManager.Events.ACCEPTED_ENCODINGS_CHANGED);
-  }
-
-  clearCustomAcceptedEncodingsOverride(): void {
-    this.#customAcceptedEncodings = null;
-    this.updateAcceptedEncodingsOverride();
-    this.dispatchEventToListeners(MultitargetNetworkManager.Events.ACCEPTED_ENCODINGS_CHANGED);
-  }
-
-  isAcceptedEncodingOverrideSet(): boolean {
-    return this.#customAcceptedEncodings !== null;
-  }
-
-  private updateAcceptedEncodingsOverride(): void {
-    const customAcceptedEncodings = this.#customAcceptedEncodings;
-    for (const agent of this.#networkAgents) {
-      if (customAcceptedEncodings === null) {
-        void agent.invoke_clearAcceptedEncodingsOverride();
-      } else {
-        void agent.invoke_setAcceptedEncodings({encodings: customAcceptedEncodings});
-      }
-    }
   }
 
   get requestConditions(): RequestConditions {
@@ -2516,7 +2483,6 @@ export namespace MultitargetNetworkManager {
     CONDITIONS_CHANGED = 'ConditionsChanged',
     USER_AGENT_CHANGED = 'UserAgentChanged',
     INTERCEPTORS_CHANGED = 'InterceptorsChanged',
-    ACCEPTED_ENCODINGS_CHANGED = 'AcceptedEncodingsChanged',
     REQUEST_INTERCEPTED = 'RequestIntercepted',
     REQUEST_FULFILLED = 'RequestFulfilled',
   }
@@ -2526,7 +2492,6 @@ export namespace MultitargetNetworkManager {
     [Events.CONDITIONS_CHANGED]: void;
     [Events.USER_AGENT_CHANGED]: void;
     [Events.INTERCEPTORS_CHANGED]: void;
-    [Events.ACCEPTED_ENCODINGS_CHANGED]: void;
     [Events.REQUEST_INTERCEPTED]: string;
     [Events.REQUEST_FULFILLED]: Platform.DevToolsPath.UrlString;
   }

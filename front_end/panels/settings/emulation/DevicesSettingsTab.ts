@@ -106,6 +106,16 @@ const UIStrings = {
    */
   safeAreaValueMustBeInRange: '{PH1}: {PH2} must be an integer from 0 to {PH3}.',
   /**
+   * @description Error message shown when custom device safe-area left and right insets are too large.
+   * @example {Portrait safe area} PH1
+   */
+  safeAreaHorizontalInsetsExceedWidth: '{PH1}: Left and right insets must not exceed the device width.',
+  /**
+   * @description Error message shown when custom device safe-area top and bottom insets are too large.
+   * @example {Landscape safe area} PH1
+   */
+  safeAreaVerticalInsetsExceedHeight: '{PH1}: Top and bottom insets must not exceed the device height.',
+  /**
    * @description Label for display cutout values on a custom device.
    */
   displayCutout: 'Display cutout',
@@ -681,30 +691,61 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       return EmulationModel.DeviceModeModel.DeviceModeModel.scaleValidator(input.value);
     }
 
-    function safeAreaValidator(orientationLabel: string,
+    function nonNegativeIntegerValue(controlName: string): number|null {
+      return parseOptionalNonNegativeInteger(editor.control(controlName).value);
+    }
+
+    function positiveIntegerValue(controlName: string): number|null {
+      const value = nonNegativeIntegerValue(controlName);
+      return value && value > 0 ? value : null;
+    }
+
+    function safeAreaValidator(controlPrefix: string, orientationLabel: string, widthControlName: string,
+                               heightControlName: string,
                                input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      if (parseOptionalNonNegativeInteger(input.value) !== null) {
-        return {valid: true};
+      const ownValue = parseOptionalNonNegativeInteger(input.value);
+      if (ownValue === null) {
+        return {
+          valid: false,
+          errorMessage: i18nString(UIStrings.safeAreaValueMustBeInRange, {
+            PH1: orientationLabel,
+            PH2: input.getAttribute('aria-label') || input.getAttribute('placeholder') || '',
+            PH3: EmulationModel.DeviceModeModel.MaxDeviceSize,
+          }),
+        };
       }
 
-      return {
-        valid: false,
-        errorMessage: i18nString(UIStrings.safeAreaValueMustBeInRange, {
-          PH1: orientationLabel,
-          PH2: input.getAttribute('aria-label') || input.getAttribute('placeholder') || '',
-          PH3: EmulationModel.DeviceModeModel.MaxDeviceSize,
-        }),
-      };
+      const left = nonNegativeIntegerValue(`${controlPrefix}safe-area-left`);
+      const top = nonNegativeIntegerValue(`${controlPrefix}safe-area-top`);
+      const right = nonNegativeIntegerValue(`${controlPrefix}safe-area-right`);
+      const bottom = nonNegativeIntegerValue(`${controlPrefix}safe-area-bottom`);
+      const width = positiveIntegerValue(widthControlName);
+      const height = positiveIntegerValue(heightControlName);
+      if (input === editor.control(`${controlPrefix}safe-area-right`) && left !== null && right !== null &&
+          width !== null && left + right > width) {
+        return {
+          valid: false,
+          errorMessage: i18nString(UIStrings.safeAreaHorizontalInsetsExceedWidth, {PH1: orientationLabel}),
+        };
+      }
+      if (input === editor.control(`${controlPrefix}safe-area-bottom`) && top !== null && bottom !== null &&
+          height !== null && top + bottom > height) {
+        return {
+          valid: false,
+          errorMessage: i18nString(UIStrings.safeAreaVerticalInsetsExceedHeight, {PH1: orientationLabel}),
+        };
+      }
+      return {valid: true};
     }
 
     function portraitSafeAreaValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
                                        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return safeAreaValidator(i18nString(UIStrings.portraitSafeArea), input);
+      return safeAreaValidator('', i18nString(UIStrings.portraitSafeArea), 'width', 'height', input);
     }
 
     function landscapeSafeAreaValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
                                         input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return safeAreaValidator(i18nString(UIStrings.landscapeSafeArea), input);
+      return safeAreaValidator('landscape-', i18nString(UIStrings.landscapeSafeArea), 'height', 'width', input);
     }
 
     function cutoutShapeValidator(): UI.ListWidget.ValidatorResult {

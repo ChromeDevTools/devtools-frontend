@@ -59,6 +59,11 @@ function select(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.Emul
   return editor.control(name) as HTMLSelectElement;
 }
 
+function validationErrorCount(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>): number {
+  const errorContainer = editor.element.querySelector('.list-widget-input-validation-error');
+  return errorContainer?.textContent ? errorContainer.querySelectorAll('br').length + 1 : 0;
+}
+
 function fillFields(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
                     fieldValues: Record<string, string>): void {
   for (const [controlName, value] of Object.entries(fieldValues)) {
@@ -405,7 +410,7 @@ describeWithEnvironment('DevicesSettingsTab', () => {
     assert.isFalse(input(editor, 'cutout-border-radius').hidden);
   });
 
-  it('provides accessible names and orientation groups for safe-area and cutout fields', () => {
+  it('provides accessible names, orientation groups, and validation announcements', () => {
     const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
 
     assert.strictEqual(input(editor, 'safe-area-top').getAttribute('aria-label'), 'Top inset');
@@ -425,5 +430,77 @@ describeWithEnvironment('DevicesSettingsTab', () => {
     assert.strictEqual(cutoutShape.getAttribute('aria-label'), 'Display cutout');
     assert.strictEqual(input(editor, 'cutout-width').getAttribute('aria-label'), 'Cutout width');
     assert.strictEqual(input(editor, 'cutout-cx').getAttribute('aria-label'), 'Center x');
+
+    fillFields(editor, {'safe-area-left': '300', 'safe-area-right': '300'});
+    requestValidation(editor);
+    const error = editor.element.querySelector('.list-widget-input-validation-error');
+
+    assert.strictEqual(input(editor, 'safe-area-right').getAttribute('aria-invalid'), 'true');
+    assert.strictEqual(error?.getAttribute('role'), 'alert');
+    assert.strictEqual(error?.getAttribute('aria-live'), 'polite');
+    assert.include(error?.textContent || '',
+                   'Portrait safe area: Left and right insets must not exceed the device width.');
+  });
+
+  it('validates portrait and landscape safe areas against their orientation dimensions', () => {
+    const portraitEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    fillFields(portraitEditor, {'safe-area-left': '300', 'safe-area-right': '300'});
+    requestValidation(portraitEditor);
+    assert.include(portraitEditor.element.textContent || '',
+                   'Portrait safe area: Left and right insets must not exceed the device width.');
+    assert.strictEqual(validationErrorCount(portraitEditor), 1);
+    assert.strictEqual(input(portraitEditor, 'safe-area-right').getAttribute('aria-invalid'), 'true');
+    for (const controlName of ['safe-area-left', 'safe-area-top', 'safe-area-bottom']) {
+      assert.isNull(input(portraitEditor, controlName).getAttribute('aria-invalid'));
+    }
+
+    const landscapeEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    fillFields(landscapeEditor, {'landscape-safe-area-top': '300', 'landscape-safe-area-bottom': '300'});
+    requestValidation(landscapeEditor);
+    assert.include(landscapeEditor.element.textContent || '',
+                   'Landscape safe area: Top and bottom insets must not exceed the device height.');
+    assert.strictEqual(validationErrorCount(landscapeEditor), 1);
+    assert.strictEqual(input(landscapeEditor, 'landscape-safe-area-bottom').getAttribute('aria-invalid'), 'true');
+    for (const controlName of ['landscape-safe-area-left', 'landscape-safe-area-top', 'landscape-safe-area-right']) {
+      assert.isNull(input(landscapeEditor, controlName).getAttribute('aria-invalid'));
+    }
+  });
+
+  it('validates each safe-area axis independently', () => {
+    const horizontalEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    fillFields(horizontalEditor, {'safe-area-left': '300', 'safe-area-right': '300', 'safe-area-top': '-1'});
+    requestValidation(horizontalEditor);
+    assert.strictEqual(validationErrorCount(horizontalEditor), 2);
+    assert.strictEqual(input(horizontalEditor, 'safe-area-top').getAttribute('aria-invalid'), 'true');
+    assert.strictEqual(input(horizontalEditor, 'safe-area-right').getAttribute('aria-invalid'), 'true');
+    assert.include(horizontalEditor.element.textContent || '',
+                   'Portrait safe area: Left and right insets must not exceed the device width.');
+
+    const verticalEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    fillFields(verticalEditor, {'safe-area-left': '-1', 'safe-area-top': '500', 'safe-area-bottom': '500'});
+    requestValidation(verticalEditor);
+    assert.strictEqual(validationErrorCount(verticalEditor), 2);
+    assert.strictEqual(input(verticalEditor, 'safe-area-left').getAttribute('aria-invalid'), 'true');
+    assert.strictEqual(input(verticalEditor, 'safe-area-bottom').getAttribute('aria-invalid'), 'true');
+    assert.include(verticalEditor.element.textContent || '',
+                   'Portrait safe area: Top and bottom insets must not exceed the device height.');
+  });
+
+  it('distinguishes simultaneous portrait and landscape safe-area errors', () => {
+    const editor = new DevicesSettingsTab().beginEdit(createCustomDevice());
+    fillFields(editor, {
+      'safe-area-left': '300',
+      'safe-area-right': '300',
+      'landscape-safe-area-top': '300',
+      'landscape-safe-area-bottom': '300',
+    });
+    requestValidation(editor);
+
+    const errorText = editor.element.querySelector('.list-widget-input-validation-error')?.textContent || '';
+    assert.include(errorText, 'Portrait safe area: Left and right insets must not exceed the device width.');
+    assert.include(errorText, 'Landscape safe area: Top and bottom insets must not exceed the device height.');
+    assert.strictEqual(validationErrorCount(editor), 2);
+    assert.strictEqual(input(editor, 'safe-area-right').getAttribute('aria-invalid'), 'true');
+    assert.strictEqual(input(editor, 'landscape-safe-area-bottom').getAttribute('aria-invalid'), 'true');
   });
 });

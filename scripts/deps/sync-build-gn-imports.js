@@ -58,7 +58,6 @@ function parseMultipleLineOfBuildGNFiles(lines, startIndex) {
     }
     indexForSourcesLines++;
   }
-  i = indexForSourcesLines;
   return {data, nextIndex: indexForSourcesLines};
 }
 

@@ -90,7 +90,7 @@ describeWithEnvironment('ConsoleInsight', () => {
     assert.strictEqual(nextInput.state.type, Explain.State.INSIGHT);
   });
 
-  it('shows opt-in teaser when setting is disabled via disabledCondition', async () => {
+  it('shows opt-in teaser when setting is disabled via isAvailable', async () => {
     const stub = sinon.stub(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor, 'isAvailable').returns({
       status: Common.Settings.SettingAvailability.DISABLED,
       reason: [AiAssistanceModel.AiUtils.DisabledReason.POLICY_RESTRICTED],

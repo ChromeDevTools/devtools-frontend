@@ -548,24 +548,10 @@ export class Setting<V> {
   }
 
   disabled(): boolean {
-    if (this.#registration?.disabledCondition) {
-      const {disabled} = this.#registration.disabledCondition(Root.Runtime.hostConfig);
-      // If registration does not disable it, pass through to #disabled
-      // attribute check.
-      if (disabled) {
-        return true;
-      }
-    }
     return this.#disabled || false;
   }
 
   disabledReasons(): Platform.UIString.LocalizedString[] {
-    if (this.#registration?.disabledCondition) {
-      const result = this.#registration.disabledCondition(Root.Runtime.hostConfig);
-      if (result.disabled) {
-        return result.reasons;
-      }
-    }
     return [];
   }
 

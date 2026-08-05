@@ -4,8 +4,6 @@
 
 import {assert} from 'chai';
 
-import * as Common from '../../../core/common/common.js';
-import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import {
   renderElementIntoDOM,
@@ -93,44 +91,6 @@ describe('SettingCheckbox', () => {
     checkbox.click();
 
     assert.isFalse(setting.get());
-  });
-
-  it('can be disabled via registration', () => {
-    stubNoopSettings();
-    const setting = createFakeSetting<boolean>('setting', false);
-    setting.setRegistration({
-      settingName: 'setting',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-      disabledCondition: () => {
-        return {disabled: true, reasons: ['reason' as Platform.UIString.LocalizedString]};
-      },
-    });
-
-    const {checkbox} = renderSettingCheckbox({setting});
-
-    checkbox.click();
-
-    assert.isFalse(setting.get());
-    assert.isTrue(checkbox.disabled);
-  });
-
-  it('shows disabled reason', () => {
-    stubNoopSettings();
-    const setting = createFakeSetting<boolean>('setting', false);
-    setting.setRegistration({
-      settingName: 'setting',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-      disabledCondition: () => {
-        return {disabled: true, reasons: ['reason' as Platform.UIString.LocalizedString]};
-      },
-    });
-
-    const {component} = renderSettingCheckbox({setting});
-
-    assert.strictEqual(
-        (component.shadowRoot!.querySelector('.disabled-reason') as HTMLElement).getAttribute('title'), 'reason');
   });
 
   it('disables checkbox when disabled property is true', () => {

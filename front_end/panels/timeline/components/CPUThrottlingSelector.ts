@@ -8,7 +8,6 @@ import '../../../ui/components/menus/menus.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -22,9 +21,8 @@ const {render, html} = Lit;
 const UIStrings = {
   /**
    * @description Text label for a selection box showing which CPU throttling option is applied.
-   * @example {No throttling} PH1
    */
-  cpu: 'CPU: {PH1}',
+  cpu: 'CPU:',
   /**
    * @description Text label for a selection box showing which CPU throttling option is applied.
    * @example {No throttling} PH1
@@ -48,6 +46,14 @@ const UIStrings = {
    */
   recalibrate: 'Recalibrate…',
   /**
+   * @description CPU preset option with no throttling.
+   */
+  disabledThrottlingPreset: 'Disabled',
+  /**
+   * @description Default presets category title.
+   */
+  defaultPresets: 'Presets',
+  /**
    * @description Label shown above a list of CPU calibration preset options.
    */
   labelCalibratedPresets: 'Calibrated presets',
@@ -67,8 +73,8 @@ interface ViewInput {
   currentOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption;
   groups: CPUThrottlingGroup[];
   throttling: PanelsCommon.CPUThrottlingOption.CalibratedCPUThrottling;
-  onMenuItemSelected: (event: Menus.SelectMenu.SelectMenuItemSelectedEvent) => void;
-  onCalibrateClick: () => void;
+  onMenuItemSelected: (event: Event) => void;
+  onCalibrateClick: (event: Event) => void;
 }
 
 export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
@@ -84,49 +90,47 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
   const calibrationLabel = hasCalibratedOnce ? i18nString(UIStrings.recalibrate) : i18nString(UIStrings.calibrate);
 
   // clang-format off
-  /* eslint-disable @devtools/no-deprecated-component-usages */
   const template = html`
     <style>${cpuThrottlingSelectorStyles}</style>
-    <devtools-select-menu
-          @selectmenuselected=${input.onMenuItemSelected}
-          .showDivider=${true}
-          .showArrow=${true}
-          .sideButton=${false}
-          .showSelectedItem=${true}
-          .jslogContext=${'cpu-throttling'}
-          .buttonTitle=${i18nString(UIStrings.cpu, {PH1: selectionTitle})}
-          .title=${i18nString(UIStrings.cpuThrottling, {PH1: selectionTitle})}
+    <style>${UI.inspectorCommonStyles}</style>
+    <label>
+      ${i18nString(UIStrings.cpu)}
+      <select
+          @change=${input.onMenuItemSelected}
+          jslog=${VisualLogging.dropDown('cpu-throttling').track({change: true})}
+          title=${i18nString(UIStrings.cpuThrottling, {PH1: selectionTitle})}
         >
         ${input.groups.map(group => {
           return html`
-            <devtools-menu-group .name=${group.name} .title=${group.name}>
+            <optgroup label=${group.name} title=${group.name}>
               ${group.items.map(option => {
                 const title = option === input.recommendedOption ? i18nString(UIStrings.recommendedThrottling, {PH1: option.title()}) : option.title();
                 const rate = option.rate();
                 return html`
-                  <devtools-menu-item
-                    .value=${option.calibratedDeviceType ?? rate}
+                  <option
+                    .value=${String(option.calibratedDeviceType ?? rate)}
                     .selected=${input.currentOption === option}
                     .disabled=${rate === 0}
                     .title=${title}
                     jslog=${VisualLogging.item(option.jslogContext).track({click: true})}
                   >
                     ${title}
-                  </devtools-menu-item>
+                  </option>
                 `;
               })}
-              ${group.name === 'Calibrated presets' ? html`<devtools-menu-item
-                .value=${-1 /* This won't be displayed unless it has some value. */}
+              ${group.name === 'Calibrated presets' ? html`<option
+                .value=${'-1' /* This won't be displayed unless it has some value. */}
                 .title=${calibrationLabel}
                 jslog=${VisualLogging.action('cpu-throttling-selector-calibrate').track({click: true})}
                 @click=${input.onCalibrateClick}
               >
                 ${calibrationLabel}
-              </devtools-menu-item>` : Lit.nothing}
-            </devtools-menu-group>`;
+              </option>` : Lit.nothing}
+            </optgroup>`;
         })}
-    </devtools-select-menu>
+      </select>
     ${recommendedInfoEl}
+    </label>
   `;
   // clang-format on
   render(template, target);
@@ -183,16 +187,19 @@ export class CPUThrottlingSelector extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #onMenuItemSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
+  #onMenuItemSelected(event: Event): void {
+    const itemValue = (event.target as HTMLSelectElement).value;
     let option;
-    if (typeof event.itemValue === 'string') {
-      if (event.itemValue === 'low-tier-mobile') {
-        option = PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption;
-      } else if (event.itemValue === 'mid-tier-mobile') {
-        option = PanelsCommon.CPUThrottlingOption.CalibratedMidTierMobileThrottlingOption;
-      }
+    if (itemValue === 'low-tier-mobile') {
+      option = PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption;
+    } else if (itemValue === 'mid-tier-mobile') {
+      option = PanelsCommon.CPUThrottlingOption.CalibratedMidTierMobileThrottlingOption;
     } else {
-      const rate = Number(event.itemValue);
+      const rate = Number(itemValue);
+      if (rate === -1) {
+        // Calibration option clicked
+        return;
+      }
       option = MobileThrottling.ThrottlingPresets.ThrottlingPresets.cpuThrottlingPresets.find(
           option => !option.calibratedDeviceType && option.rate() === rate);
     }
@@ -202,21 +209,34 @@ export class CPUThrottlingSelector extends UI.Widget.Widget {
     }
   }
 
-  #onCalibrateClick(): void {
+  #onCalibrateClick(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
     void Common.Revealer.reveal(this.#calibratedThrottlingSetting);
+    // Reset selection to the current option
+    this.requestUpdate();
   }
 
   #resetGroups(): void {
     this.#groups = [
       {
-        name: '',
+        name: i18nString(UIStrings.disabledThrottlingPreset),
         items: MobileThrottling.ThrottlingPresets.ThrottlingPresets.cpuThrottlingPresets.filter(
-            option => !option.calibratedDeviceType),
+            option => option.rate() === 1 && !option.calibratedDeviceType,
+            ),
       },
+      {
+        name: i18nString(UIStrings.defaultPresets),
+        items: MobileThrottling.ThrottlingPresets.ThrottlingPresets.cpuThrottlingPresets.filter(
+            option => !option.calibratedDeviceType && option.rate() > 1,
+            ),
+      },
+
       {
         name: i18nString(UIStrings.labelCalibratedPresets),
         items: MobileThrottling.ThrottlingPresets.ThrottlingPresets.cpuThrottlingPresets.filter(
-            option => option.calibratedDeviceType),
+            option => option.calibratedDeviceType,
+            ),
       },
     ];
   }

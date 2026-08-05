@@ -11,7 +11,6 @@ import * as MobileThrottling from '../../../panels/mobile_throttling/mobile_thro
 import {assertScreenshot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
-import * as Menus from '../../../ui/components/menus/menus.js';
 
 import * as Components from './components.js';
 
@@ -50,23 +49,23 @@ describeWithEnvironment('CPUThrottlingSelector view', () => {
 
     DEFAULT_VIEW(DEFAULT_INPUT, undefined, element);
 
-    const menuItems = element.querySelectorAll('devtools-menu-item');
+    const menuItems = element.querySelectorAll('option');
 
     assert.lengthOf(menuItems, 6);
 
-    assert.strictEqual(menuItems[0].value, 1);
+    assert.strictEqual(menuItems[0].value, '1');
     assert.isTrue(menuItems[0].selected);
     assert.match(menuItems[0].innerText, /No throttling/);
 
-    assert.strictEqual(menuItems[1].value, 4);
+    assert.strictEqual(menuItems[1].value, '4');
     assert.isFalse(menuItems[1].selected);
     assert.match(menuItems[1].innerText, /4× slowdown/);
 
-    assert.strictEqual(menuItems[2].value, 6);
+    assert.strictEqual(menuItems[2].value, '6');
     assert.isFalse(menuItems[2].selected);
     assert.match(menuItems[2].innerText, /6× slowdown/);
 
-    assert.strictEqual(menuItems[3].value, 20);
+    assert.strictEqual(menuItems[3].value, '20');
     assert.isFalse(menuItems[3].selected);
     assert.match(menuItems[3].innerText, /20× slowdown/);
 
@@ -86,15 +85,15 @@ describeWithEnvironment('CPUThrottlingSelector view', () => {
     DEFAULT_VIEW({...DEFAULT_INPUT, currentOption: PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption}, undefined,
                  element);
 
-    const menuItems = element.querySelectorAll('devtools-menu-item');
+    const menuItems = element.querySelectorAll('option');
 
-    assert.strictEqual(menuItems[0].value, 1);
+    assert.strictEqual(menuItems[0].value, '1');
     assert.isFalse(menuItems[0].selected);
 
-    assert.strictEqual(menuItems[1].value, 4);
+    assert.strictEqual(menuItems[1].value, '4');
     assert.isTrue(menuItems[1].selected);
 
-    assert.strictEqual(menuItems[2].value, 6);
+    assert.strictEqual(menuItems[2].value, '6');
     assert.isFalse(menuItems[2].selected);
   });
 
@@ -105,21 +104,21 @@ describeWithEnvironment('CPUThrottlingSelector view', () => {
     DEFAULT_VIEW({...DEFAULT_INPUT, recommendedOption: PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption},
                  undefined, element);
 
-    const menuItems = element.querySelectorAll('devtools-menu-item');
+    const menuItems = element.querySelectorAll('option');
 
-    assert.strictEqual(menuItems[0].value, 1);
+    assert.strictEqual(menuItems[0].value, '1');
     assert.isTrue(menuItems[0].selected);
     assert.notMatch(menuItems[0].innerText, /recommended/);
 
-    assert.strictEqual(menuItems[1].value, 4);
+    assert.strictEqual(menuItems[1].value, '4');
     assert.isFalse(menuItems[1].selected);
     assert.match(menuItems[1].innerText, /recommended/);
 
-    assert.strictEqual(menuItems[2].value, 6);
+    assert.strictEqual(menuItems[2].value, '6');
     assert.isFalse(menuItems[2].selected);
     assert.notMatch(menuItems[2].innerText, /recommended/);
 
-    assert.strictEqual(menuItems[3].value, 20);
+    assert.strictEqual(menuItems[3].value, '20');
     assert.isFalse(menuItems[3].selected);
     assert.notMatch(menuItems[3].innerText, /recommended/);
   });
@@ -156,11 +155,11 @@ describeWithEnvironment('CPUThrottlingSelector view', () => {
     },
                  undefined, element);
 
-    const menuItems = element.querySelectorAll('devtools-menu-item');
+    const menuItems = element.querySelectorAll('option');
     assert.lengthOf(menuItems, 5);
     const calibrateMenuItem = menuItems[3];
 
-    assert.strictEqual(calibrateMenuItem.value, -1);
+    assert.strictEqual(calibrateMenuItem.value, '-1');
     assert.isFalse(calibrateMenuItem.selected);
     assert.match(calibrateMenuItem.innerText, expectedPattern);
 
@@ -224,7 +223,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     it('with preset option', async () => {
       const {view, widget} = await createWidget();
 
-      view.input.onMenuItemSelected(new Menus.SelectMenu.SelectMenuItemSelectedEvent(4));
+      view.input.onMenuItemSelected({target: {value: '4'}} as unknown as Event);
 
       sinon.assert.calledOnceWithExactly(setOptionSpy, PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption);
 
@@ -234,7 +233,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     it('with calibrated option', async () => {
       const {view, widget} = await createWidget();
 
-      view.input.onMenuItemSelected(new Menus.SelectMenu.SelectMenuItemSelectedEvent('low-tier-mobile'));
+      view.input.onMenuItemSelected({target: {value: 'low-tier-mobile'}} as unknown as Event);
 
       sinon.assert.calledOnceWithExactly(setOptionSpy,
                                          PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption);

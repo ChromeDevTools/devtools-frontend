@@ -160,10 +160,6 @@ const UIStrings = {
    */
   network: 'Network:',
   /**
-   * @description Text in Timeline Panel of the Performance panel
-   */
-  cpu: 'CPU:',
-  /**
    * @description Title of the 'Network conditions' tool in the bottom drawer
    */
   networkConditions: 'Network conditions',
@@ -440,7 +436,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private showScreenshotsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   private showMemoryToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   private networkThrottlingSelect?: MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect;
-  private cpuThrottlingSelect?: MobileThrottling.ThrottlingManager.CPUThrottlingSelectorWrapper;
+  private cpuThrottlingSelect?: TimelineComponents.CPUThrottlingSelector.CPUThrottlingSelector;
   private fileSelectorElement?: HTMLInputElement;
   private selection: TimelineSelection|null = null;
   private traceLoadStart!: Trace.Types.Timing.Milli|null;
@@ -822,7 +818,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   #onFieldDataChanged(): void {
     const recs = PanelsCommon.ThrottlingUtils.getThrottlingRecommendations();
-    this.cpuThrottlingSelect?.updateRecommendedOption(recs.cpuOption);
+    if (this.cpuThrottlingSelect) {
+      this.cpuThrottlingSelect.recommendedOption = recs.cpuOption;
+    }
     if (this.networkThrottlingSelect) {
       this.networkThrottlingSelect.recommendedConditions = recs.networkConditions;
     }
@@ -1332,9 +1330,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.settingsPane.setAttribute('jslog', `${VisualLogging.pane('timeline-settings-pane').track({resize: true})}`);
 
     const cpuThrottlingPane = this.settingsPane.createChild('div');
-    cpuThrottlingPane.append(i18nString(UIStrings.cpu));
-    this.cpuThrottlingSelect = MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector();
-    cpuThrottlingPane.append(this.cpuThrottlingSelect.control.element);
+    this.cpuThrottlingSelect = new TimelineComponents.CPUThrottlingSelector.CPUThrottlingSelector();
+    this.cpuThrottlingSelect.show(cpuThrottlingPane);
 
     this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
         this.captureSelectorStatsSetting.title(), this.captureSelectorStatsSetting,

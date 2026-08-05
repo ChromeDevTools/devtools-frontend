@@ -449,6 +449,10 @@ export interface HostConfigJpegXlImageFormat {
   enabled: boolean;
 }
 
+export interface HostConfigSourceMapScopesInSourcesPanel {
+  enabled: boolean;
+}
+
 interface AiGeneratedTimelineLabels {
   enabled: boolean;
 }
@@ -571,6 +575,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsEnableOriginBoundCookies: HostConfigEnableOriginBoundCookies,
   devToolsAnimationStylesInStylesTab: HostConfigAnimationStylesInStylesTab,
   devToolsJpegXlImageFormat: HostConfigJpegXlImageFormat,
+  devToolsSourceMapScopesInSourcesPanel: HostConfigSourceMapScopesInSourcesPanel,
   devToolsAiGeneratedTimelineLabels: AiGeneratedTimelineLabels,
   devToolsGlobalAiButton: GlobalAiButton,
   devToolsGdpProfiles: GdpProfiles,

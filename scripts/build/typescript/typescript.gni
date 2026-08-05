@@ -12,7 +12,6 @@ import("../ninja/vars.gni")
 
 declare_args() {
   devtools_skip_typecheck = build_with_chromium && !is_official_build
-  devtools_use_typescript_go = true
 }
 
 assert(!devtools_skip_typecheck || !is_official_build,
@@ -273,10 +272,6 @@ template("ts_library") {
 
     if (_tsconfig_only) {
       args += [ "--tsconfig-only" ]
-    }
-
-    if (devtools_use_typescript_go) {
-      args += [ "--use-typescript-go" ]
     }
 
     if (defined(invoker.additional_type_definitions)) {

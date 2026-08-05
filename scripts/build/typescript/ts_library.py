@@ -19,7 +19,6 @@ _CURRENT_DIR = path.join(path.dirname(__file__))
 ROOT_DIRECTORY_OF_REPOSITORY = path.join(_CURRENT_DIR, '..', '..', '..')
 NODE_MODULES_DIRECTORY = path.join(ROOT_DIRECTORY_OF_REPOSITORY,
                                    'node_modules')
-TSC_LOCATION = path.join(NODE_MODULES_DIRECTORY, 'typescript', 'bin', 'tsc')
 
 try:
     old_sys_path = sys.path[:]
@@ -27,7 +26,6 @@ try:
     import devtools_paths
 finally:
     sys.path = old_sys_path
-NODE_LOCATION = devtools_paths.node_path()
 ESBUILD_LOCATION = devtools_paths.esbuild_path()
 
 BASE_TS_CONFIG_LOCATION = path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'config',
@@ -51,28 +49,15 @@ logging.basicConfig(
     level=logging.DEBUG if os.environ.get('TSC_DEBUG') else logging.WARNING)
 
 
-def runTsc(tsconfig_location, use_typescript_go=False):
-    if use_typescript_go:
-        sys.path.append(
-            path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'third_party',
-                      'typescript'))
-        import typescript
-        logging.info("runTsc (tsgo): -p %s", tsconfig_location)
-        returncode, stdout, stderr = typescript.RunTypeScriptRaw(
-            ['--project', tsconfig_location])
-        # TypeScript does not correctly write to stderr because of https://github.com/microsoft/TypeScript/issues/33849
-        return returncode, stdout + stderr
-
-    cmd = [NODE_LOCATION, TSC_LOCATION]
-    cmd += ['-p', tsconfig_location]
-    logging.info("runTsc: %s", ' '.join(cmd))
-    process = subprocess.Popen(cmd,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE,
-                               universal_newlines=True)
-    stdout, stderr = process.communicate()
+def runTsc(tsconfig_location):
+    sys.path.append(
+        path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'third_party', 'typescript'))
+    import typescript
+    logging.info("runTsc (tsgo): -p %s", tsconfig_location)
+    returncode, stdout, stderr = typescript.RunTypeScriptRaw(
+        ['--project', tsconfig_location])
     # TypeScript does not correctly write to stderr because of https://github.com/microsoft/TypeScript/issues/33849
-    return process.returncode, stdout + stderr
+    return returncode, stdout + stderr
 
 
 # To ensure that Ninja only rebuilds dependents when the actual content/public API of a TypeScript target changes,
@@ -233,7 +218,6 @@ def main():
     parser.add_argument('--tsconfig-only', action='store_true')
     parser.add_argument('--es-target', required=False)
     parser.add_argument('--es-libs', nargs='*', required=False)
-    parser.add_argument('--use-typescript-go', action='store_true')
     # Restrict supported features to the ones supported by Node 22.
     parser.set_defaults(test_only=False,
                         no_emit=False,
@@ -337,8 +321,7 @@ def main():
     previously_generated_file_metadata = compute_previous_generated_file_metadata(
         sources, tsconfig_output_directory)
 
-    found_errors, stderr = runTsc(tsconfig_location=tsconfig_output_location,
-                                  use_typescript_go=opts.use_typescript_go)
+    found_errors, stderr = runTsc(tsconfig_location=tsconfig_output_location)
 
     if opts.reset_timestamps:
         maybe_reset_timestamps_on_generated_files(

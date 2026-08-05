@@ -8,7 +8,7 @@ export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target
 export declare class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
     #private;
     private readonly nodeShortcut;
-    constructor(nodeShortcut: SDK.DOMModel.DOMNodeShortcut, view?: (input: ViewInput, _output: undefined, target: HTMLElement) => void);
+    constructor(nodeShortcut: SDK.DOMModel.DOMNodeShortcut, view?: typeof DEFAULT_VIEW);
     get hovered(): boolean;
     set hovered(x: boolean);
     deferredNode(): SDK.DOMModel.DeferredDOMNode;

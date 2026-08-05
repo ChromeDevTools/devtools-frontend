@@ -593,8 +593,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             const defaultDeviceScaleFactor = mobile ? defaultMobileScaleFactor : 0;
             this.#fitScale = this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get());
             this.#appliedUserAgentType = this.#uaSetting.get();
-            this.applyDeviceMetrics(new Geometry.Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), this.#scaleSetting.get(), this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" /* Protocol.Emulation.ScreenOrientationType.PortraitPrimary */ :
-                "landscapePrimary" /* Protocol.Emulation.ScreenOrientationType.LandscapePrimary */, resetPageScaleFactor);
+            this.applyDeviceMetrics(new Geometry.Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), this.#scaleSetting.get(), this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" /* Protocol.Emulation.ScreenOrientationType.PortraitPrimary */ : "landscapePrimary" /* Protocol.Emulation.ScreenOrientationType.LandscapePrimary */, resetPageScaleFactor);
             this.applyUserAgent(mobile ? DeviceModeModel.defaultMobileUserAgent() : '', mobile ? DeviceModeModel.defaultMobileUserAgentMetadata() : null);
             this.applyTouch(this.#uaSetting.get() === "Desktop (touch)" /* UA.DESKTOP_TOUCH */ || this.#uaSetting.get() === "Mobile" /* UA.MOBILE */, this.#uaSetting.get() === "Mobile" /* UA.MOBILE */);
         }

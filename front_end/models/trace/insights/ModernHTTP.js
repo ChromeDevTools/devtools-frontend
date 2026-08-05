@@ -5,6 +5,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
+import * as Types from '../types/types.js';
 import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /**
@@ -152,7 +153,7 @@ function computeWasteWithGraph(urlsToChange, graph, simulator) {
     return Platform.NumberUtilities.floor(savings, 1 / 10);
 }
 function computeMetricSavings(http1Requests, context) {
-    if (!context.navigation || !context.lantern) {
+    if (!context.navigation || !('lantern' in context) || !context.lantern) {
         return;
     }
     const urlsToChange = new Set(http1Requests.map(r => r.args.data.url));
@@ -180,7 +181,10 @@ export function generateInsight(data, context) {
     const isWithinContext = (event) => Helpers.Timing.eventIsInBounds(event, context.bounds);
     const contextRequests = data.NetworkRequests.byTime.filter(isWithinContext);
     const entityMappings = data.NetworkRequests.entityMappings;
-    const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? data.Meta.mainFrameURL;
+    let firstPartyUrl = data.Meta.mainFrameURL;
+    if (context.navigation && !Types.Events.isSoftNavigationStart(context.navigation)) {
+        firstPartyUrl = context.navigation.args.data?.documentLoaderURL ?? firstPartyUrl;
+    }
     const firstPartyEntity = Handlers.Helpers.getEntityForUrl(firstPartyUrl, entityMappings);
     const http1Requests = determineHttp1Requests(contextRequests, entityMappings, firstPartyEntity ?? null);
     return finalize({

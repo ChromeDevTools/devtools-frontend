@@ -37,7 +37,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
@@ -1165,8 +1164,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             showGridAdorner: Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
             showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !this.isClosingTag(),
             showMediaAdorner: this.node().isMediaNode() && !this.isClosingTag(),
-            showPopoverAdorner: Boolean(Root.Runtime.hostConfig.devToolsAllowPopoverForcing?.enabled) &&
-                Boolean(this.node().attributes().find(attr => attr.name === 'popover')) && !this.isClosingTag(),
+            showPopoverAdorner: Boolean(this.node().attributes().find(attr => attr.name === 'popover')) && !this.isClosingTag(),
             showTopLayerAdorner: this.node().topLayerIndex() !== -1 && !this.isClosingTag(),
             gridAdornerActive: this.#gridAdornerActive,
             popoverAdornerActive: this.#popoverAdornerActive,
@@ -1994,7 +1992,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         this.populateExpandRecursively(contextMenu);
         contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this), { jslogContext: 'collapse-children' });
         contextMenu.viewSection().appendItem(i18nString(UIStrings.switchToAccessibilityTree), () => ElementsPanel.instance().toggleAccessibilityTree(), { jslogContext: 'switch-to-accessibility-tree' });
-        const deviceModeWrapperAction = new Emulation.DeviceModeWrapper.ActionDelegate();
+        const deviceModeWrapperAction = new Emulation.DeviceModeView.ActionDelegate();
         contextMenu.viewSection().appendItem(i18nString(UIStrings.captureNodeScreenshot), deviceModeWrapperAction.handleAction.bind(null, UI.Context.Context.instance(), 'emulation.capture-node-screenshot'), { jslogContext: 'emulation.capture-node-screenshot' });
         if (this.nodeInternal.frameOwnerFrameId()) {
             contextMenu.viewSection().appendItem(i18nString(UIStrings.showFrameDetails), () => {

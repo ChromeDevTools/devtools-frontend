@@ -743,8 +743,7 @@ export class DebuggerPlugin extends Plugin {
         const dialog = new BreakpointEditDialog();
         dialog.editorLineNumber = line.number - 1;
         dialog.oldCondition = oldCondition,
-            dialog.breakpointType = isLogpointForDialog ? "LOGPOINT" /* SDK.DebuggerModel.BreakpointType.LOGPOINT */ :
-                "CONDITIONAL_BREAKPOINT" /* SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT */;
+            dialog.breakpointType = isLogpointForDialog ? "LOGPOINT" /* SDK.DebuggerModel.BreakpointType.LOGPOINT */ : "CONDITIONAL_BREAKPOINT" /* SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT */;
         dialog.onFinish = async (result) => {
             this.activeBreakpointDialog = null;
             this.#activeBreakpointEditRequest = undefined;

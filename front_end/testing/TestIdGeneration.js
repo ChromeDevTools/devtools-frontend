@@ -7,16 +7,15 @@ const replacements = {
     '\t': '_tab_',
     '\x00': '_null_',
     '\x07': '_bell_',
-    '"': '_dblquote_',
 };
-const nonPrintRegex = /\p{C}|"/gu;
+const nonPrintRegex = /[^\x20-\x7E]/ug;
 function replaceNonPrintable(str) {
     return str.replace(nonPrintRegex, match => {
         return replacements[match] !== undefined ? replacements[match] : '';
     });
 }
 export function escapeTestIdBlock(block) {
-    return replaceNonPrintable(block.toLowerCase().replace(/\s+/g, '_').replace(/:/g, '_'));
+    return replaceNonPrintable(block.toLowerCase()).replace(/"/g, '_dblquote_').replace(/\s+/g, '_').replace(/:/g, '_');
 }
 /**
  * Build test ID is like the test ID used on the CLI but the path part of it is

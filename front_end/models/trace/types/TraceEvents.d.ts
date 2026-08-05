@@ -2347,9 +2347,9 @@ export declare const enum Name {
  * to in multiple places.
  **/
 export declare const Categories: {
-    readonly Console: "blink.console";
-    readonly UserTiming: "blink.user_timing";
-    readonly Loading: "loading";
+    readonly Console: 'blink.console';
+    readonly UserTiming: 'blink.user_timing';
+    readonly Loading: 'loading';
 };
 /**
  * The frames implementation in handlers/FramesHandler is considered "legacy"

@@ -472,7 +472,6 @@ panels/elements/WebCustomData.test.js
 panels/emulation/AdvancedApp.test.js
 panels/emulation/DeviceModeToolbar.test.js
 panels/emulation/DeviceModeView.test.js
-panels/emulation/DeviceModeWrapper.test.js
 panels/emulation/MediaQueryInspector.test.js
 panels/event_listeners/EventListenersView.test.js
 panels/explain/components/ConsoleInsight.test.js
@@ -626,6 +625,7 @@ panels/timeline/TrackConfigBanner.test.js
 panels/timeline/TrackConfiguration.test.js
 panels/timeline/components/BreadcrumbsUI.test.js
 panels/timeline/components/CPUThrottlingSelector.test.js
+panels/timeline/components/CWVMetrics.test.js
 panels/timeline/components/ExportTraceOptions.test.js
 panels/timeline/components/FieldSettingsDialog.test.js
 panels/timeline/components/IgnoreListSetting.test.js

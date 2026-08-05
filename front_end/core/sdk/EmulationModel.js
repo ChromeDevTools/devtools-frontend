@@ -341,8 +341,7 @@ export class EmulationModel extends SDKModel {
     async updateTouch() {
         let configuration = {
             enabled: this.#touchEnabled,
-            configuration: this.#touchMobile ? "mobile" /* Protocol.Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Mobile */ :
-                "desktop" /* Protocol.Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Desktop */,
+            configuration: this.#touchMobile ? "mobile" /* Protocol.Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Mobile */ : "desktop" /* Protocol.Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Desktop */,
         };
         if (this.#customTouchEnabled) {
             configuration = {

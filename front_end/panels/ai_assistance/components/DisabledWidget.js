@@ -101,8 +101,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           <devtools-icon name="smart-assistant"></devtools-icon>
         </div>
         <div>
-          ${input.aidaAvailability ===
-        "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */
+          ${input.aidaAvailability === "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */
         ? renderConsentViewContents(input.hostConfig)
         : renderAidaUnavailableContents(input.aidaAvailability)}
         </div>

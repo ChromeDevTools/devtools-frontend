@@ -11,7 +11,7 @@ __export(InspectElementModeController_exports, {
   ToggleSearchActionDelegate: () => ToggleSearchActionDelegate
 });
 import * as Common14 from "./../../core/common/common.js";
-import * as Root6 from "./../../core/root/root.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
@@ -32,7 +32,7 @@ import * as Common13 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n36 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
 import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
 import * as PanelCommon from "./../common/common.js";
@@ -12006,7 +12006,6 @@ import * as Common8 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n26 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
-import * as Root4 from "./../../core/root/root.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as TextUtils7 from "./../../core/text_utils/text_utils.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
@@ -13435,7 +13434,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       showGridAdorner: Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
       showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !this.isClosingTag(),
       showMediaAdorner: this.node().isMediaNode() && !this.isClosingTag(),
-      showPopoverAdorner: Boolean(Root4.Runtime.hostConfig.devToolsAllowPopoverForcing?.enabled) && Boolean(this.node().attributes().find((attr) => attr.name === "popover")) && !this.isClosingTag(),
+      showPopoverAdorner: Boolean(this.node().attributes().find((attr) => attr.name === "popover")) && !this.isClosingTag(),
       showTopLayerAdorner: this.node().topLayerIndex() !== -1 && !this.isClosingTag(),
       gridAdornerActive: this.#gridAdornerActive,
       popoverAdornerActive: this.#popoverAdornerActive,
@@ -14253,7 +14252,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     this.populateExpandRecursively(contextMenu);
     contextMenu.viewSection().appendItem(i18nString12(UIStrings13.collapseChildren), this.collapseChildren.bind(this), { jslogContext: "collapse-children" });
     contextMenu.viewSection().appendItem(i18nString12(UIStrings13.switchToAccessibilityTree), () => ElementsPanel.instance().toggleAccessibilityTree(), { jslogContext: "switch-to-accessibility-tree" });
-    const deviceModeWrapperAction = new Emulation.DeviceModeWrapper.ActionDelegate();
+    const deviceModeWrapperAction = new Emulation.DeviceModeView.ActionDelegate();
     contextMenu.viewSection().appendItem(i18nString12(UIStrings13.captureNodeScreenshot), deviceModeWrapperAction.handleAction.bind(null, UI14.Context.Context.instance(), "emulation.capture-node-screenshot"), { jslogContext: "emulation.capture-node-screenshot" });
     if (this.nodeInternal.frameOwnerFrameId()) {
       contextMenu.viewSection().appendItem(i18nString12(UIStrings13.showFrameDetails), () => {
@@ -19072,7 +19071,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     }
     const isComputedStyleWidgetVisible = this.#computedStyleWidget.isShowing();
     const isStylesTabVisible = Boolean(UI21.Context.Context.instance().flavor(StylesSidebarPane));
-    const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible || isStylesTabVisible && Root5.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
+    const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible || isStylesTabVisible && Root4.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
     void selectedNode.domModel()?.cssModel()?.trackComputedStyleUpdatesForNode(shouldTrackComputedStyleUpdates ? selectedNode.id : void 0);
   }, 100);
   async #updateComputedStyles() {
@@ -20157,7 +20156,7 @@ var InspectElementModeController = class _InspectElementModeController {
 };
 var ToggleSearchActionDelegate = class {
   handleAction(_context, actionId) {
-    if (Root6.Runtime.Runtime.queryParam("isSharedWorker")) {
+    if (Root5.Runtime.Runtime.queryParam("isSharedWorker")) {
       return false;
     }
     inspectElementModeController = InspectElementModeController.instance();

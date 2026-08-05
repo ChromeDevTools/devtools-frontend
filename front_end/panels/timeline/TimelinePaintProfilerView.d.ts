@@ -44,10 +44,7 @@ export declare class TimelinePaintImageView extends UI.Widget.Widget {
     #private;
     private transformController;
     private maskRectangle?;
-    constructor(view?: (input: TimelinePaintImageViewInput, output: undefined, target: HTMLElement) => {
-        imageElementNaturalHeight: number;
-        imageElementNaturalWidth: number;
-    });
+    constructor(view?: typeof DEFAULT_VIEW);
     onResize(): void;
     private updateImagePosition;
     showImage(imageURL?: string): void;

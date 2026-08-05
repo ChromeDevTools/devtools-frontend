@@ -155,7 +155,7 @@ function finalize(partialModel) {
     };
 }
 export function generateInsight(data, context) {
-    if (!context.navigation) {
+    if (!context.navigation || !('navigationId' in context)) {
         return finalize({});
     }
     const millisToString = context.options.insightTimeFormatters?.milli ?? i18n.TimeUtilities.millisToString;

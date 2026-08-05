@@ -14,7 +14,7 @@ export declare const DEFAULT_VIEW: (input: ViewProps, _output: Record<string, un
 export type View = typeof DEFAULT_VIEW;
 export declare class ExploreWidget extends UI.Widget.Widget {
     #private;
-    constructor(element?: HTMLElement, view?: (input: ViewProps, _output: Record<string, unknown>, target: HTMLElement) => void);
+    constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW);
     wasShown(): void;
     performUpdate(): Promise<void> | void;
 }

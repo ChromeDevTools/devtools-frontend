@@ -506,7 +506,7 @@ export function isNetworkDependencyTreeInsight(model) {
     return model.insightKey === InsightKeys.NETWORK_DEPENDENCY_TREE;
 }
 export function generateInsight(data, context) {
-    if (!context.navigation) {
+    if (!context.navigation || !('navigationId' in context)) {
         return finalize({
             rootNodes: [],
             maxTime: 0,

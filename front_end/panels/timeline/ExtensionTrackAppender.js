@@ -43,8 +43,7 @@ export class ExtensionTrackAppender {
             buildGroupStyle({ shareHeaderLine: true, collapsible: 1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */ }) :
             buildGroupStyle({ shareHeaderLine: false, collapsible: 0 /* PerfUI.FlameChart.GroupCollapsibleState.ALWAYS */ });
         const headerTitle = this.#extensionTopLevelTrack.name;
-        const jsLogContext = this.#extensionTopLevelTrack.name === '🅰️ Angular' ? "angular-track" /* VisualLoggingTrackName.ANGULAR_TRACK */ :
-            "extension" /* VisualLoggingTrackName.EXTENSION */;
+        const jsLogContext = this.#extensionTopLevelTrack.name === '🅰️ Angular' ? "angular-track" /* VisualLoggingTrackName.ANGULAR_TRACK */ : "extension" /* VisualLoggingTrackName.EXTENSION */;
         const group = buildTrackHeader(jsLogContext, currentLevel, headerTitle, style, 
         /* selectable= */ true, expanded);
         group.subtitle = i18nString(UIStrings.customTrackSubtitle);

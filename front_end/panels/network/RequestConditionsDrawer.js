@@ -256,8 +256,7 @@ function renderItem({ condition, editing, editable, index, onToggle, onCondition
       <devtools-icon name=cross-circle-filled class=small aria-details=url-pattern-error-${index}>
       </devtools-icon>
       <devtools-tooltip variant=rich jslogcontext=url-pattern-warning id=url-pattern-error-${index}>
-        ${SDK.NetworkManager.RequestURLPattern.isValidPattern(constructorStringOrWildcardURL) ===
-        "has-regexp-groups" /* SDK.NetworkManager.RequestURLPatternValidity.HAS_REGEXP_GROUPS */
+        ${SDK.NetworkManager.RequestURLPattern.isValidPattern(constructorStringOrWildcardURL) === "has-regexp-groups" /* SDK.NetworkManager.RequestURLPatternValidity.HAS_REGEXP_GROUPS */
         ? i18nString(UIStrings.patternFailedWithRegExpGroups)
         : i18nString(UIStrings.patternFailedToParse)}
         ${learnMore()}

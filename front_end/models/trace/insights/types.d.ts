@@ -5,7 +5,7 @@ import type * as Models from './Models.js';
 /**
  * Context for the portion of the trace an insight should look at.
  */
-export type InsightSetContext = InsightSetContextWithoutNavigation | InsightSetContextWithNavigation;
+export type InsightSetContext = InsightSetContextWithoutNavigation | InsightSetContextWithNavigation | InsightSetContextWithSoftNavigation;
 export interface InsightSetContextWithoutNavigation {
     options: Types.Configuration.ParseOptions;
     bounds: Types.Timing.TraceWindowMicro;
@@ -19,6 +19,12 @@ export interface InsightSetContextWithNavigation {
     navigation: Types.Events.NavigationStart;
     navigationId: string;
     lantern?: LanternContext;
+}
+export interface InsightSetContextWithSoftNavigation {
+    options: Types.Configuration.ParseOptions;
+    bounds: Types.Timing.TraceWindowMicro;
+    frameId: string;
+    navigation: Types.Events.SoftNavigationStart;
 }
 export interface LanternContext {
     requests: Array<Lantern.Types.NetworkRequest<Types.Events.SyntheticNetworkRequest>>;
@@ -75,10 +81,7 @@ export type InsightModel<UIStrings extends Record<string, string> = Record<strin
      */
     wastedBytes?: number;
     frameId?: string;
-    /**
-     * If this insight is attached to a navigation, this stores its ID.
-     */
-    navigation?: Types.Events.NavigationStart;
+    navigation?: Types.Events.NavigationStart | Types.Events.SoftNavigationStart;
     /** This is lazily-generated because some insights may create many overlays. */
     createOverlays?: () => Types.Overlays.Overlay[];
 };
@@ -99,7 +102,7 @@ export interface InsightSet {
     model: InsightModels;
     /** Contains errors for all insights that had an internal error. */
     modelErrors: InsightModelErrors;
-    navigation?: Types.Events.NavigationStart;
+    navigation?: Types.Events.NavigationStart | Types.Events.SoftNavigationStart;
 }
 /**
  * Contains insights for a specific insight set. If missing, it error'd.

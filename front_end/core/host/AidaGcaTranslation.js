@@ -464,8 +464,7 @@ export function gcaChunkResponseToAidaChunkResponse(response) {
             if (part.executableCode) {
                 aidaChunkResponse.codeChunk = {
                     code: part.executableCode.code,
-                    inferenceLanguage: part.executableCode.language ? "PYTHON" /* AIDA.AidaInferenceLanguage.PYTHON */ :
-                        "UNKNOWN" /* AIDA.AidaInferenceLanguage.UNKNOWN */,
+                    inferenceLanguage: part.executableCode.language ? "PYTHON" /* AIDA.AidaInferenceLanguage.PYTHON */ : "UNKNOWN" /* AIDA.AidaInferenceLanguage.UNKNOWN */,
                 };
             }
             return aidaChunkResponse;

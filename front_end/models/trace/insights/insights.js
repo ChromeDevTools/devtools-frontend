@@ -234,7 +234,23 @@ function getFieldMetricsForInsightSet(insightSet, metadata, scope = null) {
   if (!cruxFieldData) {
     return null;
   }
-  const pageResult = getPageResult(cruxFieldData, insightSet.url.href, insightSet.url.origin, scope);
+  let pageResult = getPageResult(cruxFieldData, insightSet.url.href, insightSet.url.origin, scope);
+  if (!pageResult && insightSet.navigation && Types.Events.isSoftNavigationStart(insightSet.navigation)) {
+    pageResult = cruxFieldData.find((result) => {
+      const key = scope ? result[`${scope.pageScope}-${scope.deviceScope}`]?.record.key : (result["url-ALL"] || result["origin-ALL"])?.record.key;
+      if (!key) {
+        return false;
+      }
+      if (key.url) {
+        try {
+          return new URL(key.url).origin === insightSet.url.origin;
+        } catch {
+          return false;
+        }
+      }
+      return key.origin === insightSet.url.origin;
+    });
+  }
   if (!pageResult) {
     return null;
   }
@@ -314,7 +330,7 @@ function estimateSavingsWithGraphs(wastedBytesByRequestId, simulator, graph) {
   return Types.Timing.Milli(savings);
 }
 function metricSavingsForWastedBytes(wastedBytesByRequestId, context) {
-  if (!context.navigation || !context.lantern) {
+  if (!context.navigation || !("lantern" in context) || !context.lantern) {
     return;
   }
   if (!wastedBytesByRequestId.size) {
@@ -712,7 +728,7 @@ function metaCharsetLabel(disposition) {
   }
 }
 function generateInsight2(data, context) {
-  if (!context.navigation) {
+  if (!context.navigation || !("navigationId" in context)) {
     return finalize2({});
   }
   const documentRequest = data.NetworkRequests.byId.get(context.navigationId);
@@ -1123,8 +1139,7 @@ function generateInsight3(data, context) {
   const networkRequests = data.NetworkRequests.byTime.filter(isWithinContext);
   const domLoadingEvents = data.LayoutShifts.domLoadingEvents.filter(isWithinContext);
   const unsizedImageEvents = data.LayoutShifts.layoutImageUnsizedEvents.filter(isWithinContext);
-  const clusterKey = context.navigation ? context.navigationId : Types2.Events.NO_NAVIGATION;
-  const clusters = data.LayoutShifts.clustersByNavigationId.get(clusterKey) ?? [];
+  const clusters = data.LayoutShifts.clusters.filter(isWithinContext);
   const clustersByScore = clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore);
   const worstCluster = clustersByScore.at(0);
   const layoutShifts = clusters.flatMap((cluster) => cluster.events);
@@ -1321,7 +1336,7 @@ function finalize4(partialModel) {
   };
 }
 function generateInsight4(data, context) {
-  if (!context.navigation) {
+  if (!context.navigation || !("navigationId" in context)) {
     return finalize4({});
   }
   const millisToString = context.options.insightTimeFormatters?.milli ?? i18n7.TimeUtilities.millisToString;
@@ -2453,8 +2468,8 @@ function generateInsight11(data, context) {
   }
   const lcpMs = Helpers11.Timing.microToMilli(metricScore.timing);
   const lcpTs = metricScore.event?.ts ? Helpers11.Timing.microToMilli(metricScore.event?.ts) : void 0;
-  const lcpRequest = data.LargestImagePaint.lcpRequestByNavigationId.get(context.navigationId);
-  const docRequest = networkRequests.byId.get(context.navigationId);
+  const lcpRequest = "navigationId" in context ? data.LargestImagePaint.lcpRequestByNavigationId.get(context.navigationId) : void 0;
+  const docRequest = "navigationId" in context ? networkRequests.byId.get(context.navigationId) : void 0;
   if (!docRequest) {
     return finalize11({ lcpMs, lcpTs, lcpEvent, lcpRequest, warnings: [InsightWarning.NO_DOCUMENT_REQUEST] });
   }
@@ -2562,7 +2577,7 @@ function finalize12(partialModel) {
   };
 }
 function generateInsight12(data, context) {
-  if (!context.navigation) {
+  if (!context.navigation || !("navigationId" in context)) {
     return finalize12({});
   }
   const networkRequests = data.NetworkRequests;
@@ -2778,6 +2793,7 @@ import * as i18n27 from "./../../../core/i18n/i18n.js";
 import * as Platform4 from "./../../../core/platform/platform.js";
 import * as Handlers6 from "./../handlers/handlers.js";
 import * as Helpers15 from "./../helpers/helpers.js";
+import * as Types9 from "./../types/types.js";
 var UIStrings14 = {
   /**
    * @description Title of an insight that recommends using HTTP/2 over HTTP/1.1 because of the performance benefits. "HTTP" should not be translated.
@@ -2886,7 +2902,7 @@ function computeWasteWithGraph(urlsToChange, graph, simulator) {
   return Platform4.NumberUtilities.floor(savings, 1 / 10);
 }
 function computeMetricSavings(http1Requests, context) {
-  if (!context.navigation || !context.lantern) {
+  if (!context.navigation || !("lantern" in context) || !context.lantern) {
     return;
   }
   const urlsToChange = new Set(http1Requests.map((r) => r.args.data.url));
@@ -2914,7 +2930,10 @@ function generateInsight14(data, context) {
   const isWithinContext = (event) => Helpers15.Timing.eventIsInBounds(event, context.bounds);
   const contextRequests = data.NetworkRequests.byTime.filter(isWithinContext);
   const entityMappings = data.NetworkRequests.entityMappings;
-  const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? data.Meta.mainFrameURL;
+  let firstPartyUrl = data.Meta.mainFrameURL;
+  if (context.navigation && !Types9.Events.isSoftNavigationStart(context.navigation)) {
+    firstPartyUrl = context.navigation.args.data?.documentLoaderURL ?? firstPartyUrl;
+  }
   const firstPartyEntity = Handlers6.Helpers.getEntityForUrl(firstPartyUrl, entityMappings);
   const http1Requests = determineHttp1Requests(contextRequests, entityMappings, firstPartyEntity ?? null);
   return finalize14({
@@ -2951,7 +2970,7 @@ import * as i18n29 from "./../../../core/i18n/i18n.js";
 import * as Platform5 from "./../../../core/platform/platform.js";
 import * as Extras3 from "./../extras/extras.js";
 import * as Helpers16 from "./../helpers/helpers.js";
-import * as Types9 from "./../types/types.js";
+import * as Types10 from "./../types/types.js";
 var UIStrings15 = {
   /**
    * @description Title of an insight that recommends avoiding chaining critical requests.
@@ -3035,8 +3054,8 @@ var nonCriticalResourceTypes = /* @__PURE__ */ new Set([
   "Fetch",
   "EventSource"
 ]);
-var PRECONNECT_SOCKET_MAX_IDLE_IN_MS = Types9.Timing.Milli(15e3);
-var IGNORE_THRESHOLD_IN_MILLISECONDS = Types9.Timing.Milli(50);
+var PRECONNECT_SOCKET_MAX_IDLE_IN_MS = Types10.Timing.Milli(15e3);
+var IGNORE_THRESHOLD_IN_MILLISECONDS = Types10.Timing.Milli(50);
 var TOO_MANY_PRECONNECTS_THRESHOLD = 4;
 function finalize15(partialModel) {
   return {
@@ -3098,7 +3117,7 @@ function sortRecursively(nodes) {
 function generateNetworkDependencyTree(context) {
   const rootNodes = [];
   const relatedEvents = /* @__PURE__ */ new Map();
-  let maxTime = Types9.Timing.Micro(0);
+  let maxTime = Types10.Timing.Micro(0);
   let fail = false;
   let longestChain = [];
   function addChain(path) {
@@ -3110,7 +3129,7 @@ function generateNetworkDependencyTree(context) {
     }
     const initialRequest = path[0];
     const lastRequest = path[path.length - 1];
-    const totalChainTime = Types9.Timing.Micro(lastRequest.ts + lastRequest.dur - initialRequest.ts);
+    const totalChainTime = Types10.Timing.Micro(lastRequest.ts + lastRequest.dur - initialRequest.ts);
     if (totalChainTime > maxTime) {
       maxTime = totalChainTime;
       longestChain = path;
@@ -3120,7 +3139,7 @@ function generateNetworkDependencyTree(context) {
       const request = path[depth];
       let found = currentNodes.find((node) => node.request === request);
       if (!found) {
-        const timeFromInitialRequest = Types9.Timing.Micro(request.ts + request.dur - initialRequest.ts);
+        const timeFromInitialRequest = Types10.Timing.Micro(request.ts + request.dur - initialRequest.ts);
         found = {
           request,
           timeFromInitialRequest,
@@ -3354,8 +3373,8 @@ function generatePreconnectCandidates(data, context, contextRequests) {
     }
   });
   const groupedOrigins = candidateRequestsByOrigin(data, documentRequest, contextRequests, lcpGraphURLs);
-  let maxWastedLcp = Types9.Timing.Milli(0);
-  let maxWastedFcp = Types9.Timing.Milli(0);
+  let maxWastedLcp = Types10.Timing.Milli(0);
+  let maxWastedFcp = Types10.Timing.Milli(0);
   let preconnectCandidates = [];
   groupedOrigins.forEach((requests) => {
     const firstRequestOfOrigin = requests[0];
@@ -3365,11 +3384,11 @@ function generatePreconnectCandidates(data, context, contextRequests) {
     const firstRequestOfOriginParsedURL = new Common.ParsedURL.ParsedURL(firstRequestOfOrigin.args.data.url);
     const origin = firstRequestOfOriginParsedURL.securityOrigin();
     const additionalRtt = additionalRttByOrigin.get(origin) ?? 0;
-    let connectionTime = Types9.Timing.Milli(rtt + additionalRtt);
+    let connectionTime = Types10.Timing.Milli(rtt + additionalRtt);
     if (firstRequestOfOriginParsedURL.scheme === "https") {
-      connectionTime = Types9.Timing.Milli(connectionTime * 2);
+      connectionTime = Types10.Timing.Milli(connectionTime * 2);
     }
-    const timeBetweenMainResourceAndDnsStart = Types9.Timing.Micro(firstRequestOfOrigin.args.data.syntheticData.sendStartTime - documentRequest.args.data.syntheticData.finishTime + Helpers16.Timing.milliToMicro(firstRequestOfOrigin.args.data.timing.dnsStart));
+    const timeBetweenMainResourceAndDnsStart = Types10.Timing.Micro(firstRequestOfOrigin.args.data.syntheticData.sendStartTime - documentRequest.args.data.syntheticData.finishTime + Helpers16.Timing.milliToMicro(firstRequestOfOrigin.args.data.timing.dnsStart));
     const wastedMs = Math.min(connectionTime, Helpers16.Timing.microToMilli(timeBetweenMainResourceAndDnsStart));
     if (wastedMs < IGNORE_THRESHOLD_IN_MILLISECONDS) {
       return;
@@ -3390,7 +3409,7 @@ function isNetworkDependencyTreeInsight(model) {
   return model.insightKey === InsightKeys.NETWORK_DEPENDENCY_TREE;
 }
 function generateInsight15(data, context) {
-  if (!context.navigation) {
+  if (!context.navigation || !("navigationId" in context)) {
     return finalize15({
       rootNodes: [],
       maxTime: 0,
@@ -3546,7 +3565,7 @@ function finalize16(partialModel) {
   };
 }
 function generateInsight16(data, context) {
-  if (!context.navigation) {
+  if (!context.navigation || !("navigationId" in context)) {
     return finalize16({
       renderBlockingRequests: []
     });
@@ -3669,7 +3688,7 @@ function isNavigationStart(event) {
 }
 
 // gen/front_end/models/trace/insights/SlowCSSSelector.js
-import * as Types10 from "./../types/types.js";
+import * as Types11 from "./../types/types.js";
 var UIStrings17 = {
   /**
    * @description Title of an insight that provides details about slow CSS selectors.
@@ -3784,7 +3803,7 @@ function generateInsight17(data, context) {
   return finalize17({
     // TODO: should we identify RecalcStyle events as linked to this insight?
     relatedEvents: [],
-    totalElapsedMs: Types10.Timing.Milli(totalElapsedUs / 1e3),
+    totalElapsedMs: Types11.Timing.Milli(totalElapsedUs / 1e3),
     totalMatchAttempts,
     totalMatchCount,
     topSelectorElapsedMs,
@@ -3809,6 +3828,7 @@ import * as i18n35 from "./../../../core/i18n/i18n.js";
 import * as ThirdPartyWeb from "./../../../third_party/third-party-web/third-party-web.js";
 import * as Extras4 from "./../extras/extras.js";
 import * as Handlers8 from "./../handlers/handlers.js";
+import * as Types12 from "./../types/types.js";
 var UIStrings18 = {
   /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
   title: "3rd parties",
@@ -3856,7 +3876,10 @@ function isThirdPartyInsight(model) {
 }
 function generateInsight18(data, context) {
   const entitySummaries = Extras4.ThirdParties.summarizeByThirdParty(data, context.bounds);
-  const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? data.Meta.mainFrameURL;
+  let firstPartyUrl = data.Meta.mainFrameURL;
+  if (context.navigation && !Types12.Events.isSoftNavigationStart(context.navigation)) {
+    firstPartyUrl = context.navigation.args.data?.documentLoaderURL ?? firstPartyUrl;
+  }
   const firstPartyEntity = ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) || Handlers8.Helpers.makeUpEntity(data.Renderer.entityMappings.createdEntityCache, firstPartyUrl);
   return finalize18({
     relatedEvents: getRelatedEvents(entitySummaries, firstPartyEntity),
@@ -3905,7 +3928,7 @@ import * as i18n37 from "./../../../core/i18n/i18n.js";
 import * as Platform6 from "./../../../core/platform/platform.js";
 import * as Handlers9 from "./../handlers/handlers.js";
 import * as Helpers20 from "./../helpers/helpers.js";
-import * as Types11 from "./../types/types.js";
+import * as Types13 from "./../types/types.js";
 var UIStrings19 = {
   /** Title of an insight that provides details about if the page's viewport is optimized for mobile viewing. */
   title: "Optimize viewport for mobile",
@@ -3981,7 +4004,7 @@ function createOverlays19(model) {
   }
   return model.longPointerInteractions.map((interaction) => {
     const delay = Math.min(interaction.inputDelay, 300 * 1e3);
-    const bounds = Helpers20.Timing.traceWindowFromMicroSeconds(Types11.Timing.Micro(interaction.ts), Types11.Timing.Micro(interaction.ts + delay));
+    const bounds = Helpers20.Timing.traceWindowFromMicroSeconds(Types13.Timing.Micro(interaction.ts), Types13.Timing.Micro(interaction.ts + delay));
     return {
       type: "TIMESPAN_BREAKDOWN",
       entry: interaction,

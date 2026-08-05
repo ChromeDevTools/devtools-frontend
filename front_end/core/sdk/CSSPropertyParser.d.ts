@@ -111,8 +111,8 @@ export declare const CSSControlMap: {
     new (entries?: readonly (readonly [string, HTMLElement[]])[] | null | undefined): Map<string, HTMLElement[]>;
     new (iterable?: Iterable<readonly [string, HTMLElement[]]> | null | undefined): Map<string, HTMLElement[]>;
     readonly prototype: Map<any, any>;
-    groupBy<K, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Map<K, T[]>;
     readonly [Symbol.species]: MapConstructor;
+    groupBy<K, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Map<K, T[]>;
 };
 export type CSSControlMap = Map<string, HTMLElement[]>;
 export declare namespace ASTUtils {

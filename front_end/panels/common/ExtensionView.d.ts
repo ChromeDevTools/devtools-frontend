@@ -9,9 +9,10 @@ interface ViewInput {
 interface ViewOutput {
     iframe?: HTMLIFrameElement;
 }
+declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare class ExtensionView extends UI.Widget.Widget {
     #private;
-    constructor(server: ExtensionServer, id: string, src: string, className: string, view?: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void);
+    constructor(server: ExtensionServer, id: string, src: string, className: string, view?: typeof DEFAULT_VIEW);
     performUpdate(): Promise<void> | void;
     wasShown(): void;
     willHide(): void;

@@ -755,10 +755,10 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/mobile_throttling/NetworkThrottlingSelector.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var optionsMap = /* @__PURE__ */ new WeakMap();
 var DEFAULT_VIEW = (input, output, target) => {
   const title = (conditions) => typeof conditions.title === "function" ? conditions.title() : conditions.title;
   const jslog = (group, condition) => `${VisualLogging2.item(Platform.StringUtilities.toKebabCase("i18nTitleKey" in condition && condition.i18nTitleKey || title(condition))).track({ click: true })}`;
-  const optionsMap = /* @__PURE__ */ new WeakMap();
   let selectedConditions = input.selectedConditions;
   function onSelect(event) {
     const element = event.target;

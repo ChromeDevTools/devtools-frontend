@@ -1386,8 +1386,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
             this.#setLinkSelectionAnnotation({
                 type: 'ENTRIES_LINK',
                 entryFrom: fromSelectionObject,
-                state: (linkCreateButton) ? "creation_not_started" /* Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED */ :
-                    "pending_to_event" /* Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT */,
+                state: (linkCreateButton) ? "creation_not_started" /* Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED */ : "pending_to_event" /* Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT */,
             });
             if (this.#linkSelectionAnnotation) {
                 ModificationsManager.activeManager()?.createAnnotation(this.#linkSelectionAnnotation, { loadedFromFile: false, muteAriaNotifications: false });

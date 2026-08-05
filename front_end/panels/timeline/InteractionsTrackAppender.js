@@ -52,8 +52,7 @@ export class InteractionsTrackAppender {
     #appendTrackHeaderAtLevel(currentLevel, expanded) {
         const trackIsCollapsible = this.#parsedTrace.data.UserInteractions.interactionEvents.length > 0;
         const style = buildGroupStyle({
-            collapsible: trackIsCollapsible ? 2 /* PerfUI.FlameChart.GroupCollapsibleState.IF_MULTI_ROW */ :
-                1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */,
+            collapsible: trackIsCollapsible ? 2 /* PerfUI.FlameChart.GroupCollapsibleState.IF_MULTI_ROW */ : 1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */,
             useDecoratorsForOverview: true,
         });
         const group = buildTrackHeader("interactions" /* VisualLoggingTrackName.INTERACTIONS */, currentLevel, i18nString(UIStrings.interactions), style, 

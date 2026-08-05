@@ -582,6 +582,10 @@ var cwvMetrics_css_default = `/*
   }
 }
 
+.soft-nav-badge-row {
+  display: contents;
+}
+
 /*# sourceURL=${import.meta.resolve("./cwvMetrics.css")} */`;
 
 // gen/front_end/panels/timeline/components/insights/Helpers.js
@@ -601,6 +605,68 @@ function md(markdown) {
 
 // gen/front_end/panels/timeline/components/CWVMetrics.js
 import * as Insights3 from "./insights/insights.js";
+
+// gen/front_end/panels/timeline/components/metricValueStyles.css.js
+var metricValueStyles_css_default = `/*
+ * Copyright 2024 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.metric-value {
+  text-wrap: nowrap;
+}
+
+.metric-value.dim {
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+.metric-value.waiting {
+  color: var(--sys-color-token-subtle);
+}
+
+.metric-value.good {
+  color: var(--app-color-performance-good);
+}
+
+.metric-value.needs-improvement {
+  color: var(--app-color-performance-ok);
+}
+
+.metric-value.poor {
+  color: var(--app-color-performance-bad);
+}
+
+.metric-value.good.dim {
+  color: var(--app-color-performance-good-dim);
+}
+
+.metric-value.needs-improvement.dim {
+  color: var(--app-color-performance-ok-dim);
+}
+
+.metric-value.poor.dim {
+  color: var(--app-color-performance-bad-dim);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: var(--sys-size-8);
+  border-radius: var(--sys-shape-corner-extra-small);
+  padding: 0 var(--sys-size-3);
+  border: var(--sys-size-1) solid var(--sys-color-primary);
+  color: var(--sys-color-primary);
+  font-weight: var(--ref-typeface-weight-bold);
+  font-size: var(--sys-size-5);
+  text-align: center;
+  margin-top: var(--sys-size-5);
+  margin-bottom: var(--sys-size-5);
+}
+
+/*# sourceURL=${import.meta.resolve("./metricValueStyles.css")} */`;
 
 // gen/front_end/panels/timeline/components/Utils.js
 var Utils_exports = {};
@@ -972,6 +1038,13 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
   const lcpEl = renderMetricValue2("LCP", local?.lcp?.value ?? null, local?.lcp?.event ?? null);
   const inpEl = renderMetricValue2("INP", local?.inp?.value ?? null, local?.inp?.event ?? null);
   const clsEl = renderMetricValue2("CLS", local?.cls?.value ?? null, local?.cls?.worstClusterEvent ?? null);
+  const navigation = parsedTrace?.insights?.get(insightSetKey ?? "")?.navigation;
+  const isSoftNav = navigation && Trace3.Types.Events.isSoftNavigationStart(navigation);
+  const softNavBadgeTemplate = isSoftNav ? html4`
+    <div class="metrics-row soft-nav-badge-row">
+      <span class="badge">SOFT NAV</span>
+    </div>
+  ` : Lit4.nothing;
   const localMetricsTemplateResult = html4`
     <div class="metrics-row">
       <span>${lcpEl}</span>
@@ -979,6 +1052,7 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
       <span>${clsEl}</span>
       <span class="row-label">Local</span>
     </div>
+    ${!field ? softNavBadgeTemplate : Lit4.nothing}
     ${!field && input.skipBottomBorder ? Lit4.nothing : html4`<span class="row-border"></span>`}
   `;
   let fieldMetricsTemplateResult;
@@ -998,6 +1072,7 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
         <span>${clsEl2}</span>
         <span class="row-label">${i18nString4(UIStrings4.fieldScoreLabel, { PH1: scope })}</span>
       </div>
+      ${softNavBadgeTemplate}
       ${input.skipBottomBorder ? Lit4.nothing : html4`<span class="row-border"></span>`}
     `;
   }
@@ -1030,6 +1105,7 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
   </div>`;
   Lit4.render(html4`
     <style>${cwvMetrics_css_default}</style>
+    <style>${metricValueStyles_css_default}</style>
     ${metricsTableEl}
     ${fieldIsDifferentEl}
   `, target);
@@ -4078,51 +4154,6 @@ function renderDetailedCompareText(options) {
   throw new Error("Detailed compare string not found");
 }
 
-// gen/front_end/panels/timeline/components/metricValueStyles.css.js
-var metricValueStyles_css_default = `/*
- * Copyright 2024 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.metric-value {
-  text-wrap: nowrap;
-}
-
-.metric-value.dim {
-  font-weight: var(--ref-typeface-weight-medium);
-}
-
-.metric-value.waiting {
-  color: var(--sys-color-token-subtle);
-}
-
-.metric-value.good {
-  color: var(--app-color-performance-good);
-}
-
-.metric-value.needs-improvement {
-  color: var(--app-color-performance-ok);
-}
-
-.metric-value.poor {
-  color: var(--app-color-performance-bad);
-}
-
-.metric-value.good.dim {
-  color: var(--app-color-performance-good-dim);
-}
-
-.metric-value.needs-improvement.dim {
-  color: var(--app-color-performance-ok-dim);
-}
-
-.metric-value.poor.dim {
-  color: var(--app-color-performance-bad-dim);
-}
-
-/*# sourceURL=${import.meta.resolve("./metricValueStyles.css")} */`;
-
 // gen/front_end/panels/timeline/components/MetricCard.js
 var { html: html13, nothing: nothing11 } = Lit13;
 var UIStrings14 = {
@@ -5086,23 +5117,6 @@ devtools-link {
 
 .section-header .section-title {
   margin-bottom: 0;
-}
-
-.section-header .badge {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  height: var(--sys-size-8);
-  line-height: var(--sys-size-8);
-  border-radius: var(--sys-shape-corner-extra-small);
-  padding: 0 var(--sys-size-3);
-  border: var(--sys-size-1) solid var(--sys-color-primary);
-  color: var(--sys-color-primary);
-  font-weight: var(--ref-typeface-weight-bold);
-  font-size: var(--sys-size-5);
-  text-align: center;
-  margin-top: var(--sys-size-5);
-  margin-bottom: var(--sys-size-5);
 }
 
 /*# sourceURL=${import.meta.resolve("./liveMetricsView.css")} */`;

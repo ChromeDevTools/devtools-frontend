@@ -14,7 +14,8 @@ var defaults = () => ({
   showAllEvents: false,
   debugMode: false,
   maxInvalidationEventsPerEvent: 20,
-  enableAnimationsFrameHandler: false
+  enableAnimationsFrameHandler: false,
+  enableSoftNavigation: true
 });
 function configToCacheKey(config) {
   return JSON.stringify(config);

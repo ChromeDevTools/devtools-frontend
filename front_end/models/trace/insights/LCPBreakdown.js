@@ -168,8 +168,8 @@ export function generateInsight(data, context) {
     const lcpMs = Helpers.Timing.microToMilli(metricScore.timing);
     // This helps position things on the timeline's UI accurately for a trace.
     const lcpTs = metricScore.event?.ts ? Helpers.Timing.microToMilli(metricScore.event?.ts) : undefined;
-    const lcpRequest = data.LargestImagePaint.lcpRequestByNavigationId.get(context.navigationId);
-    const docRequest = networkRequests.byId.get(context.navigationId);
+    const lcpRequest = 'navigationId' in context ? data.LargestImagePaint.lcpRequestByNavigationId.get(context.navigationId) : undefined;
+    const docRequest = 'navigationId' in context ? networkRequests.byId.get(context.navigationId) : undefined;
     if (!docRequest) {
         return finalize({ lcpMs, lcpTs, lcpEvent, lcpRequest, warnings: [InsightWarning.NO_DOCUMENT_REQUEST] });
     }

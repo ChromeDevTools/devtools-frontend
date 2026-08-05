@@ -5,35 +5,35 @@ export declare const UIStrings: {
     /**
      * @description Title of an insight that checks whether the page declares a character encoding early enough.
      */
-    readonly title: "Declare a character encoding";
+    readonly title: 'Declare a character encoding';
     /**
      * @description Description of an insight that checks whether the page has a proper character encoding declaration via HTTP header or early meta tag.
      */
-    readonly description: "A character encoding declaration is required. It can be done with a meta charset tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more about declaring the character encoding](https://developer.chrome.com/docs/insights/charset/).";
+    readonly description: 'A character encoding declaration is required. It can be done with a meta charset tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more about declaring the character encoding](https://developer.chrome.com/docs/insights/charset/).';
     /**
      * @description Text to tell the user that the charset is declared in the Content-Type HTTP response header.
      */
-    readonly passingHttpHeader: "Declares charset in HTTP header";
+    readonly passingHttpHeader: 'Declares charset in HTTP header';
     /**
      * @description Text to tell the user that the charset is NOT declared in the Content-Type HTTP response header.
      */
-    readonly failedHttpHeader: "Does not declare charset in HTTP header";
+    readonly failedHttpHeader: 'Does not declare charset in HTTP header';
     /**
      * @description Text to tell the user that a meta charset tag was found in the first 1024 bytes of the HTML.
      */
-    readonly passingMetaCharsetEarly: "Declares charset using a meta tag in the first 1024 bytes";
+    readonly passingMetaCharsetEarly: 'Declares charset using a meta tag in the first 1024 bytes';
     /**
      * @description Text to tell the user that a meta charset tag was found, but too late in the HTML.
      */
-    readonly failedMetaCharsetLate: "Declares charset using a meta tag after the first 1024 bytes";
+    readonly failedMetaCharsetLate: 'Declares charset using a meta tag after the first 1024 bytes';
     /**
      * @description Text to tell the user that no meta charset tag was found in the HTML.
      */
-    readonly failedMetaCharsetMissing: "Does not declare charset using a meta tag";
+    readonly failedMetaCharsetMissing: 'Does not declare charset using a meta tag';
     /**
      * @description Text to tell the user that trace data did not include the Blink signal for meta charset.
      */
-    readonly failedMetaCharsetUnknown: "Could not determine meta charset declaration from trace";
+    readonly failedMetaCharsetUnknown: 'Could not determine meta charset declaration from trace';
 };
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => import("../../../core/platform/UIString.js").LocalizedString;
 export type CharacterSetInsightModel = InsightModel<typeof UIStrings, {

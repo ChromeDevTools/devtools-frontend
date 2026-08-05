@@ -5,6 +5,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party-web.js';
 import * as Extras from '../extras/extras.js';
 import * as Handlers from '../handlers/handlers.js';
+import * as Types from '../types/types.js';
 import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
@@ -56,7 +57,10 @@ export function isThirdPartyInsight(model) {
 }
 export function generateInsight(data, context) {
     const entitySummaries = Extras.ThirdParties.summarizeByThirdParty(data, context.bounds);
-    const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? data.Meta.mainFrameURL;
+    let firstPartyUrl = data.Meta.mainFrameURL;
+    if (context.navigation && !Types.Events.isSoftNavigationStart(context.navigation)) {
+        firstPartyUrl = context.navigation.args.data?.documentLoaderURL ?? firstPartyUrl;
+    }
     const firstPartyEntity = ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) ||
         Handlers.Helpers.makeUpEntity(data.Renderer.entityMappings.createdEntityCache, firstPartyUrl);
     return finalize({

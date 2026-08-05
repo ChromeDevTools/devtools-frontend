@@ -53,13 +53,13 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/NetworkThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const optionsMap = new WeakMap();
 export const DEFAULT_VIEW = (input, output, target) => {
     // The title is usually an i18nLazyString except for custom values that are stored in the local storage in the form of a string.
     const title = (conditions) => typeof conditions.title === 'function' ? conditions.title() : conditions.title;
     const jslog = (group, condition) => `${VisualLogging
         .item(Platform.StringUtilities.toKebabCase(('i18nTitleKey' in condition && condition.i18nTitleKey) || title(condition)))
         .track({ click: true })}`;
-    const optionsMap = new WeakMap();
     let selectedConditions = input.selectedConditions;
     function onSelect(event) {
         const element = event.target;

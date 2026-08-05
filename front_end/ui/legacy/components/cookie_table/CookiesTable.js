@@ -449,8 +449,7 @@ export class CookiesTable extends UI.Widget.VBox {
     }
     createCookieFromData(data) {
         const cookie = new SDK.Cookie.Cookie(data["name" /* SDK.Cookie.Attribute.NAME */] || '', data["value" /* SDK.Cookie.Attribute.VALUE */] || '', null, data["priority" /* SDK.Cookie.Attribute.PRIORITY */]);
-        for (const attribute of ["domain" /* SDK.Cookie.Attribute.DOMAIN */, "path" /* SDK.Cookie.Attribute.PATH */, "http-only" /* SDK.Cookie.Attribute.HTTP_ONLY */,
-            "secure" /* SDK.Cookie.Attribute.SECURE */, "same-site" /* SDK.Cookie.Attribute.SAME_SITE */, "source-scheme" /* SDK.Cookie.Attribute.SOURCE_SCHEME */]) {
+        for (const attribute of ["domain" /* SDK.Cookie.Attribute.DOMAIN */, "path" /* SDK.Cookie.Attribute.PATH */, "http-only" /* SDK.Cookie.Attribute.HTTP_ONLY */, "secure" /* SDK.Cookie.Attribute.SECURE */, "same-site" /* SDK.Cookie.Attribute.SAME_SITE */, "source-scheme" /* SDK.Cookie.Attribute.SOURCE_SCHEME */]) {
             if (attribute in data) {
                 const value = data[attribute];
                 if (isFlagAttribute(attribute)) {
@@ -480,8 +479,7 @@ export class CookiesTable extends UI.Widget.VBox {
         const maxTime = 8640000000000000;
         const isRequest = cookie.type() === 0 /* SDK.Cookie.Type.REQUEST */;
         const data = { name: cookie.name(), value: cookie.value() };
-        for (const attribute of ["http-only" /* SDK.Cookie.Attribute.HTTP_ONLY */, "secure" /* SDK.Cookie.Attribute.SECURE */, "same-site" /* SDK.Cookie.Attribute.SAME_SITE */,
-            "source-scheme" /* SDK.Cookie.Attribute.SOURCE_SCHEME */, "source-port" /* SDK.Cookie.Attribute.SOURCE_PORT */]) {
+        for (const attribute of ["http-only" /* SDK.Cookie.Attribute.HTTP_ONLY */, "secure" /* SDK.Cookie.Attribute.SECURE */, "same-site" /* SDK.Cookie.Attribute.SAME_SITE */, "source-scheme" /* SDK.Cookie.Attribute.SOURCE_SCHEME */, "source-port" /* SDK.Cookie.Attribute.SOURCE_PORT */]) {
             if (cookie.hasAttribute(attribute)) {
                 if (isFlagAttribute(attribute)) {
                     data[attribute] = true;

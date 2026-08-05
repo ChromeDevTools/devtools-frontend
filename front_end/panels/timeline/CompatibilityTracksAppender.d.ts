@@ -66,7 +66,7 @@ export interface TrackAppender {
      */
     getDrawOverride?(event: Trace.Types.Events.Event): DrawOverride | undefined;
 }
-export declare const TrackNames: readonly ["Animations", "Timings", "Interactions", "GPU", "LayoutShifts", "Thread", "Thread_AuctionWorklet", "Extension", "ServerTimings"];
+export declare const TrackNames: readonly ['Animations', 'Timings', 'Interactions', 'GPU', 'LayoutShifts', 'Thread', 'Thread_AuctionWorklet', 'Extension', 'ServerTimings'];
 /**
  * Network track will use TrackAppender interface, but it won't be shown in Main flamechart.
  * So manually add it to TrackAppenderName.

@@ -4,19 +4,19 @@ import * as Types from '../types/types.js';
 import { type InsightModel, type InsightSetContext } from './types.js';
 export declare const UIStrings: {
     /** Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties. */
-    readonly title: "Font display";
+    readonly title: 'Font display';
     /**
      * @description Text to tell the user about the font-display CSS feature to help improve a the UX of a page.
      */
-    readonly description: "Consider setting [`font-display`](https://developer.chrome.com/docs/performance/insights/font-display) to `swap` or `optional` to ensure text is consistently visible. `swap` can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).";
+    readonly description: 'Consider setting [`font-display`](https://developer.chrome.com/docs/performance/insights/font-display) to `swap` or `optional` to ensure text is consistently visible. `swap` can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).';
     /** Column for a font loaded by the page to render text. */
-    readonly fontColumn: "Font";
+    readonly fontColumn: 'Font';
     /** Column for the amount of time wasted. */
-    readonly wastedTimeColumn: "Wasted time";
+    readonly wastedTimeColumn: 'Wasted time';
     /**
      * @description Message shown when no fonts with suboptimal font-display are found.
      */
-    readonly noFonts: "No fonts with suboptimal font-display found";
+    readonly noFonts: 'No fonts with suboptimal font-display found';
 };
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => Platform.UIString.LocalizedString;
 export interface RemoteFont {

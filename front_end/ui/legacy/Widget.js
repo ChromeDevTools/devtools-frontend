@@ -936,15 +936,22 @@ export class Widget {
         return this.#cachedConstraints;
     }
     setMinimumAndPreferredSizes(width, height, preferredWidth, preferredHeight) {
-        this.#constraints =
-            new Geometry.Constraints(new Geometry.Size(width, height), new Geometry.Size(preferredWidth, preferredHeight));
+        const newConstraints = new Geometry.Constraints(new Geometry.Size(width, height), new Geometry.Size(preferredWidth, preferredHeight));
+        if (this.#constraints?.isEqual(newConstraints)) {
+            return;
+        }
+        this.#constraints = newConstraints;
         this.invalidateConstraints();
     }
     setMinimumSize(width, height) {
         this.minimumSize = new Geometry.Size(width, height);
     }
     set minimumSize(size) {
-        this.#constraints = new Geometry.Constraints(size);
+        const newConstraints = new Geometry.Constraints(size);
+        if (this.#constraints?.isEqual(newConstraints)) {
+            return;
+        }
+        this.#constraints = newConstraints;
         this.invalidateConstraints();
     }
     hasNonZeroConstraints() {

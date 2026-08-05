@@ -8,76 +8,76 @@ export declare const UIStrings: {
     /**
      * @description Title of an insight that recommends avoiding chaining critical requests.
      */
-    readonly title: "Network dependency tree";
+    readonly title: 'Network dependency tree';
     /**
      * @description Description of an insight that recommends avoiding chaining critical requests.
      */
-    readonly description: "[Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.";
+    readonly description: '[Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.';
     /**
      * @description Description of the warning that recommends avoiding chaining critical requests.
      */
-    readonly warningDescription: "Avoid chaining critical requests by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.";
+    readonly warningDescription: 'Avoid chaining critical requests by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.';
     /**
      * @description Text status indicating that there isn't long chaining critical network requests.
      */
-    readonly noNetworkDependencyTree: "No rendering tasks impacted by network dependencies";
+    readonly noNetworkDependencyTree: 'No rendering tasks impacted by network dependencies';
     /**
      * @description Text for the maximum critical path latency. This refers to the longest chain of network requests that
      * the browser must download before it can render the page.
      */
-    readonly maxCriticalPathLatency: "Max critical path latency:";
+    readonly maxCriticalPathLatency: 'Max critical path latency:';
     /** Label for a column in a data table; entries will be the network request */
-    readonly columnRequest: "Request";
+    readonly columnRequest: 'Request';
     /** Label for a column in a data table; entries will be the time from main document till current network request. */
-    readonly columnTime: "Time";
+    readonly columnTime: 'Time';
     /**
      * @description Title of the table of the detected preconnect origins.
      */
-    readonly preconnectOriginsTableTitle: "Preconnected origins";
+    readonly preconnectOriginsTableTitle: 'Preconnected origins';
     /**
      * @description Description of the table of the detected preconnect origins.
      */
-    readonly preconnectOriginsTableDescription: "[preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to.";
+    readonly preconnectOriginsTableDescription: '[preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to.';
     /**
      * @description Text status indicating that there isn't any preconnected origins.
      */
-    readonly noPreconnectOrigins: "no origins were preconnected";
+    readonly noPreconnectOrigins: 'no origins were preconnected';
     /**
      * @description A warning message that is shown when found more than 4 preconnected links. "preconnect" should not be translated.
      */
-    readonly tooManyPreconnectLinksWarning: "More than 4 `preconnect` connections were found. These should be used sparingly and only to the most important origins.";
+    readonly tooManyPreconnectLinksWarning: 'More than 4 `preconnect` connections were found. These should be used sparingly and only to the most important origins.';
     /**
      * @description A warning message that is shown when the user added preconnect for some unnecessary origins. "preconnect" should not be translated.
      */
-    readonly unusedWarning: "Unused preconnect. Only use `preconnect` for origins that the page is likely to request.";
+    readonly unusedWarning: 'Unused preconnect. Only use `preconnect` for origins that the page is likely to request.';
     /**
      * @description A warning message that is shown when the user forget to set the `crossorigin` HTML attribute, or setting it to an incorrect value, on the link is a common mistake when adding preconnect links. "preconnect" should not be translated.
      * */
-    readonly crossoriginWarning: "Unused preconnect. Check that the `crossorigin` attribute is used properly.";
+    readonly crossoriginWarning: 'Unused preconnect. Check that the `crossorigin` attribute is used properly.';
     /**
      * @description Label for a column in a data table; entries will be the source of the origin.
      */
-    readonly columnSource: "Source";
+    readonly columnSource: 'Source';
     /**
      * @description Text status indicating that there isn't preconnect candidates.
      */
-    readonly noPreconnectCandidates: "No additional origins are good candidates for preconnecting";
+    readonly noPreconnectCandidates: 'No additional origins are good candidates for preconnecting';
     /**
      * @description Title of the table that shows the origins that the page should have preconnected to.
      */
-    readonly estSavingTableTitle: "Preconnect candidates";
+    readonly estSavingTableTitle: 'Preconnect candidates';
     /**
      * @description Description of the table that recommends preconnecting to the origins to save time. "preconnect" should not be translated.
      */
-    readonly estSavingTableDescription: "Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4.";
+    readonly estSavingTableDescription: 'Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4.';
     /**
      * @description Label for a column in a data table; entries will be the origin of a web resource
      */
-    readonly columnOrigin: "Origin";
+    readonly columnOrigin: 'Origin';
     /**
      * @description Label for a column in a data table; entries will be the number of milliseconds the user could reduce page load by if they implemented the suggestions.
      */
-    readonly columnWastedMs: "Est LCP savings";
+    readonly columnWastedMs: 'Est LCP savings';
 };
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => Common.UIString.LocalizedString;
 export declare const TOO_MANY_PRECONNECTS_THRESHOLD = 4;

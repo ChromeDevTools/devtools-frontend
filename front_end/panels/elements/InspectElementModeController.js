@@ -59,9 +59,7 @@ export class InspectElementModeController {
             mode = "none" /* Protocol.Overlay.InspectMode.None */;
         }
         else {
-            mode = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get() ?
-                "searchForUAShadowDOM" /* Protocol.Overlay.InspectMode.SearchForUAShadowDOM */ :
-                "searchForNode" /* Protocol.Overlay.InspectMode.SearchForNode */;
+            mode = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get() ? "searchForUAShadowDOM" /* Protocol.Overlay.InspectMode.SearchForUAShadowDOM */ : "searchForNode" /* Protocol.Overlay.InspectMode.SearchForNode */;
         }
         this.setMode(mode);
     }

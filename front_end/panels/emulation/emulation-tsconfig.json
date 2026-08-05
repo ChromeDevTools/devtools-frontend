@@ -40,7 +40,6 @@
     "../../../../../../front_end/panels/emulation/AdvancedApp.ts",
     "../../../../../../front_end/panels/emulation/DeviceModeToolbar.ts",
     "../../../../../../front_end/panels/emulation/DeviceModeView.ts",
-    "../../../../../../front_end/panels/emulation/DeviceModeWrapper.ts",
     "../../../../../../front_end/panels/emulation/InspectedPagePlaceholder.ts",
     "../../../../../../front_end/panels/emulation/MediaQueryInspector.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",

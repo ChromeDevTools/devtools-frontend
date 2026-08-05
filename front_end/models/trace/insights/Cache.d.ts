@@ -6,28 +6,28 @@ export declare const UIStrings: {
     /**
      * @description Title of an insight that provides information and suggestions of resources that could improve their caching.
      */
-    readonly title: "Use efficient cache lifetimes";
+    readonly title: 'Use efficient cache lifetimes';
     /**
      * @description Text to tell the user about how caching can help improve performance.
      */
-    readonly description: "A long cache lifetime can speed up repeat visits to your page. [Learn more about caching](https://developer.chrome.com/docs/performance/insights/cache).";
+    readonly description: 'A long cache lifetime can speed up repeat visits to your page. [Learn more about caching](https://developer.chrome.com/docs/performance/insights/cache).';
     /**
      * @description Column for a font loaded by the page to render text.
      */
-    readonly requestColumn: "Request";
+    readonly requestColumn: 'Request';
     /**
      * @description Column for a resource cache's Time To Live.
      */
-    readonly cacheTTL: "Cache TTL";
+    readonly cacheTTL: 'Cache TTL';
     /**
      * @description Text describing that there were no requests found that need caching.
      */
-    readonly noRequestsToCache: "No requests with inefficient cache policies";
+    readonly noRequestsToCache: 'No requests with inefficient cache policies';
     /**
      * @description Table row value representing the remaining items not shown in the table due to size constraints. This row will always represent at least 2 items.
      * @example {5} PH1
      */
-    readonly others: "{PH1} others";
+    readonly others: '{PH1} others';
 };
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => import("../../../core/platform/UIString.js").LocalizedString;
 export type CacheInsightModel = InsightModel<typeof UIStrings, {

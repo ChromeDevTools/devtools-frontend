@@ -1445,8 +1445,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
             this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.MixedContent, "displayed" /* NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED */);
         }
         if (request.mixedContentType === "blockable" /* Protocol.Security.MixedContentType.Blockable */) {
-            const suggestion = request.wasBlocked() ? "blocked" /* NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED */ :
-                "block-overridden" /* NetworkForward.UIFilter.MixedContentFilterValues.BLOCK_OVERRIDDEN */;
+            const suggestion = request.wasBlocked() ? "blocked" /* NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED */ : "block-overridden" /* NetworkForward.UIFilter.MixedContentFilterValues.BLOCK_OVERRIDDEN */;
             this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.MixedContent, suggestion);
         }
         const responseHeaders = request.responseHeaders;

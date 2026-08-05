@@ -12,6 +12,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import cwvMetricsStyles from './cwvMetrics.css.js';
 import { md } from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
+import metricValueStyles from './metricValueStyles.css.js';
 import { isFieldWorseThanLocal, NumberWithUnit } from './Utils.js';
 const { html } = Lit.StaticHtml;
 const UIStrings = {
@@ -158,6 +159,14 @@ const CWV_METRICS_VIEW = (input, _output, target) => {
     const lcpEl = renderMetricValue('LCP', local?.lcp?.value ?? null, local?.lcp?.event ?? null);
     const inpEl = renderMetricValue('INP', local?.inp?.value ?? null, local?.inp?.event ?? null);
     const clsEl = renderMetricValue('CLS', local?.cls?.value ?? null, local?.cls?.worstClusterEvent ?? null);
+    const navigation = parsedTrace?.insights?.get(insightSetKey ?? '')?.navigation;
+    const isSoftNav = navigation && Trace.Types.Events.isSoftNavigationStart(navigation);
+    const softNavBadgeTemplate = isSoftNav ? html `
+    <div class="metrics-row soft-nav-badge-row">
+      <span class="badge">SOFT NAV</span>
+    </div>
+  ` :
+        Lit.nothing;
     const localMetricsTemplateResult = html `
     <div class="metrics-row">
       <span>${lcpEl}</span>
@@ -165,6 +174,7 @@ const CWV_METRICS_VIEW = (input, _output, target) => {
       <span>${clsEl}</span>
       <span class="row-label">Local</span>
     </div>
+    ${!field ? softNavBadgeTemplate : Lit.nothing}
     ${!field && input.skipBottomBorder ? Lit.nothing : html `<span class="row-border"></span>`}
   `;
     let fieldMetricsTemplateResult;
@@ -185,6 +195,7 @@ const CWV_METRICS_VIEW = (input, _output, target) => {
         <span>${clsEl}</span>
         <span class="row-label">${i18nString(UIStrings.fieldScoreLabel, { PH1: scope })}</span>
       </div>
+      ${softNavBadgeTemplate}
       ${input.skipBottomBorder ? Lit.nothing : html `<span class="row-border"></span>`}
     `;
         // clang-format on
@@ -220,6 +231,7 @@ const CWV_METRICS_VIEW = (input, _output, target) => {
   </div>`;
     Lit.render(html `
     <style>${cwvMetricsStyles}</style>
+    <style>${metricValueStyles}</style>
     ${metricsTableEl}
     ${fieldIsDifferentEl}
   `, target);

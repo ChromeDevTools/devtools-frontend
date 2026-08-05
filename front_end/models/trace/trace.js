@@ -900,7 +900,11 @@ var TraceProcessor = class extends EventTarget {
     let id, urlString, navigation;
     if (context.navigation) {
       id = `NAVIGATION_${this.#insights.size}`;
-      urlString = data.Meta.finalDisplayUrlByNavigationId.get(context.navigationId) ?? data.Meta.mainFrameURL;
+      if (Types3.Events.isSoftNavigationStart(context.navigation)) {
+        urlString = context.navigation.args.context.URL;
+      } else {
+        urlString = data.Meta.finalDisplayUrlByNavigationId.get(context.navigation.args.data?.navigationId ?? "") ?? data.Meta.mainFrameURL;
+      }
       navigation = context.navigation;
     } else {
       id = Types3.Events.NO_NAVIGATION;
@@ -960,20 +964,29 @@ var TraceProcessor = class extends EventTarget {
    */
   #computeInsights(data, traceEvents, options) {
     this.#insights = /* @__PURE__ */ new Map();
-    const navigations = data.Meta.mainFrameNavigations.filter((navigation) => navigation.args.frame && navigation.args.data?.navigationId);
+    const hardNavigations = data.Meta.mainFrameNavigations.filter((navigation) => navigation.args.frame && navigation.args.data?.navigationId);
+    const softNavigations = this.#modelConfiguration.enableSoftNavigation ? Array.from(data.Meta.softNavigationsById.values()) : [];
+    const navigations = [...hardNavigations, ...softNavigations].sort((a, b) => a.ts - b.ts);
     this.#computeInsightsForInitialTracePeriod(data, navigations, options);
     for (const [index, navigation] of navigations.entries()) {
       const min = navigation.ts;
-      const max = index + 1 < navigations.length ? navigations[index + 1].ts : data.Meta.traceBounds.max;
+      let max = index + 1 < navigations.length ? navigations[index + 1].ts : data.Meta.traceBounds.max;
+      if (index + 1 < navigations.length) {
+        max = Types3.Timing.Micro(max - 1);
+      }
       const bounds = Helpers4.Timing.traceWindowFromMicroSeconds(min, max);
-      this.#computeInsightsForNavigation(navigation, bounds, data, traceEvents, options);
+      if (Types3.Events.isSoftNavigationStart(navigation)) {
+        this.#computeInsightsForSoftNavigation(navigation, bounds, data, options);
+      } else {
+        this.#computeInsightsForNavigation(navigation, bounds, data, traceEvents, options);
+      }
     }
   }
   /**
    * Computes insights for the period before the first navigation, or for the entire trace if no navigations exist.
    */
   #computeInsightsForInitialTracePeriod(data, navigations, options) {
-    const bounds = navigations.length > 0 ? Helpers4.Timing.traceWindowFromMicroSeconds(data.Meta.traceBounds.min, navigations[0].ts) : data.Meta.traceBounds;
+    const bounds = navigations.length > 0 ? Helpers4.Timing.traceWindowFromMicroSeconds(data.Meta.traceBounds.min, Types3.Timing.Micro(navigations[0].ts - 1)) : data.Meta.traceBounds;
     const context = {
       options,
       bounds,
@@ -1016,6 +1029,19 @@ var TraceProcessor = class extends EventTarget {
       navigation,
       navigationId,
       lantern
+    };
+    this.#computeInsightSet(data, context);
+  }
+  /**
+   * Computes insights for a specific soft navigation event.
+   */
+  #computeInsightsForSoftNavigation(navigation, bounds, data, options) {
+    const frameId = navigation.args.frame;
+    const context = {
+      options,
+      bounds,
+      frameId,
+      navigation
     };
     this.#computeInsightSet(data, context);
   }

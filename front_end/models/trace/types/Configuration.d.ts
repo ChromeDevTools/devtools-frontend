@@ -36,6 +36,10 @@ export interface Configuration {
      * from the model, but the contents will be empty.
      */
     enableAnimationsFrameHandler: boolean;
+    /**
+     * Whether soft-navs are used in the model/insights.
+     */
+    enableSoftNavigation: boolean;
 }
 export declare const defaults: () => Configuration;
 /**

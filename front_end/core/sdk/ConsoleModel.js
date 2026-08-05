@@ -607,9 +607,7 @@ export class ConsoleMessage {
             // frames and the breakpoint condition is the bottom-most frame.
             return { callFrame: null, type: null };
         }
-        const type = callFrames[lastBreakpointFrameIndex].url === LOGPOINT_SOURCE_URL ?
-            "LOGPOINT" /* BreakpointType.LOGPOINT */ :
-            "CONDITIONAL_BREAKPOINT" /* BreakpointType.CONDITIONAL_BREAKPOINT */;
+        const type = callFrames[lastBreakpointFrameIndex].url === LOGPOINT_SOURCE_URL ? "LOGPOINT" /* BreakpointType.LOGPOINT */ : "CONDITIONAL_BREAKPOINT" /* BreakpointType.CONDITIONAL_BREAKPOINT */;
         return { callFrame: callFrames[lastBreakpointFrameIndex + 1], type };
     }
 }

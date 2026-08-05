@@ -13,7 +13,7 @@ export interface PaneViewInput {
 export declare const DEFAULT_PANE_VIEW: (input: PaneViewInput, _output: object, target: HTMLElement) => void;
 export declare class ConsolePinPane extends UI.Widget.VBox {
     #private;
-    constructor(focusOut: () => void, view?: (input: PaneViewInput, _output: object, target: HTMLElement) => void);
+    constructor(focusOut: () => void, view?: typeof DEFAULT_PANE_VIEW);
     willHide(): void;
     private contextMenuEventFired;
     private removeAllPins;
@@ -38,7 +38,7 @@ export interface ViewOutput {
 export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare class ConsolePinPresenter extends UI.Widget.Widget {
     #private;
-    constructor(element?: HTMLElement, view?: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void);
+    constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW);
     wasShown(): void;
     willHide(): void;
     set pin(pin: ConsolePin);

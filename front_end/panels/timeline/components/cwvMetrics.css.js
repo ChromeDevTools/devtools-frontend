@@ -111,4 +111,8 @@ export default `/*
   }
 }
 
+.soft-nav-badge-row {
+  display: contents;
+}
+
 /*# sourceURL=${import.meta.resolve('./cwvMetrics.css')} */`;

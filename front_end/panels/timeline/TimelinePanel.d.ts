@@ -174,7 +174,7 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
      * run when the user switches to an existing trace, please @see
      * #setModelForActiveTrace and put your code in there.
      **/
-    loadingComplete(collectedEvents: Trace.Types.Events.Event[], exclusiveFilter: (Trace.Extras.TraceFilter.TraceFilter | null) | undefined, metadata: Trace.Types.File.MetaData | null): Promise<void>;
+    loadingComplete(collectedEvents: Trace.Types.Events.Event[], exclusiveFilter: Trace.Extras.TraceFilter.TraceFilter | null | undefined, metadata: Trace.Types.File.MetaData | null): Promise<void>;
     recordTraceLoadMetric(): void;
     loadingCompleteForTest(): void;
     private showRecordingStarted;

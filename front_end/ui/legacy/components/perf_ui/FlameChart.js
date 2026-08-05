@@ -1824,8 +1824,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
                             if (HIDE_ICON_LEFT <= x && x < HIDE_ICON_LEFT + EDIT_ICON_WIDTH) {
                                 return {
                                     groupIndex,
-                                    hoverType: groups[groupIndex].hidden ? "TRACK_CONFIG_SHOW_BUTTON" /* HoverType.TRACK_CONFIG_SHOW_BUTTON */ :
-                                        "TRACK_CONFIG_HIDE_BUTTON" /* HoverType.TRACK_CONFIG_HIDE_BUTTON */,
+                                    hoverType: groups[groupIndex].hidden ? "TRACK_CONFIG_SHOW_BUTTON" /* HoverType.TRACK_CONFIG_SHOW_BUTTON */ : "TRACK_CONFIG_HIDE_BUTTON" /* HoverType.TRACK_CONFIG_HIDE_BUTTON */,
                                 };
                             }
                             if (mouseInHeaderRow && x <= headerRight) {

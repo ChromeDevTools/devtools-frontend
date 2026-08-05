@@ -13856,8 +13856,59 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Add custom device"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | circleDisplayCutout": {
+    "message": "Circle"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | circleMustFitCutoutBounds": {
+    "message": "Circle must fit within the cutout bounds."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | customDevices": {
     "message": "Custom devices"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutBorderRadius": {
+    "message": "Pill radius"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutCenterX": {
+    "message": "Center x"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutCenterY": {
+    "message": "Center y"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutFieldRequired": {
+    "message": "{PH1} is required when display cutout is enabled."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutHeight": {
+    "message": "Cutout height"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutLowerRadius": {
+    "message": "Lower radius"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutRadius": {
+    "message": "Radius"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutUpperRadius": {
+    "message": "Upper radius"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutValueMustBeInRange": {
+    "message": "{PH1} must be an integer from 0 to {PH2}."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutValueMustBePositiveInteger": {
+    "message": "{PH1} must be a positive integer."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutWidth": {
+    "message": "Cutout width"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutX": {
+    "message": "Cutout x"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutXAndWidthExceedDeviceWidth": {
+    "message": "Cutout x plus width must not exceed the device width."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutY": {
+    "message": "Cutout y"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutYAndHeightExceedDeviceHeight": {
+    "message": "Cutout y plus height must not exceed the device height."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | defaultDevices": {
     "message": "Default devices"
@@ -13880,17 +13931,35 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
     "message": "Device pixel ratio"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | displayCutout": {
+    "message": "Display cutout"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | height": {
     "message": "Height"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | landscapeSafeArea": {
     "message": "Landscape safe area"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | noDisplayCutout": {
+    "message": "No cutout"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | notchDisplayCutout": {
+    "message": "Notch"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | pillDisplayCutout": {
+    "message": "Pill"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | portraitSafeArea": {
     "message": "Portrait safe area"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | rectangleDisplayCutout": {
+    "message": "Rectangle"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaBottom": {
     "message": "Bottom inset"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaHorizontalInsetsExceedWidth": {
+    "message": "{PH1}: Left and right insets must not exceed the device width."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaLeft": {
     "message": "Left inset"
@@ -13903,6 +13972,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaValueMustBeInRange": {
     "message": "{PH1}: {PH2} must be an integer from 0 to {PH3}."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
+    "message": "{PH1}: Top and bottom insets must not exceed the device height."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "User agent string"

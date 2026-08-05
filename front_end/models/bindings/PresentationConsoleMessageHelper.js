@@ -66,9 +66,7 @@ export class PresentationConsoleMessageManager {
             consoleMessage.source === "violation" /* Protocol.Log.LogEntrySource.Violation */ || !runtimeModel) {
             return;
         }
-        const level = consoleMessage.level === "error" /* Protocol.Log.LogEntryLevel.Error */ ?
-            "Error" /* Workspace.UISourceCode.Message.Level.ERROR */ :
-            "Warning" /* Workspace.UISourceCode.Message.Level.WARNING */;
+        const level = consoleMessage.level === "error" /* Protocol.Log.LogEntryLevel.Error */ ? "Error" /* Workspace.UISourceCode.Message.Level.ERROR */ : "Warning" /* Workspace.UISourceCode.Message.Level.WARNING */;
         this.#sourceFrameMessageManager.addMessage(new Workspace.UISourceCode.Message(level, consoleMessage.messageText), consoleMessage, runtimeModel.target());
     }
 }

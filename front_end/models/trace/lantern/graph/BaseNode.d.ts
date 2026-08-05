@@ -20,8 +20,8 @@ export type Node<T = Lantern.AnyNetworkObject> = CPUNode<T> | NetworkNode<T>;
  */
 declare class BaseNode<T = Lantern.AnyNetworkObject> {
     static types: {
-        readonly NETWORK: "network";
-        readonly CPU: "cpu";
+        readonly NETWORK: 'network';
+        readonly CPU: 'cpu';
     };
     _id: string;
     _isMainDocument: boolean;

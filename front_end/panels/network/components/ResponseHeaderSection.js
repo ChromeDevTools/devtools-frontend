@@ -111,9 +111,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
     set data(data) {
         this.#request = data.request;
         this.#isEditingAllowed =
-            Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(this.#request.url()) ?
-                2 /* EditingAllowedStatus.FORBIDDEN */ :
-                0 /* EditingAllowedStatus.DISABLED */;
+            Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(this.#request.url()) ? 2 /* EditingAllowedStatus.FORBIDDEN */ : 0 /* EditingAllowedStatus.DISABLED */;
         // If the request has been locally overridden, its 'sortedResponseHeaders'
         // contains no 'set-cookie' headers, because they have been filtered out by
         // the Chromium backend. DevTools therefore uses previously stored values.
@@ -193,9 +191,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
             return;
         }
         this.#isEditingAllowed =
-            Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(this.#request.url()) ?
-                2 /* EditingAllowedStatus.FORBIDDEN */ :
-                0 /* EditingAllowedStatus.DISABLED */;
+            Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(this.#request.url()) ? 2 /* EditingAllowedStatus.FORBIDDEN */ : 0 /* EditingAllowedStatus.DISABLED */;
         this.#headerEditors = this.headerDetails.map(header => ({
             name: header.name,
             value: header.value,

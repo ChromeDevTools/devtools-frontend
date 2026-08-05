@@ -1119,8 +1119,7 @@ export class NetworkRequestNode extends NetworkNode {
             }
             case 'initiator-address-space': {
                 const clientSecurityState = this.requestInternal.clientSecurityState();
-                this.renderAddressSpaceCell(cell, clientSecurityState ? clientSecurityState.initiatorIPAddressSpace :
-                    "Unknown" /* Protocol.Network.IPAddressSpace.Unknown */);
+                this.renderAddressSpaceCell(cell, clientSecurityState ? clientSecurityState.initiatorIPAddressSpace : "Unknown" /* Protocol.Network.IPAddressSpace.Unknown */);
                 break;
             }
             case 'size': {

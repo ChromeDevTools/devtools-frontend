@@ -40,5 +40,5 @@ declare class IfExpandedDirective extends Lit.Directive.Directive {
     constructor(partInfo: Lit.Directive.PartInfo);
     render(content: Lit.LitTemplate | Iterable<Lit.LitTemplate>): Lit.LitTemplate | Iterable<Lit.LitTemplate>;
 }
-export declare const ifExpanded: (content: Lit.LitTemplate | Iterable<Lit.LitTemplate>) => Lit.DirectiveResult<typeof IfExpandedDirective>;
+export declare const ifExpanded: (content: Iterable<Lit.LitTemplate> | Lit.LitTemplate) => Lit.DirectiveResult<typeof IfExpandedDirective>;
 export {};

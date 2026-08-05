@@ -13,7 +13,7 @@ export declare class InspectedPagePlaceholder extends InspectedPagePlaceholder_b
     private updateId?;
     constructor();
     static instance(opts?: {
-        forceNew: null;
+        forceNew: boolean | null;
     }): InspectedPagePlaceholder;
     onResize(): void;
     restoreMinimumSize(): void;

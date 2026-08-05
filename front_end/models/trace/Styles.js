@@ -808,20 +808,15 @@ export function markerDetailsForEvent(event) {
     let color = 'var(--color-text-primary)';
     if (Types.Events.isAnyFirstContentfulPaint(event)) {
         color = 'var(--sys-color-green-bright)';
-        title = (Types.Events.isSoftFirstContentfulPaint(event)) ?
-            "FCP*" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_FCP */ :
-            "FCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP */;
+        title = (Types.Events.isSoftFirstContentfulPaint(event)) ? "FCP*" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_FCP */ : "FCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP */;
     }
     if (Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
         color = 'var(--sys-color-green)';
-        title = Types.Events.isSoftLargestContentfulPaintCandidate(event) ?
-            "LCP*" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_LCP */ :
-            "LCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */;
+        title = Types.Events.isSoftLargestContentfulPaintCandidate(event) ? "LCP*" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_LCP */ : "LCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */;
     }
     if (Types.Events.isNavigationStart(event) || Types.Events.isSoftNavigationStart(event)) {
         color = 'var(--color-text-primary)';
-        title = Types.Events.isSoftNavigationStart(event) ? "Nav*" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_NAV */ :
-            "Nav" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.NAV */;
+        title = Types.Events.isSoftNavigationStart(event) ? "Nav*" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_NAV */ : "Nav" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.NAV */;
     }
     if (Types.Events.isMarkDOMContent(event)) {
         color = 'var(--color-text-disabled)';

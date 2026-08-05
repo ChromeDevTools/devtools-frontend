@@ -4680,7 +4680,7 @@ function getLCPData(parsedTrace, frameId, navigation) {
   if (!lcpEvent || !Trace4.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
     return null;
   }
-  const navigationId = navigation.args.data?.navigationId;
+  const navigationId = Trace4.Types.Events.isSoftNavigationStart(navigation) ? void 0 : navigation.args.data?.navigationId;
   return {
     lcpEvent,
     lcpRequest: navigationId ? parsedTrace.data.LargestImagePaint.lcpRequestByNavigationId.get(navigationId) : void 0,

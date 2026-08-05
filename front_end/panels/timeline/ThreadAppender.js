@@ -181,8 +181,7 @@ export class ThreadAppender {
         const trackIsCollapsible = this.#entries.length > 0;
         const style = buildGroupStyle({
             shareHeaderLine: false,
-            collapsible: trackIsCollapsible ? 0 /* PerfUI.FlameChart.GroupCollapsibleState.ALWAYS */ :
-                1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */,
+            collapsible: trackIsCollapsible ? 0 /* PerfUI.FlameChart.GroupCollapsibleState.ALWAYS */ : 1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */,
         });
         if (this.#headerNestingLevel !== null) {
             style.nestingLevel = this.#headerNestingLevel;
@@ -221,8 +220,7 @@ export class ThreadAppender {
             const trackIsCollapsible = this.#entries.length > 0;
             const headerStyle = buildGroupStyle({
                 shareHeaderLine: false,
-                collapsible: trackIsCollapsible ? 0 /* PerfUI.FlameChart.GroupCollapsibleState.ALWAYS */ :
-                    1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */,
+                collapsible: trackIsCollapsible ? 0 /* PerfUI.FlameChart.GroupCollapsibleState.ALWAYS */ : 1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */,
             });
             // Don't set any jslogcontext (first argument) because this is a shared
             // header group. Each child will have its context set.

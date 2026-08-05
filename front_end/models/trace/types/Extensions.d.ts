@@ -1,7 +1,7 @@
 import type * as Platform from '../../../core/platform/platform.js';
 import type { ConsoleTimeStamp, Event, PerformanceMark, PerformanceMeasureBegin, Phase, SyntheticBased } from './TraceEvents.js';
 export type ExtensionEntryType = 'track-entry' | 'marker';
-export declare const extensionPalette: readonly ["primary", "primary-light", "primary-dark", "secondary", "secondary-light", "secondary-dark", "tertiary", "tertiary-light", "tertiary-dark", "error", "warning"];
+export declare const extensionPalette: readonly ['primary', 'primary-light', 'primary-dark', 'secondary', 'secondary-light', 'secondary-dark', 'tertiary', 'tertiary-light', 'tertiary-dark', 'error', 'warning'];
 export type ExtensionColorFromPalette = typeof extensionPalette[number];
 /**
  * Represents any valid value that can be produced by JSON.parse()

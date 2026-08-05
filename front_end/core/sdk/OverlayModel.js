@@ -429,8 +429,7 @@ export class OverlayModel extends SDKModel {
             gridHighlightConfig: {},
             flexContainerHighlightConfig: {},
             flexItemHighlightConfig: {},
-            contrastAlgorithm: settings.moduleSetting('apca').get() ? "apca" /* Protocol.Overlay.ContrastAlgorithm.Apca */ :
-                "aa" /* Protocol.Overlay.ContrastAlgorithm.Aa */,
+            contrastAlgorithm: settings.moduleSetting('apca').get() ? "apca" /* Protocol.Overlay.ContrastAlgorithm.Apca */ : "aa" /* Protocol.Overlay.ContrastAlgorithm.Aa */,
         };
         if (mode === 'all' || mode === 'content') {
             highlightConfig.contentColor = Common.Color.PageHighlight.Content.toProtocolRGBA();

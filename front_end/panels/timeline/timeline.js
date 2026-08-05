@@ -6964,6 +6964,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     const config = Trace22.Types.Configuration.defaults();
     config.showAllEvents = Common10.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get();
     config.debugMode = Common10.Settings.Settings.instance().moduleSetting("timeline-debug-mode").get();
+    config.enableSoftNavigation = Common10.Settings.Settings.instance().moduleSetting("timeline-enable-soft-navigations").get();
     const traceEngineModel = Trace22.TraceModel.Model.createWithAllHandlers(config);
     traceEngineModel.addEventListener(Trace22.TraceModel.ModelUpdateEvent.eventName, (e) => {
       const updateEvent = e;

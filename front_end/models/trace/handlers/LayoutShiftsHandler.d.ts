@@ -4,7 +4,6 @@ import { ScoreClassification } from './PageLoadMetricsHandler.js';
 import type { HandlerName } from './types.js';
 interface LayoutShiftsData {
     clusters: readonly Types.Events.SyntheticLayoutShiftCluster[];
-    clustersByNavigationId: Map<Types.Events.NavigationId, Types.Events.SyntheticLayoutShiftCluster[]>;
     sessionMaxScore: number;
     clsWindowID: number;
     prePaintEvents: readonly Types.Events.PrePaint[];

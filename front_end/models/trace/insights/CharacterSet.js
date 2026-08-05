@@ -91,7 +91,7 @@ function metaCharsetLabel(disposition) {
     }
 }
 export function generateInsight(data, context) {
-    if (!context.navigation) {
+    if (!context.navigation || !('navigationId' in context)) {
         return finalize({});
     }
     const documentRequest = data.NetworkRequests.byId.get(context.navigationId);

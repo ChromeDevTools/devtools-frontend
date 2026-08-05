@@ -23,8 +23,7 @@ export class PartitioningBlobURLIssue extends Issue {
         return "Other" /* IssueCategory.OTHER */;
     }
     getDescription() {
-        const fileName = this.details().partitioningBlobURLInfo ===
-            "BlockedCrossPartitionFetching" /* Protocol.Audits.PartitioningBlobURLInfo.BlockedCrossPartitionFetching */ ?
+        const fileName = this.details().partitioningBlobURLInfo === "BlockedCrossPartitionFetching" /* Protocol.Audits.PartitioningBlobURLInfo.BlockedCrossPartitionFetching */ ?
             'fetchingPartitionedBlobURL.md' :
             'navigatingPartitionedBlobURL.md';
         return {

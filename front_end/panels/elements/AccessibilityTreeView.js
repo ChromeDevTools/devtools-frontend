@@ -32,9 +32,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         defaultRenderer: AccessibilityTreeUtils.accessibilityNodeRenderer,
         tree: input.nodes,
         filter: node => {
-            return node.ignored() || (node.role()?.value === 'generic' && !node.name()?.value) ?
-                "FLATTEN" /* TreeOutline.TreeOutline.FilterOption.FLATTEN */ :
-                "SHOW" /* TreeOutline.TreeOutline.FilterOption.SHOW */;
+            return node.ignored() || (node.role()?.value === 'generic' && !node.name()?.value) ? "FLATTEN" /* TreeOutline.TreeOutline.FilterOption.FLATTEN */ : "SHOW" /* TreeOutline.TreeOutline.FilterOption.SHOW */;
         },
     };
     const onTreeOutlineRef = (el) => {

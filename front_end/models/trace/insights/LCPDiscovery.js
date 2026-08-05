@@ -77,7 +77,7 @@ function finalize(partialModel) {
     };
 }
 export function generateInsight(data, context) {
-    if (!context.navigation) {
+    if (!context.navigation || !('navigationId' in context)) {
         return finalize({});
     }
     const networkRequests = data.NetworkRequests;

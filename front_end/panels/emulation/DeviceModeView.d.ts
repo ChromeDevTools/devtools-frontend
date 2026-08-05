@@ -1,8 +1,10 @@
 import * as Common from '../../core/common/common.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export interface DeviceModeViewInput {
     model: EmulationModel.DeviceModeModel.DeviceModeModel;
+    showDeviceMode: boolean;
     showMediaInspectorSetting: Common.Settings.Setting<boolean>;
     showRulersSetting: Common.Settings.Setting<boolean>;
     outlineImage: string;
@@ -59,6 +61,8 @@ export declare class DeviceModeView extends UI.Widget.VBox {
     private cachedScale?;
     constructor(element?: HTMLElement, view?: DeviceModeViewView);
     performUpdate(): void;
+    static captureScreenshot(fullSize?: boolean, clip?: Protocol.Page.Viewport): boolean;
+    private screenshotRequestedFromOverlay;
     private onOutlineImageLoaded;
     private onScreenImageLoaded;
     private createResizer;
@@ -105,5 +109,8 @@ export declare class Ruler extends Ruler_base {
     wasShown(): void;
     onResize(): void;
     performUpdate(): void;
+}
+export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+    handleAction(context: UI.Context.Context, actionId: string): boolean;
 }
 export {};

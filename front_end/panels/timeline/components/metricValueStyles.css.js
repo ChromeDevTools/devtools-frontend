@@ -45,4 +45,21 @@ export default `/*
   color: var(--app-color-performance-bad-dim);
 }
 
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: var(--sys-size-8);
+  border-radius: var(--sys-shape-corner-extra-small);
+  padding: 0 var(--sys-size-3);
+  border: var(--sys-size-1) solid var(--sys-color-primary);
+  color: var(--sys-color-primary);
+  font-weight: var(--ref-typeface-weight-bold);
+  font-size: var(--sys-size-5);
+  text-align: center;
+  margin-top: var(--sys-size-5);
+  margin-bottom: var(--sys-size-5);
+}
+
 /*# sourceURL=${import.meta.resolve('./metricValueStyles.css')} */`;

@@ -19,7 +19,7 @@ export declare class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> im
     readonly mediaThrottler: Common.Throttler.Throttler;
     private cssModel?;
     private cachedQueryModels?;
-    constructor(element?: HTMLElement, view?: (input: ViewInput, _output: object, target: DocumentFragment) => void);
+    constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW);
     get getWidthCallback(): (() => number) | undefined;
     set getWidthCallback(callback: (() => number) | undefined);
     get setWidthCallback(): ((arg0: number) => void) | undefined;

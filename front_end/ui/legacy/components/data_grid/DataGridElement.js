@@ -583,7 +583,7 @@ function nodeMixin(base) {
     };
 }
 // clang-format off
-class SortableNode extends nodeMixin((SortableDataGridNode)) {
+class SortableNode extends nodeMixin(SortableDataGridNode) {
     // clang-format on
     constructor(configElement, dataGridElement) {
         super();
@@ -592,7 +592,7 @@ class SortableNode extends nodeMixin((SortableDataGridNode)) {
     }
 }
 // clang-format off
-class DynamicHeightNode extends nodeMixin((DataGridNode)) {
+class DynamicHeightNode extends nodeMixin(DataGridNode) {
     // clang-format on
     constructor(configElement, dataGridElement) {
         super();

@@ -200,8 +200,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
                 const promises = Array.from(this.#storageBucketsUpdated, storageBucket => this.loadCacheNames(storageBucket));
                 this.#storageBucketsUpdated.clear();
                 return Promise.all(promises);
-            }, this.#scheduleAsSoonAsPossible ? "AsSoonAsPossible" /* Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE */ :
-                "Default" /* Common.Throttler.Scheduling.DEFAULT */);
+            }, this.#scheduleAsSoonAsPossible ? "AsSoonAsPossible" /* Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE */ : "Default" /* Common.Throttler.Scheduling.DEFAULT */);
         }
     }
     cacheStorageContentUpdated({ bucketId, cacheName }) {

@@ -54,7 +54,7 @@ export declare class Layers3DView extends Layers3DView_base implements LayerView
     private showPaintsSetting?;
     private mouseDownX?;
     private mouseDownY?;
-    constructor(layerViewHost: LayerViewHost, view?: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void);
+    constructor(layerViewHost: LayerViewHost, view?: typeof DEFAULT_VIEW);
     performUpdate(): void;
     setLayerTree(layerTree: SDK.LayerTreeBase.LayerTreeBase | null): void;
     showImageForLayer(layer: SDK.LayerTreeBase.Layer, imageURL?: string): void;

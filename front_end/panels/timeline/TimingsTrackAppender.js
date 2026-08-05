@@ -81,8 +81,7 @@ export class TimingsTrackAppender {
         const trackIsCollapsible = this.#parsedTrace.data.UserTimings.performanceMeasures.length > 0;
         const style = buildGroupStyle({
             useFirstLineForOverview: true,
-            collapsible: trackIsCollapsible ? 2 /* PerfUI.FlameChart.GroupCollapsibleState.IF_MULTI_ROW */ :
-                1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */,
+            collapsible: trackIsCollapsible ? 2 /* PerfUI.FlameChart.GroupCollapsibleState.IF_MULTI_ROW */ : 1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */,
         });
         const group = buildTrackHeader("timings" /* VisualLoggingTrackName.TIMINGS */, currentLevel, i18nString(UIStrings.timings), style, /* selectable= */ true, expanded);
         this.#compatibilityBuilder.registerTrackForGroup(group, this);

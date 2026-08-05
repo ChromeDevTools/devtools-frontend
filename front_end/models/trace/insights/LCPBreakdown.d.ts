@@ -6,44 +6,44 @@ export declare const UIStrings: {
     /**
      * @description Title of an insight that provides details about the LCP metric, broken down by parts.
      */
-    readonly title: "LCP breakdown";
+    readonly title: 'LCP breakdown';
     /**
      * @description Description of a DevTools insight that presents a breakdown for the LCP metric by subparts.
      * This is displayed after a user expands the section to see more. No character length limits.
      */
-    readonly description: "Each [subpart has specific improvement strategies](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.";
+    readonly description: 'Each [subpart has specific improvement strategies](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.';
     /**
      * @description Time to first byte title for the Largest Contentful Paint's subparts timespan breakdown.
      */
-    readonly timeToFirstByte: "Time to first byte";
+    readonly timeToFirstByte: 'Time to first byte';
     /**
      * @description Resource load delay title for the Largest Contentful Paint subparts timespan breakdown.
      */
-    readonly resourceLoadDelay: "Resource load delay";
+    readonly resourceLoadDelay: 'Resource load delay';
     /**
      * @description Resource load duration title for the Largest Contentful Paint subparts timespan breakdown.
      */
-    readonly resourceLoadDuration: "Resource load duration";
+    readonly resourceLoadDuration: 'Resource load duration';
     /**
      * @description Element render delay title for the Largest Contentful Paint subparts timespan breakdown.
      */
-    readonly elementRenderDelay: "Element render delay";
+    readonly elementRenderDelay: 'Element render delay';
     /**
      * @description Label used for the subpart (section) of a larger duration.
      */
-    readonly subpart: "Subpart";
+    readonly subpart: 'Subpart';
     /**
      * @description Label used for the duration a single subpart (section) takes up of a larger duration.
      */
-    readonly duration: "Duration";
+    readonly duration: 'Duration';
     /**
      * @description Label used for the duration a single subpart (section) takes up of a larger duration. The value will be the 75th percentile of aggregate data. "Field" means that the data was collected from real users in the field as opposed to the developers local environment. "Field" is synonymous with "Real user data".
      */
-    readonly fieldDuration: "Field p75";
+    readonly fieldDuration: 'Field p75';
     /**
      * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
      */
-    readonly noLcp: "No LCP detected";
+    readonly noLcp: 'No LCP detected';
 };
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => Common.UIString.LocalizedString;
 /** A TraceWindow plus its UIString. **/

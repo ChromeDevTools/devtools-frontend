@@ -1746,8 +1746,7 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper {
                 latency: globalConditions?.latency ?? 0,
                 downloadThroughput: globalConditions?.download ?? -1,
                 uploadThroughput: globalConditions?.upload ?? -1,
-                connectionType: globalConditions ? NetworkManager.connectionType(globalConditions) :
-                    "none" /* Protocol.Network.ConnectionType.None */,
+                connectionType: globalConditions ? NetworkManager.connectionType(globalConditions) : "none" /* Protocol.Network.ConnectionType.None */,
             }));
         }
         this.#conditionsAppliedForTestPromise = this.#conditionsAppliedForTestPromise.then(() => Promise.all(promises));

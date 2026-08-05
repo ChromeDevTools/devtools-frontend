@@ -5,44 +5,44 @@ export declare const UIStrings: {
     /**
      * @description Title of an insight that provides details about the LCP metric, and the network requests necessary to load it. Details how the LCP request was discoverable - in other words, the path necessary to load it (ex: network requests, JavaScript)
      */
-    readonly title: "LCP request discovery";
+    readonly title: 'LCP request discovery';
     /**
      * @description Description of an insight that provides details about the LCP metric, and the network requests necessary to load it.
      */
-    readonly description: "[Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading";
+    readonly description: '[Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading';
     /**
      * @description Text to tell the user how long after the earliest discovery time their LCP element loaded.
      * @example {401ms} PH1
      */
-    readonly lcpLoadDelay: "LCP image loaded {PH1} after earliest start point.";
+    readonly lcpLoadDelay: 'LCP image loaded {PH1} after earliest start point.';
     /**
      * @description Text to tell the user that a fetchpriority property value of "high" is applied to the LCP request.
      */
-    readonly fetchPriorityApplied: "fetchpriority=high applied";
+    readonly fetchPriorityApplied: 'fetchpriority=high applied';
     /**
      * @description Text to tell the user that a fetchpriority property value of "high" should be applied to the LCP request.
      */
-    readonly fetchPriorityShouldBeApplied: "fetchpriority=high should be applied";
+    readonly fetchPriorityShouldBeApplied: 'fetchpriority=high should be applied';
     /**
      * @description Text to tell the user that a fetchpriority property value of "high" should be applied to the preload request that loads the LCP image.
      */
-    readonly fetchPriorityShouldBeAppliedToImagePreload: "fetchpriority=high should be applied to the image preload request";
+    readonly fetchPriorityShouldBeAppliedToImagePreload: 'fetchpriority=high should be applied to the image preload request';
     /**
      * @description Text to tell the user that the LCP request is discoverable in the initial document.
      */
-    readonly requestDiscoverable: "Request is discoverable in initial document";
+    readonly requestDiscoverable: 'Request is discoverable in initial document';
     /**
      * @description Text to tell the user that LCP resources should avoid using loading=lazy.
      */
-    readonly lazyLoadNotApplied: "LCP resources should not use loading=lazy";
+    readonly lazyLoadNotApplied: 'LCP resources should not use loading=lazy';
     /**
      * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
      */
-    readonly noLcp: "No LCP detected";
+    readonly noLcp: 'No LCP detected';
     /**
      * @description Text status indicating that the Largest Contentful Paint (LCP) metric was text rather than an image. "LCP" is an acronym and should not be translated.
      */
-    readonly noLcpResource: "No LCP resource detected because the LCP is not an image";
+    readonly noLcpResource: 'No LCP resource detected because the LCP is not an image';
 };
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => import("../../../core/platform/UIString.js").LocalizedString;
 export declare function isLCPDiscoveryInsight(model: InsightModel): model is LCPDiscoveryInsightModel;

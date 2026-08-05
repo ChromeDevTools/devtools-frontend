@@ -487,6 +487,7 @@ var navigationsByNavigationId = /* @__PURE__ */ new Map();
 var softNavigationsById = /* @__PURE__ */ new Map();
 var finalDisplayUrlByNavigationId = /* @__PURE__ */ new Map();
 var mainFrameNavigations = [];
+var sameDocumentNavigations = [];
 var threadsInProcess = /* @__PURE__ */ new Map();
 var traceStartedTimeFromTracingStartedEvent = Types5.Timing.Micro(-1);
 var eventPhasesOfInterestForTraceBounds = /* @__PURE__ */ new Set([
@@ -509,6 +510,7 @@ function reset4() {
   finalDisplayUrlByNavigationId = /* @__PURE__ */ new Map();
   processNames = /* @__PURE__ */ new Map();
   mainFrameNavigations = [];
+  sameDocumentNavigations = [];
   browserProcessId = Types5.Events.ProcessID(-1);
   browserThreadId = Types5.Events.ThreadID(-1);
   gpuProcessId = Types5.Events.ProcessID(-1);
@@ -668,9 +670,7 @@ function handleEvent4(event) {
     if (event.args.render_frame_host.frame_type !== "PRIMARY_MAIN_FRAME") {
       return;
     }
-    const navigation = mainFrameNavigations.at(-1);
-    const key = navigation?.args.data?.navigationId ?? "";
-    finalDisplayUrlByNavigationId.set(key, event.args.url);
+    sameDocumentNavigations.push(event);
     return;
   }
 }
@@ -714,6 +714,25 @@ async function finalize4(options) {
     const navigationIsWithinThreshold = firstMainFrameNav.ts - traceBounds.min < firstNavTimeThreshold;
     if (firstMainFrameNav.args.data?.isOutermostMainFrame && firstMainFrameNav.args.data?.documentLoaderURL && navigationIsWithinThreshold) {
       mainFrameURL = firstMainFrameNav.args.data.documentLoaderURL;
+    }
+  }
+  const softNavs = Array.from(softNavigationsById.values()).sort((a, b) => a.ts - b.ts);
+  const hardNavs = [...mainFrameNavigations];
+  const intervals = [
+    { minTs: 0, maxTs: hardNavs.length > 0 ? hardNavs[0].ts : Infinity, key: "" },
+    ...hardNavs.map((nav, i) => ({
+      minTs: nav.ts,
+      maxTs: i + 1 < hardNavs.length ? hardNavs[i + 1].ts : Infinity,
+      key: nav.args.data?.navigationId ?? ""
+    }))
+  ];
+  for (const { minTs, maxTs, key } of intervals) {
+    const firstSoftNav = softNavs.find((sn) => sn.ts >= minTs && sn.ts < maxTs);
+    const effectiveMaxTs = firstSoftNav ? firstSoftNav.ts : maxTs;
+    const historyEvents = sameDocumentNavigations.filter((hn) => hn.ts >= minTs && hn.ts < effectiveMaxTs);
+    const lastHistoryEvent = historyEvents.at(-1);
+    if (lastHistoryEvent) {
+      finalDisplayUrlByNavigationId.set(key, lastHistoryEvent.args.url);
     }
   }
 }
@@ -3586,7 +3605,6 @@ var paintImageEvents2 = [];
 var sessionMaxScore = 0;
 var clsWindowID = -1;
 var clusters = [];
-var clustersByNavigationId = /* @__PURE__ */ new Map();
 var scoreRecords = [];
 function reset22() {
   layoutShiftEvents = [];
@@ -3604,7 +3622,6 @@ function reset22() {
   sessionMaxScore = 0;
   scoreRecords = [];
   clsWindowID = -1;
-  clustersByNavigationId = /* @__PURE__ */ new Map();
 }
 function handleEvent22(event) {
   if (Types23.Events.isLayoutShift(event) && !event.args.data?.had_recent_input) {
@@ -3733,8 +3750,8 @@ async function finalize22() {
   collectNodes();
 }
 async function buildLayoutShiftsClusters() {
-  const { navigationsByFrameId: navigationsByFrameId2, mainFrameId: mainFrameId2, traceBounds: traceBounds2 } = data4();
-  const navigations = navigationsByFrameId2.get(mainFrameId2) || [];
+  const { navigationsByFrameId: navigationsByFrameId2, mainFrameId: mainFrameId2, traceBounds: traceBounds2, softNavigationsById: softNavigationsById2 } = data4();
+  const navigations = [...navigationsByFrameId2.get(mainFrameId2) || [], ...softNavigationsById2.values()].sort((a, b) => a.ts - b.ts);
   if (layoutShiftEvents.length === 0) {
     return;
   }
@@ -3756,7 +3773,15 @@ async function buildLayoutShiftsClusters() {
         const currentCluster2 = clusters[clusters.length - 1];
         updateTraceWindowMax(currentCluster2.clusterWindow, Types23.Timing.Micro(previousClusterEndTime));
       }
-      const navigationId = currentShiftNavigation === null ? Types23.Events.NO_NAVIGATION : navigations[currentShiftNavigation].args.data?.navigationId;
+      let navigationId = void 0;
+      if (currentShiftNavigation !== null) {
+        const nav = navigations[currentShiftNavigation];
+        if (Types23.Events.isNavigationStart(nav)) {
+          navigationId = nav.args.data?.navigationId;
+        }
+      } else {
+        navigationId = Types23.Events.NO_NAVIGATION;
+      }
       clusters.push(Helpers15.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
         name: "SyntheticLayoutShiftCluster",
         // Will be replaced by the worst layout shift in the next for loop.
@@ -3874,12 +3899,6 @@ async function buildLayoutShiftsClusters() {
       clsWindowID = windowID;
       sessionMaxScore = weightedScore;
     }
-    if (cluster.navigationId) {
-      const clustersForId = Platform12.MapUtilities.getWithDefault(clustersByNavigationId, cluster.navigationId, () => {
-        return [];
-      });
-      clustersForId.push(cluster);
-    }
   }
 }
 function data22() {
@@ -3897,7 +3916,6 @@ function data22() {
     remoteFonts,
     scoreRecords,
     backendNodeIds,
-    clustersByNavigationId,
     paintImageEvents: paintImageEvents2
   };
 }

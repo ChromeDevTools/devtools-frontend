@@ -419,7 +419,7 @@ export function requiresSpace(a, b) {
     return !/\s/.test(trailingChar) && !/\s/.test(leadingChar) && !noSpaceAfter.includes(trailingChar) &&
         !noSpaceBefore.includes(leadingChar);
 }
-export const CSSControlMap = (Map);
+export const CSSControlMap = Map;
 export var ASTUtils;
 (function (ASTUtils) {
     function siblings(node) {

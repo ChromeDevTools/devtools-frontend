@@ -58,7 +58,7 @@ export declare const enum State {
 type StateData = {
     type: State.LOADING;
     consentOnboardingCompleted: boolean;
-} | {
+} | ({
     type: State.INSIGHT;
     tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'];
     validMarkdown: boolean;
@@ -68,7 +68,7 @@ type StateData = {
     directCitationUrls: string[];
     relatedUrls: string[];
     timedOut?: boolean;
-} & Host.AidaClient.DoConversationResponse | {
+} & Host.AidaClient.DoConversationResponse) | {
     type: State.ERROR;
     error: string;
 } | {

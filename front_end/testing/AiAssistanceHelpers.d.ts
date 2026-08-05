@@ -20,9 +20,9 @@ export declare const MockAidaQuotaError: {
 export declare const MockAidaPayloadLimitError: {
     readonly payloadLimitError: true;
 };
-export type MockAidaResponse = Omit<Host.AidaClient.DoConversationResponse, 'completed' | 'metadata'> & {
+export type MockAidaResponse = (Omit<Host.AidaClient.DoConversationResponse, 'completed' | 'metadata'> & {
     metadata?: Host.AidaClient.ResponseMetadata;
-} | typeof MockAidaAbortError | typeof MockAidaFetchError | typeof MockAidaQuotaError | typeof MockAidaPayloadLimitError;
+}) | typeof MockAidaAbortError | typeof MockAidaFetchError | typeof MockAidaQuotaError | typeof MockAidaPayloadLimitError;
 /**
  * Creates a mock AIDA client that responds using `data`.
  *

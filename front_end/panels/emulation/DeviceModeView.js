@@ -4,6 +4,8 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -11,6 +13,7 @@ import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { DeviceModeToolbar } from './DeviceModeToolbar.js';
 import deviceModeViewStyles from './deviceModeView.css.js';
+import { InspectedPagePlaceholder } from './InspectedPagePlaceholder.js';
 import { MediaQueryInspector } from './MediaQueryInspector.js';
 const { classMap, ref, styleMap } = Directives;
 const { widget } = UI.Widget;
@@ -84,14 +87,14 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
         '4K',
     ];
     // clang-format off
-    render(html `
-    ${UI.Widget.widget(DeviceModeToolbar, { model: input.model })}
+    render(input.showDeviceMode
+        ? html `${UI.Widget.widget(DeviceModeToolbar, { model: input.model })}
     <div class=${classMap({
-        'device-mode-content-clip': true,
-        vbox: true,
-        'device-mode-outline-visible': Boolean(input.outlineImage),
-        'device-mode-rulers-visible': input.showRulers,
-    })}>
+            'device-mode-content-clip': true,
+            vbox: true,
+            'device-mode-outline-visible': Boolean(input.outlineImage),
+            'device-mode-rulers-visible': input.showRulers,
+        })}>
       <div class="device-mode-presets-container" jslog=${VisualLogging.responsivePresets()}>
         <div class="device-mode-presets-container-inner">
           ${sizes.map((size, idx) => html `
@@ -108,30 +111,30 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
       </div>
       <div class="device-mode-media-container">
         ${input.showMediaInspector ? widget(MediaQueryInspector, {
-        scale: input.scale,
-        getWidthCallback: () => input.model.appliedDeviceSize().width,
-        setWidthCallback: input.model.setWidth.bind(input.model),
-    }) : nothing}
+            scale: input.scale,
+            getWidthCallback: () => input.model.appliedDeviceSize().width,
+            setWidthCallback: input.model.setWidth.bind(input.model),
+        }) : nothing}
       </div>
       <div class="device-mode-content-area">
         <img class="device-mode-outline-image fill"
              ?hidden=${!input.outlineImage || !input.outlineImageLoaded}
              style=${styleMap(input.cachedOutlineRect ? {
-        left: `${input.cachedOutlineRect.left}px`,
-        top: `${input.cachedOutlineRect.top}px`,
-        width: `${input.cachedOutlineRect.width}px`,
-        height: `${input.cachedOutlineRect.height}px`,
-    } : {})}
+            left: `${input.cachedOutlineRect.left}px`,
+            top: `${input.cachedOutlineRect.top}px`,
+            width: `${input.cachedOutlineRect.width}px`,
+            height: `${input.cachedOutlineRect.height}px`,
+        } : {})}
              srcset=${input.outlineImage || nothing}
              @load=${() => input.onOutlineImageLoaded(true)}
              @error=${() => input.onOutlineImageLoaded(false)}>
         <div class="device-mode-screen-area"
              style=${styleMap(input.cachedCssScreenRect ? {
-        left: `${input.cachedCssScreenRect.left}px`,
-        top: `${input.cachedCssScreenRect.top}px`,
-        width: `${input.cachedCssScreenRect.width}px`,
-        height: `${input.cachedCssScreenRect.height}px`,
-    } : {})}>
+            left: `${input.cachedCssScreenRect.left}px`,
+            top: `${input.cachedCssScreenRect.top}px`,
+            width: `${input.cachedCssScreenRect.width}px`,
+            height: `${input.cachedCssScreenRect.height}px`,
+        } : {})}>
           <img class="device-mode-screen-image"
                ?hidden=${!input.screenImage || !input.screenImageLoaded}
                srcset=${input.screenImage || nothing}
@@ -171,33 +174,36 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
           </div>
           <div class="device-mode-page-area"
                style=${styleMap(input.cachedCssVisiblePageRect ? {
-        left: `${input.cachedCssVisiblePageRect.left}px`,
-        top: `${input.cachedCssVisiblePageRect.top}px`,
-        width: `${input.cachedCssVisiblePageRect.width}px`,
-        height: `${input.cachedCssVisiblePageRect.height}px`,
-    } : {})}><slot></slot></div>
+            left: `${input.cachedCssVisiblePageRect.left}px`,
+            top: `${input.cachedCssVisiblePageRect.top}px`,
+            width: `${input.cachedCssVisiblePageRect.width}px`,
+            height: `${input.cachedCssVisiblePageRect.height}px`,
+        } : {})}>
+            ${widget(() => InspectedPagePlaceholder.instance(), { minimumSize: new Geometry.Size(1, 1) })}
+          </div>
         </div>
         ${input.showRulers ? html `
           <devtools-widget class="device-mode-ruler-top device-mode-ruler"
               style=${styleMap({ left: `${input.cachedCssScreenRect?.left ?? 0}px`, top: `${input.cachedCssScreenRect?.top ?? 0}px` })}
               ${UI.Widget.widget(Ruler, {
-        scale: input.scale,
-        horizontal: true,
-    })}
+            scale: input.scale,
+            horizontal: true,
+        })}
               @device-mode-ruler-marker-selected=${(e) => input.model.setWidthAndScaleToFit(e.detail)}>
           </devtools-widget>
           <devtools-widget class="device-mode-ruler-left device-mode-ruler"
               style=${styleMap({ left: `${input.cachedCssScreenRect?.left ?? 0}px`, top: `${input.cachedCssScreenRect?.top ?? 0}px` })}
               ${UI.Widget.widget(Ruler, {
-        scale: input.scale,
-        horizontal: false,
-    })}
+            scale: input.scale,
+            horizontal: false,
+        })}
               @device-mode-ruler-marker-selected=${(e) => input.model.setHeightAndScaleToFit(e.detail)}>
           </devtools-widget>
         ` : nothing}
       </div>
     </div>
-  `, target, {
+  `
+        : widget(() => InspectedPagePlaceholder.instance(), { minimumSize: new Geometry.Size(150, 150) }), target, {
         container: {
             classes: ['device-mode-view'],
         },
@@ -231,6 +237,8 @@ export class DeviceModeView extends UI.Widget.VBox {
     #lastOutlineImageSrc;
     #screenImageLoaded = false;
     #lastScreenImageSrc;
+    #toggleDeviceModeAction;
+    #showDeviceModeSetting;
     #view;
     constructor(element, view = DEFAULT_DEVICE_MODE_VIEW) {
         super(element, { useShadowDom: true });
@@ -243,6 +251,13 @@ export class DeviceModeView extends UI.Widget.VBox {
         this.showMediaInspectorSetting.addChangeListener(this.updateUI, this);
         this.showRulersSetting = Common.Settings.Settings.instance().moduleSetting('emulation.show-rulers');
         this.showRulersSetting.addChangeListener(this.updateUI, this);
+        this.#toggleDeviceModeAction =
+            UI.ActionRegistry.ActionRegistry.instance().getAction('emulation.toggle-device-mode');
+        const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+        this.#showDeviceModeSetting = model.enabledSetting();
+        this.#showDeviceModeSetting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam('hasOtherClients')));
+        this.#showDeviceModeSetting.addChangeListener(this.requestUpdate.bind(this));
+        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel, "ScreenshotRequested" /* SDK.OverlayModel.Events.SCREENSHOT_REQUESTED */, this.screenshotRequestedFromOverlay, this);
         this.performUpdate();
         UI.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.zoomChanged, this);
     }
@@ -255,8 +270,10 @@ export class DeviceModeView extends UI.Widget.VBox {
             this.#lastScreenImageSrc = this.model.screenImage();
             this.#screenImageLoaded = false;
         }
+        this.#toggleDeviceModeAction.setToggled(this.#showDeviceModeSetting.get());
         const input = {
             model: this.model,
+            showDeviceMode: this.#showDeviceModeSetting.get(),
             showMediaInspectorSetting: this.showMediaInspectorSetting,
             showRulersSetting: this.showRulersSetting,
             outlineImage: this.model.outlineImage(),
@@ -290,6 +307,34 @@ export class DeviceModeView extends UI.Widget.VBox {
             onScreenImageLoaded: (success) => this.onScreenImageLoaded(success),
         };
         this.#view(input, undefined, this.contentElement);
+    }
+    static #setNonEmulatedAvailableSize() {
+        const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+        if (model.type() !== EmulationModel.DeviceModeModel.Type.None) {
+            return;
+        }
+        const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
+        const rect = InspectedPagePlaceholder.instance().element.getBoundingClientRect();
+        const availableSize = new Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
+        model.setAvailableSize(availableSize, availableSize);
+    }
+    static captureScreenshot(fullSize, clip) {
+        const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+        this.#setNonEmulatedAvailableSize();
+        if (fullSize) {
+            void model.captureFullSizeScreenshot();
+        }
+        else if (clip) {
+            void model.captureAreaScreenshot(clip);
+        }
+        else {
+            void model.captureScreenshot();
+        }
+        return true;
+    }
+    screenshotRequestedFromOverlay(event) {
+        const clip = event.data;
+        DeviceModeView.captureScreenshot(false, clip);
     }
     onOutlineImageLoaded(success) {
         if (this.#outlineImageLoaded !== success) {
@@ -403,20 +448,22 @@ export class DeviceModeView extends UI.Widget.VBox {
             this.cachedScale = this.model.scale();
         }
         this.requestUpdate();
-        if (callDoResize) {
-            this.doResize();
-        }
-        if (contentAreaResized) {
-            this.contentAreaResized();
-        }
+        void this.updateComplete.then(() => {
+            if (callDoResize) {
+                this.doResize();
+            }
+            if (contentAreaResized) {
+                this.contentAreaResized();
+            }
+        });
     }
     contentAreaResized() {
         const contentArea = this.contentElement.querySelector('.device-mode-content-area');
         if (!contentArea) {
             return;
         }
-        const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
         const rect = contentArea.getBoundingClientRect();
+        const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
         const handleWidth = this.contentElement.querySelector('.device-mode-right-resizer')?.offsetWidth || 20;
         const handleHeight = this.contentElement.querySelector('.device-mode-bottom-resizer')?.offsetHeight || 20;
         const availableSize = new Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
@@ -550,5 +597,141 @@ export class Ruler extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
         };
         this.#view(viewInput, undefined, this.contentElement);
     }
+}
+export class ActionDelegate {
+    handleAction(context, actionId) {
+        switch (actionId) {
+            case 'emulation.capture-screenshot':
+                return DeviceModeView.captureScreenshot();
+            case 'emulation.capture-node-screenshot': {
+                const node = context.flavor(SDK.DOMModel.DOMNode);
+                if (!node) {
+                    return true;
+                }
+                async function captureClip() {
+                    if (!node) {
+                        return;
+                    }
+                    // Resolve to a remote object to ensure the node is alive in the context.
+                    const object = await node.resolveToObject();
+                    if (!object) {
+                        return;
+                    }
+                    // Get the Box Model via CDP.
+                    // This returns the quads relative to the target's viewport.
+                    // We use the 'border' quad to include the border and padding in the screenshot,
+                    // matching the 'width' and 'height' properties which are also Border Box dimensions.
+                    const nodeBoxModel = await node.boxModel();
+                    if (!nodeBoxModel) {
+                        throw new Error(`Unable to get box model of the node: ${new Error().stack}`);
+                    }
+                    const nodeBorderQuad = nodeBoxModel.border;
+                    // Calculate the rendered bounding box from the border quad to account for CSS scaling and transforms (e.g. zoom or transform: scale).
+                    const { minX, maxX, minY, maxY } = getQuadBoundingBox(nodeBorderQuad);
+                    // Get Layout Metrics to account for the Visual Viewport scroll and zoom.
+                    const metrics = await node.domModel().target().pageAgent().invoke_getLayoutMetrics();
+                    if (metrics.getError()) {
+                        throw new Error(`Unable to get metrics: ${new Error().stack}`);
+                    }
+                    const scrollX = metrics.cssVisualViewport.pageX;
+                    const scrollY = metrics.cssVisualViewport.pageY;
+                    // Calculate the global offset for OOPiFs (Out-of-Process iframes).
+                    // This accounts for the position of the target's frame within the main page.
+                    const { x: oopifOffsetX, y: oopifOffsetY } = await getOopifOffset(node.domModel().target());
+                    // Assemble the final Clip.
+                    // The absolute coordinates are: Global (OOPiF) + Viewport Scroll + Local Node Position (Border Box).
+                    const clip = {
+                        x: oopifOffsetX + scrollX + minX,
+                        y: oopifOffsetY + scrollY + minY,
+                        width: maxX - minX,
+                        height: maxY - minY,
+                        scale: 1,
+                    };
+                    // Apply Zoom factor.
+                    const zoom = metrics.cssVisualViewport.zoom ?? 1;
+                    clip.x *= zoom;
+                    clip.y *= zoom;
+                    clip.width *= zoom;
+                    clip.height *= zoom;
+                    DeviceModeView.captureScreenshot(false, clip);
+                }
+                void captureClip();
+                return true;
+            }
+            case 'emulation.capture-full-height-screenshot':
+                return DeviceModeView.captureScreenshot(true);
+            case 'emulation.toggle-device-mode': {
+                const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+                model.toggleDeviceMode();
+                return true;
+            }
+        }
+        return false;
+    }
+}
+/**
+ * Calculate the offset of the "Local Root" frame relative to the "Global Root" (the main frame).
+ * This involves traversing the CDP Targets for OOPiFs.
+ */
+async function getOopifOffset(target) {
+    if (!target) {
+        return { x: 0, y: 0 };
+    }
+    // Get the parent target. If there's no parent (we are at root) or it's not a frame, we are done.
+    const parentTarget = target.parentTarget();
+    if (!parentTarget || parentTarget.type() !== SDK.Target.Type.FRAME) {
+        return { x: 0, y: 0 };
+    }
+    // Identify the current frame's ID to find its owner in the parent.
+    const frameId = target.model(SDK.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.id;
+    if (!frameId) {
+        return { x: 0, y: 0 };
+    }
+    // Get the DOMModel of the parent to query the frame owner element.
+    const parentDOMModel = parentTarget.model(SDK.DOMModel.DOMModel);
+    if (!parentDOMModel) {
+        return { x: 0, y: 0 };
+    }
+    // Retrieve the frame owner node (e.g. the <iframe> element) in the parent's document.
+    const frameOwnerDeferred = await parentDOMModel.getOwnerNodeForFrame(frameId);
+    const frameOwner = await frameOwnerDeferred?.resolvePromise();
+    if (!frameOwner) {
+        return { x: 0, y: 0 };
+    }
+    // Get the content box of the iframe element.
+    // This is relative to the parent target's viewport.
+    const boxModel = await frameOwner.boxModel();
+    if (!boxModel) {
+        return { x: 0, y: 0 };
+    }
+    // content is a Quad [x1, y1, x2, y2, x3, y3, x4, y4]
+    const contentQuad = boxModel.content;
+    const iframeContentX = contentQuad[0];
+    const iframeContentY = contentQuad[1];
+    // Get the scroll position of the parent target to convert viewport-relative coordinates
+    // to document-relative coordinates.
+    const parentMetrics = await parentTarget.pageAgent().invoke_getLayoutMetrics();
+    if (parentMetrics.getError()) {
+        return { x: 0, y: 0 };
+    }
+    const scrollX = parentMetrics.cssVisualViewport.pageX;
+    const scrollY = parentMetrics.cssVisualViewport.pageY;
+    // Recursively add the offset of the parent target itself (if it is also an OOPiF).
+    const parentOffset = await getOopifOffset(parentTarget);
+    return {
+        x: iframeContentX + scrollX + parentOffset.x,
+        y: iframeContentY + scrollY + parentOffset.y,
+    };
+}
+/**
+ * Calculate the axis-aligned bounding box for a Quad [x1, y1, x2, y2, x3, y3, x4, y4].
+ * This accounts for CSS scaling and transforms (e.g. zoom, transform: scale).
+ */
+function getQuadBoundingBox(quad) {
+    const minX = Math.min(quad[0], quad[2], quad[4], quad[6]);
+    const maxX = Math.max(quad[0], quad[2], quad[4], quad[6]);
+    const minY = Math.min(quad[1], quad[3], quad[5], quad[7]);
+    const maxY = Math.max(quad[1], quad[3], quad[5], quad[7]);
+    return { minX, maxX, minY, maxY };
 }
 //# sourceMappingURL=DeviceModeView.js.map

@@ -5,7 +5,7 @@
 import * as Host from '../../core/host/host.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
-import { DeviceModeWrapper } from './DeviceModeWrapper.js';
+import { DeviceModeView } from './DeviceModeView.js';
 import { InspectedPagePlaceholder } from './InspectedPagePlaceholder.js';
 let appInstance = null;
 export class AdvancedApp {
@@ -45,7 +45,7 @@ export class AdvancedApp {
         UI.InspectorView.InspectorView.instance().setOwnerSplit(this.rootSplitWidget);
         this.inspectedPagePlaceholder = InspectedPagePlaceholder.instance();
         this.inspectedPagePlaceholder.addEventListener("Update" /* Events.UPDATE */, this.onSetInspectedPageBounds.bind(this), this);
-        this.deviceModeView = new DeviceModeWrapper();
+        this.deviceModeView = new DeviceModeView();
         UI.DockController.DockController.instance().addEventListener("BeforeDockSideChanged" /* UI.DockController.Events.BEFORE_DOCK_SIDE_CHANGED */, this.onBeforeDockSideChange, this);
         UI.DockController.DockController.instance().addEventListener("DockSideChanged" /* UI.DockController.Events.DOCK_SIDE_CHANGED */, this.onDockSideChange, this);
         UI.DockController.DockController.instance().addEventListener("AfterDockSideChanged" /* UI.DockController.Events.AFTER_DOCK_SIDE_CHANGED */, this.onAfterDockSideChange, this);

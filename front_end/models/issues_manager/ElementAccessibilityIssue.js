@@ -35,10 +35,8 @@ export class ElementAccessibilityIssue extends Issue {
     }
     isInteractiveContentAttributesSelectDescendantIssue() {
         return this.details().hasDisallowedAttributes &&
-            (this.details().elementAccessibilityIssueReason !==
-                "InteractiveContentOptionChild" /* Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentOptionChild */ &&
-                this.details().elementAccessibilityIssueReason !==
-                    "InteractiveContentSummaryDescendant" /* Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentSummaryDescendant */);
+            (this.details().elementAccessibilityIssueReason !== "InteractiveContentOptionChild" /* Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentOptionChild */ &&
+                this.details().elementAccessibilityIssueReason !== "InteractiveContentSummaryDescendant" /* Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentSummaryDescendant */);
     }
     static fromInspectorIssue(issuesModel, inspectorIssue) {
         const elementAccessibilityIssueDetails = inspectorIssue.details.elementAccessibilityIssueDetails;

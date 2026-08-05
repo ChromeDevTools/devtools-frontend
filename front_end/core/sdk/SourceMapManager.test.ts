@@ -482,4 +482,61 @@ describe('SourceMapManager', () => {
       assert.deepEqual(storedMap, networkMap);
     });
   });
+
+  describe('lazy loading source maps', () => {
+    it('defers loading until sourceMapForClientPromise is called when lazyLoading is enabled', async () => {
+      const loadResourceSpy = sinon.spy();
+      const universe = new TestUniverse({
+        pageResourceLoaderOptions: {
+          loadOverride: async url => {
+            loadResourceSpy(url);
+            return {
+              success: true,
+              content,
+              errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+            };
+          },
+        },
+      });
+      universe.settings.resolve(SDK.SourceMapManager.lazyLoadingSettingDescriptor).set(true);
+      const target = universe.createTarget();
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+      const client = new MockClient(target);
+
+      const sourceMapWillAttach = sinon.spy();
+      const sourceMapAttached = sinon.spy();
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapWillAttach, sourceMapWillAttach);
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, sourceMapAttached);
+
+      sourceMapManager.attachSourceMap(client, sourceURL, sourceMappingURL);
+
+      assert.strictEqual(sourceMapWillAttach.callCount, 0, 'SourceMapWillAttach should not fire on attach');
+      assert.strictEqual(sourceMapAttached.callCount, 0, 'SourceMapAttached should not fire on attach');
+      assert.strictEqual(loadResourceSpy.callCount, 0, 'loadResource should not be called on attach');
+      assert.isUndefined(sourceMapManager.sourceMapForClient(client), 'sourceMapForClient should be undefined');
+
+      const promise1 = sourceMapManager.sourceMapForClientPromise(client);
+      const promise2 = sourceMapManager.sourceMapForClientPromise(client);
+      assert.strictEqual(promise1, promise2, 'repeated calls should return the same promise');
+      assert.strictEqual(sourceMapWillAttach.callCount, 1, 'SourceMapWillAttach should fire once');
+
+      const sourceMap = await promise1;
+      assert.isNotNull(sourceMap);
+      assert.strictEqual(sourceMapAttached.callCount, 1, 'SourceMapAttached should fire once');
+      assert.strictEqual(loadResourceSpy.callCount, 1, 'loadResource should be called once');
+      assert.strictEqual(sourceMapManager.sourceMapForClient(client), sourceMap,
+                         'sourceMapForClient should return loaded map');
+    });
+
+    it('reads lazyLoadingSetting dynamically via isLazyLoadEnabled', () => {
+      const universe = new TestUniverse();
+      const target = universe.createTarget();
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+
+      assert.isFalse(sourceMapManager.isLazyLoadEnabled());
+
+      universe.settings.resolve(SDK.SourceMapManager.lazyLoadingSettingDescriptor).set(true);
+      assert.isTrue(sourceMapManager.isLazyLoadEnabled());
+    });
+  });
 });

@@ -60,7 +60,7 @@ luci.realm(
 highly_privileged_builder(
     name = ROLL_BUILDER_NAME,
     service_account = AUTOROLLER_ACCOUNT,
-    schedule = "0 3,12 * * *",
+    schedule = "0 3,8,12,16 * * *",
     recipe_name = "devtools/auto_roll_incoming",
     dimensions = {"os": "Ubuntu"},
     execution_timeout = default_timeout,

@@ -34,14 +34,13 @@ describe('The Performance panel', function() {
     const networkDropdownVeName = 'DropDown: active-network-condition-key';
 
     // Initial state: No throttling, then change to "3G"
-    const select = await devToolsPage.waitForAria<HTMLSelectElement>('Network conditions');
+    const select = await devToolsPage.waitForAria<HTMLSelectElement>('Network:');
     await assertOption(select, 'Disabled: No throttling');
     await select.select('3G');
     await assertOption(select, 'Presets: 3G');
     await expectVeEvents(devToolsPage, [veChange(networkDropdownVeName)], veRoot);
 
     // Change to "Slow 4G"
-    await assertOption(select, 'Presets: 3G');
     await select.select('Slow 4G');
     await assertOption(select, 'Presets: Slow 4G');
     await expectVeEvents(devToolsPage, [veChange(networkDropdownVeName)], veRoot);

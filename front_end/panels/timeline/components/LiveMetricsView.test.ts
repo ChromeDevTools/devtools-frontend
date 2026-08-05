@@ -942,8 +942,9 @@ describeWithEnvironment('LiveMetricsView', () => {
         assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
         assert.match(envRecs[1].textContent!, /Slow 4G/);
 
-        const recNotice = view.contentElement.querySelector('.environment-option devtools-network-throttling-selector')
-                              ?.shadowRoot!.querySelector('devtools-icon[name="info"]');
+        const recNotice = view.contentElement.querySelector(
+            '.environment-option devtools-icon[name="info"]',
+        );
         assert.exists(recNotice);
       });
 

@@ -16,7 +16,6 @@ import * as LiveMetricsView from './LiveMetricsView.js';
 import * as MetricCard from './MetricCard.js';
 import * as NetworkRequestDetails from './NetworkRequestDetails.js';
 import * as NetworkRequestTooltip from './NetworkRequestTooltip.js';
-import * as NetworkThrottlingSelector from './NetworkThrottlingSelector.js';
 import * as NetworkTrackWidget from './NetworkTrackWidget.js';
 import * as OriginMap from './OriginMap.js';
 import * as RelatedInsightChips from './RelatedInsightChips.js';
@@ -43,7 +42,6 @@ export {
   MetricCard,
   NetworkRequestDetails,
   NetworkRequestTooltip,
-  NetworkThrottlingSelector,
   NetworkTrackWidget,
   OriginMap,
   RelatedInsightChips,

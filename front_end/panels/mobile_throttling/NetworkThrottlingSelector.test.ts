@@ -175,3 +175,39 @@ describeWithEnvironment('createForGlobalConditions CrUX integration', () => {
     assert.isNull(select.recommendedConditions);
   });
 });
+
+describe('NetworkThrottlingSelect getRecommendedNetworkConditions', () => {
+  it('returns null when RTT data is missing', () => {
+    const result = MobileThrottling.NetworkThrottlingSelector.getRecommendedNetworkConditions(
+        undefined,
+    );
+
+    assert.isNull(result);
+  });
+
+  it('returns a matching preset when RTT data is available', () => {
+    const result = MobileThrottling.NetworkThrottlingSelector.getRecommendedNetworkConditions(
+        {
+          percentiles: {p75: '150'},
+        },
+    );
+
+    assert.strictEqual(result, SDK.NetworkManager.Slow4GConditions);
+  });
+
+  it('returns null when RTT data is invalid or too low', () => {
+    const invalidResult = MobileThrottling.NetworkThrottlingSelector.getRecommendedNetworkConditions(
+        {
+          percentiles: {p75: 'not-a-number'},
+        },
+    );
+    assert.isNull(invalidResult);
+
+    const tooLowResult = MobileThrottling.NetworkThrottlingSelector.getRecommendedNetworkConditions(
+        {
+          percentiles: {p75: '10'},
+        },
+    );
+    assert.isNull(tooLowResult);
+  });
+});

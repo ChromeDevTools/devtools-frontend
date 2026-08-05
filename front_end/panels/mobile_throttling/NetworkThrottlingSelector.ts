@@ -10,7 +10,6 @@ import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as PanelsCommon from '../common/common.js';
 
 import {ThrottlingManager} from './ThrottlingManager.js';
 import type {NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';
@@ -84,7 +83,6 @@ export const DEFAULT_VIEW: ViewFunction = (input, output, target) => {
               .item(Platform.StringUtilities.toKebabCase(
                   ('i18nTitleKey' in condition && condition.i18nTitleKey) || title(condition)))
               .track({click: true})}`;
-
   let selectedConditions = input.selectedConditions;
   function onSelect(event: Event): void {
     const element = (event.target as HTMLSelectElement | null);
@@ -165,6 +163,19 @@ export const enum Events {
 
 export interface EventTypes {
   [Events.CONDITIONS_CHANGED]: SDK.NetworkManager.ThrottlingConditions;
+}
+
+/**
+ * Computes the recommended network throttling preset based on CrUX RTT field
+ * metric data. Returns null if no RTT data is available or no preset matches.
+ */
+export function getRecommendedNetworkConditions(roundTripTimeMetricData?: CrUXManager.MetricResponse):
+    SDK.NetworkManager.Conditions|null {
+  if (roundTripTimeMetricData?.percentiles) {
+    const rtt = Number(roundTripTimeMetricData.percentiles.p75);
+    return SDK.NetworkManager.getRecommendedNetworkPreset(rtt);
+  }
+  return null;
 }
 
 export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
@@ -253,7 +264,9 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin<Eve
   #updateRecommendation = (): void => {
     const cruxManager = CrUXManager.CrUXManager.instance();
     const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData('round_trip_time');
-    this.recommendedConditions = PanelsCommon.ThrottlingUtils.getRecommendedNetworkConditions(roundTripTimeMetricData);
+    this.recommendedConditions = getRecommendedNetworkConditions(
+        roundTripTimeMetricData,
+    );
   };
 
   set bindToGlobalConditions(bind: boolean) {

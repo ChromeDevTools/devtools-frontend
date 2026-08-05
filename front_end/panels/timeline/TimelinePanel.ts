@@ -160,10 +160,6 @@ const UIStrings = {
    */
   network: 'Network:',
   /**
-   * @description Title of the 'Network conditions' tool in the bottom drawer
-   */
-  networkConditions: 'Network conditions',
-  /**
    * @description Text in Timeline Panel of the Performance panel
    */
   CpuThrottlingIsEnabled: '- CPU throttling is enabled',
@@ -435,7 +431,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private loader?: TimelineLoader;
   private showScreenshotsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   private showMemoryToolbarCheckbox?: UI.Toolbar.ToolbarItem;
-  private networkThrottlingSelect?: MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect;
   private cpuThrottlingSelect?: TimelineComponents.CPUThrottlingSelector.CPUThrottlingSelector;
   private fileSelectorElement?: HTMLInputElement;
   private selection: TimelineSelection|null = null;
@@ -830,9 +825,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const recs = PanelsCommon.ThrottlingUtils.getThrottlingRecommendations();
     if (this.cpuThrottlingSelect) {
       this.cpuThrottlingSelect.recommendedOption = recs.cpuOption;
-    }
-    if (this.networkThrottlingSelect) {
-      this.networkThrottlingSelect.recommendedConditions = recs.networkConditions;
     }
   }
 
@@ -1349,7 +1341,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     const networkThrottlingPane = this.settingsPane.createChild('div');
     networkThrottlingPane.append(i18nString(UIStrings.network));
-    networkThrottlingPane.append(this.createNetworkConditionsSelectToolbarItem().element);
+    MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
+        networkThrottlingPane,
+        i18nString(UIStrings.network),
+    );
 
     this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
         this.captureLayersAndPicturesSetting.title(), this.captureLayersAndPicturesSetting,
@@ -1398,14 +1393,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
     this.updateSettingsPaneVisibility();
-  }
-
-  private createNetworkConditionsSelectToolbarItem(): UI.Toolbar.ToolbarItem {
-    const toolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
-    this.networkThrottlingSelect =
-        MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
-            toolbarItem.element, i18nString(UIStrings.networkConditions));
-    return toolbarItem;
   }
 
   private prepareToLoadTimeline(): void {

@@ -228,6 +228,8 @@ export class ScopeInfoBuilder {
     this.#scopes = [];
     this.#ranges = [];
     this.#knownScopes.clear();
+    this.#keyToScope.clear();
+    this.#lastScope = null;
 
     return info;
   }

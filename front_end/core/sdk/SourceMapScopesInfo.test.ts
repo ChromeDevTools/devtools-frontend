@@ -637,19 +637,24 @@ describe('SourceMapScopesInfo', () => {
         return null;
       });
 
-      const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
-          .startScope(10, 10, {kind: 'function', name: 'myAuthoredFunction', isStackFrame: true, key: 'authored'})
-          .startScope(20, 15, {kind: 'block', key: 'block'})
-          .endScope(30, 3)
-          .endScope(40, 1)
-          .startScope(50, 10, {kind: 'function', isStackFrame: true, key: 'unnamed'})
-          .endScope(60, 1)
-          .endScope(70, 0);
+      const addScopes = (builder: ScopesCodec.ScopeInfoBuilder) => {
+        builder.startScope(0, 0, {kind: 'global', key: 'global'})
+            .startScope(10, 10, {kind: 'function', name: 'myAuthoredFunction', isStackFrame: true, key: 'authored'})
+            .startScope(20, 15, {kind: 'block', key: 'block'})
+            .endScope(30, 3)
+            .endScope(40, 1)
+            .startScope(50, 10, {kind: 'function', isStackFrame: true, key: 'unnamed'})
+            .endScope(60, 1)
+            .endScope(70, 0);
+      };
 
-      const scopeInfoWithMappings = new SourceMapScopesInfo(sourceMap, builder.build());
+      const mappingsBuilder = new ScopeInfoBuilder();
+      addScopes(mappingsBuilder);
+      const scopeInfoWithMappings = new SourceMapScopesInfo(sourceMap, mappingsBuilder.build());
 
-      builder.startRange(0, 0, {scopeKey: 'global'})
+      const rangesBuilder = new ScopeInfoBuilder();
+      addScopes(rangesBuilder);
+      rangesBuilder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 20, {scopeKey: 'authored'})
           .startRange(0, 40, {scopeKey: 'block'})
           .endRange(0, 60)
@@ -659,7 +664,7 @@ describe('SourceMapScopesInfo', () => {
           .startRange(0, 140)
           .endRange(0, 160)
           .endRange(0, 180);
-      const scopeInfoWithRanges = new SourceMapScopesInfo(sourceMap, builder.build());
+      const scopeInfoWithRanges = new SourceMapScopesInfo(sourceMap, rangesBuilder.build());
       return [scopeInfoWithRanges, scopeInfoWithMappings];
     })();
 

@@ -46,11 +46,16 @@ devtools_entrypoint("bundle") {
 devtools_foundation_module("unittests") {
   testonly = true
 
-  sources = [ "InspectorBackend.test.ts" ]
+  sources = [
+    "InspectorBackend.test.ts",
+    "PuppeteerDevToolsConnection.test.ts",
+  ]
 
   deps = [
     ":bundle",
+    ":puppeteer_devtools_connection",
     "../../generated:protocol",
     "../../testing",
+    "../../third_party/puppeteer:bundle",
   ]
 }

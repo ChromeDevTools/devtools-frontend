@@ -182,4 +182,148 @@ describe('AiSetting', () => {
     const aiSetting = new AiSetting(descriptor, hostConfigTracker, settings);
     assert.strictEqual(aiSetting.getIfNotDisabled(), 'computed-default');
   });
+
+  it('does not subscribe to AIDA availability or underlying setting changes upon construction', () => {
+    const descriptor: Common.Settings.ConditionalSettingDescriptor<boolean, AiAssistance.AiUtils.DisabledReason[]> = {
+      name: 'test-ai-setting-no-sub',
+      type: SettingType.BOOLEAN,
+      defaultValue: true,
+      isAvailable: () => ({status: SettingAvailability.AVAILABLE}),
+    };
+
+    const maybeSetting = settings.maybeResolve(descriptor);
+    if (!('setting' in maybeSetting)) {
+      assert.fail('Unable to resolve setting');
+    }
+    const addChangeListenerSpy = sinon.spy(maybeSetting.setting, 'addChangeListener');
+    const aiSetting = new AiSetting(descriptor, hostConfigTracker, settings);
+
+    assert.isFalse(hostConfigTracker.hasEventListeners(Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED));
+    sinon.assert.notCalled(addChangeListenerSpy);
+    assert.isTrue(aiSetting.getIfNotDisabled());
+  });
+
+  it('subscribes to AIDA availability and setting changes when the first event listener is added', () => {
+    const descriptor: Common.Settings.ConditionalSettingDescriptor<boolean, AiAssistance.AiUtils.DisabledReason[]> = {
+      name: 'test-ai-setting-sub',
+      type: SettingType.BOOLEAN,
+      defaultValue: true,
+      isAvailable: () => ({status: SettingAvailability.AVAILABLE}),
+    };
+
+    const aiSetting = new AiSetting(descriptor, hostConfigTracker, settings);
+    const setting = settings.settingForTest('test-ai-setting-sub');
+    const addChangeListenerSpy = sinon.spy(setting, 'addChangeListener');
+
+    assert.isFalse(hostConfigTracker.hasEventListeners(Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED));
+
+    const listener1 = sinon.spy();
+    aiSetting.addEventListener(Events.CHANGED, listener1);
+
+    assert.isTrue(hostConfigTracker.hasEventListeners(Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED));
+    sinon.assert.calledOnce(addChangeListenerSpy);
+
+    // Adding a second listener should not add duplicate listeners.
+    const listener2 = sinon.spy();
+    aiSetting.addEventListener(Events.CHANGED, listener2);
+    sinon.assert.calledOnce(addChangeListenerSpy);
+  });
+
+  it('unsubscribes from AIDA availability and setting changes when the last event listener is removed', () => {
+    const descriptor: Common.Settings.ConditionalSettingDescriptor<boolean, AiAssistance.AiUtils.DisabledReason[]> = {
+      name: 'test-ai-setting-unsub',
+      type: SettingType.BOOLEAN,
+      defaultValue: true,
+      isAvailable: () => ({status: SettingAvailability.AVAILABLE}),
+    };
+
+    const aiSetting = new AiSetting(descriptor, hostConfigTracker, settings);
+    const setting = settings.settingForTest('test-ai-setting-unsub');
+    const removeChangeListenerSpy = sinon.spy(setting, 'removeChangeListener');
+
+    const listener1 = sinon.spy();
+    const listener2 = sinon.spy();
+    aiSetting.addEventListener(Events.CHANGED, listener1);
+    aiSetting.addEventListener(Events.CHANGED, listener2);
+
+    aiSetting.removeEventListener(Events.CHANGED, listener1);
+    assert.isTrue(hostConfigTracker.hasEventListeners(Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED));
+    sinon.assert.notCalled(removeChangeListenerSpy);
+
+    aiSetting.removeEventListener(Events.CHANGED, listener2);
+    assert.isFalse(hostConfigTracker.hasEventListeners(Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED));
+    sinon.assert.calledOnce(removeChangeListenerSpy);
+  });
+
+  it('subscribes to newly resolved setting when AIDA availability changes while subscribed', () => {
+    let isAvailable = false;
+    const descriptor: Common.Settings.ConditionalSettingDescriptor<boolean, AiAssistance.AiUtils.DisabledReason[]> = {
+      name: 'test-ai-setting-aida-sub-change',
+      type: SettingType.BOOLEAN,
+      defaultValue: false,
+      isAvailable: () => {
+        if (isAvailable) {
+          return {status: SettingAvailability.AVAILABLE};
+        }
+        return {
+          status: SettingAvailability.DISABLED,
+          reason: [DisabledReason.POLICY_RESTRICTED],
+        };
+      },
+    };
+
+    const aiSetting = new AiSetting(descriptor, hostConfigTracker, settings);
+    const changeListener = sinon.spy();
+    aiSetting.addEventListener(Events.CHANGED, changeListener);
+
+    assert.isTrue(hostConfigTracker.hasEventListeners(Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED));
+
+    // Simulate AIDA availability changing to available.
+    isAvailable = true;
+    hostConfigTracker.dispatchEventToListeners(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+        Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+    );
+
+    const setting = settings.settingForTest('test-ai-setting-aida-sub-change');
+    changeListener.resetHistory();
+
+    setting.set(true);
+    sinon.assert.calledOnce(changeListener);
+  });
+
+  it('unsubscribes from the old setting when AIDA availability goes away while subscribed', () => {
+    let isAvailable = true;
+    const descriptor: Common.Settings.ConditionalSettingDescriptor<boolean, AiAssistance.AiUtils.DisabledReason[]> = {
+      name: 'test-ai-setting-aida-unsub-change',
+      type: SettingType.BOOLEAN,
+      defaultValue: false,
+      isAvailable: () => {
+        if (isAvailable) {
+          return {status: SettingAvailability.AVAILABLE};
+        }
+        return {
+          status: SettingAvailability.DISABLED,
+          reason: [DisabledReason.POLICY_RESTRICTED],
+        };
+      },
+    };
+
+    const aiSetting = new AiSetting(descriptor, hostConfigTracker, settings);
+    const setting = settings.settingForTest('test-ai-setting-aida-unsub-change');
+    const removeChangeListenerSpy = sinon.spy(setting, 'removeChangeListener');
+
+    const changeListener = sinon.spy();
+    aiSetting.addEventListener(Events.CHANGED, changeListener);
+
+    // Simulate AIDA availability changing to disabled.
+    isAvailable = false;
+    hostConfigTracker.dispatchEventToListeners(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+        Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL,
+    );
+
+    sinon.assert.calledOnce(removeChangeListenerSpy);
+    assert.isUndefined(aiSetting.getIfNotDisabled());
+  });
 });

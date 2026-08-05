@@ -51,6 +51,11 @@ export class Model extends EventTarget {
     this.#processor = new TraceProcessor(handlers, this.#config);
   }
 
+  updateConfiguration(config: Types.Configuration.Configuration): void {
+    this.#config = config;
+    this.#processor.updateConfiguration(config);
+  }
+
   /**
    * Parses an array of trace events into a structured object containing all the
    * information parsed by the trace handlers.

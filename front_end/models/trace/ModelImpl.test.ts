@@ -175,4 +175,26 @@ describeWithEnvironment('TraceModel', function() {
         'DocumentLatency', result.insights, getFirstOrError(result.data.Meta.navigationsByNavigationId.values()));
     assert.include(insight.data?.checklist.noRedirects.label ?? '', 'FAKE-MILLI-TIME-FORMATTER');
   });
+
+  it('supports updating configuration across model and handlers', async function() {
+    const config = Trace.Types.Configuration.defaults();
+    config.enableSoftNavigation = false;
+    const model = Trace.TraceModel.Model.createWithAllHandlers(config);
+
+    const file = await TraceLoader.rawEvents(this, 'soft-navs.json.gz');
+    await model.parse(file);
+    let result = model.parsedTrace(0);
+    assert.isOk(result);
+    assert.strictEqual(result.data.Meta.softNavigationsById.size, 0);
+
+    const newConfig = Trace.Types.Configuration.defaults();
+    newConfig.enableSoftNavigation = true;
+    model.updateConfiguration(newConfig);
+    model.resetProcessor();
+
+    await model.parse(file);
+    result = model.parsedTrace(1);
+    assert.isOk(result);
+    assert.isAbove(result.data.Meta.softNavigationsById.size, 0);
+  });
 });

@@ -8,7 +8,11 @@ import * as Types from '../types/types.js';
 
 import type {FinalizeOptions} from './types.js';
 
-let config: {showAllEvents: boolean};
+let config: Types.Configuration.Configuration = Types.Configuration.defaults();
+
+export function handleUserConfig(userConfig: Types.Configuration.Configuration): void {
+  config = userConfig;
+}
 
 // We track the renderer processes we see in each frame on the way through the trace.
 let rendererProcessesByFrameId: FrameProcessData = new Map();
@@ -328,7 +332,7 @@ export function handleEvent(event: Types.Events.Event): void {
     return;
   }
 
-  if (Types.Events.isSoftNavigationStart(event)) {
+  if (config.enableSoftNavigation && Types.Events.isSoftNavigationStart(event)) {
     softNavigationsById.set(event.args.context.performanceTimelineNavigationId, event);
   }
 
@@ -359,7 +363,7 @@ export function handleEvent(event: Types.Events.Event): void {
 }
 
 export async function finalize(options?: FinalizeOptions): Promise<void> {
-  config = {showAllEvents: Boolean(options?.showAllEvents)};
+  config.showAllEvents = Boolean(options?.showAllEvents);
 
   // We try to set the minimum time by finding the event with the smallest
   // timestamp. However, if we also got a timestamp from the
@@ -476,7 +480,7 @@ export async function finalize(options?: FinalizeOptions): Promise<void> {
 }
 
 export interface MetaHandlerData {
-  config: {showAllEvents: boolean};
+  config: Types.Configuration.Configuration;
   traceIsGeneric: boolean;
   traceBounds: Types.Timing.TraceWindowMicro;
   browserProcessId: Types.Events.ProcessID;

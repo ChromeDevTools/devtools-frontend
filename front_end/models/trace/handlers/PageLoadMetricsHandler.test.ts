@@ -423,5 +423,29 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       assert.strictEqual(fcpScore.navigation, softNavStart);
       assert.strictEqual(fcpScore.timing, 5_000);  // 15_000 - 10_000
     });
+
+    it('does not process soft navigations when enableSoftNavigation is false', async function() {
+      Trace.Handlers.ModelHandlers.Meta.reset();
+      Trace.Handlers.ModelHandlers.PageLoadMetrics.reset();
+      const config = Trace.Types.Configuration.defaults();
+      config.enableSoftNavigation = false;
+      Trace.Handlers.ModelHandlers.Meta.handleUserConfig(config);
+      Trace.Handlers.ModelHandlers.PageLoadMetrics.handleUserConfig(config);
+
+      const events = await TraceLoader.rawEvents(this, 'soft-navs.json.gz');
+      for (const event of events) {
+        Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+        Trace.Handlers.ModelHandlers.PageLoadMetrics.handleEvent(event);
+      }
+      await Trace.Handlers.ModelHandlers.Meta.finalize();
+      await Trace.Handlers.ModelHandlers.PageLoadMetrics.finalize();
+
+      const pageLoadMetricsData = Trace.Handlers.ModelHandlers.PageLoadMetrics.data();
+      const softNavMarkers = pageLoadMetricsData.allMarkerEvents.filter(
+          event => event.name === Trace.Types.Events.Name.SOFT_NAVIGATION_START ||
+              event.name === Trace.Types.Events.Name.MARK_SOFT_FCP ||
+              event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION);
+      assert.lengthOf(softNavMarkers, 0);
+    });
   });
 });

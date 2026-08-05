@@ -141,6 +141,11 @@ export function reset(): void {
   clsWindowID = -1;
 }
 
+let enableSoftNavigation = true;
+export function handleUserConfig(userConfig: Types.Configuration.Configuration): void {
+  enableSoftNavigation = userConfig.enableSoftNavigation;
+}
+
 export function handleEvent(event: Types.Events.Event): void {
   if (Types.Events.isLayoutShift(event) && !event.args.data?.had_recent_input) {
     layoutShiftEvents.push(event);
@@ -290,8 +295,9 @@ export async function finalize(): Promise<void> {
 
 async function buildLayoutShiftsClusters(): Promise<void> {
   const {navigationsByFrameId, mainFrameId, traceBounds, softNavigationsById} = metaHandlerData();
+  const softNavigations = enableSoftNavigation ? Array.from(softNavigationsById.values()) : [];
   const navigations: Types.Events.Event[] =
-      [...(navigationsByFrameId.get(mainFrameId) || []), ...softNavigationsById.values()].sort((a, b) => a.ts - b.ts);
+      [...(navigationsByFrameId.get(mainFrameId) || []), ...softNavigations].sort((a, b) => a.ts - b.ts);
   if (layoutShiftEvents.length === 0) {
     return;
   }

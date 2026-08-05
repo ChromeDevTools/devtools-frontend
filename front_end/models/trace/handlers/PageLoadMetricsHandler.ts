@@ -53,6 +53,11 @@ export function reset(): void {
   metaCharsetCheckEventsArray = [];
 }
 
+let enableSoftNavigation = true;
+export function handleUserConfig(userConfig: Types.Configuration.Configuration): void {
+  enableSoftNavigation = userConfig.enableSoftNavigation;
+}
+
 let pageLoadEventsArray: Types.Events.PageLoadEvent[] = [];
 
 // Once we've found the LCP events in the trace we want to fetch their DOM Node
@@ -72,6 +77,12 @@ export function handleEvent(event: Types.Events.Event): void {
   }
 
   if (!Types.Events.eventIsPageLoadEvent(event)) {
+    return;
+  }
+  if (!enableSoftNavigation &&
+      (Types.Events.isSoftNavigationStart(event) ||
+       event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION ||
+       Types.Events.isSoftFirstContentfulPaint(event))) {
     return;
   }
   pageLoadEventsArray.push(event);

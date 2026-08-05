@@ -632,4 +632,32 @@ describe('MetaHandler', function() {
       ['', 'http://localhost:10325/testing/me?0.7574185139653986'],
     ]);
   });
+
+  it('does not populate softNavigationsById when enableSoftNavigation is false', async function() {
+    const events = await TraceLoader.rawEvents(this, 'soft-navs.json.gz');
+    Trace.Handlers.ModelHandlers.Meta.reset();
+    const config = Trace.Types.Configuration.defaults();
+    config.enableSoftNavigation = false;
+    Trace.Handlers.ModelHandlers.Meta.handleUserConfig(config);
+    for (const event of events) {
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+    }
+    await Trace.Handlers.ModelHandlers.Meta.finalize();
+    const data = Trace.Handlers.ModelHandlers.Meta.data();
+    assert.strictEqual(data.softNavigationsById.size, 0);
+  });
+
+  it('populates softNavigationsById when enableSoftNavigation is true', async function() {
+    const events = await TraceLoader.rawEvents(this, 'soft-navs.json.gz');
+    Trace.Handlers.ModelHandlers.Meta.reset();
+    const config = Trace.Types.Configuration.defaults();
+    config.enableSoftNavigation = true;
+    Trace.Handlers.ModelHandlers.Meta.handleUserConfig(config);
+    for (const event of events) {
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+    }
+    await Trace.Handlers.ModelHandlers.Meta.finalize();
+    const data = Trace.Handlers.ModelHandlers.Meta.data();
+    assert.isAbove(data.softNavigationsById.size, 0);
+  });
 });

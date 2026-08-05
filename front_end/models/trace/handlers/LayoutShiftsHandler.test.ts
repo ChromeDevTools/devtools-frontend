@@ -297,4 +297,89 @@ describe('LayoutShiftsHandler', function() {
       assert.strictEqual(cluster.dur || 0, dur);
     }
   });
+
+  it('does not split layout shift clusters on soft navigations when enableSoftNavigation is false', async function() {
+    Trace.Handlers.ModelHandlers.Meta.reset();
+    Trace.Handlers.ModelHandlers.LayoutShifts.reset();
+    const config = Trace.Types.Configuration.defaults();
+    config.enableSoftNavigation = false;
+    Trace.Handlers.ModelHandlers.Meta.handleUserConfig(config);
+    Trace.Handlers.ModelHandlers.LayoutShifts.handleUserConfig(config);
+
+    const events = await TraceLoader.rawEvents(this, 'soft-navs.json.gz');
+    const layoutShiftEvents = await TraceLoader.rawEvents(this, 'cls-single-frame.json.gz');
+    const shiftEvent = layoutShiftEvents.find(e => e.name === 'LayoutShift');
+    if (!shiftEvent) {
+      throw new Error('No LayoutShift event found in cls-single-frame.json.gz');
+    }
+    const softNavEvent = events.find(e => e.name === 'SoftNavigationStart');
+    if (!softNavEvent) {
+      throw new Error('No soft navigation event found in soft-navs.json.gz');
+    }
+
+    const shiftBefore = JSON.parse(JSON.stringify(shiftEvent));
+    shiftBefore.ts = softNavEvent.ts - 1000;
+    shiftBefore.args.data.had_recent_input = false;
+
+    const shiftAfter = JSON.parse(JSON.stringify(shiftEvent));
+    shiftAfter.ts = softNavEvent.ts + 1000;
+    shiftAfter.args.data.had_recent_input = false;
+
+    const mutableEvents = [...events, shiftBefore, shiftAfter];
+    mutableEvents.sort((a, b) => a.ts - b.ts);
+
+    for (const event of mutableEvents) {
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event as Trace.Types.Events.Event);
+      Trace.Handlers.ModelHandlers.LayoutShifts.handleEvent(event as Trace.Types.Events.Event);
+    }
+    await Trace.Handlers.ModelHandlers.Meta.finalize();
+    await Trace.Handlers.ModelHandlers.LayoutShifts.finalize();
+
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
+    assert.lengthOf(layoutShifts.clusters, 1);
+    assert.lengthOf(layoutShifts.clusters[0].events, 2);
+  });
+
+  it('splits layout shift clusters on soft navigations when enableSoftNavigation is true', async function() {
+    Trace.Handlers.ModelHandlers.Meta.reset();
+    Trace.Handlers.ModelHandlers.LayoutShifts.reset();
+    const config = Trace.Types.Configuration.defaults();
+    config.enableSoftNavigation = true;
+    Trace.Handlers.ModelHandlers.Meta.handleUserConfig(config);
+    Trace.Handlers.ModelHandlers.LayoutShifts.handleUserConfig(config);
+
+    const events = await TraceLoader.rawEvents(this, 'soft-navs.json.gz');
+    const layoutShiftEvents = await TraceLoader.rawEvents(this, 'cls-single-frame.json.gz');
+    const shiftEvent = layoutShiftEvents.find(e => e.name === 'LayoutShift');
+    if (!shiftEvent) {
+      throw new Error('No LayoutShift event found in cls-single-frame.json.gz');
+    }
+    const softNavEvent = events.find(e => e.name === 'SoftNavigationStart');
+    if (!softNavEvent) {
+      throw new Error('No soft navigation event found in soft-navs.json.gz');
+    }
+
+    const shiftBefore = JSON.parse(JSON.stringify(shiftEvent));
+    shiftBefore.ts = softNavEvent.ts - 1000;
+    shiftBefore.args.data.had_recent_input = false;
+
+    const shiftAfter = JSON.parse(JSON.stringify(shiftEvent));
+    shiftAfter.ts = softNavEvent.ts + 1000;
+    shiftAfter.args.data.had_recent_input = false;
+
+    const mutableEvents = [...events, shiftBefore, shiftAfter];
+    mutableEvents.sort((a, b) => a.ts - b.ts);
+
+    for (const event of mutableEvents) {
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event as Trace.Types.Events.Event);
+      Trace.Handlers.ModelHandlers.LayoutShifts.handleEvent(event as Trace.Types.Events.Event);
+    }
+    await Trace.Handlers.ModelHandlers.Meta.finalize();
+    await Trace.Handlers.ModelHandlers.LayoutShifts.finalize();
+
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
+    assert.lengthOf(layoutShifts.clusters, 2);
+    assert.lengthOf(layoutShifts.clusters[0].events, 1);
+    assert.lengthOf(layoutShifts.clusters[1].events, 1);
+  });
 });

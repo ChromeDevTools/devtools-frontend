@@ -1290,7 +1290,7 @@
       MAX_VALUE: 16,
     },
   };
-  // LINT.ThenChange(/front_end/core/host/UserMetricsEnums.d.ts)
+  // LINT.ThenChange(/front_end/core/host/UserMetricsEnums.ts)
 
   // InspectorFrontendHostImpl --------------------------------------------------
 

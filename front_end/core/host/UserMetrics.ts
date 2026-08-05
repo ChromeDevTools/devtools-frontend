@@ -6,26 +6,25 @@ import * as Common from '../common/common.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import {EnumeratedHistogram} from './InspectorFrontendHostAPI.js';
-import type * as Enums from './UserMetricsEnums.js';
+import * as Enums from './UserMetricsEnums.js';
 
 export class UserMetrics {
-
   sourcesPanelFileDebugged(mediaType?: string): void {
     const code = (mediaType && MediaTypes[mediaType as keyof typeof MediaTypes]) || MediaTypes.Unknown;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.SourcesPanelFileDebugged, code, MediaTypes.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.SourcesPanelFileDebugged, code,
+                                                            MediaTypes.MAX_VALUE);
   }
 
   sourcesPanelFileOpened(mediaType?: string): void {
     const code = (mediaType && MediaTypes[mediaType as keyof typeof MediaTypes]) || MediaTypes.Unknown;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.SourcesPanelFileOpened, code, MediaTypes.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.SourcesPanelFileOpened, code,
+                                                            MediaTypes.MAX_VALUE);
   }
 
   networkPanelResponsePreviewOpened(mediaType: string): void {
     const code = (mediaType && MediaTypes[mediaType as keyof typeof MediaTypes]) || MediaTypes.Unknown;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.NetworkPanelResponsePreviewOpened, code, MediaTypes.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.NetworkPanelResponsePreviewOpened, code,
+                                                            MediaTypes.MAX_VALUE);
   }
 
   actionTaken(action: Action): void {
@@ -39,20 +38,20 @@ export class UserMetrics {
 
   keybindSetSettingChanged(keybindSet: string): void {
     const value = KeybindSetSettings[keybindSet as keyof typeof KeybindSetSettings] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.KeybindSetSettingChanged, value, KeybindSetSettings.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.KeybindSetSettingChanged, value,
+                                                            KeybindSetSettings.MAX_VALUE);
   }
 
   keyboardShortcutFired(actionId: string): void {
     const action =
         KeyboardShortcutAction[actionId as keyof typeof KeyboardShortcutAction] || KeyboardShortcutAction.OtherShortcut;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.KeyboardShortcutFired, action, KeyboardShortcutAction.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.KeyboardShortcutFired, action,
+                                                            KeyboardShortcutAction.MAX_VALUE);
   }
 
   issuesPanelOpenedFrom(issueOpener: IssueOpener): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.IssuesPanelOpenedFrom, issueOpener, IssueOpener.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.IssuesPanelOpenedFrom, issueOpener,
+                                                            IssueOpener.MAX_VALUE);
   }
 
   issuesPanelIssueExpanded(issueExpandedCategory?: string): void {
@@ -66,8 +65,8 @@ export class UserMetrics {
       return;
     }
 
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.IssuesPanelIssueExpanded, issueExpanded, IssueExpanded.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.IssuesPanelIssueExpanded, issueExpanded,
+                                                            IssueExpanded.MAX_VALUE);
   }
 
   issuesPanelResourceOpened(issueCategory: string, type: string): void {
@@ -78,8 +77,8 @@ export class UserMetrics {
       return;
     }
 
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.IssuesPanelResourceOpened, value, IssueResourceOpened.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.IssuesPanelResourceOpened, value,
+                                                            IssueResourceOpened.MAX_VALUE);
   }
 
   issueCreated(code: string): void {
@@ -87,8 +86,8 @@ export class UserMetrics {
     if (issueCreated === undefined) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.IssueCreated, issueCreated, IssueCreated.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.IssueCreated, issueCreated,
+                                                            IssueCreated.MAX_VALUE);
   }
 
   experimentEnabledAtLaunch(experimentId: string): void {
@@ -96,13 +95,13 @@ export class UserMetrics {
     if (experiment === undefined) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.ExperimentEnabledAtLaunch, experiment, DevtoolsExperiments.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ExperimentEnabledAtLaunch, experiment,
+                                                            DevtoolsExperiments.MAX_VALUE);
   }
 
   navigationSettingAtFirstTimelineLoad(state: TimelineNavigationSetting): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.TimelineNavigationSettingState, state, TimelineNavigationSetting.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.TimelineNavigationSettingState, state,
+                                                            TimelineNavigationSetting.MAX_VALUE);
   }
 
   experimentDisabledAtLaunch(experimentId: string): void {
@@ -110,8 +109,8 @@ export class UserMetrics {
     if (experiment === undefined) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.ExperimentDisabledAtLaunch, experiment, DevtoolsExperiments.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ExperimentDisabledAtLaunch, experiment,
+                                                            DevtoolsExperiments.MAX_VALUE);
   }
 
   experimentChanged(experimentId: string, isEnabled: boolean): void {
@@ -127,16 +126,16 @@ export class UserMetrics {
     if (developerResourceLoaded >= DeveloperResourceLoaded.MAX_VALUE) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.DeveloperResourceLoaded, developerResourceLoaded, DeveloperResourceLoaded.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.DeveloperResourceLoaded,
+                                                            developerResourceLoaded, DeveloperResourceLoaded.MAX_VALUE);
   }
 
   developerResourceScheme(developerResourceScheme: DeveloperResourceScheme): void {
     if (developerResourceScheme >= DeveloperResourceScheme.MAX_VALUE) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.DeveloperResourceScheme, developerResourceScheme, DeveloperResourceScheme.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.DeveloperResourceScheme,
+                                                            developerResourceScheme, DeveloperResourceScheme.MAX_VALUE);
   }
 
   language(language: Intl.UnicodeBCP47LocaleIdentifier): void {
@@ -144,8 +143,8 @@ export class UserMetrics {
     if (languageCode === undefined) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.Language, languageCode, Language.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.Language, languageCode,
+                                                            Language.MAX_VALUE);
   }
 
   syncSetting(devtoolsSyncSettingEnabled: boolean): void {
@@ -158,54 +157,54 @@ export class UserMetrics {
                                                     SyncSetting.DEVTOOLS_SYNC_SETTING_DISABLED;
       }
 
-      InspectorFrontendHostInstance.recordEnumeratedHistogram(
-          EnumeratedHistogram.SyncSetting, settingValue, SyncSetting.MAX_VALUE);
+      InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.SyncSetting, settingValue,
+                                                              SyncSetting.MAX_VALUE);
     });
   }
 
   recordingToggled(value: RecordingToggled): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.RecordingToggled, value, RecordingToggled.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.RecordingToggled, value,
+                                                            RecordingToggled.MAX_VALUE);
   }
 
   recordingReplayFinished(value: RecordingReplayFinished): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.RecordingReplayFinished, value, RecordingReplayFinished.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.RecordingReplayFinished, value,
+                                                            RecordingReplayFinished.MAX_VALUE);
   }
 
   recordingReplayStarted(value: RecordingReplayStarted): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.RecordingReplayStarted, value, RecordingReplayStarted.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.RecordingReplayStarted, value,
+                                                            RecordingReplayStarted.MAX_VALUE);
   }
 
   lighthouseModeRun(type: LighthouseModeRun): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.LighthouseModeRun, type, LighthouseModeRun.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.LighthouseModeRun, type,
+                                                            LighthouseModeRun.MAX_VALUE);
   }
 
   lighthouseCategoryUsed(type: LighthouseCategoryUsed): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.LighthouseCategoryUsed, type, LighthouseCategoryUsed.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.LighthouseCategoryUsed, type,
+                                                            LighthouseCategoryUsed.MAX_VALUE);
   }
 
   swatchActivated(swatch: SwatchType): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.SwatchActivated, swatch, SwatchType.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.SwatchActivated, swatch,
+                                                            SwatchType.MAX_VALUE);
   }
 
   workspacesPopulated(wallClockTimeInMilliseconds: number): void {
-    InspectorFrontendHostInstance.recordPerformanceHistogram(
-        'DevTools.Workspaces.PopulateWallClocktime', wallClockTimeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Workspaces.PopulateWallClocktime',
+                                                             wallClockTimeInMilliseconds);
   }
 
   visualLoggingProcessingDone(timeInMilliseconds: number): void {
-    InspectorFrontendHostInstance.recordPerformanceHistogram(
-        'DevTools.VisualLogging.ProcessingTime', timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.VisualLogging.ProcessingTime',
+                                                             timeInMilliseconds);
   }
 
   freestylerQueryLength(numberOfCharacters: number): void {
-    InspectorFrontendHostInstance.recordCountHistogram(
-        'DevTools.Freestyler.QueryLength', numberOfCharacters, 0, 100_000, 100);
+    InspectorFrontendHostInstance.recordCountHistogram('DevTools.Freestyler.QueryLength', numberOfCharacters, 0,
+                                                       100_000, 100);
   }
 
   freestylerEvalResponseSize(bytes: number): void {
@@ -213,23 +212,23 @@ export class UserMetrics {
   }
 
   builtInAiAvailability(availability: BuiltInAiAvailability): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.BuiltInAiAvailability, availability, BuiltInAiAvailability.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.BuiltInAiAvailability, availability,
+                                                            BuiltInAiAvailability.MAX_VALUE);
   }
 
   consoleInsightTeaserGenerated(timeInMilliseconds: number): void {
-    InspectorFrontendHostInstance.recordPerformanceHistogram(
-        'DevTools.Insights.TeaserGenerationTime', timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserGenerationTime',
+                                                             timeInMilliseconds);
   }
 
   consoleInsightTeaserGeneratedMedium(timeInMilliseconds: number): void {
-    InspectorFrontendHostInstance.recordPerformanceHistogramMedium(
-        'DevTools.Insights.TeaserGenerationTimeMedium', timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogramMedium('DevTools.Insights.TeaserGenerationTimeMedium',
+                                                                   timeInMilliseconds);
   }
 
   consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds: number): void {
-    InspectorFrontendHostInstance.recordPerformanceHistogram(
-        'DevTools.Insights.TeaserFirstChunkGenerationTime', timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserFirstChunkGenerationTime',
+                                                             timeInMilliseconds);
   }
 
   consoleInsightTeaserFirstChunkGeneratedMedium(timeInMilliseconds: number): void {
@@ -238,28 +237,28 @@ export class UserMetrics {
   }
 
   consoleInsightTeaserChunkToEndMedium(timeInMilliseconds: number): void {
-    InspectorFrontendHostInstance.recordPerformanceHistogramMedium(
-        'DevTools.Insights.TeaserChunkToEndMedium', timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogramMedium('DevTools.Insights.TeaserChunkToEndMedium',
+                                                                   timeInMilliseconds);
   }
 
   consoleInsightTeaserAbortedAfterFirstCharacter(timeInMilliseconds: number): void {
-    InspectorFrontendHostInstance.recordPerformanceHistogram(
-        'DevTools.Insights.TeaserAfterFirstCharacterAbortionTime', timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserAfterFirstCharacterAbortionTime',
+                                                             timeInMilliseconds);
   }
 
   consoleInsightTeaserAbortedBeforeFirstCharacter(timeInMilliseconds: number): void {
-    InspectorFrontendHostInstance.recordPerformanceHistogram(
-        'DevTools.Insights.TeaserBeforeFirstCharacterAbortionTime', timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.TeaserBeforeFirstCharacterAbortionTime',
+                                                             timeInMilliseconds);
   }
 
   consoleInsightLongTeaserGenerated(timeInMilliseconds: number): void {
-    InspectorFrontendHostInstance.recordPerformanceHistogram(
-        'DevTools.Insights.LongTeaserGenerationTime', timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.LongTeaserGenerationTime',
+                                                             timeInMilliseconds);
   }
 
   consoleInsightShortTeaserGenerated(timeInMilliseconds: number): void {
-    InspectorFrontendHostInstance.recordPerformanceHistogram(
-        'DevTools.Insights.ShortTeaserGenerationTime', timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.ShortTeaserGenerationTime',
+                                                             timeInMilliseconds);
   }
 }
 
@@ -270,11 +269,11 @@ export class UserMetrics {
  * custom frontend, the enum boundary values exactly match what the host
  * Chrome binary expects (which is provided via devtools_compatibility.js).
  */
-function createDynamicEnumProxy<T>(enumName: string): T {
-  return new Proxy({}, {
+function createDynamicEnumProxy<T extends object>(enumName: string, fallbackEnum: T): T {
+  return new Proxy(fallbackEnum, {
            get(_target, prop) {
              if (typeof prop === 'symbol') {
-               return Reflect.get(_target, prop);
+               return Reflect.get(fallbackEnum, prop);
              }
 
              const metrics =
@@ -291,14 +290,13 @@ function createDynamicEnumProxy<T>(enumName: string): T {
                const value = Number(prop);
                for (const [key, val] of Object.entries(enumObj || {})) {
                  if (val === value) {
-                   return key;
+                   return key as keyof T;
                  }
                }
              }
 
-             // Return undefined if the property is missing to preserve truthiness fallbacks
-             // in hosted mode or when DevToolsMetrics is uninitialized.
-             return undefined;
+             // Fallback to the compile-time TypeScript enum if DevToolsMetrics is missing
+             return Reflect.get(fallbackEnum, prop);
            },
 
            has(_target, prop) {
@@ -312,7 +310,7 @@ function createDynamicEnumProxy<T>(enumName: string): T {
              if (typeof prop === 'string' && /^\d+$/.test(prop)) {
                return Object.values(enumObj || {}).includes(Number(prop));
              }
-             return false;
+             return Reflect.has(fallbackEnum, prop);
            },
 
            ownKeys(_target) {
@@ -320,7 +318,7 @@ function createDynamicEnumProxy<T>(enumName: string): T {
                  // eslint-disable-next-line @typescript-eslint/naming-convention
                  (globalThis as {DevToolsMetrics?: Record<string, Record<string, number|string>>}).DevToolsMetrics;
              const enumObj = metrics && metrics[enumName];
-             return enumObj ? Reflect.ownKeys(enumObj) : [];
+             return enumObj ? Reflect.ownKeys(enumObj) : Reflect.ownKeys(fallbackEnum);
            },
 
            getOwnPropertyDescriptor(_target, prop) {
@@ -329,7 +327,7 @@ function createDynamicEnumProxy<T>(enumName: string): T {
                  (globalThis as {DevToolsMetrics?: Record<string, Record<string, number|string>>}).DevToolsMetrics;
              const enumObj = metrics && metrics[enumName];
              if (!enumObj) {
-               return undefined;
+               return Reflect.getOwnPropertyDescriptor(fallbackEnum, prop);
              }
              return Reflect.getOwnPropertyDescriptor(enumObj, prop);
            },
@@ -337,110 +335,122 @@ function createDynamicEnumProxy<T>(enumName: string): T {
 }
 
 export type Action = Enums.Action;
-export const Action = createDynamicEnumProxy<typeof Enums.Action>('Action');
+export const Action = createDynamicEnumProxy<typeof Enums.Action>('Action', Enums.Action);
 
 export type PanelCodes = Enums.PanelCodes;
-export const PanelCodes = createDynamicEnumProxy<typeof Enums.PanelCodes>('PanelCodes');
+export const PanelCodes = createDynamicEnumProxy<typeof Enums.PanelCodes>('PanelCodes', Enums.PanelCodes);
 
 export type MediaTypes = Enums.MediaTypes;
-export const MediaTypes = createDynamicEnumProxy<typeof Enums.MediaTypes>('MediaTypes');
+export const MediaTypes = createDynamicEnumProxy<typeof Enums.MediaTypes>('MediaTypes', Enums.MediaTypes);
 
 export type KeybindSetSettings = Enums.KeybindSetSettings;
-export const KeybindSetSettings = createDynamicEnumProxy<typeof Enums.KeybindSetSettings>('KeybindSetSettings');
+export const KeybindSetSettings =
+    createDynamicEnumProxy<typeof Enums.KeybindSetSettings>('KeybindSetSettings', Enums.KeybindSetSettings);
 
 export type KeyboardShortcutAction = Enums.KeyboardShortcutAction;
 export const KeyboardShortcutAction =
-    createDynamicEnumProxy<typeof Enums.KeyboardShortcutAction>('KeyboardShortcutAction');
+    createDynamicEnumProxy<typeof Enums.KeyboardShortcutAction>('KeyboardShortcutAction', Enums.KeyboardShortcutAction);
 
 export type IssueOpener = Enums.IssueOpener;
-export const IssueOpener = createDynamicEnumProxy<typeof Enums.IssueOpener>('IssueOpener');
+export const IssueOpener = createDynamicEnumProxy<typeof Enums.IssueOpener>('IssueOpener', Enums.IssueOpener);
 
 export type DevtoolsExperiments = Enums.DevtoolsExperiments;
-export const DevtoolsExperiments = createDynamicEnumProxy<typeof Enums.DevtoolsExperiments>('DevtoolsExperiments');
+export const DevtoolsExperiments =
+    createDynamicEnumProxy<typeof Enums.DevtoolsExperiments>('DevtoolsExperiments', Enums.DevtoolsExperiments);
 
 export type IssueExpanded = Enums.IssueExpanded;
-export const IssueExpanded = createDynamicEnumProxy<typeof Enums.IssueExpanded>('IssueExpanded');
+export const IssueExpanded = createDynamicEnumProxy<typeof Enums.IssueExpanded>('IssueExpanded', Enums.IssueExpanded);
 
 export type IssueResourceOpened = Enums.IssueResourceOpened;
-export const IssueResourceOpened = createDynamicEnumProxy<typeof Enums.IssueResourceOpened>('IssueResourceOpened');
+export const IssueResourceOpened =
+    createDynamicEnumProxy<typeof Enums.IssueResourceOpened>('IssueResourceOpened', Enums.IssueResourceOpened);
 
 export type IssueCreated = Enums.IssueCreated;
-export const IssueCreated = createDynamicEnumProxy<typeof Enums.IssueCreated>('IssueCreated');
+export const IssueCreated = createDynamicEnumProxy<typeof Enums.IssueCreated>('IssueCreated', Enums.IssueCreated);
 
 export type DeveloperResourceLoaded = Enums.DeveloperResourceLoaded;
-export const DeveloperResourceLoaded =
-    createDynamicEnumProxy<typeof Enums.DeveloperResourceLoaded>('DeveloperResourceLoaded');
+export const DeveloperResourceLoaded = createDynamicEnumProxy<typeof Enums.DeveloperResourceLoaded>(
+    'DeveloperResourceLoaded', Enums.DeveloperResourceLoaded);
 
 export type DeveloperResourceScheme = Enums.DeveloperResourceScheme;
-export const DeveloperResourceScheme =
-    createDynamicEnumProxy<typeof Enums.DeveloperResourceScheme>('DeveloperResourceScheme');
+export const DeveloperResourceScheme = createDynamicEnumProxy<typeof Enums.DeveloperResourceScheme>(
+    'DeveloperResourceScheme', Enums.DeveloperResourceScheme);
 
 export type Language = Enums.Language;
-export const Language = createDynamicEnumProxy<typeof Enums.Language>('Language');
+export const Language = createDynamicEnumProxy<typeof Enums.Language>('Language', Enums.Language);
 
 export type SyncSetting = Enums.SyncSetting;
-export const SyncSetting = createDynamicEnumProxy<typeof Enums.SyncSetting>('SyncSetting');
+export const SyncSetting = createDynamicEnumProxy<typeof Enums.SyncSetting>('SyncSetting', Enums.SyncSetting);
 
 export type RecordingToggled = Enums.RecordingToggled;
-export const RecordingToggled = createDynamicEnumProxy<typeof Enums.RecordingToggled>('RecordingToggled');
+export const RecordingToggled =
+    createDynamicEnumProxy<typeof Enums.RecordingToggled>('RecordingToggled', Enums.RecordingToggled);
 
 export type RecordingAssertion = Enums.RecordingAssertion;
-export const RecordingAssertion = createDynamicEnumProxy<typeof Enums.RecordingAssertion>('RecordingAssertion');
+export const RecordingAssertion =
+    createDynamicEnumProxy<typeof Enums.RecordingAssertion>('RecordingAssertion', Enums.RecordingAssertion);
 
 export type RecordingReplayFinished = Enums.RecordingReplayFinished;
-export const RecordingReplayFinished =
-    createDynamicEnumProxy<typeof Enums.RecordingReplayFinished>('RecordingReplayFinished');
+export const RecordingReplayFinished = createDynamicEnumProxy<typeof Enums.RecordingReplayFinished>(
+    'RecordingReplayFinished', Enums.RecordingReplayFinished);
 
 export type RecordingReplaySpeed = Enums.RecordingReplaySpeed;
-export const RecordingReplaySpeed = createDynamicEnumProxy<typeof Enums.RecordingReplaySpeed>('RecordingReplaySpeed');
+export const RecordingReplaySpeed =
+    createDynamicEnumProxy<typeof Enums.RecordingReplaySpeed>('RecordingReplaySpeed', Enums.RecordingReplaySpeed);
 
 export type RecordingReplayStarted = Enums.RecordingReplayStarted;
 export const RecordingReplayStarted =
-    createDynamicEnumProxy<typeof Enums.RecordingReplayStarted>('RecordingReplayStarted');
+    createDynamicEnumProxy<typeof Enums.RecordingReplayStarted>('RecordingReplayStarted', Enums.RecordingReplayStarted);
 
 export type RecordingEdited = Enums.RecordingEdited;
-export const RecordingEdited = createDynamicEnumProxy<typeof Enums.RecordingEdited>('RecordingEdited');
+export const RecordingEdited =
+    createDynamicEnumProxy<typeof Enums.RecordingEdited>('RecordingEdited', Enums.RecordingEdited);
 
 export type RecordingExported = Enums.RecordingExported;
-export const RecordingExported = createDynamicEnumProxy<typeof Enums.RecordingExported>('RecordingExported');
+export const RecordingExported =
+    createDynamicEnumProxy<typeof Enums.RecordingExported>('RecordingExported', Enums.RecordingExported);
 
 export type RecordingCodeToggled = Enums.RecordingCodeToggled;
-export const RecordingCodeToggled = createDynamicEnumProxy<typeof Enums.RecordingCodeToggled>('RecordingCodeToggled');
+export const RecordingCodeToggled =
+    createDynamicEnumProxy<typeof Enums.RecordingCodeToggled>('RecordingCodeToggled', Enums.RecordingCodeToggled);
 
 export type RecordingCopiedToClipboard = Enums.RecordingCopiedToClipboard;
-export const RecordingCopiedToClipboard =
-    createDynamicEnumProxy<typeof Enums.RecordingCopiedToClipboard>('RecordingCopiedToClipboard');
+export const RecordingCopiedToClipboard = createDynamicEnumProxy<typeof Enums.RecordingCopiedToClipboard>(
+    'RecordingCopiedToClipboard', Enums.RecordingCopiedToClipboard);
 
 export type ManifestSectionCodes = Enums.ManifestSectionCodes;
-export const ManifestSectionCodes = createDynamicEnumProxy<typeof Enums.ManifestSectionCodes>('ManifestSectionCodes');
+export const ManifestSectionCodes =
+    createDynamicEnumProxy<typeof Enums.ManifestSectionCodes>('ManifestSectionCodes', Enums.ManifestSectionCodes);
 
 export type LighthouseModeRun = Enums.LighthouseModeRun;
-export const LighthouseModeRun = createDynamicEnumProxy<typeof Enums.LighthouseModeRun>('LighthouseModeRun');
+export const LighthouseModeRun =
+    createDynamicEnumProxy<typeof Enums.LighthouseModeRun>('LighthouseModeRun', Enums.LighthouseModeRun);
 
 export type LighthouseCategoryUsed = Enums.LighthouseCategoryUsed;
 export const LighthouseCategoryUsed =
-    createDynamicEnumProxy<typeof Enums.LighthouseCategoryUsed>('LighthouseCategoryUsed');
+    createDynamicEnumProxy<typeof Enums.LighthouseCategoryUsed>('LighthouseCategoryUsed', Enums.LighthouseCategoryUsed);
 
 export type SwatchType = Enums.SwatchType;
-export const SwatchType = createDynamicEnumProxy<typeof Enums.SwatchType>('SwatchType');
+export const SwatchType = createDynamicEnumProxy<typeof Enums.SwatchType>('SwatchType', Enums.SwatchType);
 
 export type BadgeType = Enums.BadgeType;
-export const BadgeType = createDynamicEnumProxy<typeof Enums.BadgeType>('BadgeType');
+export const BadgeType = createDynamicEnumProxy<typeof Enums.BadgeType>('BadgeType', Enums.BadgeType);
 
 export type AnimationsPlaybackRate = Enums.AnimationsPlaybackRate;
 export const AnimationsPlaybackRate =
-    createDynamicEnumProxy<typeof Enums.AnimationsPlaybackRate>('AnimationsPlaybackRate');
+    createDynamicEnumProxy<typeof Enums.AnimationsPlaybackRate>('AnimationsPlaybackRate', Enums.AnimationsPlaybackRate);
 
 export type TimelineNavigationSetting = Enums.TimelineNavigationSetting;
-export const TimelineNavigationSetting =
-    createDynamicEnumProxy<typeof Enums.TimelineNavigationSetting>('TimelineNavigationSetting');
+export const TimelineNavigationSetting = createDynamicEnumProxy<typeof Enums.TimelineNavigationSetting>(
+    'TimelineNavigationSetting', Enums.TimelineNavigationSetting);
 
 export type BuiltInAiAvailability = Enums.BuiltInAiAvailability;
 export const BuiltInAiAvailability =
-    createDynamicEnumProxy<typeof Enums.BuiltInAiAvailability>('BuiltInAiAvailability');
+    createDynamicEnumProxy<typeof Enums.BuiltInAiAvailability>('BuiltInAiAvailability', Enums.BuiltInAiAvailability);
 
 export type ResendRequestType = Enums.ResendRequestType;
-export const ResendRequestType = createDynamicEnumProxy<typeof Enums.ResendRequestType>('ResendRequestType');
+export const ResendRequestType =
+    createDynamicEnumProxy<typeof Enums.ResendRequestType>('ResendRequestType', Enums.ResendRequestType);
 
 const resendRequestTypeMap = new Map<Common.ResourceType.ResourceType, keyof typeof Enums.ResendRequestType>([
   [Common.ResourceType.resourceTypes.XHR, 'XHR'],

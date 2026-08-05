@@ -23,9 +23,9 @@ import {
 } from './paths.js';
 import {shardFilter} from './sharding.js';
 
-const argv = yargs(expandResponseFiles(hideBin(process.argv))).parseSync()['_'] as string[];
+const argv = yargs(expandResponseFiles(hideBin(process.argv))).help(false).parseSync()['_'] as string[];
 
-const options = commandLineArgs(yargs(argv)).parseSync();
+const options = commandLineArgs(yargs(argv)).help(false).parseSync();
 interface Config {
   tests: string[];
   verbose: number;

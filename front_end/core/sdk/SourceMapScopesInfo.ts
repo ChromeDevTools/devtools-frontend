@@ -268,46 +268,6 @@ export class SourceMapScopesInfo {
   }
 
   /**
-   * Given a generated position, returns the original name of the surrounding function as well as
-   * all the original function names that got inlined into the surrounding generated function and their
-   * respective callsites in the original code (ordered from inner to outer).
-   *
-   * @returns a list with inlined functions. Every entry in the list has a callsite in the orignal code,
-   * except the last function (since the last function didn't get inlined).
-   */
-  findInlinedFunctions(generatedLine: number, generatedColumn: number): InlineInfo {
-    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
-    const result: InlineInfo = {
-      inlinedFunctions: [],
-      originalFunctionName: '',
-    };
-
-    // Walk the generated ranges from the innermost containing range outwards as long as we don't
-    // encounter a range that is a scope in the generated code and a function scope originally.
-    for (let i = rangeChain.length - 1; i >= 0; --i) {
-      const range = rangeChain[i];
-
-      if (range.callSite) {
-        // Record the name and call-site if the range corresponds to an inlined function.
-        result.inlinedFunctions.push({
-          name: range.originalScope?.name ?? '',
-          callsite: {...range.callSite, sourceURL: this.#sourceMap.sourceURLForSourceIndex(range.callSite.sourceIndex)},
-        });
-      }
-      if (range.isStackFrame) {
-        // We arrived at an actual generated JS function, don't go further.
-        // The corresponding original scope could not actually be a function
-        // (e.g. a block scope transpiled down to a JS function), but we'll
-        // filter that out later.
-        result.originalFunctionName = range.originalScope?.name ?? '';
-        break;
-      }
-    }
-
-    return result;
-  }
-
-  /**
    * Given a generated position, this returns all the surrounding generated ranges from outer
    * to inner.
    */
@@ -606,28 +566,6 @@ export interface TranslatedFrame {
   column: number;
   name?: string;
   url?: Platform.DevToolsPath.UrlString;
-}
-
-/**
- * Represents the inlining information for a given generated position.
- *
- * It contains a list of all the inlined original functions at the generated position
- * as well as the original function name of the generated position's surrounding
- * function.
- *
- * The inlined functions are sorted from inner to outer (or top to bottom on the stack).
- */
-export interface InlineInfo {
-  inlinedFunctions: Array<{
-    name: string,
-    callsite: {
-      line: number,
-      column: number,
-      sourceIndex: number,
-      sourceURL?: Platform.DevToolsPath.UrlString,
-    },
-  }>;
-  originalFunctionName: string;
 }
 
 export function contains(

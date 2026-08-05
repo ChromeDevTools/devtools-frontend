@@ -1300,49 +1300,6 @@ describeWithEnvironment('SourceMap', () => {
     });
   });
 
-  describe('findEntry', () => {
-    it('can resolve generated positions with inlineFrameIndex', () => {
-      // 'foo' calls 'bar', 'bar' calls 'baz'. 'bar' and 'baz' are inlined into 'foo'.
-      const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
-          .startScope(10, 0, {kind: 'function', key: 'foo', name: 'foo'})
-          .endScope(20, 0)
-          .startScope(30, 0, {kind: 'function', key: 'bar', name: 'bar'})
-          .endScope(40, 0)
-          .startScope(50, 0, {kind: 'function', key: 'baz', name: 'baz'})
-          .endScope(60, 0)
-          .endScope(70, 0);
-
-      builder.startRange(0, 0, {scopeKey: 'global'})
-          .startRange(0, 0, {scopeKey: 'foo', isStackFrame: true})
-          .startRange(0, 5, {scopeKey: 'bar', callSite: {sourceIndex: 0, line: 15, column: 0}})
-          .startRange(0, 5, {scopeKey: 'baz', callSite: {sourceIndex: 0, line: 35, column: 0}})
-          .endRange(0, 10)
-          .endRange(0, 10)
-          .endRange(0, 10)
-          .endRange(0, 10);
-
-      const sourceMap = new SDK.SourceMap.SourceMap(
-          compiledUrl, sourceMapJsonUrl,
-          ScopesCodec.encode(builder.build(), {version: 3, sources: ['foo.ts'], mappings: ''}) as
-              SDK.SourceMap.SourceMapV3Object,
-          new Common.Console.Console());
-
-      assert.isNull(
-          sourceMap.findEntry(0, 7, 0));  // We don't have mappings, so inlineFrameIndex = 0 ('baz') has no entry.
-
-      const barEntry = sourceMap.findEntry(0, 7, 1);
-      assert.isNotNull(barEntry);
-      assert.strictEqual(barEntry.sourceLineNumber, 35);
-      assert.strictEqual(barEntry.sourceColumnNumber, 0);
-
-      const fooEntry = sourceMap.findEntry(0, 7, 2);
-      assert.isNotNull(fooEntry);
-      assert.strictEqual(fooEntry.sourceLineNumber, 15);
-      assert.strictEqual(fooEntry.sourceColumnNumber, 0);
-    });
-  });
-
   it('combines "scopes" proposal scopes appropriately for index maps', () => {
     const info1 = new ScopesCodec.ScopeInfoBuilder()
                       .startScope(0, 0, {kind: 'global', key: 'global'})

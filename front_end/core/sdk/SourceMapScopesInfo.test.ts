@@ -23,58 +23,6 @@ const {SourceMapScopesInfo} = SDK.SourceMapScopesInfo;
 const {ScopeInfoBuilder} = ScopesCodec;
 
 describe('SourceMapScopesInfo', () => {
-  describe('findInlinedFunctions', () => {
-    it('returns the single original function name if nothing was inlined', () => {
-      const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
-          .startScope(5, 0, {kind: 'function', key: 'foo', name: 'foo'})
-          .endScope(10, 0)
-          .endScope(20, 0);
-
-      builder.startRange(0, 0, {scopeKey: 'global'})
-          .startRange(0, 0, {scopeKey: 'foo', isStackFrame: true})
-          .endRange(0, 5)
-          .endRange(0, 5);
-
-      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
-
-      assert.deepEqual(info.findInlinedFunctions(0, 3), {originalFunctionName: 'foo', inlinedFunctions: []});
-    });
-
-    it('returns the names of the surrounding function plus all the inlined function names', () => {
-      // 'foo' calls 'bar', 'bar' calls 'baz'. 'bar' and 'baz' are inlined into 'foo'.
-      const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
-          .startScope(10, 0, {kind: 'function', key: 'foo', name: 'foo'})
-          .endScope(20, 0)
-          .startScope(30, 0, {kind: 'function', key: 'bar', name: 'bar'})
-          .endScope(40, 0)
-          .startScope(50, 0, {kind: 'function', key: 'baz', name: 'baz'})
-          .endScope(60, 0)
-          .endScope(70, 0);
-
-      builder.startRange(0, 0, {scopeKey: 'global'})
-          .startRange(0, 0, {scopeKey: 'foo', isStackFrame: true})
-          .startRange(0, 5, {scopeKey: 'bar', callSite: {sourceIndex: 0, line: 15, column: 0}})
-          .startRange(0, 5, {scopeKey: 'baz', callSite: {sourceIndex: 0, line: 35, column: 0}})
-          .endRange(0, 10)
-          .endRange(0, 10)
-          .endRange(0, 10)
-          .endRange(0, 10);
-
-      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
-
-      assert.deepEqual(info.findInlinedFunctions(0, 4), {originalFunctionName: 'foo', inlinedFunctions: []});
-      assert.deepEqual(info.findInlinedFunctions(0, 7), {
-        originalFunctionName: 'foo',
-        inlinedFunctions: [
-          {name: 'baz', callsite: {sourceIndex: 0, line: 35, column: 0, sourceURL: undefined}},
-          {name: 'bar', callsite: {sourceIndex: 0, line: 15, column: 0, sourceURL: undefined}},
-        ],
-      });
-    });
-  });
-
   describeWithEnvironment('translateCallSite', () => {
     it('throws for an outlined frame', () => {
       const builder = new ScopeInfoBuilder().startRange(0, 0, {isStackFrame: true, isHidden: true}).endRange(0, 10);

@@ -1009,6 +1009,58 @@ describe('Runtime hosts policy', () => {
     assert.deepEqual(resources.map(r => r.url), [blockedUrl, allowedUrl]);
   });
 
+  it('blocks scripts with sourceURL comments if the embedderName is a blocked URL', async () => {
+    const target = getBackend(context).createTarget({id: 'target' as Protocol.Target.TargetID});
+    target.setInspectedURL(allowedUrl);
+
+    const script = sinon.createStubInstance(SDK.Script.Script, {target, contentURL: allowedUrl});
+    script.hasSourceURL = true;
+    script.embedderName.returns(blockedUrl);
+    const workspaceBinding = sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
+    workspaceBinding.scriptsForUISourceCode.callsFake(uiSourceCode => {
+      if (uiSourceCode.contentURL() === allowedUrl) {
+        return [script];
+      }
+      return [];
+    });
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance').returns(workspaceBinding);
+    const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+        Workspace.Workspace.WorkspaceImpl.instance(), target.id(), Workspace.Workspace.projectTypes.Network, '',
+        false /* isServiceProject */);
+    await createUISourceCode(project, allowedUrl, Common.ResourceType.resourceTypes.Script);
+
+    assert.exists(context.chrome.devtools);
+    const resources =
+        await new Promise<Chrome.DevTools.Resource[]>(r => context.chrome.devtools?.inspectedWindow.getResources(r));
+    assert.deepEqual(resources.map(r => r.url), []);
+  });
+
+  it('allows scripts with sourceURL comments if the embedderName is not a URL', async () => {
+    const target = getBackend(context).createTarget({id: 'target' as Protocol.Target.TargetID});
+    target.setInspectedURL(allowedUrl);
+
+    const script = sinon.createStubInstance(SDK.Script.Script, {target, contentURL: allowedUrl});
+    script.hasSourceURL = true;
+    script.embedderName.returns(urlString`eval`);
+    const workspaceBinding = sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
+    workspaceBinding.scriptsForUISourceCode.callsFake(uiSourceCode => {
+      if (uiSourceCode.contentURL() === allowedUrl) {
+        return [script];
+      }
+      return [];
+    });
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance').returns(workspaceBinding);
+    const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+        Workspace.Workspace.WorkspaceImpl.instance(), target.id(), Workspace.Workspace.projectTypes.Network, '',
+        false /* isServiceProject */);
+    await createUISourceCode(project, allowedUrl, Common.ResourceType.resourceTypes.Script);
+
+    assert.exists(context.chrome.devtools);
+    const resources =
+        await new Promise<Chrome.DevTools.Resource[]>(r => context.chrome.devtools?.inspectedWindow.getResources(r));
+    assert.deepEqual(resources.map(r => r.url), [allowedUrl]);
+  });
+
   const requestToManager = new Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkManager.NetworkManager>();
 
   function createRequest(

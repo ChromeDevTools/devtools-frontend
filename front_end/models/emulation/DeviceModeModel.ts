@@ -104,6 +104,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #availableSize: Geometry.Size;
   #preferredSize: Geometry.Size;
   #initialized: boolean;
+  #autoFitScaleOnInitialize: boolean;
   #appliedDeviceSize: Geometry.Size;
   #appliedDeviceScaleFactor: number;
   #appliedUserAgentType: UA;
@@ -143,6 +144,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#availableSize = new Geometry.Size(1, 1);
     this.#preferredSize = new Geometry.Size(1, 1);
     this.#initialized = false;
+    this.#autoFitScaleOnInitialize = false;
     this.#appliedDeviceSize = new Geometry.Size(1, 1);
     this.#appliedDeviceScaleFactor = globalThis.devicePixelRatio;
     this.#appliedUserAgentType = UA.DESKTOP;
@@ -311,10 +313,22 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.#scaleSetting;
   }
 
+  #updateFitScale(): void {
+    if (this.#type === Type.Device && this.#device && this.#mode) {
+      const orientation = this.#device.orientationByName(this.#mode.orientation);
+      this.#scaleSetting.set(
+          this.calculateFitScale(orientation.width, orientation.height, this.currentOutline(), this.currentInsets()));
+    }
+  }
+
   setAvailableSize(availableSize: Geometry.Size, preferredSize: Geometry.Size): void {
     this.#availableSize = availableSize;
     this.#preferredSize = preferredSize;
     this.#initialized = true;
+    if (this.#autoFitScaleOnInitialize) {
+      this.#autoFitScaleOnInitialize = false;
+      this.#updateFitScale();
+    }
     this.calculateAndEmulate(false);
   }
 
@@ -326,15 +340,19 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       console.assert(Boolean(device) && Boolean(mode), 'Must pass device and mode for device emulation');
       this.#mode = mode;
       this.#device = device;
-      if (this.#initialized) {
-        const orientation = device.orientationByName(mode.orientation);
-        this.#scaleSetting.set(
-            scale ||
-            this.calculateFitScale(orientation.width, orientation.height, this.currentOutline(), this.currentInsets()));
+      if (scale !== undefined) {
+        this.#autoFitScaleOnInitialize = false;
+        this.#scaleSetting.set(scale);
+      } else if (this.#initialized) {
+        this.#autoFitScaleOnInitialize = false;
+        this.#updateFitScale();
+      } else {
+        this.#autoFitScaleOnInitialize = true;
       }
     } else {
       this.#device = null;
       this.#mode = null;
+      this.#autoFitScaleOnInitialize = false;
     }
 
     if (type !== Type.None) {

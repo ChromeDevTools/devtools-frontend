@@ -874,4 +874,67 @@ describe('DeviceModeModel', () => {
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
     }
   });
+
+  it('updates scale to fit when setAvailableSize is called after emulate with undefined scale', () => {
+    const em = target.model(SDK.EmulationModel.EmulationModel);
+    assert.exists(em);
+    deviceModeModel.modelAdded(em);
+
+    try {
+      const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
+      device.userAgent = 'test-ua';
+      device.vertical = {width: 1000, height: 1000, outlineInsets: null, outlineImage: null, hinge: null};
+      const mode: EmulationModel.EmulatedDevices.Mode = {
+        title: 'default',
+        orientation: EmulationModel.EmulatedDevices.Vertical,
+        insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
+        image: null,
+      };
+
+      // Stale scale from previous session.
+      deviceModeModel.scaleSetting().set(0.42);
+
+      // Emulate before setAvailableSize is called (simulating DevTools startup).
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, mode, undefined);
+
+      // setAvailableSize is called on layout with preferred size 500x500.
+      deviceModeModel.setAvailableSize(new Geometry.Size(500, 500), new Geometry.Size(500, 500));
+
+      // Fit scale for 1000x1000 in 500x500 is 0.5.
+      assert.strictEqual(deviceModeModel.scaleSetting().get(), 0.5);
+      assert.strictEqual(deviceModeModel.scale(), 0.5);
+    } finally {
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+    }
+  });
+
+  it('preserves explicitly specified scale when setAvailableSize is called after emulate', () => {
+    const em = target.model(SDK.EmulationModel.EmulationModel);
+    assert.exists(em);
+    deviceModeModel.modelAdded(em);
+
+    try {
+      const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
+      device.userAgent = 'test-ua';
+      device.vertical = {width: 1000, height: 1000, outlineInsets: null, outlineImage: null, hinge: null};
+      const mode: EmulationModel.EmulatedDevices.Mode = {
+        title: 'default',
+        orientation: EmulationModel.EmulatedDevices.Vertical,
+        insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
+        image: null,
+      };
+
+      // Emulate with an explicit scale of 0.75 before setAvailableSize.
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, mode, 0.75);
+
+      // setAvailableSize is called on layout with preferred size 500x500.
+      deviceModeModel.setAvailableSize(new Geometry.Size(500, 500), new Geometry.Size(500, 500));
+
+      // Explicit scale of 0.75 should be preserved, not overwritten with fit scale (0.5).
+      assert.strictEqual(deviceModeModel.scaleSetting().get(), 0.75);
+      assert.strictEqual(deviceModeModel.scale(), 0.75);
+    } finally {
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+    }
+  });
 });

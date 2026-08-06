@@ -301,7 +301,7 @@ describe('UIUtils', () => {
 
       const onClick = () => {};
 
-      const interception = sinon.stub(UI.UIUtils.InterceptBindingDirective.prototype, 'render');
+      const interception = sinon.stub(Lit.CustomDirectives.InterceptBindingDirective.prototype, 'render');
 
       Lit.render(
           html`
@@ -415,69 +415,6 @@ describe('UIUtils', () => {
       await raf();
 
       assert.instanceOf(instantiatedWidget, MockWidget);
-    });
-  });
-
-  describe('InterceptBindingDirective', () => {
-    const interceptBinding = Lit.Directive.directive(UI.UIUtils.InterceptBindingDirective);
-    it('attaches event handlers to clones', () => {
-      const container = document.createElement('div');
-      const clickHandler = sinon.spy();
-      Lit.render(html`<button @click=${interceptBinding(clickHandler)}></button>`, container);
-      const templateButton = container.firstElementChild;
-      assert.instanceOf(templateButton, HTMLButtonElement);
-      templateButton.click();
-      sinon.assert.calledOnce(clickHandler);
-
-      const clonedButton = UI.UIUtils.HTMLElementWithLightDOMTemplate.cloneNode(templateButton);
-      assert.instanceOf(clonedButton, HTMLButtonElement);
-
-      clonedButton.click();
-      sinon.assert.calledTwice(clickHandler);
-    });
-
-    it('attaches multiple event handlers to the same element', () => {
-      const container = document.createElement('div');
-      const clickHandler = sinon.spy();
-      const mousedownHandler = sinon.spy();
-      Lit.render(
-          html`<button @click=${interceptBinding(clickHandler)} @mousedown=${
-              interceptBinding(mousedownHandler)}></button>`,
-          container);
-      const templateButton = container.firstElementChild;
-      assert.instanceOf(templateButton, HTMLButtonElement);
-
-      const clonedButton = UI.UIUtils.HTMLElementWithLightDOMTemplate.cloneNode(templateButton);
-      assert.instanceOf(clonedButton, HTMLButtonElement);
-
-      clonedButton.dispatchEvent(new MouseEvent('mousedown'));
-      sinon.assert.notCalled(clickHandler);
-      sinon.assert.calledOnce(mousedownHandler);
-      clonedButton.click();
-      sinon.assert.calledOnce(clickHandler);
-      sinon.assert.calledOnce(mousedownHandler);
-    });
-
-    it('attaches event handlers to nested elements', () => {
-      const container = document.createElement('div');
-      const buttonClickHandler = sinon.spy();
-      const divClickHandler = sinon.spy();
-      Lit.render(
-          html`<div @click=${interceptBinding(divClickHandler)}><button @click=${
-              interceptBinding(buttonClickHandler)}></button></div>`,
-          container);
-      const templateDiv = container.firstElementChild;
-      assert.instanceOf(templateDiv, HTMLDivElement);
-
-      const clonedDiv = UI.UIUtils.HTMLElementWithLightDOMTemplate.cloneNode(templateDiv);
-      assert.instanceOf(clonedDiv, HTMLDivElement);
-
-      const clonedButton = clonedDiv.querySelector('button');
-      assert.instanceOf(clonedButton, HTMLButtonElement);
-
-      clonedButton.click();
-      sinon.assert.calledOnce(buttonClickHandler);
-      sinon.assert.calledOnce(divClickHandler);
     });
   });
 

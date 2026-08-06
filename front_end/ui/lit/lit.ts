@@ -18,6 +18,7 @@ export {
   svg,
   type TemplateResult,
 } from '../../third_party/lit/lit.js';
+export * as CustomDirectives from './Directives.js';
 export {
   i18nTemplate,
 } from './i18n-template.js';

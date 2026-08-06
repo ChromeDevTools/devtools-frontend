@@ -9,6 +9,7 @@ import("./visibility.gni")
 
 devtools_ui_module("lit") {
   sources = [
+    "Directives.ts",
     "i18n-template.ts",
     "render.ts",
     "strip-whitespace.ts",
@@ -49,6 +50,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "Directives.test.ts",
     "i18n-template.test.ts",
     "render.test.ts",
     "strip-whitespace.test.ts",
@@ -59,5 +61,6 @@ devtools_ui_module("unittests") {
     "../../core/i18n:bundle",
     "../../testing",
     "../../third_party/i18n:bundle",
+    "../../third_party/lit:bundle",
   ]
 }

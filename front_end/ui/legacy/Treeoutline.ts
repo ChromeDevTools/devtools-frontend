@@ -1657,7 +1657,7 @@ class TreeViewTreeElement extends TreeElement {
   }
 
   refresh(): void {
-    const expandable = Boolean(this.configElement.querySelector('ul[role="group"]'));
+    const expandable = Boolean(this.configElement.querySelector(':scope > ul[role="group"]'));
     this.setExpandable(expandable);
 
     this.titleElement.textContent = '';
@@ -1676,7 +1676,9 @@ class TreeViewTreeElement extends TreeElement {
       this.listItemElement.classList.add(className);
       this.#clonedClasses.add(className);
     }
-    Lit.CustomDirectives.InterceptBindingDirective.setEventListeners(this.configElement, this.listItemElement);
+    const childUl = this.configElement.querySelector(':scope > ul[role="group"]');
+    const templateElements = childUl ? [this.configElement, childUl] : [this.configElement];
+    Lit.CustomDirectives.InterceptBindingDirective.setEventListeners(templateElements, this.listItemElement);
 
     for (const child of this.configElement.childNodes) {
       if (child instanceof HTMLUListElement && child.role === 'group') {
@@ -1696,9 +1698,9 @@ class TreeViewTreeElement extends TreeElement {
   }
 
   remove(): void {
-    removeNode(
-        this,
-        Boolean(this.parent && (this.parent as TreeViewTreeElement).configElement?.querySelector('ul[role="group"]')));
+    removeNode(this,
+               Boolean(this.parent &&
+                       (this.parent as TreeViewTreeElement).configElement?.querySelector(':scope > ul[role="group"]')));
     TreeViewTreeElement.#elementToTreeElement.delete(this.configElement);
   }
 }
@@ -1932,7 +1934,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
       let treeElement;
       if (node instanceof HTMLLIElement) {
         treeElement = new TreeViewTreeElement(this.#treeOutline, node);
-        const expandable = Boolean(node.querySelector('ul[role="group"]'));
+        const expandable = Boolean(node.querySelector(':scope > ul[role="group"]'));
         treeElement.setExpandable(expandable);
         treeElement.updateExpansionFromAttribute();
       } else {
@@ -1964,11 +1966,10 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
       if (node instanceof HTMLLIElement) {
         TreeViewTreeElement.get(node)?.remove();
       } else if (node.treeElement) {
-        removeNode(
-            node.treeElement,
-            Boolean(
-                node.treeElement.parent &&
-                (node.treeElement.parent as TreeViewTreeElement).configElement?.querySelector('ul[role="group"]')));
+        removeNode(node.treeElement,
+                   Boolean(node.treeElement.parent &&
+                           (node.treeElement.parent as TreeViewTreeElement)
+                               .configElement?.querySelector(':scope > ul[role="group"]')));
       }
     }
   }

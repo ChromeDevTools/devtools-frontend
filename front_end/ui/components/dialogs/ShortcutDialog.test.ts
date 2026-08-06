@@ -14,13 +14,13 @@ import * as Dialogs from './dialogs.js';
 
 describe('ShortcutDialog', () => {
   setupLocaleHooks();
-  async function getShortcutDialog(open?: boolean, prependedElement?: HTMLElement) {
+  async function getShortcutDialog(open?: boolean, prependedElement?: HTMLElement, buttonAlignRight = true) {
     const container = document.createElement('div');
     container.style.width = '600px';
     container.style.height = '600px';
     container.style.display = 'flex';
     container.style.padding = '2rem';
-    container.style.justifyContent = 'flex-end';
+    container.style.justifyContent = buttonAlignRight ? 'flex-end' : 'flex-start';
 
     const shortcutDialog = new Dialogs.ShortcutDialog.ShortcutDialog();
     if (prependedElement) {
@@ -40,10 +40,24 @@ describe('ShortcutDialog', () => {
           rows: [[{key: 'F8'}]],
         },
       ],
-      open,
+      open: false,
     };
+
+    // Render the ShortcutDialog in order to create the shadow root.
     container.append(shortcutDialog);
     renderElementIntoDOM(container, {includeCommonStyles: true});
+    await RenderCoordinator.done();
+    await raf();
+
+    // Set the dialog boundaries to match the container. Otherwise, the
+    // boundaries match the view port and the dialog always renders to the right.
+    const buttonDialog = getDialogFromShortcutDialog(shortcutDialog);
+    const dialog = buttonDialog?.shadowRoot?.querySelector('devtools-dialog');
+    dialog?.setBoundingElementForTesting(container);
+    if (open) {
+      shortcutDialog.data = {...shortcutDialog.data, open: true};
+    }
+
     await RenderCoordinator.done();
     await raf();
 
@@ -77,5 +91,10 @@ describe('ShortcutDialog', () => {
   it('renders the shortcut dialog', async () => {
     await getShortcutDialog(true);
     await assertScreenshot('dialog/shortcut_dialog_open.png');
+  });
+
+  it('renders the shortcut dialog to the right when the button is on the left side', async () => {
+    await getShortcutDialog(true, undefined, false);
+    await assertScreenshot('dialog/shortcut_dialog_open_to_the_right.png');
   });
 });

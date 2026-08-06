@@ -77,10 +77,6 @@ const UIStrings = {
    * section allows users to see their signed-in account and configure which DevTools data is synced via Chrome Sync.
    */
   account: 'Account',
-  /**
-   * @description Title of the Privacy setting category.
-   */
-  privacy: 'Privacy',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/common/SettingRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -148,7 +144,6 @@ export const enum SettingCategory {
   EXTENSIONS = 'EXTENSIONS',
   ADORNER = 'ADORNER',
   ACCOUNT = 'ACCOUNT',
-  PRIVACY = 'PRIVACY',
 }
 
 export function getLocalizedSettingsCategory(category: SettingCategory): Platform.UIString.LocalizedString {
@@ -191,8 +186,6 @@ export function getLocalizedSettingsCategory(category: SettingCategory): Platfor
       return i18n.i18n.lockedString('');
     case SettingCategory.ACCOUNT:
       return i18nString(UIStrings.account);
-    case SettingCategory.PRIVACY:
-      return i18nString(UIStrings.privacy);
   }
 }
 

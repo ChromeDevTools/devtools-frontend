@@ -209,9 +209,11 @@ async function extractTableFromResourceSection(resourceContentElement: puppeteer
   if (table) {
     return await table.evaluate(table => {
       const rows = [];
-      for (const tableRow of table.childNodes) {
+      const tableRows = table.querySelectorAll('tr');
+      for (const tableRow of tableRows) {
         const row = [];
-        for (const cell of tableRow.childNodes) {
+        const cells = tableRow.querySelectorAll('td, th');
+        for (const cell of cells) {
           const requestLinkIcon = cell instanceof HTMLElement && cell.querySelector('devtools-request-link-icon');
           if (requestLinkIcon) {
             const label = requestLinkIcon.shadowRoot?.querySelector('[aria-label="Shortened URL"]');

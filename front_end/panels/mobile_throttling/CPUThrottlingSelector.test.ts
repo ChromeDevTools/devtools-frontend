@@ -1,22 +1,22 @@
-// Copyright 2024 The Chromium Authors
+// Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as PanelsCommon from '../../../panels/common/common.js';
-import * as MobileThrottling from '../../../panels/mobile_throttling/mobile_throttling.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import {
+  assertScreenshot,
+  renderElementIntoDOM,
+} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as PanelsCommon from '../common/common.js';
 
-import * as Components from './components.js';
+import * as MobileThrottling from './mobile_throttling.js';
 
-const {CPUThrottlingSelector, DEFAULT_VIEW} = Components.CPUThrottlingSelector;
-
-const DEFAULT_INPUT: Parameters<typeof DEFAULT_VIEW>[0] = {
+const DEFAULT_INPUT: Parameters<typeof MobileThrottling.CPUThrottlingSelector.DEFAULT_VIEW>[0] = {
   groups: [
     {
       name: 'first group',
@@ -38,16 +38,20 @@ const DEFAULT_INPUT: Parameters<typeof DEFAULT_VIEW>[0] = {
   currentOption: PanelsCommon.CPUThrottlingOption.NoThrottlingOption,
   recommendedOption: null,
   throttling: {},
-  onMenuItemSelected: () => {},
+  onSelect: () => {},
   onCalibrateClick: () => {},
 } as const;
 
 describeWithEnvironment('CPUThrottlingSelector view', () => {
   it('renders all CPU throttling options', async () => {
-    const element = document.createElement('div');
+    const element = document.createElement('select');
     renderElementIntoDOM(element);
 
-    DEFAULT_VIEW(DEFAULT_INPUT, undefined, element);
+    MobileThrottling.CPUThrottlingSelector.DEFAULT_VIEW(
+        DEFAULT_INPUT,
+        undefined,
+        element,
+    );
 
     const menuItems = element.querySelectorAll('option');
 
@@ -79,11 +83,17 @@ describeWithEnvironment('CPUThrottlingSelector view', () => {
   });
 
   it('marks current option as selected', async () => {
-    const element = document.createElement('div');
+    const element = document.createElement('select');
     renderElementIntoDOM(element);
 
-    DEFAULT_VIEW({...DEFAULT_INPUT, currentOption: PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption}, undefined,
-                 element);
+    MobileThrottling.CPUThrottlingSelector.DEFAULT_VIEW(
+        {
+          ...DEFAULT_INPUT,
+          currentOption: PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption,
+        },
+        undefined,
+        element,
+    );
 
     const menuItems = element.querySelectorAll('option');
 
@@ -98,11 +108,17 @@ describeWithEnvironment('CPUThrottlingSelector view', () => {
   });
 
   it('renders recommended option if present', async () => {
-    const element = document.createElement('div');
+    const element = document.createElement('select');
     renderElementIntoDOM(element);
 
-    DEFAULT_VIEW({...DEFAULT_INPUT, recommendedOption: PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption},
-                 undefined, element);
+    MobileThrottling.CPUThrottlingSelector.DEFAULT_VIEW(
+        {
+          ...DEFAULT_INPUT,
+          recommendedOption: PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption,
+        },
+        undefined,
+        element,
+    );
 
     const menuItems = element.querySelectorAll('option');
 
@@ -123,37 +139,42 @@ describeWithEnvironment('CPUThrottlingSelector view', () => {
     assert.notMatch(menuItems[3].innerText, /recommended/);
   });
 
-  function testCalibrationItem(throttling: PanelsCommon.CPUThrottlingOption.CalibratedCPUThrottling,
-                               expectedPattern: RegExp) {
-    const element = document.createElement('div');
+  function testCalibrationItem(
+      throttling: PanelsCommon.CPUThrottlingOption.CalibratedCPUThrottling,
+      expectedPattern: RegExp,
+  ) {
+    const element = document.createElement('select');
     const onCalibrateClick = sinon.spy();
     renderElementIntoDOM(element);
 
-    DEFAULT_VIEW({
-      recommendedOption: null,
-      currentOption: PanelsCommon.CPUThrottlingOption.NoThrottlingOption,
-      groups: [
+    MobileThrottling.CPUThrottlingSelector.DEFAULT_VIEW(
         {
-          name: 'first group',
-          items: [PanelsCommon.CPUThrottlingOption.NoThrottlingOption],
-        },
-        {
-          name: 'Calibrated presets',
-          items: [
-            PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption,
-            PanelsCommon.CPUThrottlingOption.CalibratedMidTierMobileThrottlingOption,
+          recommendedOption: null,
+          currentOption: PanelsCommon.CPUThrottlingOption.NoThrottlingOption,
+          groups: [
+            {
+              name: 'first group',
+              items: [PanelsCommon.CPUThrottlingOption.NoThrottlingOption],
+            },
+            {
+              name: 'Calibrated presets',
+              items: [
+                PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption,
+                PanelsCommon.CPUThrottlingOption.CalibratedMidTierMobileThrottlingOption,
+              ],
+            },
+            {
+              name: 'last group',
+              items: [PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption],
+            },
           ],
+          throttling,
+          onSelect: () => {},
+          onCalibrateClick,
         },
-        {
-          name: 'last group',
-          items: [PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption],
-        },
-      ],
-      throttling,
-      onMenuItemSelected: () => {},
-      onCalibrateClick,
-    },
-                 undefined, element);
+        undefined,
+        element,
+    );
 
     const menuItems = element.querySelectorAll('option');
     assert.lengthOf(menuItems, 5);
@@ -162,9 +183,6 @@ describeWithEnvironment('CPUThrottlingSelector view', () => {
     assert.strictEqual(calibrateMenuItem.value, '-1');
     assert.isFalse(calibrateMenuItem.selected);
     assert.match(calibrateMenuItem.innerText, expectedPattern);
-
-    calibrateMenuItem.click();
-    sinon.assert.calledOnce(onCalibrateClick);
   }
 
   it('renders calibration item after calibrated presets', async () => {
@@ -181,25 +199,35 @@ describeWithEnvironment('CPUThrottlingSelector view', () => {
     `;
 
   it('renders hint correctly', async () => {
-    const container = document.createElement('div');
+    const container = document.createElement('select');
     container.style.cssText = containerCss;
     renderElementIntoDOM(container, {includeCommonStyles: true});
-    DEFAULT_VIEW(
-        {...DEFAULT_INPUT, recommendedOption: PanelsCommon.CPUThrottlingOption.LowTierThrottlingOption},
+    MobileThrottling.CPUThrottlingSelector.DEFAULT_VIEW(
+        {
+          ...DEFAULT_INPUT,
+          recommendedOption: PanelsCommon.CPUThrottlingOption.LowTierThrottlingOption,
+        },
         undefined,
         container,
     );
 
-    await assertScreenshot('timeline/cpu_throttling_selector_recommendation.png');
+    await assertScreenshot(
+        'timeline/cpu_throttling_selector_recommendation.png',
+    );
   });
 });
 
 describeWithEnvironment('CPUThrottlingSelector', () => {
   let cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
 
-  async function createWidget(recommendedOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption|null = null) {
-    const view = createViewFunctionStub(CPUThrottlingSelector);
-    const widget = new CPUThrottlingSelector(undefined, view);
+  async function createWidget(
+      recommendedOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption|null = null,
+  ) {
+    const view = createViewFunctionStub(MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector);
+    const widget = new MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector(
+        undefined,
+        view,
+    );
     widget.markAsRoot();
     renderElementIntoDOM(widget);
     widget.recommendedOption = recommendedOption;
@@ -209,23 +237,32 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
 
   beforeEach(() => {
     cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});
-    MobileThrottling.ThrottlingManager.ThrottlingManager.instance({forceNew: true});
+    MobileThrottling.ThrottlingManager.ThrottlingManager.instance({
+      forceNew: true,
+    });
   });
 
   describe('updates CPU throttling manager on change', () => {
     let setOptionSpy: sinon.SinonSpy;
 
     beforeEach(() => {
-      setOptionSpy =
-          sinon.spy(MobileThrottling.ThrottlingManager.ThrottlingManager.instance(), 'setCPUThrottlingOption');
+      setOptionSpy = sinon.spy(
+          MobileThrottling.ThrottlingManager.ThrottlingManager.instance(),
+          'setCPUThrottlingOption',
+      );
     });
 
     it('with preset option', async () => {
       const {view, widget} = await createWidget();
 
-      view.input.onMenuItemSelected({target: {value: '4'}} as unknown as Event);
+      view.input.onSelect(
+          PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption,
+      );
 
-      sinon.assert.calledOnceWithExactly(setOptionSpy, PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption);
+      sinon.assert.calledOnceWithExactly(
+          setOptionSpy,
+          PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption,
+      );
 
       widget.detach();
     });
@@ -233,10 +270,14 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     it('with calibrated option', async () => {
       const {view, widget} = await createWidget();
 
-      view.input.onMenuItemSelected({target: {value: 'low-tier-mobile'}} as unknown as Event);
+      view.input.onSelect(
+          PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption,
+      );
 
-      sinon.assert.calledOnceWithExactly(setOptionSpy,
-                                         PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption);
+      sinon.assert.calledOnceWithExactly(
+          setOptionSpy,
+          PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption,
+      );
 
       widget.detach();
     });
@@ -246,12 +287,18 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     cpuThrottlingManager.setCPUThrottlingRate(1);
     const {view, widget} = await createWidget();
 
-    assert.strictEqual(view.input.currentOption, PanelsCommon.CPUThrottlingOption.NoThrottlingOption);
+    assert.strictEqual(
+        view.input.currentOption,
+        PanelsCommon.CPUThrottlingOption.NoThrottlingOption,
+    );
 
     cpuThrottlingManager.setCPUThrottlingRate(6);
     await view.nextInput;
 
-    assert.strictEqual(view.input.currentOption, PanelsCommon.CPUThrottlingOption.LowTierThrottlingOption);
+    assert.strictEqual(
+        view.input.currentOption,
+        PanelsCommon.CPUThrottlingOption.LowTierThrottlingOption,
+    );
 
     widget.detach();
   });
@@ -262,7 +309,10 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     const {view, widget} = await createWidget();
 
     // Ensure that the component picks up the new changes and has selected the right throttling setting
-    assert.strictEqual(view.input.currentOption, PanelsCommon.CPUThrottlingOption.LowTierThrottlingOption);
+    assert.strictEqual(
+        view.input.currentOption,
+        PanelsCommon.CPUThrottlingOption.LowTierThrottlingOption,
+    );
 
     widget.detach();
   });

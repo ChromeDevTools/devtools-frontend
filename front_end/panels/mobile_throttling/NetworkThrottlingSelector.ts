@@ -93,17 +93,15 @@ export const DEFAULT_VIEW: ViewFunction = (input, output, target) => {
     if (!option) {
       return;
     }
-    if (option === element.options[element.options.length - 1]) {
+    const conditions = optionsMap.get(option);
+    if (conditions) {
+      selectedConditions = conditions;
+      input.onSelect(conditions);
+    } else {
       input.onAddCustomConditions();
       event.consume(true);
       if (selectedConditions) {
         element.value = title(selectedConditions);
-      }
-    } else {
-      const conditions = optionsMap.get(option);
-      if (conditions) {
-        selectedConditions = conditions;
-        input.onSelect(conditions);
       }
     }
   }

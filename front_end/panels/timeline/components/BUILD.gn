@@ -10,7 +10,6 @@ import("../../../../scripts/build/typescript/typescript.gni")
 generate_css("css_files") {
   sources = [
     "breadcrumbsUI.css",
-    "cpuThrottlingSelector.css",
     "cwvMetrics.css",
     "exportTraceOptions.css",
     "fieldSettingsDialog.css",
@@ -37,7 +36,6 @@ devtools_ui_module("components") {
   sources = [
     "Breadcrumbs.ts",
     "BreadcrumbsUI.ts",
-    "CPUThrottlingSelector.ts",
     "CWVMetrics.ts",
     "DetailsView.ts",
     "ExportTraceOptions.ts",
@@ -129,7 +127,6 @@ devtools_ui_module("unittests") {
 
   sources = [
     "BreadcrumbsUI.test.ts",
-    "CPUThrottlingSelector.test.ts",
     "CWVMetrics.test.ts",
     "ExportTraceOptions.test.ts",
     "FieldSettingsDialog.test.ts",

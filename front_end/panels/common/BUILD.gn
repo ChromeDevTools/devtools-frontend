@@ -41,7 +41,6 @@ devtools_ui_module("common") {
     "GdpSignUpDialog.ts",
     "GeminiRebrandPromoDialog.ts",
     "PersistenceUtils.ts",
-    "ThrottlingUtils.ts",
   ]
 
   deps = [
@@ -118,7 +117,6 @@ devtools_ui_module("unittests") {
     "ExtensionPanel.test.ts",
     "ExtensionServer.test.ts",
     "GdpSignUpDialog.test.ts",
-    "ThrottlingUtils.test.ts",
   ]
 
   deps = [

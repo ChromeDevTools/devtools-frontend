@@ -46,7 +46,6 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../models/badges/badges.js';
-import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -60,7 +59,6 @@ import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as PanelsCommon from '../common/common.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import {ActiveFilters} from './ActiveFilters.js';
@@ -159,6 +157,10 @@ const UIStrings = {
    * @description Text in Timeline Panel of the Performance panel
    */
   network: 'Network:',
+  /**
+   * @description Text in Timeline Panel of the Performance panel
+   */
+  cpu: 'CPU:',
   /**
    * @description Text in Timeline Panel of the Performance panel
    */
@@ -431,7 +433,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private loader?: TimelineLoader;
   private showScreenshotsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   private showMemoryToolbarCheckbox?: UI.Toolbar.ToolbarItem;
-  private cpuThrottlingSelect?: TimelineComponents.CPUThrottlingSelector.CPUThrottlingSelector;
+  private cpuThrottlingSelect?: MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector;
   private fileSelectorElement?: HTMLInputElement;
   private selection: TimelineSelection|null = null;
   private traceLoadStart!: Trace.Types.Timing.Milli|null;
@@ -807,25 +809,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // Record the performance tool load time.
     UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('timeline', 'DevTools.Launch.Timeline');
 
-    const cruxManager = CrUXManager.CrUXManager.instance();
-    cruxManager.addEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, this.#onFieldDataChanged, this);
-    this.#onFieldDataChanged();
   }
 
   override willHide(): void {
     super.willHide();
     UI.Context.Context.instance().setFlavor(TimelinePanel, null);
     this.#historyManager.cancelIfShowing();
-
-    const cruxManager = CrUXManager.CrUXManager.instance();
-    cruxManager.removeEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, this.#onFieldDataChanged, this);
-  }
-
-  #onFieldDataChanged(): void {
-    const recs = PanelsCommon.ThrottlingUtils.getThrottlingRecommendations();
-    if (this.cpuThrottlingSelect) {
-      this.cpuThrottlingSelect.recommendedOption = recs.cpuOption;
-    }
   }
 
   loadFromEvents(events: Trace.Types.Events.Event[]): void {
@@ -1332,8 +1321,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.settingsPane.setAttribute('jslog', `${VisualLogging.pane('timeline-settings-pane').track({resize: true})}`);
 
     const cpuThrottlingPane = this.settingsPane.createChild('div');
-    this.cpuThrottlingSelect = new TimelineComponents.CPUThrottlingSelector.CPUThrottlingSelector();
-    this.cpuThrottlingSelect.show(cpuThrottlingPane);
+    cpuThrottlingPane.append(i18nString(UIStrings.cpu));
+    this.cpuThrottlingSelect =
+        MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector.createForGlobalConditions(cpuThrottlingPane);
 
     this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
         this.captureSelectorStatsSetting.title(), this.captureSelectorStatsSetting,

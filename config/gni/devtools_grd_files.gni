@@ -1807,7 +1807,6 @@ grd_files_unbundled_sources = [
   "front_end/panels/media/playerPropertiesView.css.js",
   "front_end/panels/mobile_throttling/CPUThrottlingSelector.js",
   "front_end/panels/mobile_throttling/CalibrationController.js",
-  "front_end/panels/mobile_throttling/MobileThrottlingSelector.js",
   "front_end/panels/mobile_throttling/NetworkPanelIndicator.js",
   "front_end/panels/mobile_throttling/NetworkThrottlingSelector.js",
   "front_end/panels/mobile_throttling/ThrottlingManager.js",

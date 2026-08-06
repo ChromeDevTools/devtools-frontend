@@ -13,13 +13,7 @@ import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
-import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
-import {
-  type Conditions,
-  type ConditionsList,
-  type MobileThrottlingConditionsGroup,
-  ThrottlingPresets,
-} from './ThrottlingPresets.js';
+import {ThrottlingPresets} from './ThrottlingPresets.js';
 
 export interface CPUThrottlingSelectorWrapper {
   control: UI.Toolbar.ToolbarComboBox;
@@ -35,10 +29,6 @@ const UIStrings = {
    * @description Text in throttling manager of the Network panel.
    */
   forceDisconnectedFromNetwork: 'Force disconnected from network',
-  /**
-   * @description Text for throttling the network.
-   */
-  throttling: 'Throttling',
   /**
    * @description Icon title in throttling manager of the Network panel.
    */
@@ -204,53 +194,6 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Thrott
     }
 
     return checkbox;
-  }
-
-  createMobileThrottlingButton(): UI.Toolbar.ToolbarMenuButton {
-    const button = new UI.Toolbar.ToolbarMenuButton(appendItems, undefined, undefined, 'mobile-throttling');
-    button.setTitle(i18nString(UIStrings.throttling));
-    button.setDarkText();
-
-    let options: ConditionsList = [];
-    let selectedIndex = -1;
-    const selector = new MobileThrottlingSelector(populate, select);
-    return button;
-
-    function appendItems(contextMenu: UI.ContextMenu.ContextMenu): void {
-      for (let index = 0; index < options.length; ++index) {
-        const conditions = options[index];
-        if (!conditions) {
-          continue;
-        }
-        if (conditions.title === ThrottlingPresets.getCustomConditions().title &&
-            conditions.description === ThrottlingPresets.getCustomConditions().description) {
-          continue;
-        }
-        contextMenu.defaultSection().appendCheckboxItem(
-            conditions.title, selector.optionSelected.bind(selector, conditions as Conditions),
-            {checked: selectedIndex === index, jslogContext: conditions.jslogContext});
-      }
-    }
-
-    function populate(groups: MobileThrottlingConditionsGroup[]): ConditionsList {
-      options = [];
-      for (const group of groups) {
-        for (const conditions of group.items) {
-          options.push(conditions);
-        }
-        options.push(null);
-      }
-      return options;
-    }
-
-    function select(index: number): void {
-      selectedIndex = index;
-      const option = options[index];
-      if (option) {
-        button.setText(option.title);
-        button.setTitle(`${option.title}: ${option.description}`);
-      }
-    }
   }
 
   private updatePanelIcon(): void {

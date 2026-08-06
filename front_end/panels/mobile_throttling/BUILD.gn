@@ -16,7 +16,6 @@ devtools_ui_module("mobile_throttling") {
   sources = [
     "CPUThrottlingSelector.ts",
     "CalibrationController.ts",
-    "MobileThrottlingSelector.ts",
     "NetworkPanelIndicator.ts",
     "NetworkThrottlingSelector.ts",
     "ThrottlingManager.ts",

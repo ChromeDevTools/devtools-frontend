@@ -141,7 +141,8 @@ describeWithEnvironment('AISettingsTab', () => {
     settingToParams.next();
     const explainThisResource = settingToParams.next();
     assert.exists(explainThisResource.value);
-    assert.isFalse(explainThisResource.value[1].setting?.disabled);
+    assert.isFalse(explainThisResource.value[1].setting instanceof AiAssistanceModel.AiSetting.AiSetting &&
+                   explainThisResource.value[1].setting.disabled);
     assert.strictEqual(explainThisResource.value[1].settingDescription, 'Get context-aware help on the inspected page');
   });
 

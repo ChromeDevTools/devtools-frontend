@@ -323,7 +323,7 @@ export const AI_SETTINGS_TAB_DEFAULT_VIEW: View = (input, _output, target): void
     const tabindex = settingData.settingExpandState.isSettingExpanded ? '0' : '-1';
     const isSettingDisabled = isDisabled ||
         Boolean(settingData.disabledReasons?.length) ||
-        Boolean(typeof settingData.setting?.disabled === 'function' ? settingData.setting.disabled() : settingData.setting?.disabled);
+        (settingData.setting instanceof AiAssistanceModel.AiSetting.AiSetting && settingData.setting.disabled);
     return html`
       <div class="accordion-header" @click=${input.expandSetting.bind(this, settingName)}>
         <div class="icon-container centered">

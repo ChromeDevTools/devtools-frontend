@@ -546,10 +546,6 @@ export class Setting<V> {
     this.#requiresUserAction = requiresUserAction;
   }
 
-  disabled(): boolean {
-    return false;
-  }
-
   #maybeLogAccess(value: V): void {
     try {
       const valueToLog = typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' ?

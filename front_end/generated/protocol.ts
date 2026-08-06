@@ -5897,6 +5897,17 @@ export namespace DOM {
     nodeIds: NodeId[];
   }
 
+  export interface ForceShowInterestRequest {
+    /**
+     * Id of the interest invoker HTMLElement.
+     */
+    nodeId: NodeId;
+    /**
+     * If true, opens and holds interest. If false, releases forced interest.
+     */
+    enable: boolean;
+  }
+
   /**
    * Fired when `Element`'s attribute is modified.
    */
@@ -15215,7 +15226,6 @@ export namespace Page {
   export interface FileHandler {
     action: string;
     name: string;
-    icons?: ImageResource[];
     /**
      * Mimic a map, name is the key, accepts is the value.
      */
@@ -20172,7 +20182,7 @@ export namespace WebAuthn {
      * every assertion operation will report a value of 0.
      * See https://w3c.github.io/webauthn/#signature-counter
      */
-    signCount?: integer;
+    signCount: integer;
     /**
      * The large blob associated with the credential.
      * See https://w3c.github.io/webauthn/#sctn-large-blob-extension
@@ -20816,6 +20826,10 @@ export namespace Debugger {
      * Terminate execution after timing out (number of milliseconds).
      */
     timeout?: Runtime.TimeDelta;
+    /**
+     * Specifies the scope number to evaluate the expression in (default: 0, innermost scope).
+     */
+    scopeNumber?: integer;
   }
 
   export interface EvaluateOnCallFrameResponse extends ProtocolResponseWithError {

@@ -4052,6 +4052,7 @@ export const knownContextValues = new Set([
   'text-combine-upright',
   'text-decoration',
   'text-decoration-color',
+  'text-decoration-inset',
   'text-decoration-line',
   'text-decoration-skip-ink',
   'text-decoration-skip-spaces',

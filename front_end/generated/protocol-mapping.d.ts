@@ -2274,6 +2274,14 @@ export namespace ProtocolMapping {
       returnType: Protocol.DOM.ForceShowPopoverResponse;
     };
     /**
+     * When enabling, this API forces an element to gain interest in its target,
+     * keeping interest active until disabled.
+     */
+    'DOM.forceShowInterest': {
+      paramsType: [Protocol.DOM.ForceShowInterestRequest];
+      returnType: void;
+    };
+    /**
      * Returns event listeners of the given object.
      */
     'DOMDebugger.getEventListeners': {

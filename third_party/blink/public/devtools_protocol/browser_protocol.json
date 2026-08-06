@@ -8897,6 +8897,23 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "forceShowInterest",
+                    "description": "When enabling, this API forces an element to gain interest in its target,\nkeeping interest active until disabled.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "Id of the interest invoker HTMLElement.",
+                            "$ref": "NodeId"
+                        },
+                        {
+                            "name": "enable",
+                            "description": "If true, opens and holds interest. If false, releases forced interest.",
+                            "type": "boolean"
+                        }
+                    ]
                 }
             ],
             "events": [
@@ -22674,14 +22691,6 @@
                             "type": "string"
                         },
                         {
-                            "name": "icons",
-                            "optional": true,
-                            "type": "array",
-                            "items": {
-                                "$ref": "ImageResource"
-                            }
-                        },
-                        {
                             "name": "accepts",
                             "description": "Mimic a map, name is the key, accepts is the value.",
                             "optional": true,
@@ -30315,7 +30324,6 @@
                         {
                             "name": "signCount",
                             "description": "Signature counter. Must be equal to or greater than -1.\nIf -1, the credential won't have an associated signature counter, and\nevery assertion operation will report a value of 0.\nSee https://w3c.github.io/webauthn/#signature-counter",
-                            "optional": true,
                             "type": "integer"
                         },
                         {
@@ -31399,6 +31407,13 @@
                             "experimental": true,
                             "optional": true,
                             "$ref": "Runtime.TimeDelta"
+                        },
+                        {
+                            "name": "scopeNumber",
+                            "description": "Specifies the scope number to evaluate the expression in (default: 0, innermost scope).",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "integer"
                         }
                     ],
                     "returns": [

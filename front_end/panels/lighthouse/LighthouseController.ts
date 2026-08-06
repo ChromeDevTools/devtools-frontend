@@ -201,7 +201,7 @@ class LighthouseRun {
     emulation: {
       type: EmulationModel.DeviceModeModel.Type,
       enabled: boolean,
-      outlineEnabled: boolean,
+
       toolbarControlsEnabled: boolean,
       scale: number,
       device: EmulationModel.EmulatedDevices.EmulatedDevice|null,
@@ -274,7 +274,6 @@ class LighthouseRun {
   /**
    * We set the device emulation on the DevTools-side for two reasons:
    * 1. To workaround some odd device metrics emulation bugs like occuluding viewports
-   * 2. To get the attractive device outline
    */
   private async setupEmulationAndProtocolConnection(): Promise<void> {
     const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
@@ -282,7 +281,6 @@ class LighthouseRun {
       emulation: {
         type: emulationModel.type(),
         enabled: emulationModel.enabledSetting().get(),
-        outlineEnabled: emulationModel.deviceOutlineSetting().get(),
         toolbarControlsEnabled: emulationModel.toolbarControlsEnabledSetting().get(),
         scale: emulationModel.scaleSetting().get(),
         device: emulationModel.device(),
@@ -297,7 +295,6 @@ class LighthouseRun {
       emulationModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
     } else if (this.flags.formFactor === 'mobile') {
       emulationModel.enabledSetting().set(true);
-      emulationModel.deviceOutlineSetting().set(true);
 
       // The emulation model is currently coupled to the UI.
       // We must wait for the device mode view to render so that it can
@@ -325,10 +322,9 @@ class LighthouseRun {
       // https://bugs.chromium.org/p/chromium/issues/detail?id=1337089
       emulationModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
 
-      const {type, enabled, outlineEnabled, toolbarControlsEnabled, scale, device, mode} =
-          this.emulationStateBefore.emulation;
+      const {type, enabled, toolbarControlsEnabled, scale, device, mode} = this.emulationStateBefore.emulation;
       emulationModel.enabledSetting().set(enabled);
-      emulationModel.deviceOutlineSetting().set(outlineEnabled);
+
       emulationModel.toolbarControlsEnabledSetting().set(toolbarControlsEnabled);
 
       // `emulate` will ignore the `scale` parameter for responsive emulation.

@@ -114,7 +114,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #heightSetting: Common.Settings.Setting<number>;
   #uaSetting: Common.Settings.Setting<UA>;
   readonly #deviceScaleFactorSetting: Common.Settings.Setting<number>;
-  readonly #deviceOutlineSetting: Common.Settings.Setting<boolean>;
+
   readonly #toolbarControlsEnabledSetting: Common.Settings.Setting<boolean>;
   #type: Type;
   #device: EmulatedDevice|null;
@@ -179,9 +179,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#uaSetting.addChangeListener(this.uaSettingChanged, this);
     this.#deviceScaleFactorSetting = this.#settings.createSetting('emulation.device-scale-factor', 0);
     this.#deviceScaleFactorSetting.addChangeListener(this.deviceScaleFactorSettingChanged, this);
-
-    this.#deviceOutlineSetting = this.#settings.moduleSetting('emulation.show-device-outline');
-    this.#deviceOutlineSetting.addChangeListener(this.deviceOutlineSettingChanged, this);
 
     this.#toolbarControlsEnabledSetting = this.#settings.createSetting('emulation.toolbar-controls-enabled', true,
                                                                        Common.Settings.SettingStorageType.SESSION);
@@ -408,11 +405,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return (this.#device && this.#mode) ? this.#device.modeImage(this.#mode) : '';
   }
 
-  outlineImage(): string {
-    return (this.#device && this.#mode && this.#deviceOutlineSetting.get()) ? this.#device.outlineImage(this.#mode) :
-                                                                              '';
-  }
-
   canShowDeviceFrame(): boolean {
     return Boolean(this.#device && this.#mode && this.#device.outlineImage(this.#mode));
   }
@@ -487,10 +479,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   deviceScaleFactorSetting(): Common.Settings.Setting<number> {
     return this.#deviceScaleFactorSetting;
-  }
-
-  deviceOutlineSetting(): Common.Settings.Setting<boolean> {
-    return this.#deviceOutlineSetting;
   }
 
   toolbarControlsEnabledSetting(): Common.Settings.Setting<boolean> {
@@ -608,10 +596,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.calculateAndEmulate(false);
   }
 
-  private deviceOutlineSettingChanged(): void {
-    this.calculateAndEmulate(false);
-  }
-
   private preferredScaledWidth(): number {
     return Math.floor(this.#preferredSize.width / (this.#scaleSetting.get() || 1));
   }
@@ -621,15 +605,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private currentOutline(): Insets {
-    let outline: Insets = new Insets(0, 0, 0, 0);
-    if (this.#type !== Type.Device || !this.#device || !this.#mode) {
-      return outline;
-    }
-    const orientation = this.#device.orientationByName(this.#mode.orientation);
-    if (this.#deviceOutlineSetting.get()) {
-      outline = orientation.outlineInsets || outline;
-    }
-    return outline;
+    return new Insets(0, 0, 0, 0);
   }
 
   private currentInsets(): Insets {
@@ -942,9 +918,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       }
       ctx.imageSmoothingEnabled = false;
 
-      if (this.outlineImage()) {
-        await this.paintImage(ctx, this.outlineImage(), outlineRect.relativeTo(outlineRect));
-      }
       if (this.screenImage()) {
         await this.paintImage(ctx, this.screenImage(), screenRect.relativeTo(outlineRect));
       }

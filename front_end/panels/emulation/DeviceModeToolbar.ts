@@ -117,14 +117,7 @@ const UIStrings = {
    * @example {4.3} PH1
    */
   defaultF: '{PH1} (default)',
-  /**
-   * @description Command to hide the frame around the mobile device screen.
-   */
-  hideDeviceFrame: 'Hide device frame',
-  /**
-   * @description Command to show the frame around the mobile device screen.
-   */
-  showDeviceFrame: 'Show device frame',
+
   /**
    * @description Command to hide a display in the device mode toolbar that shows the different media
    * queries for the device, above the device screen.
@@ -801,8 +794,7 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
       return;
     }
     const model = this.model;
-    appendToggleItem(contextMenu.headerSection(), model.deviceOutlineSetting(), i18nString(UIStrings.hideDeviceFrame),
-                     i18nString(UIStrings.showDeviceFrame), !model.canShowDeviceFrame(), 'device-frame');
+
     appendToggleItem(
         contextMenu.headerSection(), this.showMediaInspectorSetting, i18nString(UIStrings.hideMediaQueries),
         i18nString(UIStrings.showMediaQueries), undefined, 'media-queries');
@@ -839,7 +831,6 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
   }
 
   private reset(): void {
-    this.model?.deviceOutlineSetting().set(false);
     this.showDeviceScaleFactorSetting.set(false);
     this.showUserAgentTypeSetting.set(false);
     this.showMediaInspectorSetting.set(false);

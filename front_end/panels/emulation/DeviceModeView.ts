@@ -66,8 +66,6 @@ export interface DeviceModeViewInput {
   showDeviceMode: boolean;
   showMediaInspectorSetting: Common.Settings.Setting<boolean>;
   showRulersSetting: Common.Settings.Setting<boolean>;
-  outlineImage: string;
-  outlineImageLoaded: boolean;
   screenImage: string;
   screenImageLoaded: boolean;
   resizable: boolean;
@@ -76,7 +74,6 @@ export interface DeviceModeViewInput {
   scale: number;
   cachedCssScreenRect?: EmulationModel.DeviceModeModel.Rect;
   cachedCssVisiblePageRect?: EmulationModel.DeviceModeModel.Rect;
-  cachedOutlineRect?: EmulationModel.DeviceModeModel.Rect;
   onApplyPresetSize: (size: number, e: Event) => void;
   bottomRightResizer: UI.ResizerWidget.ResizerWidget;
   bottomLeftResizer: UI.ResizerWidget.ResizerWidget;
@@ -89,7 +86,6 @@ export interface DeviceModeViewInput {
   leftResizerRef: (el?: Element) => void;
   bottomResizerRef: (el?: Element) => void;
   onDoubleclickBottomResizer: () => void;
-  onOutlineImageLoaded: (success: boolean) => void;
   onScreenImageLoaded: (success: boolean) => void;
 }
 
@@ -143,7 +139,6 @@ export const DEFAULT_DEVICE_MODE_VIEW: DeviceModeViewView = (
     <div class=${classMap({
       'device-mode-content-clip': true,
       vbox: true,
-      'device-mode-outline-visible': Boolean(input.outlineImage),
       'device-mode-rulers-visible': input.showRulers,
     })}>
       <div class="device-mode-presets-container" jslog=${VisualLogging.responsivePresets()}>
@@ -168,17 +163,6 @@ export const DEFAULT_DEVICE_MODE_VIEW: DeviceModeViewView = (
                                      }) : nothing}
       </div>
       <div class="device-mode-content-area">
-        <img class="device-mode-outline-image fill"
-             ?hidden=${!input.outlineImage || !input.outlineImageLoaded}
-             style=${styleMap(input.cachedOutlineRect ? {
-               left: `${input.cachedOutlineRect.left}px`,
-               top: `${input.cachedOutlineRect.top}px`,
-               width: `${input.cachedOutlineRect.width}px`,
-               height: `${input.cachedOutlineRect.height}px`,
-             } : {})}
-             srcset=${input.outlineImage || nothing}
-             @load=${(): void => input.onOutlineImageLoaded(true)}
-             @error=${(): void => input.onOutlineImageLoaded(false)}>
         <div class="device-mode-screen-area"
              style=${styleMap(input.cachedCssScreenRect ? {
                left: `${input.cachedCssScreenRect.left}px`,
@@ -285,12 +269,9 @@ export class DeviceModeView extends UI.Widget.VBox {
   private resizeStart?: Geometry.Size;
   private cachedCssScreenRect?: EmulationModel.DeviceModeModel.Rect;
   private cachedCssVisiblePageRect?: EmulationModel.DeviceModeModel.Rect;
-  private cachedOutlineRect?: EmulationModel.DeviceModeModel.Rect;
   private cachedMediaInspectorVisible?: boolean;
   private cachedShowRulers?: boolean;
   private cachedScale?: number;
-  #outlineImageLoaded = false;
-  #lastOutlineImageSrc?: string;
   #screenImageLoaded = false;
   #lastScreenImageSrc?: string;
   readonly #toggleDeviceModeAction: UI.ActionRegistration.Action;
@@ -326,10 +307,6 @@ export class DeviceModeView extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
-    if (this.#lastOutlineImageSrc !== this.model.outlineImage()) {
-      this.#lastOutlineImageSrc = this.model.outlineImage();
-      this.#outlineImageLoaded = false;
-    }
     if (this.#lastScreenImageSrc !== this.model.screenImage()) {
       this.#lastScreenImageSrc = this.model.screenImage();
       this.#screenImageLoaded = false;
@@ -340,8 +317,6 @@ export class DeviceModeView extends UI.Widget.VBox {
       showDeviceMode: this.#showDeviceModeSetting.get(),
       showMediaInspectorSetting: this.showMediaInspectorSetting,
       showRulersSetting: this.showRulersSetting,
-      outlineImage: this.model.outlineImage(),
-      outlineImageLoaded: this.#outlineImageLoaded,
       screenImage: this.model.screenImage(),
       screenImageLoaded: this.#screenImageLoaded,
       resizable: this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive,
@@ -351,7 +326,6 @@ export class DeviceModeView extends UI.Widget.VBox {
       scale: this.model.scale(),
       cachedCssScreenRect: this.cachedCssScreenRect,
       cachedCssVisiblePageRect: this.cachedCssVisiblePageRect,
-      cachedOutlineRect: this.cachedOutlineRect,
       onApplyPresetSize: (width: number, e: Event): void => {
         this.model.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
         this.model.setWidthAndScaleToFit(width);
@@ -368,7 +342,6 @@ export class DeviceModeView extends UI.Widget.VBox {
       leftResizerRef: this.leftResizerRef,
       bottomResizerRef: this.bottomResizerRef,
       onDoubleclickBottomResizer: (): void => this.model.setHeight(0),
-      onOutlineImageLoaded: (success: boolean): void => this.onOutlineImageLoaded(success),
       onScreenImageLoaded: (success: boolean): void => this.onScreenImageLoaded(success),
     };
     this.#view(input, undefined, this.contentElement);
@@ -406,13 +379,6 @@ export class DeviceModeView extends UI.Widget.VBox {
     DeviceModeView.captureScreenshot(false, clip);
   }
 
-  private onOutlineImageLoaded(success: boolean): void {
-    if (this.#outlineImageLoaded !== success) {
-      this.#outlineImageLoaded = success;
-      this.requestUpdate();
-    }
-  }
-
   private onScreenImageLoaded(success: boolean): void {
     if (this.#screenImageLoaded !== success) {
       this.#screenImageLoaded = success;
@@ -430,10 +396,20 @@ export class DeviceModeView extends UI.Widget.VBox {
       cursor = 'nesw-resize';
     }
     resizer.setCursor(cursor);
-    resizer.addEventListener(UI.ResizerWidget.Events.RESIZE_START, this.onResizeStart, this);
     resizer.addEventListener(
-        UI.ResizerWidget.Events.RESIZE_UPDATE_XY, this.onResizeUpdate.bind(this, widthFactor, heightFactor));
-    resizer.addEventListener(UI.ResizerWidget.Events.RESIZE_END, this.onResizeEnd, this);
+        UI.ResizerWidget.Events.RESIZE_START,
+        this.onResizeStart,
+        this,
+    );
+    resizer.addEventListener(
+        UI.ResizerWidget.Events.RESIZE_UPDATE_XY,
+        this.onResizeUpdate.bind(this, widthFactor, heightFactor),
+    );
+    resizer.addEventListener(
+        UI.ResizerWidget.Events.RESIZE_END,
+        this.onResizeEnd,
+        this,
+    );
     return resizer;
   }
 
@@ -509,15 +485,6 @@ export class DeviceModeView extends UI.Widget.VBox {
     if (!this.cachedCssVisiblePageRect || !cssVisiblePageRect.isEqual(this.cachedCssVisiblePageRect)) {
       callDoResize = true;
       this.cachedCssVisiblePageRect = cssVisiblePageRect;
-    }
-
-    const outlineRectFromModel = this.model.outlineRect();
-    if (outlineRectFromModel) {
-      const outlineRect = outlineRectFromModel.scale(1 / zoomFactor);
-      if (!this.cachedOutlineRect || !outlineRect.isEqual(this.cachedOutlineRect)) {
-        callDoResize = true;
-        this.cachedOutlineRect = outlineRect;
-      }
     }
 
     const mediaInspectorVisible =

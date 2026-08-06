@@ -51,14 +51,6 @@ const UIStrings = {
    * @description Command that hides measuring rulers next to the emulated device.
    */
   hideRulers: 'Hide rulers in the device mode toolbar',
-  /**
-   * @description Command that shows a frame around the emulated device.
-   */
-  showDeviceFrame: 'Show device frame',
-  /**
-   * @description Command that hides a frame around the emulated device.
-   */
-  hideDeviceFrame: 'Hide device frame',
 
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/emulation-meta.ts', UIStrings);
@@ -160,24 +152,6 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.hideRulers),
-    },
-  ],
-  tags: [i18nLazyString(UIStrings.device)],
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.MOBILE,
-  settingName: 'emulation.show-device-outline',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.showDeviceFrame),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.hideDeviceFrame),
     },
   ],
   tags: [i18nLazyString(UIStrings.device)],

@@ -78,11 +78,17 @@ export class Universe {
     const multitargetNetworkManager = new SDK.NetworkManager.MultitargetNetworkManager(targetManager);
     context.set(SDK.NetworkManager.MultitargetNetworkManager, multitargetNetworkManager);
 
+    const workspace = new Workspace.Workspace.WorkspaceImpl();
+    context.set(Workspace.Workspace.WorkspaceImpl, workspace);
+
+    const fileManager = new Workspace.FileManager.FileManager();
+    context.set(Workspace.FileManager.FileManager, fileManager);
+
     this.supportsEmulation = options.supportsEmulation;
     let deviceModeModel = null;
     if (options.supportsEmulation) {
-      deviceModeModel =
-          new Emulation.DeviceModeModel.DeviceModeModel(targetManager, settings, multitargetNetworkManager);
+      deviceModeModel = new Emulation.DeviceModeModel.DeviceModeModel(targetManager, settings,
+                                                                      multitargetNetworkManager, fileManager);
       context.set(Emulation.DeviceModeModel.DeviceModeModel, deviceModeModel);
     }
 
@@ -116,12 +122,6 @@ export class Universe {
 
     const domModelUndoStack = new SDK.DOMModel.DOMModelUndoStack();
     context.set(SDK.DOMModel.DOMModelUndoStack, domModelUndoStack);
-
-    const workspace = new Workspace.Workspace.WorkspaceImpl();
-    context.set(Workspace.Workspace.WorkspaceImpl, workspace);
-
-    const fileManager = new Workspace.FileManager.FileManager();
-    context.set(Workspace.FileManager.FileManager, fileManager);
 
     const automaticFileSystemWorkspaceBinding =
         new Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding(

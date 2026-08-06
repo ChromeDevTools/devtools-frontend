@@ -132,7 +132,7 @@ export class TestUniverse implements Foundation.Universe.Universe {
     [
       Emulation.DeviceModeModel.DeviceModeModel,
       () => new Emulation.DeviceModeModel.DeviceModeModel(this.targetManager, this.settings,
-                                                          this.multitargetNetworkManager),
+                                                          this.multitargetNetworkManager, this.fileManager),
     ],
     [
       Emulation.EmulatedDevices.EmulatedDevicesList,

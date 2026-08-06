@@ -502,7 +502,6 @@ export class Setting<V> {
   // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
   #serializer: Serializer<unknown, V> = JSON;
   #hadUserAction?: boolean;
-  #disabled?: boolean;
   #loggedInitialAccess = false;
   #logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
   readonly #console: Console;
@@ -548,12 +547,7 @@ export class Setting<V> {
   }
 
   disabled(): boolean {
-    return this.#disabled || false;
-  }
-
-  setDisabled(disabled: boolean): void {
-    this.#disabled = disabled;
-    this.eventSupport.dispatchEventToListeners(this.name);
+    return false;
   }
 
   #maybeLogAccess(value: V): void {

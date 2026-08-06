@@ -85,8 +85,7 @@ describe('SettingCheckbox', () => {
 
   it('ignores clicks when disabled', () => {
     const setting = createFakeSetting<boolean>('setting', false);
-    setting.setDisabled(true);
-    const {checkbox} = renderSettingCheckbox({setting});
+    const {checkbox} = renderSettingCheckbox({setting, disabled: true});
 
     checkbox.click();
 

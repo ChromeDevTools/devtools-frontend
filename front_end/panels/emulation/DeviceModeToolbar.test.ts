@@ -42,7 +42,6 @@ function createFakeSetting<T>(defaultValue: T): Common.Settings.Setting<T> {
         listeners.splice(index, 1);
       }
     },
-    setDisabled: () => {},
     setTitle: () => {},
     title: () => '',
     asRegExp: () => null,

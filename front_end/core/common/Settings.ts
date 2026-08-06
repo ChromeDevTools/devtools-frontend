@@ -499,8 +499,6 @@ export class Setting<V> {
   #type: SettingType|null = null;
   #requiresUserAction?: boolean;
   #value?: V;
-  // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
-  #serializer: Serializer<unknown, V> = JSON;
   #hadUserAction?: boolean;
   #loggedInitialAccess = false;
   #logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
@@ -512,10 +510,6 @@ export class Setting<V> {
     storage.register(this.name);
     this.#console = console;
     this.#logSettingAccess = logSettingAccess;
-  }
-
-  setSerializer(serializer: Serializer<unknown, V>): void {
-    this.#serializer = serializer;
   }
 
   descriptor(): SettingDescriptor<V> {
@@ -550,7 +544,7 @@ export class Setting<V> {
     try {
       const valueToLog = typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' ?
           value :
-          this.#serializer?.stringify(value);
+          JSON.stringify(value);
       if (valueToLog !== undefined && this.#logSettingAccess) {
         void this.#logSettingAccess(this.name, valueToLog);
       }
@@ -579,7 +573,7 @@ export class Setting<V> {
     this.#value = this.defaultValue;
     if (this.storage.has(this.name)) {
       try {
-        this.#value = this.#serializer.parse(this.storage.get(this.name));
+        this.#value = JSON.parse(this.storage.get(this.name)) as V;
       } catch {
         this.storage.remove(this.name);
       }
@@ -595,7 +589,7 @@ export class Setting<V> {
     this.#value = this.defaultValue;
     if (value) {
       try {
-        this.#value = this.#serializer.parse(value);
+        this.#value = JSON.parse(value) as V;
       } catch {
         this.storage.remove(this.name);
       }
@@ -614,7 +608,7 @@ export class Setting<V> {
     this.#hadUserAction = true;
     this.#value = value;
     try {
-      const settingString = this.#serializer.stringify(value);
+      const settingString = JSON.stringify(value);
       try {
         this.storage.set(this.name, settingString);
       } catch (e) {
@@ -783,11 +777,6 @@ export {
   SettingRegistration,
   SettingType,
 };
-
-export interface Serializer<I, O> {
-  stringify: (value: I) => string;
-  parse: (value: string) => O;
-}
 
 export interface SimpleSettingOption {
   value: string|boolean;

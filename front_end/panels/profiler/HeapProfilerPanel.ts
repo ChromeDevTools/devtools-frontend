@@ -11,9 +11,9 @@ import {ProfilesPanel} from './ProfilesPanel.js';
 
 const UIStrings = {
   /**
-   * @description A context menu item in the Heap Profiler Panel of a profiler tool
+   * @description Context menu item to reveal the selected object in the summary perspective.
    */
-  revealInSummaryView: 'Reveal in Summary view',
+  revealInSummaryView: 'Reveal in summary view',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapProfilerPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

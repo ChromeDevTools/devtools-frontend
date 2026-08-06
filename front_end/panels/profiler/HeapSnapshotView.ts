@@ -48,105 +48,105 @@ import type {ProfileTypeRegistry} from './ProfileTypeRegistry.js';
 
 const UIStrings = {
   /**
-   * @description Text to find an item
+   * @description Text to find an item.
    */
   find: 'Find',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Perspective dropdown option to view the heap by object containment hierarchy.
    */
   containment: 'Containment',
   /**
-   * @description Retaining paths title text content in Heap Snapshot View of a profiler tool
+   * @description Pane title showing objects holding references to the selected object.
    */
   retainers: 'Retainers',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Tab title for the allocation stack trace view in heap snapshots.
    */
   allocationStack: 'Allocation stack',
   /**
-   * @description Screen reader label for a select box that chooses the perspective in the Memory panel when viewing a Heap Snapshot
+   * @description Screen reader label for a select box that chooses the perspective in the Memory panel when viewing a heap snapshot.
    */
   perspective: 'Perspective',
   /**
-   * @description Screen reader label for a select box that chooses the snapshot to use as a base in the Memory panel when viewing a Heap Snapshot
+   * @description Screen reader label for a select box that chooses the snapshot to use as a base in the Memory panel when viewing a heap snapshot.
    */
   baseSnapshot: 'Base snapshot',
   /**
-   * @description Text to filter result items
+   * @description Text to filter result items.
    */
   filter: 'Filter',
   /**
-   * @description Placeholder text in the filter bar to filter by JavaScript class names for a heap
+   * @description Placeholder text in the filter bar to filter by JavaScript class names for a heap.
    */
   filterByClass: 'Filter by class',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Label on the heap statistics pie chart representing V8 compiled code.
    */
   code: 'Code',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Label on the heap statistics pie chart representing JavaScript strings.
    */
   strings: 'Strings',
   /**
-   * @description Label on a pie chart in the statistics view for the Heap Snapshot tool
+   * @description Label on the heap statistics pie chart representing JavaScript arrays.
    */
   jsArrays: 'JS arrays',
   /**
-   * @description Label on a pie chart in the statistics view for the Heap Snapshot tool
+   * @description Label on the heap statistics pie chart representing JavaScript typed arrays.
    */
   typedArrays: 'Typed arrays',
   /**
-   * @description Label on a pie chart in the statistics view for the Heap Snapshot tool
+   * @description Label on the heap statistics pie chart representing V8 system objects.
    */
   systemObjects: 'System objects',
   /**
-   * @description Label on a pie chart in the statistics view for the Heap Snapshot tool
+   * @description Label on the heap statistics pie chart representing other JavaScript objects.
    */
   otherJSObjects: 'Other JS objects',
   /**
-   * @description Label on a pie chart in the statistics view for the Heap Snapshot tool
+   * @description Label on the heap statistics pie chart representing non-JavaScript objects (such as HTML and CSS).
    */
   otherNonJSObjects: 'Other non-JS objects (such as HTML and CSS)',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Filter dropdown option in the summary view to show all objects without filtering.
    */
   allObjects: 'All objects',
   /**
-   * @description Title in Heap Snapshot View of a profiler tool
+   * @description Filter dropdown option to show objects allocated before a previous heap snapshot.
    * @example {Profile 2} PH1
    */
   objectsAllocatedBeforeS: 'Objects allocated before {PH1}',
   /**
-   * @description Title in Heap Snapshot View of a profiler tool
+   * @description Filter dropdown option to show objects allocated between two specific heap snapshots.
    * @example {Profile 1} PH1
    * @example {Profile 2} PH2
    */
   objectsAllocatedBetweenSAndS: 'Objects allocated between {PH1} and {PH2}',
   /**
    * @description An option which will filter the heap snapshot to show only
-   * strings which exactly match at least one other string
+   * strings which exactly match at least one other string.
    */
   duplicatedStrings: 'Duplicated strings',
   /**
    * @description An option which will filter the heap snapshot to show only
-   * detached DOM nodes and other objects kept alive by detached DOM nodes
+   * detached DOM nodes and other objects kept alive by detached DOM nodes.
    */
   objectsRetainedByDetachedDomNodes: 'Objects retained by detached DOM nodes',
   /**
    * @description An option which will filter the heap snapshot to show only
-   * objects kept alive by contexts
+   * objects kept alive by contexts.
    */
   objectsRetainedByContexts: 'Objects retained by contexts',
   /**
    * @description An option which will filter the heap snapshot to show only
-   * objects kept alive by the DevTools console
+   * objects kept alive by the DevTools console.
    */
   objectsRetainedByConsole: 'Objects retained by DevTools Console',
   /**
    * @description An option which will filter the heap snapshot to show only
-   * objects retained by event handlers
+   * objects retained by event handlers.
    */
-  objectsRetainedByEventHandlers: 'Objects retained by Event Handlers',
+  objectsRetainedByEventHandlers: 'Objects retained by event handlers',
   /**
    * @description An option which will filter the heap snapshot to show only
    * objects attributed to a specific native context (roughly, a JavaScript
@@ -174,80 +174,80 @@ const UIStrings = {
    */
   objectsNotAttributedToNativeContextS: 'Objects not attributed to a native context ({PH1})',
   /**
-   * @description Text for the summary view
+   * @description Perspective dropdown option to view heap snapshot objects grouped by constructor.
    */
   summary: 'Summary',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Perspective dropdown option to compare differences between two heap snapshots.
    */
   comparison: 'Comparison',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Perspective dropdown option to view memory allocations by function.
    */
   allocation: 'Allocation',
   /**
-   * @description Title text content in Heap Snapshot View of a profiler tool
+   * @description Label for memory objects that are currently alive in the heap.
    */
   liveObjects: 'Live objects',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Perspective dropdown option to view heap memory breakdown charts.
    */
   statistics: 'Statistics',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Name for the heap snapshot profiling type in the Memory panel.
    */
   heapSnapshot: 'Heap snapshot',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Button text to capture a new heap snapshot.
    */
   takeHeapSnapshot: 'Take heap snapshot',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Header for the list of captured heap snapshot profiles.
    */
   heapSnapshots: 'Heap snapshots',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Description for the heap snapshot profiling type option in the Memory panel.
    */
   heapSnapshotProfilesShowMemory: 'See the memory distribution of JavaScript objects and related DOM nodes',
   /**
-   * @description Progress update that the profiler is capturing a snapshot of the heap
+   * @description Progress update that the profiler is capturing a snapshot of the heap.
    */
   snapshotting: 'Snapshotting…',
   /**
-   * @description Profile title in Heap Snapshot View of a profiler tool
+   * @description Default title for a captured heap snapshot profile.
    * @example {1} PH1
    */
   snapshotD: 'Snapshot {PH1}',
   /**
-   * @description Text for a percentage value
+   * @description Text for a percentage value.
    * @example {13.0} PH1
    */
   percentagePlaceholder: '{PH1}%',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Name for the allocation timeline profiling option in the Memory panel.
    */
   allocationInstrumentationOn: 'Allocations on timeline',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Button text to stop recording an allocation timeline or heap profile.
    */
   stopRecordingHeapProfile: 'Stop recording heap profile',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Button text to start recording an allocation timeline or heap profile.
    */
   startRecordingHeapProfile: 'Start recording heap profile',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool.
+   * @description Checkbox label to enable recording stack traces for memory allocations.
    * A stack trace is a list of functions that were called.
    * This option turns on recording of a stack trace at each allocation.
    * The recording itself is a somewhat expensive operation, so turning this option on, the website's performance may be affected negatively (e.g. everything becomes slower).
    */
   recordAllocationStacksExtra: 'Allocation stack traces (more overhead)',
   /**
-   * @description Text in CPUProfile View of a profiler tool
+   * @description Status message displayed while recording a memory profile.
    */
   recording: 'Recording…',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Header for the list of captured allocation timeline profiles.
    */
   allocationTimelines: 'Allocation timelines',
   /**
@@ -256,30 +256,30 @@ const UIStrings = {
   AllocationTimelinesShowInstrumented:
       'Record memory allocations over time and isolate memory leaks by selecting intervals with allocations that are still alive',
   /**
-   * @description Text when something is loading
+   * @description Text when something is loading.
    */
   loading: 'Loading…',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Status message showing progress percentage while saving a heap snapshot file.
    * @example {30} PH1
    */
   savingD: 'Saving… {PH1}%',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Title for the heap memory usage chart in allocation timeline overview.
    */
   heapMemoryUsage: 'Heap memory usage',
   /**
-   * @description Text of a DOM element in Heap Snapshot View of a profiler tool
+   * @description Text of a DOM element in heap snapshot view of a profiler tool.
    */
   stackWasNotRecordedForThisObject:
       'Stack wasn’t recorded for this object because it had been allocated before this profile recording started.',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool.
+   * @description Button label in the Retainers view to restore all ignored retainers.
    * This text is on a button to undo all previous "Ignore this retainer" actions.
    */
   restoreIgnoredRetainers: 'Restore ignored retainers',
   /**
-   * @description Text in Heap Snapshot View showing summary stats (count of objects and total shallow size) for the selected filter
+   * @description Text in heap snapshot view showing summary stats (count of objects and total shallow size) for the selected filter.
    * @example {1,000} PH1
    * @example {1.5 MB} PH2
    */

@@ -35,40 +35,40 @@ const {widget, widgetRef} = UI.Widget;
 
 const UIStrings = {
   /**
-   * @description The reported total size used in the selected time frame of the allocation sampling profile
+   * @description The reported total size used in the selected time frame of the allocation sampling profile.
    * @example {3 MB} PH1
    */
   selectedSizeS: 'Selected size: {PH1}',
   /**
-   * @description Name of column header that reports the size (in terms of bytes) used for a particular part of the heap, excluding the size of the children nodes of this part of the heap
+   * @description Column header that reports the size (in bytes) used for a particular part of the heap, excluding the size of child nodes.
    */
   selfSizeBytes: 'Self size',
   /**
-   * @description Name of column header that reports the total size (in terms of bytes) used for a particular part of the heap
+   * @description Column header that reports the total size (in bytes) used for a particular part of the heap.
    */
   totalSizeBytes: 'Total size',
   /**
-   * @description Button text to stop profiling the heap
+   * @description Button text to stop profiling the heap.
    */
   stopHeapProfiling: 'Stop heap profiling',
   /**
-   * @description Button text to start profiling the heap
+   * @description Button text to start profiling the heap.
    */
   startHeapProfiling: 'Start heap profiling',
   /**
-   * @description Progress update that the profiler is recording the contents of the heap
+   * @description Progress update that the profiler is recording the contents of the heap.
    */
   recording: 'Recording…',
   /**
-   * @description Icon title in Heap Profile View of a profiler tool
+   * @description Tooltip and status text for the recording icon when the heap profiler is actively recording.
    */
   heapProfilerIsRecording: 'Heap profiler is recording',
   /**
-   * @description Progress update that the profiler is in the process of stopping its recording of the heap
+   * @description Progress update that the profiler is in the process of stopping its recording of the heap.
    */
   stopping: 'Stopping…',
   /**
-   * @description Sampling category to only profile allocations happening on the heap
+   * @description Sampling category to only profile allocations happening on the heap.
    */
   allocationSampling: 'Allocation sampling',
   /**
@@ -76,95 +76,95 @@ const UIStrings = {
    */
   samplingProfiles: 'Sampling profiles',
   /**
-   * @description Description in Heap Profile View of a profiler tool
+   * @description Description for the allocation sampling profiling option in the Memory panel.
    */
   recordMemoryAllocations:
       'Approximate memory allocations by sampling long operations with minimal overhead and get a breakdown by JavaScript execution stack',
   /**
-   * @description Name of a profile
+   * @description Name of a profile.
    * @example {2} PH1
    */
   profileD: 'Profile {PH1}',
   /**
-   * @description Accessible text for the value in bytes in memory allocation or coverage view.
+   * @description Accessible text for the value in bytes in the allocation view or coverage view.
    * @example {12345} PH1
    */
   sBytes: '{PH1} bytes',
   /**
-   * @description Text in CPUProfile View of a profiler tool
+   * @description Formatting template for displaying a percentage value in heap and CPU profile views.
    * @example {21.33} PH1
    */
   formatPercent: '{PH1} %',
   /**
-   * @description The formatted size in kilobytes, abbreviated to kB
+   * @description The formatted size in kilobytes, abbreviated to kB.
    * @example {1,021} PH1
    */
   skb: '{PH1} kB',
   /**
-   * @description Text for the name of something
+   * @description Text for the name of something.
    */
   name: 'Name',
   /**
-   * @description Tooltip of a cell that reports the size used for a particular part of the heap, excluding the size of the children nodes of this part of the heap
+   * @description Tooltip for a cell reporting the size used for a particular part of the heap, excluding the size of child nodes.
    */
   selfSize: 'Self size',
   /**
-   * @description Tooltip of a cell that reports the total size used for a particular part of the heap
+   * @description Tooltip for a cell reporting the total size used for a particular part of the heap.
    */
   totalSize: 'Total size',
   /**
-   * @description Text for web URLs
+   * @description Text for web URLs.
    */
   url: 'URL',
   /**
-   * @description Label for a checkbox in the memory panel to enable sampling heap profiler timeline.
+   * @description Label for a checkbox in the Memory panel to enable sampling heap profiler timeline.
    */
   samplingHeapProfilerTimeline: 'Sampling heap profiler timeline',
   /**
-   * @description Text in Profile View of a profiler tool
+   * @description Tab title for an individual heap profile view in the Memory panel.
    */
   profile: 'Profile',
   /**
    * @description Placeholder text in the search box of the JavaScript profiler tool. Users can search
-   *the results by the cost in milliseconds, the name of the function, or the file name.
+   * the results by the cost in milliseconds, the name of the function, or the file name.
    */
   findByCostMsNameOrFile: 'Find by cost (>50ms), name or file',
   /**
-   * @description Text for a programming function
+   * @description Text for a programming function.
    */
   function: 'Function',
   /**
-   * @description Title of the Profiler tool
+   * @description Title of the Profiler tool.
    */
   profiler: 'Profiler',
   /**
-   * @description Aria-label for profiles view combobox in memory tool
+   * @description Aria-label for profiles view combobox in Memory panel.
    */
   profileViewMode: 'Profile view mode',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon visibility button in the Profile View of a profiler tool
+   * @description Tooltip text that appears when hovering over the focus button in the heap profile view toolbar.
    */
   focusSelectedFunction: 'Focus selected function',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon delete button in the Profile View of a profiler tool
+   * @description Tooltip text that appears when hovering over the exclude button in the heap profile view toolbar.
    */
   excludeSelectedFunction: 'Exclude selected function',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon refresh button in the Profile View of a profiler tool
+   * @description Tooltip text that appears when hovering over the restore button in the heap profile view toolbar.
    */
   restoreAllFunctions: 'Restore all functions',
   /**
-   * @description Text in Profile View of a profiler tool
+   * @description Option in the view mode dropdown to display the heap profile as a flame chart.
    */
   chart: 'Chart',
   /**
-   * @description Text in Profile View of a profiler tool
+   * @description Option in the view mode dropdown to display the heap profile as a bottom-up call tree.
    */
-  heavyBottomUp: 'Heavy (Bottom Up)',
+  heavyBottomUp: 'Heavy (bottom up)',
   /**
-   * @description Text for selecting different profile views in the JS profiler tool. This option is a tree view.
+   * @description Option in the view mode dropdown to display the heap profile as a top-down call tree.
    */
-  treeTopDown: 'Tree (Top Down)',
+  treeTopDown: 'Tree (top down)',
 
   /**
    * @description Tooltip to alert developers that some parts of code in execution were not optimized.

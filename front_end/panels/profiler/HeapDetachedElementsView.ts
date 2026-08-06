@@ -21,19 +21,19 @@ import {WritableProfileHeader} from './WritableProfileHeader.js';
 
 const UIStrings = {
   /**
-   * @description Button text to obtain the detached elements retained by JS
+   * @description Button text to get the detached elements retained by JavaScript.
    */
-  startDetachedElements: 'Obtain detached elements',
+  startDetachedElements: 'Get detached elements',
   /**
    * @description The title for the collection of profiles that are gathered from various snapshots of the heap, using a sampling (e.g. every 1/100) technique.
    */
   detachedElementsTitle: 'Detached elements',
   /**
-   * @description Description in Heap Profile View of a profiler tool
+   * @description Description for the detached elements profiling option in the Memory panel.
    */
-  detachedElementsDescription: 'Detached elements shows objects that are retained by a JS reference.',
+  detachedElementsDescription: 'Detached elements show objects retained by a JS reference.',
   /**
-   * @description Name of a profile
+   * @description Name of a profile.
    * @example {2} PH1
    */
   detachedElementProfile: 'Detached elements {PH1}',

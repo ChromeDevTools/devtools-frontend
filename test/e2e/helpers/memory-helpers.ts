@@ -22,7 +22,7 @@ export async function navigateToMemoryTab(devToolsPage: DevToolsPage) {
 
 export async function takeDetachedElementsProfile(devToolsPage: DevToolsPage) {
   await devToolsPage.click('xpath///label[text()="Detached elements"]');
-  await devToolsPage.click('devtools-button[aria-label="Obtain detached elements"]');
+  await devToolsPage.click('devtools-button[aria-label="Get detached elements"]');
   await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
   await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }

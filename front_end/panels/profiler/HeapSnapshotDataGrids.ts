@@ -24,101 +24,97 @@ import type {DataDisplayDelegate} from './ProfileHeader.js';
 
 const UIStrings = {
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Tooltip for the distance column header in heap snapshot data grids.
    */
   distanceFromWindowObject: 'Distance from window object',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Tooltip for the shallow size column header in heap snapshot data grids.
    */
   sizeOfTheObjectItselfInBytes: 'Size of the object itself in bytes',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Tooltip for the retained size column header in heap snapshot data grids.
    */
   sizeOfTheObjectPlusTheGraphIt: 'Size of the object plus the graph it retains in bytes',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Column header displaying JavaScript object names in heap snapshot data grids.
    */
   object: 'Object',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Column header displaying distance from root window object in heap snapshot data grids.
    */
   distance: 'Distance',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool. Shallow size is the size of just this node, not including children/retained size.
+   * @description Column header displaying shallow size in heap snapshot data grids.
    */
-  shallowSize: 'Shallow Size',
+  shallowSize: 'Shallow size',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Column header displaying retained size in heap snapshot data grids.
    */
-  retainedSize: 'Retained Size',
+  retainedSize: 'Retained size',
   /**
-   * @description Title for a section in the Heap Snapshot view. This title is for a table which
+   * @description Title for a section in the heap snapshot view. This title is for a table which
    * shows retaining relationships between JavaScript objects. One object retains another if it holds
    * a reference to it, keeping it alive.
    */
-  heapSnapshotRetainment: 'Heap Snapshot Retainment',
+  heapSnapshotRetainment: 'Heap snapshot retainment',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Column header displaying JavaScript constructor names in heap snapshot data grids.
    */
   constructorString: 'Constructor',
   /**
-   * @description Data grid name for Heap Snapshot Constructors data grids
+   * @description Data grid name for heap snapshot constructors data grids.
    */
-  heapSnapshotConstructors: 'Heap Snapshot Constructors',
+  heapSnapshotConstructors: 'Heap snapshot constructors',
   /**
-   * @description Column header in a table displaying the diff between two Heap Snapshots. This
-   * column is number of new objects in snapshot #2 compared to snapshot #1.
+   * @description Column header in heap snapshot diff table displaying the number of new objects.
    */
   New: '# New',
   /**
-   * @description Column header in a table displaying the diff between two Heap Snapshots. This
-   * column is number of deleted objects in snapshot #2 compared to snapshot #1.
+   * @description Column header in heap snapshot diff table displaying the number of deleted objects.
    */
   Deleted: '# Deleted',
   /**
-   * @description Column header in a table displaying the diff between two Heap Snapshots. This
-   * column is the difference (delta) between the # New and # Deleted objects in the snapshot.
+   * @description Column header in heap snapshot diff table displaying net object count change.
    */
   Delta: '# Delta',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Column header in heap snapshot diff table displaying total allocated size.
    */
-  allocSize: 'Alloc. Size',
+  allocSize: 'Alloc. size',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Column header in heap snapshot diff table displaying total freed size.
    */
-  freedSize: 'Freed Size',
+  freedSize: 'Freed size',
   /**
-   * @description Title of a column in a table in the Heap Snapshot tool. 'Delta' here means
-   * difference, so the whole string means 'difference in size'.
+   * @description Column header in heap snapshot diff table displaying difference in size between snapshots. 'Delta' means difference.
    */
-  sizeDelta: 'Size Delta',
+  sizeDelta: 'Size delta',
   /**
-   * @description Data grid name for Heap Snapshot Diff data grids
+   * @description Data grid name for heap snapshot diff data grids.
    */
-  heapSnapshotDiff: 'Heap Snapshot Diff',
+  heapSnapshotDiff: 'Heap snapshot diff',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Column header in allocation data grid displaying the number of live objects.
    */
-  liveCount: 'Live Count',
+  liveCount: 'Live count',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Column header in allocation data grid displaying total allocation count.
    */
   count: 'Count',
   /**
-   * @description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Column header in allocation data grid displaying total live size.
    */
-  liveSize: 'Live Size',
+  liveSize: 'Live size',
   /**
-   * @description Text for the size of something
+   * @description Text for the size of something.
    */
   size: 'Size',
   /**
-   * @description Text for a programming function
+   * @description Text for a programming function.
    */
   function: 'Function',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Data grid name for allocation view in heap snapshots.
    */
   allocation: 'Allocation',
 } as const;

@@ -16,27 +16,27 @@ import type {ProfilesPanel} from './ProfilesPanel.js';
 
 const UIStrings = {
   /**
-   * @description Text in Profile Launcher View of a profiler tool
+   * @description Header above the JavaScript VM instance selector in the Memory panel launcher.
    */
   selectJavascriptVmInstance: 'Select JavaScript VM instance',
   /**
-   * @description Text to load something
+   * @description Text to load something.
    */
   load: 'Load profile',
   /**
-   * @description Control button text content in Profile Launcher View of a profiler tool
+   * @description Primary button text to take an instant heap snapshot in the Memory panel.
    */
   takeSnapshot: 'Take snapshot',
   /**
-   * @description Text of an item that stops the running task
+   * @description Text of an item that stops the running task.
    */
   stop: 'Stop',
   /**
-   * @description Control button text content in Profile Launcher View of a profiler tool
+   * @description Primary button text to start recording a continuous profile in the Memory panel.
    */
   start: 'Start',
   /**
-   * @description Profile type header element text content in Profile Launcher View of a profiler tool
+   * @description Header for the profile type selection group in the Memory panel launcher.
    */
   selectProfilingType: 'Select profiling type',
 } as const;

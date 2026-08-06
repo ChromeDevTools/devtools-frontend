@@ -14,31 +14,31 @@ import {ProfileHeader, type ProfileType} from './ProfileHeader.js';
 
 const UIStrings = {
   /**
-   * @description Name of a profile
+   * @description Name of a profile.
    * @example {2} PH1
    */
   profileD: 'Profile {PH1}',
   /**
-   * @description Text in Profile View of a profiler tool
+   * @description Status update showing data loaded size while reading a profile file from disk.
    * @example {4 MB} PH1
    */
   loadingD: 'Loading… {PH1}',
   /**
-   * @description Text in Profile View of a profiler tool
+   * @description Error message shown when reading a profile file from disk fails.
    * @example {example.file} PH1
    * @example {cannot open file} PH2
    */
   fileSReadErrorS: 'File \'\'{PH1}\'\' read error: {PH2}',
   /**
-   * @description Text when something is loading
+   * @description Text when something is loading.
    */
   loading: 'Loading…',
   /**
-   * @description Text in Profile View of a profiler tool
+   * @description Error message when loading a profile file fails.
    */
   failedToReadFile: 'Failed to read file',
   /**
-   * @description Text in Profile View of a profiler tool
+   * @description Status update message while parsing profile JSON content.
    */
   parsing: 'Parsing…',
   /**

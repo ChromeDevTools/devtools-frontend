@@ -68,30 +68,30 @@ import {WritableProfileHeader} from './WritableProfileHeader.js';
 
 const UIStrings = {
   /**
-   * @description Text in Profiles Panel of a profiler tool
+   * @description Error message when attempting to load an unsupported profile file format.
    * @example {'.js', '.json'} PH1
    */
   cantLoadFileSupportedFile: 'Can’t load file. Supported file extensions: \'\'{PH1}\'\'.',
   /**
-   * @description Text in Profiles Panel of a profiler tool
+   * @description Error message when trying to load a profile while a recording is currently active.
    */
   cantLoadProfileWhileAnother: 'Can’t load profile while another profile is being recorded.',
   /**
-   * @description Text in Profiles Panel of a profiler tool
+   * @description Error header when loading a profile file fails.
    */
   profileLoadingFailed: 'Profile loading failed',
   /**
-   * @description Text in Profiles Panel of a profiler tool
+   * @description Detailed error reason string shown when profile loading fails.
    * @example {cannot open file} PH1
    */
   failReason: 'Reason: {PH1}.',
   /**
-   * @description Text in Profiles Panel of a profiler tool
+   * @description Header for a profile run iteration in the Profiles sidebar.
    * @example {2} PH1
    */
   runD: 'Run {PH1}',
   /**
-   * @description Text in Profiles Panel of a profiler tool
+   * @description Sidebar section header for collected profiles.
    */
   profiles: 'Profiles',
 } as const;

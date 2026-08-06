@@ -14,15 +14,15 @@ const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Column header in detached elements table displaying detached DOM nodes.
    */
   detachedNodes: 'Detached nodes',
   /**
-   * @description Text in Heap Snapshot View of a profiler tool
+   * @description Column header in detached elements table displaying the number of detached DOM nodes.
    */
   nodeSize: 'Node count',
   /**
-   * @description Label for the detached elements table
+   * @description Label for the detached elements table.
    */
   detachedElementsList: 'Detached elements list',
 } as const;

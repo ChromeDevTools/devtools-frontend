@@ -12,31 +12,31 @@ let loadedProfilerModule: (typeof Profiler|undefined);
 
 const UIStrings = {
   /**
-   * @description Title for the profiler tab
+   * @description Title for the profiler tab.
    */
   memory: 'Memory',
   /**
-   * @description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
+   * @description Text in the shortcuts page to explain a keyboard shortcut (start/stop recording performance).
    */
   startStopRecording: 'Start/stop recording',
   /**
-   * @description Command for showing the profiler tab
+   * @description Title of the action to show the Memory panel.
    */
   showMemory: 'Show Memory',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon clear button in the Profiles Panel of a profiler tool
+   * @description Title of the action to clear all recorded profiles in the Memory panel.
    */
   clearAllProfiles: 'Clear all profiles',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon download button
+   * @description Title of the action to save a recorded profile to a file.
    */
   saveProfile: 'Save profile…',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon load button
+   * @description Title of the action to load a saved profile from a file.
    */
   loadProfile: 'Load profile…',
   /**
-   * @description Command for deleting a profile in the Profiler panel
+   * @description Title of the action to delete a profile in the Memory panel.
    */
   deleteProfile: 'Delete profile',
 } as const;

@@ -334,7 +334,7 @@ describe('The Memory Panel', function() {
     void takeAllocationTimelineProfile(devToolsPage, {recordStacks: true});
     await changeViewViaDropdown(devToolsPage, 'Allocation');
 
-    const header = await devToolsPage.waitForElementWithTextContent('Live Count');
+    const header = await devToolsPage.waitForElementWithTextContent('Live count');
     const table = await header.evaluateHandle(node => {
       return node.closest('.data-grid')!;
     });
@@ -357,14 +357,12 @@ describe('The Memory Panel', function() {
        const input = await devToolsPage.waitFor('input[title="Sampling heap profiler timeline"]');
        assert.isNotNull(input, 'Input not found');
 
-       let isDisabled = await input.evaluate(el => (el as HTMLInputElement).disabled);
+       const isDisabled = await input.evaluate(el => (el as HTMLInputElement).disabled);
        assert.isTrue(isDisabled, 'Checkbox should be disabled by default');
 
-       const optionLabel = await devToolsPage.waitForElementWithTextContent('Allocation sampling');
-       await devToolsPage.clickElement(optionLabel);
+       await devToolsPage.click('xpath///label[text()="Allocation sampling"]');
 
-       isDisabled = await input.evaluate(el => (el as HTMLInputElement).disabled);
-       assert.isFalse(isDisabled, 'Checkbox should be enabled when allocation sampling is selected');
+       await devToolsPage.waitForFunction(async () => !(await input.evaluate(el => (el as HTMLInputElement).disabled)));
      });
 
   it('shows object source links in snapshot', async ({devToolsPage, inspectedPage}) => {
@@ -541,7 +539,7 @@ describe('The Memory Panel', function() {
     await setFilterDropdown(devToolsPage, 'Objects retained by DevTools Console');
     await getCategoryRow(devToolsPage, 'ObjectRetainedByConsole', undefined);
     assert.isNotOk(await getCategoryRow(devToolsPage, 'ObjectRetainedByBothDetachedDomAndConsole', false));
-    await setFilterDropdown(devToolsPage, 'Objects retained by Event Handlers');
+    await setFilterDropdown(devToolsPage, 'Objects retained by event handlers');
     await getCategoryRow(devToolsPage, 'ObjectRetainedByEventHandler', undefined);
     assert.isNotOk(await getCategoryRow(devToolsPage, 'ObjectRetainedByConsole', false));
     assert.isNotOk(await getCategoryRow(devToolsPage, 'ObjectRetainedByDetachedDom', false));
@@ -604,7 +602,7 @@ describe('The Memory Panel', function() {
     await devToolsPage.drainTaskQueue();
     await devToolsPage.drainTaskQueue();
     await devToolsPage.page.keyboard.press('ArrowDown');
-    await clickOnContextMenuForRetainer(devToolsPage, 'x', 'Reveal in Summary view');
+    await clickOnContextMenuForRetainer(devToolsPage, 'x', 'Reveal in summary view');
     await waitUntilRetainerChainSatisfies(
         devToolsPage, retainerChain => retainerChain.length > 0 && retainerChain[0].propertyName === 'a');
     await inspectedPage.bringToFront();

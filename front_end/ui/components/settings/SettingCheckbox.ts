@@ -17,7 +17,7 @@ import * as Input from '../input/input.js';
 
 import settingCheckboxStyles from './settingCheckbox.css.js';
 
-const {html, Directives: {ifDefined}} = Lit;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -123,7 +123,7 @@ export class SettingCheckbox extends HTMLElement {
   }
 
   get checked(): boolean {
-    if (!this.#setting || this.#setting.disabledReasons().length > 0) {
+    if (!this.#setting) {
       return false;
     }
 
@@ -141,14 +141,6 @@ export class SettingCheckbox extends HTMLElement {
 
     const icon = this.icon();
     const title = learnMore?.tooltip?.() ?? '';
-    const disabledReasons = this.#setting.disabledReasons();
-    const reason = disabledReasons.length ?
-        html`
-      <devtools-button class="disabled-reason" .iconName=${'info'} .variant=${Buttons.Button.Variant.ICON} .size=${
-            Buttons.Button.Size.SMALL} title=${ifDefined(disabledReasons.join('\n'))} @click=${
-            onclick}></devtools-button>
-    ` :
-        Lit.nothing;
     Lit.render(html`
       <style>${Input.checkboxStyles}</style>
       <style>${settingCheckboxStyles}</style>
@@ -162,7 +154,7 @@ export class SettingCheckbox extends HTMLElement {
             jslog=${VisualLogging.toggle().track({change: true}).context(this.#setting.name)}
             aria-label=${titleText}
           />
-          ${this.#textOverride || titleText}${reason}
+          ${this.#textOverride || titleText}
         </label>
         ${icon}
       </p>`,

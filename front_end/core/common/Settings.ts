@@ -551,10 +551,6 @@ export class Setting<V> {
     return this.#disabled || false;
   }
 
-  disabledReasons(): Platform.UIString.LocalizedString[] {
-    return [];
-  }
-
   setDisabled(disabled: boolean): void {
     this.#disabled = disabled;
     this.eventSupport.dispatchEventToListeners(this.name);

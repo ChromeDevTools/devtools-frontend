@@ -8,7 +8,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
+import {createFakeSetting, describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as UI from '../../legacy.js';
@@ -609,5 +609,75 @@ describeWithEnvironment('DataGrid', () => {
     sendKeydown(element, 'ArrowDown');
     alerts = getAlertAnnouncement(element);
     assert.strictEqual(alerts[0], 'Column 1: Value 5');
+  });
+
+  describe('column visibility setting', () => {
+    it('restores column visibility from setting on initialization', async () => {
+      const setting = createFakeSetting<Record<string, {visible: boolean}>>(
+          'protocol-monitor-columns',
+          {'column-1': {visible: false}},
+      );
+
+      const element = await renderDataGrid(html`
+          <devtools-data-grid striped name="Display Name" .columnsVisibilitySetting=${setting}>
+            <table>
+              <tr>
+                <th id="column-1" hideable>Column 1</th>
+                <th id="column-2" hideable>Column 2</th>
+              </tr>
+              <tr><td>Value 1</td><td>Value 2</td></tr>
+            </table>
+          </devtools-data-grid>`);
+
+      const shadowRoot = element.shadowRoot;
+      assert.isNotNull(shadowRoot);
+      const dataGridElement = shadowRoot!.querySelector('.data-grid');
+      assert.isNotNull(dataGridElement);
+      // Wait for rendering
+      await RenderCoordinator.done();
+
+      assert.isNull(shadowRoot!.querySelector('th.column-1-column'));
+      assert.isNotNull(shadowRoot!.querySelector('th.column-2-column'));
+    });
+
+    it('updates column settings when columns are toggled', async () => {
+      const setting = createFakeSetting<Record<string, {visible: boolean}>>(
+          'protocol-monitor-columns',
+          {},
+      );
+
+      const element = await renderDataGrid(html`
+          <devtools-data-grid striped name="Display Name" .columnsVisibilitySetting=${setting}>
+            <table>
+              <tr>
+                <th id="column-1" hideable>Column 1</th>
+                <th id="column-2" hideable>Column 2</th>
+              </tr>
+              <tr><td>Value 1</td><td>Value 2</td></tr>
+            </table>
+          </devtools-data-grid>`);
+
+      const shadowRoot = element.shadowRoot;
+      assert.isNotNull(shadowRoot);
+      const thead = shadowRoot!.querySelector('thead');
+      assert.isNotNull(thead);
+
+      let capturedMenu: UI.ContextMenu.ContextMenu|null = null;
+      sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').callsFake(function(this: UI.ContextMenu.ContextMenu) {
+        capturedMenu = this;
+        return Promise.resolve();
+      });
+
+      thead!.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true, cancelable: true, composed: true}));
+      assert.isNotNull(capturedMenu);
+
+      const menu: UI.ContextMenu.ContextMenu = capturedMenu!;
+      const item1 = menu.defaultSection().items.find(item => item.buildDescriptor().label === 'Column 1');
+      assert.isDefined(item1);
+
+      menu.invokeHandler(item1!.id());
+
+      assert.isFalse(setting.get()['column-1']?.visible);
+    });
   });
 });

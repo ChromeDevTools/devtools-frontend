@@ -5,6 +5,7 @@
 import '../../ui/legacy/legacy.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
@@ -24,6 +25,7 @@ import protocolMonitorStyles from './protocolMonitor.css.js';
 
 const {styleMap} = Directives;
 const {widget, widgetRef} = UI.Widget;
+
 const UIStrings = {
   /**
    * @description Table column header in the Protocol monitor data grid that displays the CDP method name (for example, Page.navigate or Network.enable).
@@ -180,6 +182,7 @@ export interface ViewInput {
   onTargetChange: (targetId: string) => void;
   onToggleSidebar: () => void;
   onEditorSubmit: (command: string, parameters: Record<string, unknown>, targetId?: string) => void;
+  columnsVisibilitySetting: Common.Settings.Setting<Record<string, {visible: boolean}>>;
   targets: SDK.Target.Target[];
   selectedTargetId: string;
 }
@@ -239,6 +242,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               <devtools-data-grid
                   striped
                   slot="main"
+                  .columnsVisibilitySetting=${input.columnsVisibilitySetting}
                   .filters=${input.parseFilter(input.filter)}>
                 <table>
                     <tr>
@@ -372,6 +376,8 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel implements SDK.TargetMan
   #filter = '';
   #editorWidget!: JSONEditor;
   #targetsBySessionId = new Map<string, SDK.Target.Target>();
+  #columnsVisibilitySetting = Common.Settings.Settings.instance().createSetting<Record<string, {visible: boolean}>>(
+      'protocol-monitor-columns', {});
   constructor(view: View = DEFAULT_VIEW) {
     super('protocol-monitor', true);
     this.#view = view;
@@ -469,6 +475,7 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel implements SDK.TargetMan
       onEditorSubmit: (command: string, parameters: Record<string, unknown>, targetId?: string) => {
         this.onCommandSend(command, parameters, targetId);
       },
+      columnsVisibilitySetting: this.#columnsVisibilitySetting,
       targets: SDK.TargetManager.TargetManager.instance().targets(),
       selectedTargetId: this.#selectedTargetId,
     };

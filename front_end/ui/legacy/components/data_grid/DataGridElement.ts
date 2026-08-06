@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 
+import type * as Common from '../../../../core/common/common.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as Lit from '../../../lit/lit.js';
@@ -79,6 +80,39 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
   #hiddenColumns = new Set<string>();
   #usedCreationNode: DataGridElementNode|null = null;
   #sortingChangedScheduled = false;
+  #columnsVisibilitySetting?: Common.Settings.Setting<Record<string, {visible: boolean}>>;
+
+  set columnsVisibilitySetting(setting: Common.Settings.Setting<Record<string, {visible: boolean}>>) {
+    this.#columnsVisibilitySetting = setting;
+    this.#applyColumnVisibilitySetting();
+  }
+
+  get columnsVisibilitySetting(): Common.Settings.Setting<Record<string, {visible: boolean}>>|undefined {
+    return this.#columnsVisibilitySetting;
+  }
+
+  #applyColumnVisibilitySetting(): void {
+    if (!this.#columnsVisibilitySetting) {
+      return;
+    }
+    const settingValue = this.#columnsVisibilitySetting.get();
+    let changed = false;
+    for (const column of this.#columns) {
+      if (this.#hideableColumns.has(column.id) && settingValue[column.id]?.visible === false) {
+        if (!this.#hiddenColumns.has(column.id)) {
+          this.#hiddenColumns.add(column.id);
+          changed = true;
+        }
+      } else if (this.#hiddenColumns.has(column.id)) {
+        this.#hiddenColumns.delete(column.id);
+        changed = true;
+      }
+    }
+    if (changed) {
+      const visibleColumns = new Set(this.#columns.map(({id}) => id).filter(id => !this.#hiddenColumns.has(id)));
+      this.#dataGrid.setColumnsVisibility(visibleColumns);
+    }
+  }
 
   constructor() {
     super();
@@ -133,6 +167,11 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
                 }
                 this.#dataGrid.setColumnsVisibility(
                     new Set(this.#columns.map(({id}) => id).filter(column => !this.#hiddenColumns.has(column))));
+                if (this.#columnsVisibilitySetting) {
+                  const settingValue = this.#columnsVisibilitySetting.get();
+                  settingValue[column.id] = {visible: !this.#hiddenColumns.has(column.id)};
+                  this.#columnsVisibilitySetting.set(settingValue);
+                }
               }, {checked: !this.#hiddenColumns.has(column.id)});
         }
       }
@@ -320,6 +359,7 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
     const visibleColumns = new Set(this.#columns.map(({id}) => id).filter(id => !this.#hiddenColumns.has(id)));
     this.#dataGrid.setColumnsVisibility(visibleColumns);
     this.#dataGrid.setEditCallback(hasEditableColumn ? this.#editCallback.bind(this) : undefined, INTERNAL_TOKEN);
+    this.#applyColumnVisibilitySetting();
   }
 
   #needUpdateColumns(mutationList: MutationRecord[]): boolean {

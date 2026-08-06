@@ -182,7 +182,7 @@ describe('DeviceModeModel', () => {
         EmulationModel.EmulatedDevices.Capability.TOUCH,
         EmulationModel.EmulatedDevices.Capability.MOBILE,
       ];
-      mobileDevice.vertical = {width: 400, height: 800, outlineInsets: null, outlineImage: null, hinge: null};
+      mobileDevice.vertical = {width: 400, height: 800, hinge: null};
 
       // Custom desktop device with empty UA but non-null metadata (as
       // created through the DevTools UI when only filling in some CH fields).
@@ -198,7 +198,7 @@ describe('DeviceModeModel', () => {
         mobile: false,
       } as Protocol.Emulation.UserAgentMetadata;
       desktopDevice.capabilities = [];
-      desktopDevice.vertical = {width: 1920, height: 1080, outlineInsets: null, outlineImage: null, hinge: null};
+      desktopDevice.vertical = {width: 1920, height: 1080, hinge: null};
 
       const mode: EmulationModel.EmulatedDevices.Mode = {
         title: 'default',
@@ -225,8 +225,8 @@ describe('DeviceModeModel', () => {
   function createSafeAreaDevice(): EmulationModel.EmulatedDevices.EmulatedDevice {
     const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
     device.userAgent = 'test-ua';
-    device.vertical = {width: 430, height: 932, outlineInsets: null, outlineImage: null, hinge: null};
-    device.horizontal = {width: 932, height: 430, outlineInsets: null, outlineImage: null, hinge: null};
+    device.vertical = {width: 430, height: 932, hinge: null};
+    device.horizontal = {width: 932, height: 430, hinge: null};
     device.modes = [
       {
         title: 'default',
@@ -289,7 +289,7 @@ describe('DeviceModeModel', () => {
     try {
       const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
       device.userAgent = 'test-ua';
-      device.vertical = {width: 400, height: 800, outlineInsets: null, outlineImage: null, hinge: null};
+      device.vertical = {width: 400, height: 800, hinge: null};
       const mode: EmulationModel.EmulatedDevices.Mode = {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,
@@ -336,8 +336,8 @@ describe('DeviceModeModel', () => {
   function createCutoutDevice(): EmulationModel.EmulatedDevices.EmulatedDevice {
     const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
     device.userAgent = 'test-ua';
-    device.vertical = {width: 430, height: 932, outlineInsets: null, outlineImage: null, hinge: null};
-    device.horizontal = {width: 932, height: 430, outlineInsets: null, outlineImage: null, hinge: null};
+    device.vertical = {width: 430, height: 932, hinge: null};
+    device.horizontal = {width: 932, height: 430, hinge: null};
     device.modes = [
       {
         title: 'default',
@@ -771,30 +771,6 @@ describe('DeviceModeModel', () => {
     }
   });
 
-  it('returns whether device frame can be shown for current mode', () => {
-    try {
-      assert.isFalse(deviceModeModel.canShowDeviceFrame(), 'Should be false initially');
-
-      const deviceWithFrame = new EmulationModel.EmulatedDevices.EmulatedDevice();
-      deviceWithFrame.vertical = {width: 400, height: 800, outlineInsets: null, outlineImage: 'test.png', hinge: null};
-      const mode: EmulationModel.EmulatedDevices.Mode = {
-        title: 'default',
-        orientation: EmulationModel.EmulatedDevices.Vertical,
-        insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-        image: null,
-      };
-      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, deviceWithFrame, mode);
-      assert.isTrue(deviceModeModel.canShowDeviceFrame(), 'Should be true when outlineImage is present');
-
-      const deviceWithoutFrame = new EmulationModel.EmulatedDevices.EmulatedDevice();
-      deviceWithoutFrame.vertical = {width: 400, height: 800, outlineInsets: null, outlineImage: null, hinge: null};
-      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, deviceWithoutFrame, mode);
-      assert.isFalse(deviceModeModel.canShowDeviceFrame(), 'Should be false when outlineImage is null');
-    } finally {
-      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
-    }
-  });
-
   it('behaves correctly when adjusting inputs in responsive mode', () => {
     try {
       const viewportSize = new Geometry.Size(320, 480);
@@ -803,8 +779,7 @@ describe('DeviceModeModel', () => {
 
       function assertState(expectedScale: number, expectedAppliedDeviceSize: {width: number, height: number},
                            expectedScreenRect: {left: number, top: number, width: number, height: number},
-                           expectedVisiblePageRect: {left: number, top: number, width: number, height: number},
-                           expectedOutlineRect: {left: number, top: number, width: number, height: number}) {
+                           expectedVisiblePageRect: {left: number, top: number, width: number, height: number}) {
         assert.strictEqual(deviceModeModel.scale(), expectedScale);
         assert.strictEqual(deviceModeModel.appliedDeviceSize().width, expectedAppliedDeviceSize.width);
         assert.strictEqual(deviceModeModel.appliedDeviceSize().height, expectedAppliedDeviceSize.height);
@@ -816,61 +791,51 @@ describe('DeviceModeModel', () => {
         assert.strictEqual(deviceModeModel.visiblePageRect().top, expectedVisiblePageRect.top);
         assert.strictEqual(deviceModeModel.visiblePageRect().width, expectedVisiblePageRect.width);
         assert.strictEqual(deviceModeModel.visiblePageRect().height, expectedVisiblePageRect.height);
-        const outlineRect = deviceModeModel.outlineRect();
-        assert.isNotNull(outlineRect);
-        if (outlineRect) {
-          assert.strictEqual(outlineRect.left, expectedOutlineRect.left);
-          assert.strictEqual(outlineRect.top, expectedOutlineRect.top);
-          assert.strictEqual(outlineRect.width, expectedOutlineRect.width);
-          assert.strictEqual(outlineRect.height, expectedOutlineRect.height);
-        }
       }
 
       assertState(1, {width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480},
-                  {left: 0, top: 0, width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480});
+                  {left: 0, top: 0, width: 320, height: 480});
 
       let width = viewportSize.width - 1;
       deviceModeModel.setWidthAndScaleToFit(width);
       assertState(1, {width: 319, height: 480}, {left: 0.5, top: 0, width: 319, height: 480},
-                  {left: 0, top: 0, width: 319, height: 480}, {left: 0.5, top: 0, width: 319, height: 480});
+                  {left: 0, top: 0, width: 319, height: 480});
 
       width = viewportSize.width + 1;
       deviceModeModel.setWidthAndScaleToFit(width);
       assertState(0.99, {width: 321, height: 484},
                   {left: 1.1049999999999898, top: 0, width: 317.79, height: 479.15999999999997},
-                  {left: 0, top: 0, width: 317.79, height: 479.15999999999997},
-                  {left: 1.1049999999999898, top: 0, width: 317.79, height: 479.15999999999997});
+                  {left: 0, top: 0, width: 317.79, height: 479.15999999999997});
 
       deviceModeModel.setWidthAndScaleToFit(viewportSize.width);
       assertState(1, {width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480},
-                  {left: 0, top: 0, width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480});
+                  {left: 0, top: 0, width: 320, height: 480});
 
       let height = viewportSize.height - 1;
       deviceModeModel.setHeightAndScaleToFit(height);
       assertState(1, {width: 320, height: 479}, {left: 0, top: 0, width: 320, height: 479},
-                  {left: 0, top: 0, width: 320, height: 479}, {left: 0, top: 0, width: 320, height: 479});
+                  {left: 0, top: 0, width: 320, height: 479});
 
       height = viewportSize.height + 1;
       deviceModeModel.setHeightAndScaleToFit(height);
       assertState(0.99, {width: 320, height: 481}, {left: 1.5999999999999943, top: 0, width: 316.8, height: 476.19},
-                  {left: 0, top: 0, width: 316.8, height: 476.19},
-                  {left: 1.5999999999999943, top: 0, width: 316.8, height: 476.19});
+                  {left: 0, top: 0, width: 316.8, height: 476.19});
 
       deviceModeModel.setHeightAndScaleToFit(viewportSize.height);
       assertState(1, {width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480},
-                  {left: 0, top: 0, width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480});
+                  {left: 0, top: 0, width: 320, height: 480});
 
       deviceModeModel.scaleSetting().set(0.5);
       assertState(0.5, {width: 320, height: 480}, {left: 80, top: 0, width: 160, height: 240},
-                  {left: 0, top: 0, width: 160, height: 240}, {left: 80, top: 0, width: 160, height: 240});
+                  {left: 0, top: 0, width: 160, height: 240});
 
       deviceModeModel.scaleSetting().set(1);
       assertState(1, {width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480},
-                  {left: 0, top: 0, width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480});
+                  {left: 0, top: 0, width: 320, height: 480});
 
       deviceModeModel.scaleSetting().set(1.25);
       assertState(1.25, {width: 256, height: 384}, {left: 0, top: 0, width: 320, height: 480},
-                  {left: 0, top: 0, width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480});
+                  {left: 0, top: 0, width: 320, height: 480});
     } finally {
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
     }
@@ -884,7 +849,7 @@ describe('DeviceModeModel', () => {
     try {
       const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
       device.userAgent = 'test-ua';
-      device.vertical = {width: 1000, height: 1000, outlineInsets: null, outlineImage: null, hinge: null};
+      device.vertical = {width: 1000, height: 1000, hinge: null};
       const mode: EmulationModel.EmulatedDevices.Mode = {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,
@@ -917,7 +882,7 @@ describe('DeviceModeModel', () => {
     try {
       const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
       device.userAgent = 'test-ua';
-      device.vertical = {width: 1000, height: 1000, outlineInsets: null, outlineImage: null, hinge: null};
+      device.vertical = {width: 1000, height: 1000, hinge: null};
       const mode: EmulationModel.EmulatedDevices.Mode = {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,

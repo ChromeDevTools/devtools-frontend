@@ -124,7 +124,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #touchMobile: boolean;
   #emulationModel: SDK.EmulationModel.EmulationModel|null;
   #onModelAvailable: (() => void)|null;
-  #outlineRect?: Rect;
   #screenOrientationLocked: boolean;
   readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #settings: Common.Settings.Settings;
@@ -318,8 +317,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #updateFitScale(): void {
     if (this.#type === Type.Device && this.#device && this.#mode) {
       const orientation = this.#device.orientationByName(this.#mode.orientation);
-      this.#scaleSetting.set(
-          this.calculateFitScale(orientation.width, orientation.height, this.currentOutline(), this.currentInsets()));
+      this.#scaleSetting.set(this.calculateFitScale(orientation.width, orientation.height, this.currentInsets()));
     }
   }
 
@@ -408,14 +406,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   screenImage(): string {
     return (this.#device && this.#mode) ? this.#device.modeImage(this.#mode) : '';
-  }
-
-  canShowDeviceFrame(): boolean {
-    return Boolean(this.#device && this.#mode && this.#device.outlineImage(this.#mode));
-  }
-
-  outlineRect(): Rect|null {
-    return this.#outlineRect || null;
   }
 
   screenRect(): Rect {
@@ -609,10 +599,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return Math.floor(this.#preferredSize.height / (this.#scaleSetting.get() || 1));
   }
 
-  private currentOutline(): Insets {
-    return new Insets(0, 0, 0, 0);
-  }
-
   private currentInsets(): Insets {
     if (this.#type !== Type.Device || !this.#mode) {
       return new Insets(0, 0, 0, 0);
@@ -665,25 +651,22 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     if (this.#type === Type.Device && this.#device && this.#mode) {
       const orientation = this.#device.orientationByName(this.#mode.orientation);
-      const outline = this.currentOutline();
       const insets = this.currentInsets();
-      this.#fitScale = this.calculateFitScale(orientation.width, orientation.height, outline, insets);
+      this.#fitScale = this.calculateFitScale(orientation.width, orientation.height, insets);
       if (mobile) {
         this.#appliedUserAgentType = this.#device.touch() ? UA.MOBILE : UA.MOBILE_NO_TOUCH;
       } else {
         this.#appliedUserAgentType = this.#device.touch() ? UA.DESKTOP_TOUCH : UA.DESKTOP;
       }
-      this.applyDeviceMetrics(
-          new Geometry.Size(orientation.width, orientation.height), insets, outline, this.#scaleSetting.get(),
-          this.#device.deviceScaleFactor, mobile, this.getScreenOrientationType(), resetPageScaleFactor);
+      this.applyDeviceMetrics(new Geometry.Size(orientation.width, orientation.height), insets,
+                              this.#scaleSetting.get(), this.#device.deviceScaleFactor, mobile,
+                              this.getScreenOrientationType(), resetPageScaleFactor);
       this.applyUserAgent(this.#device.userAgent, this.#device.userAgentMetadata);
       this.applyTouch(this.#device.touch(), mobile);
     } else if (this.#type === Type.None) {
       this.#fitScale = this.calculateFitScale(this.#availableSize.width, this.#availableSize.height);
       this.#appliedUserAgentType = UA.DESKTOP;
-      this.applyDeviceMetrics(
-          this.#availableSize, new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), 1, 0, mobile, null,
-          resetPageScaleFactor);
+      this.applyDeviceMetrics(this.#availableSize, new Insets(0, 0, 0, 0), 1, 0, mobile, null, resetPageScaleFactor);
       this.applyUserAgent('', null);
       this.applyTouch(false, false);
     } else if (this.#type === Type.Responsive) {
@@ -698,12 +681,12 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       const defaultDeviceScaleFactor = mobile ? defaultMobileScaleFactor : 0;
       this.#fitScale = this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get());
       this.#appliedUserAgentType = this.#uaSetting.get();
-      this.applyDeviceMetrics(
-          new Geometry.Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0),
-          this.#scaleSetting.get(), this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile,
-          screenHeight >= screenWidth ? Protocol.Emulation.ScreenOrientationType.PortraitPrimary :
-                                        Protocol.Emulation.ScreenOrientationType.LandscapePrimary,
-          resetPageScaleFactor);
+      this.applyDeviceMetrics(new Geometry.Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0),
+                              this.#scaleSetting.get(),
+                              this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile,
+                              screenHeight >= screenWidth ? Protocol.Emulation.ScreenOrientationType.PortraitPrimary :
+                                                            Protocol.Emulation.ScreenOrientationType.LandscapePrimary,
+                              resetPageScaleFactor);
       this.applyUserAgent(
           mobile ? DeviceModeModel.defaultMobileUserAgent() : '',
           mobile ? DeviceModeModel.defaultMobileUserAgentMetadata() : null);
@@ -719,14 +702,11 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.dispatchEventToListeners(Events.UPDATED);
   }
 
-  private calculateFitScale(screenWidth: number, screenHeight: number, outline?: Insets, insets?: Insets): number {
-    const outlineWidth = outline ? outline.left + outline.right : 0;
-    const outlineHeight = outline ? outline.top + outline.bottom : 0;
+  private calculateFitScale(screenWidth: number, screenHeight: number, insets?: Insets): number {
     const insetsWidth = insets ? insets.left + insets.right : 0;
     const insetsHeight = insets ? insets.top + insets.bottom : 0;
-    let scale = Math.min(
-        screenWidth ? this.#preferredSize.width / (screenWidth + outlineWidth) : 1,
-        screenHeight ? this.#preferredSize.height / (screenHeight + outlineHeight) : 1);
+    let scale = Math.min(screenWidth ? this.#preferredSize.width / screenWidth : 1,
+                         screenHeight ? this.#preferredSize.height / screenHeight : 1);
     scale = Math.min(Math.floor(scale * 100), 100);
 
     let sharpScale = scale;
@@ -759,10 +739,9 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#multitargetNetworkManager.setUserAgentOverride(userAgent, userAgent ? userAgentMetadata : null);
   }
 
-  private applyDeviceMetrics(
-      screenSize: Geometry.Size, insets: Insets, outline: Insets, scale: number, deviceScaleFactor: number,
-      mobile: boolean, screenOrientation: Protocol.Emulation.ScreenOrientationType|null,
-      resetPageScaleFactor: boolean): void {
+  private applyDeviceMetrics(screenSize: Geometry.Size, insets: Insets, scale: number, deviceScaleFactor: number,
+                             mobile: boolean, screenOrientation: Protocol.Emulation.ScreenOrientationType|null,
+                             resetPageScaleFactor: boolean): void {
     screenSize.width = Math.max(1, Math.floor(screenSize.width));
     screenSize.height = Math.max(1, Math.floor(screenSize.height));
 
@@ -776,12 +755,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     this.#appliedDeviceSize = screenSize;
     this.#appliedDeviceScaleFactor = deviceScaleFactor || window.devicePixelRatio;
-    this.#screenRect = new Rect(
-        Math.max(0, (this.#availableSize.width - screenSize.width * scale) / 2), outline.top * scale,
-        screenSize.width * scale, screenSize.height * scale);
-    this.#outlineRect = new Rect(
-        this.#screenRect.left - outline.left * scale, 0, (outline.left + screenSize.width + outline.right) * scale,
-        (outline.top + screenSize.height + outline.bottom) * scale);
+    this.#screenRect = new Rect(Math.max(0, (this.#availableSize.width - screenSize.width * scale) / 2), 0,
+                                screenSize.width * scale, screenSize.height * scale);
     this.#visiblePageRect = new Rect(
         positionX * scale, positionY * scale,
         Math.min(pageWidth * scale, this.#availableSize.width - this.#screenRect.left - positionX * scale),
@@ -903,20 +878,15 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     pageImage.src = 'data:image/png;base64,' + screenshot;
     pageImage.onload = async () => {
       const scale = pageImage.naturalWidth / this.screenRect().width;
-      const outlineRectFromModel = this.outlineRect();
-      if (!outlineRectFromModel) {
-        throw new Error('Unable to take screenshot: no outlineRect available.');
-      }
-      const outlineRect = outlineRectFromModel.scale(scale);
       const screenRect = this.screenRect().scale(scale);
       const visiblePageRect = this.visiblePageRect().scale(scale);
-      const contentLeft = screenRect.left + visiblePageRect.left - outlineRect.left;
-      const contentTop = screenRect.top + visiblePageRect.top - outlineRect.top;
+      const contentLeft = visiblePageRect.left;
+      const contentTop = visiblePageRect.top;
 
-      const canvas = new OffscreenCanvas(Math.floor(outlineRect.width),
+      const canvas = new OffscreenCanvas(Math.floor(screenRect.width),
                                          // Cap the height to not hit the GPU limit.
                                          // https://crbug.com/1260828
-                                         Math.min((1 << 14), Math.floor(outlineRect.height)));
+                                         Math.min((1 << 14), Math.floor(screenRect.height)));
       const ctx = canvas.getContext('2d', {willReadFrequently: true});
       if (!ctx) {
         throw new Error('Could not get 2d context from canvas.');
@@ -924,7 +894,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       ctx.imageSmoothingEnabled = false;
 
       if (this.screenImage()) {
-        await this.paintImage(ctx, this.screenImage(), screenRect.relativeTo(outlineRect));
+        await this.paintImage(ctx, this.screenImage(), screenRect.relativeTo(screenRect));
       }
       ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
       void this.saveScreenshot(canvas);

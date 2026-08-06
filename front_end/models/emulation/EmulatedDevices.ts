@@ -75,8 +75,8 @@ export class EmulatedDevice {
   constructor() {
     this.title = '';
     this.type = Type.Unknown;
-    this.vertical = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
-    this.horizontal = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
+    this.vertical = {width: 0, height: 0, hinge: null};
+    this.horizontal = {width: 0, height: 0, hinge: null};
     this.deviceScaleFactor = 1;
     this.capabilities = [Capability.TOUCH, Capability.MOBILE];
     this.userAgent = '';
@@ -85,8 +85,8 @@ export class EmulatedDevice {
 
     this.isDualScreen = false;
     this.isFoldableScreen = false;
-    this.verticalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
-    this.horizontalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
+    this.verticalSpanned = {width: 0, height: 0, hinge: null};
+    this.horizontalSpanned = {width: 0, height: 0, hinge: null};
 
     this.#show = Show.Default;
     this.#showByDefault = true;
@@ -200,15 +200,6 @@ export class EmulatedDevice {
         result.height = parseIntValue(json, 'height');
         if (result.height < 0 || result.height > MaxDeviceSize || result.height < MinDeviceSize) {
           throw new Error('Emulated device has wrong height: ' + result.height);
-        }
-
-        const outlineInsets = parseValue(json['outline'], 'insets', 'object', null);
-        if (outlineInsets) {
-          result.outlineInsets = parseInsets(outlineInsets);
-          if (result.outlineInsets.left < 0 || result.outlineInsets.top < 0) {
-            throw new Error('Emulated device has wrong outline insets');
-          }
-          result.outlineImage = (parseValue(json['outline'], 'image', 'string') as string);
         }
 
         if (json['hinge']) {
@@ -469,17 +460,7 @@ export class EmulatedDevice {
     const json = {} as any;
     json['width'] = orientation.width;
     json['height'] = orientation.height;
-    if (orientation.outlineInsets) {
-      json.outline = {
-        insets: {
-          left: orientation.outlineInsets.left,
-          top: orientation.outlineInsets.top,
-          right: orientation.outlineInsets.right,
-          bottom: orientation.outlineInsets.bottom,
-        },
-        image: orientation.outlineImage,
-      } as {image: string | null, insets: {left: number, right: number, top: number, bottom: number}};
-    }
+
     if (orientation.hinge) {
       json.hinge = {
         width: orientation.hinge.width,
@@ -520,14 +501,6 @@ export class EmulatedDevice {
       return '';
     }
     return computeRelativeImageURL(mode.image);
-  }
-
-  outlineImage(mode: Mode): string {
-    const orientation = this.orientationByName(mode.orientation);
-    if (!orientation.outlineImage) {
-      return '';
-    }
-    return computeRelativeImageURL(orientation.outlineImage);
   }
 
   orientationByName(name: string): Orientation {
@@ -791,8 +764,6 @@ export type Cutout = BaseCutout&({shape: CutoutShape.RECTANGLE}|{shape: CutoutSh
 export interface Orientation {
   width: number;
   height: number;
-  outlineInsets: Insets|null;
-  outlineImage: string|null;
   hinge: SDK.OverlayModel.Hinge|null;
 }
 export interface JSONMode {
@@ -2136,10 +2107,6 @@ const emulatedDevices = [
     'title': 'Nest Hub Max',
     'screen': {
       'horizontal': {
-        'outline': {
-          'image': '@url(optimized/google-nest-hub-max-horizontal.avif)',
-          'insets': {'left': 92, 'top': 96, 'right': 91, 'bottom': 248},
-        },
         'width': 1280,
         'height': 800,
       },
@@ -2249,19 +2216,11 @@ const emulatedDevices = [
     'title': 'Moto G4',
     'screen': {
       'horizontal': {
-        'outline': {
-          'image': '@url(optimized/MotoG4-landscape.avif)',
-          'insets': {'left': 91, 'top': 30, 'right': 74, 'bottom': 30},
-        },
         'width': 640,
         'height': 360,
       },
       'device-pixel-ratio': 3,
       'vertical': {
-        'outline': {
-          'image': '@url(optimized/MotoG4-portrait.avif)',
-          'insets': {'left': 30, 'top': 91, 'right': 30, 'bottom': 74},
-        },
         'width': 360,
         'height': 640,
       },

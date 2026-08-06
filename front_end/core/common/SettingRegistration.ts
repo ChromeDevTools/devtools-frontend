@@ -4,7 +4,6 @@
 
 import * as i18n from '../i18n/i18n.js';
 import type * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
 
 import type {SettingStorageType} from './Settings.js';
 
@@ -98,7 +97,7 @@ export function registerSettingExtension(registration: SettingRegistration): voi
 }
 
 export function getRegisteredSettings(): SettingRegistration[] {
-  return registeredSettings.filter(setting => Root.Runtime.Runtime.isDescriptorEnabled(setting));
+  return registeredSettings;
 }
 
 export function registerSettingsForTest(settings: SettingRegistration[], forceReset = false): void {
@@ -268,13 +267,6 @@ export interface SettingRegistration {
    * Determines if the setting value is stored in the global, local or session storage.
    */
   storageType?: SettingStorageType;
-  /**
-   * A condition is a function that will make the setting available if it
-   * returns true, and not available, otherwise. Make sure that objects you
-   * access from inside the condition function are ready at the time when the
-   * setting conditions are checked.
-   */
-  condition?: Root.Runtime.Condition;
 
   /**
    * See {@link LearnMore} for more info.

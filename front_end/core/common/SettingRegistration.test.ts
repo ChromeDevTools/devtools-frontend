@@ -4,10 +4,6 @@
 
 import {assert} from 'chai';
 
-import {
-  updateHostConfig,
-} from '../../testing/EnvironmentHelpers.js';
-
 import * as Common from './common.js';
 
 describe('SettingRegistration', () => {
@@ -49,35 +45,5 @@ describe('SettingRegistration', () => {
         defaultValue: false,
       });
     });
-  });
-
-  it('can handle settings with condition which depends on host config', () => {
-    updateHostConfig({
-      devToolsConsoleInsights: {
-        modelId: 'mockModel',
-        temperature: -1,
-        enabled: true,
-      },
-    });
-    const settingRegistrations: Common.SettingRegistration.SettingRegistration[] = [{
-      settingName,
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-      condition: config => {
-        return config?.devToolsConsoleInsights?.enabled === true;
-      },
-    }];
-
-    const dummyStorage = new Common.Settings.SettingsStorage({});
-    const settings = new Common.Settings.Settings({
-      syncedStorage: dummyStorage,
-      globalStorage: dummyStorage,
-      localStorage: dummyStorage,
-      settingRegistrations,
-      console: new Common.Console.Console(),
-    });
-    const setting = settings.moduleSetting(settingName);
-    assert.isNotNull(setting);
-    assert.isFalse(setting.get());
   });
 });

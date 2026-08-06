@@ -2126,6 +2126,7 @@ export const knownContextValues = new Set([
   'integer-8-bit',
   'interactions',
   'interactivity',
+  'interest',
   'interest-delay',
   'interest-delay-end',
   'interest-delay-start',

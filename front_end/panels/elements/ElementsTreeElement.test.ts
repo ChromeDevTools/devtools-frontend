@@ -7,6 +7,7 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -16,6 +17,7 @@ import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelp
 import {createTarget, describeWithEnvironment, registerActions} from '../../testing/EnvironmentHelpers.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html} from '../../ui/lit/lit.js';
@@ -41,9 +43,11 @@ function getBaseViewInput(): Elements.ElementsTreeElement.ViewInput {
     showGridLanesAdorner: false,
     showMediaAdorner: false,
     showPopoverAdorner: false,
+    showInterestAdorner: false,
     showTopLayerAdorner: false,
     gridAdornerActive: false,
     popoverAdornerActive: false,
+    interestAdornerActive: false,
     isSubgrid: false,
     showViewSourceAdorner: false,
     showScrollAdorner: false,
@@ -64,6 +68,7 @@ function getBaseViewInput(): Elements.ElementsTreeElement.ViewInput {
     onGridAdornerClick: () => {},
     onMediaAdornerClick: () => {},
     onPopoverAdornerClick: () => {},
+    onInterestAdornerClick: () => {},
     onScrollSnapAdornerClick: () => {},
     onTopLayerAdornerClick: () => {},
     isHovered: false,
@@ -1341,7 +1346,8 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
         isSubgrid: true,
       } as SDK.CSSModel.LayoutProperties);
 
-      sinon.stub(node, 'attributes').returns([{name: 'popover', value: ''}] as SDK.DOMModel.Attribute[]);
+      sinon.stub(node, 'attributes').returns([{name: 'popover', value: ''},
+                                              {name: 'interesttarget', value: ''}] as SDK.DOMModel.Attribute[]);
       sinon.stub(node, 'topLayerIndex').returns(1);
       sinon.stub(node, 'affectedByStartingStyles').returns(true);
 
@@ -1375,6 +1381,7 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     });
 
     it('popover adorner click is no-op', () => {
+
       treeElement.updateAdorners();
       treeElement.performUpdate();
 
@@ -1385,6 +1392,26 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
       const agentSpy = sinon.spy(domModel.agent, 'invoke_forceShowPopover');
       popoverAdorner!.dispatchEvent(new Event('click'));
       sinon.assert.notCalled(agentSpy);
+    });
+
+    it('interest adorner click is no-op', () => {
+      // Force allow interest for test
+      const originalDevToolsAllowInterestForcing = Root.Runtime.hostConfig.devToolsAllowInterestForcing;
+      Root.Runtime.hostConfig.devToolsAllowInterestForcing = {enabled: true};
+
+      treeElement.updateAdorners();
+      treeElement.performUpdate();
+
+      const adorners = treeElement.listItemElement.querySelectorAll('devtools-adorner');
+      const interestAdorner = Array.from(adorners).find(a => a.name === 'interest');
+      assert.exists(interestAdorner);
+
+      const agentSpy = sinon.spy(domModel.agent, 'invoke_forceShowInterest');
+      interestAdorner.dispatchEvent(new Event('click'));
+      sinon.assert.notCalled(agentSpy);
+
+      // Restore
+      Root.Runtime.hostConfig.devToolsAllowInterestForcing = originalDevToolsAllowInterestForcing;
     });
 
     it('top-layer adorner click is no-op', () => {
@@ -1469,5 +1496,34 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
       const hint = domTarget.querySelector('.selected-hint');
       assert.isNull(hint);
     });
+  });
+
+  it('triggers invoke_forceShowInterest on interest adorner click', () => {
+    const originalDevToolsAllowInterestForcing = Root.Runtime.hostConfig.devToolsAllowInterestForcing;
+    Root.Runtime.hostConfig.devToolsAllowInterestForcing = {enabled: true};
+
+    sinon.stub(node, 'attributes').returns([{name: 'interestfor', value: 'my-tooltip'}] as SDK.DOMModel.Attribute[]);
+
+    treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+        /* omitRootDOMNode */ false, /* selectEnabled */ true, /* hideGutter */ false, /* maxTreeDepth */ 2,
+        /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ false);
+    treeOutline.wireToDOMModel(domModel);
+
+    treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
+    treeElement.treeOutline = treeOutline;
+
+    treeElement.updateAdorners();
+    treeElement.performUpdate();
+
+    const adorners = treeElement.listItemElement.querySelectorAll<Adorners.Adorner.Adorner>('devtools-adorner');
+    const interestAdorner = Array.from(adorners).find(a => a.name === 'interest');
+    assert.exists(interestAdorner);
+
+    const agentSpy = sinon.spy(domModel.agent, 'invoke_forceShowInterest');
+    interestAdorner.dispatchEvent(new Event('click'));
+    sinon.assert.calledWith(agentSpy, {nodeId: node.id, enable: true});
+
+    // Restore
+    Root.Runtime.hostConfig.devToolsAllowInterestForcing = originalDevToolsAllowInterestForcing;
   });
 });

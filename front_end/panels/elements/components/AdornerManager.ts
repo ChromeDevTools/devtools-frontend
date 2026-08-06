@@ -16,6 +16,7 @@ export enum RegisteredAdorners {
   FLEX = 'flex',
   GRID = 'grid',
   GRID_LANES = 'grid-lanes',
+  INTEREST = 'interest',
   MEDIA = 'media',
   POPOVER = 'popover',
   REVEAL = 'reveal',

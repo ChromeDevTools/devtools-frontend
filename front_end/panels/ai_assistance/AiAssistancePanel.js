@@ -692,12 +692,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.requestUpdate();
     }
     #getAiAssistanceEnabledSetting() {
-        try {
-            return Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled');
-        }
-        catch {
-            return;
-        }
+        return new AiAssistanceModel.AiSetting.AiSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor, Host.AidaClient.HostConfigTracker.instance(), Common.Settings.Settings.instance());
     }
     static async instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
@@ -864,7 +859,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             createStorageContext(UI.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem));
         this.#updateConversationState(this.#conversation);
         AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted" /* AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED */, this.#onHistoryDeleted, this);
-        this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
+        this.#aiAssistanceEnabledSetting.addEventListener("Changed" /* AiAssistanceModel.AiSetting.Events.CHANGED */, this.requestUpdate, this);
         Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#handleAidaAvailabilityChange);
         const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
         if (initialAvailability !== undefined) {
@@ -891,7 +886,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     willHide() {
         super.willHide();
         AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().removeEventListener("AiHistoryDeleted" /* AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED */, this.#onHistoryDeleted, this);
-        this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
+        this.#aiAssistanceEnabledSetting.removeEventListener("Changed" /* AiAssistanceModel.AiSetting.Events.CHANGED */, this.requestUpdate, this);
         Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#handleAidaAvailabilityChange);
         this.#toggleSearchElementAction?.removeEventListener("Toggled" /* UI.ActionRegistration.Events.TOGGLED */, this.requestUpdate, this);
         UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);

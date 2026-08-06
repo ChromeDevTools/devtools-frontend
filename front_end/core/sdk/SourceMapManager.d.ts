@@ -5,9 +5,11 @@ import { type PageResourceLoadInitiator, type ResourceLoader } from './PageResou
 import { SourceMap, type SourceMapV3 } from './SourceMap.js';
 import { type Target } from './Target.js';
 export type SourceMapFactory<T> = (compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString, payload: SourceMapV3, client: T) => SourceMap;
+export declare const lazyLoadingSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
     #private;
     constructor(target: Target, factory?: SourceMapFactory<T>);
+    isLazyLoadEnabled(): boolean;
     setEnabled(isEnabled: boolean): void;
     private static getBaseUrl;
     static resolveRelativeSourceURL(target: Target | null, url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString;

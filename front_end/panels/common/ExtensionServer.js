@@ -778,7 +778,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     /**
      * Slightly more permissive as {@link extensionAllowedOnURL}: This method also permits
      * UISourceCodes that originate from a {@link SDK.Script.Script} with a sourceURL magic comment as
-     * long as the corresponding target is permitted.
+     * long as the corresponding target and the embedder name (if it is a URL) are permitted.
      */
     extensionAllowedOnContentProvider(contentProvider, port) {
         // 1. Exception for Scripts with sourceURL
@@ -792,6 +792,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
                 }
                 return scripts.every(script => {
                     if (script.hasSourceURL) {
+                        // TODO(542925220): embedderName is a terrible proxy, but currently V8 stores the original URL only in there.
+                        // We'll add a proper field in the future and will replace it then.
+                        const embedderName = script.embedderName();
+                        if (embedderName && URL.canParse(embedderName) && !this.extensionAllowedOnURL(embedderName, port)) {
+                            return false;
+                        }
                         return this.extensionAllowedOnTarget(script.target(), port);
                     }
                     return this.extensionAllowedOnURL(script.contentURL(), port) &&

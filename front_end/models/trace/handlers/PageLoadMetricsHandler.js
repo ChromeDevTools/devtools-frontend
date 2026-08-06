@@ -40,6 +40,10 @@ export function reset() {
     metaCharsetCheckEventsByNavigation = new Map();
     metaCharsetCheckEventsArray = [];
 }
+let enableSoftNavigation = true;
+export function handleUserConfig(userConfig) {
+    enableSoftNavigation = userConfig.enableSoftNavigation;
+}
 let pageLoadEventsArray = [];
 // Once we've found the LCP events in the trace we want to fetch their DOM Node
 // from the backend. We could do this by parsing through our Map of frame =>
@@ -56,6 +60,12 @@ export function handleEvent(event) {
         return;
     }
     if (!Types.Events.eventIsPageLoadEvent(event)) {
+        return;
+    }
+    if (!enableSoftNavigation &&
+        (Types.Events.isSoftNavigationStart(event) ||
+            event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */ ||
+            Types.Events.isSoftFirstContentfulPaint(event))) {
         return;
     }
     pageLoadEventsArray.push(event);

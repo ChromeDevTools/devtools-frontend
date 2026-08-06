@@ -93,7 +93,7 @@ export declare class SourceMap {
     embeddedContentByURL(sourceURL: Platform.DevToolsPath.UrlString): string | null;
     hasScopeInfo(): boolean;
     waitForScopeInfo(): Promise<void>;
-    findEntry(lineNumber: number, columnNumber: number, inlineFrameIndex?: number): SourceMapEntry | null;
+    findEntry(lineNumber: number, columnNumber: number): SourceMapEntry | null;
     /** Returns the entry at the given position but only if an entry exists for that exact position */
     findEntryExact(lineNumber: number, columnNumber: number): SourceMapEntry | null;
     findEntryRanges(lineNumber: number, columnNumber: number): {

@@ -142,26 +142,8 @@ export class SourceMap {
         this.#ensureSourceMapProcessed();
         return this.#scopesFallbackPromise ?? Promise.resolve();
     }
-    findEntry(lineNumber, columnNumber, inlineFrameIndex) {
+    findEntry(lineNumber, columnNumber) {
         this.#ensureSourceMapProcessed();
-        if (inlineFrameIndex && this.#scopesInfo !== null) {
-            // For inlineFrameIndex != 0 we use the callsite info for the corresponding inlining site.
-            // Note that the callsite for "inlineFrameIndex" is actually in the previous frame.
-            const { inlinedFunctions } = this.#scopesInfo.findInlinedFunctions(lineNumber, columnNumber);
-            const { callsite } = inlinedFunctions[inlineFrameIndex - 1];
-            if (!callsite) {
-                console.error('Malformed source map. Expected to have a callsite info for index', inlineFrameIndex);
-                return null;
-            }
-            return {
-                lineNumber,
-                columnNumber,
-                sourceIndex: callsite.sourceIndex,
-                sourceURL: this.sourceURLs()[callsite.sourceIndex],
-                sourceLineNumber: callsite.line,
-                sourceColumnNumber: callsite.column,
-            };
-        }
         const mappings = this.mappings();
         const index = Platform.ArrayUtilities.upperBound(mappings, undefined, (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
         return index ? mappings[index - 1] : null;

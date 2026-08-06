@@ -20,6 +20,7 @@ export declare class TraceProcessor extends EventTarget {
      */
     static getInsightRunners(): Insights.Types.InsightModelsType;
     constructor(traceHandlers: Partial<Handlers.Types.Handlers>, modelConfiguration?: Types.Configuration.Configuration);
+    updateConfiguration(config: Types.Configuration.Configuration): void;
     reset(): void;
     parse(traceEvents: readonly Types.Events.Event[], options: Types.Configuration.ParseOptions): Promise<void>;
     get data(): Handlers.Types.HandlerData | null;

@@ -61,6 +61,10 @@ export class TraceProcessor extends EventTarget {
             }
         }
     }
+    updateConfiguration(config) {
+        this.#modelConfiguration = config;
+        this.#passConfigToHandlers();
+    }
     /**
      * When the user passes in a set of handlers, we want to ensure that we have all
      * the required handlers. Handlers can depend on other handlers, so if the user

@@ -31,8 +31,7 @@ export default `/*
   flex: 2 0 200px;
 }
 
-.network-config-fields span:first-of-type,
-.network-config-fields .network-config-accepted-encoding-custom {
+.network-config-fields span:first-of-type {
   padding: 3px 0;
 }
 

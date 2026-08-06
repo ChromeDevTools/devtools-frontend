@@ -3934,7 +3934,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
   /**
    * Slightly more permissive as {@link extensionAllowedOnURL}: This method also permits
    * UISourceCodes that originate from a {@link SDK.Script.Script} with a sourceURL magic comment as
-   * long as the corresponding target is permitted.
+   * long as the corresponding target and the embedder name (if it is a URL) are permitted.
    */
   extensionAllowedOnContentProvider(contentProvider, port) {
     if (contentProvider instanceof Workspace.UISourceCode.UISourceCode && contentProvider.contentType() === Common7.ResourceType.resourceTypes.Script) {
@@ -3946,6 +3946,10 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
         }
         return scripts.every((script) => {
           if (script.hasSourceURL) {
+            const embedderName = script.embedderName();
+            if (embedderName && URL.canParse(embedderName) && !this.extensionAllowedOnURL(embedderName, port)) {
+              return false;
+            }
             return this.extensionAllowedOnTarget(script.target(), port);
           }
           return this.extensionAllowedOnURL(script.contentURL(), port) && this.extensionAllowedOnTarget(script.target(), port);
@@ -5017,30 +5021,16 @@ var Linkifier2 = class _Linkifier {
 // gen/front_end/panels/common/ThrottlingUtils.js
 var ThrottlingUtils_exports = {};
 __export(ThrottlingUtils_exports, {
-  getRecommendedNetworkConditions: () => getRecommendedNetworkConditions,
   getThrottlingRecommendations: () => getThrottlingRecommendations
 });
-import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as CrUXManager from "./../../models/crux-manager/crux-manager.js";
 function getThrottlingRecommendations() {
-  const cruxManager = CrUXManager.CrUXManager.instance();
-  const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData("round_trip_time");
   let cpuOption = CalibratedMidTierMobileThrottlingOption;
   if (cpuOption.rate() === 0) {
     cpuOption = MidTierThrottlingOption;
   }
-  const networkConditions = getRecommendedNetworkConditions(roundTripTimeMetricData);
   return {
-    cpuOption,
-    networkConditions
+    cpuOption
   };
-}
-function getRecommendedNetworkConditions(roundTripTimeMetricData) {
-  if (roundTripTimeMetricData?.percentiles) {
-    const rtt = Number(roundTripTimeMetricData.percentiles.p75);
-    return SDK4.NetworkManager.getRecommendedNetworkPreset(rtt);
-  }
-  return null;
 }
 
 // gen/front_end/panels/common/common.prebundle.js

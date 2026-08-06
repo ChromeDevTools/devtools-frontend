@@ -3101,7 +3101,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (!this.shouldShowInsights()) {
       return false;
     }
-    if (!Common2.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").getIfNotDisabled() || !AiAssistanceModel.BuiltInAi.BuiltInAi.instance().isEventuallyAvailable()) {
+    if (!Common2.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").get() || !AiAssistanceModel.BuiltInAi.BuiltInAi.instance().isEventuallyAvailable()) {
       return false;
     }
     const devtoolsLocale = i18n3.DevToolsLocale.DevToolsLocale.instance();
@@ -4310,8 +4310,7 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
     this.requestUpdate();
   }
   #getConsoleInsightsEnabledSetting() {
-    const result = Common3.Settings.Settings.instance().maybeResolve(AiAssistanceModel3.AiUtils.consoleInsightsEnabledSettingDescriptor);
-    return "setting" in result ? result.setting : void 0;
+    return new AiAssistanceModel3.AiSetting.AiSetting(AiAssistanceModel3.AiUtils.consoleInsightsEnabledSettingDescriptor, Host2.AidaClient.HostConfigTracker.instance(), Common3.Settings.Settings.instance());
   }
   #getOnboardingCompletedSetting() {
     return Common3.Settings.Settings.instance().createLocalSetting("console-insights-onboarding-finished", true);
@@ -4332,7 +4331,7 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
   }
   #onTellMeMoreClick(event) {
     event.stopPropagation();
-    if (this.#getConsoleInsightsEnabledSetting()?.getIfNotDisabled() && this.#getOnboardingCompletedSetting()?.getIfNotDisabled()) {
+    if (this.#getConsoleInsightsEnabledSetting()?.getIfNotDisabled() && this.#getOnboardingCompletedSetting()?.get()) {
       this.#executeConsoleInsightAction();
       return;
     }

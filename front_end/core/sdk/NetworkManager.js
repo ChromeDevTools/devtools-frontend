@@ -1779,7 +1779,6 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     #targetManager;
     #userAgentOverride = '';
     #userAgentMetadataOverride = null;
-    #customAcceptedEncodings = null;
     #networkAgents = new Set();
     #fetchAgents = new Set();
     inflightMainResourceRequests = new Map();
@@ -1861,12 +1860,6 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         this.#requestConditions.applyConditions(this.isOffline(), this.isThrottling() ? this.#networkConditions : null, networkAgent);
         if (this.isIntercepting()) {
             void fetchAgent.invoke_enable({ patterns: this.#urlsForRequestInterceptor.valuesArray() });
-        }
-        if (this.#customAcceptedEncodings === null) {
-            void networkAgent.invoke_clearAcceptedEncodingsOverride();
-        }
-        else {
-            void networkAgent.invoke_setAcceptedEncodings({ encodings: this.#customAcceptedEncodings });
         }
         this.#networkAgents.add(networkAgent);
         this.#fetchAgents.add(fetchAgent);
@@ -1953,30 +1946,6 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         this.#customUserAgent = userAgent;
         this.#userAgentMetadataOverride = userAgentMetadataOverride;
         this.updateUserAgentOverride();
-    }
-    setCustomAcceptedEncodingsOverride(acceptedEncodings) {
-        this.#customAcceptedEncodings = acceptedEncodings;
-        this.updateAcceptedEncodingsOverride();
-        this.dispatchEventToListeners("AcceptedEncodingsChanged" /* MultitargetNetworkManager.Events.ACCEPTED_ENCODINGS_CHANGED */);
-    }
-    clearCustomAcceptedEncodingsOverride() {
-        this.#customAcceptedEncodings = null;
-        this.updateAcceptedEncodingsOverride();
-        this.dispatchEventToListeners("AcceptedEncodingsChanged" /* MultitargetNetworkManager.Events.ACCEPTED_ENCODINGS_CHANGED */);
-    }
-    isAcceptedEncodingOverrideSet() {
-        return this.#customAcceptedEncodings !== null;
-    }
-    updateAcceptedEncodingsOverride() {
-        const customAcceptedEncodings = this.#customAcceptedEncodings;
-        for (const agent of this.#networkAgents) {
-            if (customAcceptedEncodings === null) {
-                void agent.invoke_clearAcceptedEncodingsOverride();
-            }
-            else {
-                void agent.invoke_setAcceptedEncodings({ encodings: customAcceptedEncodings });
-            }
-        }
     }
     get requestConditions() {
         return this.#requestConditions;

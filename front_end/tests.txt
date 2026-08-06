@@ -47,6 +47,7 @@ core/platform/NumberUtilities.test.js
 core/platform/StringUtilities.test.js
 core/platform/TypedArrayUtilities.test.js
 core/protocol_client/InspectorBackend.test.js
+core/protocol_client/PuppeteerDevToolsConnection.test.js
 core/root/Runtime.test.js
 core/sdk/AccessibilityModel.test.js
 core/sdk/AnimationModel.test.js
@@ -636,7 +637,6 @@ panels/timeline/components/LiveMetricsView.test.js
 panels/timeline/components/MetricCard.test.js
 panels/timeline/components/NetworkRequestDetails.test.js
 panels/timeline/components/NetworkRequestTooltip.test.js
-panels/timeline/components/NetworkThrottlingSelector.test.js
 panels/timeline/components/OriginMap.test.js
 panels/timeline/components/RelatedInsightChips.test.js
 panels/timeline/components/Sidebar.test.js

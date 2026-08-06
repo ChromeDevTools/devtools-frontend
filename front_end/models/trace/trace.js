@@ -632,6 +632,10 @@ var TraceProcessor = class extends EventTarget {
       }
     }
   }
+  updateConfiguration(config) {
+    this.#modelConfiguration = config;
+    this.#passConfigToHandlers();
+  }
   /**
    * When the user passes in a set of handlers, we want to ensure that we have all
    * the required handlers. Handlers can depend on other handlers, so if the user
@@ -1109,6 +1113,10 @@ var Model = class _Model extends EventTarget {
       this.#config = config;
     }
     this.#processor = new TraceProcessor(handlers, this.#config);
+  }
+  updateConfiguration(config) {
+    this.#config = config;
+    this.#processor.updateConfiguration(config);
   }
   /**
    * Parses an array of trace events into a structured object containing all the

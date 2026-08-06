@@ -21,24 +21,63 @@ export class AiSetting extends Common.ObjectWrapper.ObjectWrapper {
     #settings;
     #boundOnSettingChanged = this.#onSettingChanged.bind(this);
     #boundOnAidaAvailabilityChanged = this.#onAidaAvailabilityChanged.bind(this);
+    #isSubscribed = false;
     constructor(descriptor, hostConfigTracker, settings) {
         super();
         this.#descriptor = descriptor;
         this.#hostConfigTracker = hostConfigTracker;
         this.#settings = settings;
-        this.#hostConfigTracker.addEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnAidaAvailabilityChanged);
         this.#tryResolveSetting();
+    }
+    addEventListener(eventType, listener, thisObject) {
+        const isFirst = !this.hasEventListeners(eventType);
+        const descriptor = super.addEventListener(eventType, listener, thisObject);
+        if (isFirst) {
+            this.#subscribe();
+        }
+        return descriptor;
+    }
+    removeEventListener(eventType, listener, thisObject) {
+        super.removeEventListener(eventType, listener, thisObject);
+        if (!this.hasEventListeners(eventType)) {
+            this.#unsubscribe();
+        }
+    }
+    #subscribe() {
+        if (this.#isSubscribed) {
+            return;
+        }
+        this.#tryResolveSetting();
+        this.#isSubscribed = true;
+        this.#hostConfigTracker.addEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnAidaAvailabilityChanged);
+        this.#setting?.addChangeListener(this.#boundOnSettingChanged);
+    }
+    #unsubscribe() {
+        if (!this.#isSubscribed) {
+            return;
+        }
+        this.#isSubscribed = false;
+        this.#hostConfigTracker.removeEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnAidaAvailabilityChanged);
+        this.#setting?.removeChangeListener(this.#boundOnSettingChanged);
     }
     #tryResolveSetting() {
         const result = this.#settings.maybeResolve(this.#descriptor);
         if ('setting' in result) {
             if (this.#setting !== result.setting) {
-                if (this.#setting) {
+                if (this.#setting && this.#isSubscribed) {
                     this.#setting.removeChangeListener(this.#boundOnSettingChanged);
                 }
                 this.#setting = result.setting;
-                this.#setting.addChangeListener(this.#boundOnSettingChanged);
+                if (this.#isSubscribed) {
+                    this.#setting.addChangeListener(this.#boundOnSettingChanged);
+                }
             }
+        }
+        else if (this.#setting) {
+            if (this.#isSubscribed) {
+                this.#setting.removeChangeListener(this.#boundOnSettingChanged);
+            }
+            this.#setting = undefined;
         }
     }
     get unavailable() {
@@ -60,13 +99,21 @@ export class AiSetting extends Common.ObjectWrapper.ObjectWrapper {
         if (this.disabled || this.unavailable) {
             return undefined;
         }
+        this.#tryResolveSetting();
         return this.#setting?.get();
     }
     setIfNotDisabled(value) {
         if (this.disabled || this.unavailable) {
             return;
         }
+        this.#tryResolveSetting();
         this.#setting?.set(value);
+    }
+    get() {
+        return this.getIfNotDisabled();
+    }
+    set(value) {
+        this.setIfNotDisabled(value);
     }
     #onSettingChanged() {
         this.dispatchEventToListeners("Changed" /* Events.CHANGED */);

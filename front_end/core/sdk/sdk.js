@@ -17951,6 +17951,7 @@ var SourceMapManager_exports = {};
 __export(SourceMapManager_exports, {
   Events: () => Events2,
   SourceMapManager: () => SourceMapManager,
+  lazyLoadingSettingDescriptor: () => lazyLoadingSettingDescriptor,
   tryLoadSourceMap: () => tryLoadSourceMap
 });
 import * as Common13 from "./../common/common.js";
@@ -19753,35 +19754,6 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     return false;
   }
   /**
-   * Given a generated position, returns the original name of the surrounding function as well as
-   * all the original function names that got inlined into the surrounding generated function and their
-   * respective callsites in the original code (ordered from inner to outer).
-   *
-   * @returns a list with inlined functions. Every entry in the list has a callsite in the orignal code,
-   * except the last function (since the last function didn't get inlined).
-   */
-  findInlinedFunctions(generatedLine, generatedColumn) {
-    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
-    const result = {
-      inlinedFunctions: [],
-      originalFunctionName: ""
-    };
-    for (let i = rangeChain.length - 1; i >= 0; --i) {
-      const range = rangeChain[i];
-      if (range.callSite) {
-        result.inlinedFunctions.push({
-          name: range.originalScope?.name ?? "",
-          callsite: { ...range.callSite, sourceURL: this.#sourceMap.sourceURLForSourceIndex(range.callSite.sourceIndex) }
-        });
-      }
-      if (range.isStackFrame) {
-        result.originalFunctionName = range.originalScope?.name ?? "";
-        break;
-      }
-    }
-    return result;
-  }
-  /**
    * Given a generated position, this returns all the surrounding generated ranges from outer
    * to inner.
    */
@@ -20133,24 +20105,8 @@ var SourceMap = class {
     this.#ensureSourceMapProcessed();
     return this.#scopesFallbackPromise ?? Promise.resolve();
   }
-  findEntry(lineNumber, columnNumber, inlineFrameIndex) {
+  findEntry(lineNumber, columnNumber) {
     this.#ensureSourceMapProcessed();
-    if (inlineFrameIndex && this.#scopesInfo !== null) {
-      const { inlinedFunctions } = this.#scopesInfo.findInlinedFunctions(lineNumber, columnNumber);
-      const { callsite } = inlinedFunctions[inlineFrameIndex - 1];
-      if (!callsite) {
-        console.error("Malformed source map. Expected to have a callsite info for index", inlineFrameIndex);
-        return null;
-      }
-      return {
-        lineNumber,
-        columnNumber,
-        sourceIndex: callsite.sourceIndex,
-        sourceURL: this.sourceURLs()[callsite.sourceIndex],
-        sourceLineNumber: callsite.line,
-        sourceColumnNumber: callsite.column
-      };
-    }
     const mappings = this.mappings();
     const index = Platform7.ArrayUtilities.upperBound(mappings, void 0, (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
     return index ? mappings[index - 1] : null;
@@ -20688,9 +20644,16 @@ var IN_MEMORY_INSTANCE = new class {
 }();
 
 // gen/front_end/core/sdk/SourceMapManager.js
+var lazyLoadingSettingDescriptor = {
+  name: "source-maps-lazy-loading",
+  type: "boolean",
+  defaultValue: false,
+  storageType: "Local"
+};
 var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.ObjectWrapper {
   #target;
   #factory;
+  #lazyLoadingSetting;
   #isEnabled = true;
   #clientData = /* @__PURE__ */ new Map();
   #sourceMaps = /* @__PURE__ */ new Map();
@@ -20700,6 +20663,11 @@ var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.Ob
     super();
     this.#target = target;
     this.#factory = factory ?? ((compiledURL, sourceMappingURL, payload) => new SourceMap(compiledURL, sourceMappingURL, payload, this.#target.targetManager().getConsole()));
+    const settings = target.targetManager().settings;
+    this.#lazyLoadingSetting = settings.resolve(lazyLoadingSettingDescriptor);
+  }
+  isLazyLoadEnabled() {
+    return this.#lazyLoadingSetting.get();
   }
   setEnabled(isEnabled) {
     if (isEnabled === this.#isEnabled) {
@@ -20733,7 +20701,7 @@ var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.Ob
     if (!clientData) {
       return Promise.resolve(void 0);
     }
-    return clientData.sourceMapPromise;
+    return clientData.getSourceMap();
   }
   clientForSourceMap(sourceMap) {
     return this.#sourceMaps.get(sourceMap);
@@ -20746,49 +20714,60 @@ var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.Ob
     if (!relativeSourceMapURL) {
       return;
     }
-    let clientData = {
+    const clientData = {
       relativeSourceURL,
       relativeSourceMapURL,
-      sourceMapPromise: Promise.resolve(void 0)
+      getSourceMap: () => Promise.resolve(void 0)
     };
+    this.#clientData.set(client, clientData);
     if (this.#isEnabled) {
       const sourceURL = _SourceMapManager.resolveRelativeSourceURL(this.#target, relativeSourceURL);
       const sourceMapURL = Common13.ParsedURL.ParsedURL.completeURL(sourceURL, relativeSourceMapURL);
       if (sourceMapURL) {
-        if (this.#attachingClient) {
-          console.error("Attaching source map may cancel previously attaching source map");
-        }
-        this.#attachingClient = client;
-        this.dispatchEventToListeners(Events2.SourceMapWillAttach, { client });
-        if (this.#attachingClient === client) {
-          this.#attachingClient = null;
-          const initiator = client.createPageResourceLoadInitiator();
-          const resourceLoader = this.#target.targetManager().context.get(PageResourceLoader);
-          clientData.sourceMapPromise = loadSourceMap(resourceLoader, this.#sourceMapCache, sourceMapURL, client.debugId(), initiator).then((payload) => {
-            const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
-            if (this.#clientData.get(client) === clientData) {
-              clientData.sourceMap = sourceMap;
-              this.#sourceMaps.set(sourceMap, client);
-              this.dispatchEventToListeners(Events2.SourceMapAttached, { client, sourceMap });
+        let sourceMapPromise;
+        const doLoad = () => {
+          if (!sourceMapPromise) {
+            if (this.#attachingClient) {
+              console.error("Attaching source map may cancel previously attaching source map");
             }
-            return sourceMap;
-          }, () => {
-            if (this.#clientData.get(client) === clientData) {
+            this.#attachingClient = client;
+            this.dispatchEventToListeners(Events2.SourceMapWillAttach, { client });
+            if (this.#attachingClient === client) {
+              this.#attachingClient = null;
+              const initiator = client.createPageResourceLoadInitiator();
+              const resourceLoader = this.#target.targetManager().context.get(PageResourceLoader);
+              sourceMapPromise = loadSourceMap(resourceLoader, this.#sourceMapCache, sourceMapURL, client.debugId(), initiator).then((payload) => {
+                const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
+                if (this.#clientData.get(client) === clientData) {
+                  clientData.sourceMap = sourceMap;
+                  this.#sourceMaps.set(sourceMap, client);
+                  this.dispatchEventToListeners(Events2.SourceMapAttached, { client, sourceMap });
+                }
+                return sourceMap;
+              }, () => {
+                if (this.#clientData.get(client) === clientData) {
+                  this.dispatchEventToListeners(Events2.SourceMapFailedToAttach, { client });
+                }
+                return void 0;
+              });
+            } else {
+              if (this.#attachingClient) {
+                console.error("Cancelling source map attach because another source map is attaching");
+              }
+              this.#clientData.delete(client);
               this.dispatchEventToListeners(Events2.SourceMapFailedToAttach, { client });
+              sourceMapPromise = Promise.resolve(void 0);
             }
-            return void 0;
-          });
-        } else {
-          if (this.#attachingClient) {
-            console.error("Cancelling source map attach because another source map is attaching");
           }
-          clientData = null;
-          this.dispatchEventToListeners(Events2.SourceMapFailedToAttach, { client });
+          return sourceMapPromise;
+        };
+        if (this.isLazyLoadEnabled()) {
+          clientData.getSourceMap = doLoad;
+        } else {
+          const promise = doLoad();
+          clientData.getSourceMap = () => promise;
         }
       }
-    }
-    if (clientData) {
-      this.#clientData.set(client, clientData);
     }
   }
   cancelAttachSourceMap(client) {
@@ -30089,7 +30068,6 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
   #targetManager;
   #userAgentOverride = "";
   #userAgentMetadataOverride = null;
-  #customAcceptedEncodings = null;
   #networkAgents = /* @__PURE__ */ new Set();
   #fetchAgents = /* @__PURE__ */ new Set();
   inflightMainResourceRequests = /* @__PURE__ */ new Map();
@@ -30166,11 +30144,6 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     this.#requestConditions.applyConditions(this.isOffline(), this.isThrottling() ? this.#networkConditions : null, networkAgent);
     if (this.isIntercepting()) {
       void fetchAgent.invoke_enable({ patterns: this.#urlsForRequestInterceptor.valuesArray() });
-    }
-    if (this.#customAcceptedEncodings === null) {
-      void networkAgent.invoke_clearAcceptedEncodingsOverride();
-    } else {
-      void networkAgent.invoke_setAcceptedEncodings({ encodings: this.#customAcceptedEncodings });
     }
     this.#networkAgents.add(networkAgent);
     this.#fetchAgents.add(fetchAgent);
@@ -30260,35 +30233,6 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     this.#customUserAgent = userAgent;
     this.#userAgentMetadataOverride = userAgentMetadataOverride;
     this.updateUserAgentOverride();
-  }
-  setCustomAcceptedEncodingsOverride(acceptedEncodings) {
-    this.#customAcceptedEncodings = acceptedEncodings;
-    this.updateAcceptedEncodingsOverride();
-    this.dispatchEventToListeners(
-      "AcceptedEncodingsChanged"
-      /* MultitargetNetworkManager.Events.ACCEPTED_ENCODINGS_CHANGED */
-    );
-  }
-  clearCustomAcceptedEncodingsOverride() {
-    this.#customAcceptedEncodings = null;
-    this.updateAcceptedEncodingsOverride();
-    this.dispatchEventToListeners(
-      "AcceptedEncodingsChanged"
-      /* MultitargetNetworkManager.Events.ACCEPTED_ENCODINGS_CHANGED */
-    );
-  }
-  isAcceptedEncodingOverrideSet() {
-    return this.#customAcceptedEncodings !== null;
-  }
-  updateAcceptedEncodingsOverride() {
-    const customAcceptedEncodings = this.#customAcceptedEncodings;
-    for (const agent of this.#networkAgents) {
-      if (customAcceptedEncodings === null) {
-        void agent.invoke_clearAcceptedEncodingsOverride();
-      } else {
-        void agent.invoke_setAcceptedEncodings({ encodings: customAcceptedEncodings });
-      }
-    }
   }
   get requestConditions() {
     return this.#requestConditions;

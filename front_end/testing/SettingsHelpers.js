@@ -19,7 +19,6 @@ export function stubNoopSettings() {
         set: () => { },
         addChangeListener: () => { },
         removeChangeListener: () => { },
-        setDisabled: () => { },
         title: () => { },
         asRegExp: () => { },
         type: () => "boolean" /* Common.Settings.SettingType.BOOLEAN */,

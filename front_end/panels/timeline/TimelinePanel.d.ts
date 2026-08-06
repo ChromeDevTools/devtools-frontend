@@ -53,7 +53,6 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     private loader?;
     private showScreenshotsToolbarCheckbox?;
     private showMemoryToolbarCheckbox?;
-    private networkThrottlingSelect?;
     private cpuThrottlingSelect?;
     private fileSelectorElement?;
     private selection;
@@ -109,7 +108,6 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     private canRecord;
     private populateToolbar;
     private createSettingsPane;
-    private createNetworkConditionsSelectToolbarItem;
     private prepareToLoadTimeline;
     private createFileSelector;
     private contextMenu;

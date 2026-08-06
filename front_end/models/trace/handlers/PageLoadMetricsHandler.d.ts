@@ -2,6 +2,7 @@ import * as Types from '../types/types.js';
 import type { HandlerName } from './types.js';
 type AnyNavigationStart = Types.Events.NavigationStart | Types.Events.SoftNavigationStart;
 export declare function reset(): void;
+export declare function handleUserConfig(userConfig: Types.Configuration.Configuration): void;
 export declare function handleEvent(event: Types.Events.Event): void;
 export declare function getFrameIdForPageLoadEvent(event: Types.Events.PageLoadEvent): string;
 /**

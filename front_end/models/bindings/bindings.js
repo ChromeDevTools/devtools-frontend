@@ -1154,7 +1154,7 @@ var CompilerScriptMapping = class {
     if (!project) {
       return null;
     }
-    const entry = sourceMap.findEntry(lineNumber, columnNumber, rawLocation.inlineFrameIndex);
+    const entry = sourceMap.findEntry(lineNumber, columnNumber);
     if (!entry?.sourceURL) {
       return null;
     }

@@ -1303,8 +1303,7 @@ var networkConfigView_css_default = `/*
   flex: 2 0 200px;
 }
 
-.network-config-fields span:first-of-type,
-.network-config-fields .network-config-accepted-encoding-custom {
+.network-config-fields span:first-of-type {
   padding: 3px 0;
 }
 
@@ -1431,11 +1430,6 @@ var UIStrings5 = {
    */
   selectAutomatically: "Use browser default",
   /**
-   * @description Title of a section in the Network conditions panel that includes
-   * a set of checkboxes to override the content encodings supported by the browser.
-   */
-  acceptedEncoding: "Accepted `Content-Encoding`s",
-  /**
    * @description Status text displayed after updating user agent client hints.
    */
   clientHintsStatusText: "User agent updated.",
@@ -1460,8 +1454,6 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
     this.createNetworkThrottlingSection();
     this.contentElement.createChild("div").classList.add("panel-section-separator");
     this.createUserAgentSection();
-    this.contentElement.createChild("div").classList.add("panel-section-separator");
-    this.createAcceptedEncodingSection();
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
@@ -1550,31 +1542,31 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
     return { select: userAgentSelectElement, input: otherUserAgentElement, error: errorElement };
   }
   createSection(title, className) {
-    const section5 = this.contentElement.createChild("section", "network-config-group");
+    const section4 = this.contentElement.createChild("section", "network-config-group");
     if (className) {
-      section5.classList.add(className);
+      section4.classList.add(className);
     }
-    section5.createChild("div", "network-config-title").textContent = title;
-    return section5.createChild("div", "network-config-fields");
+    section4.createChild("div", "network-config-title").textContent = title;
+    return section4.createChild("div", "network-config-fields");
   }
   createCacheSection() {
-    const section5 = this.createSection(i18nString5(UIStrings5.caching), "network-config-disable-cache");
-    section5.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.disableCache), Common4.Settings.Settings.instance().moduleSetting("cache-disabled")));
+    const section4 = this.createSection(i18nString5(UIStrings5.caching), "network-config-disable-cache");
+    section4.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.disableCache), Common4.Settings.Settings.instance().moduleSetting("cache-disabled")));
   }
   createNetworkThrottlingSection() {
     const title = i18nString5(UIStrings5.networkThrottling);
-    const section5 = this.createSection(title, "network-config-throttling");
-    MobileThrottling2.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(section5, title);
+    const section4 = this.createSection(title, "network-config-throttling");
+    MobileThrottling2.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(section4, title);
     const saveDataSelect = MobileThrottling2.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector("chrome-select");
-    section5.appendChild(saveDataSelect);
+    section4.appendChild(saveDataSelect);
   }
   createUserAgentSection() {
     const userAgentMetadataSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent-metadata", null);
     const customUserAgentSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent", "");
     const title = i18nString5(UIStrings5.userAgent);
-    const section5 = this.createSection(title, "network-config-ua");
+    const section4 = this.createSection(title, "network-config-ua");
     const autoCheckbox = UI5.UIUtils.CheckboxLabel.create(i18nString5(UIStrings5.selectAutomatically), true, void 0, customUserAgentSetting.name);
-    section5.appendChild(autoCheckbox);
+    section4.appendChild(autoCheckbox);
     customUserAgentSetting.addChangeListener(() => {
       if (autoCheckbox.checked) {
         return;
@@ -1583,7 +1575,7 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
       const userAgentMetadata = getUserAgentMetadata(customUA);
       SDK4.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
     });
-    const customUserAgentSelectBox = section5.createChild("div", "network-config-ua-custom");
+    const customUserAgentSelectBox = section4.createChild("div", "network-config-ua-custom");
     autoCheckbox.addEventListener("change", userAgentSelectBoxChanged);
     const customSelectAndInput = _NetworkConfigView.createUserAgentSelectAndInput(title);
     customUserAgentSelectBox.appendChild(customSelectAndInput.select);
@@ -1619,7 +1611,7 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
       SDK4.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, metaData);
       userAgentUpdateButtonStatusText.textContent = i18nString5(UIStrings5.clientHintsStatusText);
     });
-    const userAgentUpdateButtonStatusText = section5.createChild("span", "status-text");
+    const userAgentUpdateButtonStatusText = section4.createChild("span", "status-text");
     userAgentUpdateButtonStatusText.textContent = "";
     userAgentSelectBoxChanged();
     function userAgentSelectBoxChanged() {
@@ -1632,55 +1624,6 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
       const customUA = useCustomUA ? customUserAgentSetting.get() : "";
       const userAgentMetadata = useCustomUA ? getUserAgentMetadata(customUA) : null;
       SDK4.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
-    }
-  }
-  createAcceptedEncodingSection() {
-    const useCustomAcceptedEncodingSetting = Common4.Settings.Settings.instance().createSetting("use-custom-accepted-encodings", false);
-    const customAcceptedEncodingSetting = Common4.Settings.Settings.instance().createSetting("custom-accepted-encodings", `${"gzip"},${"br"},${"deflate"}`);
-    const title = i18nString5(UIStrings5.acceptedEncoding);
-    const section5 = this.createSection(title, "network-config-accepted-encoding");
-    const autoCheckbox = UI5.UIUtils.CheckboxLabel.create(i18nString5(UIStrings5.selectAutomatically), true, void 0, useCustomAcceptedEncodingSetting.name);
-    section5.appendChild(autoCheckbox);
-    function onSettingChange() {
-      if (!useCustomAcceptedEncodingSetting.get()) {
-        SDK4.NetworkManager.MultitargetNetworkManager.instance().clearCustomAcceptedEncodingsOverride();
-      } else {
-        SDK4.NetworkManager.MultitargetNetworkManager.instance().setCustomAcceptedEncodingsOverride(customAcceptedEncodingSetting.get() === "" ? [] : customAcceptedEncodingSetting.get().split(","));
-      }
-    }
-    customAcceptedEncodingSetting.addChangeListener(onSettingChange);
-    useCustomAcceptedEncodingSetting.addChangeListener(onSettingChange);
-    const encodingsSection = section5.createChild("div", "network-config-accepted-encoding-custom");
-    encodingsSection.setAttribute("jslog", `${VisualLogging4.section().context(customAcceptedEncodingSetting.name)}`);
-    autoCheckbox.checked = !useCustomAcceptedEncodingSetting.get();
-    autoCheckbox.addEventListener("change", acceptedEncodingsChanged);
-    const checkboxes = /* @__PURE__ */ new Map();
-    const contentEncodings = {
-      Deflate: "deflate",
-      Gzip: "gzip",
-      Br: "br",
-      Zstd: "zstd"
-    };
-    for (const encoding of Object.values(contentEncodings)) {
-      const checkbox = UI5.UIUtils.CheckboxLabel.createWithStringLiteral(encoding, true, encoding);
-      encodingsSection.appendChild(checkbox);
-      checkboxes.set(encoding, checkbox);
-    }
-    for (const [encoding, checkbox] of checkboxes) {
-      checkbox.checked = customAcceptedEncodingSetting.get().includes(encoding);
-      checkbox.addEventListener("change", acceptedEncodingsChanged);
-    }
-    acceptedEncodingsChanged();
-    function acceptedEncodingsChanged() {
-      useCustomAcceptedEncodingSetting.set(!autoCheckbox.checked);
-      const encodings = [];
-      for (const [encoding, checkbox] of checkboxes) {
-        checkbox.disabled = autoCheckbox.checked;
-        if (checkbox.checked) {
-          encodings.push(encoding);
-        }
-      }
-      customAcceptedEncodingSetting.set(encodings.join(","));
     }
   }
   wasShown() {
@@ -4341,8 +4284,8 @@ var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
   #refreshHeadersView() {
     this.requestUpdate();
   }
-  revealHeader(section5, header) {
-    this.#toReveal = { section: section5, header };
+  revealHeader(section4, header) {
+    this.#toReveal = { section: section4, header };
     this.requestUpdate();
   }
   #uiSourceCodeAddedOrRemoved(event) {
@@ -5291,14 +5234,14 @@ var DEFAULT_VIEW8 = (input, output, target) => {
   const requestPayloadExpandedSetting = Common8.Settings.Settings.instance().createSetting("request-info-request-payload-category-expanded", true);
   const onContextMenu = (viewSource, setViewSource, decoding) => (event) => {
     const contextMenu = new UI11.ContextMenu.ContextMenu(event);
-    const section5 = contextMenu.newSection();
+    const section4 = contextMenu.newSection();
     if (viewSource) {
-      section5.appendItem(i18nString11(UIStrings11.viewParsed), () => setViewSource(!viewSource), { jslogContext: "view-parsed" });
+      section4.appendItem(i18nString11(UIStrings11.viewParsed), () => setViewSource(!viewSource), { jslogContext: "view-parsed" });
     } else {
-      section5.appendItem(i18nString11(UIStrings11.viewSource), () => setViewSource(!viewSource), { jslogContext: "view-source" });
+      section4.appendItem(i18nString11(UIStrings11.viewSource), () => setViewSource(!viewSource), { jslogContext: "view-source" });
       if (decoding) {
         const viewURLEncodedText = decoding.decode ? i18nString11(UIStrings11.viewUrlEncoded) : i18nString11(UIStrings11.viewDecoded);
-        section5.appendItem(viewURLEncodedText, () => decoding.toggleDecode(), { jslogContext: "toggle-url-decoding" });
+        section4.appendItem(viewURLEncodedText, () => decoding.toggleDecode(), { jslogContext: "toggle-url-decoding" });
       }
     }
     void contextMenu.show();
@@ -8158,12 +8101,12 @@ var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
     );
     await this.#responseView?.revealPosition(position);
   }
-  revealHeader(section5, header) {
+  revealHeader(section4, header) {
     this.#selectTab(
       "headers-component"
       /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
     );
-    this.#headersViewComponent?.revealHeader(section5, header);
+    this.#headersViewComponent?.revealHeader(section4, header);
   }
   getHeadersViewComponent() {
     return this.#headersViewComponent;

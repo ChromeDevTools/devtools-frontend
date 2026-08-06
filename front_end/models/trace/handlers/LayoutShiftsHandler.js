@@ -63,6 +63,10 @@ export function reset() {
     scoreRecords = [];
     clsWindowID = -1;
 }
+let enableSoftNavigation = true;
+export function handleUserConfig(userConfig) {
+    enableSoftNavigation = userConfig.enableSoftNavigation;
+}
 export function handleEvent(event) {
     if (Types.Events.isLayoutShift(event) && !event.args.data?.had_recent_input) {
         layoutShiftEvents.push(event);
@@ -201,7 +205,8 @@ export async function finalize() {
 }
 async function buildLayoutShiftsClusters() {
     const { navigationsByFrameId, mainFrameId, traceBounds, softNavigationsById } = metaHandlerData();
-    const navigations = [...(navigationsByFrameId.get(mainFrameId) || []), ...softNavigationsById.values()].sort((a, b) => a.ts - b.ts);
+    const softNavigations = enableSoftNavigation ? Array.from(softNavigationsById.values()) : [];
+    const navigations = [...(navigationsByFrameId.get(mainFrameId) || []), ...softNavigations].sort((a, b) => a.ts - b.ts);
     if (layoutShiftEvents.length === 0) {
         return;
     }

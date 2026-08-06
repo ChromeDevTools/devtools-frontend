@@ -659,11 +659,7 @@ var UIStrings4 = {
   /**
    * @description Icon title for warning indicator in the Network panel title.
    */
-  requestsMayBeBlocked: "Requests may be blocked. See the Network request blocking panel",
-  /**
-   * @description Title of an icon in the Network panel that indicates that accepted content encodings have been overridden.
-   */
-  acceptedEncodingOverrideSet: "The set of accepted `Content-Encoding` headers has been changed by DevTools. See the Network conditions panel"
+  requestsMayBeBlocked: "Requests may be blocked. See the Network request blocking panel"
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/mobile_throttling/NetworkPanelIndicator.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
@@ -676,7 +672,6 @@ var NetworkPanelIndicator = class {
     manager.addEventListener("ConditionsChanged", updateVisibility);
     manager.addEventListener("BlockedPatternsChanged", updateVisibility);
     manager.addEventListener("InterceptorsChanged", updateVisibility);
-    manager.addEventListener("AcceptedEncodingsChanged", updateVisibility);
     Common2.Settings.Settings.instance().moduleSetting("cache-disabled").addChangeListener(updateVisibility, this);
     updateVisibility();
     function updateVisibility() {
@@ -690,9 +685,6 @@ var NetworkPanelIndicator = class {
       if (manager.isBlocking()) {
         warnings.push(i18nString4(UIStrings4.requestsMayBeBlocked));
       }
-      if (manager.isAcceptedEncodingOverrideSet()) {
-        warnings.push(i18nString4(UIStrings4.acceptedEncodingOverrideSet));
-      }
       UI2.InspectorView.InspectorView.instance().setPanelWarnings("network", warnings);
     }
   }
@@ -702,7 +694,8 @@ var NetworkPanelIndicator = class {
 var NetworkThrottlingSelector_exports = {};
 __export(NetworkThrottlingSelector_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
-  NetworkThrottlingSelect: () => NetworkThrottlingSelect
+  NetworkThrottlingSelect: () => NetworkThrottlingSelect,
+  getRecommendedNetworkConditions: () => getRecommendedNetworkConditions
 });
 import * as Common3 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
@@ -712,7 +705,6 @@ import * as CrUXManager from "./../../models/crux-manager/crux-manager.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon3 from "./../common/common.js";
 var { render: render2, html: html2, Directives } = Lit;
 var UIStrings5 = {
   /**
@@ -826,6 +818,13 @@ var DEFAULT_VIEW = (input, output, target) => {
     }
   );
 };
+function getRecommendedNetworkConditions(roundTripTimeMetricData) {
+  if (roundTripTimeMetricData?.percentiles) {
+    const rtt = Number(roundTripTimeMetricData.percentiles.p75);
+    return SDK5.NetworkManager.getRecommendedNetworkPreset(rtt);
+  }
+  return null;
+}
 var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.ObjectWrapper.eventMixin(UI3.Widget.Widget) {
   #settings;
   #recommendedConditions = null;
@@ -898,7 +897,7 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.Obj
   #updateRecommendation = () => {
     const cruxManager = CrUXManager.CrUXManager.instance();
     const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData("round_trip_time");
-    this.recommendedConditions = PanelsCommon3.ThrottlingUtils.getRecommendedNetworkConditions(roundTripTimeMetricData);
+    this.recommendedConditions = getRecommendedNetworkConditions(roundTripTimeMetricData);
   };
   set bindToGlobalConditions(bind) {
     const cruxManager = CrUXManager.CrUXManager.instance();
@@ -995,12 +994,12 @@ import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import { createIcon } from "./../../ui/kit/kit.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon5 from "./../common/common.js";
+import * as PanelsCommon4 from "./../common/common.js";
 
 // gen/front_end/panels/mobile_throttling/CalibrationController.js
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as PanelsCommon4 from "./../common/common.js";
+import * as PanelsCommon3 from "./../common/common.js";
 var UIStrings6 = {
   /**
    * @description Text to display to user while a calibration process is running.
@@ -1147,12 +1146,12 @@ ${result.description}`;
       if (actualScore < midScore) {
         if (actualScore < lowScore) {
           this.#result = {
-            low: PanelsCommon4.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK,
-            mid: PanelsCommon4.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK
+            low: PanelsCommon3.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK,
+            mid: PanelsCommon3.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK
           };
           return;
         }
-        this.#result = { mid: PanelsCommon4.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK };
+        this.#result = { mid: PanelsCommon3.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK };
         isHalfwayDone = true;
       }
     }
@@ -1673,7 +1672,7 @@ var CPUThrottlingCard = class {
         return i18nString7(UIStrings7.needsCalibration);
       }
       if (typeof result2 === "string") {
-        return PanelsCommon5.CPUThrottlingOption.calibrationErrorToString(result2);
+        return PanelsCommon4.CPUThrottlingOption.calibrationErrorToString(result2);
       }
       if (typeof result2 !== "number") {
         return `Invalid: ${result2}`;

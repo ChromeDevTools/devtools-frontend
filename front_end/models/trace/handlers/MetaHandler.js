@@ -4,7 +4,10 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
-let config;
+let config = Types.Configuration.defaults();
+export function handleUserConfig(userConfig) {
+    config = userConfig;
+}
 // We track the renderer processes we see in each frame on the way through the trace.
 let rendererProcessesByFrameId = new Map();
 // We will often want to key data by Frame IDs, and commonly we'll care most
@@ -280,7 +283,7 @@ export function handleEvent(event) {
         }
         return;
     }
-    if (Types.Events.isSoftNavigationStart(event)) {
+    if (config.enableSoftNavigation && Types.Events.isSoftNavigationStart(event)) {
         softNavigationsById.set(event.args.context.performanceTimelineNavigationId, event);
     }
     // Update `finalDisplayUrlByNavigationId` to reflect the latest redirect for each navigation.
@@ -306,7 +309,7 @@ export function handleEvent(event) {
     }
 }
 export async function finalize(options) {
-    config = { showAllEvents: Boolean(options?.showAllEvents) };
+    config.showAllEvents = Boolean(options?.showAllEvents);
     // We try to set the minimum time by finding the event with the smallest
     // timestamp. However, if we also got a timestamp from the
     // TracingStartedInBrowser event, we should always use that.

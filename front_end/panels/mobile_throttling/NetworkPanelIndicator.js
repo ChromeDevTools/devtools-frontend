@@ -18,10 +18,6 @@ const UIStrings = {
      * @description Icon title for warning indicator in the Network panel title.
      */
     requestsMayBeBlocked: 'Requests may be blocked. See the Network request blocking panel',
-    /**
-     * @description Title of an icon in the Network panel that indicates that accepted content encodings have been overridden.
-     */
-    acceptedEncodingOverrideSet: 'The set of accepted `Content-Encoding` headers has been changed by DevTools. See the Network conditions panel',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/NetworkPanelIndicator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -35,7 +31,6 @@ export class NetworkPanelIndicator {
         manager.addEventListener("ConditionsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED */, updateVisibility);
         manager.addEventListener("BlockedPatternsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED */, updateVisibility);
         manager.addEventListener("InterceptorsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.INTERCEPTORS_CHANGED */, updateVisibility);
-        manager.addEventListener("AcceptedEncodingsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.ACCEPTED_ENCODINGS_CHANGED */, updateVisibility);
         Common.Settings.Settings.instance().moduleSetting('cache-disabled').addChangeListener(updateVisibility, this);
         updateVisibility();
         function updateVisibility() {
@@ -48,9 +43,6 @@ export class NetworkPanelIndicator {
             }
             if (manager.isBlocking()) {
                 warnings.push(i18nString(UIStrings.requestsMayBeBlocked));
-            }
-            if (manager.isAcceptedEncodingOverrideSet()) {
-                warnings.push(i18nString(UIStrings.acceptedEncodingOverrideSet));
             }
             UI.InspectorView.InspectorView.instance().setPanelWarnings('network', warnings);
         }

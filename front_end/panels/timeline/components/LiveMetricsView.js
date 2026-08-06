@@ -4,7 +4,6 @@
 import '../../../ui/components/settings/settings.js';
 import '../../../ui/kit/kit.js';
 import './FieldSettingsDialog.js';
-import './NetworkThrottlingSelector.js';
 import '../../../ui/components/menus/menus.js';
 import './MetricCard.js';
 import * as Common from '../../../core/common/common.js';
@@ -21,6 +20,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../../common/common.js';
+import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 import { CPUThrottlingSelector } from './CPUThrottlingSelector.js';
 import { md } from './insights/Helpers.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
@@ -283,6 +283,14 @@ const UIStrings = {
      * @description Description of a view that can be used to analyze the performance of a Node process as a timeline. "Node" is a product name and should not be translated.
      */
     nodeClickToRecord: 'Record a performance timeline of the connected Node process.',
+    /**
+     * @description Text in Timeline Panel of the Performance panel for network throttling
+     */
+    networkThrottling: 'Network:',
+    /**
+     * @description Text for why user should change a throttling setting.
+     */
+    recommendedThrottlingReason: 'Consider changing setting to simulate real user environments',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -538,7 +546,16 @@ function renderRecordingSettings(input) {
       ${widget(CPUThrottlingSelector, { recommendedOption: recs.cpuOption })}
     </div>
     <div class="environment-option">
-      <devtools-network-throttling-selector .recommendedConditions=${recs.networkConditions}></devtools-network-throttling-selector>
+      <label>
+        ${i18nString(UIStrings.networkThrottling)}
+        <select
+          ${widget(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, { bindToGlobalConditions: true })}
+        ></select>
+      </label>
+      <devtools-icon
+        title=${i18nString(UIStrings.recommendedThrottlingReason)}
+        name=info
+       ></devtools-icon>
     </div>
     <div class="environment-option">
       <setting-checkbox

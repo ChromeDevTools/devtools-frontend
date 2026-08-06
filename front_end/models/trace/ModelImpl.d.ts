@@ -22,6 +22,7 @@ export declare class Model extends EventTarget {
      */
     static createWithSubsetOfHandlers(traceHandlers: Partial<Handlers.Types.Handlers>, config?: Types.Configuration.Configuration): Model;
     constructor(handlers: Handlers.Types.Handlers, config?: Types.Configuration.Configuration);
+    updateConfiguration(config: Types.Configuration.Configuration): void;
     /**
      * Parses an array of trace events into a structured object containing all the
      * information parsed by the trace handlers.

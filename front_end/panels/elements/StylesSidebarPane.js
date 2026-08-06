@@ -1367,7 +1367,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             this.#elementsForSyncViewportCheck = [];
             return;
         }
-        const scrollContainer = this.contentElement.parentElement;
+        const scrollContainer = this.element.parentElement;
         if (!scrollContainer) {
             this.#elementsForSyncViewportCheck = [];
             return;

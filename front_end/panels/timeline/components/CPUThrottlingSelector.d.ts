@@ -1,6 +1,5 @@
 import '../../../ui/kit/kit.js';
 import '../../../ui/components/menus/menus.js';
-import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as PanelsCommon from '../../common/common.js';
 interface CPUThrottlingGroup {
@@ -13,8 +12,8 @@ interface ViewInput {
     currentOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption;
     groups: CPUThrottlingGroup[];
     throttling: PanelsCommon.CPUThrottlingOption.CalibratedCPUThrottling;
-    onMenuItemSelected: (event: Menus.SelectMenu.SelectMenuItemSelectedEvent) => void;
-    onCalibrateClick: () => void;
+    onMenuItemSelected: (event: Event) => void;
+    onCalibrateClick: (event: Event) => void;
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 type View = typeof DEFAULT_VIEW;

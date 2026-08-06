@@ -29,15 +29,6 @@ export declare class SourceMapScopesInfo {
      */
     hasInlinedFrames(generatedLine: number, generatedColumn: number): boolean;
     /**
-     * Given a generated position, returns the original name of the surrounding function as well as
-     * all the original function names that got inlined into the surrounding generated function and their
-     * respective callsites in the original code (ordered from inner to outer).
-     *
-     * @returns a list with inlined functions. Every entry in the list has a callsite in the orignal code,
-     * except the last function (since the last function didn't get inlined).
-     */
-    findInlinedFunctions(generatedLine: number, generatedColumn: number): InlineInfo;
-    /**
      * @returns true if we have enough info (i.e. variable and binding expressions) to build
      * a scope view.
      */
@@ -98,26 +89,5 @@ export interface TranslatedFrame {
     column: number;
     name?: string;
     url?: Platform.DevToolsPath.UrlString;
-}
-/**
- * Represents the inlining information for a given generated position.
- *
- * It contains a list of all the inlined original functions at the generated position
- * as well as the original function name of the generated position's surrounding
- * function.
- *
- * The inlined functions are sorted from inner to outer (or top to bottom on the stack).
- */
-export interface InlineInfo {
-    inlinedFunctions: Array<{
-        name: string;
-        callsite: {
-            line: number;
-            column: number;
-            sourceIndex: number;
-            sourceURL?: Platform.DevToolsPath.UrlString;
-        };
-    }>;
-    originalFunctionName: string;
 }
 export declare function contains(range: Pick<ScopesCodec.GeneratedRange, 'start' | 'end'>, line: number, column: number): boolean;

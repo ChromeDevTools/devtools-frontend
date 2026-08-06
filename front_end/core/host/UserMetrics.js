@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../common/common.js';
 import { InspectorFrontendHostInstance } from './InspectorFrontendHost.js';
+import * as Enums from './UserMetricsEnums.js';
 export class UserMetrics {
     sourcesPanelFileDebugged(mediaType) {
         const code = (mediaType && MediaTypes[mediaType]) || MediaTypes.Unknown;
@@ -183,11 +184,11 @@ export class UserMetrics {
  * custom frontend, the enum boundary values exactly match what the host
  * Chrome binary expects (which is provided via devtools_compatibility.js).
  */
-function createDynamicEnumProxy(enumName) {
-    return new Proxy({}, {
+function createDynamicEnumProxy(enumName, fallbackEnum) {
+    return new Proxy(fallbackEnum, {
         get(_target, prop) {
             if (typeof prop === 'symbol') {
-                return Reflect.get(_target, prop);
+                return Reflect.get(fallbackEnum, prop);
             }
             const metrics = 
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -205,9 +206,8 @@ function createDynamicEnumProxy(enumName) {
                     }
                 }
             }
-            // Return undefined if the property is missing to preserve truthiness fallbacks
-            // in hosted mode or when DevToolsMetrics is uninitialized.
-            return undefined;
+            // Fallback to the compile-time TypeScript enum if DevToolsMetrics is missing
+            return Reflect.get(fallbackEnum, prop);
         },
         has(_target, prop) {
             const metrics = 
@@ -220,14 +220,14 @@ function createDynamicEnumProxy(enumName) {
             if (typeof prop === 'string' && /^\d+$/.test(prop)) {
                 return Object.values(enumObj || {}).includes(Number(prop));
             }
-            return false;
+            return Reflect.has(fallbackEnum, prop);
         },
         ownKeys(_target) {
             const metrics = 
             // eslint-disable-next-line @typescript-eslint/naming-convention
             globalThis.DevToolsMetrics;
             const enumObj = metrics && metrics[enumName];
-            return enumObj ? Reflect.ownKeys(enumObj) : [];
+            return enumObj ? Reflect.ownKeys(enumObj) : Reflect.ownKeys(fallbackEnum);
         },
         getOwnPropertyDescriptor(_target, prop) {
             const metrics = 
@@ -235,44 +235,44 @@ function createDynamicEnumProxy(enumName) {
             globalThis.DevToolsMetrics;
             const enumObj = metrics && metrics[enumName];
             if (!enumObj) {
-                return undefined;
+                return Reflect.getOwnPropertyDescriptor(fallbackEnum, prop);
             }
             return Reflect.getOwnPropertyDescriptor(enumObj, prop);
         },
     });
 }
-export const Action = createDynamicEnumProxy('Action');
-export const PanelCodes = createDynamicEnumProxy('PanelCodes');
-export const MediaTypes = createDynamicEnumProxy('MediaTypes');
-export const KeybindSetSettings = createDynamicEnumProxy('KeybindSetSettings');
-export const KeyboardShortcutAction = createDynamicEnumProxy('KeyboardShortcutAction');
-export const IssueOpener = createDynamicEnumProxy('IssueOpener');
-export const DevtoolsExperiments = createDynamicEnumProxy('DevtoolsExperiments');
-export const IssueExpanded = createDynamicEnumProxy('IssueExpanded');
-export const IssueResourceOpened = createDynamicEnumProxy('IssueResourceOpened');
-export const IssueCreated = createDynamicEnumProxy('IssueCreated');
-export const DeveloperResourceLoaded = createDynamicEnumProxy('DeveloperResourceLoaded');
-export const DeveloperResourceScheme = createDynamicEnumProxy('DeveloperResourceScheme');
-export const Language = createDynamicEnumProxy('Language');
-export const SyncSetting = createDynamicEnumProxy('SyncSetting');
-export const RecordingToggled = createDynamicEnumProxy('RecordingToggled');
-export const RecordingAssertion = createDynamicEnumProxy('RecordingAssertion');
-export const RecordingReplayFinished = createDynamicEnumProxy('RecordingReplayFinished');
-export const RecordingReplaySpeed = createDynamicEnumProxy('RecordingReplaySpeed');
-export const RecordingReplayStarted = createDynamicEnumProxy('RecordingReplayStarted');
-export const RecordingEdited = createDynamicEnumProxy('RecordingEdited');
-export const RecordingExported = createDynamicEnumProxy('RecordingExported');
-export const RecordingCodeToggled = createDynamicEnumProxy('RecordingCodeToggled');
-export const RecordingCopiedToClipboard = createDynamicEnumProxy('RecordingCopiedToClipboard');
-export const ManifestSectionCodes = createDynamicEnumProxy('ManifestSectionCodes');
-export const LighthouseModeRun = createDynamicEnumProxy('LighthouseModeRun');
-export const LighthouseCategoryUsed = createDynamicEnumProxy('LighthouseCategoryUsed');
-export const SwatchType = createDynamicEnumProxy('SwatchType');
-export const BadgeType = createDynamicEnumProxy('BadgeType');
-export const AnimationsPlaybackRate = createDynamicEnumProxy('AnimationsPlaybackRate');
-export const TimelineNavigationSetting = createDynamicEnumProxy('TimelineNavigationSetting');
-export const BuiltInAiAvailability = createDynamicEnumProxy('BuiltInAiAvailability');
-export const ResendRequestType = createDynamicEnumProxy('ResendRequestType');
+export const Action = createDynamicEnumProxy('Action', Enums.Action);
+export const PanelCodes = createDynamicEnumProxy('PanelCodes', Enums.PanelCodes);
+export const MediaTypes = createDynamicEnumProxy('MediaTypes', Enums.MediaTypes);
+export const KeybindSetSettings = createDynamicEnumProxy('KeybindSetSettings', Enums.KeybindSetSettings);
+export const KeyboardShortcutAction = createDynamicEnumProxy('KeyboardShortcutAction', Enums.KeyboardShortcutAction);
+export const IssueOpener = createDynamicEnumProxy('IssueOpener', Enums.IssueOpener);
+export const DevtoolsExperiments = createDynamicEnumProxy('DevtoolsExperiments', Enums.DevtoolsExperiments);
+export const IssueExpanded = createDynamicEnumProxy('IssueExpanded', Enums.IssueExpanded);
+export const IssueResourceOpened = createDynamicEnumProxy('IssueResourceOpened', Enums.IssueResourceOpened);
+export const IssueCreated = createDynamicEnumProxy('IssueCreated', Enums.IssueCreated);
+export const DeveloperResourceLoaded = createDynamicEnumProxy('DeveloperResourceLoaded', Enums.DeveloperResourceLoaded);
+export const DeveloperResourceScheme = createDynamicEnumProxy('DeveloperResourceScheme', Enums.DeveloperResourceScheme);
+export const Language = createDynamicEnumProxy('Language', Enums.Language);
+export const SyncSetting = createDynamicEnumProxy('SyncSetting', Enums.SyncSetting);
+export const RecordingToggled = createDynamicEnumProxy('RecordingToggled', Enums.RecordingToggled);
+export const RecordingAssertion = createDynamicEnumProxy('RecordingAssertion', Enums.RecordingAssertion);
+export const RecordingReplayFinished = createDynamicEnumProxy('RecordingReplayFinished', Enums.RecordingReplayFinished);
+export const RecordingReplaySpeed = createDynamicEnumProxy('RecordingReplaySpeed', Enums.RecordingReplaySpeed);
+export const RecordingReplayStarted = createDynamicEnumProxy('RecordingReplayStarted', Enums.RecordingReplayStarted);
+export const RecordingEdited = createDynamicEnumProxy('RecordingEdited', Enums.RecordingEdited);
+export const RecordingExported = createDynamicEnumProxy('RecordingExported', Enums.RecordingExported);
+export const RecordingCodeToggled = createDynamicEnumProxy('RecordingCodeToggled', Enums.RecordingCodeToggled);
+export const RecordingCopiedToClipboard = createDynamicEnumProxy('RecordingCopiedToClipboard', Enums.RecordingCopiedToClipboard);
+export const ManifestSectionCodes = createDynamicEnumProxy('ManifestSectionCodes', Enums.ManifestSectionCodes);
+export const LighthouseModeRun = createDynamicEnumProxy('LighthouseModeRun', Enums.LighthouseModeRun);
+export const LighthouseCategoryUsed = createDynamicEnumProxy('LighthouseCategoryUsed', Enums.LighthouseCategoryUsed);
+export const SwatchType = createDynamicEnumProxy('SwatchType', Enums.SwatchType);
+export const BadgeType = createDynamicEnumProxy('BadgeType', Enums.BadgeType);
+export const AnimationsPlaybackRate = createDynamicEnumProxy('AnimationsPlaybackRate', Enums.AnimationsPlaybackRate);
+export const TimelineNavigationSetting = createDynamicEnumProxy('TimelineNavigationSetting', Enums.TimelineNavigationSetting);
+export const BuiltInAiAvailability = createDynamicEnumProxy('BuiltInAiAvailability', Enums.BuiltInAiAvailability);
+export const ResendRequestType = createDynamicEnumProxy('ResendRequestType', Enums.ResendRequestType);
 const resendRequestTypeMap = new Map([
     [Common.ResourceType.resourceTypes.XHR, 'XHR'],
     [Common.ResourceType.resourceTypes.Fetch, 'FETCH'],

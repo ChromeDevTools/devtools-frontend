@@ -9728,7 +9728,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       this.#elementsForSyncViewportCheck = [];
       return;
     }
-    const scrollContainer = this.contentElement.parentElement;
+    const scrollContainer = this.element.parentElement;
     if (!scrollContainer) {
       this.#elementsForSyncViewportCheck = [];
       return;

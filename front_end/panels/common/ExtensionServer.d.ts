@@ -93,7 +93,7 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     /**
      * Slightly more permissive as {@link extensionAllowedOnURL}: This method also permits
      * UISourceCodes that originate from a {@link SDK.Script.Script} with a sourceURL magic comment as
-     * long as the corresponding target is permitted.
+     * long as the corresponding target and the embedder name (if it is a URL) are permitted.
      */
     private extensionAllowedOnContentProvider;
     /**

@@ -318,6 +318,7 @@ devtools-link {
   display: flex;
   align-items: center;
   margin-top: 8px;
+  gap: var(--sys-size-2);
 }
 
 .environment-recs-list {

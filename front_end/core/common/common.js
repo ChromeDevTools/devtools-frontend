@@ -5229,7 +5229,6 @@ __export(SettingRegistration_exports, {
   resetSettings: () => resetSettings
 });
 import * as i18n5 from "./../i18n/i18n.js";
-import * as Root2 from "./../root/root.js";
 var UIStrings3 = {
   /**
    * @description Title of the Elements panel.
@@ -5318,7 +5317,7 @@ function registerSettingExtension(registration) {
   registeredSettings.push(registration);
 }
 function getRegisteredSettings() {
-  return registeredSettings.filter((setting) => Root2.Runtime.Runtime.isDescriptorEnabled(setting));
+  return registeredSettings;
 }
 function registerSettingsForTest(settings, forceReset = false) {
   if (registeredSettings.length === 0 || forceReset) {
@@ -5405,7 +5404,7 @@ __export(Settings_exports, {
   resetSettings: () => resetSettings
 });
 import * as Platform5 from "./../platform/platform.js";
-import * as Root4 from "./../root/root.js";
+import * as Root3 from "./../root/root.js";
 
 // gen/front_end/core/common/VersionController.js
 var VersionController_exports = {};
@@ -5413,7 +5412,7 @@ __export(VersionController_exports, {
   VersionController: () => VersionController
 });
 import * as Platform4 from "./../platform/platform.js";
-import * as Root3 from "./../root/root.js";
+import * as Root2 from "./../root/root.js";
 var VersionController = class _VersionController {
   static GLOBAL_VERSION_SETTING_NAME = "inspectorVersion";
   static SYNCED_VERSION_SETTING_NAME = "syncedInspectorVersion";
@@ -6077,7 +6076,7 @@ var VersionController = class _VersionController {
     recordingsSetting.set(recordings);
   }
   updateVersionFrom42To43() {
-    const timelineShowAllEventsExperimentEnabled = Root3.Runtime.experiments.getValueFromStorage("timeline-show-all-events");
+    const timelineShowAllEventsExperimentEnabled = Root2.Runtime.experiments.getValueFromStorage("timeline-show-all-events");
     if (timelineShowAllEventsExperimentEnabled !== void 0) {
       if (this.#settings.syncedStorage.has("timeline-show-all-events")) {
         return;
@@ -6090,7 +6089,7 @@ var VersionController = class _VersionController {
     }
   }
   updateVersionFrom43To44() {
-    const apcaExperimentEnabled = Root3.Runtime.experiments.getValueFromStorage("apca");
+    const apcaExperimentEnabled = Root2.Runtime.experiments.getValueFromStorage("apca");
     if (apcaExperimentEnabled !== void 0) {
       if (this.#settings.syncedStorage.has("apca")) {
         return;
@@ -6103,7 +6102,7 @@ var VersionController = class _VersionController {
     }
   }
   updateVersionFrom44To45() {
-    const timelineDebugModeExperimentEnabled = Root3.Runtime.experiments.getValueFromStorage("timeline-debug-mode");
+    const timelineDebugModeExperimentEnabled = Root2.Runtime.experiments.getValueFromStorage("timeline-debug-mode");
     if (timelineDebugModeExperimentEnabled !== void 0) {
       if (this.#settings.syncedStorage.has("timeline-debug-mode")) {
         return;
@@ -6116,7 +6115,7 @@ var VersionController = class _VersionController {
     }
   }
   updateVersionFrom45To46() {
-    const timelineInvalidationTrackingExperimentEnabled = Root3.Runtime.experiments.getValueFromStorage("timeline-invalidation-tracking");
+    const timelineInvalidationTrackingExperimentEnabled = Root2.Runtime.experiments.getValueFromStorage("timeline-invalidation-tracking");
     if (timelineInvalidationTrackingExperimentEnabled !== void 0) {
       if (this.#settings.syncedStorage.has("timeline-invalidation-tracking")) {
         return;
@@ -6194,7 +6193,7 @@ var Settings = class _Settings {
     for (const registration of this.#settingRegistrations) {
       const { settingName, defaultValue, storageType } = registration;
       const isRegex = registration.settingType === "regex";
-      const evaluatedDefaultValue = typeof defaultValue === "function" ? defaultValue(Root4.Runtime.hostConfig) : defaultValue;
+      const evaluatedDefaultValue = typeof defaultValue === "function" ? defaultValue(Root3.Runtime.hostConfig) : defaultValue;
       const setting = isRegex && typeof evaluatedDefaultValue === "string" ? this.createRegExpSetting(settingName, evaluatedDefaultValue, void 0, storageType) : this.createSetting(settingName, evaluatedDefaultValue, storageType);
       setting.setRegistration(registration);
       this.registerModuleSetting(setting);
@@ -6207,7 +6206,7 @@ var Settings = class _Settings {
     return this.#settingRegistrations;
   }
   static hasInstance() {
-    return Root4.DevToolsContext.globalInstance().has(_Settings);
+    return Root3.DevToolsContext.globalInstance().has(_Settings);
   }
   static instance(opts = {
     forceNew: null,
@@ -6218,11 +6217,11 @@ var Settings = class _Settings {
     console: null
   }) {
     const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console: console2 } = opts;
-    if (!Root4.DevToolsContext.globalInstance().has(_Settings) || forceNew) {
+    if (!Root3.DevToolsContext.globalInstance().has(_Settings) || forceNew) {
       if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations || !console2) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
-      Root4.DevToolsContext.globalInstance().set(_Settings, new _Settings({
+      Root3.DevToolsContext.globalInstance().set(_Settings, new _Settings({
         syncedStorage,
         globalStorage,
         localStorage,
@@ -6232,10 +6231,10 @@ var Settings = class _Settings {
         console: console2
       }));
     }
-    return Root4.DevToolsContext.globalInstance().get(_Settings);
+    return Root3.DevToolsContext.globalInstance().get(_Settings);
   }
   static removeInstance() {
-    Root4.DevToolsContext.globalInstance().delete(_Settings);
+    Root3.DevToolsContext.globalInstance().delete(_Settings);
   }
   registerModuleSetting(setting) {
     const settingName = setting.name;
@@ -6365,7 +6364,7 @@ var Settings = class _Settings {
     const { name, type, defaultValue, storageType } = descriptor;
     const isRegex = type === "regex";
     const isGetter = (value) => typeof value === "function";
-    const evaluatedDefaultValue = isGetter(defaultValue) ? defaultValue(Root4.Runtime.hostConfig) : defaultValue;
+    const evaluatedDefaultValue = isGetter(defaultValue) ? defaultValue(Root3.Runtime.hostConfig) : defaultValue;
     setting = isRegex && typeof evaluatedDefaultValue === "string" ? this.createRegExpSetting(name, evaluatedDefaultValue, void 0, storageType) : this.createSetting(name, evaluatedDefaultValue, storageType);
     setting.setSettingType(type);
     this.registerModuleSetting(setting);
@@ -6383,7 +6382,7 @@ var Settings = class _Settings {
    * @returns An object with either the resolved `setting` or the availability `status` and `reason`.
    */
   maybeResolve(descriptor) {
-    const available = descriptor.isAvailable(Root4.Runtime.hostConfig);
+    const available = descriptor.isAvailable(Root3.Runtime.hostConfig);
     if (available.status === 1) {
       return { setting: this.#resolve(descriptor) };
     }
@@ -6483,7 +6482,6 @@ var Setting = class {
   // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
   #serializer = JSON;
   #hadUserAction;
-  #disabled;
   #loggedInitialAccess = false;
   #logSettingAccess;
   #console;
@@ -6523,26 +6521,7 @@ var Setting = class {
     this.#requiresUserAction = requiresUserAction;
   }
   disabled() {
-    if (this.#registration?.disabledCondition) {
-      const { disabled } = this.#registration.disabledCondition(Root4.Runtime.hostConfig);
-      if (disabled) {
-        return true;
-      }
-    }
-    return this.#disabled || false;
-  }
-  disabledReasons() {
-    if (this.#registration?.disabledCondition) {
-      const result = this.#registration.disabledCondition(Root4.Runtime.hostConfig);
-      if (result.disabled) {
-        return result.reasons;
-      }
-    }
-    return [];
-  }
-  setDisabled(disabled) {
-    this.#disabled = disabled;
-    this.eventSupport.dispatchEventToListeners(this.name);
+    return false;
   }
   #maybeLogAccess(value) {
     try {
@@ -6578,15 +6557,6 @@ var Setting = class {
     }
     this.#maybeLogInitialAccess(this.#value);
     return this.#value;
-  }
-  // Prefer this getter for settings which are "disableable". The plain getter returns `this.#value`,
-  // even if the setting is disabled, which means the callsite has to explicitly call the `disabled()`
-  // getter and add its own logic for the disabled state.
-  getIfNotDisabled() {
-    if (this.disabled()) {
-      return;
-    }
-    return this.get();
   }
   async forceGet() {
     const name = this.name;

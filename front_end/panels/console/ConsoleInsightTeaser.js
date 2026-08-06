@@ -377,8 +377,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         this.requestUpdate();
     }
     #getConsoleInsightsEnabledSetting() {
-        const result = Common.Settings.Settings.instance().maybeResolve(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor);
-        return 'setting' in result ? result.setting : undefined;
+        return new AiAssistanceModel.AiSetting.AiSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor, Host.AidaClient.HostConfigTracker.instance(), Common.Settings.Settings.instance());
     }
     #getOnboardingCompletedSetting() {
         return Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', true);
@@ -399,8 +398,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     }
     #onTellMeMoreClick(event) {
         event.stopPropagation();
-        if (this.#getConsoleInsightsEnabledSetting()?.getIfNotDisabled() &&
-            this.#getOnboardingCompletedSetting()?.getIfNotDisabled()) {
+        if (this.#getConsoleInsightsEnabledSetting()?.getIfNotDisabled() && this.#getOnboardingCompletedSetting()?.get()) {
             this.#executeConsoleInsightAction();
             return;
         }

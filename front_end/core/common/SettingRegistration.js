@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
 const UIStrings = {
     /**
      * @description Title of the Elements panel.
@@ -91,7 +90,7 @@ export function registerSettingExtension(registration) {
     registeredSettings.push(registration);
 }
 export function getRegisteredSettings() {
-    return registeredSettings.filter(setting => Root.Runtime.Runtime.isDescriptorEnabled(setting));
+    return registeredSettings;
 }
 export function registerSettingsForTest(settings, forceReset = false) {
     if (registeredSettings.length === 0 || forceReset) {

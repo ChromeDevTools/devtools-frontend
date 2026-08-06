@@ -148,14 +148,6 @@ const UIStrings = {
     /**
      * @description Text in Timeline Panel of the Performance panel
      */
-    cpu: 'CPU:',
-    /**
-     * @description Title of the 'Network conditions' tool in the bottom drawer
-     */
-    networkConditions: 'Network conditions',
-    /**
-     * @description Text in Timeline Panel of the Performance panel
-     */
     CpuThrottlingIsEnabled: '- CPU throttling is enabled',
     /**
      * @description Text in Timeline Panel of the Performance panel
@@ -392,7 +384,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     loader;
     showScreenshotsToolbarCheckbox;
     showMemoryToolbarCheckbox;
-    networkThrottlingSelect;
     cpuThrottlingSelect;
     fileSelectorElement;
     selection = null;
@@ -481,6 +472,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         this.#dimThirdPartiesSetting.addChangeListener(this.onDimThirdPartiesChanged, this);
         this.#thirdPartyTracksSetting = TimelinePanel.extensionDataVisibilitySetting();
         this.#thirdPartyTracksSetting.addChangeListener(this.#extensionDataVisibilityChanged, this);
+        Common.Settings.Settings.instance()
+            .moduleSetting('timeline-enable-soft-navigations')
+            .addChangeListener(this.#onModelConfigurationChanged, this);
         const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
         timelineToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
         timelineToolbarContainer.role = 'toolbar';
@@ -648,13 +642,19 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         ActiveFilters.removeInstance();
         timelinePanelInstance = undefined;
     }
-    #instantiateNewModel() {
+    #getModelConfig() {
         const config = Trace.Types.Configuration.defaults();
         config.showAllEvents = Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get();
         config.debugMode = Common.Settings.Settings.instance().moduleSetting('timeline-debug-mode').get();
         config.enableSoftNavigation =
             Common.Settings.Settings.instance().moduleSetting('timeline-enable-soft-navigations').get();
-        const traceEngineModel = Trace.TraceModel.Model.createWithAllHandlers(config);
+        return config;
+    }
+    #onModelConfigurationChanged() {
+        this.#traceEngineModel.updateConfiguration(this.#getModelConfig());
+    }
+    #instantiateNewModel() {
+        const traceEngineModel = Trace.TraceModel.Model.createWithAllHandlers(this.#getModelConfig());
         traceEngineModel.addEventListener(Trace.TraceModel.ModelUpdateEvent.eventName, e => {
             const updateEvent = e;
             const str = i18nString(UIStrings.processed);
@@ -697,9 +697,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     }
     #onFieldDataChanged() {
         const recs = PanelsCommon.ThrottlingUtils.getThrottlingRecommendations();
-        this.cpuThrottlingSelect?.updateRecommendedOption(recs.cpuOption);
-        if (this.networkThrottlingSelect) {
-            this.networkThrottlingSelect.recommendedConditions = recs.networkConditions;
+        if (this.cpuThrottlingSelect) {
+            this.cpuThrottlingSelect.recommendedOption = recs.cpuOption;
         }
     }
     loadFromEvents(events) {
@@ -1133,13 +1132,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         this.settingsPane = this.element.createChild('div', 'timeline-settings-pane');
         this.settingsPane.setAttribute('jslog', `${VisualLogging.pane('timeline-settings-pane').track({ resize: true })}`);
         const cpuThrottlingPane = this.settingsPane.createChild('div');
-        cpuThrottlingPane.append(i18nString(UIStrings.cpu));
-        this.cpuThrottlingSelect = MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector();
-        cpuThrottlingPane.append(this.cpuThrottlingSelect.control.element);
+        this.cpuThrottlingSelect = new TimelineComponents.CPUThrottlingSelector.CPUThrottlingSelector();
+        this.cpuThrottlingSelect.show(cpuThrottlingPane);
         this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.captureSelectorStatsSetting.title(), this.captureSelectorStatsSetting, i18nString(UIStrings.capturesSelectorStats)));
         const networkThrottlingPane = this.settingsPane.createChild('div');
         networkThrottlingPane.append(i18nString(UIStrings.network));
-        networkThrottlingPane.append(this.createNetworkConditionsSelectToolbarItem().element);
+        MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(networkThrottlingPane, i18nString(UIStrings.network));
         this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.captureLayersAndPicturesSetting.title(), this.captureLayersAndPicturesSetting, i18nString(UIStrings.capturesAdvancedPaint)));
         this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.disableCaptureJSProfileSetting.title(), this.disableCaptureJSProfileSetting, i18nString(UIStrings.disablesJavascriptSampling)));
         const screenshotPresetSelect = new UI.Toolbar.ToolbarComboBox(() => this.screenshotCaptureModeSetting.set(screenshotPresetSelect.selectedOption().value), this.screenshotCaptureModeSetting.title(), '', 'screenshot-capture-mode');
@@ -1172,12 +1170,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         this.settingsPane.append(thirdPartyCheckbox.element);
         this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
         this.updateSettingsPaneVisibility();
-    }
-    createNetworkConditionsSelectToolbarItem() {
-        const toolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
-        this.networkThrottlingSelect =
-            MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(toolbarItem.element, i18nString(UIStrings.networkConditions));
-        return toolbarItem;
     }
     prepareToLoadTimeline() {
         console.assert(this.state === "Idle" /* State.IDLE */);
@@ -2458,6 +2450,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 },
             };
         }
+        this.#traceEngineModel.updateConfiguration(this.#getModelConfig());
         await this.#traceEngineModel.parse(collectedEvents, config);
         // Store all source maps on the trace metadata.
         // If not fresh, we can't validate the maps are still accurate.

@@ -20,9 +20,13 @@ export interface EventTypes {
 export declare class AiSetting<ValueT> extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
     constructor(descriptor: Common.Settings.ConditionalSettingDescriptor<ValueT, DisabledReason[]>, hostConfigTracker: Host.AidaClient.HostConfigTracker, settings: Common.Settings.Settings);
+    addEventListener<T extends keyof EventTypes>(eventType: T, listener: Common.EventTarget.EventListener<EventTypes, T>, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
+    removeEventListener<T extends keyof EventTypes>(eventType: T, listener: Common.EventTarget.EventListener<EventTypes, T>, thisObject?: Object): void;
     get unavailable(): boolean;
     get disabled(): boolean;
     get disabledReasons(): DisabledReason[];
     getIfNotDisabled(): ValueT | undefined;
     setIfNotDisabled(value: ValueT): void;
+    get(): ValueT | undefined;
+    set(value: ValueT): void;
 }

@@ -50,13 +50,6 @@ p {
   margin: 6px 0;
 }
 
-.disabled-reason {
-  box-sizing: border-box;
-  margin-left: var(--sys-size-2);
-  width: var(--sys-size-9);
-  height: var(--sys-size-9);
-}
-
 .info-icon {
   cursor: pointer;
   position: relative;
@@ -74,7 +67,7 @@ p {
 /*# sourceURL=${import.meta.resolve("./settingCheckbox.css")} */`;
 
 // gen/front_end/ui/components/settings/SettingCheckbox.js
-var { html, Directives: { ifDefined } } = Lit;
+var { html } = Lit;
 var UIStrings = {
   /**
    * @description Text that is usually a hyperlink to more documentation.
@@ -154,7 +147,7 @@ var SettingCheckbox = class extends HTMLElement {
     return void 0;
   }
   get checked() {
-    if (!this.#setting || this.#setting.disabledReasons().length > 0) {
+    if (!this.#setting) {
       return false;
     }
     return this.#setting.get();
@@ -168,10 +161,6 @@ var SettingCheckbox = class extends HTMLElement {
     const titleText = uiDescriptor?.title?.() ?? this.#setting.title();
     const icon = this.icon();
     const title = learnMore?.tooltip?.() ?? "";
-    const disabledReasons = this.#setting.disabledReasons();
-    const reason = disabledReasons.length ? html`
-      <devtools-button class="disabled-reason" .iconName=${"info"} .variant=${"icon"} .size=${"SMALL"} title=${ifDefined(disabledReasons.join("\n"))} @click=${onclick}></devtools-button>
-    ` : Lit.nothing;
     Lit.render(html`
       <style>${Input.checkboxStyles}</style>
       <style>${settingCheckbox_css_default}</style>
@@ -185,7 +174,7 @@ var SettingCheckbox = class extends HTMLElement {
             jslog=${VisualLogging.toggle().track({ change: true }).context(this.#setting.name)}
             aria-label=${titleText}
           />
-          ${this.#textOverride || titleText}${reason}
+          ${this.#textOverride || titleText}
         </label>
         ${icon}
       </p>`, this.#shadow, { host: this });

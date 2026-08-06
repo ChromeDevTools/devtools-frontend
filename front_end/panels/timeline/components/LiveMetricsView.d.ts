@@ -1,7 +1,6 @@
 import '../../../ui/components/settings/settings.js';
 import '../../../ui/kit/kit.js';
 import './FieldSettingsDialog.js';
-import './NetworkThrottlingSelector.js';
 import '../../../ui/components/menus/menus.js';
 import './MetricCard.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';

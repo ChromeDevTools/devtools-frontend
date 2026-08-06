@@ -1,5 +1,5 @@
 import * as Common from '../common/common.js';
-import type * as Enums from './UserMetricsEnums.js';
+import * as Enums from './UserMetricsEnums.js';
 export declare class UserMetrics {
     sourcesPanelFileDebugged(mediaType?: string): void;
     sourcesPanelFileOpened(mediaType?: string): void;

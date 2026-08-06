@@ -3128,20 +3128,11 @@
   "panels/ai_assistance/ai_assistance-meta.ts | gemini": {
     "message": "Gemini"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | geoRestricted": {
-    "message": "This feature is unavailable in your region."
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | policyRestricted": {
-    "message": "This setting is managed by your administrator."
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "Show AI assistance"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
     "message": "Show Gemini"
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
-    "message": "To use this feature, set your language preference to English in DevTools settings."
   },
   "panels/ai_assistance/AiAssistancePanel.ts | chatDeleted": {
     "message": "Chat deleted"
@@ -9962,9 +9953,6 @@
   "panels/mobile_throttling/MobileThrottlingSelector.ts | presets": {
     "message": "Presets"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "The set of accepted Content-Encoding headers has been changed by DevTools. See the Network conditions panel"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Network throttling is enabled"
   },
@@ -10486,9 +10474,6 @@
   },
   "panels/network/network-meta.ts | useDefaultColors": {
     "message": "Use default colors"
-  },
-  "panels/network/NetworkConfigView.ts | acceptedEncoding": {
-    "message": "Accepted Content-Encodings"
   },
   "panels/network/NetworkConfigView.ts | caching": {
     "message": "Caching"
@@ -15342,10 +15327,16 @@
     "message": "Calibrate…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
-    "message": "CPU: {PH1}"
+    "message": "CPU:"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
     "message": "CPU throttling: {PH1}"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | defaultPresets": {
+    "message": "Presets"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | disabledThrottlingPreset": {
+    "message": "Disabled"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | labelCalibratedPresets": {
     "message": "Calibrated presets"
@@ -15683,6 +15674,9 @@
   "panels/timeline/components/LiveMetricsView.ts | network": {
     "message": "Network: {PH1}"
   },
+  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
+    "message": "Network:"
+  },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Next steps"
   },
@@ -15712,6 +15706,9 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | processingDuration": {
     "message": "Processing duration"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | recommendedThrottlingReason": {
+    "message": "Consider changing setting to simulate real user environments"
   },
   "panels/timeline/components/LiveMetricsView.ts | resourceLoadDelay": {
     "message": "Resource load delay"
@@ -15994,30 +15991,6 @@
   },
   "panels/timeline/components/NetworkRequestTooltip.ts | wasThrottled": {
     "message": "Request was throttled ({PH1})"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | add": {
-    "message": "Add…"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | custom": {
-    "message": "Custom"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
-    "message": "Disabled"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
-    "message": "Network: {PH1}"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
-    "message": "Network throttling: {PH1}"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
-    "message": "Presets"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottling": {
-    "message": "{PH1} – recommended"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottlingReason": {
-    "message": "Consider changing setting to simulate real user environments"
   },
   "panels/timeline/components/OriginMap.ts | alreadyMapped": {
     "message": "\"{PH1}\" is already mapped to a production origin."
@@ -16496,9 +16469,6 @@
   "panels/timeline/TimelinePanel.ts | compressingTraceForDownload": {
     "message": "Compressing…"
   },
-  "panels/timeline/TimelinePanel.ts | cpu": {
-    "message": "CPU:"
-  },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU throttling is enabled"
   },
@@ -16549,9 +16519,6 @@
   },
   "panels/timeline/TimelinePanel.ts | network": {
     "message": "Network:"
-  },
-  "panels/timeline/TimelinePanel.ts | networkConditions": {
-    "message": "Network conditions"
   },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Network throttling is enabled"

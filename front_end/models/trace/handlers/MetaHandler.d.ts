@@ -1,12 +1,11 @@
 import * as Types from '../types/types.js';
 import type { FinalizeOptions } from './types.js';
+export declare function handleUserConfig(userConfig: Types.Configuration.Configuration): void;
 export declare function reset(): void;
 export declare function handleEvent(event: Types.Events.Event): void;
 export declare function finalize(options?: FinalizeOptions): Promise<void>;
 export interface MetaHandlerData {
-    config: {
-        showAllEvents: boolean;
-    };
+    config: Types.Configuration.Configuration;
     traceIsGeneric: boolean;
     traceBounds: Types.Timing.TraceWindowMicro;
     browserProcessId: Types.Events.ProcessID;

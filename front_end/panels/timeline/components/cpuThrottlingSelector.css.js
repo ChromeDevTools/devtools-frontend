@@ -13,6 +13,7 @@ export default `/*
   :scope {
     display: flex;
     align-items: center;
+    gap: var(--sys-size-2);
     max-width: 100%;
     height: 20px;
   }
@@ -27,8 +28,7 @@ export default `/*
     height: var(--sys-size-8);
   }
 
-  devtools-select-menu {
-    min-width: 160px;
+  select {
     max-width: 100%;
     height: 20px;
   }

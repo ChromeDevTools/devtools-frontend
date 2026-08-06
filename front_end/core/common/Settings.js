@@ -320,7 +320,6 @@ export class Setting {
     // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
     #serializer = JSON;
     #hadUserAction;
-    #disabled;
     #loggedInitialAccess = false;
     #logSettingAccess;
     #console;
@@ -360,28 +359,7 @@ export class Setting {
         this.#requiresUserAction = requiresUserAction;
     }
     disabled() {
-        if (this.#registration?.disabledCondition) {
-            const { disabled } = this.#registration.disabledCondition(Root.Runtime.hostConfig);
-            // If registration does not disable it, pass through to #disabled
-            // attribute check.
-            if (disabled) {
-                return true;
-            }
-        }
-        return this.#disabled || false;
-    }
-    disabledReasons() {
-        if (this.#registration?.disabledCondition) {
-            const result = this.#registration.disabledCondition(Root.Runtime.hostConfig);
-            if (result.disabled) {
-                return result.reasons;
-            }
-        }
-        return [];
-    }
-    setDisabled(disabled) {
-        this.#disabled = disabled;
-        this.eventSupport.dispatchEventToListeners(this.name);
+        return false;
     }
     #maybeLogAccess(value) {
         try {
@@ -421,15 +399,6 @@ export class Setting {
         }
         this.#maybeLogInitialAccess(this.#value);
         return this.#value;
-    }
-    // Prefer this getter for settings which are "disableable". The plain getter returns `this.#value`,
-    // even if the setting is disabled, which means the callsite has to explicitly call the `disabled()`
-    // getter and add its own logic for the disabled state.
-    getIfNotDisabled() {
-        if (this.disabled()) {
-            return;
-        }
-        return this.get();
     }
     async forceGet() {
         const name = this.name;

@@ -699,8 +699,7 @@ export class ConsoleInsight extends UI.Widget.Widget {
     // off -> entrypoints are shown, and point to the AI setting panel where the setting can be turned on
     // on -> entrypoints are shown, and console insights can be generated
     #getConsoleInsightsEnabledSetting() {
-        const result = Common.Settings.Settings.instance().maybeResolve(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor);
-        return 'setting' in result ? result.setting : undefined;
+        return new AiAssistanceModel.AiSetting.AiSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor, Host.AidaClient.HostConfigTracker.instance(), Common.Settings.Settings.instance());
     }
     // off -> consent reminder is shown, unless the 'console-insights-enabled'-setting has been enabled in the current DevTools session
     // on -> no consent reminder shown
@@ -710,7 +709,7 @@ export class ConsoleInsight extends UI.Widget.Widget {
     wasShown() {
         super.wasShown();
         this.focus();
-        this.#consoleInsightsEnabledSetting?.addChangeListener(this.#onConsoleInsightsSettingChanged, this);
+        this.#consoleInsightsEnabledSetting.addEventListener("Changed" /* AiAssistanceModel.AiSetting.Events.CHANGED */, this.#onConsoleInsightsSettingChanged, this);
         const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
         if (this.#state.type === "loading" /* State.LOADING */ && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true &&
             !blockedByAge && this.#state.consentOnboardingCompleted) {
@@ -731,7 +730,7 @@ export class ConsoleInsight extends UI.Widget.Widget {
     }
     willHide() {
         super.willHide();
-        this.#consoleInsightsEnabledSetting?.removeChangeListener(this.#onConsoleInsightsSettingChanged, this);
+        this.#consoleInsightsEnabledSetting.removeEventListener("Changed" /* AiAssistanceModel.AiSetting.Events.CHANGED */, this.#onConsoleInsightsSettingChanged, this);
         Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnAidaAvailabilityChange);
     }
     #updateAidaAvailability(aidaAvailability) {

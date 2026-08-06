@@ -7065,11 +7065,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.requestUpdate();
   }
   #getAiAssistanceEnabledSetting() {
-    try {
-      return Common5.Settings.Settings.instance().moduleSetting("ai-assistance-enabled");
-    } catch {
-      return;
-    }
+    return new AiAssistanceModel8.AiSetting.AiSetting(AiAssistanceModel8.AiUtils.aiAssistanceEnabledSettingDescriptor, Host5.AidaClient.HostConfigTracker.instance(), Common5.Settings.Settings.instance());
   }
   static async instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
@@ -7213,7 +7209,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.#selectedStorage = createStorageContext(UI9.Context.Context.instance().flavor(AiAssistanceModel8.StorageItem.StorageItem));
     this.#updateConversationState(this.#conversation);
     AiAssistanceModel8.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted", this.#onHistoryDeleted, this);
-    this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
+    this.#aiAssistanceEnabledSetting.addEventListener("Changed", this.requestUpdate, this);
     Host5.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     const initialAvailability = Host5.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (initialAvailability !== void 0) {
@@ -7237,7 +7233,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   willHide() {
     super.willHide();
     AiAssistanceModel8.AiHistoryStorage.AiHistoryStorage.instance().removeEventListener("AiHistoryDeleted", this.#onHistoryDeleted, this);
-    this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
+    this.#aiAssistanceEnabledSetting.removeEventListener("Changed", this.requestUpdate, this);
     Host5.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.removeEventListener("Toggled", this.requestUpdate, this);
     UI9.Context.Context.instance().removeFlavorChangeListener(SDK6.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);

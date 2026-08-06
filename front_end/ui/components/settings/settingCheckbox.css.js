@@ -33,13 +33,6 @@ p {
   margin: 6px 0;
 }
 
-.disabled-reason {
-  box-sizing: border-box;
-  margin-left: var(--sys-size-2);
-  width: var(--sys-size-9);
-  height: var(--sys-size-9);
-}
-
 .info-icon {
   cursor: pointer;
   position: relative;

@@ -43,6 +43,7 @@ interface ScoreRecord {
     score: number;
 }
 export declare function reset(): void;
+export declare function handleUserConfig(userConfig: Types.Configuration.Configuration): void;
 export declare function handleEvent(event: Types.Events.Event): void;
 export declare function finalize(): Promise<void>;
 export declare function data(): LayoutShiftsData;

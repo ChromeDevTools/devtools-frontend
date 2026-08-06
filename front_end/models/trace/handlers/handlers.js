@@ -440,7 +440,7 @@ __export(RendererHandler_exports, {
   deps: () => deps3,
   finalize: () => finalize7,
   handleEvent: () => handleEvent7,
-  handleUserConfig: () => handleUserConfig2,
+  handleUserConfig: () => handleUserConfig3,
   makeCompleteEvent: () => makeCompleteEvent,
   reset: () => reset7,
   sanitizeProcesses: () => sanitizeProcesses,
@@ -456,12 +456,16 @@ __export(MetaHandler_exports, {
   data: () => data4,
   finalize: () => finalize4,
   handleEvent: () => handleEvent4,
+  handleUserConfig: () => handleUserConfig2,
   reset: () => reset4
 });
 import * as Platform2 from "./../../../core/platform/platform.js";
 import * as Helpers3 from "./../helpers/helpers.js";
 import * as Types5 from "./../types/types.js";
-var config;
+var config = Types5.Configuration.defaults();
+function handleUserConfig2(userConfig) {
+  config = userConfig;
+}
 var rendererProcessesByFrameId = /* @__PURE__ */ new Map();
 var mainFrameId = "";
 var mainFrameURL = "";
@@ -651,7 +655,7 @@ function handleEvent4(event) {
     }
     return;
   }
-  if (Types5.Events.isSoftNavigationStart(event)) {
+  if (config.enableSoftNavigation && Types5.Events.isSoftNavigationStart(event)) {
     softNavigationsById.set(event.args.context.performanceTimelineNavigationId, event);
   }
   if (Types5.Events.isResourceSendRequest(event)) {
@@ -675,7 +679,7 @@ function handleEvent4(event) {
   }
 }
 async function finalize4(options) {
-  config = { showAllEvents: Boolean(options?.showAllEvents) };
+  config.showAllEvents = Boolean(options?.showAllEvents);
   if (traceStartedTimeFromTracingStartedEvent >= 0) {
     traceBounds.min = traceStartedTimeFromTracingStartedEvent;
   }
@@ -1421,7 +1425,7 @@ var getOrCreateRendererProcess = (processes2, pid) => {
 var getOrCreateRendererThread = (process, tid) => {
   return Platform5.MapUtilities.getWithDefault(process.threads, tid, makeRendererThread);
 };
-function handleUserConfig2(userConfig) {
+function handleUserConfig3(userConfig) {
   config2 = userConfig;
 }
 function reset7() {
@@ -2947,7 +2951,7 @@ __export(InvalidationsHandler_exports, {
   data: () => data17,
   finalize: () => finalize17,
   handleEvent: () => handleEvent17,
-  handleUserConfig: () => handleUserConfig3,
+  handleUserConfig: () => handleUserConfig4,
   reset: () => reset17
 });
 import * as Types18 from "./../types/types.js";
@@ -2957,7 +2961,7 @@ function reset17() {
   frameStateByFrame.clear();
   maxInvalidationsPerEvent = null;
 }
-function handleUserConfig3(userConfig) {
+function handleUserConfig4(userConfig) {
   maxInvalidationsPerEvent = userConfig.maxInvalidationEventsPerEvent;
 }
 function getState(frameId) {
@@ -3077,6 +3081,7 @@ __export(PageLoadMetricsHandler_exports, {
   finalize: () => finalize18,
   getFrameIdForPageLoadEvent: () => getFrameIdForPageLoadEvent,
   handleEvent: () => handleEvent18,
+  handleUserConfig: () => handleUserConfig5,
   metricIsLCP: () => metricIsLCP,
   reset: () => reset18,
   scoreClassificationForDOMContentLoaded: () => scoreClassificationForDOMContentLoaded,
@@ -3100,6 +3105,10 @@ function reset18() {
   metaCharsetCheckEventsByNavigation = /* @__PURE__ */ new Map();
   metaCharsetCheckEventsArray = [];
 }
+var enableSoftNavigation = true;
+function handleUserConfig5(userConfig) {
+  enableSoftNavigation = userConfig.enableSoftNavigation;
+}
 var pageLoadEventsArray = [];
 var selectedLCPCandidateEvents = /* @__PURE__ */ new Set();
 function handleEvent18(event) {
@@ -3108,6 +3117,9 @@ function handleEvent18(event) {
     return;
   }
   if (!Types19.Events.eventIsPageLoadEvent(event)) {
+    return;
+  }
+  if (!enableSoftNavigation && (Types19.Events.isSoftNavigationStart(event) || event.name === "largestContentfulPaint::CandidateForSoftNavigation" || Types19.Events.isSoftFirstContentfulPaint(event))) {
     return;
   }
   pageLoadEventsArray.push(event);
@@ -3519,6 +3531,7 @@ __export(LayoutShiftsHandler_exports, {
   deps: () => deps13,
   finalize: () => finalize22,
   handleEvent: () => handleEvent22,
+  handleUserConfig: () => handleUserConfig6,
   reset: () => reset22,
   scoreClassificationForLayoutShift: () => scoreClassificationForLayoutShift
 });
@@ -3622,6 +3635,10 @@ function reset22() {
   sessionMaxScore = 0;
   scoreRecords = [];
   clsWindowID = -1;
+}
+var enableSoftNavigation2 = true;
+function handleUserConfig6(userConfig) {
+  enableSoftNavigation2 = userConfig.enableSoftNavigation;
 }
 function handleEvent22(event) {
   if (Types23.Events.isLayoutShift(event) && !event.args.data?.had_recent_input) {
@@ -3751,7 +3768,8 @@ async function finalize22() {
 }
 async function buildLayoutShiftsClusters() {
   const { navigationsByFrameId: navigationsByFrameId2, mainFrameId: mainFrameId2, traceBounds: traceBounds2, softNavigationsById: softNavigationsById2 } = data4();
-  const navigations = [...navigationsByFrameId2.get(mainFrameId2) || [], ...softNavigationsById2.values()].sort((a, b) => a.ts - b.ts);
+  const softNavigations = enableSoftNavigation2 ? Array.from(softNavigationsById2.values()) : [];
+  const navigations = [...navigationsByFrameId2.get(mainFrameId2) || [], ...softNavigations].sort((a, b) => a.ts - b.ts);
   if (layoutShiftEvents.length === 0) {
     return;
   }

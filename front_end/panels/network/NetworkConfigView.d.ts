@@ -1,4 +1,4 @@
-import * as Protocol from '../../generated/protocol.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class NetworkConfigView extends UI.Widget.VBox {
     constructor();
@@ -14,7 +14,6 @@ export declare class NetworkConfigView extends UI.Widget.VBox {
     private createCacheSection;
     private createNetworkThrottlingSection;
     private createUserAgentSection;
-    private createAcceptedEncodingSection;
     wasShown(): void;
 }
 interface UserAgentGroup {

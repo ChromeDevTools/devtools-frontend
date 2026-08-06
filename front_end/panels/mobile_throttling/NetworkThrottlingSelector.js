@@ -9,7 +9,6 @@ import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as PanelsCommon from '../common/common.js';
 import { ThrottlingManager } from './ThrottlingManager.js';
 const { render, html, Directives } = Lit;
 const UIStrings = {
@@ -131,6 +130,17 @@ export const DEFAULT_VIEW = (input, output, target) => {
         },
     });
 };
+/**
+ * Computes the recommended network throttling preset based on CrUX RTT field
+ * metric data. Returns null if no RTT data is available or no preset matches.
+ */
+export function getRecommendedNetworkConditions(roundTripTimeMetricData) {
+    if (roundTripTimeMetricData?.percentiles) {
+        const rtt = Number(roundTripTimeMetricData.percentiles.p75);
+        return SDK.NetworkManager.getRecommendedNetworkPreset(rtt);
+    }
+    return null;
+}
 export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
     #settings;
     #recommendedConditions = null;
@@ -198,7 +208,7 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin(UI.
     #updateRecommendation = () => {
         const cruxManager = CrUXManager.CrUXManager.instance();
         const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData('round_trip_time');
-        this.recommendedConditions = PanelsCommon.ThrottlingUtils.getRecommendedNetworkConditions(roundTripTimeMetricData);
+        this.recommendedConditions = getRecommendedNetworkConditions(roundTripTimeMetricData);
     };
     set bindToGlobalConditions(bind) {
         const cruxManager = CrUXManager.CrUXManager.instance();

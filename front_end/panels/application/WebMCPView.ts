@@ -198,6 +198,14 @@ const UIStrings = {
    * @description Label for a list of tool flags or attributes
    */
   flags: 'Flags',
+  /**
+   * @description Text for the label of the tool description
+   */
+  description: 'Description',
+  /**
+   * @description Text for the label of the tool origin
+   */
+  origin: 'Origin',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -714,7 +722,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                     } as ProtocolMonitor.JSONEditor.Command,
                   });
                 }
-              }}>Run tool</devtools-button>
+              }}>${i18nString(UIStrings.runTool)}</devtools-button>
           ` : nothing}
         </div>
       </devtools-split-view>
@@ -1124,9 +1132,9 @@ const TOOL_DETAILS_VIEW = (input: ToolDetailsViewInput, output: undefined, targe
   render(html`
     <style>${webMCPViewStyles}</style>
     <div class="tool-details-grid">
-      <div class="label">Name</div>
+      <div class="label">${i18nString(UIStrings.name)}</div>
       <div class="value source-code">${tool.name}</div>
-      <div class="label">Description</div>
+      <div class="label">${i18nString(UIStrings.description)}</div>
       <div class="value">${tool.description}</div>
       ${flags.length > 0 ? html`
       <div class="label">${i18nString(UIStrings.flags)}</div>
@@ -1137,7 +1145,7 @@ const TOOL_DETAILS_VIEW = (input: ToolDetailsViewInput, output: undefined, targe
       <div class="value">${Components.Linkifier.Linkifier.linkifyRevealable(tool.frame, tool.frame.displayName())}</div>
       ` : nothing}
       ${origin instanceof SDK.DOMModel.DOMNode ? html`
-      <div class="label">Origin</div>
+      <div class="label">${i18nString(UIStrings.origin)}</div>
       <div class="value tool-origin-container">
         <span
             class="node-text-container source-code tool-origin-node"
@@ -1161,7 +1169,7 @@ const TOOL_DETAILS_VIEW = (input: ToolDetailsViewInput, output: undefined, targe
            @click=${() => input.revealNode(origin)}
            ></devtools-button>
       </div>` : origin ? html`
-      <div class="label">Origin</div>
+      <div class="label">${i18nString(UIStrings.origin)}</div>
       <div class="value stack-trace">
         ${widget(Components.JSPresentationUtils.StackTracePreviewContent,
                  {stackTrace: origin, options: { expandable: true}})}

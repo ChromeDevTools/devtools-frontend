@@ -168,14 +168,6 @@ devtools-toolbar.device-mode-toolbar-options {
   --override-screen-area-box-shadow: rgb(40 40 42) 0 0 0 0.5px, rgb(51 51 51 / 40%) 0 0 20px;
 }
 
-.device-mode-screen-image {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-}
-
 .device-mode-resizer {
   position: absolute;
   display: flex;

@@ -66,8 +66,6 @@ export interface DeviceModeViewInput {
   showDeviceMode: boolean;
   showMediaInspectorSetting: Common.Settings.Setting<boolean>;
   showRulersSetting: Common.Settings.Setting<boolean>;
-  screenImage: string;
-  screenImageLoaded: boolean;
   resizable: boolean;
   showRulers: boolean;
   showMediaInspector: boolean;
@@ -86,7 +84,6 @@ export interface DeviceModeViewInput {
   leftResizerRef: (el?: Element) => void;
   bottomResizerRef: (el?: Element) => void;
   onDoubleclickBottomResizer: () => void;
-  onScreenImageLoaded: (success: boolean) => void;
 }
 
 export type DeviceModeViewView = (
@@ -170,11 +167,6 @@ export const DEFAULT_DEVICE_MODE_VIEW: DeviceModeViewView = (
                width: `${input.cachedCssScreenRect.width}px`,
                height: `${input.cachedCssScreenRect.height}px`,
              } : {})}>
-          <img class="device-mode-screen-image"
-               ?hidden=${!input.screenImage || !input.screenImageLoaded}
-               srcset=${input.screenImage || nothing}
-               @load=${(): void => input.onScreenImageLoaded(true)}
-               @error=${(): void => input.onScreenImageLoaded(false)}>
           <div class="device-mode-resizer device-mode-bottom-right-resizer"
                ?hidden=${!input.resizable}
                jslog=${VisualLogging.slider('device-mode-resizer').track({drag: true})}
@@ -272,8 +264,6 @@ export class DeviceModeView extends UI.Widget.VBox {
   private cachedMediaInspectorVisible?: boolean;
   private cachedShowRulers?: boolean;
   private cachedScale?: number;
-  #screenImageLoaded = false;
-  #lastScreenImageSrc?: string;
   readonly #toggleDeviceModeAction: UI.ActionRegistration.Action;
   readonly #showDeviceModeSetting: Common.Settings.Setting<boolean>;
   #view: DeviceModeViewView;
@@ -307,18 +297,12 @@ export class DeviceModeView extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
-    if (this.#lastScreenImageSrc !== this.model.screenImage()) {
-      this.#lastScreenImageSrc = this.model.screenImage();
-      this.#screenImageLoaded = false;
-    }
     this.#toggleDeviceModeAction.setToggled(this.#showDeviceModeSetting.get());
     const input: DeviceModeViewInput = {
       model: this.model,
       showDeviceMode: this.#showDeviceModeSetting.get(),
       showMediaInspectorSetting: this.showMediaInspectorSetting,
       showRulersSetting: this.showRulersSetting,
-      screenImage: this.model.screenImage(),
-      screenImageLoaded: this.#screenImageLoaded,
       resizable: this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive,
       showRulers: this.showRulersSetting.get() && this.model.type() !== EmulationModel.DeviceModeModel.Type.None,
       showMediaInspector:
@@ -342,7 +326,6 @@ export class DeviceModeView extends UI.Widget.VBox {
       leftResizerRef: this.leftResizerRef,
       bottomResizerRef: this.bottomResizerRef,
       onDoubleclickBottomResizer: (): void => this.model.setHeight(0),
-      onScreenImageLoaded: (success: boolean): void => this.onScreenImageLoaded(success),
     };
     this.#view(input, undefined, this.contentElement);
   }
@@ -377,13 +360,6 @@ export class DeviceModeView extends UI.Widget.VBox {
   private screenshotRequestedFromOverlay(event: Common.EventTarget.EventTargetEvent<Protocol.Page.Viewport>): void {
     const clip = event.data;
     DeviceModeView.captureScreenshot(false, clip);
-  }
-
-  private onScreenImageLoaded(success: boolean): void {
-    if (this.#screenImageLoaded !== success) {
-      this.#screenImageLoaded = success;
-      this.requestUpdate();
-    }
   }
 
   private createResizer(widthFactor: number, heightFactor: number): UI.ResizerWidget.ResizerWidget {

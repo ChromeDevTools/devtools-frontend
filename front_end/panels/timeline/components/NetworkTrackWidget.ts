@@ -20,7 +20,7 @@ export interface NetworkDataProvider extends PerfUI.FlameChart.FlameChartDataPro
   setModel(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper: Trace.EntityMapper.EntityMapper): void;
   setWindowTimes(min: number, max: number): void;
   timelineData(): PerfUI.FlameChart.FlameChartTimelineData;
-  preparePopoverElement(index: number): Element|null;
+  preparePopoverElement(index: number): Lit.TemplateResult|null;
 }
 
 export interface NetworkTrackWidgetData {

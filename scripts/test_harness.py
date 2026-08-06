@@ -309,6 +309,28 @@ class DevToolsTestHarness(unittest.TestCase):
             'test/harness/unit/before_each_hook_fail.test.ts:block:run')
         self.assertEqual(results[0].get('status'), 'FAIL')
 
+    def test_unit_bail(self):
+        abs_test_file = self._resolve_test_file(
+            "test/harness/unit/errors.test.ts")
+        results, exit_code = self.run_test_with_rdb([
+            "node_modules/karma/bin/karma", "start",
+            os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
+            abs_test_file, "--bail"
+        ])
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(
+            len(results), 3,
+            f"Expected exactly 3 test results with --bail, got {len(results)}")
+        self.assertEqual(results[0].get('testId'),
+                         'test/harness/unit/errors.test.ts:block_1:run_1')
+        self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertEqual(results[1].get('testId'),
+                         'test/harness/unit/errors.test.ts:block_1:run_2')
+        self.assertEqual(results[1].get('status'), 'PASS')
+        self.assertEqual(results[2].get('testId'),
+                         'test/harness/unit/errors.test.ts:block_2:run_3')
+        self.assertEqual(results[2].get('status'), 'FAIL')
+
     def test_unit_ids(self):
         results, exit_code = self.run_unit_test(
             "test/harness/unit/hooks.test.ts:block_2:run_3")
@@ -445,6 +467,27 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertEqual(results[3].get('testId'),
                          'test/harness/e2e/errors.test.ts:block_2:run_4')
         self.assertEqual(results[3].get('status'), 'PASS')
+
+    def test_e2e_bail(self):
+        abs_test_file = self._resolve_test_file(
+            "test/harness/e2e/errors.test.ts")
+        results, exit_code = self.run_test_with_rdb([
+            os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
+            abs_test_file, "--", "--bail"
+        ])
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(
+            len(results), 3,
+            f"Expected exactly 3 test results with --bail, got {len(results)}")
+        self.assertEqual(results[0].get('testId'),
+                         'test/harness/e2e/errors.test.ts:block_1:run_1')
+        self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertEqual(results[1].get('testId'),
+                         'test/harness/e2e/errors.test.ts:block_1:run_2')
+        self.assertEqual(results[1].get('status'), 'PASS')
+        self.assertEqual(results[2].get('testId'),
+                         'test/harness/e2e/errors.test.ts:block_2:run_3')
+        self.assertEqual(results[2].get('status'), 'FAIL')
 
     def test_e2e_repeat(self):
         abs_test_file = self._resolve_test_file("test/harness/e2e/e2e.test.ts")

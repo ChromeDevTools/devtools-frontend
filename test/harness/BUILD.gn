@@ -40,6 +40,7 @@ devtools_ui_module("unit_fixtures") {
     "unit/after_each_hook_fail.test.ts",
     "unit/before_each_hook_fail.test.ts",
     "unit/duplicate.test.ts",
+    "unit/errors.test.ts",
     "unit/get_test_id.test.ts",
     "unit/global_after_hook_fail.test.ts",
     "unit/global_before_hook_fail.test.ts",

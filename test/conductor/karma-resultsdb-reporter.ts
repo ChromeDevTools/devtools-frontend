@@ -13,6 +13,7 @@ import {formatAsHtml, formatDiff, resultAssertionsDiff} from './diff-utils.js';
 import {GEN_DIR} from './paths.js';
 import * as ResultsDb from './resultsdb.js';
 import {ScreenshotError} from './screenshot-error.js';
+import {TestConfig} from './test_config.js';
 import {isExpectedResult} from './test_expectations.js';
 
 export function formatAsPatch(assertionDiff: any) {
@@ -146,7 +147,7 @@ export const ResultsDBReporter = function(
   this.onRunComplete = (browsers: any, results: any) => {
     browsers.forEach((browser: any) => {
       const {total, success, failed, skipped} = browser.lastResult;
-      if (total !== success + failed + skipped && !this.hasExclusiveTests) {
+      if (total !== success + failed + skipped && !this.hasExclusiveTests && !TestConfig.bail) {
         throw new Error(`Karma exited early: executed ${success + failed + skipped} out of ${total} tests`);
       }
     });

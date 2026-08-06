@@ -27,6 +27,7 @@ function optionsWithDefalts(options: Options): Options {
     reporter: path.join(__dirname, 'mocha-resultsdb-reporter.js'),
     slow: 1000,
     failZero: false,
+    bail: TestConfig.bail,
     ...options,
     ...TestConfig.mochaGrep,
   };

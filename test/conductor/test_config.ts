@@ -49,6 +49,7 @@ interface Config {
   isLuci: boolean;
   isPerfTest: boolean;
   expectationsFile?: string;
+  bail: boolean;
 }
 
 function sliceArrayFromElement(array: string[], element: string) {
@@ -179,6 +180,7 @@ export const TestConfig: Config = {
   isLuci: process.env['LUCI_CONTEXT'] !== undefined,
   isPerfTest: false,
   expectationsFile: options['expectations-file'],
+  bail: options['bail'],
 };
 
 export function loadTests(testDirectory: string, filename = 'tests.txt') {

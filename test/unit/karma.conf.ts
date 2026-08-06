@@ -304,7 +304,7 @@ const ProgressWithDiffReporter = function(
 
     browsers.forEach((browser: any) => {
       const {total, success, failed, skipped} = browser.lastResult;
-      if (total !== success + failed + skipped && !this.hasExclusiveTests) {
+      if (total !== success + failed + skipped && !this.hasExclusiveTests && !TestConfig.bail) {
         throw new Error(`Karma exited early: executed ${success + failed + skipped} out of ${total} tests`);
       }
     });
@@ -518,6 +518,7 @@ module.exports = function(config: any) {
       captureConsole: true,
       mocha: {
         ...TestConfig.mochaGrep,
+        bail: TestConfig.bail,
         retries: TestConfig.retries,
         timeout: TestConfig.debug ? 0 : 5_000,
         expose: ['hasExclusiveTests', 'file', 'type'],

@@ -111,6 +111,12 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
         default: 1,
         desc: 'Reruns the test X number of times regardless of result (e2e tests only)',
       })
+      .option('bail', {
+        alias: ['fail-fast'],
+        type: 'boolean',
+        default: false,
+        desc: 'Stops the test run after the first test failure',
+      })
       .option('retries', {
         type: 'number',
         desc: 'Reruns the tests if upon failure at max X number of times',

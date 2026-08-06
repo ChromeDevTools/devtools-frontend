@@ -53,7 +53,7 @@ export async function screenshotError(state: ScreenshotState, error: Error) {
     return error;
   }
 
-  console.error('Taking screenshots for the error:', error);
+  console.error('Taking screenshots for the error:\n', error);
   if (!TestConfig.debug) {
     try {
       const screenshotTimeout = 5_000;

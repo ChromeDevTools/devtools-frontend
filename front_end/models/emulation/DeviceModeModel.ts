@@ -404,10 +404,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.#type;
   }
 
-  screenImage(): string {
-    return (this.#device && this.#mode) ? this.#device.modeImage(this.#mode) : '';
-  }
-
   screenRect(): Rect {
     return this.#screenRect;
   }
@@ -893,9 +889,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       }
       ctx.imageSmoothingEnabled = false;
 
-      if (this.screenImage()) {
-        await this.paintImage(ctx, this.screenImage(), screenRect.relativeTo(screenRect));
-      }
       ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
       void this.saveScreenshot(canvas);
     };

@@ -438,7 +438,6 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       title: '',
       orientation: EmulationModel.EmulatedDevices.Vertical,
       insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-      image: null,
     };
     const safeAreaInsets = this.safeAreaInsetsFromEditor(editor);
     if (safeAreaInsets) {
@@ -453,7 +452,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       title: '',
       orientation: EmulationModel.EmulatedDevices.Horizontal,
       insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-      image: null,
+
     };
     const landscapeSafeAreaInsets = this.safeAreaInsetsFromEditor(editor, 'landscape-');
     if (landscapeSafeAreaInsets) {

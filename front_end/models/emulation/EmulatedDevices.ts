@@ -48,12 +48,6 @@ const str_ = i18n.i18n.registerUIStrings('models/emulation/EmulatedDevices.ts', 
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function computeRelativeImageURL(cssURLValue: string): string {
-  return cssURLValue.replace(/@url\(([^\)]*?)\)/g, (_match: string, url: string) => {
-    return new URL(`../../emulated_devices/${url}`, import.meta.url).toString();
-  });
-}
-
 export class EmulatedDevice {
   title: string;
   type: Type;
@@ -273,9 +267,10 @@ export class EmulatedDevice {
         if (mode.insets.top < 0 || mode.insets.left < 0 || mode.insets.right < 0 || mode.insets.bottom < 0 ||
             mode.insets.top + mode.insets.bottom > orientation.height ||
             mode.insets.left + mode.insets.right > orientation.width) {
-          throw new Error('Emulated device mode \'' + mode.title + '\'has wrong mode insets');
+          throw new Error(
+              'Emulated device mode \'' + mode.title + '\'has wrong mode insets',
+          );
         }
-        mode.image = (parseValue(modes[i], 'image', 'string', null) as string);
         const safeAreaInsets = parseValue(modes[i], 'safe-area-insets', 'object', null);
         if (safeAreaInsets) {
           mode.safeAreaInsets = parseInsets(safeAreaInsets);
@@ -410,7 +405,6 @@ export class EmulatedDevice {
           right: this.modes[i].insets.right,
           bottom: this.modes[i].insets.bottom,
         },
-        image: this.modes[i].image || undefined,
       };
       const safeAreaInsets = this.modes[i].safeAreaInsets;
       if (safeAreaInsets) {
@@ -494,13 +488,6 @@ export class EmulatedDevice {
       }
     }
     return json;
-  }
-
-  modeImage(mode: Mode): string {
-    if (!mode.image) {
-      return '';
-    }
-    return computeRelativeImageURL(mode.image);
   }
 
   orientationByName(name: string): Orientation {
@@ -661,8 +648,16 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
       if (device) {
         result.add(device);
         if (!device.modes.length) {
-          device.modes.push({title: '', orientation: Horizontal, insets: new Insets(0, 0, 0, 0), image: null});
-          device.modes.push({title: '', orientation: Vertical, insets: new Insets(0, 0, 0, 0), image: null});
+          device.modes.push({
+            title: '',
+            orientation: Horizontal,
+            insets: new Insets(0, 0, 0, 0),
+          });
+          device.modes.push({
+            title: '',
+            orientation: Vertical,
+            insets: new Insets(0, 0, 0, 0),
+          });
         }
       } else {
         success = false;
@@ -742,7 +737,6 @@ export interface Mode {
   title: string;
   orientation: string;
   insets: Insets;
-  image: string|null;
   safeAreaInsets?: Insets;
   cutout?: Cutout;
 }
@@ -769,7 +763,6 @@ export interface Orientation {
 export interface JSONMode {
   title: string;
   orientation: string;
-  image?: string;
   insets: {
     left: number,
     right: number,

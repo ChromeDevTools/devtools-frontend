@@ -204,7 +204,6 @@ describe('DeviceModeModel', () => {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,
         insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-        image: null,
       };
 
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, mobileDevice, mode);
@@ -232,14 +231,14 @@ describe('DeviceModeModel', () => {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,
         insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-        image: null,
+
         safeAreaInsets: new EmulationModel.DeviceModeModel.Insets(0, 59, 0, 34),
       },
       {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Horizontal,
         insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-        image: null,
+
         safeAreaInsets: new EmulationModel.DeviceModeModel.Insets(59, 0, 59, 21),
       },
     ];
@@ -294,7 +293,7 @@ describe('DeviceModeModel', () => {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,
         insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-        image: null,
+
       };
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, mode);
 
@@ -343,7 +342,7 @@ describe('DeviceModeModel', () => {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,
         insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-        image: null,
+
         cutout: {
           shape: EmulationModel.EmulatedDevices.CutoutShape.PILL,
           x: 153,
@@ -357,7 +356,7 @@ describe('DeviceModeModel', () => {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Horizontal,
         insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-        image: null,
+
       },
     ];
     return device;
@@ -854,7 +853,7 @@ describe('DeviceModeModel', () => {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,
         insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-        image: null,
+
       };
 
       // Stale scale from previous session.
@@ -887,7 +886,7 @@ describe('DeviceModeModel', () => {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,
         insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-        image: null,
+
       };
 
       // Emulate with an explicit scale of 0.75 before setAvailableSize.

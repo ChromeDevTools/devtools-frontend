@@ -31,13 +31,13 @@ function createCustomDevice(): EmulationModel.EmulatedDevices.EmulatedDevice {
       title: '',
       orientation: EmulationModel.EmulatedDevices.Vertical,
       insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-      image: null,
+
     },
     {
       title: '',
       orientation: EmulationModel.EmulatedDevices.Horizontal,
       insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-      image: null,
+
     },
   ];
   return device;

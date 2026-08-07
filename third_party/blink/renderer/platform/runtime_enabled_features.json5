@@ -3435,11 +3435,18 @@
     },
     {
       name: "GlobalPrivacyControl",
-      implied_by: ["GlobalPrivacyControlForce"],
+      implied_by: [
+        "GlobalPrivacyControlForce",
+        "GlobalPrivacyControlTest"
+      ],
       base_feature: "none",
     },
     {
       name: "GlobalPrivacyControlForce",
+    },
+    {
+      name: "GlobalPrivacyControlTest",
+      status: "experimental",
     },
     {
       name: "GraphemeClusterBoundsCheck",
@@ -6430,7 +6437,7 @@
     {
       // https://crbug.com/41492459
       name: "TextOverflowString",
-      status: "test",
+      status: "experimental",
     },
     {
       name: "TextScaleMetaTag",

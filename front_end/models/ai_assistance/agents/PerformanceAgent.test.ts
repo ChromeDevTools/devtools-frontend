@@ -2274,6 +2274,58 @@ code
     });
   });
 
+  // Guard against prototype pollution vulnerabilities where the AI agent
+  // or user input might pass prototype property names (e.g. 'toString', 'constructor')
+  // triggering unexpected behavior when performing dynamic lookups on model objects.
+  describe('Prototype pollution guards', () => {
+    it('blocks getMainThreadTrackSummaryByLabel for prototype properties', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [{name: 'getMainThreadTrackSummaryByLabel', args: {label: 'toString'}}],
+          }],
+          [{explanation: 'done'}],
+        ]),
+      });
+      const context = PerformanceTraceContext.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(action);
+      assert.strictEqual(action.output, 'Invalid label: toString');
+    });
+
+    it('blocks getInsightDetails for prototype properties', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+      const insightSetId = [...parsedTrace.insights.keys()][0];
+
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [{name: 'getInsightDetails', args: {insightSetId, insightName: 'toString'}}],
+          }],
+          [{explanation: 'done'}],
+        ]),
+      });
+      const context = PerformanceTraceContext.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(action);
+      assert.include(action.output, 'No insight available. Valid insight names are:');
+    });
+  });
+
   describe('getLabelName', () => {
     it('returns correct names for static labels', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
@@ -2311,6 +2363,17 @@ code
       assert.strictEqual(
           PerformanceAgent.getLabelName('unknown-label' as PerformanceAgent.MainThreadSectionLabel, focus),
           'unknown-label',
+      );
+    });
+
+    // Guard against prototype pollution: 'toString' is a prototype property
+    // and should not be resolved as a valid model, returning the fallback label name.
+    it('returns the label itself for prototype properties', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
+      assert.strictEqual(
+          PerformanceAgent.getLabelName('toString' as PerformanceAgent.MainThreadSectionLabel, focus),
+          'toString',
       );
     });
   });

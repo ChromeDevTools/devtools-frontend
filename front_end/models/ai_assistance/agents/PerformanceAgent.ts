@@ -204,12 +204,22 @@ const STATIC_LABEL_NAMES: Record<string, string> = {
   NO_NAVIGATION: 'the period before the first navigation',
 };
 
+function getInsightModel(
+    model: Trace.Insights.Types.InsightModels,
+    key: string,
+    ): Trace.Insights.Types.InsightModels[keyof Trace.Insights.Types.InsightModels]|undefined {
+  if (Object.prototype.hasOwnProperty.call(model, key)) {
+    return model[key as keyof Trace.Insights.Types.InsightModels];
+  }
+  return undefined;
+}
+
 /**
  * Converts the label name we use in the code to a human readable one that is
  * shown to the user.
  */
 export function getLabelName(label: MainThreadSectionLabel, focus: AgentFocus): string {
-  if (STATIC_LABEL_NAMES[label]) {
+  if (Object.prototype.hasOwnProperty.call(STATIC_LABEL_NAMES, label)) {
     return STATIC_LABEL_NAMES[label];
   }
 
@@ -222,7 +232,7 @@ export function getLabelName(label: MainThreadSectionLabel, focus: AgentFocus): 
   // Go through all the insights we have to find the first one that matches to find the title.
   // TODO(b/505291090): make it easier to look up Insight titles from a key.
   for (const insightSet of parsedTrace.insights?.values() ?? []) {
-    const model = insightSet.model[label as keyof Trace.Insights.Types.InsightModels];
+    const model = getInsightModel(insightSet.model, label);
     if (model) {
       return `${model.title} insight`;
     }
@@ -813,7 +823,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           return {error: `Invalid insight set id. Valid insight set ids are: ${valid}`};
         }
 
-        const insight = insightSet.model[params.insightName as keyof Trace.Insights.Types.InsightModels];
+        const insight = getInsightModel(insightSet.model, params.insightName);
         if (!insight) {
           const valid = Object.keys(insightSet.model).join(', ');
           return {error: `No insight available. Valid insight names are: ${valid}`};
@@ -1361,14 +1371,14 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     }
 
     if (insightSet) {
-      const model = insightSet.model[label as keyof Trace.Insights.Types.InsightModels];
+      const model = getInsightModel(insightSet.model, label);
       if (model) {
         return Trace.Insights.Common.insightBounds(model, insightSet.bounds);
       }
     }
 
     for (const is of parsedTrace.insights?.values() ?? []) {
-      const model = is.model[label as keyof Trace.Insights.Types.InsightModels];
+      const model = getInsightModel(is.model, label);
       if (model) {
         return Trace.Insights.Common.insightBounds(model, is.bounds);
       }

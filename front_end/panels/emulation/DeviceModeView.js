@@ -92,7 +92,6 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
     <div class=${classMap({
             'device-mode-content-clip': true,
             vbox: true,
-            'device-mode-outline-visible': Boolean(input.outlineImage),
             'device-mode-rulers-visible': input.showRulers,
         })}>
       <div class="device-mode-presets-container" jslog=${VisualLogging.responsivePresets()}>
@@ -117,17 +116,6 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
         }) : nothing}
       </div>
       <div class="device-mode-content-area">
-        <img class="device-mode-outline-image fill"
-             ?hidden=${!input.outlineImage || !input.outlineImageLoaded}
-             style=${styleMap(input.cachedOutlineRect ? {
-            left: `${input.cachedOutlineRect.left}px`,
-            top: `${input.cachedOutlineRect.top}px`,
-            width: `${input.cachedOutlineRect.width}px`,
-            height: `${input.cachedOutlineRect.height}px`,
-        } : {})}
-             srcset=${input.outlineImage || nothing}
-             @load=${() => input.onOutlineImageLoaded(true)}
-             @error=${() => input.onOutlineImageLoaded(false)}>
         <div class="device-mode-screen-area"
              style=${styleMap(input.cachedCssScreenRect ? {
             left: `${input.cachedCssScreenRect.left}px`,
@@ -135,11 +123,6 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
             width: `${input.cachedCssScreenRect.width}px`,
             height: `${input.cachedCssScreenRect.height}px`,
         } : {})}>
-          <img class="device-mode-screen-image"
-               ?hidden=${!input.screenImage || !input.screenImageLoaded}
-               srcset=${input.screenImage || nothing}
-               @load=${() => input.onScreenImageLoaded(true)}
-               @error=${() => input.onScreenImageLoaded(false)}>
           <div class="device-mode-resizer device-mode-bottom-right-resizer"
                ?hidden=${!input.resizable}
                jslog=${VisualLogging.slider('device-mode-resizer').track({ drag: true })}
@@ -229,14 +212,9 @@ export class DeviceModeView extends UI.Widget.VBox {
     resizeStart;
     cachedCssScreenRect;
     cachedCssVisiblePageRect;
-    cachedOutlineRect;
     cachedMediaInspectorVisible;
     cachedShowRulers;
     cachedScale;
-    #outlineImageLoaded = false;
-    #lastOutlineImageSrc;
-    #screenImageLoaded = false;
-    #lastScreenImageSrc;
     #toggleDeviceModeAction;
     #showDeviceModeSetting;
     #view;
@@ -262,31 +240,18 @@ export class DeviceModeView extends UI.Widget.VBox {
         UI.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.zoomChanged, this);
     }
     performUpdate() {
-        if (this.#lastOutlineImageSrc !== this.model.outlineImage()) {
-            this.#lastOutlineImageSrc = this.model.outlineImage();
-            this.#outlineImageLoaded = false;
-        }
-        if (this.#lastScreenImageSrc !== this.model.screenImage()) {
-            this.#lastScreenImageSrc = this.model.screenImage();
-            this.#screenImageLoaded = false;
-        }
         this.#toggleDeviceModeAction.setToggled(this.#showDeviceModeSetting.get());
         const input = {
             model: this.model,
             showDeviceMode: this.#showDeviceModeSetting.get(),
             showMediaInspectorSetting: this.showMediaInspectorSetting,
             showRulersSetting: this.showRulersSetting,
-            outlineImage: this.model.outlineImage(),
-            outlineImageLoaded: this.#outlineImageLoaded,
-            screenImage: this.model.screenImage(),
-            screenImageLoaded: this.#screenImageLoaded,
             resizable: this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive,
             showRulers: this.showRulersSetting.get() && this.model.type() !== EmulationModel.DeviceModeModel.Type.None,
             showMediaInspector: this.showMediaInspectorSetting.get() && this.model.type() !== EmulationModel.DeviceModeModel.Type.None,
             scale: this.model.scale(),
             cachedCssScreenRect: this.cachedCssScreenRect,
             cachedCssVisiblePageRect: this.cachedCssVisiblePageRect,
-            cachedOutlineRect: this.cachedOutlineRect,
             onApplyPresetSize: (width, e) => {
                 this.model.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
                 this.model.setWidthAndScaleToFit(width);
@@ -303,8 +268,6 @@ export class DeviceModeView extends UI.Widget.VBox {
             leftResizerRef: this.leftResizerRef,
             bottomResizerRef: this.bottomResizerRef,
             onDoubleclickBottomResizer: () => this.model.setHeight(0),
-            onOutlineImageLoaded: (success) => this.onOutlineImageLoaded(success),
-            onScreenImageLoaded: (success) => this.onScreenImageLoaded(success),
         };
         this.#view(input, undefined, this.contentElement);
     }
@@ -335,18 +298,6 @@ export class DeviceModeView extends UI.Widget.VBox {
     screenshotRequestedFromOverlay(event) {
         const clip = event.data;
         DeviceModeView.captureScreenshot(false, clip);
-    }
-    onOutlineImageLoaded(success) {
-        if (this.#outlineImageLoaded !== success) {
-            this.#outlineImageLoaded = success;
-            this.requestUpdate();
-        }
-    }
-    onScreenImageLoaded(success) {
-        if (this.#screenImageLoaded !== success) {
-            this.#screenImageLoaded = success;
-            this.requestUpdate();
-        }
     }
     createResizer(widthFactor, heightFactor) {
         const resizer = new UI.ResizerWidget.ResizerWidget();
@@ -423,14 +374,6 @@ export class DeviceModeView extends UI.Widget.VBox {
         if (!this.cachedCssVisiblePageRect || !cssVisiblePageRect.isEqual(this.cachedCssVisiblePageRect)) {
             callDoResize = true;
             this.cachedCssVisiblePageRect = cssVisiblePageRect;
-        }
-        const outlineRectFromModel = this.model.outlineRect();
-        if (outlineRectFromModel) {
-            const outlineRect = outlineRectFromModel.scale(1 / zoomFactor);
-            if (!this.cachedOutlineRect || !outlineRect.isEqual(this.cachedOutlineRect)) {
-                callDoResize = true;
-                this.cachedOutlineRect = outlineRect;
-            }
         }
         const mediaInspectorVisible = this.showMediaInspectorSetting.get() && this.model.type() !== EmulationModel.DeviceModeModel.Type.None;
         if (mediaInspectorVisible !== this.cachedMediaInspectorVisible) {

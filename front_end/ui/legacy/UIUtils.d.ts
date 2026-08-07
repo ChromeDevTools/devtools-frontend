@@ -290,13 +290,6 @@ export declare class PromotionManager {
  */
 export declare function maybeCreateNewBadge(promotionId: string): HTMLDivElement | undefined;
 export declare function bindToAction(actionName: string): ReturnType<typeof Directives.ref>;
-type BindingEventListener = (arg: any) => any;
-export declare class InterceptBindingDirective extends Lit.Directive.Directive {
-    #private;
-    update(part: Lit.Directive.Part, [listener]: [BindingEventListener]): unknown;
-    render(listener: Function): Function;
-    static setEventListeners(templateElement: Element, renderedElement: Element): void;
-}
 export declare const cloneCustomElement: <T extends HTMLElement>(element: T, deep?: boolean) => T;
 export declare class HTMLElementWithLightDOMTemplate extends HTMLElement {
     #private;

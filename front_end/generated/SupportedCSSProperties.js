@@ -826,6 +826,7 @@ export const generatedProperties = [
             "text-box-trim",
             "text-combine-upright",
             "text-decoration-color",
+            "text-decoration-inset",
             "text-decoration-line",
             "text-decoration-skip-ink",
             "text-decoration-skip-spaces",
@@ -4990,7 +4991,7 @@ export const generatedProperties = [
         ],
         "name": "scroll-axis-lock",
         "runtime_flag": "ScrollAxisLock",
-        "runtime_flag_status": "experimental"
+        "runtime_flag_status": "stable"
     },
     {
         "keywords": [
@@ -5487,6 +5488,15 @@ export const generatedProperties = [
             "currentcolor"
         ],
         "name": "text-decoration-color"
+    },
+    {
+        "inherited": false,
+        "keywords": [
+            "auto"
+        ],
+        "name": "text-decoration-inset",
+        "runtime_flag": "CSSTextDecorationInset",
+        "runtime_flag_status": "experimental"
     },
     {
         "keywords": [
@@ -8844,6 +8854,11 @@ export const generatedPropertyValues = {
     "text-decoration-color": {
         "values": [
             "currentcolor"
+        ]
+    },
+    "text-decoration-inset": {
+        "values": [
+            "auto"
         ]
     },
     "text-decoration-line": {

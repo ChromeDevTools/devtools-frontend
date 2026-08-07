@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Breadcrumbs from './Breadcrumbs.js';
 import * as BreadcrumbsUI from './BreadcrumbsUI.js';
-import * as CPUThrottlingSelector from './CPUThrottlingSelector.js';
 import * as CWVMetrics from './CWVMetrics.js';
 import * as DetailsView from './DetailsView.js';
 import * as ExportTraceOptions from './ExportTraceOptions.js';
@@ -25,5 +24,5 @@ import * as SidebarSingleInsightSet from './SidebarSingleInsightSet.js';
 import * as TimelineRangeSummaryView from './TimelineRangeSummaryView.js';
 import * as TimelineSummary from './TimelineSummary.js';
 import * as Utils from './Utils.js';
-export { Breadcrumbs, BreadcrumbsUI, CPUThrottlingSelector, CWVMetrics, DetailsView, ExportTraceOptions, FieldSettingsDialog, IgnoreListSetting, InteractionBreakdown, LayoutShiftDetails, LiveMetricsView, MetricCard, NetworkRequestDetails, NetworkRequestTooltip, NetworkTrackWidget, OriginMap, RelatedInsightChips, Sidebar, SidebarAnnotationsTab, SidebarInsightsTab, SidebarSingleInsightSet, TimelineRangeSummaryView, TimelineSummary, Utils, };
+export { Breadcrumbs, BreadcrumbsUI, CWVMetrics, DetailsView, ExportTraceOptions, FieldSettingsDialog, IgnoreListSetting, InteractionBreakdown, LayoutShiftDetails, LiveMetricsView, MetricCard, NetworkRequestDetails, NetworkRequestTooltip, NetworkTrackWidget, OriginMap, RelatedInsightChips, Sidebar, SidebarAnnotationsTab, SidebarInsightsTab, SidebarSingleInsightSet, TimelineRangeSummaryView, TimelineSummary, Utils, };
 //# sourceMappingURL=components.prebundle.js.map

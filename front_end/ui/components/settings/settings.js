@@ -169,7 +169,7 @@ var SettingCheckbox = class extends HTMLElement {
           <input
             type="checkbox"
             .checked=${this.checked}
-            ?disabled=${this.#disabled || this.#setting.disabled()}
+            ?disabled=${this.#disabled}
             @change=${this.#checkboxChanged}
             jslog=${VisualLogging.toggle().track({ change: true }).context(this.#setting.name)}
             aria-label=${titleText}

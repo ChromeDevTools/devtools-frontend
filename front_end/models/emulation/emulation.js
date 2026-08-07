@@ -2184,6 +2184,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   #availableSize;
   #preferredSize;
   #initialized;
+  #autoFitScaleOnInitialize;
   #appliedDeviceSize;
   #appliedDeviceScaleFactor;
   #appliedUserAgentType;
@@ -2193,7 +2194,6 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   #heightSetting;
   #uaSetting;
   #deviceScaleFactorSetting;
-  #deviceOutlineSetting;
   #toolbarControlsEnabledSetting;
   #type;
   #device;
@@ -2208,16 +2208,19 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   #targetManager;
   #settings;
   #multitargetNetworkManager;
-  constructor(targetManager, settings, multitargetNetworkManager) {
+  #fileManager;
+  constructor(targetManager, settings, multitargetNetworkManager, fileManager) {
     super();
     this.#targetManager = targetManager;
     this.#settings = settings;
     this.#multitargetNetworkManager = multitargetNetworkManager;
+    this.#fileManager = fileManager;
     this.#screenRect = new Rect(0, 0, 1, 1);
     this.#visiblePageRect = new Rect(0, 0, 1, 1);
     this.#availableSize = new Geometry.Size(1, 1);
     this.#preferredSize = new Geometry.Size(1, 1);
     this.#initialized = false;
+    this.#autoFitScaleOnInitialize = false;
     this.#appliedDeviceSize = new Geometry.Size(1, 1);
     this.#appliedDeviceScaleFactor = globalThis.devicePixelRatio;
     this.#appliedUserAgentType = "Desktop";
@@ -2251,8 +2254,6 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     this.#uaSetting.addChangeListener(this.uaSettingChanged, this);
     this.#deviceScaleFactorSetting = this.#settings.createSetting("emulation.device-scale-factor", 0);
     this.#deviceScaleFactorSetting.addChangeListener(this.deviceScaleFactorSettingChanged, this);
-    this.#deviceOutlineSetting = this.#settings.moduleSetting("emulation.show-device-outline");
-    this.#deviceOutlineSetting.addChangeListener(this.deviceOutlineSettingChanged, this);
     this.#toolbarControlsEnabledSetting = this.#settings.createSetting(
       "emulation.toolbar-controls-enabled",
       true,
@@ -2278,7 +2279,9 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         Common2.Settings.Settings.instance(),
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        SDK2.NetworkManager.MultitargetNetworkManager.instance()
+        SDK2.NetworkManager.MultitargetNetworkManager.instance(),
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        Workspace.FileManager.FileManager.instance()
       ));
     }
     return Root2.DevToolsContext.globalInstance().get(_DeviceModeModel);
@@ -2358,10 +2361,20 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   get scaleSettingInternal() {
     return this.#scaleSetting;
   }
+  #updateFitScale() {
+    if (this.#type === Type2.Device && this.#device && this.#mode) {
+      const orientation = this.#device.orientationByName(this.#mode.orientation);
+      this.#scaleSetting.set(this.calculateFitScale(orientation.width, orientation.height, this.currentOutline(), this.currentInsets()));
+    }
+  }
   setAvailableSize(availableSize, preferredSize) {
     this.#availableSize = availableSize;
     this.#preferredSize = preferredSize;
     this.#initialized = true;
+    if (this.#autoFitScaleOnInitialize) {
+      this.#autoFitScaleOnInitialize = false;
+      this.#updateFitScale();
+    }
     this.calculateAndEmulate(false);
   }
   emulate(type, device, mode, scale) {
@@ -2371,13 +2384,19 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       console.assert(Boolean(device) && Boolean(mode), "Must pass device and mode for device emulation");
       this.#mode = mode;
       this.#device = device;
-      if (this.#initialized) {
-        const orientation = device.orientationByName(mode.orientation);
-        this.#scaleSetting.set(scale || this.calculateFitScale(orientation.width, orientation.height, this.currentOutline(), this.currentInsets()));
+      if (scale !== void 0) {
+        this.#autoFitScaleOnInitialize = false;
+        this.#scaleSetting.set(scale);
+      } else if (this.#initialized) {
+        this.#autoFitScaleOnInitialize = false;
+        this.#updateFitScale();
+      } else {
+        this.#autoFitScaleOnInitialize = true;
       }
     } else {
       this.#device = null;
       this.#mode = null;
+      this.#autoFitScaleOnInitialize = false;
     }
     if (type !== Type2.None) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.DeviceModeEnabled);
@@ -2421,9 +2440,6 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   }
   screenImage() {
     return this.#device && this.#mode ? this.#device.modeImage(this.#mode) : "";
-  }
-  outlineImage() {
-    return this.#device && this.#mode && this.#deviceOutlineSetting.get() ? this.#device.outlineImage(this.#mode) : "";
   }
   canShowDeviceFrame() {
     return Boolean(this.#device && this.#mode && this.#device.outlineImage(this.#mode));
@@ -2483,9 +2499,6 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   }
   deviceScaleFactorSetting() {
     return this.#deviceScaleFactorSetting;
-  }
-  deviceOutlineSetting() {
-    return this.#deviceOutlineSetting;
   }
   toolbarControlsEnabledSetting() {
     return this.#toolbarControlsEnabledSetting;
@@ -2585,9 +2598,6 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   deviceScaleFactorSettingChanged() {
     this.calculateAndEmulate(false);
   }
-  deviceOutlineSettingChanged() {
-    this.calculateAndEmulate(false);
-  }
   preferredScaledWidth() {
     return Math.floor(this.#preferredSize.width / (this.#scaleSetting.get() || 1));
   }
@@ -2595,15 +2605,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     return Math.floor(this.#preferredSize.height / (this.#scaleSetting.get() || 1));
   }
   currentOutline() {
-    let outline = new Insets(0, 0, 0, 0);
-    if (this.#type !== Type2.Device || !this.#device || !this.#mode) {
-      return outline;
-    }
-    const orientation = this.#device.orientationByName(this.#mode.orientation);
-    if (this.#deviceOutlineSetting.get()) {
-      outline = orientation.outlineInsets || outline;
-    }
-    return outline;
+    return new Insets(0, 0, 0, 0);
   }
   currentInsets() {
     if (this.#type !== Type2.Device || !this.#mode) {
@@ -2868,9 +2870,6 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
         throw new Error("Could not get 2d context from canvas.");
       }
       ctx.imageSmoothingEnabled = false;
-      if (this.outlineImage()) {
-        await this.paintImage(ctx, this.outlineImage(), outlineRect.relativeTo(outlineRect));
-      }
       if (this.screenImage()) {
         await this.paintImage(ctx, this.screenImage(), screenRect.relativeTo(outlineRect));
       }
@@ -2925,16 +2924,34 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   }
   async saveScreenshot(canvas) {
     const url = this.inspectedURL();
-    let fileName = "";
+    let baseName = "";
     if (url) {
-      const withoutFragment = Platform.StringUtilities.removeURLFragment(url);
-      fileName = Platform.StringUtilities.trimURL(withoutFragment);
+      const parsedURL = Common2.ParsedURL.ParsedURL.fromString(url);
+      if (parsedURL) {
+        const host = parsedURL.host;
+        const path = parsedURL.path.replace(/^\/+/, "").replace(/\/+$/, "");
+        baseName = host;
+        if (path) {
+          baseName += "-" + path.replaceAll("/", "-");
+        }
+        baseName = baseName.replace(/[^a-z0-9._-]/gi, "_");
+      }
     }
+    if (!baseName) {
+      baseName = "screenshot";
+    }
+    let suffix = "";
     const device = this.device();
     if (device && this.type() === Type2.Device) {
-      fileName += `(${device.title})`;
+      suffix += `(${device.title})`;
     }
-    fileName += ".png";
+    suffix += ".png";
+    const maxBaseNameLength = Math.max(0, 63 - suffix.length);
+    baseName = Platform.StringUtilities.truncateToCodeUnitLength(baseName, maxBaseNameLength);
+    let fileName = baseName + suffix;
+    if (fileName.length > 63) {
+      fileName = Platform.StringUtilities.truncateToCodeUnitLength(fileName, 59) + ".png";
+    }
     const blob = await canvas.convertToBlob({ type: "image/png" });
     const dataUrl = await new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -2949,13 +2966,13 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       true,
       "image/png"
     );
-    await Workspace.FileManager.FileManager.instance().save(
+    await this.#fileManager.save(
       fileName,
       contentData,
       /* forceSaveAs=*/
       true
     );
-    Workspace.FileManager.FileManager.instance().close(fileName);
+    this.#fileManager.close(fileName);
   }
   applyTouch(touchEnabled, mobile) {
     this.#touchEnabled = touchEnabled;

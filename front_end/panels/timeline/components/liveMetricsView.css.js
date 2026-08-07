@@ -321,6 +321,12 @@ devtools-link {
   gap: var(--sys-size-2);
 }
 
+.environment-option-label {
+  display: flex;
+  align-items: center;
+  gap: var(--sys-size-2);
+}
+
 .environment-recs-list {
   margin: 0;
   padding-left: 20px;

@@ -193,6 +193,9 @@ export interface HostConfigSourceMapScopesInSourcesPanel {
 interface AiGeneratedTimelineLabels {
     enabled: boolean;
 }
+interface AllowInterestForcing {
+    enabled: boolean;
+}
 interface GlobalAiButton {
     enabled: boolean;
     promotionEnabled: boolean;
@@ -294,6 +297,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsJpegXlImageFormat: HostConfigJpegXlImageFormat;
     devToolsSourceMapScopesInSourcesPanel: HostConfigSourceMapScopesInSourcesPanel;
     devToolsAiGeneratedTimelineLabels: AiGeneratedTimelineLabels;
+    devToolsAllowInterestForcing: AllowInterestForcing;
     devToolsGlobalAiButton: GlobalAiButton;
     devToolsGdpProfiles: GdpProfiles;
     devToolsGdpProfilesAvailability: GdpProfilesAvailability;

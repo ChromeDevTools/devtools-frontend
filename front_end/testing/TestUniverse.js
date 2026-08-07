@@ -107,7 +107,7 @@ export class TestUniverse {
         ],
         [
             Emulation.DeviceModeModel.DeviceModeModel,
-            () => new Emulation.DeviceModeModel.DeviceModeModel(this.targetManager, this.settings, this.multitargetNetworkManager),
+            () => new Emulation.DeviceModeModel.DeviceModeModel(this.targetManager, this.settings, this.multitargetNetworkManager, this.fileManager),
         ],
         [
             Emulation.EmulatedDevices.EmulatedDevicesList,
@@ -262,6 +262,15 @@ export class TestUniverse {
     dispose() {
         if (this.#context.has(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager)) {
             this.isolatedFileSystemManager.dispose();
+        }
+        if (this.#context.has(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager)) {
+            this.automaticFileSystemManager.dispose();
+        }
+        if (this.#context.has(Workspace.FileManager.FileManager)) {
+            this.fileManager.dispose();
+        }
+        if (this.#context.has(SDK.TargetManager.TargetManager)) {
+            this.targetManager.dispose();
         }
     }
     get aiHistoryStorage() {

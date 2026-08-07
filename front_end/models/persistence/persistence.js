@@ -727,6 +727,7 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
   fileSystemsLoadedPromise;
   #settings;
   #console;
+  #eventDescriptors;
   constructor(settings, console2) {
     super();
     this.#settings = settings;
@@ -734,13 +735,15 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
     this.#fileSystems = /* @__PURE__ */ new Map();
     this.callbacks = /* @__PURE__ */ new Map();
     this.progresses = /* @__PURE__ */ new Map();
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.onFileSystemRemoved, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.FileSystemAdded, this.onFileSystemAdded, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this.onFileSystemFilesChanged, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this.onIndexingTotalWorkCalculated, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.IndexingWorked, this.onIndexingWorked, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.IndexingDone, this.onIndexingDone, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.SearchCompleted, this.onSearchCompleted, this);
+    this.#eventDescriptors = [
+      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.onFileSystemRemoved, this),
+      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.FileSystemAdded, this.onFileSystemAdded, this),
+      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this.onFileSystemFilesChanged, this),
+      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this.onIndexingTotalWorkCalculated, this),
+      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.IndexingWorked, this.onIndexingWorked, this),
+      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.IndexingDone, this.onIndexingDone, this),
+      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.SearchCompleted, this.onSearchCompleted, this)
+    ];
     const defaultCommonExcludedFolders = [
       "/node_modules/",
       "/\\.devtools",
@@ -779,13 +782,7 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
   }
   // TODO(crbug.com/542394587): Should be `Symbol.dispsoe`
   dispose() {
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host2.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.onFileSystemRemoved, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host2.InspectorFrontendHostAPI.Events.FileSystemAdded, this.onFileSystemAdded, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host2.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this.onFileSystemFilesChanged, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host2.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this.onIndexingTotalWorkCalculated, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host2.InspectorFrontendHostAPI.Events.IndexingWorked, this.onIndexingWorked, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host2.InspectorFrontendHostAPI.Events.IndexingDone, this.onIndexingDone, this);
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host2.InspectorFrontendHostAPI.Events.SearchCompleted, this.onSearchCompleted, this);
+    Common3.EventTarget.removeEventListeners(this.#eventDescriptors);
   }
   static instance(opts = {}) {
     const forceNew = opts.forceNew ?? null;
@@ -802,7 +799,8 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
   }
   requestFileSystems() {
     const { resolve, promise } = Promise.withResolvers();
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
+    const descriptor = Host2.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host2.InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
+    this.#eventDescriptors.push(descriptor);
     Host2.InspectorFrontendHost.InspectorFrontendHostInstance.requestFileSystems();
     return promise;
     function onFileSystemsLoaded(event) {
@@ -2088,11 +2086,11 @@ var AutomaticFileSystemManager = class _AutomaticFileSystemManager extends Commo
    */
   static removeInstance() {
     if (Root3.DevToolsContext.globalInstance().has(_AutomaticFileSystemManager)) {
-      Root3.DevToolsContext.globalInstance().get(_AutomaticFileSystemManager).#dispose();
+      Root3.DevToolsContext.globalInstance().get(_AutomaticFileSystemManager).dispose();
       Root3.DevToolsContext.globalInstance().delete(_AutomaticFileSystemManager);
     }
   }
-  #dispose() {
+  dispose() {
     this.#inspectorFrontendHost.events.removeEventListener(Host6.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.#fileSystemRemoved, this);
     this.#projectSettingsModel.removeEventListener("AvailabilityChanged", this.#availabilityChanged, this);
     this.#projectSettingsModel.removeEventListener("ProjectSettingsChanged", this.#projectSettingsChanged, this);

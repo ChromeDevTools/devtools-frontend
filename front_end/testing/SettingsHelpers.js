@@ -178,7 +178,6 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("AI" /* Common.Settings.SettingCategory.AI */, 'ai-code-completion-enabled', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
     createSettingValue("AI" /* Common.Settings.SettingCategory.AI */, 'ai-code-completion-teaser-dismissed', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
     createSettingValue("AI" /* Common.Settings.SettingCategory.AI */, 'ai-assistance-v2-opt-in-change-dialog-seen', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
-    createSettingValue("MOBILE" /* Common.Settings.SettingCategory.MOBILE */, 'emulation.show-device-outline', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
     createSettingValue("APPEARANCE" /* Common.Settings.SettingCategory.APPEARANCE */, 'chrome-theme-colors', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
     createSettingValue("PERFORMANCE" /* Common.Settings.SettingCategory.PERFORMANCE */, 'timeline.user-had-shortcuts-dialog-opened-once', false, "boolean" /* Common.Settings.SettingType.BOOLEAN */),
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'show-event-listeners-for-ancestors', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */),

@@ -88,7 +88,7 @@ devtools-toolbar.device-mode-toolbar-options {
   box-shadow: inset 0 -1px var(--sys-color-divider);
 }
 
-.device-mode-content-clip:not(.device-mode-outline-visible) .device-mode-media-container {
+.device-mode-content-clip .device-mode-media-container {
   margin-bottom: 20px;
 }
 
@@ -162,23 +162,15 @@ devtools-toolbar.device-mode-toolbar-options {
   background-color: var(--sys-color-inverse-surface);
 }
 
-.device-mode-content-clip:not(.device-mode-outline-visible) .device-mode-screen-area {
+.device-mode-content-clip .device-mode-screen-area {
   --override-screen-area-box-shadow: hsl(240deg 3% 84%) 0 0 0 0.5px, hsl(0deg 0% 80% / 40%) 0 0 20px;
 
   box-shadow: var(--override-screen-area-box-shadow);
 }
 
-.theme-with-dark-background .device-mode-content-clip:not(.device-mode-outline-visible) .device-mode-screen-area,
-:host-context(.theme-with-dark-background) .device-mode-content-clip:not(.device-mode-outline-visible) .device-mode-screen-area {
+.theme-with-dark-background .device-mode-content-clip .device-mode-screen-area,
+:host-context(.theme-with-dark-background) .device-mode-content-clip .device-mode-screen-area {
   --override-screen-area-box-shadow: rgb(40 40 42) 0 0 0 0.5px, rgb(51 51 51 / 40%) 0 0 20px;
-}
-
-.device-mode-screen-image {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
 }
 
 .device-mode-resizer {
@@ -319,15 +311,6 @@ devtools-toolbar.device-mode-toolbar-options {
   border-top: 1px solid transparent;
   right: 20px;
   bottom: 0;
-}
-
-.device-mode-content-clip.device-mode-outline-visible .device-mode-ruler-top .device-mode-ruler-content {
-  border-top: 1px solid var(--sys-color-token-subtle);
-}
-
-.device-mode-content-clip.device-mode-outline-visible .device-mode-ruler-left .device-mode-ruler-content {
-  border-left: 1px solid var(--sys-color-token-subtle);
-  border-top: 1px solid var(--sys-color-token-subtle);
 }
 
 .device-mode-ruler-inner {

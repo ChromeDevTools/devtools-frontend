@@ -167,9 +167,6 @@
   "core/common/SettingRegistration.ts | persistence": {
     "message": "Persistence"
   },
-  "core/common/SettingRegistration.ts | privacy": {
-    "message": "Privacy"
-  },
   "core/common/SettingRegistration.ts | rendering": {
     "message": "Rendering"
   },
@@ -8114,6 +8111,9 @@
   "panels/elements/ElementsTreeElement.ts | forceOpenPopover": {
     "message": "Keep this popover open"
   },
+  "panels/elements/ElementsTreeElement.ts | forceShowInterest": {
+    "message": "Trigger interest on this element"
+  },
   "panels/elements/ElementsTreeElement.ts | forceState": {
     "message": "Force state"
   },
@@ -8164,6 +8164,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
     "message": "Stop keeping this popover open"
+  },
+  "panels/elements/ElementsTreeElement.ts | stopForceShowInterest": {
+    "message": "Cancel interest on this element"
   },
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "Style scrollbars"
@@ -8492,9 +8495,6 @@
   "panels/emulation/DeviceModeToolbar.ts | heightLeaveEmptyForFull": {
     "message": "Height (leave empty for full)"
   },
-  "panels/emulation/DeviceModeToolbar.ts | hideDeviceFrame": {
-    "message": "Hide device frame"
-  },
   "panels/emulation/DeviceModeToolbar.ts | hideMediaQueries": {
     "message": "Hide media queries"
   },
@@ -8530,9 +8530,6 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | screenOrientationOptions": {
     "message": "Screen orientation options"
-  },
-  "panels/emulation/DeviceModeToolbar.ts | showDeviceFrame": {
-    "message": "Show device frame"
   },
   "panels/emulation/DeviceModeToolbar.ts | showMediaQueries": {
     "message": "Show media queries"
@@ -8585,17 +8582,11 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "device"
   },
-  "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
-    "message": "Hide device frame"
-  },
   "panels/emulation/emulation-meta.ts | hideMediaQueries": {
     "message": "Hide media queries"
   },
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Hide rulers in the device mode toolbar"
-  },
-  "panels/emulation/emulation-meta.ts | showDeviceFrame": {
-    "message": "Show device frame"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Show media queries"
@@ -9919,6 +9910,27 @@
   },
   "panels/mobile_throttling/CalibrationController.ts | runningCalibration": {
     "message": "Running CPU calibration, don’t leave this tab or close DevTools."
+  },
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | calibrate": {
+    "message": "Calibrate…"
+  },
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "CPU throttling: {PH1}"
+  },
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | defaultPresets": {
+    "message": "Presets"
+  },
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | disabledThrottlingPreset": {
+    "message": "Disabled"
+  },
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | labelCalibratedPresets": {
+    "message": "Calibrated presets"
+  },
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | recalibrate": {
+    "message": "Recalibrate…"
+  },
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – recommended"
   },
   "panels/mobile_throttling/mobile_throttling-meta.ts | device": {
     "message": "device"
@@ -11826,16 +11838,16 @@
     "message": "Detached elements {PH1}"
   },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsDescription": {
-    "message": "Detached elements shows objects that are retained by a JS reference."
+    "message": "Detached elements show objects retained by a JS reference."
   },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsTitle": {
     "message": "Detached elements"
   },
   "panels/profiler/HeapDetachedElementsView.ts | startDetachedElements": {
-    "message": "Obtain detached elements"
+    "message": "Get detached elements"
   },
   "panels/profiler/HeapProfilerPanel.ts | revealInSummaryView": {
-    "message": "Reveal in Summary view"
+    "message": "Reveal in summary view"
   },
   "panels/profiler/HeapProfileView.ts | allocationSampling": {
     "message": "Allocation sampling"
@@ -11862,7 +11874,7 @@
     "message": "Heap profiler is recording"
   },
   "panels/profiler/HeapProfileView.ts | heavyBottomUp": {
-    "message": "Heavy (Bottom Up)"
+    "message": "Heavy (bottom up)"
   },
   "panels/profiler/HeapProfileView.ts | name": {
     "message": "Name"
@@ -11928,7 +11940,7 @@
     "message": "Total size"
   },
   "panels/profiler/HeapProfileView.ts | treeTopDown": {
-    "message": "Tree (Top Down)"
+    "message": "Tree (top down)"
   },
   "panels/profiler/HeapProfileView.ts | url": {
     "message": "URL"
@@ -11937,7 +11949,7 @@
     "message": "Allocation"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | allocSize": {
-    "message": "Alloc. Size"
+    "message": "Alloc. size"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | constructorString": {
     "message": "Constructor"
@@ -11958,25 +11970,25 @@
     "message": "Distance from window object"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | freedSize": {
-    "message": "Freed Size"
+    "message": "Freed size"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | function": {
     "message": "Function"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | heapSnapshotConstructors": {
-    "message": "Heap Snapshot Constructors"
+    "message": "Heap snapshot constructors"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | heapSnapshotDiff": {
-    "message": "Heap Snapshot Diff"
+    "message": "Heap snapshot diff"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | heapSnapshotRetainment": {
-    "message": "Heap Snapshot Retainment"
+    "message": "Heap snapshot retainment"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | liveCount": {
-    "message": "Live Count"
+    "message": "Live count"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | liveSize": {
-    "message": "Live Size"
+    "message": "Live size"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | New": {
     "message": "# New"
@@ -11985,16 +11997,16 @@
     "message": "Object"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | retainedSize": {
-    "message": "Retained Size"
+    "message": "Retained size"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | shallowSize": {
-    "message": "Shallow Size"
+    "message": "Shallow size"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | size": {
     "message": "Size"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | sizeDelta": {
-    "message": "Size Delta"
+    "message": "Size delta"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | sizeOfTheObjectItselfInBytes": {
     "message": "Size of the object itself in bytes"
@@ -12048,13 +12060,13 @@
     "message": "An internal object which stores the named properties in a JavaScript Object."
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | previewIsNotAvailable": {
-    "message": "Preview is not available"
+    "message": "Preview isn’t available"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealInSummaryView": {
-    "message": "Reveal in Summary view"
+    "message": "Reveal in summary view"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "Reveal object ''{PH1}'' with id @{PH2} in Summary view"
+    "message": "Reveal object ''{PH1}'' with id @{PH2} in summary view"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
     "message": "A string which represents some of the characters from another string."
@@ -12159,7 +12171,7 @@
     "message": "Objects retained by detached DOM nodes"
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
-    "message": "Objects retained by Event Handlers"
+    "message": "Objects retained by event handlers"
   },
   "panels/profiler/HeapSnapshotView.ts | objectsSharedBetweenNativeContextsS": {
     "message": "Objects shared between native contexts ({PH1})"
@@ -15323,33 +15335,6 @@
   "panels/timeline/components/BreadcrumbsUI.ts | removeChildBreadcrumbs": {
     "message": "Remove child breadcrumbs"
   },
-  "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
-    "message": "CPU:"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
-    "message": "CPU throttling: {PH1}"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | defaultPresets": {
-    "message": "Presets"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | disabledThrottlingPreset": {
-    "message": "Disabled"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | labelCalibratedPresets": {
-    "message": "Calibrated presets"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
-    "message": "{PH1} – recommended"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
-    "message": "Consider changing setting to simulate real user environments"
-  },
   "panels/timeline/components/CWVMetrics.ts | dismissTitle": {
     "message": "Dismiss"
   },
@@ -15592,6 +15577,9 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
     "message": "Collection period: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
+    "message": "CPU:"
   },
   "panels/timeline/components/LiveMetricsView.ts | dateRange": {
     "message": "{PH1} - {PH2}"
@@ -16468,6 +16456,9 @@
   },
   "panels/timeline/TimelinePanel.ts | compressingTraceForDownload": {
     "message": "Compressing…"
+  },
+  "panels/timeline/TimelinePanel.ts | cpu": {
+    "message": "CPU:"
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU throttling is enabled"

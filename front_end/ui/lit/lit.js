@@ -1,13 +1,88 @@
+var __defProp = Object.defineProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+
 // gen/front_end/ui/lit/lit.prebundle.js
-import { AsyncDirective, Decorators, Directive, Directives, LitElement, noChange, nothing as nothing2, StaticHtml as StaticHtml2, svg } from "./../../third_party/lit/lit.js";
+import { AsyncDirective, Decorators, Directive as Directive2, Directives, LitElement, noChange, nothing as nothing2, StaticHtml as StaticHtml2, svg } from "./../../third_party/lit/lit.js";
+
+// gen/front_end/ui/lit/Directives.js
+var Directives_exports = {};
+__export(Directives_exports, {
+  InterceptBindingDirective: () => InterceptBindingDirective
+});
+import * as Lit from "./../../third_party/lit/lit.js";
+var InterceptBindingDirective = class _InterceptBindingDirective extends Lit.Directive.Directive {
+  static #interceptedBindings = /* @__PURE__ */ new WeakMap();
+  static #attachedBindings = /* @__PURE__ */ new WeakMap();
+  update(part, [listener]) {
+    if (part.type !== Lit.Directive.PartType.EVENT) {
+      return listener;
+    }
+    let eventListeners = _InterceptBindingDirective.#interceptedBindings.get(part.element);
+    if (!eventListeners) {
+      eventListeners = /* @__PURE__ */ new Map();
+      _InterceptBindingDirective.#interceptedBindings.set(part.element, eventListeners);
+    }
+    eventListeners.set(part.name, listener);
+    return this.render(listener);
+  }
+  /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
+  render(listener) {
+    return listener;
+  }
+  static setEventListeners(templateElements, renderedElement) {
+    const attachedListeners = _InterceptBindingDirective.#attachedBindings.get(renderedElement);
+    if (attachedListeners) {
+      for (const [name, listeners] of attachedListeners) {
+        for (const listener of listeners) {
+          renderedElement.removeEventListener(name, listener);
+        }
+      }
+    }
+    const elements = templateElements instanceof Element ? [templateElements] : templateElements;
+    const newAttachedListeners = /* @__PURE__ */ new Map();
+    for (const templateElement of elements) {
+      const newListeners = _InterceptBindingDirective.#interceptedBindings.get(templateElement);
+      if (newListeners) {
+        for (const [name, listener] of newListeners) {
+          renderedElement.addEventListener(name, listener);
+          let listenersSet = newAttachedListeners.get(name);
+          if (!listenersSet) {
+            listenersSet = /* @__PURE__ */ new Set();
+            newAttachedListeners.set(name, listenersSet);
+          }
+          listenersSet.add(listener);
+        }
+      }
+    }
+    if (newAttachedListeners.size) {
+      _InterceptBindingDirective.#attachedBindings.set(renderedElement, newAttachedListeners);
+    } else {
+      _InterceptBindingDirective.#attachedBindings.delete(renderedElement);
+    }
+  }
+  static registerListeners(element, listeners) {
+    if (!listeners) {
+      _InterceptBindingDirective.#interceptedBindings.delete(element);
+      return;
+    }
+    const map = /* @__PURE__ */ new Map();
+    for (const [name, listener] of Object.entries(listeners)) {
+      map.set(name, typeof listener === "function" ? listener : listener.handleEvent.bind(listener));
+    }
+    _InterceptBindingDirective.#interceptedBindings.set(element, map);
+  }
+};
 
 // gen/front_end/ui/lit/i18n-template.js
 import * as i18n from "./../../core/i18n/i18n.js";
-import * as Lit from "./../../third_party/lit/lit.js";
-var { html } = Lit.StaticHtml;
+import * as Lit2 from "./../../third_party/lit/lit.js";
+var { html } = Lit2.StaticHtml;
 function i18nTemplate(registeredStrings, stringId, placeholders) {
   const formatter = registeredStrings.getLocalizedStringSetFor(i18n.DevToolsLocale.DevToolsLocale.instance().locale).getMessageFormatterFor(stringId);
-  let result = Lit.nothing;
+  let result = Lit2.nothing;
   for (const icuElement of formatter.getAst()) {
     if (icuElement.type === /* argumentElement */
     1) {
@@ -23,7 +98,7 @@ function i18nTemplate(registeredStrings, stringId, placeholders) {
 }
 
 // gen/front_end/ui/lit/render.js
-import * as Lit2 from "./../../third_party/lit/lit.js";
+import * as Lit3 from "./../../third_party/lit/lit.js";
 var renderOptions = /* @__PURE__ */ new WeakMap();
 var containerListeners = /* @__PURE__ */ new WeakMap();
 function render2(template, container, options) {
@@ -109,13 +184,16 @@ function render2(template, container, options) {
       listenersMap.delete(name);
     }
   }
+  if (host instanceof Element) {
+    InterceptBindingDirective.registerListeners(host, options?.container?.interceptedListeners);
+  }
   renderOptions.set(container, options);
-  return Lit2.render(template, container, options);
+  return Lit3.render(template, container, options);
 }
 
 // gen/front_end/ui/lit/strip-whitespace.js
 import * as Platform from "./../../core/platform/platform.js";
-import * as Lit3 from "./../../third_party/lit/lit.js";
+import * as Lit4 from "./../../third_party/lit/lit.js";
 var templates = /* @__PURE__ */ new WeakMap();
 function isLitDirective(value) {
   return Boolean(typeof value === "object" && value && "_$litDirective$" in value && "values" in value);
@@ -144,7 +222,7 @@ function html3(strings, ...values) {
     return val;
   };
   const escapedValues = values.map(escapeValue);
-  return Lit3.html(stripped, ...escapedValues);
+  return Lit4.html(stripped, ...escapedValues);
 }
 function strip(strings) {
   let inTag = false;
@@ -163,8 +241,9 @@ function strip(strings) {
 }
 export {
   AsyncDirective,
+  Directives_exports as CustomDirectives,
   Decorators,
-  Directive,
+  Directive2 as Directive,
   Directives,
   LitElement,
   StaticHtml2 as StaticHtml,

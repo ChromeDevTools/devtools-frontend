@@ -461,7 +461,6 @@ var LighthouseRun = class {
   /**
    * We set the device emulation on the DevTools-side for two reasons:
    * 1. To workaround some odd device metrics emulation bugs like occuluding viewports
-   * 2. To get the attractive device outline
    */
   async setupEmulationAndProtocolConnection() {
     const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
@@ -469,7 +468,6 @@ var LighthouseRun = class {
       emulation: {
         type: emulationModel.type(),
         enabled: emulationModel.enabledSetting().get(),
-        outlineEnabled: emulationModel.deviceOutlineSetting().get(),
         toolbarControlsEnabled: emulationModel.toolbarControlsEnabledSetting().get(),
         scale: emulationModel.scaleSetting().get(),
         device: emulationModel.device(),
@@ -483,7 +481,6 @@ var LighthouseRun = class {
       emulationModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
     } else if (this.flags.formFactor === "mobile") {
       emulationModel.enabledSetting().set(true);
-      emulationModel.deviceOutlineSetting().set(true);
       await UI.Widget.Widget.allUpdatesComplete;
       for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
         if (device.title === "Moto G Power") {
@@ -498,9 +495,8 @@ var LighthouseRun = class {
     if (this.emulationStateBefore) {
       const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
       emulationModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
-      const { type, enabled, outlineEnabled, toolbarControlsEnabled, scale, device, mode: mode2 } = this.emulationStateBefore.emulation;
+      const { type, enabled, toolbarControlsEnabled, scale, device, mode: mode2 } = this.emulationStateBefore.emulation;
       emulationModel.enabledSetting().set(enabled);
-      emulationModel.deviceOutlineSetting().set(outlineEnabled);
       emulationModel.toolbarControlsEnabledSetting().set(toolbarControlsEnabled);
       if (type === EmulationModel.DeviceModeModel.Type.Responsive) {
         emulationModel.scaleSetting().set(scale);

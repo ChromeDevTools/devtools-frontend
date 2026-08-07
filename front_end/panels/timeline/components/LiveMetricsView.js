@@ -21,7 +21,6 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../../common/common.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
-import { CPUThrottlingSelector } from './CPUThrottlingSelector.js';
 import { md } from './insights/Helpers.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
 import metricValueStyles from './metricValueStyles.css.js';
@@ -171,6 +170,10 @@ const UIStrings = {
      * @description Text label for a checkbox that controls if the network cache is disabled.
      */
     disableNetworkCache: 'Disable network cache',
+    /**
+     * @description Text label for a selection box showing which CPU throttling option is applied.
+     */
+    cpuThrottling: 'CPU:',
     /**
      * @description Text label for a link to the Largest Contentful Paint (LCP) related page element. This element represents the largest content on the page. "LCP" should not be translated.
      */
@@ -531,7 +534,6 @@ function renderRecordingSettings(input) {
     const fieldEnabled = input.cruxManager.getConfigSetting().get().enabled;
     const deviceRec = getDeviceRec(input.cruxManager) || i18nString(UIStrings.notEnoughData);
     const networkRec = getNetworkRecTitle(input.cruxManager) || i18nString(UIStrings.notEnoughData);
-    const recs = PanelsCommon.ThrottlingUtils.getThrottlingRecommendations();
     // clang-format off
     return html `
     <h3 class="card-title">${i18nString(UIStrings.environmentSettings)}</h3>
@@ -543,19 +545,22 @@ function renderRecordingSettings(input) {
       </ul>
     ` : nothing}
     <div class="environment-option">
-      ${widget(CPUThrottlingSelector, { recommendedOption: recs.cpuOption })}
+      <label class="environment-option-label">
+        ${i18nString(UIStrings.cpuThrottling)}
+        <select ${widget(MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector)}></select>
+      </label>
+      <devtools-icon title=${i18nString(UIStrings.recommendedThrottlingReason)} name="info"></devtools-icon>
     </div>
     <div class="environment-option">
-      <label>
+      <label class="environment-option-label">
         ${i18nString(UIStrings.networkThrottling)}
         <select
-          ${widget(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, { bindToGlobalConditions: true })}
+          ${widget(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
+        bindToGlobalConditions: true,
+    })}
         ></select>
       </label>
-      <devtools-icon
-        title=${i18nString(UIStrings.recommendedThrottlingReason)}
-        name=info
-       ></devtools-icon>
+      <devtools-icon title=${i18nString(UIStrings.recommendedThrottlingReason)} name="info"></devtools-icon>
     </div>
     <div class="environment-option">
       <setting-checkbox

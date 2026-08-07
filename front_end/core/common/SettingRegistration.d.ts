@@ -1,5 +1,7 @@
 import type * as Platform from '../platform/platform.js';
 import type { SettingStorageType } from './Settings.js';
+export declare function registerCategoryOrder(category?: SettingCategory, order?: number): void;
+export declare function removeCategoryOrder(category?: SettingCategory, order?: number): void;
 export declare function registerSettingExtension(registration: SettingRegistration): void;
 export declare function getRegisteredSettings(): SettingRegistration[];
 export declare function registerSettingsForTest(settings: SettingRegistration[], forceReset?: boolean): void;
@@ -24,8 +26,7 @@ export declare const enum SettingCategory {
     MEMORY = "MEMORY",
     EXTENSIONS = "EXTENSIONS",
     ADORNER = "ADORNER",
-    ACCOUNT = "ACCOUNT",
-    PRIVACY = "PRIVACY"
+    ACCOUNT = "ACCOUNT"
 }
 export declare function getLocalizedSettingsCategory(category: SettingCategory): Platform.UIString.LocalizedString;
 export declare const enum SettingType {

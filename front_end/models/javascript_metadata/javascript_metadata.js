@@ -7815,16 +7815,16 @@ var NativeFunctions = [
     signatures: [["type", "eventInitDict"]]
   },
   {
+    name: "setConstraints",
+    signatures: [["?constraints"]]
+  },
+  {
     name: "webkitGetUserMedia",
     signatures: [["constraints", "successCallback", "errorCallback"]]
   },
   {
     name: "OverconstrainedError",
     signatures: [["constraint", "?message"]]
-  },
-  {
-    name: "setConstraints",
-    signatures: [["?constraints"]]
   },
   {
     name: "appendEncodedChunks",

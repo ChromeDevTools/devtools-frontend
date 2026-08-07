@@ -2,6 +2,7 @@ import type * as Common from '../../core/common/common.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 export declare class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
     #private;
@@ -70,7 +71,7 @@ export declare class TimelineFlameChartNetworkDataProvider implements PerfUI.Fla
      * event C and will include the socket event A.
      * */
     forceDrawableLevel(levelIndex: number): boolean;
-    preparePopoverElement(index: number): Element | null;
+    preparePopoverElement(index: number): Lit.TemplateResult | null;
     /**
      * Note that although we use the same mechanism to track configuration
      * changes in the Network part of the timeline, we only really use it to track

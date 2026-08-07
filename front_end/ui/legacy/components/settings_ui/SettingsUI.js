@@ -66,7 +66,7 @@ export function renderSettingSelect(setting, subtitle, disabled) {
         <select
           id=${controlId}
           aria-label=${name}
-          .disabled=${disabled ?? setting.disabled()}
+          .disabled=${Boolean(disabled)}
           @change=${onSelectChange}
           jslog=${VisualLogging.dropDown().track({ change: true }).context(setting.name)}
         >

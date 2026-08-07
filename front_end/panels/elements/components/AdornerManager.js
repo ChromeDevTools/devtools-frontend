@@ -9,6 +9,7 @@ export var RegisteredAdorners;
     RegisteredAdorners["FLEX"] = "flex";
     RegisteredAdorners["GRID"] = "grid";
     RegisteredAdorners["GRID_LANES"] = "grid-lanes";
+    RegisteredAdorners["INTEREST"] = "interest";
     RegisteredAdorners["MEDIA"] = "media";
     RegisteredAdorners["POPOVER"] = "popover";
     RegisteredAdorners["REVEAL"] = "reveal";

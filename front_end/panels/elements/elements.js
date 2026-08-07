@@ -11,7 +11,7 @@ __export(InspectElementModeController_exports, {
   ToggleSearchActionDelegate: () => ToggleSearchActionDelegate
 });
 import * as Common14 from "./../../core/common/common.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
@@ -32,7 +32,7 @@ import * as Common13 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n36 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
 import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
 import * as PanelCommon from "./../common/common.js";
@@ -12006,6 +12006,7 @@ import * as Common8 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n26 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as TextUtils7 from "./../../core/text_utils/text_utils.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
@@ -12526,6 +12527,14 @@ var UIStrings13 = {
    * @description ARIA label for an elements tree adorner
    */
   stopForceOpenPopover: "Stop keeping this popover open",
+  /**
+   * @description ARIA label for an elements tree adorner
+   */
+  forceShowInterest: "Trigger interest on this element",
+  /**
+   * @description ARIA label for an elements tree adorner
+   */
+  stopForceShowInterest: "Cancel interest on this element",
   /**
    * @description Label of the adorner for flex elements in the Elements panel
    */
@@ -13065,7 +13074,7 @@ function maybeRenderAdAdorner(input) {
   `;
 }
 var DEFAULT_VIEW4 = (input, output, target) => {
-  const hasAdorners = !!input.adProvenance || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner || input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner || input.showCustomElementAdorner;
+  const hasAdorners = !!input.adProvenance || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner || input.showInterestAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner || input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner || input.showCustomElementAdorner;
   const gutterContainerClasses = {
     "has-decorations": input.decorations.length || input.descendantDecorations.length,
     "gutter-container": true,
@@ -13199,6 +13208,20 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER}</span>
         </devtools-adorner>` : nothing4}
+        ${input.showInterestAdorner ? html11`<devtools-adorner
+          class=clickable
+          role=button
+          toggleable=true
+          tabindex=0
+          .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.INTEREST}
+          jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.INTEREST).track({ click: true })}
+          active=${input.interestAdornerActive}
+          aria-label=${input.interestAdornerActive ? i18nString12(UIStrings13.stopForceShowInterest) : i18nString12(UIStrings13.forceShowInterest)}
+          @click=${input.onInterestAdornerClick}
+          @keydown=${handleAdornerKeydown(input.onInterestAdornerClick)}
+          ${adornerRef()}>
+          <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.INTEREST}</span>
+        </devtools-adorner>` : nothing4}
         ${input.showTopLayerAdorner ? html11`<devtools-adorner
           class=clickable
           role=button
@@ -13311,6 +13334,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   #flexAdornerActive = false;
   #gridAdornerActive = false;
   #popoverAdornerActive = false;
+  #interestAdornerActive = false;
   #scrollSnapAdornerActive = false;
   #startingStyleAdornerActive = false;
   #layout = null;
@@ -13435,9 +13459,11 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !this.isClosingTag(),
       showMediaAdorner: this.node().isMediaNode() && !this.isClosingTag(),
       showPopoverAdorner: Boolean(this.node().attributes().find((attr) => attr.name === "popover")) && !this.isClosingTag(),
+      showInterestAdorner: Boolean(Root4.Runtime.hostConfig.devToolsAllowInterestForcing?.enabled) && Boolean(this.node().attributes().find((attr) => attr.name === "interesttarget" || attr.name === "interestfor")) && !this.isClosingTag(),
       showTopLayerAdorner: this.node().topLayerIndex() !== -1 && !this.isClosingTag(),
       gridAdornerActive: this.#gridAdornerActive,
       popoverAdornerActive: this.#popoverAdornerActive,
+      interestAdornerActive: this.#interestAdornerActive,
       isSubgrid: Boolean(this.#layout?.isSubgrid),
       showViewSourceAdorner: this.nodeInternal.isRootNode() && isOpeningTag(this.tagTypeContext),
       showScrollAdorner: (this.node().nodeName() === "HTML" && this.node().ownerDocument?.isScrollable() || this.node().nodeName() !== "#document" && this.node().isScrollable()) && !this.isClosingTag(),
@@ -13477,6 +13503,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       } : (event) => this.#onMediaAdornerClick(event),
       onPopoverAdornerClick: this.treeOutline?.disableEdits ? () => {
       } : (event) => this.#onPopoverAdornerClick(event),
+      onInterestAdornerClick: this.treeOutline?.disableEdits ? () => {
+      } : (event) => this.#onInterestAdornerClick(event),
       onScrollSnapAdornerClick: this.treeOutline?.disableEdits ? () => {
       } : (event) => this.#onScrollSnapAdornerClick(event),
       onTopLayerAdornerClick: this.treeOutline?.disableEdits ? () => {
@@ -13781,9 +13809,11 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       showGridLanesAdorner: false,
       showMediaAdorner: false,
       showPopoverAdorner: false,
+      showInterestAdorner: false,
       showTopLayerAdorner: false,
       gridAdornerActive: false,
       popoverAdornerActive: false,
+      interestAdornerActive: false,
       isSubgrid: false,
       showViewSourceAdorner: false,
       showScrollAdorner: false,
@@ -13813,6 +13843,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       onMediaAdornerClick: () => {
       },
       onPopoverAdornerClick: () => {
+      },
+      onInterestAdornerClick: () => {
       },
       onScrollSnapAdornerClick: () => {
       },
@@ -14944,6 +14976,20 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable: !this.#popoverAdornerActive });
     this.#popoverAdornerActive = !this.#popoverAdornerActive;
     if (this.#popoverAdornerActive) {
+      Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+    }
+    this.performUpdate();
+  }
+  async #onInterestAdornerClick(event) {
+    event.stopPropagation();
+    const node = this.node();
+    const nodeId = node.id;
+    if (!nodeId) {
+      return;
+    }
+    await node.domModel().agent.invoke_forceShowInterest({ nodeId, enable: !this.#interestAdornerActive });
+    this.#interestAdornerActive = !this.#interestAdornerActive;
+    if (this.#interestAdornerActive) {
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
     }
     this.performUpdate();
@@ -19071,7 +19117,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     }
     const isComputedStyleWidgetVisible = this.#computedStyleWidget.isShowing();
     const isStylesTabVisible = Boolean(UI21.Context.Context.instance().flavor(StylesSidebarPane));
-    const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible || isStylesTabVisible && Root4.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
+    const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible || isStylesTabVisible && Root5.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
     void selectedNode.domModel()?.cssModel()?.trackComputedStyleUpdatesForNode(shouldTrackComputedStyleUpdates ? selectedNode.id : void 0);
   }, 100);
   async #updateComputedStyles() {
@@ -20156,7 +20202,7 @@ var InspectElementModeController = class _InspectElementModeController {
 };
 var ToggleSearchActionDelegate = class {
   handleAction(_context, actionId) {
-    if (Root5.Runtime.Runtime.queryParam("isSharedWorker")) {
+    if (Root6.Runtime.Runtime.queryParam("isSharedWorker")) {
       return false;
     }
     inspectElementModeController = InspectElementModeController.instance();

@@ -45,7 +45,7 @@ import { InplaceEditor } from './InplaceEditor.js';
 import { Keys } from './KeyboardShortcut.js';
 import { Tooltip } from './Tooltip.js';
 import treeoutlineStyles from './treeoutline.css.js';
-import { createShadowRootWithCoreStyles, deepElementFromPoint, enclosingNodeOrSelfWithNodeNameInArray, HTMLElementWithLightDOMTemplate, InterceptBindingDirective, isEditing, } from './UIUtils.js';
+import { createShadowRootWithCoreStyles, deepElementFromPoint, enclosingNodeOrSelfWithNodeNameInArray, HTMLElementWithLightDOMTemplate, isEditing, } from './UIUtils.js';
 const UIStrings = {
     /**
      * @description Screen reader announcement made when the user expands a tree item, such as a DOM
@@ -1404,7 +1404,7 @@ class TreeViewTreeElement extends TreeElement {
         });
     }
     refresh() {
-        const expandable = Boolean(this.configElement.querySelector('ul[role="group"]'));
+        const expandable = Boolean(this.configElement.querySelector(':scope > ul[role="group"]'));
         this.setExpandable(expandable);
         this.titleElement.textContent = '';
         this.#clonedAttributes.forEach(attr => this.listItemElement.attributes.removeNamedItem(attr));
@@ -1422,7 +1422,9 @@ class TreeViewTreeElement extends TreeElement {
             this.listItemElement.classList.add(className);
             this.#clonedClasses.add(className);
         }
-        InterceptBindingDirective.setEventListeners(this.configElement, this.listItemElement);
+        const childUl = this.configElement.querySelector(':scope > ul[role="group"]');
+        const templateElements = childUl ? [this.configElement, childUl] : [this.configElement];
+        Lit.CustomDirectives.InterceptBindingDirective.setEventListeners(templateElements, this.listItemElement);
         for (const child of this.configElement.childNodes) {
             if (child instanceof HTMLUListElement && child.role === 'group') {
                 continue;
@@ -1437,7 +1439,8 @@ class TreeViewTreeElement extends TreeElement {
         return configElement && TreeViewTreeElement.#elementToTreeElement.get(configElement);
     }
     remove() {
-        removeNode(this, Boolean(this.parent && this.parent.configElement?.querySelector('ul[role="group"]')));
+        removeNode(this, Boolean(this.parent &&
+            this.parent.configElement?.querySelector(':scope > ul[role="group"]')));
         TreeViewTreeElement.#elementToTreeElement.delete(this.configElement);
     }
 }
@@ -1537,10 +1540,10 @@ function removeNode(node, preserveParentExpandable = false) {
  * This section is only relevant if NOT using the `template`.
  *
  * Since config elements are cloned into the shadow DOM, it's not possible to directly attach event listeners to the
- * children of config elements. Instead, the `UI.UIUtils.InterceptBindingDirective` directive needs to be used as a
+ * children of config elements. Instead, the `Lit.CustomDirectives.InterceptBindingDirective` directive needs to be used as a
  * wrapper:
  * ```
- * const on = Lit.Directive.directive(UI.UIUtils.InterceptBindingDirective);
+ * const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
  *
  * html`<li role="treeitem">
  *   <button @click=${on(clickHandler)}>click me</button>
@@ -1659,7 +1662,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
             let treeElement;
             if (node instanceof HTMLLIElement) {
                 treeElement = new TreeViewTreeElement(this.#treeOutline, node);
-                const expandable = Boolean(node.querySelector('ul[role="group"]'));
+                const expandable = Boolean(node.querySelector(':scope > ul[role="group"]'));
                 treeElement.setExpandable(expandable);
                 treeElement.updateExpansionFromAttribute();
             }
@@ -1693,7 +1696,8 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
             }
             else if (node.treeElement) {
                 removeNode(node.treeElement, Boolean(node.treeElement.parent &&
-                    node.treeElement.parent.configElement?.querySelector('ul[role="group"]')));
+                    node.treeElement.parent
+                        .configElement?.querySelector(':scope > ul[role="group"]')));
             }
         }
     }

@@ -1710,44 +1710,6 @@ export function bindToAction(actionName) {
         e.onclick = () => action.execute();
     });
 }
-export class InterceptBindingDirective extends Lit.Directive.Directive {
-    static #interceptedBindings = new WeakMap();
-    static #attachedBindings = new WeakMap();
-    update(part, [listener]) {
-        if (part.type !== Lit.Directive.PartType.EVENT) {
-            return listener;
-        }
-        let eventListeners = InterceptBindingDirective.#interceptedBindings.get(part.element);
-        if (!eventListeners) {
-            eventListeners = new Map();
-            InterceptBindingDirective.#interceptedBindings.set(part.element, eventListeners);
-        }
-        eventListeners.set(part.name, listener);
-        return this.render(listener);
-    }
-    /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
-    render(listener) {
-        return listener;
-    }
-    static setEventListeners(templateElement, renderedElement) {
-        const attachedListeners = InterceptBindingDirective.#attachedBindings.get(renderedElement);
-        if (attachedListeners) {
-            for (const [name, listener] of attachedListeners) {
-                renderedElement.removeEventListener(name, listener);
-            }
-        }
-        const newListeners = InterceptBindingDirective.#interceptedBindings.get(templateElement);
-        if (newListeners?.size) {
-            for (const [name, listener] of newListeners) {
-                renderedElement.addEventListener(name, listener);
-            }
-            InterceptBindingDirective.#attachedBindings.set(renderedElement, new Map(newListeners));
-        }
-        else {
-            InterceptBindingDirective.#attachedBindings.delete(renderedElement);
-        }
-    }
-}
 export const cloneCustomElement = (element, deep) => {
     const clone = document.createElement(element.localName);
     for (const attribute of element.attributes) {
@@ -1773,12 +1735,12 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
             clone.appendChild(HTMLElementWithLightDOMTemplate.cloneNode(child));
         }
         if (node instanceof Element && clone instanceof Element) {
-            InterceptBindingDirective.setEventListeners(node, clone);
+            Lit.CustomDirectives.InterceptBindingDirective.setEventListeners(node, clone);
         }
         return clone;
     }
     static patchLitTemplate(template) {
-        const interceptingWrapper = Lit.Directive.directive(InterceptBindingDirective);
+        const interceptingWrapper = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const patchingWrapper = (fn) => {
             return function (...args) {

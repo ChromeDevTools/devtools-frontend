@@ -37,6 +37,7 @@ export interface ViewInput {
     flexAdornerActive: boolean;
     gridAdornerActive: boolean;
     popoverAdornerActive: boolean;
+    interestAdornerActive: boolean;
     adProvenance?: Protocol.Network.AdProvenance;
     target?: SDK.Target.Target;
     adTooltipId: string;
@@ -47,6 +48,7 @@ export interface ViewInput {
     showGridLanesAdorner: boolean;
     showMediaAdorner: boolean;
     showPopoverAdorner: boolean;
+    showInterestAdorner: boolean;
     showTopLayerAdorner: boolean;
     isSubgrid: boolean;
     showViewSourceAdorner: boolean;
@@ -60,6 +62,7 @@ export interface ViewInput {
     onGridAdornerClick: (e: Event) => void;
     onMediaAdornerClick: (e: Event) => void;
     onPopoverAdornerClick: (e: Event) => void;
+    onInterestAdornerClick: (e: Event) => void;
     onScrollSnapAdornerClick: (e: Event) => void;
     onTopLayerAdornerClick: (e: Event) => void;
     onViewSourceAdornerClick: () => void;

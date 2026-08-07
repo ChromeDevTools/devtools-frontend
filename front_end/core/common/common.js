@@ -5224,8 +5224,10 @@ __export(SettingRegistration_exports, {
   getLocalizedSettingsCategory: () => getLocalizedSettingsCategory,
   getRegisteredSettings: () => getRegisteredSettings,
   maybeRemoveSettingExtension: () => maybeRemoveSettingExtension,
+  registerCategoryOrder: () => registerCategoryOrder,
   registerSettingExtension: () => registerSettingExtension,
   registerSettingsForTest: () => registerSettingsForTest,
+  removeCategoryOrder: () => removeCategoryOrder,
   resetSettings: () => resetSettings
 });
 import * as i18n5 from "./../i18n/i18n.js";
@@ -5298,21 +5300,37 @@ var UIStrings3 = {
    * @description Header for the Account section in the settings UI. The Account
    * section allows users to see their signed-in account and configure which DevTools data is synced via Chrome Sync.
    */
-  account: "Account",
-  /**
-   * @description Title of the Privacy setting category.
-   */
-  privacy: "Privacy"
+  account: "Account"
 };
 var str_3 = i18n5.i18n.registerUIStrings("core/common/SettingRegistration.ts", UIStrings3);
 var i18nString = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var registeredSettings = [];
 var settingNameSet = /* @__PURE__ */ new Set();
+var orderValuesBySettingCategory = /* @__PURE__ */ new Map();
+function registerCategoryOrder(category, order) {
+  if (category && typeof order === "number") {
+    let orderValues = orderValuesBySettingCategory.get(category);
+    if (!orderValues) {
+      orderValues = /* @__PURE__ */ new Set();
+      orderValuesBySettingCategory.set(category, orderValues);
+    }
+    if (orderValues.has(order)) {
+      throw new Error(`Duplicate order value '${order}' for settings category '${category}'`);
+    }
+    orderValues.add(order);
+  }
+}
+function removeCategoryOrder(category, order) {
+  if (category && typeof order === "number") {
+    orderValuesBySettingCategory.get(category)?.delete(order);
+  }
+}
 function registerSettingExtension(registration) {
   const settingName = registration.settingName;
   if (settingNameSet.has(settingName)) {
     throw new Error(`Duplicate setting name '${settingName}'`);
   }
+  registerCategoryOrder(registration.category, registration.order);
   settingNameSet.add(settingName);
   registeredSettings.push(registration);
 }
@@ -5321,18 +5339,16 @@ function getRegisteredSettings() {
 }
 function registerSettingsForTest(settings, forceReset = false) {
   if (registeredSettings.length === 0 || forceReset) {
-    registeredSettings = settings;
-    settingNameSet.clear();
+    resetSettings();
     for (const setting of settings) {
-      const settingName = setting.settingName;
-      if (settingNameSet.has(settingName)) {
-        throw new Error(`Duplicate setting name '${settingName}'`);
-      }
-      settingNameSet.add(settingName);
+      registerSettingExtension(setting);
     }
   }
 }
 function resetSettings() {
+  for (const setting of registeredSettings) {
+    removeCategoryOrder(setting.category, setting.order);
+  }
   registeredSettings = [];
   settingNameSet.clear();
 }
@@ -5341,7 +5357,8 @@ function maybeRemoveSettingExtension(settingName) {
   if (settingIndex < 0 || !settingNameSet.delete(settingName)) {
     return false;
   }
-  registeredSettings.splice(settingIndex, 1);
+  const [removed] = registeredSettings.splice(settingIndex, 1);
+  removeCategoryOrder(removed.category, removed.order);
   return true;
 }
 function getLocalizedSettingsCategory(category) {
@@ -5384,8 +5401,6 @@ function getLocalizedSettingsCategory(category) {
       return i18n5.i18n.lockedString("");
     case "ACCOUNT":
       return i18nString(UIStrings3.account);
-    case "PRIVACY":
-      return i18nString(UIStrings3.privacy);
   }
 }
 
@@ -6177,7 +6192,6 @@ var Settings = class _Settings {
   #settingRegistrations;
   #sessionStorage = new SettingsStorage({});
   settingNameSet = /* @__PURE__ */ new Set();
-  orderValuesBySettingCategory = /* @__PURE__ */ new Map();
   #eventSupport = new ObjectWrapper();
   #registry = /* @__PURE__ */ new Map();
   moduleSettings = /* @__PURE__ */ new Map();
@@ -6238,18 +6252,8 @@ var Settings = class _Settings {
   }
   registerModuleSetting(setting) {
     const settingName = setting.name;
-    const category = setting.category();
-    const order = setting.order();
     if (this.settingNameSet.has(settingName)) {
       throw new Error(`Duplicate Setting name '${settingName}'`);
-    }
-    if (category && order) {
-      const orderValues = this.orderValuesBySettingCategory.get(category) || /* @__PURE__ */ new Set();
-      if (orderValues.has(order)) {
-        throw new Error(`Duplicate order value '${order}' for settings category '${category}'`);
-      }
-      orderValues.add(order);
-      this.orderValuesBySettingCategory.set(category, orderValues);
     }
     this.settingNameSet.add(settingName);
     this.moduleSettings.set(setting.name, setting);
@@ -6479,8 +6483,6 @@ var Setting = class {
   #type = null;
   #requiresUserAction;
   #value;
-  // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
-  #serializer = JSON;
   #hadUserAction;
   #loggedInitialAccess = false;
   #logSettingAccess;
@@ -6493,9 +6495,6 @@ var Setting = class {
     storage.register(this.name);
     this.#console = console2;
     this.#logSettingAccess = logSettingAccess;
-  }
-  setSerializer(serializer) {
-    this.#serializer = serializer;
   }
   descriptor() {
     return {
@@ -6520,12 +6519,9 @@ var Setting = class {
   setRequiresUserAction(requiresUserAction) {
     this.#requiresUserAction = requiresUserAction;
   }
-  disabled() {
-    return false;
-  }
   #maybeLogAccess(value) {
     try {
-      const valueToLog = typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? value : this.#serializer?.stringify(value);
+      const valueToLog = typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? value : JSON.stringify(value);
       if (valueToLog !== void 0 && this.#logSettingAccess) {
         void this.#logSettingAccess(this.name, valueToLog);
       }
@@ -6550,7 +6546,7 @@ var Setting = class {
     this.#value = this.defaultValue;
     if (this.storage.has(this.name)) {
       try {
-        this.#value = this.#serializer.parse(this.storage.get(this.name));
+        this.#value = JSON.parse(this.storage.get(this.name));
       } catch {
         this.storage.remove(this.name);
       }
@@ -6565,7 +6561,7 @@ var Setting = class {
     this.#value = this.defaultValue;
     if (value) {
       try {
-        this.#value = this.#serializer.parse(value);
+        this.#value = JSON.parse(value);
       } catch {
         this.storage.remove(this.name);
       }
@@ -6581,7 +6577,7 @@ var Setting = class {
     this.#hadUserAction = true;
     this.#value = value;
     try {
-      const settingString = this.#serializer.stringify(value);
+      const settingString = JSON.stringify(value);
       try {
         this.storage.set(this.name, settingString);
       } catch (e) {

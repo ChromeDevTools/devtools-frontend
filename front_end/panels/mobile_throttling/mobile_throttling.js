@@ -629,8 +629,8 @@ var MobileThrottlingSelector = class {
     }
     const customConditions = ThrottlingPresets.getCustomConditions();
     for (let index = 0; index < this.options.length; ++index) {
-      const item2 = this.options[index];
-      if (item2 && item2.title === customConditions.title && item2.description === customConditions.description) {
+      const item3 = this.options[index];
+      if (item3 && item3.title === customConditions.title && item3.description === customConditions.description) {
         this.selectCallback(index);
         return;
       }
@@ -761,17 +761,15 @@ var DEFAULT_VIEW = (input, output, target) => {
     if (!option) {
       return;
     }
-    if (option === element.options[element.options.length - 1]) {
+    const conditions = optionsMap.get(option);
+    if (conditions) {
+      selectedConditions = conditions;
+      input.onSelect(conditions);
+    } else {
       input.onAddCustomConditions();
       event.consume(true);
       if (selectedConditions) {
         element.value = title(selectedConditions);
-      }
-    } else {
-      const conditions = optionsMap.get(option);
-      if (conditions) {
-        selectedConditions = conditions;
-        input.onSelect(conditions);
       }
     }
   }
@@ -980,6 +978,225 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.Obj
   }
 };
 
+// gen/front_end/panels/mobile_throttling/CPUThrottlingSelector.js
+var CPUThrottlingSelector_exports = {};
+__export(CPUThrottlingSelector_exports, {
+  CPUThrottlingSelector: () => CPUThrottlingSelector,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2
+});
+import * as Common4 from "./../../core/common/common.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as SDK6 from "./../../core/sdk/sdk.js";
+import * as CrUXManager3 from "./../../models/crux-manager/crux-manager.js";
+import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
+import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon3 from "./../common/common.js";
+var { render: render3, html: html3, Directives: Directives2 } = Lit2;
+var UIStrings6 = {
+  /**
+   * @description Text label for a selection box showing which CPU throttling option is applied.
+   * @example {No throttling} PH1
+   */
+  cpuThrottling: "CPU throttling: {PH1}",
+  /**
+   * @description Text label for a selection box showing that a specific option is recommended.
+   * @example {4x slowdown} PH1
+   */
+  recommendedThrottling: "{PH1} \u2013 recommended",
+  /**
+   * @description Text to prompt the user to run the CPU calibration process.
+   */
+  calibrate: "Calibrate\u2026",
+  /**
+   * @description Text to prompt the user to re-run the CPU calibration process.
+   */
+  recalibrate: "Recalibrate\u2026",
+  /**
+   * @description CPU preset option with no throttling.
+   */
+  disabledThrottlingPreset: "Disabled",
+  /**
+   * @description Default presets category title.
+   */
+  defaultPresets: "Presets",
+  /**
+   * @description Label shown above a list of CPU calibration preset options.
+   */
+  labelCalibratedPresets: "Calibrated presets"
+};
+var str_6 = i18n11.i18n.registerUIStrings("panels/mobile_throttling/CPUThrottlingSelector.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var optionsMap2 = /* @__PURE__ */ new WeakMap();
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  const selectionTitle = input.currentOption.title();
+  const hasCalibratedOnce = input.throttling.low || input.throttling.mid;
+  const calibrationLabel = hasCalibratedOnce ? i18nString6(UIStrings6.recalibrate) : i18nString6(UIStrings6.calibrate);
+  function onSelect(event) {
+    const element = event.target;
+    if (!element) {
+      return;
+    }
+    const option = element.selectedOptions[0];
+    if (!option) {
+      return;
+    }
+    const condition = optionsMap2.get(option);
+    if (condition) {
+      input.onSelect(condition);
+    } else {
+      input.onCalibrateClick();
+      event.consume(true);
+      element.value = String(input.currentOption.calibratedDeviceType ?? input.currentOption.rate());
+    }
+  }
+  render3(html3`${input.groups.map((group) => {
+    return html3` <optgroup
+        label=${group.name}
+        title=${group.name}
+      >
+        ${group.items.map((option) => {
+      const title = option === input.recommendedOption ? i18nString6(UIStrings6.recommendedThrottling, {
+        PH1: option.title()
+      }) : option.title();
+      const rate = option.rate();
+      return html3`
+            <option
+              ${Directives2.ref((optionEl) => optionEl && optionsMap2.set(optionEl, option))}
+              .value=${String(option.calibratedDeviceType ?? rate)}
+              ?selected=${input.currentOption === option}
+              ?disabled=${rate === 0}
+              title=${title}
+              aria-label=${title}
+              jslog=${VisualLogging3.item(option.jslogContext).track({
+        click: true
+      })}
+            >
+              ${title}
+            </option>
+          `;
+    })}
+        ${group.name === i18nString6(UIStrings6.labelCalibratedPresets) ? html3`<option
+              .value=${"-1"}
+              title=${calibrationLabel}
+              aria-label=${calibrationLabel}
+              jslog=${VisualLogging3.action("cpu-throttling-selector-calibrate").track({ click: true })}
+            >
+              ${calibrationLabel}
+            </option>` : Lit2.nothing}
+      </optgroup>`;
+  })}`, target, {
+    container: {
+      listeners: { change: onSelect },
+      attributes: {
+        title: i18nString6(UIStrings6.cpuThrottling, { PH1: selectionTitle }),
+        "aria-label": i18nString6(UIStrings6.cpuThrottling, { PH1: selectionTitle }),
+        jslog: `${VisualLogging3.dropDown("cpu-throttling").track({ change: true })}`
+      }
+    }
+  });
+};
+var CPUThrottlingSelector = class _CPUThrottlingSelector extends UI4.Widget.Widget {
+  #currentOption;
+  #recommendedOption = null;
+  #groups = [];
+  #calibratedThrottlingSetting;
+  #view;
+  #cpuThrottlingManager = SDK6.CPUThrottlingManager.CPUThrottlingManager.instance();
+  static createForGlobalConditions(element) {
+    const selectElement = element.createChild("select");
+    const select = new _CPUThrottlingSelector(selectElement);
+    select.show(
+      element,
+      void 0,
+      /* suppressOrphanWidgetError= */
+      true
+    );
+    select.performUpdate();
+    return select;
+  }
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element);
+    this.#currentOption = throttlingManager().cpuThrottlingOption();
+    this.#calibratedThrottlingSetting = Common4.Settings.Settings.instance().createSetting(
+      "calibrated-cpu-throttling",
+      {},
+      "Global"
+      /* Common.Settings.SettingStorageType.GLOBAL */
+    );
+    this.#resetGroups();
+    this.#view = view;
+    this.performUpdate();
+  }
+  set recommendedOption(recommendedOption) {
+    this.#recommendedOption = recommendedOption;
+    this.requestUpdate();
+  }
+  #updateRecommendation = () => {
+    let cpuOption = PanelsCommon3.CPUThrottlingOption.CalibratedMidTierMobileThrottlingOption;
+    if (cpuOption.rate() === 0) {
+      cpuOption = PanelsCommon3.CPUThrottlingOption.MidTierThrottlingOption;
+    }
+    this.recommendedOption = cpuOption;
+  };
+  wasShown() {
+    super.wasShown();
+    this.#cpuThrottlingManager.addEventListener("RateChanged", this.#onOptionChange, this);
+    this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
+    CrUXManager3.CrUXManager.instance().addEventListener("field-data-changed", this.#updateRecommendation);
+    this.#updateRecommendation();
+    this.#onOptionChange();
+  }
+  willHide() {
+    super.willHide();
+    this.#calibratedThrottlingSetting.removeChangeListener(this.#onCalibratedSettingChanged, this);
+    this.#cpuThrottlingManager.removeEventListener("RateChanged", this.#onOptionChange, this);
+    CrUXManager3.CrUXManager.instance().removeEventListener("field-data-changed", this.#updateRecommendation);
+  }
+  #onOptionChange() {
+    this.#currentOption = throttlingManager().cpuThrottlingOption();
+    this.requestUpdate();
+  }
+  #onCalibratedSettingChanged() {
+    this.#resetGroups();
+    this.requestUpdate();
+  }
+  #onSelect(option) {
+    throttlingManager().setCPUThrottlingOption(option);
+  }
+  #onCalibrateClick() {
+    void Common4.Revealer.reveal(this.#calibratedThrottlingSetting);
+    this.requestUpdate();
+  }
+  #resetGroups() {
+    this.#groups = [
+      {
+        name: i18nString6(UIStrings6.disabledThrottlingPreset),
+        items: ThrottlingPresets.cpuThrottlingPresets.filter((option) => option.rate() === 1 && !option.calibratedDeviceType)
+      },
+      {
+        name: i18nString6(UIStrings6.defaultPresets),
+        items: ThrottlingPresets.cpuThrottlingPresets.filter((option) => !option.calibratedDeviceType && option.rate() > 1)
+      },
+      {
+        name: i18nString6(UIStrings6.labelCalibratedPresets),
+        items: ThrottlingPresets.cpuThrottlingPresets.filter((option) => option.calibratedDeviceType)
+      }
+    ];
+  }
+  performUpdate() {
+    const input = {
+      recommendedOption: this.#recommendedOption,
+      currentOption: this.#currentOption,
+      groups: this.#groups,
+      throttling: this.#calibratedThrottlingSetting.get(),
+      onSelect: this.#onSelect.bind(this),
+      onCalibrateClick: this.#onCalibrateClick.bind(this)
+    };
+    this.#view(input, void 0, this.contentElement);
+  }
+};
+
 // gen/front_end/panels/mobile_throttling/ThrottlingSettingsTab.js
 var ThrottlingSettingsTab_exports = {};
 __export(ThrottlingSettingsTab_exports, {
@@ -987,27 +1204,27 @@ __export(ThrottlingSettingsTab_exports, {
   ThrottlingSettingsTab: () => ThrottlingSettingsTab
 });
 import "./../../ui/kit/kit.js";
-import * as Common4 from "./../../core/common/common.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as Common5 from "./../../core/common/common.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import { createIcon } from "./../../ui/kit/kit.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon4 from "./../common/common.js";
+import * as UI5 from "./../../ui/legacy/legacy.js";
+import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon5 from "./../common/common.js";
 
 // gen/front_end/panels/mobile_throttling/CalibrationController.js
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as PanelsCommon3 from "./../common/common.js";
-var UIStrings6 = {
+import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as PanelsCommon4 from "./../common/common.js";
+var UIStrings7 = {
   /**
    * @description Text to display to user while a calibration process is running.
    */
   runningCalibration: "Running CPU calibration, don\u2019t leave this tab or close DevTools."
 };
-var str_6 = i18n11.i18n.registerUIStrings("panels/mobile_throttling/CalibrationController.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var str_7 = i18n13.i18n.registerUIStrings("panels/mobile_throttling/CalibrationController.ts", UIStrings7);
+var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var benchmarkDurationMs = 250;
 var midScore = 1e3;
 var lowScore = 264;
@@ -1025,12 +1242,12 @@ var CalibrationController = class {
    * benchmark takes to run. This benchmark will run multiple times throughout the calibration process.
    */
   async start() {
-    const primaryPageTarget = SDK6.TargetManager.TargetManager.instance().primaryPageTarget();
+    const primaryPageTarget = SDK7.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!primaryPageTarget) {
       return false;
     }
-    const runtimeModel = primaryPageTarget.model(SDK6.RuntimeModel.RuntimeModel);
-    const emulationModel = primaryPageTarget.model(SDK6.EmulationModel.EmulationModel);
+    const runtimeModel = primaryPageTarget.model(SDK7.RuntimeModel.RuntimeModel);
+    const emulationModel = primaryPageTarget.model(SDK7.EmulationModel.EmulationModel);
     if (!runtimeModel || !emulationModel) {
       return false;
     }
@@ -1064,7 +1281,7 @@ var CalibrationController = class {
     await primaryPageTarget.pageAgent().invoke_navigate({ url: "about:blank" });
     await runtimeModel.agent.invoke_evaluate({
       expression: `
-          (${setupTestPage})(${JSON.stringify(i18nString6(UIStrings6.runningCalibration))});
+          (${setupTestPage})(${JSON.stringify(i18nString7(UIStrings7.runningCalibration))});
 
           window.runBenchmark = () => {
             window.runs = window.runs ?? 0;
@@ -1146,12 +1363,12 @@ ${result.description}`;
       if (actualScore < midScore) {
         if (actualScore < lowScore) {
           this.#result = {
-            low: PanelsCommon3.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK,
-            mid: PanelsCommon3.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK
+            low: PanelsCommon4.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK,
+            mid: PanelsCommon4.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK
           };
           return;
         }
-        this.#result = { mid: PanelsCommon3.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK };
+        this.#result = { mid: PanelsCommon4.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK };
         isHalfwayDone = true;
       }
     }
@@ -1393,7 +1610,7 @@ var throttlingSettingsTab_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./throttlingSettingsTab.css")} */`;
 
 // gen/front_end/panels/mobile_throttling/ThrottlingSettingsTab.js
-var UIStrings7 = {
+var UIStrings8 = {
   /**
    * @description Title for default network throttling profiles card.
    */
@@ -1551,8 +1768,8 @@ var UIStrings7 = {
    */
   dSlowdown: "{PH1}\xD7 slowdown"
 };
-var str_7 = i18n13.i18n.registerUIStrings("panels/mobile_throttling/ThrottlingSettingsTab.ts", UIStrings7);
-var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var str_8 = i18n15.i18n.registerUIStrings("panels/mobile_throttling/ThrottlingSettingsTab.ts", UIStrings8);
+var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 function createComputePressurePromise() {
   const result = { state: "" };
   if (typeof PressureObserver === "undefined") {
@@ -1591,9 +1808,9 @@ var CPUThrottlingCard = class {
       /* Common.Settings.SettingStorageType.GLOBAL */
     );
     this.element = document.createElement("devtools-card");
-    this.element.heading = i18nString7(UIStrings7.cpuThrottlingPresets);
+    this.element.heading = i18nString8(UIStrings8.cpuThrottlingPresets);
     const descriptionEl = this.element.createChild("span");
-    descriptionEl.textContent = i18nString7(UIStrings7.cpuCalibrationDescription);
+    descriptionEl.textContent = i18nString8(UIStrings8.cpuCalibrationDescription);
     this.lowTierMobileDeviceEl = this.element.createChild("div", "cpu-preset-section");
     this.lowTierMobileDeviceEl.append("Low-tier mobile device");
     this.lowTierMobileDeviceEl.createChild("div", "cpu-preset-result");
@@ -1616,7 +1833,7 @@ var CPUThrottlingCard = class {
       variant: "outlined",
       jslogContext: "throttling.calibrate-cancel"
     };
-    this.cancelButton.textContent = i18nString7(UIStrings7.cancel);
+    this.cancelButton.textContent = i18nString8(UIStrings8.cancel);
     this.cancelButton.addEventListener("click", () => this.cancelButtonClicked());
     buttonContainerEl.append(this.cancelButton);
     this.textEl = this.calibrateEl.createChild("div", "text-container");
@@ -1647,37 +1864,37 @@ var CPUThrottlingCard = class {
     this.progress.style.display = "none";
     if (this.state === "cta") {
       this.calibrateButton.style.display = "";
-      this.calibrateButton.textContent = hasCalibrated ? i18nString7(UIStrings7.recalibrate) : i18nString7(UIStrings7.calibrate);
+      this.calibrateButton.textContent = hasCalibrated ? i18nString8(UIStrings8.recalibrate) : i18nString8(UIStrings8.calibrate);
       if (!hasCalibrated) {
         this.textEl.style.display = "";
         this.textEl.textContent = "";
-        this.textEl.append(this.createTextWithIcon(i18nString7(UIStrings7.calibrationCTA), "info"));
+        this.textEl.append(this.createTextWithIcon(i18nString8(UIStrings8.calibrationCTA), "info"));
       }
     } else if (this.state === "prompting") {
       this.calibrateButton.style.display = "";
-      this.calibrateButton.textContent = i18nString7(UIStrings7.continue);
+      this.calibrateButton.textContent = i18nString8(UIStrings8.continue);
       this.cancelButton.style.display = "";
       this.textEl.style.display = "";
       this.textEl.textContent = "";
       for (const warning of this.warnings) {
         this.textEl.append(this.createTextWithIcon(warning, "warning"));
       }
-      this.textEl.append(this.createTextWithIcon(i18nString7(UIStrings7.calibrationConfirmationPrompt), "info"));
+      this.textEl.append(this.createTextWithIcon(i18nString8(UIStrings8.calibrationConfirmationPrompt), "info"));
     } else if (this.state === "calibrating") {
       this.cancelButton.style.display = "";
       this.progress.style.display = "";
     }
     const resultToString = (result2) => {
       if (result2 === void 0) {
-        return i18nString7(UIStrings7.needsCalibration);
+        return i18nString8(UIStrings8.needsCalibration);
       }
       if (typeof result2 === "string") {
-        return PanelsCommon4.CPUThrottlingOption.calibrationErrorToString(result2);
+        return PanelsCommon5.CPUThrottlingOption.calibrationErrorToString(result2);
       }
       if (typeof result2 !== "number") {
         return `Invalid: ${result2}`;
       }
-      return i18nString7(UIStrings7.dSlowdown, { PH1: result2.toFixed(1) });
+      return i18nString8(UIStrings8.dSlowdown, { PH1: result2.toFixed(1) });
     };
     const setPresetResult = (element, result2) => {
       if (!element) {
@@ -1701,14 +1918,14 @@ var CPUThrottlingCard = class {
     if (this.computePressurePromise) {
       const computePressure = await this.computePressurePromise;
       if (computePressure.state === "critical" || computePressure.state === "serious") {
-        warnings.push(i18nString7(UIStrings7.calibrationWarningHighCPU));
+        warnings.push(i18nString8(UIStrings8.calibrationWarningHighCPU));
       }
     }
     const battery = await navigator.getBattery();
     if (!battery.charging) {
-      warnings.push(i18nString7(UIStrings7.calibrationWarningRunningOnBattery));
+      warnings.push(i18nString8(UIStrings8.calibrationWarningRunningOnBattery));
     } else if (battery.level < 0.2) {
-      warnings.push(i18nString7(UIStrings7.calibrationWarningLowBattery));
+      warnings.push(i18nString8(UIStrings8.calibrationWarningLowBattery));
     }
     return warnings;
   }
@@ -1765,7 +1982,7 @@ function extractCustomSettingIndex(key) {
   }
   return 0;
 }
-var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
+var ThrottlingSettingsTab = class extends UI5.Widget.VBox {
   /** List of default network throttling presets (read-only in UI) */
   presetsList;
   /** List of custom user-defined network throttling profiles */
@@ -1783,7 +2000,7 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
   #customUserConditionsCount;
   constructor(settings) {
     super({
-      jslog: `${VisualLogging3.pane("throttling-conditions")}`,
+      jslog: `${VisualLogging4.pane("throttling-conditions")}`,
       useShadowDom: true
     });
     this.registerRequiredCSS(throttlingSettingsTab_css_default);
@@ -1798,25 +2015,25 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
       iconName: "plus",
       jslogContext: "network.add-conditions"
     };
-    addButton.textContent = i18nString7(UIStrings7.addCustomProfile);
+    addButton.textContent = i18nString8(UIStrings8.addCustomProfile);
     addButton.addEventListener("click", () => this.addButtonClicked());
-    this.presetsList = new UI4.ListWidget.ListWidget(this);
+    this.presetsList = new UI5.ListWidget.ListWidget(this);
     this.presetsList.setHeader(createHeaderRow());
-    createProfilesCard(i18nString7(UIStrings7.defaultProfiles), this.presetsList, settingsContent);
+    createProfilesCard(i18nString8(UIStrings8.defaultProfiles), this.presetsList, settingsContent);
     const presets = ThrottlingPresets.networkPresets;
     for (let i = 0; i < presets.length; ++i) {
       this.presetsList.appendItem(presets[i], false);
     }
-    this.customList = new UI4.ListWidget.ListWidget(this);
+    this.customList = new UI5.ListWidget.ListWidget(this);
     this.customList.setHeader(createHeaderRow());
-    const customContainer = createProfilesCard(i18nString7(UIStrings7.customProfiles), this.customList, settingsContent);
+    const customContainer = createProfilesCard(i18nString8(UIStrings8.customProfiles), this.customList, settingsContent);
     customContainer.appendChild(addButton);
-    this.customUserConditions = SDK7.NetworkManager.customUserNetworkConditionsSetting(settings);
+    this.customUserConditions = SDK8.NetworkManager.customUserNetworkConditionsSetting(settings);
     this.customUserConditions.addChangeListener(this.conditionsUpdated, this);
     const customConditions = this.customUserConditions.get();
     const lastCondition = customConditions.at(-1);
     const key = lastCondition?.key;
-    if (key && SDK7.NetworkManager.keyIsCustomUser(key)) {
+    if (key && SDK8.NetworkManager.keyIsCustomUser(key)) {
       const maxIndex = extractCustomSettingIndex(key);
       this.#customUserConditionsCount = maxIndex;
     } else {
@@ -1858,19 +2075,19 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
     const titleText = title.createChild("div", "conditions-list-title-text");
     const castedTitle = this.retrieveOptionsTitle(conditions);
     titleText.textContent = castedTitle;
-    UI4.Tooltip.Tooltip.install(title, castedTitle);
+    UI5.Tooltip.Tooltip.install(title, castedTitle);
     element.createChild("div", "conditions-list-separator");
     element.createChild("div", "conditions-list-text").textContent = throughputText(conditions.download);
     element.createChild("div", "conditions-list-separator");
     element.createChild("div", "conditions-list-text").textContent = throughputText(conditions.upload);
     element.createChild("div", "conditions-list-separator");
-    element.createChild("div", "conditions-list-text").textContent = i18nString7(UIStrings7.dms, { PH1: conditions.latency });
+    element.createChild("div", "conditions-list-text").textContent = i18nString8(UIStrings8.dms, { PH1: conditions.latency });
     element.createChild("div", "conditions-list-separator");
     element.createChild("div", "conditions-list-text").textContent = percentText(conditions.packetLoss ?? 0);
     element.createChild("div", "conditions-list-separator");
     element.createChild("div", "conditions-list-text").textContent = String(conditions.packetQueueLength ?? 0);
     element.createChild("div", "conditions-list-separator");
-    element.createChild("div", "conditions-list-text").textContent = conditions.packetReordering ? i18nString7(UIStrings7.on) : i18nString7(UIStrings7.off);
+    element.createChild("div", "conditions-list-text").textContent = conditions.packetReordering ? i18nString8(UIStrings8.on) : i18nString8(UIStrings8.off);
     return element;
   }
   removeItemRequested(_item, index) {
@@ -1920,7 +2137,7 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
     const settings = [
       {
         name: "title",
-        labelText: i18nString7(UIStrings7.profileName),
+        labelText: i18nString8(UIStrings8.profileName),
         inputType: "text",
         placeholder: "",
         validator: titleValidator,
@@ -1928,49 +2145,49 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
       },
       {
         name: "download",
-        labelText: i18nString7(UIStrings7.download),
+        labelText: i18nString8(UIStrings8.download),
         inputType: "text",
-        placeholder: i18n13.i18n.lockedString("kbit/s"),
+        placeholder: i18n15.i18n.lockedString("kbit/s"),
         validator: throughputValidator
       },
       {
         name: "upload",
-        labelText: i18nString7(UIStrings7.upload),
+        labelText: i18nString8(UIStrings8.upload),
         inputType: "text",
-        placeholder: i18n13.i18n.lockedString("kbit/s"),
+        placeholder: i18n15.i18n.lockedString("kbit/s"),
         validator: throughputValidator
       },
       {
         name: "latency",
-        labelText: i18nString7(UIStrings7.latency),
+        labelText: i18nString8(UIStrings8.latency),
         inputType: "text",
-        placeholder: i18n13.i18n.lockedString("ms"),
+        placeholder: i18n15.i18n.lockedString("ms"),
         validator: latencyValidator
       },
       {
         name: "packetLoss",
-        labelText: i18nString7(UIStrings7.packetLoss),
+        labelText: i18nString8(UIStrings8.packetLoss),
         inputType: "text",
-        placeholder: i18n13.i18n.lockedString("percent"),
+        placeholder: i18n15.i18n.lockedString("percent"),
         validator: packetLossValidator
       },
       {
         name: "packetQueueLength",
-        labelText: i18nString7(UIStrings7.packetQueueLength),
+        labelText: i18nString8(UIStrings8.packetQueueLength),
         inputType: "text",
-        placeholder: i18nString7(UIStrings7.packet),
+        placeholder: i18nString8(UIStrings8.packet),
         validator: packetQueueLengthValidator
       },
       {
         name: "packetReordering",
-        labelText: i18nString7(UIStrings7.packetReordering),
+        labelText: i18nString8(UIStrings8.packetReordering),
         inputType: "checkbox",
         placeholder: "",
         validator: packetReorderingValidator,
         isOptional: false
       }
     ];
-    const editor = new UI4.ListWidget.Editor();
+    const editor = new UI5.ListWidget.Editor();
     this.editor = editor;
     const content = editor.contentElement();
     const settingsContainer = content.createChild("div", "settings-container");
@@ -1981,12 +2198,12 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
       const inputElement = settingElement.createChild("div");
       const input = editor.createInput(name, inputType, placeholder, validator);
       input.classList.add("input");
-      UI4.ARIAUtils.setLabel(input, labelText);
+      UI5.ARIAUtils.setLabel(input, labelText);
       inputElement.appendChild(input);
       const optionalTextElement = inputElement.createChild("div");
-      const optionalStr = i18nString7(UIStrings7.optional);
+      const optionalStr = i18nString8(UIStrings8.optional);
       optionalTextElement.textContent = optionalStr;
-      UI4.ARIAUtils.setDescription(input, optionalStr);
+      UI5.ARIAUtils.setDescription(input, optionalStr);
       if (!isOptional) {
         optionalTextElement.style.visibility = "hidden";
       }
@@ -2000,7 +2217,7 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
       const value = input.value.trim();
       const valid = value.length > 0 && value.length <= maxLength;
       if (!valid) {
-        const errorMessage = i18nString7(UIStrings7.profileNameCharactersLengthMust, { PH1: maxLength });
+        const errorMessage = i18nString8(UIStrings8.profileNameCharactersLengthMust, { PH1: maxLength });
         return { valid, errorMessage };
       }
       return {
@@ -2015,7 +2232,7 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
       const throughput = input.getAttribute("aria-label");
       const valid = !Number.isNaN(parsedValue) && parsedValue >= minThroughput && parsedValue <= maxThroughput;
       if (!valid) {
-        const errorMessage = i18nString7(UIStrings7.sMustBeANumberBetweenSkbsToSkbs, { PH1: String(throughput), PH2: minThroughput, PH3: maxThroughput });
+        const errorMessage = i18nString8(UIStrings8.sMustBeANumberBetweenSkbsToSkbs, { PH1: String(throughput), PH2: minThroughput, PH3: maxThroughput });
         return { valid, errorMessage };
       }
       return {
@@ -2029,7 +2246,7 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
       const parsedValue = Number(value);
       const valid = Number.isInteger(parsedValue) && parsedValue >= minLatency && parsedValue <= maxLatency;
       if (!valid) {
-        const errorMessage = i18nString7(UIStrings7.latencyMustBeAnIntegerBetweenSms, { PH1: minLatency, PH2: maxLatency });
+        const errorMessage = i18nString8(UIStrings8.latencyMustBeAnIntegerBetweenSms, { PH1: minLatency, PH2: maxLatency });
         return { valid, errorMessage };
       }
       return {
@@ -2043,7 +2260,7 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
       const parsedValue = Number(value);
       const valid = parsedValue >= minPacketLoss && parsedValue <= maxPacketLoss;
       if (!valid) {
-        const errorMessage = i18nString7(UIStrings7.packetLossMustBeAnIntegerBetweenSpct, { PH1: minPacketLoss, PH2: maxPacketLoss });
+        const errorMessage = i18nString8(UIStrings8.packetLossMustBeAnIntegerBetweenSpct, { PH1: minPacketLoss, PH2: maxPacketLoss });
         return { valid, errorMessage };
       }
       return {
@@ -2056,7 +2273,7 @@ var ThrottlingSettingsTab = class extends UI4.Widget.VBox {
       const parsedValue = Number(value);
       const valid = parsedValue >= minPacketQueueLength;
       if (!valid) {
-        const errorMessage = i18nString7(UIStrings7.packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero);
+        const errorMessage = i18nString8(UIStrings8.packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero);
         return { valid, errorMessage };
       }
       return {
@@ -2076,13 +2293,13 @@ function throughputText(throughput) {
   }
   const throughputInKbps = throughput / (1e3 / 8);
   if (throughputInKbps < 1e3) {
-    return i18nString7(UIStrings7.dskbits, { PH1: throughputInKbps });
+    return i18nString8(UIStrings8.dskbits, { PH1: throughputInKbps });
   }
   if (throughputInKbps < 1e3 * 10) {
     const formattedResult = (throughputInKbps / 1e3).toFixed(1);
-    return i18nString7(UIStrings7.fsmbits, { PH1: formattedResult });
+    return i18nString8(UIStrings8.fsmbits, { PH1: formattedResult });
   }
-  return i18nString7(UIStrings7.fsmbits, { PH1: throughputInKbps / 1e3 | 0 });
+  return i18nString8(UIStrings8.fsmbits, { PH1: throughputInKbps / 1e3 | 0 });
 }
 function percentText(percent) {
   if (percent < 0) {
@@ -2103,25 +2320,26 @@ function appendHeaderColumn(element, text) {
   element.createChild("div", "conditions-list-separator");
   const column = element.createChild("div", "conditions-list-text");
   column.textContent = text;
-  UI4.Tooltip.Tooltip.install(column, text);
+  UI5.Tooltip.Tooltip.install(column, text);
 }
 function createHeaderRow() {
   const element = document.createElement("div");
   element.classList.add("conditions-list-item", "conditions-list-header");
   const title = element.createChild("div", "conditions-list-text conditions-list-title");
   const titleText = title.createChild("div", "conditions-list-title-text");
-  const profileName = i18nString7(UIStrings7.profileName);
+  const profileName = i18nString8(UIStrings8.profileName);
   titleText.textContent = profileName;
-  UI4.Tooltip.Tooltip.install(title, profileName);
-  appendHeaderColumn(element, i18nString7(UIStrings7.download));
-  appendHeaderColumn(element, i18nString7(UIStrings7.upload));
-  appendHeaderColumn(element, i18nString7(UIStrings7.latency));
-  appendHeaderColumn(element, i18nString7(UIStrings7.packetLoss));
-  appendHeaderColumn(element, i18nString7(UIStrings7.packetQueueLength));
-  appendHeaderColumn(element, i18nString7(UIStrings7.packetReordering));
+  UI5.Tooltip.Tooltip.install(title, profileName);
+  appendHeaderColumn(element, i18nString8(UIStrings8.download));
+  appendHeaderColumn(element, i18nString8(UIStrings8.upload));
+  appendHeaderColumn(element, i18nString8(UIStrings8.latency));
+  appendHeaderColumn(element, i18nString8(UIStrings8.packetLoss));
+  appendHeaderColumn(element, i18nString8(UIStrings8.packetQueueLength));
+  appendHeaderColumn(element, i18nString8(UIStrings8.packetReordering));
   return element;
 }
 export {
+  CPUThrottlingSelector_exports as CPUThrottlingSelector,
   MobileThrottlingSelector_exports as MobileThrottlingSelector,
   NetworkPanelIndicator_exports as NetworkPanelIndicator,
   NetworkThrottlingSelector_exports as NetworkThrottlingSelector,

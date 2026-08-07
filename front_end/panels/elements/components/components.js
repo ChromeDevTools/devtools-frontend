@@ -109,6 +109,7 @@ var RegisteredAdorners;
   RegisteredAdorners2["FLEX"] = "flex";
   RegisteredAdorners2["GRID"] = "grid";
   RegisteredAdorners2["GRID_LANES"] = "grid-lanes";
+  RegisteredAdorners2["INTEREST"] = "interest";
   RegisteredAdorners2["MEDIA"] = "media";
   RegisteredAdorners2["POPOVER"] = "popover";
   RegisteredAdorners2["REVEAL"] = "reveal";

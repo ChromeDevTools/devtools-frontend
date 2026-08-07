@@ -922,7 +922,8 @@ var ShortcutDialog = class extends HTMLElement {
       dialogTitle: this.#customTitle ?? i18nString2(UIStrings2.dialogTitle),
       variant: "toolbar",
       iconName: "help",
-      iconTitle: i18nString2(UIStrings2.showShortcutTitle)
+      iconTitle: i18nString2(UIStrings2.showShortcutTitle),
+      horizontalAlignment: "auto"
     }}>
         <ul class="keybinds-list">
           ${this.#prependedElement ? html3`${this.#prependedElement}` : nothing2}

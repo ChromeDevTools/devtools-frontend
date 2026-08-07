@@ -1359,6 +1359,9 @@ export declare const generatedPropertyValues: {
     "text-decoration-color": {
         values: string[];
     };
+    "text-decoration-inset": {
+        values: string[];
+    };
     "text-decoration-line": {
         values: string[];
     };

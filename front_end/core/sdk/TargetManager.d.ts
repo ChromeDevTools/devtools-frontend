@@ -32,6 +32,7 @@ export declare class TargetManager extends Common.ObjectWrapper.ObjectWrapper<Ev
         forceNew: boolean;
     }): TargetManager;
     static removeInstance(): void;
+    dispose(): void;
     onInspectedURLChange(target: Target): void;
     onNameChange(target: Target): void;
     suspendAllTargets(reason?: string): Promise<void>;

@@ -2224,7 +2224,7 @@ import * as i18n52 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
-import * as CrUXManager5 from "./../../models/crux-manager/crux-manager.js";
+import * as CrUXManager3 from "./../../models/crux-manager/crux-manager.js";
 import * as Trace33 from "./../../models/trace/trace.js";
 import * as Workspace5 from "./../../models/workspace/workspace.js";
 import * as TraceBounds15 from "./../../services/trace_bounds/trace_bounds.js";
@@ -3039,7 +3039,7 @@ import * as LegacyComponents from "./../../ui/legacy/components/utils/utils.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport17 from "./../../ui/legacy/theme_support/theme_support.js";
 import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
-import * as PanelsCommon2 from "./../common/common.js";
+import * as PanelsCommon from "./../common/common.js";
 import * as TimelineComponents4 from "./components/components.js";
 import * as Extensions2 from "./extensions/extensions.js";
 
@@ -3072,7 +3072,6 @@ import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges from "./../../models/badges/badges.js";
-import * as CrUXManager3 from "./../../models/crux-manager/crux-manager.js";
 import * as Trace22 from "./../../models/trace/trace.js";
 import * as SourceMapsResolver from "./../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as Workspace2 from "./../../models/workspace/workspace.js";
@@ -3086,7 +3085,6 @@ import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_u
 import * as UI8 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport15 from "./../../ui/legacy/theme_support/theme_support.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon from "./../common/common.js";
 import * as MobileThrottling2 from "./../mobile_throttling/mobile_throttling.js";
 
 // gen/front_end/panels/timeline/ActiveFilters.js
@@ -6458,6 +6456,10 @@ var UIStrings18 = {
   /**
    * @description Text in Timeline Panel of the Performance panel
    */
+  cpu: "CPU:",
+  /**
+   * @description Text in Timeline Panel of the Performance panel
+   */
   CpuThrottlingIsEnabled: "- CPU throttling is enabled",
   /**
    * @description Text in Timeline Panel of the Performance panel
@@ -6988,22 +6990,11 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     super.wasShown();
     UI8.Context.Context.instance().setFlavor(_TimelinePanel, this);
     UI8.UIUserMetrics.UIUserMetrics.instance().panelLoaded("timeline", "DevTools.Launch.Timeline");
-    const cruxManager = CrUXManager3.CrUXManager.instance();
-    cruxManager.addEventListener("field-data-changed", this.#onFieldDataChanged, this);
-    this.#onFieldDataChanged();
   }
   willHide() {
     super.willHide();
     UI8.Context.Context.instance().setFlavor(_TimelinePanel, null);
     this.#historyManager.cancelIfShowing();
-    const cruxManager = CrUXManager3.CrUXManager.instance();
-    cruxManager.removeEventListener("field-data-changed", this.#onFieldDataChanged, this);
-  }
-  #onFieldDataChanged() {
-    const recs = PanelsCommon.ThrottlingUtils.getThrottlingRecommendations();
-    if (this.cpuThrottlingSelect) {
-      this.cpuThrottlingSelect.recommendedOption = recs.cpuOption;
-    }
   }
   loadFromEvents(events) {
     if (this.state !== "Idle") {
@@ -7387,8 +7378,8 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     this.settingsPane = this.element.createChild("div", "timeline-settings-pane");
     this.settingsPane.setAttribute("jslog", `${VisualLogging4.pane("timeline-settings-pane").track({ resize: true })}`);
     const cpuThrottlingPane = this.settingsPane.createChild("div");
-    this.cpuThrottlingSelect = new TimelineComponents3.CPUThrottlingSelector.CPUThrottlingSelector();
-    this.cpuThrottlingSelect.show(cpuThrottlingPane);
+    cpuThrottlingPane.append(i18nString18(UIStrings18.cpu));
+    this.cpuThrottlingSelect = MobileThrottling2.CPUThrottlingSelector.CPUThrottlingSelector.createForGlobalConditions(cpuThrottlingPane);
     this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.captureSelectorStatsSetting.title(), this.captureSelectorStatsSetting, i18nString18(UIStrings18.capturesSelectorStats)));
     const networkThrottlingPane = this.settingsPane.createChild("div");
     networkThrottlingPane.append(i18nString18(UIStrings18.network));
@@ -10177,7 +10168,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     for (const relatedNode of relatedNodes) {
       if (relatedNode) {
         const nodeSpan = document.createElement("span");
-        render3(PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(relatedNode), nodeSpan);
+        render3(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedNode), nodeSpan);
         contentHelper.appendElementRow(relatedNodeLabel || i18nString19(UIStrings19.relatedNode), nodeSpan);
       }
     }
@@ -10345,7 +10336,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       const node = invalidation.args.data.nodeId && relatedNodesMap ? relatedNodesMap.get(invalidation.args.data.nodeId) : null;
       if (node) {
         const nodeSpan2 = document.createElement("span");
-        render3(PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node), nodeSpan2);
+        render3(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node), nodeSpan2);
         return nodeSpan2;
       }
       if (invalidation.args.data.nodeName) {
@@ -14726,7 +14717,7 @@ import * as Trace32 from "./../../models/trace/trace.js";
 import * as PerfUI15 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport23 from "./../../ui/legacy/theme_support/theme_support.js";
-import { html as html7, render as render7 } from "./../../ui/lit/lit.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
 import * as TimelineComponents6 from "./components/components.js";
 
 // gen/front_end/panels/timeline/NetworkTrackAppender.js
@@ -14952,6 +14943,7 @@ function keyForTraceConfig(trace) {
 }
 
 // gen/front_end/panels/timeline/TimelineFlameChartNetworkDataProvider.js
+var { html: html7 } = Lit2;
 var TimelineFlameChartNetworkDataProvider = class {
   #minimumBoundary = 0;
   #timeSpan = 0;
@@ -15258,16 +15250,13 @@ var TimelineFlameChartNetworkDataProvider = class {
   }
   preparePopoverElement(index) {
     const event = this.#events[index];
-    if (Trace32.Types.Events.isSyntheticNetworkRequest(event)) {
-      const element = document.createElement("div");
-      const root = UI16.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: timelineFlamechartPopover_css_default });
-      render7(html7`
-        <div class="timeline-flamechart-popover">
-          ${TimelineComponents6.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(event, this.#entityMapper || void 0)}
-        </div>`, root);
-      return element;
+    if (!event || !Trace32.Types.Events.isSyntheticNetworkRequest(event)) {
+      return null;
     }
-    return null;
+    return html7`
+      <div class="timeline-flamechart-popover">
+        ${TimelineComponents6.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(event, this.#entityMapper || void 0)}
+      </div>`;
   }
   /**
    * Sets the minimum time and total time span of a trace using the
@@ -16088,7 +16077,7 @@ var TimelineFlameChartView = class extends Common16.ObjectWrapper.eventMixin(UI1
     const fieldMetricResultsByNavigationId = /* @__PURE__ */ new Map();
     for (const insightSet of insights.values()) {
       if (insightSet.navigation?.args.data?.navigationId) {
-        fieldMetricResultsByNavigationId.set(insightSet.navigation.args.data.navigationId, Trace33.Insights.Common.getFieldMetricsForInsightSet(insightSet, metadata, CrUXManager5.CrUXManager.instance().getSelectedScope()));
+        fieldMetricResultsByNavigationId.set(insightSet.navigation.args.data.navigationId, Trace33.Insights.Common.getFieldMetricsForInsightSet(insightSet, metadata, CrUXManager3.CrUXManager.instance().getSelectedScope()));
       }
     }
     for (const marker of this.#markers) {
@@ -18894,7 +18883,7 @@ __export(NetworkTrackWidget_exports, {
 });
 import * as Trace37 from "./../../models/trace/trace.js";
 import * as PerfUI19 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/networkTrackWidget.css.js
 var networkTrackWidget_css_default = `/* Copyright 2026 The Chromium Authors
@@ -18932,7 +18921,7 @@ var networkTrackWidget_css_default = `/* Copyright 2026 The Chromium Authors
 /*# sourceURL=${import.meta.resolve("./networkTrackWidget.css")} */`;
 
 // gen/front_end/panels/timeline/components/NetworkTrackWidget.js
-var { html: html8 } = Lit2;
+var { html: html8 } = Lit3;
 var NetworkTrackWidget = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #flameChartContainer = document.createElement("div");
@@ -18980,7 +18969,7 @@ var NetworkTrackWidget = class extends HTMLElement {
         <style>${networkTrackWidget_css_default}</style>
         ${this.#flameChartContainer}
       `;
-    Lit2.render(output, this.#shadow, { host: this });
+    Lit3.render(output, this.#shadow, { host: this });
     if (this.#flameChart) {
       this.#flameChart.update();
     }

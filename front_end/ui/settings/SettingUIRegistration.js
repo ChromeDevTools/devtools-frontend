@@ -8,6 +8,7 @@ export function register(settingDescriptor, settingUIDescriptor) {
     if (registeredSettings.has(settingName)) {
         throw new Error(`Duplicate setting name '${settingName}'`);
     }
+    Common.SettingRegistration.registerCategoryOrder(settingUIDescriptor.category, settingUIDescriptor.order);
     registeredSettings.set(settingName, { descriptor: settingDescriptor, uiDescriptor: settingUIDescriptor });
 }
 export function getRegisteredSettings() {
@@ -49,6 +50,9 @@ export function resolve(settingDescriptor) {
     return uiDescriptor;
 }
 export function resetSettings() {
+    for (const { uiDescriptor } of registeredSettings.values()) {
+        Common.SettingRegistration.removeCategoryOrder(uiDescriptor.category, uiDescriptor.order);
+    }
     registeredSettings.clear();
 }
 //# sourceMappingURL=SettingUIRegistration.js.map

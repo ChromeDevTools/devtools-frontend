@@ -62,6 +62,7 @@ export declare class AutomaticFileSystemManager extends Common.ObjectWrapper.Obj
      * Clears the `AutomaticFileSystemManager` singleton (if any);
      */
     static removeInstance(): void;
+    dispose(): void;
     /**
      * Attempt to connect the automatic workspace folder (if any).
      *

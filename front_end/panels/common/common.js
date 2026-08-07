@@ -5018,21 +5018,6 @@ var Linkifier2 = class _Linkifier {
   }
 };
 
-// gen/front_end/panels/common/ThrottlingUtils.js
-var ThrottlingUtils_exports = {};
-__export(ThrottlingUtils_exports, {
-  getThrottlingRecommendations: () => getThrottlingRecommendations
-});
-function getThrottlingRecommendations() {
-  let cpuOption = CalibratedMidTierMobileThrottlingOption;
-  if (cpuOption.rate() === 0) {
-    cpuOption = MidTierThrottlingOption;
-  }
-  return {
-    cpuOption
-  };
-}
-
 // gen/front_end/panels/common/common.prebundle.js
 var UIStrings8 = {
   /**
@@ -5120,7 +5105,6 @@ export {
   GdpSignUpDialog,
   GeminiRebrandPromoDialog,
   PersistenceUtils_exports as PersistenceUtils,
-  ThrottlingUtils_exports as ThrottlingUtils,
   TypeToAllowDialog
 };
 //# sourceMappingURL=common.js.map

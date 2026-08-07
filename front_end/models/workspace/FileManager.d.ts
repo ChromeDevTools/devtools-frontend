@@ -7,6 +7,7 @@ export interface SaveCallbackParam {
 export declare class FileManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
     constructor();
+    dispose(): void;
     static instance(opts?: {
         forceNew: boolean | null;
     }): FileManager;

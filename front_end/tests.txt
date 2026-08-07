@@ -420,7 +420,6 @@ panels/common/DOMLinkifier.test.js
 panels/common/ExtensionPanel.test.js
 panels/common/ExtensionServer.test.js
 panels/common/GdpSignUpDialog.test.js
-panels/common/ThrottlingUtils.test.js
 panels/console/ConsoleContextSelector.test.js
 panels/console/ConsoleFormat.test.js
 panels/console/ConsoleInsightTeaser.test.js
@@ -504,6 +503,7 @@ panels/media/MainView.test.js
 panels/media/PlayerListView.test.js
 panels/media/PlayerMessagesView.test.js
 panels/media/TickingFlameChartHelpers.test.js
+panels/mobile_throttling/CPUThrottlingSelector.test.js
 panels/mobile_throttling/NetworkThrottlingSelector.test.js
 panels/mobile_throttling/ThrottlingManager.test.js
 panels/mobile_throttling/ThrottlingSettingsTab.test.js
@@ -625,7 +625,6 @@ panels/timeline/TimelineUIUtils.test.js
 panels/timeline/TrackConfigBanner.test.js
 panels/timeline/TrackConfiguration.test.js
 panels/timeline/components/BreadcrumbsUI.test.js
-panels/timeline/components/CPUThrottlingSelector.test.js
 panels/timeline/components/CWVMetrics.test.js
 panels/timeline/components/ExportTraceOptions.test.js
 panels/timeline/components/FieldSettingsDialog.test.js
@@ -811,6 +810,7 @@ ui/legacy/components/source_frame/StreamingContentHexView.test.js
 ui/legacy/components/utils/JSPresentationUtils.test.js
 ui/legacy/components/utils/Linkifier.test.js
 ui/legacy/theme_support/ThemeSupport.test.js
+ui/lit/Directives.test.js
 ui/lit/i18n-template.test.js
 ui/lit/render.test.js
 ui/lit/strip-whitespace.test.js

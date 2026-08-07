@@ -37,6 +37,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
@@ -233,6 +234,14 @@ const UIStrings = {
      * @description ARIA label for an elements tree adorner
      */
     stopForceOpenPopover: 'Stop keeping this popover open',
+    /**
+     * @description ARIA label for an elements tree adorner
+     */
+    forceShowInterest: 'Trigger interest on this element',
+    /**
+     * @description ARIA label for an elements tree adorner
+     */
+    stopForceShowInterest: 'Cancel interest on this element',
     /**
      * @description Label of the adorner for flex elements in the Elements panel
      */
@@ -790,9 +799,9 @@ function maybeRenderAdAdorner(input) {
 export const DEFAULT_VIEW = (input, output, target) => {
     const hasAdorners = !!input.adProvenance || input.showContainerAdorner || input.showFlexAdorner ||
         input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner ||
-        input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner ||
-        input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner ||
-        input.showCustomElementAdorner;
+        input.showInterestAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner ||
+        input.showScrollAdorner || input.showScrollSnapAdorner || input.showSlotAdorner ||
+        input.showStartingStyleAdorner || input.showCustomElementAdorner;
     const gutterContainerClasses = {
         'has-decorations': input.decorations.length || input.descendantDecorations.length,
         'gutter-container': true,
@@ -925,6 +934,20 @@ export const DEFAULT_VIEW = (input, output, target) => {
           ${adornerRef()}>
           <span>${ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER}</span>
         </devtools-adorner>` : nothing}
+        ${input.showInterestAdorner ? html `<devtools-adorner
+          class=clickable
+          role=button
+          toggleable=true
+          tabindex=0
+          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.INTEREST}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.INTEREST).track({ click: true })}
+          active=${input.interestAdornerActive}
+          aria-label=${input.interestAdornerActive ? i18nString(UIStrings.stopForceShowInterest) : i18nString(UIStrings.forceShowInterest)}
+          @click=${input.onInterestAdornerClick}
+          @keydown=${handleAdornerKeydown(input.onInterestAdornerClick)}
+          ${adornerRef()}>
+          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.INTEREST}</span>
+        </devtools-adorner>` : nothing}
         ${input.showTopLayerAdorner ? html `<devtools-adorner
           class=clickable
           role=button
@@ -1038,6 +1061,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     #flexAdornerActive = false;
     #gridAdornerActive = false;
     #popoverAdornerActive = false;
+    #interestAdornerActive = false;
     #scrollSnapAdornerActive = false;
     #startingStyleAdornerActive = false;
     #layout = null;
@@ -1165,9 +1189,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !this.isClosingTag(),
             showMediaAdorner: this.node().isMediaNode() && !this.isClosingTag(),
             showPopoverAdorner: Boolean(this.node().attributes().find(attr => attr.name === 'popover')) && !this.isClosingTag(),
+            showInterestAdorner: Boolean(Root.Runtime.hostConfig.devToolsAllowInterestForcing?.enabled) &&
+                Boolean(this.node().attributes().find(attr => attr.name === 'interesttarget' || attr.name === 'interestfor')) &&
+                !this.isClosingTag(),
             showTopLayerAdorner: this.node().topLayerIndex() !== -1 && !this.isClosingTag(),
             gridAdornerActive: this.#gridAdornerActive,
             popoverAdornerActive: this.#popoverAdornerActive,
+            interestAdornerActive: this.#interestAdornerActive,
             isSubgrid: Boolean(this.#layout?.isSubgrid),
             showViewSourceAdorner: this.nodeInternal.isRootNode() && isOpeningTag(this.tagTypeContext),
             showScrollAdorner: ((this.node().nodeName() === 'HTML' && this.node().ownerDocument?.isScrollable()) ||
@@ -1204,6 +1232,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 (event) => this.#onMediaAdornerClick(event),
             onPopoverAdornerClick: this.treeOutline?.disableEdits ? () => { } :
                 (event) => this.#onPopoverAdornerClick(event),
+            onInterestAdornerClick: this.treeOutline?.disableEdits ? () => { } :
+                (event) => this.#onInterestAdornerClick(event),
             onScrollSnapAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onScrollSnapAdornerClick(event),
             onTopLayerAdornerClick: this.treeOutline?.disableEdits ? () => { } :
                 () => {
@@ -1520,9 +1550,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             showGridLanesAdorner: false,
             showMediaAdorner: false,
             showPopoverAdorner: false,
+            showInterestAdorner: false,
             showTopLayerAdorner: false,
             gridAdornerActive: false,
             popoverAdornerActive: false,
+            interestAdornerActive: false,
             isSubgrid: false,
             showViewSourceAdorner: false,
             showScrollAdorner: false,
@@ -1543,6 +1575,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             onGridAdornerClick: () => { },
             onMediaAdornerClick: () => { },
             onPopoverAdornerClick: () => { },
+            onInterestAdornerClick: () => { },
             onScrollSnapAdornerClick: () => { },
             onTopLayerAdornerClick: () => { },
             isHovered: false,
@@ -2731,6 +2764,20 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable: !this.#popoverAdornerActive });
         this.#popoverAdornerActive = !this.#popoverAdornerActive;
         if (this.#popoverAdornerActive) {
+            Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+        }
+        this.performUpdate();
+    }
+    async #onInterestAdornerClick(event) {
+        event.stopPropagation();
+        const node = this.node();
+        const nodeId = node.id;
+        if (!nodeId) {
+            return;
+        }
+        await node.domModel().agent.invoke_forceShowInterest({ nodeId, enable: !this.#interestAdornerActive });
+        this.#interestAdornerActive = !this.#interestAdornerActive;
+        if (this.#interestAdornerActive) {
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
         }
         this.performUpdate();

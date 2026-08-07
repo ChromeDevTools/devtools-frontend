@@ -14,11 +14,17 @@ import * as Host from "./../../core/host/host.js";
 import * as Root from "./../../core/root/root.js";
 var FileManager = class _FileManager extends Common.ObjectWrapper.ObjectWrapper {
   #saveCallbacks = /* @__PURE__ */ new Map();
+  #eventDescriptors;
   constructor() {
     super();
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.SavedURL, this.savedURL, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.CanceledSaveURL, this.#canceledSavedURL, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.AppendedToURL, this.appendedToURL, this);
+    this.#eventDescriptors = [
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.SavedURL, this.savedURL, this),
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.CanceledSaveURL, this.#canceledSavedURL, this),
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.AppendedToURL, this.appendedToURL, this)
+    ];
+  }
+  dispose() {
+    Common.EventTarget.removeEventListeners(this.#eventDescriptors);
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;

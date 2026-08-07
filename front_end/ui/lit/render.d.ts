@@ -6,6 +6,7 @@ export interface RenderOptions extends Lit.RenderOptions {
         }>;
         classes?: string[];
         listeners?: Record<string, EventListenerOrEventListenerObject>;
+        interceptedListeners?: Record<string, EventListenerOrEventListenerObject>;
     };
 }
 export declare function render(template: unknown, container: HTMLElement | DocumentFragment, options?: RenderOptions): ReturnType<typeof Lit.render>;

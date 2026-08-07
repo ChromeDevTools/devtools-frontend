@@ -39,7 +39,6 @@
   "files": [
     "../../../../../../../front_end/panels/timeline/components/Breadcrumbs.ts",
     "../../../../../../../front_end/panels/timeline/components/BreadcrumbsUI.ts",
-    "../../../../../../../front_end/panels/timeline/components/CPUThrottlingSelector.ts",
     "../../../../../../../front_end/panels/timeline/components/CWVMetrics.ts",
     "../../../../../../../front_end/panels/timeline/components/DetailsView.ts",
     "../../../../../../../front_end/panels/timeline/components/ExportTraceOptions.ts",

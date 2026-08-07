@@ -71,11 +71,11 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
      */
     static removeInstance() {
         if (Root.DevToolsContext.globalInstance().has(AutomaticFileSystemManager)) {
-            Root.DevToolsContext.globalInstance().get(AutomaticFileSystemManager).#dispose();
+            Root.DevToolsContext.globalInstance().get(AutomaticFileSystemManager).dispose();
             Root.DevToolsContext.globalInstance().delete(AutomaticFileSystemManager);
         }
     }
-    #dispose() {
+    dispose() {
         this.#inspectorFrontendHost.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.#fileSystemRemoved, this);
         this.#projectSettingsModel.removeEventListener("AvailabilityChanged" /* ProjectSettings.ProjectSettingsModel.Events.AVAILABILITY_CHANGED */, this.#availabilityChanged, this);
         this.#projectSettingsModel.removeEventListener("ProjectSettingsChanged" /* ProjectSettings.ProjectSettingsModel.Events.PROJECT_SETTINGS_CHANGED */, this.#projectSettingsChanged, this);

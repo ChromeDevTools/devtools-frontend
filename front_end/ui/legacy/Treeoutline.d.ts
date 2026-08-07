@@ -271,10 +271,10 @@ export declare namespace TreeSearch {
  * This section is only relevant if NOT using the `template`.
  *
  * Since config elements are cloned into the shadow DOM, it's not possible to directly attach event listeners to the
- * children of config elements. Instead, the `UI.UIUtils.InterceptBindingDirective` directive needs to be used as a
+ * children of config elements. Instead, the `Lit.CustomDirectives.InterceptBindingDirective` directive needs to be used as a
  * wrapper:
  * ```
- * const on = Lit.Directive.directive(UI.UIUtils.InterceptBindingDirective);
+ * const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
  *
  * html`<li role="treeitem">
  *   <button @click=${on(clickHandler)}>click me</button>

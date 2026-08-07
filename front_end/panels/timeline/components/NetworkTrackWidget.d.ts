@@ -1,10 +1,11 @@
 import * as Trace from '../../../models/trace/trace.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as Lit from '../../../ui/lit/lit.js';
 export interface NetworkDataProvider extends PerfUI.FlameChart.FlameChartDataProvider {
     setModel(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper: Trace.EntityMapper.EntityMapper): void;
     setWindowTimes(min: number, max: number): void;
     timelineData(): PerfUI.FlameChart.FlameChartTimelineData;
-    preparePopoverElement(index: number): Element | null;
+    preparePopoverElement(index: number): Lit.TemplateResult | null;
 }
 export interface NetworkTrackWidgetData {
     parsedTrace: Trace.TraceModel.ParsedTrace | null;

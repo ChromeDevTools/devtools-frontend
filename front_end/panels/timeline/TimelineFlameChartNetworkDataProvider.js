@@ -1,7 +1,6 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -9,14 +8,14 @@ import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
-import { html, render } from '../../ui/lit/lit.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as TimelineComponents from './components/components.js';
 import { initiatorsDataToDrawForNetwork } from './Initiators.js';
 import { NetworkTrackAppender } from './NetworkTrackAppender.js';
-import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import { FlameChartStyle, Selection } from './TimelineFlameChartView.js';
 import { selectionFromEvent, selectionIsRange, selectionsEqual, } from './TimelineSelection.js';
 import { buildPersistedConfig } from './TrackConfiguration.js';
+const { html } = Lit;
 export class TimelineFlameChartNetworkDataProvider {
     #minimumBoundary = 0;
     #timeSpan = 0;
@@ -331,18 +330,13 @@ export class TimelineFlameChartNetworkDataProvider {
     }
     preparePopoverElement(index) {
         const event = this.#events[index];
-        if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
-            const element = document.createElement('div');
-            const root = UI.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: timelineFlamechartPopoverStyles });
-            // clang-format off
-            render(html `
-        <div class="timeline-flamechart-popover">
-          ${TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(event, this.#entityMapper || undefined)}
-        </div>`, root);
-            // clang-format on
-            return element;
+        if (!event || !Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+            return null;
         }
-        return null;
+        return html `
+      <div class="timeline-flamechart-popover">
+        ${TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(event, this.#entityMapper || undefined)}
+      </div>`;
     }
     /**
      * Sets the minimum time and total time span of a trace using the

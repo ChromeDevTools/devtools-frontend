@@ -75,6 +75,7 @@ export class ShortcutDialog extends HTMLElement {
             variant: "toolbar" /* Buttons.Button.Variant.TOOLBAR */,
             iconName: 'help',
             iconTitle: i18nString(UIStrings.showShortcutTitle),
+            horizontalAlignment: "auto" /* DialogHorizontalAlignment.AUTO */,
         }}>
         <ul class="keybinds-list">
           ${(this.#prependedElement) ? html `${this.#prependedElement}` : nothing}

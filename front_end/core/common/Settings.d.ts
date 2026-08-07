@@ -80,7 +80,6 @@ export declare class Settings {
     readonly globalStorage: SettingsStorage;
     readonly localStorage: SettingsStorage;
     settingNameSet: Set<string>;
-    orderValuesBySettingCategory: Map<SettingCategory, Set<number>>;
     readonly moduleSettings: Map<string, Setting<unknown>>;
     constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console, }: SettingsCreationOptions);
     getRegisteredSettings(): SettingRegistration[];
@@ -188,13 +187,11 @@ export declare class Setting<V> {
     private readonly eventSupport;
     readonly storage: SettingsStorage;
     constructor(name: string, defaultValue: V, eventSupport: ObjectWrapper<GenericEvents>, storage: SettingsStorage, console: Console, logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>);
-    setSerializer(serializer: Serializer<unknown, V>): void;
     descriptor(): SettingDescriptor<V>;
     addChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): EventDescriptor;
     removeChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): void;
     title(): Platform.UIString.LocalizedString;
     setRequiresUserAction(requiresUserAction: boolean): void;
-    disabled(): boolean;
     get(): V;
     forceGet(): Promise<V>;
     set(value: V): void;
@@ -238,10 +235,6 @@ export declare const enum SettingStorageType {
     SESSION = "Session"
 }
 export { getLocalizedSettingsCategory, maybeRemoveSettingExtension, RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType, };
-export interface Serializer<I, O> {
-    stringify: (value: I) => string;
-    parse: (value: string) => O;
-}
 export interface SimpleSettingOption {
     value: string | boolean;
     title: string;

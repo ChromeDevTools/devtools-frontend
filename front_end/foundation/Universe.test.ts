@@ -14,6 +14,7 @@ import {MockCDPConnection} from '../testing/MockCDPConnection.js';
 import {setupRuntimeHooks} from '../testing/RuntimeHelpers.js';
 import {DEFAULT_SETTING_REGISTRATIONS_FOR_TEST} from '../testing/SettingsHelpers.js';
 import {createTarget} from '../testing/TargetHelpers.js';
+import {TestUniverse} from '../testing/TestUniverse.js';
 
 import * as Foundation from './foundation.js';
 
@@ -57,6 +58,45 @@ describe('Universe', () => {
       supportsEmulation: false,
     });
     assert.isNull(universe.deviceModeModel);
+  });
+
+  it('returns ProjectSettingsModel when initAutomaticFilesystem is true', () => {
+    const universe = new Foundation.Universe.Universe({
+      settingsCreationOptions: createSettingsCreationOptions(),
+      hostConfig: {} as Root.Runtime.HostConfig,
+      inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+      supportsEmulation: false,
+      initAutomaticFilesystem: true,
+    });
+    assert.isNotNull(universe.projectSettingsModel);
+    assert.isNotNull(universe.automaticFileSystemManager);
+    assert.isNotNull(universe.automaticFileSystemWorkspaceBinding);
+  });
+
+  it('returns null for ProjectSettingsModel and throws for automatic file system when initAutomaticFilesystem is false',
+     () => {
+       const universe = new Foundation.Universe.Universe({
+         settingsCreationOptions: createSettingsCreationOptions(),
+         hostConfig: {} as Root.Runtime.HostConfig,
+         inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+         supportsEmulation: false,
+         initAutomaticFilesystem: false,
+       });
+       assert.isNull(universe.projectSettingsModel);
+       assert.throws(() => universe.automaticFileSystemManager);
+       assert.throws(() => universe.automaticFileSystemWorkspaceBinding);
+     });
+
+  it('handles initAutomaticFilesystem in TestUniverse', () => {
+    const defaultUniverse = new TestUniverse();
+    assert.isNotNull(defaultUniverse.projectSettingsModel);
+    assert.isNotNull(defaultUniverse.automaticFileSystemManager);
+    assert.isNotNull(defaultUniverse.automaticFileSystemWorkspaceBinding);
+
+    const disabledUniverse = new TestUniverse({initAutomaticFilesystem: false});
+    assert.throws(() => disabledUniverse.projectSettingsModel);
+    assert.throws(() => disabledUniverse.automaticFileSystemManager);
+    assert.throws(() => disabledUniverse.automaticFileSystemWorkspaceBinding);
   });
 
   it('retrieves registered services via universe.get(...)', () => {

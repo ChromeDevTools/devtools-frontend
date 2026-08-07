@@ -209,6 +209,7 @@ export class MainImpl {
       hostConfig: Root.Runtime.hostConfig,
       inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
       supportsEmulation: this.#supportsEmulation,
+      initAutomaticFilesystem: true,
     };
     this.#universe = new Foundation.Universe.Universe(creationOptions);
     Root.DevToolsContext.setGlobalInstance(this.#universe.context as Root.DevToolsContext.WritableDevToolsContext);

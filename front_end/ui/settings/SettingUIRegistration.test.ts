@@ -94,4 +94,85 @@ describe('SettingUIRegistration', () => {
   it('returns null when maybeResolve is called for an unregistered setting descriptor', () => {
     assert.isNull(SettingsUI.SettingUIRegistration.maybeResolve(settingDescriptor));
   });
+
+  it('throws an error when trying to register a duplicate order value for the same category', () => {
+    SettingsUI.SettingUIRegistration.register(settingDescriptor, {
+      category: Common.SettingRegistration.SettingCategory.GLOBAL,
+      order: 1,
+    });
+
+    const otherDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+      name: 'other-setting',
+      type: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+    };
+
+    assert.throws(() => {
+      SettingsUI.SettingUIRegistration.register(otherDescriptor, {
+        category: Common.SettingRegistration.SettingCategory.GLOBAL,
+        order: 1,
+      });
+    }, 'Duplicate order value \'1\' for settings category \'GLOBAL\'');
+  });
+
+  it('throws an error when registering a UI descriptor that clashes with a legacy setting category order', () => {
+    Common.SettingRegistration.registerSettingExtension({
+      settingName: 'legacy-setting',
+      settingType: Common.SettingRegistration.SettingType.BOOLEAN,
+      defaultValue: true,
+      category: Common.SettingRegistration.SettingCategory.CONSOLE,
+      order: 5,
+    });
+
+    assert.throws(() => {
+      SettingsUI.SettingUIRegistration.register(settingDescriptor, {
+        category: Common.SettingRegistration.SettingCategory.CONSOLE,
+        order: 5,
+      });
+    }, 'Duplicate order value \'5\' for settings category \'CONSOLE\'');
+  });
+
+  it('allows re-registering an order after SettingUIRegistration.resetSettings()', () => {
+    SettingsUI.SettingUIRegistration.register(settingDescriptor, {
+      category: Common.SettingRegistration.SettingCategory.GLOBAL,
+      order: 1,
+    });
+
+    SettingsUI.SettingUIRegistration.resetSettings();
+
+    const otherDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+      name: 'other-setting',
+      type: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+    };
+
+    assert.doesNotThrow(() => {
+      SettingsUI.SettingUIRegistration.register(otherDescriptor, {
+        category: Common.SettingRegistration.SettingCategory.GLOBAL,
+        order: 1,
+      });
+    });
+  });
+
+  it('preserves UI category order validation when Common.SettingRegistration.resetSettings() is called', () => {
+    SettingsUI.SettingUIRegistration.register(settingDescriptor, {
+      category: Common.SettingRegistration.SettingCategory.GLOBAL,
+      order: 1,
+    });
+
+    Common.SettingRegistration.resetSettings();
+
+    const otherDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+      name: 'other-setting',
+      type: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+    };
+
+    assert.throws(() => {
+      SettingsUI.SettingUIRegistration.register(otherDescriptor, {
+        category: Common.SettingRegistration.SettingCategory.GLOBAL,
+        order: 1,
+      });
+    }, 'Duplicate order value \'1\' for settings category \'GLOBAL\'');
+  });
 });

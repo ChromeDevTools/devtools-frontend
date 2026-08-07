@@ -112,7 +112,6 @@ export class Settings {
   readonly #settingRegistrations: SettingRegistration[];
   readonly #sessionStorage = new SettingsStorage({});
   settingNameSet = new Set<string>();
-  orderValuesBySettingCategory = new Map<SettingCategory, Set<number>>();
   #eventSupport = new ObjectWrapper<GenericEvents>();
   #registry = new Map<string, Setting<unknown>>();
   readonly moduleSettings = new Map<string, Setting<unknown>>();
@@ -215,18 +214,8 @@ export class Settings {
 
   private registerModuleSetting(setting: Setting<unknown>): void {
     const settingName = setting.name;
-    const category = setting.category();
-    const order = setting.order();
     if (this.settingNameSet.has(settingName)) {
       throw new Error(`Duplicate Setting name '${settingName}'`);
-    }
-    if (category && order) {
-      const orderValues = this.orderValuesBySettingCategory.get(category) || new Set();
-      if (orderValues.has(order)) {
-        throw new Error(`Duplicate order value '${order}' for settings category '${category}'`);
-      }
-      orderValues.add(order);
-      this.orderValuesBySettingCategory.set(category, orderValues);
     }
     this.settingNameSet.add(settingName);
     this.moduleSettings.set(setting.name, setting);

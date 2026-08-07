@@ -1352,6 +1352,32 @@ describe('Runtime hosts policy', () => {
 
     sinon.assert.notCalled(setHeadersSpy);
   });
+
+  it('rejects recorder extension plugin and view registration when runtime_blocked_hosts is set', async () => {
+    const target = getBackend(context).createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(allowedUrl);
+    assert.exists(context.chrome.devtools);
+
+    class RecorderPlugin {
+      async stringify(recording: object) {
+        return JSON.stringify(recording);
+      }
+      async stringifyStep(step: object) {
+        return JSON.stringify(step);
+      }
+      replay(_recording: object) {
+        return;
+      }
+    }
+    const extensionPlugin = new RecorderPlugin();
+    await context.chrome.devtools.recorder.registerRecorderExtensionPlugin(extensionPlugin, 'Test', 'text/javascript');
+
+    const manager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
+    assert.lengthOf(manager.plugins(), 0);
+
+    await context.chrome.devtools.recorder.createView('Test View', 'test.html');
+    assert.isUndefined(manager.views().find(v => v.title === 'Test View'));
+  });
 });
 
 describe('addRequestHeaders security', () => {

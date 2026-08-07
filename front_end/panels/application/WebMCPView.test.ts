@@ -18,7 +18,7 @@ import {
   getContextMenuForElement,
   getMenuForToolbarButton,
 } from '../../testing/ContextMenuHelpers.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
   deinitializeGlobalVars,
@@ -120,6 +120,42 @@ describe('WebMCPView (View)', () => {
     // Output column -> Output tab
     cells[3].click();
     sinon.assert.calledWith(onCallSelect, call, Application.WebMCPView.TabId.OUTPUT);
+  });
+
+  it('renders null output in the output column cell', async () => {
+    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
+    const sdkTarget = createTarget();
+    const target = document.createElement('div');
+    target.style.width = '800px';
+    target.style.height = '600px';
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    const tool = createTool('testTool', 'Test tool', 'frame-1' as Protocol.Page.FrameId, sdkTarget);
+    const call: WebMCP.WebMCPModel.Call = {
+      invocationId: '1',
+      input: '{}',
+      tool,
+      result: new WebMCP.WebMCPModel.Result(Protocol.WebMCP.InvocationStatus.Completed, null, undefined, undefined),
+      cancel: () => {},
+    };
+
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      toolCalls: [call],
+    },
+                 {}, target);
+
+    await UI.Widget.Widget.allUpdatesComplete;
+    await RenderCoordinator.done({waitForWork: true});
+    const grid = target.querySelector('devtools-data-grid');
+    assert.isNotNull(grid);
+    const shadowRoot = grid.shadowRoot;
+    assert.isNotNull(shadowRoot);
+    const rows = shadowRoot.querySelectorAll('tr');
+    const callRow = Array.from(rows).find(r => r.querySelector('td') && r.textContent?.includes(call.tool.name));
+    assert.isDefined(callRow);
+    const cells = callRow!.querySelectorAll('td');
+    assert.strictEqual(cells[3].textContent?.trim(), 'null');
   });
 
   it('ignores shortcuts when details view is already open', async () => {
@@ -925,6 +961,21 @@ describe('filterToolCalls', () => {
     assert.strictEqual(result[0].invocationId, '3');
   });
 
+  it('filters by text when output is null', () => {
+    const callsWithNullOutput: WebMCP.WebMCPModel.Call[] = [
+      {
+        invocationId: 'null-call',
+        tool: tools[0],
+        input: '{}',
+        result: new WebMCP.WebMCPModel.Result(Protocol.WebMCP.InvocationStatus.Completed, null, undefined, undefined),
+        cancel: () => {},
+      },
+    ];
+    const result = filterToolCalls(callsWithNullOutput, {text: 'null'});
+    assert.lengthOf(result, 1);
+    assert.strictEqual(result[0].invocationId, 'null-call');
+  });
+
   it('filters by status', () => {
     const result = filterToolCalls(mockCalls, {
       text: '',
@@ -1131,6 +1182,26 @@ describe('PayloadWidget (View)', () => {
         {}, target);
 
     await assertScreenshot('application/webmcp_payload_unparsable.png');
+  });
+
+  it('renders null valueObject payload', async () => {
+    const target = document.createElement('div');
+    target.style.width = '600px';
+    target.style.height = '400px';
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    PAYLOAD_DEFAULT_VIEW({
+      valueObject: null,
+    },
+                         {}, target);
+
+    await raf();
+    const tree = target.querySelector('devtools-tree');
+    assert.isNotNull(tree);
+    const treeOutline = tree.getInternalTreeOutlineForTest();
+    const rootElement = treeOutline.rootElement().children()[0];
+    assert.exists(rootElement);
+    assert.include(rootElement.listItemElement.textContent || '', 'null');
   });
 });
 

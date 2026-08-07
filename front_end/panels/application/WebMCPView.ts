@@ -302,7 +302,7 @@ export function filterToolCalls(toolCalls: WebMCP.WebMCPModel.Call[],
     const regex = Platform.StringUtilities.createPlainTextSearchRegex(filterState.text, 'i');
     filtered = filtered.filter(call => {
       return regex.test(call.tool.name) || regex.test(call.input) ||
-          (call.result?.output && regex.test(JSON.stringify(call.result.output))) ||
+          (call.result?.output !== undefined && regex.test(JSON.stringify(call.result.output))) ||
           (call.result?.errorText && regex.test(call.result.errorText));
     });
   }
@@ -568,7 +568,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                         <td @click=${(e: Event) => {
                           e.stopPropagation();
                           input.onCallSelect(call, TabId.OUTPUT);
-                        }}>${call.result?.output ? JSON.stringify(call.result.output)
+                        }}>${call.result?.output !== undefined ? JSON.stringify(call.result.output)
                                                     : call.result?.errorText ?? ''}</td>
                         ` : nothing}
                     </tr>
@@ -967,7 +967,8 @@ export interface PayloadViewInput {
 }
 
 export const PAYLOAD_DEFAULT_VIEW = (input: PayloadViewInput, output: object, target: HTMLElement): void => {
-  if (!input.valueObject && !input.valueString && !input.errorText && !input.symbolizedError) {
+  if (input.valueObject === undefined && input.valueString === undefined && !input.errorText &&
+      !input.symbolizedError) {
     render(nothing, target);
     return;
   }

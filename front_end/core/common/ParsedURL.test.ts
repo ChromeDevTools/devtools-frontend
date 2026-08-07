@@ -619,6 +619,16 @@ describe('Parsed URL', () => {
     assert.strictEqual(parsedUrl.securityOrigin(), 'http://www.example.com', 'security origin returned was incorrect');
   });
 
+  it('returns empty string as security origin for invalid or empty URL', () => {
+    const parsedUrl = new ParsedURL('');
+    assert.strictEqual(parsedUrl.securityOrigin(), '', 'security origin returned was incorrect');
+  });
+
+  it('returns empty string as security origin for malformed URL without scheme and domain', () => {
+    const parsedUrl = new ParsedURL('malformed');
+    assert.strictEqual(parsedUrl.securityOrigin(), '', 'security origin returned was incorrect');
+  });
+
   it('returns the url without scheme for a URL that has a scheme', () => {
     const parsedUrl = new ParsedURL('http://www.example.com');
     assert.strictEqual(parsedUrl.urlWithoutScheme(), 'www.example.com', 'URL without scheme returned was incorrect');

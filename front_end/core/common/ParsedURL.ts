@@ -533,7 +533,11 @@ export class ParsedURL {
       return 'data:' as Platform.DevToolsPath.UrlString;
     }
     const scheme = this.isBlobURL() ? this.blobInnerScheme : this.scheme;
-    return scheme + '://' + this.domain() as Platform.DevToolsPath.UrlString;
+    const domain = this.domain();
+    if (!scheme && !domain) {
+      return '' as Platform.DevToolsPath.UrlString;
+    }
+    return scheme + '://' + domain as Platform.DevToolsPath.UrlString;
   }
 
   urlWithoutScheme(): string {

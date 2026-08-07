@@ -709,6 +709,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
         if (text instanceof HTMLElement) {
           link.appendChild(text);
         } else if (bypassURLTrimming) {
+          link.removeChildren();
           link.classList.add('devtools-link-styled-trim');
           Linkifier.appendTextWithoutHashes(link, text);
         } else {

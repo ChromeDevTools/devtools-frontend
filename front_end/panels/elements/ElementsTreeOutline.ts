@@ -1188,7 +1188,7 @@ export class ElementsTreeOutline extends
     if (!treeElement) {
       return false;
     }
-    return treeElement.isEditing() || false;
+    return treeElement.isEditing || false;
   }
 
   update(): void {

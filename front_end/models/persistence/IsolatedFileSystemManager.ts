@@ -35,6 +35,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   private readonly fileSystemsLoadedPromise: Promise<IsolatedFileSystem[]>;
   readonly #settings: Common.Settings.Settings;
   readonly #console: Common.Console.Console;
+  readonly #eventDescriptors: Common.EventTarget.EventDescriptor[];
   constructor(settings: Common.Settings.Settings, console: Common.Console.Console) {
     super();
     this.#settings = settings;
@@ -44,20 +45,22 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     this.callbacks = new Map();
     this.progresses = new Map();
 
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.onFileSystemRemoved, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.FileSystemAdded, this.onFileSystemAdded, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this.onFileSystemFilesChanged, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this.onIndexingTotalWorkCalculated, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.IndexingWorked, this.onIndexingWorked, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.IndexingDone, this.onIndexingDone, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.SearchCompleted, this.onSearchCompleted, this);
+    this.#eventDescriptors = [
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.onFileSystemRemoved, this),
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host.InspectorFrontendHostAPI.Events.FileSystemAdded, this.onFileSystemAdded, this),
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this.onFileSystemFilesChanged, this),
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this.onIndexingTotalWorkCalculated, this),
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host.InspectorFrontendHostAPI.Events.IndexingWorked, this.onIndexingWorked, this),
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host.InspectorFrontendHostAPI.Events.IndexingDone, this.onIndexingDone, this),
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host.InspectorFrontendHostAPI.Events.SearchCompleted, this.onSearchCompleted, this),
+    ];
 
     // Initialize exclude pattern settings
     const defaultCommonExcludedFolders = [
@@ -101,20 +104,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
 
   // TODO(crbug.com/542394587): Should be `Symbol.dispsoe`
   dispose(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-        Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.onFileSystemRemoved, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-        Host.InspectorFrontendHostAPI.Events.FileSystemAdded, this.onFileSystemAdded, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-        Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this.onFileSystemFilesChanged, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-        Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this.onIndexingTotalWorkCalculated, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-        Host.InspectorFrontendHostAPI.Events.IndexingWorked, this.onIndexingWorked, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-        Host.InspectorFrontendHostAPI.Events.IndexingDone, this.onIndexingDone, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-        Host.InspectorFrontendHostAPI.Events.SearchCompleted, this.onSearchCompleted, this);
+    Common.EventTarget.removeEventListeners(this.#eventDescriptors);
   }
 
   static instance(opts: {
@@ -141,8 +131,9 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
 
   private requestFileSystems(): Promise<IsolatedFileSystem[]> {
     const {resolve, promise} = Promise.withResolvers<IsolatedFileSystem[]>();
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+    const descriptor = Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
+    this.#eventDescriptors.push(descriptor);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.requestFileSystems();
     return promise;
 

@@ -212,4 +212,18 @@ describe('Universe', () => {
 
     sinon.assert.calledOnce(disposeSpy);
   });
+
+  it('cleans up TargetManager on dispose', () => {
+    const universe = new Foundation.Universe.Universe({
+      settingsCreationOptions: createSettingsCreationOptions(),
+      hostConfig: {} as Root.Runtime.HostConfig,
+      inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+      supportsEmulation: false,
+    });
+
+    const disposeSpy = sinon.spy(universe.targetManager, 'dispose');
+    universe.dispose();
+
+    sinon.assert.calledOnce(disposeSpy);
+  });
 });

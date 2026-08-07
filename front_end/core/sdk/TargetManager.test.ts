@@ -303,4 +303,17 @@ describe('TargetManager', () => {
     assert.strictEqual(inspectedURLChangedHostApi.lastCall.firstArg, `https://c.com/${targets[1].id()}`);
     assert.strictEqual(inspectedURLChangedEventListener.lastCall.firstArg.data, targets[1]);
   });
+
+  it('disposes all targets and cleans up on dispose', () => {
+    const target1 = createTarget({targetManager});
+    const target2 = createTarget({targetManager});
+    const target1DisposeSpy = sinon.spy(target1, 'dispose');
+    const target2DisposeSpy = sinon.spy(target2, 'dispose');
+
+    targetManager.dispose();
+
+    sinon.assert.calledOnce(target1DisposeSpy);
+    sinon.assert.calledOnce(target2DisposeSpy);
+    assert.lengthOf(targetManager.targets(), 0);
+  });
 });

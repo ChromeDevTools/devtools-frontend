@@ -15,14 +15,21 @@ export interface SaveCallbackParam {
 export class FileManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #saveCallbacks = new Map<
       Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, (arg0: SaveCallbackParam|null) => void>();
+  readonly #eventDescriptors: Common.EventTarget.EventDescriptor[];
   constructor() {
     super();
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.SavedURL, this.savedURL, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.CanceledSaveURL, this.#canceledSavedURL, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.AppendedToURL, this.appendedToURL, this);
+    this.#eventDescriptors = [
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host.InspectorFrontendHostAPI.Events.SavedURL, this.savedURL, this),
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host.InspectorFrontendHostAPI.Events.CanceledSaveURL, this.#canceledSavedURL, this),
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host.InspectorFrontendHostAPI.Events.AppendedToURL, this.appendedToURL, this),
+    ];
+  }
+
+  dispose(): void {
+    Common.EventTarget.removeEventListeners(this.#eventDescriptors);
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): FileManager {

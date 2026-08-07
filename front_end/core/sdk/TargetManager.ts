@@ -122,6 +122,24 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     Root.DevToolsContext.globalInstance().delete(TargetManager);
   }
 
+  // TODO(crbug.com/542394587): Should be `Symbol.dispose`
+  dispose(): void {
+    for (const target of this.targets()) {
+      target.dispose('TargetManager disposed');
+    }
+    if (this.#browserTarget) {
+      this.#browserTarget.dispose('TargetManager disposed');
+      this.#browserTarget = null;
+    }
+    this.#targets.clear();
+    this.#observers.clear();
+    this.#modelObservers.clear();
+    this.#modelListeners.clear();
+    this.#scopeChangeListeners.clear();
+    this.#scopeTarget = null;
+    this.#scopedObservers = new WeakSet();
+  }
+
   onInspectedURLChange(target: Target): void {
     if (target !== this.#scopeTarget) {
       return;

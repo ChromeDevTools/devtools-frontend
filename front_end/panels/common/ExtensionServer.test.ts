@@ -923,7 +923,7 @@ describe('Runtime hosts policy', () => {
 
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
-                                          {scriptsForUISourceCode: []}));
+                                          {scriptsForUISourceCode: [], sourceMapURLsForUISourceCode: []}));
     const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
         Workspace.Workspace.WorkspaceImpl.instance(), target.id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
@@ -962,7 +962,7 @@ describe('Runtime hosts policy', () => {
 
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
-                                          {scriptsForUISourceCode: []}));
+                                          {scriptsForUISourceCode: [], sourceMapURLsForUISourceCode: []}));
 
     const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
         Workspace.Workspace.WorkspaceImpl.instance(), blockedTarget.id(), Workspace.Workspace.projectTypes.Network, '',
@@ -990,6 +990,7 @@ describe('Runtime hosts policy', () => {
     const script = sinon.createStubInstance(SDK.Script.Script, {target, contentURL: blockedUrl});
     script.hasSourceURL = true;
     const workspaceBinding = sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
+    workspaceBinding.sourceMapURLsForUISourceCode.returns([]);
     workspaceBinding.scriptsForUISourceCode.callsFake(uiSourceCode => {
       if (uiSourceCode.contentURL() === blockedUrl) {
         return [script];
@@ -1017,6 +1018,7 @@ describe('Runtime hosts policy', () => {
     script.hasSourceURL = true;
     script.embedderName.returns(blockedUrl);
     const workspaceBinding = sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
+    workspaceBinding.sourceMapURLsForUISourceCode.returns([]);
     workspaceBinding.scriptsForUISourceCode.callsFake(uiSourceCode => {
       if (uiSourceCode.contentURL() === allowedUrl) {
         return [script];
@@ -1035,6 +1037,24 @@ describe('Runtime hosts policy', () => {
     assert.deepEqual(resources.map(r => r.url), []);
   });
 
+  it('blocks CSS sources originating from a blocked source map URL', async () => {
+    const target = getBackend(context).createTarget({id: 'target' as Protocol.Target.TargetID});
+    target.setInspectedURL(allowedUrl);
+
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
+                                          {scriptsForUISourceCode: [], sourceMapURLsForUISourceCode: []}));
+    const cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance();
+    (cssWorkspaceBinding.sourceMapURLsForUISourceCode as sinon.SinonStub).returns([blockedUrl]);
+    const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+        Workspace.Workspace.WorkspaceImpl.instance(), target.id(), Workspace.Workspace.projectTypes.Network, '',
+        false /* isServiceProject */);
+    await createUISourceCode(project, allowedUrl, Common.ResourceType.resourceTypes.SourceMapStyleSheet);
+
+    const resources = await context.chrome.devtools!.inspectedWindow.getResources();
+    assert.deepEqual(resources.map(resource => resource.url), []);
+  });
+
   it('allows scripts with sourceURL comments if the embedderName is not a URL', async () => {
     const target = getBackend(context).createTarget({id: 'target' as Protocol.Target.TargetID});
     target.setInspectedURL(allowedUrl);
@@ -1043,6 +1063,7 @@ describe('Runtime hosts policy', () => {
     script.hasSourceURL = true;
     script.embedderName.returns(urlString`eval`);
     const workspaceBinding = sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
+    workspaceBinding.sourceMapURLsForUISourceCode.returns([]);
     workspaceBinding.scriptsForUISourceCode.callsFake(uiSourceCode => {
       if (uiSourceCode.contentURL() === allowedUrl) {
         return [script];
@@ -1306,7 +1327,7 @@ describe('Runtime hosts policy', () => {
 
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
-                                          {scriptsForUISourceCode: []}));
+                                          {scriptsForUISourceCode: [], sourceMapURLsForUISourceCode: []}));
     const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
         Workspace.Workspace.WorkspaceImpl.instance(), target.id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
@@ -1652,6 +1673,47 @@ class StubLanguageExtension implements Chrome.DevTools.LanguageExtensionPlugin {
   }
 }
 
+async function createScriptResource(
+    context: ExtensionContext,
+    options?: {
+      scriptUrl?: Platform.DevToolsPath.UrlString,
+      scriptContent?: string,
+      inspectedUrl?: Platform.DevToolsPath.UrlString,
+    },
+    ): Promise<{
+  target: SDK.Target.Target,
+  currentScript: SDK.Script.Script,
+  scriptResource: Chrome.DevTools.Resource,
+}> {
+  const scriptUrl = options?.scriptUrl ?? urlString`http://example.com/script.js`;
+  const scriptContent =
+      options?.scriptContent ?? 'function f(x) { console.log(x); } function ignore(y){ console.log(y); }';
+
+  const backend = getBackend(context);
+  mockResourceTree(backend.cdpConnection);
+  const target = backend.createTarget({type: SDK.Target.Type.FRAME});
+  if (options?.inspectedUrl) {
+    target.setInspectedURL(options.inspectedUrl);
+  }
+  const debuggerWorkspaceBinding = backend.universe.debuggerWorkspaceBinding;
+  sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance').returns(debuggerWorkspaceBinding);
+
+  const scriptInfo = {url: scriptUrl, content: scriptContent};
+  const uiSourceCodePromise = debuggerWorkspaceBinding.waitForUISourceCodeAdded(scriptInfo.url, target);
+  const currentScript = await backend.addScript(target, scriptInfo, null);
+  await uiSourceCodePromise;
+
+  const resources = await new Promise<Chrome.DevTools.Resource[]>(r => {
+    context.chrome.devtools?.inspectedWindow.getResources(r);
+  });
+  const scriptResource = resources.find(item => item.url === scriptInfo.url.toString());
+  if (!scriptResource) {
+    throw new Error(`Expected script resource to be registered for ${scriptInfo.url}`);
+  }
+
+  return {target, currentScript, scriptResource};
+}
+
 describe('Language Extension API', () => {
   const context = setupDevtoolsExtensionHooks();
   it('reports loaded resources', async () => {
@@ -1679,7 +1741,44 @@ describe('Language Extension API', () => {
     };
     assert.deepEqual(resource, expectedResource);
   });
+
 });
+
+for (const allowFileAccess of [false, true]) {
+  describe(`Source map resources with {allowFileAccess: ${allowFileAccess}}`, () => {
+    const context = setupDevtoolsExtensionHooks({allowFileAccess});
+
+    it(`${allowFileAccess ? 'exposes' : 'hides'} sources originating from a file:// source map`, async () => {
+      const backend = getBackend(context);
+      mockResourceTree(backend.cdpConnection);
+      const target = backend.createTarget({type: SDK.Target.Type.FRAME});
+      target.setInspectedURL(urlString`http://example.com`);
+      sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+          .returns(backend.universe.debuggerWorkspaceBinding);
+
+      const sourceURL = urlString`http://example.com/source.ts`;
+      await backend.addScript(target, {url: urlString`http://example.com/eval.js`, content: '42;'}, {
+        url: 'file:///tmp/secret.map',
+        content: {
+          version: 3,
+          sources: [sourceURL],
+          sourcesContent: ['secret content'],
+          mappings: 'AAAA',
+        },
+      });
+
+      const resources = await context.chrome.devtools?.inspectedWindow.getResources();
+      const sourceResource = resources?.find(resource => resource.url === sourceURL);
+
+      if (allowFileAccess) {
+        assert.exists(sourceResource);
+        assert.deepEqual(await sourceResource.getContent(), {content: 'secret content', encoding: ''});
+      } else {
+        assert.notExists(sourceResource);
+      }
+    });
+  });
+}
 
 for (const allowFileAccess of [true, false]) {
   describe(
@@ -1730,29 +1829,13 @@ for (const allowFileAccess of [true, false]) {
       });
 }
 
-describe('validate attachSourceMapURL ', () => {
+describe('attachSourceMapURL', () => {
   const context = setupDevtoolsExtensionHooks();
-  let backend: MockDebuggerBackend;
-  let target: SDK.Target.Target;
-  let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
-
-  beforeEach(() => {
-    backend = getBackend(context);
-    mockResourceTree(backend.cdpConnection);
-
-    target = backend.createTarget({type: SDK.Target.Type.FRAME});
-    debuggerWorkspaceBinding = backend.universe.debuggerWorkspaceBinding;
-    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
-        .returns(debuggerWorkspaceBinding);
-  });
-
   it('correctly attaches a source map to a registered script', async () => {
     const sourceRoot = 'http://example.com';
     const scriptName = 'script.ts';
-    const scriptInfo = {
-      url: urlString`${sourceRoot}/script.js`,
-      content: 'function f(x) { console.log(x); } function ignore(y){ console.log(y); }',
-    };
+    const scriptUrl = urlString`${sourceRoot}/script.js`;
+    const scriptContent = 'function f(x) { console.log(x); } function ignore(y){ console.log(y); }';
     const sourceMap = encodeSourceMap(
         [
           `0:9 => ${scriptName}:0:1`,
@@ -1765,38 +1848,20 @@ describe('validate attachSourceMapURL ', () => {
     const sourceMapString = {
       version: 3,
       names: ['f', 'console', 'log', 'ignore'],
-      sources: [scriptInfo.url],
+      sources: [scriptUrl],
       mappings: sourceMap.mappings,
-      file: `${scriptInfo.url}.map`,
+      file: `${scriptUrl}.map`,
     };
 
-    // Before any script is registered, there shouldn't be any uiSourceCodes.
-    assert.isNull(Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(scriptInfo.url));
-
-    // Create promise to await the uiSourceCode given the url and its target.
-    const uiSourceCodePromise = debuggerWorkspaceBinding.waitForUISourceCodeAdded(scriptInfo.url, target);
-
-    // Register the script.
-    const currentScript = await backend.addScript(target, scriptInfo, null);
-
-    // Await the promise for sourceCode to be added.
-    await uiSourceCodePromise;
-
-    assert.exists(context.chrome.devtools);
-
-    const resources = await context.chrome.devtools!.inspectedWindow.getResources();
-
-    // Validate that resource is registered.
-    assert.isTrue(resources && resources.length > 0);
+    const {currentScript, scriptResource} = await createScriptResource(context, {scriptUrl, scriptContent});
 
     // Script should not have a source map url attached yet.
     assert.notExists(currentScript.sourceMapURL);
 
     // Call attachSourceMapURL with encoded source map as a dataURL
-    const scriptResource = resources.find(item => item.url === scriptInfo.url.toString());
     const encodedSourceMap = `data:text/plain;base64,${btoa(JSON.stringify(sourceMapString))}`;
 
-    await scriptResource?.attachSourceMapURL(encodedSourceMap);
+    await scriptResource.attachSourceMapURL(encodedSourceMap);
 
     // Validate that the script has the sourcemap dataURL attached.
     assert.deepEqual(currentScript.sourceMapURL, encodedSourceMap);

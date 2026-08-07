@@ -124,6 +124,8 @@ describe('CSSWorkspaceBinding', () => {
     assert.exists(scssUISourceCode);
 
     await cssWorkspaceBinding.pendingLiveLocationChangesPromise();
+    assert.deepEqual(cssWorkspaceBinding.sourceMapURLsForUISourceCode(scssUISourceCode),
+                     [urlString`http://example.com/example.css.map`]);
 
     const header = cssModel.styleSheetHeaderForId(headerPayload.styleSheetId);
     assert.exists(header);

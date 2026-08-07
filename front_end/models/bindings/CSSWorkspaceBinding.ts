@@ -143,6 +143,10 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
     }
     return rawLocations;
   }
+
+  sourceMapURLsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): Platform.DevToolsPath.UrlString[] {
+    return SASSSourceMapping.sourceMapURLsForUISourceCode(uiSourceCode);
+  }
 }
 
 export interface SourceMapping {

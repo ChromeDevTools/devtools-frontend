@@ -463,6 +463,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return [...scripts];
   }
 
+  sourceMapURLsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): Platform.DevToolsPath.UrlString[] {
+    const urls = new Set<Platform.DevToolsPath.UrlString>();
+    for (const modelData of this.#debuggerModelToData.values()) {
+      modelData.compilerMapping.sourceMapURLsForUISourceCode(uiSourceCode).forEach(url => urls.add(url));
+    }
+    return [...urls];
+  }
+
   supportsConditionalBreakpoints(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     const scripts = this.pluginManager.scriptsForUISourceCode(uiSourceCode);
     return scripts.every(script => script.isJavaScript());

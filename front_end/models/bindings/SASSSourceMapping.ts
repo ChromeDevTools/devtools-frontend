@@ -140,6 +140,12 @@ export class SASSSourceMapping implements SourceMapping {
     return [];
   }
 
+  static sourceMapURLsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode):
+      Platform.DevToolsPath.UrlString[] {
+    const binding = uiSourceCodeToBinding.get(uiSourceCode);
+    return binding?.getReferringSourceMaps().map(sourceMap => sourceMap.url()) ?? [];
+  }
+
   dispose(): void {
     Common.EventTarget.removeEventListeners(this.#eventListeners);
     this.#project.dispose();

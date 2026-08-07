@@ -6,7 +6,7 @@
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 import type {Loggable} from './Loggable.js';
-import {type LoggingConfig, VisualElements} from './LoggingConfig.js';
+import {elementKey, type LoggingConfig, VisualElements} from './LoggingConfig.js';
 import {getLoggingState, type LoggingState} from './LoggingState.js';
 
 let veDebuggingEnabled = false;
@@ -404,10 +404,6 @@ function processImpressionsForAdHocAnalysisDebugLog(states: LoggingState[]): voi
     adHocAnalysisEntries.set(state.veid, entry);
     maybeLogDebugEvent(entry);
   }
-}
-
-function elementKey(config: LoggingConfig): string {
-  return `${VisualElements[config.ve]}${config.context ? `: ${config.context}` : ''}`;
 }
 
 export function debugString(config: LoggingConfig): string {

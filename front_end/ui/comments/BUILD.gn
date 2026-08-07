@@ -1,0 +1,41 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../visibility.gni")
+
+devtools_ui_module("comments") {
+  sources = [ "CommentAnchorResolver.ts" ]
+
+  deps = [ "../../ui/visual_logging:bundle" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "comments.ts"
+
+  deps = [ ":comments" ]
+
+  visibility = [
+    ":*",
+    "../../entrypoints/main/*",
+    "../../panels/*",
+    "../../testing/*",
+    "../components/*",
+    "../legacy/*",
+  ]
+
+  visibility += devtools_visibility
+}
+
+devtools_ui_module("unittests") {
+  testonly = true
+
+  sources = [ "CommentAnchorResolver.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
+}

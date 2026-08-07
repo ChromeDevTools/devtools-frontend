@@ -123,4 +123,44 @@ describe('LoggingConfig', () => {
     assert.strictEqual(
         `${treeItem().context(42).track({keydown: 'Enter'})}`, 'TreeItem; context: 42; track: keydown: Enter');
   });
+
+  describe('elementKey', () => {
+    it('formats element key without context', () => {
+      element.setAttribute('jslog', 'TreeItem');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(VisualLogging.LoggingConfig.elementKey(config), 'TreeItem');
+    });
+
+    it('formats element key with context', () => {
+      element.setAttribute('jslog', 'Action; context: toggle');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(VisualLogging.LoggingConfig.elementKey(config), 'Action: toggle');
+    });
+  });
+
+  describe('getVePath', () => {
+    it('returns empty string when element and ancestors have no jslog', () => {
+      assert.strictEqual(VisualLogging.LoggingConfig.getVePath(element), '');
+    });
+
+    it('constructs path for single element', () => {
+      element.setAttribute('jslog', 'TreeItem; context: item-1');
+      assert.strictEqual(VisualLogging.LoggingConfig.getVePath(element), 'TreeItem: item-1');
+    });
+
+    it('constructs path traversing ancestors and shadow roots', () => {
+      const panel = document.createElement('div');
+      panel.setAttribute('jslog', 'Panel; context: elements');
+
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+      panel.appendChild(host);
+
+      const inner = document.createElement('div');
+      inner.setAttribute('jslog', 'TreeItem; context: node');
+      shadow.appendChild(inner);
+
+      assert.strictEqual(VisualLogging.LoggingConfig.getVePath(inner), 'Panel: elements > TreeItem: node');
+    });
+  });
 });

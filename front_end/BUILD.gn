@@ -218,6 +218,7 @@ group("unittests") {
     "testing:unittests",
     "third_party/chromium/client-variations:unittests",
     "third_party/i18n:unittests",
+    "ui/comments:unittests",
     "ui/components/adorners:unittests",
     "ui/components/buttons:unittests",
     "ui/components/code_highlighter:unittests",

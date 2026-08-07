@@ -27,6 +27,27 @@ export interface LoggingConfig {
   parent?: string;
 }
 
+export function elementKey(config: LoggingConfig): string {
+  return `${VisualElements[config.ve]}${config.context ? `: ${config.context}` : ''}`;
+}
+
+export function getVePath(element: Element): string {
+  const parts: string[] = [];
+  let current: Element|null = element;
+  while (current) {
+    if (needsLogging(current)) {
+      try {
+        const config = getLoggingConfig(current);
+        parts.unshift(elementKey(config));
+      } catch {
+        // Skip invalid logging configs
+      }
+    }
+    current = current.parentElementOrShadowHost();
+  }
+  return parts.join(' > ');
+}
+
 export function needsLogging(element: Element): boolean {
   return element.hasAttribute(LOGGING_ATTRIBUTE);
 }

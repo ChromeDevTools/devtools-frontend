@@ -39,6 +39,7 @@ devtools_module("main") {
     "../../models/workspace:bundle",
     "../../panels/common:bundle",
     "../../panels/snippets:bundle",
+    "../../ui/comments:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/snackbars:bundle",
     "../../ui/helpers:bundle",

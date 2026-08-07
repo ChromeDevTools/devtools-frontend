@@ -38,6 +38,7 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/inspector_main/*",
     "../../entrypoints/main/*",
     "../../panels/*",
+    "../comments/*",
     "../components/*",
     "../kit/*",
     "../legacy/*",

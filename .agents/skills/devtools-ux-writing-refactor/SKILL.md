@@ -59,14 +59,16 @@ Locate all TypeScript files in the target folder that define `const UIStrings = 
    * For panel names that consist of two words, capitalize only the first word (for example, `Developer resources panel`).
    * When you use the panel name in combination with another word, capitalize the panel name but not the other word, unless it is a proper noun (for example, `Console view` or `DevTools Console`).
    * In some cases, ambiguity exists whether a word refers to a UX element in DevTools (such as a panel name) or a concept (such as developer terminology). For example, this occurs with `console`, `issue`, or `network`. Decide based on the surrounding context and code (for example, `Console view`, `Console sidebar`, and `Console prompt` versus `console message`, `console warning`, `console log`, `copy console`, `clear console`, and `console history`; `Show Network` versus `network log` and `network filter`).
+   * **Casing in `@description` comments:** Apply the same capitalization rules to `@description` comments: ONLY panel names use sentence case (for example, `Memory panel`, `Console panel`, `Performance panel`). Feature names, view names, tool names, and sub-components MUST be all lowercase unless they appear at the very start of the description sentence or phrase (for example, `heap profiler`, `heap snapshot view`, `isolate selector`, `allocation sampling`, `command menu`, `summary view`).
 6. **Punctuation and actionability:** Remove trailing periods from single-sentence labels or titles. Ensure that error messages instruct the user how to recover (for example, `Shorten filename to 64 characters or less` instead of `Invalid filename`). Ensure that ARIA labels and multi-sentence tooltips have consistent terminal punctuation.
 7. **Terminology (glossary):** Strictly follow standard DevTools UI terminology and letter casing (`panel`, `tab`, `drawer`, `sidebar`, `datagrid` or `table`, `action bar`, `status bar`, and `live expressions section`). Never use `pane` or call tabs `panes` in UI strings or localization (L10n) comments.
 8. **Localization (L10n) comments:** Ensure that every string in `UIStrings` has a preceding `@description` comment that explains where and when it appears. This information is used for translators who need to understand the context in which the string is used.
+   * **Research usage sites:** Before modifying or writing `@description` comments, always research where the string key (for example, `UIStrings.keyName`) is used in the codebase (`grep_search` or view surrounding code). Determine the exact UI element type (for example, button label, tooltip, table column header, context menu item, checkbox label, aria label, status bar message, or dropdown option) and location (panel, view, sidebar, or dialog).
+   * **Avoid redundancy and repetition:** Do not simply repeat or restate the UI string value in the description (for example, avoid `@description Text for clear all profiles` for `'Clear all profiles'`). Instead, describe the UI role, element type, and location (for example, `@description Tooltip text for the clear button in the profiles sidebar of the Memory panel.`).
+   * **Consistency across similar descriptions:** Ensure consistent phrasing structure across descriptions of similar UI strings in the same module and throughout DevTools (for example, use uniform patterns like `Tooltip text for the <action> button in <location>.` or `Column header in <table_name> datagrid for <purpose>.`).
+   * **Casing in descriptions:** Strictly follow the rule that ONLY panel names use sentence case (for example, `Memory panel`, `Console panel`, `Profiles panel`), while feature names, views, tools, and sub-components are ALL LOWERCASE (for example, `heap profiler`, `heap snapshot view`, `isolate selector`, `allocation sampling`, `summary view`), unless appearing at the start of the description sentence or phrase.
    * **Straight apostrophes in comments:** Always use straight apostrophes (`'`) in code comments (such as `@description` comments and L10n annotations), even if the UI string itself uses curly apostrophes (`’`).
-   * Use precise terminology and correct letter casing (see rule 7). Ensure that the description is easy to understand and provides enough context for translators. For descriptions that are underspecified or
-   ambiguous, figure out the context by looking at the use site of the
-   string and come up with a better description.
-   * You must explicitly document all standard placeholders (`{PH1}`, `{url}`, `{index}`) with runtime data examples (for example, `@example {https://example.com} url`).
+   * **Placeholders:** You must explicitly document all standard placeholders (`{PH1}`, `{url}`, `{index}`) with runtime data examples (for example, `@example {https://example.com} url`).
    * *ICU plural variables:* The i18n tool automatically parses variables in ICU plural format (such as `n` in `{n, plural, =0 {No issues} ...}`) as numeric counts, so they don’t require an `@example` tag in the `@description` comment.
    * *Terminal punctuation:* Every `@description` comment must end with a period (`.`), even if it is a single phrase or sentence.
 
@@ -74,11 +76,26 @@ Locate all TypeScript files in the target folder that define `const UIStrings = 
 
 Also consult the style guides at `google3/experimental/users/rachelandrew/tools/chrome_writing/knowledge/style/` for applicable guidelines.
 
-## 5. Pause for confirmation
+## 5. Subagent critique of proposed changes
+
+Before running tests or pausing for user review, enter an iterative critique loop with a subagent:
+1. **Invoke subagent:** Use `invoke_subagent` with `TypeName: "self"` and `Role: "UX Writing Reviewer"`.
+2. **Prompt instructions:** Provide the subagent with the `git diff` of your changes and instruct it to critique the refactoring against the **8-point UX writing checklist**:
+   - Are `@description` comments specific, informative, and non-redundant (not restating string values)?
+   - Are usage sites researched so the UI element type and location are accurately described?
+   - Do `@description` comments and string values strictly follow the casing rule (ONLY panel names in sentence case, feature/view names in all lowercase unless starting a phrase)?
+   - Are contractions, curly apostrophes, ellipses, and placeholders (`{PH1}`) correctly formatted?
+   - Were all references in sibling code/tests properly updated?
+3. **Address feedback and loop:**
+   - If the subagent raises any feedback, concerns, or suggested fixes, apply the necessary code changes.
+   - Re-invoke the subagent with the updated `git diff` to re-critique the changes.
+   - **Repeat this loop continuously as long as the subagent has feedback, until the subagent explicitly approves the diff with no remaining issues.**
+
+## 6. Pause for confirmation
 
 Ask the user for a preliminary review of the proposed changes before proceeding. If the user has feedback, address feedback and pause again for confirmation.
 
-## 6. Mandatory verification and testing
+## 7. Mandatory verification and testing
 
 Don’t finish an edit without running the linter and test suite. In DevTools, i18n placeholder changes or string edits can easily break tests or linter rules.
 
@@ -89,18 +106,18 @@ Don’t finish an edit without running the linter and test suite. In DevTools, i
    npm run lint -- <folder_path>
    ```
 3. **Run unit tests**
-   Run unit tests for the target folder first for fast feedback. Then, run the full test suite to verify that no cross-module regressions or snapshot failures occurred:
+   You MUST run the full test suite using `npm run test` to verify that no cross-module regressions, e2e test failures, or snapshot regressions occurred. Do not only run a subset of tests:
    ```bash
-   npm run test -- <folder_path>
    npm run test
    ```
+   *(Optionally, you may run `npm run test -- <folder_path>` first for rapid initial feedback during iterative development, but running `npm run test` for full test suite coverage is required before completing the task.)*
 4. **Run presubmit checks**
    Ensure that you commit or stage all changes before you run presubmit checks:
    ```bash
    git cl presubmit -u
    ```
 
-## 7. Summarize changes and upload the CL
+## 8. Summarize changes and upload the CL
 
 When all tests and presubmit checks pass, commit your changes and upload the CL to Gerrit. Don’t use `[uxw]` as a prefix.
 

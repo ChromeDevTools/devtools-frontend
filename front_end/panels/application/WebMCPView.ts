@@ -251,6 +251,7 @@ export interface ViewInput {
   selectedCall: WebMCP.WebMCPModel.Call|null;
   selectedTab?: TabId;
   onCallSelect: (call: WebMCP.WebMCPModel.Call|null, tabId?: TabId) => void;
+  onTabSelect: (tabId: TabId) => void;
   filters: FilterState;
   filterButtons: FilterMenuButtons;
   onClearLogClick: () => void;
@@ -577,7 +578,9 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               </devtools-data-grid>
             </div>
             <div slot="sidebar" style="height: 100%; display: flex; flex-direction: column; overflow: hidden;">
-              <devtools-tabbed-pane class="call-details-tabbed-pane">
+              <devtools-tabbed-pane
+                class="call-details-tabbed-pane"
+                @select=${(e: Event) => input.onTabSelect((e as CustomEvent<{tabId: TabId}>).detail.tabId)}>
                 <devtools-button
                   slot="left"
                   .iconName=${'cross'}
@@ -588,19 +591,19 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 ></devtools-button>
                 <devtools-widget
                   id=${TabId.DETAILS}
-                  ?selected=${input.selectedTab === TabId.DETAILS}
+                  ?selected=${Directives.live(input.selectedTab === TabId.DETAILS)}
                   title=${i18nString(UIStrings.toolDetails)}
                   ${widget(ToolDetailsWidget, {tool: input.selectedCall?.tool, isUnregistered: input.selectedCall ? !input.tools.includes(input.selectedCall.tool) : false})}>
                 </devtools-widget>
                 <devtools-widget
                   id=${TabId.INPUT}
-                  ?selected=${input.selectedTab === TabId.INPUT}
+                  ?selected=${Directives.live(input.selectedTab === TabId.INPUT)}
                   title=${i18nString(UIStrings.input)}
                   ${widget(PayloadWidget, parsePayload(input.selectedCall?.input))}>
                 </devtools-widget>
                 <devtools-widget
                   id=${TabId.OUTPUT}
-                  ?selected=${input.selectedTab === TabId.OUTPUT}
+                  ?selected=${Directives.live(input.selectedTab === TabId.OUTPUT)}
                   title=${i18nString(UIStrings.output)}
                   ${widget(PayloadWidget, {
                           valueObject: input.selectedCall?.result?.output,
@@ -916,8 +919,12 @@ export class WebMCPView extends UI.Widget.VBox {
           this.#selectedTab = tabId;
         } else {
           this.#selectedCall = call;
+          this.#selectedTab = undefined;
         }
         this.requestUpdate();
+      },
+      onTabSelect: tabId => {
+        this.#selectedTab = tabId;
       },
       toolCalls: filteredCalls,
       filters: this.#filterState,

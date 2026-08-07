@@ -54,6 +54,7 @@ const createDefaultViewInput = (): Application.WebMCPView.ViewInput => {
     onRevealTool: () => {},
     selectedCall: null,
     onCallSelect: () => {},
+    onTabSelect: () => {},
     onRunTool: () => {},
     onPaste: () => {},
   };
@@ -1474,6 +1475,7 @@ describe('WebMCPView JSON Editor', () => {
       onRevealTool: () => {},
       selectedCall: null,
       onCallSelect: () => {},
+      onTabSelect: () => {},
       onRunTool: () => {},
       onPaste: () => {},
     };

@@ -269,7 +269,7 @@ describe('ResourceTimingView', () => {
     Network.RequestTimingView.DEFAULT_VIEW(baseInput, {}, container);
     const cautionElementTrue = container.querySelector('.caution');
     assert.isNotNull(cautionElementTrue, 'caution element should exist when request is not finished');
-    assert.include(cautionElementTrue?.textContent, 'CAUTION: request is not finished yet!');
+    assert.include(cautionElementTrue?.textContent, 'Caution: Request isn’t finished yet');
 
     // Case 2: request.finished = true
     const requestFinished = createNetworkRequest(Protocol.Network.ServiceWorkerRouterSource.Network,

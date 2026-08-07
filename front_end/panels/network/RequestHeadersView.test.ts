@@ -174,7 +174,7 @@ describeWithEnvironment('RequestHeadersView', () => {
         getRowsTextFromCategory(responseHeadersCategory),
         [['age', '0'], ['cache-control', 'max-age=600'], ['content-encoding', 'gzip'], ['content-length', '661']]);
 
-    const requestHeadersCategory = component.contentElement.querySelector('[aria-label="Request Headers"]');
+    const requestHeadersCategory = component.contentElement.querySelector('[aria-label="Request headers"]');
     assert.instanceOf(requestHeadersCategory, HTMLDetailsElement);
     assert.deepEqual(
         getRowsTextFromCategory(requestHeadersCategory),
@@ -357,7 +357,7 @@ describeWithEnvironment('RequestHeadersView', () => {
 
     component = await renderHeadersComponent(request);
 
-    const requestHeadersCategory = component.contentElement.querySelector('[aria-label="Request Headers"]');
+    const requestHeadersCategory = component.contentElement.querySelector('[aria-label="Request headers"]');
     assert.instanceOf(requestHeadersCategory, HTMLDetailsElement);
     assert.deepEqual(
         getRowsTextFromCategory(requestHeadersCategory),

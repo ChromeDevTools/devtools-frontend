@@ -174,7 +174,7 @@ const UIStrings = {
   /**
    * @description Text to announce to screen readers that network data is available.
    */
-  networkDataAvailable: 'Network Data Available',
+  networkDataAvailable: 'Network data available',
   /**
    * @description Text in Network Log View of the Network panel
    * @example {3} PH1

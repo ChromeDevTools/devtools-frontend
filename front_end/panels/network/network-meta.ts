@@ -26,7 +26,7 @@ const UIStrings = {
   /**
    * @description Command for showing the 'Network request blocking' tool
    */
-  showRequestConditions: 'Show Request conditions',
+  showRequestConditions: 'Show request conditions',
   /**
    * @description Title of the 'Request conditions' tool in the bottom drawer
    */

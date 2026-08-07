@@ -361,13 +361,13 @@ describe('The Network Request view', () => {
         rows: [
           'Request URL',
           'https://localhost:%/test/e2e/resources/network/image.svg?id=42&param=a%20b',
-          'Request Method',
+          'Request method',
           'POST',
-          'Status Code',
+          'Status code',
           '200 OK',
-          'Remote Address',
+          'Remote address',
           '[::1]:%',
-          'Referrer Policy',
+          'Referrer policy',
           'strict-origin-when-cross-origin',
         ],
       },
@@ -391,7 +391,7 @@ describe('The Network Request view', () => {
         ],
       },
       {
-        aria: 'Request Headers',
+        aria: 'Request headers',
         rows: [
           'accept',
           '*/*',
@@ -448,9 +448,9 @@ describe('The Network Request view', () => {
     const payloadOutlineText =
         await Promise.all(payloadOutline.map(async item => await item.evaluate(el => el.textContent || '')));
     const expectedPayloadContent = [
-      'Query String Parameters (2)View sourceView URL-encoded',
+      'Query string parameters (2)View sourceView URL-encoded',
       ['id42', 'parama b'],
-      'Form Data (4)View sourceView URL-encoded',
+      'Form data (4)View sourceView URL-encoded',
       ['fooalpha', 'barbeta:42:0', 'baz', '(empty)'],
     ].flat();
 
@@ -508,18 +508,18 @@ describe('The Network Request view', () => {
         rows: [
           'Request URL',
           'https://localhost:%/test/e2e/resources/network/image.svg?id=42&param=a%20b',
-          'Request Method',
+          'Request method',
           'POST',
-          'Status Code',
+          'Status code',
           '200 OK',
-          'Remote Address',
+          'Remote address',
           '[::1]:%',
-          'Referrer Policy',
+          'Referrer policy',
           'strict-origin-when-cross-origin',
         ],
       },
       {
-        aria: 'Request Headers',
+        aria: 'Request headers',
         rows: [
           'accept',
           '*/*',

@@ -69,7 +69,7 @@ const UIStrings = {
    * @description Text in Request Payload View of the Network panel. This is a noun-phrase meaning the
    * payload of a network request.
    */
-  requestPayload: 'Request Payload',
+  requestPayload: 'Request payload',
   /**
    * @description Text in Request Payload View of the Network panel
    */
@@ -77,11 +77,11 @@ const UIStrings = {
   /**
    * @description Text in Request Payload View of the Network panel
    */
-  queryStringParameters: 'Query String Parameters',
+  queryStringParameters: 'Query string parameters',
   /**
    * @description Text in Request Payload View of the Network panel
    */
-  formData: 'Form Data',
+  formData: 'Form data',
   /**
    * @description Text for toggling the view of payload data (e.g. query string parameters) from source to parsed in the payload tab
    */

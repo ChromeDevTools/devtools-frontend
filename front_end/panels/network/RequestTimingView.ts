@@ -41,7 +41,7 @@ const UIStrings = {
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  dnsLookup: 'DNS Lookup',
+  dnsLookup: 'DNS lookup',
   /**
    * @description Text in Request Timing View of the Network panel
    */
@@ -53,7 +53,7 @@ const UIStrings = {
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  contentDownload: 'Content Download',
+  contentDownload: 'Content download',
   /**
    * @description Text in Request Timing View of the Network panel
    */
@@ -89,11 +89,11 @@ const UIStrings = {
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  routerEvaluation: 'Router Evaluation',
+  routerEvaluation: 'Router evaluation',
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  routerCacheLookup: 'Cache Lookup',
+  routerCacheLookup: 'Cache lookup',
   /**
    * @description Inner element text content in Network Log View Columns of the Network panel
    */
@@ -115,15 +115,15 @@ const UIStrings = {
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  serverPush: 'Server Push',
+  serverPush: 'Server push',
   /**
    * @description Text of a DOM element in Request Timing View of the Network panel
    */
-  resourceScheduling: 'Resource Scheduling',
+  resourceScheduling: 'Resource scheduling',
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  connectionStart: 'Connection Start',
+  connectionStart: 'Connection start',
   /**
    * @description Text in Request Timing View of the Network panel
    */
@@ -131,7 +131,7 @@ const UIStrings = {
   /**
    * @description Text of a DOM element in Request Timing View of the Network panel
    */
-  cautionRequestIsNotFinishedYet: 'CAUTION: request is not finished yet!',
+  cautionRequestIsNotFinishedYet: 'Caution: Request isn’t finished yet',
   /**
    * @description Text in Request Timing View of the Network panel
    */

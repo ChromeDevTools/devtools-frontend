@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-imperative-dom-api */
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2008 Matt Lilek <webkit@mattlilek.com>
@@ -445,7 +446,7 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
                 }
                 return openingTag;
             }
-            if (ElementsTreeElement.canShowInlineText(node)) {
+            if (ElementsTreeWidget.canShowInlineText(node)) {
                 const firstChild = node.firstChild;
                 if (!firstChild) {
                     throw new Error('ElementsTreeElement._nodeTitleInfo expects node.firstChild to be defined.');
@@ -605,6 +606,7 @@ function renderLinkifiedValue(value, node) {
         text: value,
         preventClick: true,
         showColumnNumber: false,
+        bypassURLTrimming: true,
         onRef: link => {
             ImagePreviewPopover.setImageUrl(link, rewrittenHref);
         },
@@ -1036,9 +1038,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
   `, target);
     // clang-format on
 };
-export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
+export class ElementsTreeWidget extends UI.Widget.Widget {
+    treeElement;
     nodeInternal;
-    treeOutline;
     searchQuery;
     #expandedChildrenLimit;
     decorationsThrottler;
@@ -1055,7 +1057,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     #elementIssues = new Map();
     #nodeElementToIssue = new Map();
     #highlights = [];
-    tagTypeContext;
     #adornersThrottler = new Common.Throttler.Throttler(100);
     #containerAdornerActive = false;
     #flexAdornerActive = false;
@@ -1069,51 +1070,27 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     #descendantDecorations = [];
     #decorationsTooltip = '';
     static #adTooltipIdCounter = 0;
-    #adTooltipId = `ad-tooltip-${++ElementsTreeElement.#adTooltipIdCounter}`;
+    #adTooltipId = `ad-tooltip-${++ElementsTreeWidget.#adTooltipIdCounter}`;
     #updateRecord = null;
     // Used to add the content to TreeElement's title element.
     // Relied on by web tests.
-    #contentElement;
-    constructor(node, isClosingTag) {
-        // The title will be updated in onattach.
+    constructor(treeElement) {
         super();
+        this.treeElement = treeElement;
+        const node = treeElement.node();
+        const isClosingTag = treeElement.isClosingTag();
         this.nodeInternal = node;
-        this.treeOutline = null;
-        this.listItemElement.setAttribute('jslog', `${VisualLogging.treeItem().parent('elementsTreeOutline').track({
-            keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
-            resize: true,
-            drag: true,
-            click: true,
-        })}`);
+        this.treeElement.treeOutline = null;
         this.searchQuery = null;
         this.#expandedChildrenLimit = InitialChildrenLimit;
         this.decorationsThrottler = new Common.Throttler.Throttler(100);
         this.inClipboard = false;
         this.#hovered = false;
         this.editing = null;
-        if (isClosingTag) {
-            this.tagTypeContext = { tagType: "CLOSING_TAG" /* TagType.CLOSING */ };
-        }
-        else {
-            this.tagTypeContext = {
-                tagType: "OPENING_TAG" /* TagType.OPENING */,
-                canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE,
-            };
+        if (!isClosingTag) {
             void this.#updateAdorners();
         }
         this.expandAllButtonElement = null;
-        this.performUpdate();
-        if (this.nodeInternal.retained && !this.isClosingTag()) {
-            this.setLeadingIcons([
-                html `<devtools-icon class="extra-small" name="small-status-dot" style="color:var(--icon-error); vertical-align:middle"></devtools-icon>`,
-            ]);
-            this.listItemNode.classList.add('detached-elements-detached-node');
-            this.listItemNode.style.setProperty('display', '-webkit-box');
-            this.listItemNode.setAttribute('title', 'Retained Node');
-        }
-        if (this.nodeInternal.detached && !this.isClosingTag()) {
-            this.listItemNode.setAttribute('title', 'Detached Tree Node');
-        }
     }
     static animateOnDOMUpdate(treeElement) {
         const tagName = treeElement.listItemElement.querySelector('.webkit-html-tag-name');
@@ -1130,7 +1107,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         return roots;
     }
     static canShowInlineText(node) {
-        if (node.contentDocument() || node.templateContent() || ElementsTreeElement.visibleShadowRoots(node).length ||
+        if (node.contentDocument() || node.templateContent() || ElementsTreeWidget.visibleShadowRoots(node).length ||
             node.hasPseudoElements()) {
             return false;
         }
@@ -1159,60 +1136,69 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             node.domModel().cssModel().forcePseudoState(node, pseudoState, enabled);
         }
     }
-    // ClearNode param is used to clean DOM after in-place editing..
-    performUpdate(clearNode = false) {
+    #clearDOMNextUpdate = false;
+    performUpdate() {
         // Skip updating when in-place editing (not HTML editing indicated by the
         // editorState) is happening. Doing an update would break editing
         // (crbug.com/515639787).
         if (this.editing && !this.#editorState) {
             return;
         }
+        if (this.#clearDOMNextUpdate) {
+            this.#clearDOMNextUpdate = false;
+            Lit.render(Lit.nothing, this.contentElement, { host: this });
+        }
+        const isClosingTag = this.treeElement.isClosingTag();
         const output = {};
         DEFAULT_VIEW({
-            node: !clearNode ? this.nodeInternal : null,
-            isClosingTag: this.isClosingTag(),
-            expanded: this.expanded,
-            isExpandable: this.isExpandable(),
-            isXMLMimeType: Boolean(this.treeOutline?.isXMLMimeType),
+            node: this.nodeInternal,
+            isClosingTag,
+            expanded: this.treeElement.expanded,
+            isExpandable: this.treeElement.isExpandable(),
+            isXMLMimeType: Boolean(this.treeElement.treeOutline?.isXMLMimeType),
             updateRecord: this.#updateRecord,
             onHighlightSearchResults: () => this.#highlightSearchResults(),
-            onExpand: () => this.expand(),
+            onExpand: () => this.treeElement.expand(),
             containerAdornerActive: this.#containerAdornerActive,
             adProvenance: this.nodeInternal.adProvenance(),
             adTooltipId: this.#adTooltipId,
             target: this.nodeInternal.domModel().target(),
-            showContainerAdorner: Boolean(this.#layout?.containerType) && !this.isClosingTag(),
+            showContainerAdorner: Boolean(this.#layout?.containerType) && !isClosingTag,
             containerType: this.#layout?.containerType,
-            showFlexAdorner: Boolean(this.#layout?.isFlex) && !this.isClosingTag(),
+            showFlexAdorner: Boolean(this.#layout?.isFlex) && !isClosingTag,
             flexAdornerActive: this.#flexAdornerActive,
-            showGridAdorner: Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
-            showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !this.isClosingTag(),
-            showMediaAdorner: this.node().isMediaNode() && !this.isClosingTag(),
-            showPopoverAdorner: Boolean(this.node().attributes().find(attr => attr.name === 'popover')) && !this.isClosingTag(),
+            showGridAdorner: Boolean(this.#layout?.isGrid) && !isClosingTag,
+            showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !isClosingTag,
+            showMediaAdorner: this.node().isMediaNode() && !isClosingTag,
+            showPopoverAdorner: Boolean(this.node().attributes().find(attr => attr.name === 'popover')) && !isClosingTag,
             showInterestAdorner: Boolean(Root.Runtime.hostConfig.devToolsAllowInterestForcing?.enabled) &&
                 Boolean(this.node().attributes().find(attr => attr.name === 'interesttarget' || attr.name === 'interestfor')) &&
-                !this.isClosingTag(),
-            showTopLayerAdorner: this.node().topLayerIndex() !== -1 && !this.isClosingTag(),
+                !isClosingTag,
+            showTopLayerAdorner: this.node().topLayerIndex() !== -1 && !isClosingTag,
             gridAdornerActive: this.#gridAdornerActive,
             popoverAdornerActive: this.#popoverAdornerActive,
             interestAdornerActive: this.#interestAdornerActive,
             isSubgrid: Boolean(this.#layout?.isSubgrid),
-            showViewSourceAdorner: this.nodeInternal.isRootNode() && isOpeningTag(this.tagTypeContext),
+            showViewSourceAdorner: this.nodeInternal.isRootNode() && isOpeningTag(this.treeElement.tagTypeContext),
             showScrollAdorner: ((this.node().nodeName() === 'HTML' && this.node().ownerDocument?.isScrollable()) ||
                 (this.node().nodeName() !== '#document' && this.node().isScrollable())) &&
-                !this.isClosingTag(),
+                !isClosingTag,
             decorations: this.#decorations,
-            descendantDecorations: this.expanded ? [] : this.#descendantDecorations,
+            descendantDecorations: this.treeElement.expanded ? [] : this.#descendantDecorations,
             decorationsTooltip: this.#decorationsTooltip,
             indent: this.computeLeftIndent(),
-            showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !this.isClosingTag(),
+            showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
             scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
-            showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
-            showCustomElementAdorner: this.node().isCustomElement() && !this.isClosingTag(),
-            onCustomElementAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => void this.#onCustomElementAdornerClick(event),
-            showStartingStyleAdorner: this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
+            showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !isClosingTag,
+            showCustomElementAdorner: this.node().isCustomElement() && !isClosingTag,
+            onCustomElementAdornerClick: this.treeElement.treeOutline?.disableEdits ?
+                () => { } :
+                (event) => void this.#onCustomElementAdornerClick(event),
+            showStartingStyleAdorner: this.nodeInternal.affectedByStartingStyles() && !isClosingTag,
             startingStyleAdornerActive: this.#startingStyleAdornerActive,
-            onStartingStyleAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onStartingStyleAdornerClick(event),
+            onStartingStyleAdornerClick: this.treeElement.treeOutline?.disableEdits ?
+                () => { } :
+                (event) => this.#onStartingStyleAdornerClick(event),
             onSlotAdornerClick: () => {
                 if (this.nodeInternal.assignedSlot) {
                     const deferredNode = this.nodeInternal.assignedSlot.deferredNode;
@@ -1222,37 +1208,40 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 }
             },
             topLayerIndex: this.node().topLayerIndex(),
-            onViewSourceAdornerClick: this.treeOutline?.disableEdits ? () => { } : this.revealHTMLInSources.bind(this),
+            onViewSourceAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => { } :
+                this.revealHTMLInSources.bind(this),
             onGutterClick: this.showContextMenu.bind(this),
-            onContainerAdornerClick: this.treeOutline?.disableEdits ? () => { } :
+            onContainerAdornerClick: this.treeElement.treeOutline?.disableEdits ?
+                () => { } :
                 (event) => this.#onContainerAdornerClick(event),
-            onFlexAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onFlexAdornerClick(event),
-            onGridAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onGridAdornerClick(event),
-            onMediaAdornerClick: this.treeOutline?.disableEdits ? () => { } :
-                (event) => this.#onMediaAdornerClick(event),
-            onPopoverAdornerClick: this.treeOutline?.disableEdits ? () => { } :
-                (event) => this.#onPopoverAdornerClick(event),
-            onInterestAdornerClick: this.treeOutline?.disableEdits ? () => { } :
-                (event) => this.#onInterestAdornerClick(event),
-            onScrollSnapAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onScrollSnapAdornerClick(event),
-            onTopLayerAdornerClick: this.treeOutline?.disableEdits ? () => { } :
+            onFlexAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => { } : (event) => this.#onFlexAdornerClick(event),
+            onGridAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => { } : (event) => this.#onGridAdornerClick(event),
+            onMediaAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => { } : (event) => this.#onMediaAdornerClick(event),
+            onPopoverAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => { } : (event) => this.#onPopoverAdornerClick(event),
+            onInterestAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => { } : (event) => this.#onInterestAdornerClick(event),
+            onScrollSnapAdornerClick: this.treeElement.treeOutline?.disableEdits ?
+                () => { } :
+                (event) => this.#onScrollSnapAdornerClick(event),
+            onTopLayerAdornerClick: this.treeElement.treeOutline?.disableEdits ?
+                () => { } :
                 () => {
-                    if (!this.treeOutline) {
+                    if (!this.treeElement.treeOutline) {
                         return;
                     }
-                    this.treeOutline.revealInTopLayer(this.node());
+                    this.treeElement.treeOutline.revealInTopLayer(this.node());
                 },
             isHovered: this.#hovered,
-            isSelected: this.selected,
+            isSelected: this.treeElement.selected,
             canInspect: this.node().canInspectNode(),
-            showAiButton: Boolean(this.#hovered || this.selected) && this.node().nodeType() === Node.ELEMENT_NODE &&
-                this.isAiButtonEnabled() && this.treeOutline?.showAIButton,
+            showAiButton: Boolean(this.#hovered || this.treeElement.selected) &&
+                this.node().nodeType() === Node.ELEMENT_NODE && this.isAiButtonEnabled() &&
+                this.treeElement.treeOutline?.showAIButton,
             aiButtonTitle: this.isAiButtonEnabled() ?
                 UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button').title() :
                 undefined,
             onAiButtonClick: (ev) => {
                 ev.stopPropagation();
-                this.select(true, false);
+                this.treeElement.select(true, false);
                 const action = UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button');
                 if (action) {
                     void action.execute();
@@ -1260,11 +1249,46 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             },
             editorState: this.#editorState,
             editorWidth: this.#editorWidth,
-        }, output, this.listItemElement);
-        this.#contentElement = output.contentElement;
+        }, output, this.contentElement);
         this.#editorRef = output.editorRef;
         if (this.#updateRecord) {
             this.#updateRecord = null;
+        }
+    }
+    async #onCustomElementAdornerClick(event) {
+        event.stopPropagation();
+        const node = this.node();
+        const object = await node.resolveToObject('');
+        if (!object) {
+            return;
+        }
+        let constructorObject = null;
+        try {
+            const result = await object.callFunction(function () {
+                const selector = this.getAttribute('is') || this.tagName.toLowerCase();
+                return (typeof customElements !== 'undefined' && customElements.get(selector)) || this.constructor;
+            });
+            constructorObject = result.object;
+        }
+        finally {
+            object.release();
+        }
+        if (!constructorObject) {
+            return;
+        }
+        try {
+            if (constructorObject.type === 'function') {
+                const functionDetails = await SDK.RemoteObject.RemoteFunction.objectAsFunction(constructorObject).targetFunctionDetails();
+                if (functionDetails?.location) {
+                    const uiLocation = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(functionDetails.location);
+                    if (uiLocation) {
+                        void Common.Revealer.reveal(uiLocation);
+                    }
+                }
+            }
+        }
+        finally {
+            constructorObject.release();
         }
     }
     #onContainerAdornerClick(event) {
@@ -1340,13 +1364,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     highlightAttribute(attributeName) {
         // If the attribute is not found, we highlight the tag name instead.
-        let animationElement = this.listItemElement.querySelector('.webkit-html-tag-name') ?? this.listItemElement;
+        let animationElement = this.contentElement.querySelector('.webkit-html-tag-name') ?? this.element;
         if (this.nodeInternal.getAttribute(attributeName) !== undefined) {
-            const tag = this.listItemElement.getElementsByClassName('webkit-html-tag')[0];
-            const attributes = tag.getElementsByClassName('webkit-html-attribute');
+            const tag = this.contentElement.querySelector('.webkit-html-tag');
+            const attributes = tag?.getElementsByClassName('webkit-html-attribute') ?? [];
             for (const attribute of attributes) {
                 const attributeElement = attribute.getElementsByClassName('webkit-html-attribute-name')[0];
-                if (attributeElement.textContent === attributeName) {
+                if (attributeElement?.textContent === attributeName) {
                     animationElement = attributeElement;
                     break;
                 }
@@ -1354,16 +1378,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
         UI.UIUtils.runCSSAnimationOnce(animationElement, DOM_UPDATE_ANIMATION_CLASS_NAME);
     }
-    isClosingTag() {
-        return !isOpeningTag(this.tagTypeContext);
-    }
     isDisplayContents() {
         return Boolean(this.#layout?.isContents);
     }
     node() {
         return this.nodeInternal;
     }
-    isEditing() {
+    get isEditing() {
         return Boolean(this.editing);
     }
     highlightSearchResults(searchQuery) {
@@ -1381,7 +1402,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             return;
         }
         this.inClipboard = inClipboard;
-        this.listItemElement.classList.toggle('in-clipboard', inClipboard);
+        this.requestUpdate();
     }
     get hovered() {
         return this.#hovered;
@@ -1391,15 +1412,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             return;
         }
         this.#hovered = isHovered;
-        if (this.listItemElement) {
-            if (isHovered) {
-                this.listItemElement.classList.add('hovered');
-            }
-            else {
-                this.listItemElement.classList.remove('hovered');
-            }
-            this.performUpdate();
-        }
+        this.requestUpdate();
     }
     addIssue(newIssue) {
         if (this.#elementIssues.has(newIssue.primaryKey())) {
@@ -1424,7 +1437,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         return this.#nodeElementToIssue;
     }
     #highlightViolatingAttr(name, issue) {
-        const tag = this.listItemElement.getElementsByClassName('webkit-html-tag')[0];
+        const tag = this.contentElement.querySelectorAll('.webkit-html-tag')[0];
         const attributes = tag.getElementsByClassName('webkit-html-attribute');
         for (const attribute of attributes) {
             if (attribute.getElementsByClassName('webkit-html-attribute-name')[0].textContent === name) {
@@ -1435,7 +1448,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
     }
     #highlightTagAsViolating(issue) {
-        const tagElement = this.listItemElement.getElementsByClassName('webkit-html-tag-name')[0];
+        const tagElement = this.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
         tagElement.classList.add('violating-element');
         this.#updateNodeElementToIssue(tagElement, issue);
     }
@@ -1446,7 +1459,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             this.#nodeElementToIssue.set(nodeElement, issues);
         }
         issues.push(issue);
-        this.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
+        this.treeElement.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
     }
     removeIssue(issue) {
         if (!this.#elementIssues.has(issue.primaryKey())) {
@@ -1468,7 +1481,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
     }
     #undoHighlightViolatingAttr(name, issue) {
-        const violatingAttributes = this.listItemElement.querySelectorAll('.webkit-html-attribute-name.violating-element');
+        const violatingAttributes = this.contentElement.querySelectorAll('.webkit-html-attribute-name.violating-element');
         for (const attributeElement of violatingAttributes) {
             if (attributeElement.textContent === name) {
                 this.#removeFromNodeElementToIssue(attributeElement, issue);
@@ -1479,7 +1492,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
     }
     #undoHighlightTagAsViolating(issue) {
-        const tagElement = this.listItemElement.getElementsByClassName('webkit-html-tag-name')[0];
+        const tagElement = this.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
         if (!tagElement) {
             return;
         }
@@ -1500,7 +1513,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         else {
             this.#nodeElementToIssue.set(nodeElement, issues);
         }
-        this.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
+        this.treeElement.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
     }
     expandedChildrenLimit() {
         return this.#expandedChildrenLimit;
@@ -1509,12 +1522,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         this.#expandedChildrenLimit = expandedChildrenLimit;
     }
     onTopLayerIndexChanged() {
-        this.performUpdate();
+        this.requestUpdate();
     }
     onbind() {
-        this.performUpdate();
-        if (this.treeOutline && !this.isClosingTag()) {
-            this.treeOutline.treeElementByNode.set(this.nodeInternal, this);
+        this.requestUpdate();
+        if (this.treeElement.treeOutline && !this.treeElement.isClosingTag()) {
+            this.treeElement.treeOutline.treeElementByNode.set(this.nodeInternal, this.treeElement);
             this.nodeInternal.addEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
             this.nodeInternal.addEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
             this.nodeInternal.addEventListener(SDK.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated, this);
@@ -1589,15 +1602,16 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             indent: 0,
             editorState: null,
             editorWidth: null,
-        }, {}, this.listItemElement);
+        }, {}, this.contentElement);
     }
     onunbind() {
         if (this.editing) {
             this.editing.cancel();
         }
         this.clearView();
-        if (this.treeOutline && this.treeOutline.treeElementByNode.get(this.nodeInternal) === this) {
-            this.treeOutline.treeElementByNode.delete(this.nodeInternal);
+        if (this.treeElement.treeOutline &&
+            this.treeElement.treeOutline.treeElementByNode.get(this.nodeInternal) === this.treeElement) {
+            this.treeElement.treeOutline.treeElementByNode.delete(this.nodeInternal);
         }
         this.nodeInternal.removeEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
         this.nodeInternal.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
@@ -1615,19 +1629,19 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     #onPersistentContainerQueryOverlayStateChanged(event) {
         this.#containerAdornerActive = event.data.enabled;
-        this.performUpdate();
+        this.requestUpdate();
     }
     #onPersistentFlexContainerOverlayStateChanged(event) {
         this.#flexAdornerActive = event.data.enabled;
-        this.performUpdate();
+        this.requestUpdate();
     }
     #onPersistentGridOverlayStateChanged(event) {
         this.#gridAdornerActive = event.data.enabled;
-        this.performUpdate();
+        this.requestUpdate();
     }
     #onPersistentScrollSnapOverlayStateChanged(event) {
         this.#scrollSnapAdornerActive = event.data.enabled;
-        this.performUpdate();
+        this.requestUpdate();
     }
     #onScrollSnapAdornerClick(event) {
         event.stopPropagation();
@@ -1646,58 +1660,48 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     onattach() {
         if (this.#hovered) {
-            this.listItemElement.classList.add('hovered');
-            this.performUpdate();
+            this.element.classList.add('hovered');
+            this.requestUpdate();
         }
-        this.updateTitle();
-        this.listItemElement.draggable = true;
+        this.treeElement.updateTitle();
+        this.element.draggable = true;
     }
     async onpopulate() {
-        if (this.treeOutline) {
-            return await this.treeOutline.populateTreeElement(this);
+        if (this.treeElement.treeOutline) {
+            return await this.treeElement.treeOutline.populateTreeElement(this.treeElement);
         }
-    }
-    async expandRecursively() {
-        await this.nodeInternal.getSubtree(100, true);
-        await super.expandRecursively(Number.MAX_VALUE);
     }
     onexpand() {
-        if (this.isClosingTag()) {
+        if (this.treeElement.isClosingTag()) {
             return;
         }
-        this.updateTitle();
+        this.treeElement.updateTitle();
     }
     oncollapse() {
-        if (this.isClosingTag()) {
+        if (this.treeElement.isClosingTag()) {
             return;
         }
-        this.updateTitle();
-    }
-    select(omitFocus, selectedByUser) {
-        if (this.editing) {
-            return false;
-        }
-        return super.select(omitFocus, selectedByUser);
+        this.treeElement.updateTitle();
     }
     onselect(selectedByUser) {
-        if (!this.treeOutline) {
+        if (!this.treeElement.treeOutline) {
             return false;
         }
-        this.treeOutline.suppressRevealAndSelect = true;
-        this.treeOutline.selectDOMNode(this.nodeInternal, selectedByUser);
+        this.treeElement.treeOutline.suppressRevealAndSelect = true;
+        this.treeElement.treeOutline.selectDOMNode(this.nodeInternal, selectedByUser);
         if (selectedByUser) {
             this.nodeInternal.highlight();
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
         }
-        this.performUpdate();
-        this.treeOutline.suppressRevealAndSelect = false;
+        this.requestUpdate();
+        this.treeElement.treeOutline.suppressRevealAndSelect = false;
         return true;
     }
     ondelete() {
-        if (!this.treeOutline) {
+        if (!this.treeElement.treeOutline) {
             return false;
         }
-        const startTagTreeElement = this.treeOutline.findTreeElement(this.nodeInternal);
+        const startTagTreeElement = this.treeElement.treeOutline.findTreeElement(this.nodeInternal);
         startTagTreeElement ? (void startTagTreeElement.remove()) : (void this.remove());
         return true;
     }
@@ -1711,25 +1715,16 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         // prevent a newline from being immediately inserted
         return true;
     }
-    selectOnMouseDown(event) {
-        super.selectOnMouseDown(event);
-        if (this.editing) {
-            return;
-        }
-        // Prevent selecting the nearest word on double click.
-        if (event.detail >= 2) {
-            event.preventDefault();
-        }
-    }
     ondblclick(event) {
-        if (this.editing || this.isClosingTag()) {
+        if (this.editing || this.treeElement.isClosingTag()) {
             return false;
         }
-        if (this.startEditingTarget(event.target)) {
+        const target = (event.composedPath()[0] || event.target);
+        if (this.startEditingTarget(target)) {
             return false;
         }
-        if (this.isExpandable() && !this.expanded) {
-            this.expand();
+        if (this.treeElement.isExpandable() && !this.treeElement.expanded) {
+            this.treeElement.expand();
         }
         return false;
     }
@@ -1753,7 +1748,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
     }
     startEditingTarget(eventTarget) {
-        if (!this.treeOutline || this.treeOutline.selectedDOMNode() !== this.nodeInternal) {
+        if (!this.treeElement.treeOutline || this.treeElement.treeOutline.selectedDOMNode() !== this.nodeInternal) {
             return false;
         }
         if (this.nodeInternal.nodeType() !== Node.ELEMENT_NODE && this.nodeInternal.nodeType() !== Node.TEXT_NODE &&
@@ -1771,16 +1766,16 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
         const tagName = eventTarget.enclosingNodeOrSelfWithClass('webkit-html-tag-name');
         if (tagName) {
-            return this.startEditingTagName(tagName);
+            return this.treeElement.startEditingTagName(tagName);
         }
         const newAttribute = eventTarget.enclosingNodeOrSelfWithClass('add-attribute');
         if (newAttribute) {
-            return this.addNewAttribute();
+            return this.treeElement.addNewAttribute();
         }
         return false;
     }
     showContextMenu(event) {
-        this.treeOutline && void this.treeOutline.showContextMenu(this, event);
+        this.treeElement.treeOutline && void this.treeElement.treeOutline.showContextMenu(this.treeElement, event);
     }
     revealHTMLInSources() {
         const frameOwnerId = this.nodeInternal.frameOwnerFrameId();
@@ -1794,32 +1789,34 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     async populateTagContextMenu(contextMenu, event) {
         // Add attribute-related actions.
-        const treeElement = this.isClosingTag() && this.treeOutline ? this.treeOutline.findTreeElement(this.nodeInternal) : this;
+        const treeElement = this.treeElement.isClosingTag() && this.treeElement.treeOutline ?
+            this.treeElement.treeOutline.findTreeElement(this.nodeInternal) :
+            this.treeElement;
         if (!treeElement) {
             return;
         }
         contextMenu.editSection().appendItem(i18nString(UIStrings.addAttribute), treeElement.addNewAttribute.bind(treeElement), { jslogContext: 'add-attribute' });
-        const target = event.target;
+        const target = (event.composedPath()[0] || event.target);
         const attribute = target.enclosingNodeOrSelfWithClass('webkit-html-attribute');
         const newAttribute = target.enclosingNodeOrSelfWithClass('add-attribute');
         if (attribute && !newAttribute) {
             contextMenu.editSection().appendItem(i18nString(UIStrings.editAttribute), this.startEditingAttribute.bind(this, attribute, target), { jslogContext: 'edit-attribute' });
         }
         await this.populateNodeContextMenu(contextMenu);
-        ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, treeElement.node());
+        ElementsTreeWidget.populateForcedPseudoStateItems(contextMenu, treeElement.node());
         this.populateScrollIntoView(contextMenu);
         contextMenu.viewSection().appendItem(i18nString(UIStrings.focus), async () => {
             await this.nodeInternal.focus();
         }, { jslogContext: 'focus' });
     }
     populatePseudoElementContextMenu(contextMenu) {
-        if (this.childCount() !== 0) {
+        if (this.treeElement.childCount() !== 0) {
             this.populateExpandRecursively(contextMenu);
         }
         this.populateScrollIntoView(contextMenu);
     }
     populateExpandRecursively(contextMenu) {
-        contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this), { jslogContext: 'expand-recursively' });
+        contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively), this.treeElement.expandRecursively.bind(this.treeElement), { jslogContext: 'expand-recursively' });
     }
     populateScrollIntoView(contextMenu) {
         contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => this.nodeInternal.scrollIntoView(), { jslogContext: 'scroll-into-view' });
@@ -1844,7 +1841,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         const isShadowRoot = this.nodeInternal.isShadowRoot();
         const createShortcut = UI.KeyboardShortcut.KeyboardShortcut.shortcutToString.bind(null);
         const modifier = UI.KeyboardShortcut.Modifiers.CtrlOrMeta.value;
-        const treeOutline = this.treeOutline;
+        const treeOutline = this.treeElement.treeOutline;
         if (!treeOutline) {
             return;
         }
@@ -2017,13 +2014,16 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
         menuItem = contextMenu.clipboardSection().appendItem(i18nString(UIStrings.paste), treeOutline.pasteNode.bind(treeOutline, this.nodeInternal), { disabled: !treeOutline.canPaste(this.nodeInternal), jslogContext: 'paste' });
         menuItem.setShortcut(createShortcut('V', modifier));
-        menuItem = contextMenu.debugSection().appendCheckboxItem(i18nString(UIStrings.hideElement), treeOutline.toggleHideElement.bind(treeOutline, this.nodeInternal), { checked: treeOutline.isToggledToHidden(this.nodeInternal), jslogContext: 'elements.hide-element' });
+        menuItem = contextMenu.debugSection().appendCheckboxItem(i18nString(UIStrings.hideElement), treeOutline.toggleHideElement.bind(treeOutline, this.nodeInternal), {
+            checked: treeOutline.isToggledToHidden(this.nodeInternal),
+            jslogContext: 'elements.hide-element',
+        });
         menuItem.setShortcut(UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('elements.hide-element') || '');
         if (isEditable) {
             contextMenu.editSection().appendItem(i18nString(UIStrings.deleteElement), this.remove.bind(this), { jslogContext: 'delete-element' });
         }
         this.populateExpandRecursively(contextMenu);
-        contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this), { jslogContext: 'collapse-children' });
+        contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.treeElement.collapseChildren.bind(this.treeElement), { jslogContext: 'collapse-children' });
         contextMenu.viewSection().appendItem(i18nString(UIStrings.switchToAccessibilityTree), () => ElementsPanel.instance().toggleAccessibilityTree(), { jslogContext: 'switch-to-accessibility-tree' });
         const deviceModeWrapperAction = new Emulation.DeviceModeView.ActionDelegate();
         contextMenu.viewSection().appendItem(i18nString(UIStrings.captureNodeScreenshot), deviceModeWrapperAction.handleAction.bind(null, UI.Context.Context.instance(), 'emulation.capture-node-screenshot'), { jslogContext: 'emulation.capture-node-screenshot' });
@@ -2038,7 +2038,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
     }
     async populateProcessingElementContextMenu(contextMenu) {
-        const treeOutline = this.treeOutline;
+        const treeOutline = this.treeElement.treeOutline;
         if (!treeOutline) {
             return;
         }
@@ -2050,16 +2050,16 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         contextMenu.editSection().appendItem(i18nString(UIStrings.deleteElement), this.remove.bind(this), { jslogContext: 'delete-element' });
     }
     startEditing() {
-        if (!this.treeOutline || this.treeOutline.selectedDOMNode() !== this.nodeInternal) {
+        if (!this.treeElement.treeOutline || this.treeElement.treeOutline.selectedDOMNode() !== this.nodeInternal) {
             return;
         }
-        const listItem = this.listItemElement;
-        if (isOpeningTag(this.tagTypeContext) && this.tagTypeContext.canAddAttributes) {
+        const listItem = this.element;
+        if (isOpeningTag(this.treeElement.tagTypeContext) && this.treeElement.tagTypeContext.canAddAttributes) {
             const attribute = listItem.getElementsByClassName('webkit-html-attribute')[0];
             if (attribute) {
                 return this.startEditingAttribute(attribute, attribute.getElementsByClassName('webkit-html-attribute-value')[0]);
             }
-            return this.addNewAttribute();
+            return this.treeElement.addNewAttribute();
         }
         if (this.nodeInternal.nodeType() === Node.TEXT_NODE) {
             const textNode = listItem.getElementsByClassName('webkit-html-text-node')[0];
@@ -2068,12 +2068,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             }
         }
         if (this.nodeInternal.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-            return this.startEditingProcessingInstructionValue();
+            return this.treeElement.startEditingProcessingInstructionValue();
         }
         return;
     }
     startEditingProcessingInstructionValue() {
-        const processingInstructionValue = this.listItemElement.getElementsByClassName('webkit-html-processing-instruction-value')[0];
+        const processingInstructionValue = this.contentElement.querySelectorAll('.webkit-html-processing-instruction-value')[0];
         if (processingInstructionValue) {
             return this.startEditingTextNode(processingInstructionValue);
         }
@@ -2088,13 +2088,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         attr.style.marginLeft = '2px'; // overrides the .editing margin rule
         attr.style.marginRight = '2px'; // overrides the .editing margin rule
         attr.setAttribute('jslog', `${VisualLogging.value('new-attribute').track({ change: true, resize: true })}`);
-        const tag = this.listItemElement.getElementsByClassName('webkit-html-tag')[0];
+        const tag = this.contentElement.querySelectorAll('.webkit-html-tag')[0];
         this.insertInLastAttributePosition(tag, attr);
         attr.scrollIntoViewIfNeeded(true);
         return this.startEditingAttribute(attr, attr);
     }
     triggerEditAttribute(attributeName) {
-        const attributeElements = this.listItemElement.getElementsByClassName('webkit-html-attribute-name');
+        const attributeElements = this.contentElement.querySelectorAll('.webkit-html-attribute-name');
         for (let i = 0, len = attributeElements.length; i < len; ++i) {
             if (attributeElements[i].textContent === attributeName) {
                 for (let elem = attributeElements[i].nextSibling; elem; elem = elem.nextSibling) {
@@ -2110,7 +2110,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         return;
     }
     startEditingAttribute(attribute, elementForSelection) {
-        console.assert(this.listItemElement.isAncestor(attribute));
+        console.assert(this.element.isAncestor(attribute));
         if (UI.UIUtils.isBeingEdited(attribute)) {
             return true;
         }
@@ -2160,7 +2160,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             config.setPostKeydownFinishHandler(postKeyDownFinishHandler);
         }
         this.updateEditorHandles(attribute, config);
-        const componentSelection = this.listItemElement.getComponentSelection();
+        const componentSelection = this.element.getComponentSelection();
         componentSelection?.selectAllChildren(elementForSelection);
         return true;
     }
@@ -2180,13 +2180,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         } // Strip the CSS or JS highlighting if present.
         const config = new UI.InplaceEditor.Config(this.textNodeEditingCommitted.bind(this, textNode), this.editingCancelled.bind(this), null);
         this.updateEditorHandles(textNodeElement, config);
-        const componentSelection = this.listItemElement.getComponentSelection();
+        const componentSelection = this.element.getComponentSelection();
         componentSelection?.selectAllChildren(textNodeElement);
         return true;
     }
     startEditingTagName(tagNameElement) {
         if (!tagNameElement) {
-            tagNameElement = this.listItemElement.getElementsByClassName('webkit-html-tag-name')[0];
+            tagNameElement = this.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
             if (!tagNameElement) {
                 return false;
             }
@@ -2231,7 +2231,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         tagNameElement.addEventListener('keydown', keydownListener, false);
         const config = new UI.InplaceEditor.Config(editingCommitted.bind(this), editingCancelled.bind(this), tagName);
         this.updateEditorHandles(tagNameElement, config);
-        const componentSelection = this.listItemElement.getComponentSelection();
+        const componentSelection = this.element.getComponentSelection();
         componentSelection?.selectAllChildren(tagNameElement);
         return true;
     }
@@ -2256,8 +2256,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             return;
         }
         // Hide children item.
-        if (this.childrenListElement) {
-            this.childrenListElement.style.display = 'none';
+        if (this.treeElement.childrenListElement) {
+            this.treeElement.childrenListElement.style.display = 'none';
         }
         const initialValue = convertUnicodeCharsToHTMLEntities(maybeInitialValue).text;
         // Append editor.
@@ -2338,15 +2338,17 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 }),
             ],
         });
-        this.performUpdate();
+        this.requestUpdate();
         resize.call(this);
-        this.#editorRef?.focus();
         this.editing = { commit: commit.bind(this), cancel: dispose.bind(this), resize: resize.bind(this) };
-        this.treeOutline?.setMultilineEditing(this.editing);
+        this.treeElement.treeOutline?.setMultilineEditing(this.editing);
+        await this.updateComplete;
+        this.#editorRef?.focus();
         function resize() {
-            if (this.treeOutline) {
-                this.#editorWidth = this.treeOutline.visibleWidth() - this.computeLeftIndent() - 30;
-                this.performUpdate();
+            if (this.treeElement.treeOutline) {
+                this.#editorWidth =
+                    this.treeElement.treeOutline.visibleWidth() - this.computeLeftIndent() - 30;
+                this.requestUpdate();
             }
         }
         function commit() {
@@ -2361,21 +2363,21 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             }
             this.editing = null;
             this.#editorState = null;
-            this.performUpdate();
+            this.requestUpdate();
             // Unhide children item.
-            if (this.childrenListElement) {
-                this.childrenListElement.style.removeProperty('display');
+            if (this.treeElement.childrenListElement) {
+                this.treeElement.childrenListElement.style.removeProperty('display');
             }
-            if (this.treeOutline) {
-                this.treeOutline.setMultilineEditing(null);
-                this.treeOutline.focus();
+            if (this.treeElement.treeOutline) {
+                this.treeElement.treeOutline.setMultilineEditing(null);
+                this.treeElement.treeOutline.focus();
             }
             disposeCallback();
         }
     }
     attributeEditingCommitted(element, newText, oldText, attributeName, moveDirection) {
         this.editing = null;
-        const treeOutline = this.treeOutline;
+        const treeOutline = this.treeElement.treeOutline;
         function moveToNextAttributeIfNeeded(error) {
             if (error) {
                 this.editingCancelled(element, attributeName);
@@ -2395,14 +2397,14 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 }
                 if (moveDirection === 'backward') {
                     if (i === 0) {
-                        this.startEditingTagName();
+                        this.treeElement.startEditingTagName();
                     }
                     else {
                         this.triggerEditAttribute(attributes[i - 1].name);
                     }
                 }
                 else if (i === attributes.length - 1) {
-                    this.addNewAttribute();
+                    this.treeElement.addNewAttribute();
                 }
                 else {
                     this.triggerEditAttribute(attributes[i + 1].name);
@@ -2424,10 +2426,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             }
             else if (moveDirection === 'forward') {
                 if (!Platform.StringUtilities.isWhitespace(newText)) {
-                    this.addNewAttribute();
+                    this.treeElement.addNewAttribute();
                 }
                 else {
-                    this.startEditingTagName();
+                    this.treeElement.startEditingTagName();
                 }
             }
         }
@@ -2436,7 +2438,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
             return;
         }
-        this.updateTitle();
+        this.treeElement.updateTitle();
         moveToNextAttributeIfNeeded.call(this);
     }
     tagNameEditingCommitted(element, newText, oldText, tagName, moveDirection) {
@@ -2452,11 +2454,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
         function moveToNextAttributeIfNeeded() {
             if (this.nodeInternal.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-                this.startEditingProcessingInstructionValue();
+                this.treeElement.startEditingProcessingInstructionValue();
                 return;
             }
             if (moveDirection !== 'forward') {
-                this.addNewAttribute();
+                this.treeElement.addNewAttribute();
                 return;
             }
             const attributes = this.nodeInternal.attributes();
@@ -2464,7 +2466,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 this.triggerEditAttribute(attributes[0].name);
             }
             else {
-                this.addNewAttribute();
+                this.treeElement.addNewAttribute();
             }
         }
         newText = newText.trim();
@@ -2472,8 +2474,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             cancel();
             return;
         }
-        const treeOutline = this.treeOutline;
-        const wasExpanded = this.expanded;
+        const treeOutline = this.treeElement.treeOutline;
+        const wasExpanded = this.treeElement.expanded;
         this.nodeInternal.setNodeName(newText, (error, newNode) => {
             if (error || !newNode) {
                 cancel();
@@ -2484,35 +2486,37 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             }
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
             const newTreeItem = treeOutline.selectNodeAfterEdit(wasExpanded, error, newNode);
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-            // @ts-expect-error
-            moveToNextAttributeIfNeeded.call(newTreeItem);
+            if (newTreeItem) {
+                moveToNextAttributeIfNeeded.call(newTreeItem.widget);
+            }
         });
     }
     textNodeEditingCommitted(textNode, _element, newText) {
         this.editing = null;
         function callback() {
-            this.updateTitle();
+            this.#clearDOMNextUpdate = true;
+            this.treeElement.updateTitle();
         }
         textNode.setNodeValue(newText, callback.bind(this));
     }
     editingCancelled(_element, _tagName) {
         this.editing = null;
         // Need to restore attributes structure.
-        this.updateTitle();
+        this.#clearDOMNextUpdate = true;
+        this.treeElement.updateTitle();
     }
     distinctClosingTagElement() {
         // FIXME: Improve the Tree Element / Outline Abstraction to prevent crawling the DOM
         // For an expanded element, it will be the last element with class "close"
         // in the child element list.
-        if (this.expanded) {
-            const closers = this.childrenListElement.querySelectorAll('.close');
+        if (this.treeElement.expanded) {
+            const closers = this.treeElement.childrenListElement.querySelectorAll('.close');
             return closers[closers.length - 1];
         }
         // Remaining cases are single line non-expanded elements with a closing
         // tag, or HTML elements without a closing tag (such as <br>). Return
         // null in the case where there isn't a closing tag.
-        const tags = this.listItemElement.getElementsByClassName('webkit-html-tag');
+        const tags = this.contentElement.querySelectorAll('.webkit-html-tag');
         return tags.length === 1 ? null : tags[tags.length - 1];
     }
     updateTitle(updateRecord) {
@@ -2521,11 +2525,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (this.editing) {
             return;
         }
-        this.performUpdate(/* clearNode= */ true);
         this.#updateRecord = updateRecord ?? null;
         if (this.nodeInternal.nodeType() === Node.DOCUMENT_FRAGMENT_NODE && this.nodeInternal.isInShadowTree() &&
             this.nodeInternal.shadowRootType()) {
-            this.childrenListElement.classList.add('shadow-root');
+            this.treeElement.childrenListElement.classList.add('shadow-root');
             let depth = 4;
             for (let node = this.nodeInternal; depth && node; node = node.parentNode) {
                 if (node.nodeType() === Node.DOCUMENT_FRAGMENT_NODE) {
@@ -2533,17 +2536,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 }
             }
             if (!depth) {
-                this.childrenListElement.classList.add('shadow-root-deep');
+                this.treeElement.childrenListElement.classList.add('shadow-root-deep');
             }
             else {
-                this.childrenListElement.classList.add('shadow-root-depth-' + depth);
+                this.treeElement.childrenListElement.classList.add('shadow-root-depth-' + depth);
             }
         }
         this.performUpdate();
-        if (this.#contentElement) {
-            // fixme: we probably do not need a title element in the new tree outline.
-            this.title = this.#contentElement;
-        }
         this.updateDecorations();
         // If there is an issue with this node, make sure to update it.
         for (const issue of this.#elementIssues.values()) {
@@ -2552,20 +2551,20 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         this.#highlightSearchResults();
     }
     computeLeftIndent() {
-        let treeElement = this.parent;
+        let treeElement = this.treeElement.parent;
         let depth = 0;
         while (treeElement !== null) {
             depth++;
             treeElement = treeElement.parent;
         }
         /** Keep it in sync with elementsTreeOutline.css **/
-        return 12 * (depth - 2) + (this.isExpandable() && this.isCollapsible() ? 1 : 12);
+        return 12 * (depth - 2) + (this.treeElement.isExpandable() && this.treeElement.isCollapsible() ? 1 : 12);
     }
     updateDecorations() {
         // Important to keep the entire tree node row as a clickable area for that
         // node.
-        this.listItemElement.style.setProperty('--indent', this.computeLeftIndent() + 'px');
-        if (this.isClosingTag()) {
+        this.element.style.setProperty('--indent', this.computeLeftIndent() + 'px');
+        if (this.treeElement.isClosingTag()) {
             return;
         }
         if (this.nodeInternal.nodeType() !== Node.ELEMENT_NODE) {
@@ -2574,15 +2573,16 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         void this.decorationsThrottler.schedule(this.#updateDecorations.bind(this));
     }
     #updateDecorations() {
-        if (!this.treeOutline) {
+        if (!this.treeElement.treeOutline) {
             return Promise.resolve();
         }
         const node = this.nodeInternal;
-        if (!this.treeOutline.decoratorExtensions) {
-            this.treeOutline.decoratorExtensions = getRegisteredDecorators();
+        const outline = this.treeElement.treeOutline;
+        if (!outline.decoratorExtensions) {
+            outline.decoratorExtensions = getRegisteredDecorators();
         }
         const markerToExtension = new Map();
-        for (const decoratorExtension of this.treeOutline.decoratorExtensions) {
+        for (const decoratorExtension of (outline.decoratorExtensions || [])) {
             markerToExtension.set(decoratorExtension.marker, decoratorExtension);
         }
         const promises = [];
@@ -2609,32 +2609,32 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             this.#descendantDecorations = descendantDecorations;
             if (!decorations.length && !descendantDecorations.length) {
                 this.#decorationsTooltip = '';
-                this.performUpdate();
+                this.requestUpdate();
                 return;
             }
             const tooltip = [];
             for (const decoration of decorations) {
                 tooltip.push(decoration.title);
             }
-            if (!this.expanded && descendantDecorations.length) {
+            if (!this.treeElement.expanded && descendantDecorations.length) {
                 tooltip.push(i18nString(UIStrings.children));
                 for (const decoration of descendantDecorations) {
                     tooltip.push(decoration.title);
                 }
             }
             this.#decorationsTooltip = tooltip.join('\n');
-            this.performUpdate();
+            this.requestUpdate();
         }
     }
     async remove() {
-        if (this.treeOutline?.isToggledToHidden(this.nodeInternal)) {
+        if (this.treeElement.treeOutline?.isToggledToHidden(this.nodeInternal)) {
             // Unhide the node before removing. This avoids inconsistent state if the node is restored via undo.
-            await this.treeOutline.toggleHideElement(this.nodeInternal);
+            await this.treeElement.treeOutline.toggleHideElement(this.nodeInternal);
         }
         if (this.nodeInternal.pseudoType()) {
             return;
         }
-        const parentElement = this.parent;
+        const parentElement = this.treeElement.parent;
         if (!parentElement) {
             return;
         }
@@ -2714,7 +2714,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (!this.searchQuery) {
             return;
         }
-        const text = this.listItemElement.textContent || '';
+        const text = this.contentElement.deepTextContent();
         const regexObject = Platform.StringUtilities.createPlainTextSearchRegex(this.searchQuery, 'gi');
         const matchRanges = [];
         let match = regexObject.exec(text);
@@ -2726,7 +2726,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (!matchRanges.length) {
             matchRanges.push(new TextUtils.TextRange.SourceRange(0, text.length));
         }
-        this.#highlights = Highlighting.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(this.listItemElement, matchRanges);
+        this.#highlights = Highlighting.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(this.contentElement, matchRanges);
     }
     editAsHTML() {
         const promise = Common.Revealer.reveal(this.node());
@@ -2740,7 +2740,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         void this.#adornersThrottler.schedule(this.#updateAdorners.bind(this));
     }
     async #updateAdorners() {
-        if (this.isClosingTag()) {
+        if (this.treeElement.isClosingTag()) {
             return;
         }
         const node = this.node();
@@ -2752,7 +2752,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         else {
             this.#layout = null;
         }
-        this.performUpdate();
+        this.requestUpdate();
     }
     async #onPopoverAdornerClick(event) {
         event.stopPropagation();
@@ -2766,7 +2766,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (this.#popoverAdornerActive) {
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
         }
-        this.performUpdate();
+        this.requestUpdate();
     }
     async #onInterestAdornerClick(event) {
         event.stopPropagation();
@@ -2780,7 +2780,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (this.#interestAdornerActive) {
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
         }
-        this.performUpdate();
+        this.requestUpdate();
     }
     #onStartingStyleAdornerClick(event) {
         event.stopPropagation();
@@ -2797,43 +2797,230 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             model.forceStartingStyle(node, true);
         }
         this.#startingStyleAdornerActive = !this.#startingStyleAdornerActive;
-        this.performUpdate();
+        this.requestUpdate();
     }
-    async #onCustomElementAdornerClick(event) {
-        event.stopPropagation();
-        const node = this.node();
-        const object = await node.resolveToObject('');
-        if (!object) {
+}
+export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
+    widget;
+    widgetWrapper;
+    nodeInternal;
+    tagTypeContext;
+    constructor(node, isClosingTag) {
+        super();
+        this.nodeInternal = node;
+        this.listItemElement.setAttribute('jslog', `${VisualLogging.treeItem().parent('elementsTreeOutline').track({
+            keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
+            resize: true,
+            drag: true,
+            click: true,
+        })}`);
+        if (isClosingTag) {
+            this.tagTypeContext = { tagType: "CLOSING_TAG" /* TagType.CLOSING */ };
+        }
+        else {
+            this.tagTypeContext = {
+                tagType: "OPENING_TAG" /* TagType.OPENING */,
+                canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE,
+            };
+        }
+        this.widgetWrapper = document.createElement('div');
+        this.widgetWrapper.style.display = 'contents';
+        this.title = this.widgetWrapper;
+        this.widget = new ElementsTreeWidget(this);
+        this.widget.element.classList.remove('vbox', 'flex-auto');
+        this.widget.element.style.display = 'contents';
+        this.widget.markAsRoot();
+        this.widget.show(this.widgetWrapper);
+        if (this.nodeInternal.retained && !this.isClosingTag()) {
+            this.setLeadingIcons([
+                html `<devtools-icon class="extra-small" name="small-status-dot" style="color:var(--icon-error); vertical-align:middle"></devtools-icon>`,
+            ]);
+            this.listItemNode.classList.add('detached-elements-detached-node');
+            this.listItemNode.style.setProperty('display', '-webkit-box');
+            this.listItemNode.setAttribute('title', 'Retained Node');
+        }
+        if (this.nodeInternal.detached && !this.isClosingTag()) {
+            this.listItemNode.setAttribute('title', 'Detached Tree Node');
+        }
+    }
+    highlightSearchResults(searchQuery) {
+        this.widget.highlightSearchResults(searchQuery);
+    }
+    hideSearchHighlights() {
+        this.widget.hideSearchHighlights();
+    }
+    copyStyles() {
+        return this.widget.copyStyles();
+    }
+    addIssue(issue) {
+        this.widget.addIssue(issue);
+    }
+    get issuesByNodeElement() {
+        return this.widget.issuesByNodeElement;
+    }
+    removeIssue(issue) {
+        this.widget.removeIssue(issue);
+    }
+    setInClipboard(inClipboard) {
+        this.widget.setInClipboard(inClipboard);
+        if (this.listItemElement) {
+            this.listItemElement.classList.toggle('in-clipboard', inClipboard);
+        }
+    }
+    get isEditing() {
+        return this.widget.isEditing;
+    }
+    expandedChildrenLimit() {
+        return this.widget.expandedChildrenLimit();
+    }
+    setExpandedChildrenLimit(limit) {
+        this.widget.setExpandedChildrenLimit(limit);
+    }
+    highlightAttribute(name) {
+        this.widget.highlightAttribute(name);
+    }
+    populateTextContextMenu(contextMenu, textNode) {
+        return this.widget.populateTextContextMenu(contextMenu, textNode);
+    }
+    populateTagContextMenu(contextMenu, event) {
+        return this.widget.populateTagContextMenu(contextMenu, event);
+    }
+    populateNodeContextMenu(contextMenu) {
+        return this.widget.populateNodeContextMenu(contextMenu);
+    }
+    populatePseudoElementContextMenu(contextMenu) {
+        this.widget.populatePseudoElementContextMenu(contextMenu);
+    }
+    populateProcessingElementContextMenu(contextMenu) {
+        return this.widget.populateProcessingElementContextMenu(contextMenu);
+    }
+    hasEditableNode() {
+        return this.widget.hasEditableNode();
+    }
+    toggleEditAsHTML(callback, startEditing) {
+        this.widget.toggleEditAsHTML(callback, startEditing);
+    }
+    get expandAllButtonElement() {
+        return this.widget.expandAllButtonElement;
+    }
+    set expandAllButtonElement(element) {
+        this.widget.expandAllButtonElement = element;
+    }
+    node() {
+        return this.nodeInternal;
+    }
+    isClosingTag() {
+        return this.tagTypeContext.tagType === "CLOSING_TAG" /* TagType.CLOSING */;
+    }
+    onattach() {
+        this.widget.onattach();
+    }
+    async onpopulate() {
+        return await this.widget.onpopulate();
+    }
+    async expandRecursively() {
+        await this.nodeInternal.getSubtree(100, true);
+        await super.expandRecursively(Number.MAX_VALUE);
+    }
+    onexpand() {
+        this.widget.onexpand();
+    }
+    oncollapse() {
+        this.widget.oncollapse();
+    }
+    select(omitFocus, selectedByUser) {
+        if (this.widget.editing) {
+            return false;
+        }
+        return super.select(omitFocus, selectedByUser);
+    }
+    onselect(selectedByUser) {
+        return this.widget.onselect(selectedByUser);
+    }
+    ondelete() {
+        return this.widget.ondelete();
+    }
+    onenter() {
+        return this.widget.onenter();
+    }
+    selectOnMouseDown(event) {
+        super.selectOnMouseDown(event);
+        if (this.widget.editing) {
             return;
         }
-        let constructorObject = null;
-        try {
-            const result = await object.callFunction(function () {
-                const selector = this.getAttribute('is') || this.tagName.toLowerCase();
-                return (typeof customElements !== 'undefined' && customElements.get(selector)) || this.constructor;
-            });
-            constructorObject = result.object;
+        // Prevent selecting the nearest word on double click.
+        if (event.detail >= 2) {
+            event.preventDefault();
         }
-        finally {
-            object.release();
+    }
+    ondblclick(event) {
+        return this.widget.ondblclick(event);
+    }
+    onbind() {
+        this.widget.onbind();
+    }
+    onunbind() {
+        this.widget.onunbind();
+    }
+    static animateOnDOMUpdate(treeElement) {
+        ElementsTreeWidget.animateOnDOMUpdate(treeElement);
+    }
+    static visibleShadowRoots(node) {
+        return ElementsTreeWidget.visibleShadowRoots(node);
+    }
+    static canShowInlineText(node) {
+        return ElementsTreeWidget.canShowInlineText(node);
+    }
+    static populateForcedPseudoStateItems(contextMenu, node) {
+        ElementsTreeWidget.populateForcedPseudoStateItems(contextMenu, node);
+    }
+    set hovered(isHovered) {
+        this.widget.hovered = isHovered;
+        if (this.listItemElement) {
+            this.listItemElement.classList.toggle('hovered', isHovered);
         }
-        if (!constructorObject) {
-            return;
-        }
-        try {
-            if (constructorObject.type === 'function') {
-                const functionDetails = await SDK.RemoteObject.RemoteFunction.objectAsFunction(constructorObject).targetFunctionDetails();
-                if (functionDetails?.location) {
-                    const uiLocation = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(functionDetails.location);
-                    if (uiLocation) {
-                        void Common.Revealer.reveal(uiLocation);
-                    }
-                }
-            }
-        }
-        finally {
-            constructorObject.release();
-        }
+    }
+    get hovered() {
+        return this.widget.hovered;
+    }
+    updateAdorners() {
+        this.widget.updateAdorners();
+    }
+    get updateComplete() {
+        return this.widget.updateComplete;
+    }
+    requestUpdate() {
+        this.widget.requestUpdate();
+    }
+    updateTitle(updateRecord) {
+        this.widget.updateTitle(updateRecord);
+    }
+    triggerEditAttribute(attributeName) {
+        return this.widget.triggerEditAttribute(attributeName) || false;
+    }
+    editingCancelled(element, tagName) {
+        this.widget.editingCancelled(element, tagName);
+    }
+    updateDecorations() {
+        this.widget.updateDecorations();
+    }
+    async remove() {
+        return await this.widget.remove();
+    }
+    addNewAttribute() {
+        return this.widget.addNewAttribute();
+    }
+    startEditingTagName(tagNameElement) {
+        return this.widget.startEditingTagName(tagNameElement);
+    }
+    startEditingProcessingInstructionValue() {
+        return this.widget.startEditingProcessingInstructionValue();
+    }
+    isDisplayContents() {
+        return this.widget.isDisplayContents();
+    }
+    performUpdate() {
+        this.widget.performUpdate();
     }
 }
 export const InitialChildrenLimit = 500;

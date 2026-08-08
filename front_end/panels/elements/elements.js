@@ -11686,7 +11686,7 @@ import * as Highlighting3 from "./../../ui/components/highlighting/highlighting.
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as UIComponentUtils from "./../../ui/legacy/components/utils/utils.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
-import { html as html13, nothing as nothing5, render as render11 } from "./../../ui/lit/lit.js";
+import { html as html13, nothing as nothing6, render as render11 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/AdoptedStyleSheetTreeElement.js
@@ -11994,6 +11994,7 @@ __export(ElementsTreeElement_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4,
   EditTagBlocklist: () => EditTagBlocklist,
   ElementsTreeElement: () => ElementsTreeElement,
+  ElementsTreeWidget: () => ElementsTreeWidget,
   ForbiddenClosingTagElements: () => ForbiddenClosingTagElements,
   InitialChildrenLimit: () => InitialChildrenLimit,
   adornerRef: () => adornerRef,
@@ -12355,7 +12356,7 @@ function getRegisteredDecorators() {
 }
 
 // gen/front_end/panels/elements/ElementsTreeElement.js
-var { html: html11, nothing: nothing4, render: render9, Directives: { ref: ref3, repeat } } = Lit7;
+var { html: html11, nothing: nothing5, render: render9, Directives: { ref: ref3, repeat } } = Lit7;
 var { animateOn } = UI14.UIUtils;
 var UIStrings13 = {
   /**
@@ -12737,7 +12738,7 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
         }
         return openingTag;
       }
-      if (ElementsTreeElement.canShowInlineText(node)) {
+      if (ElementsTreeWidget.canShowInlineText(node)) {
         const firstChild = node.firstChild;
         if (!firstChild) {
           throw new Error("ElementsTreeElement._nodeTitleInfo expects node.firstChild to be defined.");
@@ -12895,6 +12896,7 @@ function renderLinkifiedValue(value5, node) {
     text: value5,
     preventClick: true,
     showColumnNumber: false,
+    bypassURLTrimming: true,
     onRef: (link2) => {
       ImagePreviewPopover.setImageUrl(link2, rewrittenHref);
     }
@@ -12984,17 +12986,17 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
     if (el) {
       setValueWithEntities(el, value5);
     }
-  }) : nothing4;
+  }) : nothing5;
   const jslog = VisualLogging8.value(name === "style" ? "style-attribute" : "attribute").track({
     change: true,
     dblclick: true
   });
   return html11`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
       ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? Lit7.Directives.until(relationPromise, name) : name}</span>${hasText ? html11`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
-                        ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing4}
-                        ${valueType === 2 ? renderLinkifiedSrcset(Common8.Srcset.parseSrcset(value5), node) : nothing4}
-                        ${linkifyValue && relationPromise ? Lit7.Directives.until(relationPromise, value5) : nothing4}
-                </span>"` : nothing4}</span>`;
+                        ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing5}
+                        ${valueType === 2 ? renderLinkifiedSrcset(Common8.Srcset.parseSrcset(value5), node) : nothing5}
+                        ${linkifyValue && relationPromise ? Lit7.Directives.until(relationPromise, value5) : nothing5}
+                </span>"` : nothing5}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
   const classMap3 = {
@@ -13017,11 +13019,11 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
   const jslog = !isClosingTag ? VisualLogging8.value("tag-name").track({ change: true, dblclick: true }) : "";
   return html11`<span
       class=${Lit7.Directives.classMap(classMap3)} ${setAriaLabel}
-      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing4} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html11` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
+      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing5} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html11` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
 }
 function maybeRenderAdAdorner(input) {
   if (!input.adProvenance) {
-    return nothing4;
+    return nothing5;
   }
   return html11`
     <devtools-adorner
@@ -13042,7 +13044,7 @@ function maybeRenderAdAdorner(input) {
         ${input.adProvenance.filterlistRule ? html11`
           <div class="ad-provenance-tooltip-title">${i18nString12(UIStrings13.filterListRule)}</div>
           <div class="ad-provenance-tooltip-content">${input.adProvenance.filterlistRule}</div>
-        ` : nothing4}
+        ` : nothing5}
 
         ${input.adProvenance.adScriptAncestry && input.target ? html11`
           <div class="ad-provenance-tooltip-title">${i18nString12(UIStrings13.creatorAdScriptAncestry)}</div>
@@ -13063,12 +13065,12 @@ function maybeRenderAdAdorner(input) {
             <div class="ad-provenance-tooltip-content">
               ${input.adProvenance.adScriptAncestry.rootScriptFilterlistRule}
             </div>
-          ` : nothing4}
-        ` : nothing4}
+          ` : nothing5}
+        ` : nothing5}
 
         ${!input.adProvenance.adScriptAncestry && !input.adProvenance.filterlistRule ? html11`
             <div class="ad-provenance-tooltip-title">${i18nString12(UIStrings13.noProvenanceAvailable)}</div>
-          ` : nothing4}
+          ` : nothing5}
       </div>
     </devtools-tooltip>
   `;
@@ -13084,10 +13086,10 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     <div ${ref3((el) => {
     output.contentElement = el;
   })}>
-      ${input.node ? html11`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand)}</span>` : nothing4}
+      ${input.node ? html11`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand)}</span>` : nothing5}
       ${input.isHovered || input.isSelected ? html11`
         <div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>
-      ` : nothing4}
+      ` : nothing5}
       <div class=${Lit7.Directives.classMap(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
@@ -13097,7 +13099,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
              title=${input.decorationsTooltip}>
              ${input.decorations.map((d) => html11`<div class="elements-gutter-decoration" style="--decoration-color: ${d.color}"></div>`)}
              ${input.descendantDecorations.map((d) => html11`<div class="elements-gutter-decoration elements-has-decorated-children" style="--decoration-color: ${d.color}"></div>`)}
-        </div>` : nothing4}
+        </div>` : nothing5}
       </div>
       ${hasAdorners ? html11`<div class="adorner-container ${input.editorState ? "hidden" : ""}">
         ${maybeRenderAdAdorner(input)}
@@ -13108,7 +13110,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           @click=${input.onViewSourceAdornerClick}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}</span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showCustomElementAdorner ? html11`<devtools-adorner
           class="custom-element clickable"
           role=button
@@ -13120,7 +13122,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onCustomElementAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.CUSTOM_ELEMENT}</span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showContainerAdorner ? html11`<devtools-adorner
           class=clickable
           role=button
@@ -13137,7 +13139,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
             <devtools-icon name="container"></devtools-icon>
             <span>${input.containerType}</span>
           </span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showFlexAdorner ? html11`<devtools-adorner
           class=clickable
           role=button
@@ -13151,7 +13153,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onFlexAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.FLEX}</span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showGridAdorner ? html11`<devtools-adorner
           class=clickable
           role=button
@@ -13165,7 +13167,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
           ${adornerRef()}>
           <span>${input.isSubgrid ? ElementsComponents5.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents5.AdornerManager.RegisteredAdorners.GRID}</span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showGridLanesAdorner ? html11`<devtools-adorner
           class=clickable
           role=button
@@ -13179,7 +13181,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.GRID_LANES}</span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showMediaAdorner ? html11`<devtools-adorner
           class=clickable
           role=button
@@ -13193,7 +13195,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           <span class="adorner-with-icon">
             ${ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA}<devtools-icon name="select-element"></devtools-icon>
           </span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showPopoverAdorner ? html11`<devtools-adorner
           class=clickable
           role=button
@@ -13207,7 +13209,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onPopoverAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER}</span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showInterestAdorner ? html11`<devtools-adorner
           class=clickable
           role=button
@@ -13221,7 +13223,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onInterestAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.INTEREST}</span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showTopLayerAdorner ? html11`<devtools-adorner
           class=clickable
           role=button
@@ -13235,7 +13237,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           <span class="adorner-with-icon">
             ${`top-layer (${input.topLayerIndex})`}<devtools-icon name="select-element"></devtools-icon>
           </span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showStartingStyleAdorner ? html11`<devtools-adorner
           class="starting-style"
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE}
@@ -13247,7 +13249,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onStartingStyleAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE}</span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showScrollAdorner ? html11`<devtools-adorner
           class="scroll"
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL}
@@ -13255,7 +13257,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           aria-label=${i18nString12(UIStrings13.elementHasScrollableOverflow)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL}</span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showSlotAdorner ? html11`<devtools-adorner
           class=clickable
           role=button
@@ -13269,7 +13271,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
             <devtools-icon name="select-element"></devtools-icon>
             <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SLOT}</span>
           </span>
-        </devtools-adorner>` : nothing4}
+        </devtools-adorner>` : nothing5}
         ${input.showScrollSnapAdorner ? html11`<devtools-adorner
           class="scroll-snap"
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP}
@@ -13281,11 +13283,11 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onScrollSnapAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP}</span>
-        </devtools-adorner>` : nothing4}
-      </div>` : nothing4}
+        </devtools-adorner>` : nothing5}
+      </div>` : nothing5}
       ${input.isSelected && input.canInspect ? html11`
         <span class="selected-hint ${input.editorState ? "hidden" : ""}" title=${i18nString12(UIStrings13.useSInTheConsoleToReferToThis, { PH1: "$0" })} aria-hidden="true"></span>
-      ` : nothing4}
+      ` : nothing5}
       ${input.showAiButton ? html11`
         <span class="ai-button-container ${input.editorState ? "hidden" : ""}">
           <devtools-floating-button
@@ -13296,7 +13298,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
             @mousedown=${(e) => e.stopPropagation()}>
           </devtools-floating-button>
         </span>
-      ` : nothing4}
+      ` : nothing5}
       ${input.editorState ? html11`<div @keydown=${(event) => {
     if (event.key === "Escape") {
       event.consume(true);
@@ -13305,13 +13307,13 @@ var DEFAULT_VIEW4 = (input, output, target) => {
         <devtools-text-editor .state=${input.editorState} ${ref3((el) => {
     output.editorRef = el;
   })}></devtools-text-editor>
-      </div>` : nothing4}
+      </div>` : nothing5}
     </div>
   `, target);
 };
-var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.TreeElement {
+var ElementsTreeWidget = class _ElementsTreeWidget extends UI14.Widget.Widget {
+  treeElement;
   nodeInternal;
-  treeOutline;
   searchQuery;
   #expandedChildrenLimit;
   decorationsThrottler;
@@ -13328,7 +13330,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   #elementIssues = /* @__PURE__ */ new Map();
   #nodeElementToIssue = /* @__PURE__ */ new Map();
   #highlights = [];
-  tagTypeContext;
   #adornersThrottler = new Common8.Throttler.Throttler(100);
   #containerAdornerActive = false;
   #flexAdornerActive = false;
@@ -13342,52 +13343,27 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   #descendantDecorations = [];
   #decorationsTooltip = "";
   static #adTooltipIdCounter = 0;
-  #adTooltipId = `ad-tooltip-${++_ElementsTreeElement.#adTooltipIdCounter}`;
+  #adTooltipId = `ad-tooltip-${++_ElementsTreeWidget.#adTooltipIdCounter}`;
   #updateRecord = null;
   // Used to add the content to TreeElement's title element.
   // Relied on by web tests.
-  #contentElement;
-  constructor(node, isClosingTag) {
+  constructor(treeElement) {
     super();
+    this.treeElement = treeElement;
+    const node = treeElement.node();
+    const isClosingTag = treeElement.isClosingTag();
     this.nodeInternal = node;
-    this.treeOutline = null;
-    this.listItemElement.setAttribute("jslog", `${VisualLogging8.treeItem().parent("elementsTreeOutline").track({
-      keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End",
-      resize: true,
-      drag: true,
-      click: true
-    })}`);
+    this.treeElement.treeOutline = null;
     this.searchQuery = null;
     this.#expandedChildrenLimit = InitialChildrenLimit;
     this.decorationsThrottler = new Common8.Throttler.Throttler(100);
     this.inClipboard = false;
     this.#hovered = false;
     this.editing = null;
-    if (isClosingTag) {
-      this.tagTypeContext = {
-        tagType: "CLOSING_TAG"
-        /* TagType.CLOSING */
-      };
-    } else {
-      this.tagTypeContext = {
-        tagType: "OPENING_TAG",
-        canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE
-      };
+    if (!isClosingTag) {
       void this.#updateAdorners();
     }
     this.expandAllButtonElement = null;
-    this.performUpdate();
-    if (this.nodeInternal.retained && !this.isClosingTag()) {
-      this.setLeadingIcons([
-        html11`<devtools-icon class="extra-small" name="small-status-dot" style="color:var(--icon-error); vertical-align:middle"></devtools-icon>`
-      ]);
-      this.listItemNode.classList.add("detached-elements-detached-node");
-      this.listItemNode.style.setProperty("display", "-webkit-box");
-      this.listItemNode.setAttribute("title", "Retained Node");
-    }
-    if (this.nodeInternal.detached && !this.isClosingTag()) {
-      this.listItemNode.setAttribute("title", "Detached Tree Node");
-    }
   }
   static animateOnDOMUpdate(treeElement) {
     const tagName = treeElement.listItemElement.querySelector(".webkit-html-tag-name");
@@ -13404,7 +13380,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     return roots;
   }
   static canShowInlineText(node) {
-    if (node.contentDocument() || node.templateContent() || _ElementsTreeElement.visibleShadowRoots(node).length || node.hasPseudoElements()) {
+    if (node.contentDocument() || node.templateContent() || _ElementsTreeWidget.visibleShadowRoots(node).length || node.hasPseudoElements()) {
       return false;
     }
     if (node.nodeType() !== Node.ELEMENT_NODE) {
@@ -13432,54 +13408,59 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       node.domModel().cssModel().forcePseudoState(node, pseudoState, enabled);
     }
   }
-  // ClearNode param is used to clean DOM after in-place editing..
-  performUpdate(clearNode = false) {
+  #clearDOMNextUpdate = false;
+  performUpdate() {
     if (this.editing && !this.#editorState) {
       return;
     }
+    if (this.#clearDOMNextUpdate) {
+      this.#clearDOMNextUpdate = false;
+      Lit7.render(Lit7.nothing, this.contentElement, { host: this });
+    }
+    const isClosingTag = this.treeElement.isClosingTag();
     const output = {};
     DEFAULT_VIEW4({
-      node: !clearNode ? this.nodeInternal : null,
-      isClosingTag: this.isClosingTag(),
-      expanded: this.expanded,
-      isExpandable: this.isExpandable(),
-      isXMLMimeType: Boolean(this.treeOutline?.isXMLMimeType),
+      node: this.nodeInternal,
+      isClosingTag,
+      expanded: this.treeElement.expanded,
+      isExpandable: this.treeElement.isExpandable(),
+      isXMLMimeType: Boolean(this.treeElement.treeOutline?.isXMLMimeType),
       updateRecord: this.#updateRecord,
       onHighlightSearchResults: () => this.#highlightSearchResults(),
-      onExpand: () => this.expand(),
+      onExpand: () => this.treeElement.expand(),
       containerAdornerActive: this.#containerAdornerActive,
       adProvenance: this.nodeInternal.adProvenance(),
       adTooltipId: this.#adTooltipId,
       target: this.nodeInternal.domModel().target(),
-      showContainerAdorner: Boolean(this.#layout?.containerType) && !this.isClosingTag(),
+      showContainerAdorner: Boolean(this.#layout?.containerType) && !isClosingTag,
       containerType: this.#layout?.containerType,
-      showFlexAdorner: Boolean(this.#layout?.isFlex) && !this.isClosingTag(),
+      showFlexAdorner: Boolean(this.#layout?.isFlex) && !isClosingTag,
       flexAdornerActive: this.#flexAdornerActive,
-      showGridAdorner: Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
-      showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !this.isClosingTag(),
-      showMediaAdorner: this.node().isMediaNode() && !this.isClosingTag(),
-      showPopoverAdorner: Boolean(this.node().attributes().find((attr) => attr.name === "popover")) && !this.isClosingTag(),
-      showInterestAdorner: Boolean(Root4.Runtime.hostConfig.devToolsAllowInterestForcing?.enabled) && Boolean(this.node().attributes().find((attr) => attr.name === "interesttarget" || attr.name === "interestfor")) && !this.isClosingTag(),
-      showTopLayerAdorner: this.node().topLayerIndex() !== -1 && !this.isClosingTag(),
+      showGridAdorner: Boolean(this.#layout?.isGrid) && !isClosingTag,
+      showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !isClosingTag,
+      showMediaAdorner: this.node().isMediaNode() && !isClosingTag,
+      showPopoverAdorner: Boolean(this.node().attributes().find((attr) => attr.name === "popover")) && !isClosingTag,
+      showInterestAdorner: Boolean(Root4.Runtime.hostConfig.devToolsAllowInterestForcing?.enabled) && Boolean(this.node().attributes().find((attr) => attr.name === "interesttarget" || attr.name === "interestfor")) && !isClosingTag,
+      showTopLayerAdorner: this.node().topLayerIndex() !== -1 && !isClosingTag,
       gridAdornerActive: this.#gridAdornerActive,
       popoverAdornerActive: this.#popoverAdornerActive,
       interestAdornerActive: this.#interestAdornerActive,
       isSubgrid: Boolean(this.#layout?.isSubgrid),
-      showViewSourceAdorner: this.nodeInternal.isRootNode() && isOpeningTag(this.tagTypeContext),
-      showScrollAdorner: (this.node().nodeName() === "HTML" && this.node().ownerDocument?.isScrollable() || this.node().nodeName() !== "#document" && this.node().isScrollable()) && !this.isClosingTag(),
+      showViewSourceAdorner: this.nodeInternal.isRootNode() && isOpeningTag(this.treeElement.tagTypeContext),
+      showScrollAdorner: (this.node().nodeName() === "HTML" && this.node().ownerDocument?.isScrollable() || this.node().nodeName() !== "#document" && this.node().isScrollable()) && !isClosingTag,
       decorations: this.#decorations,
-      descendantDecorations: this.expanded ? [] : this.#descendantDecorations,
+      descendantDecorations: this.treeElement.expanded ? [] : this.#descendantDecorations,
       decorationsTooltip: this.#decorationsTooltip,
       indent: this.computeLeftIndent(),
-      showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !this.isClosingTag(),
+      showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
       scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
-      showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
-      showCustomElementAdorner: this.node().isCustomElement() && !this.isClosingTag(),
-      onCustomElementAdornerClick: this.treeOutline?.disableEdits ? () => {
+      showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !isClosingTag,
+      showCustomElementAdorner: this.node().isCustomElement() && !isClosingTag,
+      onCustomElementAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => {
       } : (event) => void this.#onCustomElementAdornerClick(event),
-      showStartingStyleAdorner: this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
+      showStartingStyleAdorner: this.nodeInternal.affectedByStartingStyles() && !isClosingTag,
       startingStyleAdornerActive: this.#startingStyleAdornerActive,
-      onStartingStyleAdornerClick: this.treeOutline?.disableEdits ? () => {
+      onStartingStyleAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => {
       } : (event) => this.#onStartingStyleAdornerClick(event),
       onSlotAdornerClick: () => {
         if (this.nodeInternal.assignedSlot) {
@@ -13490,38 +13471,38 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         }
       },
       topLayerIndex: this.node().topLayerIndex(),
-      onViewSourceAdornerClick: this.treeOutline?.disableEdits ? () => {
+      onViewSourceAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => {
       } : this.revealHTMLInSources.bind(this),
       onGutterClick: this.showContextMenu.bind(this),
-      onContainerAdornerClick: this.treeOutline?.disableEdits ? () => {
+      onContainerAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => {
       } : (event) => this.#onContainerAdornerClick(event),
-      onFlexAdornerClick: this.treeOutline?.disableEdits ? () => {
+      onFlexAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => {
       } : (event) => this.#onFlexAdornerClick(event),
-      onGridAdornerClick: this.treeOutline?.disableEdits ? () => {
+      onGridAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => {
       } : (event) => this.#onGridAdornerClick(event),
-      onMediaAdornerClick: this.treeOutline?.disableEdits ? () => {
+      onMediaAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => {
       } : (event) => this.#onMediaAdornerClick(event),
-      onPopoverAdornerClick: this.treeOutline?.disableEdits ? () => {
+      onPopoverAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => {
       } : (event) => this.#onPopoverAdornerClick(event),
-      onInterestAdornerClick: this.treeOutline?.disableEdits ? () => {
+      onInterestAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => {
       } : (event) => this.#onInterestAdornerClick(event),
-      onScrollSnapAdornerClick: this.treeOutline?.disableEdits ? () => {
+      onScrollSnapAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => {
       } : (event) => this.#onScrollSnapAdornerClick(event),
-      onTopLayerAdornerClick: this.treeOutline?.disableEdits ? () => {
+      onTopLayerAdornerClick: this.treeElement.treeOutline?.disableEdits ? () => {
       } : () => {
-        if (!this.treeOutline) {
+        if (!this.treeElement.treeOutline) {
           return;
         }
-        this.treeOutline.revealInTopLayer(this.node());
+        this.treeElement.treeOutline.revealInTopLayer(this.node());
       },
       isHovered: this.#hovered,
-      isSelected: this.selected,
+      isSelected: this.treeElement.selected,
       canInspect: this.node().canInspectNode(),
-      showAiButton: Boolean(this.#hovered || this.selected) && this.node().nodeType() === Node.ELEMENT_NODE && this.isAiButtonEnabled() && this.treeOutline?.showAIButton,
+      showAiButton: Boolean(this.#hovered || this.treeElement.selected) && this.node().nodeType() === Node.ELEMENT_NODE && this.isAiButtonEnabled() && this.treeElement.treeOutline?.showAIButton,
       aiButtonTitle: this.isAiButtonEnabled() ? UI14.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button").title() : void 0,
       onAiButtonClick: (ev) => {
         ev.stopPropagation();
-        this.select(true, false);
+        this.treeElement.select(true, false);
         const action2 = UI14.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button");
         if (action2) {
           void action2.execute();
@@ -13529,11 +13510,44 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       },
       editorState: this.#editorState,
       editorWidth: this.#editorWidth
-    }, output, this.listItemElement);
-    this.#contentElement = output.contentElement;
+    }, output, this.contentElement);
     this.#editorRef = output.editorRef;
     if (this.#updateRecord) {
       this.#updateRecord = null;
+    }
+  }
+  async #onCustomElementAdornerClick(event) {
+    event.stopPropagation();
+    const node = this.node();
+    const object = await node.resolveToObject("");
+    if (!object) {
+      return;
+    }
+    let constructorObject = null;
+    try {
+      const result = await object.callFunction(function() {
+        const selector = this.getAttribute("is") || this.tagName.toLowerCase();
+        return typeof customElements !== "undefined" && customElements.get(selector) || this.constructor;
+      });
+      constructorObject = result.object;
+    } finally {
+      object.release();
+    }
+    if (!constructorObject) {
+      return;
+    }
+    try {
+      if (constructorObject.type === "function") {
+        const functionDetails = await SDK12.RemoteObject.RemoteFunction.objectAsFunction(constructorObject).targetFunctionDetails();
+        if (functionDetails?.location) {
+          const uiLocation = await Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(functionDetails.location);
+          if (uiLocation) {
+            void Common8.Revealer.reveal(uiLocation);
+          }
+        }
+      }
+    } finally {
+      constructorObject.release();
     }
   }
   #onContainerAdornerClick(event) {
@@ -13605,13 +13619,13 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
   }
   highlightAttribute(attributeName) {
-    let animationElement = this.listItemElement.querySelector(".webkit-html-tag-name") ?? this.listItemElement;
+    let animationElement = this.contentElement.querySelector(".webkit-html-tag-name") ?? this.element;
     if (this.nodeInternal.getAttribute(attributeName) !== void 0) {
-      const tag = this.listItemElement.getElementsByClassName("webkit-html-tag")[0];
-      const attributes = tag.getElementsByClassName("webkit-html-attribute");
+      const tag = this.contentElement.querySelector(".webkit-html-tag");
+      const attributes = tag?.getElementsByClassName("webkit-html-attribute") ?? [];
       for (const attribute of attributes) {
         const attributeElement = attribute.getElementsByClassName("webkit-html-attribute-name")[0];
-        if (attributeElement.textContent === attributeName) {
+        if (attributeElement?.textContent === attributeName) {
           animationElement = attributeElement;
           break;
         }
@@ -13619,16 +13633,13 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
     UI14.UIUtils.runCSSAnimationOnce(animationElement, DOM_UPDATE_ANIMATION_CLASS_NAME);
   }
-  isClosingTag() {
-    return !isOpeningTag(this.tagTypeContext);
-  }
   isDisplayContents() {
     return Boolean(this.#layout?.isContents);
   }
   node() {
     return this.nodeInternal;
   }
-  isEditing() {
+  get isEditing() {
     return Boolean(this.editing);
   }
   highlightSearchResults(searchQuery) {
@@ -13646,7 +13657,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       return;
     }
     this.inClipboard = inClipboard;
-    this.listItemElement.classList.toggle("in-clipboard", inClipboard);
+    this.requestUpdate();
   }
   get hovered() {
     return this.#hovered;
@@ -13656,14 +13667,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       return;
     }
     this.#hovered = isHovered;
-    if (this.listItemElement) {
-      if (isHovered) {
-        this.listItemElement.classList.add("hovered");
-      } else {
-        this.listItemElement.classList.remove("hovered");
-      }
-      this.performUpdate();
-    }
+    this.requestUpdate();
   }
   addIssue(newIssue) {
     if (this.#elementIssues.has(newIssue.primaryKey())) {
@@ -13687,7 +13691,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     return this.#nodeElementToIssue;
   }
   #highlightViolatingAttr(name, issue) {
-    const tag = this.listItemElement.getElementsByClassName("webkit-html-tag")[0];
+    const tag = this.contentElement.querySelectorAll(".webkit-html-tag")[0];
     const attributes = tag.getElementsByClassName("webkit-html-attribute");
     for (const attribute of attributes) {
       if (attribute.getElementsByClassName("webkit-html-attribute-name")[0].textContent === name) {
@@ -13698,7 +13702,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
   }
   #highlightTagAsViolating(issue) {
-    const tagElement = this.listItemElement.getElementsByClassName("webkit-html-tag-name")[0];
+    const tagElement = this.contentElement.querySelectorAll(".webkit-html-tag-name")[0];
     tagElement.classList.add("violating-element");
     this.#updateNodeElementToIssue(tagElement, issue);
   }
@@ -13709,7 +13713,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       this.#nodeElementToIssue.set(nodeElement, issues);
     }
     issues.push(issue);
-    this.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
+    this.treeElement.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
   }
   removeIssue(issue) {
     if (!this.#elementIssues.has(issue.primaryKey())) {
@@ -13730,7 +13734,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
   }
   #undoHighlightViolatingAttr(name, issue) {
-    const violatingAttributes = this.listItemElement.querySelectorAll(".webkit-html-attribute-name.violating-element");
+    const violatingAttributes = this.contentElement.querySelectorAll(".webkit-html-attribute-name.violating-element");
     for (const attributeElement of violatingAttributes) {
       if (attributeElement.textContent === name) {
         this.#removeFromNodeElementToIssue(attributeElement, issue);
@@ -13741,7 +13745,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
   }
   #undoHighlightTagAsViolating(issue) {
-    const tagElement = this.listItemElement.getElementsByClassName("webkit-html-tag-name")[0];
+    const tagElement = this.contentElement.querySelectorAll(".webkit-html-tag-name")[0];
     if (!tagElement) {
       return;
     }
@@ -13761,7 +13765,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     } else {
       this.#nodeElementToIssue.set(nodeElement, issues);
     }
-    this.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
+    this.treeElement.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
   }
   expandedChildrenLimit() {
     return this.#expandedChildrenLimit;
@@ -13770,12 +13774,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     this.#expandedChildrenLimit = expandedChildrenLimit;
   }
   onTopLayerIndexChanged() {
-    this.performUpdate();
+    this.requestUpdate();
   }
   onbind() {
-    this.performUpdate();
-    if (this.treeOutline && !this.isClosingTag()) {
-      this.treeOutline.treeElementByNode.set(this.nodeInternal, this);
+    this.requestUpdate();
+    if (this.treeElement.treeOutline && !this.treeElement.isClosingTag()) {
+      this.treeElement.treeOutline.treeElementByNode.set(this.nodeInternal, this.treeElement);
       this.nodeInternal.addEventListener(SDK12.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
       this.nodeInternal.addEventListener(SDK12.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
       this.nodeInternal.addEventListener(SDK12.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated, this);
@@ -13862,15 +13866,15 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       indent: 0,
       editorState: null,
       editorWidth: null
-    }, {}, this.listItemElement);
+    }, {}, this.contentElement);
   }
   onunbind() {
     if (this.editing) {
       this.editing.cancel();
     }
     this.clearView();
-    if (this.treeOutline && this.treeOutline.treeElementByNode.get(this.nodeInternal) === this) {
-      this.treeOutline.treeElementByNode.delete(this.nodeInternal);
+    if (this.treeElement.treeOutline && this.treeElement.treeOutline.treeElementByNode.get(this.nodeInternal) === this.treeElement) {
+      this.treeElement.treeOutline.treeElementByNode.delete(this.nodeInternal);
     }
     this.nodeInternal.removeEventListener(SDK12.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
     this.nodeInternal.removeEventListener(SDK12.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
@@ -13888,19 +13892,19 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   }
   #onPersistentContainerQueryOverlayStateChanged(event) {
     this.#containerAdornerActive = event.data.enabled;
-    this.performUpdate();
+    this.requestUpdate();
   }
   #onPersistentFlexContainerOverlayStateChanged(event) {
     this.#flexAdornerActive = event.data.enabled;
-    this.performUpdate();
+    this.requestUpdate();
   }
   #onPersistentGridOverlayStateChanged(event) {
     this.#gridAdornerActive = event.data.enabled;
-    this.performUpdate();
+    this.requestUpdate();
   }
   #onPersistentScrollSnapOverlayStateChanged(event) {
     this.#scrollSnapAdornerActive = event.data.enabled;
-    this.performUpdate();
+    this.requestUpdate();
   }
   #onScrollSnapAdornerClick(event) {
     event.stopPropagation();
@@ -13918,58 +13922,48 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   }
   onattach() {
     if (this.#hovered) {
-      this.listItemElement.classList.add("hovered");
-      this.performUpdate();
+      this.element.classList.add("hovered");
+      this.requestUpdate();
     }
-    this.updateTitle();
-    this.listItemElement.draggable = true;
+    this.treeElement.updateTitle();
+    this.element.draggable = true;
   }
   async onpopulate() {
-    if (this.treeOutline) {
-      return await this.treeOutline.populateTreeElement(this);
+    if (this.treeElement.treeOutline) {
+      return await this.treeElement.treeOutline.populateTreeElement(this.treeElement);
     }
-  }
-  async expandRecursively() {
-    await this.nodeInternal.getSubtree(100, true);
-    await super.expandRecursively(Number.MAX_VALUE);
   }
   onexpand() {
-    if (this.isClosingTag()) {
+    if (this.treeElement.isClosingTag()) {
       return;
     }
-    this.updateTitle();
+    this.treeElement.updateTitle();
   }
   oncollapse() {
-    if (this.isClosingTag()) {
+    if (this.treeElement.isClosingTag()) {
       return;
     }
-    this.updateTitle();
-  }
-  select(omitFocus, selectedByUser) {
-    if (this.editing) {
-      return false;
-    }
-    return super.select(omitFocus, selectedByUser);
+    this.treeElement.updateTitle();
   }
   onselect(selectedByUser) {
-    if (!this.treeOutline) {
+    if (!this.treeElement.treeOutline) {
       return false;
     }
-    this.treeOutline.suppressRevealAndSelect = true;
-    this.treeOutline.selectDOMNode(this.nodeInternal, selectedByUser);
+    this.treeElement.treeOutline.suppressRevealAndSelect = true;
+    this.treeElement.treeOutline.selectDOMNode(this.nodeInternal, selectedByUser);
     if (selectedByUser) {
       this.nodeInternal.highlight();
       Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
     }
-    this.performUpdate();
-    this.treeOutline.suppressRevealAndSelect = false;
+    this.requestUpdate();
+    this.treeElement.treeOutline.suppressRevealAndSelect = false;
     return true;
   }
   ondelete() {
-    if (!this.treeOutline) {
+    if (!this.treeElement.treeOutline) {
       return false;
     }
-    const startTagTreeElement = this.treeOutline.findTreeElement(this.nodeInternal);
+    const startTagTreeElement = this.treeElement.treeOutline.findTreeElement(this.nodeInternal);
     startTagTreeElement ? void startTagTreeElement.remove() : void this.remove();
     return true;
   }
@@ -13980,24 +13974,16 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     this.startEditing();
     return true;
   }
-  selectOnMouseDown(event) {
-    super.selectOnMouseDown(event);
-    if (this.editing) {
-      return;
-    }
-    if (event.detail >= 2) {
-      event.preventDefault();
-    }
-  }
   ondblclick(event) {
-    if (this.editing || this.isClosingTag()) {
+    if (this.editing || this.treeElement.isClosingTag()) {
       return false;
     }
-    if (this.startEditingTarget(event.target)) {
+    const target = event.composedPath()[0] || event.target;
+    if (this.startEditingTarget(target)) {
       return false;
     }
-    if (this.isExpandable() && !this.expanded) {
-      this.expand();
+    if (this.treeElement.isExpandable() && !this.treeElement.expanded) {
+      this.treeElement.expand();
     }
     return false;
   }
@@ -14020,7 +14006,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
   }
   startEditingTarget(eventTarget) {
-    if (!this.treeOutline || this.treeOutline.selectedDOMNode() !== this.nodeInternal) {
+    if (!this.treeElement.treeOutline || this.treeElement.treeOutline.selectedDOMNode() !== this.nodeInternal) {
       return false;
     }
     if (this.nodeInternal.nodeType() !== Node.ELEMENT_NODE && this.nodeInternal.nodeType() !== Node.TEXT_NODE && this.nodeInternal.nodeType() !== Node.PROCESSING_INSTRUCTION_NODE) {
@@ -14036,16 +14022,16 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
     const tagName = eventTarget.enclosingNodeOrSelfWithClass("webkit-html-tag-name");
     if (tagName) {
-      return this.startEditingTagName(tagName);
+      return this.treeElement.startEditingTagName(tagName);
     }
     const newAttribute = eventTarget.enclosingNodeOrSelfWithClass("add-attribute");
     if (newAttribute) {
-      return this.addNewAttribute();
+      return this.treeElement.addNewAttribute();
     }
     return false;
   }
   showContextMenu(event) {
-    this.treeOutline && void this.treeOutline.showContextMenu(this, event);
+    this.treeElement.treeOutline && void this.treeElement.treeOutline.showContextMenu(this.treeElement, event);
   }
   revealHTMLInSources() {
     const frameOwnerId = this.nodeInternal.frameOwnerFrameId();
@@ -14058,32 +14044,32 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
   }
   async populateTagContextMenu(contextMenu, event) {
-    const treeElement = this.isClosingTag() && this.treeOutline ? this.treeOutline.findTreeElement(this.nodeInternal) : this;
+    const treeElement = this.treeElement.isClosingTag() && this.treeElement.treeOutline ? this.treeElement.treeOutline.findTreeElement(this.nodeInternal) : this.treeElement;
     if (!treeElement) {
       return;
     }
     contextMenu.editSection().appendItem(i18nString12(UIStrings13.addAttribute), treeElement.addNewAttribute.bind(treeElement), { jslogContext: "add-attribute" });
-    const target = event.target;
+    const target = event.composedPath()[0] || event.target;
     const attribute = target.enclosingNodeOrSelfWithClass("webkit-html-attribute");
     const newAttribute = target.enclosingNodeOrSelfWithClass("add-attribute");
     if (attribute && !newAttribute) {
       contextMenu.editSection().appendItem(i18nString12(UIStrings13.editAttribute), this.startEditingAttribute.bind(this, attribute, target), { jslogContext: "edit-attribute" });
     }
     await this.populateNodeContextMenu(contextMenu);
-    _ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, treeElement.node());
+    _ElementsTreeWidget.populateForcedPseudoStateItems(contextMenu, treeElement.node());
     this.populateScrollIntoView(contextMenu);
     contextMenu.viewSection().appendItem(i18nString12(UIStrings13.focus), async () => {
       await this.nodeInternal.focus();
     }, { jslogContext: "focus" });
   }
   populatePseudoElementContextMenu(contextMenu) {
-    if (this.childCount() !== 0) {
+    if (this.treeElement.childCount() !== 0) {
       this.populateExpandRecursively(contextMenu);
     }
     this.populateScrollIntoView(contextMenu);
   }
   populateExpandRecursively(contextMenu) {
-    contextMenu.viewSection().appendItem(i18nString12(UIStrings13.expandRecursively), this.expandRecursively.bind(this), { jslogContext: "expand-recursively" });
+    contextMenu.viewSection().appendItem(i18nString12(UIStrings13.expandRecursively), this.treeElement.expandRecursively.bind(this.treeElement), { jslogContext: "expand-recursively" });
   }
   populateScrollIntoView(contextMenu) {
     contextMenu.viewSection().appendItem(i18nString12(UIStrings13.scrollIntoView), () => this.nodeInternal.scrollIntoView(), { jslogContext: "scroll-into-view" });
@@ -14105,7 +14091,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     const isShadowRoot = this.nodeInternal.isShadowRoot();
     const createShortcut = UI14.KeyboardShortcut.KeyboardShortcut.shortcutToString.bind(null);
     const modifier = UI14.KeyboardShortcut.Modifiers.CtrlOrMeta.value;
-    const treeOutline = this.treeOutline;
+    const treeOutline = this.treeElement.treeOutline;
     if (!treeOutline) {
       return;
     }
@@ -14276,13 +14262,16 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
     menuItem = contextMenu.clipboardSection().appendItem(i18nString12(UIStrings13.paste), treeOutline.pasteNode.bind(treeOutline, this.nodeInternal), { disabled: !treeOutline.canPaste(this.nodeInternal), jslogContext: "paste" });
     menuItem.setShortcut(createShortcut("V", modifier));
-    menuItem = contextMenu.debugSection().appendCheckboxItem(i18nString12(UIStrings13.hideElement), treeOutline.toggleHideElement.bind(treeOutline, this.nodeInternal), { checked: treeOutline.isToggledToHidden(this.nodeInternal), jslogContext: "elements.hide-element" });
+    menuItem = contextMenu.debugSection().appendCheckboxItem(i18nString12(UIStrings13.hideElement), treeOutline.toggleHideElement.bind(treeOutline, this.nodeInternal), {
+      checked: treeOutline.isToggledToHidden(this.nodeInternal),
+      jslogContext: "elements.hide-element"
+    });
     menuItem.setShortcut(UI14.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("elements.hide-element") || "");
     if (isEditable) {
       contextMenu.editSection().appendItem(i18nString12(UIStrings13.deleteElement), this.remove.bind(this), { jslogContext: "delete-element" });
     }
     this.populateExpandRecursively(contextMenu);
-    contextMenu.viewSection().appendItem(i18nString12(UIStrings13.collapseChildren), this.collapseChildren.bind(this), { jslogContext: "collapse-children" });
+    contextMenu.viewSection().appendItem(i18nString12(UIStrings13.collapseChildren), this.treeElement.collapseChildren.bind(this.treeElement), { jslogContext: "collapse-children" });
     contextMenu.viewSection().appendItem(i18nString12(UIStrings13.switchToAccessibilityTree), () => ElementsPanel.instance().toggleAccessibilityTree(), { jslogContext: "switch-to-accessibility-tree" });
     const deviceModeWrapperAction = new Emulation.DeviceModeView.ActionDelegate();
     contextMenu.viewSection().appendItem(i18nString12(UIStrings13.captureNodeScreenshot), deviceModeWrapperAction.handleAction.bind(null, UI14.Context.Context.instance(), "emulation.capture-node-screenshot"), { jslogContext: "emulation.capture-node-screenshot" });
@@ -14297,7 +14286,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
   }
   async populateProcessingElementContextMenu(contextMenu) {
-    const treeOutline = this.treeOutline;
+    const treeOutline = this.treeElement.treeOutline;
     if (!treeOutline) {
       return;
     }
@@ -14309,16 +14298,16 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     contextMenu.editSection().appendItem(i18nString12(UIStrings13.deleteElement), this.remove.bind(this), { jslogContext: "delete-element" });
   }
   startEditing() {
-    if (!this.treeOutline || this.treeOutline.selectedDOMNode() !== this.nodeInternal) {
+    if (!this.treeElement.treeOutline || this.treeElement.treeOutline.selectedDOMNode() !== this.nodeInternal) {
       return;
     }
-    const listItem = this.listItemElement;
-    if (isOpeningTag(this.tagTypeContext) && this.tagTypeContext.canAddAttributes) {
+    const listItem = this.element;
+    if (isOpeningTag(this.treeElement.tagTypeContext) && this.treeElement.tagTypeContext.canAddAttributes) {
       const attribute = listItem.getElementsByClassName("webkit-html-attribute")[0];
       if (attribute) {
         return this.startEditingAttribute(attribute, attribute.getElementsByClassName("webkit-html-attribute-value")[0]);
       }
-      return this.addNewAttribute();
+      return this.treeElement.addNewAttribute();
     }
     if (this.nodeInternal.nodeType() === Node.TEXT_NODE) {
       const textNode = listItem.getElementsByClassName("webkit-html-text-node")[0];
@@ -14327,12 +14316,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       }
     }
     if (this.nodeInternal.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-      return this.startEditingProcessingInstructionValue();
+      return this.treeElement.startEditingProcessingInstructionValue();
     }
     return;
   }
   startEditingProcessingInstructionValue() {
-    const processingInstructionValue = this.listItemElement.getElementsByClassName("webkit-html-processing-instruction-value")[0];
+    const processingInstructionValue = this.contentElement.querySelectorAll(".webkit-html-processing-instruction-value")[0];
     if (processingInstructionValue) {
       return this.startEditingTextNode(processingInstructionValue);
     }
@@ -14345,13 +14334,13 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     attr.style.marginLeft = "2px";
     attr.style.marginRight = "2px";
     attr.setAttribute("jslog", `${VisualLogging8.value("new-attribute").track({ change: true, resize: true })}`);
-    const tag = this.listItemElement.getElementsByClassName("webkit-html-tag")[0];
+    const tag = this.contentElement.querySelectorAll(".webkit-html-tag")[0];
     this.insertInLastAttributePosition(tag, attr);
     attr.scrollIntoViewIfNeeded(true);
     return this.startEditingAttribute(attr, attr);
   }
   triggerEditAttribute(attributeName) {
-    const attributeElements = this.listItemElement.getElementsByClassName("webkit-html-attribute-name");
+    const attributeElements = this.contentElement.querySelectorAll(".webkit-html-attribute-name");
     for (let i = 0, len = attributeElements.length; i < len; ++i) {
       if (attributeElements[i].textContent === attributeName) {
         for (let elem = attributeElements[i].nextSibling; elem; elem = elem.nextSibling) {
@@ -14367,7 +14356,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     return;
   }
   startEditingAttribute(attribute, elementForSelection) {
-    console.assert(this.listItemElement.isAncestor(attribute));
+    console.assert(this.element.isAncestor(attribute));
     if (UI14.UIUtils.isBeingEdited(attribute)) {
       return true;
     }
@@ -14412,7 +14401,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       config.setPostKeydownFinishHandler(postKeyDownFinishHandler);
     }
     this.updateEditorHandles(attribute, config);
-    const componentSelection = this.listItemElement.getComponentSelection();
+    const componentSelection = this.element.getComponentSelection();
     componentSelection?.selectAllChildren(elementForSelection);
     return true;
   }
@@ -14430,13 +14419,13 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
     const config = new UI14.InplaceEditor.Config(this.textNodeEditingCommitted.bind(this, textNode), this.editingCancelled.bind(this), null);
     this.updateEditorHandles(textNodeElement, config);
-    const componentSelection = this.listItemElement.getComponentSelection();
+    const componentSelection = this.element.getComponentSelection();
     componentSelection?.selectAllChildren(textNodeElement);
     return true;
   }
   startEditingTagName(tagNameElement) {
     if (!tagNameElement) {
-      tagNameElement = this.listItemElement.getElementsByClassName("webkit-html-tag-name")[0];
+      tagNameElement = this.contentElement.querySelectorAll(".webkit-html-tag-name")[0];
       if (!tagNameElement) {
         return false;
       }
@@ -14481,7 +14470,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     tagNameElement.addEventListener("keydown", keydownListener, false);
     const config = new UI14.InplaceEditor.Config(editingCommitted.bind(this), editingCancelled.bind(this), tagName);
     this.updateEditorHandles(tagNameElement, config);
-    const componentSelection = this.listItemElement.getComponentSelection();
+    const componentSelection = this.element.getComponentSelection();
     componentSelection?.selectAllChildren(tagNameElement);
     return true;
   }
@@ -14505,8 +14494,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     if (this.editing) {
       return;
     }
-    if (this.childrenListElement) {
-      this.childrenListElement.style.display = "none";
+    if (this.treeElement.childrenListElement) {
+      this.treeElement.childrenListElement.style.display = "none";
     }
     const initialValue = convertUnicodeCharsToHTMLEntities(maybeInitialValue).text;
     this.#editorState = CodeMirror2.EditorState.create({
@@ -14582,15 +14571,16 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         })
       ]
     });
-    this.performUpdate();
+    this.requestUpdate();
     resize.call(this);
-    this.#editorRef?.focus();
     this.editing = { commit: commit.bind(this), cancel: dispose.bind(this), resize: resize.bind(this) };
-    this.treeOutline?.setMultilineEditing(this.editing);
+    this.treeElement.treeOutline?.setMultilineEditing(this.editing);
+    await this.updateComplete;
+    this.#editorRef?.focus();
     function resize() {
-      if (this.treeOutline) {
-        this.#editorWidth = this.treeOutline.visibleWidth() - this.computeLeftIndent() - 30;
-        this.performUpdate();
+      if (this.treeElement.treeOutline) {
+        this.#editorWidth = this.treeElement.treeOutline.visibleWidth() - this.computeLeftIndent() - 30;
+        this.requestUpdate();
       }
     }
     function commit() {
@@ -14605,20 +14595,20 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       }
       this.editing = null;
       this.#editorState = null;
-      this.performUpdate();
-      if (this.childrenListElement) {
-        this.childrenListElement.style.removeProperty("display");
+      this.requestUpdate();
+      if (this.treeElement.childrenListElement) {
+        this.treeElement.childrenListElement.style.removeProperty("display");
       }
-      if (this.treeOutline) {
-        this.treeOutline.setMultilineEditing(null);
-        this.treeOutline.focus();
+      if (this.treeElement.treeOutline) {
+        this.treeElement.treeOutline.setMultilineEditing(null);
+        this.treeElement.treeOutline.focus();
       }
       disposeCallback();
     }
   }
   attributeEditingCommitted(element, newText, oldText, attributeName, moveDirection) {
     this.editing = null;
-    const treeOutline = this.treeOutline;
+    const treeOutline = this.treeElement.treeOutline;
     function moveToNextAttributeIfNeeded(error) {
       if (error) {
         this.editingCancelled(element, attributeName);
@@ -14637,12 +14627,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         }
         if (moveDirection === "backward") {
           if (i === 0) {
-            this.startEditingTagName();
+            this.treeElement.startEditingTagName();
           } else {
             this.triggerEditAttribute(attributes[i - 1].name);
           }
         } else if (i === attributes.length - 1) {
-          this.addNewAttribute();
+          this.treeElement.addNewAttribute();
         } else {
           this.triggerEditAttribute(attributes[i + 1].name);
         }
@@ -14658,9 +14648,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         }
       } else if (moveDirection === "forward") {
         if (!Platform7.StringUtilities.isWhitespace(newText)) {
-          this.addNewAttribute();
+          this.treeElement.addNewAttribute();
         } else {
-          this.startEditingTagName();
+          this.treeElement.startEditingTagName();
         }
       }
     }
@@ -14669,7 +14659,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
       return;
     }
-    this.updateTitle();
+    this.treeElement.updateTitle();
     moveToNextAttributeIfNeeded.call(this);
   }
   tagNameEditingCommitted(element, newText, oldText, tagName, moveDirection) {
@@ -14685,18 +14675,18 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
     function moveToNextAttributeIfNeeded() {
       if (this.nodeInternal.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-        this.startEditingProcessingInstructionValue();
+        this.treeElement.startEditingProcessingInstructionValue();
         return;
       }
       if (moveDirection !== "forward") {
-        this.addNewAttribute();
+        this.treeElement.addNewAttribute();
         return;
       }
       const attributes = this.nodeInternal.attributes();
       if (attributes.length > 0) {
         this.triggerEditAttribute(attributes[0].name);
       } else {
-        this.addNewAttribute();
+        this.treeElement.addNewAttribute();
       }
     }
     newText = newText.trim();
@@ -14704,8 +14694,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       cancel();
       return;
     }
-    const treeOutline = this.treeOutline;
-    const wasExpanded = this.expanded;
+    const treeOutline = this.treeElement.treeOutline;
+    const wasExpanded = this.treeElement.expanded;
     this.nodeInternal.setNodeName(newText, (error, newNode) => {
       if (error || !newNode) {
         cancel();
@@ -14716,39 +14706,39 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       }
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
       const newTreeItem = treeOutline.selectNodeAfterEdit(wasExpanded, error, newNode);
-      moveToNextAttributeIfNeeded.call(newTreeItem);
+      if (newTreeItem) {
+        moveToNextAttributeIfNeeded.call(newTreeItem.widget);
+      }
     });
   }
   textNodeEditingCommitted(textNode, _element, newText) {
     this.editing = null;
     function callback() {
-      this.updateTitle();
+      this.#clearDOMNextUpdate = true;
+      this.treeElement.updateTitle();
     }
     textNode.setNodeValue(newText, callback.bind(this));
   }
   editingCancelled(_element, _tagName) {
     this.editing = null;
-    this.updateTitle();
+    this.#clearDOMNextUpdate = true;
+    this.treeElement.updateTitle();
   }
   distinctClosingTagElement() {
-    if (this.expanded) {
-      const closers = this.childrenListElement.querySelectorAll(".close");
+    if (this.treeElement.expanded) {
+      const closers = this.treeElement.childrenListElement.querySelectorAll(".close");
       return closers[closers.length - 1];
     }
-    const tags = this.listItemElement.getElementsByClassName("webkit-html-tag");
+    const tags = this.contentElement.querySelectorAll(".webkit-html-tag");
     return tags.length === 1 ? null : tags[tags.length - 1];
   }
   updateTitle(updateRecord) {
     if (this.editing) {
       return;
     }
-    this.performUpdate(
-      /* clearNode= */
-      true
-    );
     this.#updateRecord = updateRecord ?? null;
     if (this.nodeInternal.nodeType() === Node.DOCUMENT_FRAGMENT_NODE && this.nodeInternal.isInShadowTree() && this.nodeInternal.shadowRootType()) {
-      this.childrenListElement.classList.add("shadow-root");
+      this.treeElement.childrenListElement.classList.add("shadow-root");
       let depth = 4;
       for (let node = this.nodeInternal; depth && node; node = node.parentNode) {
         if (node.nodeType() === Node.DOCUMENT_FRAGMENT_NODE) {
@@ -14756,15 +14746,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         }
       }
       if (!depth) {
-        this.childrenListElement.classList.add("shadow-root-deep");
+        this.treeElement.childrenListElement.classList.add("shadow-root-deep");
       } else {
-        this.childrenListElement.classList.add("shadow-root-depth-" + depth);
+        this.treeElement.childrenListElement.classList.add("shadow-root-depth-" + depth);
       }
     }
     this.performUpdate();
-    if (this.#contentElement) {
-      this.title = this.#contentElement;
-    }
     this.updateDecorations();
     for (const issue of this.#elementIssues.values()) {
       this.#applyIssueStyleAndTooltip(issue);
@@ -14772,17 +14759,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     this.#highlightSearchResults();
   }
   computeLeftIndent() {
-    let treeElement = this.parent;
+    let treeElement = this.treeElement.parent;
     let depth = 0;
     while (treeElement !== null) {
       depth++;
       treeElement = treeElement.parent;
     }
-    return 12 * (depth - 2) + (this.isExpandable() && this.isCollapsible() ? 1 : 12);
+    return 12 * (depth - 2) + (this.treeElement.isExpandable() && this.treeElement.isCollapsible() ? 1 : 12);
   }
   updateDecorations() {
-    this.listItemElement.style.setProperty("--indent", this.computeLeftIndent() + "px");
-    if (this.isClosingTag()) {
+    this.element.style.setProperty("--indent", this.computeLeftIndent() + "px");
+    if (this.treeElement.isClosingTag()) {
       return;
     }
     if (this.nodeInternal.nodeType() !== Node.ELEMENT_NODE) {
@@ -14791,15 +14778,16 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     void this.decorationsThrottler.schedule(this.#updateDecorations.bind(this));
   }
   #updateDecorations() {
-    if (!this.treeOutline) {
+    if (!this.treeElement.treeOutline) {
       return Promise.resolve();
     }
     const node = this.nodeInternal;
-    if (!this.treeOutline.decoratorExtensions) {
-      this.treeOutline.decoratorExtensions = getRegisteredDecorators();
+    const outline = this.treeElement.treeOutline;
+    if (!outline.decoratorExtensions) {
+      outline.decoratorExtensions = getRegisteredDecorators();
     }
     const markerToExtension = /* @__PURE__ */ new Map();
-    for (const decoratorExtension of this.treeOutline.decoratorExtensions) {
+    for (const decoratorExtension of outline.decoratorExtensions || []) {
       markerToExtension.set(decoratorExtension.marker, decoratorExtension);
     }
     const promises = [];
@@ -14826,31 +14814,31 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       this.#descendantDecorations = descendantDecorations;
       if (!decorations.length && !descendantDecorations.length) {
         this.#decorationsTooltip = "";
-        this.performUpdate();
+        this.requestUpdate();
         return;
       }
       const tooltip = [];
       for (const decoration of decorations) {
         tooltip.push(decoration.title);
       }
-      if (!this.expanded && descendantDecorations.length) {
+      if (!this.treeElement.expanded && descendantDecorations.length) {
         tooltip.push(i18nString12(UIStrings13.children));
         for (const decoration of descendantDecorations) {
           tooltip.push(decoration.title);
         }
       }
       this.#decorationsTooltip = tooltip.join("\n");
-      this.performUpdate();
+      this.requestUpdate();
     }
   }
   async remove() {
-    if (this.treeOutline?.isToggledToHidden(this.nodeInternal)) {
-      await this.treeOutline.toggleHideElement(this.nodeInternal);
+    if (this.treeElement.treeOutline?.isToggledToHidden(this.nodeInternal)) {
+      await this.treeElement.treeOutline.toggleHideElement(this.nodeInternal);
     }
     if (this.nodeInternal.pseudoType()) {
       return;
     }
-    const parentElement = this.parent;
+    const parentElement = this.treeElement.parent;
     if (!parentElement) {
       return;
     }
@@ -14930,7 +14918,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     if (!this.searchQuery) {
       return;
     }
-    const text = this.listItemElement.textContent || "";
+    const text = this.contentElement.deepTextContent();
     const regexObject = Platform7.StringUtilities.createPlainTextSearchRegex(this.searchQuery, "gi");
     const matchRanges = [];
     let match = regexObject.exec(text);
@@ -14941,7 +14929,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     if (!matchRanges.length) {
       matchRanges.push(new TextUtils7.TextRange.SourceRange(0, text.length));
     }
-    this.#highlights = Highlighting2.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(this.listItemElement, matchRanges);
+    this.#highlights = Highlighting2.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(this.contentElement, matchRanges);
   }
   editAsHTML() {
     const promise = Common8.Revealer.reveal(this.node());
@@ -14954,7 +14942,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     void this.#adornersThrottler.schedule(this.#updateAdorners.bind(this));
   }
   async #updateAdorners() {
-    if (this.isClosingTag()) {
+    if (this.treeElement.isClosingTag()) {
       return;
     }
     const node = this.node();
@@ -14964,7 +14952,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     } else {
       this.#layout = null;
     }
-    this.performUpdate();
+    this.requestUpdate();
   }
   async #onPopoverAdornerClick(event) {
     event.stopPropagation();
@@ -14978,7 +14966,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     if (this.#popoverAdornerActive) {
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
     }
-    this.performUpdate();
+    this.requestUpdate();
   }
   async #onInterestAdornerClick(event) {
     event.stopPropagation();
@@ -14992,7 +14980,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     if (this.#interestAdornerActive) {
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
     }
-    this.performUpdate();
+    this.requestUpdate();
   }
   #onStartingStyleAdornerClick(event) {
     event.stopPropagation();
@@ -15008,41 +14996,231 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       model.forceStartingStyle(node, true);
     }
     this.#startingStyleAdornerActive = !this.#startingStyleAdornerActive;
-    this.performUpdate();
+    this.requestUpdate();
   }
-  async #onCustomElementAdornerClick(event) {
-    event.stopPropagation();
-    const node = this.node();
-    const object = await node.resolveToObject("");
-    if (!object) {
+};
+var ElementsTreeElement = class extends UI14.TreeOutline.TreeElement {
+  widget;
+  widgetWrapper;
+  nodeInternal;
+  tagTypeContext;
+  constructor(node, isClosingTag) {
+    super();
+    this.nodeInternal = node;
+    this.listItemElement.setAttribute("jslog", `${VisualLogging8.treeItem().parent("elementsTreeOutline").track({
+      keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End",
+      resize: true,
+      drag: true,
+      click: true
+    })}`);
+    if (isClosingTag) {
+      this.tagTypeContext = {
+        tagType: "CLOSING_TAG"
+        /* TagType.CLOSING */
+      };
+    } else {
+      this.tagTypeContext = {
+        tagType: "OPENING_TAG",
+        canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE
+      };
+    }
+    this.widgetWrapper = document.createElement("div");
+    this.widgetWrapper.style.display = "contents";
+    this.title = this.widgetWrapper;
+    this.widget = new ElementsTreeWidget(this);
+    this.widget.element.classList.remove("vbox", "flex-auto");
+    this.widget.element.style.display = "contents";
+    this.widget.markAsRoot();
+    this.widget.show(this.widgetWrapper);
+    if (this.nodeInternal.retained && !this.isClosingTag()) {
+      this.setLeadingIcons([
+        html11`<devtools-icon class="extra-small" name="small-status-dot" style="color:var(--icon-error); vertical-align:middle"></devtools-icon>`
+      ]);
+      this.listItemNode.classList.add("detached-elements-detached-node");
+      this.listItemNode.style.setProperty("display", "-webkit-box");
+      this.listItemNode.setAttribute("title", "Retained Node");
+    }
+    if (this.nodeInternal.detached && !this.isClosingTag()) {
+      this.listItemNode.setAttribute("title", "Detached Tree Node");
+    }
+  }
+  highlightSearchResults(searchQuery) {
+    this.widget.highlightSearchResults(searchQuery);
+  }
+  hideSearchHighlights() {
+    this.widget.hideSearchHighlights();
+  }
+  copyStyles() {
+    return this.widget.copyStyles();
+  }
+  addIssue(issue) {
+    this.widget.addIssue(issue);
+  }
+  get issuesByNodeElement() {
+    return this.widget.issuesByNodeElement;
+  }
+  removeIssue(issue) {
+    this.widget.removeIssue(issue);
+  }
+  setInClipboard(inClipboard) {
+    this.widget.setInClipboard(inClipboard);
+    if (this.listItemElement) {
+      this.listItemElement.classList.toggle("in-clipboard", inClipboard);
+    }
+  }
+  get isEditing() {
+    return this.widget.isEditing;
+  }
+  expandedChildrenLimit() {
+    return this.widget.expandedChildrenLimit();
+  }
+  setExpandedChildrenLimit(limit) {
+    this.widget.setExpandedChildrenLimit(limit);
+  }
+  highlightAttribute(name) {
+    this.widget.highlightAttribute(name);
+  }
+  populateTextContextMenu(contextMenu, textNode) {
+    return this.widget.populateTextContextMenu(contextMenu, textNode);
+  }
+  populateTagContextMenu(contextMenu, event) {
+    return this.widget.populateTagContextMenu(contextMenu, event);
+  }
+  populateNodeContextMenu(contextMenu) {
+    return this.widget.populateNodeContextMenu(contextMenu);
+  }
+  populatePseudoElementContextMenu(contextMenu) {
+    this.widget.populatePseudoElementContextMenu(contextMenu);
+  }
+  populateProcessingElementContextMenu(contextMenu) {
+    return this.widget.populateProcessingElementContextMenu(contextMenu);
+  }
+  hasEditableNode() {
+    return this.widget.hasEditableNode();
+  }
+  toggleEditAsHTML(callback, startEditing) {
+    this.widget.toggleEditAsHTML(callback, startEditing);
+  }
+  get expandAllButtonElement() {
+    return this.widget.expandAllButtonElement;
+  }
+  set expandAllButtonElement(element) {
+    this.widget.expandAllButtonElement = element;
+  }
+  node() {
+    return this.nodeInternal;
+  }
+  isClosingTag() {
+    return this.tagTypeContext.tagType === "CLOSING_TAG";
+  }
+  onattach() {
+    this.widget.onattach();
+  }
+  async onpopulate() {
+    return await this.widget.onpopulate();
+  }
+  async expandRecursively() {
+    await this.nodeInternal.getSubtree(100, true);
+    await super.expandRecursively(Number.MAX_VALUE);
+  }
+  onexpand() {
+    this.widget.onexpand();
+  }
+  oncollapse() {
+    this.widget.oncollapse();
+  }
+  select(omitFocus, selectedByUser) {
+    if (this.widget.editing) {
+      return false;
+    }
+    return super.select(omitFocus, selectedByUser);
+  }
+  onselect(selectedByUser) {
+    return this.widget.onselect(selectedByUser);
+  }
+  ondelete() {
+    return this.widget.ondelete();
+  }
+  onenter() {
+    return this.widget.onenter();
+  }
+  selectOnMouseDown(event) {
+    super.selectOnMouseDown(event);
+    if (this.widget.editing) {
       return;
     }
-    let constructorObject = null;
-    try {
-      const result = await object.callFunction(function() {
-        const selector = this.getAttribute("is") || this.tagName.toLowerCase();
-        return typeof customElements !== "undefined" && customElements.get(selector) || this.constructor;
-      });
-      constructorObject = result.object;
-    } finally {
-      object.release();
+    if (event.detail >= 2) {
+      event.preventDefault();
     }
-    if (!constructorObject) {
-      return;
+  }
+  ondblclick(event) {
+    return this.widget.ondblclick(event);
+  }
+  onbind() {
+    this.widget.onbind();
+  }
+  onunbind() {
+    this.widget.onunbind();
+  }
+  static animateOnDOMUpdate(treeElement) {
+    ElementsTreeWidget.animateOnDOMUpdate(treeElement);
+  }
+  static visibleShadowRoots(node) {
+    return ElementsTreeWidget.visibleShadowRoots(node);
+  }
+  static canShowInlineText(node) {
+    return ElementsTreeWidget.canShowInlineText(node);
+  }
+  static populateForcedPseudoStateItems(contextMenu, node) {
+    ElementsTreeWidget.populateForcedPseudoStateItems(contextMenu, node);
+  }
+  set hovered(isHovered) {
+    this.widget.hovered = isHovered;
+    if (this.listItemElement) {
+      this.listItemElement.classList.toggle("hovered", isHovered);
     }
-    try {
-      if (constructorObject.type === "function") {
-        const functionDetails = await SDK12.RemoteObject.RemoteFunction.objectAsFunction(constructorObject).targetFunctionDetails();
-        if (functionDetails?.location) {
-          const uiLocation = await Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(functionDetails.location);
-          if (uiLocation) {
-            void Common8.Revealer.reveal(uiLocation);
-          }
-        }
-      }
-    } finally {
-      constructorObject.release();
-    }
+  }
+  get hovered() {
+    return this.widget.hovered;
+  }
+  updateAdorners() {
+    this.widget.updateAdorners();
+  }
+  get updateComplete() {
+    return this.widget.updateComplete;
+  }
+  requestUpdate() {
+    this.widget.requestUpdate();
+  }
+  updateTitle(updateRecord) {
+    this.widget.updateTitle(updateRecord);
+  }
+  triggerEditAttribute(attributeName) {
+    return this.widget.triggerEditAttribute(attributeName) || false;
+  }
+  editingCancelled(element, tagName) {
+    this.widget.editingCancelled(element, tagName);
+  }
+  updateDecorations() {
+    this.widget.updateDecorations();
+  }
+  async remove() {
+    return await this.widget.remove();
+  }
+  addNewAttribute() {
+    return this.widget.addNewAttribute();
+  }
+  startEditingTagName(tagNameElement) {
+    return this.widget.startEditingTagName(tagNameElement);
+  }
+  startEditingProcessingInstructionValue() {
+    return this.widget.startEditingProcessingInstructionValue();
+  }
+  isDisplayContents() {
+    return this.widget.isDisplayContents();
+  }
+  performUpdate() {
+    this.widget.performUpdate();
   }
 };
 var InitialChildrenLimit = 500;
@@ -16213,7 +16391,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
               ${issues.map((issue) => {
             const elementIssueDetails = getElementIssueDetails(issue);
             if (!elementIssueDetails) {
-              return nothing5;
+              return nothing6;
             }
             const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
             const openIssueEvent = () => Common10.Revealer.reveal(issue);
@@ -16573,7 +16751,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     if (!treeElement) {
       return false;
     }
-    return treeElement.isEditing() || false;
+    return treeElement.isEditing || false;
   }
   update() {
     const selectedNode = this.selectedDOMNode();
@@ -18170,7 +18348,7 @@ import * as Common12 from "./../../core/common/common.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html15, nothing as nothing6, render as render13 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html15, nothing as nothing7, render as render13 } from "./../../ui/lit/lit.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -18376,7 +18554,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     Common12.Color.Legacy.fromRGBA([0, 0, 0, 0])
   ];
   const boxLabels = ["content", "padding", "border", "margin", "position"];
-  let previousBox = nothing6;
+  let previousBox = nothing7;
   for (let i = 0; i < boxes.length; ++i) {
     const name = boxes[i];
     const display = style.get("display");
@@ -20446,7 +20624,7 @@ import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK20 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html18, nothing as nothing7, render as render16 } from "./../../ui/lit/lit.js";
+import { Directives as Directives3, html as html18, nothing as nothing8, render as render16 } from "./../../ui/lit/lit.js";
 import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -20516,7 +20694,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
       </div>
       ${input.objectTree && input.allChildrenFiltered ? html18`
         <div class="gray-info-message">${i18nString19(UIStrings20.noMatchingProperty)}</div>
-      ` : nothing7}
+      ` : nothing8}
       <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html18`
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>;

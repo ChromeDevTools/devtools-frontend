@@ -45,9 +45,6 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     device(): EmulatedDevice | null;
     mode(): Mode | null;
     type(): Type;
-    screenImage(): string;
-    canShowDeviceFrame(): boolean;
-    outlineRect(): Rect | null;
     screenRect(): Rect;
     visiblePageRect(): Rect;
     scale(): number;
@@ -79,7 +76,6 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     private deviceScaleFactorSettingChanged;
     private preferredScaledWidth;
     private preferredScaledHeight;
-    private currentOutline;
     private currentInsets;
     private currentSafeAreaInsets;
     private applySafeAreaInsets;

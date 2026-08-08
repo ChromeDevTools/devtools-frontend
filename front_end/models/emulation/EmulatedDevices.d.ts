@@ -3,7 +3,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import { Insets } from './DeviceModeModel.js';
-export declare function computeRelativeImageURL(cssURLValue: string): string;
 export declare class EmulatedDevice {
     #private;
     title: string;
@@ -28,8 +27,6 @@ export declare class EmulatedDevice {
     getRotationPartner(mode: Mode): Mode | null;
     toJSON(): any;
     private orientationToJSON;
-    modeImage(mode: Mode): string;
-    outlineImage(mode: Mode): string;
     orientationByName(name: string): Orientation;
     show(): boolean;
     setShow(show: boolean): void;
@@ -91,7 +88,6 @@ export interface Mode {
     title: string;
     orientation: string;
     insets: Insets;
-    image: string | null;
     safeAreaInsets?: Insets;
     cutout?: Cutout;
 }
@@ -125,14 +121,11 @@ export type Cutout = BaseCutout & ({
 export interface Orientation {
     width: number;
     height: number;
-    outlineInsets: Insets | null;
-    outlineImage: string | null;
     hinge: SDK.OverlayModel.Hinge | null;
 }
 export interface JSONMode {
     title: string;
     orientation: string;
-    image?: string;
     insets: {
         left: number;
         right: number;
@@ -167,13 +160,11 @@ declare const emulatedDevices: ({
         horizontal: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'device-pixel-ratio': number;
         vertical: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'vertical-spanned'?: undefined;
         'horizontal-spanned'?: undefined;
@@ -199,13 +190,11 @@ declare const emulatedDevices: ({
         horizontal: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'device-pixel-ratio': number;
         vertical: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'vertical-spanned'?: undefined;
         'horizontal-spanned'?: undefined;
@@ -271,13 +260,11 @@ declare const emulatedDevices: ({
         horizontal: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'device-pixel-ratio': number;
         vertical: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'vertical-spanned'?: undefined;
         'horizontal-spanned'?: undefined;
@@ -342,13 +329,11 @@ declare const emulatedDevices: ({
         horizontal: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'device-pixel-ratio': number;
         vertical: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'vertical-spanned'?: undefined;
         'horizontal-spanned'?: undefined;
@@ -415,13 +400,11 @@ declare const emulatedDevices: ({
         horizontal: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'device-pixel-ratio': number;
         vertical: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'vertical-spanned'?: undefined;
         'horizontal-spanned'?: undefined;
@@ -431,8 +414,8 @@ declare const emulatedDevices: ({
     type: string;
     'dual-screen'?: undefined;
     'foldable-screen'?: undefined;
-    modes?: undefined;
     'user-agent-metadata'?: undefined;
+    modes?: undefined;
 } | {
     order: number;
     'show-by-default': boolean;
@@ -442,13 +425,11 @@ declare const emulatedDevices: ({
         horizontal: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'device-pixel-ratio': number;
         vertical: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'vertical-spanned': {
             width: number;
@@ -516,13 +497,11 @@ declare const emulatedDevices: ({
         horizontal: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'device-pixel-ratio': number;
         vertical: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'vertical-spanned': {
             width: number;
@@ -599,15 +578,6 @@ declare const emulatedDevices: ({
         'vertical-spanned'?: undefined;
         'horizontal-spanned'?: undefined;
         horizontal: {
-            outline: {
-                image: string;
-                insets: {
-                    left: number;
-                    top: number;
-                    right: number;
-                    bottom: number;
-                };
-            };
             width: number;
             height: number;
         };
@@ -615,7 +585,6 @@ declare const emulatedDevices: ({
         vertical: {
             width: number;
             height: number;
-            outline?: undefined;
         };
     };
     capabilities: string[];
@@ -638,13 +607,11 @@ declare const emulatedDevices: ({
         horizontal: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'device-pixel-ratio': number;
         vertical: {
             width: number;
             height: number;
-            outline?: undefined;
         };
     };
     capabilities: string[];
@@ -662,6 +629,7 @@ declare const emulatedDevices: ({
     'dual-screen'?: undefined;
     'foldable-screen'?: undefined;
     order?: undefined;
+    'user-agent-metadata'?: undefined;
     'show-by-default': boolean;
     title: () => Platform.UIString.LocalizedString;
     screen: {
@@ -670,13 +638,11 @@ declare const emulatedDevices: ({
         horizontal: {
             width: number;
             height: number;
-            outline?: undefined;
         };
         'device-pixel-ratio': number;
         vertical: {
             width: number;
             height: number;
-            outline?: undefined;
         };
     };
     capabilities: string[];
@@ -686,54 +652,5 @@ declare const emulatedDevices: ({
         title: string;
         orientation: string;
     }[];
-    'user-agent-metadata'?: undefined;
-} | {
-    'dual-screen'?: undefined;
-    'foldable-screen'?: undefined;
-    order?: undefined;
-    modes?: undefined;
-    'show-by-default': boolean;
-    title: string;
-    screen: {
-        'vertical-spanned'?: undefined;
-        'horizontal-spanned'?: undefined;
-        horizontal: {
-            outline: {
-                image: string;
-                insets: {
-                    left: number;
-                    top: number;
-                    right: number;
-                    bottom: number;
-                };
-            };
-            width: number;
-            height: number;
-        };
-        'device-pixel-ratio': number;
-        vertical: {
-            outline: {
-                image: string;
-                insets: {
-                    left: number;
-                    top: number;
-                    right: number;
-                    bottom: number;
-                };
-            };
-            width: number;
-            height: number;
-        };
-    };
-    capabilities: string[];
-    'user-agent': string;
-    'user-agent-metadata': {
-        platform: string;
-        platformVersion: string;
-        architecture: string;
-        model: string;
-        mobile: boolean;
-    };
-    type: string;
 })[];
 export {};

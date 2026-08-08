@@ -13,6 +13,8 @@ export interface LoggingConfig {
     context?: string;
     parent?: string;
 }
+export declare function elementKey(config: LoggingConfig): string;
+export declare function getVePath(element: Element): string;
 export declare function needsLogging(element: Element): boolean;
 export declare function getLoggingConfig(element: Element): LoggingConfig;
 export declare enum VisualElements {

@@ -4404,7 +4404,11 @@ var ParsedURL = class _ParsedURL {
       return "data:";
     }
     const scheme = this.isBlobURL() ? this.blobInnerScheme : this.scheme;
-    return scheme + "://" + this.domain();
+    const domain = this.domain();
+    if (!scheme && !domain) {
+      return "";
+    }
+    return scheme + "://" + domain;
   }
   urlWithoutScheme() {
     if (this.scheme && this.url.startsWith(this.scheme + "://")) {

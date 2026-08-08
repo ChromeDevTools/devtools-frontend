@@ -11,6 +11,15 @@ import * as NonDomState from './NonDomState.js';
 
 export type Loggable = LoggableModule.Loggable;
 export {DebugLoggingFormat, setVeDebuggingEnabled, setVeDebugLoggingEnabled} from './Debugging.js';
+export {
+  elementKey,
+  getLoggingConfig,
+  getVePath,
+  type LoggingConfig,
+  needsLogging,
+  parseJsLog,
+  VisualElements,
+} from './LoggingConfig.js';
 export {addDocument, startLogging, stopLogging} from './LoggingDriver.js';
 export {logImpressions, logSettingAccess, logFunctionCall} from './LoggingEvents.js';
 export const logClick = (loggable: Loggable, event: Event, options: {doubleClick?: boolean} = {}): void =>

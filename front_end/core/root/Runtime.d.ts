@@ -257,6 +257,9 @@ interface DevToolsPlusButton {
 interface DevToolsInstrumentationBreakpoints {
     enabled: boolean;
 }
+interface HostConfigDevToolsComments {
+    enabled: boolean;
+}
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -315,6 +318,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsPlusButton: DevToolsPlusButton;
     devToolsInstrumentationBreakpoints: DevToolsInstrumentationBreakpoints;
     extensionsOnChromeUrls: ExtensionsOnChromeUrls;
+    devToolsComments: HostConfigDevToolsComments;
 }>;
 /**
  * The host configuration for this DevTools instance.

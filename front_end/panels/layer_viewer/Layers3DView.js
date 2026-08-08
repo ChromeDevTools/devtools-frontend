@@ -17,38 +17,38 @@ const { html, render, Directives: { ref } } = Lit;
 const { widget } = UI.Widget;
 const UIStrings = {
     /**
-     * @description Text of a DOM element in DView of the Layers panel
+     * @description Text of a DOM element in 3D view of the Layers panel.
      */
     noLayerInformation: 'No layers detected yet',
     /**
-     * @description Text of a DOM element in DView of the Layers panel that explains the panel
+     * @description Text of a DOM element in 3D view of the Layers panel that explains the panel.
      */
     layerExplanation: 'On this page you will be able to view and inspect document layers.',
     /**
-     * @description Accessibility label for canvas view in Layers tool
+     * @description Accessibility label for canvas view in Layers panel.
      */
-    dLayersView: '3D Layers View',
+    dLayersView: '3D layers view',
     /**
-     * @description Text in DView of the Layers panel
+     * @description Text in 3D view of the Layers panel.
      */
     cantDisplayLayers: 'Can’t display layers',
     /**
-     * @description Text in DView of the Layers panel
+     * @description Text in 3D view of the Layers panel.
      */
     webglSupportIsDisabledInYour: 'WebGL support is disabled in your browser.',
     /**
-     * @description Text in DView of the Layers panel
+     * @description Text in 3D view of the Layers panel.
      * @example {about:gpu} PH1
      */
     checkSForPossibleReasons: 'Check {PH1} for possible reasons.',
     /**
-     * @description A context menu item in the DView of the Layers panel
+     * @description Context menu item in the 3D view of the Layers panel.
      */
-    resetView: 'Reset View',
+    resetView: 'Reset view',
     /**
-     * @description A context menu item in the DView of the Layers panel
+     * @description Context menu item in the 3D view of the Layers panel.
      */
-    showPaintProfiler: 'Show Paint Profiler',
+    showPaintProfiler: 'Show paint profiler',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/Layers3DView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

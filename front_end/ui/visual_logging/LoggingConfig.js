@@ -5,6 +5,26 @@ import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import { knownContextValues } from './KnownContextValues.js';
 const LOGGING_ATTRIBUTE = 'jslog';
+export function elementKey(config) {
+    return `${VisualElements[config.ve]}${config.context ? `: ${config.context}` : ''}`;
+}
+export function getVePath(element) {
+    const parts = [];
+    let current = element;
+    while (current) {
+        if (needsLogging(current)) {
+            try {
+                const config = getLoggingConfig(current);
+                parts.unshift(elementKey(config));
+            }
+            catch {
+                // Skip invalid logging configs
+            }
+        }
+        current = current.parentElementOrShadowHost();
+    }
+    return parts.join(' > ');
+}
 export function needsLogging(element) {
     return element.hasAttribute(LOGGING_ATTRIBUTE);
 }

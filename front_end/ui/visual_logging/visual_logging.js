@@ -3231,6 +3231,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "protocol",
   "protocol-handlers",
   "protocol-monitor",
+  "protocol-monitor-columns",
   "protocol-monitor-documentation",
   "protocol-monitor.add-custom-property",
   "protocol-monitor.add-parameter",
@@ -4590,6 +4591,24 @@ var knownContextValues = /* @__PURE__ */ new Set([
 
 // gen/front_end/ui/visual_logging/LoggingConfig.js
 var LOGGING_ATTRIBUTE = "jslog";
+function elementKey(config) {
+  return `${VisualElements[config.ve]}${config.context ? `: ${config.context}` : ""}`;
+}
+function getVePath(element) {
+  const parts = [];
+  let current = element;
+  while (current) {
+    if (needsLogging(current)) {
+      try {
+        const config = getLoggingConfig(current);
+        parts.unshift(elementKey(config));
+      } catch {
+      }
+    }
+    current = current.parentElementOrShadowHost();
+  }
+  return parts.join(" > ");
+}
 function needsLogging(element) {
   return element.hasAttribute(LOGGING_ATTRIBUTE);
 }
@@ -5085,9 +5104,6 @@ function processImpressionsForAdHocAnalysisDebugLog(states) {
     adHocAnalysisEntries.set(state2.veid, entry);
     maybeLogDebugEvent(entry);
   }
-}
-function elementKey(config) {
-  return `${VisualElements[config.ve]}${config.context ? `: ${config.context}` : ""}`;
 }
 function debugString(config) {
   const components = [VisualElements[config.ve]];
@@ -6180,6 +6196,7 @@ var tree = makeConfigStringBuilder.bind(null, "Tree");
 var treeItem = makeConfigStringBuilder.bind(null, "TreeItem");
 var value = makeConfigStringBuilder.bind(null, "Value");
 export {
+  VisualElements,
   action,
   addDocument,
   adorner,
@@ -6200,9 +6217,12 @@ export {
   domBreakpoint,
   drawer,
   dropDown,
+  elementKey,
   elementsBreadcrumbs,
   expand,
   filterDropdown,
+  getLoggingConfig,
+  getVePath,
   gutter,
   isUnderInspection,
   item,
@@ -6217,10 +6237,12 @@ export {
   mediaInspectorView,
   menu,
   metricsBox,
+  needsLogging,
   paletteColorShades,
   pane,
   panel,
   panelTabHeader,
+  parseJsLog,
   pieChart,
   pieChartSlice,
   pieChartTotal,

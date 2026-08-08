@@ -8263,8 +8263,14 @@ var STATIC_LABEL_NAMES = {
   "trace-bounds": "the entire trace",
   NO_NAVIGATION: "the period before the first navigation"
 };
+function getInsightModel(model, key) {
+  if (Object.prototype.hasOwnProperty.call(model, key)) {
+    return model[key];
+  }
+  return void 0;
+}
 function getLabelName(label, focus) {
-  if (STATIC_LABEL_NAMES[label]) {
+  if (Object.prototype.hasOwnProperty.call(STATIC_LABEL_NAMES, label)) {
     return STATIC_LABEL_NAMES[label];
   }
   const { parsedTrace } = focus;
@@ -8273,7 +8279,7 @@ function getLabelName(label, focus) {
     return `navigation to ${insightSetById.url.href}`;
   }
   for (const insightSet of parsedTrace.insights?.values() ?? []) {
-    const model = insightSet.model[label];
+    const model = getInsightModel(insightSet.model, label);
     if (model) {
       return `${model.title} insight`;
     }
@@ -8742,7 +8748,7 @@ ${result}`,
           const valid = [...parsedTrace.insights?.values() ?? []].map((insightSet2) => `id: ${insightSet2.id}, url: ${insightSet2.url}, bounds: ${this.#formatter?.serializeBounds(insightSet2.bounds)}`).join("; ");
           return { error: `Invalid insight set id. Valid insight set ids are: ${valid}` };
         }
-        const insight = insightSet.model[params.insightName];
+        const insight = getInsightModel(insightSet.model, params.insightName);
         if (!insight) {
           const valid = Object.keys(insightSet.model).join(", ");
           return { error: `No insight available. Valid insight names are: ${valid}` };
@@ -9212,13 +9218,13 @@ ${result}`,
       return insightSetById.bounds;
     }
     if (insightSet) {
-      const model = insightSet.model[label];
+      const model = getInsightModel(insightSet.model, label);
       if (model) {
         return Trace7.Insights.Common.insightBounds(model, insightSet.bounds);
       }
     }
     for (const is of parsedTrace.insights?.values() ?? []) {
-      const model = is.model[label];
+      const model = getInsightModel(is.model, label);
       if (model) {
         return Trace7.Insights.Common.insightBounds(model, is.bounds);
       }

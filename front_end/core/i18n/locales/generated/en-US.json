@@ -3854,6 +3854,9 @@
   "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
     "message": "Bounce tracking mitigations"
   },
+  "panels/application/components/AdsView.ts | adDetectionMistakes": {
+    "message": "Chrome’s ad detection can make mistakes."
+  },
   "panels/application/components/AdsView.ts | adIframes": {
     "message": "Ad iframes"
   },
@@ -3877,6 +3880,9 @@
   },
   "panels/application/components/AdsView.ts | initialOrigin": {
     "message": "Initial origin"
+  },
+  "panels/application/components/AdsView.ts | learnMore": {
+    "message": "Learn more"
   },
   "panels/application/components/AdsView.ts | metrics": {
     "message": "Metrics"
@@ -6257,6 +6263,9 @@
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Declarative"
   },
+  "panels/application/WebMCPView.ts | description": {
+    "message": "Description"
+  },
   "panels/application/WebMCPView.ts | editAndRun": {
     "message": "Edit and run"
   },
@@ -6301,6 +6310,9 @@
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
     "message": "Available WebMCP Tools"
+  },
+  "panels/application/WebMCPView.ts | origin": {
+    "message": "Origin"
   },
   "panels/application/WebMCPView.ts | output": {
     "message": "Output"
@@ -6360,7 +6372,7 @@
     "message": "Automatically open this panel"
   },
   "panels/autofill/AutofillView.ts | autoShowTooltip": {
-    "message": "Open the autofill panel automatically when an autofill activity is detected."
+    "message": "Open the Autofill panel automatically when an autofill activity is detected"
   },
   "panels/autofill/AutofillView.ts | formField": {
     "message": "Form field"
@@ -6390,7 +6402,7 @@
     "message": "Show test addresses in autofill menu"
   },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
-    "message": "To start debugging autofill, use Chrome’s autofill menu to fill an address form."
+    "message": "To start debugging autofill, use Chrome’s autofill menu to fill an address form"
   },
   "panels/autofill/AutofillView.ts | value": {
     "message": "Value"
@@ -9174,10 +9186,10 @@
     "message": "Zoom out"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
-    "message": "Compositing Reasons"
+    "message": "Compositing reasons"
   },
   "panels/layer_viewer/LayerDetailsView.ts | containingBlocRectangleDimensions": {
-    "message": "Containing Block {PH1} × {PH2} (at {PH3}, {PH4})"
+    "message": "Containing block {PH1} × {PH2} (at {PH3}, {PH4})"
   },
   "panels/layer_viewer/LayerDetailsView.ts | mainThreadScrollingReason": {
     "message": "Main thread scrolling reason"
@@ -9186,10 +9198,10 @@
     "message": "Memory estimate"
   },
   "panels/layer_viewer/LayerDetailsView.ts | nearestLayerShiftingContaining": {
-    "message": "Nearest Layer Shifting Containing Block"
+    "message": "Nearest layer shifting containing block"
   },
   "panels/layer_viewer/LayerDetailsView.ts | nearestLayerShiftingStickyBox": {
-    "message": "Nearest Layer Shifting Sticky Box"
+    "message": "Nearest layer shifting sticky box"
   },
   "panels/layer_viewer/LayerDetailsView.ts | noLayerSelected": {
     "message": "No layer selected"
@@ -9201,7 +9213,7 @@
     "message": "Paint count"
   },
   "panels/layer_viewer/LayerDetailsView.ts | paintProfiler": {
-    "message": "Paint Profiler"
+    "message": "Paint profiler"
   },
   "panels/layer_viewer/LayerDetailsView.ts | repaintsOnScroll": {
     "message": "Repaints on scroll"
@@ -9222,7 +9234,7 @@
     "message": "{PH1}: {PH2} ({PH3})"
   },
   "panels/layer_viewer/LayerDetailsView.ts | stickyBoxRectangleDimensions": {
-    "message": "Sticky Box {PH1} × {PH2} (at {PH3}, {PH4})"
+    "message": "Sticky box {PH1} × {PH2} (at {PH3}, {PH4})"
   },
   "panels/layer_viewer/LayerDetailsView.ts | stickyPositionConstraint": {
     "message": "Sticky position constraint"
@@ -9246,7 +9258,7 @@
     "message": "Check {PH1} for possible reasons."
   },
   "panels/layer_viewer/Layers3DView.ts | dLayersView": {
-    "message": "3D Layers View"
+    "message": "3D layers view"
   },
   "panels/layer_viewer/Layers3DView.ts | layerExplanation": {
     "message": "On this page you will be able to view and inspect document layers."
@@ -9255,10 +9267,10 @@
     "message": "No layers detected yet"
   },
   "panels/layer_viewer/Layers3DView.ts | resetView": {
-    "message": "Reset View"
+    "message": "Reset view"
   },
   "panels/layer_viewer/Layers3DView.ts | showPaintProfiler": {
-    "message": "Show Paint Profiler"
+    "message": "Show paint profiler"
   },
   "panels/layer_viewer/Layers3DView.ts | webglSupportIsDisabledInYour": {
     "message": "WebGL support is disabled in your browser."
@@ -9267,10 +9279,10 @@
     "message": "{PH1} layers"
   },
   "panels/layer_viewer/LayerTreeOutline.ts | layersTreePane": {
-    "message": "Layers Tree Pane"
+    "message": "Layers tree"
   },
   "panels/layer_viewer/LayerTreeOutline.ts | showPaintProfiler": {
-    "message": "Show Paint Profiler"
+    "message": "Show paint profiler"
   },
   "panels/layer_viewer/LayerTreeOutline.ts | updateChildDimension": {
     "message": " ({PH1} × {PH2})"
@@ -9282,7 +9294,7 @@
     "message": "Bitmap"
   },
   "panels/layer_viewer/PaintProfilerView.ts | commandLog": {
-    "message": "Command Log"
+    "message": "Command log"
   },
   "panels/layer_viewer/PaintProfilerView.ts | misc": {
     "message": "Misc"
@@ -9956,15 +9968,6 @@
   "panels/mobile_throttling/mobile_throttling-meta.ts | throttlingTag": {
     "message": "throttling"
   },
-  "panels/mobile_throttling/MobileThrottlingSelector.ts | advanced": {
-    "message": "Advanced"
-  },
-  "panels/mobile_throttling/MobileThrottlingSelector.ts | disabled": {
-    "message": "Disabled"
-  },
-  "panels/mobile_throttling/MobileThrottlingSelector.ts | presets": {
-    "message": "Presets"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Network throttling is enabled"
   },
@@ -10042,9 +10045,6 @@
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "Override the value reported by navigator.connection.saveData on the page"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | throttling": {
-    "message": "Throttling"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | checkNetworkAndPerformancePanels": {
     "message": "Check Network and Performance panels"

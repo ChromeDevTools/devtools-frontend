@@ -10,15 +10,15 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 const UIStrings = {
     /**
-     * @description Tooltip text that appears when hovering over largeicon pan button in Transform Controller of the Layers panel
+     * @description Tooltip text that appears when hovering over largeicon pan button in transform controller of the Layers panel.
      */
     panModeX: 'Pan mode (X)',
     /**
-     * @description Tooltip text that appears when hovering over largeicon rotate button in Transform Controller of the Layers panel
+     * @description Tooltip text that appears when hovering over largeicon rotate button in transform controller of the Layers panel.
      */
     rotateModeV: 'Rotate mode (V)',
     /**
-     * @description Tooltip text that appears when hovering over the largeicon center button in the Transform Controller of the Layers panel
+     * @description Tooltip text that appears when hovering over the largeicon center button in the transform controller of the Layers panel.
      */
     resetTransform: 'Reset transform (0)',
 };

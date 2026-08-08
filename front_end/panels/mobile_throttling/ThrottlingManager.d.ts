@@ -21,7 +21,6 @@ export declare class ThrottlingManager extends Common.ObjectWrapper.ObjectWrappe
         settings?: Common.Settings.Settings;
     }): ThrottlingManager;
     createOfflineToolbarCheckbox(): UI.Toolbar.ToolbarCheckbox;
-    createMobileThrottlingButton(): UI.Toolbar.ToolbarMenuButton;
     private updatePanelIcon;
     cpuThrottlingOption(): PanelsCommon.CPUThrottlingOption.CPUThrottlingOption;
     setCPUThrottlingOption(option: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption): void;

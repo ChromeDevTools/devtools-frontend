@@ -6,7 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 const UIStrings = {
     /**
-     * @description Text in Layer View Host of the Layers panel
+     * @description Text in layer view host of the Layers panel.
      */
     showInternalLayers: 'Show internal layers',
 };

@@ -41,11 +41,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/emulation/EmulatedDevices.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export function computeRelativeImageURL(cssURLValue) {
-    return cssURLValue.replace(/@url\(([^\)]*?)\)/g, (_match, url) => {
-        return new URL(`../../emulated_devices/${url}`, import.meta.url).toString();
-    });
-}
 export class EmulatedDevice {
     title;
     type;
@@ -66,8 +61,8 @@ export class EmulatedDevice {
     constructor() {
         this.title = '';
         this.type = Type.Unknown;
-        this.vertical = { width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null };
-        this.horizontal = { width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null };
+        this.vertical = { width: 0, height: 0, hinge: null };
+        this.horizontal = { width: 0, height: 0, hinge: null };
         this.deviceScaleFactor = 1;
         this.capabilities = ["touch" /* Capability.TOUCH */, "mobile" /* Capability.MOBILE */];
         this.userAgent = '';
@@ -75,8 +70,8 @@ export class EmulatedDevice {
         this.modes = [];
         this.isDualScreen = false;
         this.isFoldableScreen = false;
-        this.verticalSpanned = { width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null };
-        this.horizontalSpanned = { width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null };
+        this.verticalSpanned = { width: 0, height: 0, hinge: null };
+        this.horizontalSpanned = { width: 0, height: 0, hinge: null };
         this.#show = Show.Default;
         this.#showByDefault = true;
     }
@@ -169,14 +164,6 @@ export class EmulatedDevice {
                 if (result.height < 0 || result.height > MaxDeviceSize || result.height < MinDeviceSize) {
                     throw new Error('Emulated device has wrong height: ' + result.height);
                 }
-                const outlineInsets = parseValue(json['outline'], 'insets', 'object', null);
-                if (outlineInsets) {
-                    result.outlineInsets = parseInsets(outlineInsets);
-                    if (result.outlineInsets.left < 0 || result.outlineInsets.top < 0) {
-                        throw new Error('Emulated device has wrong outline insets');
-                    }
-                    result.outlineImage = parseValue(json['outline'], 'image', 'string');
-                }
                 if (json['hinge']) {
                     result.hinge = parseHinge(parseValue(json, 'hinge', 'object', undefined));
                 }
@@ -243,7 +230,6 @@ export class EmulatedDevice {
                     mode.insets.left + mode.insets.right > orientation.width) {
                     throw new Error('Emulated device mode \'' + mode.title + '\'has wrong mode insets');
                 }
-                mode.image = parseValue(modes[i], 'image', 'string', null);
                 const safeAreaInsets = parseValue(modes[i], 'safe-area-insets', 'object', null);
                 if (safeAreaInsets) {
                     mode.safeAreaInsets = parseInsets(safeAreaInsets);
@@ -367,7 +353,6 @@ export class EmulatedDevice {
                     right: this.modes[i].insets.right,
                     bottom: this.modes[i].insets.bottom,
                 },
-                image: this.modes[i].image || undefined,
             };
             const safeAreaInsets = this.modes[i].safeAreaInsets;
             if (safeAreaInsets) {
@@ -415,17 +400,6 @@ export class EmulatedDevice {
         const json = {};
         json['width'] = orientation.width;
         json['height'] = orientation.height;
-        if (orientation.outlineInsets) {
-            json.outline = {
-                insets: {
-                    left: orientation.outlineInsets.left,
-                    top: orientation.outlineInsets.top,
-                    right: orientation.outlineInsets.right,
-                    bottom: orientation.outlineInsets.bottom,
-                },
-                image: orientation.outlineImage,
-            };
-        }
         if (orientation.hinge) {
             json.hinge = {
                 width: orientation.hinge.width,
@@ -451,19 +425,6 @@ export class EmulatedDevice {
             }
         }
         return json;
-    }
-    modeImage(mode) {
-        if (!mode.image) {
-            return '';
-        }
-        return computeRelativeImageURL(mode.image);
-    }
-    outlineImage(mode) {
-        const orientation = this.orientationByName(mode.orientation);
-        if (!orientation.outlineImage) {
-            return '';
-        }
-        return computeRelativeImageURL(orientation.outlineImage);
     }
     orientationByName(name) {
         switch (name) {
@@ -597,8 +558,16 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
             if (device) {
                 result.add(device);
                 if (!device.modes.length) {
-                    device.modes.push({ title: '', orientation: Horizontal, insets: new Insets(0, 0, 0, 0), image: null });
-                    device.modes.push({ title: '', orientation: Vertical, insets: new Insets(0, 0, 0, 0), image: null });
+                    device.modes.push({
+                        title: '',
+                        orientation: Horizontal,
+                        insets: new Insets(0, 0, 0, 0),
+                    });
+                    device.modes.push({
+                        title: '',
+                        orientation: Vertical,
+                        insets: new Insets(0, 0, 0, 0),
+                    });
                 }
             }
             else {
@@ -1884,10 +1853,6 @@ const emulatedDevices = [
         'title': 'Nest Hub Max',
         'screen': {
             'horizontal': {
-                'outline': {
-                    'image': '@url(optimized/google-nest-hub-max-horizontal.avif)',
-                    'insets': { 'left': 92, 'top': 96, 'right': 91, 'bottom': 248 },
-                },
                 'width': 1280,
                 'height': 800,
             },
@@ -1991,19 +1956,11 @@ const emulatedDevices = [
         'title': 'Moto G4',
         'screen': {
             'horizontal': {
-                'outline': {
-                    'image': '@url(optimized/MotoG4-landscape.avif)',
-                    'insets': { 'left': 91, 'top': 30, 'right': 74, 'bottom': 30 },
-                },
                 'width': 640,
                 'height': 360,
             },
             'device-pixel-ratio': 3,
             'vertical': {
-                'outline': {
-                    'image': '@url(optimized/MotoG4-portrait.avif)',
-                    'insets': { 'left': 30, 'top': 91, 'right': 30, 'bottom': 74 },
-                },
                 'width': 360,
                 'height': 640,
             },

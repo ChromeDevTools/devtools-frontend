@@ -976,6 +976,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
         if (text instanceof HTMLElement) {
           link3.appendChild(text);
         } else if (bypassURLTrimming) {
+          link3.removeChildren();
           link3.classList.add("devtools-link-styled-trim");
           _Linkifier.appendTextWithoutHashes(link3, text);
         } else {

@@ -79,7 +79,7 @@ import * as i18n from "./../../core/i18n/i18n.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 var UIStrings = {
   /**
-   * @description Text in Layer View Host of the Layers panel
+   * @description Text in layer view host of the Layers panel.
    */
   showInternalLayers: "Show internal layers"
 };
@@ -231,15 +231,15 @@ var { html, nothing } = Lit;
 var { widget } = UI.Widget;
 var UIStrings2 = {
   /**
-   * @description Text in Layer Details View of the Layers panel
+   * @description Text in layer details view of the Layers panel.
    */
   selectALayerToSeeItsDetails: "Select a layer to see its details",
   /**
-   * @description Text in Layer Details View of the Layers panel if no layer is selected for viewing its content
+   * @description Text in layer details view of the Layers panel if no layer is selected for viewing its content.
    */
   noLayerSelected: "No layer selected",
   /**
-   * @description Element text content in Layer Details View of the Layers panel
+   * @description Element text content in layer details view of the Layers panel.
    * @example {Touch event handler} PH1
    * @example {10} PH2
    * @example {10} PH3
@@ -248,46 +248,46 @@ var UIStrings2 = {
    */
   scrollRectangleDimensions: "{PH1} {PH2} \xD7 {PH3} (at {PH4}, {PH5})",
   /**
-   * @description Text in Layer Details View of the Layers panel. Used to indicate that a particular
+   * @description Text in layer details view of the Layers panel. Used to indicate that a particular
    * layer of the website is unnamed (was not given a name/doesn't have one).
    */
   unnamed: "<unnamed>",
   /**
-   * @description Text in Layer Details View of the Layers panel
-   * @example {Nearest Layer Shifting Sticky Box} PH1
+   * @description Text in layer details view of the Layers panel.
+   * @example {Nearest layer shifting sticky box} PH1
    * @example {&lt;unnamed&gt;} PH2
    * @example {5} PH3
    */
   stickyAncestorLayersS: "{PH1}: {PH2} ({PH3})",
   /**
-   * @description Sticky box rect element text content in Layer Details View of the Layers panel
+   * @description Sticky box rect element text content in layer details view of the Layers panel.
    * @example {10} PH1
    * @example {10} PH2
    * @example {10} PH3
    * @example {10} PH4
    */
-  stickyBoxRectangleDimensions: "Sticky Box {PH1} \xD7 {PH2} (at {PH3}, {PH4})",
+  stickyBoxRectangleDimensions: "Sticky box {PH1} \xD7 {PH2} (at {PH3}, {PH4})",
   /**
-   * @description Containing block rect element text content in Layer Details View of the Layers panel.
-   * The placeholder are width, height, x position, and y position respectively.
+   * @description Containing block rect element text content in layer details view of the Layers panel.
+   * The placeholders are width, height, x position, and y position respectively.
    * @example {10} PH1
    * @example {10} PH2
    * @example {10} PH3
    * @example {10} PH4
    */
-  containingBlocRectangleDimensions: "Containing Block {PH1} \xD7 {PH2} (at {PH3}, {PH4})",
+  containingBlocRectangleDimensions: "Containing block {PH1} \xD7 {PH2} (at {PH3}, {PH4})",
   /**
-   * @description Text in Layer Details View of the Layers panel. This also means "The nearest sticky
+   * @description Text in layer details view of the Layers panel. This also means "The nearest sticky
    * box that causes a layer shift".
    */
-  nearestLayerShiftingStickyBox: "Nearest Layer Shifting Sticky Box",
+  nearestLayerShiftingStickyBox: "Nearest layer shifting sticky box",
   /**
-   * @description Text in Layer Details View of the Layers panel. This also means "The nearest block
+   * @description Text in layer details view of the Layers panel. This also means "The nearest block
    * that causes a layer shift".
    */
-  nearestLayerShiftingContaining: "Nearest Layer Shifting Containing Block",
+  nearestLayerShiftingContaining: "Nearest layer shifting containing block",
   /**
-   * @description Size cell text content in Layer Details View of the Layers panel
+   * @description Size cell text content in layer details view of the Layers panel.
    * @example {10} PH1
    * @example {10} PH2
    * @example {10} PH3
@@ -295,53 +295,53 @@ var UIStrings2 = {
    */
   updateRectangleDimensions: "{PH1} \xD7 {PH2} (at {PH3}, {PH4})",
   /**
-   * @description Text for the size of something
+   * @description Text for the size of something.
    */
   size: "Size",
   /**
-   * @description Text in Layer Details View of the Layers panel
+   * @description Text in layer details view of the Layers panel.
    */
-  compositingReasons: "Compositing Reasons",
+  compositingReasons: "Compositing reasons",
   /**
-   * @description Text in Layer Details View of the Layers panel
+   * @description Text in layer details view of the Layers panel.
    */
   memoryEstimate: "Memory estimate",
   /**
-   * @description Text in Layer Details View of the Layers panel
+   * @description Text in layer details view of the Layers panel.
    */
   paintCount: "Paint count",
   /**
-   * @description Text in Layer Details View of the Layers panel
+   * @description Text in layer details view of the Layers panel.
    */
   slowScrollRegions: "Slow scroll regions",
   /**
-   * @description Text in Layer Details View of the Layers panel
+   * @description Text in layer details view of the Layers panel.
    */
   stickyPositionConstraint: "Sticky position constraint",
   /**
-   * @description Title of the paint profiler, old name of the performance pane
+   * @description Label for button to open the paint profiler in the layer details view of the Layers panel.
    */
-  paintProfiler: "Paint Profiler",
+  paintProfiler: "Paint profiler",
   /**
-   * @description Text in Layer Details View of the Layers panel
+   * @description Text in layer details view of the Layers panel.
    */
   nonFastScrollable: "Non fast scrollable",
   /**
-   * @description Text in Layer Details View of the Layers panel
+   * @description Text in layer details view of the Layers panel.
    */
   touchEventHandler: "Touch event handler",
   /**
-   * @description Text in Layer Details View of the Layers panel
+   * @description Text in layer details view of the Layers panel.
    */
   wheelEventHandler: "Wheel event handler",
   /**
-   * @description Text in Layer Details View of the Layers panel. Means that this rectangle needs to
+   * @description Text in layer details view of the Layers panel. Means that this rectangle needs to
    * be repainted when the webpage is scrolled. 'repaints' means that the browser engine needs to
    * draw the pixels for this rectangle to the user's monitor again.
    */
   repaintsOnScroll: "Repaints on scroll",
   /**
-   * @description Text in Layer Details View of the Layers panel
+   * @description Text in layer details view of the Layers panel.
    */
   mainThreadScrollingReason: "Main thread scrolling reason"
 };
@@ -575,20 +575,20 @@ var layerTreeOutline_css_default = `/*
 // gen/front_end/panels/layer_viewer/LayerTreeOutline.js
 var UIStrings3 = {
   /**
-   * @description A count of the number of rendering layers in Layer Tree Outline of the Layers panel
+   * @description A count of the number of rendering layers in layer tree outline of the Layers panel.
    * @example {10} PH1
    */
   layerCount: "{PH1} layers",
   /**
-   * @description Label for layers sidepanel tree
+   * @description Label for layers sidebar tree.
    */
-  layersTreePane: "Layers Tree Pane",
+  layersTreePane: "Layers tree",
   /**
-   * @description A context menu item in the DView of the Layers panel
+   * @description Context menu item in the 3D view of the Layers panel.
    */
-  showPaintProfiler: "Show Paint Profiler",
+  showPaintProfiler: "Show paint profiler",
   /**
-   * @description Details text content in Layer Tree Outline of the Layers panel
+   * @description Details text content in layer tree outline of the Layers panel.
    * @example {10} PH1
    * @example {10} PH2
    */
@@ -871,15 +871,15 @@ import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings4 = {
   /**
-   * @description Tooltip text that appears when hovering over largeicon pan button in Transform Controller of the Layers panel
+   * @description Tooltip text that appears when hovering over largeicon pan button in transform controller of the Layers panel.
    */
   panModeX: "Pan mode (X)",
   /**
-   * @description Tooltip text that appears when hovering over largeicon rotate button in Transform Controller of the Layers panel
+   * @description Tooltip text that appears when hovering over largeicon rotate button in transform controller of the Layers panel.
    */
   rotateModeV: "Rotate mode (V)",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon center button in the Transform Controller of the Layers panel
+   * @description Tooltip text that appears when hovering over the largeicon center button in the transform controller of the Layers panel.
    */
   resetTransform: "Reset transform (0)"
 };
@@ -1132,38 +1132,38 @@ var { html: html3, render: render3, Directives: { ref: ref2 } } = Lit2;
 var { widget: widget2 } = UI4.Widget;
 var UIStrings5 = {
   /**
-   * @description Text of a DOM element in DView of the Layers panel
+   * @description Text of a DOM element in 3D view of the Layers panel.
    */
   noLayerInformation: "No layers detected yet",
   /**
-   * @description Text of a DOM element in DView of the Layers panel that explains the panel
+   * @description Text of a DOM element in 3D view of the Layers panel that explains the panel.
    */
   layerExplanation: "On this page you will be able to view and inspect document layers.",
   /**
-   * @description Accessibility label for canvas view in Layers tool
+   * @description Accessibility label for canvas view in Layers panel.
    */
-  dLayersView: "3D Layers View",
+  dLayersView: "3D layers view",
   /**
-   * @description Text in DView of the Layers panel
+   * @description Text in 3D view of the Layers panel.
    */
   cantDisplayLayers: "Can\u2019t display layers",
   /**
-   * @description Text in DView of the Layers panel
+   * @description Text in 3D view of the Layers panel.
    */
   webglSupportIsDisabledInYour: "WebGL support is disabled in your browser.",
   /**
-   * @description Text in DView of the Layers panel
+   * @description Text in 3D view of the Layers panel.
    * @example {about:gpu} PH1
    */
   checkSForPossibleReasons: "Check {PH1} for possible reasons.",
   /**
-   * @description A context menu item in the DView of the Layers panel
+   * @description Context menu item in the 3D view of the Layers panel.
    */
-  resetView: "Reset View",
+  resetView: "Reset view",
   /**
-   * @description A context menu item in the DView of the Layers panel
+   * @description Context menu item in the 3D view of the Layers panel.
    */
-  showPaintProfiler: "Show Paint Profiler"
+  showPaintProfiler: "Show paint profiler"
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/layer_viewer/Layers3DView.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
@@ -2223,33 +2223,33 @@ var { html: html4, render: render4, nothing: nothing4 } = Lit3;
 var { ref: ref3 } = Lit3.Directives;
 var UIStrings6 = {
   /**
-   * @description Text to indicate the progress of a profile
+   * @description Text to indicate the progress of a profile.
    */
   profiling: "Profiling\u2026",
   /**
-   * @description Text in Paint Profiler View of the Layers panel
+   * @description Text in paint profiler view of the Layers panel.
    */
   shapes: "Shapes",
   /**
-   * @description Text in Paint Profiler View of the Layers panel
+   * @description Text in paint profiler view of the Layers panel.
    */
   bitmap: "Bitmap",
   /**
-   * @description Generic label for any text
+   * @description Generic label for any text.
    */
   text: "Text",
   /**
-   * @description Text in Paint Profiler View of the Layers panel
+   * @description Text in paint profiler view of the Layers panel.
    */
   misc: "Misc",
   /**
-   * @description ARIA label for a pie chart that shows the results of the paint profiler
+   * @description ARIA label for a pie chart that shows the results of the paint profiler.
    */
   profilingResults: "Profiling results",
   /**
-   * @description Label for command log tree in the Profiler tab
+   * @description Label for command log tree in the paint profiler.
    */
-  commandLog: "Command Log"
+  commandLog: "Command log"
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/layer_viewer/PaintProfilerView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);

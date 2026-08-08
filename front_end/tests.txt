@@ -685,6 +685,7 @@ testing/SnapshotTester.test.js
 testing/SourceMapEncoder.test.js
 third_party/chromium/client-variations/ClientVariations.test.js
 third_party/i18n/i18n.test.js
+ui/comments/CommentAnchorResolver.test.js
 ui/components/adorners/Adorner.test.js
 ui/components/buttons/Button.test.js
 ui/components/code_highlighter/CodeHighlighter.test.js

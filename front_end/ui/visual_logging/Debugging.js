@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 import { assertNotNullOrUndefined } from '../../core/platform/platform.js';
-import { VisualElements } from './LoggingConfig.js';
+import { elementKey, VisualElements } from './LoggingConfig.js';
 import { getLoggingState } from './LoggingState.js';
 let veDebuggingEnabled = false;
 let debugOverlay = null;
@@ -326,9 +326,6 @@ function processImpressionsForAdHocAnalysisDebugLog(states) {
         adHocAnalysisEntries.set(state.veid, entry);
         maybeLogDebugEvent(entry);
     }
-}
-function elementKey(config) {
-    return `${VisualElements[config.ve]}${config.context ? `: ${config.context}` : ''}`;
 }
 export function debugString(config) {
     const components = [VisualElements[config.ve]];

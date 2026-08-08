@@ -835,6 +835,7 @@
   "front_end/third_party/wasmparser/wasmparser.js",
   "front_end/third_party/web-vitals/web-vitals.js",
   "front_end/trace_app.html",
+  "front_end/ui/comments/comments.js",
   "front_end/ui/components/adorners/adorners.js",
   "front_end/ui/components/buttons/buttons.js",
   "front_end/ui/components/code_highlighter/code_highlighter.js",

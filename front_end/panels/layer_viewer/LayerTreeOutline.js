@@ -10,20 +10,20 @@ import layerTreeOutlineStyles from './layerTreeOutline.css.js';
 import { LayerSelection, } from './LayerViewHost.js';
 const UIStrings = {
     /**
-     * @description A count of the number of rendering layers in Layer Tree Outline of the Layers panel
+     * @description A count of the number of rendering layers in layer tree outline of the Layers panel.
      * @example {10} PH1
      */
     layerCount: '{PH1} layers',
     /**
-     * @description Label for layers sidepanel tree
+     * @description Label for layers sidebar tree.
      */
-    layersTreePane: 'Layers Tree Pane',
+    layersTreePane: 'Layers tree',
     /**
-     * @description A context menu item in the DView of the Layers panel
+     * @description Context menu item in the 3D view of the Layers panel.
      */
-    showPaintProfiler: 'Show Paint Profiler',
+    showPaintProfiler: 'Show paint profiler',
     /**
-     * @description Details text content in Layer Tree Outline of the Layers panel
+     * @description Details text content in layer tree outline of the Layers panel.
      * @example {10} PH1
      * @example {10} PH2
      */

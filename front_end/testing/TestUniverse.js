@@ -37,6 +37,7 @@ export class TestUniverse {
     #context = new Root.DevToolsContext.WritableDevToolsContext();
     #creationOptions;
     supportsEmulation = true;
+    initAutomaticFilesystem;
     #producers = new Map([
         [
             AiAssistance.AiHistoryStorage.AiHistoryStorage,
@@ -139,11 +140,21 @@ export class TestUniverse {
         ],
         [
             Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager,
-            () => new Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager(this.#creationOptions?.inspectorFrontendHost ?? Host.InspectorFrontendHost.InspectorFrontendHostInstance, this.projectSettingsModel),
+            () => {
+                if (!this.initAutomaticFilesystem) {
+                    throw new Error('AutomaticFileSystemManager is not enabled in this TestUniverse.');
+                }
+                return new Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager(this.#creationOptions?.inspectorFrontendHost ?? Host.InspectorFrontendHost.InspectorFrontendHostInstance, this.projectSettingsModel);
+            },
         ],
         [
             Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding,
-            () => new Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding(this.automaticFileSystemManager, this.isolatedFileSystemManager, this.workspace),
+            () => {
+                if (!this.initAutomaticFilesystem) {
+                    throw new Error('AutomaticFileSystemWorkspaceBinding is not enabled in this TestUniverse.');
+                }
+                return new Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding(this.automaticFileSystemManager, this.isolatedFileSystemManager, this.workspace);
+            },
         ],
         [
             Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding,
@@ -163,7 +174,12 @@ export class TestUniverse {
         ],
         [
             ProjectSettings.ProjectSettingsModel.ProjectSettingsModel,
-            () => new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(this.pageResourceLoader, this.targetManager),
+            () => {
+                if (!this.initAutomaticFilesystem) {
+                    throw new Error('ProjectSettingsModel is not enabled in this TestUniverse.');
+                }
+                return new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(this.pageResourceLoader, this.targetManager);
+            },
         ],
         [
             SDK.CPUThrottlingManager.CPUThrottlingManager,
@@ -238,6 +254,7 @@ export class TestUniverse {
     ]);
     constructor(options) {
         this.#creationOptions = options;
+        this.initAutomaticFilesystem = options?.initAutomaticFilesystem ?? true;
     }
     // eslint-disable-next-line @devtools/enforce-test-universe-return-types
     get(ctor) {
@@ -264,7 +281,7 @@ export class TestUniverse {
             this.isolatedFileSystemManager.dispose();
         }
         if (this.#context.has(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager)) {
-            this.automaticFileSystemManager.dispose();
+            this.automaticFileSystemManager?.dispose();
         }
         if (this.#context.has(Workspace.FileManager.FileManager)) {
             this.fileManager.dispose();

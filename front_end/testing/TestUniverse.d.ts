@@ -42,6 +42,7 @@ export interface CreationOptions extends Partial<Foundation.Universe.CreationOpt
 export declare class TestUniverse implements Foundation.Universe.Universe {
     #private;
     readonly supportsEmulation = true;
+    readonly initAutomaticFilesystem: boolean;
     constructor(options?: CreationOptions);
     get<T>(ctor: Root.DevToolsContext.ConstructorT<T>): T;
     /**

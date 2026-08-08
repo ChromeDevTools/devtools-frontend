@@ -3236,6 +3236,7 @@ export const knownContextValues = new Set([
     'protocol',
     'protocol-handlers',
     'protocol-monitor',
+    'protocol-monitor-columns',
     'protocol-monitor-documentation',
     'protocol-monitor.add-custom-property',
     'protocol-monitor.add-parameter',

@@ -985,7 +985,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         if (!treeElement) {
             return false;
         }
-        return treeElement.isEditing() || false;
+        return treeElement.isEditing || false;
     }
     update() {
         const selectedNode = this.selectedDOMNode();

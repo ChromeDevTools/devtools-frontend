@@ -31,6 +31,37 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
     #hiddenColumns = new Set();
     #usedCreationNode = null;
     #sortingChangedScheduled = false;
+    #columnsVisibilitySetting;
+    set columnsVisibilitySetting(setting) {
+        this.#columnsVisibilitySetting = setting;
+        this.#applyColumnVisibilitySetting();
+    }
+    get columnsVisibilitySetting() {
+        return this.#columnsVisibilitySetting;
+    }
+    #applyColumnVisibilitySetting() {
+        if (!this.#columnsVisibilitySetting) {
+            return;
+        }
+        const settingValue = this.#columnsVisibilitySetting.get();
+        let changed = false;
+        for (const column of this.#columns) {
+            if (this.#hideableColumns.has(column.id) && settingValue[column.id]?.visible === false) {
+                if (!this.#hiddenColumns.has(column.id)) {
+                    this.#hiddenColumns.add(column.id);
+                    changed = true;
+                }
+            }
+            else if (this.#hiddenColumns.has(column.id)) {
+                this.#hiddenColumns.delete(column.id);
+                changed = true;
+            }
+        }
+        if (changed) {
+            const visibleColumns = new Set(this.#columns.map(({ id }) => id).filter(id => !this.#hiddenColumns.has(id)));
+            this.#dataGrid.setColumnsVisibility(visibleColumns);
+        }
+    }
     constructor() {
         super();
         // TODO(dsv): Move this to the data_grid.css once all the data grid usage is migrated to this web component.
@@ -71,6 +102,11 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
                             this.#hiddenColumns.add(column.id);
                         }
                         this.#dataGrid.setColumnsVisibility(new Set(this.#columns.map(({ id }) => id).filter(column => !this.#hiddenColumns.has(column))));
+                        if (this.#columnsVisibilitySetting) {
+                            const settingValue = this.#columnsVisibilitySetting.get();
+                            settingValue[column.id] = { visible: !this.#hiddenColumns.has(column.id) };
+                            this.#columnsVisibilitySetting.set(settingValue);
+                        }
                     }, { checked: !this.#hiddenColumns.has(column.id) });
                 }
             }
@@ -241,6 +277,7 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
         const visibleColumns = new Set(this.#columns.map(({ id }) => id).filter(id => !this.#hiddenColumns.has(id)));
         this.#dataGrid.setColumnsVisibility(visibleColumns);
         this.#dataGrid.setEditCallback(hasEditableColumn ? this.#editCallback.bind(this) : undefined, INTERNAL_TOKEN);
+        this.#applyColumnVisibilitySetting();
     }
     #needUpdateColumns(mutationList) {
         for (const mutation of mutationList) {

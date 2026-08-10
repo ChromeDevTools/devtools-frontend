@@ -2,7 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+
+export interface EditorAnchorSignature {
+  /** 1-based line number for CodeMirror text editor anchors */
+  lineNumber: number;
+  /** File path associated with the editor */
+  filePath?: string;
+}
 
 export interface CommentAnchorSignature {
   /** Visual logging tree path, e.g. "Panel: elements > Pane: styles > TreeOutline > TreeItem: color" */
@@ -17,6 +25,8 @@ export interface CommentAnchorSignature {
   networkRequestId?: string;
   /** Optional backend NodeId for Elements panel DOM nodes (`data-backend-node-id`) */
   backendNodeId?: number;
+  /** Optional editor anchor coordinates for CodeMirror text editors */
+  editor?: EditorAnchorSignature;
 }
 
 export interface CommentThread {
@@ -57,6 +67,16 @@ export function closestAcrossShadow(element: Element, selector: string): Element
     current = current.parentElementOrShadowHost();
   }
   return null;
+}
+
+/**
+ * Checks whether an element is a CodeMirror editor container (`.cm-editor`).
+ *
+ * @param element The element to check.
+ * @returns True if the element has the `.cm-editor` class; otherwise false.
+ */
+function isCodeMirrorEditor(element: Element): boolean {
+  return element.classList.contains('cm-editor');
 }
 
 /**
@@ -103,15 +123,73 @@ export function isTabTitle(element: Element): boolean {
   return false;
 }
 
+interface CodeMirrorLineInfo {
+  lineNumber: number;
+  textSignature: string;
+}
+
+/**
+ * Resolves line information (1-based line number and trimmed line text) for an element inside a CodeMirror editor.
+ *
+ * Uses the underlying `CodeMirror.EditorView` and `EditorState.doc` data model directly via
+ * `EditorView.findFromDOM()`. This avoids relying on virtualized DOM nodes (`.cm-line` elements)
+ * which only exist for the currently visible viewport.
+ *
+ * @param element The source DOM element inside or on the editor.
+ * @returns An object containing the 1-based line number and line text, or null if unresolvable or empty.
+ */
+function resolveCodeMirrorLineInfo(element: Element): CodeMirrorLineInfo|null {
+  const cmEditor = element.closest('.cm-editor') as HTMLElement | null;
+  if (!cmEditor) {
+    return null;
+  }
+  const view = CodeMirror.EditorView.findFromDOM(cmEditor);
+  if (!view) {
+    throw new Error('Could not find CodeMirror EditorView from .cm-editor element');
+  }
+  const doc = view.state.doc;
+
+  // 1. Gutter element clicked (line numbers)
+  const gutterEl = element.closest('.cm-gutterElement');
+  if (gutterEl) {
+    const rawText = gutterEl.textContent?.trim() || '';
+    if (rawText.length > 0 && /^\d+$/.test(rawText)) {
+      const lineNum = parseInt(rawText, 10);
+      if (lineNum > 0 && lineNum <= doc.lines) {
+        const line = doc.line(lineNum);
+        const textSignature = line.text.trim();
+        return textSignature ? {lineNumber: line.number, textSignature} : null;
+      }
+    }
+    return null;
+  }
+
+  // 2. Content / line / token clicked: use line element directly or escalate to closest .cm-line
+  const cmLine = element.classList.contains('cm-line') ? element : element.closest('.cm-line');
+  if (cmLine) {
+    try {
+      const pos = view.posAtDOM(cmLine);
+      const line = doc.lineAt(pos);
+      const textSignature = line.text.trim();
+      return textSignature ? {lineNumber: line.number, textSignature} : null;
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
+}
+
 /**
  * Resolves an arbitrary clicked or targeted DOM element to its appropriate semantic comment anchor element.
  *
  * Traversal hierarchy:
  * 1. Checks if the element is part of a tab title (returns null if so).
- * 2. Checks for domain IDs (`data-network-request-id` or `data-backend-node-id`) across shadow boundaries,
+ * 2. Escalates CodeMirror line/gutter elements to .cm-editor (only if the clicked line is non-empty).
+ * 3. Checks for domain IDs (`data-network-request-id` or `data-backend-node-id`) across shadow boundaries,
  *    returning the owning domain element.
- * 3. Escalates minor controls / sub-elements up to semantic containers (e.g., TableRow, TreeItem).
- * 4. Falls back to the nearest visual logging element if no semantic container is found.
+ * 4. Escalates minor controls / sub-elements up to semantic containers (e.g., TableRow, TreeItem).
+ * 5. Falls back to the nearest visual logging element if no semantic container is found.
  *
  * @param element The source DOM element to resolve.
  * @returns The resolved semantic anchor Element, or null if unresolvable/empty/excluded.
@@ -119,6 +197,17 @@ export function isTabTitle(element: Element): boolean {
 export function resolveCommentAnchorElement(element: Element): Element|null {
   if (isTabTitle(element)) {
     return null;
+  }
+  // CodeMirror internal lines, gutters, and content live inside .cm-editor.
+  // We only allow commenting on non-empty lines within the editor; the whole editor
+  // container is never a valid comment target.
+  const cmEditor = element.closest('.cm-editor');
+  if (cmEditor) {
+    const lineInfo = resolveCodeMirrorLineInfo(element);
+    if (!lineInfo) {
+      return null;
+    }
+    return cmEditor;
   }
   const domainElement = closestAcrossShadow(element, '[data-network-request-id], [data-backend-node-id]');
   if (domainElement) {
@@ -213,11 +302,35 @@ export function getSiblingIndex(element: Element, vePath: string,
 }
 
 /**
+ * Checks whether a CodeMirror editor matches a specific line number and text signature.
+ *
+ * Uses `EditorView.findFromDOM()` to inspect the document model in memory rather than
+ * querying virtualized DOM line nodes.
+ *
+ * @param editor The `.cm-editor` element.
+ * @param editorLineNumber The expected 1-based line number.
+ * @param textSignature The expected text content of the line.
+ * @returns True if the editor contains the line matching both line number and text signature; otherwise false.
+ */
+function checkCodeMirrorLineMatch(editor: Element, editorLineNumber: number, textSignature: string): boolean {
+  const view = CodeMirror.EditorView.findFromDOM(editor as HTMLElement);
+  if (!view) {
+    return false;
+  }
+  const doc = view.state.doc;
+  if (editorLineNumber <= 0 || editorLineNumber > doc.lines) {
+    return false;
+  }
+  const line = doc.line(editorLineNumber);
+  return line.text.trim() === textSignature;
+}
+
+/**
  * Resolves a DOM element to a robust, serializable `CommentAnchorSignature`.
  *
  * The signature captures visual logging paths, text content, sibling index disambiguation,
- * and domain IDs (`networkRequestId`, `backendNodeId`) to allow resilient rematching
- * across DOM re-renders, filtering, and DevTools sessions.
+ * domain IDs (`networkRequestId`, `backendNodeId`), and CodeMirror editor coordinates to allow
+ * resilient rematching across DOM re-renders, filtering, and DevTools sessions.
  *
  * @param element The source DOM element to resolve into an anchor signature.
  * @param root Optional root Document or Element to search within for sibling index calculation.
@@ -237,9 +350,24 @@ export function resolveCommentAnchor(
   }
 
   // 2. Extract text signature and parent text signature
-  const textSignature = target.deepTextContent();
-  const parentEl = target.parentElementOrShadowHost();
-  const parentTextSignature = parentEl ? parentEl.deepTextContent() : undefined;
+  const isEditorTarget = isCodeMirrorEditor(target);
+  let textSignature: string;
+  let parentTextSignature: string|undefined;
+  let editor: EditorAnchorSignature|undefined;
+
+  if (isEditorTarget) {
+    const lineInfo = resolveCodeMirrorLineInfo(element);
+    if (!lineInfo) {
+      return null;
+    }
+    textSignature = lineInfo.textSignature;
+    const filePath = target.getAttribute('data-file-path') ?? undefined;
+    editor = {lineNumber: lineInfo.lineNumber, filePath};
+  } else {
+    textSignature = target.deepTextContent();
+    const parentEl = target.parentElementOrShadowHost();
+    parentTextSignature = parentEl ? parentEl.deepTextContent() : undefined;
+  }
 
   // 3. Calculate sibling index among elements with same vePath in document order
   const siblingIndex = getSiblingIndex(target, vePath, root);
@@ -257,6 +385,7 @@ export function resolveCommentAnchor(
     siblingIndex,
     networkRequestId,
     backendNodeId,
+    editor,
   };
 }
 
@@ -319,9 +448,10 @@ export function deepQuerySelector(root: Document|Element, selector: string): Ele
  *
  * Matching pipeline:
  * 1. Primary fast-path: Query by domain IDs (`networkRequestId` or `backendNodeId`) across shadow roots.
- * 2. Visual logging path fallback: Find all candidate elements matching `vePath`.
- * 3. Text content refinement: Filter candidates by `textSignature` and `parentTextSignature`.
- * 4. Sibling index disambiguation: Match exact sibling position when multiple candidates exist.
+ * 2. CodeMirror editor line match: Match editor and line number/text, scoped by `filePath` if present.
+ * 3. Visual logging path fallback: Find all candidate elements matching `vePath`.
+ * 4. Text content refinement: Filter candidates by `textSignature` and `parentTextSignature`.
+ * 5. Sibling index disambiguation: Match exact sibling position when multiple candidates exist.
  *
  * @param comment The comment thread containing the anchor signature to rematch.
  * @param root The root Document or Element to search within (defaults to document).
@@ -338,6 +468,23 @@ export function rematchCommentAnchor(comment: CommentThread, root: Document|Elem
   }
   if (anchor.backendNodeId !== undefined) {
     return deepQuerySelector(root, `[data-backend-node-id="${CSS.escape(String(anchor.backendNodeId))}"]`);
+  }
+  if (anchor.editor) {
+    const {lineNumber, filePath} = anchor.editor;
+    const cmEditors =
+        cachedJslogElements ? cachedJslogElements.filter(isCodeMirrorEditor) : deepQuerySelectorAll(root, '.cm-editor');
+    const matchingEditors = cmEditors.filter(cmEditor => {
+      if (filePath !== undefined && cmEditor.getAttribute('data-file-path') !== filePath) {
+        return false;
+      }
+      return VisualLogging.getVePath(cmEditor) === anchor.vePath;
+    });
+    for (const cmEditor of matchingEditors) {
+      if (checkCodeMirrorLineMatch(cmEditor, lineNumber, anchor.textSignature)) {
+        return cmEditor;
+      }
+    }
+    return matchingEditors[0] ?? null;
   }
 
   // Step 2: VE path and deepTextContent fallback (for non-ID controls and console logs)

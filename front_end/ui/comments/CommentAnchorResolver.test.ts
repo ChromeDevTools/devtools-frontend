@@ -5,10 +5,29 @@
 import {assert} from 'chai';
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as TextEditor from '../components/text_editor/text_editor.js';
 
 import * as Comments from './comments.js';
 
-describe('CommentAnchorResolver', () => {
+function createTextEditor(doc: string, filePath?: string): TextEditor.TextEditor.TextEditor {
+  const state = CodeMirror.EditorState.create({
+    doc,
+    extensions: [
+      CodeMirror.lineNumbers(),
+      TextEditor.Config.baseConfiguration(doc),
+    ],
+  });
+  const textEditor = new TextEditor.TextEditor.TextEditor(state);
+  textEditor.editor.dom.setAttribute('jslog', 'TextField; context: editor');
+  if (filePath) {
+    textEditor.editor.dom.setAttribute('data-file-path', filePath);
+  }
+  return textEditor;
+}
+
+describeWithEnvironment('CommentAnchorResolver', () => {
   let container: HTMLElement;
 
   beforeEach(() => {
@@ -521,6 +540,165 @@ describe('CommentAnchorResolver', () => {
       const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(el);
       assert.isNull(anchor);
     });
+
+    it('resolves CodeMirror line elements to .cm-editor with line number and file path', () => {
+      const textEditor = createTextEditor('import * as Foo from "./foo.js";\nexport const bar = 123;', 'src/index.ts');
+      container.appendChild(textEditor);
+
+      const lines = textEditor.editor.dom.querySelectorAll('.cm-content > .cm-line');
+      const line2 = lines[1];
+      assert.isDefined(line2);
+
+      const anchorEl = Comments.CommentAnchorResolver.resolveCommentAnchorElement(line2);
+      assert.strictEqual(anchorEl, textEditor.editor.dom);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(line2);
+      assert.isNotNull(anchor);
+      assert.strictEqual(anchor?.editor?.lineNumber, 2);
+      assert.strictEqual(anchor?.textSignature, 'export const bar = 123;');
+      assert.strictEqual(anchor?.editor?.filePath, 'src/index.ts');
+    });
+
+    it('resolves CodeMirror gutter elements to corresponding line element', () => {
+      const textEditor = createTextEditor('const a = 1;\nconst b = 2;');
+      container.appendChild(textEditor);
+
+      const gutters = textEditor.editor.dom.querySelectorAll('.cm-lineNumbers .cm-gutterElement');
+      const g2 = Array.from(gutters).find(g => g.textContent?.trim() === '2');
+      assert.isDefined(g2);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(g2!);
+      assert.isNotNull(anchor);
+      assert.strictEqual(anchor?.editor?.lineNumber, 2);
+      assert.strictEqual(anchor?.textSignature, 'const b = 2;');
+    });
+
+    it('resolves CodeMirror line elements when clicking nested token child elements inside a line', () => {
+      const textEditor = createTextEditor('const x = 42;', 'src/tokens.ts');
+      container.appendChild(textEditor);
+
+      const line = textEditor.editor.dom.querySelector('.cm-content > .cm-line');
+      assert.isNotNull(line);
+
+      const tokenSpan = document.createElement('span');
+      tokenSpan.textContent = 'x';
+      line!.appendChild(tokenSpan);
+
+      const anchorEl = Comments.CommentAnchorResolver.resolveCommentAnchorElement(tokenSpan);
+      assert.strictEqual(anchorEl, textEditor.editor.dom);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(tokenSpan);
+      assert.isNotNull(anchor);
+      assert.strictEqual(anchor?.editor?.lineNumber, 1);
+      assert.strictEqual(anchor?.textSignature, 'const x = 42;');
+      assert.strictEqual(anchor?.editor?.filePath, 'src/tokens.ts');
+    });
+
+    it('resolves and rematches lines accurately in a large virtualized CodeMirror editor', () => {
+      const linesArray: string[] = [];
+      for (let i = 1; i <= 200; i++) {
+        linesArray.push(`const variable_${i} = ${i};`);
+      }
+      const doc = linesArray.join('\n');
+      const textEditor = createTextEditor(doc, 'src/large.ts');
+      container.appendChild(textEditor);
+
+      // Verify rematching line 150 (outside initial viewport) directly via document model
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'virtualized-line-thread',
+        anchor: {
+          vePath: 'TextField: editor',
+          textSignature: 'const variable_150 = 150;',
+          editor: {
+            filePath: 'src/large.ts',
+            lineNumber: 150,
+          },
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, textEditor.editor.dom);
+    });
+
+    it('returns null when CodeMirror editor is empty with only whitespace', () => {
+      const textEditor = createTextEditor('   \n  ');
+      container.appendChild(textEditor);
+
+      const anchorEl = Comments.CommentAnchorResolver.resolveCommentAnchorElement(textEditor.editor.dom);
+      assert.isNull(anchorEl);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(textEditor.editor.dom);
+      assert.isNull(anchor);
+    });
+
+    it('returns null when clicking on an empty/whitespace line in a non-empty CodeMirror editor', () => {
+      const textEditor = createTextEditor('const a = 1;\n\nconst b = 2;');
+      container.appendChild(textEditor);
+
+      const lines = textEditor.editor.dom.querySelectorAll('.cm-content > .cm-line');
+      const emptyLine = lines[1];
+      assert.isDefined(emptyLine);
+
+      const anchorEl = Comments.CommentAnchorResolver.resolveCommentAnchorElement(emptyLine);
+      assert.isNull(anchorEl);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(emptyLine);
+      assert.isNull(anchor);
+    });
+
+    it('returns null when clicking on gutter element without a corresponding document line', () => {
+      const textEditor = createTextEditor('single line');
+      container.appendChild(textEditor);
+
+      // Create a standalone detached gutter element to test the out-of-bounds / no-line fallback
+      const gutter = textEditor.editor.dom.querySelector('.cm-lineNumbers');
+      assert.isNotNull(gutter);
+      const extraGutter = document.createElement('div');
+      extraGutter.classList.add('cm-gutterElement');
+      extraGutter.textContent = '99';
+      gutter!.appendChild(extraGutter);
+
+      const anchorEl = Comments.CommentAnchorResolver.resolveCommentAnchorElement(extraGutter);
+      assert.isNull(anchorEl);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(extraGutter);
+      assert.isNull(anchor);
+    });
+
+    it('returns null when clicking on a non-numeric gutter marker', () => {
+      const textEditor = createTextEditor('const a = 100;\nconst b = 200;', 'src/gutters.ts');
+      container.appendChild(textEditor);
+
+      const gutters = textEditor.editor.dom.querySelector('.cm-gutters');
+      assert.isNotNull(gutters);
+
+      // Create a breakpoint/icon gutter with no numeric text
+      const iconGutter = document.createElement('div');
+      iconGutter.classList.add('cm-gutterElement');
+      const icon = document.createElement('span');
+      icon.classList.add('cm-breakpoint-icon');
+      iconGutter.appendChild(icon);
+      gutters!.appendChild(iconGutter);
+
+      const anchorEl = Comments.CommentAnchorResolver.resolveCommentAnchorElement(icon);
+      assert.isNull(anchorEl);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(icon);
+      assert.isNull(anchor);
+    });
+
+    it('throws an error in resolveCommentAnchor if CodeMirror EditorView cannot be found for .cm-editor element',
+       () => {
+         const detachedEditor = document.createElement('div');
+         detachedEditor.classList.add('cm-editor');
+         detachedEditor.setAttribute('jslog', 'TextField; context: editor');
+
+         assert.throws(() => {
+           Comments.CommentAnchorResolver.resolveCommentAnchor(detachedEditor);
+         }, 'Could not find CodeMirror EditorView from .cm-editor element');
+       });
   });
 
   describe('deepQuerySelectorAll', () => {
@@ -924,6 +1102,129 @@ describe('CommentAnchorResolver', () => {
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, item2);
+    });
+
+    it('scopes CodeMirror editor re-attachment to the panel encoded in vePath', () => {
+      const sourcesPanel = document.createElement('div');
+      sourcesPanel.setAttribute('jslog', 'Panel; context: sources');
+      const sourcesEditor = createTextEditor('const x = 10;');
+      sourcesPanel.appendChild(sourcesEditor);
+      container.appendChild(sourcesPanel);
+
+      const consolePanel = document.createElement('div');
+      consolePanel.setAttribute('jslog', 'Panel; context: console');
+      const consoleEditor = createTextEditor('const x = 10;');
+      consolePanel.appendChild(consoleEditor);
+      container.appendChild(consolePanel);
+
+      const line = sourcesEditor.editor.dom.querySelector('.cm-content > .cm-line');
+      assert.isNotNull(line);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(line!);
+      assert.isNotNull(anchor);
+      assert.strictEqual(anchor?.vePath, 'Panel: sources > TextField: editor');
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'cm-thread',
+        anchor: anchor!,
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, sourcesEditor.editor.dom);
+    });
+
+    it('rematches CodeMirror editor matching editorFilePath among multiple open editors', () => {
+      const editor1 = createTextEditor('const a = 1;', 'src/fileA.ts');
+      container.appendChild(editor1);
+
+      const editor2 = createTextEditor('const a = 1;', 'src/fileB.ts');
+      container.appendChild(editor2);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'file-b-thread',
+        anchor: {
+          vePath: 'TextField: editor',
+          textSignature: 'const a = 1;',
+          editor: {
+            filePath: 'src/fileB.ts',
+            lineNumber: 1,
+          },
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, editor2.editor.dom);
+    });
+
+    it('returns null when no open editor matches editor.filePath', () => {
+      const editor = createTextEditor('const a = 1;', 'src/foo.ts');
+      container.appendChild(editor);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'missing-file-thread',
+        anchor: {
+          vePath: 'TextField: editor',
+          textSignature: 'const a = 1;',
+          editor: {
+            filePath: 'src/nonexistent.ts',
+            lineNumber: 1,
+          },
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.isNull(rematched);
+    });
+
+    it('rematches CodeMirror editor by lineNumber even when line text content has changed', () => {
+      const editor = createTextEditor('const modified = 999;', 'src/app.ts');
+      container.appendChild(editor);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'modified-line-thread',
+        anchor: {
+          vePath: 'TextField: editor',
+          textSignature: 'const original = 1;',
+          editor: {
+            filePath: 'src/app.ts',
+            lineNumber: 1,
+          },
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, editor.editor.dom);
+    });
+
+    it('rematches CodeMirror editor using cachedJslogElements when provided', () => {
+      const editor = createTextEditor('const cached = 42;', 'src/cached.ts');
+      container.appendChild(editor);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'cached-editor-thread',
+        anchor: {
+          vePath: 'TextField: editor',
+          textSignature: 'const cached = 42;',
+          editor: {
+            filePath: 'src/cached.ts',
+            lineNumber: 1,
+          },
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const cachedElements = Comments.CommentAnchorResolver.deepQuerySelectorAll(container, '[jslog]');
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container, cachedElements);
+      assert.strictEqual(rematched, editor.editor.dom);
     });
 
     it('disambiguates identical items across multiple parent containers using parentTextSignature and siblingIndex',

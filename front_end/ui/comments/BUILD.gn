@@ -9,7 +9,10 @@ import("../../visibility.gni")
 devtools_ui_module("comments") {
   sources = [ "CommentAnchorResolver.ts" ]
 
-  deps = [ "../../ui/visual_logging:bundle" ]
+  deps = [
+    "../../third_party/codemirror.next:bundle",
+    "../../ui/visual_logging:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {
@@ -37,5 +40,7 @@ devtools_ui_module("unittests") {
   deps = [
     ":bundle",
     "../../testing",
+    "../../third_party/codemirror.next:bundle",
+    "../components/text_editor:bundle",
   ]
 }

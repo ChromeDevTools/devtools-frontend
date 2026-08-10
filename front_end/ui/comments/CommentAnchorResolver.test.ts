@@ -20,6 +20,220 @@ describe('CommentAnchorResolver', () => {
     container.remove();
   });
 
+  describe('closestAcrossShadow', () => {
+    it('returns the element itself if it matches the selector', () => {
+      const el = document.createElement('div');
+      el.classList.add('my-target');
+      container.appendChild(el);
+
+      const matched = Comments.CommentAnchorResolver.closestAcrossShadow(el, '.my-target');
+      assert.strictEqual(matched, el);
+    });
+
+    it('finds matching ancestor across shadow DOM boundary', () => {
+      const parent = document.createElement('div');
+      parent.setAttribute('data-outer-id', 'outer-123');
+
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+      const innerChild = document.createElement('span');
+      shadow.appendChild(innerChild);
+
+      parent.appendChild(host);
+      container.appendChild(parent);
+
+      const matched = Comments.CommentAnchorResolver.closestAcrossShadow(innerChild, '[data-outer-id]');
+      assert.strictEqual(matched, parent);
+    });
+
+    it('returns null when no matching element is found', () => {
+      const el = document.createElement('div');
+      container.appendChild(el);
+
+      const matched = Comments.CommentAnchorResolver.closestAcrossShadow(el, '.non-existent');
+      assert.isNull(matched);
+    });
+  });
+
+  describe('isNonEmptyItem', () => {
+    it('returns true when element has non-empty text content', () => {
+      const el = document.createElement('div');
+      el.textContent = 'Hello World';
+      assert.isTrue(Comments.CommentAnchorResolver.isNonEmptyItem(el));
+    });
+
+    it('returns false when element is empty or only whitespace', () => {
+      const el = document.createElement('div');
+      el.textContent = '   \n\t  ';
+      assert.isFalse(Comments.CommentAnchorResolver.isNonEmptyItem(el));
+    });
+
+    it('returns true when element contains non-empty text inside shadow root', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+      const span = document.createElement('span');
+      span.textContent = 'Shadow Text';
+      shadow.appendChild(span);
+
+      assert.isTrue(Comments.CommentAnchorResolver.isNonEmptyItem(host));
+    });
+  });
+
+  describe('isTabTitle', () => {
+    it('identifies PanelTabHeader VE elements', () => {
+      const tabHeader = document.createElement('div');
+      tabHeader.setAttribute('jslog', 'PanelTabHeader; context: console');
+      assert.isTrue(Comments.CommentAnchorResolver.isTabTitle(tabHeader));
+    });
+
+    it('identifies elements with role="tab"', () => {
+      const tab = document.createElement('div');
+      tab.setAttribute('role', 'tab');
+      assert.isTrue(Comments.CommentAnchorResolver.isTabTitle(tab));
+    });
+
+    it('identifies elements with tab CSS classes', () => {
+      const tab1 = document.createElement('div');
+      tab1.classList.add('tab-element');
+      assert.isTrue(Comments.CommentAnchorResolver.isTabTitle(tab1));
+
+      const tab2 = document.createElement('div');
+      tab2.classList.add('tab-header');
+      assert.isTrue(Comments.CommentAnchorResolver.isTabTitle(tab2));
+    });
+
+    it('identifies child elements within tab headers across shadow boundaries', () => {
+      const host = document.createElement('div');
+      host.setAttribute('role', 'tab');
+      const shadow = host.attachShadow({mode: 'open'});
+      const child = document.createElement('span');
+      shadow.appendChild(child);
+
+      assert.isTrue(Comments.CommentAnchorResolver.isTabTitle(child));
+    });
+
+    it('returns false for non-tab elements', () => {
+      const el = document.createElement('div');
+      el.setAttribute('jslog', 'TreeItem; context: item');
+      assert.isFalse(Comments.CommentAnchorResolver.isTabTitle(el));
+    });
+  });
+
+  describe('extractVeName', () => {
+    it('extracts trailing VE name from full visual logging path', () => {
+      assert.strictEqual(
+          Comments.CommentAnchorResolver.extractVeName('Panel: elements > Pane: styles > TreeItem: color'), 'TreeItem');
+      assert.strictEqual(Comments.CommentAnchorResolver.extractVeName('Action: toggle'), 'Action');
+      assert.strictEqual(Comments.CommentAnchorResolver.extractVeName('TableRow'), 'TableRow');
+    });
+
+    it('returns empty string for empty path', () => {
+      assert.strictEqual(Comments.CommentAnchorResolver.extractVeName(''), '');
+    });
+  });
+
+  describe('matchesVePath', () => {
+    it('returns true when element matches full VE path', () => {
+      const panel = document.createElement('div');
+      panel.setAttribute('jslog', 'Panel; context: elements');
+      const item = document.createElement('div');
+      item.setAttribute('jslog', 'TreeItem; context: rule');
+      panel.appendChild(item);
+      container.appendChild(panel);
+
+      assert.isTrue(Comments.CommentAnchorResolver.matchesVePath(item, 'Panel: elements > TreeItem: rule'));
+    });
+
+    it('returns false when element does not match VE path or lacks jslog', () => {
+      const el = document.createElement('div');
+      container.appendChild(el);
+      assert.isFalse(Comments.CommentAnchorResolver.matchesVePath(el, 'TreeItem: rule'));
+
+      el.setAttribute('jslog', 'Action; context: btn');
+      assert.isFalse(Comments.CommentAnchorResolver.matchesVePath(el, 'TreeItem: rule'));
+    });
+
+    it('falls back to getVePath when element lacks jslog DOM attribute or value', () => {
+      const panel = document.createElement('div');
+      panel.setAttribute('jslog', 'Panel; context: elements');
+      const item = document.createElement('div');
+      item.setAttribute('jslog', '');
+      panel.appendChild(item);
+      container.appendChild(panel);
+
+      assert.isTrue(Comments.CommentAnchorResolver.matchesVePath(item, 'Panel: elements', 'TreeItem'));
+    });
+  });
+
+  describe('getSiblingIndex', () => {
+    it('returns sequential 0-based indices for elements sharing the same VE path in document order', () => {
+      const panel = document.createElement('div');
+      panel.setAttribute('jslog', 'Panel; context: elements');
+
+      const item1 = document.createElement('div');
+      item1.setAttribute('jslog', 'TreeItem; context: rule');
+      panel.appendChild(item1);
+
+      const item2 = document.createElement('div');
+      item2.setAttribute('jslog', 'TreeItem; context: rule');
+      panel.appendChild(item2);
+
+      const item3 = document.createElement('div');
+      item3.setAttribute('jslog', 'TreeItem; context: rule');
+      panel.appendChild(item3);
+
+      container.appendChild(panel);
+
+      assert.strictEqual(Comments.CommentAnchorResolver.getSiblingIndex(item1, 'Panel: elements > TreeItem: rule'), 0);
+      assert.strictEqual(Comments.CommentAnchorResolver.getSiblingIndex(item2, 'Panel: elements > TreeItem: rule'), 1);
+      assert.strictEqual(Comments.CommentAnchorResolver.getSiblingIndex(item3, 'Panel: elements > TreeItem: rule'), 2);
+    });
+
+    it('correctly calculates indices when elements are inside separate DOM container wrappers', () => {
+      const panel = document.createElement('div');
+      panel.setAttribute('jslog', 'Panel; context: elements');
+
+      // Each item is in its own container div (DOM parent only has 1 child)
+      const wrap1 = document.createElement('div');
+      const item1 = document.createElement('div');
+      item1.setAttribute('jslog', 'TreeItem; context: rule');
+      wrap1.appendChild(item1);
+      panel.appendChild(wrap1);
+
+      const wrap2 = document.createElement('div');
+      const item2 = document.createElement('div');
+      item2.setAttribute('jslog', 'TreeItem; context: rule');
+      wrap2.appendChild(item2);
+      panel.appendChild(wrap2);
+
+      container.appendChild(panel);
+
+      assert.strictEqual(Comments.CommentAnchorResolver.getSiblingIndex(item1, 'Panel: elements > TreeItem: rule'), 0);
+      assert.strictEqual(Comments.CommentAnchorResolver.getSiblingIndex(item2, 'Panel: elements > TreeItem: rule'), 1);
+    });
+
+    it('correctly calculates indices across shadow DOM boundaries', () => {
+      const host = document.createElement('div');
+      host.setAttribute('jslog', 'Panel; context: shadow-panel');
+      const shadow = host.attachShadow({mode: 'open'});
+
+      const item1 = document.createElement('div');
+      item1.setAttribute('jslog', 'TreeItem; context: item');
+      shadow.appendChild(item1);
+
+      const item2 = document.createElement('div');
+      item2.setAttribute('jslog', 'TreeItem; context: item');
+      shadow.appendChild(item2);
+
+      container.appendChild(host);
+
+      assert.strictEqual(Comments.CommentAnchorResolver.getSiblingIndex(item1, 'Panel: shadow-panel > TreeItem: item'),
+                         0);
+      assert.strictEqual(Comments.CommentAnchorResolver.getSiblingIndex(item2, 'Panel: shadow-panel > TreeItem: item'),
+                         1);
+    });
+  });
+
   describe('resolveCommentAnchorElement', () => {
     it('escalates interactive controls to semantic containers', () => {
       const parent = document.createElement('div');
@@ -66,6 +280,19 @@ describe('CommentAnchorResolver', () => {
       assert.strictEqual(anchorEl, row);
     });
 
+    it('returns the element that has data-network-request-id when resolving a descendant', () => {
+      const row = document.createElement('div');
+      row.setAttribute('data-network-request-id', 'req-999');
+      const cell = document.createElement('div');
+      cell.setAttribute('jslog', 'TableCell; context: cell');
+      cell.textContent = 'GET /api/data';
+      row.appendChild(cell);
+      container.appendChild(row);
+
+      const anchorEl = Comments.CommentAnchorResolver.resolveCommentAnchorElement(cell);
+      assert.strictEqual(anchorEl, row);
+    });
+
     it('stops escalation immediately when element has data-backend-node-id', () => {
       const nodeEl = document.createElement('div');
       nodeEl.setAttribute('jslog', 'Action; context: dom-node');
@@ -74,6 +301,19 @@ describe('CommentAnchorResolver', () => {
       container.appendChild(nodeEl);
 
       const anchorEl = Comments.CommentAnchorResolver.resolveCommentAnchorElement(nodeEl);
+      assert.strictEqual(anchorEl, nodeEl);
+    });
+
+    it('returns the element that has data-backend-node-id when resolving a descendant', () => {
+      const nodeEl = document.createElement('div');
+      nodeEl.setAttribute('data-backend-node-id', '42');
+      const childSpan = document.createElement('span');
+      childSpan.setAttribute('jslog', 'Action; context: tag-name');
+      childSpan.textContent = 'div';
+      nodeEl.appendChild(childSpan);
+      container.appendChild(nodeEl);
+
+      const anchorEl = Comments.CommentAnchorResolver.resolveCommentAnchorElement(childSpan);
       assert.strictEqual(anchorEl, nodeEl);
     });
 
@@ -147,6 +387,765 @@ describe('CommentAnchorResolver', () => {
 
       const anchorEl3 = Comments.CommentAnchorResolver.resolveCommentAnchorElement(classTab);
       assert.isNull(anchorEl3);
+    });
+  });
+
+  describe('resolveCommentAnchor', () => {
+    it('constructs vePath, captures textSignature, and calculates sibling index without redundant panelName', () => {
+      const panel = document.createElement('div');
+      panel.setAttribute('jslog', 'Panel; context: elements');
+
+      const item1 = document.createElement('div');
+      item1.setAttribute('jslog', 'TreeItem; context: rule');
+      item1.textContent = 'margin: 0;';
+      panel.appendChild(item1);
+
+      const item2 = document.createElement('div');
+      item2.setAttribute('jslog', 'TreeItem; context: rule');
+      item2.textContent = 'margin: 0;';
+      panel.appendChild(item2);
+
+      container.appendChild(panel);
+
+      const anchor1 = Comments.CommentAnchorResolver.resolveCommentAnchor(item1);
+      const anchor2 = Comments.CommentAnchorResolver.resolveCommentAnchor(item2);
+
+      assert.isNotNull(anchor1);
+      assert.isNotNull(anchor2);
+      assert.strictEqual(anchor1?.vePath, 'Panel: elements > TreeItem: rule');
+      assert.strictEqual(anchor2?.vePath, 'Panel: elements > TreeItem: rule');
+      assert.strictEqual(anchor1?.siblingIndex, 0);
+      assert.strictEqual(anchor2?.siblingIndex, 1);
+      assert.strictEqual(anchor1?.textSignature, 'margin: 0;');
+    });
+
+    it('captures networkRequestId from element or closest ancestor', () => {
+      const row = document.createElement('div');
+      row.setAttribute('jslog', 'TableRow; context: network-row');
+      row.setAttribute('data-network-request-id', 'req-1234');
+      const cell = document.createElement('div');
+      cell.setAttribute('jslog', 'TableCell; context: cell');
+      cell.textContent = 'GET /api/test';
+      row.appendChild(cell);
+      container.appendChild(row);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(cell);
+      assert.isNotNull(anchor);
+      assert.strictEqual(anchor?.networkRequestId, 'req-1234');
+    });
+
+    it('calculates sibling index correctly for elements inside a shadow root', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+
+      const item1 = document.createElement('div');
+      item1.setAttribute('jslog', 'TreeItem; context: rule');
+      item1.textContent = 'display: flex;';
+      shadow.appendChild(item1);
+
+      const item2 = document.createElement('div');
+      item2.setAttribute('jslog', 'TreeItem; context: rule');
+      item2.textContent = 'display: flex;';
+      shadow.appendChild(item2);
+
+      container.appendChild(host);
+
+      const anchor1 = Comments.CommentAnchorResolver.resolveCommentAnchor(item1);
+      const anchor2 = Comments.CommentAnchorResolver.resolveCommentAnchor(item2);
+
+      assert.isNotNull(anchor1);
+      assert.isNotNull(anchor2);
+      assert.strictEqual(anchor1?.siblingIndex, 0);
+      assert.strictEqual(anchor2?.siblingIndex, 1);
+    });
+
+    it('calculates sibling index for direct children of shadow root with interspersed text/comment nodes', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+
+      shadow.appendChild(document.createComment('leading comment'));
+      shadow.appendChild(document.createTextNode('\n  '));
+
+      const item1 = document.createElement('div');
+      item1.setAttribute('jslog', 'TreeItem; context: rule');
+      item1.textContent = 'color: red;';
+      shadow.appendChild(item1);
+
+      shadow.appendChild(document.createTextNode('\n  '));
+      shadow.appendChild(document.createComment('middle comment'));
+
+      const item2 = document.createElement('div');
+      item2.setAttribute('jslog', 'TreeItem; context: rule');
+      item2.textContent = 'color: red;';
+      shadow.appendChild(item2);
+
+      container.appendChild(host);
+
+      const anchor1 = Comments.CommentAnchorResolver.resolveCommentAnchor(item1);
+      const anchor2 = Comments.CommentAnchorResolver.resolveCommentAnchor(item2);
+
+      assert.isNotNull(anchor1);
+      assert.isNotNull(anchor2);
+      assert.strictEqual(anchor1?.siblingIndex, 0);
+      assert.strictEqual(anchor2?.siblingIndex, 1);
+    });
+
+    it('captures backendNodeId from element or closest ancestor', () => {
+      const ancestor = document.createElement('div');
+      ancestor.setAttribute('jslog', 'TreeItem; context: dom-node');
+      ancestor.setAttribute('data-backend-node-id', '101');
+      const node = document.createElement('div');
+      node.setAttribute('jslog', 'TreeItem; context: child-node');
+      node.textContent = '<div>Hello</div>';
+      ancestor.appendChild(node);
+      container.appendChild(ancestor);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(node);
+      assert.isNotNull(anchor);
+      assert.strictEqual(anchor?.backendNodeId, 101);
+    });
+
+    it('returns null if element cannot be resolved to an anchor element', () => {
+      const emptyEl = document.createElement('div');
+      container.appendChild(emptyEl);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(emptyEl);
+      assert.isNull(anchor);
+    });
+
+    it('returns null if resolved element has no visual logging path', () => {
+      const el = document.createElement('div');
+      el.textContent = 'Some content without jslog';
+      container.appendChild(el);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(el);
+      assert.isNull(anchor);
+    });
+  });
+
+  describe('deepQuerySelectorAll', () => {
+    it('returns all matching descendant elements across light and shadow DOM in document order, ignoring root element',
+       () => {
+         const parent = document.createElement('div');
+         parent.setAttribute('data-test-item', 'item-1');
+
+         const host = document.createElement('div');
+         const shadow = host.attachShadow({mode: 'open'});
+         const shadowChild = document.createElement('div');
+         shadowChild.setAttribute('data-test-item', 'item-2');
+         shadow.appendChild(shadowChild);
+         parent.appendChild(host);
+
+         const sibling = document.createElement('div');
+         sibling.setAttribute('data-test-item', 'item-3');
+         parent.appendChild(sibling);
+
+         container.appendChild(parent);
+
+         const matched = Comments.CommentAnchorResolver.deepQuerySelectorAll(parent, '[data-test-item]');
+         assert.deepEqual(matched, [shadowChild, sibling]);
+       });
+
+    it('finds matching elements inside the root element\'s own shadowRoot', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+
+      const shadowChild1 = document.createElement('div');
+      shadowChild1.setAttribute('data-test-item', 'shadow-1');
+      shadow.appendChild(shadowChild1);
+
+      const shadowChild2 = document.createElement('span');
+      shadowChild2.setAttribute('data-test-item', 'shadow-2');
+      shadow.appendChild(shadowChild2);
+
+      container.appendChild(host);
+
+      const matched = Comments.CommentAnchorResolver.deepQuerySelectorAll(host, '[data-test-item]');
+      assert.deepEqual(matched, [shadowChild1, shadowChild2]);
+    });
+
+    it('finds matching elements inside nested shadow roots when root element itself has a shadowRoot', () => {
+      const rootHost = document.createElement('div');
+      const rootShadow = rootHost.attachShadow({mode: 'open'});
+
+      const nestedHost = document.createElement('div');
+      const nestedShadow = nestedHost.attachShadow({mode: 'open'});
+
+      const nestedChild = document.createElement('div');
+      nestedChild.setAttribute('data-test-item', 'nested-shadow-item');
+      nestedShadow.appendChild(nestedChild);
+
+      rootShadow.appendChild(nestedHost);
+      container.appendChild(rootHost);
+
+      const matched = Comments.CommentAnchorResolver.deepQuerySelectorAll(rootHost, '[data-test-item]');
+      assert.deepEqual(matched, [nestedChild]);
+    });
+
+    it('preserves document order across root\'s shadowRoot matches and light DOM matches (descendants only)', () => {
+      const host = document.createElement('div');
+      host.setAttribute('data-test-item', 'root-host');
+
+      const shadow = host.attachShadow({mode: 'open'});
+      const shadowChild = document.createElement('div');
+      shadowChild.setAttribute('data-test-item', 'shadow-child');
+      shadow.appendChild(shadowChild);
+
+      const lightChild = document.createElement('div');
+      lightChild.setAttribute('data-test-item', 'light-child');
+      host.appendChild(lightChild);
+
+      container.appendChild(host);
+
+      const matched = Comments.CommentAnchorResolver.deepQuerySelectorAll(host, '[data-test-item]');
+      assert.deepEqual(matched, [shadowChild, lightChild]);
+    });
+
+    it('returns an empty array when no elements match, including within shadow roots', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+      const shadowChild = document.createElement('div');
+      shadow.appendChild(shadowChild);
+      container.appendChild(host);
+
+      const matched = Comments.CommentAnchorResolver.deepQuerySelectorAll(host, '[data-nonexistent]');
+      assert.deepEqual(matched, []);
+    });
+
+    it('works when searching from Document root across elements containing shadow roots', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+      const shadowChild = document.createElement('div');
+      shadowChild.setAttribute('data-doc-search', 'found');
+      shadow.appendChild(shadowChild);
+      container.appendChild(host);
+
+      const matched = Comments.CommentAnchorResolver.deepQuerySelectorAll(document, '[data-doc-search="found"]');
+      assert.include(matched, shadowChild);
+    });
+
+    it('stops early when limit is reached in deepQuerySelectorAll', () => {
+      const parent = document.createElement('div');
+      for (let i = 0; i < 5; i++) {
+        const child = document.createElement('div');
+        child.setAttribute('data-test-item', `item-${i}`);
+        parent.appendChild(child);
+      }
+      container.appendChild(parent);
+
+      const matched2 = Comments.CommentAnchorResolver.deepQuerySelectorAll(parent, '[data-test-item]', 2);
+      assert.lengthOf(matched2, 2);
+      assert.strictEqual(matched2[0].getAttribute('data-test-item'), 'item-0');
+      assert.strictEqual(matched2[1].getAttribute('data-test-item'), 'item-1');
+
+      const matched0 = Comments.CommentAnchorResolver.deepQuerySelectorAll(parent, '[data-test-item]', 0);
+      assert.deepEqual(matched0, []);
+
+      const matchedNaN = Comments.CommentAnchorResolver.deepQuerySelectorAll(parent, '[data-test-item]', NaN);
+      assert.deepEqual(matchedNaN, []);
+    });
+
+    it('stops early across shadow roots when limit is reached', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+
+      const shadowChild1 = document.createElement('div');
+      shadowChild1.setAttribute('data-test-item', 'shadow-1');
+      shadow.appendChild(shadowChild1);
+
+      const shadowChild2 = document.createElement('div');
+      shadowChild2.setAttribute('data-test-item', 'shadow-2');
+      shadow.appendChild(shadowChild2);
+
+      const lightChild = document.createElement('div');
+      lightChild.setAttribute('data-test-item', 'light-1');
+      host.appendChild(lightChild);
+
+      container.appendChild(host);
+
+      const matched = Comments.CommentAnchorResolver.deepQuerySelectorAll(host, '[data-test-item]', 1);
+      assert.deepEqual(matched, [shadowChild1]);
+    });
+  });
+
+  describe('deepQuerySelector', () => {
+    it('ignores root element when root matches selector and returns first matching descendant', () => {
+      const root = document.createElement('div');
+      root.setAttribute('data-network-request-id', 'req-root');
+
+      const child = document.createElement('div');
+      child.setAttribute('data-network-request-id', 'req-child');
+      root.appendChild(child);
+
+      container.appendChild(root);
+
+      const matched = Comments.CommentAnchorResolver.deepQuerySelector(root, '[data-network-request-id]');
+      assert.strictEqual(matched, child);
+    });
+
+    it('finds element inside root element\'s own shadowRoot', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+
+      const target = document.createElement('div');
+      target.setAttribute('data-network-request-id', 'req-in-shadow');
+      shadow.appendChild(target);
+
+      container.appendChild(host);
+
+      const matched =
+          Comments.CommentAnchorResolver.deepQuerySelector(host, '[data-network-request-id="req-in-shadow"]');
+      assert.strictEqual(matched, target);
+    });
+
+    it('finds element inside nested shadow roots within root element\'s shadowRoot', () => {
+      const rootHost = document.createElement('div');
+      const rootShadow = rootHost.attachShadow({mode: 'open'});
+
+      const nestedHost = document.createElement('div');
+      const nestedShadow = nestedHost.attachShadow({mode: 'open'});
+
+      const target = document.createElement('div');
+      target.setAttribute('data-network-request-id', 'req-deep-nested');
+      nestedShadow.appendChild(target);
+
+      rootShadow.appendChild(nestedHost);
+      container.appendChild(rootHost);
+
+      const matched =
+          Comments.CommentAnchorResolver.deepQuerySelector(rootHost, '[data-network-request-id="req-deep-nested"]');
+      assert.strictEqual(matched, target);
+    });
+
+    it('returns first matching element in document order when root has shadow and light DOM matches', () => {
+      const host = document.createElement('div');
+
+      const shadow = host.attachShadow({mode: 'open'});
+      const shadowTarget = document.createElement('div');
+      shadowTarget.setAttribute('data-item', 'shadow-first');
+      shadow.appendChild(shadowTarget);
+
+      const lightTarget = document.createElement('div');
+      lightTarget.setAttribute('data-item', 'light-second');
+      host.appendChild(lightTarget);
+
+      container.appendChild(host);
+
+      const matched = Comments.CommentAnchorResolver.deepQuerySelector(host, '[data-item]');
+      assert.strictEqual(matched, shadowTarget);
+    });
+
+    it('returns null when no matching element exists in the tree', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+      const child = document.createElement('div');
+      shadow.appendChild(child);
+      container.appendChild(host);
+
+      const matched = Comments.CommentAnchorResolver.deepQuerySelector(host, '[data-missing]');
+      assert.isNull(matched);
+    });
+  });
+
+  describe('rematchCommentAnchor', () => {
+    it('finds element using primary domain ID fast-path across shadow DOM', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+
+      const target = document.createElement('div');
+      target.setAttribute('data-network-request-id', 'req-1234');
+      target.textContent = 'Request 1234';
+      shadow.appendChild(target);
+      container.appendChild(host);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-1',
+        anchor: {
+          vePath: 'Panel: network > TreeItem: req',
+          textSignature: 'Request 1234',
+          networkRequestId: 'req-1234',
+        },
+        comments: [{
+          author: 'DEVELOPER',
+          text: 'Check this request',
+          timestamp: Date.now(),
+        }],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, target);
+    });
+
+    it('handles special characters in networkRequestId selector with CSS.escape', () => {
+      const target = document.createElement('div');
+      target.setAttribute('data-network-request-id', 'req"with"quotes.[1]');
+      target.textContent = 'Special Request';
+      container.appendChild(target);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-special-id',
+        anchor: {
+          vePath: 'Panel: network > TreeItem: req',
+          textSignature: 'Special Request',
+          networkRequestId: 'req"with"quotes.[1]',
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, target);
+    });
+
+    it('returns null when element with networkRequestId is not found', () => {
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-missing-id',
+        anchor: {
+          vePath: 'Panel: network > TreeItem: req',
+          textSignature: 'Request',
+          networkRequestId: 'non-existent-req',
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.isNull(rematched);
+    });
+
+    it('finds element using backendNodeId domain ID', () => {
+      const el = document.createElement('div');
+      el.setAttribute('data-backend-node-id', '99');
+      el.textContent = '<button>Submit</button>';
+      container.appendChild(el);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-dom',
+        anchor: {
+          vePath: 'Panel: elements > TreeItem: node',
+          textSignature: '<button>Submit</button>',
+          backendNodeId: 99,
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, el);
+    });
+
+    it('finds element using VE path and textSignature fallback', () => {
+      const item = document.createElement('div');
+      item.setAttribute('jslog', 'TreeItem; context: my-rule');
+      item.textContent = 'color: blue;';
+      container.appendChild(item);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-2',
+        anchor: {
+          vePath: 'TreeItem: my-rule',
+          textSignature: 'color: blue;',
+        },
+        comments: [{
+          author: 'DEVELOPER',
+          text: 'Why blue?',
+          timestamp: Date.now(),
+        }],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, item);
+    });
+
+    it('disambiguates identical text items using siblingIndex', () => {
+      const panel = document.createElement('div');
+      panel.setAttribute('jslog', 'Panel; context: elements');
+
+      const item1 = document.createElement('div');
+      item1.setAttribute('jslog', 'TreeItem; context: prop');
+      item1.textContent = 'color: red;';
+      const item2 = document.createElement('div');
+      item2.setAttribute('jslog', 'TreeItem; context: prop');
+      item2.textContent = 'color: red;';
+
+      panel.appendChild(item1);
+      panel.appendChild(item2);
+      container.appendChild(panel);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-sibling',
+        anchor: {
+          vePath: 'Panel: elements > TreeItem: prop',
+          textSignature: 'color: red;',
+          siblingIndex: 1,
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, item2);
+    });
+
+    it('disambiguates identical text items inside shadow root using siblingIndex with interspersed nodes', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+
+      shadow.appendChild(document.createComment('comment-1'));
+      shadow.appendChild(document.createTextNode('\n  '));
+
+      const item1 = document.createElement('div');
+      item1.setAttribute('jslog', 'TreeItem; context: shadow-prop');
+      item1.textContent = 'font-size: 14px;';
+      shadow.appendChild(item1);
+
+      shadow.appendChild(document.createTextNode('\n  '));
+      shadow.appendChild(document.createComment('comment-2'));
+
+      const item2 = document.createElement('div');
+      item2.setAttribute('jslog', 'TreeItem; context: shadow-prop');
+      item2.textContent = 'font-size: 14px;';
+      shadow.appendChild(item2);
+
+      container.appendChild(host);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-shadow-sibling',
+        anchor: {
+          vePath: 'TreeItem: shadow-prop',
+          textSignature: 'font-size: 14px;',
+          siblingIndex: 1,
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, item2);
+    });
+
+    it('disambiguates identical items across multiple parent containers using parentTextSignature and siblingIndex',
+       () => {
+         const parentA = document.createElement('div');
+         parentA.setAttribute('jslog', 'Pane; context: sectionA');
+         const itemA1 = document.createElement('div');
+         itemA1.setAttribute('jslog', 'TreeItem; context: item');
+         itemA1.textContent = 'value';
+         const itemA2 = document.createElement('div');
+         itemA2.setAttribute('jslog', 'TreeItem; context: item');
+         itemA2.textContent = 'value';
+         parentA.appendChild(itemA1);
+         parentA.appendChild(itemA2);
+
+         const parentB = document.createElement('div');
+         parentB.setAttribute('jslog', 'Pane; context: sectionB');
+         const itemB1 = document.createElement('div');
+         itemB1.setAttribute('jslog', 'TreeItem; context: item');
+         itemB1.textContent = 'value';
+         const itemB2 = document.createElement('div');
+         itemB2.setAttribute('jslog', 'TreeItem; context: item');
+         itemB2.textContent = 'value';
+         parentB.appendChild(itemB1);
+         parentB.appendChild(itemB2);
+
+         container.appendChild(parentA);
+         container.appendChild(parentB);
+
+         const anchorB2 = Comments.CommentAnchorResolver.resolveCommentAnchor(itemB2);
+         assert.isNotNull(anchorB2);
+
+         const thread: Comments.CommentAnchorResolver.CommentThread = {
+           id: 'comment-b2',
+           anchor: anchorB2!,
+           comments: [],
+           status: 'ACTIVE',
+         };
+
+         const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+         assert.strictEqual(rematched, itemB2);
+       });
+
+    it('disambiguates identical items using siblingIndex even if text content has changed', () => {
+      const panel = document.createElement('div');
+      panel.setAttribute('jslog', 'Panel; context: elements');
+
+      const item1 = document.createElement('div');
+      item1.setAttribute('jslog', 'TreeItem; context: rule');
+      item1.textContent = 'color: green;';  // Text modified from red
+      const item2 = document.createElement('div');
+      item2.setAttribute('jslog', 'TreeItem; context: rule');
+      item2.textContent = 'color: yellow;';  // Text modified from red
+
+      panel.appendChild(item1);
+      panel.appendChild(item2);
+      container.appendChild(panel);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-modified-text',
+        anchor: {
+          vePath: 'Panel: elements > TreeItem: rule',
+          textSignature: 'color: red;',  // Old text
+          siblingIndex: 1,
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, item2);
+    });
+
+    it('correctly rematches using siblingIndex when preceding siblings have different text and text has changed',
+       () => {
+         const panel = document.createElement('div');
+         panel.setAttribute('jslog', 'Panel; context: elements');
+
+         const item0 = document.createElement('div');
+         item0.setAttribute('jslog', 'TreeItem; context: prop');
+         item0.textContent = 'margin: 0;';
+
+         const item1 = document.createElement('div');
+         item1.setAttribute('jslog', 'TreeItem; context: prop');
+         item1.textContent = 'padding: 0;';
+
+         const item2 = document.createElement('div');
+         item2.setAttribute('jslog', 'TreeItem; context: prop');
+         item2.textContent = 'padding: 0;';
+
+         panel.appendChild(item0);
+         panel.appendChild(item1);
+         panel.appendChild(item2);
+         container.appendChild(panel);
+
+         // Create anchor for item2 (which is at siblingIndex 2 among TreeItem siblings)
+         const anchor2 = Comments.CommentAnchorResolver.resolveCommentAnchor(item2);
+         assert.isNotNull(anchor2);
+         assert.strictEqual(anchor2?.siblingIndex, 2);
+
+         // Simulate text modification in DevTools
+         item1.textContent = 'padding: 5px;';
+         item2.textContent = 'padding: 10px;';
+
+         const thread: Comments.CommentAnchorResolver.CommentThread = {
+           id: 'comment-text-changed',
+           anchor: anchor2!,
+           comments: [],
+           status: 'ACTIVE',
+         };
+
+         const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+         assert.strictEqual(rematched, item2);
+       });
+
+    it('avoids VE prefix collisions during fast filtering', () => {
+      const tree = document.createElement('div');
+      tree.setAttribute('jslog', 'Tree; context: tree-root');
+      tree.textContent = 'Tree root';
+      container.appendChild(tree);
+
+      const treeItem = document.createElement('div');
+      treeItem.setAttribute('jslog', 'TreeItem; context: tree-item');
+      treeItem.textContent = 'Tree item';
+      container.appendChild(treeItem);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-tree',
+        anchor: {
+          vePath: 'Tree: tree-root',
+          textSignature: 'Tree root',
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, tree);
+    });
+
+    it('matches elements with leading whitespace in jslog', () => {
+      const el = document.createElement('div');
+      el.setAttribute('jslog', '  TreeItem; context: spaced');
+      el.textContent = 'Spaced item';
+      container.appendChild(el);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-spaced',
+        anchor: {
+          vePath: 'TreeItem: spaced',
+          textSignature: 'Spaced item',
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, el);
+    });
+
+    it('finds element when root passed to rematchCommentAnchor has a shadowRoot (domain ID path)', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+
+      const target = document.createElement('div');
+      target.setAttribute('data-network-request-id', 'req-root-shadow');
+      target.textContent = 'Shadow Request';
+      shadow.appendChild(target);
+      container.appendChild(host);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-root-shadow-req',
+        anchor: {
+          vePath: 'Panel: network > TreeItem: req',
+          textSignature: 'Shadow Request',
+          networkRequestId: 'req-root-shadow',
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, host);
+      assert.strictEqual(rematched, target);
+    });
+
+    it('finds element when root passed to rematchCommentAnchor has a shadowRoot (VE fallback path)', () => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+
+      const target = document.createElement('div');
+      target.setAttribute('jslog', 'TreeItem; context: root-shadow-item');
+      target.textContent = 'Shadow Item';
+      shadow.appendChild(target);
+      container.appendChild(host);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-root-shadow-ve',
+        anchor: {
+          vePath: 'TreeItem: root-shadow-item',
+          textSignature: 'Shadow Item',
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, host);
+      assert.strictEqual(rematched, target);
+    });
+
+    it('returns null when no matching candidate exists in the root', () => {
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'missing',
+        anchor: {
+          vePath: 'Panel: elements > TreeItem: deleted-node',
+          textSignature: 'non-existent',
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.isNull(rematched);
     });
   });
 

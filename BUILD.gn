@@ -4,7 +4,6 @@
 
 import("./config/gni/devtools_grd_files.gni")
 import("./config/gni/devtools_image_files.gni")
-import("./front_end/emulated_devices/optimized/optimized_images.gni")
 import("./scripts/build/ninja/copy.gni")
 import("./scripts/build/ninja/node.gni")
 import("./scripts/build/ninja/vars.gni")

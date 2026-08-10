@@ -1,9 +1,0 @@
-# Copyright 2020 The Chromium Authors
-# Use of this source code is governed by a BSD-style license that can be
-# found in the LICENSE file.
-import("../../../scripts/build/ninja/copy.gni")
-import("./optimized_images.gni")
-
-copy_to_gen_with_grd("optimized_emulated_devices") {
-  sources = devtools_emulated_devices_images
-}

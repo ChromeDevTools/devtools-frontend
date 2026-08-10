@@ -13,9 +13,6 @@
     'all': {
       'filepath': '.',
     },
-    'chromedriver': {
-      'filepath': 'front_end/emulated_devices/',
-    },
     'lighthouse': {
       'filepath': '[Ll]ighthouse',
     },
@@ -26,7 +23,6 @@
 
   'WATCHLISTS': {
     'all': ['devtools-reviews+devtools@chromium.org'],
-    'chromedriver': [],
     'lighthouse': ['lighthouse-eng+devtools-cl@google.com'],
     'third_party': ['devtools-reviews+third_party@chromium.org'],
   },

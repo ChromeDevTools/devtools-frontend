@@ -44,9 +44,6 @@ devtools_ui_module("emulation") {
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]
-
-  public_deps =
-      [ "../../emulated_devices/optimized:optimized_emulated_devices" ]
 }
 
 devtools_entrypoint("bundle") {

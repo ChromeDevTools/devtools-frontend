@@ -260,9 +260,6 @@ export class DebuggerPlugin extends Plugin {
 
     this.ignoreListInfobar = null;
     this.showIgnoreListInfobarIfNeeded();
-    for (const scriptFile of this.scriptFileForDebuggerModel.values()) {
-      scriptFile.checkMapping();
-    }
   }
 
   override editorExtension(): CodeMirror.Extension {
@@ -586,26 +583,12 @@ export class DebuggerPlugin extends Plugin {
   }
 
   private workingCopyChanged(): void {
-    if (!this.scriptFileForDebuggerModel.size) {
-      this.setMuted(this.uiSourceCode.isDirty());
-    }
+    this.setMuted(this.uiSourceCode.isDirty());
   }
 
   private workingCopyCommitted(): void {
     this.scriptsPanel.updateLastModificationTime();
-    if (!this.scriptFileForDebuggerModel.size) {
-      this.setMuted(false);
-    }
-  }
-
-  private didMergeToVM(): void {
-    if (this.consistentScripts()) {
-      this.setMuted(false);
-    }
-  }
-
-  private didDivergeFromVM(): void {
-    this.setMuted(true);
+    this.setMuted(false);
   }
 
   private setMuted(value: boolean): void {
@@ -620,15 +603,6 @@ export class DebuggerPlugin extends Plugin {
         this.editor.dispatch({effects: muteBreakpoints.of(null)});
       }
     }
-  }
-
-  private consistentScripts(): boolean {
-    for (const scriptFile of this.scriptFileForDebuggerModel.values()) {
-      if (scriptFile.hasDivergedFromVM() || scriptFile.isMergingToVM()) {
-        return false;
-      }
-    }
-    return true;
   }
 
   private isIdentifier(tokenType: string): boolean {
@@ -1333,11 +1307,6 @@ export class DebuggerPlugin extends Plugin {
     if (uiLocation.uiSourceCode !== this.uiSourceCode || this.muted) {
       return;
     }
-    for (const scriptFile of this.scriptFileForDebuggerModel.values()) {
-      if (scriptFile.isDivergingFromVM() || scriptFile.isMergingToVM()) {
-        return;
-      }
-    }
     // These tend to arrive in bursts, so debounce them
     window.clearTimeout(this.refreshBreakpointsTimeout);
     this.refreshBreakpointsTimeout = window.setTimeout(() => this.refreshBreakpoints(), 50);
@@ -1411,28 +1380,13 @@ export class DebuggerPlugin extends Plugin {
   }
 
   private updateScriptFile(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    const oldScriptFile = this.scriptFileForDebuggerModel.get(debuggerModel);
+    this.scriptFileForDebuggerModel.delete(debuggerModel);
     const newScriptFile = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
         this.uiSourceCode, debuggerModel);
-    this.scriptFileForDebuggerModel.delete(debuggerModel);
-    if (oldScriptFile) {
-      oldScriptFile.removeEventListener(
-          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_MERGE_TO_VM, this.didMergeToVM, this);
-      oldScriptFile.removeEventListener(
-          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_DIVERGE_FROM_VM, this.didDivergeFromVM, this);
-      if (this.muted && !this.uiSourceCode.isDirty() && this.consistentScripts()) {
-        this.setMuted(false);
-      }
-    }
     if (!newScriptFile) {
       return;
     }
     this.scriptFileForDebuggerModel.set(debuggerModel, newScriptFile);
-    newScriptFile.addEventListener(
-        Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_MERGE_TO_VM, this.didMergeToVM, this);
-    newScriptFile.addEventListener(
-        Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_DIVERGE_FROM_VM, this.didDivergeFromVM, this);
-    newScriptFile.checkMapping();
 
     void newScriptFile.missingSymbolFiles().then(resources => {
       if (resources) {
@@ -1713,12 +1667,6 @@ export class DebuggerPlugin extends Plugin {
     this.hideIgnoreListInfobar();
     if (this.sourceMapInfobar) {
       this.sourceMapInfobar.dispose();
-    }
-    for (const script of this.scriptFileForDebuggerModel.values()) {
-      script.removeEventListener(
-          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_MERGE_TO_VM, this.didMergeToVM, this);
-      script.removeEventListener(
-          Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_DIVERGE_FROM_VM, this.didDivergeFromVM, this);
     }
     this.scriptFileForDebuggerModel.clear();
 

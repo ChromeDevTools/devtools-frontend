@@ -484,10 +484,6 @@ interface GdpProfilesAvailability {
   enterprisePolicyValue: GdpProfilesEnterprisePolicyValue;
 }
 
-interface LiveEdit {
-  enabled: boolean;
-}
-
 interface ExtensionsOnChromeUrls {
   enabled: boolean;
 }
@@ -588,7 +584,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsGlobalAiButton: GlobalAiButton,
   devToolsGdpProfiles: GdpProfiles,
   devToolsGdpProfilesAvailability: GdpProfilesAvailability,
-  devToolsLiveEdit: LiveEdit,
   devToolsFlexibleLayout: DevToolsFlexibleLayout,
   deviceBoundSessionsDebugging: DeviceBoundSessionsDebugging,
   devToolsEnableDurableMessages: DevToolsEnableDurableMessages,

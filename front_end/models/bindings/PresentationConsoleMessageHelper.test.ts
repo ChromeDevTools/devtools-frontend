@@ -53,9 +53,9 @@ async function addScript(
     url: Platform.DevToolsPath.UrlString): Promise<Workspace.UISourceCode.UISourceCode> {
   const scriptParsedSpy = sinon.stub(helper, 'parsedScriptSourceForTest');
   const parsedScriptSourceDonePromise = expectCall(scriptParsedSpy);
-  const script = debuggerModel.parsedScriptSource(
-      'scriptId' as Protocol.Runtime.ScriptId, url, 0, 0, 3, 3, executionContext.id, '', undefined, false, undefined,
-      false, false, 0, false, null, null, null, null, null, null);
+  const script = debuggerModel.parsedScriptSource('scriptId' as Protocol.Runtime.ScriptId, url, 0, 0, 3, 3,
+                                                  executionContext.id, '', undefined, undefined, false, false, 0, false,
+                                                  null, null, null, null, null, null);
 
   await parsedScriptSourceDonePromise;
   scriptParsedSpy.restore();

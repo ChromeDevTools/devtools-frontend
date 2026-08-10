@@ -36,7 +36,6 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import {
   COND_BREAKPOINT_SOURCE_URL,
   type DebuggerModel,
-  Events,
   Location,
   LOGPOINT_SOURCE_URL,
 } from './DebuggerModel.js';
@@ -80,7 +79,6 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   executionContextId: number;
   hash: string;
   readonly #isContentScript: boolean;
-  readonly #isLiveEdit: boolean;
   sourceMapURL?: string;
   debugSymbols: Protocol.Debugger.DebugSymbols|null;
   hasSourceURL: boolean;
@@ -92,13 +90,13 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   readonly #embedderName: Platform.DevToolsPath.UrlString|null;
   readonly isModule: boolean|null;
   readonly buildId: string|null;
-  constructor(
-      debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString,
-      startLine: number, startColumn: number, endLine: number, endColumn: number, executionContextId: number,
-      hash: string, isContentScript: boolean, isLiveEdit: boolean, sourceMapURL: string|undefined,
-      hasSourceURL: boolean, length: number, isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null,
-      codeOffset: number|null, scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols|null,
-      embedderName: Platform.DevToolsPath.UrlString|null, buildId: string|null) {
+  constructor(debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId,
+              sourceURL: Platform.DevToolsPath.UrlString, startLine: number, startColumn: number, endLine: number,
+              endColumn: number, executionContextId: number, hash: string, isContentScript: boolean,
+              sourceMapURL: string|undefined, hasSourceURL: boolean, length: number, isModule: boolean|null,
+              originStackTrace: Protocol.Runtime.StackTrace|null, codeOffset: number|null, scriptLanguage: string|null,
+              debugSymbols: Protocol.Debugger.DebugSymbols|null, embedderName: Platform.DevToolsPath.UrlString|null,
+              buildId: string|null) {
     this.debuggerModel = debuggerModel;
     this.scriptId = scriptId;
     this.sourceURL = sourceURL;
@@ -112,7 +110,6 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     this.executionContextId = executionContextId;
     this.hash = hash;
     this.#isContentScript = isContentScript;
-    this.#isLiveEdit = isLiveEdit;
     this.sourceMapURL = sourceMapURL;
     this.debugSymbols = debugSymbols;
     this.hasSourceURL = hasSourceURL;
@@ -173,10 +170,6 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
 
   executionContext(): ExecutionContext|null {
     return this.debuggerModel.runtimeModel().executionContext(this.executionContextId);
-  }
-
-  isLiveEdit(): boolean {
-    return this.#isLiveEdit;
   }
 
   contentURL(): Platform.DevToolsPath.UrlString {
@@ -261,8 +254,8 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (!this.#contentPromise) {
       const fileSizeToCache = 65535;  // We won't bother cacheing files under 64K
-      if (this.hash && !this.#isLiveEdit && this.contentLength > fileSizeToCache) {
-        // For large files that aren't live edits and have a hash, we keep a content-addressed cache
+      if (this.hash && this.contentLength > fileSizeToCache) {
+        // For large files that have a hash, we keep a content-addressed cache
         // so we don't need to load multiple copies or disassemble wasm modules multiple times.
         if (!scriptCacheInstance) {
           // Initialize script cache singleton. Add a finalizer for removing keys from the map.
@@ -329,43 +322,6 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     const matches = await this.debuggerModel.target().debuggerAgent().invoke_searchInContent(
         {scriptId: this.scriptId, query, caseSensitive, isRegex});
     return TextUtils.TextUtils.performSearchInSearchMatches(matches.result || [], query, caseSensitive, isRegex);
-  }
-
-  private appendSourceURLCommentIfNeeded(source: string): string {
-    if (!this.hasSourceURL) {
-      return source;
-    }
-    return source + '\n //# sourceURL=' + this.sourceURL;
-  }
-
-  async editSource(newSource: string): Promise<{
-    changed: boolean,
-    status: Protocol.Debugger.SetScriptSourceResponseStatus,
-    exceptionDetails?: Protocol.Runtime.ExceptionDetails,
-  }> {
-    newSource = Script.trimSourceURLComment(newSource);
-    // We append correct #sourceURL to script for consistency only. It's not actually needed for things to work correctly.
-    newSource = this.appendSourceURLCommentIfNeeded(newSource);
-
-    const oldSource = TextUtils.ContentData.ContentData.textOr(await this.requestContentData(), null);
-    if (oldSource === newSource) {
-      return {changed: false, status: Protocol.Debugger.SetScriptSourceResponseStatus.Ok};
-    }
-    const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
-        {scriptId: this.scriptId, scriptSource: newSource, allowTopFrameEditing: true});
-    if (response.getError()) {
-      // Something went seriously wrong, like the V8 inspector no longer knowing about this script without
-      // shutting down the Debugger agent etc.
-      throw new Error(`Script#editSource failed for script with id ${this.scriptId}: ${response.getError()}`);
-    }
-
-    if (!response.getError() && response.status === Protocol.Debugger.SetScriptSourceResponseStatus.Ok) {
-      this.#contentPromise =
-          Promise.resolve(new TextUtils.ContentData.ContentData(newSource, /* isBase64 */ false, 'text/javascript'));
-    }
-
-    this.debuggerModel.dispatchEventToListeners(Events.ScriptSourceWasEdited, {script: this, status: response.status});
-    return {changed: true, status: response.status, exceptionDetails: response.exceptionDetails};
   }
 
   rawLocation(lineNumber: number, columnNumber: number): Location|null {

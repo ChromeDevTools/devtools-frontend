@@ -117,7 +117,6 @@ describe('DebuggerModel', () => {
             executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
             hash: '',
             buildId: '',
-            isLiveEdit: false,
             sourceMapURL: undefined,
             hasSourceURL: false,
             length: 10,
@@ -134,7 +133,6 @@ describe('DebuggerModel', () => {
             executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
             hash: '',
             buildId: '',
-            isLiveEdit: false,
             sourceMapURL: undefined,
             hasSourceURL: false,
             length: 10,
@@ -189,7 +187,6 @@ describe('DebuggerModel', () => {
             executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
             hash: '',
             buildId: '',
-            isLiveEdit: false,
             sourceMapURL: undefined,
             hasSourceURL: false,
             length: 10,
@@ -206,7 +203,6 @@ describe('DebuggerModel', () => {
             executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
             buildId: '',
             hash: '',
-            isLiveEdit: false,
             sourceMapURL: undefined,
             hasSourceURL: false,
             length: 10,
@@ -228,9 +224,8 @@ describe('DebuggerModel', () => {
       const target = universe.createTarget();
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
       const scriptUrl = urlString`https://script-host/script.js`;
-      const script = new SDK.Script.Script(
-          debuggerModel, SCRIPT_ID_ONE, scriptUrl, 0, 0, 0, 0, 0, '', false, false, undefined, false, 0, null, null,
-          null, null, null, null, null);
+      const script = new SDK.Script.Script(debuggerModel, SCRIPT_ID_ONE, scriptUrl, 0, 0, 0, 0, 0, '', false, undefined,
+                                           false, 0, null, null, null, null, null, null, null);
       const scopeTypes: Protocol.Debugger.ScopeType[] = [
         Protocol.Debugger.ScopeType.Global,
         Protocol.Debugger.ScopeType.Local,
@@ -318,7 +313,6 @@ describe('DebuggerModel', () => {
             executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
             hash: '',
             buildId: '',
-            isLiveEdit: false,
             sourceMapURL: sourceMapUrl,
             hasSourceURL: false,
             length: 10,
@@ -350,7 +344,6 @@ describe('DebuggerModel', () => {
             executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
             hash: '',
             buildId: '',
-            isLiveEdit: false,
             sourceMapURL: sourceMapUrl,
             hasSourceURL: false,
             length: 10,

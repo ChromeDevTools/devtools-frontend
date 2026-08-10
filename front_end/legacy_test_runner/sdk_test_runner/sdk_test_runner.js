@@ -130,7 +130,6 @@ SDKTestRunner.PageMock = class {
       executionContextAuxData: context.auxData,
       sourceMapURL: '',
       hasSourceURL: true,
-      isLiveEdit: false,
       isModule: false,
       length: content.length,
     };

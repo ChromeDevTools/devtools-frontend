@@ -1714,8 +1714,8 @@ for (const allowFileAccess of [true, false]) {
           const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
           assert.isOk(debuggerModel);
           debuggerModel.parsedScriptSource('0' as Protocol.Runtime.ScriptId, urlString`file:///source/url`, 0, 0, 100,
-                                           100, 0, '', {}, false, 'file:///source/url.map', false, false, 200, true,
-                                           null, null, Protocol.Debugger.ScriptLanguage.JavaScript, [{
+                                           100, 0, '', {}, 'file:///source/url.map', false, false, 200, true, null,
+                                           null, Protocol.Debugger.ScriptLanguage.JavaScript, [{
                                              type: Protocol.Debugger.DebugSymbolsType.SourceMap,
                                              externalURL: 'file:///source/url.map',
                                            }],

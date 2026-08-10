@@ -254,9 +254,9 @@ describeWithEnvironment('TimelineUIUtils', function() {
         return;
       }
       const sourceMapManager = debuggerModel.sourceMapManager();
-      const script = debuggerModel.parsedScriptSource(SCRIPT_ID_STRING, scriptUrl, 0, 0, 0, 0, 0, '', undefined, false,
-                                                      sourceMapUrl, true, false, length, false, null, null, null, null,
-                                                      null, null);
+      const script =
+          debuggerModel.parsedScriptSource(SCRIPT_ID_STRING, scriptUrl, 0, 0, 0, 0, 0, '', undefined, sourceMapUrl,
+                                           true, false, length, false, null, null, null, null, null, null);
       await sourceMapManager.sourceMapForClientPromise(script);
     });
     it('maps to the authored script when a call frame is provided', async function() {

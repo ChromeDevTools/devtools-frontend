@@ -1785,54 +1785,6 @@ describeWithEnvironment('BreakpointManager', () => {
     assert.deepEqual(Array.from(breakpoint.getUiSourceCodes()), [uiSourceCode]);
   });
 
-  it('updates a breakpoint after live editing the underlying script', async () => {
-    const scriptInfo = {url: URL, content: 'console.log(\'hello\');'};
-    const script = await backend.addScript(target, scriptInfo, null);
-
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    assert.exists(debuggerModel);
-
-    void backend.responderToBreakpointByUrlRequest(URL, 0)({
-      breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
-      locations: [{
-        scriptId: script.scriptId,
-        lineNumber: 0,
-        columnNumber: 0,
-      }],
-    });
-
-    backend.cdpConnection.setSuccessHandler('Debugger.setScriptSource',
-                                            () => ({status: Protocol.Debugger.SetScriptSourceResponseStatus.Ok}));
-
-    const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, script);
-    assert.exists(uiSourceCode);
-
-    // Set the breakpoint on the front-end/model side.
-    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
-    assert.exists(breakpoint);
-
-    // Wait for the breakpoint to be set in the backend.
-    await breakpoint.refreshInDebugger();
-
-    // Simulate live editing. We do this from the UISourceCode instead of the `Script`
-    // so the `ResourceScriptFile` updates the LiveLocation of the `ModelBreakpoint`
-    // (which in turn updates the UILocation on the breakpoint).
-    uiSourceCode.setWorkingCopy('\n\nconsole.log(\'hello\');');
-    uiSourceCode.commitWorkingCopy();
-
-    // Note that `UISourceCode` does not actually track how a breakpoint moves. This
-    // is normally done by CodeMirror + DebuggerPlugin. This means even though the
-    // console.log moves two lines down, we still try to reset the breakpoint on line 0.
-    await backend.responderToBreakpointByUrlRequest(URL, 0)({
-      breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
-      locations: [{
-        scriptId: script.scriptId,
-        lineNumber: 0,
-        columnNumber: 0,
-      }],
-    });
-  });
-
   describe('can correctly set breakpoints for all pre-registered targets', () => {
     let mainUiSourceCode: Workspace.UISourceCode.UISourceCode;
     let workerUiSourceCode: Workspace.UISourceCode.UISourceCode;

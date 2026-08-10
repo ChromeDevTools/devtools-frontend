@@ -649,16 +649,16 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.DebuggerResumed, this);
   }
 
-  parsedScriptSource(
-      scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString, startLine: number,
-      startColumn: number, endLine: number, endColumn: number,
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      executionContextId: number, hash: string, executionContextAuxData: any, isLiveEdit: boolean,
-      sourceMapURL: string|undefined, hasSourceURLComment: boolean, hasSyntaxError: boolean, length: number,
-      isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null, codeOffset: number|null,
-      scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols[]|null,
-      embedderName: Platform.DevToolsPath.UrlString|null, buildId: string|null): Script {
+  parsedScriptSource(scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString, startLine: number,
+                     startColumn: number, endLine: number, endColumn: number,
+                     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                     executionContextId: number, hash: string, executionContextAuxData: any,
+                     sourceMapURL: string|undefined, hasSourceURLComment: boolean, hasSyntaxError: boolean,
+                     length: number, isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null,
+                     codeOffset: number|null, scriptLanguage: string|null,
+                     debugSymbols: Protocol.Debugger.DebugSymbols[]|null,
+                     embedderName: Platform.DevToolsPath.UrlString|null, buildId: string|null): Script {
     const knownScript = this.#scripts.get(scriptId);
     if (knownScript) {
       return knownScript;
@@ -670,10 +670,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
     const selectedDebugSymbol =
         DebuggerModel.selectSymbolSource(debugSymbols, this.target().targetManager().getConsole());
-    const script = new Script(
-        this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-        isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length, isModule, originStackTrace, codeOffset,
-        scriptLanguage, selectedDebugSymbol, embedderName, buildId);
+    const script = new Script(this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId,
+                              hash, isContentScript, sourceMapURL, hasSourceURLComment, length, isModule,
+                              originStackTrace, codeOffset, scriptLanguage, selectedDebugSymbol, embedderName, buildId);
     this.registerScript(script);
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
 
@@ -972,7 +971,6 @@ export enum Events {
   GlobalObjectCleared = 'GlobalObjectCleared',
   CallFrameSelected = 'CallFrameSelected',
   DebuggerIsReadyToPause = 'DebuggerIsReadyToPause',
-  ScriptSourceWasEdited = 'ScriptSourceWasEdited',
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -987,10 +985,6 @@ export interface EventTypes {
   [Events.CallFrameSelected]: DebuggerModel;
   [Events.DebuggerIsReadyToPause]: DebuggerModel;
   [Events.DebugInfoAttached]: Script;
-  [Events.ScriptSourceWasEdited]: {
-    script: Script,
-    status: Protocol.Debugger.SetScriptSourceResponseStatus,
-  };
 }
 
 class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
@@ -1026,7 +1020,6 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     executionContextId,
     hash,
     executionContextAuxData,
-    isLiveEdit,
     sourceMapURL,
     hasSourceURL,
     length,
@@ -1043,9 +1036,9 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     }
     this.#debuggerModel.parsedScriptSource(
         scriptId, url as Platform.DevToolsPath.UrlString, startLine, startColumn, endLine, endColumn,
-        executionContextId, hash, executionContextAuxData, Boolean(isLiveEdit), sourceMapURL, Boolean(hasSourceURL),
-        false, length || 0, isModule || null, stackTrace || null, codeOffset || null, scriptLanguage || null,
-        debugSymbols || null, embedderName as Platform.DevToolsPath.UrlString || null, buildId || null);
+        executionContextId, hash, executionContextAuxData, sourceMapURL, Boolean(hasSourceURL), false, length || 0,
+        isModule || null, stackTrace || null, codeOffset || null, scriptLanguage || null, debugSymbols || null,
+        embedderName as Platform.DevToolsPath.UrlString || null, buildId || null);
   }
 
   scriptFailedToParse({
@@ -1071,11 +1064,11 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     if (!this.#debuggerModel.debuggerEnabled()) {
       return;
     }
-    this.#debuggerModel.parsedScriptSource(
-        scriptId, url as Platform.DevToolsPath.UrlString, startLine, startColumn, endLine, endColumn,
-        executionContextId, hash, executionContextAuxData, false, sourceMapURL, Boolean(hasSourceURL), true,
-        length || 0, isModule || null, stackTrace || null, codeOffset || null, scriptLanguage || null, null,
-        embedderName as Platform.DevToolsPath.UrlString || null, buildId || null);
+    this.#debuggerModel.parsedScriptSource(scriptId, url as Platform.DevToolsPath.UrlString, startLine, startColumn,
+                                           endLine, endColumn, executionContextId, hash, executionContextAuxData,
+                                           sourceMapURL, Boolean(hasSourceURL), true, length || 0, isModule || null,
+                                           stackTrace || null, codeOffset || null, scriptLanguage || null, null,
+                                           embedderName as Platform.DevToolsPath.UrlString || null, buildId || null);
   }
 
   breakpointResolved({breakpointId, location}: Protocol.Debugger.BreakpointResolvedEvent): void {

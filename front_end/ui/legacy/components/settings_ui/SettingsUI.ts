@@ -45,14 +45,8 @@ export function createSettingCheckbox(
 export function renderSettingSelect(setting: Common.Settings.Setting<unknown>, subtitle?: string,
                                     disabled?: boolean): TemplateResult {
   const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
-  const name = uiDescriptor?.title?.() ?? setting.title();
-  const options = uiDescriptor?.options?.map(opt => ({
-                                               value: opt.value,
-                                               title: opt.title(),
-                                               text: typeof opt.text === 'function' ? opt.text() : opt.text,
-                                               raw: opt.raw,
-                                             })) ??
-      setting.options();
+  const name = uiDescriptor?.title || setting.title();
+  const options = uiDescriptor?.options?.length ? uiDescriptor.options : setting.options();
   const requiresReload = Boolean(uiDescriptor?.reloadRequired ?? setting.reloadRequired());
   const controlId = UI.ARIAUtils.nextId('labelledControl');
   const reloadWarningRef = createRef<HTMLParagraphElement>();

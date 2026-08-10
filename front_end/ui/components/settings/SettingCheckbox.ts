@@ -137,7 +137,7 @@ export class SettingCheckbox extends HTMLElement {
 
     const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(this.#setting.descriptor());
     const learnMore = uiDescriptor?.learnMore ?? this.#setting.learnMore();
-    const titleText = uiDescriptor?.title?.() ?? this.#setting.title();
+    const titleText = uiDescriptor?.title || this.#setting.title();
 
     const icon = this.icon();
     const title = learnMore?.tooltip?.() ?? '';

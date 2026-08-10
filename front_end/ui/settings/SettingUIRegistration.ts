@@ -84,18 +84,67 @@ export function getRegisteredSettings(): readonly RegisteredSettingUI[] {
   return Array.from(combined.values());
 }
 
-export function maybeResolve(settingDescriptor: Common.Settings.SettingDescriptor<unknown>): SettingUIDescriptor|null {
-  const settingUI = registeredSettings.get(settingDescriptor.name) ??
-      getRegisteredSettings().find(registered => registered.descriptor.name === settingDescriptor.name);
-  return settingUI?.uiDescriptor ?? null;
+export interface SimpleSettingOption {
+  value: string|boolean;
+  title: Platform.UIString.LocalizedString;
+  text?: Platform.UIString.LocalizedString|string;
+  raw?: boolean;
 }
 
-export function resolve(settingDescriptor: Common.Settings.SettingDescriptor<unknown>): SettingUIDescriptor {
-  const uiDescriptor = maybeResolve(settingDescriptor);
-  if (!uiDescriptor) {
+export class SettingUI {
+  readonly #raw: SettingUIDescriptor;
+
+  constructor(raw: SettingUIDescriptor) {
+    this.#raw = raw;
+  }
+
+  get title(): Platform.UIString.LocalizedString {
+    return this.#raw.title?.() ?? ('' as Platform.UIString.LocalizedString);
+  }
+
+  get category(): Common.SettingRegistration.SettingCategory|null {
+    return this.#raw.category ?? null;
+  }
+
+  get order(): number|null {
+    return this.#raw.order ?? null;
+  }
+
+  get tags(): string {
+    return this.#raw.tags ? this.#raw.tags.map(tag => tag()).join('\0') : '';
+  }
+
+  get options(): SimpleSettingOption[] {
+    return this.#raw.options?.map(opt => ({
+                                    value: opt.value,
+                                    title: opt.title(),
+                                    text: typeof opt.text === 'function' ? opt.text() : opt.text,
+                                    raw: opt.raw,
+                                  })) ??
+        [];
+  }
+
+  get reloadRequired(): boolean {
+    return Boolean(this.#raw.reloadRequired);
+  }
+
+  get learnMore(): Common.SettingRegistration.LearnMore|null {
+    return this.#raw.learnMore ?? null;
+  }
+}
+
+export function maybeResolve(settingDescriptor: Common.Settings.SettingDescriptor<unknown>): SettingUI|null {
+  const settingUI = registeredSettings.get(settingDescriptor.name) ??
+      getRegisteredSettings().find(registered => registered.descriptor.name === settingDescriptor.name);
+  return settingUI ? new SettingUI(settingUI.uiDescriptor) : null;
+}
+
+export function resolve(settingDescriptor: Common.Settings.SettingDescriptor<unknown>): SettingUI {
+  const ui = maybeResolve(settingDescriptor);
+  if (!ui) {
     throw new Error(`No UI descriptor registered for setting '${settingDescriptor.name}'`);
   }
-  return uiDescriptor;
+  return ui;
 }
 
 export function resetSettings(): void {

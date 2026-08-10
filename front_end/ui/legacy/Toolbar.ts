@@ -1431,7 +1431,7 @@ export class ToolbarSettingCheckbox extends ToolbarCheckbox {
       setting: Common.Settings.Setting<boolean>, tooltip?: Common.UIString.LocalizedString,
       alternateTitle?: Common.UIString.LocalizedString) {
     const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
-    const title = alternateTitle || uiDescriptor?.title?.() || setting.title();
+    const title = alternateTitle || uiDescriptor?.title || setting.title();
     super(title, tooltip, undefined, setting.name);
     bindCheckbox(this.element as CheckboxLabel, setting);
   }

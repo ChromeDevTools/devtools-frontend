@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 
 import * as SettingsUI from './settings.js';
 
@@ -59,17 +60,29 @@ describe('SettingUIRegistration', () => {
     }, 'Duplicate setting name \'mock-setting\'');
   });
 
-  it('resolves a registered setting UI descriptor', () => {
+  it('resolves a registered setting UI descriptor to a SettingUI instance with accessors', () => {
     const uiDescriptor: SettingsUI.SettingUIRegistration.SettingUIDescriptor = {
       category: Common.SettingRegistration.SettingCategory.GLOBAL,
+      order: 10,
+      title: () => i18n.i18n.lockedString('Mock Setting Title'),
+      tags: [() => i18n.i18n.lockedString('tag1'), () => i18n.i18n.lockedString('tag2')],
+      options: [{value: 'val1', title: () => i18n.i18n.lockedString('Option 1')}],
+      reloadRequired: true,
     };
     SettingsUI.SettingUIRegistration.register(settingDescriptor, uiDescriptor);
 
     const resolved = SettingsUI.SettingUIRegistration.resolve(settingDescriptor);
-    assert.strictEqual(resolved, uiDescriptor);
+    assert.instanceOf(resolved, SettingsUI.SettingUIRegistration.SettingUI);
+    assert.strictEqual(resolved.category, Common.SettingRegistration.SettingCategory.GLOBAL);
+    assert.strictEqual(resolved.order, 10);
+    assert.strictEqual(resolved.title, 'Mock Setting Title');
+    assert.strictEqual(resolved.tags, 'tag1\0tag2');
+    assert.deepEqual(resolved.options,
+                     [{value: 'val1', title: i18n.i18n.lockedString('Option 1'), text: undefined, raw: undefined}]);
+    assert.isTrue(resolved.reloadRequired);
   });
 
-  it('resolves legacy setting registrations', () => {
+  it('resolves legacy setting registrations to SettingUI', () => {
     Common.SettingRegistration.registerSettingExtension({
       settingName: 'legacy-setting',
       settingType: Common.SettingRegistration.SettingType.BOOLEAN,
@@ -82,6 +95,7 @@ describe('SettingUIRegistration', () => {
       type: Common.Settings.SettingType.BOOLEAN,
       defaultValue: true,
     });
+    assert.instanceOf(resolved, SettingsUI.SettingUIRegistration.SettingUI);
     assert.strictEqual(resolved.category, Common.SettingRegistration.SettingCategory.CONSOLE);
   });
 

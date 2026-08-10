@@ -461,15 +461,9 @@ export class LayoutPane extends UI.Widget.Widget {
       const mappedSetting = {
         type: settingType,
         name: setting.name,
-        title: uiDescriptor?.title?.() ?? setting.title(),
+        title: uiDescriptor?.title || setting.title(),
       };
-      const options = uiDescriptor?.options?.map(opt => ({
-                                                   value: opt.value,
-                                                   title: opt.title(),
-                                                   text: typeof opt.text === 'function' ? opt.text() : opt.text,
-                                                   raw: opt.raw,
-                                                 })) ??
-          setting.options();
+      const options = uiDescriptor?.options?.length ? uiDescriptor.options : setting.options();
 
       if (typeof settingValue === 'boolean') {
         settings.push({

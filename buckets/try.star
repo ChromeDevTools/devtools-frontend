@@ -288,7 +288,13 @@ luci.cq_group(
     ),
     acls = cq_acls,
     tree_status_name = "devtools",
-    retry_config = cq_retry_config,
+    retry_config = cq.retry_config(
+        single_quota = 0,
+        global_quota = 0,
+        failure_weight = 2,
+        transient_failure_weight = 1,
+        timeout_weight = 4,
+    ),
     verifiers = branch_verifiers(),
 )
 

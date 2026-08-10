@@ -820,7 +820,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
 
     {
-      // 1. Simple inline if() with style query
+      // Simple inline if() with style query
       const {match} = matchSingleValue('width', 'if(style(--foo: bar): 10px)',
                                        new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
       assert.exists(match);
@@ -828,7 +828,15 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     }
 
     {
-      // 2. Parenthesized boolean subexpression
+      // Query if property exists
+      const {match} = matchSingleValue('width', 'if(style(--foo): 10px)',
+                                       new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
+      assert.exists(match);
+      assert.strictEqual(match.text, '--foo');
+    }
+
+    {
+      // Parenthesized boolean subexpression
       const {match} = matchSingleValue('width', 'if(not (style(--a: b) and style(--c: d)): 10px)',
                                        new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
       assert.exists(match);
@@ -836,7 +844,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     }
 
     {
-      // 3. Ensure variables in value positions are NOT matched by VariableNameMatcher
+      // Ensure variables in value positions are NOT matched by VariableNameMatcher
       const {match} = matchSingleValue('width', 'if((style((calc(var(--a)) > 10px) and not (--c: d))): 10px)',
                                        new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
       assert.exists(match);
@@ -844,7 +852,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     }
 
     {
-      // 4. LHS of range comparison
+      // LHS of range comparison
       const {match} = matchSingleValue('width', 'if(style(--q > 3): 10px)',
                                        new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
       assert.exists(match);
@@ -852,7 +860,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     }
 
     {
-      // 5. RHS of range comparison
+      // RHS of range comparison
       const {match} = matchSingleValue('width', 'if(style(3 = --q): 10px)',
                                        new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
       assert.exists(match);
@@ -860,7 +868,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     }
 
     {
-      // 6. Range comparisons with calculations inside style() calling var()
+      // Range comparisons with calculations inside style() calling var()
       const {match} = matchSingleValue('width', 'if(style(--foo > calc(var(--bar) + 10px)): 10px)',
                                        new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
       assert.exists(match);

@@ -233,7 +233,7 @@ describe('CSSPropertyParser', () => {
       assert.strictEqual(tokenizeDeclaration('color /*comment*/', 'red')?.propertyName, 'color');
       assert.strictEqual(tokenizeDeclaration('/*comment*/color/*comment*/', 'red')?.propertyName, 'color');
       assert.strictEqual(tokenizeDeclaration(' /*comment*/color', 'red')?.propertyName, 'color');
-      assert.strictEqual(tokenizeDeclaration('co/*comment*/lor', 'red')?.propertyName, 'lor');
+      assert.isUndefined(SDK.CSSPropertyParser.tokenizeDeclaration('co/*comment*/lor', 'red')?.propertyName);
       assert.isNull(SDK.CSSPropertyParser.tokenizeDeclaration('co:lor', 'red'));
     });
 

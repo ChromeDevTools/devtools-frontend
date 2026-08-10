@@ -843,4 +843,53 @@ describe('bindCheckbox', () => {
                             'await in asyncFunction');
        });
   });
+
+  describe('createHistoryInput', () => {
+    it('navigates query history on ArrowUp and ArrowDown without dispatching redundant input events at boundaries',
+       () => {
+         const inputElement = UI.UIUtils.createHistoryInput('search');
+         const inputEventSpy = sinon.spy();
+         inputElement.addEventListener('input', inputEventSpy);
+
+         inputElement.value = 'first';
+         inputElement.dispatchEvent(
+             new KeyboardEvent('keydown', {key: 'Enter', keyCode: 13, bubbles: true, cancelable: true}));
+
+         inputElement.value = 'second';
+         inputElement.dispatchEvent(
+             new KeyboardEvent('keydown', {key: 'Enter', keyCode: 13, bubbles: true, cancelable: true}));
+
+         // Navigate up to the previous history entry ('first', historyPosition 0)
+         const arrowUpEvent = new KeyboardEvent(
+             'keydown', {key: 'ArrowUp', keyCode: 38, shiftKey: false, bubbles: true, cancelable: true});
+         inputElement.dispatchEvent(arrowUpEvent);
+         assert.strictEqual(inputElement.value, 'first');
+         sinon.assert.calledOnce(inputEventSpy);
+         inputEventSpy.resetHistory();
+
+         // Hitting the boundary (historyPosition 0), no input event should be dispatched
+         inputElement.dispatchEvent(arrowUpEvent);
+         assert.strictEqual(inputElement.value, 'first');
+         sinon.assert.notCalled(inputEventSpy);
+
+         // Navigate down to the next history entry ('second', historyPosition 1)
+         const arrowDownEvent = new KeyboardEvent(
+             'keydown', {key: 'ArrowDown', keyCode: 40, shiftKey: false, bubbles: true, cancelable: true});
+         inputElement.dispatchEvent(arrowDownEvent);
+         assert.strictEqual(inputElement.value, 'second');
+         sinon.assert.calledOnce(inputEventSpy);
+         inputEventSpy.resetHistory();
+
+         // Navigate down to the empty search string (historyPosition 2)
+         inputElement.dispatchEvent(arrowDownEvent);
+         assert.strictEqual(inputElement.value, '');
+         sinon.assert.calledOnce(inputEventSpy);
+         inputEventSpy.resetHistory();
+
+         // Hitting the boundary (historyPosition 2), no input event should be dispatched
+         inputElement.dispatchEvent(arrowDownEvent);
+         assert.strictEqual(inputElement.value, '');
+         sinon.assert.notCalled(inputEventSpy);
+       });
+  });
 });

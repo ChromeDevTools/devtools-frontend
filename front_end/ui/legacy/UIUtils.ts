@@ -1046,14 +1046,18 @@ export function createHistoryInput(type = 'search', className?: string): HTMLInp
 
   function onKeydown(event: KeyboardEvent): void {
     if (event.keyCode === Keys.Up.code) {
-      historyPosition = Math.max(historyPosition - 1, 0);
-      historyInput.value = history[historyPosition];
-      historyInput.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}));
+      if (historyPosition > 0) {
+        historyPosition--;
+        historyInput.value = history[historyPosition];
+        historyInput.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}));
+      }
       event.consume(true);
     } else if (event.keyCode === Keys.Down.code) {
-      historyPosition = Math.min(historyPosition + 1, history.length - 1);
-      historyInput.value = history[historyPosition];
-      historyInput.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}));
+      if (historyPosition < history.length - 1) {
+        historyPosition++;
+        historyInput.value = history[historyPosition];
+        historyInput.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}));
+      }
       event.consume(true);
     } else if (event.keyCode === Keys.Enter.code) {
       if (history.length > 1 && history[history.length - 2] === historyInput.value) {

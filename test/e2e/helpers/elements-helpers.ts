@@ -1044,8 +1044,8 @@ export const toggleAccessibilityPane = async (devToolsPage: DevToolsPage) => {
   }
   await devToolsPage.click('aria/Accessibility');
   await devToolsPage.waitFor('.source-order-checkbox');
-  await devToolsPage.waitFor('[aria-label="ARIA Attributes"]');
-  await devToolsPage.waitFor('[aria-label="Computed Properties"]');
+  await devToolsPage.waitFor('[aria-label="ARIA attributes"]');
+  await devToolsPage.waitFor('[aria-label="Computed properties"]');
   await expectVeEvents(
       devToolsPage,
       [

@@ -21,7 +21,7 @@ describe('Accessibility Pane in the Elements Tab', function() {
   it('shows name from label for span element', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/accessibility-simple-page.html');
     await toggleAccessibilityPane(devToolsPage);
-    const a11yPane = await devToolsPage.waitForAria('Accessibility panel');
+    const a11yPane = await devToolsPage.waitFor('.accessibility-sidebar-view');
     const spanElement = await devToolsPage.waitForElementWithTextContent('span-name');
     await devToolsPage.click('text/span-name', {root: spanElement});
     await devToolsPage.waitForAria('Name:\xa0"span-name"', a11yPane);

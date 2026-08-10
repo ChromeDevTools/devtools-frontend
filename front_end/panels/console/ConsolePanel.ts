@@ -131,6 +131,10 @@ export class WrapperView extends UI.Widget.VBox {
   showViewInWrapper(): void {
     this.view.show(this.element);
   }
+
+  insertIntoPrompt(text: string): void {
+    this.view.insertIntoPrompt(text);
+  }
 }
 
 export class ConsoleRevealer implements Common.Revealer.Revealer<Common.Console.Console> {

@@ -1460,6 +1460,191 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-and-content-overridd
   });
 });
 
+describeWithEnvironment('Edit and resend as fetch', () => {
+  let target: SDK.Target.Target;
+  let networkLogView: Network.NetworkLogView.NetworkLogView;
+  let connection: MockCDPConnection;
+
+  beforeEach(() => {
+    connection = new MockCDPConnection();
+    connection.setSuccessHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
+    connection.setSuccessHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
+    const dummyStorage = new Common.Settings.SettingsStorage({});
+
+    for (const settingName of ['network-color-code-resource-types', 'network.group-by-frame']) {
+      Common.Settings.maybeRemoveSettingExtension(settingName);
+      Common.Settings.registerSettingExtension({
+        settingName,
+        settingType: Common.Settings.SettingType.BOOLEAN,
+        defaultValue: false,
+      });
+    }
+    Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: dummyStorage,
+      globalStorage: dummyStorage,
+      localStorage: dummyStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+      console: Common.Console.Console.instance(),
+    });
+    registerNoopActions(['network.toggle-recording', 'inspector-main.reload']);
+
+    sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({
+      shortcutTitleForAction: () => {},
+      shortcutsForAction: () => [],
+    } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
+
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});
+    createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    target = createTarget({parentTarget: tabTarget});
+  });
+
+  afterEach(() => {
+    if (networkLogView) {
+      networkLogView.detach();
+    }
+  });
+
+  function createRequest(url: string): SDK.NetworkRequest.NetworkRequest {
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+    let request: SDK.NetworkRequest.NetworkRequest|undefined;
+    const onRequestStarted = (event: Common.EventTarget.EventTargetEvent<SDK.NetworkManager.RequestStartedEvent>) => {
+      request = event.data.request;
+    };
+    networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, onRequestStarted);
+    dispatchEvent(target, 'Network.requestWillBeSent',
+                  {requestId: `resendTest${Date.now()}`, loaderId: 'loaderId', request: {url}} as unknown as
+                      Protocol.Network.RequestWillBeSentEvent);
+    networkManager.removeEventListener(SDK.NetworkManager.Events.RequestStarted, onRequestStarted);
+    assert.exists(request);
+    request.requestMethod = 'GET';
+    request.setResourceType(Common.ResourceType.resourceTypes.Fetch);
+    return request;
+  }
+
+  function createNetworkLogViewForTest(): Network.NetworkLogView.NetworkLogView {
+    const filterBar = new UI.FilterBar.FilterBar('network-test');
+    return new Network.NetworkLogView.NetworkLogView(
+        filterBar, document.createElement('div'),
+        Common.Settings.Settings.instance().createSetting('network-log-large-rows', false));
+  }
+
+  it('context menu shows \'Edit and resend as fetch\' for eligible requests', () => {
+    networkLogView = createNetworkLogViewForTest();
+    const request = createRequest('https://example.com/api');
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+
+    networkLogView.handleContextMenuForRequest(contextMenu, request);
+
+    const item = findMenuItemWithLabel(contextMenu.debugSection(), 'Edit and resend as fetch');
+    assert.exists(item);
+  });
+
+  it('resendFromConsole generates fetch with await prefix', async () => {
+    networkLogView = createNetworkLogViewForTest();
+    const request = createRequest('https://example.com/data');
+
+    // Stub InspectorView and ViewManager to avoid real UI interaction
+    sinon.stub(UI.InspectorView.InspectorView.instance(), 'showDrawer');
+    const fakeWidget = {insertIntoPrompt: sinon.stub()};
+    const fakeView = {widget: sinon.stub().resolves(fakeWidget)};
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'view').returns(fakeView as unknown as UI.View.View);
+
+    // Trigger via context menu
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    networkLogView.handleContextMenuForRequest(contextMenu, request);
+
+    const item = findMenuItemWithLabel(contextMenu.debugSection(), 'Edit and resend as fetch');
+    assert.exists(item);
+    contextMenu.invokeHandler(item.id());
+
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    sinon.assert.calledOnce(fakeWidget.insertIntoPrompt);
+    const injected = fakeWidget.insertIntoPrompt.firstCall.args[0] as string;
+    assert.isTrue(injected.includes('await fetch('), 'should include await fetch(');
+    assert.isFalse(injected.includes('await await'), 'should not contain double await');
+  });
+
+  it('resendFromConsole logs console message with affectedResources', async () => {
+    networkLogView = createNetworkLogViewForTest();
+    const request = createRequest('https://example.com/api/data');
+
+    // Stub InspectorView and ViewManager
+    sinon.stub(UI.InspectorView.InspectorView.instance(), 'showDrawer');
+    const fakeWidget = {insertIntoPrompt: sinon.stub()};
+    const fakeView = {widget: sinon.stub().resolves(fakeWidget)};
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'view').returns(fakeView as unknown as UI.View.View);
+
+    // Spy on console model
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    assert.exists(consoleModel);
+    const addMessageSpy = sinon.spy(consoleModel, 'addMessage');
+
+    // Trigger via context menu
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    networkLogView.handleContextMenuForRequest(contextMenu, request);
+
+    const item = findMenuItemWithLabel(contextMenu.debugSection(), 'Edit and resend as fetch');
+    assert.exists(item);
+    contextMenu.invokeHandler(item.id());
+
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    sinon.assert.calledOnce(addMessageSpy);
+    const message = addMessageSpy.firstCall.args[0];
+    assert.exists(message.getAffectedResources());
+    assert.strictEqual(message.getAffectedResources()?.requestId, request.requestId());
+    assert.include(message.messageText, 'GET');
+  });
+
+  it('resendFromConsole clears stackTrace/url from associated message', async () => {
+    networkLogView = createNetworkLogViewForTest();
+    const request = createRequest('https://example.com/api/data');
+
+    // Stub InspectorView and ViewManager
+    sinon.stub(UI.InspectorView.InspectorView.instance(), 'showDrawer');
+    const fakeWidget = {insertIntoPrompt: sinon.stub()};
+    const fakeView = {widget: sinon.stub().resolves(fakeWidget)};
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'view').returns(fakeView as unknown as UI.View.View);
+
+    // Spy on console model
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    assert.exists(consoleModel);
+    const addMessageSpy = sinon.spy(consoleModel, 'addMessage');
+
+    // Trigger via context menu
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    networkLogView.handleContextMenuForRequest(contextMenu, request);
+
+    const item = findMenuItemWithLabel(contextMenu.debugSection(), 'Edit and resend as fetch');
+    assert.exists(item);
+    contextMenu.invokeHandler(item.id());
+
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    sinon.assert.calledOnce(addMessageSpy);
+    const message = addMessageSpy.firstCall.args[0];
+    assert.isUndefined(message.url);
+    assert.strictEqual(message.line, 0);
+    assert.strictEqual(message.column, 0);
+    assert.isUndefined(message.stackTrace);
+  });
+});
+
 describeWithEnvironment('NetworkLogView placeholder', () => {
   const START_RECORDING_ID = 'network.toggle-recording';
   const RELOAD_ID = 'inspector-main.reload';

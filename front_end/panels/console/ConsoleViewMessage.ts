@@ -628,6 +628,19 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       UI.UIUtils.createTextChild(anchorWrapperElement, ' ');
       return anchorWrapperElement;
     }
+
+    // No source location anchor exists, but there may still be affected resource links to display.
+    const affectedResourceElements = this.createAffectedResourceLinks();
+    if (affectedResourceElements.length) {
+      const anchorWrapperElement = document.createElement('span');
+      anchorWrapperElement.classList.add('console-message-anchor');
+      for (const element of affectedResourceElements) {
+        anchorWrapperElement.append(element);
+      }
+      UI.UIUtils.createTextChild(anchorWrapperElement, ' ');
+      return anchorWrapperElement;
+    }
+
     return null;
   }
 

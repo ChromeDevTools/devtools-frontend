@@ -920,6 +920,16 @@ export class ConsoleView extends UI.Widget.VBox implements
     }
   }
 
+  /**
+   * Inserts text into the console prompt (replacing any existing content)
+   * and focuses the prompt. Used by cross-panel features such as
+   * "Edit and resend as fetch".
+   */
+  insertIntoPrompt(text: string): void {
+    this.prompt.insertText(text);
+    this.focusPrompt();
+  }
+
   override restoreScrollPositions(): void {
     if (this.viewport.stickToBottom()) {
       this.immediatelyScrollToBottom();
@@ -1341,7 +1351,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     if (consoleMessage) {
       const request = Logs.NetworkLog.NetworkLog.requestForConsoleMessage(consoleMessage);
-      if (request && SDK.NetworkManager.NetworkManager.canResendRequest(request)) {
+      if (request && SDK.NetworkManager.NetworkManager.canResendRequest(request, true)) {
         contextMenu.debugSection().appendItem(i18nString(UIStrings.resend),
                                               SDK.NetworkManager.NetworkManager.replayRequest.bind(null, request),
                                               {jslogContext: 'resend'});

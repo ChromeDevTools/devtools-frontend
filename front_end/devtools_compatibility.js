@@ -1332,6 +1332,7 @@
     SwatchActivated: 'DevTools.SwatchActivated',
     BuiltInAiAvailability: 'DevTools.BuiltInAiAvailability',
     ResendRequest: 'DevTools.ResendRequest',
+    EditResendRequest: 'DevTools.EditResendRequest',
     // LINT.ThenChange(/front_end/core/host/InspectorFrontendHostAPI.ts:EnumeratedHistogram)
   };
 

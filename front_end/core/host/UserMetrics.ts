@@ -36,6 +36,11 @@ export class UserMetrics {
                                                             ResendRequestType.MAX_VALUE);
   }
 
+  editResendRequest(type: ResendRequestType): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.EditResendRequest, type,
+                                                            ResendRequestType.MAX_VALUE);
+  }
+
   keybindSetSettingChanged(keybindSet: string): void {
     const value = KeybindSetSettings[keybindSet as keyof typeof KeybindSetSettings] || 0;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.KeybindSetSettingChanged, value,

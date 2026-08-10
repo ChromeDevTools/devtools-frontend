@@ -557,5 +557,6 @@ export const enum EnumeratedHistogram {
   SwatchActivated = 'DevTools.SwatchActivated',
   BuiltInAiAvailability = 'DevTools.BuiltInAiAvailability',
   ResendRequest = 'DevTools.ResendRequest',
+  EditResendRequest = 'DevTools.EditResendRequest',
   // LINT.ThenChange(/front_end/devtools_compatibility.js:EnumeratedHistogram)
 }

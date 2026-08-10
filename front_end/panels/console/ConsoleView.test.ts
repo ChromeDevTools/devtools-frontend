@@ -1485,6 +1485,19 @@ describeWithEnvironment('ConsoleView', () => {
     });
   });
 
+  it('insertIntoPrompt delegates to prompt and focuses', () => {
+    const focusPromptSpy = sinon.spy(consoleView, 'focusPrompt');
+
+    consoleView.insertIntoPrompt('await fetch("https://example.com")');
+
+    // Verify prompt contains the injected text
+    const editor = consoleView.element.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
+    assert.exists(editor);
+    assert.strictEqual(editor.state.doc.toString(), 'await fetch("https://example.com")');
+
+    // Verify focusPrompt was called
+    sinon.assert.calledOnce(focusPromptSpy);
+  });
   describe('logged object screenshot and context menu', () => {
     it('screenshots how ConsoleView logs an object', async () => {
       const target = createTarget();
@@ -1674,5 +1687,4 @@ describeWithEnvironment('ConsoleView', () => {
       ]);
     });
   });
-
 });

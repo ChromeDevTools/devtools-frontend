@@ -134,6 +134,13 @@ const FULL_FIDELITY_RESEND_TYPES = new Set([
   Common.ResourceType.resourceTypes.SourceMapStyleSheet,
 ]);
 
+/** Resource types eligible for resend but with reduced fidelity. */
+const PARTIAL_FIDELITY_RESEND_TYPES = new Set([
+  Common.ResourceType.resourceTypes.Document,
+  Common.ResourceType.resourceTypes.Prefetch,
+  Common.ResourceType.resourceTypes.Ping,
+]);
+
 const CONNECTION_TYPES = new Map([
   ['2g', Protocol.Network.ConnectionType.Cellular2g],
   ['3g', Protocol.Network.ConnectionType.Cellular3g],
@@ -211,11 +218,18 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return requestToManagerMap.get(request) || null;
   }
 
-  static canResendRequest(request: NetworkRequest): boolean {
+  static canResendRequest(request: NetworkRequest, fullFidelity: boolean): boolean {
     if (!requestToManagerMap.get(request) || !request.backendRequestId() || request.isRedirect()) {
       return false;
     }
-    return FULL_FIDELITY_RESEND_TYPES.has(request.resourceType());
+    const type = request.resourceType();
+    if (FULL_FIDELITY_RESEND_TYPES.has(type)) {
+      return true;
+    }
+    if (!fullFidelity && PARTIAL_FIDELITY_RESEND_TYPES.has(type)) {
+      return true;
+    }
+    return false;
   }
 
   static replayRequest(request: NetworkRequest): void {

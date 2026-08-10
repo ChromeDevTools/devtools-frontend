@@ -193,4 +193,25 @@ describeWithEnvironment('ConsoleContextSelector', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
     sinon.assert.calledOnceWithExactly(stub, TextEditor.TextEditorHistory.Direction.FORWARD);
   });
+
+  it('insertText replaces content, places caret at end, and scrolls into view', () => {
+    // editor already has 'foo' from beforeEach
+    assert.strictEqual(editor.state.doc.toString(), 'foo');
+
+    const dispatchSpy = sinon.spy(editor, 'dispatch');
+    const text = 'await fetch("https://example.com")';
+    consolePrompt.insertText(text);
+
+    // Replaces existing content
+    assert.strictEqual(editor.state.doc.toString(), text);
+
+    // Caret is at the end
+    const selection = editor.state.selection.main;
+    assert.strictEqual(selection.anchor, text.length);
+
+    // scrollIntoView was requested
+    sinon.assert.calledOnce(dispatchSpy);
+    const transaction = dispatchSpy.firstCall.args[0] as {scrollIntoView?: boolean};
+    assert.isTrue(transaction.scrollIntoView);
+  });
 });

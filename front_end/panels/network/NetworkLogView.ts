@@ -471,6 +471,33 @@ const UIStrings = {
    */
   resend: 'Resend',
   /**
+   * @description A context menu command in the Network panel that copies a request as an editable
+   * fetch command and pastes it into the Console for the user to modify before resending.
+   */
+  editAndResendAsFetch: 'Edit and resend as fetch',
+  /**
+   * @description Console message that appears when using "Edit and resend as fetch" feature.
+   * Indicates that a resendable copy of a request has been placed in the console.
+   * @example {GET} PH1
+   * @example {api/data} PH2
+   */
+  resendableCopyOfRequest: 'Resendable copy of {PH1} request to {PH2}',
+  /**
+   * @description Comment added before a generated fetch command, indicating which execution
+   * context the original request was sent from.
+   * @example {top} PH1
+   */
+  originallyCalledFromContext: '// Originally called from {PH1} context.',
+  /**
+   * @description Comment added before a generated fetch command, advising the user to select
+   * the execution context in the Console toolbar to resend from the same context.
+   */
+  selectExecutionContextInConsole: '// To resend from the same execution context, select it in the Console’s toolbar.',
+  /**
+   * @description Comment added after a generated fetch command, inviting the user to edit before resending.
+   */
+  editAndEnterToResend: '// Make any edits, then ENTER to resend',
+  /**
    * @description Text in Network Log View of the Network panel
    */
   areYouSureYouWantToClearBrowser: 'Are you sure you want to clear browser cache?',
@@ -1185,7 +1212,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           return;
         }
 
-        if (SDK.NetworkManager.NetworkManager.canResendRequest(request)) {
+        if (SDK.NetworkManager.NetworkManager.canResendRequest(request, true)) {
           SDK.NetworkManager.NetworkManager.replayRequest(request);
           void VisualLogging.logKeyDown(this.dataGrid.selectedNode.element(), event, 'resend');
         }
@@ -1975,10 +2002,16 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
             {jslogContext: 'throttle-request-domain'});
       }
 
-      if (SDK.NetworkManager.NetworkManager.canResendRequest(request)) {
+      if (SDK.NetworkManager.NetworkManager.canResendRequest(request, true)) {
         contextMenu.debugSection().appendItem(i18nString(UIStrings.resend),
                                               SDK.NetworkManager.NetworkManager.replayRequest.bind(null, request),
                                               {jslogContext: 'resend'});
+      }
+
+      if (SDK.NetworkManager.NetworkManager.canResendRequest(request, false)) {
+        contextMenu.debugSection().appendItem(i18nString(UIStrings.editAndResendAsFetch),
+                                              this.resendFromConsole.bind(this, request),
+                                              {jslogContext: 'edit-and-resend-as-fetch'});
       }
     }
   }
@@ -2045,6 +2078,85 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const requests = Logs.NetworkLog.NetworkLog.instance().requests().filter(request => this.applyFilter(request));
     const commands = await this.generateAllFetchCall(requests, style);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(commands);
+  }
+
+  private async resendFromConsole(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
+    // Record telemetry
+    Host.userMetrics.editResendRequest(Host.UserMetrics.resendRequestType(request.resourceType()));
+
+    // Step 1: Generate fetch command (reuse existing Copy as fetch logic)
+    let fetchCommand = await this.generateFetchCall(request, FetchStyle.BROWSER);
+
+    // Step 2: Prepend 'await' unless already present
+    if (!fetchCommand.startsWith('await ')) {
+      fetchCommand = 'await ' + fetchCommand;
+    }
+
+    // Prepend execution context guidance comments
+    const contextDescription = NetworkRequestNode.getExecutionContextDescription(request);
+    if (contextDescription) {
+      const contextComments = i18nString(UIStrings.originallyCalledFromContext, {PH1: contextDescription}) + '\n' +
+          i18nString(UIStrings.selectExecutionContextInConsole) + '\n';
+      fetchCommand = contextComments + fetchCommand;
+    }
+
+    // Append invitation to edit before resending
+    fetchCommand += '\n' + i18nString(UIStrings.editAndEnterToResend);
+
+    // Step 3: Show the console drawer (without switching away from network panel)
+    UI.InspectorView.InspectorView.instance().showDrawer({focus: false, hasTargetDrawer: true});
+    void UI.ViewManager.ViewManager.instance().showView('console-view', /* userGesture */ false, /* omitFocus */ true);
+
+    // Step 4: Log console message with link to original request
+    NetworkLogView.logResendConsoleMessage(request);
+
+    // Step 5: Inject fetch command into console prompt
+    const consoleViewWrapper = await UI.ViewManager.ViewManager.instance().view('console-view');
+    if (!consoleViewWrapper) {
+      return;
+    }
+    const widget = await consoleViewWrapper.widget();
+
+    // Use a minimal interface to avoid circular imports
+    interface ConsoleViewWithPrompt {
+      insertIntoPrompt(text: string): void;
+    }
+    const consoleView = widget as unknown as Partial<ConsoleViewWithPrompt>;
+    if (typeof consoleView.insertIntoPrompt !== 'function') {
+      return;
+    }
+    consoleView.insertIntoPrompt(fetchCommand);
+  }
+
+  private static logResendConsoleMessage(request: SDK.NetworkRequest.NetworkRequest): void {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+      return;
+    }
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    if (!runtimeModel || !consoleModel) {
+      return;
+    }
+    const method = request.requestMethod;
+    const name = request.name();
+    const logMessage = i18nString(UIStrings.resendableCopyOfRequest, {PH1: method, PH2: name});
+    const requestId = request.requestId();
+
+    const message = new SDK.ConsoleModel.ConsoleMessage(
+        runtimeModel, Protocol.Log.LogEntrySource.Network, Protocol.Log.LogEntryLevel.Info, logMessage, {
+          affectedResources: {requestId: requestId as Protocol.Network.RequestId},
+        });
+    consoleModel.addMessage(message);
+
+    // Associate message with request for bidirectional linking
+    Logs.NetworkLog.NetworkLog.instance().associateConsoleMessageWithRequest(message, requestId);
+
+    // Clear the initiator-derived fields to prevent confusing "VM123:1" display
+    message.url = undefined;
+    message.line = 0;
+    message.column = 0;
+    message.stackTrace = undefined;
   }
 
   private async copyPowerShellCommand(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {

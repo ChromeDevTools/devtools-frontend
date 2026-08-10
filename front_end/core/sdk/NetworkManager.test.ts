@@ -1362,11 +1362,29 @@ describe('NetworkManager', () => {
     setupSettingsHooks();
     setupRuntimeHooks();
 
+    function createRequestWithType(
+        universe: TestUniverse, connection: MockCDPConnection,
+        resourceType: Protocol.Network.ResourceType): Promise<SDK.NetworkRequest.NetworkRequest> {
+      const networkManager = new SDK.NetworkManager.NetworkManager(universe.createTarget({connection}));
+      const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'req-' + resourceType as Protocol.Network.RequestId,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        documentURL: 'https://example.test/',
+        request: {url: 'https://example.test/resource', method: 'GET', headers: {}},
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: resourceType,
+      } as Protocol.Network.RequestWillBeSentEvent);
+      return requestStartedPromise.then(({request}) => request);
+    }
+
     it('returns false when request has no backendRequestId', () => {
       const request =
           SDK.NetworkRequest.NetworkRequest.create('' as Protocol.Network.RequestId, urlString`https://example.test/`,
                                                    urlString`https://example.test/`, null, null, null);
-      assert.isFalse(SDK.NetworkManager.NetworkManager.canResendRequest(request));
+      assert.isFalse(SDK.NetworkManager.NetworkManager.canResendRequest(request, true));
     });
 
     it('returns false when request is a redirect', async () => {
@@ -1411,7 +1429,15 @@ describe('NetworkManager', () => {
       const newRequest = await requestRedirectedPromise;
       const redirectedRequest = newRequest.redirectSource()!;
       assert.isTrue(redirectedRequest.isRedirect());
-      assert.isFalse(SDK.NetworkManager.NetworkManager.canResendRequest(redirectedRequest));
+      assert.isFalse(SDK.NetworkManager.NetworkManager.canResendRequest(redirectedRequest, true));
+    });
+
+    it('fullFidelity parameter distinguishes partial-fidelity types', async () => {
+      const universe = new TestUniverse();
+      const connection = new MockCDPConnection();
+      const request = await createRequestWithType(universe, connection, Protocol.Network.ResourceType.Document);
+      assert.isFalse(SDK.NetworkManager.NetworkManager.canResendRequest(request, true));
+      assert.isTrue(SDK.NetworkManager.NetworkManager.canResendRequest(request, false));
     });
   });
 

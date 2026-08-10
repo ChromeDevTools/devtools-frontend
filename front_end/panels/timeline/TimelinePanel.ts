@@ -58,6 +58,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
@@ -1326,8 +1327,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector.createForGlobalConditions(cpuThrottlingPane);
 
     this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
-        this.captureSelectorStatsSetting.title(), this.captureSelectorStatsSetting,
-        i18nString(UIStrings.capturesSelectorStats)));
+        SettingUIRegistration.SettingUIRegistration.resolve(this.captureSelectorStatsSetting.descriptor()).title,
+        this.captureSelectorStatsSetting, i18nString(UIStrings.capturesSelectorStats)));
 
     const networkThrottlingPane = this.settingsPane.createChild('div');
     networkThrottlingPane.append(i18nString(UIStrings.network));
@@ -1337,17 +1338,18 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     );
 
     this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
-        this.captureLayersAndPicturesSetting.title(), this.captureLayersAndPicturesSetting,
-        i18nString(UIStrings.capturesAdvancedPaint)));
+        SettingUIRegistration.SettingUIRegistration.resolve(this.captureLayersAndPicturesSetting.descriptor()).title,
+        this.captureLayersAndPicturesSetting, i18nString(UIStrings.capturesAdvancedPaint)));
 
     this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
-        this.disableCaptureJSProfileSetting.title(), this.disableCaptureJSProfileSetting,
-        i18nString(UIStrings.disablesJavascriptSampling)));
+        SettingUIRegistration.SettingUIRegistration.resolve(this.disableCaptureJSProfileSetting.descriptor()).title,
+        this.disableCaptureJSProfileSetting, i18nString(UIStrings.disablesJavascriptSampling)));
 
     const screenshotPresetSelect = new UI.Toolbar.ToolbarComboBox(
         () =>
             this.screenshotCaptureModeSetting.set((screenshotPresetSelect.selectedOption() as HTMLOptionElement).value),
-        this.screenshotCaptureModeSetting.title(), '', 'screenshot-capture-mode');
+        SettingUIRegistration.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title, '',
+        'screenshot-capture-mode');
     let selectedScreenshotPresetIndex = 0;
     for (let i = 0; i < SCREENSHOT_CAPTURE_PRESETS.length; ++i) {
       const preset = SCREENSHOT_CAPTURE_PRESETS[i];
@@ -1359,7 +1361,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
     screenshotPresetSelect.setSelectedIndex(selectedScreenshotPresetIndex);
     const screenshotPresetPane = this.settingsPane.createChild('div');
-    screenshotPresetPane.append(this.screenshotCaptureModeSetting.title());
+    screenshotPresetPane.append(
+        SettingUIRegistration.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title);
     screenshotPresetPane.append(screenshotPresetSelect.element);
     // Surface the dropdown only when the "Screenshots" checkbox is on, since the
     // preset only affects the screenshots captured during the recording.

@@ -88,5 +88,6 @@ devtools_ui_module("unittests") {
     "../../../../core/platform:bundle",
     "../../../../testing",
     "../../../lit:bundle",
+    "../../../settings:bundle",
   ]
 }

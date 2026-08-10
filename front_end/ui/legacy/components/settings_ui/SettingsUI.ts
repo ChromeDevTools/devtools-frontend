@@ -44,10 +44,10 @@ export function createSettingCheckbox(
 
 export function renderSettingSelect(setting: Common.Settings.Setting<unknown>, subtitle?: string,
                                     disabled?: boolean): TemplateResult {
-  const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
-  const name = uiDescriptor?.title || setting.title();
-  const options = uiDescriptor?.options?.length ? uiDescriptor.options : setting.options();
-  const requiresReload = Boolean(uiDescriptor?.reloadRequired ?? setting.reloadRequired());
+  const uiDescriptor = SettingUIRegistration.SettingUIRegistration.resolve(setting.descriptor());
+  const name = uiDescriptor.title;
+  const options = uiDescriptor.options;
+  const requiresReload = uiDescriptor.reloadRequired;
   const controlId = UI.ARIAUtils.nextId('labelledControl');
   const reloadWarningRef = createRef<HTMLParagraphElement>();
 
@@ -109,8 +109,7 @@ export const renderControlForSetting = function(setting: Common.Settings.Setting
     case Common.Settings.SettingType.BOOLEAN: {
       const onchange = (): void => {
         const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
-        const requiresReload = Boolean(uiDescriptor?.reloadRequired ?? setting.reloadRequired());
-        if (requiresReload) {
+        if (uiDescriptor?.reloadRequired) {
           UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
               i18nString(UIStrings.settingsChangedReloadDevTools));
         }

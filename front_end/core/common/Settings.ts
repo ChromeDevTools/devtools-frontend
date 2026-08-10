@@ -10,7 +10,6 @@ import type {EventDescriptor, EventTargetEvent, GenericEvents} from './EventTarg
 import {ObjectWrapper} from './Object.js';
 import {
   getLocalizedSettingsCategory,
-  type LearnMore,
   maybeRemoveSettingExtension,
   type RegExpSettingItem,
   registerSettingExtension,
@@ -518,13 +517,6 @@ export class Setting<V> {
     this.eventSupport.removeEventListener(this.name, listener, thisObject);
   }
 
-  title(): Platform.UIString.LocalizedString {
-    if (this.#registration?.title) {
-      return this.#registration.title();
-    }
-    return '' as Platform.UIString.LocalizedString;
-  }
-
   setRequiresUserAction(requiresUserAction: boolean): void {
     this.#requiresUserAction = requiresUserAction;
   }
@@ -624,57 +616,6 @@ export class Setting<V> {
     return this.#type ?? this.#registration?.settingType ?? null;
   }
 
-  options(): SimpleSettingOption[] {
-    if (this.#registration && this.#registration.options) {
-      return this.#registration.options.map(opt => {
-        const {value, title, text, raw} = opt;
-        return {
-          value,
-          title: title(),
-          text: typeof text === 'function' ? text() : text,
-          raw,
-        };
-      });
-    }
-    return [];
-  }
-
-  reloadRequired(): boolean|null {
-    if (this.#registration) {
-      return this.#registration.reloadRequired || null;
-    }
-    return null;
-  }
-
-  category(): SettingCategory|null {
-    if (this.#registration) {
-      return this.#registration.category || null;
-    }
-    return null;
-  }
-
-  tags(): string|null {
-    if (this.#registration && this.#registration.tags) {
-      // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
-      return this.#registration.tags.map(tag => tag()).join('\0');
-    }
-    return null;
-  }
-
-  order(): number|null {
-    if (this.#registration) {
-      return this.#registration.order || null;
-    }
-    return null;
-  }
-
-  /**
-   * See {@link LearnMore} for more info
-   */
-  learnMore(): LearnMore|null {
-    return this.#registration?.learnMore ?? null;
-  }
-
   private printSettingsSavingError(message: string, value: string): void {
     const errorMessage =
         'Error saving setting with name: ' + this.name + ', value length: ' + value.length + '. Error: ' + message;
@@ -766,10 +707,3 @@ export {
   SettingRegistration,
   SettingType,
 };
-
-export interface SimpleSettingOption {
-  value: string|boolean;
-  title: string;
-  text?: string;
-  raw?: boolean;
-}

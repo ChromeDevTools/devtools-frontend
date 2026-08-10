@@ -58,19 +58,6 @@ describeWithEnvironment('LayoutPane', () => {
   }
 
   it('renders settings', async () => {
-    Common.Settings.Settings.instance().moduleSetting('show-grid-line-labels').setRegistration({
-      settingName: 'show-grid-line-labels',
-      settingType: Common.Settings.SettingType.ENUM,
-      defaultValue: 'none',
-      title: () => 'Enum setting title' as Platform.UIString.LocalizedString,
-    });
-    Common.Settings.Settings.instance().moduleSetting('show-grid-track-sizes').setRegistration({
-      settingName: 'show-grid-track-sizes',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: true,
-      title: () => 'Boolean setting title' as Platform.UIString.LocalizedString,
-    });
-
     const component = await renderComponent();
     assert.deepEqual(
         queryLabels(component.contentElement, '[data-enum-setting]'), [{label: 'Enum setting title', input: 'SELECT'}]);

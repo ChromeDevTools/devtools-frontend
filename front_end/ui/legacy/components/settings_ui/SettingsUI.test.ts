@@ -31,6 +31,7 @@ describeWithEnvironment('SettingsUI', () => {
       title: () => i18n.i18n.lockedString('Test Setting'),
       ...registrationOverrides,
     };
+    Common.Settings.registerSettingExtension(registration);
     const settings = createSettingsForTest([registration]);
     return settings.moduleSetting('test-setting');
   }
@@ -142,14 +143,16 @@ describeWithEnvironment('SettingsUI', () => {
     });
 
     it('renders a select for an enum setting', () => {
-      const setting = createSettingsForTest([{
-                        settingName: 'test-enum-setting',
-                        settingType: Common.Settings.SettingType.ENUM,
-                        defaultValue: 'a',
-                        options: [
-                          {value: 'a', text: 'A', title: () => i18n.i18n.lockedString('A'), raw: true},
-                        ],
-                      }]).moduleSetting('test-enum-setting');
+      const registration: Common.Settings.SettingRegistration = {
+        settingName: 'test-enum-setting',
+        settingType: Common.Settings.SettingType.ENUM,
+        defaultValue: 'a',
+        options: [
+          {value: 'a', text: 'A', title: () => i18n.i18n.lockedString('A'), raw: true},
+        ],
+      };
+      Common.Settings.registerSettingExtension(registration);
+      const setting = createSettingsForTest([registration]).moduleSetting('test-enum-setting');
 
       const template = SettingsUI.SettingsUI.renderControlForSetting(setting);
       assert.notStrictEqual(template, Lit.nothing);

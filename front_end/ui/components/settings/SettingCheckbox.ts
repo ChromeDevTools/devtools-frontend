@@ -66,7 +66,7 @@ export class SettingCheckbox extends HTMLElement {
     }
 
     const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(this.#setting.descriptor());
-    const learnMore = uiDescriptor?.learnMore ?? this.#setting.learnMore();
+    const learnMore = uiDescriptor?.learnMore;
     if (learnMore) {
       const jsLogContext = `${this.#setting.name}-documentation`;
       const data: Buttons.Button.ButtonData = {
@@ -136,8 +136,8 @@ export class SettingCheckbox extends HTMLElement {
     }
 
     const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(this.#setting.descriptor());
-    const learnMore = uiDescriptor?.learnMore ?? this.#setting.learnMore();
-    const titleText = uiDescriptor?.title || this.#setting.title();
+    const learnMore = uiDescriptor?.learnMore;
+    const titleText = uiDescriptor?.title ?? '';
 
     const icon = this.icon();
     const title = learnMore?.tooltip?.() ?? '';

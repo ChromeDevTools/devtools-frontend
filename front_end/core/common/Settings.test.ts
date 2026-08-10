@@ -238,7 +238,6 @@ describe('Settings instance', () => {
     const setting = settings.moduleSetting('test-setting');
 
     assert.isFalse(setting.get());
-    assert.strictEqual(setting.category(), Common.Settings.SettingCategory.CONSOLE);
     assert.deepEqual(setting.descriptor(), {
       name: 'test-setting',
       type: Common.Settings.SettingType.BOOLEAN,

@@ -58,6 +58,7 @@ import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {AiCodeCompletionSummaryToolbar} from '../common/common.js';
 
@@ -498,30 +499,30 @@ export class ConsoleView extends UI.Widget.VBox implements
     settingsPane.append(
         SettingsUI.SettingsUI.createSettingCheckbox(
             i18nString(UIStrings.networkMessages), this.filter.networkMessagesSetting,
-            this.filter.networkMessagesSetting.title()),
+            SettingUIRegistration.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title),
+        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.logXMLHttpRequests),
+                                                    monitoringXHREnabledSetting),
+        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.preserveLog), preserveConsoleLogSetting,
+                                                    i18nString(UIStrings.doNotClearLogOnPageReload)),
         SettingsUI.SettingsUI.createSettingCheckbox(
-            i18nString(UIStrings.logXMLHttpRequests), monitoringXHREnabledSetting),
+            SettingUIRegistration.SettingUIRegistration.resolve(consoleEagerEvalSetting.descriptor()).title,
+            consoleEagerEvalSetting, i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)),
+        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.selectedContextOnly),
+                                                    this.filter.filterByExecutionContextSetting,
+                                                    i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)),
         SettingsUI.SettingsUI.createSettingCheckbox(
-            i18nString(UIStrings.preserveLog), preserveConsoleLogSetting,
-            i18nString(UIStrings.doNotClearLogOnPageReload)),
+            SettingUIRegistration.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor())
+                .title,
+            this.consoleHistoryAutocompleteSetting, i18nString(UIStrings.autocompleteFromHistory)),
         SettingsUI.SettingsUI.createSettingCheckbox(
-            consoleEagerEvalSetting.title(), consoleEagerEvalSetting,
-            i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)),
+            SettingUIRegistration.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title,
+            this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole)),
         SettingsUI.SettingsUI.createSettingCheckbox(
-            i18nString(UIStrings.selectedContextOnly), this.filter.filterByExecutionContextSetting,
-            i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)),
+            SettingUIRegistration.SettingUIRegistration.resolve(userActivationEvalSetting.descriptor()).title,
+            userActivationEvalSetting, i18nString(UIStrings.treatEvaluationAsUserActivation)),
         SettingsUI.SettingsUI.createSettingCheckbox(
-            this.consoleHistoryAutocompleteSetting.title(), this.consoleHistoryAutocompleteSetting,
-            i18nString(UIStrings.autocompleteFromHistory)),
-        SettingsUI.SettingsUI.createSettingCheckbox(
-            this.groupSimilarSetting.title(), this.groupSimilarSetting,
-            i18nString(UIStrings.groupSimilarMessagesInConsole)),
-        SettingsUI.SettingsUI.createSettingCheckbox(
-            userActivationEvalSetting.title(), userActivationEvalSetting,
-            i18nString(UIStrings.treatEvaluationAsUserActivation)),
-        SettingsUI.SettingsUI.createSettingCheckbox(
-            this.showCorsErrorsSetting.title(), this.showCorsErrorsSetting,
-            i18nString(UIStrings.showCorsErrorsInConsole)),
+            SettingUIRegistration.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title,
+            this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole)),
     );
 
     if (!this.showSettingsPaneSetting.get()) {

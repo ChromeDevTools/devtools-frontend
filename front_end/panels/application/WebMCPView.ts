@@ -987,6 +987,7 @@ export const PAYLOAD_DEFAULT_VIEW = (input: PayloadViewInput, output: object, ta
       readOnly: true,
       propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
     });
+    objectTree.expanded = true;
     return html`<devtools-tree .template=${html`
           <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>

@@ -64,8 +64,8 @@ export interface ObjectPropertySearchResult extends UI.TreeOutline.TreeSearchRes
   matchType: 'name'|'value';
   range: TextUtils.TextRange.SourceRange;
 }
-const {widget} = UI.Widget;
-const {ref, repeat, ifDefined, classMap, until} = Directives;
+const {widget, widgetRef} = UI.Widget;
+const {ref, repeat, ifDefined, classMap} = Directives;
 const UIStrings = {
   /**
    * @description Text in Object Properties Section
@@ -167,6 +167,7 @@ const objectPropertiesSectionMap = new WeakMap<Element, ObjectPropertiesSection>
 // the legacy TreeOutline/TreeElement dependencies are removed.
 const topLevelNodesCache = new WeakMap<ObjectTreeNodeBase, {
   nodes: UI.TreeOutline.TreeElement[],
+  listener: () => void,
   linkifier?: Components.Linkifier.Linkifier,
 }>();
 
@@ -488,7 +489,7 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
         yield* child.#walk(Math.max(-1, maxDepth - 1), filter);
       }
     }
-    }
+  }
 
   async expandRecursively(maxDepth: number): Promise<void> {
     for (const node of this.#walk(maxDepth, n => n.canExpandRecursively)) {
@@ -1366,51 +1367,143 @@ export function populateObjectTreeContextMenu(
       {checked: object.includeNullOrUndefinedValues, jslogContext: 'show-all'});
 }
 
-function renderObjectTreeInternal(
-    objectTree: ObjectTree,
-    linkifier?: Components.Linkifier.Linkifier,
-    emptyPlaceholder?: string|null,
-    classes: Record<string, boolean> = {},
-    ): LitTemplate|DirectiveResult {
-  const entry = topLevelNodesCache.get(objectTree);
-  if (entry && entry.linkifier === linkifier) {
-    return html`
-      <ul class=${classMap(classes)} role="group">
-        ${entry.nodes.map(node => html`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
-      </ul>
-    `;
+interface ObjectTreeViewInput {
+  renderAsSubtree: boolean;
+  objectTree?: ObjectTree;
+  linkifier?: Components.Linkifier.Linkifier;
+  emptyPlaceholder?: string;
+  onExpand: (expanded: boolean) => void;
+}
+type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
+export const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) => {
+  const objectTree = input.objectTree;
+  if (!objectTree) {
+    render(nothing, target);
+    return;
   }
-
-  const promise = (async () => {
-    await ObjectPropertyTreeElement.populateChildrenIfNeeded(objectTree);
-    const nodes = Array.from(ObjectPropertyTreeElement.createNodes(
-        objectTree, /* skipProto= */ false, /* skipGettersAndSetters= */ false, linkifier, emptyPlaceholder));
-    topLevelNodesCache.set(objectTree, {linkifier, nodes});
+  const classes = input.renderAsSubtree ? ['source-code', 'object-properties-section'] : [];
+  let entry = topLevelNodesCache.get(objectTree);
+  if (!entry || entry.linkifier !== input.linkifier || (!entry.nodes.length && objectTree.children)) {
+    if (entry) {
+      objectTree.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, entry.listener);
+    }
+    const nodes = Array.from(ObjectPropertyTreeElement.createNodes(objectTree, /* skipProto= */ false,
+                                                                   /* skipGettersAndSetters= */ false, input.linkifier,
+                                                                   input.emptyPlaceholder));
     const listener = (): void => {
       topLevelNodesCache.delete(objectTree);
       objectTree.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, listener);
     };
+    entry = {linkifier: input.linkifier, nodes, listener};
+    topLevelNodesCache.set(objectTree, entry);
     objectTree.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, listener);
+  }
 
-    return html`
-      <ul class=${classMap(classes)} role="group">
-        ${nodes.map(node => html`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
-      </ul>
-    `;
-  })();
+  render(entry.nodes.map(node => html`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`), target, {
+    container: {
+      classes,
+      attributes: {role: 'group'},
+      interceptedListeners: {
+        expand: (e: Event) => input.onExpand((e as UI.TreeOutline.TreeViewElement.ExpandEvent).detail.expanded),
+      },
+    },
+  });
+};
 
-  return until(promise, html`<ul class=${classMap(classes)} role="group"></ul>`);
+export class ObjectTreeWidget extends UI.Widget.Widget {
+  #objectTree: ObjectTree|undefined = undefined;
+  #linkifier: Components.Linkifier.Linkifier|undefined = undefined;
+  #emptyPlaceholder?: string;
+  #renderAsSubtree = false;
+  readonly #view: ObjectTreeView;
+
+  constructor(element?: HTMLElement, view = OBJECT_TREE_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  onExpand = (expanded: boolean): void => {
+    if (this.#objectTree) {
+      this.#objectTree.expanded = expanded;
+    }
+  };
+
+  get objectTree(): ObjectTree|undefined {
+    return this.#objectTree;
+  }
+  set objectTree(val: ObjectTree) {
+    if (val === this.#objectTree) {
+      return;
+    }
+    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.#objectTree = val;
+    this.#objectTree?.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#objectTree?.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.requestUpdate();
+  }
+  get linkifier(): Components.Linkifier.Linkifier|undefined {
+    return this.#linkifier;
+  }
+  set linkifier(val: Components.Linkifier.Linkifier) {
+    if (val === this.#linkifier) {
+      return;
+    }
+    this.#linkifier = val;
+    this.requestUpdate();
+  }
+  get emptyPlaceholder(): string|undefined {
+    return this.#emptyPlaceholder;
+  }
+  set emptyPlaceholder(val: string) {
+    if (val === this.#emptyPlaceholder) {
+      return;
+    }
+    this.#emptyPlaceholder = val;
+    this.requestUpdate();
+  }
+
+  get renderAsSubtree(): boolean {
+    return this.#renderAsSubtree;
+  }
+  set renderAsSubtree(val: boolean) {
+    if (val === this.#renderAsSubtree) {
+      return;
+    }
+    this.#renderAsSubtree = val;
+    this.requestUpdate();
+  }
+
+  override async performUpdate(): Promise<void> {
+    if (this.#objectTree?.expanded) {
+      await ObjectPropertyTreeElement.populateChildrenIfNeeded(this.#objectTree);
+    }
+    this.#view(this, {}, this.contentElement);
+  }
+
+  override onDetach(): void {
+    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.#objectTree?.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#objectTree?.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+  }
 }
 
 export function renderObjectTree(
     objectTree: ObjectTree,
     linkifier?: Components.Linkifier.Linkifier,
-    emptyPlaceholder?: string|null,
+    emptyPlaceholder?: string,
     ): LitTemplate|DirectiveResult {
-  return renderObjectTreeInternal(objectTree, linkifier, emptyPlaceholder, {
-    'source-code': true,
-    'object-properties-section': true,
-  });
+  return html`<ul role="group" ${
+      widget(ObjectTreeWidget, {objectTree, linkifier, emptyPlaceholder, renderAsSubtree: true})} ${
+      /* The empty widgetRef forces the widget to be materialized in the template DOM */
+      widgetRef(ObjectTreeWidget, () => {})}></ul>`;
 }
 
 export function renderObjectPropertiesSection(
@@ -1418,18 +1511,19 @@ export function renderObjectPropertiesSection(
     title: LitTemplate,
     linkifier?: Components.Linkifier.Linkifier,
     ): LitTemplate {
-  const treeContent = renderObjectTreeInternal(objectTree, linkifier, undefined, {});
-
+  // clang-format off
   return html`<devtools-tree class="object-properties-section" show-selection-on-keyboard-focus .template=${html`
     <ul role="tree" class="source-code object-properties-section">
       <style>${objectValueStyles}</style>
       <style>${objectPropertiesSectionStyles}</style>
       <li role="treeitem" class="object-properties-section-root-element" ?open=${objectTree.expanded}>
         ${title}
-        ${treeContent}
+        <ul role="group" ${widget(ObjectTreeWidget, {objectTree, linkifier})} ${
+      /* The empty widgetRef forces the widget to be materialized in the template DOM */
+      widgetRef(ObjectTreeWidget, () => {})}></ul>
       </li>
-    </ul>
-  `}></devtools-tree>`;
+    </ul>`}></devtools-tree>`;
+  // clang-format on
 }
 class RootElement extends UI.TreeOutline.TreeElement {
   private readonly object: ObjectTree;

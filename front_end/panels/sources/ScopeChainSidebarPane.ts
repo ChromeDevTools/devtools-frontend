@@ -89,7 +89,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     scope: SDK.DebuggerModel.ScopeChainEntry,
     objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree,
   }): TemplateResult => {
-    let emptyPlaceholder: Common.UIString.LocalizedString|null = null;
+    let emptyPlaceholder: Common.UIString.LocalizedString|undefined;
     if (scope.type() === Protocol.Debugger.ScopeType.Local || scope.type() === Protocol.Debugger.ScopeType.Closure) {
       emptyPlaceholder = i18nString(UIStrings.noVariables);
     }

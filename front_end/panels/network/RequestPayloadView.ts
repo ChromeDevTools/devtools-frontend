@@ -201,6 +201,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       readOnly: true,
       propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
     });
+    objectTree.expanded = true;
     return html`
       <li role=treeitem class="source-code object-properties-section-root-element object-properties-section" open>
         ${object.description}

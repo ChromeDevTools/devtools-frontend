@@ -1972,9 +1972,12 @@ class ValueDecoration extends CodeMirror.WidgetType {
         /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
         render(formatter.renderObjectPreview(value.preview), nameValuePair.createChild('span'));
       } else {
-        const propertyValue = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
-            value, /* wasThrown */ false, /* showPreview */ false);
-        nameValuePair.appendChild(propertyValue);
+        const propertyValue =
+            ObjectUI.ObjectPropertiesSection.renderPropertyValue(value, /* wasThrown */ false, /* showPreview */ false);
+        const fragment = document.createDocumentFragment();
+        /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+        render(propertyValue, fragment);
+        nameValuePair.appendChild(fragment);
       }
     }
     return widget;

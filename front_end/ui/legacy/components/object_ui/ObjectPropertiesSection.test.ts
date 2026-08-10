@@ -698,10 +698,17 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
     assert.isTrue(secondInput.editing);
   });
 
+  function createAndRenderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean,
+                                        showPreview: boolean): HTMLElement {
+    const fragment = document.createDocumentFragment();
+    render(ObjectUI.ObjectPropertiesSection.renderPropertyValue(value, wasThrown, showPreview), fragment);
+    assert.exists(fragment.firstElementChild);
+    return fragment.firstElementChild as HTMLElement;
+  }
+
   it('shows expandable text contents for lengthy strings', async () => {
     const longString = `l${'o'.repeat(15000)}ng`;
-    const value = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
-        SDK.RemoteObject.RemoteObject.fromLocalObject(longString), false, true);
+    const value = createAndRenderPropertyValue(SDK.RemoteObject.RemoteObject.fromLocalObject(longString), false, true);
 
     renderElementIntoDOM(value, {includeCommonStyles: true});
 
@@ -732,7 +739,7 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
 
   it('escapes bidi characters in standalone string values', () => {
     const object = SDK.RemoteObject.RemoteObject.fromLocalObject('\u202Ereversed_string');
-    const value = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(object, false, false);
+    const value = createAndRenderPropertyValue(object, false, false);
 
     renderElementIntoDOM(value, {
       includeCommonStyles: true,
@@ -750,7 +757,7 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
     // Ensure preview is undefined so hasPreview is false
     sinon.stub(object, 'preview').get(() => undefined);
 
-    const value = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(object, false, true);
+    const value = createAndRenderPropertyValue(object, false, true);
 
     renderElementIntoDOM(value, {
       includeCommonStyles: true,
@@ -867,7 +874,7 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
                                         ],
                                       }));
 
-    const value = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(object, false, true);
+    const value = createAndRenderPropertyValue(object, false, true);
 
     renderElementIntoDOM(value, {
       includeCommonStyles: true,

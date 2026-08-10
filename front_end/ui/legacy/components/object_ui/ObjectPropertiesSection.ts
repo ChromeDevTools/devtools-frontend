@@ -1118,19 +1118,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     }
   }
 
-  static createPropertyValueWithCustomSupport(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean,
-                                              showPreview: boolean, linkifier?: Components.Linkifier.Linkifier,
-                                              isSyntheticProperty?: boolean, variableName?: string,
-                                              includeNullOrUndefined?: boolean): HTMLElement {
-    if (value.customPreview()) {
-      const result = (new CustomPreviewComponent(value)).element;
-      result.classList.add('object-properties-section-custom-section');
-      return result;
-    }
-    return ObjectPropertiesSection.createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty,
-                                                       variableName, includeNullOrUndefined);
-  }
-
   static getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate {
     // Directly set styles on memory icon, so that the memory icon is also
     // styled within the context of code mirror.
@@ -1153,81 +1140,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
     render(ObjectPropertiesSection.getMemoryIcon(object, expression), fragment);
     element.appendChild(fragment);
-  }
-
-  static createPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean,
-                             linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty = false,
-                             variableName?: string, includeNullOrUndefined?: boolean): HTMLElement {
-    const propertyValue = document.createDocumentFragment();
-    const type = value.type;
-    const subtype = value.subtype;
-    const description = value.description || '';
-    const className = value.className;
-
-    const contents = (): LitTemplate => {
-      if (type === 'object' && subtype === 'internal#location') {
-        const rawLocation = value.debuggerModel().createRawLocationByScriptId(
-            value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
-        if (rawLocation && linkifier) {
-          return html`${linkifier.linkifyRawLocation(rawLocation, Platform.DevToolsPath.EmptyUrlString, 'value')}`;
-        }
-        const title = description || undefined;
-        return html`<span class=value title=${ifDefined(title)}>${'<' + i18nString(UIStrings.unknown) + '>'}</span>`;
-      }
-      if (type === 'string' && typeof description === 'string') {
-        const text = Platform.StringUtilities.escapeUnicodeAsText(JSON.stringify(description));
-        const tooLong = description.length > maxRenderableStringLength;
-        return html`<span class="value object-value-string" title=${ifDefined(tooLong ? undefined : description)}>${
-            tooLong ? widget(ExpandableTextPropertyValue, {text}) : text}</span>`;
-      }
-      if (type === 'object' && subtype === 'trustedtype') {
-        const text = `${className} "${description}"`;
-        const tooLong = text.length > maxRenderableStringLength;
-        return html`<span class="value object-value-trustedtype" title=${ifDefined(tooLong ? undefined : text)}>${
-            tooLong ? widget(ExpandableTextPropertyValue, {text}) : renderTrustedType(description, className)}</span>`;
-      }
-      if (type === 'function') {
-        return html`<span class="value">${
-            ObjectPropertiesSection.valueElementForFunctionDescription(description)}</span>`;
-      }
-      if (type === 'object' && subtype === 'node' && description) {
-        return html`<span class="value object-value-node"
-            @click=${(event: Event) => {
-          void Common.Revealer.reveal(value);
-          event.consume(true);
-        }}
-            @mousemove=${() => SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(value)}
-            @mouseleave=${
-            () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance())}
-          >${renderNodeTitle(description)}</span>`;
-      }
-      if (description.length > maxRenderableStringLength) {
-        // clang-format off
-        return html`<span class="value object-value-${subtype || type}" title=${description}>
-          ${widget(ExpandableTextPropertyValue, {text: description})}
-        </span>`;
-        // clang-format on
-      }
-      const hasPreview = value.preview && showPreview;
-      return html`<span class="value object-value-${subtype || type}" title=${description}>${
-          hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview, includeNullOrUndefined) :
-                       description}${isSyntheticProperty ? nothing : this.getMemoryIcon(value, variableName)}</span>`;
-    };
-
-    if (wasThrown) {
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(html`<span class="error value">${
-                 uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.exceptionS, {PH1: contents()})}</span>`,
-             propertyValue);
-    } else {
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(contents(), propertyValue);
-    }
-    const child = propertyValue.firstElementChild;
-    if (!(child instanceof HTMLElement)) {
-      throw new Error('Expected an HTML element');
-    }
-    return child;
   }
 
   static isDisplayableProperty(property: SDK.RemoteObject.RemoteObjectProperty,
@@ -1606,6 +1518,105 @@ export async function formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject
                                                                     details, linkify);
 }
 
+export function renderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean,
+                                    linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty = false,
+                                    variableName?: string, includeNullOrUndefined?: boolean, useCustomPreview = false,
+                                    valueRef?: (element: Element|undefined) => void): LitTemplate {
+  if (useCustomPreview && value.customPreview()) {
+    const result = (new CustomPreviewComponent(value)).element;
+    result.classList.add('object-properties-section-custom-section');
+    valueRef?.(result);
+    return html`${result}`;
+  }
+
+  const type = value.type;
+  const subtype = value.subtype;
+  const description = value.description || '';
+  const className = value.className;
+
+  const isInternalLocation = type === 'object' && subtype === 'internal#location';
+  const isString = type === 'string' && typeof description === 'string';
+  const isTrustedType = type === 'object' && subtype === 'trustedtype';
+  const isFunction = type === 'function';
+  const isNode = type === 'object' && subtype === 'node' && Boolean(description);
+  const isDefault = !isInternalLocation && !isString && !isTrustedType && !isFunction && !isNode;
+  const classes = classMap({
+    value: true,
+    [`object-value-${subtype || type}`]: isDefault,
+    'object-value-string': isString,
+    'object-value-trustedtype': isTrustedType,
+    'object-value-node': isNode,
+  });
+
+  const onNodeClick = (event: Event): void => {
+    void Common.Revealer.reveal(value);
+    event.consume(true);
+  };
+  const onNodeMouseMove = (): void => SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(value);
+  const onNodeMouseLeave = (): void =>
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
+
+  let title: string|undefined;
+  let content: LitTemplate|string|Element|DirectiveResult|null = description;
+  if (isNode) {
+    content = renderNodeTitle(description);
+  } else if (isInternalLocation) {
+    const rawLocation = value.debuggerModel().createRawLocationByScriptId(value.value.scriptId, value.value.lineNumber,
+                                                                          value.value.columnNumber);
+    const linkifiedLocation = rawLocation && linkifier ?
+        linkifier.linkifyRawLocation(rawLocation, Platform.DevToolsPath.EmptyUrlString, 'value') :
+        null;
+    if (linkifiedLocation) {
+      valueRef?.(linkifiedLocation);
+      return html`${linkifiedLocation}`;
+    }
+    title = description || undefined;
+    content = '<' + i18nString(UIStrings.unknown) + '>';
+  } else if (isString) {
+    const text = Platform.StringUtilities.escapeUnicodeAsText(JSON.stringify(description));
+    const tooLong = description.length > maxRenderableStringLength;
+    title = tooLong ? undefined : description;
+    content = tooLong ? widget(ExpandableTextPropertyValue, {text}) : text;
+  } else if (isTrustedType) {
+    const text = `${className} "${description}"`;
+    const tooLong = text.length > maxRenderableStringLength;
+    title = tooLong ? undefined : text;
+    content = tooLong ? widget(ExpandableTextPropertyValue, {text}) : renderTrustedType(description, className);
+  } else if (isFunction) {
+    content = ObjectPropertiesSection.valueElementForFunctionDescription(description);
+  } else if (description.length > maxRenderableStringLength) {
+    title = description;
+    content = widget(ExpandableTextPropertyValue, {text: description});
+  } else {
+    title = description;
+    const hasPreview = value.preview && showPreview;
+    const previewContent = hasPreview ?
+        new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview, includeNullOrUndefined) :
+        description;
+    content = html`${previewContent}${
+        isSyntheticProperty ? nothing : ObjectPropertiesSection.getMemoryIcon(value, variableName)}`;
+  }
+
+  if (wasThrown) {
+    return html`<span ${valueRef ? ref(valueRef) : nothing} class="error value">${
+        uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.exceptionS, {
+          PH1: html`<span
+        class=${classes}
+        title=${ifDefined(title)}
+        @click=${isNode ? onNodeClick : nothing}
+        @mousemove=${isNode ? onNodeMouseMove : nothing}
+        @mouseleave=${isNode ? onNodeMouseLeave : nothing}>${content}</span>`,
+        })}</span>`;
+  }
+  return html`<span
+      ${valueRef ? ref(valueRef) : nothing}
+      class=${classes}
+      title=${ifDefined(title)}
+      @click=${isNode ? onNodeClick : nothing}
+      @mousemove=${isNode ? onNodeMouseMove : nothing}
+      @mouseleave=${isNode ? onNodeMouseLeave : nothing}>${content}</span>`;
+}
+
 export function defaultObjectPresentation(objectOrTree: SDK.RemoteObject.RemoteObject|ObjectTree,
                                           linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean,
                                           readOnly?: boolean): LitTemplate {
@@ -1615,7 +1626,7 @@ export function defaultObjectPresentation(objectOrTree: SDK.RemoteObject.RemoteO
   });
   const object = objectTree.object;
   const title = html`<span class="source-code"><style>${objectValueStyles}</style>${
-      ObjectPropertiesSection.createPropertyValue(object, /* wasThrown= */ false, /* showPreview= */ true)}</span>`;
+      renderPropertyValue(object, /* wasThrown= */ false, /* showPreview= */ true)}</span>`;
   if (!object.hasChildren) {
     return title;
   }
@@ -1681,7 +1692,7 @@ export const OBJECT_PROPERTY_DEFAULT_VIEW: ObjectPropertyView = (input, output, 
       (entries ?? []).filter(e => e !== currentMatch && e.matchType === 'name').map(e => e.range.cssValue()).join(' ');
   const valueRanges =
       (entries ?? []).filter(e => e !== currentMatch && e.matchType === 'value').map(e => e.range.cssValue()).join(' ');
-  const value = (): LitTemplate|HTMLElement => {
+  const value = (): LitTemplate => {
     const valueRef = ref(e => {
       output.valueElement = e;
     });
@@ -1690,11 +1701,11 @@ export const OBJECT_PROPERTY_DEFAULT_VIEW: ObjectPropertyView = (input, output, 
     }
     if (property.value) {
       const showPreview = property.name !== '[[Prototype]]';
-      const value = ObjectPropertiesSection.createPropertyValueWithCustomSupport(
-          property.value, property.wasThrown, showPreview, input.linkifier, property.synthetic,
-          input.node.path /* variableName */, input.node.includeNullOrUndefinedValues);
-      output.valueElement = value;
-      return value;
+      return renderPropertyValue(property.value, property.wasThrown, showPreview, input.linkifier, property.synthetic,
+                                 input.node.path /* variableName */, input.node.includeNullOrUndefinedValues,
+                                 /* useCustomPreview */ true, e => {
+                                   output.valueElement = e;
+                                 });
     }
     if (property.getter) {
       const getter = property.getter;

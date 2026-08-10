@@ -15,3 +15,15 @@
 # crbug.com/1342718 [ mac win32 linux ] front_end/panels/explain/components/ConsoleInsight.test.ts:ConsoleInsight:shows_opt-in_teaser_when_setting_is_turned_off [ Failure Pass Skip ]
 # crbug.com/1342718 front_end/panels/explain/components/ConsoleInsight.test.ts:ConsoleInsight:shows_opt-in_teaser_when_setting_is_turned_off [ Failure Pass ]
 # crbug.com/1234567 [ mac ] front_end/panels/elements/ElementsPanel.test.ts [ Failure ]
+
+
+crbug.com/538426484 [ linux ] test/e2e/elements/adopted-stylesheets.test.ts:the_elements_tab:shows_link_to_imported_stylesheet [ Failure Pass ]
+crbug.com/538395855 [ linux ] front_end/panels/application/ReportingApiView.test.ts:reportingapiview:view:updates_report_details [ Failure Pass ]
+crbug.com/538175758 [ linux ] front_end/panels/emulation/DeviceModeView.test.ts:devicemodeview:devicemodeview_tests:renders_the_view [ Failure Pass ]
+crbug.com/538275618 [ linux ] front_end/panels/explain/components/ConsoleInsight.test.ts:consoleinsight:with_logging:renders_the_insight [ Failure Pass ]
+crbug.com/538269887 [ linux ] front_end/panels/explain/components/ConsoleInsight.test.ts:consoleinsight:without_logging:renders_the_insight [ Failure Pass ]
+crbug.com/538206828 [ linux ] front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.test.ts:linearmemoryinspector:renders_the_inspector [ Failure Pass ]
+crbug.com/538332664 [ linux ] front_end/ui/legacy/components/object_ui/ObjectPropertiesSection.test.ts:objectpropertytreeelement:shows_expandable_text_contents_for_lengthy_strings [ Failure Pass ]
+crbug.com/537672763 test/e2e/performance/wasm/performance_profiling.test.ts [ Failure Pass ]
+
+crbug.com/537136541 test/e2e/sources/inline-variable.test.ts:sources_tab:shows_correct_inline_variable_at_definition [ Failure Pass ]

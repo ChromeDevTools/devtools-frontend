@@ -205,10 +205,6 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
   }
 
   async startRecording(options: RecordingOptions): Promise<void> {
-    function disabledByDefault(category: string): string {
-      return 'disabled-by-default-' + category;
-    }
-
     this.client.recordingStatus(i18nString(UIStrings.initializingTracing));
 
     // If we are doing "Reload & record", we first navigate the page to
@@ -220,51 +216,9 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
       await this.#navigateToAboutBlank();
     }
 
-    // The following categories are also used in other tools, but this panel
-    // offers the possibility of turning them off (see below).
-    // 'disabled-by-default-devtools.screenshot'
-    //   └ default: on, option: captureFilmStrip
-    // 'disabled-by-default-devtools.timeline.invalidationTracking'
-    //   └ default: off, experiment: timelineInvalidationTracking
-    // 'disabled-by-default-v8.cpu_profiler'
-    //   └ default: on, option: enableJSSampling
-    const categoriesArray = [
-      Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get() ? '*' : '-*',
-      Trace.Types.Events.Categories.Console,
-      Trace.Types.Events.Categories.Loading,
-      Trace.Types.Events.Categories.UserTiming,
-      'devtools.timeline',
-      disabledByDefault('devtools.target-rundown'),
-      disabledByDefault('devtools.timeline.frame'),
-      disabledByDefault('devtools.timeline.stack'),
-      disabledByDefault('devtools.timeline'),
-      disabledByDefault('devtools.v8-source-rundown-sources'),
-      disabledByDefault('devtools.v8-source-rundown'),
-      disabledByDefault('layout_shift.debug'),
-      // Looking for disabled-by-default-v8.compile? We disabled it: crbug.com/414330508.
-      disabledByDefault('v8.inspector'),
-      disabledByDefault('v8.cpu_profiler.hires'),
-      disabledByDefault('lighthouse'),
-      'v8.execute',
-      'v8',
-      'cppgc',
-      'navigation,rail',
-    ];
-
-    if (options.enableJSSampling) {
-      categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
-    }
-    if (Common.Settings.Settings.instance().moduleSetting('timeline-invalidation-tracking').get() as boolean) {
-      categoriesArray.push(disabledByDefault('devtools.timeline.invalidationTracking'));
-    }
-    if (options.capturePictures) {
-      categoriesArray.push(
-          disabledByDefault('devtools.timeline.layers'), disabledByDefault('devtools.timeline.picture'),
-          disabledByDefault('blink.graphics_context_annotations'));
-    }
+    const categoriesArray = this.#categoriesForRecording(options);
     const screenshotOptions: Tracing.TracingManager.TracingStartOptions = {};
     if (options.captureFilmStrip) {
-      categoriesArray.push(disabledByDefault('devtools.screenshot'));
       if (options.screenshotMaxSize !== undefined) {
         screenshotOptions.screenshotMaxSize = options.screenshotMaxSize;
       }
@@ -272,17 +226,12 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
         screenshotOptions.screenshotMaxCount = options.screenshotMaxCount;
       }
     }
-    if (options.captureSelectorStats) {
-      categoriesArray.push(disabledByDefault('blink.debug'));
-      // enable invalidation nodes
-      categoriesArray.push(disabledByDefault('devtools.timeline.invalidationTracking'));
-    }
 
     await LiveMetrics.LiveMetrics.instance().disable();
 
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this.#onFrameNavigated,
-        this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel,
+                                                                SDK.ResourceTreeModel.Events.FrameNavigated,
+                                                                this.#onFrameNavigated, this);
 
     this.#navigationUrls = [];
     this.#fieldData = null;
@@ -311,9 +260,8 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
 
     const loadEvent = this.#navigateWithSDK(options.navigateToUrl);
     this.#statusChecker.add(i18nString(UIStrings.waitingForLoadEvent), loadEvent);
-    this.#statusChecker.add(
-        i18nString(UIStrings.waitingForLoadEventPlus5Seconds),
-        loadEvent.then(() => new Promise(resolve => setTimeout(resolve, 5000))));
+    this.#statusChecker.add(i18nString(UIStrings.waitingForLoadEventPlus5Seconds),
+                            loadEvent.then(() => new Promise(resolve => setTimeout(resolve, 5000))));
 
     this.#statusChecker.setListener(status => {
       if (status === null) {
@@ -352,9 +300,9 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
       this.tracingManager.stop();
     }
 
-    SDK.TargetManager.TargetManager.instance().removeModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this.#onFrameNavigated,
-        this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel,
+                                                                   SDK.ResourceTreeModel.Events.FrameNavigated,
+                                                                   this.#onFrameNavigated, this);
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.#onLoadEventFired, this);
 
@@ -475,6 +423,30 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
   eventsRetrievalProgress(progress: number): void {
     this.client.loadingProgress(progress);
   }
+
+  #categoriesForRecording(options: RecordingOptions): string[] {
+    const categoriesArray = [
+      Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get() ? '*' : '-*',
+      ...Trace.Types.Events.DefaultCategories,
+    ];
+
+    if (options.enableJSSampling) {
+      categoriesArray.push(...Trace.Types.Events.OptionalCategories.JsSampling);
+    }
+    if (Common.Settings.Settings.instance().moduleSetting('timeline-invalidation-tracking').get() as boolean) {
+      categoriesArray.push(...Trace.Types.Events.OptionalCategories.InvalidationTracking);
+    }
+    if (options.capturePictures) {
+      categoriesArray.push(...Trace.Types.Events.OptionalCategories.AdvancedPaint);
+    }
+    if (options.captureFilmStrip) {
+      categoriesArray.push(...Trace.Types.Events.OptionalCategories.Screenshot);
+    }
+    if (options.captureSelectorStats) {
+      categoriesArray.push(...Trace.Types.Events.OptionalCategories.CssSelectorStats);
+    }
+    return categoriesArray;
+  }
 }
 
 export interface Client {
@@ -483,9 +455,9 @@ export interface Client {
   loadingStarted(): void;
   processingStarted(): void;
   loadingProgress(progress?: number): void;
-  loadingComplete(
-      collectedEvents: Trace.Types.Events.Event[], exclusiveFilter: Trace.Extras.TraceFilter.TraceFilter|null,
-      metadata: Trace.Types.File.MetaData|null): Promise<void>;
+  loadingComplete(collectedEvents: Trace.Types.Events.Event[],
+                  exclusiveFilter: Trace.Extras.TraceFilter.TraceFilter|null,
+                  metadata: Trace.Types.File.MetaData|null): Promise<void>;
   loadingCompleteForTest(): void;
 }
 export interface RecordingOptions {

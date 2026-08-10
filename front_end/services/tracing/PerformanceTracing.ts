@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as SDK from '../../core/sdk/sdk.js';
+import * as Trace from '../../models/trace/trace.js';
 
 import {TracingManager, type TracingManagerClient} from './TracingManager.js';
 
@@ -24,26 +25,13 @@ export class PerformanceTracing implements TracingManagerClient {
     }
 
     // This panel may be opened with trace data recorded in other tools.
-    // Keep in sync with the categories arrays in:
-    // https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/panels/timeline/TimelineController.ts
-    // https://github.com/GoogleChrome/lighthouse/blob/master/lighthouse-core/gather/gatherers/trace.js
     const categories = [
       '-*',
-      'blink.console',
-      'blink.user_timing',
-      'devtools.timeline',
-      'disabled-by-default-devtools.screenshot',
-      'disabled-by-default-devtools.timeline',
-      'disabled-by-default-devtools.timeline.invalidationTracking',
-      'disabled-by-default-devtools.timeline.frame',
-      'disabled-by-default-devtools.timeline.stack',
-      'disabled-by-default-v8.cpu_profiler',
-      'disabled-by-default-v8.cpu_profiler.hires',
+      ...Trace.Types.Events.DefaultCategories,
+      ...Trace.Types.Events.OptionalCategories.JsSampling,
+      ...Trace.Types.Events.OptionalCategories.Screenshot,
+      ...Trace.Types.Events.OptionalCategories.InvalidationTracking,
       'latencyInfo',
-      'loading',
-      'disabled-by-default-lighthouse',
-      'v8.execute',
-      'v8',
     ].join(',');
 
     const started = await this.#tracingManager.start(this, categories);

@@ -3277,6 +3277,42 @@ export const Categories = {
   Loading: 'loading',
 } as const;
 
+export const DefaultCategories = [
+  'blink.console',
+  'blink.user_timing',
+  'loading',
+  'devtools.timeline',
+  'disabled-by-default-devtools.target-rundown',
+  'disabled-by-default-devtools.timeline.frame',
+  'disabled-by-default-devtools.timeline.stack',
+  'disabled-by-default-devtools.timeline',
+  'disabled-by-default-devtools.v8-source-rundown-sources',
+  'disabled-by-default-devtools.v8-source-rundown',
+  'disabled-by-default-layout_shift.debug',
+  'disabled-by-default-v8.inspector',
+  'disabled-by-default-v8.cpu_profiler.hires',
+  'disabled-by-default-lighthouse',
+  'v8.execute',
+  'v8',
+  'cppgc',
+  'navigation,rail',
+] as const;
+
+export const OptionalCategories = {
+  JsSampling: ['disabled-by-default-v8.cpu_profiler'],
+  InvalidationTracking: ['disabled-by-default-devtools.timeline.invalidationTracking'],
+  AdvancedPaint: [
+    'disabled-by-default-devtools.timeline.layers',
+    'disabled-by-default-devtools.timeline.picture',
+    'disabled-by-default-blink.graphics_context_annotations',
+  ],
+  Screenshot: ['disabled-by-default-devtools.screenshot'],
+  CssSelectorStats: [
+    'disabled-by-default-blink.debug',
+    'disabled-by-default-devtools.timeline.invalidationTracking',
+  ],
+} as const;
+
 /**
  * The frames implementation in handlers/FramesHandler is considered "legacy"
  * in that it is based on the old TimelineModel implementation rather than

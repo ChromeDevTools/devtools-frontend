@@ -1779,7 +1779,7 @@
     "message": "{PH1} latency, {PH2} download ({PH3} total)"
   },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
-    "message": "Blob could not be loaded."
+    "message": "Blob couldn’t be loaded"
   },
   "models/persistence/IsolatedFileSystem.ts | cantReadFileSS": {
     "message": "Can’t read file: {PH1}: {PH2}"
@@ -1788,7 +1788,7 @@
     "message": "Overrides: Failed to create directory {PH1}. Are the workspace or overrides configured correctly?"
   },
   "models/persistence/IsolatedFileSystem.ts | createDirFailedBecausePathIsFile": {
-    "message": "Overrides: Failed to create directory {PH1} because the path exists and is a file."
+    "message": "Overrides: Failed to create directory {PH1} because the path exists and is a file"
   },
   "models/persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
     "message": "File system error: {PH1}"
@@ -1797,7 +1797,7 @@
     "message": "Linked to {PH1}"
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
-    "message": "Unable to add filesystem: {PH1}"
+    "message": "Can’t add file system: {PH1}"
   },
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Disable override network requests"
@@ -1824,7 +1824,7 @@
     "message": "rewrite"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
-    "message": "PlatformFileSystem cannot read files."
+    "message": "PlatformFileSystem can’t read files"
   },
   "models/trace/insights/Cache.ts | cacheTTL": {
     "message": "Cache TTL"

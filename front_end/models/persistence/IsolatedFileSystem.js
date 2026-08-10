@@ -11,14 +11,14 @@ import { Events } from './IsolatedFileSystemManager.js';
 import { PlatformFileSystem, PlatformFileSystemType } from './PlatformFileSystem.js';
 const UIStrings = {
     /**
-     * @description Text in Isolated File System of the Workspace settings in Settings
+     * @description Text in isolated file system of workspace settings in Settings.
      * @example {folder does not exist} PH1
      */
     fileSystemErrorS: 'File system error: {PH1}',
     /**
-     * @description Error message when reading a remote blob
+     * @description Error message when reading a remote blob.
      */
-    blobCouldNotBeLoaded: 'Blob could not be loaded.',
+    blobCouldNotBeLoaded: 'Blob couldn’t be loaded',
     /**
      * @description Error message when reading a file.
      * @example {c:\dir\file.js} PH1
@@ -26,17 +26,17 @@ const UIStrings = {
      */
     cantReadFileSS: 'Can’t read file: {PH1}: {PH2}',
     /**
-     * @description Text to show something is linked to another
+     * @description Text to show something is linked to another.
      * @example {example.url} PH1
      */
     linkedToS: 'Linked to {PH1}',
     /**
-     * @description Error message shown when devtools failed to create a file system directory.
+     * @description Error message shown when DevTools failed to create a file system directory.
      * @example {path/} PH1
      */
-    createDirFailedBecausePathIsFile: 'Overrides: Failed to create directory {PH1} because the path exists and is a file.',
+    createDirFailedBecausePathIsFile: 'Overrides: Failed to create directory {PH1} because the path exists and is a file',
     /**
-     * @description Error message shown when devtools failed to create a file system directory.
+     * @description Error message shown when DevTools failed to create a file system directory.
      * @example {path/} PH1
      */
     createDirFailed: 'Overrides: Failed to create directory {PH1}. Are the workspace or overrides configured correctly?',

@@ -65,7 +65,7 @@ var UIStrings = {
   /**
    * @description Assertion error message when failing to load a file.
    */
-  unableToReadFilesWithThis: "`PlatformFileSystem` cannot read files."
+  unableToReadFilesWithThis: "`PlatformFileSystem` can\u2019t read files"
 };
 var str_ = i18n.i18n.registerUIStrings("models/persistence/PlatformFileSystem.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -169,14 +169,14 @@ var PlatformFileSystem = class extends Common.ObjectWrapper.ObjectWrapper {
 var _a;
 var UIStrings2 = {
   /**
-   * @description Text in Isolated File System of the Workspace settings in Settings
+   * @description Text in isolated file system of workspace settings in Settings.
    * @example {folder does not exist} PH1
    */
   fileSystemErrorS: "File system error: {PH1}",
   /**
-   * @description Error message when reading a remote blob
+   * @description Error message when reading a remote blob.
    */
-  blobCouldNotBeLoaded: "Blob could not be loaded.",
+  blobCouldNotBeLoaded: "Blob couldn\u2019t be loaded",
   /**
    * @description Error message when reading a file.
    * @example {c:\dir\file.js} PH1
@@ -184,17 +184,17 @@ var UIStrings2 = {
    */
   cantReadFileSS: "Can\u2019t read file: {PH1}: {PH2}",
   /**
-   * @description Text to show something is linked to another
+   * @description Text to show something is linked to another.
    * @example {example.url} PH1
    */
   linkedToS: "Linked to {PH1}",
   /**
-   * @description Error message shown when devtools failed to create a file system directory.
+   * @description Error message shown when DevTools failed to create a file system directory.
    * @example {path/} PH1
    */
-  createDirFailedBecausePathIsFile: "Overrides: Failed to create directory {PH1} because the path exists and is a file.",
+  createDirFailedBecausePathIsFile: "Overrides: Failed to create directory {PH1} because the path exists and is a file",
   /**
-   * @description Error message shown when devtools failed to create a file system directory.
+   * @description Error message shown when DevTools failed to create a file system directory.
    * @example {path/} PH1
    */
   createDirFailed: "Overrides: Failed to create directory {PH1}. Are the workspace or overrides configured correctly?"
@@ -711,10 +711,10 @@ var BinaryExtensions = /* @__PURE__ */ new Set([
 // gen/front_end/models/persistence/IsolatedFileSystemManager.js
 var UIStrings3 = {
   /**
-   * @description Text in Isolated File System Manager of the Workspace settings in Settings
+   * @description Text in isolated file system manager of workspace settings in Settings.
    * @example {folder does not exist} PH1
    */
-  unableToAddFilesystemS: "Unable to add filesystem: {PH1}"
+  unableToAddFilesystemS: "Can\u2019t add file system: {PH1}"
 };
 var str_3 = i18n5.i18n.registerUIStrings("models/persistence/IsolatedFileSystemManager.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);

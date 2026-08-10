@@ -6,7 +6,7 @@ import * as Mocha from 'mocha';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-import {generateExactTestId} from '../../front_end/testing/TestIdGeneration.js';
+import {formatFailedTestsSummary, generateExactTestId} from '../../front_end/testing/TestIdGeneration.js';
 import * as DiffUtils from '../conductor/diff-utils.js';
 import {GEN_DIR} from '../conductor/paths.js';
 import * as ResultsDb from '../conductor/resultsdb.js';
@@ -53,6 +53,7 @@ class ResultsDbReporter extends Mocha.reporters.Base {
   private n = 0;
   private expectedFailuresCount = 0;
   private unexpectedPassesCount = 0;
+  private failedTestIds = new Set<string>();
   htmlResult: fs.WriteStream|undefined;
 
   localResultsPath() {
@@ -82,6 +83,7 @@ class ResultsDbReporter extends Mocha.reporters.Base {
 
   private onTestPass(test: Mocha.Test) {
     const {exactTestId} = generateExactTestId(GEN_DIR, test.file!, test.titlePath());
+    this.failedTestIds.delete(exactTestId);
     const isExpected = isExpectedResult({exactTestId, success: true, skipped: false});
     if (!isExpected) {
       this.unexpectedPassesCount++;
@@ -119,6 +121,8 @@ class ResultsDbReporter extends Mocha.reporters.Base {
     if (isExpected) {
       this.expectedFailuresCount++;
       process.stdout.write(`\n[TestExpectations] Expected failure: ${exactTestId}\n`);
+    } else {
+      this.failedTestIds.add(exactTestId);
     }
 
     if (!TestConfig.isAiAgent) {
@@ -193,6 +197,11 @@ class ResultsDbReporter extends Mocha.reporters.Base {
 
   override epilogue() {
     super.epilogue();
+
+    const summary = formatFailedTestsSummary(this.failedTestIds);
+    if (summary) {
+      process.stdout.write(summary);
+    }
 
     const unexpectedFailures = this.failures.length - this.expectedFailuresCount;
     if (this.failures.length > 0 && unexpectedFailures === 0) {

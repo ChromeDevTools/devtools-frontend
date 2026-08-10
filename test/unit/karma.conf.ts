@@ -9,7 +9,7 @@ import * as path from 'node:path';
 import type {Page, ScreenshotOptions, Target} from 'puppeteer-core';
 import puppeteer from 'puppeteer-core';
 
-import {generateExactTestId} from '../../front_end/testing/TestIdGeneration.js';
+import {formatFailedTestsSummary, generateExactTestId} from '../../front_end/testing/TestIdGeneration.js';
 import {resultAssertionsDiff} from '../../test/conductor/diff-utils.js';
 import {formatAsPatch, ResultsDBReporter} from '../../test/conductor/karma-resultsdb-reporter.js';
 import {CHECKOUT_ROOT, GEN_DIR, SOURCE_ROOT, TEST_ID_REGEX} from '../../test/conductor/paths.js';
@@ -40,6 +40,7 @@ function* reporters() {
   if (TestConfig.coverage) {
     yield 'coverage';
   }
+  yield 'failure-summary';
 }
 
 interface LogEntry {
@@ -431,6 +432,43 @@ const BrowserArtifactReporter = function(this: any, baseReporterDecorator: any) 
 };
 BrowserArtifactReporter.$inject = ['baseReporterDecorator'];
 
+const FailureSummaryReporter = function(this: any, baseReporterDecorator: any) {
+  baseReporterDecorator(this);
+
+  const failedTestIds = new Set<string>();
+
+  this.specFailure = function(_browser: any, result: any) {
+    const file = result.mocha?.file;
+    if (!file) {
+      return;
+    }
+    const suite = result.suite || [];
+    const description = result.description;
+    const {exactTestId} = generateExactTestId(GEN_DIR, file, [...suite, description]);
+    const isExpected = isExpectedResult({exactTestId, success: false, skipped: false});
+    if (!isExpected) {
+      failedTestIds.add(exactTestId);
+    }
+  };
+
+  this.specSuccess = function(_browser: any, result: any) {
+    const file = result.mocha?.file;
+    if (!file) {
+      return;
+    }
+    const {exactTestId} = generateExactTestId(GEN_DIR, file, [...(result.suite || []), result.description]);
+    failedTestIds.delete(exactTestId);
+  };
+
+  this.onRunComplete = function(_browsers: any, _results: any) {
+    const summary = formatFailedTestsSummary(failedTestIds);
+    if (summary) {
+      this.write(summary);
+    }
+  };
+};
+FailureSummaryReporter.$inject = ['baseReporterDecorator'];
+
 const coveragePreprocessors = TestConfig.coverage ? {
   [path.join(GEN_DIR, 'front_end/!(third_party)/**/!(*.test).{js,mjs}')]: ['coverage'],
   [path.join(GEN_DIR, 'inspector_overlay/**/*.{js,mjs}')]: ['coverage'],
@@ -545,6 +583,7 @@ module.exports = function(config: any) {
       {'reporter:screenshots': ['type', ScreenshotErrorReporter]},
       {'reporter:progress-diff': ['type', ProgressWithDiffReporter]},
       {'reporter:test-expectations': ['type', TestExpectationsReporter]},
+      {'reporter:failure-summary': ['type', FailureSummaryReporter]},
       {'middleware:snapshotTester': ['factory', snapshotTesterFactory]},
     ],
 

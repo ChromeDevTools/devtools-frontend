@@ -543,12 +543,12 @@ function createPerformanceTraceContext(focus: AiAssistanceModel.AIContext.AgentF
   return new AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext(focus);
 }
 
-function createStorageContext(item: AiAssistanceModel.StorageItem.StorageItem|null):
-    AiAssistanceModel.StorageAgent.StorageContext|null {
+function createStorageContext(item: AiAssistanceModel.StorageItem.StorageItem|
+                              null): AiAssistanceModel.StorageContext.StorageContext|null {
   if (!item) {
     return null;
   }
-  return new AiAssistanceModel.StorageAgent.StorageContext(item);
+  return new AiAssistanceModel.StorageContext.StorageContext(item);
 }
 
 /**
@@ -606,7 +606,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #selectedRequest: AiAssistanceModel.RequestContext.RequestContext|null = null;
 
   #selectedAccessibility: AiAssistanceModel.AccessibilityContext.AccessibilityContext|null = null;
-  #selectedStorage: AiAssistanceModel.StorageAgent.StorageContext|null = null;
+  #selectedStorage: AiAssistanceModel.StorageContext.StorageContext|null = null;
 
   // Messages displayed in the `ChatView` component.
 
@@ -1640,7 +1640,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     } else if (data instanceof AiAssistanceModel.AccessibilityContext.AccessibilityContext) {
       this.#selectedAccessibility = data;
-    } else if (data instanceof AiAssistanceModel.StorageAgent.StorageContext) {
+    } else if (data instanceof AiAssistanceModel.StorageContext.StorageContext) {
       this.#selectedStorage = data;
     }
 

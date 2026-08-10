@@ -14,8 +14,7 @@ import {
   type AgentOptions,
   AiAgent,
   type ContextResponse,
-  ConversationContext,
-  type ConversationSuggestions,
+  type ConversationContext,
   type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
@@ -68,7 +67,7 @@ function isSamePrimaryPageOrigin(targetManager: SDK.TargetManager.TargetManager,
   return isSamePageOrigin(primaryPageTarget, context);
 }
 
-export function isSamePageOrigin(target: SDK.Target.Target|null, context?: ConversationContext<StorageItem>): boolean {
+export function isSamePageOrigin(target: SDK.Target.Target|null, context?: ConversationContext<unknown>): boolean {
   if (!target || !context) {
     return false;
   }
@@ -83,84 +82,6 @@ function resolveTargetOrigins(context?: ConversationContext<StorageItem>, origin
   const rawList = (origins && origins.length > 0) ? origins : (primaryOrigin ? [primaryOrigin] : []);
   const uniqueOrigins = Array.from(new Set(rawList));
   return uniqueOrigins.slice(0, MAX_TARGET_ORIGINS);
-}
-
-export class StorageContext extends ConversationContext<StorageItem> {
-  #item: StorageItem;
-
-  constructor(item: StorageItem) {
-    super();
-    this.#item = item;
-  }
-
-  override getURL(): string {
-    return this.#item.primaryTargetOrigin;
-  }
-
-  override getItem(): StorageItem {
-    return this.#item;
-  }
-
-  override getTitle(): string {
-    if (this.#item instanceof CookieItem) {
-      if (this.#item.name) {
-        return `cookie: ${this.#item.name}${this.#item.origin ? ` ${this.#item.origin}` : ''}`;
-      }
-      return `cookies${this.#item.isGenericContext ? '' : `: ${this.#item.origin}`}`;
-    }
-    if (this.#item instanceof DOMStorageItem) {
-      if (this.#item.key) {
-        return `entry: ${this.#item.key}${this.#item.origin ? ` ${this.#item.origin}` : ''}`;
-      }
-      const prefix = this.#item.type === 'localStorage' ? 'local storage' : 'session storage';
-      return `${prefix}${this.#item.isGenericContext ? '' : `: ${this.#item.origin}`}`;
-    }
-    return `Storage: ${this.getOrigin()}`;
-  }
-
-  override async getSuggestions(): Promise<ConversationSuggestions|undefined> {
-    if (this.#item instanceof CookieItem) {
-      if (this.#item.name) {
-        return [
-          {
-            title: 'Why is this cookie set?',
-            jslogContext: 'storage-cookie',
-          },
-          {
-            title: 'Explain the value of this cookie',
-            jslogContext: 'storage-cookie',
-          },
-        ];
-      }
-      return [
-        {
-          title: 'Explain the cookies set by this page',
-          jslogContext: 'storage-cookie',
-        },
-      ];
-    }
-    if (this.#item instanceof DOMStorageItem) {
-      if (this.#item.key) {
-        return [
-          {
-            title: 'What is the purpose of this storage entry?',
-            jslogContext: 'storage-domstorage',
-          },
-          {
-            title: 'Explain the value of this storage entry',
-            jslogContext: 'storage-domstorage',
-          },
-        ];
-      }
-      return [
-        {
-          title: 'Explain these storage items',
-          jslogContext: 'storage-domstorage',
-        },
-      ];
-    }
-    return undefined;
-  }
 }
 
 // Maximum character length of values allowed.
@@ -281,7 +202,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
       },
 
       handler: async args => {
-        this.disableServerSideLogging();
+        this.setServerSideLoggingActive(false);
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -367,7 +288,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
       },
 
       handler: async (args, options) => {
-        this.disableServerSideLogging();
+        this.setServerSideLoggingActive(false);
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -467,7 +388,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
         };
       },
       handler: async args => {
-        this.disableServerSideLogging();
+        this.setServerSideLoggingActive(false);
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -527,7 +448,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
         };
       },
       handler: async (args, options) => {
-        this.disableServerSideLogging();
+        this.setServerSideLoggingActive(false);
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -684,9 +605,9 @@ export class StorageAgent extends AiAgent<StorageItem> {
   protected override async preRun(): Promise<void> {
     const item = this.context?.getItem();
     if (item instanceof CookieItem && Boolean(item.name)) {
-      this.disableServerSideLogging();
+      this.setServerSideLoggingActive(false);
     } else if (item instanceof DOMStorageItem && Boolean(item.key)) {
-      this.disableServerSideLogging();
+      this.setServerSideLoggingActive(false);
     }
   }
 

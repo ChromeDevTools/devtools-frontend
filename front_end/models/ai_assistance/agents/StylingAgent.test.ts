@@ -118,7 +118,7 @@ describeWithEnvironment('StylingAgent', function() {
         aidaClient: mockAidaClient([[{
           explanation: 'answer',
         }]]),
-        serverSideLoggingEnabled: true,
+        serverSideLoggingAllowed: true,
       });
       await Array.fromAsync(agent.run('question', {selected: null}));
 

@@ -109,7 +109,7 @@ describe('PerformanceAgent', function() {
       sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
       const agent = new PerformanceAgent.PerformanceAgent({
         aidaClient: mockAidaClient([[{explanation: 'answer'}]]),
-        serverSideLoggingEnabled: true,
+        serverSideLoggingAllowed: true,
       });
 
       await Array.fromAsync(agent.run('question', {selected: null}));

@@ -22,6 +22,7 @@ import * as DOMNodeContext from './contexts/DOMNodeContext.js';
 import * as FileContext from './contexts/FileContext.js';
 import * as PerformanceTraceContext from './contexts/PerformanceTraceContext.js';
 import * as RequestContext from './contexts/RequestContext.js';
+import * as StorageContext from './contexts/StorageContext.js';
 import * as ConversationSummary from './ConversationSummary.js';
 import * as FileFormatter from './data_formatters/FileFormatter.js';
 import * as LighthouseFormatter from './data_formatters/LighthouseFormatter.js';
@@ -44,6 +45,7 @@ import * as GetLighthouseAudits from './tools/GetLighthouseAudits.js';
 import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
 import * as GetStyles from './tools/GetStyles.js';
 import * as ListNetworkRequests from './tools/ListNetworkRequests.js';
+import * as ListPageOrigins from './tools/ListPageOrigins.js';
 import * as RecordPerformanceTrace from './tools/RecordPerformanceTrace.js';
 import * as ResolveDevtoolsNodePath from './tools/ResolveDevtoolsNodePath.js';
 import * as Tool from './tools/Tool.js';
@@ -81,6 +83,7 @@ export {
   Injected,
   LighthouseFormatter,
   ListNetworkRequests,
+  ListPageOrigins,
   NetworkAgent,
   NetworkRequestFormatter,
   PerformanceAgent,
@@ -92,6 +95,7 @@ export {
   RequestContext,
   ResolveDevtoolsNodePath,
   StorageAgent,
+  StorageContext,
   StorageItem,
   StylingAgent,
   Tool,

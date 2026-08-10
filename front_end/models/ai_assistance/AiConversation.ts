@@ -27,7 +27,7 @@ import {ContextSelectionAgent} from './agents/ContextSelectionAgent.js';
 import {FileAgent} from './agents/FileAgent.js';
 import {NetworkAgent} from './agents/NetworkAgent.js';
 import {PerformanceAgent} from './agents/PerformanceAgent.js';
-import {StorageAgent, StorageContext} from './agents/StorageAgent.js';
+import {StorageAgent} from './agents/StorageAgent.js';
 import {StylingAgent} from './agents/StylingAgent.js';
 import {AiAgent2} from './AiAgent2.js';
 import {AiHistoryStorage, ConversationType, type SerializedConversation} from './AiHistoryStorage.js';
@@ -37,6 +37,9 @@ import {DOMNodeContext} from './contexts/DOMNodeContext.js';
 import {FileContext} from './contexts/FileContext.js';
 import {PerformanceTraceContext} from './contexts/PerformanceTraceContext.js';
 import {RequestContext} from './contexts/RequestContext.js';
+import {StorageContext} from './contexts/StorageContext.js';
+import {ToolAnnotation} from './tools/Tool.js';
+import {ToolRegistry} from './tools/ToolRegistry.js';
 
 export const NOT_FOUND_IMAGE_DATA = '';
 export const CONTEXT_TITLE = 'Analyzing data';
@@ -324,9 +327,17 @@ export class AiConversation {
                        case ResponseType.SIDE_EFFECT: {
                          return {...item, confirm: undefined};
                        }
-                       case ResponseType.CONTEXT:
-                       case ResponseType.ACTION: {
+                       case ResponseType.CONTEXT: {
                          return {...item, widgets: undefined};
+                       }
+                       case ResponseType.ACTION: {
+                         const tool = item.toolName ? ToolRegistry.get(item.toolName) : undefined;
+                         const shouldRedact = tool?.annotations?.includes(ToolAnnotation.REDACT_FROM_HISTORY);
+                         return {
+                           ...item,
+                           output: shouldRedact ? '<redacted>' : item.output,
+                           widgets: undefined,
+                         };
                        }
                        default:
                          return item;
@@ -361,7 +372,7 @@ export class AiConversation {
 
     const options = {
       aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+      serverSideLoggingAllowed: isAiAssistanceServerSideLoggingAllowed(),
       sessionId: this.id,
       changeManager: this.#changeManager,
       performanceRecordAndReload: this.#performanceRecordAndReload,
@@ -540,7 +551,13 @@ export class AiConversation {
   };
 }
 
-function isAiAssistanceServerSideLoggingEnabled(): boolean {
+/**
+ * Checks whether server-side logging is allowed by the global system policy.
+ * Note that even if this returns true, individual agents can still dynamically
+ * deactivate/activate logging during their execution (e.g., when handling
+ * sensitive tools).
+ */
+function isAiAssistanceServerSideLoggingAllowed(): boolean {
   return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 

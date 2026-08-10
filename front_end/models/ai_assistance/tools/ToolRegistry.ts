@@ -8,6 +8,7 @@ import {GetLighthouseAuditsTool} from './GetLighthouseAudits.js';
 import {GetNetworkRequestDetailsTool} from './GetNetworkRequestDetails.js';
 import {GetStylesTool} from './GetStyles.js';
 import {ListNetworkRequestsTool} from './ListNetworkRequests.js';
+import {ListPageOriginsTool} from './ListPageOrigins.js';
 import {RecordPerformanceTraceTool} from './RecordPerformanceTrace.js';
 import {ResolveDevtoolsNodePathTool} from './ResolveDevtoolsNodePath.js';
 import {type AllToolsCapabilities, type Tool, type ToolArgs, ToolName} from './Tool.js';
@@ -29,6 +30,7 @@ export const TOOLS = {
   [ToolName.RESOLVE_DEVTOOLS_NODE_PATH]: new ResolveDevtoolsNodePathTool(),
   [ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS]: new GetElementAccessibilityDetailsTool(),
   [ToolName.RECORD_PERFORMANCE_TRACE]: new RecordPerformanceTraceTool(),
+  [ToolName.LIST_PAGE_ORIGINS]: new ListPageOriginsTool(),
 };
 
 /**

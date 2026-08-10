@@ -40,7 +40,8 @@ function mockSkills(agent: AiAssistance.AiAgent2.AiAgent2, skills: Partial<Recor
 
 describeWithEnvironment('AiAgent2', () => {
   it('registers all expected skills', () => {
-    assert.deepEqual(Object.keys(SKILLS).sort(), ['styling', 'network', 'accessibility', 'performance'].sort());
+    assert.deepEqual(Object.keys(SKILLS).sort(),
+                     ['styling', 'network', 'accessibility', 'performance', 'storage'].sort());
   });
 
   it('accepts changeManager in options and passes it to tools', async () => {

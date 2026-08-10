@@ -493,6 +493,45 @@ describe('AiConversation', () => {
     assert.isUndefined((serialized.history[2] as AiAssistance.AiAgent.ActionResponse).widgets);
   });
 
+  it('redacts action outputs of tools annotated with REDACT_FROM_HISTORY', () => {
+    const conversation =
+        new AiAssistance.AiConversation.AiConversation({type: AiAssistance.AiHistoryStorage.ConversationType.STYLING});
+
+    const dummyTool = {
+      name: 'dummyTool' as AiAssistance.Tool.ToolName,
+      annotations: [AiAssistance.Tool.ToolAnnotation.REDACT_FROM_HISTORY],
+    } as unknown as AiAssistance.Tool.Tool;
+    sinon.stub(AiAssistance.ToolRegistry.ToolRegistry, 'get').withArgs('dummyTool').returns(dummyTool);
+
+    const actionResponseWithRedaction: AiAssistance.AiAgent.ActionResponse = {
+      type: AiAssistance.AiAgent.ResponseType.ACTION,
+      code: 'code',
+      output: 'secret storage value',
+      canceled: false,
+      toolName: 'dummyTool',
+    };
+
+    const actionResponseWithoutRedaction: AiAssistance.AiAgent.ActionResponse = {
+      type: AiAssistance.AiAgent.ResponseType.ACTION,
+      code: 'code',
+      output: 'normal output',
+      canceled: false,
+      toolName: 'otherTool',
+    };
+
+    conversation.history.push(actionResponseWithRedaction, actionResponseWithoutRedaction);
+
+    const serialized = conversation.serialize();
+
+    assert.lengthOf(serialized.history, 2);
+
+    assert.strictEqual(serialized.history[0].type, AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.strictEqual((serialized.history[0] as AiAssistance.AiAgent.ActionResponse).output, '<redacted>');
+
+    assert.strictEqual(serialized.history[1].type, AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.strictEqual((serialized.history[1] as AiAssistance.AiAgent.ActionResponse).output, 'normal output');
+  });
+
   async function testNavigationDuringRun({
     navigationUrl,
     expectBlocked,

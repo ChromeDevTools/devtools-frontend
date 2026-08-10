@@ -140,7 +140,7 @@ export interface PerformanceRecordingCapability {
  * Used by the agent to pass a complete context to any tool type-safely.
  */
 export type AllToolsCapabilities = BaseToolCapability&PageExecutionCapability&StyleMutationCapability&TargetCapability&
-    OriginLockCapability&LighthouseCapability&PerformanceRecordingCapability;
+    OriginLockCapability&LighthouseCapability&PerformanceRecordingCapability&ServerLoggingCapability;
 
 /**
  * Base argument type for AI Tools.
@@ -156,6 +156,7 @@ export const enum ToolName {
   RESOLVE_DEVTOOLS_NODE_PATH = 'resolveDevtoolsNodePath',
   GET_ELEMENT_ACCESSIBILITY_DETAILS = 'getElementAccessibilityDetails',
   RECORD_PERFORMANCE_TRACE = 'recordPerformanceTrace',
+  LIST_PAGE_ORIGINS = 'listPageOrigins',
 }
 
 /**
@@ -180,6 +181,7 @@ export interface BaseTool<ArgsType extends ToolArgs = ToolArgs> {
       ) => {
     title?: string, thought?: string, action?: string, suggestions?: [string, ...string[]],
   };
+  readonly annotations?: ToolAnnotation[];
 }
 
 /**
@@ -242,3 +244,11 @@ export type Tool<
     ReturnType = unknown,
     CapabilitiesType extends BaseToolCapability = BaseToolCapability,
     > = DataTool<ArgsType, ReturnType, CapabilitiesType>|ContextTool<ArgsType, ReturnType, CapabilitiesType>;
+
+export interface ServerLoggingCapability {
+  setLoggingEnabled(enabled: boolean): void;
+}
+
+export const enum ToolAnnotation {
+  REDACT_FROM_HISTORY = 'redact-from-history',
+}

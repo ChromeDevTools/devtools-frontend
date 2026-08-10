@@ -32,7 +32,7 @@ import {
   FileContext,
   PerformanceTraceContext,
   RequestContext,
-  StorageAgent,
+  StorageContext,
   StorageItem,
 } from '../ai_assistance.js';
 
@@ -80,7 +80,7 @@ describe('ContextSelectionAgent', function() {
       sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
       const agent = new ContextSelectionAgent.ContextSelectionAgent({
         aidaClient: mockAidaClient([[{explanation: 'answer'}]]),
-        serverSideLoggingEnabled: true,
+        serverSideLoggingAllowed: true,
       });
       await Array.fromAsync(agent.run('question', {selected: null}));
 
@@ -994,6 +994,7 @@ describe('ContextSelectionAgent', function() {
         type: AiAgent.ResponseType.ACTION,
         code: 'listSourceFiles()',
         output: '[{"file":"script.js","id":1}]',
+        toolName: 'listSourceFiles',
         widgets: [{
           name: 'SOURCE_FILES_LIST',
           data: {
@@ -1060,6 +1061,7 @@ describe('ContextSelectionAgent', function() {
         type: AiAgent.ResponseType.ACTION,
         code: 'listSourceFiles()',
         output: '[{"file":"script.js","id":1}]',
+        toolName: 'listSourceFiles',
         widgets: [{
           name: 'SOURCE_FILES_LIST',
           data: {
@@ -1116,8 +1118,8 @@ describe('ContextSelectionAgent', function() {
 
       const contextChange = responses.find(response => response.type === AiAgent.ResponseType.CONTEXT_CHANGE);
       assert.exists(contextChange);
-      assert.instanceOf(contextChange.context, StorageAgent.StorageContext);
-      const storageContext = contextChange.context as StorageAgent.StorageContext;
+      assert.instanceOf(contextChange.context, StorageContext.StorageContext);
+      const storageContext = contextChange.context as StorageContext.StorageContext;
       assert.strictEqual(storageContext.getItem().constructor, StorageItem.StorageItem);
       assert.strictEqual(storageContext.getItem().origin, 'https://example.com');
       assert.strictEqual(storageContext.getItem().primaryTargetOrigin, 'https://example.com');

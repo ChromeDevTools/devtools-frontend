@@ -17,6 +17,7 @@ action_foreach("generate_skills") {
     "accessibility.md",
     "network.md",
     "performance.md",
+    "storage.md",
     "styling.md",
   ]
 

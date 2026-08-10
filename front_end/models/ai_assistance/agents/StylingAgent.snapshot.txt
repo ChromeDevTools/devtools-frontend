@@ -365,7 +365,8 @@ Content:
     "type": "action",
     "code": "console.log('hello');",
     "output": "hello",
-    "canceled": false
+    "canceled": false,
+    "toolName": "executeJavaScript"
   },
   {
     "type": "querying"

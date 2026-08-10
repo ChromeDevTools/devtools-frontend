@@ -6,6 +6,7 @@ import {skill as accessibilitySkill} from './accessibility.skill.js';
 import {skill as networkSkill} from './network.skill.js';
 import {skill as performanceSkill} from './performance.skill.js';
 import type {Skill, SkillName} from './Skill.js';
+import {skill as storageSkill} from './storage.skill.js';
 import {skill as stylingSkill} from './styling.skill.js';
 
 export const SKILLS: Record<SkillName, Skill> = {
@@ -13,4 +14,5 @@ export const SKILLS: Record<SkillName, Skill> = {
   network: networkSkill,
   accessibility: accessibilitySkill,
   performance: performanceSkill,
+  storage: storageSkill,
 };

@@ -30,6 +30,7 @@ const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
   network: 'Network requests',
   accessibility: 'Accessibility',
   performance: 'Performance',
+  storage: 'Storage',
 };
 
 const preamble = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
@@ -79,6 +80,12 @@ export class AiAgent2 extends AiAgent<unknown> {
 
   get options(): RequestOptions {
     return {};
+  }
+
+  protected override async preRun(): Promise<void> {
+    if (this.context && !this.context.isLoggingEnabled()) {
+      this.setServerSideLoggingActive(false);
+    }
   }
 
   readonly #activeSkills = new Set<SkillName>();
@@ -242,6 +249,9 @@ User query: ${enhancedQuery}`;
           getEstablishedOrigin: () => this.#getConversationOrigin(),
           lighthouseRecording: this.#lighthouseRecording,
           performanceRecordAndReload: this.#performanceRecordAndReload,
+          setLoggingEnabled: (enabled: boolean) => {
+            this.setServerSideLoggingActive(enabled);
+          },
         };
         return tool.handler(args, context, options);
       },

@@ -365,3 +365,9 @@ export interface HeapQueryOptions {
   isDetached?: boolean;
   sortBy?: 'retainedSize'|'selfSize'|'id';
 }
+
+export interface HeapEdgesQueryOptions {
+  sortBy?: 'retainedSize'|'selfSize'|'name';
+  minRetainedSize?: number;
+  excludePrimitives?: boolean;
+}

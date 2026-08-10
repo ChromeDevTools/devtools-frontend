@@ -1059,6 +1059,96 @@ describe('HeapSnapshot', () => {
     assert.strictEqual(names.join(','), 'b', 'edges provider names');
   });
 
+  describe('heapSnapshotEdgesProvider query options', () => {
+    async function createTestSnapshotForEdgesProviderOptions() {
+      const mock = {
+        snapshot: {
+          meta: {
+            node_fields: ['type', 'name', 'id', 'self_size', 'retained_size', 'dominator', 'edge_count'],
+            node_types: [['hidden', 'object', 'native', 'number'], '', '', '', '', '', ''],
+            edge_fields: ['type', 'name_or_index', 'to_node'],
+            edge_types: [['element', 'property', 'shortcut'], '', ''],
+            location_fields: ['object_index', 'script_id', 'line', 'column'],
+            trace_function_info_fields: ['function_id', 'name', 'script_name', 'script_id', 'line', 'column'],
+            trace_node_fields: ['id', 'function_info_index', 'count', 'size', 'children'],
+          },
+          node_count: 7,
+          edge_count: 6,
+          trace_function_count: 1,
+        },
+        nodes: [
+          1, 1, 1, 100, 100, 0, 6,  // Node 0 (Root, self_size 100, edge_count 6)
+          3, 6, 2, 4,   4,   0, 0,  // Node 1 (number type, self_size 4, edge_count 0)
+          2, 7, 3, 4,   4,   0, 0,  // Node 2 (native type, name 'null', self_size 4, edge_count 0)
+          2, 8, 4, 4,   4,   0, 0,  // Node 3 (native type, name 'undefined', self_size 4, edge_count 0)
+          2, 3, 5, 4,   4,   0, 0,  // Node 4 (native type, name 'true', self_size 4, edge_count 0)
+          1, 9, 6, 50,  50,  0, 0,  // Node 5 (object type, name 'A', self_size 50, edge_count 0)
+          1, 2, 7, 40,  40,  0, 0,  // Node 6 (object type, name 'B', self_size 40, edge_count 0)
+        ],
+        edges: [
+          1,
+          6,
+          7,  // Edge to Node 1 (numEdge)
+          1,
+          7,
+          14,  // Edge to Node 2 (nullEdge)
+          1,
+          8,
+          21,  // Edge to Node 3 (undefinedEdge)
+          1,
+          3,
+          28,  // Edge to Node 4 (trueEdge)
+          1,
+          10,
+          35,  // Edge to Node 5 (objAEdge)
+          1,
+          11,
+          42,  // Edge to Node 6 (realObjEdge)
+        ],
+        trace_function_infos: [0, 2, 1, 0, 0, 0],
+        trace_tree: [1, 0, 0, 0, []],
+        locations: [],
+        strings: ['', 'Root', 'B', 'true', '', '', 'numEdge', 'null', 'undefined', 'A', 'objAEdge', 'realObjEdge'],
+      };
+
+      return await HeapSnapshotWorker.HeapSnapshot.createJSHeapSnapshotForTesting(postprocessHeapSnapshotMock(mock));
+    }
+
+    it('includes all edges by default when no options are provided', async () => {
+      const snapshot = await createTestSnapshotForEdgesProviderOptions();
+      const provider = snapshot.createEdgesProvider(0);
+      const range = provider.serializeItemsRange(0, 10);
+      assert.strictEqual(range.totalLength, 6, 'All edges included by default');
+    });
+
+    it('filters out primitive edges when excludePrimitives is true', async () => {
+      const snapshot = await createTestSnapshotForEdgesProviderOptions();
+      const provider = snapshot.createEdgesProvider(0, {excludePrimitives: true});
+      const range = provider.serializeItemsRange(0, 10);
+      assert.strictEqual(range.totalLength, 2, 'Primitives excluded');
+      const filteredEdgeNames = range.items.map(item => item.name);
+      assert.deepEqual(filteredEdgeNames, ['objAEdge', 'realObjEdge'], 'Excluded number, null, undefined, and true');
+    });
+
+    it('filters edges by minimum retained size when minRetainedSize is specified', async () => {
+      const snapshot = await createTestSnapshotForEdgesProviderOptions();
+      const provider = snapshot.createEdgesProvider(0, {minRetainedSize: 30});
+      const range = provider.serializeItemsRange(0, 10);
+      assert.strictEqual(range.totalLength, 2, 'Edges with retained size < 30 excluded');
+      const minRetainedEdgeNames = range.items.map(item => item.name);
+      assert.deepEqual(minRetainedEdgeNames, ['objAEdge', 'realObjEdge']);
+    });
+
+    it('sorts edges when sortBy option is specified', async () => {
+      const snapshot = await createTestSnapshotForEdgesProviderOptions();
+      const provider = snapshot.createEdgesProvider(0, {sortBy: 'retainedSize'});
+      const range = provider.serializeItemsRange(0, 10);
+      const sortedEdgeNames = range.items.map(item => item.name);
+      assert.deepEqual(sortedEdgeNames, ['objAEdge', 'realObjEdge', 'null', 'numEdge', 'true', 'undefined'],
+                       'Sorted by retainedSize descending');
+    });
+  });
+
   it('heapSnapshotLoader', async () => {
     const source = createHeapSnapshotMockRaw();
     const sourceStringified = JSON.stringify(source);

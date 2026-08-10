@@ -3292,11 +3292,58 @@ export abstract class HeapSnapshot {
     return null;
   }
 
-  createEdgesProvider(nodeIndex: number): HeapSnapshotEdgesProvider {
+  createEdgesProvider(nodeIndex: number,
+                      options?: HeapSnapshotModel.HeapSnapshotModel.HeapEdgesQueryOptions): HeapSnapshotEdgesProvider {
     const node = this.createNode(nodeIndex);
-    const filter = this.containmentEdgesFilter();
+    const defaultFilter = this.containmentEdgesFilter();
+    const minRetainedSize = options?.minRetainedSize;
+    const excludePrimitives = options?.excludePrimitives ?? false;
+
+    let filter: ((arg0: HeapSnapshotEdge) => boolean)|null = defaultFilter;
+
+    if (minRetainedSize !== undefined || excludePrimitives) {
+      filter = (edge: HeapSnapshotEdge): boolean => {
+        if (defaultFilter && !defaultFilter(edge)) {
+          return false;
+        }
+        const targetNode = edge.node();
+        if (minRetainedSize !== undefined && targetNode.retainedSize() < minRetainedSize) {
+          return false;
+        }
+        if (excludePrimitives) {
+          const rawType = targetNode.rawType();
+          if (rawType === this.nodeNumberType) {
+            return false;
+          }
+          if (rawType === this.nodeNativeType) {
+            const targetName = targetNode.rawName();
+            if (targetName === 'undefined' || targetName === 'null' || targetName === 'true' ||
+                targetName === 'false') {
+              return false;
+            }
+          }
+        }
+        return true;
+      };
+    }
+
     const indexProvider = new HeapSnapshotEdgeIndexProvider(this);
-    return new HeapSnapshotEdgesProvider(this, filter, node.edges(), indexProvider);
+    const provider = new HeapSnapshotEdgesProvider(this, filter, node.edges(), indexProvider);
+
+    if (options?.sortBy) {
+      const sortBy = options.sortBy;
+      let comparator: HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig;
+      if (sortBy === 'selfSize') {
+        comparator = new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('selfSize', false, '!edgeName', true);
+      } else if (sortBy === 'name') {
+        comparator = new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('!edgeName', true, 'retainedSize', false);
+      } else {
+        comparator = new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('retainedSize', false, '!edgeName', true);
+      }
+      provider.sortAndRewind(comparator);
+    }
+
+    return provider;
   }
 
   createEdgesProviderForTest(nodeIndex: number, filter: ((arg0: HeapSnapshotEdge) => boolean)|null):

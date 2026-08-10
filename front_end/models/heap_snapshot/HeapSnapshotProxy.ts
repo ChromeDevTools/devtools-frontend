@@ -312,8 +312,8 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callMethodPromise('getObjectInfo', nodeIndex);
   }
 
-  createEdgesProvider(nodeIndex: number): HeapSnapshotProviderProxy {
-    return this.callFactoryMethod('createEdgesProvider', HeapSnapshotProviderProxy, nodeIndex);
+  createEdgesProvider(nodeIndex: number, options?: HeapSnapshotModel.HeapEdgesQueryOptions): HeapSnapshotProviderProxy {
+    return this.callFactoryMethod('createEdgesProvider', HeapSnapshotProviderProxy, nodeIndex, options);
   }
 
   createRetainingEdgesProvider(nodeIndex: number): HeapSnapshotProviderProxy {

@@ -501,21 +501,11 @@ export class HeapSnapshotNode implements HeapSnapshotItem {
   }
 
   #detachednessAndClassIndex(): number {
-    const {snapshot, nodeIndex} = this;
-    const nodeDetachednessAndClassIndexOffset = snapshot.nodeDetachednessAndClassIndexOffset;
-    return nodeDetachednessAndClassIndexOffset !== -1 ?
-        snapshot.nodes.getValue(nodeIndex + nodeDetachednessAndClassIndexOffset) :
-        (snapshot.detachednessAndClassIndexArray as Uint32Array)[nodeIndex / snapshot.nodeFieldCount];
+    return this.snapshot.detachednessAndClassIndexArray[this.nodeIndex / this.snapshot.nodeFieldCount];
   }
 
   #setDetachednessAndClassIndex(value: number): void {
-    const {snapshot, nodeIndex} = this;
-    const nodeDetachednessAndClassIndexOffset = snapshot.nodeDetachednessAndClassIndexOffset;
-    if (nodeDetachednessAndClassIndexOffset !== -1) {
-      snapshot.nodes.setValue(nodeIndex + nodeDetachednessAndClassIndexOffset, value);
-    } else {
-      (snapshot.detachednessAndClassIndexArray as Uint32Array)[nodeIndex / snapshot.nodeFieldCount] = value;
-    }
+    this.snapshot.detachednessAndClassIndexArray[this.nodeIndex / this.snapshot.nodeFieldCount] = value;
   }
 
   detachedness(): HeapSnapshotModel.HeapSnapshotModel.DOMLinkState {
@@ -1010,7 +1000,7 @@ export abstract class HeapSnapshot {
   #ignoredEdgesInRetainersView = new Set<number>();
   #nodeDistancesForRetainersView: Int32Array|undefined;
   #edgeNamesThatAreNotWeakMaps: Platform.TypedArrayUtilities.BitVector;
-  detachednessAndClassIndexArray?: Uint32Array;
+  detachednessAndClassIndexArray!: Uint32Array;
   nodeNativeContextAttribution!: Int32Array;
   #nativeContextSizes!: HeapSnapshotModel.HeapSnapshotModel.NativeContextSizes;
   #nativeContextOrdinals!: number[];
@@ -1092,6 +1082,7 @@ export abstract class HeapSnapshot {
     this.#progress.updateStatus('Building retainers…');
     const resultsFromSecondWorker = this.startInitStep1InSecondThread(secondWorker);
     this.#progress.updateStatus('Propagating DOM state…');
+    this.initDetachednessAndClassIndex();
     this.propagateDOMState();
     this.#progress.updateStatus('Calculating node flags…');
     this.calculateFlags();
@@ -2400,12 +2391,6 @@ export abstract class HeapSnapshot {
       nodeRegExpType,
     } = this;
 
-    // If the snapshot doesn't contain a detachedness field in each node, then
-    // allocate a separate array so there is somewhere to store the class index.
-    if (this.nodeDetachednessAndClassIndexOffset === -1) {
-      this.detachednessAndClassIndexArray = new Uint32Array(nodeCount);
-    }
-
     // We'll add some new values to the `strings` array during the processing below.
     // This map lets us easily find the index for each added string.
     const stringTable = new Map<string, number>();
@@ -2985,6 +2970,30 @@ export abstract class HeapSnapshot {
       }
     }
     return null;
+  }
+
+  private initDetachednessAndClassIndex(): void {
+    this.detachednessAndClassIndexArray = new Uint32Array(this.nodeCount);
+    if (this.nodeDetachednessAndClassIndexOffset !== -1) {
+      // Seed this array from the detachedness field of the snapshot.
+      const {nodeFieldCount, nodeDetachednessAndClassIndexOffset: offset} = this;
+      for (let i = 0; i < this.nodeCount; ++i) {
+        this.detachednessAndClassIndexArray[i] = Number(this.nodes.getValue(i * nodeFieldCount + offset));
+      }
+    } else {
+      // For old snapshots, treat native objects named 'Detached ...' as detached.
+      const node = this.rootNode();
+      const nodesLength = this.nodes.length;
+      const {nodeFieldCount, nodeNativeType, nodeTypeOffset} = this;
+      for (let nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
+        if (this.nodes.getValue(nodeIndex + nodeTypeOffset) === nodeNativeType) {
+          node.nodeIndex = nodeIndex;
+          if (node.name().startsWith('Detached ')) {
+            node.setDetachedness(HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.DETACHED);
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -4334,7 +4343,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
         continue;
       }
       node.nodeIndex = nodeIndex;
-      if (node.name().startsWith('Detached ')) {
+      if (node.detachedness() === HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.DETACHED) {
         this.flags[ordinal] |= flag;
       }
     }

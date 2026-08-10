@@ -24,7 +24,6 @@ import {expectCall} from '../../testing/ExpectStubCall.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../ui/components/report_view/report_view.js';
-import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
@@ -285,14 +284,8 @@ describeWithEnvironment('IDBDataView', () => {
 
     const widgetElement = valueCell.firstElementChild;
     assert.exists(widgetElement);
-    const presentation =
-        ObjectUI.ObjectPropertiesSection.getObjectPropertiesSectionFrom(widgetElement.firstElementChild as Element);
-    assert.exists(presentation);
-    const rootElement = presentation.objectTreeElement();
-    await rootElement.onpopulate();
-    const child = rootElement.childAt(0);
-    assert.instanceOf(child, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
-    assert.isFalse(child.editable);
+    const widget = UI.Widget.Widget.get(widgetElement) as Application.IndexedDBViews.ObjectPropertiesSectionWidget;
+    assert.isTrue(widget.objectTree?.readOnly);
   });
 
   it('renders toolbar and data grid', async () => {

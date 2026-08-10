@@ -254,7 +254,6 @@ export interface IndexedDBDataViewInput {
   onKeyFilterChange: (value: string) => void;
   onRowSelected: (rowNumber: number) => void;
   deleteEntry: (entry: Entry) => Promise<void>;
-  populateContextMenu: (e: CustomEvent<UI.ContextMenu.ContextMenu>, entry: Entry) => void;
 }
 
 const renderKeyPathString = (keyPathString: string): LitTemplate => {
@@ -272,6 +271,21 @@ const renderKeyColumnHeader = (prefix: string, keyPath: string|string[]|null|und
           renderKeyPathString(keyPath)})`;
 };
 
+const populateContextMenu = (e: CustomEvent<UI.ContextMenu.ContextMenu>): void => {
+  const row = e.currentTarget as HTMLElement;
+  const widgetElement = row.querySelector('.value-column devtools-widget');
+  const widget = widgetElement ? UI.Widget.Widget.get(widgetElement) as ObjectPropertiesSectionWidget : null;
+  if (widget?.objectTree) {
+    const contextMenu = e.detail;
+    contextMenu.revealSection().appendItem(i18nString(UIStrings.expandRecursively), () => {
+      void widget.expandRecursively();
+    }, {jslogContext: 'expand-recursively'});
+    contextMenu.revealSection().appendItem(i18nString(UIStrings.collapse), () => {
+      widget.expanded = false;
+    }, {jslogContext: 'collapse'});
+  }
+};
+
 const renderDataGrid = (input: IndexedDBDataViewInput): LitTemplate => {
   const keyPath = input.isIndex && input.index ? input.index.keyPath : input.objectStore.keyPath;
   // clang-format off
@@ -284,17 +298,20 @@ const renderDataGrid = (input: IndexedDBDataViewInput): LitTemplate => {
         ${input.isIndex ? html`<th id="primary-key">${renderKeyColumnHeader(i18nString(UIStrings.primaryKey), input.objectStore.keyPath)}</th>` : nothing}
         <th id="value">${i18nString(UIStrings.valueString)}</th>
       </tr>
-      ${repeat(input.entries, (_entry, index) => index, (entry, index) => html`
-        <tr ?selected=${index + input.skipCount === input.selectedRowNumber}
-            @select=${() => input.onRowSelected(index + input.skipCount)}
-            @delete=${() => input.deleteEntry(entry)}
-            @contextmenu=${(e: CustomEvent<UI.ContextMenu.ContextMenu>) => input.populateContextMenu(e, entry)}>
-          <td>${index + input.skipCount}</td>
-          <td>${widget(ObjectPropertiesSectionWidget, {value: entry.key})}</td>
-          ${input.isIndex ? html`<td>${widget(ObjectPropertiesSectionWidget, {value: entry.primaryKey})}</td>` : nothing}
-          <td class="value-column">${widget(ObjectPropertiesSectionWidget, {value: entry.value})}</td>
-        </tr>`,
-      )}
+      ${repeat(input.entries, (_entry, index) => index, (entry, index) => {
+        return html`
+          <tr ?selected=${index + input.skipCount === input.selectedRowNumber}
+              class="data-grid-data-row"
+              @select=${() => input.onRowSelected(index + input.skipCount)}
+              @delete=${() => input.deleteEntry(entry)}
+              @contextmenu=${populateContextMenu}>
+            <td>${index + input.skipCount}</td>
+            <td>${widget(ObjectPropertiesSectionWidget, {value: entry.key})}</td>
+            ${input.isIndex ? html`<td>${widget(ObjectPropertiesSectionWidget, {value: entry.primaryKey})}</td>`
+                            : nothing}
+            <td class="value-column">${widget(ObjectPropertiesSectionWidget, {value: entry.value})}</td>
+          </tr>`;
+      })}
     </table>`}>
   </devtools-data-grid>`;
   // clang-format on
@@ -465,31 +482,6 @@ export class IDBDataView extends UI.View.SimpleView {
   private pageForwardButtonClicked(): void {
     this.skipCount = this.skipCount + this.pageSize;
     this.updateData(false);
-  }
-
-  private populateContextMenu(e: CustomEvent<UI.ContextMenu.ContextMenu>, {value}: Entry): void {
-    const contextMenu = e.detail;
-    if (value && value.hasChildren) {
-      const tr = e.currentTarget as HTMLElement;
-      const valueTd = tr.querySelector('.value-column');
-      if (valueTd) {
-        const widgetEl = valueTd.querySelector('devtools-widget');
-        if (widgetEl) {
-          const widget = UI.Widget.Widget.get(widgetEl);
-          if (widget instanceof ObjectPropertiesSectionWidget) {
-            const objectUi = widget.objectPropertiesSection;
-            if (objectUi) {
-              contextMenu.revealSection().appendItem(i18nString(UIStrings.expandRecursively), () => {
-                void objectUi.objectTreeElement().expandRecursively();
-              }, {jslogContext: 'expand-recursively'});
-              contextMenu.revealSection().appendItem(i18nString(UIStrings.collapse), () => {
-                objectUi.objectTreeElement().collapse();
-              }, {jslogContext: 'collapse'});
-            }
-          }
-        }
-      }
-    }
   }
 
   refreshData(): void {
@@ -683,43 +675,33 @@ export class IDBDataView extends UI.View.SimpleView {
       },
       onRowSelected: this.onRowSelected.bind(this),
       deleteEntry: this.deleteEntry.bind(this),
-      populateContextMenu: this.populateContextMenu.bind(this),
     },
                undefined, this.element);
   }
 }
 
 interface ObjectPropertiesSectionWidgetInput {
-  value: SDK.RemoteObject.RemoteObject|null;
-}
-
-interface ObjectPropertiesSectionWidgetOutput {
-  objectPropSection: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection|null;
+  objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree|null;
 }
 
 type ObjectPropertiesSectionWidgetView = (
     input: ObjectPropertiesSectionWidgetInput,
-    output: ObjectPropertiesSectionWidgetOutput,
+    output: void,
     target: HTMLElement,
     ) => void;
 
 const OBJECT_PROPERTIES_SECTION_WIDGET_DEFAULT_VIEW: ObjectPropertiesSectionWidgetView = (input, output, target) => {
-  if (!input.value) {
-    output.objectPropSection = null;
+  if (!input.objectTree) {
     render(nothing, target);
     return;
   }
-  const objectPropSection = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.defaultObjectPropertiesSection(
-      input.value, undefined /* linkifier */, true /* skipProto */, true /* readOnly */);
-  output.objectPropSection = objectPropSection;
-
-  const element = input.value.hasChildren ? objectPropSection.element : objectPropSection.titleElement;
-  render(html`${element}`, target);
+  render(ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(input.objectTree, undefined /* linkifier */,
+                                                                    true /* skipProto */, true /* readOnly */),
+         target);
 };
 
-class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
-  #value: SDK.RemoteObject.RemoteObject|null = null;
-  #objectPropSection: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection|null = null;
+export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
+  #objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree|null = null;
   readonly #view: ObjectPropertiesSectionWidgetView;
 
   constructor(element?: HTMLElement, view = OBJECT_PROPERTIES_SECTION_WIDGET_DEFAULT_VIEW) {
@@ -728,20 +710,40 @@ class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
   }
 
   set value(value: SDK.RemoteObject.RemoteObject|null) {
-    if (this.#value === value) {
-      return;
+    if (value) {
+      this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(value, {
+        readOnly: true,
+        propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+      });
+    } else {
+      this.#objectTree = null;
     }
-    this.#value = value;
     this.requestUpdate();
   }
 
-  get objectPropertiesSection(): ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection|null {
-    return this.#objectPropSection;
+  get objectTree(): ObjectUI.ObjectPropertiesSection.ObjectTree|null {
+    return this.#objectTree;
+  }
+
+  get expanded(): boolean {
+    return this.#objectTree?.expanded ?? false;
+  }
+
+  set expanded(expanded: boolean) {
+    if (this.#objectTree) {
+      this.#objectTree.expanded = expanded;
+      this.requestUpdate();
+    }
+  }
+
+  async expandRecursively(): Promise<void> {
+    if (this.#objectTree) {
+      await this.#objectTree.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
+      this.requestUpdate();
+    }
   }
 
   override performUpdate(): void {
-    const output: ObjectPropertiesSectionWidgetOutput = {objectPropSection: null};
-    this.#view({value: this.#value}, output, this.contentElement);
-    this.#objectPropSection = output.objectPropSection;
+    this.#view({objectTree: this.#objectTree}, undefined, this.contentElement);
   }
 }

@@ -8,13 +8,14 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import {createIcon, type Icon} from '../../../kit/kit.js';
+import {render} from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import {sanitizeStyle} from './CSSStyleSanitizer.js';
 import customPreviewComponentStyles from './customPreviewComponent.css.js';
 import {
+  defaultObjectPresentation as defaultObjectPresentationTemplate,
   ObjectPropertiesMode,
-  ObjectPropertiesSection,
   ObjectPropertiesSectionsTreeOutline,
   ObjectPropertyTreeElement,
   ObjectTree,
@@ -129,7 +130,7 @@ export class CustomPreviewSection {
       return (new CustomPreviewSection(remoteObject)).element();
     }
 
-    const sectionElement = ObjectPropertiesSection.defaultObjectPresentation(remoteObject);
+    const sectionElement = defaultObjectPresentation(remoteObject);
     sectionElement.classList.toggle('custom-expandable-section-standard-section', remoteObject.hasChildren);
     return sectionElement;
   }
@@ -239,7 +240,14 @@ export class CustomPreviewComponent {
     if (this.element.shadowRoot) {
       this.element.shadowRoot.textContent = '';
       this.customPreviewSection = null;
-      this.element.shadowRoot.appendChild(ObjectPropertiesSection.defaultObjectPresentation(this.object));
+      this.element.shadowRoot.appendChild(defaultObjectPresentation(this.object));
     }
   }
+}
+
+function defaultObjectPresentation(object: SDK.RemoteObject.RemoteObject): Element {
+  const element = document.createElement('span');
+  // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+  render(defaultObjectPresentationTemplate(object), element);
+  return element;
 }

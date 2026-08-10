@@ -969,33 +969,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     this.rootElement().childrenListElement.classList.add('source-code', 'object-properties-section');
   }
 
-  static defaultObjectPresentation(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier,
-                                   skipProto?: boolean, readOnly?: boolean): Element {
-    const objectPropertiesSection =
-        ObjectPropertiesSection.defaultObjectPropertiesSection(object, linkifier, skipProto, readOnly);
-    if (!object.hasChildren) {
-      return objectPropertiesSection.titleElement;
-    }
-    return objectPropertiesSection.element;
-  }
-
-  static defaultObjectPropertiesSection(object: SDK.RemoteObject.RemoteObject,
-                                        linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean,
-                                        readOnly?: boolean): ObjectPropertiesSection {
-    const titleElement = document.createElement('span');
-    titleElement.classList.add('source-code');
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(titleElement, {cssFile: objectValueStyles});
-    const propertyValue =
-        ObjectPropertiesSection.createPropertyValue(object, /* wasThrown */ false, /* showPreview */ true);
-    shadowRoot.appendChild(propertyValue);
-    const objectPropertiesSection = new ObjectPropertiesSection(object, titleElement, linkifier, undefined, !readOnly);
-    if (skipProto) {
-      objectPropertiesSection.skipProto();
-    }
-
-    return objectPropertiesSection;
-  }
-
   // The RemoteObjectProperty overload is kept for web test compatibility for now.
   static compareProperties(propertyA: ObjectTreeNode|SDK.RemoteObject.RemoteObjectProperty,
                            propertyB: ObjectTreeNode|SDK.RemoteObject.RemoteObjectProperty,
@@ -1372,6 +1345,7 @@ interface ObjectTreeViewInput {
   objectTree?: ObjectTree;
   linkifier?: Components.Linkifier.Linkifier;
   emptyPlaceholder?: string;
+  skipProto: boolean;
   onExpand: (expanded: boolean) => void;
 }
 type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
@@ -1387,8 +1361,7 @@ export const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) 
     if (entry) {
       objectTree.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, entry.listener);
     }
-    const nodes = Array.from(ObjectPropertyTreeElement.createNodes(objectTree, /* skipProto= */ false,
-                                                                   /* skipGettersAndSetters= */ false, input.linkifier,
+    const nodes = Array.from(ObjectPropertyTreeElement.createNodes(objectTree, input.skipProto, false, input.linkifier,
                                                                    input.emptyPlaceholder));
     const listener = (): void => {
       topLevelNodesCache.delete(objectTree);
@@ -1415,6 +1388,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
   #linkifier: Components.Linkifier.Linkifier|undefined = undefined;
   #emptyPlaceholder?: string;
   #renderAsSubtree = false;
+  #skipProto = false;
   readonly #view: ObjectTreeView;
 
   constructor(element?: HTMLElement, view = OBJECT_TREE_DEFAULT_VIEW) {
@@ -1428,6 +1402,13 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
     }
   };
 
+  get skipProto(): boolean {
+    return this.#skipProto;
+  }
+  set skipProto(val: boolean) {
+    this.#skipProto = val;
+    this.requestUpdate();
+  }
   get objectTree(): ObjectTree|undefined {
     return this.#objectTree;
   }
@@ -1510,15 +1491,21 @@ export function renderObjectPropertiesSection(
     objectTree: ObjectTree,
     title: LitTemplate,
     linkifier?: Components.Linkifier.Linkifier,
+    skipProto = false,
+    showOverflow = true,
     ): LitTemplate {
   // clang-format off
-  return html`<devtools-tree class="object-properties-section" show-selection-on-keyboard-focus .template=${html`
+  return html`<devtools-tree
+      class="object-properties-section"
+      ?hide-overflow=${!showOverflow}
+      show-selection-on-keyboard-focus
+      .template=${html`
     <ul role="tree" class="source-code object-properties-section">
       <style>${objectValueStyles}</style>
       <style>${objectPropertiesSectionStyles}</style>
       <li role="treeitem" class="object-properties-section-root-element" ?open=${objectTree.expanded}>
         ${title}
-        <ul role="group" ${widget(ObjectTreeWidget, {objectTree, linkifier})} ${
+        <ul role="group" ${widget(ObjectTreeWidget, {objectTree, linkifier, skipProto})} ${
       /* The empty widgetRef forces the widget to be materialized in the template DOM */
       widgetRef(ObjectTreeWidget, () => {})}></ul>
       </li>
@@ -1617,6 +1604,22 @@ export async function formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject
 
   return ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName,
                                                                     details, linkify);
+}
+
+export function defaultObjectPresentation(objectOrTree: SDK.RemoteObject.RemoteObject|ObjectTree,
+                                          linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean,
+                                          readOnly?: boolean): LitTemplate {
+  const objectTree = objectOrTree instanceof ObjectTree ? objectOrTree : new ObjectTree(objectOrTree, {
+    readOnly: Boolean(readOnly),
+    propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+  });
+  const object = objectTree.object;
+  const title = html`<span class="source-code"><style>${objectValueStyles}</style>${
+      ObjectPropertiesSection.createPropertyValue(object, /* wasThrown= */ false, /* showPreview= */ true)}</span>`;
+  if (!object.hasChildren) {
+    return title;
+  }
+  return renderObjectPropertiesSection(objectTree, title, linkifier, skipProto, !readOnly);
 }
 
 /**

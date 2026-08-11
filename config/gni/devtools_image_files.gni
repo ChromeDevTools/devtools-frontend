@@ -12,7 +12,6 @@ devtools_image_files = [
   "chromeRight.avif",
   "cssoverview_icons_2x.avif",
   "nodeIcon.avif",
-  "toolbarResizerVertical.png",
   "touchCursor_2x.png",
   "geminiInDevTools.png",
   "geminiInDevTools_2x.png",

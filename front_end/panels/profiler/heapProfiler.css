@@ -100,15 +100,6 @@
   white-space: nowrap;
 }
 
-.heap-snapshot-view .heap-snapshot-view-resizer .verticalResizerIcon {
-  /* stylelint-disable-next-line custom-property-pattern */
-  background-image: var(--image-file-toolbarResizerVertical);
-  background-repeat: no-repeat;
-  background-position: center;
-  flex: 0 0 28px;
-  margin-left: auto;
-}
-
 .heap-snapshot-view .heap-snapshot-view-resizer .title > span {
   display: inline-block;
   padding-top: 3px;

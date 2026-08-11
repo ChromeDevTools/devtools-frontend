@@ -24,7 +24,7 @@ export type * as CDPConnection from '../front_end/core/protocol_client/CDPConnec
 export {ConnectionTransport} from '../front_end/core/protocol_client/ConnectionTransport.js';
 export * as ProtocolClient from '../front_end/core/protocol_client/protocol_client.js';
 export {PuppeteerDevToolsConnection} from '../front_end/core/protocol_client/PuppeteerDevToolsConnection.js';
-export {DebuggerModel} from '../front_end/core/sdk/DebuggerModel.js';
+export {DebuggerModel, skipAllPausesSettingDescriptor} from '../front_end/core/sdk/DebuggerModel.js';
 export * as NetworkManager from '../front_end/core/sdk/NetworkManager.js';
 export {RuntimeModel} from '../front_end/core/sdk/RuntimeModel.js';
 export * as SourceMapManager from '../front_end/core/sdk/SourceMapManager.js';

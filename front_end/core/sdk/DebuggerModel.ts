@@ -137,6 +137,12 @@ export const WASM_SYMBOLS_PRIORITY = [
   Protocol.Debugger.DebugSymbolsType.SourceMap,
 ];
 
+export const skipAllPausesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'skip-all-pauses',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};
+
 export class DebuggerModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.DebuggerApi;
   #runtimeModel: RuntimeModel;
@@ -149,6 +155,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   #selectedCallFrame: CallFrame|null = null;
   #debuggerEnabled = false;
   #debuggerId: string|null = null;
+  readonly #skipAllPausesSetting: Common.Settings.Setting<boolean>;
   #skipAllPausesTimeout?: ReturnType<typeof setTimeout>;
   #beforePausedCallback: ((arg0: DebuggerPausedDetails, stepOver: Location|null) => Promise<boolean>)|null = null;
   #computeAutoStepRangesCallback: ((arg0: StepMode, arg1: CallFrame) => Promise<Array<{
@@ -179,10 +186,12 @@ export class DebuggerModel extends SDKModel<EventTypes> {
                                  compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
 
     const settings = this.target().targetManager().settings;
+    this.#skipAllPausesSetting = settings.resolve(skipAllPausesSettingDescriptor);
     settings.resolve(pauseOnExceptionEnabledSettingDescriptor)
         .addChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.resolve(pauseOnCaughtExceptionSettingDescriptor)
         .addChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#skipAllPausesSetting.addChangeListener(this.skipAllPausesChanged, this);
     settings.moduleSetting('pause-on-uncaught-exception').addChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting('disable-async-stack-traces').addChangeListener(this.asyncStackTracesStateChanged, this);
     settings.moduleSetting('breakpoints-active').addChangeListener(this.breakpointsActiveChanged, this);
@@ -256,6 +265,11 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     }
     this.#debuggerEnabled = true;
 
+    let skipAllPausesPromise: Promise<Protocol.ProtocolResponseWithError>|undefined;
+    if (this.#skipAllPausesSetting.get()) {
+      skipAllPausesPromise = this.agent.invoke_setSkipAllPauses({skip: true});
+    }
+
     // Set a limit for the total size of collected script sources retained by debugger.
     // 10MB for remote frontends, 100MB for others.
     const isRemoteFrontend = Root.Runtime.Runtime.queryParam('remoteFrontend') || Root.Runtime.Runtime.queryParam('ws');
@@ -267,14 +281,14 @@ export class DebuggerModel extends SDKModel<EventTypes> {
         instrumentation: Protocol.Debugger.SetInstrumentationBreakpointRequestInstrumentation.BeforeScriptExecution,
       });
     }
+    const settings = this.target().targetManager().settings;
     this.pauseOnExceptionStateChanged();
     void this.asyncStackTracesStateChanged();
-    const settings = this.target().targetManager().settings;
     if (!settings.moduleSetting('breakpoints-active').get()) {
       this.breakpointsActiveChanged();
     }
     this.dispatchEventToListeners(Events.DebuggerWasEnabled, this);
-    const [enableResult] = await Promise.all([enablePromise, instrumentationPromise]);
+    const [enableResult] = await Promise.all([enablePromise, instrumentationPromise, skipAllPausesPromise]);
     this.registerDebugger(enableResult);
   }
 
@@ -344,12 +358,24 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   private skipAllPauses(skip: boolean): void {
+    if (this.#skipAllPausesSetting.get()) {
+      return;
+    }
     clearTimeout(this.#skipAllPausesTimeout);
 
     void this.agent.invoke_setSkipAllPauses({skip});
   }
 
+  private skipAllPausesChanged(): void {
+    const skip = this.#skipAllPausesSetting.get();
+    clearTimeout(this.#skipAllPausesTimeout);
+    void this.agent.invoke_setSkipAllPauses({skip});
+  }
+
   skipAllPausesUntilReloadOrTimeout(timeout: number): void {
+    if (this.#skipAllPausesSetting.get()) {
+      return;
+    }
     clearTimeout(this.#skipAllPausesTimeout);
 
     void this.agent.invoke_setSkipAllPauses({skip: true});
@@ -877,6 +903,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
         .removeChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.resolve(pauseOnCaughtExceptionSettingDescriptor)
         .removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#skipAllPausesSetting.removeChangeListener(this.skipAllPausesChanged, this);
     settings.moduleSetting('disable-async-stack-traces').removeChangeListener(this.asyncStackTracesStateChanged, this);
   }
 

@@ -100,6 +100,97 @@ describe('DebuggerModel', () => {
     });
   });
 
+  describe('skipAllPauses', () => {
+    it('skips all pauses on construction when setting is enabled', async () => {
+      const connection = new MockCDPConnection();
+      let skipAllPausesEnabled = false;
+      connection.setSuccessHandler('Debugger.setSkipAllPauses', request => {
+        if (request.skip === true) {
+          skipAllPausesEnabled = true;
+        }
+        return {};
+      });
+      universe.settings.resolve(SDK.DebuggerModel.skipAllPausesSettingDescriptor).set(true);
+      universe.createTarget({connection});
+      assert.isTrue(skipAllPausesEnabled);
+    });
+
+    it('updates skip all pauses when setting changes', async () => {
+      const connection = new MockCDPConnection();
+      const skipRequests: boolean[] = [];
+      connection.setSuccessHandler('Debugger.setSkipAllPauses', request => {
+        skipRequests.push(request.skip);
+        return {};
+      });
+      universe.createTarget({connection});
+      universe.settings.resolve(SDK.DebuggerModel.skipAllPausesSettingDescriptor).set(true);
+      universe.settings.resolve(SDK.DebuggerModel.skipAllPausesSettingDescriptor).set(false);
+      assert.deepEqual(skipRequests, [true, false]);
+    });
+
+    it('skips all pauses for suspended target when resumed', async () => {
+      const connection = new MockCDPConnection();
+      let skipAllPausesEnabled = false;
+      connection.setSuccessHandler('Debugger.setSkipAllPauses', request => {
+        if (request.skip === true) {
+          skipAllPausesEnabled = true;
+        }
+        return {};
+      });
+
+      universe.settings.resolve(SDK.DebuggerModel.skipAllPausesSettingDescriptor).set(true);
+      const target = universe.createTarget({connection});
+      assert.isTrue(skipAllPausesEnabled);
+
+      await target.suspend();
+
+      skipAllPausesEnabled = false;
+      await target.resume();
+      assert.isTrue(skipAllPausesEnabled);
+    });
+
+    it('does not re-enable pauses on pause() when setting is enabled', async () => {
+      const connection = new MockCDPConnection();
+      const skipRequests: boolean[] = [];
+      connection.setSuccessHandler('Debugger.setSkipAllPauses', request => {
+        skipRequests.push(request.skip);
+        return {};
+      });
+      connection.setSuccessHandler('Debugger.pause', () => ({}));
+
+      universe.settings.resolve(SDK.DebuggerModel.skipAllPausesSettingDescriptor).set(true);
+      const target = universe.createTarget({connection});
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assert.deepEqual(skipRequests, [true]);
+
+      debuggerModel?.pause();
+      assert.deepEqual(skipRequests, [true]);
+    });
+
+    it('does not re-enable pauses after timeout when setting is enabled', async () => {
+      const clock = sinon.useFakeTimers();
+      try {
+        const connection = new MockCDPConnection();
+        const skipRequests: boolean[] = [];
+        connection.setSuccessHandler('Debugger.setSkipAllPauses', request => {
+          skipRequests.push(request.skip);
+          return {};
+        });
+
+        universe.settings.resolve(SDK.DebuggerModel.skipAllPausesSettingDescriptor).set(true);
+        const target = universe.createTarget({connection});
+        const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+        assert.deepEqual(skipRequests, [true]);
+
+        debuggerModel?.skipAllPausesUntilReloadOrTimeout(500);
+        clock.tick(600);
+        assert.deepEqual(skipRequests, [true]);
+      } finally {
+        clock.restore();
+      }
+    });
+  });
+
   describe('createRawLocationFromURL', () => {
     it('yields correct location in the presence of multiple scripts with the same URL', async () => {
       const connection = new MockCDPConnection();

@@ -1,0 +1,49 @@
+/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope,
+  .comments-overlay-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999990;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .comment-pin {
+    position: absolute;
+    pointer-events: auto;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 24px;
+    filter: drop-shadow(0 2px 5px rgb(0 0 0 / 35%));
+    user-select: none;
+    transition: transform 0.1s ease;
+  }
+
+  .comment-pin:hover {
+    transform: scale(1.15);
+  }
+
+  .comment-anchor-highlight {
+    position: absolute;
+    pointer-events: none;
+    border: 2px dashed var(--sys-color-primary);
+    background-color: color-mix(in srgb, var(--sys-color-primary), transparent 90%);
+    box-sizing: border-box;
+  }
+
+  .comment-hover-highlight {
+    position: absolute;
+    pointer-events: none;
+    border: 2px solid var(--sys-color-primary);
+    background-color: color-mix(in srgb, var(--sys-color-primary), transparent 85%);
+    box-sizing: border-box;
+  }
+}

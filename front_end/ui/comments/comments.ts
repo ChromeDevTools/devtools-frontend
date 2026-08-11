@@ -4,8 +4,10 @@
 
 import * as CommentAnchorResolver from './CommentAnchorResolver.js';
 import * as CommentManager from './CommentManager.js';
+import * as CommentsOverlayWidget from './CommentsOverlayWidget.js';
 
 export {
   CommentAnchorResolver,
   CommentManager,
+  CommentsOverlayWidget,
 };

@@ -61,6 +61,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import {commentForbiddenHeaders, isForbiddenHeader} from './FetchHeaderCommenting.js';
 import {canPreloadRequest, generatePreloadLink} from './LinkPreloadGenerator.js';
 import {
   Events,
@@ -2084,8 +2085,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     // Record telemetry
     Host.userMetrics.editResendRequest(Host.UserMetrics.resendRequestType(request.resourceType()));
 
-    // Step 1: Generate fetch command (reuse existing Copy as fetch logic)
-    let fetchCommand = await this.generateFetchCall(request, FetchStyle.BROWSER);
+    // Step 1: Generate an editable fetch command that retains forbidden headers as comments.
+    let fetchCommand = await this.generateFetchCall(request, FetchStyle.BROWSER, {commentForbiddenHeaders: true});
 
     // Step 2: Prepend 'await' unless already present
     if (!fetchCommand.startsWith('await ')) {
@@ -2478,39 +2479,22 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     }
   }
 
-  private async generateFetchCall(request: SDK.NetworkRequest.NetworkRequest, style: FetchStyle): Promise<string> {
-    const ignoredHeaders = new Set<string>([
-      // Internal headers
-      'method',
-      'path',
-      'scheme',
-      'version',
-
-      // Unsafe headers
-      // Keep this list synchronized with src/net/http/http_util.cc
-      'accept-charset',
-      'accept-encoding',
-      'access-control-request-headers',
-      'access-control-request-method',
-      'connection',
-      'content-length',
-      'cookie',
-      'cookie2',
-      'date',
-      'dnt',
-      'expect',
-      'host',
-      'keep-alive',
-      'origin',
-      'referer',
-      'te',
-      'trailer',
-      'transfer-encoding',
-      'upgrade',
-      'via',
+  private async generateFetchCall(request: SDK.NetworkRequest.NetworkRequest, style: FetchStyle,
+                                  generateOptions?: {commentForbiddenHeaders?: boolean}): Promise<string> {
+    // Editable fetch commands retain unsafe headers so the generated output can
+    // show them as comments, but still omit protocol-internal pseudo-headers.
+    const internalOnly = new Set<string>(['method', 'path', 'scheme', 'version']);
+    const shouldFilterHeader = (name: string, value: string): boolean => {
+      const lowerName = name.toLowerCase();
+      if (internalOnly.has(lowerName) || name.includes(':')) {
+        return true;
+      }
+      if (generateOptions?.commentForbiddenHeaders) {
+        return false;
+      }
       // TODO(phistuck) - remove this once crbug.com/571722 is fixed.
-      'user-agent',
-    ]);
+      return lowerName === 'user-agent' || isForbiddenHeader(name, value);
+    };
 
     const credentialHeaders = new Set<string>(['cookie', 'authorization']);
 
@@ -2524,7 +2508,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const headerData: Headers = requestHeaders.reduce((result, header) => {
       const name = header.name;
 
-      if (!ignoredHeaders.has(name.toLowerCase()) && !name.includes(':')) {
+      if (!shouldFilterHeader(name, header.value)) {
         result.append(name, header.value);
       }
 
@@ -2578,7 +2562,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       fetchOptions.credentials = credentials;
     }
 
-    const options = JSON.stringify(fetchOptions, null, 2);
+    let options = JSON.stringify(fetchOptions, null, 2);
+    if (generateOptions?.commentForbiddenHeaders) {
+      options = commentForbiddenHeaders(options);
+    }
     return `fetch(${url}, ${options});`;
   }
 

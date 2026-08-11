@@ -37,6 +37,7 @@ devtools_ui_module("network") {
   sources = [
     "BinaryResourceView.ts",
     "EventSourceMessagesView.ts",
+    "FetchHeaderCommenting.ts",
     "LinkPreloadGenerator.ts",
     "NetworkConfigView.ts",
     "NetworkDataGridNode.ts",
@@ -162,6 +163,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "FetchHeaderCommenting.test.ts",
     "LinkPreloadGenerator.test.ts",
     "NetworkConfigView.test.ts",
     "NetworkDataGridNode.test.ts",

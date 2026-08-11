@@ -1544,9 +1544,41 @@ describeWithEnvironment('Edit and resend as fetch', () => {
     assert.exists(item);
   });
 
+  it('Copy as fetch filters headers using the forbidden-header rules', async () => {
+    networkLogView = createNetworkLogViewForTest();
+    const request = createRequest('https://example.com/api');
+    request.setRequestHeaders([
+      {name: 'Sec-Fetch-Mode', value: 'cors'},
+      {name: 'X-HTTP-Method', value: 'TRACE'},
+      {name: 'X-HTTP-Method-Override', value: 'PATCH'},
+      {name: 'X-Custom', value: 'value'},
+      {name: 'User-Agent', value: 'custom'},
+    ]);
+    const copyText = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText').resolves();
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    networkLogView.handleContextMenuForRequest(contextMenu, request);
+
+    const copyMenu = contextMenu.clipboardSection().items[0] as UI.ContextMenu.SubMenu;
+    const item = findMenuItemWithLabel(copyMenu.defaultSection(), 'Copy as fetch');
+    assert.exists(item);
+    contextMenu.invokeHandler(item.id());
+    await expectCalled(copyText);
+
+    const fetchCall = copyText.lastCall.args[0] as string;
+    assert.notInclude(fetchCall, 'sec-fetch-mode');
+    assert.notInclude(fetchCall, 'x-http-method": "TRACE');
+    assert.notInclude(fetchCall, 'user-agent');
+    assert.include(fetchCall, 'x-http-method-override": "PATCH');
+    assert.include(fetchCall, 'x-custom": "value');
+  });
+
   it('resendFromConsole generates fetch with await prefix', async () => {
     networkLogView = createNetworkLogViewForTest();
     const request = createRequest('https://example.com/data');
+    request.setRequestHeaders([{name: 'Host', value: 'example.com'}]);
 
     // Stub InspectorView and ViewManager to avoid real UI interaction
     sinon.stub(UI.InspectorView.InspectorView.instance(), 'showDrawer');
@@ -1571,6 +1603,7 @@ describeWithEnvironment('Edit and resend as fetch', () => {
     const injected = fakeWidget.insertIntoPrompt.firstCall.args[0] as string;
     assert.isTrue(injected.includes('await fetch('), 'should include await fetch(');
     assert.isFalse(injected.includes('await await'), 'should not contain double await');
+    assert.include(injected, '// "host": "example.com"', 'should comment forbidden headers');
   });
 
   it('resendFromConsole logs console message with affectedResources', async () => {

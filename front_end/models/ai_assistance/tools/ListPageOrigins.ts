@@ -7,7 +7,6 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import {areOriginsEquivalent, isOpaqueOrigin} from '../AiOrigins.js';
-import {isSamePageOrigin} from '../contexts/StorageContext.js';
 
 import {
   type BaseToolCapability,
@@ -43,6 +42,15 @@ export class ListPageOriginsTool implements
     };
   }
 
+  /**
+   * Retrieves the set of unique frame origins loaded within the primary page's target tree.
+   *
+   * To prevent data leakage across different tabs/windows, this tool:
+   * 1. Restricts the frame search to those belonging to the `primaryPageTarget`'s outermost target tree.
+   * 2. Filters out any origins that are not equivalent to the established allowed origin.
+   *    Note: Under site isolation, frames may be hosted on different sub-targets or processes,
+   *    so we check `frame.securityOrigin` directly instead of the frame's target origin.
+   */
   async handler(
       _args: Record<string, never>,
       context: BaseToolCapability&OriginLockCapability,
@@ -66,11 +74,17 @@ export class ListPageOriginsTool implements
 
     const origins = new Set<string>();
     for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
-      if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), allowedOrigin)) {
+      if (frame.resourceTreeModel().target().outermostTarget() !== primaryPageTarget) {
         continue;
       }
       const origin = frame.securityOrigin;
-      if (!origin || isOpaqueOrigin(origin) || origins.has(origin)) {
+      // Filter out frames that are not same-origin to the page's allowed origin.
+      // Under site isolation, frames can be hosted on different targets/processes,
+      // so we check the security origin of the frame directly instead of the target.
+      if (!origin || !areOriginsEquivalent(origin, allowedOrigin)) {
+        continue;
+      }
+      if (origins.has(origin)) {
         continue;
       }
       origins.add(origin);

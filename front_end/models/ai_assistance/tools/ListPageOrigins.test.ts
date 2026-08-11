@@ -54,13 +54,11 @@ describe('ListPageOriginsTool', () => {
     sinon.stub(targetManager, 'primaryPageTarget').returns(primaryTarget);
 
     const mockFrame1 = createMockFrame('http://example.com', primaryTarget);
-    const mockFrame2 = createMockFrame('http://sub.example.com', primaryTarget);
-    const mockFrame3 = createMockFrame('http://example.com', primaryTarget);
+    const mockFrame2 = createMockFrame('http://example.com', primaryTarget);
 
     sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'frames').returns([
       mockFrame1,
       mockFrame2,
-      mockFrame3,
     ]);
 
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
@@ -72,7 +70,38 @@ describe('ListPageOriginsTool', () => {
     const response = await tool.handler({}, context);
     assertIsResult(response);
     assert.deepEqual(response.result, {
-      origins: ['http://example.com', 'http://sub.example.com'],
+      origins: ['http://example.com'],
+    });
+  });
+
+  it('filters out subdomain and cross-origin frames', async () => {
+    const targetManager = universe.targetManager;
+    const primaryTarget = sinon.createStubInstance(SDK.Target.Target);
+    primaryTarget.inspectedURL.returns(urlString`http://example.com/index.html`);
+    primaryTarget.outermostTarget.returns(primaryTarget);
+
+    sinon.stub(targetManager, 'primaryPageTarget').returns(primaryTarget);
+
+    const sameOriginFrame = createMockFrame('http://example.com', primaryTarget);
+    const subdomainFrame = createMockFrame('http://sub.example.com', primaryTarget);
+    const crossOriginFrame = createMockFrame('http://blocked-origin.com', primaryTarget);
+
+    sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'frames').returns([
+      sameOriginFrame,
+      subdomainFrame,
+      crossOriginFrame,
+    ]);
+
+    const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
+    const context = {
+      conversationContext: null,
+      getEstablishedOrigin: sinon.stub().returns('http://example.com'),
+    };
+
+    const response = await tool.handler({}, context);
+    assertIsResult(response);
+    assert.deepEqual(response.result, {
+      origins: ['http://example.com'],
     });
   });
 
@@ -89,7 +118,7 @@ describe('ListPageOriginsTool', () => {
     sinon.stub(targetManager, 'primaryPageTarget').returns(primaryTarget);
 
     const mockFrame1 = createMockFrame('http://example.com', primaryTarget);
-    const mockFrame2 = createMockFrame('http://blocked-origin.com', blockedTarget);
+    const mockFrame2 = createMockFrame('http://example.com', blockedTarget);
 
     sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'frames').returns([
       mockFrame1,

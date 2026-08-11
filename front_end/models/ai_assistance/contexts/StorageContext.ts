@@ -2,13 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
 import {
   ConversationContext,
   type ConversationSuggestions,
 } from '../agents/AiAgent.js';
-import {areOriginsEquivalent} from '../AiOrigins.js';
 import {CookieItem, DOMStorageItem, type StorageItem} from '../StorageItem.js';
 
 export class StorageContext extends ConversationContext<StorageItem> {
@@ -100,12 +97,4 @@ export class StorageContext extends ConversationContext<StorageItem> {
     }
     return undefined;
   }
-}
-
-export function isSamePageOrigin(target: SDK.Target.Target|null, allowedOrigin: string): boolean {
-  if (!target) {
-    return false;
-  }
-  const pageOrigin = Common.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL());
-  return pageOrigin !== '' && areOriginsEquivalent(pageOrigin, allowedOrigin);
 }

@@ -16,7 +16,6 @@ generate_css("css_files") {
     "aiCodeGenerationTeaser.css",
     "aiCodeGenerationUpgradeDialog.css",
     "badgeNotification.css",
-    "common.css",
     "domLinkifier.css",
     "freDialog.css",
     "gdpSignUpDialog.css",

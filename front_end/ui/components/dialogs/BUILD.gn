@@ -12,6 +12,7 @@ generate_css("css_files") {
     "buttonDialog.css",
     "dialog.css",
     "shortcutDialog.css",
+    "typeToAllowDialog.css",
   ]
 }
 
@@ -20,10 +21,13 @@ devtools_ui_module("dialogs") {
     "ButtonDialog.ts",
     "Dialog.ts",
     "ShortcutDialog.ts",
+    "TypeToAllowDialog.ts",
   ]
   deps = [
+    "../../../core/host:bundle",
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
+    "../../../models/geometry:bundle",
     "../../legacy:bundle",
     "../../lit:bundle",
     "../../visual_logging:bundle",

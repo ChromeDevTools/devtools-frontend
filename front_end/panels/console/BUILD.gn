@@ -60,6 +60,7 @@ devtools_ui_module("console") {
     "../../third_party/codemirror.next:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/code_highlighter:bundle",
+    "../../ui/components/dialogs:bundle",
     "../../ui/components/highlighting:bundle",
     "../../ui/components/issue_counter:bundle",
     "../../ui/components/request_link_icon:bundle",

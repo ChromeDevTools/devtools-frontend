@@ -214,7 +214,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
             if (el instanceof HTMLCanvasElement) {
               output.focusCanvas = (): void => el.focus();
               canvasElement = el;
-              ScreencastView.repaintScreencastCanvas(el, input);
+              repaintScreencastCanvas(el, input);
             }
           })}></canvas>
         <div
@@ -225,7 +225,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           })}
           ${ref(el => {
             if (el instanceof HTMLElement && canvasElement && input.elementTitleData?.visible && !el.classList.contains('hidden')) {
-              ScreencastView.clampTooltipPosition(canvasElement, el, input.highlightModel);
+              clampTooltipPosition(canvasElement, el, input.highlightModel);
             }
         })}>
           <span class="screencast-tag-name">${input.elementTitleData?.tagName ?? nothing}</span>
@@ -239,6 +239,141 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   // clang-format on
 };
 
+function repaintScreencastCanvas(el: HTMLCanvasElement, input: CanvasRenderingInput): void {
+  const context = el.getContext('2d');
+  if (!context) {
+    return;
+  }
+
+  const model = input.highlightModel;
+  const config = input.highlightConfig;
+
+  const canvasWidth = el.getBoundingClientRect().width;
+  const canvasHeight = el.getBoundingClientRect().height;
+  el.width = window.devicePixelRatio * canvasWidth;
+  el.height = window.devicePixelRatio * canvasHeight;
+
+  context.save();
+  context.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+  if (model && config) {
+    context.save();
+    const quads = [];
+    const isTransparent = (color: Protocol.DOM.RGBA): boolean => Boolean(color.a && color.a === 0);
+    if (model.content && config.contentColor && !isTransparent(config.contentColor)) {
+      quads.push({quad: model.content, color: config.contentColor});
+    }
+    if (model.padding && config.paddingColor && !isTransparent(config.paddingColor)) {
+      quads.push({quad: model.padding, color: config.paddingColor});
+    }
+    if (model.border && config.borderColor && !isTransparent(config.borderColor)) {
+      quads.push({quad: model.border, color: config.borderColor});
+    }
+    if (model.margin && config.marginColor && !isTransparent(config.marginColor)) {
+      quads.push({quad: model.margin, color: config.marginColor});
+    }
+
+    for (let i = quads.length - 1; i > 0; --i) {
+      drawOutlinedQuadWithClip(context, quads[i].quad, quads[i - 1].quad, quads[i].color);
+    }
+    if (quads.length > 0) {
+      drawOutlinedQuad(context, quads[0].quad, quads[0].color);
+    }
+    context.globalCompositeOperation = 'destination-over';
+  }
+
+  if (input.screencastImage) {
+    context.drawImage(input.screencastImage, 0, input.screenOffsetTop * input.screenZoom,
+                      input.screencastImage.naturalWidth * input.imageZoom,
+                      input.screencastImage.naturalHeight * input.imageZoom);
+  }
+  context.restore();
+}
+
+function cssColor(color: Protocol.DOM.RGBA): string {
+  if (!color) {
+    return 'transparent';
+  }
+  return Common.Color.Legacy.fromRGBA([color.r, color.g, color.b, color.a !== undefined ? color.a : 1])
+             .asString(Common.Color.Format.RGBA) ||
+      '';
+}
+
+function quadToPath(context: CanvasRenderingContext2D, quad: Protocol.DOM.Quad): CanvasRenderingContext2D {
+  context.beginPath();
+  context.moveTo(quad[0], quad[1]);
+  context.lineTo(quad[2], quad[3]);
+  context.lineTo(quad[4], quad[5]);
+  context.lineTo(quad[6], quad[7]);
+  context.closePath();
+  return context;
+}
+
+function drawOutlinedQuad(context: CanvasRenderingContext2D, quad: Protocol.DOM.Quad,
+                          fillColor: Protocol.DOM.RGBA): void {
+  context.save();
+  context.lineWidth = 2;
+  quadToPath(context, quad).clip();
+  context.fillStyle = cssColor(fillColor);
+  context.fill();
+  context.restore();
+}
+
+function drawOutlinedQuadWithClip(context: CanvasRenderingContext2D, quad: Protocol.DOM.Quad,
+                                  clipQuad: Protocol.DOM.Quad, fillColor: Protocol.DOM.RGBA): void {
+  context.fillStyle = cssColor(fillColor);
+  context.save();
+  context.lineWidth = 0;
+  quadToPath(context, quad).fill();
+  context.globalCompositeOperation = 'destination-out';
+  context.fillStyle = 'red';
+  quadToPath(context, clipQuad).fill();
+  context.restore();
+}
+
+function clampTooltipPosition(canvas: HTMLCanvasElement, titleElement: HTMLElement,
+                              model?: Protocol.DOM.BoxModel|null): void {
+  if (!model) {
+    return;
+  }
+  const canvasWidth = canvas.getBoundingClientRect().width;
+  const canvasHeight = canvas.getBoundingClientRect().height;
+  const titleWidth = titleElement.offsetWidth;
+  const titleHeight = titleElement.offsetHeight;
+
+  const anchorTop = model.margin[1];
+  const anchorBottom = model.margin[7];
+
+  const arrowHeight = 7;
+  let arrowDirection: 'up'|'down'|undefined;
+
+  let boxX = Math.max(2, model.margin[0]);
+  if (boxX + titleWidth > canvasWidth) {
+    boxX = canvasWidth - titleWidth - 2;
+  }
+
+  let boxY;
+  if (anchorTop > canvasHeight) {
+    boxY = canvasHeight - titleHeight - arrowHeight;
+    arrowDirection = 'down';
+  } else if (anchorBottom < 0) {
+    boxY = arrowHeight;
+    arrowDirection = 'up';
+  } else if (anchorBottom + titleHeight + arrowHeight < canvasHeight) {
+    boxY = anchorBottom + arrowHeight - 4;
+    arrowDirection = 'up';
+  } else if (anchorTop - titleHeight - arrowHeight > 0) {
+    boxY = anchorTop - titleHeight - arrowHeight + 3;
+    arrowDirection = 'down';
+  } else {
+    boxY = arrowHeight;
+  }
+
+  titleElement.style.top = `${boxY}px`;
+  titleElement.style.left = `${boxX}px`;
+  titleElement.classList.toggle('arrow-up', arrowDirection === 'up');
+  titleElement.classList.toggle('arrow-down', arrowDirection === 'down');
+}
 export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel.Highlighter {
   readonly #view: View;
   #viewOutput: ViewOutput;
@@ -373,6 +508,8 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
                                                  this.requestNavigationHistoryEvent, this);
       this.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded,
                                                  this.requestNavigationHistoryEvent, this);
+      this.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.FrameNavigatedWithinDocument,
+                                                 this.onFrameNavigated, this);
     }
   }
 
@@ -653,98 +790,6 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
     return model;
   }
 
-  static repaintScreencastCanvas(el: HTMLCanvasElement, input: CanvasRenderingInput): void {
-    const context = el.getContext('2d');
-    if (!context) {
-      return;
-    }
-
-    const model = input.highlightModel;
-    const config = input.highlightConfig;
-
-    const canvasWidth = el.getBoundingClientRect().width;
-    const canvasHeight = el.getBoundingClientRect().height;
-    el.width = window.devicePixelRatio * canvasWidth;
-    el.height = window.devicePixelRatio * canvasHeight;
-
-    context.save();
-    context.scale(window.devicePixelRatio, window.devicePixelRatio);
-
-    if (model && config) {
-      context.save();
-      const quads = [];
-      const isTransparent = (color: Protocol.DOM.RGBA): boolean => Boolean(color.a && color.a === 0);
-      if (model.content && config.contentColor && !isTransparent(config.contentColor)) {
-        quads.push({quad: model.content, color: config.contentColor});
-      }
-      if (model.padding && config.paddingColor && !isTransparent(config.paddingColor)) {
-        quads.push({quad: model.padding, color: config.paddingColor});
-      }
-      if (model.border && config.borderColor && !isTransparent(config.borderColor)) {
-        quads.push({quad: model.border, color: config.borderColor});
-      }
-      if (model.margin && config.marginColor && !isTransparent(config.marginColor)) {
-        quads.push({quad: model.margin, color: config.marginColor});
-      }
-
-      for (let i = quads.length - 1; i > 0; --i) {
-        ScreencastView.drawOutlinedQuadWithClip(context, quads[i].quad, quads[i - 1].quad, quads[i].color);
-      }
-      if (quads.length > 0) {
-        ScreencastView.drawOutlinedQuad(context, quads[0].quad, quads[0].color);
-      }
-      context.globalCompositeOperation = 'destination-over';
-    }
-
-    if (input.screencastImage) {
-      context.drawImage(input.screencastImage, 0, input.screenOffsetTop * input.screenZoom,
-                        input.screencastImage.naturalWidth * input.imageZoom,
-                        input.screencastImage.naturalHeight * input.imageZoom);
-    }
-    context.restore();
-  }
-
-  private static cssColor(color: Protocol.DOM.RGBA): string {
-    if (!color) {
-      return 'transparent';
-    }
-    return Common.Color.Legacy.fromRGBA([color.r, color.g, color.b, color.a !== undefined ? color.a : 1])
-               .asString(Common.Color.Format.RGBA) ||
-        '';
-  }
-
-  private static quadToPath(context: CanvasRenderingContext2D, quad: Protocol.DOM.Quad): CanvasRenderingContext2D {
-    context.beginPath();
-    context.moveTo(quad[0], quad[1]);
-    context.lineTo(quad[2], quad[3]);
-    context.lineTo(quad[4], quad[5]);
-    context.lineTo(quad[6], quad[7]);
-    context.closePath();
-    return context;
-  }
-
-  private static drawOutlinedQuad(context: CanvasRenderingContext2D, quad: Protocol.DOM.Quad,
-                                  fillColor: Protocol.DOM.RGBA): void {
-    context.save();
-    context.lineWidth = 2;
-    ScreencastView.quadToPath(context, quad).clip();
-    context.fillStyle = ScreencastView.cssColor(fillColor);
-    context.fill();
-    context.restore();
-  }
-
-  private static drawOutlinedQuadWithClip(context: CanvasRenderingContext2D, quad: Protocol.DOM.Quad,
-                                          clipQuad: Protocol.DOM.Quad, fillColor: Protocol.DOM.RGBA): void {
-    context.fillStyle = ScreencastView.cssColor(fillColor);
-    context.save();
-    context.lineWidth = 0;
-    ScreencastView.quadToPath(context, quad).fill();
-    context.globalCompositeOperation = 'destination-out';
-    context.fillStyle = 'red';
-    ScreencastView.quadToPath(context, clipQuad).fill();
-    context.restore();
-  }
-
   private drawElementTitle(): void {
     if (!this.node) {
       if (this.#elementTitleData.visible) {
@@ -771,50 +816,6 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
       };
       this.requestUpdate();
     }
-  }
-
-  static clampTooltipPosition(canvas: HTMLCanvasElement, titleElement: HTMLElement,
-                              model?: Protocol.DOM.BoxModel|null): void {
-    if (!model) {
-      return;
-    }
-    const canvasWidth = canvas.getBoundingClientRect().width;
-    const canvasHeight = canvas.getBoundingClientRect().height;
-    const titleWidth = titleElement.offsetWidth;
-    const titleHeight = titleElement.offsetHeight;
-
-    const anchorTop = model.margin[1];
-    const anchorBottom = model.margin[7];
-
-    const arrowHeight = 7;
-    let arrowDirection: 'up'|'down'|undefined;
-
-    let boxX = Math.max(2, model.margin[0]);
-    if (boxX + titleWidth > canvasWidth) {
-      boxX = canvasWidth - titleWidth - 2;
-    }
-
-    let boxY;
-    if (anchorTop > canvasHeight) {
-      boxY = canvasHeight - titleHeight - arrowHeight;
-      arrowDirection = 'down';
-    } else if (anchorBottom < 0) {
-      boxY = arrowHeight;
-      arrowDirection = 'up';
-    } else if (anchorBottom + titleHeight + arrowHeight < canvasHeight) {
-      boxY = anchorBottom + arrowHeight - 4;
-      arrowDirection = 'up';
-    } else if (anchorTop - titleHeight - arrowHeight > 0) {
-      boxY = anchorTop - titleHeight - arrowHeight + 3;
-      arrowDirection = 'down';
-    } else {
-      boxY = arrowHeight;
-    }
-
-    titleElement.style.top = `${boxY}px`;
-    titleElement.style.left = `${boxX}px`;
-    titleElement.classList.toggle('arrow-up', arrowDirection === 'up');
-    titleElement.classList.toggle('arrow-down', arrowDirection === 'down');
   }
 
   private viewportDimensions(): {width: number, height: number} {
@@ -848,6 +849,8 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
                                               this.requestNavigationHistoryEvent, this);
       this.resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded,
                                               this.requestNavigationHistoryEvent, this);
+      this.resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigatedWithinDocument,
+                                              this.onFrameNavigated, this);
     }
   }
 
@@ -902,6 +905,13 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
 
   private requestNavigationHistoryEvent(): void {
     void this.requestNavigationHistory();
+  }
+
+  private onFrameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {
+    const frame = event.data;
+    if (frame.isOutermostFrame()) {
+      this.requestNavigationHistoryEvent();
+    }
   }
 
   private async requestNavigationHistory(): Promise<void> {

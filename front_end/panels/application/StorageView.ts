@@ -158,6 +158,8 @@ export class StorageView extends UI.Widget.VBox {
   private includeThirdPartyCookiesCheckbox: UI.UIUtils.CheckboxLabel;
   private quotaRow: HTMLElement;
   private quotaUsage: number|null;
+  private quotaQuota: number|null;
+  private quotaOverrideActive: boolean|null;
   private pieChart: PerfUI.PieChart.PieChart;
   private previousOverrideFieldValue: string;
   private quotaOverrideCheckbox: UI.UIUtils.CheckboxLabel;
@@ -266,6 +268,8 @@ export class StorageView extends UI.Widget.VBox {
         i18nString(UIStrings.learnMore), undefined, 'learn-more');
     learnMoreRow.appendChild(learnMore);
     this.quotaUsage = null;
+    this.quotaQuota = null;
+    this.quotaOverrideActive = null;
     this.pieChart = new PerfUI.PieChart.PieChart();
     this.populatePieChart(0, []);
     const usageBreakdownRow = quota.appendRow();
@@ -406,6 +410,9 @@ export class StorageView extends UI.Widget.VBox {
       this.quotaOverrideControlRow.classList.add('hidden');
       this.quotaOverrideCheckbox.checked = false;
       this.quotaOverrideErrorMessage.textContent = '';
+      this.quotaUsage = null;
+      this.quotaQuota = null;
+      this.quotaOverrideActive = null;
     }
     void this.performUpdate();
   }
@@ -558,59 +565,75 @@ export class StorageView extends UI.Widget.VBox {
   override async performUpdate(): Promise<void> {
     if (!this.securityOrigin || !this.target) {
       this.quotaRow.textContent = '';
+      this.quotaUsage = null;
+      this.quotaQuota = null;
+      this.quotaOverrideActive = null;
       this.populatePieChart(0, []);
       return;
     }
 
     const securityOrigin = this.securityOrigin;
     const response = await this.target.storageAgent().invoke_getUsageAndQuota({origin: securityOrigin});
-    this.quotaRow.textContent = '';
     if (response.getError()) {
+      this.quotaRow.textContent = '';
+      this.quotaUsage = null;
+      this.quotaQuota = null;
+      this.quotaOverrideActive = null;
       this.populatePieChart(0, []);
       return;
     }
-    const quotaOverridden = response.overrideActive;
-    const quotaAsString = i18n.ByteUtilities.bytesToString(response.quota);
-    const usageAsString = i18n.ByteUtilities.bytesToString(response.usage);
-    const formattedQuotaAsString = i18nString(UIStrings.storageWithCustomMarker, {PH1: quotaAsString});
 
-    let quota: string|HTMLElement = quotaAsString;
-    if (quotaOverridden) {
-      const element = document.createElement('b');
-      element.textContent = formattedQuotaAsString;
-      quota = element;
-    }
+    const usageChanged = this.quotaUsage !== response.usage;
+    const quotaChanged = this.quotaQuota !== response.quota;
+    const overrideChanged = this.quotaOverrideActive !== response.overrideActive;
 
-    const element = uiI18n.getFormatLocalizedString(str_, UIStrings.storageQuotaUsed, {PH1: usageAsString, PH2: quota});
-    this.quotaRow.appendChild(element);
-    UI.Tooltip.Tooltip.install(
-        this.quotaRow,
-        i18nString(
-            UIStrings.storageQuotaUsedWithBytes,
-            {PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString()}));
-
-    if (!response.overrideActive && response.quota < 125829120) {  // 120 MB
-      const icon = new Icon();
-      icon.name = 'info';
-      icon.style.color = 'var(--icon-info)';
-      icon.classList.add('small');
-      UI.Tooltip.Tooltip.install(this.quotaRow, i18nString(UIStrings.storageQuotaIsLimitedIn));
-      this.quotaRow.appendChild(icon);
-    }
-
-    if (this.quotaUsage === null || this.quotaUsage !== response.usage) {
+    if (usageChanged || quotaChanged || overrideChanged) {
       this.quotaUsage = response.usage;
-      const slices: PerfUI.PieChart.Slice[] = [];
-      for (const usageForType of response.usageBreakdown.sort((a, b) => b.usage - a.usage)) {
-        const value = usageForType.usage;
-        if (!value) {
-          continue;
-        }
-        const title = this.getStorageTypeName(usageForType.storageType);
-        const color = this.pieColors.get(usageForType.storageType) || '#ccc';
-        slices.push({value, color, title});
+      this.quotaQuota = response.quota;
+      this.quotaOverrideActive = response.overrideActive;
+
+      this.quotaRow.textContent = '';
+      const quotaAsString = i18n.ByteUtilities.bytesToString(response.quota);
+      const usageAsString = i18n.ByteUtilities.bytesToString(response.usage);
+      const formattedQuotaAsString = i18nString(UIStrings.storageWithCustomMarker, {PH1: quotaAsString});
+
+      let quota: string|HTMLElement = quotaAsString;
+      if (response.overrideActive) {
+        const element = document.createElement('b');
+        element.textContent = formattedQuotaAsString;
+        quota = element;
       }
-      this.populatePieChart(response.usage, slices);
+
+      const element =
+          uiI18n.getFormatLocalizedString(str_, UIStrings.storageQuotaUsed, {PH1: usageAsString, PH2: quota});
+      this.quotaRow.appendChild(element);
+      UI.Tooltip.Tooltip.install(
+          this.quotaRow,
+          i18nString(UIStrings.storageQuotaUsedWithBytes,
+                     {PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString()}));
+
+      if (!response.overrideActive && response.quota < 125829120) {  // 120 MiB
+        const icon = new Icon();
+        icon.name = 'info';
+        icon.style.color = 'var(--icon-info)';
+        icon.classList.add('small');
+        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.storageQuotaIsLimitedIn));
+        this.quotaRow.appendChild(icon);
+      }
+
+      if (usageChanged) {
+        const slices: PerfUI.PieChart.Slice[] = [];
+        for (const usageForType of response.usageBreakdown.sort((a, b) => b.usage - a.usage)) {
+          const value = usageForType.usage;
+          if (!value) {
+            continue;
+          }
+          const title = this.getStorageTypeName(usageForType.storageType);
+          const color = this.pieColors.get(usageForType.storageType) || '#ccc';
+          slices.push({value, color, title});
+        }
+        this.populatePieChart(response.usage, slices);
+      }
     }
 
     void this.throttler.schedule(this.requestUpdate.bind(this));

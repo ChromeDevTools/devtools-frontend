@@ -109,4 +109,221 @@ describe('CommentManager', () => {
     manager.clear();
     assert.lengthOf(manager.getCommentThreads(), 0);
   });
+
+  it('toggles comment mode and dispatches COMMENT_MODE_CHANGED', () => {
+    manager.setCommentMode(true);
+    assert.isTrue(manager.isCommentMode());
+    assert.strictEqual(document.body.style.cursor, 'crosshair');
+
+    manager.setCommentMode(false);
+    assert.isFalse(manager.isCommentMode());
+    assert.strictEqual(document.body.style.cursor, '');
+  });
+
+  it('does not dispatch COMMENT_MODE_CHANGED when setting comment mode to the same value', () => {
+    let modeChanges = 0;
+    manager.addEventListener(Comments.CommentManager.Events.COMMENT_MODE_CHANGED, () => {
+      modeChanges++;
+    });
+
+    manager.setCommentMode(true);
+    assert.strictEqual(modeChanges, 1);
+
+    manager.setCommentMode(true);
+    assert.strictEqual(modeChanges, 1);
+
+    manager.setCommentMode(false);
+    assert.strictEqual(modeChanges, 2);
+
+    manager.setCommentMode(false);
+    assert.strictEqual(modeChanges, 2);
+  });
+
+  it('resets comment mode when clear() is called', () => {
+    manager.setCommentMode(true);
+    assert.isTrue(manager.isCommentMode());
+    assert.strictEqual(document.body.style.cursor, 'crosshair');
+
+    manager.clear();
+
+    assert.isFalse(manager.isCommentMode());
+    assert.strictEqual(document.body.style.cursor, '');
+  });
+
+  it('handles element clicks in comment mode', () => {
+    const item = document.createElement('div');
+    item.setAttribute('jslog', 'TreeItem; context: click-item');
+    item.textContent = 'display: block;';
+    container.appendChild(item);
+
+    const threadInactive = manager.handleElementClick(item, 'Not in mode');
+    assert.isNull(threadInactive);
+
+    manager.setCommentMode(true);
+    const threadActive = manager.handleElementClick(item, 'In mode');
+    assert.isNotNull(threadActive);
+    assert.strictEqual(threadActive?.comments[0].text, 'In mode');
+  });
+
+  it('creates comments when clicking elements with start() in Comment Mode', () => {
+    manager.start(container, 'Clicked comment');
+    manager.setCommentMode(true);
+
+    const el = document.createElement('div');
+    el.setAttribute('jslog', 'TreeItem; context: clickable');
+    el.textContent = 'line-height: 1.5;';
+    container.appendChild(el);
+
+    el.click();
+
+    const threads = manager.getCommentThreads();
+    assert.lengthOf(threads, 1);
+    assert.strictEqual(threads[0].comments[0].text, 'Clicked comment');
+    assert.include(threads[0].anchor.vePath, 'TreeItem: clickable');
+  });
+
+  it('does not create comments when clicking elements in Comment Mode if not anchorable', () => {
+    manager.start(container, 'Clicked comment');
+    manager.setCommentMode(true);
+
+    const emptyDiv = document.createElement('div');
+    container.appendChild(emptyDiv);
+    emptyDiv.click();
+
+    assert.lengthOf(manager.getCommentThreads(), 0);
+  });
+
+  it('creates comments when clicking elements inside Shadow DOM using composed target', () => {
+    manager.start(container, 'Shadow comment');
+    manager.setCommentMode(true);
+
+    const host = document.createElement('div');
+    const shadow = host.attachShadow({mode: 'open'});
+    const innerEl = document.createElement('div');
+    innerEl.setAttribute('jslog', 'TreeItem; context: shadow-item');
+    innerEl.textContent = 'shadow content';
+    shadow.appendChild(innerEl);
+    container.appendChild(host);
+
+    innerEl.click();
+
+    const threads = manager.getCommentThreads();
+    assert.lengthOf(threads, 1);
+    assert.strictEqual(threads[0].comments[0].text, 'Shadow comment');
+    assert.include(threads[0].anchor.vePath, 'TreeItem: shadow-item');
+  });
+
+  it('suppresses pointer and mouse events on anchorable elements in Comment Mode', () => {
+    manager.start(container, 'Suppress test');
+    manager.setCommentMode(true);
+
+    const el = document.createElement('div');
+    el.setAttribute('jslog', 'TreeItem; context: suppress-item');
+    el.textContent = 'target content';
+    container.appendChild(el);
+
+    for (const eventType of ['mousedown', 'pointerdown', 'mouseup', 'pointerup', 'dblclick']) {
+      const ev = new MouseEvent(eventType, {bubbles: true, cancelable: true});
+      el.dispatchEvent(ev);
+      assert.isTrue(ev.defaultPrevented, `Expected ${eventType} to be defaultPrevented`);
+    }
+  });
+
+  it('sets hover highlight data on mouseover in Comment Mode and clears it on mouseleave', () => {
+    manager.start(container, 'Highlight test');
+    manager.setCommentMode(true);
+
+    const el = document.createElement('div');
+    el.setAttribute('jslog', 'TreeItem; context: highlighted');
+    el.textContent = 'padding: 8px;';
+    container.appendChild(el);
+
+    const mouseoverEvent = new MouseEvent('mouseover', {bubbles: true, cancelable: true});
+    el.dispatchEvent(mouseoverEvent);
+    assert.isTrue(mouseoverEvent.defaultPrevented);
+
+    const hoverData = manager.getHoverHighlight();
+    assert.isNotNull(hoverData);
+    assert.isTrue(hoverData?.visible);
+
+    const mouseleaveEvent = new MouseEvent('mouseleave', {bubbles: true, cancelable: true});
+    el.dispatchEvent(mouseleaveEvent);
+    assert.isTrue(mouseleaveEvent.defaultPrevented);
+    assert.isNull(manager.getHoverHighlight());
+  });
+
+  it('does not consume mouseleave event on non-anchorable elements in Comment Mode', () => {
+    manager.start(container, 'Hover test');
+    manager.setCommentMode(true);
+
+    const nonAnchorEl = document.createElement('div');
+    container.appendChild(nonAnchorEl);
+
+    const mouseleaveEvent = new MouseEvent('mouseleave', {bubbles: true, cancelable: true});
+    nonAnchorEl.dispatchEvent(mouseleaveEvent);
+    assert.isFalse(mouseleaveEvent.defaultPrevented);
+    assert.isNull(manager.getHoverHighlight());
+  });
+
+  it('does not clear hover highlight when moving pointer between children of the same anchor element', () => {
+    manager.start(container, 'Child hover test');
+    manager.setCommentMode(true);
+
+    const anchorEl = document.createElement('div');
+    anchorEl.setAttribute('jslog', 'TreeItem; context: parent-anchor');
+    const child1 = document.createElement('span');
+    child1.textContent = 'child 1';
+    const child2 = document.createElement('span');
+    child2.textContent = 'child 2';
+    anchorEl.appendChild(child1);
+    anchorEl.appendChild(child2);
+    container.appendChild(anchorEl);
+
+    const mouseoverEvent = new MouseEvent('mouseover', {bubbles: true, cancelable: true});
+    child1.dispatchEvent(mouseoverEvent);
+    assert.isNotNull(manager.getHoverHighlight());
+
+    const mouseleaveEvent = new MouseEvent('mouseleave', {bubbles: true, cancelable: true, relatedTarget: child2});
+    child1.dispatchEvent(mouseleaveEvent);
+
+    assert.isNotNull(manager.getHoverHighlight());
+  });
+
+  it('deduplicates HOVER_HIGHLIGHT_CHANGED events when hover data has not changed', () => {
+    manager.start(container, 'Deduplication test');
+    manager.setCommentMode(true);
+
+    const anchorEl = document.createElement('div');
+    anchorEl.setAttribute('jslog', 'TreeItem; context: dedup-anchor');
+    anchorEl.textContent = 'dedup content';
+    container.appendChild(anchorEl);
+
+    let eventCount = 0;
+    manager.addEventListener(Comments.CommentManager.Events.HOVER_HIGHLIGHT_CHANGED, () => {
+      eventCount++;
+    });
+
+    const mouseoverEvent1 = new MouseEvent('mouseover', {bubbles: true, cancelable: true});
+    anchorEl.dispatchEvent(mouseoverEvent1);
+    assert.strictEqual(eventCount, 1);
+
+    // Repeated mousemove or mouseover on the same element with identical bounds should not dispatch new events
+    const mousemoveEvent = new MouseEvent('mousemove', {bubbles: true, cancelable: true});
+    anchorEl.dispatchEvent(mousemoveEvent);
+    assert.strictEqual(eventCount, 1);
+
+    // Leaving should fire event once
+    const mouseleaveEvent = new MouseEvent('mouseleave', {bubbles: true, cancelable: true});
+    anchorEl.dispatchEvent(mouseleaveEvent);
+    assert.strictEqual(eventCount, 2);
+
+    // Repeated leave or clear when already null should not dispatch new events
+    anchorEl.dispatchEvent(mouseleaveEvent);
+    assert.strictEqual(eventCount, 2);
+  });
+
+  it('starts and stops listeners cleanly', () => {
+    manager.start({root: container, defaultText: 'Test'});
+    manager.stop();
+  });
 });

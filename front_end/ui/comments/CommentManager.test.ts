@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 
@@ -36,6 +37,10 @@ describe('CommentManager', () => {
     assert.strictEqual(thread?.comments[0].text, 'Needs adjustment');
     assert.strictEqual(thread?.comments[0].author, 'DEVELOPER');
     assert.strictEqual(thread?.status, 'ACTIVE');
+
+    const pins = manager.getPinPositions();
+    assert.lengthOf(pins, 1);
+    assert.isTrue(pins[0].visible);
   });
 
   it('returns null when creating comment on non-anchorable element', () => {
@@ -67,24 +72,30 @@ describe('CommentManager', () => {
   });
 
   it('removes comment threads and dispatches event', () => {
-    const item = document.createElement('div');
-    item.setAttribute('jslog', 'TreeItem; context: delete-test');
-    item.textContent = 'delete me';
-    container.appendChild(item);
+    const unobserveSpy = sinon.spy(IntersectionObserver.prototype, 'unobserve');
+    try {
+      const item = document.createElement('div');
+      item.setAttribute('jslog', 'TreeItem; context: delete-test');
+      item.textContent = 'delete me';
+      container.appendChild(item);
 
-    let eventCount = 0;
-    manager.addEventListener(Comments.CommentManager.Events.COMMENT_THREADS_CHANGED, () => {
-      eventCount++;
-    });
+      let eventCount = 0;
+      manager.addEventListener(Comments.CommentManager.Events.COMMENT_THREADS_CHANGED, () => {
+        eventCount++;
+      });
 
-    const thread = manager.createComment(item, 'To delete');
-    assert.isNotNull(thread);
-    assert.lengthOf(manager.getCommentThreads(), 1);
-    assert.strictEqual(eventCount, 1);
+      const thread = manager.createComment(item, 'To delete');
+      assert.isNotNull(thread);
+      assert.lengthOf(manager.getCommentThreads(), 1);
+      assert.strictEqual(eventCount, 1);
 
-    manager.removeCommentThread(thread!.id);
-    assert.lengthOf(manager.getCommentThreads(), 0);
-    assert.strictEqual(eventCount, 2);
+      manager.removeCommentThread(thread!.id);
+      assert.lengthOf(manager.getCommentThreads(), 0);
+      assert.strictEqual(eventCount, 2);
+      sinon.assert.calledWith(unobserveSpy, item);
+    } finally {
+      unobserveSpy.restore();
+    }
   });
 
   it('does not dispatch events when removing a non-existent comment thread ID', () => {
@@ -322,8 +333,152 @@ describe('CommentManager', () => {
     assert.strictEqual(eventCount, 2);
   });
 
-  it('starts and stops listeners cleanly', () => {
+  it('starts and stops listeners and observers cleanly', () => {
     manager.start({root: container, defaultText: 'Test'});
     manager.stop();
+  });
+
+  it('staggers pin vertical offsets when multiple comments are on the same element', () => {
+    const item = document.createElement('div');
+    item.setAttribute('jslog', 'TreeItem; context: multi-pin');
+    item.textContent = 'display: grid;';
+    item.getBoundingClientRect = () => new DOMRect(50, 100, 200, 30);
+    container.appendChild(item);
+
+    manager.setCommentMode(true);
+    const thread1 = manager.createComment(item, 'First comment');
+    const thread2 = manager.createComment(item, 'Second comment');
+
+    assert.isNotNull(thread1);
+    assert.isNotNull(thread2);
+
+    const pins = manager.getPinPositions();
+    assert.lengthOf(pins, 2);
+    assert.isTrue(pins[0].visible);
+    assert.isTrue(pins[1].visible);
+
+    // Second pin should have a 26px vertical offset compared to first pin
+    assert.strictEqual(pins[1].top - pins[0].top, 26);
+  });
+
+  it('observes connected elements with IntersectionObserver even when hidden', () => {
+    const observeSpy = sinon.spy(IntersectionObserver.prototype, 'observe');
+    try {
+      const hiddenEl = document.createElement('div');
+      hiddenEl.setAttribute('jslog', 'TreeItem; context: hidden-item');
+      hiddenEl.textContent = 'hidden item';
+      hiddenEl.style.display = 'none';
+      container.appendChild(hiddenEl);
+
+      manager.setCommentMode(true);
+      const thread = manager.createComment(hiddenEl, 'Hidden comment');
+      assert.isNotNull(thread);
+      sinon.assert.calledWith(observeSpy, hiddenEl);
+
+      // Pins should be empty because element is hidden
+      assert.lengthOf(manager.getPinPositions(), 0);
+    } finally {
+      observeSpy.restore();
+    }
+  });
+
+  it('keeps observing element when other comment threads remain on it', () => {
+    const unobserveSpy = sinon.spy(IntersectionObserver.prototype, 'unobserve');
+    try {
+      const el = document.createElement('div');
+      el.setAttribute('jslog', 'TreeItem; context: shared-element');
+      el.textContent = 'shared comment target';
+      container.appendChild(el);
+
+      manager.setCommentMode(true);
+      const thread1 = manager.createComment(el, 'Comment 1');
+      const thread2 = manager.createComment(el, 'Comment 2');
+      assert.isNotNull(thread1);
+      assert.isNotNull(thread2);
+      assert.lengthOf(manager.getCommentThreads(), 2);
+
+      manager.removeCommentThread(thread1!.id);
+      assert.lengthOf(manager.getCommentThreads(), 1);
+      assert.isFalse(unobserveSpy.calledWith(el));
+
+      manager.removeCommentThread(thread2!.id);
+      assert.lengthOf(manager.getCommentThreads(), 0);
+      sinon.assert.calledWith(unobserveSpy, el);
+    } finally {
+      unobserveSpy.restore();
+    }
+  });
+
+  it('rematches comments across DOM re-renders and updates pin visibility for orphaned comments', async () => {
+    const clock = sinon.useFakeTimers();
+    try {
+      manager.start(container);
+      manager.setCommentMode(true);
+
+      const oldItem = document.createElement('div');
+      oldItem.setAttribute('jslog', 'TreeItem; context: dynamic');
+      oldItem.textContent = 'display: flex;';
+      container.appendChild(oldItem);
+
+      const thread = manager.createComment(oldItem, 'Flex bug');
+      assert.isNotNull(thread);
+      assert.lengthOf(manager.getPinPositions(), 1);
+      assert.isTrue(manager.getPinPositions()[0].visible);
+
+      // Simulate DOM re-render by replacing oldItem with a newly recreated DOM node
+      oldItem.remove();
+      const newItem = document.createElement('div');
+      newItem.setAttribute('jslog', 'TreeItem; context: dynamic');
+      newItem.textContent = 'display: flex;';
+      container.appendChild(newItem);
+
+      await Promise.resolve();
+      clock.tick(250);
+
+      assert.lengthOf(manager.getPinPositions(), 1);
+      assert.isTrue(manager.getPinPositions()[0].visible);
+
+      // Simulate item scrolling out of view / folder collapsing (node removed)
+      newItem.remove();
+
+      await Promise.resolve();
+      clock.tick(250);
+
+      assert.lengthOf(manager.getPinPositions(), 0);
+      assert.lengthOf(manager.getHighlightRects(), 0);
+    } finally {
+      clock.restore();
+    }
+  });
+
+  it('unobserves old elements when rematching to a new element for recycled nodes', async () => {
+    const clock = sinon.useFakeTimers();
+    const unobserveSpy = sinon.spy(IntersectionObserver.prototype, 'unobserve');
+    try {
+      manager.start(container);
+      manager.setCommentMode(true);
+
+      const oldItem = document.createElement('div');
+      oldItem.setAttribute('jslog', 'TreeItem; context: recycled');
+      oldItem.textContent = 'item 1';
+      container.appendChild(oldItem);
+
+      const thread = manager.createComment(oldItem, 'Recycled test');
+      assert.isNotNull(thread);
+
+      oldItem.setAttribute('jslog', 'TreeItem; context: recycled-different');
+      const newItem = document.createElement('div');
+      newItem.setAttribute('jslog', 'TreeItem; context: recycled');
+      newItem.textContent = 'item 1 recycled';
+      container.appendChild(newItem);
+
+      await Promise.resolve();
+      clock.tick(250);
+
+      sinon.assert.calledWith(unobserveSpy, oldItem);
+    } finally {
+      unobserveSpy.restore();
+      clock.restore();
+    }
   });
 });

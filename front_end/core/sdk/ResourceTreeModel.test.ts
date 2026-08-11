@@ -261,4 +261,27 @@ describeWithEnvironment('ResourceTreeModel', () => {
         initialFrame, frameAfterNav,
         'Instead of keeping the existing frame, a new frame was created upon bfcache-navigation');
   });
+
+  it('updates frame url and dispatches events on navigatedWithinDocument', async () => {
+    const target = universe.createTarget({connection});
+    const resourceTreeModel = await getInitializedResourceTreeModel(target);
+    const mainFrame = getMainFrame(target);
+    const newUrl = urlString`https://example.com/spa-route`;
+
+    const frameNavigatedWithinDocumentSpy = sinon.spy();
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigatedWithinDocument,
+                                       frameNavigatedWithinDocumentSpy);
+
+    connection.dispatchEvent('Page.navigatedWithinDocument', {
+      frameId: mainFrame.id,
+      url: newUrl,
+      navigationType: Protocol.Page.NavigatedWithinDocumentEventNavigationType.HistoryAPI,
+    },
+                             undefined);
+
+    assert.strictEqual(mainFrame.url, newUrl);
+    assert.strictEqual(target.inspectedURL(), newUrl);
+    sinon.assert.calledOnce(frameNavigatedWithinDocumentSpy);
+    assert.strictEqual(frameNavigatedWithinDocumentSpy.firstCall.args[0].data, mainFrame);
+  });
 });

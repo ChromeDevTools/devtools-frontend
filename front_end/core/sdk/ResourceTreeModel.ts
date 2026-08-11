@@ -247,6 +247,18 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
   }
 
+  navigatedWithinDocument(frameId: Protocol.Page.FrameId, url: string): void {
+    const frame = this.framesInternal.get(frameId);
+    if (!frame) {
+      return;
+    }
+    frame.navigatedWithinDocument(url as Platform.DevToolsPath.UrlString);
+    if (frame.isMainFrame()) {
+      this.target().setInspectedURL(frame.url);
+    }
+    this.dispatchEventToListeners(Events.FrameNavigatedWithinDocument, frame);
+  }
+
   frameDetached(frameId: Protocol.Page.FrameId, isSwap: boolean): void {
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
     if (!this.#cachedResourcesProcessed) {
@@ -584,6 +596,7 @@ export enum Events {
   /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   FrameAdded = 'FrameAdded',
   FrameNavigated = 'FrameNavigated',
+  FrameNavigatedWithinDocument = 'FrameNavigatedWithinDocument',
   FrameDetached = 'FrameDetached',
   FrameResized = 'FrameResized',
   FrameWillNavigate = 'FrameWillNavigate',
@@ -607,6 +620,7 @@ export enum Events {
 export interface EventTypes {
   [Events.FrameAdded]: ResourceTreeFrame;
   [Events.FrameNavigated]: ResourceTreeFrame;
+  [Events.FrameNavigatedWithinDocument]: ResourceTreeFrame;
   [Events.FrameDetached]: {frame: ResourceTreeFrame, isSwap: boolean};
   [Events.FrameResized]: void;
   [Events.FrameWillNavigate]: ResourceTreeFrame;
@@ -734,6 +748,10 @@ export class ResourceTreeFrame {
     if (mainResource && mainResource.loaderId === this.#loaderId) {
       this.addResource(mainResource);
     }
+  }
+
+  navigatedWithinDocument(url: Platform.DevToolsPath.UrlString): void {
+    this.#url = url;
   }
 
   resourceTreeModel(): ResourceTreeModel {
@@ -1096,7 +1114,8 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
   frameStartedNavigating({}: Protocol.Page.FrameStartedNavigatingEvent): void {
   }
 
-  navigatedWithinDocument({}: Protocol.Page.NavigatedWithinDocumentEvent): void {
+  navigatedWithinDocument({frameId, url}: Protocol.Page.NavigatedWithinDocumentEvent): void {
+    this.#resourceTreeModel.navigatedWithinDocument(frameId, url);
   }
 
   frameResized(): void {

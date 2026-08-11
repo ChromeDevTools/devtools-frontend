@@ -64,9 +64,6 @@ export class CSSMetadata {
       if (Boolean(runtimeFlagStatus) && runtimeFlagStatus !== 'stable') {
         continue;
       }
-      if (!CSS.supports(propertyName, 'initial')) {
-        continue;
-      }
       this.#values.push(propertyName);
 
       if (property.inherited) {
@@ -113,7 +110,7 @@ export class CSSMetadata {
     for (const propertyName of this.#longhands.keys()) {
       // skip "all" because it is a CSS-wide keyword
       // skip shorthands that are defined in generatedPropertyValues because they have their own value sets
-      if (propertyName === 'all' || propertyValueSets.has(propertyName)) {
+      if (propertyName === 'all' || propertyName in SupportedCSSProperties.generatedPropertyValues) {
         continue;
       }
       const longhands = this.#longhands.get(propertyName);
@@ -121,6 +118,10 @@ export class CSSMetadata {
         continue;
       }
       const values = new Array<string>();
+      const propertyValueSet = propertyValueSets.get(propertyName);
+      if (propertyValueSet) {
+        values.push(...propertyValueSet);
+      }
       for (const longhand of longhands) {
         const longhandValues = propertyValueSets.get(longhand);
         if (!longhandValues) {
@@ -141,11 +142,6 @@ export class CSSMetadata {
           for (const val of aliasForValues) {
             values.add(val);
           }
-        }
-      }
-      for (const commonKeyword of CommonKeywords) {
-        if (!values.has(commonKeyword) && CSS.supports(propertyName, commonKeyword)) {
-          values.add(commonKeyword);
         }
       }
 

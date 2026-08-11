@@ -5,7 +5,7 @@
 When the user interacts with AI via the AI Assistance Panel, they are having a _conversation_ with an agent. DevTools currently contains two architectural generations for AI assistance:
 
 - **Legacy V1 (Multi-Agent Architecture)**: Implemented in `agents/`. Each domain is handled by a specialized agent subclass extending `AiAgent` (for example, `PerformanceAgent`, `StylingAgent`, `NetworkAgent`).
-- **AIAgentV2 (Unified Single-Agent Architecture)**: Implemented in `AiAgent2.ts`. We are migrating from the siloed multi-agent architecture to a unified, skill-based single-agent architecture. In V2, a single agent (`AIAgent2`) handles multiple domains by dynamically loading **Skills** (`skills/`) and calling type-safe **Tools** (`tools/`).
+- **AIAgentV2 (Unified Single-Agent Architecture)**: Implemented in `AiAgent2.ts`. We are migrating from the siloed multi-agent architecture to a unified, skill-based single-agent architecture. In V2, a single agent (`AiAgent2`) handles multiple domains by dynamically loading **Skills** (`skills/`) and calling type-safe **Tools** (`tools/`).
 
 Both architectures share the core **Contexts**, **Formatters**, and **Security & Origin Isolation** mechanisms described below.
 
@@ -67,7 +67,7 @@ To prevent prompt injection attacks and cross-origin data leaks, the AI Assistan
 
 ## AIAgentV2 (Unified Architecture)
 
-We are migrating DevTools AI Assistance from a siloed multi-agent architecture to a unified, skill-based single-agent architecture (`AIAgent2`). In this new architecture, capabilities are defined as **Skills** in Markdown files, and the agent can dynamically load skills as needed via a `learnSkill` tool.
+We are migrating DevTools AI Assistance from a siloed multi-agent architecture to a unified, skill-based single-agent architecture (`AiAgent2`). In this new architecture, capabilities are defined as **Skills** in Markdown files, and the agent can dynamically load skills as needed via a `learnSkills` tool.
 
 ### Skills Build System
 
@@ -81,6 +81,10 @@ To support skills requiring execution of code or fetching page state (like compu
 - **Tool**: A generic interface parameterized by `<Args, ReturnType, ContextType>` that binds parameter argument types and handler execution to strict contracts. `ContextType` defaults to `BaseToolCapability`, ensuring that each tool explicitly requests only the dependencies it requires.
 - **Capability Contexts**: Instead of passing a monolithic grab-bag context to all tools, dependencies are broken into narrow capability interfaces (e.g. `PageExecutionCapability`, `StyleMutationCapability`, `TargetCapability`, `OriginLockCapability`). Tools declare their required dependencies by intersecting these interfaces on their generic `ContextType` definition. The caller/Agent fulfills the complete capability context (`AllToolsCapabilities`), guaranteeing 100% compile-time type safety for dependencies without runtime checks.
 - **ToolRegistry**: A static registry (`ToolRegistry`) storing instantiated tools. It uses TypeScript function overloading and generic lookups (`static get<K extends keyof typeof TOOLS>(name: K): typeof TOOLS[K]`) to return the precise class type of each tool, preventing type-erasure and escape-hatches (such as `any` or `as unknown` type assertions) at integration points like `AiAgent2.ts`. See the [Tools README](tools/README.md) for authoring instructions.
+
+### Adding a new skill
+
+See the [Skills README](skills/README.md) for detailed instructions.
 
 ## Extending Domain Support (Performance Insights)
 

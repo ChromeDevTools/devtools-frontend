@@ -1,53 +1,50 @@
-'use strict';
+'use strict'
 
-var Type = require('../type');
+const Type = require('../type')
 
-var _toString = Object.prototype.toString;
+const _toString = Object.prototype.toString
 
-function resolveYamlPairs(data) {
-  if (data === null) return true;
+function resolveYamlPairs (data) {
+  if (data === null) return true
 
-  var index, length, pair, keys, result,
-      object = data;
+  const object = data
 
-  result = new Array(object.length);
+  const result = new Array(object.length)
 
-  for (index = 0, length = object.length; index < length; index += 1) {
-    pair = object[index];
+  for (let index = 0, length = object.length; index < length; index += 1) {
+    const pair = object[index]
 
-    if (_toString.call(pair) !== '[object Object]') return false;
+    if (_toString.call(pair) !== '[object Object]') return false
 
-    keys = Object.keys(pair);
+    const keys = Object.keys(pair)
 
-    if (keys.length !== 1) return false;
+    if (keys.length !== 1) return false
 
-    result[index] = [ keys[0], pair[keys[0]] ];
+    result[index] = [keys[0], pair[keys[0]]]
   }
 
-  return true;
+  return true
 }
 
-function constructYamlPairs(data) {
-  if (data === null) return [];
+function constructYamlPairs (data) {
+  if (data === null) return []
 
-  var index, length, pair, keys, result,
-      object = data;
+  const object = data
+  const result = new Array(object.length)
 
-  result = new Array(object.length);
+  for (let index = 0, length = object.length; index < length; index += 1) {
+    const pair = object[index]
 
-  for (index = 0, length = object.length; index < length; index += 1) {
-    pair = object[index];
+    const keys = Object.keys(pair)
 
-    keys = Object.keys(pair);
-
-    result[index] = [ keys[0], pair[keys[0]] ];
+    result[index] = [keys[0], pair[keys[0]]]
   }
 
-  return result;
+  return result
 }
 
 module.exports = new Type('tag:yaml.org,2002:pairs', {
   kind: 'sequence',
   resolve: resolveYamlPairs,
   construct: constructYamlPairs
-});
+})

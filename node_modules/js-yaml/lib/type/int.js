@@ -1,137 +1,124 @@
-'use strict';
+'use strict'
 
-var common = require('../common');
-var Type   = require('../type');
+const common = require('../common')
+const Type = require('../type')
 
-function isHexCode(c) {
-  return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) ||
-         ((0x41/* A */ <= c) && (c <= 0x46/* F */)) ||
-         ((0x61/* a */ <= c) && (c <= 0x66/* f */));
+function isHexCode (c) {
+  return ((c >= 0x30/* 0 */) && (c <= 0x39/* 9 */)) ||
+         ((c >= 0x41/* A */) && (c <= 0x46/* F */)) ||
+         ((c >= 0x61/* a */) && (c <= 0x66/* f */))
 }
 
-function isOctCode(c) {
-  return ((0x30/* 0 */ <= c) && (c <= 0x37/* 7 */));
+function isOctCode (c) {
+  return ((c >= 0x30/* 0 */) && (c <= 0x37/* 7 */))
 }
 
-function isDecCode(c) {
-  return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */));
+function isDecCode (c) {
+  return ((c >= 0x30/* 0 */) && (c <= 0x39/* 9 */))
 }
 
-function resolveYamlInteger(data) {
-  if (data === null) return false;
+function resolveYamlInteger (data) {
+  if (data === null) return false
 
-  var max = data.length,
-      index = 0,
-      hasDigits = false,
-      ch;
+  const max = data.length
+  let index = 0
+  let hasDigits = false
 
-  if (!max) return false;
+  if (!max) return false
 
-  ch = data[index];
+  let ch = data[index]
 
   // sign
   if (ch === '-' || ch === '+') {
-    ch = data[++index];
+    ch = data[++index]
   }
 
   if (ch === '0') {
     // 0
-    if (index + 1 === max) return true;
-    ch = data[++index];
+    if (index + 1 === max) return true
+    ch = data[++index]
 
     // base 2, base 8, base 16
 
     if (ch === 'b') {
       // base 2
-      index++;
+      index++
 
       for (; index < max; index++) {
-        ch = data[index];
-        if (ch === '_') continue;
-        if (ch !== '0' && ch !== '1') return false;
-        hasDigits = true;
+        ch = data[index]
+        if (ch !== '0' && ch !== '1') return false
+        hasDigits = true
       }
-      return hasDigits && ch !== '_';
+      return hasDigits && isFinite(parseYamlInteger(data))
     }
-
 
     if (ch === 'x') {
       // base 16
-      index++;
+      index++
 
       for (; index < max; index++) {
-        ch = data[index];
-        if (ch === '_') continue;
-        if (!isHexCode(data.charCodeAt(index))) return false;
-        hasDigits = true;
+        if (!isHexCode(data.charCodeAt(index))) return false
+        hasDigits = true
       }
-      return hasDigits && ch !== '_';
+      return hasDigits && isFinite(parseYamlInteger(data))
     }
-
 
     if (ch === 'o') {
       // base 8
-      index++;
+      index++
 
       for (; index < max; index++) {
-        ch = data[index];
-        if (ch === '_') continue;
-        if (!isOctCode(data.charCodeAt(index))) return false;
-        hasDigits = true;
+        if (!isOctCode(data.charCodeAt(index))) return false
+        hasDigits = true
       }
-      return hasDigits && ch !== '_';
+      return hasDigits && isFinite(parseYamlInteger(data))
     }
   }
 
   // base 10 (except 0)
 
-  // value should not start with `_`;
-  if (ch === '_') return false;
-
   for (; index < max; index++) {
-    ch = data[index];
-    if (ch === '_') continue;
     if (!isDecCode(data.charCodeAt(index))) {
-      return false;
+      return false
     }
-    hasDigits = true;
+    hasDigits = true
   }
 
-  // Should have digits and should not end with `_`
-  if (!hasDigits || ch === '_') return false;
+  if (!hasDigits) return false
 
-  return true;
+  return isFinite(parseYamlInteger(data))
 }
 
-function constructYamlInteger(data) {
-  var value = data, sign = 1, ch;
+function parseYamlInteger (data) {
+  let value = data
+  let sign = 1
 
-  if (value.indexOf('_') !== -1) {
-    value = value.replace(/_/g, '');
-  }
-
-  ch = value[0];
+  let ch = value[0]
 
   if (ch === '-' || ch === '+') {
-    if (ch === '-') sign = -1;
-    value = value.slice(1);
-    ch = value[0];
+    if (ch === '-') sign = -1
+    value = value.slice(1)
+    ch = value[0]
   }
 
-  if (value === '0') return 0;
+  if (value === '0') return 0
 
   if (ch === '0') {
-    if (value[1] === 'b') return sign * parseInt(value.slice(2), 2);
-    if (value[1] === 'x') return sign * parseInt(value.slice(2), 16);
-    if (value[1] === 'o') return sign * parseInt(value.slice(2), 8);
+    if (value[1] === 'b') return sign * parseInt(value.slice(2), 2)
+    if (value[1] === 'x') return sign * parseInt(value.slice(2), 16)
+    if (value[1] === 'o') return sign * parseInt(value.slice(2), 8)
   }
 
-  return sign * parseInt(value, 10);
+  return sign * parseInt(value, 10)
 }
 
-function isInteger(object) {
+function constructYamlInteger (data) {
+  return parseYamlInteger(data)
+}
+
+function isInteger (object) {
   return (Object.prototype.toString.call(object)) === '[object Number]' &&
-         (object % 1 === 0 && !common.isNegativeZero(object));
+         (object % 1 === 0 && !common.isNegativeZero(object))
 }
 
 module.exports = new Type('tag:yaml.org,2002:int', {
@@ -140,17 +127,16 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   construct: constructYamlInteger,
   predicate: isInteger,
   represent: {
-    binary:      function (obj) { return obj >= 0 ? '0b' + obj.toString(2) : '-0b' + obj.toString(2).slice(1); },
-    octal:       function (obj) { return obj >= 0 ? '0o'  + obj.toString(8) : '-0o'  + obj.toString(8).slice(1); },
-    decimal:     function (obj) { return obj.toString(10); },
-    /* eslint-disable max-len */
-    hexadecimal: function (obj) { return obj >= 0 ? '0x' + obj.toString(16).toUpperCase() :  '-0x' + obj.toString(16).toUpperCase().slice(1); }
+    binary: function (obj) { return obj >= 0 ? '0b' + obj.toString(2) : '-0b' + obj.toString(2).slice(1) },
+    octal: function (obj) { return obj >= 0 ? '0o' + obj.toString(8) : '-0o' + obj.toString(8).slice(1) },
+    decimal: function (obj) { return obj.toString(10) },
+    hexadecimal: function (obj) { return obj >= 0 ? '0x' + obj.toString(16).toUpperCase() : '-0x' + obj.toString(16).toUpperCase().slice(1) }
   },
   defaultStyle: 'decimal',
   styleAliases: {
-    binary:      [ 2,  'bin' ],
-    octal:       [ 8,  'oct' ],
-    decimal:     [ 10, 'dec' ],
-    hexadecimal: [ 16, 'hex' ]
+    binary: [2, 'bin'],
+    octal: [8, 'oct'],
+    decimal: [10, 'dec'],
+    hexadecimal: [16, 'hex']
   }
-});
+})

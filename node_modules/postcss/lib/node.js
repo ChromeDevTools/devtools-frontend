@@ -7,25 +7,41 @@ let { isClean, my } = require('./symbols')
 
 function cloneNode(obj, parent) {
   let cloned = new obj.constructor()
+  // An explicit stack instead of recursive calls to survive deeply
+  // nested trees. Each entry is [source, its clone, clone's parent].
+  let stack = [[obj, cloned, parent]]
 
-  for (let i in obj) {
-    if (!Object.prototype.hasOwnProperty.call(obj, i)) {
-      /* c8 ignore next 2 */
-      continue
-    }
-    if (i === 'proxyCache') continue
-    let value = obj[i]
-    let type = typeof value
+  while (stack.length > 0) {
+    let [source, target, targetParent] = stack.pop()
+    for (let i in source) {
+      if (!Object.prototype.hasOwnProperty.call(source, i)) {
+        /* c8 ignore next 2 */
+        continue
+      }
+      if (i === 'proxyCache') continue
+      let value = source[i]
+      let type = typeof value
 
-    if (i === 'parent' && type === 'object') {
-      if (parent) cloned[i] = parent
-    } else if (i === 'source') {
-      cloned[i] = value
-    } else if (Array.isArray(value)) {
-      cloned[i] = value.map(j => cloneNode(j, cloned))
-    } else {
-      if (type === 'object' && value !== null) value = cloneNode(value)
-      cloned[i] = value
+      if (i === 'parent' && type === 'object') {
+        if (targetParent) target[i] = targetParent
+      } else if (i === 'source') {
+        target[i] = value
+      } else if (Array.isArray(value)) {
+        let children = []
+        target[i] = children
+        for (let j of value) {
+          let childClone = new j.constructor()
+          children.push(childClone)
+          stack.push([j, childClone, target])
+        }
+      } else {
+        if (type === 'object' && value !== null) {
+          let valueClone = new value.constructor()
+          stack.push([value, valueClone, undefined])
+          value = valueClone
+        }
+        target[i] = value
+      }
     }
   }
 
@@ -69,11 +85,15 @@ class Node {
     this[isClean] = false
     this[my] = true
 
-    for (let name in defaults) {
+    for (let name of Object.keys(defaults)) {
+      if (name === '__proto__') continue
       if (name === 'nodes') {
         this.nodes = []
         for (let node of defaults[name]) {
-          if (typeof node.clone === 'function') {
+          // Clone only nodes that already belong to another tree, so passing a
+          // freshly created (parent-less) node adopts that instance instead of
+          // a copy and keeps the caller's reference usable. See #1987.
+          if (typeof node.clone === 'function' && node.parent) {
             this.append(node.clone())
           } else {
             this.append(node)
@@ -206,14 +226,18 @@ class Node {
   }
 
   positionBy(opts = {}) {
-    let pos = this.source.start
+    let inputString =
+      'document' in this.source.input
+        ? this.source.input.document
+        : this.source.input.css
+    let pos = {
+      column: this.source.start.column,
+      line: this.source.start.line,
+      offset: sourceOffset(inputString, this.source.start)
+    }
     if (opts.index) {
       pos = this.positionInside(opts.index)
     } else if (opts.word) {
-      let inputString =
-        'document' in this.source.input
-          ? this.source.input.document
-          : this.source.input.css
       let stringRepresentation = inputString.slice(
         sourceOffset(inputString, this.source.start),
         sourceOffset(inputString, this.source.end)
@@ -298,7 +322,7 @@ class Node {
           line: opts.start.line,
           offset: sourceOffset(inputString, opts.start)
         }
-      } else if (opts.index) {
+      } else if (typeof opts.index === 'number') {
         start = this.positionInside(opts.index)
       }
 
@@ -310,7 +334,7 @@ class Node {
         }
       } else if (typeof opts.endIndex === 'number') {
         end = this.positionInside(opts.endIndex)
-      } else if (opts.index) {
+      } else if (typeof opts.index === 'number') {
         end = this.positionInside(opts.index + 1)
       }
     }
@@ -374,47 +398,68 @@ class Node {
   }
 
   toJSON(_, inputs) {
-    let fixed = {}
     let emitInputs = inputs == null
     inputs = inputs || new Map()
-    let inputsNextIndex = 0
 
-    for (let name in this) {
-      if (!Object.prototype.hasOwnProperty.call(this, name)) {
-        /* c8 ignore next 2 */
-        continue
-      }
-      if (name === 'parent' || name === 'proxyCache') continue
-      let value = this[name]
+    // A worklist instead of recursive `toJSON()` calls to survive deeply
+    // nested trees. Each entry converts one node and writes the result
+    // into the already converted parent by [holder, key].
+    let holderOfRoot = []
+    let queue = [[this, holderOfRoot, 0]]
 
-      if (Array.isArray(value)) {
-        fixed[name] = value.map(i => {
-          if (typeof i === 'object' && i.toJSON) {
-            return i.toJSON(null, inputs)
-          } else {
-            return i
+    for (let step = 0; step < queue.length; step++) {
+      let [node, holder, key] = queue[step]
+      let fixed = {}
+      holder[key] = fixed
+
+      for (let name in node) {
+        if (!Object.prototype.hasOwnProperty.call(node, name)) {
+          /* c8 ignore next 2 */
+          continue
+        }
+        if (name === 'parent' || name === 'proxyCache') continue
+        let value = node[name]
+
+        if (Array.isArray(value)) {
+          let fixedArray = []
+          fixed[name] = fixedArray
+          for (let i = 0; i < value.length; i++) {
+            let item = value[i]
+            if (typeof item === 'object' && item.toJSON) {
+              if (item.toJSON === Node.prototype.toJSON) {
+                queue.push([item, fixedArray, i])
+              } else {
+                fixedArray[i] = item.toJSON(null, inputs)
+              }
+            } else {
+              fixedArray[i] = item
+            }
           }
-        })
-      } else if (typeof value === 'object' && value.toJSON) {
-        fixed[name] = value.toJSON(null, inputs)
-      } else if (name === 'source') {
-        if (value == null) continue
-        let inputId = inputs.get(value.input)
-        if (inputId == null) {
-          inputId = inputsNextIndex
-          inputs.set(value.input, inputsNextIndex)
-          inputsNextIndex++
+        } else if (typeof value === 'object' && value.toJSON) {
+          if (value.toJSON === Node.prototype.toJSON) {
+            queue.push([value, fixed, name])
+          } else {
+            fixed[name] = value.toJSON(null, inputs)
+          }
+        } else if (name === 'source') {
+          if (value == null) continue
+          let inputId = inputs.get(value.input)
+          if (inputId == null) {
+            inputId = inputs.size
+            inputs.set(value.input, inputId)
+          }
+          fixed[name] = {
+            end: value.end,
+            inputId,
+            start: value.start
+          }
+        } else {
+          fixed[name] = value
         }
-        fixed[name] = {
-          end: value.end,
-          inputId,
-          start: value.start
-        }
-      } else {
-        fixed[name] = value
       }
     }
 
+    let fixed = holderOfRoot[0]
     if (emitInputs) {
       fixed.inputs = [...inputs.keys()].map(input => input.toJSON())
     }

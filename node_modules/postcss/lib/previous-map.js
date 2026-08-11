@@ -1,7 +1,7 @@
 'use strict'
 
 let { existsSync, readFileSync } = require('fs')
-let { dirname, join } = require('path')
+let { dirname, isAbsolute, join, relative, sep } = require('path')
 let { SourceMapConsumer, SourceMapGenerator } = require('source-map-js')
 
 function fromBase64(str) {
@@ -85,9 +85,12 @@ class PreviousMap {
   }
 
   loadFile(path, cssFile, trusted) {
-    /* c8 ignore next 5 */
     if (!trusted && !this.unsafeMap) {
-      if (!/\.map$/i.test(path)) {
+      if (!/\.map$/i.test(path)) return undefined
+      if (!cssFile) return undefined
+
+      let rel = relative(dirname(cssFile), path)
+      if (rel === '..' || rel.startsWith('..' + sep) || isAbsolute(rel)) {
         return undefined
       }
     }

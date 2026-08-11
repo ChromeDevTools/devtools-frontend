@@ -4,8 +4,37 @@ const statuses = require('../lib/statuses')
 const supported = require('../lib/supported')
 const browsers = require('./browsers').browsers
 const versions = require('./browserVersions').browserVersions
+const versionGroups = require('./versionGroups.js').versionGroups
 
 const MATH2LOG = Math.log(2)
+
+const groupCache = {}
+
+function expandKey(key) {
+  let cached = groupCache[key]
+  if (cached === undefined) {
+    cached = groupCache[key] = expandGroups(versionGroups[key], [])
+  }
+  return cached
+}
+
+function expandGroups(value, out) {
+  let start = 0
+  for (let i = 0, len = value.length; i <= len; i++) {
+    if (i === len || value.charCodeAt(i) === 32) {
+      if (i > start) {
+        if (value.charCodeAt(start) === 95) {
+          let group = expandKey(value.slice(start + 1, i))
+          for (let j = 0; j < group.length; j++) out.push(group[j])
+        } else {
+          out.push(value.slice(start, i))
+        }
+      }
+      start = i + 1
+    }
+  }
+  return out
+}
 
 function unpackSupport(cipher) {
   // bit flags
@@ -36,7 +65,7 @@ function unpackFeature(packed) {
     let browser = packed.A[key]
     browserStats[browsers[key]] = Object.keys(browser).reduce(
       (stats, support) => {
-        let packedVersions = browser[support].split(' ')
+        let packedVersions = expandGroups(browser[support], [])
         let unpacked2 = unpackSupport(support)
         packedVersions.forEach(v => (stats[versions[v]] = unpacked2))
         return stats

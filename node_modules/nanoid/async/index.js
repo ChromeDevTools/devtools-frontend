@@ -1,5 +1,7 @@
 import crypto from 'crypto'
+
 import { urlAlphabet } from '../url-alphabet/index.js'
+
 let random = bytes =>
   new Promise((resolve, reject) => {
     crypto.randomFill(Buffer.allocUnsafe(bytes), (err, buf) => {
@@ -10,9 +12,13 @@ let random = bytes =>
       }
     })
   })
+
 let customAlphabet = (alphabet, defaultSize = 21) => {
   let mask = (2 << (31 - Math.clz32((alphabet.length - 1) | 1))) - 1
+
+
   let step = Math.ceil((1.6 * mask * defaultSize) / alphabet.length)
+
   let tick = (id, size = defaultSize) =>
     random(step).then(bytes => {
       let i = step
@@ -22,8 +28,13 @@ let customAlphabet = (alphabet, defaultSize = 21) => {
       }
       return tick(id, size)
     })
-  return size => tick('', size)
+
+  return (size = defaultSize) => {
+    if (size <= 0) return Promise.resolve('')
+    return tick('', size)
+  }
 }
+
 let nanoid = (size = 21) =>
   random((size |= 0)).then(bytes => {
     let id = ''
@@ -32,4 +43,5 @@ let nanoid = (size = 21) =>
     }
     return id
   })
+
 export { nanoid, customAlphabet, random }

@@ -206,12 +206,21 @@ class Input {
     if (!this.map) return false
     let consumer = this.map.consumer()
 
-    let from = consumer.originalPositionFor({ column, line })
+    let from = consumer.originalPositionFor({ column: column - 1, line })
     if (!from.source) return false
 
     let to
     if (typeof endLine === 'number') {
-      to = consumer.originalPositionFor({ column: endColumn, line: endLine })
+      let toPosition = consumer.originalPositionFor({
+        column: endColumn - 1,
+        line: endLine
+      })
+      // The source map may not have a mapping that covers the end position
+      // (`originalPositionFor()` then returns `null` for `line`/`column`
+      // instead of omitting them). Treat that the same as not requesting
+      // an end position at all, so `endLine`/`endColumn` stay a consistent
+      // `undefined` pair instead of a mix of `null` and a bogus number.
+      if (toPosition.source) to = toPosition
     }
 
     let fromUrl
@@ -226,8 +235,8 @@ class Input {
     }
 
     let result = {
-      column: from.column,
-      endColumn: to && to.column,
+      column: from.column + 1,
+      endColumn: to && to.column + 1,
       endLine: to && to.line,
       line: from.line,
       url: fromUrl.toString()

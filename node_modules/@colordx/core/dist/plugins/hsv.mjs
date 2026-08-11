@@ -1,0 +1,2 @@
+import {a,c,d as d$1}from'../chunk-LAE55ZGF.mjs';import'../chunk-GLKEY6D3.mjs';import {b}from'../chunk-IOXRZECH.mjs';var m=(p,u,c$1)=>{p.prototype.toHsv=function(o=2){let{h:r,s:t,v:s,alpha:n}=a(this._rawRgb()),h=b(r,o);return {h:h>=360?0:h,s:b(t,o),v:b(s,o),alpha:n}},p.prototype.toHsvString=function(o=2){let{h:r,s:t,v:s,alpha:n}=this.toHsv(o);return n<1?`hsv(${r} ${t}% ${s}% / ${n})`:`hsv(${r} ${t}% ${s}%)`},u.push(c,d$1),c$1.push([c,"hsv"],[d$1,"hsv"]);},d=m;export{d as default};//# sourceMappingURL=hsv.mjs.map
+//# sourceMappingURL=hsv.mjs.map

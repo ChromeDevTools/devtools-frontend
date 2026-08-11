@@ -4,9 +4,7 @@
 // This schema is based on standard YAML's Core schema and includes most of
 // extra types described at YAML tag repository. (http://yaml.org/type/)
 
-
-'use strict';
-
+'use strict'
 
 module.exports = require('./core').extend({
   implicit: [
@@ -19,4 +17,4 @@ module.exports = require('./core').extend({
     require('../type/pairs'),
     require('../type/set')
   ]
-});
+})

@@ -1,9 +1,17 @@
+
 import { urlAlphabet } from './url-alphabet/index.js'
+
 let random = bytes => crypto.getRandomValues(new Uint8Array(bytes))
+
 let customRandom = (alphabet, defaultSize, getRandom) => {
   let mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1
+
+
+
   let step = -~((1.6 * mask * defaultSize) / alphabet.length)
+
   return (size = defaultSize) => {
+    if (size <= 0) return ''
     let id = ''
     while (true) {
       let bytes = getRandom(step)
@@ -15,8 +23,10 @@ let customRandom = (alphabet, defaultSize, getRandom) => {
     }
   }
 }
+
 let customAlphabet = (alphabet, size = 21) =>
   customRandom(alphabet, size, random)
+
 let nanoid = (size = 21) =>
   crypto.getRandomValues(new Uint8Array(size)).reduce((id, byte) => {
     byte &= 63
@@ -31,4 +41,5 @@ let nanoid = (size = 21) =>
     }
     return id
   }, '')
+
 export { nanoid, customAlphabet, customRandom, urlAlphabet, random }

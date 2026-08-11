@@ -4,8 +4,6 @@
 // NOTE: JS-YAML does not support schema-specific tag resolution restrictions.
 // So, Core schema has no distinctions from JSON schema is JS-YAML.
 
+'use strict'
 
-'use strict';
-
-
-module.exports = require('./json');
+module.exports = require('./json')

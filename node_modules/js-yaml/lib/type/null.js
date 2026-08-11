@@ -1,22 +1,22 @@
-'use strict';
+'use strict'
 
-var Type = require('../type');
+const Type = require('../type')
 
-function resolveYamlNull(data) {
-  if (data === null) return true;
+function resolveYamlNull (data) {
+  if (data === null) return true
 
-  var max = data.length;
+  const max = data.length
 
   return (max === 1 && data === '~') ||
-         (max === 4 && (data === 'null' || data === 'Null' || data === 'NULL'));
+         (max === 4 && (data === 'null' || data === 'Null' || data === 'NULL'))
 }
 
-function constructYamlNull() {
-  return null;
+function constructYamlNull () {
+  return null
 }
 
-function isNull(object) {
-  return object === null;
+function isNull (object) {
+  return object === null
 }
 
 module.exports = new Type('tag:yaml.org,2002:null', {
@@ -25,11 +25,11 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   construct: constructYamlNull,
   predicate: isNull,
   represent: {
-    canonical: function () { return '~';    },
-    lowercase: function () { return 'null'; },
-    uppercase: function () { return 'NULL'; },
-    camelcase: function () { return 'Null'; },
-    empty:     function () { return '';     }
+    canonical: function () { return '~' },
+    lowercase: function () { return 'null' },
+    uppercase: function () { return 'NULL' },
+    camelcase: function () { return 'Null' },
+    empty: function () { return '' }
   },
   defaultStyle: 'lowercase'
-});
+})

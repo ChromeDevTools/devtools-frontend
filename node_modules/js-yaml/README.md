@@ -1,7 +1,7 @@
 JS-YAML - YAML 1.2 parser / writer for JavaScript
 =================================================
 
-[![CI](https://github.com/nodeca/js-yaml/workflows/CI/badge.svg?branch=master)](https://github.com/nodeca/js-yaml/actions)
+[![CI](https://github.com/nodeca/js-yaml/actions/workflows/ci.yml/badge.svg)](https://github.com/nodeca/js-yaml/actions/workflows/ci.yml)
 [![NPM version](https://img.shields.io/npm/v/js-yaml.svg)](https://www.npmjs.org/package/js-yaml)
 
 __[Online Demo](https://nodeca.github.io/js-yaml/)__
@@ -88,6 +88,11 @@ options:
     https://www.yaml.org/spec/1.2/spec.html#id2804923
   - `DEFAULT_SCHEMA` - all supported YAML types.
 - `json` _(default: false)_ - compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
+- `maxDepth` _(default: 100)_ - limits nesting depth for collections (does not
+  take aliasees into account).
+- `maxTotalMergeKeys` _(default: 10000)_ - limits the total number of keys
+  processed by merge (`<<`) across one `load()` / `loadAll()` call. Set to `-1`
+  to disable.
 
 NOTE: This function **does not** understand multi-document sources, it throws
 exception on those.
@@ -226,22 +231,3 @@ moment of adding them.
 ``` javascript
 { "foo,bar": ["baz"], "[object Object]": ["baz", "baz"] }
 ```
-
-Also, reading of properties on implicit block mapping keys is not supported yet.
-So, the following YAML document cannot be loaded.
-
-``` yaml
-&anchor foo:
-  foo: bar
-  *anchor: duplicate key
-  baz: bat
-  *anchor: duplicate key
-```
-
-
-js-yaml for enterprise
-----------------------
-
-Available as part of the Tidelift Subscription
-
-The maintainers of js-yaml and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. [Learn more.](https://tidelift.com/subscription/pkg/npm-js-yaml?utm_source=npm-js-yaml&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)

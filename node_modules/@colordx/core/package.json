@@ -1,0 +1,131 @@
+{
+  "name": "@colordx/core",
+  "version": "5.5.0",
+  "description": "A high-performance color library with extended support for modern color spaces including OKLCH, OKLAB, Display-P3, and more",
+  "author": "Dmitrii Kriaklin",
+  "license": "MIT",
+  "homepage": "https://colordx.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dkryaklin/colordx.git"
+  },
+  "keywords": [
+    "color",
+    "colour",
+    "oklch",
+    "oklab",
+    "display-p3",
+    "wide-gamut",
+    "hsl",
+    "rgb",
+    "hex",
+    "hsv",
+    "hwb",
+    "lab",
+    "lch",
+    "xyz",
+    "cmyk",
+    "color-space",
+    "color-manipulation",
+    "color-conversion",
+    "performance"
+  ],
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./plugins/*": {
+      "import": {
+        "types": "./dist/plugins/*.d.ts",
+        "default": "./dist/plugins/*.mjs"
+      },
+      "require": {
+        "types": "./dist/plugins/*.d.cts",
+        "default": "./dist/plugins/*.cjs"
+      }
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "plugins/*": [
+        "./dist/plugins/*.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "packageManager": "yarn@4.13.0",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:types": "tsc --noEmit -p tsconfig.tests.json",
+    "test:mutate": "stryker run",
+    "knip": "knip",
+    "lint": "eslint src",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "changeset": "changeset",
+    "changeset:ai": "tsx scripts/changeset.ts",
+    "version": "changeset version",
+    "release": "yarn build && publint && changeset publish",
+    "check": "tsc --noEmit && yarn test:types && echo 'tsc ok' && yarn lint && yarn format",
+    "bench": "node --expose-gc --import tsx/esm bench/index.ts",
+    "size": "tsx scripts/size.ts",
+    "prepare": "node --eval \"if (process.env.CI) process.exit(0)\" && husky || true"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
+    "@changesets/cli": "^2.30.0",
+    "@stryker-mutator/core": "^9.6.1",
+    "@stryker-mutator/vitest-runner": "^9.6.1",
+    "@texel/color": "^1.1.11",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "@types/chroma-js": "^3",
+    "@types/culori": "^4.0.1",
+    "@types/tinycolor2": "^1",
+    "@vitest/coverage-v8": "^4.1.0",
+    "chroma-js": "^3.2.0",
+    "color": "^5.0.3",
+    "colord": "^2.9.3",
+    "culori": "^4.0.2",
+    "esbuild": "^0.28.0",
+    "eslint": "^9.39.0",
+    "eslint-config-prettier": "^10.1.8",
+    "fast-check": "^4.6.0",
+    "husky": "^9.1.7",
+    "knip": "^6.7.0",
+    "lint-staged": "^16.4.0",
+    "mitata": "^1.0.34",
+    "prettier": "^3.8.1",
+    "publint": "^0.3.18",
+    "tinycolor2": "^1.6.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.1",
+    "vitest": "^4.1.0"
+  }
+}

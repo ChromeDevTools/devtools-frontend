@@ -1,12 +1,9 @@
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
+'use strict'
 
-'use strict';
-
-
-var Schema = require('../schema');
-
+const Schema = require('../schema')
 
 module.exports = new Schema({
   explicit: [
@@ -14,4 +11,4 @@ module.exports = new Schema({
     require('../type/seq'),
     require('../type/map')
   ]
-});
+})

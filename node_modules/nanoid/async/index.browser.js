@@ -1,8 +1,14 @@
 let random = async bytes => crypto.getRandomValues(new Uint8Array(bytes))
+
 let customAlphabet = (alphabet, defaultSize = 21) => {
   let mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1
+
+
+
   let step = -~((1.6 * mask * defaultSize) / alphabet.length)
+
   return async (size = defaultSize) => {
+    if (size <= 0) return ''
     let id = ''
     while (true) {
       let bytes = crypto.getRandomValues(new Uint8Array(step))
@@ -14,9 +20,11 @@ let customAlphabet = (alphabet, defaultSize = 21) => {
     }
   }
 }
+
 let nanoid = async (size = 21) => {
   let id = ''
   let bytes = crypto.getRandomValues(new Uint8Array((size |= 0)))
+
   while (size--) {
     let byte = bytes[size] & 63
     if (byte < 36) {
@@ -31,4 +39,5 @@ let nanoid = async (size = 21) => {
   }
   return id
 }
+
 export { nanoid, customAlphabet, random }

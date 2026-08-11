@@ -16,6 +16,10 @@ Or if using `pnpm`:
 ```sh
 pnpm exec update-browserslist-db latest
 ```
+Or if using `yarn`:
+```sh
+yarn dlx update-browserslist-db@latest
+```
 
 <a href="https://evilmartians.com/?utm_source=update-browserslist-db">
   <img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg"

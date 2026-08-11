@@ -1,24 +1,24 @@
-'use strict';
+'use strict'
 
-var Type = require('../type');
+const Type = require('../type')
 
-function resolveYamlBoolean(data) {
-  if (data === null) return false;
+function resolveYamlBoolean (data) {
+  if (data === null) return false
 
-  var max = data.length;
+  const max = data.length
 
   return (max === 4 && (data === 'true' || data === 'True' || data === 'TRUE')) ||
-         (max === 5 && (data === 'false' || data === 'False' || data === 'FALSE'));
+         (max === 5 && (data === 'false' || data === 'False' || data === 'FALSE'))
 }
 
-function constructYamlBoolean(data) {
+function constructYamlBoolean (data) {
   return data === 'true' ||
          data === 'True' ||
-         data === 'TRUE';
+         data === 'TRUE'
 }
 
-function isBoolean(object) {
-  return Object.prototype.toString.call(object) === '[object Boolean]';
+function isBoolean (object) {
+  return Object.prototype.toString.call(object) === '[object Boolean]'
 }
 
 module.exports = new Type('tag:yaml.org,2002:bool', {
@@ -27,9 +27,9 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   construct: constructYamlBoolean,
   predicate: isBoolean,
   represent: {
-    lowercase: function (object) { return object ? 'true' : 'false'; },
-    uppercase: function (object) { return object ? 'TRUE' : 'FALSE'; },
-    camelcase: function (object) { return object ? 'True' : 'False'; }
+    lowercase: function (object) { return object ? 'true' : 'false' },
+    uppercase: function (object) { return object ? 'TRUE' : 'FALSE' },
+    camelcase: function (object) { return object ? 'True' : 'False' }
   },
   defaultStyle: 'lowercase'
-});
+})

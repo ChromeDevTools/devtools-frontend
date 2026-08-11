@@ -1,0 +1,2 @@
+var t={analogous:[-30,0,30],complementary:[0,180],"double-split-complementary":[-30,0,30,150,210],rectangle:[0,60,180,240],tetradic:[0,90,180,270],triadic:[0,120,240],"split-complementary":[0,150,210]},a=o=>{o.prototype.harmonies=function(e="complementary"){return t[e].map(r=>this.rotate(r))};},l=a;export{l as default};//# sourceMappingURL=harmonies.mjs.map
+//# sourceMappingURL=harmonies.mjs.map

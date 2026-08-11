@@ -26,6 +26,7 @@ import {
 import type {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {addChildFrame, FRAME_URL, getMainFrame, mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -1921,15 +1922,6 @@ describe('Extension Panels', () => {
         object: SDK.RemoteObject.RemoteObject.fromLocalObject(options.expression),
       };
     });
-    sinon.stub(UI.UIUtils.Renderer, 'render').callsFake(async (object: Object) => {
-      const element = document.createElement('div');
-      if (object instanceof SDK.RemoteObject.RemoteObject) {
-        element.textContent = String(object.value);
-      } else {
-        element.textContent = 'mock-rendered';
-      }
-      return {element, forceSelect: () => {}};
-    });
   });
 
   /**
@@ -2124,7 +2116,11 @@ describe('Extension Panels', () => {
       await run();
       const sidebar = getSidebar();
       // Verify that the JSON string object is rendered correctly.
-      assert.strictEqual(sidebar.element.textContent, expectedObject);
+      const sectionElement = sidebar.element.firstElementChild?.firstElementChild;
+      assert.exists(sectionElement);
+      const section = ObjectUI.ObjectPropertiesSection.getObjectPropertiesSectionFrom(sectionElement);
+      assert.exists(section);
+      assert.strictEqual(section.root.object.value, expectedObject);
     }
   });
 
@@ -2172,7 +2168,11 @@ describe('Extension Panels', () => {
       await run();
       const sidebar = getSidebar();
       // The expression evaluates to the expression itself because of the stub on executionContext.evaluate.
-      assert.strictEqual(sidebar.element.textContent, expectedObject);
+      const sectionElement = sidebar.element.firstElementChild?.firstElementChild;
+      assert.exists(sectionElement);
+      const section = ObjectUI.ObjectPropertiesSection.getObjectPropertiesSectionFrom(sectionElement);
+      assert.exists(section);
+      assert.strictEqual(section.root.object.value, expectedObject);
     }
   });
 

@@ -1643,27 +1643,6 @@ export class ConfirmDialog {
   }
 }
 
-export interface RenderedObject {
-  element: HTMLElement;
-  forceSelect(): void;
-}
-
-export abstract class Renderer {
-  abstract render(object: Object, options?: Options): Promise<RenderedObject|null>;
-
-  static async render(object: Object, options?: Options): Promise<RenderedObject|null> {
-    if (!object) {
-      throw new Error('Can\'t render ' + object);
-    }
-    const extension = getApplicableRegisteredRenderers(object)[0];
-    if (!extension) {
-      return null;
-    }
-    const renderer = await extension.loadRenderer();
-    return await renderer.render(object, options);
-  }
-}
-
 export function formatTimestamp(timestamp: number, full: boolean): string {
   const date = new Date(timestamp);
   const yymmdd = date.getFullYear() + '-' + leadZero(date.getMonth() + 1, 2) + '-' + leadZero(date.getDate(), 2);
@@ -1675,15 +1654,6 @@ export function formatTimestamp(timestamp: number, full: boolean): string {
     const valueString = String(value);
     return valueString.padStart(length, '0');
   }
-}
-
-export interface Options {
-  title?: string|Element;
-  editable?: boolean;
-  /**
-   * Should the resulting object be expanded.
-   */
-  expand?: boolean;
 }
 
 export const isScrolledToBottom = (element: Element): boolean => {
@@ -1748,32 +1718,6 @@ export const deepElementFromEvent = (ev: Event): Node|null => {
   const root = event.target && (event.target as Element).getComponentRoot();
   return root ? deepElementFromPoint((root as Document | ShadowRoot), event.pageX, event.pageY) : null;
 };
-
-const registeredRenderers: RendererRegistration[] = [];
-
-export function registerRenderer(registration: RendererRegistration): void {
-  registeredRenderers.push(registration);
-}
-export function getApplicableRegisteredRenderers(object: Object): RendererRegistration[] {
-  return registeredRenderers.filter(isRendererApplicableToContextTypes);
-
-  function isRendererApplicableToContextTypes(rendererRegistration: RendererRegistration): boolean {
-    if (!rendererRegistration.contextTypes) {
-      return true;
-    }
-    for (const contextType of rendererRegistration.contextTypes()) {
-      if (object instanceof contextType) {
-        return true;
-      }
-    }
-    return false;
-  }
-}
-
-export interface RendererRegistration {
-  loadRenderer: () => Promise<Renderer>;
-  contextTypes: () => Array<Platform.Constructor.ConstructorOrAbstract<unknown>>;
-}
 
 export interface ConfirmDialogOptions {
   okButtonLabel?: string;

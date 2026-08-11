@@ -2496,42 +2496,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
   static sparseIterationThreshold = 250000;
 }
 
-let rendererInstance: Renderer;
-
-export class Renderer implements UI.UIUtils.Renderer {
-  static instance(opts: {forceNew: boolean} = {forceNew: false}): Renderer {
-    const {forceNew} = opts;
-    if (!rendererInstance || forceNew) {
-      rendererInstance = new Renderer();
-    }
-    return rendererInstance;
-  }
-
-  async render(object: Object, options?: UI.UIUtils.Options): Promise<UI.UIUtils.RenderedObject|null> {
-    if (!(object instanceof SDK.RemoteObject.RemoteObject)) {
-      throw new Error('Can\'t render ' + object);
-    }
-    const title = options?.title;
-    const section = new ObjectPropertiesSection(object, title, undefined, undefined, Boolean(options?.editable));
-    if (!title) {
-      section.titleLessMode();
-    }
-    if (options?.expand) {
-      section.firstChild()?.expand();
-    }
-    const dispatchDimensionChange = (): void => {
-      section.element.dispatchEvent(new CustomEvent('dimensionschanged'));
-    };
-    section.addEventListener(UI.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
-    section.addEventListener(UI.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
-    section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
-    return {
-      element: section.element,
-      forceSelect: section.forceSelect.bind(section),
-    };
-  }
-}
-
 interface ExpandableTextViewInput {
   copyText: () => void;
   expandText: () => void;

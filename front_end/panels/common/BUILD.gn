@@ -65,6 +65,7 @@ devtools_ui_module("common") {
     "../../ui/i18n:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
     "../../ui/lit:bundle",
@@ -125,6 +126,7 @@ devtools_ui_module("unittests") {
     "../../testing",
     "../../ui/components/snackbars:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
   ]

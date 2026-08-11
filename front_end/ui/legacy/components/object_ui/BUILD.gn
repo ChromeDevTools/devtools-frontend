@@ -65,6 +65,7 @@ devtools_entrypoint("bundle") {
     # and the business logic should never depend on the UI modules.
     ":*",
     "../../../../panels/application/*",
+    "../../../../panels/common/*",
     "../../../../panels/console/*",
     "../../../../panels/elements/*",
     "../../../../panels/event_listeners/*",
@@ -76,18 +77,6 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_ui_legacy_visibility
-}
-
-devtools_entrypoint("meta") {
-  entrypoint = "object_ui-meta.ts"
-
-  deps = [
-    ":bundle",
-    "../../../../core/sdk:bundle",
-    "../../../../ui/legacy:bundle",
-  ]
-
-  visibility = [ "../../../../entrypoints/*" ]
 }
 
 devtools_ui_module("unittests") {

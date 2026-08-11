@@ -159,6 +159,8 @@ export const enum ToolName {
   LIST_PAGE_ORIGINS = 'listPageOrigins',
   GET_TRACE_EVENT_BY_KEY = 'getTraceEventByKey',
   SELECT_TRACE_EVENT_BY_KEY = 'selectTraceEventByKey',
+  LIST_SOURCES = 'listSources',
+  GET_SOURCE_CONTENT = 'getSourceContent',
 }
 
 /**

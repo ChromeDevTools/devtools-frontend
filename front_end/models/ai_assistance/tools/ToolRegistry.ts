@@ -6,10 +6,12 @@ import {ExecuteJavaScriptTool} from './ExecuteJavaScript.js';
 import {GetElementAccessibilityDetailsTool} from './GetElementAccessibilityDetails.js';
 import {GetLighthouseAuditsTool} from './GetLighthouseAudits.js';
 import {GetNetworkRequestDetailsTool} from './GetNetworkRequestDetails.js';
+import {GetSourceContentTool} from './GetSourceContent.js';
 import {GetStylesTool} from './GetStyles.js';
 import {GetTraceEventByKeyTool} from './GetTraceEventByKey.js';
 import {ListNetworkRequestsTool} from './ListNetworkRequests.js';
 import {ListPageOriginsTool} from './ListPageOrigins.js';
+import {ListSourcesTool} from './ListSources.js';
 import {RecordPerformanceTraceTool} from './RecordPerformanceTrace.js';
 import {ResolveDevtoolsNodePathTool} from './ResolveDevtoolsNodePath.js';
 import {SelectTraceEventByKeyTool} from './SelectTraceEventByKey.js';
@@ -35,6 +37,8 @@ export const TOOLS = {
   [ToolName.LIST_PAGE_ORIGINS]: new ListPageOriginsTool(),
   [ToolName.GET_TRACE_EVENT_BY_KEY]: new GetTraceEventByKeyTool(),
   [ToolName.SELECT_TRACE_EVENT_BY_KEY]: new SelectTraceEventByKeyTool(),
+  [ToolName.LIST_SOURCES]: new ListSourcesTool(),
+  [ToolName.GET_SOURCE_CONTENT]: new GetSourceContentTool(),
 };
 
 /**

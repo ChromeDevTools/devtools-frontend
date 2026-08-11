@@ -459,6 +459,24 @@ describeWithEnvironment('ChatMessage', () => {
             'SOURCE_FILES_LIST:https://example.com/script1.js,https://example.com/script2.js',
         );
       });
+
+      it('should correctly handle STORAGE_BREAKDOWN widget', () => {
+        const widget = {
+          name: 'STORAGE_BREAKDOWN',
+          data: {
+            totalUsageBytes: 1000,
+            totalQuotaBytes: 10000,
+            usageBreakdown: [
+              {storageType: 'indexeddb', bytes: 200},
+              {storageType: 'cookies', bytes: 15},
+            ],
+          },
+        } as unknown as AIAssistanceModel.AiAgent.AiWidget;
+        assert.strictEqual(
+            AiAssistance.ChatMessage.getWidgetSignature(widget),
+            'STORAGE_BREAKDOWN:1000:indexeddb_200,cookies_15',
+        );
+      });
     });
   });
 

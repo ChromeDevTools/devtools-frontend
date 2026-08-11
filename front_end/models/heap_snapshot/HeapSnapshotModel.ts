@@ -335,6 +335,15 @@ export interface NativeContextSizes {
   noAttributionSize: number;
 }
 
+export interface RetainedByContextSummary {
+  contextCount: number;
+  retainedByContextSize: number;
+  retainedByContextCount: number;
+  notRetainedByContextSize: number;
+  notRetainedByContextCount: number;
+  totalSize: number;
+}
+
 export const enum DOMLinkState {
   UNKNOWN = 0,
   ATTACHED = 1,

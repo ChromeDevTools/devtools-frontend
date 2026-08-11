@@ -280,6 +280,10 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callMethodPromise('getNativeContextSizes');
   }
 
+  getRetainedByContextSummary(): Promise<HeapSnapshotModel.RetainedByContextSummary> {
+    return this.callMethodPromise('getRetainedByContextSummary');
+  }
+
   aggregatesWithFilter(filter: HeapSnapshotModel.NodeFilter):
       Promise<Record<string, HeapSnapshotModel.AggregatedInfo>> {
     return this.callMethodPromise('aggregatesWithFilter', filter);

@@ -2692,6 +2692,49 @@ export abstract class HeapSnapshot {
     return this.#nativeContextSizes;
   }
 
+  getRetainedByContextSummary(): HeapSnapshotModel.HeapSnapshotModel.RetainedByContextSummary {
+    // Use the exact same implementation here as aggregateWithFilter('objectsRetainedByContexts').
+    const isRetainedByContext = this.createNamedFilter('objectsRetainedByContexts');
+
+    let contextCount = 0;
+    let retainedByContextSize = 0;
+    let retainedByContextCount = 0;
+    let notRetainedByContextSize = 0;
+    let notRetainedByContextCount = 0;
+
+    const node = this.rootNode();
+    const {nodes, nodeFieldCount, nodeSelfSizeOffset: selfSizeOffset} = this;
+    const nodesLength = nodes.length;
+
+    for (let nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
+      const selfSize = nodes.getValue(nodeIndex + selfSizeOffset);
+      if (!selfSize) {
+        continue;
+      }
+      node.nodeIndex = nodeIndex;
+      if (isRetainedByContext(node)) {
+        retainedByContextCount++;
+        retainedByContextSize += selfSize;
+      } else {
+        notRetainedByContextCount++;
+        notRetainedByContextSize += selfSize;
+      }
+
+      if (this.isContextObject(node)) {
+        contextCount++;
+      }
+    }
+
+    return {
+      contextCount,
+      retainedByContextSize,
+      retainedByContextCount,
+      notRetainedByContextSize,
+      notRetainedByContextCount,
+      totalSize: retainedByContextSize + notRetainedByContextSize,
+    };
+  }
+
   nodeNativeContext(nodeIndex: number): number {
     const ordinal = nodeIndex / this.nodeFieldCount;
     const nativeContextOrdinal = this.nodeNativeContextAttribution[ordinal];

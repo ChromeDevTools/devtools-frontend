@@ -1674,6 +1674,41 @@ describe('HeapSnapshot', () => {
     ]);
   });
 
+  it('correctly calculates getRetainedByContextSummary', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+
+    const context1 = new HeapNode('system / Context', 10, 'object', 10);
+    const context2 = new HeapNode('system / Context', 20, 'object', 20);
+    const nodeA = new HeapNode('NodeA', 30, 'object', 30);
+    const nodeB = new HeapNode('NodeB', 40, 'object', 40);
+
+    // Zero self-size nodes should be excluded from counts and sizes
+    const zeroSizeRetainedNode = new HeapNode('ZeroSizeRetained', 0, 'object', 0);
+    const zeroSizeNotRetainedNode = new HeapNode('ZeroSizeNotRetained', 0, 'object', 0);
+    const zeroSizeContext = new HeapNode('system / Context', 0, 'object', 0);
+
+    root.linkNode(context1, 'property', 'context1');
+    root.linkNode(context2, 'property', 'context2');
+    root.linkNode(nodeB, 'property', 'nodeB');
+    root.linkNode(zeroSizeNotRetainedNode, 'property', 'zeroNotRetained');
+    root.linkNode(zeroSizeContext, 'property', 'zeroContext');
+
+    context1.linkNode(nodeA, 'property', 'a');
+    context1.linkNode(zeroSizeRetainedNode, 'property', 'zeroRetained');
+    context2.linkNode(nodeB, 'property', 'b');
+
+    const snapshot = await builder.createJSHeapSnapshot();
+
+    const summary = snapshot.getRetainedByContextSummary();
+    assert.strictEqual(summary.contextCount, 2);
+    assert.strictEqual(summary.retainedByContextSize, 60);  // context1 (10) + context2 (20) + nodeA (30)
+    assert.strictEqual(summary.retainedByContextCount, 3);
+    assert.strictEqual(summary.notRetainedByContextSize, 40);  // nodeB (40)
+    assert.strictEqual(summary.notRetainedByContextCount, 1);
+    assert.strictEqual(summary.totalSize, 100);
+  });
+
   it('does not attribute objects to non-native contexts via meta-map links', async () => {
     const builder = new HeapSnapshotBuilder();
     const root = builder.rootNode;

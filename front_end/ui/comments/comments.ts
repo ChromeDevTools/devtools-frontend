@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import * as CommentAnchorResolver from './CommentAnchorResolver.js';
+import * as CommentManager from './CommentManager.js';
 
 export {
   CommentAnchorResolver,
+  CommentManager,
 };

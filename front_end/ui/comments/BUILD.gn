@@ -7,9 +7,13 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../visibility.gni")
 
 devtools_ui_module("comments") {
-  sources = [ "CommentAnchorResolver.ts" ]
+  sources = [
+    "CommentAnchorResolver.ts",
+    "CommentManager.ts",
+  ]
 
   deps = [
+    "../../core/common:bundle",
     "../../third_party/codemirror.next:bundle",
     "../../ui/visual_logging:bundle",
   ]
@@ -35,10 +39,14 @@ devtools_entrypoint("bundle") {
 devtools_ui_module("unittests") {
   testonly = true
 
-  sources = [ "CommentAnchorResolver.test.ts" ]
+  sources = [
+    "CommentAnchorResolver.test.ts",
+    "CommentManager.test.ts",
+  ]
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
     "../../testing",
     "../../third_party/codemirror.next:bundle",
     "../components/text_editor:bundle",

@@ -49,6 +49,7 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
+import type * as Comments from '../../ui/comments/comments.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbar from '../../ui/components/snackbars/snackbars.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
@@ -998,3 +999,33 @@ export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegat
     return false;
   }
 }
+
+let activeCommentManager: Comments.CommentManager.CommentManager|null = null;
+let activeOverlayWidget: Comments.CommentsOverlayWidget.CommentsOverlayWidget|null = null;
+
+// Temporary for manual testing and experimentation.
+export async function comments(): Promise<Comments.CommentManager.CommentManager> {
+  const Comments = await import('../../ui/comments/comments.js');
+  if (!activeCommentManager || !activeOverlayWidget) {
+    activeCommentManager = new Comments.CommentManager.CommentManager();
+    activeCommentManager.start();
+
+    activeOverlayWidget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(activeCommentManager);
+    activeOverlayWidget.markAsRoot();
+    activeOverlayWidget.show(document.body);
+    activeCommentManager.setCommentMode(true);
+    return activeCommentManager;
+  }
+
+  const newMode = !activeCommentManager.isCommentMode();
+  activeCommentManager.setCommentMode(newMode);
+  if (newMode) {
+    activeOverlayWidget.show(document.body);
+  } else {
+    activeOverlayWidget.detach();
+  }
+  return activeCommentManager;
+}
+
+// @ts-expect-error global helper for manual testing
+globalThis.comments = comments;

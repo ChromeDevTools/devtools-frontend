@@ -14,7 +14,7 @@ import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Logs from '../../logs/logs.js';
 import * as Trace from '../../trace/trace.js';
 import {canResourceContentsBeReadForTrace} from '../AiOrigins.js';
-import type {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
+import type {MainThreadSectionLabel, PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
 import {
   PerformanceInsightFormatter,
 } from '../data_formatters/PerformanceInsightFormatter.js';
@@ -47,13 +47,6 @@ const UIStringsNotTranslated = {
   mainThreadActivity: 'Investigating main thread activity',
 } as const;
 const lockedString = i18n.i18n.lockedString;
-
-/**
- * Labels used to identify specific periods or categories in the trace for getting main thread summary.
- * Supports hardcoded phases, dynamic navigation IDs (`NAVIGATION_X`), and insight models.
- */
-export type MainThreadSectionLabel = 'nav-to-lcp'|'lcp-ttfb'|'lcp-render-delay'|'trace-bounds'|'NO_NAVIGATION'|
-                                     `NAVIGATION_${string}`|keyof Trace.Insights.Types.InsightModels;
 
 /**
  * WARNING: preamble defined in code is only used when userTier is
@@ -195,14 +188,6 @@ enum ScorePriority {
 // 16k Tokens * ~4 char per token.
 const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
 
-const STATIC_LABEL_NAMES: Record<string, string> = {
-  'nav-to-lcp': 'navigation to LCP',
-  'lcp-ttfb': 'LCP to TTFB',
-  'lcp-render-delay': 'LCP render delay',
-  'trace-bounds': 'the entire trace',
-  NO_NAVIGATION: 'the period before the first navigation',
-};
-
 function getInsightModel(
     model: Trace.Insights.Types.InsightModels,
     key: string,
@@ -211,33 +196,6 @@ function getInsightModel(
     return model[key as keyof Trace.Insights.Types.InsightModels];
   }
   return undefined;
-}
-
-/**
- * Converts the label name we use in the code to a human readable one that is
- * shown to the user.
- */
-export function getLabelName(label: MainThreadSectionLabel, focus: AgentFocus): string {
-  if (Object.prototype.hasOwnProperty.call(STATIC_LABEL_NAMES, label)) {
-    return STATIC_LABEL_NAMES[label];
-  }
-
-  const {parsedTrace} = focus;
-  const insightSetById = parsedTrace.insights?.get(label as Trace.Types.Events.NavigationId);
-  if (insightSetById) {
-    return `navigation to ${insightSetById.url.href}`;
-  }
-
-  // Go through all the insights we have to find the first one that matches to find the title.
-  // TODO(b/505291090): make it easier to look up Insight titles from a key.
-  for (const insightSet of parsedTrace.insights?.values() ?? []) {
-    const model = getInsightModel(insightSet.model, label);
-    if (model) {
-      return `${model.title} insight`;
-    }
-  }
-
-  return label;
 }
 
 export interface PerformanceAgentOptions extends AgentOptions {
@@ -937,20 +895,6 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       },
     });
 
-    const createBounds =
-        (min?: Trace.Types.Timing.Micro, max?: Trace.Types.Timing.Micro): Trace.Types.Timing.TraceWindowMicro|null => {
-          const {min: bMin, max: bMax} = parsedTrace.data.Meta.traceBounds;
-          const clampedMin = Math.max(min ?? bMin, bMin);
-          const clampedMax = Math.min(max ?? bMax, bMax);
-
-          if (clampedMin > clampedMax) {
-            return null;
-          }
-
-          return Trace.Helpers.Timing.traceWindowFromMicroSeconds(clampedMin as Trace.Types.Timing.Micro,
-                                                                  clampedMax as Trace.Types.Timing.Micro);
-        };
-
     this.declareFunction<{label: MainThreadSectionLabel}, {summary: string}>('getMainThreadTrackSummaryByLabel', {
       description:
           'Returns a focused, detailed summary of the main thread for a predefined labeled period. Use this to get more relevant detail than the initial trace summary before diagnosing issues.',
@@ -969,7 +913,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         required: ['label'],
       },
       displayInfoFromArgs: args => {
-        const labelName = getLabelName(args.label, focus);
+        const labelName = context.getLabelName(args.label);
         return {
           title: lockedString(`${UIStringsNotTranslated.mainThreadActivity}: ${labelName}`),
           action: `getMainThreadTrackSummaryByLabel('${args.label}')`,
@@ -978,7 +922,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       handler: async args => {
         debugLog('Function call: getMainThreadTrackSummaryByLabel');
 
-        const bounds = this.#getBoundsForLabel(args.label, focus);
+        const bounds = context.getBoundsForLabel(args.label);
         if (!bounds) {
           return {error: `Invalid label: ${args.label}`};
         }
@@ -1026,7 +970,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           throw new Error('missing formatter');
         }
 
-        const bounds = createBounds(args.min, args.max);
+        const bounds = context.createBounds(args.min, args.max);
         if (!bounds) {
           return {error: 'invalid bounds'};
         }
@@ -1322,67 +1266,6 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         };
       },
     });
-  }
-
-  #getBoundsForLabel(label: MainThreadSectionLabel, focus: AgentFocus): Trace.Types.Timing.TraceWindowMicro|null {
-    const {parsedTrace} = focus;
-    const insightSet = focus.primaryInsightSet;
-
-    if (label === 'nav-to-lcp') {
-      if (insightSet) {
-        const lcp = Trace.Insights.Common.getLCP(insightSet);
-        if (lcp) {
-          return Trace.Helpers.Timing.traceWindowFromMicroSeconds(insightSet.bounds.min,
-                                                                  lcp.event.ts as Trace.Types.Timing.Micro);
-        }
-      }
-      return null;
-    }
-
-    if (label === 'lcp-ttfb') {
-      if (insightSet) {
-        const subparts = insightSet.model.LCPBreakdown?.subparts;
-        if (subparts?.ttfb) {
-          return subparts.ttfb;
-        }
-      }
-      return null;
-    }
-
-    if (label === 'lcp-render-delay') {
-      if (insightSet) {
-        const subparts = insightSet.model.LCPBreakdown?.subparts;
-        if (subparts?.renderDelay) {
-          return subparts.renderDelay;
-        }
-      }
-      return null;
-    }
-
-    if (label === 'trace-bounds') {
-      return parsedTrace.data.Meta.traceBounds;
-    }
-
-    const insightSetById = parsedTrace.insights?.get(label as Trace.Types.Events.NavigationId);
-    if (insightSetById) {
-      return insightSetById.bounds;
-    }
-
-    if (insightSet) {
-      const model = getInsightModel(insightSet.model, label);
-      if (model) {
-        return Trace.Insights.Common.insightBounds(model, insightSet.bounds);
-      }
-    }
-
-    for (const is of parsedTrace.insights?.values() ?? []) {
-      const model = getInsightModel(is.model, label);
-      if (model) {
-        return Trace.Insights.Common.insightBounds(model, is.bounds);
-      }
-    }
-
-    return null;
   }
 
   async #getNetworkRequestImageData(lcpRequest: Trace.Types.Events.SyntheticNetworkRequest):

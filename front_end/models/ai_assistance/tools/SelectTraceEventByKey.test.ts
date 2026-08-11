@@ -7,22 +7,31 @@ import * as sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as Tracing from '../../../services/tracing/tracing.js';
 import {
   assertIsError,
   assertIsResult,
-  initializePersistenceImplForTests,
+  makeFakeParsedTrace,
 } from '../../../testing/AiAssistanceHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../../testing/TestUniverse.js';
 import type * as Trace from '../../trace/trace.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-describeWithEnvironment('SelectTraceEventByKeyTool', () => {
+describe('SelectTraceEventByKeyTool', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
   let revealStub: sinon.SinonStub;
 
   const SelectTraceEventByKeyTool = AiAssistance.SelectTraceEventByKey.SelectTraceEventByKeyTool;
 
   beforeEach(() => {
-    initializePersistenceImplForTests();
+    universe = new TestUniverse();
     revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
   });
 
@@ -46,19 +55,14 @@ describeWithEnvironment('SelectTraceEventByKeyTool', () => {
   });
 
   it('returns error when event cannot be found', async () => {
-    const parsedTrace = {
-      insights: new Map(),
-      metadata: {},
-      data: {
-        Meta: {
-          mainFrameNavigations: [],
-          traceBounds: {min: 0, max: 100},
-          mainFrameURL: 'https://example.com',
-        },
-      },
-    } as unknown as Trace.TraceModel.ParsedTrace;
+    const parsedTrace = makeFakeParsedTrace();
 
-    const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+    const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+        parsedTrace,
+        universe.targetManager,
+        new Tracing.FreshRecording.Tracker(),
+        universe.debuggerWorkspaceBinding,
+    );
     const focus = traceContext.getItem();
     sinon.stub(focus, 'lookupEvent').returns(null);
 
@@ -74,19 +78,14 @@ describeWithEnvironment('SelectTraceEventByKeyTool', () => {
   });
 
   it('reveals the event and returns success data with TIMELINE_EVENT_SUMMARY widget', async () => {
-    const parsedTrace = {
-      insights: new Map(),
-      metadata: {},
-      data: {
-        Meta: {
-          mainFrameNavigations: [],
-          traceBounds: {min: 0, max: 100},
-          mainFrameURL: 'https://example.com',
-        },
-      },
-    } as unknown as Trace.TraceModel.ParsedTrace;
+    const parsedTrace = makeFakeParsedTrace();
 
-    const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+    const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+        parsedTrace,
+        universe.targetManager,
+        new Tracing.FreshRecording.Tracker(),
+        universe.debuggerWorkspaceBinding,
+    );
     const focus = traceContext.getItem();
     const mockEvent = {
       name: 'some-event',

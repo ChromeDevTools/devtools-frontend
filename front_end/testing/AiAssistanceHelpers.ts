@@ -16,6 +16,7 @@ import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
+import type * as Trace from '../models/trace/trace.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
 import * as AiAssistancePanel from '../panels/ai_assistance/ai_assistance.js';
@@ -394,4 +395,33 @@ export async function createDummyImageFile(width: number, height: number): Promi
     throw new Error('Failed to create blob');
   }
   return new File([blob], 'dummy.jpg', {type: 'image/jpeg'});
+}
+
+export function makeFakeParsedTrace(options: {
+  min?: number,
+  max?: number,
+  mainFrameURL?: string,
+} = {}): Trace.TraceModel.ParsedTrace {
+  return {
+    insights: new Map(),
+    metadata: {},
+    data: {
+      Meta: {
+        mainFrameNavigations: [],
+        traceBounds: {min: options.min ?? 0, max: options.max ?? 100},
+        mainFrameURL: options.mainFrameURL ?? 'https://example.com',
+      },
+    },
+  } as unknown as Trace.TraceModel.ParsedTrace;
+}
+
+export function stubPerformanceTraceFormatter(
+    traceContext: AiAssistance.PerformanceTraceContext.PerformanceTraceContext,
+    methods: {
+      formatMainThreadTrackSummary?: sinon.SinonStub,
+      formatNetworkTrackSummary?: sinon.SinonStub,
+    },
+    ): sinon.SinonStub {
+  return sinon.stub(traceContext, 'createFormatter')
+      .returns(methods as unknown as AiAssistance.PerformanceTraceFormatter.PerformanceTraceFormatter);
 }

@@ -24,6 +24,13 @@ import type {AICallTree} from '../performance/AICallTree.js';
 import {AgentFocus} from '../performance/AIContext.js';
 
 /**
+ * Labels used to identify specific periods or categories in the trace for getting main thread summary.
+ * Supports hardcoded phases, dynamic navigation IDs (`NAVIGATION_X`), and insight models.
+ */
+export type MainThreadSectionLabel = 'nav-to-lcp'|'lcp-ttfb'|'lcp-render-delay'|'trace-bounds'|'NO_NAVIGATION'|
+                                     `NAVIGATION_${string}`|keyof Trace.Insights.Types.InsightModels;
+
+/**
  * The conversation context for AI queries regarding performance traces.
  * Encapsulates the user's active trace selection/focus and handles formatting
  * the context data for the LLM prompt and user-facing accordion disclosures.
@@ -339,4 +346,121 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
 
     return details.length > 0 ? (details as [ContextDetail, ...ContextDetail[]]) : null;
   }
+
+  getBoundsForLabel(label: MainThreadSectionLabel): Trace.Types.Timing.TraceWindowMicro|null {
+    const focus = this.#focus;
+    const {parsedTrace} = focus;
+    const insightSet = focus.primaryInsightSet;
+
+    if (label === 'nav-to-lcp') {
+      if (insightSet) {
+        const lcp = Trace.Insights.Common.getLCP(insightSet);
+        if (lcp) {
+          return Trace.Helpers.Timing.traceWindowFromMicroSeconds(insightSet.bounds.min,
+                                                                  lcp.event.ts as Trace.Types.Timing.Micro);
+        }
+      }
+      return null;
+    }
+
+    if (label === 'lcp-ttfb') {
+      if (insightSet) {
+        const subparts = insightSet.model.LCPBreakdown?.subparts;
+        if (subparts?.ttfb) {
+          return subparts.ttfb;
+        }
+      }
+      return null;
+    }
+
+    if (label === 'lcp-render-delay') {
+      if (insightSet) {
+        const subparts = insightSet.model.LCPBreakdown?.subparts;
+        if (subparts?.renderDelay) {
+          return subparts.renderDelay;
+        }
+      }
+      return null;
+    }
+
+    if (label === 'trace-bounds') {
+      return parsedTrace.data.Meta.traceBounds;
+    }
+
+    const insightSetById = parsedTrace.insights?.get(label as Trace.Types.Events.NavigationId);
+    if (insightSetById) {
+      return insightSetById.bounds;
+    }
+
+    if (insightSet) {
+      const model = getInsightModel(insightSet.model, label);
+      if (model) {
+        return Trace.Insights.Common.insightBounds(model, insightSet.bounds);
+      }
+    }
+
+    for (const is of parsedTrace.insights?.values() ?? []) {
+      const model = getInsightModel(is.model, label);
+      if (model) {
+        return Trace.Insights.Common.insightBounds(model, is.bounds);
+      }
+    }
+
+    return null;
+  }
+
+  getLabelName(label: MainThreadSectionLabel): string {
+    return getLabelName(label, this.#focus.parsedTrace);
+  }
+
+  createBounds(min?: number, max?: number): Trace.Types.Timing.TraceWindowMicro|null {
+    const {min: bMin, max: bMax} = this.#focus.parsedTrace.data.Meta.traceBounds;
+    const clampedMin = Math.round(Math.max(min ?? bMin, bMin));
+    const clampedMax = Math.round(Math.min(max ?? bMax, bMax));
+
+    if (clampedMin > clampedMax) {
+      return null;
+    }
+
+    return Trace.Helpers.Timing.traceWindowFromMicroSeconds(clampedMin as Trace.Types.Timing.Micro,
+                                                            clampedMax as Trace.Types.Timing.Micro);
+  }
+}
+
+const STATIC_LABEL_NAMES: Record<string, string> = {
+  'nav-to-lcp': 'navigation to LCP',
+  'lcp-ttfb': 'LCP to TTFB',
+  'lcp-render-delay': 'LCP render delay',
+  'trace-bounds': 'the entire trace',
+  NO_NAVIGATION: 'the period before the first navigation',
+};
+
+function getInsightModel(
+    model: Trace.Insights.Types.InsightModels,
+    key: string,
+    ): Trace.Insights.Types.InsightModels[keyof Trace.Insights.Types.InsightModels]|undefined {
+  if (Object.prototype.hasOwnProperty.call(model, key)) {
+    return model[key as keyof Trace.Insights.Types.InsightModels];
+  }
+  return undefined;
+}
+
+function getLabelName(label: MainThreadSectionLabel, parsedTrace: Trace.TraceModel.ParsedTrace): string {
+  if (Object.prototype.hasOwnProperty.call(STATIC_LABEL_NAMES, label)) {
+    return STATIC_LABEL_NAMES[label];
+  }
+
+  const insightSetById = parsedTrace.insights?.get(label as Trace.Types.Events.NavigationId);
+  if (insightSetById) {
+    return `navigation to ${insightSetById.url.href}`;
+  }
+
+  for (const insightSet of parsedTrace.insights?.values() ?? []) {
+    const model = getInsightModel(insightSet.model, label);
+    if (model) {
+      return `${model.title} insight`;
+    }
+  }
+
+  return label;
 }

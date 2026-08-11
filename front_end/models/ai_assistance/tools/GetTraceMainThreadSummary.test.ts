@@ -10,6 +10,7 @@ import {
   assertIsError,
   assertIsResult,
   makeFakeParsedTrace,
+  stubPerformanceTraceFormatter,
 } from '../../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
@@ -18,7 +19,7 @@ import {TestUniverse} from '../../../testing/TestUniverse.js';
 import type * as Trace from '../../trace/trace.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-describe('GetTraceEventByKeyTool', () => {
+describe('GetTraceMainThreadSummaryTool', () => {
   setupLocaleHooks();
   setupSettingsHooks();
   setupRuntimeHooks();
@@ -29,13 +30,13 @@ describe('GetTraceEventByKeyTool', () => {
     universe = new TestUniverse();
   });
 
-  const GetTraceEventByKeyTool = AiAssistance.GetTraceEventByKey.GetTraceEventByKeyTool;
+  const GetTraceMainThreadSummaryTool = AiAssistance.GetTraceMainThreadSummary.GetTraceMainThreadSummaryTool;
 
   it('returns display info', () => {
-    const tool = new GetTraceEventByKeyTool();
-    const displayInfo = tool.displayInfoFromArgs({eventKey: 'event-key-1'});
-    assert.strictEqual(displayInfo.title, 'Looking at trace event');
-    assert.strictEqual(displayInfo.action, 'getTraceEventByKey(\'event-key-1\')');
+    const tool = new GetTraceMainThreadSummaryTool();
+    const displayInfo = tool.displayInfoFromArgs({label: 'nav-to-lcp'});
+    assert.strictEqual(displayInfo.title, 'Main thread activity: nav-to-lcp');
+    assert.strictEqual(displayInfo.action, 'getTraceMainThreadSummary(\'nav-to-lcp\')');
   });
 
   it('returns error when conversationContext is not available', async () => {
@@ -43,14 +44,14 @@ describe('GetTraceEventByKeyTool', () => {
       conversationContext: null,
     };
 
-    const tool = new GetTraceEventByKeyTool();
-    const result = await tool.handler({eventKey: 'event-key-1'}, context);
+    const tool = new GetTraceMainThreadSummaryTool();
+    const result = await tool.handler({label: 'nav-to-lcp'}, context);
 
     assertIsError(result);
     assert.strictEqual(result.error, 'Performance trace context is not available.');
   });
 
-  it('returns error when event cannot be found', async () => {
+  it('returns error when label bounds cannot be resolved', async () => {
     const parsedTrace = makeFakeParsedTrace();
 
     const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
@@ -59,21 +60,20 @@ describe('GetTraceEventByKeyTool', () => {
         new Tracing.FreshRecording.Tracker(),
         universe.debuggerWorkspaceBinding,
     );
-    const focus = traceContext.getItem();
-    sinon.stub(focus, 'lookupEvent').returns(null);
+    sinon.stub(traceContext, 'getBoundsForLabel').returns(null);
 
     const capabilities = {
       conversationContext: traceContext,
     };
 
-    const tool = new GetTraceEventByKeyTool();
-    const result = await tool.handler({eventKey: 'invalid-key'}, capabilities);
+    const tool = new GetTraceMainThreadSummaryTool();
+    const result = await tool.handler({label: 'NAVIGATION_invalid'}, capabilities);
 
     assertIsError(result);
-    assert.strictEqual(result.error, 'Could not find event with key "invalid-key".');
+    assert.strictEqual(result.error, 'Invalid label: NAVIGATION_invalid');
   });
 
-  it('returns formatted event details and TIMELINE_EVENT_SUMMARY widget on success', async () => {
+  it('returns formatted summary and widgets on success', async () => {
     const parsedTrace = makeFakeParsedTrace();
 
     const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
@@ -82,29 +82,38 @@ describe('GetTraceEventByKeyTool', () => {
         new Tracing.FreshRecording.Tracker(),
         universe.debuggerWorkspaceBinding,
     );
-    const focus = traceContext.getItem();
-    const mockEvent = {
-      name: 'some-event',
-      ts: 100,
-    } as unknown as Trace.Types.Events.Event;
+    const mockBounds = {min: 10, max: 50} as unknown as Trace.Types.Timing.TraceWindowMicro;
+    sinon.stub(traceContext, 'getBoundsForLabel').withArgs('trace-bounds').returns(mockBounds);
 
-    sinon.stub(focus, 'lookupEvent').withArgs('valid-key').returns(mockEvent);
+    stubPerformanceTraceFormatter(traceContext, {
+      formatMainThreadTrackSummary: sinon.stub().resolves('mock main thread summary details'),
+    });
 
     const capabilities = {
       conversationContext: traceContext,
     };
 
-    const tool = new GetTraceEventByKeyTool();
-    const result = await tool.handler({eventKey: 'valid-key'}, capabilities);
+    const tool = new GetTraceMainThreadSummaryTool();
+    const result = await tool.handler({label: 'trace-bounds'}, capabilities);
 
     assertIsResult(result);
-    assert.strictEqual(result.result, JSON.stringify(mockEvent));
-    assert.deepEqual(result.widgets, [{
-                       name: 'TIMELINE_EVENT_SUMMARY',
-                       data: {
-                         event: mockEvent,
-                         parsedTrace,
-                       },
-                     }]);
+    assert.strictEqual(result.result, 'mock main thread summary details');
+    assert.deepEqual(result.widgets, [
+      {
+        name: 'TIMELINE_RANGE_SUMMARY',
+        data: {
+          parsedTrace,
+          bounds: mockBounds,
+          track: 'main',
+        },
+      },
+      {
+        name: 'BOTTOM_UP_TREE',
+        data: {
+          bounds: mockBounds,
+          parsedTrace,
+        },
+      },
+    ]);
   });
 });

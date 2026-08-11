@@ -147,6 +147,11 @@ export type AllToolsCapabilities = BaseToolCapability&PageExecutionCapability&St
  */
 export type ToolArgs = Record<string, unknown>;
 
+// The maximum size (in bytes) of a function execution result.
+// Approximately 16k tokens at ~4 characters per token, designed to limit
+// result sizes to prevent overloading the LLM's context window.
+export const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
+
 export const enum ToolName {
   EXECUTE_JAVASCRIPT = 'executeJavaScript',
   GET_STYLES = 'getStyles',
@@ -161,6 +166,8 @@ export const enum ToolName {
   SELECT_TRACE_EVENT_BY_KEY = 'selectTraceEventByKey',
   LIST_SOURCES = 'listSources',
   GET_SOURCE_CONTENT = 'getSourceContent',
+  GET_TRACE_MAIN_THREAD_SUMMARY = 'getTraceMainThreadSummary',
+  GET_TRACE_NETWORK_SUMMARY = 'getTraceNetworkSummary',
 }
 
 /**

@@ -10,6 +10,7 @@ import {
   assertIsError,
   assertIsResult,
   makeFakeParsedTrace,
+  stubPerformanceTraceFormatter,
 } from '../../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
@@ -18,7 +19,7 @@ import {TestUniverse} from '../../../testing/TestUniverse.js';
 import type * as Trace from '../../trace/trace.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-describe('GetTraceEventByKeyTool', () => {
+describe('GetTraceNetworkSummaryTool', () => {
   setupLocaleHooks();
   setupSettingsHooks();
   setupRuntimeHooks();
@@ -29,13 +30,13 @@ describe('GetTraceEventByKeyTool', () => {
     universe = new TestUniverse();
   });
 
-  const GetTraceEventByKeyTool = AiAssistance.GetTraceEventByKey.GetTraceEventByKeyTool;
+  const GetTraceNetworkSummaryTool = AiAssistance.GetTraceNetworkSummary.GetTraceNetworkSummaryTool;
 
   it('returns display info', () => {
-    const tool = new GetTraceEventByKeyTool();
-    const displayInfo = tool.displayInfoFromArgs({eventKey: 'event-key-1'});
-    assert.strictEqual(displayInfo.title, 'Looking at trace event');
-    assert.strictEqual(displayInfo.action, 'getTraceEventByKey(\'event-key-1\')');
+    const tool = new GetTraceNetworkSummaryTool();
+    const displayInfo = tool.displayInfoFromArgs({min: 10, max: 50});
+    assert.strictEqual(displayInfo.title, 'Network activity summary');
+    assert.strictEqual(displayInfo.action, 'getTraceNetworkSummary({min: 10, max: 50})');
   });
 
   it('returns error when conversationContext is not available', async () => {
@@ -43,14 +44,14 @@ describe('GetTraceEventByKeyTool', () => {
       conversationContext: null,
     };
 
-    const tool = new GetTraceEventByKeyTool();
-    const result = await tool.handler({eventKey: 'event-key-1'}, context);
+    const tool = new GetTraceNetworkSummaryTool();
+    const result = await tool.handler({min: 10, max: 50}, context);
 
     assertIsError(result);
     assert.strictEqual(result.error, 'Performance trace context is not available.');
   });
 
-  it('returns error when event cannot be found', async () => {
+  it('returns error when bounds are invalid', async () => {
     const parsedTrace = makeFakeParsedTrace();
 
     const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
@@ -59,21 +60,20 @@ describe('GetTraceEventByKeyTool', () => {
         new Tracing.FreshRecording.Tracker(),
         universe.debuggerWorkspaceBinding,
     );
-    const focus = traceContext.getItem();
-    sinon.stub(focus, 'lookupEvent').returns(null);
+    sinon.stub(traceContext, 'createBounds').returns(null);
 
     const capabilities = {
       conversationContext: traceContext,
     };
 
-    const tool = new GetTraceEventByKeyTool();
-    const result = await tool.handler({eventKey: 'invalid-key'}, capabilities);
+    const tool = new GetTraceNetworkSummaryTool();
+    const result = await tool.handler({min: 50, max: 10}, capabilities);
 
     assertIsError(result);
-    assert.strictEqual(result.error, 'Could not find event with key "invalid-key".');
+    assert.strictEqual(result.error, 'Invalid bounds.');
   });
 
-  it('returns formatted event details and TIMELINE_EVENT_SUMMARY widget on success', async () => {
+  it('returns formatted summary and NETWORK_TRACK widget on success', async () => {
     const parsedTrace = makeFakeParsedTrace();
 
     const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
@@ -82,28 +82,27 @@ describe('GetTraceEventByKeyTool', () => {
         new Tracing.FreshRecording.Tracker(),
         universe.debuggerWorkspaceBinding,
     );
-    const focus = traceContext.getItem();
-    const mockEvent = {
-      name: 'some-event',
-      ts: 100,
-    } as unknown as Trace.Types.Events.Event;
+    const mockBounds = {min: 10, max: 50} as unknown as Trace.Types.Timing.TraceWindowMicro;
+    sinon.stub(traceContext, 'createBounds').returns(mockBounds);
 
-    sinon.stub(focus, 'lookupEvent').withArgs('valid-key').returns(mockEvent);
+    stubPerformanceTraceFormatter(traceContext, {
+      formatNetworkTrackSummary: sinon.stub().returns('mock network summary details'),
+    });
 
     const capabilities = {
       conversationContext: traceContext,
     };
 
-    const tool = new GetTraceEventByKeyTool();
-    const result = await tool.handler({eventKey: 'valid-key'}, capabilities);
+    const tool = new GetTraceNetworkSummaryTool();
+    const result = await tool.handler({min: 10, max: 50}, capabilities);
 
     assertIsResult(result);
-    assert.strictEqual(result.result, JSON.stringify(mockEvent));
+    assert.strictEqual(result.result, 'mock network summary details');
     assert.deepEqual(result.widgets, [{
-                       name: 'TIMELINE_EVENT_SUMMARY',
+                       name: 'NETWORK_TRACK',
                        data: {
-                         event: mockEvent,
                          parsedTrace,
+                         bounds: mockBounds,
                        },
                      }]);
   });

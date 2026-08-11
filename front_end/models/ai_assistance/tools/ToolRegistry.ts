@@ -9,6 +9,8 @@ import {GetNetworkRequestDetailsTool} from './GetNetworkRequestDetails.js';
 import {GetSourceContentTool} from './GetSourceContent.js';
 import {GetStylesTool} from './GetStyles.js';
 import {GetTraceEventByKeyTool} from './GetTraceEventByKey.js';
+import {GetTraceMainThreadSummaryTool} from './GetTraceMainThreadSummary.js';
+import {GetTraceNetworkSummaryTool} from './GetTraceNetworkSummary.js';
 import {ListNetworkRequestsTool} from './ListNetworkRequests.js';
 import {ListPageOriginsTool} from './ListPageOrigins.js';
 import {ListSourcesTool} from './ListSources.js';
@@ -39,6 +41,8 @@ export const TOOLS = {
   [ToolName.SELECT_TRACE_EVENT_BY_KEY]: new SelectTraceEventByKeyTool(),
   [ToolName.LIST_SOURCES]: new ListSourcesTool(),
   [ToolName.GET_SOURCE_CONTENT]: new GetSourceContentTool(),
+  [ToolName.GET_TRACE_MAIN_THREAD_SUMMARY]: new GetTraceMainThreadSummaryTool(),
+  [ToolName.GET_TRACE_NETWORK_SUMMARY]: new GetTraceNetworkSummaryTool(),
 };
 
 /**

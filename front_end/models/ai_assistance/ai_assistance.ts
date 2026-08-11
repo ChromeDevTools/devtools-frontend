@@ -46,6 +46,8 @@ import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
 import * as GetSourceContent from './tools/GetSourceContent.js';
 import * as GetStyles from './tools/GetStyles.js';
 import * as GetTraceEventByKey from './tools/GetTraceEventByKey.js';
+import * as GetTraceMainThreadSummary from './tools/GetTraceMainThreadSummary.js';
+import * as GetTraceNetworkSummary from './tools/GetTraceNetworkSummary.js';
 import * as ListNetworkRequests from './tools/ListNetworkRequests.js';
 import * as ListPageOrigins from './tools/ListPageOrigins.js';
 import * as ListSources from './tools/ListSources.js';
@@ -86,6 +88,8 @@ export {
   GetSourceContent,
   GetStyles,
   GetTraceEventByKey,
+  GetTraceMainThreadSummary,
+  GetTraceNetworkSummary,
   Injected,
   LighthouseFormatter,
   ListNetworkRequests,

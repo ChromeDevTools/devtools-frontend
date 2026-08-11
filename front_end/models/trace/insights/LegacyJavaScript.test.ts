@@ -25,6 +25,9 @@ describeWithEnvironment('LegacyJavaScript', function() {
   });
 
   it('has results when savings are big enough', async function() {
+    if (this.timeout() > 0) {
+      this.timeout(45_000);
+    }
     const {data, insights} = await processTrace(this, 'yahoo-news.json.gz');
     assert.strictEqual(insights.size, 1);
     const insight =

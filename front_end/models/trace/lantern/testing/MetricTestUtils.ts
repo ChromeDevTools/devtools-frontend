@@ -2,10 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// Unsure why this lint is failing, given `lantern/metrics/SpeedIndex.test.ts` does the same
-// and is fine. Maybe `*.test.*` files are excluded from this rule?
-// eslint-disable-next-line @devtools/es-modules-import
-import * as TraceLoader from '../../../../testing/TraceLoader.js';
 import * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
 
@@ -15,9 +11,7 @@ function toLanternTrace(traceEvents: readonly Trace.Types.Events.Event[]): Lante
   };
 }
 
-async function runTraceProcessor(context: Mocha.Suite|Mocha.Context, trace: Lantern.Types.Trace) {
-  TraceLoader.TraceLoader.setTestTimeout(context);
-
+async function runTraceProcessor(_context: Mocha.Suite|Mocha.Context, trace: Lantern.Types.Trace) {
   const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
   await processor.parse(trace.traceEvents as Trace.Types.Events.Event[], {isCPUProfile: false, isFreshRecording: true});
   if (!processor.data) {

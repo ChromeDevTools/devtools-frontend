@@ -12,7 +12,6 @@ import {
   initializeGlobalVars,
 } from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
-import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 import type {PreconnectedOrigin} from './NetworkDependencyTree.js';
@@ -117,7 +116,9 @@ describe('NetworkDependencyTree', function() {
   });
 
   it('Calculates the relatedEvents map (event to warning map)', async function() {
-    TraceLoader.setTestTimeout(this);
+    if (this.timeout() > 0) {
+      this.timeout(45_000);
+    }
     // Need to load a file with longer dependency chain for this test.
     // Only those requests whose depth >= 2 will be added to the related events.
     const {data, insights} = await processTrace(this, 'web-dev-screenshot-source-ids.json.gz');

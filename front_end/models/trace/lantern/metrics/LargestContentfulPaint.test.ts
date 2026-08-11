@@ -11,7 +11,9 @@ import {getComputationDataFromFixture, toLanternTrace} from '../testing/testing.
 const {FirstContentfulPaint, LargestContentfulPaint} = Lantern.Metrics;
 
 describe('Metrics: Lantern LCP', function() {
-  TraceLoader.setTestTimeout(this);
+  if (this.timeout() > 0) {
+    this.timeout(45_000);
+  }
   let trace: Lantern.Types.Trace;
   before(async function() {
     trace = toLanternTrace(await TraceLoader.rawEvents(this, 'lantern/paul/trace.json.gz'));

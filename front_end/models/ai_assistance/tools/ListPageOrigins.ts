@@ -6,19 +6,21 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import {isOpaqueOrigin} from '../AiOrigins.js';
+import {areOriginsEquivalent, isOpaqueOrigin} from '../AiOrigins.js';
 import {isSamePageOrigin} from '../contexts/StorageContext.js';
 
 import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  type OriginLockCapability,
   ToolName,
 } from './Tool.js';
 
 const lockedString = i18n.i18n.lockedString;
 
-export class ListPageOriginsTool implements DataTool<Record<string, never>, {origins: string[]}, BaseToolCapability> {
+export class ListPageOriginsTool implements
+    DataTool<Record<string, never>, {origins: string[]}, BaseToolCapability&OriginLockCapability> {
   readonly name = ToolName.LIST_PAGE_ORIGINS;
   readonly description =
       'Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies or listStorageKeys, unless the user\'s explicit request hints at focusing only on the primary page.';
@@ -43,16 +45,20 @@ export class ListPageOriginsTool implements DataTool<Record<string, never>, {ori
 
   async handler(
       _args: Record<string, never>,
-      context: BaseToolCapability,
+      context: BaseToolCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<{origins: string[]}>> {
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
 
-    const pageOrigin = primaryPageTarget && context.conversationContext ?
-        Common.ParsedURL.ParsedURL.extractOrigin(primaryPageTarget.inspectedURL()) :
-        '';
-    const isAllowed = pageOrigin !== '' && context.conversationContext?.isOriginAllowed(pageOrigin);
+    const allowedOrigin = context.getEstablishedOrigin();
+    if (!allowedOrigin || isOpaqueOrigin(allowedOrigin)) {
+      return {error: 'No origin available or not allowed.'};
+    }
+
+    const pageOrigin =
+        primaryPageTarget ? Common.ParsedURL.ParsedURL.extractOrigin(primaryPageTarget.inspectedURL()) : '';
+    const isAllowed = pageOrigin !== '' && areOriginsEquivalent(pageOrigin, allowedOrigin);
 
     if (!isAllowed) {
       return {error: 'No origin available or not allowed.'};
@@ -60,8 +66,7 @@ export class ListPageOriginsTool implements DataTool<Record<string, never>, {ori
 
     const origins = new Set<string>();
     for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
-      if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(),
-                            context.conversationContext ?? undefined)) {
+      if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), allowedOrigin)) {
         continue;
       }
       const origin = frame.securityOrigin;

@@ -63,15 +63,10 @@ describe('ListPageOriginsTool', () => {
       mockFrame3,
     ]);
 
-    const mockContext = {
-      isOriginAllowed: sinon.stub().callsFake((origin: string|undefined) => {
-        return origin === 'http://example.com' || origin === 'http://sub.example.com';
-      }),
-    } as unknown as AiAssistance.AiAgent.ConversationContext<unknown>;
-
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
     const context = {
-      conversationContext: mockContext,
+      conversationContext: null,
+      getEstablishedOrigin: sinon.stub().returns('http://example.com'),
     };
 
     const response = await tool.handler({}, context);
@@ -81,7 +76,7 @@ describe('ListPageOriginsTool', () => {
     });
   });
 
-  it('filters out origins that are not allowed by context', async () => {
+  it('filters out frames from other outermost targets/tabs', async () => {
     const targetManager = universe.targetManager;
     const primaryTarget = sinon.createStubInstance(SDK.Target.Target);
     primaryTarget.inspectedURL.returns(urlString`http://example.com/index.html`);
@@ -101,15 +96,10 @@ describe('ListPageOriginsTool', () => {
       mockFrame2,
     ]);
 
-    const mockContext = {
-      isOriginAllowed: sinon.stub().callsFake((origin: string|undefined) => {
-        return origin === 'http://example.com';
-      }),
-    } as unknown as AiAssistance.AiAgent.ConversationContext<unknown>;
-
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
     const context = {
-      conversationContext: mockContext,
+      conversationContext: null,
+      getEstablishedOrigin: sinon.stub().returns('http://example.com'),
     };
 
     const response = await tool.handler({}, context);
@@ -137,13 +127,10 @@ describe('ListPageOriginsTool', () => {
       mockFrame3,
     ]);
 
-    const mockContext = {
-      isOriginAllowed: sinon.stub().returns(true),
-    } as unknown as AiAssistance.AiAgent.ConversationContext<unknown>;
-
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
     const context = {
-      conversationContext: mockContext,
+      conversationContext: null,
+      getEstablishedOrigin: sinon.stub().returns('http://example.com'),
     };
 
     const response = await tool.handler({}, context);
@@ -153,20 +140,44 @@ describe('ListPageOriginsTool', () => {
     });
   });
 
-  it('returns error if primary page target origin is not allowed', async () => {
+  it('allows primary target origin when conversationContext is null (empty selection)', async () => {
+    const targetManager = universe.targetManager;
+    const primaryTarget = sinon.createStubInstance(SDK.Target.Target);
+    primaryTarget.inspectedURL.returns(urlString`http://example.com/index.html`);
+    primaryTarget.outermostTarget.returns(primaryTarget);
+
+    sinon.stub(targetManager, 'primaryPageTarget').returns(primaryTarget);
+
+    const mockFrame1 = createMockFrame('http://example.com', primaryTarget);
+
+    sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'frames').returns([
+      mockFrame1,
+    ]);
+
+    const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
+    const context = {
+      conversationContext: null,
+      getEstablishedOrigin: sinon.stub().returns('http://example.com'),
+    };
+
+    const response = await tool.handler({}, context);
+    assertIsResult(response);
+    assert.deepEqual(response.result, {
+      origins: ['http://example.com'],
+    });
+  });
+
+  it('returns error if primary page target origin is different from the allowed origin', async () => {
     const targetManager = universe.targetManager;
     const primaryTarget = sinon.createStubInstance(SDK.Target.Target);
     primaryTarget.inspectedURL.returns(urlString`http://blocked-origin.com/index.html`);
 
     sinon.stub(targetManager, 'primaryPageTarget').returns(primaryTarget);
 
-    const mockContext = {
-      isOriginAllowed: sinon.stub().returns(false),
-    } as unknown as AiAssistance.AiAgent.ConversationContext<unknown>;
-
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
     const context = {
-      conversationContext: mockContext,
+      conversationContext: null,
+      getEstablishedOrigin: sinon.stub().returns('http://example.com'),
     };
 
     const response = await tool.handler({}, context);

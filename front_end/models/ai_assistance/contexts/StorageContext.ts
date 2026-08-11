@@ -8,6 +8,7 @@ import {
   ConversationContext,
   type ConversationSuggestions,
 } from '../agents/AiAgent.js';
+import {areOriginsEquivalent} from '../AiOrigins.js';
 import {CookieItem, DOMStorageItem, type StorageItem} from '../StorageItem.js';
 
 export class StorageContext extends ConversationContext<StorageItem> {
@@ -101,10 +102,10 @@ export class StorageContext extends ConversationContext<StorageItem> {
   }
 }
 
-export function isSamePageOrigin(target: SDK.Target.Target|null, context?: ConversationContext<unknown>): boolean {
-  if (!target || !context) {
+export function isSamePageOrigin(target: SDK.Target.Target|null, allowedOrigin: string): boolean {
+  if (!target) {
     return false;
   }
   const pageOrigin = Common.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL());
-  return pageOrigin !== '' && context.isOriginAllowed(pageOrigin);
+  return pageOrigin !== '' && areOriginsEquivalent(pageOrigin, allowedOrigin);
 }

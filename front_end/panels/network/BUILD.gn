@@ -163,6 +163,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "BinaryResourceView.test.ts",
     "FetchHeaderCommenting.test.ts",
     "LinkPreloadGenerator.test.ts",
     "NetworkConfigView.test.ts",

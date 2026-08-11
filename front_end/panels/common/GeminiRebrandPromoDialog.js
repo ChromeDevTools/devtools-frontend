@@ -19,11 +19,10 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import styles from './geminiRebrandPromoDialog.css.js';
 const UIStrings = {
     /**
-     * @description Aria label for the dialog
+     * @description ARIA label for the dialog.
      */
     dialogAriaLabel: 'Gemini 3 Flash in DevTools',
     /**
-     *
      * @description Button text for dismissing the dialog.
      */
     dismiss: 'Dismiss',
@@ -32,19 +31,19 @@ const UIStrings = {
      */
     getStarted: 'Get started',
     /**
-     * @description Detail message shown in the dialog.
+     * @description Feature item describing Gemini as an AI companion for web development.
      */
     detailAiCompanion: 'Meet your AI-powered companion for web dev',
     /**
-     * @description Detail message shown in the dialog.
+     * @description Feature item describing instant answers for console errors.
      */
     detailConsoleErrors: 'Get instant, accurate answers for console errors',
     /**
-     * @description Detail message shown in the dialog.
+     * @description Feature item describing CSS and JS snippet generation.
      */
     detailGenerateCode: 'Generate CSS and JS snippets on the fly',
     /**
-     * @description Detail message shown in the dialog.
+     * @description Feature item describing automatic issue detection in performance traces.
      */
     detailPerformance: 'Automatically find issues in performance traces',
 };

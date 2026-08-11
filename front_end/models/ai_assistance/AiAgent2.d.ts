@@ -14,6 +14,7 @@ export declare class AiAgent2 extends AiAgent<unknown> {
     readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
     readonly userTier = "TESTERS";
     get options(): RequestOptions;
+    protected preRun(): Promise<void>;
     constructor(opts: AiAgent2Options);
     enhanceQuery(query: string, selected?: ConversationContext<unknown> | null, _multimodalInputType?: MultimodalInputType): Promise<string>;
     handleContextDetails(selected: ConversationContext<unknown> | null): AsyncGenerator<ContextResponse, void, void>;

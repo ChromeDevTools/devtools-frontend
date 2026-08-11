@@ -1831,6 +1831,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
   set parsedJSON(parsedJSON) {
     if (this.objectTree) {
       this.objectTree.removeEventListener("children-changed", this.#onChildrenChanged, this);
+      this.objectTree.removeEventListener("expanded-changed", this.#onChildrenChanged, this);
     }
     this.#parsedJSON = parsedJSON;
     this.objectTree = null;
@@ -1905,6 +1906,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
       this.objectTree.expanded = true;
     }
     this.objectTree.addEventListener("children-changed", this.#onChildrenChanged, this);
+    this.objectTree.addEventListener("expanded-changed", this.#onChildrenChanged, this);
   }
   #onChildrenChanged() {
     this.requestUpdate();
@@ -1935,13 +1937,14 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
       this.search.updateSearchableView(this.searchableView);
     }
   }
-  performSearch(searchConfig, shouldJump, jumpBackwards) {
+  async performSearch(searchConfig, shouldJump, jumpBackwards) {
     this.initialize();
     this.onSearchCanceled();
     const searchRegex = searchConfig.toSearchRegex(true).regex;
     if (!this.objectTree) {
       return;
     }
+    await this.objectTree.populateChildrenIfNeeded();
     this.search.search(this.objectTree, jumpBackwards ?? false, (node, closeTag) => {
       if (closeTag || !searchRegex) {
         return [];

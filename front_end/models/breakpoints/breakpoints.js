@@ -487,7 +487,6 @@ var Breakpoint = class {
     void this.#updateModel(modelBreakpoint);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerWasEnabled, this.#onDebuggerEnabled, this);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerWasDisabled, this.#onDebuggerDisabled, this);
-    debuggerModel.addEventListener(SDK.DebuggerModel.Events.ScriptSourceWasEdited, this.#onScriptWasEdited, this);
   }
   modelRemoved(debuggerModel) {
     const modelBreakpoint = this.#modelBreakpoints.get(debuggerModel);
@@ -498,7 +497,6 @@ var Breakpoint = class {
   #removeDebuggerModelListeners(debuggerModel) {
     debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebuggerWasEnabled, this.#onDebuggerEnabled, this);
     debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebuggerWasDisabled, this.#onDebuggerDisabled, this);
-    debuggerModel.removeEventListener(SDK.DebuggerModel.Events.ScriptSourceWasEdited, this.#onScriptWasEdited, this);
   }
   #onDebuggerEnabled(event) {
     const debuggerModel = event.data;
@@ -511,18 +509,6 @@ var Breakpoint = class {
     const debuggerModel = event.data;
     const model = this.#modelBreakpoints.get(debuggerModel);
     model?.cleanUpAfterDebuggerIsGone();
-  }
-  async #onScriptWasEdited(event) {
-    const { source: debuggerModel, data: { script, status } } = event;
-    if (status !== "Ok") {
-      return;
-    }
-    console.assert(debuggerModel instanceof SDK.DebuggerModel.DebuggerModel);
-    const model = this.#modelBreakpoints.get(debuggerModel);
-    if (model?.wasSetIn(script.scriptId)) {
-      await model.resetBreakpoint();
-      void this.#updateModel(model);
-    }
   }
   modelBreakpoint(debuggerModel) {
     return this.#modelBreakpoints.get(debuggerModel);
@@ -758,11 +744,6 @@ var ModelBreakpoint = class {
   #cancelCallback = false;
   #currentState = null;
   #breakpointIds = [];
-  /**
-   * We track all the script IDs this ModelBreakpoint was actually set in. This allows us
-   * to properly reset this ModelBreakpoint after a script was live edited.
-   */
-  #resolvedScriptIds = /* @__PURE__ */ new Set();
   constructor(debuggerModel, breakpoint, debuggerWorkspaceBinding) {
     this.#debuggerModel = debuggerModel;
     this.#breakpoint = breakpoint;
@@ -777,7 +758,6 @@ var ModelBreakpoint = class {
     }
     this.#uiLocations.clear();
     this.#liveLocations.disposeAll();
-    this.#resolvedScriptIds.clear();
   }
   async scheduleUpdateInDebugger() {
     if (!this.#debuggerModel.debuggerEnabled()) {
@@ -798,15 +778,6 @@ var ModelBreakpoint = class {
     release();
     return result;
   }
-  scriptDiverged() {
-    for (const uiSourceCode of this.#breakpoint.getUiSourceCodes()) {
-      const scriptFile = this.#debuggerWorkspaceBinding.scriptFile(uiSourceCode, this.#debuggerModel);
-      if (scriptFile?.hasDivergedFromVM()) {
-        return true;
-      }
-    }
-    return false;
-  }
   async #updateInDebugger() {
     if (this.#debuggerModel.target().isDisposed()) {
       this.cleanUpAfterDebuggerIsGone();
@@ -816,7 +787,7 @@ var ModelBreakpoint = class {
     const columnNumber = this.#breakpoint.columnNumber();
     const condition = this.#breakpoint.backendCondition();
     let newState = null;
-    if (!this.#breakpoint.getIsRemoved() && this.#breakpoint.enabled() && !this.scriptDiverged()) {
+    if (!this.#breakpoint.getIsRemoved() && this.#breakpoint.enabled()) {
       let debuggerLocations = [];
       for (const uiSourceCode of this.#breakpoint.getUiSourceCodes()) {
         const { lineNumber: uiLineNumber, columnNumber: uiColumnNumber } = BreakpointManager.uiLocationFromBreakpointLocation(uiSourceCode, lineNumber, columnNumber);
@@ -952,7 +923,6 @@ var ModelBreakpoint = class {
     }
   }
   async addResolvedLocation(location) {
-    this.#resolvedScriptIds.add(location.scriptId);
     const uiLocation = await this.#debuggerWorkspaceBinding.rawLocationToUILocation(location);
     if (!uiLocation) {
       return "OK";
@@ -971,10 +941,6 @@ var ModelBreakpoint = class {
     if (this.#breakpointIds.length) {
       this.didRemoveFromDebugger();
     }
-  }
-  /** @returns true, iff this `ModelBreakpoint` was set (at some point) in `scriptId` */
-  wasSetIn(scriptId) {
-    return this.#resolvedScriptIds.has(scriptId);
   }
 };
 (function(Breakpoint2) {

@@ -1517,12 +1517,6 @@
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Loading debug symbols for {PH2} (via {PH3})…"
   },
-  "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
-    "message": "LiveEdit compile failed: {PH1}"
-  },
-  "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
-    "message": "LiveEdit failed: {PH1}"
-  },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
     "message": "Field metrics are for a different URL than the current page."
   },
@@ -6717,7 +6711,7 @@
     "message": "Designed for your success"
   },
   "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
-    "message": "Grow your skills, build with AI, and earn badges you can showcase in your developer profile"
+    "message": "Grow your skills, build with AI, and earn badges you can showcase in your developer profile."
   },
   "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
     "message": "Google Developer Program sign up dialog"
@@ -6726,7 +6720,7 @@
     "message": "Keep me updated"
   },
   "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
-    "message": "The latest DevTools features, event invites, and tailored insights land directly in your inbox"
+    "message": "The latest DevTools features, event invites, and tailored insights land directly in your inbox."
   },
   "panels/common/GdpSignUpDialog.ts | learnMore": {
     "message": "Learn more"
@@ -6741,13 +6735,13 @@
     "message": "Sign up"
   },
   "panels/common/GdpSignUpDialog.ts | signUpFailed": {
-    "message": "Your Google Developer Program profile couldn’t be created. Please try again later."
+    "message": "Your Google Developer Profile couldn’t be created. Please try again later."
   },
   "panels/common/GdpSignUpDialog.ts | tailorProfile": {
     "message": "Tailor your profile"
   },
   "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
-    "message": "The name on your Google Account and your interests will be used in your Google Developer Profile. Your name may appear where you contribute and can be changed at any time."
+    "message": "The name on your Google account and your interests will be used in your Google Developer Profile. Your name may appear where you contribute and can be changed at any time."
   },
   "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
     "message": "By creating a Developer Profile, you agree to the {PH1}. Google’s {PH2} and {PH3} apply to your use of this service."

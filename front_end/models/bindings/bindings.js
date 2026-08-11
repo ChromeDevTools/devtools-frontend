@@ -1458,6 +1458,9 @@ var CompilerScriptMapping = class {
     }
     return scripts;
   }
+  sourceMapURLsForUISourceCode(uiSourceCode) {
+    return [...this.#uiSourceCodeToSourceMaps.get(uiSourceCode)].map((sourceMap) => sourceMap.url());
+  }
   sourceMapAttachedForTest(_sourceMap) {
   }
   dispose() {
@@ -1655,6 +1658,10 @@ var SASSSourceMapping = class {
       return binding.getReferringSourceMaps().map((sourceMap) => sourceMap.compiledURL());
     }
     return [];
+  }
+  static sourceMapURLsForUISourceCode(uiSourceCode) {
+    const binding = uiSourceCodeToBinding.get(uiSourceCode);
+    return binding?.getReferringSourceMaps().map((sourceMap) => sourceMap.url()) ?? [];
   }
   dispose() {
     Common6.EventTarget.removeEventListeners(this.#eventListeners);
@@ -2181,6 +2188,9 @@ var CSSWorkspaceBinding = class _CSSWorkspaceBinding {
       rawLocations.push(...modelInfo.uiLocationToRawLocations(uiLocation));
     }
     return rawLocations;
+  }
+  sourceMapURLsForUISourceCode(uiSourceCode) {
+    return SASSSourceMapping.sourceMapURLsForUISourceCode(uiSourceCode);
   }
 };
 var ModelInfo = class {
@@ -3279,7 +3289,7 @@ __export(DebuggerWorkspaceBinding_exports, {
   Location: () => Location
 });
 import * as Platform6 from "./../../core/platform/platform.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Workspace17 from "./../workspace/workspace.js";
 
@@ -3408,27 +3418,11 @@ __export(ResourceScriptMapping_exports, {
   ResourceScriptMapping: () => ResourceScriptMapping
 });
 import * as Common12 from "./../../core/common/common.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
-import * as Root3 from "./../../core/root/root.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
 import * as Formatter from "./../formatter/formatter.js";
 import * as Workspace15 from "./../workspace/workspace.js";
-var UIStrings3 = {
-  /**
-   * @description Error text displayed in the Console panel when editing a live script fails. LiveEdit is the name of the feature for editing code that is already running.
-   * @example {warning} PH1
-   */
-  liveEditFailed: "`LiveEdit` failed: {PH1}",
-  /**
-   * @description Error text displayed in the Console panel when compiling a live-edited script fails. LiveEdit is the name of the feature for editing code that is already running.
-   * @example {connection lost} PH1
-   */
-  liveEditCompileFailed: "`LiveEdit` compile failed: {PH1}"
-};
-var str_3 = i18n5.i18n.registerUIStrings("models/bindings/ResourceScriptMapping.ts", UIStrings3);
-var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var ResourceScriptMapping = class {
   debuggerModel;
   #workspace;
@@ -3485,9 +3479,6 @@ var ResourceScriptMapping = class {
     }
     const scriptFile = this.#uiSourceCodeToScriptFile.get(uiSourceCode);
     if (!scriptFile) {
-      return null;
-    }
-    if (scriptFile.hasDivergedFromVM() && !scriptFile.isMergingToVM() || scriptFile.isDivergingFromVM()) {
       return null;
     }
     if (scriptFile.script !== script) {
@@ -3569,7 +3560,7 @@ var ResourceScriptMapping = class {
     return new Workspace15.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
   addScript(script) {
-    if (script.isLiveEdit() || script.isBreakpointCondition) {
+    if (script.isBreakpointCondition) {
       return;
     }
     let url = script.sourceURL;
@@ -3618,10 +3609,6 @@ var ResourceScriptMapping = class {
       if (!uiSourceCode) {
         continue;
       }
-      const scriptFile = this.#uiSourceCodeToScriptFile.get(uiSourceCode);
-      if (scriptFile) {
-        scriptFile.dispose();
-      }
       this.#uiSourceCodeToScriptFile.delete(uiSourceCode);
       this.#scriptToUISourceCode.delete(script);
       uiSourceCodesByProject.set(uiSourceCode.project(), uiSourceCode);
@@ -3660,151 +3647,14 @@ var ResourceScriptMapping = class {
     this.globalObjectCleared();
   }
 };
-var ResourceScriptFile = class extends Common12.ObjectWrapper.ObjectWrapper {
+var ResourceScriptFile = class {
   #resourceScriptMapping;
   uiSourceCode;
   script;
-  #scriptSource;
-  #isDivergingFromVM;
-  #hasDivergedFromVM;
-  #isMergingToVM;
-  #updateMutex = new Common12.Mutex.Mutex();
   constructor(resourceScriptMapping, uiSourceCode, script) {
-    super();
     this.#resourceScriptMapping = resourceScriptMapping;
     this.uiSourceCode = uiSourceCode;
     this.script = this.uiSourceCode.contentType().isScript() ? script : null;
-    this.uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
-    this.uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
-  }
-  isDiverged() {
-    if (this.uiSourceCode.isDirty()) {
-      return true;
-    }
-    if (!this.script) {
-      return false;
-    }
-    if (typeof this.#scriptSource === "undefined" || this.#scriptSource === null) {
-      return false;
-    }
-    const workingCopy = this.uiSourceCode.workingCopy();
-    if (!workingCopy) {
-      return false;
-    }
-    if (!workingCopy.startsWith(this.#scriptSource.trimEnd())) {
-      return true;
-    }
-    const suffix = this.uiSourceCode.workingCopy().substr(this.#scriptSource.length);
-    return Boolean(suffix.length) && !suffix.match(SDK10.Script.sourceURLRegex);
-  }
-  workingCopyChanged() {
-    void this.update();
-  }
-  workingCopyCommitted() {
-    if (Root3.Runtime.hostConfig.devToolsLiveEdit?.enabled === false) {
-      return;
-    }
-    if (this.uiSourceCode.project().canSetFileContent()) {
-      return;
-    }
-    if (!this.script) {
-      return;
-    }
-    const source = this.uiSourceCode.workingCopy();
-    void this.script.editSource(source).then(({ status, exceptionDetails }) => {
-      void this.scriptSourceWasSet(source, status, exceptionDetails);
-    });
-  }
-  async scriptSourceWasSet(source, status, exceptionDetails) {
-    if (status === "Ok") {
-      this.#scriptSource = source;
-    }
-    await this.update();
-    if (status === "Ok") {
-      return;
-    }
-    if (!exceptionDetails) {
-      Common12.Console.Console.instance().addMessage(
-        i18nString3(UIStrings3.liveEditFailed, { PH1: getErrorText(status) }),
-        "warning"
-        /* Common.Console.MessageLevel.WARNING */
-      );
-      return;
-    }
-    const messageText = i18nString3(UIStrings3.liveEditCompileFailed, { PH1: exceptionDetails.text });
-    this.uiSourceCode.addLineMessage("Error", messageText, exceptionDetails.lineNumber, exceptionDetails.columnNumber);
-    function getErrorText(status2) {
-      switch (status2) {
-        case "BlockedByActiveFunction":
-          return "Functions that are on the stack (currently being executed) can\u2019t be edited";
-        case "BlockedByActiveGenerator":
-          return "Async functions/generators that are active can\u2019t be edited";
-        case "BlockedByTopLevelEsModuleChange":
-          return "The top level of JavaScript modules can\u2019t be edited";
-        case "CompileError":
-        case "Ok":
-          throw new Error("Compile errors and Ok status must not be reported on the console");
-      }
-    }
-  }
-  async update() {
-    const release = await this.#updateMutex.acquire();
-    const diverged = this.isDiverged();
-    if (diverged && !this.#hasDivergedFromVM) {
-      await this.divergeFromVM();
-    } else if (!diverged && this.#hasDivergedFromVM) {
-      await this.mergeToVM();
-    }
-    release();
-  }
-  async divergeFromVM() {
-    if (this.script) {
-      this.#isDivergingFromVM = true;
-      await this.#resourceScriptMapping.debuggerWorkspaceBinding.updateLocations(this.script);
-      this.#isDivergingFromVM = void 0;
-      this.#hasDivergedFromVM = true;
-      this.dispatchEventToListeners(
-        "DidDivergeFromVM"
-        /* ResourceScriptFile.Events.DID_DIVERGE_FROM_VM */
-      );
-    }
-  }
-  async mergeToVM() {
-    if (this.script) {
-      this.#hasDivergedFromVM = void 0;
-      this.#isMergingToVM = true;
-      await this.#resourceScriptMapping.debuggerWorkspaceBinding.updateLocations(this.script);
-      this.#isMergingToVM = void 0;
-      this.dispatchEventToListeners(
-        "DidMergeToVM"
-        /* ResourceScriptFile.Events.DID_MERGE_TO_VM */
-      );
-    }
-  }
-  hasDivergedFromVM() {
-    return Boolean(this.#hasDivergedFromVM);
-  }
-  isDivergingFromVM() {
-    return Boolean(this.#isDivergingFromVM);
-  }
-  isMergingToVM() {
-    return Boolean(this.#isMergingToVM);
-  }
-  checkMapping() {
-    if (!this.script || typeof this.#scriptSource !== "undefined") {
-      this.mappingCheckedForTest();
-      return;
-    }
-    void this.script.requestContentData().then((content) => {
-      this.#scriptSource = TextUtils6.ContentData.ContentData.textOr(content, null);
-      void this.update().then(() => this.mappingCheckedForTest());
-    });
-  }
-  mappingCheckedForTest() {
-  }
-  dispose() {
-    this.uiSourceCode.removeEventListener(Workspace15.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
-    this.uiSourceCode.removeEventListener(Workspace15.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
   }
   addSourceMapURL(sourceMapURL) {
     if (!this.script) {
@@ -3970,12 +3820,12 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       if (!resourceMapping || !targetManager || !ignoreListManager || !workspace) {
         throw new Error(`Unable to create DebuggerWorkspaceBinding: resourceMapping, targetManager and IgnoreLIstManager must be provided: ${new Error().stack}`);
       }
-      Root4.DevToolsContext.globalInstance().set(_DebuggerWorkspaceBinding, new _DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace));
+      Root3.DevToolsContext.globalInstance().set(_DebuggerWorkspaceBinding, new _DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace));
     }
-    return Root4.DevToolsContext.globalInstance().get(_DebuggerWorkspaceBinding);
+    return Root3.DevToolsContext.globalInstance().get(_DebuggerWorkspaceBinding);
   }
   static removeInstance() {
-    Root4.DevToolsContext.globalInstance().delete(_DebuggerWorkspaceBinding);
+    Root3.DevToolsContext.globalInstance().delete(_DebuggerWorkspaceBinding);
   }
   async computeAutoStepRanges(mode, callFrame) {
     function contained(location, range) {
@@ -4266,6 +4116,13 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       modelData.compilerMapping.scriptsForUISourceCode(uiSourceCode).forEach((script) => scripts.add(script));
     }
     return [...scripts];
+  }
+  sourceMapURLsForUISourceCode(uiSourceCode) {
+    const urls = /* @__PURE__ */ new Set();
+    for (const modelData of this.#debuggerModelToData.values()) {
+      modelData.compilerMapping.sourceMapURLsForUISourceCode(uiSourceCode).forEach((url) => urls.add(url));
+    }
+    return [...urls];
   }
   supportsConditionalBreakpoints(uiSourceCode) {
     const scripts = this.pluginManager.scriptsForUISourceCode(uiSourceCode);

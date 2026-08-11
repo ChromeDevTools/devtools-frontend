@@ -57,6 +57,7 @@ import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import { html, render } from '../../ui/lit/lit.js';
+import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as PanelsCommon from '../common/common.js';
 import { getDurationString } from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
@@ -1145,10 +1146,12 @@ export class TimelineUIUtils {
             }
             case "UpdateLayoutTree" /* Trace.Types.Events.Name.RECALC_STYLE */: {
                 contentHelper.appendTextRow(i18nString(UIStrings.elementsAffected), unsafeEventArgs['elementCount']);
-                const selectorStatsSetting = Common.Settings.Settings.instance().createSetting('timeline-capture-selector-stats', false);
+                const selectorStatsSetting = Common.Settings.Settings.instance().moduleSetting('timeline-capture-selector-stats');
                 if (!selectorStatsSetting.get()) {
                     const note = document.createElement('span');
-                    note.textContent = i18nString(UIStrings.sSelectorStatsInfo, { PH1: selectorStatsSetting.title() });
+                    note.textContent = i18nString(UIStrings.sSelectorStatsInfo, {
+                        PH1: SettingUIRegistration.SettingUIRegistration.resolve(selectorStatsSetting.descriptor()).title,
+                    });
                     contentHelper.appendElementRow(i18nString(UIStrings.selectorStatsTitle), note);
                 }
                 break;

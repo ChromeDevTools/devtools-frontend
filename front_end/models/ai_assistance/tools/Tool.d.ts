@@ -118,7 +118,7 @@ export interface PerformanceRecordingCapability {
  * Unified context interface providing all capabilities available in the project.
  * Used by the agent to pass a complete context to any tool type-safely.
  */
-export type AllToolsCapabilities = BaseToolCapability & PageExecutionCapability & StyleMutationCapability & TargetCapability & OriginLockCapability & LighthouseCapability & PerformanceRecordingCapability;
+export type AllToolsCapabilities = BaseToolCapability & PageExecutionCapability & StyleMutationCapability & TargetCapability & OriginLockCapability & LighthouseCapability & PerformanceRecordingCapability & ServerLoggingCapability;
 /**
  * Base argument type for AI Tools.
  */
@@ -131,7 +131,8 @@ export declare const enum ToolName {
     GET_LIGHTHOUSE_AUDITS = "getLighthouseAudits",
     RESOLVE_DEVTOOLS_NODE_PATH = "resolveDevtoolsNodePath",
     GET_ELEMENT_ACCESSIBILITY_DETAILS = "getElementAccessibilityDetails",
-    RECORD_PERFORMANCE_TRACE = "recordPerformanceTrace"
+    RECORD_PERFORMANCE_TRACE = "recordPerformanceTrace",
+    LIST_PAGE_ORIGINS = "listPageOrigins"
 }
 /**
  * Base metadata interface for a Tool.
@@ -156,6 +157,7 @@ export interface BaseTool<ArgsType extends ToolArgs = ToolArgs> {
         action?: string;
         suggestions?: [string, ...string[]];
     };
+    readonly annotations?: ToolAnnotation[];
 }
 /**
  * Generic tool interface for tools that process inputs and return structured data results.
@@ -195,3 +197,9 @@ export interface ContextTool<ArgsType extends ToolArgs = ToolArgs, ContextClass 
  * Represents any AI Assistance tool: either a `DataTool` (returns data/widgets) or a `ContextTool` (switches active context).
  */
 export type Tool<ArgsType extends ToolArgs = ToolArgs, ReturnType = unknown, CapabilitiesType extends BaseToolCapability = BaseToolCapability> = DataTool<ArgsType, ReturnType, CapabilitiesType> | ContextTool<ArgsType, ReturnType, CapabilitiesType>;
+export interface ServerLoggingCapability {
+    setLoggingEnabled(enabled: boolean): void;
+}
+export declare const enum ToolAnnotation {
+    REDACT_FROM_HISTORY = "redact-from-history"
+}

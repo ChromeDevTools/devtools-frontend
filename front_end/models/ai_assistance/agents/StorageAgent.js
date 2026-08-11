@@ -8,7 +8,7 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import { bytes } from '../data_formatters/UnitFormatters.js';
 import { CookieItem, DOMStorageItem } from '../StorageItem.js';
-import { AiAgent, ConversationContext, } from './AiAgent.js';
+import { AiAgent, } from './AiAgent.js';
 const lockedString = i18n.i18n.lockedString;
 const preamble = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
 
@@ -65,78 +65,6 @@ function resolveTargetOrigins(context, origins) {
     const rawList = (origins && origins.length > 0) ? origins : (primaryOrigin ? [primaryOrigin] : []);
     const uniqueOrigins = Array.from(new Set(rawList));
     return uniqueOrigins.slice(0, MAX_TARGET_ORIGINS);
-}
-export class StorageContext extends ConversationContext {
-    #item;
-    constructor(item) {
-        super();
-        this.#item = item;
-    }
-    getURL() {
-        return this.#item.primaryTargetOrigin;
-    }
-    getItem() {
-        return this.#item;
-    }
-    getTitle() {
-        if (this.#item instanceof CookieItem) {
-            if (this.#item.name) {
-                return `cookie: ${this.#item.name}${this.#item.origin ? ` ${this.#item.origin}` : ''}`;
-            }
-            return `cookies${this.#item.isGenericContext ? '' : `: ${this.#item.origin}`}`;
-        }
-        if (this.#item instanceof DOMStorageItem) {
-            if (this.#item.key) {
-                return `entry: ${this.#item.key}${this.#item.origin ? ` ${this.#item.origin}` : ''}`;
-            }
-            const prefix = this.#item.type === 'localStorage' ? 'local storage' : 'session storage';
-            return `${prefix}${this.#item.isGenericContext ? '' : `: ${this.#item.origin}`}`;
-        }
-        return `Storage: ${this.getOrigin()}`;
-    }
-    async getSuggestions() {
-        if (this.#item instanceof CookieItem) {
-            if (this.#item.name) {
-                return [
-                    {
-                        title: 'Why is this cookie set?',
-                        jslogContext: 'storage-cookie',
-                    },
-                    {
-                        title: 'Explain the value of this cookie',
-                        jslogContext: 'storage-cookie',
-                    },
-                ];
-            }
-            return [
-                {
-                    title: 'Explain the cookies set by this page',
-                    jslogContext: 'storage-cookie',
-                },
-            ];
-        }
-        if (this.#item instanceof DOMStorageItem) {
-            if (this.#item.key) {
-                return [
-                    {
-                        title: 'What is the purpose of this storage entry?',
-                        jslogContext: 'storage-domstorage',
-                    },
-                    {
-                        title: 'Explain the value of this storage entry',
-                        jslogContext: 'storage-domstorage',
-                    },
-                ];
-            }
-            return [
-                {
-                    title: 'Explain these storage items',
-                    jslogContext: 'storage-domstorage',
-                },
-            ];
-        }
-        return undefined;
-    }
 }
 // Maximum character length of values allowed.
 const MAX_NUM_CHAR_LENGTH = 10000;
@@ -222,7 +150,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args) => {
-                this.disableServerSideLogging();
+                this.setServerSideLoggingActive(false);
                 if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -289,7 +217,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args, options) => {
-                this.disableServerSideLogging();
+                this.setServerSideLoggingActive(false);
                 if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -369,7 +297,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args) => {
-                this.disableServerSideLogging();
+                this.setServerSideLoggingActive(false);
                 if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -418,7 +346,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args, options) => {
-                this.disableServerSideLogging();
+                this.setServerSideLoggingActive(false);
                 if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -539,10 +467,10 @@ export class StorageAgent extends AiAgent {
     async preRun() {
         const item = this.context?.getItem();
         if (item instanceof CookieItem && Boolean(item.name)) {
-            this.disableServerSideLogging();
+            this.setServerSideLoggingActive(false);
         }
         else if (item instanceof DOMStorageItem && Boolean(item.key)) {
-            this.disableServerSideLogging();
+            this.setServerSideLoggingActive(false);
         }
     }
     async *handleContextDetails(context) {

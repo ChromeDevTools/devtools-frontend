@@ -64,14 +64,14 @@ export class CommandMenu {
         }
         return new Command(category, title, keys, shortcut, jslogContext, handler, availableHandler, isPanelOrDrawer, featurePromotionId);
     }
-    static createSettingCommand(setting, title, value, settingUIDescriptor) {
-        const uiDescriptor = settingUIDescriptor ?? SettingsUI.SettingUIRegistration.maybeResolve(setting.descriptor());
-        const category = uiDescriptor?.category ?? setting.category();
-        if (!category) {
+    static createSettingCommand(setting, title, value, settingUI) {
+        const ui = settingUI ?? SettingsUI.SettingUIRegistration.maybeResolve(setting.descriptor());
+        const category = ui?.category;
+        if (!category || !ui) {
             throw new Error(`Creating '${title}' setting command failed. Setting has no category.`);
         }
-        const tags = uiDescriptor?.tags?.map(tag => tag()).join('\0') ?? setting.tags() ?? '';
-        const reloadRequired = Boolean(uiDescriptor?.reloadRequired ?? setting.reloadRequired());
+        const tags = ui.tags;
+        const reloadRequired = ui.reloadRequired;
         return CommandMenu.createCommand({
             category: Common.Settings.getLocalizedSettingsCategory(category),
             keys: tags,
@@ -87,11 +87,8 @@ export class CommandMenu {
                     UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
                 }
             },
-            availableHandler,
+            availableHandler: () => setting.get() !== value,
         });
-        function availableHandler() {
-            return setting.get() !== value;
-        }
     }
     static createActionCommand(options) {
         const { action, userActionCode } = options;
@@ -174,8 +171,8 @@ export class CommandMenu {
         // Populate allowlisted settings.
         const settingsRegistrations = SettingsUI.SettingUIRegistration.getRegisteredSettings();
         for (const registeredSettingUI of settingsRegistrations) {
-            const options = registeredSettingUI.uiDescriptor.options;
-            if (!options || !registeredSettingUI.uiDescriptor.category) {
+            const settingUI = SettingsUI.SettingUIRegistration.resolve(registeredSettingUI.descriptor);
+            if (!settingUI.options.length || !settingUI.category) {
                 continue;
             }
             let setting;
@@ -189,8 +186,8 @@ export class CommandMenu {
             else {
                 setting = Common.Settings.Settings.instance().resolve(registeredSettingUI.descriptor);
             }
-            for (const pair of options) {
-                this.#commands.push(CommandMenu.createSettingCommand(setting, pair.title(), pair.value, registeredSettingUI.uiDescriptor));
+            for (const option of settingUI.options) {
+                this.#commands.push(CommandMenu.createSettingCommand(setting, option.title, option.value, settingUI));
             }
         }
     }

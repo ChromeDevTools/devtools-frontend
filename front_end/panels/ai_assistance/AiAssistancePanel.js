@@ -445,7 +445,7 @@ function createStorageContext(item) {
     if (!item) {
         return null;
     }
-    return new AiAssistanceModel.StorageAgent.StorageContext(item);
+    return new AiAssistanceModel.StorageContext.StorageContext(item);
 }
 let panelInstance;
 export class AiAssistancePanel extends UI.Panel.Panel {
@@ -1320,7 +1320,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         else if (data instanceof AiAssistanceModel.AccessibilityContext.AccessibilityContext) {
             this.#selectedAccessibility = data;
         }
-        else if (data instanceof AiAssistanceModel.StorageAgent.StorageContext) {
+        else if (data instanceof AiAssistanceModel.StorageContext.StorageContext) {
             this.#selectedStorage = data;
         }
         void VisualLogging.logFunctionCall(`context-change-${this.#conversation?.type}`);

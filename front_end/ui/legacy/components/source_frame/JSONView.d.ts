@@ -27,7 +27,7 @@ export declare class JSONView extends UI.Widget.VBox implements UI.SearchableVie
     performUpdate(): void;
     private jumpToMatch;
     onSearchCanceled(): void;
-    performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void;
+    performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): Promise<void>;
     jumpToNextSearchResult(): void;
     jumpToPreviousSearchResult(): void;
     supportsCaseSensitiveSearch(): boolean;

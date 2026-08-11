@@ -39,7 +39,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let scopeChainSidebarPaneInstance;
 export const DEFAULT_VIEW = (input, output, target) => {
     const createScopeSection = ({ scope, objectTree }) => {
-        let emptyPlaceholder = null;
+        let emptyPlaceholder;
         if (scope.type() === "local" /* Protocol.Debugger.ScopeType.Local */ || scope.type() === "closure" /* Protocol.Debugger.ScopeType.Closure */) {
             emptyPlaceholder = i18nString(UIStrings.noVariables);
         }

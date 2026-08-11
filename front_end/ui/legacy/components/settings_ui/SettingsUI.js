@@ -33,16 +33,10 @@ export function createSettingCheckbox(name, setting, tooltip) {
     return label;
 }
 export function renderSettingSelect(setting, subtitle, disabled) {
-    const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
-    const name = uiDescriptor?.title?.() ?? setting.title();
-    const options = uiDescriptor?.options?.map(opt => ({
-        value: opt.value,
-        title: opt.title(),
-        text: typeof opt.text === 'function' ? opt.text() : opt.text,
-        raw: opt.raw,
-    })) ??
-        setting.options();
-    const requiresReload = Boolean(uiDescriptor?.reloadRequired ?? setting.reloadRequired());
+    const uiDescriptor = SettingUIRegistration.SettingUIRegistration.resolve(setting.descriptor());
+    const name = uiDescriptor.title;
+    const options = uiDescriptor.options;
+    const requiresReload = uiDescriptor.reloadRequired;
     const controlId = UI.ARIAUtils.nextId('labelledControl');
     const reloadWarningRef = createRef();
     const onSelectChange = (e) => {
@@ -99,8 +93,7 @@ export const renderControlForSetting = function (setting, subtitle, disabled) {
         case "boolean" /* Common.Settings.SettingType.BOOLEAN */: {
             const onchange = () => {
                 const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
-                const requiresReload = Boolean(uiDescriptor?.reloadRequired ?? setting.reloadRequired());
-                if (requiresReload) {
+                if (uiDescriptor?.reloadRequired) {
                     UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
                 }
             };

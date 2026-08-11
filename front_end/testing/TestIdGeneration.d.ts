@@ -10,3 +10,4 @@ export declare function generateExactTestId(genDir: string, file: string, titleP
     fineName: string;
     caseName: string;
 };
+export declare function formatFailedTestsSummary(failedTestIds: Iterable<string>): string;

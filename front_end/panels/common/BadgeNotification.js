@@ -18,30 +18,30 @@ import * as GdpSignUpDialog from './GdpSignUpDialog.js';
 const { html, render } = Lit;
 const UIStrings = {
     /**
-     * @description Title for close button
+     * @description Title for close button.
      */
     close: 'Close',
     /**
-     * @description Activity based badge award notification text
+     * @description Activity-based badge award notification text.
      * @example {Badge Title} PH1
      */
     activityBasedBadgeAwardMessage: 'You earned the {PH1} badge! It’s been added to your Developer Profile.',
     /**
-     * @description Action title for navigating to the badge settings in Google Developer Profile section
+     * @description Action title for navigating to the badge settings in Google Developer Profile section.
      */
     manageSettings: 'Manage settings',
     /**
-     * @description Action title for opening the Google Developer Program profile page of the user in a new tab
+     * @description Action title for opening the user\'s Google Developer Profile page in a new tab.
      */
     viewProfile: 'View profile',
     /**
-     * @description Starter badge award notification text when the user has a Google Developer Program profile but did not enable receiving badges in DevTools yet
+     * @description Starter badge award notification text when the user has a Google Developer Profile but has not enabled receiving badges in DevTools yet.
      * @example {Badge Title} PH1
      * @example {Google Developer Program link} PH2
      */
     starterBadgeAwardMessageSettingDisabled: 'You earned the {PH1} badge for the {PH2}! Turn on badges to claim it.',
     /**
-     * @description Starter badge award notification text when the user does not have a Google Developer Program profile.
+     * @description Starter badge award notification text when the user does not have a Google Developer Profile.
      * @example {Badge Title} PH1
      * @example {Google Developer Program link} PH2
      */
@@ -51,11 +51,11 @@ const UIStrings = {
      */
     noThanks: 'No thanks',
     /**
-     * @description Action title for enabling the "Receive badges" setting
+     * @description Action title for enabling the "Receive badges" setting.
      */
     receiveBadges: 'Turn on badges',
     /**
-     * @description Action title for creating a Google Developer Program profle
+     * @description Action title for creating a Google Developer Program profile.
      */
     createProfile: 'Create profile',
 };

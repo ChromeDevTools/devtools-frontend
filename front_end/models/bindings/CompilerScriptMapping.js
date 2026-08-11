@@ -484,6 +484,9 @@ export class CompilerScriptMapping {
         }
         return scripts;
     }
+    sourceMapURLsForUISourceCode(uiSourceCode) {
+        return [...this.#uiSourceCodeToSourceMaps.get(uiSourceCode)].map(sourceMap => sourceMap.url());
+    }
     sourceMapAttachedForTest(_sourceMap) {
     }
     dispose() {

@@ -102,6 +102,9 @@ export class CSSWorkspaceBinding {
         }
         return rawLocations;
     }
+    sourceMapURLsForUISourceCode(uiSourceCode) {
+        return SASSSourceMapping.sourceMapURLsForUISourceCode(uiSourceCode);
+    }
 }
 export class ModelInfo {
     #eventListeners;

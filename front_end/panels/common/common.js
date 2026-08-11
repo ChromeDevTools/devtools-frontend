@@ -1386,44 +1386,43 @@ var gdpSignUpDialog_css_default = `/*
 // gen/front_end/panels/common/GdpSignUpDialog.js
 var UIStrings2 = {
   /**
-   * @description Aria label for the Google Developer Program sign up dialog
+   * @description ARIA label for the Google Developer Program sign up dialog.
    */
   gdpDialogAriaLabel: "Google Developer Program sign up dialog",
   /**
-   *
-   * @description Button text for canceling GDP sign up.
+   * @description Button text for canceling Google Developer Program sign up.
    */
   cancel: "Cancel",
   /**
-   * @description Button text for confirming GDP sign up.
+   * @description Button text for confirming Google Developer Program sign up.
    */
   signUp: "Sign up",
   /**
-   * @description Title for the first section of the GDP sign up dialog.
+   * @description Title for the first section of the Google Developer Program sign up dialog.
    */
   designedForSuccess: "Designed for your success",
   /**
-   * @description Body for the first section of the GDP sign up dialog.
+   * @description Body for the first section of the Google Developer Program sign up dialog.
    */
-  designedForSuccessBody: "Grow your skills, build with AI, and earn badges you can showcase in your developer profile",
+  designedForSuccessBody: "Grow your skills, build with AI, and earn badges you can showcase in your developer profile.",
   /**
-   * @description Title for the second section of the GDP sign up dialog.
+   * @description Title for the second section of the Google Developer Program sign up dialog.
    */
   keepUpdated: "Keep me updated",
   /**
-   * @description Body for the second section of the GDP sign up dialog.
+   * @description Body for the second section of the Google Developer Program sign up dialog.
    */
-  keepUpdatedBody: "The latest DevTools features, event invites, and tailored insights land directly in your inbox",
+  keepUpdatedBody: "The latest DevTools features, event invites, and tailored insights land directly in your inbox.",
   /**
-   * @description Title for the third section of the GDP sign up dialog.
+   * @description Title for the third section of the Google Developer Program sign up dialog.
    */
   tailorProfile: "Tailor your profile",
   /**
-   * @description Body for the third section of the GDP sign up dialog.
+   * @description Body for the third section of the Google Developer Program sign up dialog.
    */
-  tailorProfileBody: "The name on your Google Account and your interests will be used in your Google Developer Profile. Your name may appear where you contribute and can be changed at any time.",
+  tailorProfileBody: "The name on your Google account and your interests will be used in your Google Developer Profile. Your name may appear where you contribute and can be changed at any time.",
   /**
-   * @description Body for the third section of the GDP sign up dialog.
+   * @description Disclaimer text for tailoring profile in the Google Developer Program sign up dialog.
    * @example {Content Policy} PH1
    * @example {Terms of Service} PH2
    * @example {Privacy Policy} PH3
@@ -1450,9 +1449,9 @@ var UIStrings2 = {
    */
   privacyPolicy: "Privacy Policy",
   /**
-   * @description Error message shown in a snackbar when GDP sign up fails.
+   * @description Error message shown in a snackbar when Google Developer Profile creation fails.
    */
-  signUpFailed: "Your Google Developer Program profile couldn\u2019t be created. Please try again later."
+  signUpFailed: "Your Google Developer Profile couldn\u2019t be created. Please try again later."
 };
 var str_2 = i18n9.i18n.registerUIStrings("panels/common/GdpSignUpDialog.ts", UIStrings2);
 var i18nString2 = i18n9.i18n.getLocalizedString.bind(void 0, str_2);
@@ -1666,11 +1665,10 @@ var geminiRebrandPromoDialog_css_default = `/*
 // gen/front_end/panels/common/GeminiRebrandPromoDialog.js
 var UIStrings3 = {
   /**
-   * @description Aria label for the dialog
+   * @description ARIA label for the dialog.
    */
   dialogAriaLabel: "Gemini 3 Flash in DevTools",
   /**
-   *
    * @description Button text for dismissing the dialog.
    */
   dismiss: "Dismiss",
@@ -1679,19 +1677,19 @@ var UIStrings3 = {
    */
   getStarted: "Get started",
   /**
-   * @description Detail message shown in the dialog.
+   * @description Feature item describing Gemini as an AI companion for web development.
    */
   detailAiCompanion: "Meet your AI-powered companion for web dev",
   /**
-   * @description Detail message shown in the dialog.
+   * @description Feature item describing instant answers for console errors.
    */
   detailConsoleErrors: "Get instant, accurate answers for console errors",
   /**
-   * @description Detail message shown in the dialog.
+   * @description Feature item describing CSS and JS snippet generation.
    */
   detailGenerateCode: "Generate CSS and JS snippets on the fly",
   /**
-   * @description Detail message shown in the dialog.
+   * @description Feature item describing automatic issue detection in performance traces.
    */
   detailPerformance: "Automatically find issues in performance traces"
 };
@@ -2483,30 +2481,30 @@ var badgeNotification_css_default = `/*
 var { html: html9, render: render9 } = Lit3;
 var UIStrings4 = {
   /**
-   * @description Title for close button
+   * @description Title for close button.
    */
   close: "Close",
   /**
-   * @description Activity based badge award notification text
+   * @description Activity-based badge award notification text.
    * @example {Badge Title} PH1
    */
   activityBasedBadgeAwardMessage: "You earned the {PH1} badge! It\u2019s been added to your Developer Profile.",
   /**
-   * @description Action title for navigating to the badge settings in Google Developer Profile section
+   * @description Action title for navigating to the badge settings in Google Developer Profile section.
    */
   manageSettings: "Manage settings",
   /**
-   * @description Action title for opening the Google Developer Program profile page of the user in a new tab
+   * @description Action title for opening the user\'s Google Developer Profile page in a new tab.
    */
   viewProfile: "View profile",
   /**
-   * @description Starter badge award notification text when the user has a Google Developer Program profile but did not enable receiving badges in DevTools yet
+   * @description Starter badge award notification text when the user has a Google Developer Profile but has not enabled receiving badges in DevTools yet.
    * @example {Badge Title} PH1
    * @example {Google Developer Program link} PH2
    */
   starterBadgeAwardMessageSettingDisabled: "You earned the {PH1} badge for the {PH2}! Turn on badges to claim it.",
   /**
-   * @description Starter badge award notification text when the user does not have a Google Developer Program profile.
+   * @description Starter badge award notification text when the user does not have a Google Developer Profile.
    * @example {Badge Title} PH1
    * @example {Google Developer Program link} PH2
    */
@@ -2516,11 +2514,11 @@ var UIStrings4 = {
    */
   noThanks: "No thanks",
   /**
-   * @description Action title for enabling the "Receive badges" setting
+   * @description Action title for enabling the "Receive badges" setting.
    */
   receiveBadges: "Turn on badges",
   /**
-   * @description Action title for creating a Google Developer Program profle
+   * @description Action title for creating a Google Developer Program profile.
    */
   createProfile: "Create profile"
 };
@@ -3945,6 +3943,14 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
    * long as the corresponding target and the embedder name (if it is a URL) are permitted.
    */
   extensionAllowedOnContentProvider(contentProvider, port) {
+    if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+      const debuggerSourceMapURLs = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapURLsForUISourceCode(contentProvider);
+      const cssSourceMapURLs = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().sourceMapURLsForUISourceCode(contentProvider);
+      const sourceMapURLs = [...debuggerSourceMapURLs, ...cssSourceMapURLs];
+      if (sourceMapURLs.some((url) => !this.extensionAllowedOnURL(url, port))) {
+        return false;
+      }
+    }
     if (contentProvider instanceof Workspace.UISourceCode.UISourceCode && contentProvider.contentType() === Common7.ResourceType.resourceTypes.Script) {
       const scripts = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(contentProvider);
       if (scripts.length > 0) {
@@ -4687,12 +4693,12 @@ import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import { html as html11 } from "./../../ui/lit/lit.js";
 var UIStrings6 = {
   /**
-   * @description Text in Persistence Utils of the Workspace settings in Settings
+   * @description Tooltip text indicating that a file is linked to a source map.
    * @example {example.url} PH1
    */
   linkedToSourceMapS: "Linked to source map: {PH1}",
   /**
-   * @description Text to show something is linked to another
+   * @description Tooltip text indicating that a file is linked to another file.
    * @example {example.url} PH1
    */
   linkedToS: "Linked to {PH1}"

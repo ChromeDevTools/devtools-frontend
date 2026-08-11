@@ -1,9 +1,8 @@
-import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import type { Console } from './Console.js';
 import type { EventDescriptor, EventTargetEvent, GenericEvents } from './EventTarget.js';
 import { ObjectWrapper } from './Object.js';
-import { getLocalizedSettingsCategory, type LearnMore, maybeRemoveSettingExtension, type RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, type SettingExtensionOption, type SettingRegistration, SettingType } from './SettingRegistration.js';
+import { getLocalizedSettingsCategory, maybeRemoveSettingExtension, type RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, type SettingExtensionOption, type SettingRegistration, SettingType } from './SettingRegistration.js';
 /**
  * Describes and configures a Setting.
  *
@@ -190,7 +189,6 @@ export declare class Setting<V> {
     descriptor(): SettingDescriptor<V>;
     addChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): EventDescriptor;
     removeChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): void;
-    title(): Platform.UIString.LocalizedString;
     setRequiresUserAction(requiresUserAction: boolean): void;
     get(): V;
     forceGet(): Promise<V>;
@@ -198,15 +196,6 @@ export declare class Setting<V> {
     setSettingType(type: SettingType): void;
     setRegistration(registration: SettingRegistration): void;
     type(): SettingType | null;
-    options(): SimpleSettingOption[];
-    reloadRequired(): boolean | null;
-    category(): SettingCategory | null;
-    tags(): string | null;
-    order(): number | null;
-    /**
-     * See {@link LearnMore} for more info
-     */
-    learnMore(): LearnMore | null;
     private printSettingsSavingError;
 }
 export declare class RegExpSetting extends Setting<any> {
@@ -235,9 +224,3 @@ export declare const enum SettingStorageType {
     SESSION = "Session"
 }
 export { getLocalizedSettingsCategory, maybeRemoveSettingExtension, RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType, };
-export interface SimpleSettingOption {
-    value: string | boolean;
-    title: string;
-    text?: string;
-    raw?: boolean;
-}

@@ -9,6 +9,13 @@ import { debugLog, isStructuredLogEnabled } from '../debug.js';
 const MAX_SUGGESTION_LENGTH = 200;
 export const MAX_STEPS = 10;
 export class ConversationContext {
+    /**
+     * Returns true if the server-side logging is enabled when this context is active.
+     * Currently only used for AI v2.
+     */
+    isLoggingEnabled() {
+        return true;
+    }
     getOrigin() {
         return extractContextOrigin(this.getURL());
     }
@@ -78,7 +85,16 @@ class CrossOriginError extends Error {
 export class AiAgent {
     #sessionId;
     #aidaClient;
-    #serverSideLoggingEnabled;
+    /**
+     * Whether server-side logging is permitted by the system policy (based on
+     * user preferences, feature flags, or branding configurations).
+     */
+    #serverSideLoggingAllowed;
+    /**
+     * Tracks the dynamic runtime state of logging. Even if logging is allowed
+     * by policy, tools can temporarily deactivate this to avoid logging sensitive data.
+     */
+    #serverSideLoggingActive;
     confirmSideEffect;
     #functionDeclarations = new Map();
     #allowedOrigin;
@@ -97,13 +113,15 @@ export class AiAgent {
     #facts = new Set();
     constructor(opts) {
         this.#aidaClient = opts.aidaClient;
-        this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
+        let serverSideLoggingAllowed = opts.serverSideLoggingAllowed ?? false;
         // Disable logging for now.
         // For context, see b/454563259#comment35.
         // We should be able to remove this ~end of April.
         if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-            this.#serverSideLoggingEnabled = false;
+            serverSideLoggingAllowed = false;
         }
+        this.#serverSideLoggingAllowed = serverSideLoggingAllowed;
+        this.#serverSideLoggingActive = serverSideLoggingAllowed;
         this.#sessionId = opts.sessionId ?? crypto.randomUUID();
         this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
         this.#history = opts.history ?? [];
@@ -145,8 +163,18 @@ export class AiAgent {
      */
     clearCache() {
     }
-    disableServerSideLogging() {
-        this.#serverSideLoggingEnabled = false;
+    /**
+     * Toggles whether server-side logging is active.
+     * Note that logging can only be activated if it was allowed by policy/configuration
+     * at startup (i.e., `#serverSideLoggingAllowed` is true).
+     */
+    setServerSideLoggingActive(active) {
+        if (active && this.#serverSideLoggingAllowed) {
+            this.#serverSideLoggingActive = true;
+        }
+        else {
+            this.#serverSideLoggingActive = false;
+        }
     }
     popPendingMultimodalInput() {
         return undefined;
@@ -198,7 +226,7 @@ export class AiAgent {
                 model_id: this.options.modelId || undefined,
             },
             metadata: {
-                disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
+                disable_user_content_logging: !(this.#serverSideLoggingActive ?? false),
                 string_session_id: this.#sessionId,
                 user_tier: userTier,
                 client_version: Root.Runtime.getChromeVersion() + this.preambleFeatures().map(feature => `+${feature}`).join(''),
@@ -536,6 +564,7 @@ export class AiAgent {
                 output: typeof result.result === 'string' ? result.result : JSON.stringify(result.result),
                 widgets: result.widgets,
                 canceled: false,
+                toolName: name,
             };
         }
         if ('error' in result) {
@@ -544,6 +573,7 @@ export class AiAgent {
                 code,
                 output: result.error,
                 canceled: false,
+                toolName: name,
             };
         }
         if ('context' in result) {

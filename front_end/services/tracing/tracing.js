@@ -35,6 +35,7 @@ __export(PerformanceTracing_exports, {
   PerformanceTracing: () => PerformanceTracing,
   RawTraceEvents: () => RawTraceEvents
 });
+import * as Trace from "./../../models/trace/trace.js";
 
 // gen/front_end/services/tracing/TracingManager.js
 var TracingManager_exports = {};
@@ -156,21 +157,11 @@ var PerformanceTracing = class {
     }
     const categories = [
       "-*",
-      "blink.console",
-      "blink.user_timing",
-      "devtools.timeline",
-      "disabled-by-default-devtools.screenshot",
-      "disabled-by-default-devtools.timeline",
-      "disabled-by-default-devtools.timeline.invalidationTracking",
-      "disabled-by-default-devtools.timeline.frame",
-      "disabled-by-default-devtools.timeline.stack",
-      "disabled-by-default-v8.cpu_profiler",
-      "disabled-by-default-v8.cpu_profiler.hires",
-      "latencyInfo",
-      "loading",
-      "disabled-by-default-lighthouse",
-      "v8.execute",
-      "v8"
+      ...Trace.Types.Events.DefaultCategories,
+      ...Trace.Types.Events.OptionalCategories.JsSampling,
+      ...Trace.Types.Events.OptionalCategories.Screenshot,
+      ...Trace.Types.Events.OptionalCategories.InvalidationTracking,
+      "latencyInfo"
     ].join(",");
     const started = await this.#tracingManager.start(this, categories);
     if (!started) {

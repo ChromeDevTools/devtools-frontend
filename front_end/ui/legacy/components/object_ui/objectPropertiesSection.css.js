@@ -13,8 +13,13 @@ export default `/*
   opacity: 60%;
 }
 
+:host {
+  display: block;
+}
+
 .object-properties-section {
   padding: 0;
+  margin: 0;
   color: var(--sys-color-on-surface);
   display: flex;
   flex-direction: column;

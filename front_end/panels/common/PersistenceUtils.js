@@ -11,12 +11,12 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import { html } from '../../ui/lit/lit.js';
 const UIStrings = {
     /**
-     * @description Text in Persistence Utils of the Workspace settings in Settings
+     * @description Tooltip text indicating that a file is linked to a source map.
      * @example {example.url} PH1
      */
     linkedToSourceMapS: 'Linked to source map: {PH1}',
     /**
-     * @description Text to show something is linked to another
+     * @description Tooltip text indicating that a file is linked to another file.
      * @example {example.url} PH1
      */
     linkedToS: 'Linked to {PH1}',

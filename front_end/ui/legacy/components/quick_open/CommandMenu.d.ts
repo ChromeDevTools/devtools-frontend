@@ -13,7 +13,7 @@ export declare class CommandMenu {
         forceNew: boolean | null;
     }): CommandMenu;
     static createCommand(options: CreateCommandOptions): Command;
-    static createSettingCommand<V>(setting: Common.Settings.Setting<V>, title: Common.UIString.LocalizedString, value: V, settingUIDescriptor?: SettingsUI.SettingUIRegistration.SettingUIDescriptor): Command;
+    static createSettingCommand<V>(setting: Common.Settings.Setting<V>, title: Common.UIString.LocalizedString, value: V, settingUI?: SettingsUI.SettingUIRegistration.SettingUI): Command;
     static createActionCommand(options: ActionCommandOptions): Command;
     static createRevealViewCommand(options: RevealViewCommandOptions): Command;
     private loadCommands;

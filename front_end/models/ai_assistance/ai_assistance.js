@@ -9,10 +9,10 @@ var AccessibilityAgent_exports = {};
 __export(AccessibilityAgent_exports, {
   AccessibilityAgent: () => AccessibilityAgent
 });
-import * as Host12 from "./../../core/host/host.js";
-import * as i18n16 from "./../../core/i18n/i18n.js";
+import * as Host13 from "./../../core/host/host.js";
+import * as i18n18 from "./../../core/i18n/i18n.js";
 import * as Root5 from "./../../core/root/root.js";
-import * as SDK10 from "./../../core/sdk/sdk.js";
+import * as SDK11 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/AiUtils.js
 var AiUtils_exports = {};
@@ -1676,6 +1676,13 @@ function canResourceContentsBeReadForTrace(targetURL, traceOrigin) {
 var MAX_SUGGESTION_LENGTH = 200;
 var MAX_STEPS = 10;
 var ConversationContext = class {
+  /**
+   * Returns true if the server-side logging is enabled when this context is active.
+   * Currently only used for AI v2.
+   */
+  isLoggingEnabled() {
+    return true;
+  }
   getOrigin() {
     return extractContextOrigin(this.getURL());
   }
@@ -1732,7 +1739,16 @@ var CrossOriginError = class extends Error {
 var AiAgent = class {
   #sessionId;
   #aidaClient;
-  #serverSideLoggingEnabled;
+  /**
+   * Whether server-side logging is permitted by the system policy (based on
+   * user preferences, feature flags, or branding configurations).
+   */
+  #serverSideLoggingAllowed;
+  /**
+   * Tracks the dynamic runtime state of logging. Even if logging is allowed
+   * by policy, tools can temporarily deactivate this to avoid logging sensitive data.
+   */
+  #serverSideLoggingActive;
   confirmSideEffect;
   #functionDeclarations = /* @__PURE__ */ new Map();
   #allowedOrigin;
@@ -1751,10 +1767,12 @@ var AiAgent = class {
   #facts = /* @__PURE__ */ new Set();
   constructor(opts) {
     this.#aidaClient = opts.aidaClient;
-    this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
+    let serverSideLoggingAllowed = opts.serverSideLoggingAllowed ?? false;
     if (Root4.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      this.#serverSideLoggingEnabled = false;
+      serverSideLoggingAllowed = false;
     }
+    this.#serverSideLoggingAllowed = serverSideLoggingAllowed;
+    this.#serverSideLoggingActive = serverSideLoggingAllowed;
     this.#sessionId = opts.sessionId ?? crypto.randomUUID();
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     this.#history = opts.history ?? [];
@@ -1795,8 +1813,17 @@ var AiAgent = class {
    */
   clearCache() {
   }
-  disableServerSideLogging() {
-    this.#serverSideLoggingEnabled = false;
+  /**
+   * Toggles whether server-side logging is active.
+   * Note that logging can only be activated if it was allowed by policy/configuration
+   * at startup (i.e., `#serverSideLoggingAllowed` is true).
+   */
+  setServerSideLoggingActive(active) {
+    if (active && this.#serverSideLoggingAllowed) {
+      this.#serverSideLoggingActive = true;
+    } else {
+      this.#serverSideLoggingActive = false;
+    }
   }
   popPendingMultimodalInput() {
     return void 0;
@@ -1848,7 +1875,7 @@ var AiAgent = class {
         model_id: this.options.modelId || void 0
       },
       metadata: {
-        disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
+        disable_user_content_logging: !(this.#serverSideLoggingActive ?? false),
         string_session_id: this.#sessionId,
         user_tier: userTier,
         client_version: Root4.Runtime.getChromeVersion() + this.preambleFeatures().map((feature) => `+${feature}`).join("")
@@ -2178,7 +2205,8 @@ var AiAgent = class {
         code,
         output: typeof result.result === "string" ? result.result : JSON.stringify(result.result),
         widgets: result.widgets,
-        canceled: false
+        canceled: false,
+        toolName: name
       };
     }
     if ("error" in result) {
@@ -2186,7 +2214,8 @@ var AiAgent = class {
         type: "action",
         code,
         output: result.error,
-        canceled: false
+        canceled: false,
+        toolName: name
       };
     }
     if ("context" in result) {
@@ -3344,21 +3373,221 @@ var ListNetworkRequestsTool = class {
   }
 };
 
+// gen/front_end/models/ai_assistance/tools/ListPageOrigins.js
+var ListPageOrigins_exports = {};
+__export(ListPageOrigins_exports, {
+  ListPageOriginsTool: () => ListPageOriginsTool
+});
+import * as Common9 from "./../../core/common/common.js";
+import * as Host10 from "./../../core/host/host.js";
+import * as i18n14 from "./../../core/i18n/i18n.js";
+import * as SDK8 from "./../../core/sdk/sdk.js";
+
+// gen/front_end/models/ai_assistance/contexts/StorageContext.js
+var StorageContext_exports = {};
+__export(StorageContext_exports, {
+  StorageContext: () => StorageContext,
+  isSamePageOrigin: () => isSamePageOrigin
+});
+import * as Common8 from "./../../core/common/common.js";
+
+// gen/front_end/models/ai_assistance/StorageItem.js
+var StorageItem_exports = {};
+__export(StorageItem_exports, {
+  CookieItem: () => CookieItem,
+  DOMStorageItem: () => DOMStorageItem,
+  EMPTY_ORIGIN: () => EMPTY_ORIGIN,
+  StorageItem: () => StorageItem
+});
+var EMPTY_ORIGIN = "";
+var StorageItem = class _StorageItem {
+  primaryTargetOrigin;
+  origin;
+  constructor(primaryTargetOrigin, origin = EMPTY_ORIGIN) {
+    this.primaryTargetOrigin = primaryTargetOrigin;
+    this.origin = origin;
+  }
+  get isGenericContext() {
+    return this.origin === EMPTY_ORIGIN;
+  }
+  static createGenericContext(primaryTargetOrigin, ..._args) {
+    return new _StorageItem(primaryTargetOrigin, EMPTY_ORIGIN);
+  }
+};
+var DOMStorageItem = class _DOMStorageItem extends StorageItem {
+  storageKey;
+  type;
+  key;
+  constructor(primaryTargetOrigin, origin, storageKey, type, key) {
+    super(primaryTargetOrigin, origin);
+    this.storageKey = storageKey;
+    this.type = type;
+    this.key = key;
+  }
+  static createGenericContext(primaryTargetOrigin, type) {
+    return new _DOMStorageItem(primaryTargetOrigin, EMPTY_ORIGIN, void 0, type);
+  }
+};
+var CookieItem = class _CookieItem extends StorageItem {
+  name;
+  constructor(primaryTargetOrigin, origin, name) {
+    super(primaryTargetOrigin, origin);
+    this.name = name;
+  }
+  static createGenericContext(primaryTargetOrigin) {
+    return new _CookieItem(primaryTargetOrigin, EMPTY_ORIGIN);
+  }
+};
+
+// gen/front_end/models/ai_assistance/contexts/StorageContext.js
+var StorageContext = class extends ConversationContext {
+  #item;
+  constructor(item) {
+    super();
+    this.#item = item;
+  }
+  getURL() {
+    return this.#item.primaryTargetOrigin;
+  }
+  getItem() {
+    return this.#item;
+  }
+  getTitle() {
+    if (this.#item instanceof CookieItem) {
+      if (this.#item.name) {
+        return `cookie: ${this.#item.name}${this.#item.origin ? ` ${this.#item.origin}` : ""}`;
+      }
+      return `cookies${this.#item.isGenericContext ? "" : `: ${this.#item.origin}`}`;
+    }
+    if (this.#item instanceof DOMStorageItem) {
+      if (this.#item.key) {
+        return `entry: ${this.#item.key}${this.#item.origin ? ` ${this.#item.origin}` : ""}`;
+      }
+      const prefix = this.#item.type === "localStorage" ? "local storage" : "session storage";
+      return `${prefix}${this.#item.isGenericContext ? "" : `: ${this.#item.origin}`}`;
+    }
+    return `Storage: ${this.getOrigin()}`;
+  }
+  /**
+   * @override
+   */
+  isLoggingEnabled() {
+    if (this.#item instanceof CookieItem && Boolean(this.#item.name)) {
+      return false;
+    }
+    if (this.#item instanceof DOMStorageItem && Boolean(this.#item.key)) {
+      return false;
+    }
+    return true;
+  }
+  async getSuggestions() {
+    if (this.#item instanceof CookieItem) {
+      if (this.#item.name) {
+        return [
+          {
+            title: "Why is this cookie set?",
+            jslogContext: "storage-cookie"
+          },
+          {
+            title: "Explain the value of this cookie",
+            jslogContext: "storage-cookie"
+          }
+        ];
+      }
+      return [
+        {
+          title: "Explain the cookies set by this page",
+          jslogContext: "storage-cookie"
+        }
+      ];
+    }
+    if (this.#item instanceof DOMStorageItem) {
+      if (this.#item.key) {
+        return [
+          {
+            title: "What is the purpose of this storage entry?",
+            jslogContext: "storage-domstorage"
+          },
+          {
+            title: "Explain the value of this storage entry",
+            jslogContext: "storage-domstorage"
+          }
+        ];
+      }
+      return [
+        {
+          title: "Explain these storage items",
+          jslogContext: "storage-domstorage"
+        }
+      ];
+    }
+    return void 0;
+  }
+};
+function isSamePageOrigin(target, context) {
+  if (!target || !context) {
+    return false;
+  }
+  const pageOrigin = Common8.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL());
+  return pageOrigin !== "" && context.isOriginAllowed(pageOrigin);
+}
+
+// gen/front_end/models/ai_assistance/tools/ListPageOrigins.js
+var lockedString6 = i18n14.i18n.lockedString;
+var ListPageOriginsTool = class {
+  name = "listPageOrigins";
+  description = "Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies or listStorageKeys, unless the user's explicit request hints at focusing only on the primary page.";
+  parameters = {
+    type: 6,
+    description: "",
+    nullable: false,
+    properties: {},
+    required: []
+  };
+  displayInfoFromArgs() {
+    return {
+      title: lockedString6("Listing page origins"),
+      action: "listPageOrigins()"
+    };
+  }
+  async handler(_args, context) {
+    const targetManager = SDK8.TargetManager.TargetManager.instance();
+    const primaryPageTarget = targetManager.primaryPageTarget();
+    const pageOrigin = primaryPageTarget && context.conversationContext ? Common9.ParsedURL.ParsedURL.extractOrigin(primaryPageTarget.inspectedURL()) : "";
+    const isAllowed = pageOrigin !== "" && context.conversationContext?.isOriginAllowed(pageOrigin);
+    if (!isAllowed) {
+      return { error: "No origin available or not allowed." };
+    }
+    const origins = /* @__PURE__ */ new Set();
+    for (const frame of SDK8.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
+      if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), context.conversationContext ?? void 0)) {
+        continue;
+      }
+      const origin = frame.securityOrigin;
+      if (!origin || isOpaqueOrigin(origin) || origins.has(origin)) {
+        continue;
+      }
+      origins.add(origin);
+    }
+    return { result: { origins: Array.from(origins) } };
+  }
+};
+
 // gen/front_end/models/ai_assistance/tools/RecordPerformanceTrace.js
 var RecordPerformanceTrace_exports = {};
 __export(RecordPerformanceTrace_exports, {
   RecordPerformanceTraceTool: () => RecordPerformanceTraceTool
 });
-import * as Host10 from "./../../core/host/host.js";
-import * as i18n14 from "./../../core/i18n/i18n.js";
+import * as Host11 from "./../../core/host/host.js";
+import * as i18n16 from "./../../core/i18n/i18n.js";
 
 // gen/front_end/models/ai_assistance/contexts/PerformanceTraceContext.js
 var PerformanceTraceContext_exports = {};
 __export(PerformanceTraceContext_exports, {
   PerformanceTraceContext: () => PerformanceTraceContext
 });
-import * as Common9 from "./../../core/common/common.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as Common11 from "./../../core/common/common.js";
+import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as Bindings from "./../bindings/bindings.js";
 import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
@@ -3369,7 +3598,7 @@ var PerformanceInsightFormatter_exports = {};
 __export(PerformanceInsightFormatter_exports, {
   PerformanceInsightFormatter: () => PerformanceInsightFormatter
 });
-import * as Common8 from "./../../core/common/common.js";
+import * as Common10 from "./../../core/common/common.js";
 import * as Trace4 from "./../trace/trace.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.js
@@ -5044,7 +5273,7 @@ Duplication grouped by Node modules: ${filesFormatted}`;
     for (const font of insight.fonts) {
       let fontName = font.name;
       if (!fontName) {
-        const url = new Common8.ParsedURL.ParsedURL(font.request.args.data.url);
+        const url = new Common10.ParsedURL.ParsedURL(font.request.args.data.url);
         fontName = url.isValid ? url.lastPathComponent : "(not available)";
       }
       output += `
@@ -5807,19 +6036,19 @@ function getPerformanceAgentFocusFromModel(model) {
 
 // gen/front_end/models/ai_assistance/contexts/PerformanceTraceContext.js
 var PerformanceTraceContext = class _PerformanceTraceContext extends ConversationContext {
-  static fromParsedTrace(parsedTrace, targetManager = SDK8.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromParsedTrace(parsedTrace, targetManager = SDK9.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
     return new _PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
   }
-  static fromInsight(parsedTrace, insight, targetManager = SDK8.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromInsight(parsedTrace, insight, targetManager = SDK9.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
     return new _PerformanceTraceContext(AgentFocus.fromInsight(parsedTrace, insight), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
   }
-  static fromCallTree(callTree, targetManager = SDK8.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromCallTree(callTree, targetManager = SDK9.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -5829,7 +6058,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
   #targetManager;
   #freshRecordingTracker;
   #debuggerWorkspaceBinding;
-  constructor(focus, targetManager = SDK8.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  constructor(focus, targetManager = SDK9.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -5885,7 +6114,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
     const origin = extractContextOrigin(url);
     const isFresh = this.#freshRecordingTracker.recordingIsFresh(parsedTrace);
     if (!isFresh) {
-      const parsed = Common9.ParsedURL.ParsedURL.fromString(origin);
+      const parsed = Common11.ParsedURL.ParsedURL.fromString(origin);
       return `imported-trace://${parsed ? parsed.domain() : origin}`;
     }
     return origin;
@@ -6047,7 +6276,7 @@ ${traceSummary}`);
 var UIStringsNotTranslate5 = {
   recordingPerformanceTrace: "Recording a performance trace"
 };
-var lockedString6 = i18n14.i18n.lockedString;
+var lockedString7 = i18n16.i18n.lockedString;
 var RecordPerformanceTraceTool = class {
   name = "recordPerformanceTrace";
   description = "Records a new performance trace to measure, analyze, and debug page performance.";
@@ -6060,7 +6289,7 @@ var RecordPerformanceTraceTool = class {
   };
   displayInfoFromArgs() {
     return {
-      title: lockedString6(UIStringsNotTranslate5.recordingPerformanceTrace),
+      title: lockedString7(UIStringsNotTranslate5.recordingPerformanceTrace),
       action: "recordPerformanceTrace()"
     };
   }
@@ -6086,8 +6315,8 @@ var ResolveDevtoolsNodePath_exports = {};
 __export(ResolveDevtoolsNodePath_exports, {
   ResolveDevtoolsNodePathTool: () => ResolveDevtoolsNodePathTool
 });
-import * as Host11 from "./../../core/host/host.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
+import * as Host12 from "./../../core/host/host.js";
+import * as SDK10 from "./../../core/sdk/sdk.js";
 var ResolveDevtoolsNodePathTool = class {
   name = "resolveDevtoolsNodePath";
   description = "Resolves a DevTools node path to a backend node ID.";
@@ -6129,7 +6358,7 @@ var ResolveDevtoolsNodePathTool = class {
       return { error: "Error: Origin lock is not established." };
     }
     const target = context.getTarget();
-    const domModel = target?.model(SDK9.DOMModel.DOMModel);
+    const domModel = target?.model(SDK10.DOMModel.DOMModel);
     if (!domModel) {
       return { error: "Error: Inspected target not found." };
     }
@@ -6188,7 +6417,11 @@ var TOOLS = {
   [
     "recordPerformanceTrace"
     /* ToolName.RECORD_PERFORMANCE_TRACE */
-  ]: new RecordPerformanceTraceTool()
+  ]: new RecordPerformanceTraceTool(),
+  [
+    "listPageOrigins"
+    /* ToolName.LIST_PAGE_ORIGINS */
+  ]: new ListPageOriginsTool()
 };
 var ToolRegistry = class {
   static get(name) {
@@ -6243,7 +6476,7 @@ If the user asks a question that requires an investigation of a problem, use thi
 `;
 var AccessibilityAgent = class extends AiAgent {
   preamble = preamble;
-  clientFeature = Host12.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
+  clientFeature = Host13.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
   #lighthouseRecording;
   #execJs;
   #changes;
@@ -6273,7 +6506,7 @@ var AccessibilityAgent = class extends AiAgent {
   }
   async preRun() {
     const target = this.targetManager.primaryPageTarget();
-    const domModel = target?.model(SDK10.DOMModel.DOMModel);
+    const domModel = target?.model(SDK11.DOMModel.DOMModel);
     if (domModel && !domModel.existingDocument()) {
       try {
         await domModel.requestDocument();
@@ -6288,7 +6521,7 @@ var AccessibilityAgent = class extends AiAgent {
    * so that the AI has a valid $0 to start with.
    */
   #getDocumentBodyNode() {
-    const document2 = this.targetManager.primaryPageTarget()?.model(SDK10.DOMModel.DOMModel)?.existingDocument();
+    const document2 = this.targetManager.primaryPageTarget()?.model(SDK11.DOMModel.DOMModel)?.existingDocument();
     return document2?.body ?? document2 ?? null;
   }
   async *handleContextDetails(lhr) {
@@ -6308,7 +6541,7 @@ var AccessibilityAgent = class extends AiAgent {
     if (!target) {
       return null;
     }
-    const domModel = target.model(SDK10.DOMModel.DOMModel);
+    const domModel = target.model(SDK11.DOMModel.DOMModel);
     if (!domModel) {
       return null;
     }
@@ -6350,7 +6583,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n16.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
+          title: i18n18.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
           action: `getLighthouseAudits('${params.categoryId}')`
         };
       },
@@ -6410,7 +6643,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n16.i18n.lockedString("Running accessibility audits"),
+          title: i18n18.i18n.lockedString("Running accessibility audits"),
           thought: params.explanation,
           action: "runAccessibilityAudits()"
         };
@@ -6553,7 +6786,7 @@ var AccessibilityAgent = class extends AiAgent {
         if (!node) {
           return { error: `Could not find the element with path: ${params.path}` };
         }
-        const accessibilityModel = node.domModel().target().model(SDK10.AccessibilityModel.AccessibilityModel);
+        const accessibilityModel = node.domModel().target().model(SDK11.AccessibilityModel.AccessibilityModel);
         if (!accessibilityModel) {
           return { error: "Accessibility model not found." };
         }
@@ -6584,8 +6817,8 @@ var AccessibilityAgent = class extends AiAgent {
           name: "DOM_TREE",
           data: {
             root: snapshot,
-            title: i18n16.i18n.lockedString("Element details"),
-            accessibleRevealLabel: i18n16.i18n.lockedString("Reveal element")
+            title: i18n18.i18n.lockedString("Element details"),
+            accessibleRevealLabel: i18n18.i18n.lockedString("Reveal element")
           }
         });
         return {
@@ -6614,10 +6847,10 @@ var ContextSelectionAgent_exports = {};
 __export(ContextSelectionAgent_exports, {
   ContextSelectionAgent: () => ContextSelectionAgent
 });
-import * as Common11 from "./../../core/common/common.js";
+import * as Common12 from "./../../core/common/common.js";
 import * as Host14 from "./../../core/host/host.js";
 import * as i18n20 from "./../../core/i18n/i18n.js";
-import * as Root7 from "./../../core/root/root.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as Logs5 from "./../logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 import * as Workspace3 from "./../workspace/workspace.js";
@@ -6744,700 +6977,9 @@ ${new FileFormatter(this.#file, this.#debuggerWorkspaceBinding).formatFile()}`;
   }
 };
 
-// gen/front_end/models/ai_assistance/StorageItem.js
-var StorageItem_exports = {};
-__export(StorageItem_exports, {
-  CookieItem: () => CookieItem,
-  DOMStorageItem: () => DOMStorageItem,
-  EMPTY_ORIGIN: () => EMPTY_ORIGIN,
-  StorageItem: () => StorageItem
-});
-var EMPTY_ORIGIN = "";
-var StorageItem = class _StorageItem {
-  primaryTargetOrigin;
-  origin;
-  constructor(primaryTargetOrigin, origin = EMPTY_ORIGIN) {
-    this.primaryTargetOrigin = primaryTargetOrigin;
-    this.origin = origin;
-  }
-  get isGenericContext() {
-    return this.origin === EMPTY_ORIGIN;
-  }
-  static createGenericContext(primaryTargetOrigin, ..._args) {
-    return new _StorageItem(primaryTargetOrigin, EMPTY_ORIGIN);
-  }
-};
-var DOMStorageItem = class _DOMStorageItem extends StorageItem {
-  storageKey;
-  type;
-  key;
-  constructor(primaryTargetOrigin, origin, storageKey, type, key) {
-    super(primaryTargetOrigin, origin);
-    this.storageKey = storageKey;
-    this.type = type;
-    this.key = key;
-  }
-  static createGenericContext(primaryTargetOrigin, type) {
-    return new _DOMStorageItem(primaryTargetOrigin, EMPTY_ORIGIN, void 0, type);
-  }
-};
-var CookieItem = class _CookieItem extends StorageItem {
-  name;
-  constructor(primaryTargetOrigin, origin, name) {
-    super(primaryTargetOrigin, origin);
-    this.name = name;
-  }
-  static createGenericContext(primaryTargetOrigin) {
-    return new _CookieItem(primaryTargetOrigin, EMPTY_ORIGIN);
-  }
-};
-
-// gen/front_end/models/ai_assistance/agents/StorageAgent.js
-var StorageAgent_exports = {};
-__export(StorageAgent_exports, {
-  StorageAgent: () => StorageAgent,
-  StorageContext: () => StorageContext,
-  findFrameForOrigin: () => findFrameForOrigin,
-  getCookiesForDomain: () => getCookiesForDomain,
-  isSamePageOrigin: () => isSamePageOrigin,
-  resolveDOMStorages: () => resolveDOMStorages
-});
-import * as Common10 from "./../../core/common/common.js";
-import * as Host13 from "./../../core/host/host.js";
-import * as i18n18 from "./../../core/i18n/i18n.js";
-import * as Root6 from "./../../core/root/root.js";
-import * as SDK11 from "./../../core/sdk/sdk.js";
-var lockedString7 = i18n18.i18n.lockedString;
-var preamble2 = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
-
- You have access to the site's storage using tools like \`getStorageBreakdown\`, \`listPageOrigins\`, \`listStorageKeys\`, \`getStorageValues\`, \`listCookies\`, and \`getCookieValues\`.
-
- # Goals
-
- 1.  **Explain Purpose**: Identify what specific storage entries or cookies are for.
- 2.  **Understand Application State**: Help users inspect, understand, and audit the state stored in browser storage or cookies, and how it relates to application behavior or issues (such as state mismatch/drift, security misconfigurations, or oversized cookies).
- 3.  **Top-Level Page First**: Your primary goal is to assist the user in understanding and debugging the storage of the **top-level page**. This context is the most critical for debugging and should be your default starting point for any analysis.
-
- # Tools & Workflow
-
- -   **Top-Level Context**: Generally, questions refer to the primary page target ("my page", "this page", etc.). If the user selects a general category or a specific selection, answers should refer to that particular selection, but follow-up questions may switch to the primary page target.
- -   **Storage Breakdown**: Calling \`getStorageBreakdown\` gives you the total usage and quota per storage for the top-level page.
- -   **Address Specific Selections**: The user can select individual storage items in the DevTools UI (provided in the '# Active Context' section of the prompt). If the query is about a selected item (e.g., "Why is this cookie set?"), focus your response on that specific item.
- -   **General Category Selection**: If a general storage category (such as Cookies, Local Storage, or Session Storage) is selected in the active context (indicated by an empty context origin), your first step MUST be to look through all cookies or local/session storage entries across all active page origins (by calling \`listPageOrigins\` to discover origins, then passing all discovered origins to \`listCookies\` or \`listStorageKeys\`), unless the user's explicit request hints otherwise.
- -   **Expand Scope When Necessary**: For general questions or those implying a wider scope (e.g., "Check all storages," "Are there related cookies on subdomains?"), proactively use your tools to explore other relevant storage contexts, including iframes and different origins.
- -   **Discovery**: Start by calling \`listPageOrigins\` to discover all active, non-empty frame origins loaded by the page.
- -   **Storage Partitioning (LocalStorage / SessionStorage)**:
-     -   Use \`listStorageKeys\` to survey keys. The results are grouped into **partitions** characterized by unique \`storageKey\` strings.
-     -   Be aware that the same origin can have multiple storage partitions depending on frame ancestry.
-     -   Use \`getStorageValues\` to inspect specific keys. The results are grouped into an array of partition \`items\` matching the requested keys under their unique \`storageKey\`.
- -   **Cookies**:
-     -   Use \`listCookies\` to discover active cookies for an origin. Note that cookies are visible by domain scopes, paths, and partition status.
-     -   Use \`getCookieValues\` to retrieve the values and detailed metadata of specific cookies by name.
-     -   **HttpOnly Protection**: You don't have access to \`HttpOnly\` cookies. They are filtered out from both discovery and retrieval tools for security reasons.
- -   **Active Context**: Start by inspecting the active context's origin (provided in the '# Active Context' section of the prompt).
- -   **Value Minimization**: Only request values using \`getStorageValues\` or \`getCookieValues\` when key names/cookie names alone are insufficient.
-
- # Considerations
-
- -   **Strictly Read-Only**: You cannot write, clear, delete, or edit storage or cookies.
- -   **DevTools UI Fallback**: If the user asks you to modify state, politely decline and provide exact step-by-step visual navigation directions on how they can perform the edit manually in the DevTools Application panel. Do NOT supply Console scripts.
- -   **Raw Evidence**: Treat storage data as raw evidence. Do not make assumptions about values without reading them first.
- -   **Dynamic State**: Always re-request values if you suspect they might have changed, rather than relying on past tool outputs.
- -   **CRITICAL**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
- -   **CRITICAL**: You are a storage debugging assistant. NEVER answer unrelated topics (legal, financial, race, sexuality, medical, religion, politics). If asked, respond: "Sorry, I can't answer that. I'm best at questions about debugging web pages."
- `;
-function isSamePrimaryPageOrigin(targetManager, context) {
-  const primaryPageTarget = targetManager.primaryPageTarget();
-  return isSamePageOrigin(primaryPageTarget, context);
-}
-function isSamePageOrigin(target, context) {
-  if (!target || !context) {
-    return false;
-  }
-  const pageOrigin = Common10.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL());
-  return pageOrigin !== "" && context.isOriginAllowed(pageOrigin);
-}
-var MAX_TARGET_ORIGINS = 100;
-function resolveTargetOrigins(context, origins) {
-  const primaryOrigin = context?.getOrigin();
-  const rawList = origins && origins.length > 0 ? origins : primaryOrigin ? [primaryOrigin] : [];
-  const uniqueOrigins = Array.from(new Set(rawList));
-  return uniqueOrigins.slice(0, MAX_TARGET_ORIGINS);
-}
-var StorageContext = class extends ConversationContext {
-  #item;
-  constructor(item) {
-    super();
-    this.#item = item;
-  }
-  getURL() {
-    return this.#item.primaryTargetOrigin;
-  }
-  getItem() {
-    return this.#item;
-  }
-  getTitle() {
-    if (this.#item instanceof CookieItem) {
-      if (this.#item.name) {
-        return `cookie: ${this.#item.name}${this.#item.origin ? ` ${this.#item.origin}` : ""}`;
-      }
-      return `cookies${this.#item.isGenericContext ? "" : `: ${this.#item.origin}`}`;
-    }
-    if (this.#item instanceof DOMStorageItem) {
-      if (this.#item.key) {
-        return `entry: ${this.#item.key}${this.#item.origin ? ` ${this.#item.origin}` : ""}`;
-      }
-      const prefix = this.#item.type === "localStorage" ? "local storage" : "session storage";
-      return `${prefix}${this.#item.isGenericContext ? "" : `: ${this.#item.origin}`}`;
-    }
-    return `Storage: ${this.getOrigin()}`;
-  }
-  async getSuggestions() {
-    if (this.#item instanceof CookieItem) {
-      if (this.#item.name) {
-        return [
-          {
-            title: "Why is this cookie set?",
-            jslogContext: "storage-cookie"
-          },
-          {
-            title: "Explain the value of this cookie",
-            jslogContext: "storage-cookie"
-          }
-        ];
-      }
-      return [
-        {
-          title: "Explain the cookies set by this page",
-          jslogContext: "storage-cookie"
-        }
-      ];
-    }
-    if (this.#item instanceof DOMStorageItem) {
-      if (this.#item.key) {
-        return [
-          {
-            title: "What is the purpose of this storage entry?",
-            jslogContext: "storage-domstorage"
-          },
-          {
-            title: "Explain the value of this storage entry",
-            jslogContext: "storage-domstorage"
-          }
-        ];
-      }
-      return [
-        {
-          title: "Explain these storage items",
-          jslogContext: "storage-domstorage"
-        }
-      ];
-    }
-    return void 0;
-  }
-};
-var MAX_NUM_CHAR_LENGTH = 1e4;
-var StorageAgent = class _StorageAgent extends AiAgent {
-  preamble = preamble2;
-  clientFeature = Host13.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
-  get userTier() {
-    return Root6.Runtime.hostConfig.devToolsFreestyler?.userTier;
-  }
-  get options() {
-    const temperature = Root6.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root6.Runtime.hostConfig.devToolsFreestyler?.modelId;
-    return {
-      temperature,
-      modelId
-    };
-  }
-  constructor(opts) {
-    super(opts);
-    this.declareFunction("listPageOrigins", {
-      description: "Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies or listStorageKeys, unless the user's explicit request hints at focusing only on the primary page.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {},
-        required: []
-      },
-      displayInfoFromArgs: () => {
-        return {
-          title: lockedString7("Listing page origins"),
-          action: "listPageOrigins()"
-        };
-      },
-      handler: async () => {
-        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
-          return { error: "No origin available or not allowed." };
-        }
-        const origins = /* @__PURE__ */ new Set();
-        for (const frame of SDK11.ResourceTreeModel.ResourceTreeModel.frames(this.targetManager)) {
-          if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), this.context)) {
-            continue;
-          }
-          const origin = frame.securityOrigin;
-          if (!origin || origins.has(origin)) {
-            continue;
-          }
-          origins.add(origin);
-        }
-        return { result: { origins: Array.from(origins) } };
-      }
-    });
-    this.declareFunction("listStorageKeys", {
-      description: "Lists all keys for a given storage type for requested origins. Returns keys grouped by storage partition under their origin.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          type: {
-            type: 1,
-            description: "Storage type: localStorage or sessionStorage",
-            nullable: false
-          },
-          origins: {
-            type: 5,
-            description: "List of origins to list keys for.",
-            items: { type: 1, description: "An origin URL." },
-            nullable: false
-          },
-          storageKey: {
-            type: 1,
-            description: "Optional. Specific storageKey to list keys for. Only applies if single origin is provided.",
-            nullable: true
-          }
-        },
-        required: ["type", "origins"]
-      },
-      displayInfoFromArgs: (args) => {
-        return {
-          title: lockedString7("Reading storage keys"),
-          action: `listStorageKeys('${args.type}', ${JSON.stringify(args.origins)})`
-        };
-      },
-      handler: async (args) => {
-        this.disableServerSideLogging();
-        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
-          return { error: "No origin available or not allowed." };
-        }
-        const targetOrigins = resolveTargetOrigins(this.context, args.origins);
-        const storageKey = targetOrigins.length === 1 && args.storageKey ? args.storageKey : void 0;
-        const storageKeysByOrigin = {};
-        await Promise.all(targetOrigins.map(async (origin) => {
-          const storages = resolveDOMStorages(this.context, args.type, origin, this.targetManager, storageKey);
-          const keyAndItems = await Promise.all(storages.map(async (storage) => {
-            const items = await storage.getItems();
-            return { storageKey: storage.storageKey, items };
-          }));
-          const partitions = [];
-          for (const { storageKey: storageKey2, items } of keyAndItems) {
-            if (!items) {
-              continue;
-            }
-            const keys = items.map(([key]) => key);
-            if (keys.length > 0) {
-              partitions.push({ storageKey: storageKey2, keys });
-            }
-          }
-          storageKeysByOrigin[origin] = { partitions };
-        }));
-        return { result: { storageKeysByOrigin } };
-      }
-    });
-    this.declareFunction("getStorageValues", {
-      description: "Retrieve specific string values from storage partitions for requested keys across origins.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          type: {
-            type: 1,
-            description: "Storage type: localStorage or sessionStorage",
-            nullable: false
-          },
-          keys: {
-            type: 5,
-            description: "A list of keys to retrieve values for.",
-            items: { type: 1, description: "A storage key." },
-            nullable: false
-          },
-          origins: {
-            type: 5,
-            description: "List of origins to get values for.",
-            items: { type: 1, description: "An origin URL." },
-            nullable: false
-          },
-          storageKey: {
-            type: 1,
-            description: "Optional. Specific storageKey partition to get values for. Only applies if single origin is provided.",
-            nullable: true
-          }
-        },
-        required: ["type", "keys", "origins"]
-      },
-      displayInfoFromArgs: (args) => {
-        return {
-          title: lockedString7("Reading storage values"),
-          action: `getStorageValues('${args.type}', ${JSON.stringify(args.keys)}, ${JSON.stringify(args.origins)}${args.storageKey ? `, '${args.storageKey}'` : ""})`
-        };
-      },
-      handler: async (args, options) => {
-        this.disableServerSideLogging();
-        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
-          return { error: "No origin available or not allowed." };
-        }
-        const targetOrigins = resolveTargetOrigins(this.context, args.origins);
-        const storageKey = targetOrigins.length === 1 && args.storageKey ? args.storageKey : void 0;
-        const allStoragesMap = {};
-        let totalStoragesCount = 0;
-        for (const origin of targetOrigins) {
-          const storages = resolveDOMStorages(this.context, args.type, origin, this.targetManager, storageKey);
-          if (storages.length > 0) {
-            allStoragesMap[origin] = storages;
-            totalStoragesCount += storages.length;
-          }
-        }
-        if (totalStoragesCount === 0) {
-          return { error: "No matching storage partitions found." };
-        }
-        if (options?.approved !== true) {
-          const keyString = args.keys.map((k) => `\`${k}\``).join(", ");
-          const targetsDesc = Object.keys(allStoragesMap).join(", ");
-          return {
-            requiresApproval: true,
-            description: lockedString7(`The AI wants to access the value(s) of ${args.type} keys ${keyString} on ${targetsDesc}.`)
-          };
-        }
-        const storageValuesByOrigin = {};
-        await Promise.all(targetOrigins.map(async (origin) => {
-          const storages = allStoragesMap[origin] || [];
-          const itemsResult = [];
-          const keyAndItems = await Promise.all(storages.map(async (storage) => {
-            const items = await storage.getItems();
-            return { storageKey: storage.storageKey, items };
-          }));
-          for (const { storageKey: partitionKey, items } of keyAndItems) {
-            if (!items) {
-              continue;
-            }
-            const itemMap = new Map(items);
-            const storageValues = {};
-            for (const key of args.keys) {
-              const value = itemMap.get(key);
-              if (value === void 0) {
-                continue;
-              }
-              const truncatedValue = value.length > MAX_NUM_CHAR_LENGTH ? value.substring(0, MAX_NUM_CHAR_LENGTH) + "... <truncated>" : value;
-              storageValues[key] = truncatedValue;
-            }
-            itemsResult.push({ storageKey: partitionKey, values: storageValues });
-          }
-          storageValuesByOrigin[origin] = { items: itemsResult };
-        }));
-        return { result: { storageValuesByOrigin } };
-      }
-    });
-    this.declareFunction("listCookies", {
-      description: "Lists all cookies for requested origins, strictly excluding their values.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          origins: {
-            type: 5,
-            description: "List of origins to list cookies for.",
-            items: { type: 1, description: "An origin URL." },
-            nullable: false
-          }
-        },
-        required: ["origins"]
-      },
-      displayInfoFromArgs: (args) => {
-        return {
-          title: lockedString7("Reading cookies"),
-          action: `listCookies(${JSON.stringify(args.origins)})`
-        };
-      },
-      handler: async (args) => {
-        this.disableServerSideLogging();
-        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
-          return { error: "No origin available or not allowed." };
-        }
-        const targetOrigins = resolveTargetOrigins(this.context, args.origins);
-        const cookieNamesByOrigin = {};
-        await Promise.all(targetOrigins.map(async (origin) => {
-          const frame = findFrameForOrigin(this.context, origin, this.targetManager);
-          if (!frame) {
-            cookieNamesByOrigin[origin] = { error: "Frame not found or origin disallowed" };
-            return;
-          }
-          const target = frame.resourceTreeModel().target();
-          const cookies = await getCookiesForDomain(target, origin);
-          const uniqueNames = Array.from(new Set(cookies?.map((c) => c.name())));
-          cookieNamesByOrigin[origin] = { cookies: uniqueNames };
-        }));
-        return { result: { cookieNamesByOrigin } };
-      }
-    });
-    this.declareFunction("getCookieValues", {
-      description: "Retrieve the values and detailed metadata of specific cookies by their names across origins.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          cookieNames: {
-            type: 5,
-            description: "A list of cookie names to retrieve values and metadata for.",
-            items: { type: 1, description: "A cookie name." },
-            nullable: false
-          },
-          origins: {
-            type: 5,
-            description: "List of origins the cookies belong to.",
-            items: { type: 1, description: "An origin URL." },
-            nullable: false
-          }
-        },
-        required: ["cookieNames", "origins"]
-      },
-      displayInfoFromArgs: (args) => {
-        return {
-          title: lockedString7("Reading cookie values and metadata"),
-          action: `getCookieValues(${JSON.stringify(args.cookieNames)}, ${JSON.stringify(args.origins)})`
-        };
-      },
-      handler: async (args, options) => {
-        this.disableServerSideLogging();
-        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
-          return { error: "No origin available or not allowed." };
-        }
-        const targetOrigins = resolveTargetOrigins(this.context, args.origins);
-        if (options?.approved !== true) {
-          return {
-            requiresApproval: true,
-            description: lockedString7(`The AI wants to access the value(s) and metadata of cookie(s) ${args.cookieNames.map((name) => `\`${name}\``).join(", ")} on ${targetOrigins.join(", ")}.`)
-          };
-        }
-        const cookiesByOrigin = {};
-        await Promise.all(targetOrigins.map(async (origin) => {
-          const frame = findFrameForOrigin(this.context, origin, this.targetManager);
-          if (!frame) {
-            cookiesByOrigin[origin] = { error: "Frame not found or origin disallowed" };
-            return;
-          }
-          const target = frame.resourceTreeModel().target();
-          const cookies = await getCookiesForDomain(target, origin);
-          if (!cookies) {
-            cookiesByOrigin[origin] = { cookies: [] };
-            return;
-          }
-          const matchingCookies = cookies.filter((c) => args.cookieNames.includes(c.name()));
-          const cookieData = matchingCookies.map((cookie) => {
-            const value = cookie.value();
-            const truncatedValue = value.length > MAX_NUM_CHAR_LENGTH ? value.substring(0, MAX_NUM_CHAR_LENGTH) + "... <truncated>" : value;
-            return {
-              value: truncatedValue,
-              domain: cookie.domain(),
-              path: cookie.path(),
-              expires: cookie.expires(),
-              size: cookie.size(),
-              secure: cookie.secure(),
-              sameSite: cookie.sameSite(),
-              partitioned: cookie.partitioned(),
-              priority: cookie.priority(),
-              sourcePort: cookie.sourcePort(),
-              sourceScheme: cookie.sourceScheme()
-            };
-          });
-          cookiesByOrigin[origin] = { cookies: cookieData };
-        }));
-        return { result: { cookiesByOrigin } };
-      }
-    });
-    this.declareFunction("getStorageBreakdown", {
-      description: "Retrieves a breakdown of active storage usage per storage type for the top-level page.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {},
-        required: []
-      },
-      displayInfoFromArgs: () => {
-        return {
-          title: lockedString7("Retrieving storage breakdown"),
-          action: "getStorageBreakdown()"
-        };
-      },
-      handler: async () => {
-        const target = this.targetManager.primaryPageTarget();
-        if (!target || !this.context || !isSamePageOrigin(target, this.context)) {
-          return { error: "No origin available or not allowed." };
-        }
-        const origin = this.context.getItem().primaryTargetOrigin;
-        const response = await target.storageAgent().invoke_getUsageAndQuota({ origin });
-        if (response.getError()) {
-          return { error: response.getError() || "Unknown CDP error" };
-        }
-        const mainStorageKey = target.model(SDK11.StorageKeyManager.StorageKeyManager)?.mainStorageKey() || void 0;
-        const localStorages = resolveDOMStorages(this.context, "localStorage", origin, this.targetManager, mainStorageKey);
-        const localStorageBytes = await calculateDOMStoragesUsage(localStorages);
-        const sessionStorages = resolveDOMStorages(this.context, "sessionStorage", origin, this.targetManager, mainStorageKey);
-        const sessionStorageBytes = await calculateDOMStoragesUsage(sessionStorages);
-        const cookies = await getCookiesForDomain(target, origin);
-        let cookieBytes = 0;
-        if (cookies) {
-          for (const cookie of cookies) {
-            cookieBytes += cookie.size();
-          }
-        }
-        const rawUsageBreakdown = response.usageBreakdown.filter((entry) => entry.usage > 0).map((entry) => ({
-          storageType: entry.storageType,
-          rawUsage: entry.usage
-        }));
-        rawUsageBreakdown.push({ storageType: "local_storage", rawUsage: localStorageBytes }, { storageType: "session_storage", rawUsage: sessionStorageBytes }, { storageType: "cookies", rawUsage: cookieBytes });
-        rawUsageBreakdown.sort((a, b) => b.rawUsage - a.rawUsage);
-        const usageBreakdown = rawUsageBreakdown.map((entry) => ({
-          storageType: entry.storageType,
-          usage: bytes(entry.rawUsage)
-        }));
-        return {
-          result: {
-            usageBreakdown
-          }
-        };
-      }
-    });
-  }
-  static #formatContext(item) {
-    const primaryTargetOrigin = `Primary target: ${item.primaryTargetOrigin}`;
-    if (item instanceof CookieItem) {
-      const parsedURL = Common10.ParsedURL.ParsedURL.fromString(item.origin);
-      const domain = parsedURL ? parsedURL.host : item.origin;
-      return `${primaryTargetOrigin}
-User-selected Context: Cookies${item.isGenericContext ? "" : `
-Domain: ${domain}`}${item.name ? `
-Cookie Name: ${item.name}` : ""}`;
-    }
-    if (item instanceof DOMStorageItem) {
-      return `${primaryTargetOrigin}
-User-selected Context: DOM Storage
- Type: ${item.type}${item.isGenericContext ? "" : `
-StorageKey: ${item.storageKey}
-Origin: ${item.origin}`}${item.key ? `
-Key: ${item.key}` : ""}`;
-    }
-    return primaryTargetOrigin;
-  }
-  async preRun() {
-    const item = this.context?.getItem();
-    if (item instanceof CookieItem && Boolean(item.name)) {
-      this.disableServerSideLogging();
-    } else if (item instanceof DOMStorageItem && Boolean(item.key)) {
-      this.disableServerSideLogging();
-    }
-  }
-  async *handleContextDetails(context) {
-    if (!context) {
-      return;
-    }
-    yield {
-      type: "context",
-      details: [
-        {
-          title: "Selected Storage Context",
-          text: _StorageAgent.#formatContext(context.getItem())
-        }
-      ]
-    };
-  }
-  async enhanceQuery(query, context) {
-    if (!context) {
-      return query;
-    }
-    return `# Active Context
-${_StorageAgent.#formatContext(context.getItem())}
-
-${query}`;
-  }
-};
-async function getCookiesForDomain(target, origin) {
-  const cookieModel = target.model(SDK11.CookieModel.CookieModel);
-  if (!cookieModel) {
-    return null;
-  }
-  const allCookies = await cookieModel.getCookiesForDomain(origin);
-  if (!allCookies) {
-    return null;
-  }
-  return allCookies.filter((cookie) => !cookie.httpOnly());
-}
-function findFrameForOrigin(context, origin, targetManager) {
-  for (const frame of SDK11.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
-    if (frame.securityOrigin === origin) {
-      const target = frame.resourceTreeModel().target();
-      if (isSamePageOrigin(target.outermostTarget(), context)) {
-        return frame;
-      }
-    }
-  }
-  return null;
-}
-async function calculateDOMStoragesUsage(storages) {
-  let totalBytes = 0;
-  for (const storage of storages) {
-    const items = await storage.getItems();
-    if (items) {
-      for (const [key, value] of items) {
-        totalBytes += (key.length + value.length) * 2;
-      }
-    }
-  }
-  return totalBytes;
-}
-function resolveDOMStorages(context, type, origin, targetManager, storageKey) {
-  const resolvedStorages = [];
-  const isLocalStorage = type === "localStorage";
-  const domStorageModels = targetManager.models(SDK11.DOMStorageModel.DOMStorageModel);
-  for (const domStorageModel of domStorageModels) {
-    if (!isSamePageOrigin(domStorageModel.target().outermostTarget(), context)) {
-      continue;
-    }
-    for (const storage of domStorageModel.storages()) {
-      if (storage.isLocalStorage !== isLocalStorage) {
-        continue;
-      }
-      const currentStorageKey = storage.storageKey;
-      if (!currentStorageKey) {
-        continue;
-      }
-      if (storageKey) {
-        if (storageKey === currentStorageKey) {
-          const parsedKey2 = SDK11.StorageKeyManager.parseStorageKey(currentStorageKey);
-          if (parsedKey2.origin === origin) {
-            resolvedStorages.push(storage);
-          }
-        }
-        continue;
-      }
-      const parsedKey = SDK11.StorageKeyManager.parseStorageKey(currentStorageKey);
-      if (parsedKey.origin === origin) {
-        resolvedStorages.push(storage);
-      }
-    }
-  }
-  return resolvedStorages;
-}
-
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
 var lockedString8 = i18n20.i18n.lockedString;
-var preamble3 = `
+var preamble2 = `
 You are an advanced Web Development Assistant and AI routing agent integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise. You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
 
 Your role is to understand the user's query, identify the appropriate specialized agent to handle it, and select the relevant context from the page to assist that agent.
@@ -7473,14 +7015,14 @@ Your role is to understand the user's query, identify the appropriate specialize
 * The only available types are \`#req\` for network request and \`#file\` for source files. Only use ID inside the link, never ask about user selecting by ID.
 `;
 var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
-  preamble = preamble3;
+  preamble = preamble2;
   clientFeature = Host14.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
   get userTier() {
-    return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root6.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
-    const temperature = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root6.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root6.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
     return {
       temperature,
       modelId
@@ -7650,7 +7192,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         const uiSourceCodes = [];
         for (const file of _ContextSelectionAgent.getUISourceCodes(this.#workspace)) {
           const fileUrl = file.url();
-          const fileOrigin = Common11.ParsedURL.ParsedURL.extractOrigin(fileUrl);
+          const fileOrigin = Common12.ParsedURL.ParsedURL.extractOrigin(fileUrl);
           if (origin && fileOrigin !== origin) {
             continue;
           }
@@ -7705,7 +7247,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
             return false;
           }
           const fileUrl = file2.url();
-          const fileOrigin = Common11.ParsedURL.ParsedURL.extractOrigin(fileUrl);
+          const fileOrigin = Common12.ParsedURL.ParsedURL.extractOrigin(fileUrl);
           return !origin || fileOrigin === origin;
         });
         if (!file) {
@@ -7836,7 +7378,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         };
       }
     });
-    if (Root7.Runtime.hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
+    if (Root6.Runtime.hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
       this.declareFunction("analyzeStorage", {
         description: "Selects the page storage. Use this when asked about browser storage (localStorage, sessionStorage, cookies) and issues related to these.",
         parameters: {
@@ -7922,8 +7464,8 @@ __export(FileAgent_exports, {
   FileAgent: () => FileAgent
 });
 import * as Host15 from "./../../core/host/host.js";
-import * as Root8 from "./../../core/root/root.js";
-var preamble4 = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
+import * as Root7 from "./../../core/root/root.js";
+var preamble3 = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
 You are provided with the content of a file from the Chrome DevTools Sources panel. To aid your analysis, you've been given the below links to understand the context of the code and its relationship to other files. When answering questions, prioritize providing these links directly.
 * Source-mapped from: If this code is the source for a mapped file, you'll have a link to that generated file.
 * Source map: If this code has an associated source map, you'll have link to the source map.
@@ -7976,14 +7518,14 @@ External Resources:
 MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions
 `;
 var FileAgent = class extends AiAgent {
-  preamble = preamble4;
+  preamble = preamble3;
   clientFeature = Host15.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier() {
-    return Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
+    return Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
   }
   get options() {
-    const temperature = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
     return {
       temperature,
       modelId
@@ -8019,8 +7561,8 @@ __export(NetworkAgent_exports, {
   NetworkAgent: () => NetworkAgent
 });
 import * as Host16 from "./../../core/host/host.js";
-import * as Root9 from "./../../core/root/root.js";
-var preamble5 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
+import * as Root8 from "./../../core/root/root.js";
+var preamble4 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
 Provide a comprehensive analysis of the network request, focusing on areas crucial for a software engineer. Your analysis should include:
 * Briefly explain the purpose of the request based on the URL, method, and any relevant headers or payload.
@@ -8065,14 +7607,14 @@ Request Status: 200 OK
 This request aims to retrieve a list of products matching the search query "laptop" within the "electronics" category. The successful 200 OK status confirms that the server fulfilled the request and returned the relevant data.
 `;
 var NetworkAgent = class extends AiAgent {
-  preamble = preamble5;
+  preamble = preamble4;
   clientFeature = Host16.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   get userTier() {
-    return Root9.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
+    return Root8.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
   }
   get options() {
-    const temperature = Root9.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
-    const modelId = Root9.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
+    const temperature = Root8.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
+    const modelId = Root8.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
     return {
       temperature,
       modelId
@@ -8114,10 +7656,10 @@ __export(PerformanceAgent_exports, {
   PerformanceAgent: () => PerformanceAgent,
   getLabelName: () => getLabelName
 });
-import * as Common12 from "./../../core/common/common.js";
+import * as Common13 from "./../../core/common/common.js";
 import * as Host17 from "./../../core/host/host.js";
 import * as i18n22 from "./../../core/i18n/i18n.js";
-import * as Root10 from "./../../core/root/root.js";
+import * as Root9 from "./../../core/root/root.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
 import * as Tracing2 from "./../../services/tracing/tracing.js";
@@ -8134,7 +7676,7 @@ var UIStringsNotTranslated = {
   mainThreadActivity: "Investigating main thread activity"
 };
 var lockedString9 = i18n22.i18n.lockedString;
-var preamble6 = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
+var preamble5 = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
 Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
 
@@ -8287,7 +7829,7 @@ function getLabelName(label, focus) {
   return label;
 }
 var PerformanceAgent = class extends AiAgent {
-  preamble = preamble6;
+  preamble = preamble5;
   #tracker;
   #networkLog;
   constructor(opts) {
@@ -8347,11 +7889,11 @@ var PerformanceAgent = class extends AiAgent {
     return Host17.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
   }
   get userTier() {
-    return Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+    return Root9.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options() {
-    const temperature = Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+    const temperature = Root9.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root9.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
     return {
       temperature,
       modelId
@@ -9078,7 +8620,7 @@ ${result}`,
         };
       }
     });
-    const isTraceApp = Root10.Runtime.Runtime.isTraceApp();
+    const isTraceApp = Root9.Runtime.Runtime.isTraceApp();
     this.declareFunction("getResourceContent", {
       description: "Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.",
       parameters: {
@@ -9166,7 +8708,7 @@ ${result}`,
           return { error: "Invalid eventKey" };
         }
         const revealable = new SDK12.TraceObject.RevealableEvent(event);
-        await Common12.Revealer.reveal(revealable);
+        await Common13.Revealer.reveal(revealable);
         return {
           result: { success: true },
           widgets: [{
@@ -9306,13 +8848,583 @@ function formatEventForAI(event) {
   return JSON.stringify(event);
 }
 
+// gen/front_end/models/ai_assistance/agents/StorageAgent.js
+var StorageAgent_exports = {};
+__export(StorageAgent_exports, {
+  StorageAgent: () => StorageAgent,
+  findFrameForOrigin: () => findFrameForOrigin,
+  getCookiesForDomain: () => getCookiesForDomain,
+  isSamePageOrigin: () => isSamePageOrigin2,
+  resolveDOMStorages: () => resolveDOMStorages
+});
+import * as Common14 from "./../../core/common/common.js";
+import * as Host18 from "./../../core/host/host.js";
+import * as i18n24 from "./../../core/i18n/i18n.js";
+import * as Root10 from "./../../core/root/root.js";
+import * as SDK13 from "./../../core/sdk/sdk.js";
+var lockedString10 = i18n24.i18n.lockedString;
+var preamble6 = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
+
+ You have access to the site's storage using tools like \`getStorageBreakdown\`, \`listPageOrigins\`, \`listStorageKeys\`, \`getStorageValues\`, \`listCookies\`, and \`getCookieValues\`.
+
+ # Goals
+
+ 1.  **Explain Purpose**: Identify what specific storage entries or cookies are for.
+ 2.  **Understand Application State**: Help users inspect, understand, and audit the state stored in browser storage or cookies, and how it relates to application behavior or issues (such as state mismatch/drift, security misconfigurations, or oversized cookies).
+ 3.  **Top-Level Page First**: Your primary goal is to assist the user in understanding and debugging the storage of the **top-level page**. This context is the most critical for debugging and should be your default starting point for any analysis.
+
+ # Tools & Workflow
+
+ -   **Top-Level Context**: Generally, questions refer to the primary page target ("my page", "this page", etc.). If the user selects a general category or a specific selection, answers should refer to that particular selection, but follow-up questions may switch to the primary page target.
+ -   **Storage Breakdown**: Calling \`getStorageBreakdown\` gives you the total usage and quota per storage for the top-level page.
+ -   **Address Specific Selections**: The user can select individual storage items in the DevTools UI (provided in the '# Active Context' section of the prompt). If the query is about a selected item (e.g., "Why is this cookie set?"), focus your response on that specific item.
+ -   **General Category Selection**: If a general storage category (such as Cookies, Local Storage, or Session Storage) is selected in the active context (indicated by an empty context origin), your first step MUST be to look through all cookies or local/session storage entries across all active page origins (by calling \`listPageOrigins\` to discover origins, then passing all discovered origins to \`listCookies\` or \`listStorageKeys\`), unless the user's explicit request hints otherwise.
+ -   **Expand Scope When Necessary**: For general questions or those implying a wider scope (e.g., "Check all storages," "Are there related cookies on subdomains?"), proactively use your tools to explore other relevant storage contexts, including iframes and different origins.
+ -   **Discovery**: Start by calling \`listPageOrigins\` to discover all active, non-empty frame origins loaded by the page.
+ -   **Storage Partitioning (LocalStorage / SessionStorage)**:
+     -   Use \`listStorageKeys\` to survey keys. The results are grouped into **partitions** characterized by unique \`storageKey\` strings.
+     -   Be aware that the same origin can have multiple storage partitions depending on frame ancestry.
+     -   Use \`getStorageValues\` to inspect specific keys. The results are grouped into an array of partition \`items\` matching the requested keys under their unique \`storageKey\`.
+ -   **Cookies**:
+     -   Use \`listCookies\` to discover active cookies for an origin. Note that cookies are visible by domain scopes, paths, and partition status.
+     -   Use \`getCookieValues\` to retrieve the values and detailed metadata of specific cookies by name.
+     -   **HttpOnly Protection**: You don't have access to \`HttpOnly\` cookies. They are filtered out from both discovery and retrieval tools for security reasons.
+ -   **Active Context**: Start by inspecting the active context's origin (provided in the '# Active Context' section of the prompt).
+ -   **Value Minimization**: Only request values using \`getStorageValues\` or \`getCookieValues\` when key names/cookie names alone are insufficient.
+
+ # Considerations
+
+ -   **Strictly Read-Only**: You cannot write, clear, delete, or edit storage or cookies.
+ -   **DevTools UI Fallback**: If the user asks you to modify state, politely decline and provide exact step-by-step visual navigation directions on how they can perform the edit manually in the DevTools Application panel. Do NOT supply Console scripts.
+ -   **Raw Evidence**: Treat storage data as raw evidence. Do not make assumptions about values without reading them first.
+ -   **Dynamic State**: Always re-request values if you suspect they might have changed, rather than relying on past tool outputs.
+ -   **CRITICAL**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
+ -   **CRITICAL**: You are a storage debugging assistant. NEVER answer unrelated topics (legal, financial, race, sexuality, medical, religion, politics). If asked, respond: "Sorry, I can't answer that. I'm best at questions about debugging web pages."
+ `;
+function isSamePrimaryPageOrigin(targetManager, context) {
+  const primaryPageTarget = targetManager.primaryPageTarget();
+  return isSamePageOrigin2(primaryPageTarget, context);
+}
+function isSamePageOrigin2(target, context) {
+  if (!target || !context) {
+    return false;
+  }
+  const pageOrigin = Common14.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL());
+  return pageOrigin !== "" && context.isOriginAllowed(pageOrigin);
+}
+var MAX_TARGET_ORIGINS = 100;
+function resolveTargetOrigins(context, origins) {
+  const primaryOrigin = context?.getOrigin();
+  const rawList = origins && origins.length > 0 ? origins : primaryOrigin ? [primaryOrigin] : [];
+  const uniqueOrigins = Array.from(new Set(rawList));
+  return uniqueOrigins.slice(0, MAX_TARGET_ORIGINS);
+}
+var MAX_NUM_CHAR_LENGTH = 1e4;
+var StorageAgent = class _StorageAgent extends AiAgent {
+  preamble = preamble6;
+  clientFeature = Host18.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
+  get userTier() {
+    return Root10.Runtime.hostConfig.devToolsFreestyler?.userTier;
+  }
+  get options() {
+    const temperature = Root10.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root10.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    return {
+      temperature,
+      modelId
+    };
+  }
+  constructor(opts) {
+    super(opts);
+    this.declareFunction("listPageOrigins", {
+      description: "Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies or listStorageKeys, unless the user's explicit request hints at focusing only on the primary page.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {},
+        required: []
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: lockedString10("Listing page origins"),
+          action: "listPageOrigins()"
+        };
+      },
+      handler: async () => {
+        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
+          return { error: "No origin available or not allowed." };
+        }
+        const origins = /* @__PURE__ */ new Set();
+        for (const frame of SDK13.ResourceTreeModel.ResourceTreeModel.frames(this.targetManager)) {
+          if (!isSamePageOrigin2(frame.resourceTreeModel().target().outermostTarget(), this.context)) {
+            continue;
+          }
+          const origin = frame.securityOrigin;
+          if (!origin || origins.has(origin)) {
+            continue;
+          }
+          origins.add(origin);
+        }
+        return { result: { origins: Array.from(origins) } };
+      }
+    });
+    this.declareFunction("listStorageKeys", {
+      description: "Lists all keys for a given storage type for requested origins. Returns keys grouped by storage partition under their origin.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          type: {
+            type: 1,
+            description: "Storage type: localStorage or sessionStorage",
+            nullable: false
+          },
+          origins: {
+            type: 5,
+            description: "List of origins to list keys for.",
+            items: { type: 1, description: "An origin URL." },
+            nullable: false
+          },
+          storageKey: {
+            type: 1,
+            description: "Optional. Specific storageKey to list keys for. Only applies if single origin is provided.",
+            nullable: true
+          }
+        },
+        required: ["type", "origins"]
+      },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: lockedString10("Reading storage keys"),
+          action: `listStorageKeys('${args.type}', ${JSON.stringify(args.origins)})`
+        };
+      },
+      handler: async (args) => {
+        this.setServerSideLoggingActive(false);
+        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
+          return { error: "No origin available or not allowed." };
+        }
+        const targetOrigins = resolveTargetOrigins(this.context, args.origins);
+        const storageKey = targetOrigins.length === 1 && args.storageKey ? args.storageKey : void 0;
+        const storageKeysByOrigin = {};
+        await Promise.all(targetOrigins.map(async (origin) => {
+          const storages = resolveDOMStorages(this.context, args.type, origin, this.targetManager, storageKey);
+          const keyAndItems = await Promise.all(storages.map(async (storage) => {
+            const items = await storage.getItems();
+            return { storageKey: storage.storageKey, items };
+          }));
+          const partitions = [];
+          for (const { storageKey: storageKey2, items } of keyAndItems) {
+            if (!items) {
+              continue;
+            }
+            const keys = items.map(([key]) => key);
+            if (keys.length > 0) {
+              partitions.push({ storageKey: storageKey2, keys });
+            }
+          }
+          storageKeysByOrigin[origin] = { partitions };
+        }));
+        return { result: { storageKeysByOrigin } };
+      }
+    });
+    this.declareFunction("getStorageValues", {
+      description: "Retrieve specific string values from storage partitions for requested keys across origins.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          type: {
+            type: 1,
+            description: "Storage type: localStorage or sessionStorage",
+            nullable: false
+          },
+          keys: {
+            type: 5,
+            description: "A list of keys to retrieve values for.",
+            items: { type: 1, description: "A storage key." },
+            nullable: false
+          },
+          origins: {
+            type: 5,
+            description: "List of origins to get values for.",
+            items: { type: 1, description: "An origin URL." },
+            nullable: false
+          },
+          storageKey: {
+            type: 1,
+            description: "Optional. Specific storageKey partition to get values for. Only applies if single origin is provided.",
+            nullable: true
+          }
+        },
+        required: ["type", "keys", "origins"]
+      },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: lockedString10("Reading storage values"),
+          action: `getStorageValues('${args.type}', ${JSON.stringify(args.keys)}, ${JSON.stringify(args.origins)}${args.storageKey ? `, '${args.storageKey}'` : ""})`
+        };
+      },
+      handler: async (args, options) => {
+        this.setServerSideLoggingActive(false);
+        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
+          return { error: "No origin available or not allowed." };
+        }
+        const targetOrigins = resolveTargetOrigins(this.context, args.origins);
+        const storageKey = targetOrigins.length === 1 && args.storageKey ? args.storageKey : void 0;
+        const allStoragesMap = {};
+        let totalStoragesCount = 0;
+        for (const origin of targetOrigins) {
+          const storages = resolveDOMStorages(this.context, args.type, origin, this.targetManager, storageKey);
+          if (storages.length > 0) {
+            allStoragesMap[origin] = storages;
+            totalStoragesCount += storages.length;
+          }
+        }
+        if (totalStoragesCount === 0) {
+          return { error: "No matching storage partitions found." };
+        }
+        if (options?.approved !== true) {
+          const keyString = args.keys.map((k) => `\`${k}\``).join(", ");
+          const targetsDesc = Object.keys(allStoragesMap).join(", ");
+          return {
+            requiresApproval: true,
+            description: lockedString10(`The AI wants to access the value(s) of ${args.type} keys ${keyString} on ${targetsDesc}.`)
+          };
+        }
+        const storageValuesByOrigin = {};
+        await Promise.all(targetOrigins.map(async (origin) => {
+          const storages = allStoragesMap[origin] || [];
+          const itemsResult = [];
+          const keyAndItems = await Promise.all(storages.map(async (storage) => {
+            const items = await storage.getItems();
+            return { storageKey: storage.storageKey, items };
+          }));
+          for (const { storageKey: partitionKey, items } of keyAndItems) {
+            if (!items) {
+              continue;
+            }
+            const itemMap = new Map(items);
+            const storageValues = {};
+            for (const key of args.keys) {
+              const value = itemMap.get(key);
+              if (value === void 0) {
+                continue;
+              }
+              const truncatedValue = value.length > MAX_NUM_CHAR_LENGTH ? value.substring(0, MAX_NUM_CHAR_LENGTH) + "... <truncated>" : value;
+              storageValues[key] = truncatedValue;
+            }
+            itemsResult.push({ storageKey: partitionKey, values: storageValues });
+          }
+          storageValuesByOrigin[origin] = { items: itemsResult };
+        }));
+        return { result: { storageValuesByOrigin } };
+      }
+    });
+    this.declareFunction("listCookies", {
+      description: "Lists all cookies for requested origins, strictly excluding their values.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          origins: {
+            type: 5,
+            description: "List of origins to list cookies for.",
+            items: { type: 1, description: "An origin URL." },
+            nullable: false
+          }
+        },
+        required: ["origins"]
+      },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: lockedString10("Reading cookies"),
+          action: `listCookies(${JSON.stringify(args.origins)})`
+        };
+      },
+      handler: async (args) => {
+        this.setServerSideLoggingActive(false);
+        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
+          return { error: "No origin available or not allowed." };
+        }
+        const targetOrigins = resolveTargetOrigins(this.context, args.origins);
+        const cookieNamesByOrigin = {};
+        await Promise.all(targetOrigins.map(async (origin) => {
+          const frame = findFrameForOrigin(this.context, origin, this.targetManager);
+          if (!frame) {
+            cookieNamesByOrigin[origin] = { error: "Frame not found or origin disallowed" };
+            return;
+          }
+          const target = frame.resourceTreeModel().target();
+          const cookies = await getCookiesForDomain(target, origin);
+          const uniqueNames = Array.from(new Set(cookies?.map((c) => c.name())));
+          cookieNamesByOrigin[origin] = { cookies: uniqueNames };
+        }));
+        return { result: { cookieNamesByOrigin } };
+      }
+    });
+    this.declareFunction("getCookieValues", {
+      description: "Retrieve the values and detailed metadata of specific cookies by their names across origins.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          cookieNames: {
+            type: 5,
+            description: "A list of cookie names to retrieve values and metadata for.",
+            items: { type: 1, description: "A cookie name." },
+            nullable: false
+          },
+          origins: {
+            type: 5,
+            description: "List of origins the cookies belong to.",
+            items: { type: 1, description: "An origin URL." },
+            nullable: false
+          }
+        },
+        required: ["cookieNames", "origins"]
+      },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: lockedString10("Reading cookie values and metadata"),
+          action: `getCookieValues(${JSON.stringify(args.cookieNames)}, ${JSON.stringify(args.origins)})`
+        };
+      },
+      handler: async (args, options) => {
+        this.setServerSideLoggingActive(false);
+        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
+          return { error: "No origin available or not allowed." };
+        }
+        const targetOrigins = resolveTargetOrigins(this.context, args.origins);
+        if (options?.approved !== true) {
+          return {
+            requiresApproval: true,
+            description: lockedString10(`The AI wants to access the value(s) and metadata of cookie(s) ${args.cookieNames.map((name) => `\`${name}\``).join(", ")} on ${targetOrigins.join(", ")}.`)
+          };
+        }
+        const cookiesByOrigin = {};
+        await Promise.all(targetOrigins.map(async (origin) => {
+          const frame = findFrameForOrigin(this.context, origin, this.targetManager);
+          if (!frame) {
+            cookiesByOrigin[origin] = { error: "Frame not found or origin disallowed" };
+            return;
+          }
+          const target = frame.resourceTreeModel().target();
+          const cookies = await getCookiesForDomain(target, origin);
+          if (!cookies) {
+            cookiesByOrigin[origin] = { cookies: [] };
+            return;
+          }
+          const matchingCookies = cookies.filter((c) => args.cookieNames.includes(c.name()));
+          const cookieData = matchingCookies.map((cookie) => {
+            const value = cookie.value();
+            const truncatedValue = value.length > MAX_NUM_CHAR_LENGTH ? value.substring(0, MAX_NUM_CHAR_LENGTH) + "... <truncated>" : value;
+            return {
+              value: truncatedValue,
+              domain: cookie.domain(),
+              path: cookie.path(),
+              expires: cookie.expires(),
+              size: cookie.size(),
+              secure: cookie.secure(),
+              sameSite: cookie.sameSite(),
+              partitioned: cookie.partitioned(),
+              priority: cookie.priority(),
+              sourcePort: cookie.sourcePort(),
+              sourceScheme: cookie.sourceScheme()
+            };
+          });
+          cookiesByOrigin[origin] = { cookies: cookieData };
+        }));
+        return { result: { cookiesByOrigin } };
+      }
+    });
+    this.declareFunction("getStorageBreakdown", {
+      description: "Retrieves a breakdown of active storage usage per storage type for the top-level page.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {},
+        required: []
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: lockedString10("Retrieving storage breakdown"),
+          action: "getStorageBreakdown()"
+        };
+      },
+      handler: async () => {
+        const target = this.targetManager.primaryPageTarget();
+        if (!target || !this.context || !isSamePageOrigin2(target, this.context)) {
+          return { error: "No origin available or not allowed." };
+        }
+        const origin = this.context.getItem().primaryTargetOrigin;
+        const response = await target.storageAgent().invoke_getUsageAndQuota({ origin });
+        if (response.getError()) {
+          return { error: response.getError() || "Unknown CDP error" };
+        }
+        const mainStorageKey = target.model(SDK13.StorageKeyManager.StorageKeyManager)?.mainStorageKey() || void 0;
+        const localStorages = resolveDOMStorages(this.context, "localStorage", origin, this.targetManager, mainStorageKey);
+        const localStorageBytes = await calculateDOMStoragesUsage(localStorages);
+        const sessionStorages = resolveDOMStorages(this.context, "sessionStorage", origin, this.targetManager, mainStorageKey);
+        const sessionStorageBytes = await calculateDOMStoragesUsage(sessionStorages);
+        const cookies = await getCookiesForDomain(target, origin);
+        let cookieBytes = 0;
+        if (cookies) {
+          for (const cookie of cookies) {
+            cookieBytes += cookie.size();
+          }
+        }
+        const rawUsageBreakdown = response.usageBreakdown.filter((entry) => entry.usage > 0).map((entry) => ({
+          storageType: entry.storageType,
+          rawUsage: entry.usage
+        }));
+        rawUsageBreakdown.push({ storageType: "local_storage", rawUsage: localStorageBytes }, { storageType: "session_storage", rawUsage: sessionStorageBytes }, { storageType: "cookies", rawUsage: cookieBytes });
+        rawUsageBreakdown.sort((a, b) => b.rawUsage - a.rawUsage);
+        const usageBreakdown = rawUsageBreakdown.map((entry) => ({
+          storageType: entry.storageType,
+          usage: bytes(entry.rawUsage)
+        }));
+        return {
+          result: {
+            usageBreakdown
+          }
+        };
+      }
+    });
+  }
+  static #formatContext(item) {
+    const primaryTargetOrigin = `Primary target: ${item.primaryTargetOrigin}`;
+    if (item instanceof CookieItem) {
+      const parsedURL = Common14.ParsedURL.ParsedURL.fromString(item.origin);
+      const domain = parsedURL ? parsedURL.host : item.origin;
+      return `${primaryTargetOrigin}
+User-selected Context: Cookies${item.isGenericContext ? "" : `
+Domain: ${domain}`}${item.name ? `
+Cookie Name: ${item.name}` : ""}`;
+    }
+    if (item instanceof DOMStorageItem) {
+      return `${primaryTargetOrigin}
+User-selected Context: DOM Storage
+ Type: ${item.type}${item.isGenericContext ? "" : `
+StorageKey: ${item.storageKey}
+Origin: ${item.origin}`}${item.key ? `
+Key: ${item.key}` : ""}`;
+    }
+    return primaryTargetOrigin;
+  }
+  async preRun() {
+    const item = this.context?.getItem();
+    if (item instanceof CookieItem && Boolean(item.name)) {
+      this.setServerSideLoggingActive(false);
+    } else if (item instanceof DOMStorageItem && Boolean(item.key)) {
+      this.setServerSideLoggingActive(false);
+    }
+  }
+  async *handleContextDetails(context) {
+    if (!context) {
+      return;
+    }
+    yield {
+      type: "context",
+      details: [
+        {
+          title: "Selected Storage Context",
+          text: _StorageAgent.#formatContext(context.getItem())
+        }
+      ]
+    };
+  }
+  async enhanceQuery(query, context) {
+    if (!context) {
+      return query;
+    }
+    return `# Active Context
+${_StorageAgent.#formatContext(context.getItem())}
+
+${query}`;
+  }
+};
+async function getCookiesForDomain(target, origin) {
+  const cookieModel = target.model(SDK13.CookieModel.CookieModel);
+  if (!cookieModel) {
+    return null;
+  }
+  const allCookies = await cookieModel.getCookiesForDomain(origin);
+  if (!allCookies) {
+    return null;
+  }
+  return allCookies.filter((cookie) => !cookie.httpOnly());
+}
+function findFrameForOrigin(context, origin, targetManager) {
+  for (const frame of SDK13.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
+    if (frame.securityOrigin === origin) {
+      const target = frame.resourceTreeModel().target();
+      if (isSamePageOrigin2(target.outermostTarget(), context)) {
+        return frame;
+      }
+    }
+  }
+  return null;
+}
+async function calculateDOMStoragesUsage(storages) {
+  let totalBytes = 0;
+  for (const storage of storages) {
+    const items = await storage.getItems();
+    if (items) {
+      for (const [key, value] of items) {
+        totalBytes += (key.length + value.length) * 2;
+      }
+    }
+  }
+  return totalBytes;
+}
+function resolveDOMStorages(context, type, origin, targetManager, storageKey) {
+  const resolvedStorages = [];
+  const isLocalStorage = type === "localStorage";
+  const domStorageModels = targetManager.models(SDK13.DOMStorageModel.DOMStorageModel);
+  for (const domStorageModel of domStorageModels) {
+    if (!isSamePageOrigin2(domStorageModel.target().outermostTarget(), context)) {
+      continue;
+    }
+    for (const storage of domStorageModel.storages()) {
+      if (storage.isLocalStorage !== isLocalStorage) {
+        continue;
+      }
+      const currentStorageKey = storage.storageKey;
+      if (!currentStorageKey) {
+        continue;
+      }
+      if (storageKey) {
+        if (storageKey === currentStorageKey) {
+          const parsedKey2 = SDK13.StorageKeyManager.parseStorageKey(currentStorageKey);
+          if (parsedKey2.origin === origin) {
+            resolvedStorages.push(storage);
+          }
+        }
+        continue;
+      }
+      const parsedKey = SDK13.StorageKeyManager.parseStorageKey(currentStorageKey);
+      if (parsedKey.origin === origin) {
+        resolvedStorages.push(storage);
+      }
+    }
+  }
+  return resolvedStorages;
+}
+
 // gen/front_end/models/ai_assistance/agents/StylingAgent.js
 var StylingAgent_exports = {};
 __export(StylingAgent_exports, {
   AI_ASSISTANCE_FILTER_REGEX: () => AI_ASSISTANCE_FILTER_REGEX,
   StylingAgent: () => StylingAgent
 });
-import * as Host18 from "./../../core/host/host.js";
+import * as Host19 from "./../../core/host/host.js";
 import * as Root11 from "./../../core/root/root.js";
 var preamble7 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
@@ -9382,7 +9494,7 @@ var MULTIMODAL_ENHANCEMENT_PROMPTS = {
 var AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 var StylingAgent = class extends AiAgent {
   preamble = preamble7;
-  clientFeature = Host18.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
+  clientFeature = Host19.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier() {
     return Root11.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -9484,7 +9596,7 @@ var AiAgent2_exports = {};
 __export(AiAgent2_exports, {
   AiAgent2: () => AiAgent2
 });
-import * as Host19 from "./../../core/host/host.js";
+import * as Host20 from "./../../core/host/host.js";
 
 // gen/front_end/models/ai_assistance/skills/accessibility.skill.js
 var skill = {
@@ -9520,8 +9632,42 @@ var skill3 = {
   "instructions": "You are an expert web performance assistant integrated into Chrome DevTools.\nYour goal is to help users analyze, measure, and improve web page performance.\n\nUse `recordPerformanceTrace` to record a new performance trace when requested by the user or when live measurement is required."
 };
 
-// gen/front_end/models/ai_assistance/skills/styling.skill.js
+// gen/front_end/models/ai_assistance/skills/storage.skill.js
 var skill4 = {
+  "name": "storage",
+  "description": "inspect, understand, and audit the state stored in browser storage (LocalStorage, SessionStorage) or cookies.",
+  "allowedTools": [
+    "listPageOrigins"
+  ],
+  "instructions": `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
+
+You have access to the site's storage using tools.
+
+# Goals
+
+1.  **Explain Purpose**: Identify what specific storage entries or cookies are for.
+2.  **Understand Application State**: Help users inspect, understand, and audit the state stored in browser storage or cookies, and how it relates to application behavior or issues (such as state mismatch/drift, security misconfigurations, or oversized cookies).
+3.  **Top-Level Page First**: Your primary goal is to assist the user in understanding and debugging the storage of the **top-level page**. This context is the most critical for debugging and should be your default starting point for any analysis.
+
+# Tools & Workflow
+
+-   **Top-Level Context**: Generally, questions refer to the primary page target ("my page", "this page", etc.). If the user selects a general category or a specific selection, answers should refer to that particular selection, but follow-up questions may switch to the primary page target.
+-   **Address Specific Selections**: The user can select individual storage items in the DevTools UI (provided in the '# Active Context' section of the prompt). If the query is about a selected item (e.g., "Why is this cookie set?"), focus your response on that specific item.
+-   **General Category Selection**: If a general storage category (such as Cookies, Local Storage, or Session Storage) is selected in the active context (indicated by an empty context origin), your first step MUST be to look through all active page origins by calling \`listPageOrigins\` to discover origins, unless the user's explicit request hints otherwise.
+-   **Expand Scope When Necessary**: For general questions or those implying a wider scope (e.g., "Check all storages," "Are there related cookies on subdomains?"), proactively use your tools to explore other relevant storage contexts, including iframes and different origins.
+-   **Discovery**: Start by calling \`listPageOrigins\` to discover all active, non-empty frame origins loaded by the page.
+-   **Active Context**: Start by inspecting the active context's origin (provided in the '# Active Context' section of the prompt).
+
+# Considerations
+
+-   **Strictly Read-Only**: You cannot write, clear, delete, or edit storage or cookies.
+-   **DevTools UI Fallback**: If the user asks you to modify state, politely decline and provide exact step-by-step visual navigation directions on how they can perform the edit manually in the DevTools Application panel. Do NOT supply Console scripts.
+-   **Raw Evidence**: Treat storage data as raw evidence. Do not make assumptions about values without reading them first.
+-   **Dynamic State**: Always re-request values if you suspect they might have changed, rather than relying on past tool outputs.`
+};
+
+// gen/front_end/models/ai_assistance/skills/styling.skill.js
+var skill5 = {
   "name": "styling",
   "description": "CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.",
   "allowedTools": [
@@ -9533,10 +9679,11 @@ var skill4 = {
 
 // gen/front_end/models/ai_assistance/skills/SkillRegistry.js
 var SKILLS = {
-  styling: skill4,
+  styling: skill5,
   network: skill2,
   accessibility: skill,
-  performance: skill3
+  performance: skill3,
+  storage: skill4
 };
 
 // gen/front_end/models/ai_assistance/AiAgent2.js
@@ -9544,7 +9691,8 @@ var SKILL_DISPLAY_NAMES = {
   styling: "CSS and styling",
   network: "Network requests",
   accessibility: "Accessibility",
-  performance: "Performance"
+  performance: "Performance",
+  storage: "Storage"
 };
 var preamble8 = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
 Your role is to help web developers debug, analyze, and optimize web applications by learning specialized skills and utilizing tools.
@@ -9575,7 +9723,7 @@ If the user asks a question that requires an investigation or debugging, use thi
 var AiAgent2 = class extends AiAgent {
   // TODO: The static preamble is a placeholder and will eventually live server-side.
   preamble = preamble8;
-  clientFeature = Host19.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
+  clientFeature = Host20.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
   userTier = "TESTERS";
   #changes;
   #execJs;
@@ -9584,6 +9732,11 @@ var AiAgent2 = class extends AiAgent {
   #performanceRecordAndReload;
   get options() {
     return {};
+  }
+  async preRun() {
+    if (this.context && !this.context.isLoggingEnabled()) {
+      this.setServerSideLoggingActive(false);
+    }
   }
   #activeSkills = /* @__PURE__ */ new Set();
   #declaredTools = /* @__PURE__ */ new Set();
@@ -9646,7 +9799,7 @@ QUERY: ${query}`;
     if (unloadedSkills.length === 0) {
       return enhancedQuery;
     }
-    const skillsManifest = unloadedSkills.map(([name, skill5]) => `- ${name}: ${skill5.description}`).join("\n");
+    const skillsManifest = unloadedSkills.map(([name, skill6]) => `- ${name}: ${skill6.description}`).join("\n");
     return `Available skills that are not yet loaded:
 ${skillsManifest}
 
@@ -9730,7 +9883,10 @@ ${skillObj.instructions}
           getTarget: () => this.targetManager.primaryPageTarget(),
           getEstablishedOrigin: () => this.#getConversationOrigin(),
           lighthouseRecording: this.#lighthouseRecording,
-          performanceRecordAndReload: this.#performanceRecordAndReload
+          performanceRecordAndReload: this.#performanceRecordAndReload,
+          setLoggingEnabled: (enabled) => {
+            this.setServerSideLoggingActive(enabled);
+          }
         };
         return tool.handler(args, context, options);
       }
@@ -9754,11 +9910,11 @@ __export(AiConversation_exports, {
   NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA,
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
-import * as Common14 from "./../../core/common/common.js";
-import * as Host20 from "./../../core/host/host.js";
+import * as Common16 from "./../../core/common/common.js";
+import * as Host21 from "./../../core/host/host.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as Root13 from "./../../core/root/root.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
+import * as SDK14 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
 var AiHistoryStorage_exports = {};
@@ -9768,19 +9924,19 @@ __export(AiHistoryStorage_exports, {
   MAX_RECENT_PROMPTS_COUNT: () => MAX_RECENT_PROMPTS_COUNT,
   RECENT_PROMPTS_SIZE_LIMIT: () => RECENT_PROMPTS_SIZE_LIMIT
 });
-import * as Common13 from "./../../core/common/common.js";
+import * as Common15 from "./../../core/common/common.js";
 import * as Root12 from "./../../core/root/root.js";
 var DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 var MAX_RECENT_PROMPTS_COUNT = 20;
 var MAX_CONVERSATIONS_COUNT = 50;
 var RECENT_PROMPTS_SIZE_LIMIT = 100 * 1024;
-var AiHistoryStorage = class _AiHistoryStorage extends Common13.ObjectWrapper.ObjectWrapper {
+var AiHistoryStorage = class _AiHistoryStorage extends Common15.ObjectWrapper.ObjectWrapper {
   #historySetting;
   #imageHistorySettings;
   #recentPromptsSetting;
-  #mutex = new Common13.Mutex.Mutex();
+  #mutex = new Common15.Mutex.Mutex();
   #maxStorageSize;
-  constructor(settings = Common13.Settings.Settings.instance(), maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
+  constructor(settings = Common15.Settings.Settings.instance(), maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
     super();
     this.#historySetting = settings.createSetting("ai-assistance-history-entries", []);
     this.#imageHistorySettings = settings.createSetting("ai-assistance-history-images", []);
@@ -9921,7 +10077,7 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common13.ObjectWrapper.Ob
     if (!Root12.DevToolsContext.globalInstance().has(_AiHistoryStorage) || forceNew) {
       Root12.DevToolsContext.globalInstance().set(_AiHistoryStorage, new _AiHistoryStorage(
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        settings ?? Common13.Settings.Settings.instance(),
+        settings ?? Common15.Settings.Settings.instance(),
         maxStorageSize
       ));
     }
@@ -9991,7 +10147,7 @@ var AiConversation = class _AiConversation {
       data = [],
       id = crypto.randomUUID(),
       isReadOnly = true,
-      aidaClient = new Host20.AidaClient.AidaClient(),
+      aidaClient = new Host21.AidaClient.AidaClient(),
       changeManager,
       performanceRecordAndReload,
       onInspectElement,
@@ -9999,7 +10155,7 @@ var AiConversation = class _AiConversation {
       lighthouseRecording,
       aiHistoryStorage = AiHistoryStorage.instance(),
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-      targetManager = SDK13.TargetManager.TargetManager.instance()
+      targetManager = SDK14.TargetManager.TargetManager.instance()
     } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
@@ -10208,9 +10364,20 @@ ${item.text.trim()}`);
           case "side-effect": {
             return { ...item, confirm: void 0 };
           }
-          case "context":
-          case "action": {
+          case "context": {
             return { ...item, widgets: void 0 };
+          }
+          case "action": {
+            const tool = item.toolName ? ToolRegistry.get(item.toolName) : void 0;
+            const shouldRedact = tool?.annotations?.includes(
+              "redact-from-history"
+              /* ToolAnnotation.REDACT_FROM_HISTORY */
+            );
+            return {
+              ...item,
+              output: shouldRedact ? "<redacted>" : item.output,
+              widgets: void 0
+            };
           }
           default:
             return item;
@@ -10236,7 +10403,7 @@ ${item.text.trim()}`);
     this.#type = type;
     const options = {
       aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+      serverSideLoggingAllowed: isAiAssistanceServerSideLoggingAllowed(),
       sessionId: this.id,
       changeManager: this.#changeManager,
       performanceRecordAndReload: this.#performanceRecordAndReload,
@@ -10279,14 +10446,14 @@ ${item.text.trim()}`);
       }
     };
     const targetManager = this.#targetManager;
-    targetManager.addModelListener(SDK13.ResourceTreeModel.ResourceTreeModel, SDK13.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+    targetManager.addModelListener(SDK14.ResourceTreeModel.ResourceTreeModel, SDK14.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
     try {
       if (this.isBlockedByOrigin) {
         throw new Error("cross-origin context data should not be included");
       }
       yield* this.#runAgent(initialQuery, options, { isInitialCall: true });
     } finally {
-      targetManager.removeModelListener(SDK13.ResourceTreeModel.ResourceTreeModel, SDK13.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+      targetManager.removeModelListener(SDK14.ResourceTreeModel.ResourceTreeModel, SDK14.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
     }
   }
   #getQueryAfterSelection(initialQuery, selection) {
@@ -10361,7 +10528,7 @@ Original user query: ${initialQuery}`;
     return { origin: this.#origin };
   };
 };
-function isAiAssistanceServerSideLoggingEnabled() {
+function isAiAssistanceServerSideLoggingAllowed() {
   return !Root13.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 function isAiAssistanceContextSelectionAgentEnabled() {
@@ -10370,7 +10537,7 @@ function isAiAssistanceContextSelectionAgentEnabled() {
 function getPrimaryPageOrigin(targetManager) {
   const target = targetManager.primaryPageTarget();
   const inspectedURL = target?.inspectedURL();
-  return inspectedURL ? new Common14.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
+  return inspectedURL ? new Common16.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
 }
 
 // gen/front_end/models/ai_assistance/AiSetting.js
@@ -10378,10 +10545,10 @@ var AiSetting_exports = {};
 __export(AiSetting_exports, {
   AiSetting: () => AiSetting
 });
-import * as Common15 from "./../../core/common/common.js";
-import * as Host21 from "./../../core/host/host.js";
+import * as Common17 from "./../../core/common/common.js";
+import * as Host22 from "./../../core/host/host.js";
 import * as Root14 from "./../../core/root/root.js";
-var AiSetting = class extends Common15.ObjectWrapper.ObjectWrapper {
+var AiSetting = class extends Common17.ObjectWrapper.ObjectWrapper {
   #setting;
   #descriptor;
   #hostConfigTracker;
@@ -10501,10 +10668,10 @@ var BuiltInAi_exports = {};
 __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
-import * as Common16 from "./../../core/common/common.js";
-import * as Host22 from "./../../core/host/host.js";
+import * as Common18 from "./../../core/common/common.js";
+import * as Host23 from "./../../core/host/host.js";
 import * as Root15 from "./../../core/root/root.js";
-var BuiltInAi = class _BuiltInAi extends Common16.ObjectWrapper.ObjectWrapper {
+var BuiltInAi = class _BuiltInAi extends Common18.ObjectWrapper.ObjectWrapper {
   #availability = null;
   #hasGpu;
   #consoleInsightsSession;
@@ -10685,37 +10852,37 @@ Your instructions are as follows:
     if (this.#hasGpu) {
       switch (this.#availability) {
         case "unavailable":
-          Host22.userMetrics.builtInAiAvailability(Host22.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU);
+          Host23.userMetrics.builtInAiAvailability(Host23.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU);
           break;
         case "downloadable":
-          Host22.userMetrics.builtInAiAvailability(Host22.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU);
+          Host23.userMetrics.builtInAiAvailability(Host23.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU);
           break;
         case "downloading":
-          Host22.userMetrics.builtInAiAvailability(Host22.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU);
+          Host23.userMetrics.builtInAiAvailability(Host23.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU);
           break;
         case "available":
-          Host22.userMetrics.builtInAiAvailability(Host22.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU);
+          Host23.userMetrics.builtInAiAvailability(Host23.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU);
           break;
         case "disabled":
-          Host22.userMetrics.builtInAiAvailability(Host22.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU);
+          Host23.userMetrics.builtInAiAvailability(Host23.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU);
           break;
       }
     } else {
       switch (this.#availability) {
         case "unavailable":
-          Host22.userMetrics.builtInAiAvailability(Host22.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU);
+          Host23.userMetrics.builtInAiAvailability(Host23.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU);
           break;
         case "downloadable":
-          Host22.userMetrics.builtInAiAvailability(Host22.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU);
+          Host23.userMetrics.builtInAiAvailability(Host23.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU);
           break;
         case "downloading":
-          Host22.userMetrics.builtInAiAvailability(Host22.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU);
+          Host23.userMetrics.builtInAiAvailability(Host23.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU);
           break;
         case "available":
-          Host22.userMetrics.builtInAiAvailability(Host22.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU);
+          Host23.userMetrics.builtInAiAvailability(Host23.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU);
           break;
         case "disabled":
-          Host22.userMetrics.builtInAiAvailability(Host22.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU);
+          Host23.userMetrics.builtInAiAvailability(Host23.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU);
           break;
       }
     }
@@ -10727,7 +10894,7 @@ var ConversationSummary_exports = {};
 __export(ConversationSummary_exports, {
   ConversationSummary: () => ConversationSummary
 });
-import * as Host23 from "./../../core/host/host.js";
+import * as Host24 from "./../../core/host/host.js";
 import * as Root16 from "./../../core/root/root.js";
 var preamble9 = `### Role
 You are a Conversation Summarizer. Your task is to take a transcript of a conversation between a user and a DevTools AI agent and produce a succinct, actionable Markdown summary. This summary will be used to help apply fixes in an IDE, so it must capture all relevant technical details, findings, and proposed code changes without any conversational fluff.
@@ -10837,7 +11004,7 @@ ${conversation}`;
       aidaClient: this.#aidaClient,
       preamble: preamble9,
       query: enhancedQuery,
-      clientFeature: Host23.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
+      clientFeature: Host24.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
       temperature,
       modelId,
       userTier,
@@ -10858,7 +11025,7 @@ var PerformanceAnnotations_exports = {};
 __export(PerformanceAnnotations_exports, {
   PerformanceAnnotations: () => PerformanceAnnotations
 });
-import * as Host24 from "./../../core/host/host.js";
+import * as Host25 from "./../../core/host/host.js";
 import * as Root17 from "./../../core/root/root.js";
 var callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
@@ -10957,7 +11124,7 @@ ${AI_LABEL_GENERATION_PROMPT}`;
       aidaClient: this.#aidaClient,
       preamble: callTreePreamble,
       query,
-      clientFeature: Host24.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT,
+      clientFeature: Host25.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT,
       temperature,
       modelId,
       userTier,
@@ -11004,6 +11171,7 @@ export {
   injected_exports as Injected,
   LighthouseFormatter_exports as LighthouseFormatter,
   ListNetworkRequests_exports as ListNetworkRequests,
+  ListPageOrigins_exports as ListPageOrigins,
   NetworkAgent_exports as NetworkAgent,
   NetworkRequestFormatter_exports as NetworkRequestFormatter,
   PerformanceAgent_exports as PerformanceAgent,
@@ -11015,6 +11183,7 @@ export {
   RequestContext_exports as RequestContext,
   ResolveDevtoolsNodePath_exports as ResolveDevtoolsNodePath,
   StorageAgent_exports as StorageAgent,
+  StorageContext_exports as StorageContext,
   StorageItem_exports as StorageItem,
   StylingAgent_exports as StylingAgent,
   Tool_exports as Tool,

@@ -119,6 +119,7 @@ export declare class CompilerScriptMapping implements DebuggerSourceMapping {
      */
     private sourceMapDetached;
     scriptsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[];
+    sourceMapURLsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): Platform.DevToolsPath.UrlString[];
     private sourceMapAttachedForTest;
     dispose(): void;
 }

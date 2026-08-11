@@ -4,11 +4,13 @@
 import { skill as accessibilitySkill } from './accessibility.skill.js';
 import { skill as networkSkill } from './network.skill.js';
 import { skill as performanceSkill } from './performance.skill.js';
+import { skill as storageSkill } from './storage.skill.js';
 import { skill as stylingSkill } from './styling.skill.js';
 export const SKILLS = {
     styling: stylingSkill,
     network: networkSkill,
     accessibility: accessibilitySkill,
     performance: performanceSkill,
+    storage: storageSkill,
 };
 //# sourceMappingURL=SkillRegistry.js.map

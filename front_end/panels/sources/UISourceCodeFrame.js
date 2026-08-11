@@ -140,9 +140,8 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
         this.installMessageAndDecorationListeners();
         this.updateStyle();
         // Show pretty-print toggle if file type is formattable.
-        // For editable JavaScript files, the toggle is hidden because live edit fails on
-        // large whitespace changes. For non-JS files (JSON, CSS), the toggle can be shown
-        // because they don't have this issue (fixes issue 378870233).
+        // For editable JavaScript files, the toggle is hidden. For non-JS files (JSON, CSS), the toggle can be shown
+        // (fixes issue 378870233).
         const isFormattable = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(this.contentType);
         const isEditable = Persistence.Persistence.PersistenceImpl.instance().hasEditableContent(this.#uiSourceCode);
         // Check if the MIME type is JavaScript (not the resource type, which can be wrong for file system files)
@@ -196,11 +195,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
             Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().active()) {
             return true;
         }
-        // Because live edit fails on large whitespace changes, pretty printed scripts are not editable.
-        if (this.pretty && this.#uiSourceCode.contentType().hasScripts()) {
-            return false;
-        }
-        return this.#uiSourceCode.contentType() !== Common.ResourceType.resourceTypes.Document;
+        return this.#uiSourceCode.contentType().isStyleSheet();
     }
     onNetworkPersistenceChanged() {
         this.setEditable(this.#canEditSource());

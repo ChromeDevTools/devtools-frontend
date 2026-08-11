@@ -2351,6 +2351,14 @@ export declare const Categories: {
     readonly UserTiming: 'blink.user_timing';
     readonly Loading: 'loading';
 };
+export declare const DefaultCategories: readonly ['blink.console', 'blink.user_timing', 'loading', 'devtools.timeline', 'disabled-by-default-devtools.target-rundown', 'disabled-by-default-devtools.timeline.frame', 'disabled-by-default-devtools.timeline.stack', 'disabled-by-default-devtools.timeline', 'disabled-by-default-devtools.v8-source-rundown-sources', 'disabled-by-default-devtools.v8-source-rundown', 'disabled-by-default-layout_shift.debug', 'disabled-by-default-v8.inspector', 'disabled-by-default-v8.cpu_profiler.hires', 'disabled-by-default-lighthouse', 'v8.execute', 'v8', 'cppgc', 'navigation,rail'];
+export declare const OptionalCategories: {
+    readonly JsSampling: readonly ['disabled-by-default-v8.cpu_profiler'];
+    readonly InvalidationTracking: readonly ['disabled-by-default-devtools.timeline.invalidationTracking'];
+    readonly AdvancedPaint: readonly ['disabled-by-default-devtools.timeline.layers', 'disabled-by-default-devtools.timeline.picture', 'disabled-by-default-blink.graphics_context_annotations'];
+    readonly Screenshot: readonly ['disabled-by-default-devtools.screenshot'];
+    readonly CssSelectorStats: readonly ['disabled-by-default-blink.debug', 'disabled-by-default-devtools.timeline.invalidationTracking'];
+};
 /**
  * The frames implementation in handlers/FramesHandler is considered "legacy"
  * in that it is based on the old TimelineModel implementation rather than

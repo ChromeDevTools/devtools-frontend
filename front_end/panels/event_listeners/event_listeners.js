@@ -478,6 +478,7 @@ var objectValue_css_default = `/*
 // gen/front_end/panels/event_listeners/EventListenersView.js
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI from "./../../ui/legacy/legacy.js";
+import { render } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/event_listeners/eventListenersView.css.js
@@ -869,15 +870,26 @@ var ObjectEventListenerBar = class extends UI.TreeOutline.TreeElement {
   }
   setTitle(object, linkifier) {
     const title = this.listItemElement.createChild("span", "event-listener-details");
-    const propertyValue = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
+    const propertyValue = ObjectUI.ObjectPropertiesSection.renderPropertyValue(
       object,
       /* wasThrown */
       false,
       /* showPreview */
-      false
+      false,
+      linkifier,
+      /* isSyntheticProperty */
+      false,
+      /* variableName */
+      void 0,
+      /* includeNullOrUndefined */
+      void 0,
+      /* useCustomPreview */
+      false,
+      (element) => {
+        this.valueTitle = element;
+      }
     );
-    this.valueTitle = propertyValue;
-    title.appendChild(this.valueTitle);
+    render(propertyValue, title);
     if (this.#eventListener.canRemove()) {
       const deleteButton = new Buttons.Button.Button();
       deleteButton.data = {

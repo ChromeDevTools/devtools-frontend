@@ -217,9 +217,6 @@ export class DebuggerPlugin extends Plugin {
         this.initializedMuted = this.muted;
         this.ignoreListInfobar = null;
         this.showIgnoreListInfobarIfNeeded();
-        for (const scriptFile of this.scriptFileForDebuggerModel.values()) {
-            scriptFile.checkMapping();
-        }
     }
     editorExtension() {
         // Kludge to hook editor keyboard events into the ShortcutRegistry
@@ -485,23 +482,11 @@ export class DebuggerPlugin extends Plugin {
         }
     }
     workingCopyChanged() {
-        if (!this.scriptFileForDebuggerModel.size) {
-            this.setMuted(this.uiSourceCode.isDirty());
-        }
+        this.setMuted(this.uiSourceCode.isDirty());
     }
     workingCopyCommitted() {
         this.scriptsPanel.updateLastModificationTime();
-        if (!this.scriptFileForDebuggerModel.size) {
-            this.setMuted(false);
-        }
-    }
-    didMergeToVM() {
-        if (this.consistentScripts()) {
-            this.setMuted(false);
-        }
-    }
-    didDivergeFromVM() {
-        this.setMuted(true);
+        this.setMuted(false);
     }
     setMuted(value) {
         if (this.initializedMuted) {
@@ -516,14 +501,6 @@ export class DebuggerPlugin extends Plugin {
                 this.editor.dispatch({ effects: muteBreakpoints.of(null) });
             }
         }
-    }
-    consistentScripts() {
-        for (const scriptFile of this.scriptFileForDebuggerModel.values()) {
-            if (scriptFile.hasDivergedFromVM() || scriptFile.isMergingToVM()) {
-                return false;
-            }
-        }
-        return true;
     }
     isIdentifier(tokenType) {
         return tokenType === 'VariableName' || tokenType === 'VariableDefinition' || tokenType === 'PropertyName' ||
@@ -1154,11 +1131,6 @@ export class DebuggerPlugin extends Plugin {
         if (uiLocation.uiSourceCode !== this.uiSourceCode || this.muted) {
             return;
         }
-        for (const scriptFile of this.scriptFileForDebuggerModel.values()) {
-            if (scriptFile.isDivergingFromVM() || scriptFile.isMergingToVM()) {
-                return;
-            }
-        }
         // These tend to arrive in bursts, so debounce them
         window.clearTimeout(this.refreshBreakpointsTimeout);
         this.refreshBreakpointsTimeout = window.setTimeout(() => this.refreshBreakpoints(), 50);
@@ -1223,23 +1195,12 @@ export class DebuggerPlugin extends Plugin {
         this.showSourceMapInfobarIfNeeded();
     }
     updateScriptFile(debuggerModel) {
-        const oldScriptFile = this.scriptFileForDebuggerModel.get(debuggerModel);
-        const newScriptFile = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(this.uiSourceCode, debuggerModel);
         this.scriptFileForDebuggerModel.delete(debuggerModel);
-        if (oldScriptFile) {
-            oldScriptFile.removeEventListener("DidMergeToVM" /* Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_MERGE_TO_VM */, this.didMergeToVM, this);
-            oldScriptFile.removeEventListener("DidDivergeFromVM" /* Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_DIVERGE_FROM_VM */, this.didDivergeFromVM, this);
-            if (this.muted && !this.uiSourceCode.isDirty() && this.consistentScripts()) {
-                this.setMuted(false);
-            }
-        }
+        const newScriptFile = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(this.uiSourceCode, debuggerModel);
         if (!newScriptFile) {
             return;
         }
         this.scriptFileForDebuggerModel.set(debuggerModel, newScriptFile);
-        newScriptFile.addEventListener("DidMergeToVM" /* Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_MERGE_TO_VM */, this.didMergeToVM, this);
-        newScriptFile.addEventListener("DidDivergeFromVM" /* Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_DIVERGE_FROM_VM */, this.didDivergeFromVM, this);
-        newScriptFile.checkMapping();
         void newScriptFile.missingSymbolFiles().then(resources => {
             if (resources) {
                 const details = i18nString(UIStrings.debugInfoNotFound, { PH1: newScriptFile.uiSourceCode.url() });
@@ -1484,10 +1445,6 @@ export class DebuggerPlugin extends Plugin {
         this.hideIgnoreListInfobar();
         if (this.sourceMapInfobar) {
             this.sourceMapInfobar.dispose();
-        }
-        for (const script of this.scriptFileForDebuggerModel.values()) {
-            script.removeEventListener("DidMergeToVM" /* Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_MERGE_TO_VM */, this.didMergeToVM, this);
-            script.removeEventListener("DidDivergeFromVM" /* Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DID_DIVERGE_FROM_VM */, this.didDivergeFromVM, this);
         }
         this.scriptFileForDebuggerModel.clear();
         this.popoverHelper?.hidePopover();
@@ -1744,8 +1701,11 @@ class ValueDecoration extends CodeMirror.WidgetType {
                 render(formatter.renderObjectPreview(value.preview), nameValuePair.createChild('span'));
             }
             else {
-                const propertyValue = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(value, /* wasThrown */ false, /* showPreview */ false);
-                nameValuePair.appendChild(propertyValue);
+                const propertyValue = ObjectUI.ObjectPropertiesSection.renderPropertyValue(value, /* wasThrown */ false, /* showPreview */ false);
+                const fragment = document.createDocumentFragment();
+                /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+                render(propertyValue, fragment);
+                nameValuePair.appendChild(fragment);
             }
         }
         return widget;

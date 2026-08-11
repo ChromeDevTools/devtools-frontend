@@ -36,6 +36,23 @@ export interface RegisteredSettingUI {
 }
 export declare function register(settingDescriptor: Common.Settings.SettingDescriptor<unknown>, settingUIDescriptor: SettingUIDescriptor): void;
 export declare function getRegisteredSettings(): readonly RegisteredSettingUI[];
-export declare function maybeResolve(settingDescriptor: Common.Settings.SettingDescriptor<unknown>): SettingUIDescriptor | null;
-export declare function resolve(settingDescriptor: Common.Settings.SettingDescriptor<unknown>): SettingUIDescriptor;
+export interface SimpleSettingOption {
+    value: string | boolean;
+    title: Platform.UIString.LocalizedString;
+    text?: Platform.UIString.LocalizedString | string;
+    raw?: boolean;
+}
+export declare class SettingUI {
+    #private;
+    constructor(raw: SettingUIDescriptor);
+    get title(): Platform.UIString.LocalizedString;
+    get category(): Common.SettingRegistration.SettingCategory | null;
+    get order(): number | null;
+    get tags(): string;
+    get options(): SimpleSettingOption[];
+    get reloadRequired(): boolean;
+    get learnMore(): Common.SettingRegistration.LearnMore | null;
+}
+export declare function maybeResolve(settingDescriptor: Common.Settings.SettingDescriptor<unknown>): SettingUI | null;
+export declare function resolve(settingDescriptor: Common.Settings.SettingDescriptor<unknown>): SettingUI;
 export declare function resetSettings(): void;

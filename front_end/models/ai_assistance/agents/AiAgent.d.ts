@@ -100,6 +100,10 @@ export interface ActionResponse {
     output?: string;
     canceled: boolean;
     widgets?: AiWidget[];
+    /**
+     * The name of the executed tool. Only populated for AI v2.
+     */
+    toolName?: string;
 }
 export interface QueryingResponse {
     type: ResponseType.QUERYING;
@@ -127,7 +131,7 @@ export type AllowedOriginResult = {
 };
 export interface AgentOptions {
     aidaClient: Host.AidaClient.AidaClient;
-    serverSideLoggingEnabled?: boolean;
+    serverSideLoggingAllowed?: boolean;
     sessionId?: string;
     confirmSideEffectForTest?: typeof Promise.withResolvers;
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
@@ -152,6 +156,11 @@ export declare abstract class ConversationContext<T> {
     abstract getURL(): string;
     abstract getItem(): T;
     abstract getTitle(): string;
+    /**
+     * Returns true if the server-side logging is enabled when this context is active.
+     * Currently only used for AI v2.
+     */
+    isLoggingEnabled(): boolean;
     getOrigin(): string;
     /**
      * Returns true if this data context (e.g., a DOM node or Network Request) is
@@ -392,7 +401,12 @@ export declare abstract class AiAgent<T> {
      * prevent unvalidated cached data from being replayed in subsequent runs.
      */
     clearCache(): void;
-    protected disableServerSideLogging(): void;
+    /**
+     * Toggles whether server-side logging is active.
+     * Note that logging can only be activated if it was allowed by policy/configuration
+     * at startup (i.e., `#serverSideLoggingAllowed` is true).
+     */
+    protected setServerSideLoggingActive(active: boolean): void;
     popPendingMultimodalInput(): MultimodalInput | undefined;
     /**
      * Preamble features appended to the `client_version` in metadata.

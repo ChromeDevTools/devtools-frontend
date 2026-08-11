@@ -353,6 +353,13 @@ export class DebuggerWorkspaceBinding {
         }
         return [...scripts];
     }
+    sourceMapURLsForUISourceCode(uiSourceCode) {
+        const urls = new Set();
+        for (const modelData of this.#debuggerModelToData.values()) {
+            modelData.compilerMapping.sourceMapURLsForUISourceCode(uiSourceCode).forEach(url => urls.add(url));
+        }
+        return [...urls];
+    }
     supportsConditionalBreakpoints(uiSourceCode) {
         const scripts = this.pluginManager.scriptsForUISourceCode(uiSourceCode);
         return scripts.every(script => script.isJavaScript());

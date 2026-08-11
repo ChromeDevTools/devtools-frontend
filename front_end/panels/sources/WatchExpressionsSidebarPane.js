@@ -163,7 +163,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                     class="watch-expression-error value"
                     title=${ifDefined(e.exceptionDetails?.exception?.description)}
                     >${i18nString(UIStrings.notAvailable)}</span>`
-        : ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValueWithCustomSupport(e.result.object, Boolean(e.exceptionDetails), false /* showPreview */, input.linkifier)}
+        : ObjectUI.ObjectPropertiesSection.renderPropertyValue(e.result.object, Boolean(e.exceptionDetails), false /* showPreview */, input.linkifier, false /* isSyntheticProperty */, undefined /* variableName */, undefined /* includeNullOrUndefined */, /* useCustomPreview */ true)}
             </div>
           </div>
         </devtools-prompt>

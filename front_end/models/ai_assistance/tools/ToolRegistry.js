@@ -7,6 +7,7 @@ import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
 import { GetStylesTool } from './GetStyles.js';
 import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
+import { ListPageOriginsTool } from './ListPageOrigins.js';
 import { RecordPerformanceTraceTool } from './RecordPerformanceTrace.js';
 import { ResolveDevtoolsNodePathTool } from './ResolveDevtoolsNodePath.js';
 /**
@@ -26,6 +27,7 @@ export const TOOLS = {
     ["resolveDevtoolsNodePath" /* ToolName.RESOLVE_DEVTOOLS_NODE_PATH */]: new ResolveDevtoolsNodePathTool(),
     ["getElementAccessibilityDetails" /* ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS */]: new GetElementAccessibilityDetailsTool(),
     ["recordPerformanceTrace" /* ToolName.RECORD_PERFORMANCE_TRACE */]: new RecordPerformanceTraceTool(),
+    ["listPageOrigins" /* ToolName.LIST_PAGE_ORIGINS */]: new ListPageOriginsTool(),
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

@@ -2,7 +2,6 @@ import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
-import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Workspace from '../workspace/workspace.js';
 export declare class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
@@ -130,15 +129,12 @@ export declare class ModelBreakpoint {
     get currentState(): Breakpoint.State | null;
     resetLocations(): void;
     scheduleUpdateInDebugger(): Promise<ScheduleUpdateResult>;
-    private scriptDiverged;
     resetBreakpoint(): Promise<void>;
     private didRemoveFromDebugger;
     private breakpointResolved;
     private locationUpdated;
     private addResolvedLocation;
     cleanUpAfterDebuggerIsGone(): void;
-    /** @returns true, iff this `ModelBreakpoint` was set (at some point) in `scriptId` */
-    wasSetIn(scriptId: Protocol.Runtime.ScriptId): boolean;
 }
 /**
  * A concrete breakpoint position in a specific target. Each `ModelBreakpoint`

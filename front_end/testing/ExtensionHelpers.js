@@ -4,6 +4,7 @@
 import sinon from 'sinon';
 import * as Host from '../core/host/host.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as Bindings from '../models/bindings/bindings.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as PanelCommon from '../panels/common/common.js';
@@ -54,6 +55,10 @@ export function setupDevtoolsExtensionHooks(extension = {}) {
         context.backend = backend;
         sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
         sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
+        const cssWorkspaceBinding = sinon.createStubInstance(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, {
+            sourceMapURLsForUISourceCode: [],
+        });
+        sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(cssWorkspaceBinding);
         const networkLog = new Logs.NetworkLog.NetworkLog(backend.universe.targetManager, backend.universe.settings);
         sinon.stub(Logs.NetworkLog.NetworkLog, 'instance').returns(networkLog);
         setupExtensionHelper();

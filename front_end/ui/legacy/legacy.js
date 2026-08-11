@@ -13612,7 +13612,7 @@ var ToolbarCheckbox = class extends ToolbarItem {
 var ToolbarSettingCheckbox = class extends ToolbarCheckbox {
   constructor(setting, tooltip, alternateTitle) {
     const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
-    const title = alternateTitle || uiDescriptor?.title?.() || setting.title();
+    const title = alternateTitle ?? uiDescriptor?.title ?? "";
     super(title, tooltip, void 0, setting.name);
     bindCheckbox(this.element, setting);
   }

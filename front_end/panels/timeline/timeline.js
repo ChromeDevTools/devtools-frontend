@@ -3039,6 +3039,7 @@ import * as LegacyComponents from "./../../ui/legacy/components/utils/utils.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport17 from "./../../ui/legacy/theme_support/theme_support.js";
 import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
+import * as SettingUIRegistration3 from "./../../ui/settings/settings.js";
 import * as PanelsCommon from "./../common/common.js";
 import * as TimelineComponents4 from "./components/components.js";
 import * as Extensions2 from "./extensions/extensions.js";
@@ -3084,6 +3085,7 @@ import * as PerfUI12 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport15 from "./../../ui/legacy/theme_support/theme_support.js";
+import * as SettingUIRegistration from "./../../ui/settings/settings.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling2 from "./../mobile_throttling/mobile_throttling.js";
 
@@ -3812,57 +3814,19 @@ var TimelineController = class {
     await loadPromiseWithResolvers.promise;
   }
   async startRecording(options) {
-    function disabledByDefault(category) {
-      return "disabled-by-default-" + category;
-    }
     this.client.recordingStatus(i18nString12(UIStrings12.initializingTracing));
     if (options.navigateToUrl) {
       await this.#navigateToAboutBlank();
     }
-    const categoriesArray = [
-      Common6.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get() ? "*" : "-*",
-      Trace14.Types.Events.Categories.Console,
-      Trace14.Types.Events.Categories.Loading,
-      Trace14.Types.Events.Categories.UserTiming,
-      "devtools.timeline",
-      disabledByDefault("devtools.target-rundown"),
-      disabledByDefault("devtools.timeline.frame"),
-      disabledByDefault("devtools.timeline.stack"),
-      disabledByDefault("devtools.timeline"),
-      disabledByDefault("devtools.v8-source-rundown-sources"),
-      disabledByDefault("devtools.v8-source-rundown"),
-      disabledByDefault("layout_shift.debug"),
-      // Looking for disabled-by-default-v8.compile? We disabled it: crbug.com/414330508.
-      disabledByDefault("v8.inspector"),
-      disabledByDefault("v8.cpu_profiler.hires"),
-      disabledByDefault("lighthouse"),
-      "v8.execute",
-      "v8",
-      "cppgc",
-      "navigation,rail"
-    ];
-    if (options.enableJSSampling) {
-      categoriesArray.push(disabledByDefault("v8.cpu_profiler"));
-    }
-    if (Common6.Settings.Settings.instance().moduleSetting("timeline-invalidation-tracking").get()) {
-      categoriesArray.push(disabledByDefault("devtools.timeline.invalidationTracking"));
-    }
-    if (options.capturePictures) {
-      categoriesArray.push(disabledByDefault("devtools.timeline.layers"), disabledByDefault("devtools.timeline.picture"), disabledByDefault("blink.graphics_context_annotations"));
-    }
+    const categoriesArray = this.#categoriesForRecording(options);
     const screenshotOptions = {};
     if (options.captureFilmStrip) {
-      categoriesArray.push(disabledByDefault("devtools.screenshot"));
       if (options.screenshotMaxSize !== void 0) {
         screenshotOptions.screenshotMaxSize = options.screenshotMaxSize;
       }
       if (options.screenshotMaxCount !== void 0) {
         screenshotOptions.screenshotMaxCount = options.screenshotMaxCount;
       }
-    }
-    if (options.captureSelectorStats) {
-      categoriesArray.push(disabledByDefault("blink.debug"));
-      categoriesArray.push(disabledByDefault("devtools.timeline.invalidationTracking"));
     }
     await LiveMetrics.LiveMetrics.instance().disable();
     SDK5.TargetManager.TargetManager.instance().addModelListener(SDK5.ResourceTreeModel.ResourceTreeModel, SDK5.ResourceTreeModel.Events.FrameNavigated, this.#onFrameNavigated, this);
@@ -4000,6 +3964,28 @@ var TimelineController = class {
   }
   eventsRetrievalProgress(progress) {
     this.client.loadingProgress(progress);
+  }
+  #categoriesForRecording(options) {
+    const categoriesArray = [
+      Common6.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get() ? "*" : "-*",
+      ...Trace14.Types.Events.DefaultCategories
+    ];
+    if (options.enableJSSampling) {
+      categoriesArray.push(...Trace14.Types.Events.OptionalCategories.JsSampling);
+    }
+    if (Common6.Settings.Settings.instance().moduleSetting("timeline-invalidation-tracking").get()) {
+      categoriesArray.push(...Trace14.Types.Events.OptionalCategories.InvalidationTracking);
+    }
+    if (options.capturePictures) {
+      categoriesArray.push(...Trace14.Types.Events.OptionalCategories.AdvancedPaint);
+    }
+    if (options.captureFilmStrip) {
+      categoriesArray.push(...Trace14.Types.Events.OptionalCategories.Screenshot);
+    }
+    if (options.captureSelectorStats) {
+      categoriesArray.push(...Trace14.Types.Events.OptionalCategories.CssSelectorStats);
+    }
+    return categoriesArray;
   }
 };
 
@@ -7380,13 +7366,13 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     const cpuThrottlingPane = this.settingsPane.createChild("div");
     cpuThrottlingPane.append(i18nString18(UIStrings18.cpu));
     this.cpuThrottlingSelect = MobileThrottling2.CPUThrottlingSelector.CPUThrottlingSelector.createForGlobalConditions(cpuThrottlingPane);
-    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.captureSelectorStatsSetting.title(), this.captureSelectorStatsSetting, i18nString18(UIStrings18.capturesSelectorStats)));
+    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(SettingUIRegistration.SettingUIRegistration.resolve(this.captureSelectorStatsSetting.descriptor()).title, this.captureSelectorStatsSetting, i18nString18(UIStrings18.capturesSelectorStats)));
     const networkThrottlingPane = this.settingsPane.createChild("div");
     networkThrottlingPane.append(i18nString18(UIStrings18.network));
     MobileThrottling2.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(networkThrottlingPane, i18nString18(UIStrings18.network));
-    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.captureLayersAndPicturesSetting.title(), this.captureLayersAndPicturesSetting, i18nString18(UIStrings18.capturesAdvancedPaint)));
-    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.disableCaptureJSProfileSetting.title(), this.disableCaptureJSProfileSetting, i18nString18(UIStrings18.disablesJavascriptSampling)));
-    const screenshotPresetSelect = new UI8.Toolbar.ToolbarComboBox(() => this.screenshotCaptureModeSetting.set(screenshotPresetSelect.selectedOption().value), this.screenshotCaptureModeSetting.title(), "", "screenshot-capture-mode");
+    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(SettingUIRegistration.SettingUIRegistration.resolve(this.captureLayersAndPicturesSetting.descriptor()).title, this.captureLayersAndPicturesSetting, i18nString18(UIStrings18.capturesAdvancedPaint)));
+    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(SettingUIRegistration.SettingUIRegistration.resolve(this.disableCaptureJSProfileSetting.descriptor()).title, this.disableCaptureJSProfileSetting, i18nString18(UIStrings18.disablesJavascriptSampling)));
+    const screenshotPresetSelect = new UI8.Toolbar.ToolbarComboBox(() => this.screenshotCaptureModeSetting.set(screenshotPresetSelect.selectedOption().value), SettingUIRegistration.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title, "", "screenshot-capture-mode");
     let selectedScreenshotPresetIndex = 0;
     for (let i = 0; i < SCREENSHOT_CAPTURE_PRESETS.length; ++i) {
       const preset = SCREENSHOT_CAPTURE_PRESETS[i];
@@ -7397,7 +7383,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     }
     screenshotPresetSelect.setSelectedIndex(selectedScreenshotPresetIndex);
     const screenshotPresetPane = this.settingsPane.createChild("div");
-    screenshotPresetPane.append(this.screenshotCaptureModeSetting.title());
+    screenshotPresetPane.append(SettingUIRegistration.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title);
     screenshotPresetPane.append(screenshotPresetSelect.element);
     const updateScreenshotPresetVisibility = () => {
       screenshotPresetPane.hidden = !this.showScreenshotsSetting.get();
@@ -9971,10 +9957,12 @@ var TimelineUIUtils = class _TimelineUIUtils {
       }
       case "UpdateLayoutTree": {
         contentHelper.appendTextRow(i18nString19(UIStrings19.elementsAffected), unsafeEventArgs["elementCount"]);
-        const selectorStatsSetting = Common11.Settings.Settings.instance().createSetting("timeline-capture-selector-stats", false);
+        const selectorStatsSetting = Common11.Settings.Settings.instance().moduleSetting("timeline-capture-selector-stats");
         if (!selectorStatsSetting.get()) {
           const note = document.createElement("span");
-          note.textContent = i18nString19(UIStrings19.sSelectorStatsInfo, { PH1: selectorStatsSetting.title() });
+          note.textContent = i18nString19(UIStrings19.sSelectorStatsInfo, {
+            PH1: SettingUIRegistration3.SettingUIRegistration.resolve(selectorStatsSetting.descriptor()).title
+          });
           contentHelper.appendElementRow(i18nString19(UIStrings19.selectorStatsTitle), note);
         }
         break;

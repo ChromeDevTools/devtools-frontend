@@ -1190,7 +1190,7 @@ export class ToolbarCheckbox extends ToolbarItem {
 export class ToolbarSettingCheckbox extends ToolbarCheckbox {
     constructor(setting, tooltip, alternateTitle) {
         const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
-        const title = alternateTitle || uiDescriptor?.title?.() || setting.title();
+        const title = alternateTitle ?? uiDescriptor?.title ?? '';
         super(title, tooltip, undefined, setting.name);
         bindCheckbox(this.element, setting);
     }

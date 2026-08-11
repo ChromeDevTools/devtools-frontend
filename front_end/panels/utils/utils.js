@@ -13,34 +13,34 @@ import * as Snippets from "./../snippets/snippets.js";
 var { ref, styleMap, ifDefined } = Directives;
 var UIStrings = {
   /**
-   * @description Tooltip to explain the resource's overridden status
+   * @description Tooltip to explain the resource's overridden status.
    */
   requestContentHeadersOverridden: "Both request content and headers are overridden",
   /**
-   * @description Tooltip to explain the resource's overridden status
+   * @description Tooltip to explain the resource's overridden status.
    */
   requestContentOverridden: "Request content is overridden",
   /**
-   * @description Tooltip to explain the resource's overridden status
+   * @description Tooltip to explain the resource's overridden status.
    */
   requestHeadersOverridden: "Request headers are overridden",
   /**
-   * @description Tooltip to explain why the request has warning icon
+   * @description Tooltip to explain why the request has a warning icon.
    */
   thirdPartyPhaseout: "Cookies for this request are blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel.",
   /**
-   * @description Tooltip to explain that a request was throttled
+   * @description Tooltip to explain that a request was throttled.
    * @example {Image} PH1
    * @example {3G} PH2
    */
   resourceTypeWithThrottling: "{PH1} (throttled to {PH2})",
   /**
-   * @description Tooltip for a failed request
+   * @description Tooltip for a failed request.
    * @example {Document} PH1
    */
   requestFailed: "{PH1} request failed",
   /**
-   * @description Tooltip for a failed request
+   * @description Tooltip for a failed prefetch request.
    * @example {Document} PH1
    */
   prefetchFailed: "{PH1} prefetch request failed"

@@ -133,7 +133,7 @@ function getContextRemoveLabel(context) {
     if (context instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
         return lockedString(UIStringsNotTranslate.removeContextPerfInsight);
     }
-    if (context instanceof AiAssistanceModel.StorageAgent.StorageContext) {
+    if (context instanceof AiAssistanceModel.StorageContext.StorageContext) {
         return lockedString(UIStringsNotTranslate.removeContextStorage);
     }
     return lockedString(UIStringsNotTranslate.removeContext);
@@ -304,7 +304,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                                 html `<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` :
                                 input.context instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext ?
                                     html `<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` :
-                                    input.context instanceof AiAssistanceModel.StorageAgent.StorageContext ?
+                                    input.context instanceof AiAssistanceModel.StorageContext.StorageContext ?
                                         html `<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` :
                                         Lit.nothing}
                             <span

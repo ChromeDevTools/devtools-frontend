@@ -44,10 +44,7 @@ export declare class DebuggerPlugin extends Plugin {
     populateTextAreaContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void;
     private workingCopyChanged;
     private workingCopyCommitted;
-    private didMergeToVM;
-    private didDivergeFromVM;
     private setMuted;
-    private consistentScripts;
     private isIdentifier;
     private getPopoverRequest;
     private onEditorUpdate;

@@ -45,8 +45,8 @@ import objectPropertiesSectionStyles from './objectPropertiesSection.css.js';
 import objectValueStyles from './objectValue.css.js';
 import { RemoteObjectPreviewFormatter, renderNodeTitle, renderTrustedType } from './RemoteObjectPreviewFormatter.js';
 export { objectPropertiesSectionStyles, objectValueStyles };
-const { widget } = UI.Widget;
-const { ref, repeat, ifDefined, classMap, until } = Directives;
+const { widget, widgetRef } = UI.Widget;
+const { ref, repeat, ifDefined, classMap } = Directives;
 const UIStrings = {
     /**
      * @description Text in Object Properties Section
@@ -802,25 +802,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         this.registerRequiredCSS(objectValueStyles, objectPropertiesSectionStyles);
         this.rootElement().childrenListElement.classList.add('source-code', 'object-properties-section');
     }
-    static defaultObjectPresentation(object, linkifier, skipProto, readOnly) {
-        const objectPropertiesSection = ObjectPropertiesSection.defaultObjectPropertiesSection(object, linkifier, skipProto, readOnly);
-        if (!object.hasChildren) {
-            return objectPropertiesSection.titleElement;
-        }
-        return objectPropertiesSection.element;
-    }
-    static defaultObjectPropertiesSection(object, linkifier, skipProto, readOnly) {
-        const titleElement = document.createElement('span');
-        titleElement.classList.add('source-code');
-        const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(titleElement, { cssFile: objectValueStyles });
-        const propertyValue = ObjectPropertiesSection.createPropertyValue(object, /* wasThrown */ false, /* showPreview */ true);
-        shadowRoot.appendChild(propertyValue);
-        const objectPropertiesSection = new ObjectPropertiesSection(object, titleElement, linkifier, undefined, !readOnly);
-        if (skipProto) {
-            objectPropertiesSection.skipProto();
-        }
-        return objectPropertiesSection;
-    }
     // The RemoteObjectProperty overload is kept for web test compatibility for now.
     static compareProperties(propertyA, propertyB, sortPropertiesAlphabetically = true) {
         if (propertyA instanceof ObjectTreeNode) {
@@ -953,14 +934,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
             return defaultName + '()';
         }
     }
-    static createPropertyValueWithCustomSupport(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName, includeNullOrUndefined) {
-        if (value.customPreview()) {
-            const result = (new CustomPreviewComponent(value)).element;
-            result.classList.add('object-properties-section-custom-section');
-            return result;
-        }
-        return ObjectPropertiesSection.createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName, includeNullOrUndefined);
-    }
     static getMemoryIcon(object, expression) {
         // Directly set styles on memory icon, so that the memory icon is also
         // styled within the context of code mirror.
@@ -982,69 +955,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
         render(ObjectPropertiesSection.getMemoryIcon(object, expression), fragment);
         element.appendChild(fragment);
-    }
-    static createPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty = false, variableName, includeNullOrUndefined) {
-        const propertyValue = document.createDocumentFragment();
-        const type = value.type;
-        const subtype = value.subtype;
-        const description = value.description || '';
-        const className = value.className;
-        const contents = () => {
-            if (type === 'object' && subtype === 'internal#location') {
-                const rawLocation = value.debuggerModel().createRawLocationByScriptId(value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
-                if (rawLocation && linkifier) {
-                    return html `${linkifier.linkifyRawLocation(rawLocation, Platform.DevToolsPath.EmptyUrlString, 'value')}`;
-                }
-                const title = description || undefined;
-                return html `<span class=value title=${ifDefined(title)}>${'<' + i18nString(UIStrings.unknown) + '>'}</span>`;
-            }
-            if (type === 'string' && typeof description === 'string') {
-                const text = Platform.StringUtilities.escapeUnicodeAsText(JSON.stringify(description));
-                const tooLong = description.length > maxRenderableStringLength;
-                return html `<span class="value object-value-string" title=${ifDefined(tooLong ? undefined : description)}>${tooLong ? widget(ExpandableTextPropertyValue, { text }) : text}</span>`;
-            }
-            if (type === 'object' && subtype === 'trustedtype') {
-                const text = `${className} "${description}"`;
-                const tooLong = text.length > maxRenderableStringLength;
-                return html `<span class="value object-value-trustedtype" title=${ifDefined(tooLong ? undefined : text)}>${tooLong ? widget(ExpandableTextPropertyValue, { text }) : renderTrustedType(description, className)}</span>`;
-            }
-            if (type === 'function') {
-                return html `<span class="value">${ObjectPropertiesSection.valueElementForFunctionDescription(description)}</span>`;
-            }
-            if (type === 'object' && subtype === 'node' && description) {
-                return html `<span class="value object-value-node"
-            @click=${(event) => {
-                    void Common.Revealer.reveal(value);
-                    event.consume(true);
-                }}
-            @mousemove=${() => SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(value)}
-            @mouseleave=${() => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance())}
-          >${renderNodeTitle(description)}</span>`;
-            }
-            if (description.length > maxRenderableStringLength) {
-                // clang-format off
-                return html `<span class="value object-value-${subtype || type}" title=${description}>
-          ${widget(ExpandableTextPropertyValue, { text: description })}
-        </span>`;
-                // clang-format on
-            }
-            const hasPreview = value.preview && showPreview;
-            return html `<span class="value object-value-${subtype || type}" title=${description}>${hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview, includeNullOrUndefined) :
-                description}${isSyntheticProperty ? nothing : this.getMemoryIcon(value, variableName)}</span>`;
-        };
-        if (wasThrown) {
-            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-            render(html `<span class="error value">${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.exceptionS, { PH1: contents() })}</span>`, propertyValue);
-        }
-        else {
-            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-            render(contents(), propertyValue);
-        }
-        const child = propertyValue.firstElementChild;
-        if (!(child instanceof HTMLElement)) {
-            throw new Error('Expected an HTML element');
-        }
-        return child;
     }
     static isDisplayableProperty(property, parentProperty) {
         if (!parentProperty?.synthetic) {
@@ -1115,50 +1025,145 @@ export function populateObjectTreeContextMenu(contextMenu, object, expandRecursi
     }
     contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.showAll), onShowAllToggled, { checked: object.includeNullOrUndefinedValues, jslogContext: 'show-all' });
 }
-function renderObjectTreeInternal(objectTree, linkifier, emptyPlaceholder, classes = {}) {
-    const entry = topLevelNodesCache.get(objectTree);
-    if (entry && entry.linkifier === linkifier) {
-        return html `
-      <ul class=${classMap(classes)} role="group">
-        ${entry.nodes.map(node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
-      </ul>
-    `;
+export const OBJECT_TREE_DEFAULT_VIEW = (input, output, target) => {
+    const objectTree = input.objectTree;
+    if (!objectTree) {
+        render(nothing, target);
+        return;
     }
-    const promise = (async () => {
-        await ObjectPropertyTreeElement.populateChildrenIfNeeded(objectTree);
-        const nodes = Array.from(ObjectPropertyTreeElement.createNodes(objectTree, /* skipProto= */ false, /* skipGettersAndSetters= */ false, linkifier, emptyPlaceholder));
-        topLevelNodesCache.set(objectTree, { linkifier, nodes });
+    const classes = input.renderAsSubtree ? ['source-code', 'object-properties-section'] : [];
+    let entry = topLevelNodesCache.get(objectTree);
+    if (!entry || entry.linkifier !== input.linkifier || (!entry.nodes.length && objectTree.children)) {
+        if (entry) {
+            objectTree.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, entry.listener);
+        }
+        const nodes = Array.from(ObjectPropertyTreeElement.createNodes(objectTree, input.skipProto, false, input.linkifier, input.emptyPlaceholder));
         const listener = () => {
             topLevelNodesCache.delete(objectTree);
             objectTree.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, listener);
         };
+        entry = { linkifier: input.linkifier, nodes, listener };
+        topLevelNodesCache.set(objectTree, entry);
         objectTree.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, listener);
-        return html `
-      <ul class=${classMap(classes)} role="group">
-        ${nodes.map(node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
-      </ul>
-    `;
-    })();
-    return until(promise, html `<ul class=${classMap(classes)} role="group"></ul>`);
+    }
+    render(entry.nodes.map(node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`), target, {
+        container: {
+            classes,
+            attributes: { role: 'group' },
+            interceptedListeners: {
+                expand: (e) => input.onExpand(e.detail.expanded),
+            },
+        },
+    });
+};
+export class ObjectTreeWidget extends UI.Widget.Widget {
+    #objectTree = undefined;
+    #linkifier = undefined;
+    #emptyPlaceholder;
+    #renderAsSubtree = false;
+    #skipProto = false;
+    #view;
+    constructor(element, view = OBJECT_TREE_DEFAULT_VIEW) {
+        super(element);
+        this.#view = view;
+    }
+    onExpand = (expanded) => {
+        if (this.#objectTree) {
+            this.#objectTree.expanded = expanded;
+        }
+    };
+    get skipProto() {
+        return this.#skipProto;
+    }
+    set skipProto(val) {
+        this.#skipProto = val;
+        this.requestUpdate();
+    }
+    get objectTree() {
+        return this.#objectTree;
+    }
+    set objectTree(val) {
+        if (val === this.#objectTree) {
+            return;
+        }
+        this.#objectTree?.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+        this.#objectTree?.removeEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+        this.#objectTree = val;
+        this.#objectTree?.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+        this.#objectTree?.addEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+        this.requestUpdate();
+    }
+    get linkifier() {
+        return this.#linkifier;
+    }
+    set linkifier(val) {
+        if (val === this.#linkifier) {
+            return;
+        }
+        this.#linkifier = val;
+        this.requestUpdate();
+    }
+    get emptyPlaceholder() {
+        return this.#emptyPlaceholder;
+    }
+    set emptyPlaceholder(val) {
+        if (val === this.#emptyPlaceholder) {
+            return;
+        }
+        this.#emptyPlaceholder = val;
+        this.requestUpdate();
+    }
+    get renderAsSubtree() {
+        return this.#renderAsSubtree;
+    }
+    set renderAsSubtree(val) {
+        if (val === this.#renderAsSubtree) {
+            return;
+        }
+        this.#renderAsSubtree = val;
+        this.requestUpdate();
+    }
+    async performUpdate() {
+        if (this.#objectTree?.expanded) {
+            await ObjectPropertyTreeElement.populateChildrenIfNeeded(this.#objectTree);
+        }
+        this.#view(this, {}, this.contentElement);
+    }
+    onDetach() {
+        this.#objectTree?.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+        this.#objectTree?.removeEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+    }
+    wasShown() {
+        super.wasShown();
+        this.#objectTree?.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+        this.#objectTree?.removeEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+        this.#objectTree?.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+        this.#objectTree?.addEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+    }
 }
 export function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
-    return renderObjectTreeInternal(objectTree, linkifier, emptyPlaceholder, {
-        'source-code': true,
-        'object-properties-section': true,
-    });
+    return html `<ul role="group" ${widget(ObjectTreeWidget, { objectTree, linkifier, emptyPlaceholder, renderAsSubtree: true })} ${
+    /* The empty widgetRef forces the widget to be materialized in the template DOM */
+    widgetRef(ObjectTreeWidget, () => { })}></ul>`;
 }
-export function renderObjectPropertiesSection(objectTree, title, linkifier) {
-    const treeContent = renderObjectTreeInternal(objectTree, linkifier, undefined, {});
-    return html `<devtools-tree class="object-properties-section" show-selection-on-keyboard-focus .template=${html `
+export function renderObjectPropertiesSection(objectTree, title, linkifier, skipProto = false, showOverflow = true) {
+    // clang-format off
+    return html `<devtools-tree
+      class="object-properties-section"
+      ?hide-overflow=${!showOverflow}
+      show-selection-on-keyboard-focus
+      .template=${html `
     <ul role="tree" class="source-code object-properties-section">
       <style>${objectValueStyles}</style>
       <style>${objectPropertiesSectionStyles}</style>
       <li role="treeitem" class="object-properties-section-root-element" ?open=${objectTree.expanded}>
         ${title}
-        ${treeContent}
+        <ul role="group" ${widget(ObjectTreeWidget, { objectTree, linkifier, skipProto })} ${
+    /* The empty widgetRef forces the widget to be materialized in the template DOM */
+    widgetRef(ObjectTreeWidget, () => { })}></ul>
       </li>
-    </ul>
-  `}></devtools-tree>`;
+    </ul>`}></devtools-tree>`;
+    // clang-format on
 }
 class RootElement extends UI.TreeOutline.TreeElement {
     object;
@@ -1231,6 +1236,110 @@ export async function formatObjectAsFunction(func, linkify, includePreview) {
     const defaultName = details?.functionName ?? (includePreview ? '' : 'anonymous');
     return ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName, details, linkify);
 }
+export function renderPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty = false, variableName, includeNullOrUndefined, useCustomPreview = false, valueRef) {
+    if (useCustomPreview && value.customPreview()) {
+        const result = (new CustomPreviewComponent(value)).element;
+        result.classList.add('object-properties-section-custom-section');
+        valueRef?.(result);
+        return html `${result}`;
+    }
+    const type = value.type;
+    const subtype = value.subtype;
+    const description = value.description || '';
+    const className = value.className;
+    const isInternalLocation = type === 'object' && subtype === 'internal#location';
+    const isString = type === 'string' && typeof description === 'string';
+    const isTrustedType = type === 'object' && subtype === 'trustedtype';
+    const isFunction = type === 'function';
+    const isNode = type === 'object' && subtype === 'node' && Boolean(description);
+    const isDefault = !isInternalLocation && !isString && !isTrustedType && !isFunction && !isNode;
+    const classes = classMap({
+        value: true,
+        [`object-value-${subtype || type}`]: isDefault,
+        'object-value-string': isString,
+        'object-value-trustedtype': isTrustedType,
+        'object-value-node': isNode,
+    });
+    const onNodeClick = (event) => {
+        void Common.Revealer.reveal(value);
+        event.consume(true);
+    };
+    const onNodeMouseMove = () => SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(value);
+    const onNodeMouseLeave = () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
+    let title;
+    let content = description;
+    if (isNode) {
+        content = renderNodeTitle(description);
+    }
+    else if (isInternalLocation) {
+        const rawLocation = value.debuggerModel().createRawLocationByScriptId(value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
+        const linkifiedLocation = rawLocation && linkifier ?
+            linkifier.linkifyRawLocation(rawLocation, Platform.DevToolsPath.EmptyUrlString, 'value') :
+            null;
+        if (linkifiedLocation) {
+            valueRef?.(linkifiedLocation);
+            return html `${linkifiedLocation}`;
+        }
+        title = description || undefined;
+        content = '<' + i18nString(UIStrings.unknown) + '>';
+    }
+    else if (isString) {
+        const text = Platform.StringUtilities.escapeUnicodeAsText(JSON.stringify(description));
+        const tooLong = description.length > maxRenderableStringLength;
+        title = tooLong ? undefined : description;
+        content = tooLong ? widget(ExpandableTextPropertyValue, { text }) : text;
+    }
+    else if (isTrustedType) {
+        const text = `${className} "${description}"`;
+        const tooLong = text.length > maxRenderableStringLength;
+        title = tooLong ? undefined : text;
+        content = tooLong ? widget(ExpandableTextPropertyValue, { text }) : renderTrustedType(description, className);
+    }
+    else if (isFunction) {
+        content = ObjectPropertiesSection.valueElementForFunctionDescription(description);
+    }
+    else if (description.length > maxRenderableStringLength) {
+        title = description;
+        content = widget(ExpandableTextPropertyValue, { text: description });
+    }
+    else {
+        title = description;
+        const hasPreview = value.preview && showPreview;
+        const previewContent = hasPreview ?
+            new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview, includeNullOrUndefined) :
+            description;
+        content = html `${previewContent}${isSyntheticProperty ? nothing : ObjectPropertiesSection.getMemoryIcon(value, variableName)}`;
+    }
+    if (wasThrown) {
+        return html `<span ${valueRef ? ref(valueRef) : nothing} class="error value">${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.exceptionS, {
+            PH1: html `<span
+        class=${classes}
+        title=${ifDefined(title)}
+        @click=${isNode ? onNodeClick : nothing}
+        @mousemove=${isNode ? onNodeMouseMove : nothing}
+        @mouseleave=${isNode ? onNodeMouseLeave : nothing}>${content}</span>`,
+        })}</span>`;
+    }
+    return html `<span
+      ${valueRef ? ref(valueRef) : nothing}
+      class=${classes}
+      title=${ifDefined(title)}
+      @click=${isNode ? onNodeClick : nothing}
+      @mousemove=${isNode ? onNodeMouseMove : nothing}
+      @mouseleave=${isNode ? onNodeMouseLeave : nothing}>${content}</span>`;
+}
+export function defaultObjectPresentation(objectOrTree, linkifier, skipProto, readOnly) {
+    const objectTree = objectOrTree instanceof ObjectTree ? objectOrTree : new ObjectTree(objectOrTree, {
+        readOnly: Boolean(readOnly),
+        propertiesMode: 1 /* ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
+    });
+    const object = objectTree.object;
+    const title = html `<span class="source-code"><style>${objectValueStyles}</style>${renderPropertyValue(object, /* wasThrown= */ false, /* showPreview= */ true)}</span>`;
+    if (!object.hasChildren) {
+        return title;
+    }
+    return renderObjectPropertiesSection(objectTree, title, linkifier, skipProto, !readOnly);
+}
 /**
  * Number of initially visible children in an ObjectPropertyTreeElement.
  * Remaining children are shown as soon as requested via a show more properties button.
@@ -1273,9 +1382,10 @@ export const OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
         }
         if (property.value) {
             const showPreview = property.name !== '[[Prototype]]';
-            const value = ObjectPropertiesSection.createPropertyValueWithCustomSupport(property.value, property.wasThrown, showPreview, input.linkifier, property.synthetic, input.node.path /* variableName */, input.node.includeNullOrUndefinedValues);
-            output.valueElement = value;
-            return value;
+            return renderPropertyValue(property.value, property.wasThrown, showPreview, input.linkifier, property.synthetic, input.node.path /* variableName */, input.node.includeNullOrUndefinedValues, 
+            /* useCustomPreview */ true, e => {
+                output.valueElement = e;
+            });
         }
         if (property.getter) {
             const getter = property.getter;

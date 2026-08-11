@@ -17,44 +17,43 @@ import { html, render } from '../../ui/lit/lit.js';
 import styles from './gdpSignUpDialog.css.js';
 const UIStrings = {
     /**
-     * @description Aria label for the Google Developer Program sign up dialog
+     * @description ARIA label for the Google Developer Program sign up dialog.
      */
     gdpDialogAriaLabel: 'Google Developer Program sign up dialog',
     /**
-     *
-     * @description Button text for canceling GDP sign up.
+     * @description Button text for canceling Google Developer Program sign up.
      */
     cancel: 'Cancel',
     /**
-     * @description Button text for confirming GDP sign up.
+     * @description Button text for confirming Google Developer Program sign up.
      */
     signUp: 'Sign up',
     /**
-     * @description Title for the first section of the GDP sign up dialog.
+     * @description Title for the first section of the Google Developer Program sign up dialog.
      */
     designedForSuccess: 'Designed for your success',
     /**
-     * @description Body for the first section of the GDP sign up dialog.
+     * @description Body for the first section of the Google Developer Program sign up dialog.
      */
-    designedForSuccessBody: 'Grow your skills, build with AI, and earn badges you can showcase in your developer profile',
+    designedForSuccessBody: 'Grow your skills, build with AI, and earn badges you can showcase in your developer profile.',
     /**
-     * @description Title for the second section of the GDP sign up dialog.
+     * @description Title for the second section of the Google Developer Program sign up dialog.
      */
     keepUpdated: 'Keep me updated',
     /**
-     * @description Body for the second section of the GDP sign up dialog.
+     * @description Body for the second section of the Google Developer Program sign up dialog.
      */
-    keepUpdatedBody: 'The latest DevTools features, event invites, and tailored insights land directly in your inbox',
+    keepUpdatedBody: 'The latest DevTools features, event invites, and tailored insights land directly in your inbox.',
     /**
-     * @description Title for the third section of the GDP sign up dialog.
+     * @description Title for the third section of the Google Developer Program sign up dialog.
      */
     tailorProfile: 'Tailor your profile',
     /**
-     * @description Body for the third section of the GDP sign up dialog.
+     * @description Body for the third section of the Google Developer Program sign up dialog.
      */
-    tailorProfileBody: 'The name on your Google Account and your interests will be used in your Google Developer Profile. Your name may appear where you contribute and can be changed at any time.',
+    tailorProfileBody: 'The name on your Google account and your interests will be used in your Google Developer Profile. Your name may appear where you contribute and can be changed at any time.',
     /**
-     * @description Body for the third section of the GDP sign up dialog.
+     * @description Disclaimer text for tailoring profile in the Google Developer Program sign up dialog.
      * @example {Content Policy} PH1
      * @example {Terms of Service} PH2
      * @example {Privacy Policy} PH3
@@ -81,9 +80,9 @@ const UIStrings = {
      */
     privacyPolicy: 'Privacy Policy',
     /**
-     * @description Error message shown in a snackbar when GDP sign up fails.
+     * @description Error message shown in a snackbar when Google Developer Profile creation fails.
      */
-    signUpFailed: 'Your Google Developer Program profile couldn’t be created. Please try again later.',
+    signUpFailed: 'Your Google Developer Profile couldn’t be created. Please try again later.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/common/GdpSignUpDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

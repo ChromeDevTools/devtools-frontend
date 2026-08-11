@@ -15,6 +15,7 @@ const SKILL_DISPLAY_NAMES = {
     network: 'Network requests',
     accessibility: 'Accessibility',
     performance: 'Performance',
+    storage: 'Storage',
 };
 const preamble = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
 Your role is to help web developers debug, analyze, and optimize web applications by learning specialized skills and utilizing tools.
@@ -54,6 +55,11 @@ export class AiAgent2 extends AiAgent {
     #performanceRecordAndReload;
     get options() {
         return {};
+    }
+    async preRun() {
+        if (this.context && !this.context.isLoggingEnabled()) {
+            this.setServerSideLoggingActive(false);
+        }
     }
     #activeSkills = new Set();
     #declaredTools = new Set();
@@ -200,6 +206,9 @@ User query: ${enhancedQuery}`;
                     getEstablishedOrigin: () => this.#getConversationOrigin(),
                     lighthouseRecording: this.#lighthouseRecording,
                     performanceRecordAndReload: this.#performanceRecordAndReload,
+                    setLoggingEnabled: (enabled) => {
+                        this.setServerSideLoggingActive(enabled);
+                    },
                 };
                 return tool.handler(args, context, options);
             },

@@ -72,6 +72,7 @@ export class JSONView extends UI.Widget.VBox {
     set parsedJSON(parsedJSON) {
         if (this.objectTree) {
             this.objectTree.removeEventListener("children-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.#onChildrenChanged, this);
+            this.objectTree.removeEventListener("expanded-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.#onChildrenChanged, this);
         }
         this.#parsedJSON = parsedJSON;
         this.objectTree = null;
@@ -150,6 +151,7 @@ export class JSONView extends UI.Widget.VBox {
             this.objectTree.expanded = true;
         }
         this.objectTree.addEventListener("children-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.#onChildrenChanged, this);
+        this.objectTree.addEventListener("expanded-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.#onChildrenChanged, this);
     }
     #onChildrenChanged() {
         this.requestUpdate();
@@ -180,13 +182,14 @@ export class JSONView extends UI.Widget.VBox {
             this.search.updateSearchableView(this.searchableView);
         }
     }
-    performSearch(searchConfig, shouldJump, jumpBackwards) {
+    async performSearch(searchConfig, shouldJump, jumpBackwards) {
         this.initialize();
         this.onSearchCanceled();
         const searchRegex = searchConfig.toSearchRegex(true).regex;
         if (!this.objectTree) {
             return;
         }
+        await this.objectTree.populateChildrenIfNeeded();
         this.search.search(this.objectTree, jumpBackwards ?? false, (node, closeTag) => {
             if (closeTag || !searchRegex) {
                 return [];

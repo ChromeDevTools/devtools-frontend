@@ -110,6 +110,10 @@ export class SASSSourceMapping {
         }
         return [];
     }
+    static sourceMapURLsForUISourceCode(uiSourceCode) {
+        const binding = uiSourceCodeToBinding.get(uiSourceCode);
+        return binding?.getReferringSourceMaps().map(sourceMap => sourceMap.url()) ?? [];
+    }
     dispose() {
         Common.EventTarget.removeEventListeners(this.#eventListeners);
         this.#project.dispose();

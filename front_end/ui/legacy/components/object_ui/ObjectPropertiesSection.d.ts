@@ -129,14 +129,10 @@ export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineI
     titleElement: Element;
     skipProtoInternal?: boolean;
     constructor(object: SDK.RemoteObject.RemoteObject, title?: string | Element | null, linkifier?: Components.Linkifier.Linkifier, showOverflow?: boolean, editable?: boolean, search?: UI.TreeOutline.TreeSearch<ObjectTreeNodeBase>);
-    static defaultObjectPresentation(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): Element;
-    static defaultObjectPropertiesSection(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): ObjectPropertiesSection;
     static compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, sortPropertiesAlphabetically?: boolean): number;
     static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string, details?: SDK.DebuggerModel.FunctionDetails | null, linkify?: boolean): LitTemplate;
-    static createPropertyValueWithCustomSupport(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean): HTMLElement;
     static getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate;
     static appendMemoryIcon(element: Element, object: SDK.RemoteObject.RemoteObject, expression?: string): void;
-    static createPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean): HTMLElement;
     static isDisplayableProperty(property: SDK.RemoteObject.RemoteObjectProperty, parentProperty?: SDK.RemoteObject.RemoteObjectProperty): boolean;
     skipProto(): void;
     expand(): void;
@@ -156,10 +152,40 @@ export declare const enum ObjectPropertiesMode {
     OWN_AND_INTERNAL_AND_INHERITED = 1
 }
 export declare function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu, object: ObjectTree, expandRecursively: () => void, collapseChildren: () => void, sortPropertiesAlphabetically: () => void, onShowAllToggled: () => void): void;
-export declare function renderObjectTree(objectTree: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): LitTemplate | DirectiveResult;
-export declare function renderObjectPropertiesSection(objectTree: ObjectTree, title: LitTemplate, linkifier?: Components.Linkifier.Linkifier): LitTemplate;
+interface ObjectTreeViewInput {
+    renderAsSubtree: boolean;
+    objectTree?: ObjectTree;
+    linkifier?: Components.Linkifier.Linkifier;
+    emptyPlaceholder?: string;
+    skipProto: boolean;
+    onExpand: (expanded: boolean) => void;
+}
+type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
+export declare const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView;
+export declare class ObjectTreeWidget extends UI.Widget.Widget {
+    #private;
+    constructor(element?: HTMLElement, view?: ObjectTreeView);
+    onExpand: (expanded: boolean) => void;
+    get skipProto(): boolean;
+    set skipProto(val: boolean);
+    get objectTree(): ObjectTree | undefined;
+    set objectTree(val: ObjectTree);
+    get linkifier(): Components.Linkifier.Linkifier | undefined;
+    set linkifier(val: Components.Linkifier.Linkifier);
+    get emptyPlaceholder(): string | undefined;
+    set emptyPlaceholder(val: string);
+    get renderAsSubtree(): boolean;
+    set renderAsSubtree(val: boolean);
+    performUpdate(): Promise<void>;
+    onDetach(): void;
+    wasShown(): void;
+}
+export declare function renderObjectTree(objectTree: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string): LitTemplate | DirectiveResult;
+export declare function renderObjectPropertiesSection(objectTree: ObjectTree, title: LitTemplate, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, showOverflow?: boolean): LitTemplate;
 export declare function renderPropertyName(name: string | null, isPrivate?: boolean, title?: string): TemplateResult;
 export declare function formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject, linkify: boolean, includePreview?: boolean): Promise<LitTemplate>;
+export declare function renderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean, useCustomPreview?: boolean, valueRef?: (element: Element | undefined) => void): LitTemplate;
+export declare function defaultObjectPresentation(objectOrTree: SDK.RemoteObject.RemoteObject | ObjectTree, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): LitTemplate;
 /**
  * Number of initially visible children in an ObjectPropertyTreeElement.
  * Remaining children are shown as soon as requested via a show more properties button.

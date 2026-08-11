@@ -30,7 +30,7 @@ export declare class Script implements TextUtils.ContentProvider.ContentProvider
     originStackTrace: Protocol.Runtime.StackTrace | null;
     readonly isModule: boolean | null;
     readonly buildId: string | null;
-    constructor(debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString, startLine: number, startColumn: number, endLine: number, endColumn: number, executionContextId: number, hash: string, isContentScript: boolean, isLiveEdit: boolean, sourceMapURL: string | undefined, hasSourceURL: boolean, length: number, isModule: boolean | null, originStackTrace: Protocol.Runtime.StackTrace | null, codeOffset: number | null, scriptLanguage: string | null, debugSymbols: Protocol.Debugger.DebugSymbols | null, embedderName: Platform.DevToolsPath.UrlString | null, buildId: string | null);
+    constructor(debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString, startLine: number, startColumn: number, endLine: number, endColumn: number, executionContextId: number, hash: string, isContentScript: boolean, sourceMapURL: string | undefined, hasSourceURL: boolean, length: number, isModule: boolean | null, originStackTrace: Protocol.Runtime.StackTrace | null, codeOffset: number | null, scriptLanguage: string | null, debugSymbols: Protocol.Debugger.DebugSymbols | null, embedderName: Platform.DevToolsPath.UrlString | null, buildId: string | null);
     embedderName(): Platform.DevToolsPath.UrlString | null;
     target(): Target;
     private static trimSourceURLComment;
@@ -40,7 +40,6 @@ export declare class Script implements TextUtils.ContentProvider.ContentProvider
     isWasm(): boolean;
     scriptLanguage(): string | null;
     executionContext(): ExecutionContext | null;
-    isLiveEdit(): boolean;
     contentURL(): Platform.DevToolsPath.UrlString;
     contentType(): Common.ResourceType.ResourceType;
     private loadTextContent;
@@ -49,12 +48,6 @@ export declare class Script implements TextUtils.ContentProvider.ContentProvider
     getWasmBytecode(): Promise<ArrayBuffer>;
     originalContentProvider(): TextUtils.ContentProvider.ContentProvider;
     searchInContent(query: string, caseSensitive: boolean, isRegex: boolean): Promise<TextUtils.ContentProvider.SearchMatch[]>;
-    private appendSourceURLCommentIfNeeded;
-    editSource(newSource: string): Promise<{
-        changed: boolean;
-        status: Protocol.Debugger.SetScriptSourceResponseStatus;
-        exceptionDetails?: Protocol.Runtime.ExceptionDetails;
-    }>;
     rawLocation(lineNumber: number, columnNumber: number): Location | null;
     isInlineScript(): boolean;
     isAnonymousScript(): boolean;

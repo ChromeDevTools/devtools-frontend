@@ -6,9 +6,10 @@
 import '../../ui/legacy/legacy.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, nothing, render } from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import playerMessagesViewStyles from './playerMessagesView.css.js';
+const { classMap } = Directives;
 const UIStrings = {
     /**
      * @description A context menu item in the Console view of the Console panel.
@@ -97,56 +98,78 @@ class MessageLevelSelector {
         dropdown.selectItem(this.items.at(0));
     }
     populate() {
-        this.items.insert(this.items.length, {
+        const defaultLevel = {
             title: this.#defaultTitle,
             overwrite: true,
             stringValue: '',
             value: 7 /* MessageLevelBitfield.DEFAULT */,
-        });
-        this.items.insert(this.items.length, {
+        };
+        this.items.insert(this.items.length, defaultLevel);
+        this.itemMap.set(defaultLevel.value, defaultLevel);
+        const allLevel = {
             title: this.allTitle,
             overwrite: true,
             stringValue: '',
             value: 15 /* MessageLevelBitfield.ALL */,
-        });
-        this.items.insert(this.items.length, {
+        };
+        this.items.insert(this.items.length, allLevel);
+        this.itemMap.set(allLevel.value, allLevel);
+        const errorLevel = {
             title: i18nString(UIStrings.error),
             overwrite: false,
             stringValue: 'error',
             value: 1 /* MessageLevelBitfield.ERROR */,
-        });
-        this.items.insert(this.items.length, {
+        };
+        this.items.insert(this.items.length, errorLevel);
+        this.itemMap.set(errorLevel.value, errorLevel);
+        const warningLevel = {
             title: i18nString(UIStrings.warning),
             overwrite: false,
             stringValue: 'warning',
             value: 2 /* MessageLevelBitfield.WARNING */,
-        });
-        this.items.insert(this.items.length, {
+        };
+        this.items.insert(this.items.length, warningLevel);
+        this.itemMap.set(warningLevel.value, warningLevel);
+        const infoLevel = {
             title: i18nString(UIStrings.info),
             overwrite: false,
             stringValue: 'info',
             value: 4 /* MessageLevelBitfield.INFO */,
-        });
-        this.items.insert(this.items.length, {
+        };
+        this.items.insert(this.items.length, infoLevel);
+        this.itemMap.set(infoLevel.value, infoLevel);
+        const debugLevel = {
             title: i18nString(UIStrings.debug),
             overwrite: false,
             stringValue: 'debug',
             value: 8 /* MessageLevelBitfield.DEBUG */,
-        });
+        };
+        this.items.insert(this.items.length, debugLevel);
+        this.itemMap.set(debugLevel.value, debugLevel);
+    }
+    #renderItem(item, target) {
+        const checked = Boolean(item.value & this.bitFieldValue);
+        // clang-format off
+        render(html `
+      <div class="media-messages-level-dropdown-element">
+        <div class="media-messages-level-dropdown-checkbox">
+          ${!item.overwrite && checked ? html `<div>✓</div>` : nothing}
+        </div>
+        <span class="media-messages-level-dropdown-text">${item.title}</span>
+      </div>
+    `, target, { host: this });
+        // clang-format on
     }
     updateCheckMarks() {
         this.hiddenLevels = [];
         for (const [key, item] of this.itemMap) {
             if (!item.overwrite) {
-                const elementForItem = this.elementsForItems.get(item);
-                if (elementForItem?.firstChild) {
-                    elementForItem.firstChild.remove();
-                }
-                if (elementForItem && key & this.bitFieldValue) {
-                    UI.UIUtils.createTextChild(elementForItem.createChild('div'), '✓');
-                }
-                else {
+                if (!(key & this.bitFieldValue)) {
                     this.hiddenLevels.push(item.stringValue);
+                }
+                const target = this.elementsForItems.get(item);
+                if (target) {
+                    this.#renderItem(item, target);
                 }
             }
         }
@@ -175,12 +198,9 @@ class MessageLevelSelector {
     createElementForItem(item) {
         const element = document.createElement('div');
         const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: playerMessagesViewStyles });
-        const container = shadowRoot.createChild('div', 'media-messages-level-dropdown-element');
-        const checkBox = container.createChild('div', 'media-messages-level-dropdown-checkbox');
-        const text = container.createChild('span', 'media-messages-level-dropdown-text');
-        UI.UIUtils.createTextChild(text, item.title);
-        this.elementsForItems.set(item, checkBox);
+        this.elementsForItems.set(item, shadowRoot);
         this.itemMap.set(item.value, item);
+        this.#renderItem(item, shadowRoot);
         this.updateCheckMarks();
         this.view.regenerateMessageDisplayCss(this.hiddenLevels);
         return element;
@@ -199,19 +219,19 @@ export class PlayerMessagesView extends UI.Widget.VBox {
     headerPanel;
     bodyPanel;
     messageLevelSelector;
+    #items = [];
+    #hiddenLevels = [];
+    #filterString = '';
+    #dropDownItem;
+    #filterInput;
     constructor() {
         super({ jslog: `${VisualLogging.pane('messages')}` });
         this.registerRequiredCSS(playerMessagesViewStyles);
         this.headerPanel = this.contentElement.createChild('div', 'media-messages-header');
         this.bodyPanel = this.contentElement.createChild('div', 'media-messages-body');
-        this.buildToolbar();
-    }
-    buildToolbar() {
-        const toolbar = this.headerPanel.createChild('devtools-toolbar', 'media-messages-toolbar');
-        toolbar.appendText(i18nString(UIStrings.logLevel));
-        toolbar.appendToolbarItem(this.createDropdown());
-        toolbar.appendSeparator();
-        toolbar.appendToolbarItem(this.createFilterInput());
+        this.#dropDownItem = this.createDropdown();
+        this.#filterInput = this.createFilterInput();
+        this.performUpdate();
     }
     createDropdown() {
         const items = new UI.ListModel.ListModel();
@@ -234,43 +254,86 @@ export class PlayerMessagesView extends UI.Widget.VBox {
         }, this);
         return filterInput;
     }
-    regenerateMessageDisplayCss(hiddenLevels) {
-        const messages = this.bodyPanel.getElementsByClassName('media-messages-message-container');
-        for (const message of messages) {
-            if (this.matchesHiddenLevels(message, hiddenLevels)) {
-                message.classList.add('media-messages-message-unselected');
+    performUpdate() {
+        this.#renderToolbar();
+        this.#renderMessages();
+    }
+    #renderToolbar() {
+        // clang-format off
+        render(html `
+      <devtools-toolbar class="media-messages-toolbar">
+        <div class="toolbar-text">${i18nString(UIStrings.logLevel)}</div>
+        ${this.#dropDownItem?.element}
+        <div class="toolbar-divider"></div>
+        ${this.#filterInput?.element}
+      </devtools-toolbar>
+    `, this.headerPanel, { host: this });
+        // clang-format on
+    }
+    #renderMessages() {
+        // clang-format off
+        render(html `
+      ${this.#items.map(item => {
+            const isUnselected = this.#isLevelHidden(item.level);
+            let isFiltered = false;
+            if (this.#filterString !== '') {
+                if (item.type === 'message') {
+                    isFiltered = !item.message.message.includes(this.#filterString);
+                }
+                else {
+                    isFiltered = !this.#errorMatchesFilter(item.error, this.#filterString);
+                }
             }
-            else {
-                message.classList.remove('media-messages-message-unselected');
+            const classes = {
+                'media-messages-message-container': true,
+                [`media-message-${item.level}`]: true,
+                'media-messages-message-unselected': isUnselected,
+                'media-messages-message-filtered': isFiltered,
+            };
+            return html `
+          <div class=${classMap(classes)}>
+            ${item.type === 'message' ? item.message.message : this.renderError(item.error)}
+          </div>
+        `;
+        })}
+    `, this.bodyPanel, { host: this });
+        // clang-format on
+    }
+    #isLevelHidden(level) {
+        return this.#hiddenLevels.includes(level);
+    }
+    #errorMatchesFilter(error, filter) {
+        if (error.errorType.includes(filter) || error.code.toString().includes(filter)) {
+            return true;
+        }
+        for (const [key, value] of Object.entries(error.data)) {
+            if (`${key}: ${value}`.includes(filter)) {
+                return true;
             }
         }
-    }
-    matchesHiddenLevels(element, hiddenLevels) {
-        for (const level of hiddenLevels) {
-            if (element.classList.contains('media-message-' + level)) {
+        for (const stackEntry of error.stack) {
+            if (`${stackEntry.file}:${stackEntry.line}`.includes(filter)) {
+                return true;
+            }
+        }
+        for (const cause of error.cause) {
+            if (this.#errorMatchesFilter(cause, filter)) {
                 return true;
             }
         }
         return false;
     }
+    regenerateMessageDisplayCss(hiddenLevels) {
+        this.#hiddenLevels = hiddenLevels;
+        this.performUpdate();
+    }
     filterByString(userStringData) {
-        const userString = userStringData.data;
-        const messages = this.bodyPanel.getElementsByClassName('media-messages-message-container');
-        for (const message of messages) {
-            if (userString === '') {
-                message.classList.remove('media-messages-message-filtered');
-            }
-            else if (message.textContent?.includes(userString)) {
-                message.classList.remove('media-messages-message-filtered');
-            }
-            else {
-                message.classList.add('media-messages-message-filtered');
-            }
-        }
+        this.#filterString = userStringData.data;
+        this.performUpdate();
     }
     addMessage(message) {
-        const container = this.bodyPanel.createChild('div', 'media-messages-message-container media-message-' + message.level);
-        UI.UIUtils.createTextChild(container, message.message);
+        this.#items.push({ type: 'message', level: message.level, message });
+        this.performUpdate();
     }
     renderError(error) {
         // clang-format off
@@ -314,7 +377,9 @@ export class PlayerMessagesView extends UI.Widget.VBox {
                   <span class="status-error-field-label"
                     >${i18nString(UIStrings.errorCauseLabel)}</span
                   >
-                  ${this.renderError(error.cause[0])}
+                  <div>
+                    ${error.cause.map(cause => this.renderError(cause))}
+                  </div>
                 `
             : nothing}
         </div>
@@ -323,8 +388,8 @@ export class PlayerMessagesView extends UI.Widget.VBox {
         // clang-format on
     }
     addError(error) {
-        const container = this.bodyPanel.createChild('div', 'media-messages-message-container media-message-error');
-        render(this.renderError(error), container);
+        this.#items.push({ type: 'error', level: 'error', error });
+        this.performUpdate();
     }
 }
 //# sourceMappingURL=PlayerMessagesView.js.map

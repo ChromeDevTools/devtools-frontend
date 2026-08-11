@@ -11,6 +11,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { frameworkEventListeners } from './EventListenersUtils.js';
 import eventListenersViewStyles from './eventListenersView.css.js';
@@ -281,9 +282,12 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     }
     setTitle(object, linkifier) {
         const title = this.listItemElement.createChild('span', 'event-listener-details');
-        const propertyValue = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(object, /* wasThrown */ false, /* showPreview */ false);
-        this.valueTitle = propertyValue;
-        title.appendChild(this.valueTitle);
+        const propertyValue = ObjectUI.ObjectPropertiesSection.renderPropertyValue(object, /* wasThrown */ false, /* showPreview */ false, linkifier, /* isSyntheticProperty */ false, 
+        /* variableName */ undefined, /* includeNullOrUndefined */ undefined, /* useCustomPreview */ false, element => {
+            this.valueTitle = element;
+        });
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(propertyValue, title);
         if (this.#eventListener.canRemove()) {
             const deleteButton = new Buttons.Button.Button();
             deleteButton.data = {

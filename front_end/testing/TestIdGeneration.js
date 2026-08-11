@@ -49,4 +49,11 @@ export function generateExactTestId(genDir, file, titlePath) {
     }
     return { exactTestId, coarseName, fineName, caseName };
 }
+export function formatFailedTestsSummary(failedTestIds) {
+    const ids = Array.from(failedTestIds);
+    if (ids.length === 0) {
+        return '';
+    }
+    return `\nFailed tests (${ids.length}):\n${ids.map(id => `  ${id}`).join('\n')}\n\nTo rerun:\n  npm run test -- ${ids.join(' ')}\n\n`;
+}
 //# sourceMappingURL=TestIdGeneration.js.map

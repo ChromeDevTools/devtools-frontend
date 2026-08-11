@@ -6514,12 +6514,6 @@ var Setting = class {
   removeChangeListener(listener, thisObject) {
     this.eventSupport.removeEventListener(this.name, listener, thisObject);
   }
-  title() {
-    if (this.#registration?.title) {
-      return this.#registration.title();
-    }
-    return "";
-  }
   setRequiresUserAction(requiresUserAction) {
     this.#requiresUserAction = requiresUserAction;
   }
@@ -6603,50 +6597,6 @@ var Setting = class {
   }
   type() {
     return this.#type ?? this.#registration?.settingType ?? null;
-  }
-  options() {
-    if (this.#registration && this.#registration.options) {
-      return this.#registration.options.map((opt) => {
-        const { value, title, text, raw } = opt;
-        return {
-          value,
-          title: title(),
-          text: typeof text === "function" ? text() : text,
-          raw
-        };
-      });
-    }
-    return [];
-  }
-  reloadRequired() {
-    if (this.#registration) {
-      return this.#registration.reloadRequired || null;
-    }
-    return null;
-  }
-  category() {
-    if (this.#registration) {
-      return this.#registration.category || null;
-    }
-    return null;
-  }
-  tags() {
-    if (this.#registration && this.#registration.tags) {
-      return this.#registration.tags.map((tag) => tag()).join("\0");
-    }
-    return null;
-  }
-  order() {
-    if (this.#registration) {
-      return this.#registration.order || null;
-    }
-    return null;
-  }
-  /**
-   * See {@link LearnMore} for more info
-   */
-  learnMore() {
-    return this.#registration?.learnMore ?? null;
   }
   printSettingsSavingError(message, value) {
     const errorMessage = "Error saving setting with name: " + this.name + ", value length: " + value.length + ". Error: " + message;

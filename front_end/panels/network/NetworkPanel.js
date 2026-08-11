@@ -782,7 +782,7 @@ export class FilmStripRecorder {
         }
         this.#tracingManager = tracingManager;
         this.#resourceTreeModel = this.#tracingManager.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
-        void this.#tracingManager.start(this, '-*,disabled-by-default-devtools.screenshot');
+        void this.#tracingManager.start(this, ['-*', ...Trace.Types.Events.OptionalCategories.Screenshot].join(','));
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.FilmStripStartedRecording);
     }
     isRecording() {

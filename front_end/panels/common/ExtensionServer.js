@@ -789,6 +789,14 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
      * long as the corresponding target and the embedder name (if it is a URL) are permitted.
      */
     extensionAllowedOnContentProvider(contentProvider, port) {
+        if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+            const debuggerSourceMapURLs = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapURLsForUISourceCode(contentProvider);
+            const cssSourceMapURLs = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().sourceMapURLsForUISourceCode(contentProvider);
+            const sourceMapURLs = [...debuggerSourceMapURLs, ...cssSourceMapURLs];
+            if (sourceMapURLs.some(url => !this.extensionAllowedOnURL(url, port))) {
+                return false;
+            }
+        }
         // 1. Exception for Scripts with sourceURL
         if (contentProvider instanceof Workspace.UISourceCode.UISourceCode &&
             contentProvider.contentType() === Common.ResourceType.resourceTypes.Script) {

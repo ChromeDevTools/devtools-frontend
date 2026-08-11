@@ -14,11 +14,11 @@ import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
 import { FileContext } from '../contexts/FileContext.js';
 import { PerformanceTraceContext } from '../contexts/PerformanceTraceContext.js';
 import { getRequestContextOrigin, RequestContext } from '../contexts/RequestContext.js';
+import { StorageContext } from '../contexts/StorageContext.js';
 import { formatBytesToKb, seconds } from '../data_formatters/UnitFormatters.js';
 import { debugLog } from '../debug.js';
 import { StorageItem } from '../StorageItem.js';
 import { AiAgent, } from './AiAgent.js';
-import { StorageContext } from './StorageAgent.js';
 const lockedString = i18n.i18n.lockedString;
 /**
  * WARNING: preamble defined in code is only used when userTier is

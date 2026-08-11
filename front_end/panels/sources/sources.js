@@ -6217,9 +6217,6 @@ var DebuggerPlugin = class extends Plugin {
     this.initializedMuted = this.muted;
     this.ignoreListInfobar = null;
     this.showIgnoreListInfobarIfNeeded();
-    for (const scriptFile of this.scriptFileForDebuggerModel.values()) {
-      scriptFile.checkMapping();
-    }
   }
   editorExtension() {
     const handlers = this.shortcutHandlers();
@@ -6485,23 +6482,11 @@ var DebuggerPlugin = class extends Plugin {
     }
   }
   workingCopyChanged() {
-    if (!this.scriptFileForDebuggerModel.size) {
-      this.setMuted(this.uiSourceCode.isDirty());
-    }
+    this.setMuted(this.uiSourceCode.isDirty());
   }
   workingCopyCommitted() {
     this.scriptsPanel.updateLastModificationTime();
-    if (!this.scriptFileForDebuggerModel.size) {
-      this.setMuted(false);
-    }
-  }
-  didMergeToVM() {
-    if (this.consistentScripts()) {
-      this.setMuted(false);
-    }
-  }
-  didDivergeFromVM() {
-    this.setMuted(true);
+    this.setMuted(false);
   }
   setMuted(value2) {
     if (this.initializedMuted) {
@@ -6515,14 +6500,6 @@ var DebuggerPlugin = class extends Plugin {
         this.editor.dispatch({ effects: muteBreakpoints.of(null) });
       }
     }
-  }
-  consistentScripts() {
-    for (const scriptFile of this.scriptFileForDebuggerModel.values()) {
-      if (scriptFile.hasDivergedFromVM() || scriptFile.isMergingToVM()) {
-        return false;
-      }
-    }
-    return true;
   }
   isIdentifier(tokenType) {
     return tokenType === "VariableName" || tokenType === "VariableDefinition" || tokenType === "PropertyName" || tokenType === "PropertyDefinition";
@@ -7112,11 +7089,6 @@ var DebuggerPlugin = class extends Plugin {
     if (uiLocation.uiSourceCode !== this.uiSourceCode || this.muted) {
       return;
     }
-    for (const scriptFile of this.scriptFileForDebuggerModel.values()) {
-      if (scriptFile.isDivergingFromVM() || scriptFile.isMergingToVM()) {
-        return;
-      }
-    }
     window.clearTimeout(this.refreshBreakpointsTimeout);
     this.refreshBreakpointsTimeout = window.setTimeout(() => this.refreshBreakpoints(), 50);
   }
@@ -7188,23 +7160,12 @@ var DebuggerPlugin = class extends Plugin {
     this.showSourceMapInfobarIfNeeded();
   }
   updateScriptFile(debuggerModel) {
-    const oldScriptFile = this.scriptFileForDebuggerModel.get(debuggerModel);
-    const newScriptFile = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(this.uiSourceCode, debuggerModel);
     this.scriptFileForDebuggerModel.delete(debuggerModel);
-    if (oldScriptFile) {
-      oldScriptFile.removeEventListener("DidMergeToVM", this.didMergeToVM, this);
-      oldScriptFile.removeEventListener("DidDivergeFromVM", this.didDivergeFromVM, this);
-      if (this.muted && !this.uiSourceCode.isDirty() && this.consistentScripts()) {
-        this.setMuted(false);
-      }
-    }
+    const newScriptFile = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(this.uiSourceCode, debuggerModel);
     if (!newScriptFile) {
       return;
     }
     this.scriptFileForDebuggerModel.set(debuggerModel, newScriptFile);
-    newScriptFile.addEventListener("DidMergeToVM", this.didMergeToVM, this);
-    newScriptFile.addEventListener("DidDivergeFromVM", this.didDivergeFromVM, this);
-    newScriptFile.checkMapping();
     void newScriptFile.missingSymbolFiles().then((resources) => {
       if (resources) {
         const details = i18nString8(UIStrings9.debugInfoNotFound, { PH1: newScriptFile.uiSourceCode.url() });
@@ -7457,10 +7418,6 @@ var DebuggerPlugin = class extends Plugin {
     if (this.sourceMapInfobar) {
       this.sourceMapInfobar.dispose();
     }
-    for (const script of this.scriptFileForDebuggerModel.values()) {
-      script.removeEventListener("DidMergeToVM", this.didMergeToVM, this);
-      script.removeEventListener("DidDivergeFromVM", this.didDivergeFromVM, this);
-    }
     this.scriptFileForDebuggerModel.clear();
     this.popoverHelper?.hidePopover();
     this.popoverHelper?.dispose();
@@ -7690,14 +7647,16 @@ var ValueDecoration = class extends CodeMirror4.WidgetType {
       if (value2.preview && propertyCount + entryCount < 10) {
         render5(formatter.renderObjectPreview(value2.preview), nameValuePair.createChild("span"));
       } else {
-        const propertyValue = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
+        const propertyValue = ObjectUI.ObjectPropertiesSection.renderPropertyValue(
           value2,
           /* wasThrown */
           false,
           /* showPreview */
           false
         );
-        nameValuePair.appendChild(propertyValue);
+        const fragment = document.createDocumentFragment();
+        render5(propertyValue, fragment);
+        nameValuePair.appendChild(fragment);
       }
     }
     return widget;
@@ -8505,10 +8464,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     if (this.#uiSourceCode.project().type() === Workspace15.Workspace.projectTypes.Network && Persistence5.NetworkPersistenceManager.NetworkPersistenceManager.instance().active()) {
       return true;
     }
-    if (this.pretty && this.#uiSourceCode.contentType().hasScripts()) {
-      return false;
-    }
-    return this.#uiSourceCode.contentType() !== Common9.ResourceType.resourceTypes.Document;
+    return this.#uiSourceCode.contentType().isStyleSheet();
   }
   onNetworkPersistenceChanged() {
     this.setEditable(this.#canEditSource());
@@ -13449,7 +13405,7 @@ var i18nString22 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var scopeChainSidebarPaneInstance;
 var DEFAULT_VIEW7 = (input, output, target) => {
   const createScopeSection = ({ scope, objectTree }) => {
-    let emptyPlaceholder = null;
+    let emptyPlaceholder;
     if (scope.type() === "local" || scope.type() === "closure") {
       emptyPlaceholder = i18nString22(UIStrings23.noVariables);
     }
@@ -14471,7 +14427,17 @@ var DEFAULT_VIEW8 = (input, output, target) => {
               ${renderNameElement(e)}<span class=watch-expressions-separator>: </span>${e.exceptionDetails || !e.result ? html14`<span
                     class="watch-expression-error value"
                     title=${ifDefined3(e.exceptionDetails?.exception?.description)}
-                    >${i18nString24(UIStrings25.notAvailable)}</span>` : ObjectUI4.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValueWithCustomSupport(e.result.object, Boolean(e.exceptionDetails), false, input.linkifier)}
+                    >${i18nString24(UIStrings25.notAvailable)}</span>` : ObjectUI4.ObjectPropertiesSection.renderPropertyValue(
+      e.result.object,
+      Boolean(e.exceptionDetails),
+      false,
+      input.linkifier,
+      false,
+      void 0,
+      void 0,
+      /* useCustomPreview */
+      true
+    )}
             </div>
           </div>
         </devtools-prompt>

@@ -7,6 +7,7 @@ var __export = (target, all) => {
 // gen/front_end/ui/settings/SettingUIRegistration.js
 var SettingUIRegistration_exports = {};
 __export(SettingUIRegistration_exports, {
+  SettingUI: () => SettingUI,
   getRegisteredSettings: () => getRegisteredSettings,
   maybeResolve: () => maybeResolve,
   register: () => register,
@@ -49,16 +50,48 @@ function getRegisteredSettings() {
   }
   return Array.from(combined.values());
 }
+var SettingUI = class {
+  #raw;
+  constructor(raw) {
+    this.#raw = raw;
+  }
+  get title() {
+    return this.#raw.title?.() ?? "";
+  }
+  get category() {
+    return this.#raw.category ?? null;
+  }
+  get order() {
+    return this.#raw.order ?? null;
+  }
+  get tags() {
+    return this.#raw.tags ? this.#raw.tags.map((tag) => tag()).join("\0") : "";
+  }
+  get options() {
+    return this.#raw.options?.map((opt) => ({
+      value: opt.value,
+      title: opt.title(),
+      text: typeof opt.text === "function" ? opt.text() : opt.text,
+      raw: opt.raw
+    })) ?? [];
+  }
+  get reloadRequired() {
+    return Boolean(this.#raw.reloadRequired);
+  }
+  get learnMore() {
+    return this.#raw.learnMore ?? null;
+  }
+};
 function maybeResolve(settingDescriptor) {
   const settingUI = registeredSettings.get(settingDescriptor.name) ?? getRegisteredSettings().find((registered) => registered.descriptor.name === settingDescriptor.name);
-  return settingUI?.uiDescriptor ?? null;
+  return settingUI ? new SettingUI(settingUI.uiDescriptor) : null;
 }
 function resolve(settingDescriptor) {
-  const uiDescriptor = maybeResolve(settingDescriptor);
-  if (!uiDescriptor) {
+  const ui = maybeResolve(settingDescriptor);
+  if (!ui) {
     throw new Error(`No UI descriptor registered for setting '${settingDescriptor.name}'`);
   }
-  return uiDescriptor;
+  return ui;
 }
 function resetSettings() {
   for (const { uiDescriptor } of registeredSettings.values()) {

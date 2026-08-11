@@ -29,7 +29,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';
-import { COND_BREAKPOINT_SOURCE_URL, Events, Location, LOGPOINT_SOURCE_URL, } from './DebuggerModel.js';
+import { COND_BREAKPOINT_SOURCE_URL, Location, LOGPOINT_SOURCE_URL, } from './DebuggerModel.js';
 import { ResourceTreeModel } from './ResourceTreeModel.js';
 const UIStrings = {
     /**
@@ -59,7 +59,6 @@ export class Script {
     executionContextId;
     hash;
     #isContentScript;
-    #isLiveEdit;
     sourceMapURL;
     debugSymbols;
     hasSourceURL;
@@ -71,7 +70,7 @@ export class Script {
     #embedderName;
     isModule;
     buildId;
-    constructor(debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
+    constructor(debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, sourceMapURL, hasSourceURL, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
         this.debuggerModel = debuggerModel;
         this.scriptId = scriptId;
         this.sourceURL = sourceURL;
@@ -84,7 +83,6 @@ export class Script {
         this.executionContextId = executionContextId;
         this.hash = hash;
         this.#isContentScript = isContentScript;
-        this.#isLiveEdit = isLiveEdit;
         this.sourceMapURL = sourceMapURL;
         this.debugSymbols = debugSymbols;
         this.hasSourceURL = hasSourceURL;
@@ -136,9 +134,6 @@ export class Script {
     }
     executionContext() {
         return this.debuggerModel.runtimeModel().executionContext(this.executionContextId);
-    }
-    isLiveEdit() {
-        return this.#isLiveEdit;
     }
     contentURL() {
         return this.sourceURL;
@@ -211,8 +206,8 @@ export class Script {
     requestContentData() {
         if (!this.#contentPromise) {
             const fileSizeToCache = 65535; // We won't bother cacheing files under 64K
-            if (this.hash && !this.#isLiveEdit && this.contentLength > fileSizeToCache) {
-                // For large files that aren't live edits and have a hash, we keep a content-addressed cache
+            if (this.hash && this.contentLength > fileSizeToCache) {
+                // For large files that have a hash, we keep a content-addressed cache
                 // so we don't need to load multiple copies or disassemble wasm modules multiple times.
                 if (!scriptCacheInstance) {
                     // Initialize script cache singleton. Add a finalizer for removing keys from the map.
@@ -274,33 +269,6 @@ export class Script {
         }
         const matches = await this.debuggerModel.target().debuggerAgent().invoke_searchInContent({ scriptId: this.scriptId, query, caseSensitive, isRegex });
         return TextUtils.TextUtils.performSearchInSearchMatches(matches.result || [], query, caseSensitive, isRegex);
-    }
-    appendSourceURLCommentIfNeeded(source) {
-        if (!this.hasSourceURL) {
-            return source;
-        }
-        return source + '\n //# sourceURL=' + this.sourceURL;
-    }
-    async editSource(newSource) {
-        newSource = Script.trimSourceURLComment(newSource);
-        // We append correct #sourceURL to script for consistency only. It's not actually needed for things to work correctly.
-        newSource = this.appendSourceURLCommentIfNeeded(newSource);
-        const oldSource = TextUtils.ContentData.ContentData.textOr(await this.requestContentData(), null);
-        if (oldSource === newSource) {
-            return { changed: false, status: "Ok" /* Protocol.Debugger.SetScriptSourceResponseStatus.Ok */ };
-        }
-        const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource({ scriptId: this.scriptId, scriptSource: newSource, allowTopFrameEditing: true });
-        if (response.getError()) {
-            // Something went seriously wrong, like the V8 inspector no longer knowing about this script without
-            // shutting down the Debugger agent etc.
-            throw new Error(`Script#editSource failed for script with id ${this.scriptId}: ${response.getError()}`);
-        }
-        if (!response.getError() && response.status === "Ok" /* Protocol.Debugger.SetScriptSourceResponseStatus.Ok */) {
-            this.#contentPromise =
-                Promise.resolve(new TextUtils.ContentData.ContentData(newSource, /* isBase64 */ false, 'text/javascript'));
-        }
-        this.debuggerModel.dispatchEventToListeners(Events.ScriptSourceWasEdited, { script: this, status: response.status });
-        return { changed: true, status: response.status, exceptionDetails: response.exceptionDetails };
     }
     rawLocation(lineNumber, columnNumber) {
         if (this.containsLocation(lineNumber, columnNumber)) {

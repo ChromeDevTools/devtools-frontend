@@ -24401,6 +24401,57 @@
                     ]
                 },
                 {
+                    "name": "startScreenRecording",
+                    "description": "Starts screencast video recording.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "audio",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "maxWidth",
+                            "description": "Maximum frame width in pixels.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "maxHeight",
+                            "description": "Maximum frame height in pixels.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "frameRate",
+                            "description": "Maximum frame rate in frames per second.",
+                            "optional": true,
+                            "type": "integer"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "stream",
+                            "description": "A handle of the stream that holds resulting screencast data.",
+                            "experimental": true,
+                            "$ref": "IO.StreamHandle"
+                        }
+                    ]
+                },
+                {
+                    "name": "stopScreenRecording",
+                    "description": "Stops screencast video recording.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "stream",
+                            "description": "A handle of the stream that holds resulting screencast data.",
+                            "experimental": true,
+                            "$ref": "IO.StreamHandle"
+                        }
+                    ]
+                },
+                {
                     "name": "stopLoading",
                     "description": "Force the page stop all navigations and pending resource fetches."
                 },
@@ -30185,12 +30236,15 @@
                 },
                 {
                     "id": "AuthenticatorTransport",
+                    "description": "LINT_SKIP.IfChange(AuthenticatorTransport)",
                     "type": "string",
                     "enum": [
                         "usb",
                         "nfc",
                         "ble",
                         "cable",
+                        "hybrid",
+                        "smart-card",
                         "internal"
                     ]
                 },

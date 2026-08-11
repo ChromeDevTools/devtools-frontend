@@ -810,11 +810,6 @@
       status: "stable",
     },
     {
-      // Fix for https://crbug.com/471876082
-      name: "AvoidMergingStyledSpanWithSiblings",
-      status: "stable",
-    },
-    {
       // Disables the synchronous focus blur behavior when a focused form control
       // is disabled.
       name: "AvoidSynchronousBlurOnDisabledAttributeChange",
@@ -1146,13 +1141,6 @@
     {
       // crbug.com/517429018
       name: "ClampUnfocusedSelectionCache",
-      status: "stable",
-    },
-    {
-      // Clamps word boundary detection to the contenteditable scope when
-      // adjacent contenteditable spans have no whitespace between them.
-      // See https://crbug.com/40848794.
-      name: "ClampWordBoundaryToContentEditableScope",
       status: "stable",
     },
     {
@@ -1984,6 +1972,10 @@
       implied_by: ["CSSScrollSnapChangeEvent", "CSSScrollSnapChangingEvent"],
     },
     {
+      name: "CSSScrollSnapTypePair",
+      status: "test",
+    },
+    {
       // scroll-target-group property
       // https://drafts.csswg.org/css-overflow-5/#scroll-target-group
       name: "CSSScrollTargetGroup",
@@ -2222,17 +2214,12 @@
     },
     {
       name: "DeclarativeSkeletons",
+      status: "test",
     },
     {
       // Killswitch for https://crbug.com/400317114 fix.
       // This lands in M142, and the flag can be removed in M144.
       name: "DelegatesFocusTextControlInputFix",
-      status: "stable",
-    },
-    {
-      // Delete text from descendant text nodes before removing children of
-      // a root editable element to ensure selectionchange event fires.
-      name: "DeleteTextInContentEditableBeforeRemovingChildren",
       status: "stable",
     },
     // This allows pages to opt out of the unload deprecation. Enabling this
@@ -2369,11 +2356,6 @@
       origin_trial_allows_insecure: true,
       origin_trial_allows_third_party: true,
       base_feature: "none",
-    },
-    {
-      // Disables removeFormat command on Plaintext-only content editable div
-      name: "DisableRemoveFormatForPlainTextOnlyEditableDiv",
-      status: "stable",
     },
     {
       // Disconnected <area> elements should not trigger navigation.
@@ -2733,6 +2715,7 @@
     },
     {
       name: "ExperimentalJSProfilerMarkers",
+      origin_trial_feature_name: "JSSelfProfilingMarkers",
       status: "experimental",
     },
     {
@@ -3053,15 +3036,6 @@
       status: "stable",
     },
     {
-      // Returns alignment value instead of a boolean
-      name: "FixJustifyQueryCommandValue",
-      status: "stable",
-    },
-    {
-      name: "FixLinebreakForPreTag",
-      status: "stable",
-    },
-    {
       // Fix a bug in the <map> element's caching of the name attribute. This
       // flag was added in M148, and can be removed in M150.
       name: "FixMapElementEmptyNameBug",
@@ -3080,12 +3054,6 @@
       // start_offset / end_offset in SelectionPaintRange.
       // See https://crbug.com/489028874
       name: "FixSelectionPaintRangeNullOpt",
-      status: "stable",
-    },
-    {
-      // Fix for strikethrough toggle not working in empty
-      // contenteditable. See https://crbug.com/427915243
-      name: "FixStrikethroughToggleInEmptyContentEditable",
       status: "stable",
     },
     // Fix LayoutView viewport mapping in the GeometryMapper fast path for
@@ -3435,10 +3403,6 @@
       status: "test",
     },
     {
-      name: "HandleDisconnectedSelectionDuringDOMChanges",
-      status: "stable",
-    },
-    {
       name: "HandleShadowDOMInSubstringUtil",
       status: "stable",
     },
@@ -3670,20 +3634,6 @@
       // Enabled in M153, safe to remove in M155.
       // https://issues.chromium.org/issues/533188858
       name: "InputDisabledHandlerFix",
-      status: "stable",
-    },
-    {
-      // Enable DataTransfer propagation to input events for insertFromPaste,
-      // insertFromDrop, and insertReplacementText operations on content-editables.
-      name: "InputEventDataTransferForInsertCmd",
-      status: "stable",
-    },
-    {
-      // When enabled, deletion commands like Ctrl+Backspace (deleteWordBackward)
-      // with selected text will correctly report deleteContentBackward instead of
-      // deleteWordBackward in both beforeinput and input events, conforming to
-      // the W3C Input Events spec.
-      name: "InputEventsDeleteNonCollapsedSelection",
       status: "stable",
     },
     {
@@ -4016,12 +3966,6 @@
       status: "stable",
     },
     {
-      // Enables skipping <mtr> wrapping during ancestor wrapping in
-      // serialization. When enabled duplicate <mtr> wrapping are absent.
-      name: "MathMLSkipMtrTagInAncestorWrapping",
-      status: "stable",
-    },
-    {
       name:"MeasureMemory",
       status:"stable",
     },
@@ -4032,6 +3976,15 @@
     {
       name: "MediaCapabilitiesSpatialAudio",
       status: "test",
+    },
+    {
+      name: "MediaCaptionSettingsButton",
+      status: {
+        "Win": "experimental",
+        "Mac": "experimental",
+        "Linux": "experimental",
+        "ChromeOS": "experimental",
+      },
     },
     {
       name: "MediaCapture",
@@ -4242,6 +4195,12 @@
       // https://github.com/whatwg/html/pull/12513
       name: "NavigationTimingRedirectTimingViaTAO",
       status: "stable",
+    },
+    {
+      // Support <navigation-type-test> and <navigation-phase-test>.
+      name: "NavigationTypeAndPhase",
+      status: "experimental",
+      depends_on: ["RouteMatching"],
     },
     {
       name: "NavigatorContentUtils",
@@ -5119,14 +5078,6 @@
       status: "stable",
     },
     {
-      // Fix for removeFormat command incorrectly preserving background-color
-      // when removing styles from elements. Prevents background-color from being
-      // re-applied to child elements during style removal.
-      // See https://crbug.com/41438799
-      name: "RemoveFormatFilterBackgroundColor",
-      status: "stable",
-    },
-    {
       // Remove non-allowlisted event interfaces from document.createEvent().
       // This was added in M148 and can be removed after M150.
       // https://chromestatus.com/feature/5095987863486464
@@ -5336,15 +5287,6 @@
       status: "stable",
     },
     {
-      // https://wicg.github.io/webcomponents/proposals/Scoped-Custom-Element-Registries
-      // https://github.com/whatwg/html/issues/10854
-      // Spec PRs:
-      // https://github.com/whatwg/html/pull/10869
-      // https://github.com/whatwg/dom/pull/1341
-      name: "ScopedCustomElementRegistry",
-      status: "stable",
-    },
-    {
       name: "ScopedViewTransitionSizeContainment",
       status: "stable",
     },
@@ -5522,6 +5464,10 @@
       },
     },
     {
+      name: "SelectAutofillPopoverPreview",
+      status: "stable",
+    },
+    {
       // The selectedcontentelement attribute is for connecting select elements
       // to arbitrary <selectedcontent> elements.
       // https://github.com/openui/open-ui/issues/1063
@@ -5588,20 +5534,6 @@
       name: "SelectionSetBaseAndExtentNonNullNode",
       status: "experimental",
       settable_from_internals: true,
-    },
-    {
-      // Enables skipping user-select: none content
-      // in DOMSelection::toString()
-      name: "SelectionToStringSkipsUserSelectNone",
-      status: "stable",
-    },
-    {
-      // Conditionally update selection only when autoscroll actually scrolls.
-      // This prevents infinite selection updates during autoscroll when the
-      // scroll position doesn't change.
-      // See https://crbug.com/412578722
-      name: "SelectionUpdateOnlyAfterAutoscroll",
-      status: "stable",
     },
     {
       // See https://chromestatus.com/feature/5203433409871872
@@ -5763,12 +5695,10 @@
       name: "SharedStorageAPI",
       base_feature: "none",
       public: true,
-      status: "stable",
     },
     {
       name: "SharedStorageWebLocks",
       depends_on: ["SharedStorageAPI"],
-      status: "stable",
     },
     {
       name: "SharedWorker",
@@ -5819,22 +5749,7 @@
       status: "stable",
     },
     {
-      // When enabled, cursor movement (arrow keys) will skip over non-editable
-      // atomic or empty inline elements within editable content, instead of
-      // getting stuck or moving into the non-editable content.
-      name: "SkipNonEditableInAtomicMove",
-      status: "stable",
-    },
-    {
       name: "SkipOofItemForBreakCandidate",
-      status: "stable",
-    },
-    {
-      // Skips paragraph split in insertHTML when the fragment contains only
-      // inline content, preventing inline elements from being inserted
-      // outside their containing block.
-      // See https://crbug.com/41024699.
-      name: "SkipParagraphSplitForInlineInsertHTML",
       status: "stable",
     },
     {
@@ -6634,11 +6549,6 @@
       status: {
         "ChromeOS": "stable",
       },
-    },
-    {
-      // Fix for https://crbug.com/454639396
-      name: "UseBoundedSelectionOffsetsInEditContextDeleteOperations",
-      status: "stable"
     },
     {
       name: "UseLargestPaintedImageForLCPCandidate",

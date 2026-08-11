@@ -164,9 +164,6 @@ describe('The row\'s icon bucket', function() {
   });
 
   it('should reveal the Issues tab if the icon in the popover is clicked', async ({devToolsPage, inspectedPage}) => {
-    if (this.timeout()) {
-      this.timeout(20000);
-    }
     await navigateToIssuesTab(devToolsPage);
     await openFileInSourceTab(devToolsPage, inspectedPage, 'trusted-type-violations-report-only.rawresponse');
 

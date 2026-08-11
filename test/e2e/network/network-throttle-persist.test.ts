@@ -8,6 +8,9 @@ import type {ElementHandle} from 'puppeteer-core';
 import {navigateToNetworkTab, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 describe('The Network Tab', function() {
+  // This test reload panels repeatedly, which can take a longer time.
+  this.timeout(20_000);
+
   async function assertOption(select: ElementHandle<HTMLSelectElement>, expected: string) {
     assert.strictEqual(await select.evaluate(el => el.selectedOptions.length), 1);
     assert.strictEqual(await select.evaluate(el => el.selectedOptions[0].getAttribute('aria-label')), expected);
@@ -35,9 +38,6 @@ describe('The Network Tab', function() {
   });
 
   it('can persist throttling conditions', async ({devToolsPage, inspectedPage}) => {
-    // This test reload panels repeatedly, which can take a longer time.
-    this.timeout(20_000);
-
     await navigateToNetworkTab(devToolsPage, inspectedPage, 'empty.html');
     // Start with no throttling, select an option "A".
     {

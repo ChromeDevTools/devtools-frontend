@@ -4,15 +4,29 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/ninja/generate_css.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [
+    "aiCodeCompletionDisclaimer.css",
+    "aiCodeCompletionTeaser.css",
+    "aiCodeGenerationTeaser.css",
+    "aiCodeGenerationUpgradeDialog.css",
+  ]
+}
 
 devtools_ui_module("text_editor") {
   sources = [
     "AccessiblePlaceholder.ts",
+    "AiCodeCompletionDisclaimer.ts",
     "AiCodeCompletionProvider.ts",
+    "AiCodeCompletionTeaser.ts",
     "AiCodeGenerationParser.ts",
     "AiCodeGenerationProvider.ts",
+    "AiCodeGenerationTeaser.ts",
+    "AiCodeGenerationUpgradeDialog.ts",
     "AutocompleteHistory.ts",
     "ExecutionPositionHighlighter.ts",
     "TextEditor.ts",
@@ -31,18 +45,24 @@ devtools_ui_module("text_editor") {
     "../../../core/root:bundle",
     "../../../core/sdk:bundle",
     "../../../core/text_utils:bundle",
+    "../../../models/ai_assistance:bundle",
     "../../../models/ai_code_completion:bundle",
     "../../../models/ai_code_generation:bundle",
     "../../../models/bindings:bundle",
     "../../../models/javascript_metadata:bundle",
     "../../../models/source_map_scopes:bundle",
-    "../../../panels/common:bundle",
     "../../../third_party/codemirror.next:bundle",
     "../../kit:bundle",
     "../../legacy:bundle",
     "../../legacy/theme_support:bundle",
+    "../../lit:bundle",
     "../../visual_logging:bundle",
+    "../buttons:bundle",
     "../code_highlighter:bundle",
+    "../dialogs:bundle",
+    "../snackbars:bundle",
+    "../spinners:bundle",
+    "../tooltips:bundle",
   ]
 }
 
@@ -50,6 +70,7 @@ devtools_entrypoint("bundle") {
   entrypoint = "text_editor.ts"
 
   deps = [
+    ":css_files",
     ":text_editor",
     "../../../third_party/codemirror.next:bundle",
   ]
@@ -66,9 +87,12 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "AiCodeCompletionDisclaimer.test.ts",
     "AiCodeCompletionProvider.test.ts",
+    "AiCodeCompletionTeaser.test.ts",
     "AiCodeGenerationParser.test.ts",
     "AiCodeGenerationProvider.test.ts",
+    "AiCodeGenerationTeaser.test.ts",
     "AutocompleteHistory.test.ts",
     "ExecutionPositionHighlighter.test.ts",
     "TextEditor.test.ts",
@@ -87,7 +111,6 @@ devtools_ui_module("unittests") {
     "../../../models/ai_code_generation:bundle",
     "../../../models/bindings:bundle",
     "../../../models/workspace:bundle",
-    "../../../panels/common:bundle",
     "../../../testing",
     "../../../third_party/codemirror.next:bundle",
     "../../legacy:bundle",

@@ -7,13 +7,15 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
-import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import {AccessiblePlaceholder} from './AccessiblePlaceholder.js';
+import type {DisclaimerTextVariant} from './AiCodeCompletionDisclaimer.js';
 import {AiCodeGenerationParser} from './AiCodeGenerationParser.js';
+import {AiCodeGenerationTeaser, AiCodeGenerationTeaserDisplayState, PROMOTION_ID} from './AiCodeGenerationTeaser.js';
+import {AiCodeGenerationUpgradeDialog} from './AiCodeGenerationUpgradeDialog.js';
 import {
   acceptAiAutoCompleteSuggestion,
   aiAutoCompleteSuggestion,
@@ -47,7 +49,7 @@ export interface AiCodeGenerationConfig {
   onRequestTriggered: () => void;
   onResponseReceived: () => void;
   disclaimerTooltipId: string;
-  disclaimerTextVariant: PanelCommon.DisclaimerTextVariant;
+  disclaimerTextVariant: DisclaimerTextVariant;
 }
 
 export class AiCodeGenerationProvider {
@@ -60,7 +62,7 @@ export class AiCodeGenerationProvider {
       Common.Settings.Settings.instance().createSetting('ai-code-generation-onboarding-completed', false);
   #aiCodeGenerationUsedSetting = Common.Settings.Settings.instance().createSetting('ai-code-generation-used', false);
   #generationTeaserCompartment = new CodeMirror.Compartment();
-  #generationTeaser: PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser;
+  #generationTeaser: AiCodeGenerationTeaser;
   #editor?: TextEditor;
   #aiCodeGenerationConfig: AiCodeGenerationConfig;
   #aiCodeGeneration?: AiCodeGeneration.AiCodeGeneration.AiCodeGeneration;
@@ -83,7 +85,7 @@ export class AiCodeGenerationProvider {
     if (!AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationAvailable()) {
       throw new Error('AI code generation feature is not available.');
     }
-    this.#generationTeaser = new PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser();
+    this.#generationTeaser = new AiCodeGenerationTeaser();
     this.#generationTeaser.disclaimerTooltipId = aiCodeGenerationConfig.disclaimerTooltipId;
     this.#generationTeaser.disclaimerTextVariant = aiCodeGenerationConfig.disclaimerTextVariant;
     this.#aiCodeGenerationConfig = aiCodeGenerationConfig;
@@ -186,8 +188,8 @@ export class AiCodeGenerationProvider {
             this.#dismissTeaserAndSuggestion();
             return true;
           }
-          const generationTeaserIsLoading = this.#generationTeaser.displayState ===
-              PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
+          const generationTeaserIsLoading =
+              this.#generationTeaser.displayState === AiCodeGenerationTeaserDisplayState.LOADING;
           if (this.#generationTeaser.isShowing() && generationTeaserIsLoading) {
             this.#controller.abort();
             this.#controller = new AbortController();
@@ -248,13 +250,13 @@ export class AiCodeGenerationProvider {
 
     const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
-    const resolved = await PanelCommon.AiCodeGenerationUpgradeDialog.show({noLogging});
+    const resolved = await AiCodeGenerationUpgradeDialog.show({noLogging});
     this.#aiCodeGenerationOnboardingCompletedSetting.set(resolved);
     return resolved;
   }
 
   #dismissTeaserAndSuggestion(): void {
-    this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
+    this.#generationTeaser.displayState = AiCodeGenerationTeaserDisplayState.TRIGGER;
     this.#editor?.dispatch({
       effects: [
         setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED),
@@ -305,18 +307,15 @@ export class AiCodeGenerationProvider {
     if (currentTeaserMode === AiCodeGenerationTeaserMode.DISMISSED) {
       return;
     }
-    if (this.#generationTeaser.displayState ===
-        PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING) {
+    if (this.#generationTeaser.displayState === AiCodeGenerationTeaserDisplayState.LOADING) {
       this.#controller.abort();
       this.#controller = new AbortController();
       this.#dismissTeaserAndSuggestion();
       return;
     }
-    if (this.#generationTeaser.displayState ===
-        PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED) {
+    if (this.#generationTeaser.displayState === AiCodeGenerationTeaserDisplayState.GENERATED) {
       update.view.dispatch({effects: setAiAutoCompleteSuggestion.of(null)});
-      this.#generationTeaser.displayState =
-          PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.DISCOVERY;
+      this.#generationTeaser.displayState = AiCodeGenerationTeaserDisplayState.DISCOVERY;
       return;
     }
   }
@@ -342,7 +341,7 @@ export class AiCodeGenerationProvider {
       return;
     }
 
-    this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
+    this.#generationTeaser.displayState = AiCodeGenerationTeaserDisplayState.LOADING;
     try {
       const startTime = performance.now();
       this.#aiCodeGenerationConfig.onRequestTriggered();
@@ -386,8 +385,7 @@ export class AiCodeGenerationProvider {
           setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE),
         ],
       });
-      this.#generationTeaser.displayState =
-          PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED;
+      this.#generationTeaser.displayState = AiCodeGenerationTeaserDisplayState.GENERATED;
 
       AiCodeGeneration.debugLog('Suggestion dispatched to the editor', suggestionText);
       const citations = topSample.attributionMetadata?.citations ?? [];
@@ -409,8 +407,7 @@ export class AiCodeGenerationProvider {
   }
 }
 
-function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser):
-    CodeMirror.Extension {
+function aiCodeGenerationTeaserExtension(teaser: AiCodeGenerationTeaser): CodeMirror.Extension {
   return CodeMirror.ViewPlugin.fromClass(class {
     #view: CodeMirror.EditorView;
 
@@ -436,8 +433,7 @@ function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTea
       const line = this.#view.state.doc.lineAt(cursorPosition);
 
       const isEmptyLine = line.length === 0;
-      const canShowDiscoveryState =
-          UI.UIUtils.PromotionManager.instance().canShowPromotion(PanelCommon.AiCodeGenerationTeaser.PROMOTION_ID);
+      const canShowDiscoveryState = UI.UIUtils.PromotionManager.instance().canShowPromotion(PROMOTION_ID);
 
       if ((isEmptyLine && canShowDiscoveryState)) {
         return CodeMirror.Decoration.set([
@@ -461,17 +457,17 @@ function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTea
     #updateTeaserState(state: CodeMirror.EditorState): void {
       // Only handle non loading and non generated states, as updates during and after generation are handled by
       // #abortOrDismissGenerationDuringUpdate in AiCodeGenerationProvider
-      if (teaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING ||
-          teaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED) {
+      if (teaser.displayState === AiCodeGenerationTeaserDisplayState.LOADING ||
+          teaser.displayState === AiCodeGenerationTeaserDisplayState.GENERATED) {
         return;
       }
       const cursorPosition = state.selection.main.head;
       const line = state.doc.lineAt(cursorPosition);
       const isEmptyLine = line.length === 0;
       if (isEmptyLine) {
-        teaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.DISCOVERY;
+        teaser.displayState = AiCodeGenerationTeaserDisplayState.DISCOVERY;
       } else {
-        teaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
+        teaser.displayState = AiCodeGenerationTeaserDisplayState.TRIGGER;
       }
     }
   }, {
@@ -497,7 +493,7 @@ function aiCodeGenerationTeaserExtension(teaser: PanelCommon.AiCodeGenerationTea
       },
       keydown(event: KeyboardEvent): boolean {
         if (!UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) ||
-            teaser.displayState !== PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER) {
+            teaser.displayState !== AiCodeGenerationTeaserDisplayState.TRIGGER) {
           return false;
         }
         if (event.key === '.') {

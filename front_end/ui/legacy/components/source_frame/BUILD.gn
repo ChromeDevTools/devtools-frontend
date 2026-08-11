@@ -43,7 +43,6 @@ devtools_ui_module("source_frame") {
     "../../../../entrypoints/formatter_worker:formatter_actions",
     "../../../../models/formatter:bundle",
     "../../../../models/workspace:bundle",
-    "../../../../panels/common:bundle",
     "../../../../panels/linear_memory_inspector/components:bundle",
     "../../../../third_party/codemirror.next:bundle",
     "../../../../ui/components/highlighting:bundle",

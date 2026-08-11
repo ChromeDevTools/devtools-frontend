@@ -5,18 +5,20 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
-import * as Root from '../../core/root/root.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
-import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
+import * as Root from '../../../core/root/root.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../legacy/legacy.js';
+import * as Dialogs from '../dialogs/dialogs.js';
+import * as Snackbars from '../snackbars/snackbars.js';
 
-import * as PanelCommon from './common.js';
+import * as TextEditor from './text_editor.js';
 
-const {AiCodeCompletionTeaser, FreDialog} = PanelCommon;
+const {AiCodeCompletionTeaser} = TextEditor.AiCodeCompletionTeaser;
+const {FreDialog} = Dialogs.FreDialog;
 
 describeWithEnvironment('AiCodeCompletionTeaser', () => {
   let showFreDialogStub: sinon.SinonStub<Parameters<typeof FreDialog.show>, Promise<boolean>>;

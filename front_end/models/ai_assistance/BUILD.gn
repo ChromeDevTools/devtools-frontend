@@ -117,6 +117,7 @@ devtools_entrypoint("bundle") {
     "../../panels/sources/*",
     "../../panels/timeline/*",
     "../../testing/*",
+    "../../ui/components/text_editor/*",
     "../ai_code_completion",
     "./data_formatters:*",
   ]

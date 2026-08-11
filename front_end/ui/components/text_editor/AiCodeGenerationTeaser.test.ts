@@ -5,16 +5,16 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
-import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import * as Common from '../../../core/common/common.js';
+import * as Root from '../../../core/root/root.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../legacy/legacy.js';
 
-import * as PanelCommon from './common.js';
+import * as TextEditor from './text_editor.js';
 
-const {AiCodeGenerationTeaser, AiCodeGenerationTeaserDisplayState} = PanelCommon.AiCodeGenerationTeaser;
+const {AiCodeGenerationTeaser, AiCodeGenerationTeaserDisplayState} = TextEditor.AiCodeGenerationTeaser;
 
 describeWithEnvironment('AiCodeGenerationTeaser', () => {
   beforeEach(() => {

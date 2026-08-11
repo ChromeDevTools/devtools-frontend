@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
-import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
-import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
+import * as UI from '../../legacy/legacy.js';
+import * as Lit from '../../lit/lit.js';
+import * as Buttons from '../buttons/buttons.js';
 
 import styles from './freDialog.css.js';
 
@@ -32,7 +32,7 @@ const UIStrings = {
   gotIt: 'Got it',
 } as const;
 
-const str_ = i18n.i18n.registerUIStrings('panels/common/FreDialog.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/components/dialogs/FreDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FreDialog {

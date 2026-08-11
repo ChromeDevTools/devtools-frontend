@@ -13,9 +13,9 @@ import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js'
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as PanelCommon from '../common/common.js';
 
 import * as Console from './console.js';
 
@@ -180,7 +180,7 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
 
   it('shows FRE dialog on "Tell me more" click', async () => {
     Common.Settings.Settings.instance().settingForTest('console-insights-enabled').set(false);
-    const show = sinon.stub(PanelCommon.FreDialog, 'show');
+    const show = sinon.stub(Dialogs.FreDialog.FreDialog, 'show');
     const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
     new Console.ConsoleInsightTeaser.ConsoleInsightTeaser('test-uuid', consoleViewMessage, undefined, view);
     const input = await view.nextInput;

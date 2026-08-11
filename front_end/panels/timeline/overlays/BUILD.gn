@@ -48,6 +48,7 @@ devtools_ui_module("unittests") {
     "../../../models/ai_assistance:bundle",
     "../../../models/trace:bundle",
     "../../../testing",
+    "../../../ui/components/dialogs:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/perf_ui:bundle",

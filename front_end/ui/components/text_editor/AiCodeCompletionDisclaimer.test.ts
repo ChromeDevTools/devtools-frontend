@@ -5,19 +5,19 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import * as Host from '../../core/host/host.js';
-import * as Root from '../../core/root/root.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
-import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import * as Host from '../../../core/host/host.js';
+import * as Root from '../../../core/root/root.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../legacy/legacy.js';
 
-import * as Common from './common.js';
+import * as TextEditor from './text_editor.js';
 
 describeWithEnvironment('AiCodeCompletionDisclaimer', () => {
   async function createDisclaimer() {
-    const view = createViewFunctionStub(Common.AiCodeCompletionDisclaimer);
-    const widget = new Common.AiCodeCompletionDisclaimer(undefined, view);
+    const view = createViewFunctionStub(TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer);
+    const widget = new TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer(undefined, view);
     widget.disclaimerTooltipId = 'disclaimer-tooltip';
     widget.spinnerTooltipId = 'spinner-tooltip';
     widget.markAsRoot();

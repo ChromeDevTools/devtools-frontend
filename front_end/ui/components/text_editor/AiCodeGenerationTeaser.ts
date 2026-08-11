@@ -1,16 +1,16 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import '../../ui/components/tooltips/tooltips.js';
+import '../tooltips/tooltips.js';
 
-import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
-import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
+import * as UI from '../../legacy/legacy.js';
+import {Directives, html, nothing, render} from '../../lit/lit.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
+import * as Buttons from '../buttons/buttons.js';
 
 import type {DisclaimerTextVariant} from './AiCodeCompletionDisclaimer.js';
 import styles from './aiCodeGenerationTeaser.css.js';

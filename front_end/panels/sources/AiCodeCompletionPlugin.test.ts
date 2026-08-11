@@ -125,7 +125,8 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
 
     it('shows a loading state when a request is triggered', async () => {
       const fakeLoadingSetter = sinon.fake();
-      sinon.stub(PanelCommon.AiCodeCompletionDisclaimer.prototype, 'loading').set(fakeLoadingSetter);
+      sinon.stub(TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer.prototype, 'loading')
+          .set(fakeLoadingSetter);
       const plugin = setupPlugin();
       await clock.tickAsync(0);
       const providerConfig = plugin.aiCodeCompletionConfig;
@@ -139,7 +140,8 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
 
     it('hides the loading indicator when a response is received', async () => {
       const fakeLoadingSetter = sinon.fake();
-      sinon.stub(PanelCommon.AiCodeCompletionDisclaimer.prototype, 'loading').set(fakeLoadingSetter);
+      sinon.stub(TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer.prototype, 'loading')
+          .set(fakeLoadingSetter);
       const plugin = setupPlugin();
       await clock.tickAsync(0);
       const providerConfig = plugin.aiCodeCompletionConfig;

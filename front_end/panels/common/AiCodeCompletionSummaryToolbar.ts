@@ -9,10 +9,10 @@ import '../../ui/kit/kit.js';
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 
-import {AiCodeCompletionDisclaimer, type DisclaimerTextVariant} from './AiCodeCompletionDisclaimer.js';
 import styles from './aiCodeCompletionSummaryToolbar.css.js';
 
 const UIStringsNotTranslate = {
@@ -34,7 +34,7 @@ export interface AiCodeCompletionSummaryToolbarProps {
   disclaimerTooltipId?: string;
   spinnerTooltipId?: string;
   hasTopBorder?: boolean;
-  disclaimerTextVariant?: DisclaimerTextVariant;
+  disclaimerTextVariant?: TextEditor.AiCodeCompletionDisclaimer.DisclaimerTextVariant;
 }
 
 export interface ViewInput {
@@ -45,7 +45,7 @@ export interface ViewInput {
   loading: boolean;
   hasTopBorder: boolean;
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
-  disclaimerTextVariant?: DisclaimerTextVariant;
+  disclaimerTextVariant?: TextEditor.AiCodeCompletionDisclaimer.DisclaimerTextVariant;
 }
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -65,7 +65,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, _output, target) => {
   // clang-format off
   const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ?
     html`<devtools-widget
-            ${widget(AiCodeCompletionDisclaimer, {
+            ${widget(TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer, {
       disclaimerTooltipId: input.disclaimerTooltipId,
       spinnerTooltipId: input.spinnerTooltipId,
       loading: input.loading,
@@ -113,7 +113,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
   #citations = new Set<string>();
   #loading = false;
   #hasTopBorder = false;
-  #disclaimerTextVariant?: DisclaimerTextVariant;
+  #disclaimerTextVariant?: TextEditor.AiCodeCompletionDisclaimer.DisclaimerTextVariant;
 
   #aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
   #boundOnAidaAvailabilityChange:

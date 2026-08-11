@@ -18,10 +18,10 @@ import {
   setupIgnoreListManagerEnvironment,
 } from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
+import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as PanelCommon from '../../common/common.js';
 import * as Timeline from '../timeline.js';
 
 import * as Components from './components/components.js';
@@ -76,9 +76,9 @@ function createCharts(parsedTrace?: Trace.TraceModel.ParsedTrace): Overlays.Over
 }
 
 describeWithEnvironment('Overlays', () => {
-  let showFreDialogStub: sinon.SinonStub<Parameters<typeof PanelCommon.FreDialog.show>, Promise<boolean>>;
+  let showFreDialogStub: sinon.SinonStub<Parameters<typeof Dialogs.FreDialog.FreDialog.show>, Promise<boolean>>;
   beforeEach(() => {
-    showFreDialogStub = sinon.stub(PanelCommon.FreDialog, 'show');
+    showFreDialogStub = sinon.stub(Dialogs.FreDialog.FreDialog, 'show');
     setupIgnoreListManagerEnvironment();
   });
 

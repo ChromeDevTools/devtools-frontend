@@ -10,14 +10,9 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
-    "aiCodeCompletionDisclaimer.css",
     "aiCodeCompletionSummaryToolbar.css",
-    "aiCodeCompletionTeaser.css",
-    "aiCodeGenerationTeaser.css",
-    "aiCodeGenerationUpgradeDialog.css",
     "badgeNotification.css",
     "domLinkifier.css",
-    "freDialog.css",
     "gdpSignUpDialog.css",
     "geminiRebrandPromoDialog.css",
   ]
@@ -25,18 +20,13 @@ generate_css("css_files") {
 
 devtools_ui_module("common") {
   sources = [
-    "AiCodeCompletionDisclaimer.ts",
     "AiCodeCompletionSummaryToolbar.ts",
-    "AiCodeCompletionTeaser.ts",
-    "AiCodeGenerationTeaser.ts",
-    "AiCodeGenerationUpgradeDialog.ts",
     "BadgeNotification.ts",
     "CPUThrottlingOption.ts",
     "DOMLinkifier.ts",
     "ExtensionPanel.ts",
     "ExtensionServer.ts",
     "ExtensionView.ts",
-    "FreDialog.ts",
     "GdpSignUpDialog.ts",
     "GeminiRebrandPromoDialog.ts",
     "PersistenceUtils.ts",
@@ -69,6 +59,7 @@ devtools_ui_module("common") {
     "../../ui/components/snackbars:bundle",
     "../../ui/components/spinners:bundle",
     "../../ui/components/switch:bundle",
+    "../../ui/components/text_editor:bundle",
     "../../ui/components/tooltips:bundle",
     "../../ui/helpers:bundle",
     "../../ui/i18n:bundle",
@@ -96,8 +87,6 @@ devtools_entrypoint("bundle") {
     "../*",
     "../../entrypoints/main",
     "../../testing",
-    "../../ui/components/text_editor/*",
-    "../../ui/legacy/components/source_frame/*",
   ]
 
   visibility += devtools_panels_visibility
@@ -107,10 +96,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
-    "AiCodeCompletionDisclaimer.test.ts",
     "AiCodeCompletionSummaryToolbar.test.ts",
-    "AiCodeCompletionTeaser.test.ts",
-    "AiCodeGenerationTeaser.test.ts",
     "BadgeNotification.test.ts",
     "DOMLinkifier.test.ts",
     "ExtensionPanel.test.ts",

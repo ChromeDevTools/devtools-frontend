@@ -8,12 +8,13 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
 import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
-import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import {AccessiblePlaceholder} from './AccessiblePlaceholder.js';
+import type {DisclaimerTextVariant} from './AiCodeCompletionDisclaimer.js';
+import {AiCodeCompletionTeaser} from './AiCodeCompletionTeaser.js';
 import {type AiCodeGenerationConfig, AiCodeGenerationProvider} from './AiCodeGenerationProvider.js';
 import {
   acceptAiAutoCompleteSuggestion,
@@ -57,7 +58,7 @@ export interface AiCodeCompletionConfig {
   onRequestTriggered: () => void;
   onResponseReceived: () => void;
   disclaimerTooltipId: string;
-  disclaimerTextVariant: PanelCommon.DisclaimerTextVariant;
+  disclaimerTextVariant: DisclaimerTextVariant;
 }
 
 export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
@@ -71,7 +72,7 @@ export class AiCodeCompletionProvider {
   #aiCodeCompletionTeaserDismissedSetting =
       Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);
   #teaserCompartment = new CodeMirror.Compartment();
-  #teaser?: PanelCommon.AiCodeCompletionTeaser;
+  #teaser?: AiCodeCompletionTeaser;
   #suggestionRenderingTimeout?: number;
   #editor?: TextEditor;
   #aiCodeCompletionCitations: Host.AidaClient.Citation[] = [];
@@ -143,7 +144,7 @@ export class AiCodeCompletionProvider {
   editorInitialized(editor: TextEditor): void {
     this.#editor = editor;
     if (!this.#aiCodeCompletionSetting.get() && !this.#aiCodeCompletionTeaserDismissedSetting.get()) {
-      this.#teaser = new PanelCommon.AiCodeCompletionTeaser({
+      this.#teaser = new AiCodeCompletionTeaser({
         onDetach: () => this.#detachTeaser.bind(this),
         disclaimerTextVariant: this.#aiCodeCompletionConfig?.disclaimerTextVariant,
       });
@@ -486,9 +487,9 @@ export class AiCodeCompletionProvider {
   }
 }
 
-function aiCodeCompletionTeaserExtension(teaser: PanelCommon.AiCodeCompletionTeaser): CodeMirror.Extension {
+function aiCodeCompletionTeaserExtension(teaser: AiCodeCompletionTeaser): CodeMirror.Extension {
   return CodeMirror.ViewPlugin.fromClass(class {
-    teaser: PanelCommon.AiCodeCompletionTeaser;
+    teaser: AiCodeCompletionTeaser;
     #teaserDecoration: CodeMirror.DecorationSet = CodeMirror.Decoration.none;
     #teaserMode: AiCodeCompletionTeaserMode;
     #teaserDisplayTimeout?: number;

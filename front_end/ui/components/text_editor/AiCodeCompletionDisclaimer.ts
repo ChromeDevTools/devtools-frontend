@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../ui/components/spinners/spinners.js';
-import '../../ui/components/tooltips/tooltips.js';
+import '../spinners/spinners.js';
+import '../tooltips/tooltips.js';
 
-import type * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import type * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
+import * as UI from '../../legacy/legacy.js';
+import {Directives, html, nothing, render} from '../../lit/lit.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import styles from './aiCodeCompletionDisclaimer.css.js';
 
@@ -293,8 +293,8 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
 
   override wasShown(): void {
     super.wasShown();
-    Host.AidaClient.HostConfigTracker.instance().addEventListener(
-        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+    Host.AidaClient.HostConfigTracker.instance().addEventListener(Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+                                                                  this.#boundOnAidaAvailabilityChange);
     const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (initialAvailability !== undefined) {
       this.#updateAidaAvailability(initialAvailability);
@@ -303,7 +303,7 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
 
   override willHide(): void {
     super.willHide();
-    Host.AidaClient.HostConfigTracker.instance().removeEventListener(
-        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+    Host.AidaClient.HostConfigTracker.instance().removeEventListener(Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+                                                                     this.#boundOnAidaAvailabilityChange);
   }
 }

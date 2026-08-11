@@ -2,22 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../ui/kit/kit.js';
+import '../../kit/kit.js';
 
-import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
-import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
-import * as AiCodeGeneration from '../../models/ai_code_generation/ai_code_generation.js';
-import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
+import * as AIAssistance from '../../../models/ai_assistance/ai_assistance.js';
+import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
+import * as UI from '../../legacy/legacy.js';
+import {html, type LitTemplate, nothing, render} from '../../lit/lit.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
+import * as Dialogs from '../dialogs/dialogs.js';
+import * as Snackbars from '../snackbars/snackbars.js';
 
 import type {DisclaimerTextVariant} from './AiCodeCompletionDisclaimer.js';
 import styles from './aiCodeCompletionTeaser.css.js';
-import {FreDialog} from './FreDialog.js';
 
 const UIStringsNotTranslate = {
   /**
@@ -243,35 +243,33 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
 
     const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
     if (AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale.locale)) {
-      reminderItems.push(
-          {
-            iconName: 'code',
-            content: lockedString(UIStringsNotTranslate.freDisclaimerTextAsYouType),
-          },
-          {
-            iconName: 'text-analysis',
-            content: Host.Platform.isMac() ?
-                lockedString(UIStringsNotTranslate.freDisclaimerDescribeCodeInCommentForMacOs) :
-                lockedString(UIStringsNotTranslate.freDisclaimerDescribeCodeInComment),
-          });
+      reminderItems.push({
+        iconName: 'code',
+        content: lockedString(UIStringsNotTranslate.freDisclaimerTextAsYouType),
+      },
+                         {
+                           iconName: 'text-analysis',
+                           content: Host.Platform.isMac() ?
+                               lockedString(UIStringsNotTranslate.freDisclaimerDescribeCodeInCommentForMacOs) :
+                               lockedString(UIStringsNotTranslate.freDisclaimerDescribeCodeInComment),
+                         });
     }
 
-    reminderItems.push(
-        {
-          iconName: 'google',
-          content: this.#noLogging ? lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacyNoLogging) :
-                                     lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacy),
-        },
-        {
-          iconName: 'warning',
-          // clang-format off
+    reminderItems.push({
+      iconName: 'google',
+      content: this.#noLogging ? lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacyNoLogging) :
+                                 lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacy),
+    },
+                       {
+                         iconName: 'warning',
+                         // clang-format off
           content: html`<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
             jslogcontext="code-snippets-explainer.ai-code-completion-teaser"
           >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</devtools-link>`,
-          // clang-format on
-        });
+                         // clang-format on
+                       });
     return reminderItems;
   }
 
@@ -279,7 +277,7 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
     event.preventDefault();
 
     const iconName = AIAssistance.AiUtils.getIconName();
-    const result = await FreDialog.show({
+    const result = await Dialogs.FreDialog.FreDialog.show({
       header: {iconName, text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
       reminderItems: this.#createReminderItems(),
       onLearnMoreClick: () => {
@@ -311,19 +309,18 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
 
   override performUpdate(): void {
     const output = {};
-    this.#view(
-        {
-          aidaAvailability: this.#aidaAvailability,
-          onAction: this.onAction,
-          onDismiss: this.onDismiss,
-        },
-        output, this.contentElement);
+    this.#view({
+      aidaAvailability: this.#aidaAvailability,
+      onAction: this.onAction,
+      onDismiss: this.onDismiss,
+    },
+               output, this.contentElement);
   }
 
   override wasShown(): void {
     super.wasShown();
-    Host.AidaClient.HostConfigTracker.instance().addEventListener(
-        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+    Host.AidaClient.HostConfigTracker.instance().addEventListener(Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+                                                                  this.#boundOnAidaAvailabilityChange);
     this.#aiCodeCompletionFreCompletedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
     this.#aiCodeCompletionTeaserDismissedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
     const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
@@ -334,8 +331,8 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
 
   override willHide(): void {
     super.willHide();
-    Host.AidaClient.HostConfigTracker.instance().removeEventListener(
-        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+    Host.AidaClient.HostConfigTracker.instance().removeEventListener(Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+                                                                     this.#boundOnAidaAvailabilityChange);
     this.#aiCodeCompletionFreCompletedSetting.removeChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
     this.#aiCodeCompletionTeaserDismissedSetting.removeChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
   }

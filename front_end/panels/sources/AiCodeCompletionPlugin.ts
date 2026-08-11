@@ -20,7 +20,7 @@ const CITATIONS_TOOLTIP_ID = 'sources-ai-code-completion-citations-tooltip';
 
 export class AiCodeCompletionPlugin extends Plugin {
   #editor?: TextEditor.TextEditor.TextEditor;
-  #aiCodeCompletionDisclaimer?: PanelCommon.AiCodeCompletionDisclaimer;
+  #aiCodeCompletionDisclaimer?: TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer;
   #aiCodeCompletionDisclaimerContainer = document.createElement('div');
   #aiCodeCompletionDisclaimerToolbarItem = new UI.Toolbar.ToolbarItem(this.#aiCodeCompletionDisclaimerContainer);
   #aiCodeCompletionCitationsToolbar?: PanelCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar;
@@ -103,7 +103,7 @@ export class AiCodeCompletionPlugin extends Plugin {
     if (this.#aiCodeCompletionDisclaimer) {
       return;
     }
-    this.#aiCodeCompletionDisclaimer = new PanelCommon.AiCodeCompletionDisclaimer();
+    this.#aiCodeCompletionDisclaimer = new TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer();
     this.#aiCodeCompletionDisclaimer.disclaimerTooltipId = DISCLAIMER_TOOLTIP_ID;
     this.#aiCodeCompletionDisclaimer.spinnerTooltipId = SPINNER_TOOLTIP_ID;
     this.#aiCodeCompletionDisclaimer.disclaimerTextVariant = 'sources';

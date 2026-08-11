@@ -7,6 +7,7 @@ import * as Common from '../../core/common/common.js';
 import {
   type CommentThread,
   resolveCommentAnchor,
+  resolveCommentAnchorElement,
 } from './CommentAnchorResolver.js';
 
 export interface StartOptions {

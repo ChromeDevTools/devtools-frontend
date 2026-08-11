@@ -44,10 +44,12 @@ import * as GetElementAccessibilityDetails from './tools/GetElementAccessibility
 import * as GetLighthouseAudits from './tools/GetLighthouseAudits.js';
 import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
 import * as GetStyles from './tools/GetStyles.js';
+import * as GetTraceEventByKey from './tools/GetTraceEventByKey.js';
 import * as ListNetworkRequests from './tools/ListNetworkRequests.js';
 import * as ListPageOrigins from './tools/ListPageOrigins.js';
 import * as RecordPerformanceTrace from './tools/RecordPerformanceTrace.js';
 import * as ResolveDevtoolsNodePath from './tools/ResolveDevtoolsNodePath.js';
+import * as SelectTraceEventByKey from './tools/SelectTraceEventByKey.js';
 import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
 
@@ -80,6 +82,7 @@ export {
   GetLighthouseAudits,
   GetNetworkRequestDetails,
   GetStyles,
+  GetTraceEventByKey,
   Injected,
   LighthouseFormatter,
   ListNetworkRequests,
@@ -94,6 +97,7 @@ export {
   RecordPerformanceTrace,
   RequestContext,
   ResolveDevtoolsNodePath,
+  SelectTraceEventByKey,
   StorageAgent,
   StorageContext,
   StorageItem,

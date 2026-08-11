@@ -11,7 +11,7 @@ import type {AICallTree} from '../performance/AICallTree.js';
 import type {AgentFocus} from '../performance/AIContext.js';
 import {AIQueries} from '../performance/AIQueries.js';
 
-import {NetworkRequestFormatter} from './NetworkRequestFormatter.js';
+import {NetworkRequestFormatter, sanitizeHeaders} from './NetworkRequestFormatter.js';
 import {PerformanceInsightFormatter} from './PerformanceInsightFormatter.js';
 import {bytes, micros, millis} from './UnitFormatters.js';
 
@@ -1035,4 +1035,72 @@ The order of headers corresponds to an internal fixed list. If a header is not p
       ...functionCodeStrings,
     ].join('\n\n');
   }
+}
+
+/**
+ * Serializes a trace event to a JSON string for AI consumption,
+ * ensuring sensitive data (like headers and raw script source code)
+ * is sanitized or redacted.
+ */
+export function formatEventForAI(event: Trace.Types.Events.Event): string {
+  if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+    return JSON.stringify({
+      ...event,
+      args: {
+        ...event.args,
+        data: {
+          ...event.args.data,
+          responseHeaders: event.args.data.responseHeaders ? sanitizeHeaders(event.args.data.responseHeaders) : null,
+        },
+      },
+    });
+  }
+
+  if (Trace.Types.Events.isResourceReceiveResponse(event)) {
+    return JSON.stringify({
+      ...event,
+      args: {
+        ...event.args,
+        data: {
+          ...event.args.data,
+          headers: event.args.data.headers ? sanitizeHeaders(event.args.data.headers) : undefined,
+        },
+      },
+    });
+  }
+
+  if (Trace.Types.Events.isRundownScriptSource(event)) {
+    // Redact sensitive cross-origin script source text.
+    const safeData: Omit<Trace.Types.Events.RundownScriptSource['args']['data'], 'sourceText'> = {
+      isolate: event.args.data.isolate,
+      scriptId: event.args.data.scriptId,
+      length: event.args.data.length,
+    };
+    return JSON.stringify({
+      ...event,
+      args: {
+        ...event.args,
+        data: safeData,
+      },
+    });
+  }
+
+  if (Trace.Types.Events.isRundownScriptSourceLarge(event)) {
+    // Redact sensitive cross-origin script source text.
+    const safeData: Omit<Trace.Types.Events.RundownScriptSourceLarge['args']['data'], 'sourceText'> = {
+      isolate: event.args.data.isolate,
+      scriptId: event.args.data.scriptId,
+      splitIndex: event.args.data.splitIndex,
+      splitCount: event.args.data.splitCount,
+    };
+    return JSON.stringify({
+      ...event,
+      args: {
+        ...event.args,
+        data: safeData,
+      },
+    });
+  }
+
+  return JSON.stringify(event);
 }

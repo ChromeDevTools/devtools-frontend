@@ -384,4 +384,114 @@ describe('PerformanceTraceFormatter', function() {
       assert.include(output, 'Name: Grouped measurement');
     });
   });
+
+  describe('formatEventForAI', () => {
+    it('sanitizes headers for network requests', () => {
+      const mockNetworkEvent = {
+        name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
+        args: {
+          data: {
+            responseHeaders: [
+              {name: 'x-csrf-token', value: 'secret'},
+              {name: 'content-type', value: 'text/html'},
+            ],
+          },
+        },
+      } as unknown as Trace.Types.Events.Event;
+
+      const output = PerformanceTraceFormatter.formatEventForAI(mockNetworkEvent);
+      const parsed = JSON.parse(output);
+      assert.deepEqual(parsed.args.data.responseHeaders, [
+        {name: 'x-csrf-token', value: '<redacted>'},
+        {name: 'content-type', value: 'text/html'},
+      ]);
+    });
+
+    it('sanitizes headers for ResourceReceiveResponse events', () => {
+      const mockReceiveResponseEvent = {
+        name: Trace.Types.Events.Name.RESOURCE_RECEIVE_RESPONSE,
+        args: {
+          data: {
+            headers: [
+              {name: 'cookie', value: 'secret'},
+              {name: 'accept', value: '*/*'},
+            ],
+          },
+        },
+      } as unknown as Trace.Types.Events.Event;
+
+      const output = PerformanceTraceFormatter.formatEventForAI(mockReceiveResponseEvent);
+      const parsed = JSON.parse(output);
+      assert.deepEqual(parsed.args.data.headers, [
+        {name: 'cookie', value: '<redacted>'},
+        {name: 'accept', value: '*/*'},
+      ]);
+    });
+
+    it('redacts script source for RundownScriptSource events', () => {
+      const mockRundownEvent = {
+        name: 'ScriptCatchup',
+        cat: 'disabled-by-default-devtools.v8-source-rundown-sources',
+        args: {
+          data: {
+            isolate: 'isolate-1',
+            scriptId: 'script-1',
+            length: 100,
+            sourceText: 'function secret() { return 42; }',
+          },
+        },
+      } as unknown as Trace.Types.Events.Event;
+
+      const output = PerformanceTraceFormatter.formatEventForAI(mockRundownEvent);
+      const parsed = JSON.parse(output);
+      assert.isUndefined(parsed.args.data.sourceText);
+      assert.deepEqual(parsed.args.data, {
+        isolate: 'isolate-1',
+        scriptId: 'script-1',
+        length: 100,
+      });
+    });
+
+    it('redacts script source for RundownScriptSourceLarge events', () => {
+      const mockRundownLargeEvent = {
+        name: 'LargeScriptCatchup',
+        cat: 'disabled-by-default-devtools.v8-source-rundown-sources',
+        args: {
+          data: {
+            isolate: 'isolate-1',
+            scriptId: 'script-1',
+            splitIndex: 0,
+            splitCount: 2,
+            sourceText: 'function secret() { return 42; }',
+          },
+        },
+      } as unknown as Trace.Types.Events.Event;
+
+      const output = PerformanceTraceFormatter.formatEventForAI(mockRundownLargeEvent);
+      const parsed = JSON.parse(output);
+      assert.isUndefined(parsed.args.data.sourceText);
+      assert.deepEqual(parsed.args.data, {
+        isolate: 'isolate-1',
+        scriptId: 'script-1',
+        splitIndex: 0,
+        splitCount: 2,
+      });
+    });
+
+    it('serializes other events as-is', () => {
+      const mockGenericEvent = {
+        name: 'generic-event',
+        ts: 1234,
+        args: {
+          data: {
+            someProp: 'value',
+          },
+        },
+      } as unknown as Trace.Types.Events.Event;
+
+      const output = PerformanceTraceFormatter.formatEventForAI(mockGenericEvent);
+      const parsed = JSON.parse(output);
+      assert.deepEqual(parsed, mockGenericEvent);
+    });
+  });
 });

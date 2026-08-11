@@ -55,10 +55,12 @@ devtools_module("ai_assistance") {
     "tools/GetLighthouseAudits.ts",
     "tools/GetNetworkRequestDetails.ts",
     "tools/GetStyles.ts",
+    "tools/GetTraceEventByKey.ts",
     "tools/ListNetworkRequests.ts",
     "tools/ListPageOrigins.ts",
     "tools/RecordPerformanceTrace.ts",
     "tools/ResolveDevtoolsNodePath.ts",
+    "tools/SelectTraceEventByKey.ts",
     "tools/Tool.ts",
     "tools/ToolRegistry.ts",
   ]
@@ -159,10 +161,12 @@ ts_library("unittests") {
     "tools/GetLighthouseAudits.test.ts",
     "tools/GetNetworkRequestDetails.test.ts",
     "tools/GetStyles.test.ts",
+    "tools/GetTraceEventByKey.test.ts",
     "tools/ListNetworkRequests.test.ts",
     "tools/ListPageOrigins.test.ts",
     "tools/RecordPerformanceTrace.test.ts",
     "tools/ResolveDevtoolsNodePath.test.ts",
+    "tools/SelectTraceEventByKey.test.ts",
     "tools/ToolRegistry.test.ts",
   ]
 

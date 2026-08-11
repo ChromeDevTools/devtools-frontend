@@ -157,6 +157,8 @@ export const enum ToolName {
   GET_ELEMENT_ACCESSIBILITY_DETAILS = 'getElementAccessibilityDetails',
   RECORD_PERFORMANCE_TRACE = 'recordPerformanceTrace',
   LIST_PAGE_ORIGINS = 'listPageOrigins',
+  GET_TRACE_EVENT_BY_KEY = 'getTraceEventByKey',
+  SELECT_TRACE_EVENT_BY_KEY = 'selectTraceEventByKey',
 }
 
 /**

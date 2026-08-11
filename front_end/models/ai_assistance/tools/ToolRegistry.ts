@@ -7,10 +7,12 @@ import {GetElementAccessibilityDetailsTool} from './GetElementAccessibilityDetai
 import {GetLighthouseAuditsTool} from './GetLighthouseAudits.js';
 import {GetNetworkRequestDetailsTool} from './GetNetworkRequestDetails.js';
 import {GetStylesTool} from './GetStyles.js';
+import {GetTraceEventByKeyTool} from './GetTraceEventByKey.js';
 import {ListNetworkRequestsTool} from './ListNetworkRequests.js';
 import {ListPageOriginsTool} from './ListPageOrigins.js';
 import {RecordPerformanceTraceTool} from './RecordPerformanceTrace.js';
 import {ResolveDevtoolsNodePathTool} from './ResolveDevtoolsNodePath.js';
+import {SelectTraceEventByKeyTool} from './SelectTraceEventByKey.js';
 import {type AllToolsCapabilities, type Tool, type ToolArgs, ToolName} from './Tool.js';
 
 /**
@@ -31,6 +33,8 @@ export const TOOLS = {
   [ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS]: new GetElementAccessibilityDetailsTool(),
   [ToolName.RECORD_PERFORMANCE_TRACE]: new RecordPerformanceTraceTool(),
   [ToolName.LIST_PAGE_ORIGINS]: new ListPageOriginsTool(),
+  [ToolName.GET_TRACE_EVENT_BY_KEY]: new GetTraceEventByKeyTool(),
+  [ToolName.SELECT_TRACE_EVENT_BY_KEY]: new SelectTraceEventByKeyTool(),
 };
 
 /**

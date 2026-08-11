@@ -15,11 +15,10 @@ import * as Logs from '../../logs/logs.js';
 import * as Trace from '../../trace/trace.js';
 import {canResourceContentsBeReadForTrace} from '../AiOrigins.js';
 import type {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
-import {sanitizeHeaders} from '../data_formatters/NetworkRequestFormatter.js';
 import {
   PerformanceInsightFormatter,
 } from '../data_formatters/PerformanceInsightFormatter.js';
-import {PerformanceTraceFormatter} from '../data_formatters/PerformanceTraceFormatter.js';
+import {formatEventForAI, PerformanceTraceFormatter} from '../data_formatters/PerformanceTraceFormatter.js';
 import {debugLog} from '../debug.js';
 import {AICallTree} from '../performance/AICallTree.js';
 import type {AgentFocus} from '../performance/AIContext.js';
@@ -816,9 +815,8 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         const insightSet = parsedTrace.insights?.get(params.insightSetId);
         if (!insightSet) {
           const valid = ([...parsedTrace.insights?.values() ?? []])
-                            .map(
-                                insightSet => `id: ${insightSet.id}, url: ${insightSet.url}, bounds: ${
-                                    this.#formatter?.serializeBounds(insightSet.bounds)}`)
+                            .map(insightSet => `id: ${insightSet.id}, url: ${insightSet.url}, bounds: ${
+                                     this.#formatter?.serializeBounds(insightSet.bounds)}`)
                             .join('; ');
           return {error: `Invalid insight set id. Valid insight set ids are: ${valid}`};
         }
@@ -949,8 +947,8 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
             return null;
           }
 
-          return Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-              clampedMin as Trace.Types.Timing.Micro, clampedMax as Trace.Types.Timing.Micro);
+          return Trace.Helpers.Timing.traceWindowFromMicroSeconds(clampedMin as Trace.Types.Timing.Micro,
+                                                                  clampedMax as Trace.Types.Timing.Micro);
         };
 
     this.declareFunction<{label: MainThreadSectionLabel}, {summary: string}>('getMainThreadTrackSummaryByLabel', {
@@ -1334,8 +1332,8 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       if (insightSet) {
         const lcp = Trace.Insights.Common.getLCP(insightSet);
         if (lcp) {
-          return Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-              insightSet.bounds.min, lcp.event.ts as Trace.Types.Timing.Micro);
+          return Trace.Helpers.Timing.traceWindowFromMicroSeconds(insightSet.bounds.min,
+                                                                  lcp.event.ts as Trace.Types.Timing.Micro);
         }
       }
       return null;
@@ -1407,72 +1405,4 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     }
     return undefined;
   }
-}
-
-/**
- * Serializes a trace event to a JSON string for AI consumption,
- * ensuring sensitive data (like headers and raw script source code)
- * is sanitized or redacted.
- */
-function formatEventForAI(event: Trace.Types.Events.Event): string {
-  if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
-    return JSON.stringify({
-      ...event,
-      args: {
-        ...event.args,
-        data: {
-          ...event.args.data,
-          responseHeaders: event.args.data.responseHeaders ? sanitizeHeaders(event.args.data.responseHeaders) : null,
-        },
-      },
-    });
-  }
-
-  if (Trace.Types.Events.isResourceReceiveResponse(event)) {
-    return JSON.stringify({
-      ...event,
-      args: {
-        ...event.args,
-        data: {
-          ...event.args.data,
-          headers: event.args.data.headers ? sanitizeHeaders(event.args.data.headers) : undefined,
-        },
-      },
-    });
-  }
-
-  if (Trace.Types.Events.isRundownScriptSource(event)) {
-    // Redact sensitive cross-origin script source text.
-    const safeData: Omit<Trace.Types.Events.RundownScriptSource['args']['data'], 'sourceText'> = {
-      isolate: event.args.data.isolate,
-      scriptId: event.args.data.scriptId,
-      length: event.args.data.length,
-    };
-    return JSON.stringify({
-      ...event,
-      args: {
-        ...event.args,
-        data: safeData,
-      },
-    });
-  }
-
-  if (Trace.Types.Events.isRundownScriptSourceLarge(event)) {
-    // Redact sensitive cross-origin script source text.
-    const safeData: Omit<Trace.Types.Events.RundownScriptSourceLarge['args']['data'], 'sourceText'> = {
-      isolate: event.args.data.isolate,
-      scriptId: event.args.data.scriptId,
-      splitIndex: event.args.data.splitIndex,
-      splitCount: event.args.data.splitCount,
-    };
-    return JSON.stringify({
-      ...event,
-      args: {
-        ...event.args,
-        data: safeData,
-      },
-    });
-  }
-
-  return JSON.stringify(event);
 }

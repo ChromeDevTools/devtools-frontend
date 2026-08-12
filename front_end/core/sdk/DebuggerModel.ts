@@ -19,6 +19,7 @@ import {
   jsSourceMapsEnabledSettingDescriptor,
   pauseOnCaughtExceptionSettingDescriptor,
   pauseOnExceptionEnabledSettingDescriptor,
+  pauseOnUncaughtExceptionSettingDescriptor,
 } from './SDKSettings.js';
 import {SourceMap} from './SourceMap.js';
 import {SourceMapManager} from './SourceMapManager.js';
@@ -192,7 +193,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     settings.resolve(pauseOnCaughtExceptionSettingDescriptor)
         .addChangeListener(this.pauseOnExceptionStateChanged, this);
     this.#skipAllPausesSetting.addChangeListener(this.skipAllPausesChanged, this);
-    settings.moduleSetting('pause-on-uncaught-exception').addChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.resolve(pauseOnUncaughtExceptionSettingDescriptor)
+        .addChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting('disable-async-stack-traces').addChangeListener(this.asyncStackTracesStateChanged, this);
     settings.moduleSetting('breakpoints-active').addChangeListener(this.breakpointsActiveChanged, this);
 
@@ -391,7 +393,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     const pauseOnCaughtEnabled = settings.resolve(pauseOnCaughtExceptionSettingDescriptor).get();
     let state: Protocol.Debugger.SetPauseOnExceptionsRequestState;
 
-    const pauseOnUncaughtEnabled = settings.moduleSetting('pause-on-uncaught-exception').get();
+    const pauseOnUncaughtEnabled = settings.resolve(pauseOnUncaughtExceptionSettingDescriptor).get();
     if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
       state = Protocol.Debugger.SetPauseOnExceptionsRequestState.All;
     } else if (pauseOnCaughtEnabled) {
@@ -904,6 +906,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     settings.resolve(pauseOnCaughtExceptionSettingDescriptor)
         .removeChangeListener(this.pauseOnExceptionStateChanged, this);
     this.#skipAllPausesSetting.removeChangeListener(this.skipAllPausesChanged, this);
+    settings.resolve(pauseOnUncaughtExceptionSettingDescriptor)
+        .removeChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting('disable-async-stack-traces').removeChangeListener(this.asyncStackTracesStateChanged, this);
   }
 

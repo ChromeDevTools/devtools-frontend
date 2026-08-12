@@ -456,12 +456,6 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 Common.Settings.registerSettingExtension({
-  settingName: 'pause-on-uncaught-exception',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-});
-
-Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.DEBUGGER,
   title: i18nLazyString(UIStrings.disableJavascript),
   settingName: 'java-script-disabled',

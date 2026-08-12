@@ -897,7 +897,8 @@ describe('BreakpointsSidebarController', () => {
         const data = await controller.getUpdatedBreakpointViewData();
         assert.strictEqual(data.pauseOnUncaughtExceptions, pauseOnUncaughtExceptions);
         assert.strictEqual(data.pauseOnCaughtExceptions, pauseOnCaughtExceptions);
-        assert.strictEqual(settings.moduleSetting('pause-on-uncaught-exception').get(), pauseOnUncaughtExceptions);
+        assert.strictEqual(settings.resolve(SDK.SDKSettings.pauseOnUncaughtExceptionSettingDescriptor).get(),
+                           pauseOnUncaughtExceptions);
         assert.strictEqual(settings.resolve(SDK.SDKSettings.pauseOnCaughtExceptionSettingDescriptor).get(),
                            pauseOnCaughtExceptions);
       }

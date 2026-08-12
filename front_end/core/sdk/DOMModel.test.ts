@@ -7,17 +7,30 @@ import sinon from 'sinon';
 
 import * as ProtocolModule from '../../generated/protocol.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
+const {NodeType, cssEscape} = SDK.DOMModel;
 
-describeWithEnvironment('DOMModel', () => {
+describe('DOMModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
   it('updates the document on an documentUpdate event if there already is a previous document', async () => {
-    const parentTarget = createTarget();
-    const target = createTarget({parentTarget});
+    const parentTarget = universe.createTarget();
+    const target = universe.createTarget({parentTarget});
     const domModel = target.model(SDK.DOMModel.DOMModel);
     assert.exists(domModel);
     assert.exists(domModel.agent);
@@ -33,8 +46,8 @@ describeWithEnvironment('DOMModel', () => {
   });
 
   it('does not request document if there is not a previous document', async () => {
-    const parentTarget = createTarget();
-    const target = createTarget({parentTarget});
+    const parentTarget = universe.createTarget();
+    const target = universe.createTarget({parentTarget});
     const domModel = target.model(SDK.DOMModel.DOMModel);
     assert.exists(domModel);
     assert.exists(domModel.agent);
@@ -50,8 +63,8 @@ describeWithEnvironment('DOMModel', () => {
   });
 
   it('updates top layer elements correctly', async () => {
-    const parentTarget = createTarget();
-    const target = createTarget({parentTarget});
+    const parentTarget = universe.createTarget();
+    const target = universe.createTarget({parentTarget});
     const domModel = target.model(SDK.DOMModel.DOMModel);
     assert.exists(domModel);
 
@@ -62,14 +75,14 @@ describeWithEnvironment('DOMModel', () => {
     domModel.setDocumentForTest({
       nodeId: DOCUMENT_NODE_ID,
       backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-      nodeType: Node.DOCUMENT_NODE,
+      nodeType: NodeType.DOCUMENT_NODE,
       nodeName: '#document',
       childNodeCount: 2,
       children: [
         {
           nodeId: TOP_LAYER_NODE_ID,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'div',
           localName: 'div',
           nodeValue: '',
@@ -77,7 +90,7 @@ describeWithEnvironment('DOMModel', () => {
         {
           nodeId: NOT_TOP_LAYER_NODE_ID,
           backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'div',
           localName: 'div',
           nodeValue: '',
@@ -104,8 +117,8 @@ describeWithEnvironment('DOMModel', () => {
   });
 
   it('updates top layer elements correctly with backdrop', async () => {
-    const parentTarget = createTarget();
-    const target = createTarget({parentTarget});
+    const parentTarget = universe.createTarget();
+    const target = universe.createTarget({parentTarget});
     const domModel = target.model(SDK.DOMModel.DOMModel);
     assert.exists(domModel);
 
@@ -116,14 +129,14 @@ describeWithEnvironment('DOMModel', () => {
     domModel.setDocumentForTest({
       nodeId: DOCUMENT_NODE_ID,
       backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-      nodeType: Node.DOCUMENT_NODE,
+      nodeType: NodeType.DOCUMENT_NODE,
       nodeName: '#document',
       childNodeCount: 2,
       children: [
         {
           nodeId: BACKDROP_NODE_ID,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: '::backdrop',
           localName: '::backdrop',
           nodeValue: '',
@@ -131,7 +144,7 @@ describeWithEnvironment('DOMModel', () => {
         {
           nodeId: TOP_LAYER_NODE_ID,
           backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'div',
           localName: 'div',
           nodeValue: '',
@@ -159,8 +172,8 @@ describeWithEnvironment('DOMModel', () => {
   });
 
   it('updates top layer elements correctly with multiple documents', async () => {
-    const parentTarget = createTarget();
-    const target = createTarget({parentTarget});
+    const parentTarget = universe.createTarget();
+    const target = universe.createTarget({parentTarget});
     const domModel = target.model(SDK.DOMModel.DOMModel);
     assert.exists(domModel);
 
@@ -173,14 +186,14 @@ describeWithEnvironment('DOMModel', () => {
     domModel.setDocumentForTest({
       nodeId: DOCUMENT_NODE_ID,
       backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-      nodeType: Node.DOCUMENT_NODE,
+      nodeType: NodeType.DOCUMENT_NODE,
       nodeName: '#document',
       childNodeCount: 2,
       children: [
         {
           nodeId: TOP_LAYER_NODE_1_ID,
           backendNodeId: 4 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'div',
           localName: 'div',
           nodeValue: '',
@@ -188,21 +201,21 @@ describeWithEnvironment('DOMModel', () => {
         {
           nodeId: IFRAME_NODE_ID,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'iframe',
           localName: 'iframe',
           nodeValue: '',
           contentDocument: {
             nodeId: CONTENT_DOCUMENT_NODE_ID,
             backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.DOCUMENT_NODE,
+            nodeType: NodeType.DOCUMENT_NODE,
             nodeName: '#document',
             childNodeCount: 1,
             children: [
               {
                 nodeId: TOP_LAYER_NODE_2_ID,
                 backendNodeId: 5 as Protocol.DOM.BackendNodeId,
-                nodeType: Node.ELEMENT_NODE,
+                nodeType: NodeType.ELEMENT_NODE,
                 nodeName: 'div',
                 localName: 'div',
                 nodeValue: '',
@@ -250,12 +263,58 @@ describeWithEnvironment('DOMModel', () => {
     assert.strictEqual(events[1].documentShortcuts[0].deferredNode.backendNodeId(), 5 as Protocol.DOM.BackendNodeId);
   });
 
+  describe('cssEscape', () => {
+    it('escapes empty string', () => {
+      assert.strictEqual(cssEscape(''), '');
+    });
+
+    it('does not escape standard identifiers', () => {
+      assert.strictEqual(cssEscape('foo'), 'foo');
+      assert.strictEqual(cssEscape('foo-bar'), 'foo-bar');
+      assert.strictEqual(cssEscape('foo_bar'), 'foo_bar');
+      assert.strictEqual(cssEscape('fooBar123'), 'fooBar123');
+    });
+
+    it('escapes leading digit', () => {
+      assert.strictEqual(cssEscape('123foo'), '\\31 23foo');
+      assert.strictEqual(cssEscape('0'), '\\30 ');
+    });
+
+    it('escapes single hyphen and hyphen followed by digit', () => {
+      assert.strictEqual(cssEscape('-'), '\\-');
+      assert.strictEqual(cssEscape('-123'), '-\\31 23');
+      assert.strictEqual(cssEscape('--custom-property'), '--custom-property');
+      assert.strictEqual(cssEscape('-a'), '-a');
+    });
+
+    it('escapes special characters and punctuation', () => {
+      assert.strictEqual(cssEscape('#id'), '\\#id');
+      assert.strictEqual(cssEscape('.class'), '\\.class');
+      assert.strictEqual(cssEscape('hello world'), 'hello\\ world');
+      assert.strictEqual(cssEscape('foo:bar'), 'foo\\:bar');
+      assert.strictEqual(cssEscape('[type="text"]'), '\\[type\\=\\"text\\"\\]');
+      assert.strictEqual(cssEscape('(pseudo)'), '\\(pseudo\\)');
+    });
+
+    it('escapes null and control characters', () => {
+      assert.strictEqual(cssEscape('\0'), '\uFFFD');
+      assert.strictEqual(cssEscape('\x01'), '\\1 ');
+      assert.strictEqual(cssEscape('\x1f'), '\\1f ');
+      assert.strictEqual(cssEscape('\x7f'), '\\7f ');
+    });
+
+    it('preserves non-ASCII characters', () => {
+      assert.strictEqual(cssEscape('café'), 'café');
+      assert.strictEqual(cssEscape('🚀'), '🚀');
+    });
+  });
+
   describe('DOMNode', () => {
     describe('simpleSelector', () => {
       let target: SDK.Target.Target;
       let model: SDK.DOMModel.DOMModel;
       beforeEach(() => {
-        target = createTarget();
+        target = universe.createTarget();
 
         const modelBeforeAssertion = target.model(SDK.DOMModel.DOMModel);
         assert.exists(modelBeforeAssertion);
@@ -271,7 +330,7 @@ describeWithEnvironment('DOMModel', () => {
            const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
              nodeId: 1 as Protocol.DOM.NodeId,
              backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-             nodeType: Node.ELEMENT_NODE,
+             nodeType: NodeType.ELEMENT_NODE,
              nodeName: 'div',
              localName: 'div',
              nodeValue: '',
@@ -283,7 +342,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'input',
           attributes: [
             'type',
@@ -299,7 +358,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'input',
           attributes: [
             'type',
@@ -317,7 +376,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'input',
           attributes: [
             'type',
@@ -335,7 +394,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'div',
           attributes: [
             'type',
@@ -353,7 +412,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: '::before',
           localName: '::before',
           nodeValue: '',
@@ -365,7 +424,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           pseudoIdentifier: 'root',
           nodeName: '::view-transition-new',
           localName: '::view-transition-new',
@@ -379,7 +438,7 @@ describeWithEnvironment('DOMModel', () => {
       let target: SDK.Target.Target;
       let model: SDK.DOMModel.DOMModel;
       beforeEach(() => {
-        target = createTarget();
+        target = universe.createTarget();
         const modelBeforeAssertion = target.model(SDK.DOMModel.DOMModel);
         assert.exists(modelBeforeAssertion);
         model = modelBeforeAssertion;
@@ -393,7 +452,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'my-widget',
           localName: 'my-widget',
           nodeValue: '',
@@ -405,7 +464,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'button',
           localName: 'button',
           attributes: ['is', 'my-button'],
@@ -418,7 +477,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'font-face-src',
           localName: 'font-face-src',
           nodeValue: '',
@@ -430,7 +489,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 3 as Protocol.DOM.NodeId,
           backendNodeId: 4 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'annotation-xml',
           localName: 'annotation-xml',
           nodeValue: '',
@@ -442,7 +501,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'custom-xml-tag',
           localName: 'custom-xml-tag',
           xmlVersion: '1.0',
@@ -455,7 +514,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'div',
           localName: 'div',
           nodeValue: '',
@@ -467,7 +526,7 @@ describeWithEnvironment('DOMModel', () => {
         const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
           nodeId: 1 as Protocol.DOM.NodeId,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.TEXT_NODE,
+          nodeType: NodeType.TEXT_NODE,
           nodeName: '#text',
           localName: '',
           nodeValue: 'some text',
@@ -479,7 +538,7 @@ describeWithEnvironment('DOMModel', () => {
 
   describe('document.open() URL update (crbug.com/370690261)', () => {
     it('updates iframe contentDocument URL and dispatches DocumentURLChanged event', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -491,7 +550,7 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         localName: '',
         nodeValue: '',
@@ -502,7 +561,7 @@ describeWithEnvironment('DOMModel', () => {
           {
             nodeId: IFRAME_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'IFRAME',
             localName: 'iframe',
             nodeValue: '',
@@ -510,7 +569,7 @@ describeWithEnvironment('DOMModel', () => {
             contentDocument: {
               nodeId: CONTENT_DOCUMENT_NODE_ID,
               backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-              nodeType: Node.DOCUMENT_NODE,
+              nodeType: NodeType.DOCUMENT_NODE,
               nodeName: '#document',
               localName: '',
               nodeValue: '',
@@ -552,7 +611,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('does not dispatch event when URL has not changed', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -564,7 +623,7 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         localName: '',
         nodeValue: '',
@@ -575,7 +634,7 @@ describeWithEnvironment('DOMModel', () => {
           {
             nodeId: IFRAME_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'IFRAME',
             localName: 'iframe',
             nodeValue: '',
@@ -583,7 +642,7 @@ describeWithEnvironment('DOMModel', () => {
             contentDocument: {
               nodeId: CONTENT_DOCUMENT_NODE_ID,
               backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-              nodeType: Node.DOCUMENT_NODE,
+              nodeType: NodeType.DOCUMENT_NODE,
               nodeName: '#document',
               localName: '',
               nodeValue: '',
@@ -622,7 +681,7 @@ describeWithEnvironment('DOMModel', () => {
 
   describe('DOMNodeSnapshot', () => {
     it('snapshots a clean DOMNode with children and attributes', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -633,14 +692,14 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: PARENT_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
@@ -650,7 +709,7 @@ describeWithEnvironment('DOMModel', () => {
               {
                 nodeId: CHILD_NODE_ID,
                 backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-                nodeType: Node.ELEMENT_NODE,
+                nodeType: NodeType.ELEMENT_NODE,
                 nodeName: 'span',
                 localName: 'span',
                 nodeValue: '',
@@ -681,7 +740,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('snapshots shadow roots', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -692,14 +751,14 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: HOST_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
@@ -707,7 +766,7 @@ describeWithEnvironment('DOMModel', () => {
               {
                 nodeId: SHADOW_ROOT_ID,
                 backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-                nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
                 nodeName: '#shadow-root',
                 localName: '',
                 nodeValue: '',
@@ -732,7 +791,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('takes snapshot with adoptedStyleSheets', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -743,14 +802,14 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: ELEMENT_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
@@ -769,7 +828,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('snapshots pseudo elements', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -780,14 +839,14 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: ELEMENT_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
@@ -795,7 +854,7 @@ describeWithEnvironment('DOMModel', () => {
               {
                 nodeId: PSEUDO_NODE_ID,
                 backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-                nodeType: Node.ELEMENT_NODE,
+                nodeType: NodeType.ELEMENT_NODE,
                 nodeName: '::before',
                 localName: '::before',
                 nodeValue: '',
@@ -819,7 +878,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('snapshots template content', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -830,21 +889,21 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: TEMPLATE_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'template',
             localName: 'template',
             nodeValue: '',
             templateContent: {
               nodeId: CONTENT_NODE_ID,
               backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-              nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+              nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
               nodeName: '#document-fragment',
               localName: '',
               nodeValue: '',
@@ -866,7 +925,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('snapshots iframe content document', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -877,21 +936,21 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: IFRAME_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'iframe',
             localName: 'iframe',
             nodeValue: '',
             contentDocument: {
               nodeId: CONTENT_DOCUMENT_NODE_ID,
               backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-              nodeType: Node.DOCUMENT_NODE,
+              nodeType: NodeType.DOCUMENT_NODE,
               nodeName: '#document',
               localName: '',
               nodeValue: '',
@@ -913,7 +972,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('snapshots DOMDocument properties', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -924,7 +983,7 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         documentURL: 'https://example.com/',
         baseURL: 'https://example.com/',
@@ -933,7 +992,7 @@ describeWithEnvironment('DOMModel', () => {
           {
             nodeId: HTML_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'HTML',
             localName: 'html',
             nodeValue: '',
@@ -942,7 +1001,7 @@ describeWithEnvironment('DOMModel', () => {
               {
                 nodeId: BODY_NODE_ID,
                 backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-                nodeType: Node.ELEMENT_NODE,
+                nodeType: NodeType.ELEMENT_NODE,
                 nodeName: 'BODY',
                 localName: 'body',
                 nodeValue: '',
@@ -969,7 +1028,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('snapshots assigned slot', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -980,20 +1039,20 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: ELEMENT_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
             assignedSlot: {
               backendNodeId: SLOT_ID,
-              nodeType: Node.ELEMENT_NODE,
+              nodeType: NodeType.ELEMENT_NODE,
               nodeName: 'slot',
             },
           },
@@ -1010,7 +1069,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('is immutable', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -1020,14 +1079,14 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: ELEMENT_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
@@ -1056,7 +1115,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('does not reflect live DOM updates', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -1066,14 +1125,14 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: ELEMENT_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
@@ -1095,7 +1154,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('does not reflect child insertion in live DOM', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 
@@ -1106,14 +1165,14 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: PARENT_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
@@ -1132,7 +1191,7 @@ describeWithEnvironment('DOMModel', () => {
       domModel.childNodeInserted(PARENT_NODE_ID, 0 as Protocol.DOM.NodeId, {
         nodeId: CHILD_NODE_ID,
         backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.ELEMENT_NODE,
+        nodeType: NodeType.ELEMENT_NODE,
         nodeName: 'span',
         localName: 'span',
         nodeValue: '',
@@ -1146,7 +1205,7 @@ describeWithEnvironment('DOMModel', () => {
 
   describe('setAsInspectedNode', () => {
     it('does not send setInspectedNode command for non-inspectable pseudo elements', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
       assert.exists(domModel.agent);
@@ -1158,14 +1217,14 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: ELEMENT_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
@@ -1173,7 +1232,7 @@ describeWithEnvironment('DOMModel', () => {
               {
                 nodeId: PSEUDO_NODE_ID,
                 backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-                nodeType: Node.ELEMENT_NODE,
+                nodeType: NodeType.ELEMENT_NODE,
                 nodeName: '::first-line',
                 localName: '::first-line',
                 nodeValue: '',
@@ -1193,7 +1252,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('sends setInspectedNode command for inspectable pseudo elements', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
       assert.exists(domModel.agent);
@@ -1205,14 +1264,14 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: ELEMENT_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
@@ -1220,7 +1279,7 @@ describeWithEnvironment('DOMModel', () => {
               {
                 nodeId: PSEUDO_NODE_ID,
                 backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-                nodeType: Node.ELEMENT_NODE,
+                nodeType: NodeType.ELEMENT_NODE,
                 nodeName: '::before',
                 localName: '::before',
                 nodeValue: '',
@@ -1240,7 +1299,7 @@ describeWithEnvironment('DOMModel', () => {
     });
 
     it('does not send setInspectedNode command for UA shadow roots and their children', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
       assert.exists(domModel.agent);
@@ -1253,14 +1312,14 @@ describeWithEnvironment('DOMModel', () => {
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: HOST_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
@@ -1268,7 +1327,7 @@ describeWithEnvironment('DOMModel', () => {
               {
                 nodeId: UA_SHADOW_ROOT_ID,
                 backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-                nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
                 nodeName: '#shadow-root',
                 localName: '',
                 nodeValue: '',
@@ -1276,7 +1335,7 @@ describeWithEnvironment('DOMModel', () => {
                 children: [{
                   nodeId: UA_SHADOW_CHILD_ID,
                   backendNodeId: 4 as Protocol.DOM.BackendNodeId,
-                  nodeType: Node.ELEMENT_NODE,
+                  nodeType: NodeType.ELEMENT_NODE,
                   nodeName: 'span',
                   localName: 'span',
                   nodeValue: '',
@@ -1311,19 +1370,19 @@ describeWithEnvironment('DOMModel', () => {
     const UA_SHADOW_CHILD_ID = 5 as Protocol.DOM.NodeId;
 
     beforeEach(() => {
-      const target = createTarget();
+      const target = universe.createTarget();
       domModel = target.model(SDK.DOMModel.DOMModel)!;
       domModel.setDocumentForTest({
         nodeId: DOCUMENT_NODE_ID,
         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.DOCUMENT_NODE,
+        nodeType: NodeType.DOCUMENT_NODE,
         nodeName: '#document',
         childNodeCount: 1,
         children: [
           {
             nodeId: ELEMENT_NODE_ID,
             backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.ELEMENT_NODE,
+            nodeType: NodeType.ELEMENT_NODE,
             nodeName: 'div',
             localName: 'div',
             nodeValue: '',
@@ -1331,7 +1390,7 @@ describeWithEnvironment('DOMModel', () => {
               {
                 nodeId: PSEUDO_NODE_ID,
                 backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-                nodeType: Node.ELEMENT_NODE,
+                nodeType: NodeType.ELEMENT_NODE,
                 nodeName: '::before',
                 localName: '::before',
                 nodeValue: '',
@@ -1340,7 +1399,7 @@ describeWithEnvironment('DOMModel', () => {
               {
                 nodeId: NON_INSPECTABLE_PSEUDO_NODE_ID,
                 backendNodeId: 6 as Protocol.DOM.BackendNodeId,
-                nodeType: Node.ELEMENT_NODE,
+                nodeType: NodeType.ELEMENT_NODE,
                 nodeName: '::first-line',
                 localName: '::first-line',
                 nodeValue: '',
@@ -1351,7 +1410,7 @@ describeWithEnvironment('DOMModel', () => {
               {
                 nodeId: UA_SHADOW_ROOT_ID,
                 backendNodeId: 4 as Protocol.DOM.BackendNodeId,
-                nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
                 nodeName: '#shadow-root',
                 localName: '',
                 nodeValue: '',
@@ -1359,7 +1418,7 @@ describeWithEnvironment('DOMModel', () => {
                 children: [{
                   nodeId: UA_SHADOW_CHILD_ID,
                   backendNodeId: 5 as Protocol.DOM.BackendNodeId,
-                  nodeType: Node.ELEMENT_NODE,
+                  nodeType: NodeType.ELEMENT_NODE,
                   nodeName: 'span',
                   localName: 'span',
                   nodeValue: '',
@@ -1410,8 +1469,8 @@ describeWithEnvironment('DOMModel', () => {
   });
 
   it('correctly parses baseURL and documentURL for main document and iframes', () => {
-    const parentTarget = createTarget();
-    const target = createTarget({parentTarget});
+    const parentTarget = universe.createTarget();
+    const target = universe.createTarget({parentTarget});
     const domModel = target.model(SDK.DOMModel.DOMModel);
     assert.exists(domModel);
 
@@ -1427,7 +1486,7 @@ describeWithEnvironment('DOMModel', () => {
     domModel.setDocumentForTest({
       nodeId: DOCUMENT_NODE_ID,
       backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-      nodeType: Node.DOCUMENT_NODE,
+      nodeType: NodeType.DOCUMENT_NODE,
       nodeName: '#document',
       localName: '',
       nodeValue: '',
@@ -1438,14 +1497,14 @@ describeWithEnvironment('DOMModel', () => {
         {
           nodeId: IFRAME_NODE_ID,
           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.ELEMENT_NODE,
+          nodeType: NodeType.ELEMENT_NODE,
           nodeName: 'iframe',
           localName: 'iframe',
           nodeValue: '',
           contentDocument: {
             nodeId: CONTENT_DOCUMENT_NODE_ID,
             backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-            nodeType: Node.DOCUMENT_NODE,
+            nodeType: NodeType.DOCUMENT_NODE,
             nodeName: '#document',
             localName: '',
             nodeValue: '',
@@ -1475,8 +1534,8 @@ describeWithEnvironment('DOMModel', () => {
 
   describe('DOMModelUndoStack', () => {
     it('allows calling undo multiple times with non-empty history', async () => {
-      const parentTarget = createTarget();
-      const target = createTarget({parentTarget});
+      const parentTarget = universe.createTarget();
+      const target = universe.createTarget({parentTarget});
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
 

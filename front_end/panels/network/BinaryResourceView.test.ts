@@ -11,6 +11,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import {assertScreenshot, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
 
@@ -153,6 +154,52 @@ describeWithEnvironment('BinaryResourceView', () => {
     // hex string of 'hello world'
     const expectedHex = '68656c6c6f20776f726c64';
     assert.strictEqual(copiedText, expectedHex);
+    view.detach();
+  });
+});
+
+describeWithEnvironment('BinaryResourceView Position Syncing', () => {
+  it('synchronizes cursor position percentage between views', async () => {
+    // We need more content so that a 50% scroll is meaningful and document length > 0
+    const base64content = btoa('hello world'.repeat(100));
+    const contentData = TextUtils.StreamingContentData.StreamingContentData.from(
+        new TextUtils.ContentData.ContentData(base64content, true, 'application/octet-stream'));
+    const view = new Network.BinaryResourceView.BinaryResourceView(
+        contentData,
+        urlString`http://example.com`,
+        Common.ResourceType.resourceTypes.XHR,
+    );
+    // Needed to instantiate CodeMirror for the base64 view
+    renderElementIntoDOM(view, {width: 800, height: 600});
+
+    await doubleRaf();
+
+    const currentViewWidget = view.element.querySelector('devtools-widget');
+    assert.isOk(currentViewWidget);
+    const oldWrapper = UI.Widget.Widget.get(currentViewWidget) as UI.Widget.VBox;
+    const oldWidget = oldWrapper.children()[0] as unknown as {setPositionPercentage(p: number): void};
+
+    // Fake the position percentage
+    oldWidget.setPositionPercentage(0.42);
+
+    const combobox = view.element.querySelector('select');
+    assert.isOk(combobox);
+    combobox.value = 'base64';
+    combobox.dispatchEvent(new Event('change'));
+
+    await doubleRaf();
+
+    const newViewWidget = view.element.querySelector('devtools-widget');
+    assert.isOk(newViewWidget);
+    assert.notStrictEqual(currentViewWidget, newViewWidget, 'A new devtools-widget should have been rendered');
+
+    const newWrapper = UI.Widget.Widget.get(newViewWidget) as UI.Widget.VBox;
+    const newWidget = newWrapper.children()[0] as unknown as {getPositionPercentage(): number};
+    const newPercentage = newWidget.getPositionPercentage();
+
+    // Due to character rounding on lines, it might not be exactly 0.42. Just check if it's close.
+    assert.closeTo(newPercentage, 0.42, 0.05);
+
     view.detach();
   });
 });

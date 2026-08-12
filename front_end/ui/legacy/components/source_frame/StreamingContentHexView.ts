@@ -19,6 +19,7 @@ const MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1000;
 class LinearMemoryInspectorView extends UI.Widget.VBox {
   #memory: Uint8Array = new Uint8Array([0]);
   #address = 0;
+  #positionPercentageToReveal: number|null = null;
   #inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
 
   constructor() {
@@ -40,7 +41,24 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
 
   setMemory(memory: Uint8Array<ArrayBuffer>): void {
     this.#memory = memory;
+    if (this.#positionPercentageToReveal !== null && this.#memory.length > 0) {
+      this.#address = Math.floor(this.#memory.length * this.#positionPercentageToReveal);
+      this.#positionPercentageToReveal = null;
+    }
     this.refreshData();
+  }
+
+  getPositionPercentage(): number {
+    return this.#memory.length === 0 ? 0 : this.#address / this.#memory.length;
+  }
+
+  setPositionPercentage(percentage: number): void {
+    this.#positionPercentageToReveal = percentage;
+    if (this.#memory.length > 0 && this.#memory.length !== 1) {  // 1 is default empty size
+      this.#address = Math.floor(this.#memory.length * percentage);
+      this.#positionPercentageToReveal = null;
+      this.refreshData();
+    }
   }
 
   refreshData(): void {

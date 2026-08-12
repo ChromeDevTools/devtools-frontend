@@ -151,6 +151,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private lineToScrollTo: number|null;
   private selectionToSet: TextUtils.TextRange.TextRange|null;
   private loadedInternal: boolean;
+  private positionPercentageToReveal: number|null = null;
   private contentRequested: boolean;
   private wasmDisassemblyInternal: TextUtils.WasmDisassembly.WasmDisassembly|null;
   contentSet: boolean;
@@ -583,6 +584,35 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     }
   }
 
+  getPositionPercentage(): number {
+    const {textEditor} = this;
+    if (!textEditor) {
+      return 0;
+    }
+    const docLength = textEditor.state.doc.length;
+    if (docLength === 0) {
+      return 0;
+    }
+    const pos = textEditor.state.selection.main.head;
+    return pos / docLength;
+  }
+
+  setPositionPercentage(percentage: number): void {
+    this.positionPercentageToReveal = percentage;
+    this.#setPercentagePositionIfNeeded();
+  }
+
+  #setPercentagePositionIfNeeded(): void {
+    if (this.positionPercentageToReveal !== null && this.loadedInternal) {
+      const docLength = this.textEditor.state.doc.length;
+      if (docLength > 0) {
+        const pos = Math.floor(docLength * this.positionPercentageToReveal);
+        this.revealPosition(pos);
+      }
+      this.positionPercentageToReveal = null;
+    }
+  }
+
   revealPosition(position: RevealPosition, shouldHighlight?: boolean): void {
     this.lineToScrollTo = null;
     this.selectionToSet = null;
@@ -664,6 +694,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   private wasShownOrLoaded(): void {
+    this.#setPercentagePositionIfNeeded();
     this.#revealPositionIfNeeded();
     this.#setSelectionIfNeeded();
     this.#scrollToLineIfNeeded();

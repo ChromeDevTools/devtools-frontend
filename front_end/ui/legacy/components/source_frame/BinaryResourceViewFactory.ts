@@ -37,14 +37,8 @@ export class BinaryResourceViewFactory {
   }
 
   createBase64View(): ResourceSourceFrame {
-    const resourceFrame = new ResourceSourceFrame(
-        TextUtils.StaticContentProvider.StaticContentProvider.fromString(
-            this.contentUrl, this.resourceType, this.streamingContent.content().base64),
-        this.resourceType.canonicalMimeType(), {lineNumbers: false, lineWrapping: true});
-    this.streamingContent.addEventListener(TextUtils.StreamingContentData.Events.CHUNK_ADDED, () => {
-      void resourceFrame.setContent(this.base64());
-    });
-    return resourceFrame;
+    return new StreamingResourceSourceFrame(this.streamingContent, () => this.base64(), this.contentUrl,
+                                            this.resourceType, {lineNumbers: false, lineWrapping: true});
   }
 
   createHexView(): StreamingContentHexView {
@@ -52,14 +46,8 @@ export class BinaryResourceViewFactory {
   }
 
   createUtf8View(): ResourceSourceFrame {
-    const resourceFrame = new ResourceSourceFrame(
-        TextUtils.StaticContentProvider.StaticContentProvider.fromString(
-            this.contentUrl, this.resourceType, this.utf8()),
-        this.resourceType.canonicalMimeType(), {lineNumbers: true, lineWrapping: true});
-    this.streamingContent.addEventListener(TextUtils.StreamingContentData.Events.CHUNK_ADDED, () => {
-      void resourceFrame.setContent(this.utf8());
-    });
-    return resourceFrame;
+    return new StreamingResourceSourceFrame(this.streamingContent, () => this.utf8(), this.contentUrl,
+                                            this.resourceType, {lineNumbers: true, lineWrapping: true});
   }
 
   static #uint8ArrayToHexString(uint8Array: Uint8Array): string {
@@ -76,5 +64,35 @@ export class BinaryResourceViewFactory {
       hex = '0' + hex;
     }
     return hex;
+  }
+}
+
+class StreamingResourceSourceFrame extends ResourceSourceFrame {
+  readonly #streamingContent: TextUtils.StreamingContentData.StreamingContentData;
+  readonly #getContent: () => string;
+
+  constructor(streamingContent: TextUtils.StreamingContentData.StreamingContentData, getContent: () => string,
+              contentUrl: Platform.DevToolsPath.UrlString, resourceType: Common.ResourceType.ResourceType,
+              options: {lineNumbers: boolean, lineWrapping: boolean}) {
+    super(TextUtils.StaticContentProvider.StaticContentProvider.fromString(contentUrl, resourceType, getContent()),
+          resourceType.canonicalMimeType(), options);
+    this.#streamingContent = streamingContent;
+    this.#getContent = getContent;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.#streamingContent.addEventListener(TextUtils.StreamingContentData.Events.CHUNK_ADDED, this.#onChunkAdded,
+                                            this);
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.#streamingContent.removeEventListener(TextUtils.StreamingContentData.Events.CHUNK_ADDED, this.#onChunkAdded,
+                                               this);
+  }
+
+  #onChunkAdded(): void {
+    void this.setContent(this.#getContent());
   }
 }

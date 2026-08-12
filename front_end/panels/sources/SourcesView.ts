@@ -6,8 +6,6 @@
 import '../../ui/legacy/legacy.js';
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -30,95 +28,31 @@ import {
 } from './TabbedEditorContainer.js';
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
 
-const UIStrings = {
-  /**
-   * @description Text to open a file.
-   */
-  openFile: 'Open file',
-  /**
-   * @description Text to run commands.
-   */
-  runCommand: 'Run command',
-  /**
-   * @description Text in Sources view of the Sources panel.
-   */
-  workspaceDropInAFolderToSyncSources: 'To sync edits to the workspace, drop a folder with your sources here or',
-  /**
-   * @description Text in Sources view of the Sources panel.
-   */
-  selectFolder: 'Select folder',
-  /**
-   * @description Accessible label for Sources placeholder view actions list.
-   */
-  sourceViewActions: 'Source View Actions',
-} as const;
-const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-export interface Shortcut {
-  description: string;
-  onClick: () => void;
-  keys: string[];
-}
+const {widget} = UI.Widget;
 
 export interface ViewInput {
-  placeholderElement: HTMLElement;
   scriptViewToolbar: UI.Toolbar.Toolbar;
   bottomToolbar: UI.Toolbar.Toolbar;
   leftToolbarItems: UI.Toolbar.ToolbarItem[];
   rightToolbarItems: UI.Toolbar.ToolbarItem[];
   searchableView: UI.SearchableView.SearchableView;
   editorContainer: TabbedEditorContainer;
-  shortcuts: Shortcut[];
 }
 
-export interface ViewOutput {
-  onSelectFolderClicked: () => void;
-}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
-
-export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+export const DEFAULT_VIEW: View = (input, _output, target): void => {
+  // clang-format off
   render(html`
-    <devtools-widget class="vbox flex-auto" ${UI.Widget.widget(() => input.searchableView)}>
-      <devtools-widget class="vbox flex-auto" ${UI.Widget.widget(() => input.editorContainer.view)}>
+    <devtools-widget class="vbox flex-auto" ${widget(() => input.searchableView)}>
+      <devtools-widget class="vbox flex-auto" ${widget(() => input.editorContainer.view)}>
       </devtools-widget>
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging.toolbar('bottom')}>
       ${input.scriptViewToolbar}
       ${input.bottomToolbar}
-    </div>`,
-         target);
-
-  // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-  render(html`
-    <div class="tabbed-pane-placeholder-row workspace">
-      <span class="icon-container">
-        <devtools-icon name="sync" class="sync-icon"></devtools-icon>
-      </span>
-      <span>
-        ${i18nString(UIStrings.workspaceDropInAFolderToSyncSources)}
-        <button @click=${() => output.onSelectFolderClicked()}>${i18nString(UIStrings.selectFolder)}</button>
-      </span>
-    </div>
-
-    <div class="shortcuts-list tabbed-pane-placeholder-row" role="list"
-         aria-label=${i18nString(UIStrings.sourceViewActions)}>
-      ${input.shortcuts.map(shortcut => {
-           if (!shortcut.keys.length) {
-             return html`<div class="shortcut-line" role="listitem"></div>`;
-           }
-           return html`<div class="shortcut-line" role="listitem">
-            <button @click=${shortcut.onClick}>${shortcut.description}</button>
-            <span class="shortcuts">
-              ${shortcut.keys.map(key => html`
-                <span class="keybinds-key"><span>${key}</span></span>
-              `)}
-            </span>
-          </div>`;
-         })}
-    </div>`,
-         input.placeholderElement);
+    </div>`, target);
+  // clang-format on
 };
 
 export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
@@ -131,12 +65,10 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   readonly #scriptViewToolbar: UI.Toolbar.Toolbar;
   readonly #bottomToolbar: UI.Toolbar.Toolbar;
   private toolbarChangedListener: Common.EventTarget.EventDescriptor|null;
-  private readonly focusedPlaceholderElement?: HTMLElement;
   private searchView?: UISourceCodeFrame;
   private searchConfig?: UI.SearchableView.SearchConfig;
   #leftToolbarItems: UI.Toolbar.ToolbarItem[] = [];
   #rightToolbarItems: UI.Toolbar.ToolbarItem[] = [];
-  #placeholderElement: HTMLElement;
   #view: View = DEFAULT_VIEW;
 
   constructor() {
@@ -147,9 +79,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-
-    this.#placeholderElement = document.createElement('div');
-    this.#placeholderElement.classList.add('sources-placeholder');
 
     this.sourceViewByUISourceCode = new Map();
 
@@ -166,8 +95,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
     const previouslyViewedFilesSetting =
         Common.Settings.Settings.instance().createLocalSetting('previously-viewed-files', []);
-    this.editorContainer = new TabbedEditorContainer(this, previouslyViewedFilesSetting, this.#placeholderElement,
-                                                     this.focusedPlaceholderElement);
+    this.editorContainer = new TabbedEditorContainer(this, previouslyViewedFilesSetting);
     this.editorContainer.addEventListener(TabbedEditorContainerEvents.EDITOR_SELECTED, this.editorSelected, this);
     this.editorContainer.addEventListener(TabbedEditorContainerEvents.EDITOR_CLOSED, this.editorClosed, this);
 
@@ -216,64 +144,20 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   override performUpdate(): void {
     const input: ViewInput = {
-      placeholderElement: this.#placeholderElement,
       scriptViewToolbar: this.#scriptViewToolbar,
       bottomToolbar: this.#bottomToolbar,
       leftToolbarItems: this.#leftToolbarItems,
       rightToolbarItems: this.#rightToolbarItems,
       searchableView: this.#searchableView,
       editorContainer: this.editorContainer as TabbedEditorContainer,
-      shortcuts: this.#getPlaceholderShortcuts(),
     };
 
-    const output: ViewOutput = {
-      onSelectFolderClicked: () => {
-        void this.addFileSystemClicked();
-      },
-    };
-
-    this.#view(input, output, this.element);
+    this.#view(input, undefined, this.element);
   }
 
   override onDetach(): void {
     super.onDetach();
     this.editorContainer?.view.detachChildWidgets();
-  }
-
-  private async addFileSystemClicked(): Promise<void> {
-    const result = await Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
-    if (!result) {
-      return;
-    }
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.WorkspaceSelectFolder);
-    void UI.ViewManager.ViewManager.instance().showView('navigator-files');
-  }
-
-  #getPlaceholderShortcuts(): Shortcut[] {
-    const shortcuts = [
-      {actionId: 'quick-open.show', description: i18nString(UIStrings.openFile)},
-      {actionId: 'quick-open.show-command-menu', description: i18nString(UIStrings.runCommand)},
-    ];
-    const separator = Host.Platform.isMac() ? '\u2004' : ' + ';
-    return shortcuts.map(shortcut => {
-      const shortcutKeys = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(shortcut.actionId);
-      if (!shortcutKeys?.[0]) {
-        return {
-          description: shortcut.description,
-          onClick: () => {},
-          keys: [],
-        };
-      }
-      const action = UI.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
-      const keys = shortcutKeys[0].descriptors.flatMap(descriptor => descriptor.name.split(separator));
-      return {
-        description: shortcut.description,
-        onClick: () => {
-          void action.execute();
-        },
-        keys,
-      };
-    });
   }
 
   static defaultUISourceCodeScores(): Map<Workspace.UISourceCode.UISourceCode, number> {

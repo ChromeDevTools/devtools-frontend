@@ -246,6 +246,7 @@ devtools_api_test_module("api_tests") {
   sources = [
     "CSSModel.test.api.ts",
     "DOMModel.test.api.ts",
+    "DebuggerModel.test.api.ts",
   ]
 
   deps = [

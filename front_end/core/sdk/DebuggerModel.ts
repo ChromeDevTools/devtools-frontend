@@ -650,6 +650,11 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       return;
     }
 
+    if (this.#skipAllPausesSetting.get()) {
+      this.resume();
+      return;
+    }
+
     const pausedDetails =
         new DebuggerPausedDetails(this, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId);
 

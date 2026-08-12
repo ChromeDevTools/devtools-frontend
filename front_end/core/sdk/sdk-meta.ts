@@ -7,18 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Text of a setting that turn on the measuring rulers when hover over a target.
-   */
-  rulersOnHover: 'Rulers on hover',
-  /**
-   * @description Text of an option that turn on the measuring rulers when hover over a target through the Command Menu.
-   */
-  showRulersOnHover: 'Show rulers on hover',
-  /**
-   * @description Text of a setting that do turn off the measuring rulers when hover over a target.
-   */
-  doNotShowRulersOnHover: 'Don’t show rulers on hover',
-  /**
    * @description Title of a setting that turns on grid area name labels.
    */
   showAreaNames: 'Show area names',
@@ -434,25 +422,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.ELEMENTS,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.rulersOnHover),
-  settingName: 'show-metrics-rulers',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.showRulersOnHover),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.doNotShowRulersOnHover),
-    },
-  ],
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,

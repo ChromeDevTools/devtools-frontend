@@ -14,6 +14,7 @@ import {DeferredDOMNode, DOMModel, type DOMNode, DOMNodeEvents, Events as DOMMod
 import {OverlayPersistentHighlighter} from './OverlayPersistentHighlighter.js';
 import type {RemoteObject} from './RemoteObject.js';
 import {SDKModel} from './SDKModel.js';
+import {showMetricsRulersSettingDescriptor} from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 import type {TargetManager} from './TargetManager.js';
 
@@ -563,7 +564,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   private buildHighlightConfig(mode: string|undefined = 'all', showDetailedToolip: boolean|undefined = false):
       Protocol.Overlay.HighlightConfig {
     const settings = this.target().targetManager().settings;
-    const showRulers = settings.moduleSetting('show-metrics-rulers').get();
+    const showRulers = settings.resolve(showMetricsRulersSettingDescriptor).get();
     const highlightConfig: Protocol.Overlay.HighlightConfig = {
       showInfo: mode === 'all' || mode === 'container-outline',
       showRulers,

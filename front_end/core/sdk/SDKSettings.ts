@@ -62,3 +62,10 @@ export const breakpointsActiveSettingDescriptor: Common.Settings.SettingDescript
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const showMetricsRulersSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-metrics-rulers',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

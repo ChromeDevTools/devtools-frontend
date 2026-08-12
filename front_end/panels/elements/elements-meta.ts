@@ -7,10 +7,23 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Elements from './elements.js';
 
 const UIStrings = {
+  /**
+   * @description Text of a setting that turn on the measuring rulers when hover over a target.
+   */
+  rulersOnHover: 'Rulers on hover',
+  /**
+   * @description Text of an option that turn on the measuring rulers when hover over a target through the Command Menu.
+   */
+  showRulersOnHover: 'Show rulers on hover',
+  /**
+   * @description Text of a setting that do turn off the measuring rulers when hover over a target.
+   */
+  doNotShowRulersOnHover: 'Don’t show rulers on hover',
   /**
    * @description Command for showing the 'Elements' panel. Elements refers to HTML elements.
    */
@@ -713,4 +726,19 @@ Common.Settings.registerSettingExtension({
   settingName: 'show-frameowkr-listeners',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showMetricsRulersSettingDescriptor, {
+  category: Common.Settings.SettingCategory.ELEMENTS,
+  title: i18nLazyString(UIStrings.rulersOnHover),
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showRulersOnHover),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotShowRulersOnHover),
+    },
+  ],
 });

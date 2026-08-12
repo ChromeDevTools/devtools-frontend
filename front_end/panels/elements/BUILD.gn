@@ -159,6 +159,7 @@ devtools_entrypoint("meta") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/settings:bundle",
     "./components:bundle",
   ]
 

@@ -1544,4 +1544,28 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     // Restore
     Root.Runtime.hostConfig.devToolsAllowInterestForcing = originalDevToolsAllowInterestForcing;
   });
+
+  describe('ondelete', () => {
+    it('returns false if treeOutline is not set', () => {
+      const treeElementNoOutline = new Elements.ElementsTreeElement.ElementsTreeElement(node);
+      assert.isFalse(treeElementNoOutline.ondelete());
+    });
+
+    it('calls remove on tree element for node', () => {
+      const removeSpy = sinon.spy(treeElement, 'remove');
+      const handled = treeElement.ondelete();
+      assert.isTrue(handled);
+      sinon.assert.calledOnce(removeSpy);
+    });
+
+    it('calls remove on start tag tree element when ondelete is called on closing tag', () => {
+      treeElement.onbind();
+      const closingTagTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node, true);
+      closingTagTreeElement.treeOutline = treeOutline;
+      const removeSpy = sinon.spy(treeElement, 'remove');
+      const handled = closingTagTreeElement.ondelete();
+      assert.isTrue(handled);
+      sinon.assert.calledOnce(removeSpy);
+    });
+  });
 });

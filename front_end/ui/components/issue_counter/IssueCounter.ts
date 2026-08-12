@@ -179,6 +179,8 @@ export class IssueCounter extends HTMLElement {
       }
     };
     const iconSize = '2ex';
+    const accessibleName = this.#accessibleName ??
+        getIssueCountsEnumeration(this.#issuesManager, this.#displayMode !== DisplayMode.SHOW_ALWAYS);
     const data: IconButton.IconButton.IconButtonData = {
       groups: [
         {
@@ -196,7 +198,7 @@ export class IssueCounter extends HTMLElement {
       ],
       clickHandler: this.#clickHandler,
       leadingText: this.#leadingText,
-      accessibleName: this.#accessibleName,
+      accessibleName,
       compact: this.#compact,
     };
     render(

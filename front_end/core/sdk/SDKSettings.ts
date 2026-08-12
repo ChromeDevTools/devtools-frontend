@@ -90,3 +90,10 @@ export const showGridTrackSizesSettingDescriptor: Common.Settings.SettingDescrip
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const extendGridLinesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'extend-grid-lines',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting that turns on grid extension lines.
-   */
-  extendGridLines: 'Extend grid lines',
-  /**
-   * @description Title of a setting that turns off the grid extension lines.
-   */
-  doNotExtendGridLines: 'Do not extend grid lines',
-  /**
    * @description Title of a setting that turns on grid line labels.
    */
   showLineLabels: 'Show line labels',
@@ -394,25 +386,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.GRID,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.extendGridLines),
-  settingName: 'extend-grid-lines',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.extendGridLines),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.doNotExtendGridLines),
-    },
-  ],
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GRID,

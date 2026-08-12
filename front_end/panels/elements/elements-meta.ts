@@ -53,6 +53,14 @@ const UIStrings = {
    */
   doNotShowGridTrackSizes: 'Do not show grid track sizes',
   /**
+   * @description Title of a setting that turns on grid extension lines.
+   */
+  extendGridLines: 'Extend grid lines',
+  /**
+   * @description Title of a setting that turns off the grid extension lines.
+   */
+  doNotExtendGridLines: 'Do not extend grid lines',
+  /**
    * @description Command for showing the 'Elements' panel. Elements refers to HTML elements.
    */
   showElements: 'Show Elements',
@@ -792,6 +800,21 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showGridTrackSizesSett
     {
       value: false,
       title: i18nLazyString(UIStrings.doNotShowGridTrackSizes),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.extendGridLinesSettingDescriptor, {
+  category: Common.Settings.SettingCategory.GRID,
+  title: i18nLazyString(UIStrings.extendGridLines),
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.extendGridLines),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotExtendGridLines),
     },
   ],
 });

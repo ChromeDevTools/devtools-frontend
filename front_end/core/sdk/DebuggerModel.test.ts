@@ -40,7 +40,7 @@ describe('DebuggerModel', () => {
         }
         return {};
       });
-      universe.settings.moduleSetting('breakpoints-active').set(false);
+      universe.settings.resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor).set(false);
       universe.createTarget({connection});
       assert.isTrue(breakpointsDeactivated);
     });
@@ -60,7 +60,7 @@ describe('DebuggerModel', () => {
       await target.suspend();
 
       // Deactivate breakpoints while suspended.
-      universe.settings.moduleSetting('breakpoints-active').set(false);
+      universe.settings.resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor).set(false);
 
       // Verify that the backend received the message.
       assert.isTrue(breakpointsDeactivated);
@@ -85,15 +85,15 @@ describe('DebuggerModel', () => {
         return {};
       });
 
-      // Deactivate breakpoints befroe the target is created.
-      universe.settings.moduleSetting('breakpoints-active').set(false);
+      // Deactivate breakpoints before the target is created.
+      universe.settings.resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor).set(false);
       const target = universe.createTarget({connection});
       assert.isTrue(breakpointsDeactivated);
 
       await target.suspend();
 
       // Activate breakpoints while suspended.
-      universe.settings.moduleSetting('breakpoints-active').set(true);
+      universe.settings.resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor).set(true);
 
       // Verify that the backend received the message.
       assert.isTrue(breakpointsActivated);

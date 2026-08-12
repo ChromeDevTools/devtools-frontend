@@ -55,3 +55,10 @@ export const disableAsyncStackTracesSettingDescriptor: Common.Settings.SettingDe
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 };
+
+export const breakpointsActiveSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'breakpoints-active',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

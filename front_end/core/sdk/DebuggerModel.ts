@@ -16,6 +16,7 @@ import {type EvaluationOptions, type EvaluationResult, type ExecutionContext, Ru
 import {Script} from './Script.js';
 import {SDKModel} from './SDKModel.js';
 import {
+  breakpointsActiveSettingDescriptor,
   disableAsyncStackTracesSettingDescriptor,
   jsSourceMapsEnabledSettingDescriptor,
   pauseOnCaughtExceptionSettingDescriptor,
@@ -198,7 +199,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
         .addChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.resolve(disableAsyncStackTracesSettingDescriptor)
         .addChangeListener(this.asyncStackTracesStateChanged, this);
-    settings.moduleSetting('breakpoints-active').addChangeListener(this.breakpointsActiveChanged, this);
+    settings.resolve(breakpointsActiveSettingDescriptor).addChangeListener(this.breakpointsActiveChanged, this);
 
     if (!target.suspended()) {
       void this.enableDebugger();
@@ -288,7 +289,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     const settings = this.target().targetManager().settings;
     this.pauseOnExceptionStateChanged();
     void this.asyncStackTracesStateChanged();
-    if (!settings.moduleSetting('breakpoints-active').get()) {
+    if (!settings.resolve(breakpointsActiveSettingDescriptor).get()) {
       this.breakpointsActiveChanged();
     }
     this.dispatchEventToListeners(Events.DebuggerWasEnabled, this);
@@ -418,7 +419,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
   private breakpointsActiveChanged(): void {
     const settings = this.target().targetManager().settings;
-    void this.agent.invoke_setBreakpointsActive({active: settings.moduleSetting('breakpoints-active').get()});
+    void this.agent.invoke_setBreakpointsActive({active: settings.resolve(breakpointsActiveSettingDescriptor).get()});
   }
 
   setComputeAutoStepRangesCallback(callback: ((arg0: StepMode, arg1: CallFrame) => Promise<LocationRange[]>)|null):
@@ -917,6 +918,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
         .removeChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.resolve(disableAsyncStackTracesSettingDescriptor)
         .removeChangeListener(this.asyncStackTracesStateChanged, this);
+    settings.resolve(breakpointsActiveSettingDescriptor).removeChangeListener(this.breakpointsActiveChanged, this);
   }
 
   override async suspendModel(): Promise<void> {

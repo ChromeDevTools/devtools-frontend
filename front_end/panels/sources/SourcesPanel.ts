@@ -321,7 +321,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     this.setTarget(UI.Context.Context.instance().flavor(SDK.Target.Target));
     Common.Settings.Settings.instance()
-        .moduleSetting('breakpoints-active')
+        .resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor)
         .addChangeListener(this.breakpointsActiveStateChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.onCurrentTargetChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(
@@ -852,13 +852,13 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   toggleBreakpointsActive(): void {
-    Common.Settings.Settings.instance()
-        .moduleSetting('breakpoints-active')
-        .set(!Common.Settings.Settings.instance().moduleSetting('breakpoints-active').get());
+    const setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor);
+    setting.set(!setting.get());
   }
 
   private breakpointsActiveStateChanged(): void {
-    const active = Common.Settings.Settings.instance().moduleSetting('breakpoints-active').get();
+    const active =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor).get();
     this.toggleBreakpointsActiveAction.setToggled(!active);
     this.#sourcesView.toggleBreakpointsActiveState(active);
   }

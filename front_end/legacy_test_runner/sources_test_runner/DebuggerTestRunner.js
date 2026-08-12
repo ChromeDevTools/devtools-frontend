@@ -40,7 +40,7 @@ export const startDebuggerTestPromise = function(quiet) {
 };
 
 export const completeDebuggerTest = function() {
-  Common.Settings.Settings.instance().moduleSetting('breakpoints-active').set(true);
+  Common.Settings.Settings.instance().resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor).set(true);
   resumeExecution(TestRunner.completeTest.bind(TestRunner));
 };
 

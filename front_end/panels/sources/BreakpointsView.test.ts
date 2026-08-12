@@ -463,10 +463,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata([]);
       const controller =
           Sources.BreakpointsView.BreakpointsSidebarController.instance({forceNew: true, breakpointManager, settings});
-      settings.moduleSetting('breakpoints-active').set(true);
+      settings.resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor).set(true);
       let data = await controller.getUpdatedBreakpointViewData();
       assert.isTrue(data.breakpointsActive);
-      settings.moduleSetting('breakpoints-active').set(false);
+      settings.resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor).set(false);
       data = await controller.getUpdatedBreakpointViewData();
       assert.isFalse(data.breakpointsActive);
     });

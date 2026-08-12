@@ -7,18 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting that turns on grid track size labels.
-   */
-  showTrackSizes: 'Show track sizes',
-  /**
-   * @description Title for CSS Grid tooling option.
-   */
-  showGridTrackSizes: 'Show grid track sizes',
-  /**
-   * @description Title for CSS Grid tooling option.
-   */
-  doNotShowGridTrackSizes: 'Do not show grid track sizes',
-  /**
    * @description Title of a setting that turns on grid extension lines.
    */
   extendGridLines: 'Extend grid lines',
@@ -406,25 +394,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.GRID,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.showTrackSizes),
-  settingName: 'show-grid-track-sizes',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.showGridTrackSizes),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.doNotShowGridTrackSizes),
-    },
-  ],
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GRID,

@@ -72,13 +72,15 @@ describeWithEnvironment('LayoutPane', () => {
   it('stores a setting when changed', async () => {
     const component = await renderComponent();
 
-    assert.isTrue(Common.Settings.Settings.instance().moduleSetting('show-grid-track-sizes').get());
+    assert.isTrue(
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showGridTrackSizesSettingDescriptor).get());
     const input = component.contentElement.querySelector('[data-boolean-setting]');
     assert.instanceOf(input, UI.UIUtils.CheckboxLabel);
 
     input.click();
 
-    assert.isFalse(Common.Settings.Settings.instance().moduleSetting('show-grid-track-sizes').get());
+    assert.isFalse(
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showGridTrackSizesSettingDescriptor).get());
   });
 
   function makeNode(id: Protocol.DOM.NodeId) {

@@ -83,3 +83,10 @@ export const showGridAreasSettingDescriptor: Common.Settings.SettingDescriptor<b
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const showGridTrackSizesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-grid-track-sizes',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

@@ -41,6 +41,18 @@ const UIStrings = {
    */
   doNotShowGridNamedAreas: 'Do not show grid named areas',
   /**
+   * @description Title of a setting that turns on grid track size labels.
+   */
+  showTrackSizes: 'Show track sizes',
+  /**
+   * @description Title for CSS Grid tooling option.
+   */
+  showGridTrackSizes: 'Show grid track sizes',
+  /**
+   * @description Title for CSS Grid tooling option.
+   */
+  doNotShowGridTrackSizes: 'Do not show grid track sizes',
+  /**
    * @description Command for showing the 'Elements' panel. Elements refers to HTML elements.
    */
   showElements: 'Show Elements',
@@ -765,6 +777,21 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showGridAreasSettingDe
     {
       value: false,
       title: i18nLazyString(UIStrings.doNotShowGridNamedAreas),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showGridTrackSizesSettingDescriptor, {
+  category: Common.Settings.SettingCategory.GRID,
+  title: i18nLazyString(UIStrings.showTrackSizes),
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showGridTrackSizes),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotShowGridTrackSizes),
     },
   ],
 });

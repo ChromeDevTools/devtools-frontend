@@ -9,6 +9,7 @@ import {CSSModel} from './CSSModel.js';
 import type {MultitargetNetworkManager} from './NetworkManager.js';
 import {Events, OverlayModel} from './OverlayModel.js';
 import {SDKModel} from './SDKModel.js';
+import {javaScriptDisabledSettingDescriptor} from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 
 export const enum DataSaverOverride {
@@ -52,7 +53,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
     }
 
     const settings = this.target().targetManager().settings;
-    const disableJavascriptSetting = settings.moduleSetting('java-script-disabled');
+    const disableJavascriptSetting = settings.resolve(javaScriptDisabledSettingDescriptor);
     disableJavascriptSetting.addChangeListener(
         async () =>
             await this.#emulationAgent.invoke_setScriptExecutionDisabled({value: disableJavascriptSetting.get()}));

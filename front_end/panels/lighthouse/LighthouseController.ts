@@ -385,7 +385,8 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
       runtimeSetting.setting.addChangeListener(this.recomputePageAuditability.bind(this));
     }
 
-    const javaScriptDisabledSetting = Common.Settings.Settings.instance().moduleSetting('java-script-disabled');
+    const javaScriptDisabledSetting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.javaScriptDisabledSettingDescriptor);
     javaScriptDisabledSetting.addChangeListener(this.recomputePageAuditability.bind(this));
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.ServiceWorkerManager.ServiceWorkerManager, this);
@@ -494,7 +495,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   private javaScriptDisabled(): boolean {
-    return Common.Settings.Settings.instance().moduleSetting('java-script-disabled').get();
+    return Common.Settings.Settings.instance().resolve(SDK.SDKSettings.javaScriptDisabledSettingDescriptor).get();
   }
 
   private async hasImportantResourcesNotCleared(): Promise<string> {

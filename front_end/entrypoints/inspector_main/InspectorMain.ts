@@ -226,14 +226,14 @@ export class NodeIndicatorProvider implements UI.Toolbar.Provider {
 
 export class SourcesPanelIndicator {
   constructor() {
-    Common.Settings.Settings.instance()
-        .moduleSetting('java-script-disabled')
-        .addChangeListener(javaScriptDisabledChanged);
+    const disableJavascriptSetting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.javaScriptDisabledSettingDescriptor);
+    disableJavascriptSetting.addChangeListener(javaScriptDisabledChanged);
     javaScriptDisabledChanged();
 
     function javaScriptDisabledChanged(): void {
       const warnings = [];
-      if (Common.Settings.Settings.instance().moduleSetting('java-script-disabled').get()) {
+      if (disableJavascriptSetting.get()) {
         warnings.push(i18nString(UIStrings.javascriptIsDisabled));
       }
       UI.InspectorView.InspectorView.instance().setPanelWarnings('sources', warnings);

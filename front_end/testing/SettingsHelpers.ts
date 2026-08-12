@@ -20,27 +20,32 @@ function createSettingValue(category: Common.Settings.SettingCategory, settingNa
 }
 
 export function stubNoopSettings() {
-  const createDummySetting = (name: string) => ({
-    name,
-    get: () => [],
-    set: () => {},
-    addChangeListener: () => {},
-    removeChangeListener: () => {},
-    title: () => {},
-    asRegExp: () => {},
-    type: () => Common.Settings.SettingType.BOOLEAN,
-    getAsArray: () => [],
-    descriptor: () => ({
-      name,
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-    }),
-  });
+  const createDummySetting = (name: string|{name: string}) => {
+    const settingName = typeof name === 'string' ? name : name.name;
+    return {
+      name: settingName,
+      get: () => [],
+      set: () => {},
+      addChangeListener: () => {},
+      removeChangeListener: () => {},
+      title: () => {},
+      asRegExp: () => {},
+      type: () => Common.Settings.SettingType.BOOLEAN,
+      getAsArray: () => [],
+      descriptor: () => ({
+        name: settingName,
+        settingType: Common.Settings.SettingType.BOOLEAN,
+        defaultValue: false,
+      }),
+    };
+  };
 
   sinon.stub(Common.Settings.Settings, 'instance').returns({
     createSetting: createDummySetting,
     moduleSetting: createDummySetting,
     createLocalSetting: createDummySetting,
+    resolve: createDummySetting,
+    maybeResolve: createDummySetting,
   } as unknown as Common.Settings.Settings);
 }
 

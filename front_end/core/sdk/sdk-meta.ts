@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting under the Debugger category that can be invoked through the Command Menu.
-   */
-  disableJavascript: 'Disable JavaScript',
-  /**
-   * @description Title of a setting under the Debugger category that can be invoked through the Command Menu.
-   */
-  enableJavascript: 'Enable JavaScript',
-  /**
    * @description Title of a setting under the Debugger category in Settings.
    */
   disableAsyncStackTraces: 'Disable async stack traces',
@@ -454,26 +446,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.DEBUGGER,
-  title: i18nLazyString(UIStrings.disableJavascript),
-  settingName: 'java-script-disabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  order: 1,
-  defaultValue: false,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.disableJavascript),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.enableJavascript),
-    },
-  ],
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.DEBUGGER,

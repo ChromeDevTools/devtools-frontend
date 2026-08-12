@@ -42,3 +42,10 @@ export const pauseOnUncaughtExceptionSettingDescriptor: Common.Settings.SettingD
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 };
+
+export const javaScriptDisabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'java-script-disabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

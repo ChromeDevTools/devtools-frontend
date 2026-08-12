@@ -76,3 +76,10 @@ export const apcaSettingDescriptor: Common.Settings.SettingDescriptor<boolean> =
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const showGridAreasSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-grid-areas',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

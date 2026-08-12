@@ -7,18 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting that turns on grid area name labels.
-   */
-  showAreaNames: 'Show area names',
-  /**
-   * @description Title of a setting under the Grid category that turns CSS Grid Area highlighting on.
-   */
-  showGridNamedAreas: 'Show grid named areas',
-  /**
-   * @description Title of a setting under the Grid category that turns CSS Grid Area highlighting off.
-   */
-  doNotShowGridNamedAreas: 'Do not show grid named areas',
-  /**
    * @description Title of a setting that turns on grid track size labels.
    */
   showTrackSizes: 'Show track sizes',
@@ -418,25 +406,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.GRID,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.showAreaNames),
-  settingName: 'show-grid-areas',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.showGridNamedAreas),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.doNotShowGridNamedAreas),
-    },
-  ],
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GRID,

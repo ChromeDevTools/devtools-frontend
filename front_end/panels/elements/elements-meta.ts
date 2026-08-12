@@ -29,6 +29,18 @@ const UIStrings = {
    */
   apca: 'Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines',
   /**
+   * @description Title of a setting that turns on grid area name labels.
+   */
+  showAreaNames: 'Show area names',
+  /**
+   * @description Title of a setting under the Grid category that turns CSS Grid Area highlighting on.
+   */
+  showGridNamedAreas: 'Show grid named areas',
+  /**
+   * @description Title of a setting under the Grid category that turns CSS Grid Area highlighting off.
+   */
+  doNotShowGridNamedAreas: 'Do not show grid named areas',
+  /**
    * @description Command for showing the 'Elements' panel. Elements refers to HTML elements.
    */
   showElements: 'Show Elements',
@@ -740,4 +752,19 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showMetricsRulersSetti
 SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.apcaSettingDescriptor, {
   category: Common.Settings.SettingCategory.ELEMENTS,
   title: i18nLazyString(UIStrings.apca),
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showGridAreasSettingDescriptor, {
+  category: Common.Settings.SettingCategory.GRID,
+  title: i18nLazyString(UIStrings.showAreaNames),
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showGridNamedAreas),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotShowGridNamedAreas),
+    },
+  ],
 });

@@ -8,6 +8,7 @@ import * as Platform from '../platform/platform.js';
 
 import type {DOMModel} from './DOMModel.js';
 import {OverlayColorGenerator} from './OverlayColorGenerator.js';
+import {showGridAreasSettingDescriptor} from './SDKSettings.js';
 
 export const enum HighlightType {
   FLEX = 'FLEX',
@@ -59,7 +60,7 @@ export class OverlayPersistentHighlighter {
         settings.createLocalSetting<PersistentHighlightSettingItem[]>('persistent-highlight-setting', []);
     this.#showGridLineLabelsSetting = settings.moduleSetting<string>('show-grid-line-labels');
     this.#extendGridLinesSetting = settings.moduleSetting<boolean>('extend-grid-lines');
-    this.#showGridAreasSetting = settings.moduleSetting<boolean>('show-grid-areas');
+    this.#showGridAreasSetting = settings.resolve(showGridAreasSettingDescriptor);
     this.#showGridTrackSizesSetting = settings.moduleSetting<boolean>('show-grid-track-sizes');
 
     this.#showGridLineLabelsSetting.addChangeListener(this.onSettingChange, this);

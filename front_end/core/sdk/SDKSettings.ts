@@ -69,3 +69,10 @@ export const showMetricsRulersSettingDescriptor: Common.Settings.SettingDescript
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const apcaSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'apca',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

@@ -25,6 +25,10 @@ const UIStrings = {
    */
   doNotShowRulersOnHover: 'Don’t show rulers on hover',
   /**
+   * @description Title of a setting under the Elements category in Settings.
+   */
+  apca: 'Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines',
+  /**
    * @description Command for showing the 'Elements' panel. Elements refers to HTML elements.
    */
   showElements: 'Show Elements',
@@ -741,4 +745,9 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showMetricsRulersSetti
       title: i18nLazyString(UIStrings.doNotShowRulersOnHover),
     },
   ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.apcaSettingDescriptor, {
+  category: Common.Settings.SettingCategory.ELEMENTS,
+  title: i18nLazyString(UIStrings.apca),
 });

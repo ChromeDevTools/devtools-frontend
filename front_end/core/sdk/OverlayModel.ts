@@ -14,7 +14,7 @@ import {DeferredDOMNode, DOMModel, type DOMNode, DOMNodeEvents, Events as DOMMod
 import {OverlayPersistentHighlighter} from './OverlayPersistentHighlighter.js';
 import type {RemoteObject} from './RemoteObject.js';
 import {SDKModel} from './SDKModel.js';
-import {showMetricsRulersSettingDescriptor} from './SDKSettings.js';
+import {apcaSettingDescriptor, showMetricsRulersSettingDescriptor} from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 import type {TargetManager} from './TargetManager.js';
 
@@ -574,8 +574,8 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
-      contrastAlgorithm: settings.moduleSetting('apca').get() ? Protocol.Overlay.ContrastAlgorithm.Apca :
-                                                                Protocol.Overlay.ContrastAlgorithm.Aa,
+      contrastAlgorithm: settings.resolve(apcaSettingDescriptor).get() ? Protocol.Overlay.ContrastAlgorithm.Apca :
+                                                                         Protocol.Overlay.ContrastAlgorithm.Aa,
     };
 
     if (mode === 'all' || mode === 'content') {

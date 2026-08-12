@@ -266,7 +266,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
           const formattedTextColor = formatColor(blendedTextColor);
           const formattedBackgroundColor = formatColor(blendedBackgroundColor.asLegacyColor());
           const key = `${formattedTextColor}_${formattedBackgroundColor}`;
-          if (Common.Settings.Settings.instance().moduleSetting('apca').get()) {
+          if (Common.Settings.Settings.instance().resolve(SDK.SDKSettings.apcaSettingDescriptor).get()) {
             const contrastRatio = contrastInfo.contrastRatioAPCA();
             const threshold = contrastInfo.contrastRatioAPCAThreshold();
             const passes = contrastRatio && threshold ? Math.abs(contrastRatio) >= threshold : false;

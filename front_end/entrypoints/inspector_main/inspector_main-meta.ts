@@ -20,6 +20,14 @@ const UIStrings = {
    */
   hidePaintFlashingRectangles: 'Hide paint flashing rectangles',
   /**
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
+   */
+  showLayoutShiftRegions: 'Show layout shift regions',
+  /**
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
+   */
+  hideLayoutShiftRegions: 'Hide layout shift regions',
+  /**
    * @description Title of the Rendering panel. The Rendering panel is a collection of settings that
    * lets the user debug the rendering (i.e. how the website is drawn onto the screen) of the
    * website (https://developer.chrome.com/docs/devtools/evaluate-performance/reference#rendering).
@@ -274,6 +282,20 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showPaintRectsSettingD
     {
       value: false,
       title: i18nLazyString(UIStrings.hidePaintFlashingRectangles),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showLayoutShiftRegionsSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showLayoutShiftRegions),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.hideLayoutShiftRegions),
     },
   ],
 });

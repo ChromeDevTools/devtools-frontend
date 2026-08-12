@@ -111,3 +111,10 @@ export const showPaintRectsSettingDescriptor: Common.Settings.SettingDescriptor<
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const showLayoutShiftRegionsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-layout-shift-regions',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

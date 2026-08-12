@@ -16,6 +16,7 @@ import type {RemoteObject} from './RemoteObject.js';
 import {SDKModel} from './SDKModel.js';
 import {
   apcaSettingDescriptor,
+  showLayoutShiftRegionsSettingDescriptor,
   showMetricsRulersSettingDescriptor,
   showPaintRectsSettingDescriptor,
 } from './SDKSettings.js';
@@ -132,7 +133,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#highlighter = this.#defaultHighlighter;
 
     this.#showPaintRectsSetting = settings.resolve(showPaintRectsSettingDescriptor);
-    this.#showLayoutShiftRegionsSetting = settings.moduleSetting<boolean>('show-layout-shift-regions');
+    this.#showLayoutShiftRegionsSetting = settings.resolve(showLayoutShiftRegionsSettingDescriptor);
     this.#showAdHighlightsSetting = settings.moduleSetting<boolean>('show-ad-highlights');
     this.#showDebugBordersSetting = settings.moduleSetting<boolean>('show-debug-borders');
     this.#showFPSCounterSetting = settings.moduleSetting<boolean>('show-fps-counter');

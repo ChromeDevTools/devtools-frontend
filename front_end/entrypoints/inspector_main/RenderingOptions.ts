@@ -206,7 +206,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
                          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showPaintRectsSettingDescriptor));
     this.#appendCheckbox(
         i18nString(UIStrings.layoutShiftRegions), i18nString(UIStrings.highlightsAreasOfThePageBlueThat),
-        Common.Settings.Settings.instance().moduleSetting('show-layout-shift-regions'));
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showLayoutShiftRegionsSettingDescriptor));
     this.#appendCheckbox(
         i18nString(UIStrings.layerBorders), i18nString(UIStrings.showsLayerBordersOrangeoliveAnd),
         Common.Settings.Settings.instance().moduleSetting('show-debug-borders'));

@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
-   */
-  showLayoutShiftRegions: 'Show layout shift regions',
-  /**
-   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
-   */
-  hideLayoutShiftRegions: 'Hide layout shift regions',
-  /**
    * @description Text to highlight the rendering frames for ads.
    */
   highlightAdFrames: 'Highlight ad frames',
@@ -362,24 +354,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'show-layout-shift-regions',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.showLayoutShiftRegions),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.hideLayoutShiftRegions),
-    },
-  ],
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

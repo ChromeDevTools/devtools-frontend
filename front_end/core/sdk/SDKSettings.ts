@@ -97,3 +97,10 @@ export const extendGridLinesSettingDescriptor: Common.Settings.SettingDescriptor
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const showGridLineLabelsSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'show-grid-line-labels',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'lineNumbers',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

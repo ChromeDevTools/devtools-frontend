@@ -61,6 +61,22 @@ const UIStrings = {
    */
   doNotExtendGridLines: 'Do not extend grid lines',
   /**
+   * @description Title of a setting that turns on grid line labels.
+   */
+  showLineLabels: 'Show line labels',
+  /**
+   * @description Title of a setting that turns off the grid line labels.
+   */
+  hideLineLabels: 'Hide line labels',
+  /**
+   * @description Title of a setting that turns on grid line number labels.
+   */
+  showLineNumbers: 'Show line numbers',
+  /**
+   * @description Title of a setting that turns on grid line name labels.
+   */
+  showLineNames: 'Show line names',
+  /**
    * @description Command for showing the 'Elements' panel. Elements refers to HTML elements.
    */
   showElements: 'Show Elements',
@@ -815,6 +831,28 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.extendGridLinesSetting
     {
       value: false,
       title: i18nLazyString(UIStrings.doNotExtendGridLines),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showGridLineLabelsSettingDescriptor, {
+  category: Common.Settings.SettingCategory.GRID,
+  title: i18nLazyString(UIStrings.showLineLabels),
+  options: [
+    {
+      title: i18nLazyString(UIStrings.hideLineLabels),
+      text: i18nLazyString(UIStrings.hideLineLabels),
+      value: 'none',
+    },
+    {
+      title: i18nLazyString(UIStrings.showLineNumbers),
+      text: i18nLazyString(UIStrings.showLineNumbers),
+      value: 'lineNumbers',
+    },
+    {
+      title: i18nLazyString(UIStrings.showLineNames),
+      text: i18nLazyString(UIStrings.showLineNames),
+      value: 'lineNames',
     },
   ],
 });

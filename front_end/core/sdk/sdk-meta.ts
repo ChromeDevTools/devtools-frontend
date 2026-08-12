@@ -7,22 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting that turns on grid line labels.
-   */
-  showLineLabels: 'Show line labels',
-  /**
-   * @description Title of a setting that turns off the grid line labels.
-   */
-  hideLineLabels: 'Hide line labels',
-  /**
-   * @description Title of a setting that turns on grid line number labels.
-   */
-  showLineNumbers: 'Show line numbers',
-  /**
-   * @description Title of a setting that turns on grid line name labels.
-   */
-  showLineNames: 'Show line names',
-  /**
    * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
    */
   showPaintFlashingRectangles: 'Show paint flashing rectangles',
@@ -386,32 +370,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.GRID,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.showLineLabels),
-  settingName: 'show-grid-line-labels',
-  settingType: Common.Settings.SettingType.ENUM,
-  options: [
-    {
-      title: i18nLazyString(UIStrings.hideLineLabels),
-      text: i18nLazyString(UIStrings.hideLineLabels),
-      value: 'none',
-    },
-    {
-      title: i18nLazyString(UIStrings.showLineNumbers),
-      text: i18nLazyString(UIStrings.showLineNumbers),
-      value: 'lineNumbers',
-    },
-    {
-      title: i18nLazyString(UIStrings.showLineNames),
-      text: i18nLazyString(UIStrings.showLineNames),
-      value: 'lineNames',
-    },
-  ],
-  defaultValue: 'lineNumbers',
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

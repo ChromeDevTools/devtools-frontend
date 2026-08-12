@@ -11,6 +11,7 @@ import {OverlayColorGenerator} from './OverlayColorGenerator.js';
 import {
   extendGridLinesSettingDescriptor,
   showGridAreasSettingDescriptor,
+  showGridLineLabelsSettingDescriptor,
   showGridTrackSizesSettingDescriptor,
 } from './SDKSettings.js';
 
@@ -62,7 +63,7 @@ export class OverlayPersistentHighlighter {
 
     this.#persistentHighlightSetting =
         settings.createLocalSetting<PersistentHighlightSettingItem[]>('persistent-highlight-setting', []);
-    this.#showGridLineLabelsSetting = settings.moduleSetting<string>('show-grid-line-labels');
+    this.#showGridLineLabelsSetting = settings.resolve(showGridLineLabelsSettingDescriptor);
     this.#extendGridLinesSetting = settings.resolve(extendGridLinesSettingDescriptor);
     this.#showGridAreasSetting = settings.resolve(showGridAreasSettingDescriptor);
     this.#showGridTrackSizesSetting = settings.resolve(showGridTrackSizesSettingDescriptor);

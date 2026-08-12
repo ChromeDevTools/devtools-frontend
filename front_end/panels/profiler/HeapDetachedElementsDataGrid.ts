@@ -111,7 +111,6 @@ export class HeapDetachedElementsDataGridNode extends DataGrid.DataGrid.DataGrid
     return count;
   }
 
-  // FIXME: is it a partial dupe of front_end/panels/elements/ElementsTreeOutlineRenderer.ts?
   #renderNode(node: SDK.DOMModel.DOMNode, target: HTMLElement): void {
     render(
         html`

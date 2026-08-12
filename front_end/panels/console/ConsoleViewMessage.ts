@@ -59,6 +59,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as Elements from '../elements/elements.js';
 
 import {format, updateStyle} from './ConsoleFormat.js';
 import {ConsoleInsightTeaser} from './ConsoleInsightTeaser.js';
@@ -970,23 +971,33 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     if (!domModel) {
       return result;
     }
-    void domModel.pushObjectAsNodeToFrontend(remoteObject).then(async (node: SDK.DOMModel.DOMNode|null) => {
+    void domModel.pushObjectAsNodeToFrontend(remoteObject).then((node: SDK.DOMModel.DOMNode|null) => {
       if (!node) {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
         return;
       }
-      const renderResult = await UI.UIUtils.Renderer.render(node);
-      if (renderResult) {
-        this.selectableChildren.push(renderResult);
-        // FIXME: this should not be needed once ConsoleViewMessage is rendering
-        // declaratively and the tree outline auto-resizes itself.
-        renderResult.element.addEventListener('dimensionschanged', () => {
-          this.messageResized({data: renderResult.element});
-        });
-        result.appendChild(renderResult.element);
-      } else {
-        result.appendChild(this.formatParameterAsObject(remoteObject, false));
-      }
+      const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+          /* omitRootDOMNode: */ false, /* selectEnabled: */ true, /* hideGutter: */ true);
+      treeOutline.rootDOMNode = node;
+      treeOutline.deindentSingleNode();
+      treeOutline.setVisible(true);
+      // @ts-expect-error used in console_test_runner
+      treeOutline.element.treeElementForTest = treeOutline.firstChild();
+      treeOutline.setShowSelectionOnKeyboardFocus(/* show: */ true, /* preventTabOrder: */ true);
+
+      this.selectableChildren.push({
+        element: treeOutline.element,
+        forceSelect: treeOutline.forceSelect.bind(treeOutline),
+      });
+      // FIXME: this should not be needed once ConsoleViewMessage is rendering
+      // declaratively and the tree outline auto-resizes itself.
+      const dispatchDimensionChange = (): void => {
+        this.messageResized({data: treeOutline.element});
+      };
+      treeOutline.addEventListener(UI.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
+      treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
+      treeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
+      result.appendChild(treeOutline.element);
       this.formattedParameterAsNodeForTest();
     });
 

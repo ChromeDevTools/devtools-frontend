@@ -713,16 +713,6 @@ UI.Toolbar.registerToolbarItem({
   order: 0,
 });
 
-UI.UIUtils.registerRenderer({
-  contextTypes() {
-    return [SDK.DOMModel.DOMNode, SDK.DOMModel.DeferredDOMNode];
-  },
-  async loadRenderer() {
-    const Elements = await loadElementsModule();
-    return Elements.ElementsTreeOutlineRenderer.Renderer.instance();
-  },
-});
-
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NONE,
   storageType: Common.Settings.SettingStorageType.GLOBAL,

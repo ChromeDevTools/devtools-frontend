@@ -311,7 +311,7 @@ var AIv2MarkdownRenderer = class extends MarkdownView3.MarkdownView.MarkdownInsi
       return html3`${fallbackText}`;
     }
     if (href.startsWith("#file-")) {
-      const file = AiAssistanceModel3.ContextSelectionAgent.ContextSelectionAgent.getUISourceCodes().find((file2) => AiAssistanceModel3.ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.get(file2) === Number(href.substring(6)));
+      const file = AiAssistanceModel3.ListSources.ListSourcesTool.getUISourceCodes().find((file2) => AiAssistanceModel3.ListSources.ListSourcesTool.uiSourceCodeId.get(file2) === Number(href.substring(6)));
       if (file) {
         return this.#revealableLink(file, file.name());
       }
@@ -3212,7 +3212,15 @@ var UIStringsNotTranslate2 = {
   /**
    * @description Title for the source files list widget.
    */
-  inspectedFileNames: "Inspected file names"
+  inspectedFileNames: "Inspected file names",
+  /**
+   * @description Title for the storage breakdown widget.
+   */
+  storageBreakdown: "Storage breakdown",
+  /**
+   * @description Accessible label for the reveal button in the storage breakdown widget.
+   */
+  revealStorageBreakdown: "Reveal storage breakdown in Application panel"
 };
 var DEFAULT_VIEW3 = (input, output, target) => {
   const message = input.message;
@@ -3491,6 +3499,15 @@ async function resolveNode(backendNodeId) {
     nodeCache.set(backendNodeId, resolved);
   }
   return resolved;
+}
+async function makeStorageBreakdownWidget(_widgetData) {
+  return {
+    renderedWidget: html6`<div>Storage Breakdown Stub</div>`,
+    title: lockedString3(UIStringsNotTranslate2.storageBreakdown),
+    revealable: null,
+    accessibleRevealLabel: lockedString3(UIStringsNotTranslate2.revealStorageBreakdown),
+    jslogContext: "storage-breakdown-widget"
+  };
 }
 async function makeComputedStyleWidget(widgetData) {
   const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
@@ -4052,6 +4069,8 @@ function getWidgetSignature(widget5) {
       return `${widget5.name}:${widget5.data.url}:${widget5.data.line ?? ""}:${widget5.data.column ?? ""}`;
     case "NETWORK_REQUESTS_LIST":
       return `${widget5.name}:${widget5.data.requests.map((r) => r.requestId()).join(",")}`;
+    case "STORAGE_BREAKDOWN":
+      return `${widget5.name}:${widget5.data.totalUsageBytes}:${widget5.data.usageBreakdown.map((e) => `${e.storageType}_${e.bytes}`).join(",")}`;
     default:
       Platform3.assertNever(widget5, "Unknown AiWidget name");
   }
@@ -4145,6 +4164,9 @@ async function renderWidgets(widgets, options = {}) {
         break;
       case "SOURCE_CODE":
         response = await makeSourceCodeWidget(widgetData);
+        break;
+      case "STORAGE_BREAKDOWN":
+        response = await makeStorageBreakdownWidget(widgetData);
         break;
       default:
         Platform3.assertNever(widgetData, "Unknown AiWidget name");

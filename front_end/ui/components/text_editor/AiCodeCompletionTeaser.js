@@ -1,19 +1,19 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import '../../ui/kit/kit.js';
-import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
-import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
-import * as AiCodeGeneration from '../../models/ai_code_generation/ai_code_generation.js';
-import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import { html, nothing, render } from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import '../../kit/kit.js';
+import * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
+import * as AIAssistance from '../../../models/ai_assistance/ai_assistance.js';
+import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
+import * as UI from '../../legacy/legacy.js';
+import { html, nothing, render } from '../../lit/lit.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
+import * as Dialogs from '../dialogs/dialogs.js';
+import * as Snackbars from '../snackbars/snackbars.js';
 import styles from './aiCodeCompletionTeaser.css.js';
-import { FreDialog } from './FreDialog.js';
 const UIStringsNotTranslate = {
     /**
      * @description Text for `ctrl` key.
@@ -224,7 +224,7 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
     onAction = async (event) => {
         event.preventDefault();
         const iconName = AIAssistance.AiUtils.getIconName();
-        const result = await FreDialog.show({
+        const result = await Dialogs.FreDialog.FreDialog.show({
             header: { iconName, text: lockedString(UIStringsNotTranslate.freDisclaimerHeader) },
             reminderItems: this.#createReminderItems(),
             onLearnMoreClick: () => {

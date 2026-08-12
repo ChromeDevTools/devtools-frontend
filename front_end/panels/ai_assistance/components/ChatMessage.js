@@ -405,6 +405,14 @@ const UIStringsNotTranslate = {
      * @description Title for the source files list widget.
      */
     inspectedFileNames: 'Inspected file names',
+    /**
+     * @description Title for the storage breakdown widget.
+     */
+    storageBreakdown: 'Storage breakdown',
+    /**
+     * @description Accessible label for the reveal button in the storage breakdown widget.
+     */
+    revealStorageBreakdown: 'Reveal storage breakdown in Application panel',
 };
 export const DEFAULT_VIEW = (input, output, target) => {
     const message = input.message;
@@ -746,6 +754,15 @@ async function resolveNode(backendNodeId) {
         nodeCache.set(backendNodeId, resolved);
     }
     return resolved;
+}
+async function makeStorageBreakdownWidget(_widgetData) {
+    return {
+        renderedWidget: html `<div>Storage Breakdown Stub</div>`,
+        title: lockedString(UIStringsNotTranslate.storageBreakdown),
+        revealable: null,
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealStorageBreakdown),
+        jslogContext: 'storage-breakdown-widget',
+    };
 }
 async function makeComputedStyleWidget(widgetData) {
     const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
@@ -1354,6 +1371,8 @@ export function getWidgetSignature(widget) {
             return `${widget.name}:${widget.data.url}:${widget.data.line ?? ''}:${widget.data.column ?? ''}`;
         case 'NETWORK_REQUESTS_LIST':
             return `${widget.name}:${widget.data.requests.map(r => r.requestId()).join(',')}`;
+        case 'STORAGE_BREAKDOWN':
+            return `${widget.name}:${widget.data.totalUsageBytes}:${widget.data.usageBreakdown.map(e => `${e.storageType}_${e.bytes}`).join(',')}`;
         default:
             Platform.assertNever(widget, 'Unknown AiWidget name');
     }
@@ -1452,6 +1471,9 @@ async function renderWidgets(widgets, options = {}) {
                 break;
             case 'SOURCE_CODE':
                 response = await makeSourceCodeWidget(widgetData);
+                break;
+            case 'STORAGE_BREAKDOWN':
+                response = await makeStorageBreakdownWidget(widgetData);
                 break;
             default:
                 Platform.assertNever(widgetData, 'Unknown AiWidget name');

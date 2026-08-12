@@ -9,10 +9,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as PanelCommon from '../common/common.js';
 import consoleInsightTeaserStyles from './consoleInsightTeaser.css.js';
 import { ConsoleViewMessage } from './ConsoleViewMessage.js';
 import { PromptBuilder } from './PromptBuilder.js';
@@ -426,7 +426,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
         const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
             Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
         const iconName = AiAssistanceModel.AiUtils.getIconName();
-        const result = await PanelCommon.FreDialog.show({
+        const result = await Dialogs.FreDialog.FreDialog.show({
             header: { iconName, text: lockedString(UIStringsNotTranslate.freDisclaimerHeader) },
             reminderItems: [
                 {

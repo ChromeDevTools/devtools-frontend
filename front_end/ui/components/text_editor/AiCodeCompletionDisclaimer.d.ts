@@ -1,7 +1,7 @@
-import '../../ui/components/spinners/spinners.js';
-import '../../ui/components/tooltips/tooltips.js';
-import * as Host from '../../core/host/host.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import '../spinners/spinners.js';
+import '../tooltips/tooltips.js';
+import * as Host from '../../../core/host/host.js';
+import * as UI from '../../legacy/legacy.js';
 export type DisclaimerTextVariant = 'console' | 'sources' | 'styles';
 export interface ViewInput {
     disclaimerTooltipId?: string;

@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
-import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as UI from '../../legacy/legacy.js';
+import * as Lit from '../../lit/lit.js';
+import * as Buttons from '../buttons/buttons.js';
 import styles from './aiCodeGenerationUpgradeDialog.css.js';
 const { html } = Lit;
 const UIStringsNotTranslate = {

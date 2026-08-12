@@ -3951,6 +3951,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "stop-ignoring-this-retainer",
   "stop-opacity",
   "storage",
+  "storage-breakdown-widget",
   "storage-bucket",
   "storage-buckets",
   "storage-cookie",

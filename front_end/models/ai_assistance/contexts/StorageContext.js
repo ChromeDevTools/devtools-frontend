@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../../core/common/common.js';
 import { ConversationContext, } from '../agents/AiAgent.js';
+import { areOriginsEquivalent } from '../AiOrigins.js';
 import { CookieItem, DOMStorageItem } from '../StorageItem.js';
 export class StorageContext extends ConversationContext {
     #item;
@@ -88,11 +89,11 @@ export class StorageContext extends ConversationContext {
         return undefined;
     }
 }
-export function isSamePageOrigin(target, context) {
-    if (!target || !context) {
+export function isSamePageOrigin(target, allowedOrigin) {
+    if (!target) {
         return false;
     }
     const pageOrigin = Common.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL());
-    return pageOrigin !== '' && context.isOriginAllowed(pageOrigin);
+    return pageOrigin !== '' && areOriginsEquivalent(pageOrigin, allowedOrigin);
 }
 //# sourceMappingURL=StorageContext.js.map

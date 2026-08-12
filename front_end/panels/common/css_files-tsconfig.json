@@ -4,15 +4,9 @@
         "outDir": "."
     },
     "files": [
-        "aiCodeCompletionDisclaimer.css.js",
         "aiCodeCompletionSummaryToolbar.css.js",
-        "aiCodeCompletionTeaser.css.js",
-        "aiCodeGenerationTeaser.css.js",
-        "aiCodeGenerationUpgradeDialog.css.js",
         "badgeNotification.css.js",
-        "common.css.js",
         "domLinkifier.css.js",
-        "freDialog.css.js",
         "gdpSignUpDialog.css.js",
         "geminiRebrandPromoDialog.css.js"
     ]

@@ -1,5 +1,5 @@
-import type * as Platform from '../../core/platform/platform.js';
-import * as Lit from '../../ui/lit/lit.js';
+import type * as Platform from '../../../core/platform/platform.js';
+import * as Lit from '../../lit/lit.js';
 export declare class FreDialog {
     static show({ header, reminderItems, onLearnMoreClick, ariaLabel, learnMoreButtonText, learnMoreButtonAriaLabel }: {
         header: {

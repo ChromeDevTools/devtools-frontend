@@ -4,3 +4,4 @@ export declare const cssSourceMapsEnabledSettingDescriptor: Common.Settings.Sett
 export declare const preserveConsoleLogSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const pauseOnExceptionEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const pauseOnCaughtExceptionSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const pauseOnUncaughtExceptionSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;

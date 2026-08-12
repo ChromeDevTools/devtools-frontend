@@ -15124,6 +15124,33 @@ export declare namespace Page {
          */
         everyNthFrame?: integer;
     }
+    interface StartScreenRecordingRequest {
+        audio?: boolean;
+        /**
+         * Maximum frame width in pixels.
+         */
+        maxWidth?: integer;
+        /**
+         * Maximum frame height in pixels.
+         */
+        maxHeight?: integer;
+        /**
+         * Maximum frame rate in frames per second.
+         */
+        frameRate?: integer;
+    }
+    interface StartScreenRecordingResponse extends ProtocolResponseWithError {
+        /**
+         * A handle of the stream that holds resulting screencast data.
+         */
+        stream: IO.StreamHandle;
+    }
+    interface StopScreenRecordingResponse extends ProtocolResponseWithError {
+        /**
+         * A handle of the stream that holds resulting screencast data.
+         */
+        stream: IO.StreamHandle;
+    }
     const enum SetWebLifecycleStateRequestState {
         Frozen = "frozen",
         Active = "active"
@@ -18586,11 +18613,16 @@ export declare namespace WebAuthn {
         Ctap2_1 = "ctap2_1",
         Ctap2_2 = "ctap2_2"
     }
+    /**
+     * LINT_SKIP.IfChange(AuthenticatorTransport)
+     */
     const enum AuthenticatorTransport {
         Usb = "usb",
         Nfc = "nfc",
         Ble = "ble",
         Cable = "cable",
+        Hybrid = "hybrid",
+        SmartCard = "smart-card",
         Internal = "internal"
     }
     interface VirtualAuthenticatorOptions {

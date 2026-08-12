@@ -1,14 +1,14 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import '../../ui/components/spinners/spinners.js';
-import '../../ui/components/tooltips/tooltips.js';
-import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import '../spinners/spinners.js';
+import '../tooltips/tooltips.js';
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
+import * as UI from '../../legacy/legacy.js';
+import { Directives, html, nothing, render } from '../../lit/lit.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import styles from './aiCodeCompletionDisclaimer.css.js';
 const UIStringsNotTranslate = {
     /**

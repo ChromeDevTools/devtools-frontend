@@ -1,6 +1,6 @@
-import '../../ui/kit/kit.js';
-import * as Host from '../../core/host/host.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import '../../kit/kit.js';
+import * as Host from '../../../core/host/host.js';
+import * as UI from '../../legacy/legacy.js';
 import type { DisclaimerTextVariant } from './AiCodeCompletionDisclaimer.js';
 export interface ViewInput {
     aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;

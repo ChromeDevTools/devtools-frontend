@@ -47,6 +47,7 @@ console/search.test.js
 coverage/coverage-with-source-map.test.js
 coverage/coverage.test.js
 cross_tool_integration/browser.test.js
+cross_tool_integration/click-to-comment.test.js
 cross_tool_integration/workflow.test.js
 css_overview/css_overview.test.js
 elements/accessibility-pane.test.js

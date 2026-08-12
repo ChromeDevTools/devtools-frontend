@@ -32,3 +32,9 @@ export declare class PerformanceTraceFormatter {
     resolveFunctionCodeAtLocation(url: Platform.DevToolsPath.UrlString, line: number, column: number): Promise<SourceMapScopes.FunctionCodeResolver.FunctionCode | null>;
     formatFunctionCode(code: SourceMapScopes.FunctionCodeResolver.FunctionCode): string;
 }
+/**
+ * Serializes a trace event to a JSON string for AI consumption,
+ * ensuring sensitive data (like headers and raw script source code)
+ * is sanitized or redacted.
+ */
+export declare function formatEventForAI(event: Trace.Types.Events.Event): string;

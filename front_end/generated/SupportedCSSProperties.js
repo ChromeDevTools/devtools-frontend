@@ -1025,6 +1025,11 @@ export const generatedProperties = [
         "runtime_flag_status": "stable"
     },
     {
+        "devtools_keywords": [
+            "none",
+            "move",
+            "no-drag"
+        ],
         "name": "app-region"
     },
     {
@@ -5162,7 +5167,8 @@ export const generatedProperties = [
             "inline",
             "both",
             "mandatory",
-            "proximity"
+            "proximity",
+            "pair"
         ],
         "name": "scroll-snap-type"
     },
@@ -6077,6 +6083,10 @@ export const generatedProperties = [
         "name": "will-change"
     },
     {
+        "devtools_keywords": [
+            "none",
+            "move"
+        ],
         "inherited": true,
         "keywords": [
             "none",
@@ -6412,6 +6422,13 @@ export const generatedPropertyValues = {
     "animation-trigger": {
         "values": [
             "none"
+        ]
+    },
+    "app-region": {
+        "values": [
+            "none",
+            "move",
+            "no-drag"
         ]
     },
     "appearance": {
@@ -8693,7 +8710,8 @@ export const generatedPropertyValues = {
             "inline",
             "both",
             "mandatory",
-            "proximity"
+            "proximity",
+            "pair"
         ]
     },
     "scroll-target-group": {
@@ -9207,8 +9225,7 @@ export const generatedPropertyValues = {
     "window-drag": {
         "values": [
             "none",
-            "move",
-            "no-drag"
+            "move"
         ]
     },
     "word-break": {

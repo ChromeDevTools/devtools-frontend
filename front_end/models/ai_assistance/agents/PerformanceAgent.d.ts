@@ -1,20 +1,9 @@
 import * as Host from '../../../core/host/host.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Logs from '../../logs/logs.js';
-import * as Trace from '../../trace/trace.js';
 import type { PerformanceTraceContext } from '../contexts/PerformanceTraceContext.js';
 import type { AgentFocus } from '../performance/AIContext.js';
 import { type AgentOptions, AiAgent, type ContextResponse, type ConversationContext, type ParsedResponse, type RequestOptions, type ResponseData } from './AiAgent.js';
-/**
- * Labels used to identify specific periods or categories in the trace for getting main thread summary.
- * Supports hardcoded phases, dynamic navigation IDs (`NAVIGATION_X`), and insight models.
- */
-export type MainThreadSectionLabel = 'nav-to-lcp' | 'lcp-ttfb' | 'lcp-render-delay' | 'trace-bounds' | 'NO_NAVIGATION' | `NAVIGATION_${string}` | keyof Trace.Insights.Types.InsightModels;
-/**
- * Converts the label name we use in the code to a human readable one that is
- * shown to the user.
- */
-export declare function getLabelName(label: MainThreadSectionLabel, focus: AgentFocus): string;
 export interface PerformanceAgentOptions extends AgentOptions {
     tracker?: Tracing.FreshRecording.Tracker;
     networkLog?: Logs.NetworkLog.NetworkLog;

@@ -406,13 +406,13 @@ import * as Platform from "./../../../../core/platform/platform.js";
 import * as Root from "./../../../../core/root/root.js";
 import * as AiAssistanceModels from "./../../../../models/ai_assistance/ai_assistance.js";
 import * as Buttons from "./../../../../ui/components/buttons/buttons.js";
+import * as Dialogs from "./../../../../ui/components/dialogs/dialogs.js";
 import * as ComponentHelpers from "./../../../../ui/components/helpers/helpers.js";
 import * as UIHelpers from "./../../../../ui/helpers/helpers.js";
 import * as UI from "./../../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../../../ui/legacy/theme_support/theme_support.js";
 import * as Lit from "./../../../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../../../ui/visual_logging/visual_logging.js";
-import * as PanelCommon from "./../../../common/common.js";
 
 // gen/front_end/panels/timeline/overlays/components/entryLabelOverlay.css.js
 var entryLabelOverlay_css_default = `/*
@@ -1006,7 +1006,7 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
    */
   async #showUserAiFirstRunDialog() {
     this.dispatchEvent(new LabelAnnotationsConsentDialogVisibilityChange(true));
-    const userConsented = await PanelCommon.FreDialog.show({
+    const userConsented = await Dialogs.FreDialog.FreDialog.show({
       ariaLabel: i18nString2(UIStrings2.freDialog),
       header: { iconName: "pen-spark", text: lockedString(UIStringsNotTranslate.freDisclaimerHeader) },
       reminderItems: [

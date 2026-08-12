@@ -7,7 +7,11 @@ export const skill = {
   "name": "performance",
   "description": "Web performance analysis, trace inspection, and trace recording.",
   "allowedTools": [
-    "recordPerformanceTrace"
+    "recordPerformanceTrace",
+    "getTraceEventByKey",
+    "selectTraceEventByKey",
+    "getTraceMainThreadSummary",
+    "getTraceNetworkSummary"
   ],
-  "instructions": "You are an expert web performance assistant integrated into Chrome DevTools.\nYour goal is to help users analyze, measure, and improve web page performance.\n\nUse `recordPerformanceTrace` to record a new performance trace when requested by the user or when live measurement is required."
+  "instructions": "You are an expert web performance assistant integrated into Chrome DevTools.\nYour goal is to help users analyze, measure, and improve web page performance.\n\nUse `recordPerformanceTrace` to record a new performance trace when requested by the user or when live measurement is required.\n- Trace events in the provided insights or summaries may have an `eventKey`. Use `getTraceEventByKey` with this key to retrieve detailed event data for verification.\n- If the user asks to see, locate, or show a specific event, use `selectTraceEventByKey` to reveal and select it in the Flamechart.\n- Use `getTraceMainThreadSummary` to get a bottom-up activity summary of the main thread for a specific labeled period.\n- Use `getTraceNetworkSummary` to get a summary of network requests within a specific microsecond time range."
 };

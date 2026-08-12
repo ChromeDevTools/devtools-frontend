@@ -11,9 +11,8 @@ import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Logs from '../../logs/logs.js';
 import * as Trace from '../../trace/trace.js';
 import { canResourceContentsBeReadForTrace } from '../AiOrigins.js';
-import { sanitizeHeaders } from '../data_formatters/NetworkRequestFormatter.js';
 import { PerformanceInsightFormatter, } from '../data_formatters/PerformanceInsightFormatter.js';
-import { PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
+import { formatEventForAI, PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
 import { debugLog } from '../debug.js';
 import { AICallTree } from '../performance/AICallTree.js';
 import { AiAgent, } from './AiAgent.js';
@@ -163,41 +162,11 @@ var ScorePriority;
 })(ScorePriority || (ScorePriority = {}));
 // 16k Tokens * ~4 char per token.
 const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
-const STATIC_LABEL_NAMES = {
-    'nav-to-lcp': 'navigation to LCP',
-    'lcp-ttfb': 'LCP to TTFB',
-    'lcp-render-delay': 'LCP render delay',
-    'trace-bounds': 'the entire trace',
-    NO_NAVIGATION: 'the period before the first navigation',
-};
 function getInsightModel(model, key) {
     if (Object.prototype.hasOwnProperty.call(model, key)) {
         return model[key];
     }
     return undefined;
-}
-/**
- * Converts the label name we use in the code to a human readable one that is
- * shown to the user.
- */
-export function getLabelName(label, focus) {
-    if (Object.prototype.hasOwnProperty.call(STATIC_LABEL_NAMES, label)) {
-        return STATIC_LABEL_NAMES[label];
-    }
-    const { parsedTrace } = focus;
-    const insightSetById = parsedTrace.insights?.get(label);
-    if (insightSetById) {
-        return `navigation to ${insightSetById.url.href}`;
-    }
-    // Go through all the insights we have to find the first one that matches to find the title.
-    // TODO(b/505291090): make it easier to look up Insight titles from a key.
-    for (const insightSet of parsedTrace.insights?.values() ?? []) {
-        const model = getInsightModel(insightSet.model, label);
-        if (model) {
-            return `${model.title} insight`;
-        }
-    }
-    return label;
 }
 /**
  * One agent instance handles one conversation. Create a new agent
@@ -790,15 +759,6 @@ export class PerformanceAgent extends AiAgent {
                 };
             },
         });
-        const createBounds = (min, max) => {
-            const { min: bMin, max: bMax } = parsedTrace.data.Meta.traceBounds;
-            const clampedMin = Math.max(min ?? bMin, bMin);
-            const clampedMax = Math.min(max ?? bMax, bMax);
-            if (clampedMin > clampedMax) {
-                return null;
-            }
-            return Trace.Helpers.Timing.traceWindowFromMicroSeconds(clampedMin, clampedMax);
-        };
         this.declareFunction('getMainThreadTrackSummaryByLabel', {
             description: 'Returns a focused, detailed summary of the main thread for a predefined labeled period. Use this to get more relevant detail than the initial trace summary before diagnosing issues.',
             parameters: {
@@ -815,7 +775,7 @@ export class PerformanceAgent extends AiAgent {
                 required: ['label'],
             },
             displayInfoFromArgs: args => {
-                const labelName = getLabelName(args.label, focus);
+                const labelName = context.getLabelName(args.label);
                 return {
                     title: lockedString(`${UIStringsNotTranslated.mainThreadActivity}: ${labelName}`),
                     action: `getMainThreadTrackSummaryByLabel('${args.label}')`,
@@ -823,7 +783,7 @@ export class PerformanceAgent extends AiAgent {
             },
             handler: async (args) => {
                 debugLog('Function call: getMainThreadTrackSummaryByLabel');
-                const bounds = this.#getBoundsForLabel(args.label, focus);
+                const bounds = context.getBoundsForLabel(args.label);
                 if (!bounds) {
                     return { error: `Invalid label: ${args.label}` };
                 }
@@ -864,7 +824,7 @@ export class PerformanceAgent extends AiAgent {
                 if (!this.#formatter) {
                     throw new Error('missing formatter');
                 }
-                const bounds = createBounds(args.min, args.max);
+                const bounds = context.createBounds(args.min, args.max);
                 if (!bounds) {
                     return { error: 'invalid bounds' };
                 }
@@ -1126,57 +1086,6 @@ export class PerformanceAgent extends AiAgent {
             },
         });
     }
-    #getBoundsForLabel(label, focus) {
-        const { parsedTrace } = focus;
-        const insightSet = focus.primaryInsightSet;
-        if (label === 'nav-to-lcp') {
-            if (insightSet) {
-                const lcp = Trace.Insights.Common.getLCP(insightSet);
-                if (lcp) {
-                    return Trace.Helpers.Timing.traceWindowFromMicroSeconds(insightSet.bounds.min, lcp.event.ts);
-                }
-            }
-            return null;
-        }
-        if (label === 'lcp-ttfb') {
-            if (insightSet) {
-                const subparts = insightSet.model.LCPBreakdown?.subparts;
-                if (subparts?.ttfb) {
-                    return subparts.ttfb;
-                }
-            }
-            return null;
-        }
-        if (label === 'lcp-render-delay') {
-            if (insightSet) {
-                const subparts = insightSet.model.LCPBreakdown?.subparts;
-                if (subparts?.renderDelay) {
-                    return subparts.renderDelay;
-                }
-            }
-            return null;
-        }
-        if (label === 'trace-bounds') {
-            return parsedTrace.data.Meta.traceBounds;
-        }
-        const insightSetById = parsedTrace.insights?.get(label);
-        if (insightSetById) {
-            return insightSetById.bounds;
-        }
-        if (insightSet) {
-            const model = getInsightModel(insightSet.model, label);
-            if (model) {
-                return Trace.Insights.Common.insightBounds(model, insightSet.bounds);
-            }
-        }
-        for (const is of parsedTrace.insights?.values() ?? []) {
-            const model = getInsightModel(is.model, label);
-            if (model) {
-                return Trace.Insights.Common.insightBounds(model, is.bounds);
-            }
-        }
-        return null;
-    }
     async #getNetworkRequestImageData(lcpRequest) {
         const target = this.targetManager.primaryPageTarget();
         const networkManager = target?.model(SDK.NetworkManager.NetworkManager);
@@ -1194,68 +1103,5 @@ export class PerformanceAgent extends AiAgent {
         }
         return undefined;
     }
-}
-/**
- * Serializes a trace event to a JSON string for AI consumption,
- * ensuring sensitive data (like headers and raw script source code)
- * is sanitized or redacted.
- */
-function formatEventForAI(event) {
-    if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
-        return JSON.stringify({
-            ...event,
-            args: {
-                ...event.args,
-                data: {
-                    ...event.args.data,
-                    responseHeaders: event.args.data.responseHeaders ? sanitizeHeaders(event.args.data.responseHeaders) : null,
-                },
-            },
-        });
-    }
-    if (Trace.Types.Events.isResourceReceiveResponse(event)) {
-        return JSON.stringify({
-            ...event,
-            args: {
-                ...event.args,
-                data: {
-                    ...event.args.data,
-                    headers: event.args.data.headers ? sanitizeHeaders(event.args.data.headers) : undefined,
-                },
-            },
-        });
-    }
-    if (Trace.Types.Events.isRundownScriptSource(event)) {
-        // Redact sensitive cross-origin script source text.
-        const safeData = {
-            isolate: event.args.data.isolate,
-            scriptId: event.args.data.scriptId,
-            length: event.args.data.length,
-        };
-        return JSON.stringify({
-            ...event,
-            args: {
-                ...event.args,
-                data: safeData,
-            },
-        });
-    }
-    if (Trace.Types.Events.isRundownScriptSourceLarge(event)) {
-        // Redact sensitive cross-origin script source text.
-        const safeData = {
-            isolate: event.args.data.isolate,
-            scriptId: event.args.data.scriptId,
-            splitIndex: event.args.data.splitIndex,
-            splitCount: event.args.data.splitCount,
-        };
-        return JSON.stringify({
-            ...event,
-            args: {
-                ...event.args,
-                data: safeData,
-            },
-        });
-    }
-    return JSON.stringify(event);
 }
 //# sourceMappingURL=PerformanceAgent.js.map

@@ -14,7 +14,6 @@ style.setProperty('--image-file-chromeMiddle', 'url(\"' + new URL('./chromeMiddl
 style.setProperty('--image-file-chromeRight', 'url(\"' + new URL('./chromeRight.avif', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-cssoverview_icons_2x', 'url(\"' + new URL('./cssoverview_icons_2x.avif', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-nodeIcon', 'url(\"' + new URL('./nodeIcon.avif', import.meta.url).toString() + '\")');
-style.setProperty('--image-file-toolbarResizerVertical', 'url(\"' + new URL('./toolbarResizerVertical.png', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-touchCursor_2x', 'url(\"' + new URL('./touchCursor_2x.png', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-geminiInDevTools', 'url(\"' + new URL('./geminiInDevTools.png', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-geminiInDevTools_2x', 'url(\"' + new URL('./geminiInDevTools_2x.png', import.meta.url).toString() + '\")');

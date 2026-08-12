@@ -750,15 +750,222 @@ var ForcedDialogClose = class _ForcedDialogClose extends Event {
   }
 };
 
+// gen/front_end/ui/components/dialogs/FreDialog.js
+var FreDialog_exports = {};
+__export(FreDialog_exports, {
+  FreDialog: () => FreDialog
+});
+import * as i18n3 from "./../../../core/i18n/i18n.js";
+import * as UI2 from "./../../legacy/legacy.js";
+import * as Lit2 from "./../../lit/lit.js";
+import * as Buttons2 from "./../buttons/buttons.js";
+
+// gen/front_end/ui/components/dialogs/freDialog.css.js
+var freDialog_css_default = `/*
+ * Copyright 2025 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+
+.fre-disclaimer {
+  overflow-y: auto;
+  width: var(--sys-size-33);
+  padding: var(--sys-size-9);
+
+  header {
+    display: flex;
+    gap: var(--sys-size-8);
+    margin-bottom: var(--sys-size-6);
+    align-items: center;
+
+    h2 {
+      margin: 0;
+      color: var(--sys-color-on-surface);
+      font: var(--sys-typescale-headline5);
+    }
+
+    .header-icon-container {
+      background: linear-gradient(
+        135deg,
+        var(--sys-color-gradient-primary),
+        var(--sys-color-gradient-tertiary)
+      );
+      border-radius: var(--sys-size-4);
+      min-height: var(--sys-size-14);
+      min-width: var(--sys-size-14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      devtools-icon {
+        width: var(--sys-size-9);
+        height: var(--sys-size-9);
+      }
+    }
+  }
+
+  .reminder-container {
+    border-radius: var(--sys-size-6);
+    background-color: var(--sys-color-surface4);
+    padding: var(--sys-size-9);
+
+    h3 {
+      color: var(--sys-color-on-surface);
+      font: var(--sys-typescale-body4-medium);
+      margin: 0;
+    }
+
+    .reminder-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--sys-size-5);
+      margin-top: var(--sys-size-6);
+      font: var(--sys-typescale-body5-regular);
+
+      devtools-icon.reminder-icon {
+        width: var(--sys-size-8);
+        height: var(--sys-size-8);
+      }
+
+      .link {
+        color: var(--sys-color-primary);
+        text-decoration-line: underline;
+      }
+    }
+  }
+
+  footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--sys-size-8);
+    min-width: var(--sys-size-28);
+
+    .right-buttons {
+      display: flex;
+      gap: var(--sys-size-5);
+    }
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./freDialog.css")} */`;
+
+// gen/front_end/ui/components/dialogs/FreDialog.js
+var { html: html3, Directives: { ifDefined } } = Lit2;
+var UIStrings2 = {
+  /**
+   * @description Header text for the feature reminder dialog.
+   */
+  thingsToConsider: "Things to consider",
+  /**
+   * @description Text for the learn more button in the feature reminder dialog.
+   */
+  learnMore: "Learn more",
+  /**
+   * @description Text for the cancel button in the feature reminder dialog.
+   */
+  cancel: "Cancel",
+  /**
+   * @description Text for the got it button in the feature reminder dialog.
+   */
+  gotIt: "Got it"
+};
+var str_2 = i18n3.i18n.registerUIStrings("ui/components/dialogs/FreDialog.ts", UIStrings2);
+var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var FreDialog = class {
+  static show({ header, reminderItems, onLearnMoreClick, ariaLabel, learnMoreButtonText, learnMoreButtonAriaLabel }) {
+    const dialog2 = new UI2.Dialog.Dialog();
+    if (ariaLabel) {
+      dialog2.setAriaLabel(ariaLabel);
+    }
+    dialog2.contentElement.tabIndex = -1;
+    const result = Promise.withResolvers();
+    Lit2.render(html3`
+      <div class="fre-disclaimer">
+        <style>
+          ${freDialog_css_default}
+        </style>
+        <header>
+          <div class="header-icon-container">
+            <devtools-icon name=${header.iconName}></devtools-icon>
+          </div>
+          <h2 tabindex="-1">
+            ${header.text}
+          </h2>
+        </header>
+        <main class="reminder-container">
+          <h3>${i18nString2(UIStrings2.thingsToConsider)}</h3>
+          ${reminderItems.map((reminderItem) => html3`
+            <div class="reminder-item">
+              <devtools-icon class="reminder-icon" name=${reminderItem.iconName}></devtools-icon>
+              <span>${reminderItem.content}</span>
+            </div>
+          `)}
+        </main>
+        <footer>
+          <devtools-button
+            @click=${onLearnMoreClick}
+            .jslogContext=${"fre-disclaimer.learn-more"}
+            .variant=${"outlined"}
+            .title=${learnMoreButtonAriaLabel ?? i18nString2(UIStrings2.learnMore)}
+            aria-label=${ifDefined(learnMoreButtonAriaLabel)}>
+            ${learnMoreButtonText ?? i18nString2(UIStrings2.learnMore)}
+          </devtools-button>
+          <div class="right-buttons">
+            <devtools-button
+              @click=${() => {
+      result.resolve(false);
+      dialog2.hide();
+    }}
+              .jslogContext=${"fre-disclaimer.cancel"}
+              .variant=${"tonal"}>
+              ${i18nString2(UIStrings2.cancel)}
+            </devtools-button>
+            <devtools-button
+              @click=${() => {
+      result.resolve(true);
+      dialog2.hide();
+    }}
+              .jslogContext=${"fre-disclaimer.continue"}
+              .variant=${"primary"}>
+              ${i18nString2(UIStrings2.gotIt)}
+            </devtools-button>
+          </div>
+        </footer>
+      </div>`, dialog2.contentElement);
+    dialog2.setOutsideClickCallback((ev) => {
+      ev.consume(true);
+      dialog2.hide();
+      result.resolve(false);
+    });
+    dialog2.setOnHideCallback(() => {
+      result.resolve(false);
+    });
+    dialog2.setSizeBehavior(
+      "MeasureContent"
+      /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
+    );
+    dialog2.setDimmed(true);
+    dialog2.show();
+    dialog2.contentElement.focus();
+    return result.promise;
+  }
+  constructor() {
+  }
+};
+
 // gen/front_end/ui/components/dialogs/ShortcutDialog.js
 var ShortcutDialog_exports = {};
 __export(ShortcutDialog_exports, {
   ShortcutDialog: () => ShortcutDialog
 });
-import * as i18n3 from "./../../../core/i18n/i18n.js";
-import * as Buttons2 from "./../buttons/buttons.js";
+import * as i18n5 from "./../../../core/i18n/i18n.js";
+import * as Buttons3 from "./../buttons/buttons.js";
 import * as ComponentHelpers3 from "./../helpers/helpers.js";
-import { html as html3, nothing as nothing2, render as render3 } from "./../../lit/lit.js";
+import { html as html4, nothing as nothing2, render as render4 } from "./../../lit/lit.js";
 
 // gen/front_end/ui/components/dialogs/shortcutDialog.css.js
 var shortcutDialog_css_default = `/*
@@ -860,7 +1067,7 @@ var shortcutDialog_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./shortcutDialog.css")} */`;
 
 // gen/front_end/ui/components/dialogs/ShortcutDialog.js
-var UIStrings2 = {
+var UIStrings3 = {
   /**
    * @description Title of the question mark button for the shortcuts dialog.
    */
@@ -870,8 +1077,8 @@ var UIStrings2 = {
    */
   dialogTitle: "Keyboard shortcuts"
 };
-var str_2 = i18n3.i18n.registerUIStrings("ui/components/dialogs/ShortcutDialog.ts", UIStrings2);
-var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var str_3 = i18n5.i18n.registerUIStrings("ui/components/dialogs/ShortcutDialog.ts", UIStrings3);
+var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var ShortcutDialog = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #shortcuts = [];
@@ -900,13 +1107,13 @@ var ShortcutDialog = class extends HTMLElement {
   }
   #renderRow(row) {
     if (!Array.isArray(row)) {
-      return html3`<span class="footnote">${row.footnote}</span>`;
+      return html4`<span class="footnote">${row.footnote}</span>`;
     }
-    return html3`${row.map((part) => {
+    return html4`${row.map((part) => {
       if ("key" in part) {
-        return html3`<span class="keybinds-key">${part.key}</span>`;
+        return html4`<span class="keybinds-key">${part.key}</span>`;
       }
-      return html3`<span class="keybinds-join-text">${part.joinText}</span>`;
+      return html4`<span class="keybinds-join-text">${part.joinText}</span>`;
     })}
     `;
   }
@@ -914,25 +1121,25 @@ var ShortcutDialog = class extends HTMLElement {
     if (!ComponentHelpers3.ScheduledRender.isScheduledRender(this)) {
       throw new Error("Shortcut dialog render was not scheduled");
     }
-    render3(html3`
+    render4(html4`
       <style>${shortcutDialog_css_default}</style>
       <devtools-button-dialog .data=${{
       openOnRender: this.#openOnRender,
       closeButton: true,
-      dialogTitle: this.#customTitle ?? i18nString2(UIStrings2.dialogTitle),
+      dialogTitle: this.#customTitle ?? i18nString3(UIStrings3.dialogTitle),
       variant: "toolbar",
       iconName: "help",
-      iconTitle: i18nString2(UIStrings2.showShortcutTitle),
+      iconTitle: i18nString3(UIStrings3.showShortcutTitle),
       horizontalAlignment: "auto"
     }}>
         <ul class="keybinds-list">
-          ${this.#prependedElement ? html3`${this.#prependedElement}` : nothing2}
-          ${this.#shortcuts.map((shortcut) => html3`
+          ${this.#prependedElement ? html4`${this.#prependedElement}` : nothing2}
+          ${this.#shortcuts.map((shortcut) => html4`
               <li class="keybinds-list-item">
                 <div class="keybinds-list-title">${shortcut.title}</div>
                 <div class="shortcuts-for-actions">
                   ${shortcut.rows.map((row) => {
-      return html3`<div class="row-container">${this.#renderRow(row)}</div>
+      return html4`<div class="row-container">${this.#renderRow(row)}</div>
                   `;
     })}
                 </div>
@@ -943,9 +1150,144 @@ var ShortcutDialog = class extends HTMLElement {
   }
 };
 customElements.define("devtools-shortcut-dialog", ShortcutDialog);
+
+// gen/front_end/ui/components/dialogs/TypeToAllowDialog.js
+var TypeToAllowDialog_exports = {};
+__export(TypeToAllowDialog_exports, {
+  TypeToAllowDialog: () => TypeToAllowDialog
+});
+import * as Host from "./../../../core/host/host.js";
+import * as i18n7 from "./../../../core/i18n/i18n.js";
+import * as Geometry from "./../../../models/geometry/geometry.js";
+import * as Buttons4 from "./../buttons/buttons.js";
+import * as UI3 from "./../../legacy/legacy.js";
+
+// gen/front_end/ui/components/dialogs/typeToAllowDialog.css.js
+var typeToAllowDialog_css_default = `/*
+ * Copyright 2025 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.type-to-allow-dialog {
+  width: 100%;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    font: var(--sys-typescale-body2-medium);
+    margin: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
+  }
+
+  .title {
+    padding-top: var(--sys-size-3);
+  }
+
+  .dialog-close-button {
+    margin: var(--sys-size-3);
+    z-index: 1;
+  }
+
+  .message,
+  .text-input {
+    margin: 0 var(--sys-size-8);
+  }
+
+  .text-input {
+    margin-top: var(--sys-size-5);
+  }
+
+  .button {
+    text-align: right;
+    margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8);
+    gap: var(--sys-size-5);
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+  }
+
+  .button button {
+    min-width: var(--sys-size-19);
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./typeToAllowDialog.css")} */`;
+
+// gen/front_end/ui/components/dialogs/TypeToAllowDialog.js
+var UIStrings4 = {
+  /**
+   * @description Text for the cancel button in the dialog.
+   */
+  cancel: "Cancel",
+  /**
+   * @description Text for the allow button in the "type to allow" dialog.
+   */
+  allow: "Allow"
+};
+var str_4 = i18n7.i18n.registerUIStrings("ui/components/dialogs/TypeToAllowDialog.ts", UIStrings4);
+var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var TypeToAllowDialog = class {
+  static async show(options) {
+    const dialog2 = new UI3.Dialog.Dialog(options.jslogContext.dialog);
+    dialog2.setMaxContentSize(new Geometry.Size(504, 340));
+    dialog2.setSizeBehavior(
+      "SetExactWidthMaxHeight"
+      /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
+    );
+    dialog2.setDimmed(true);
+    const shadowRoot = UI3.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: typeToAllowDialog_css_default });
+    const content = shadowRoot.createChild("div", "type-to-allow-dialog");
+    const result = await new Promise((resolve) => {
+      const header = content.createChild("div", "header");
+      header.createChild("div", "title").textContent = options.header;
+      const closeButton = header.createChild("dt-close-button", "dialog-close-button");
+      closeButton.setTabbable(true);
+      self.onInvokeElement(closeButton, (event) => {
+        dialog2.hide();
+        event.consume(true);
+        resolve(false);
+      });
+      closeButton.setSize(
+        "SMALL"
+        /* Buttons.Button.Size.SMALL */
+      );
+      content.createChild("div", "message").textContent = options.message;
+      const input = UI3.UIUtils.createInput("text-input", "text", options.jslogContext.input);
+      input.placeholder = options.inputPlaceholder;
+      content.appendChild(input);
+      const buttonsBar = content.createChild("div", "button");
+      const cancelButton = UI3.UIUtils.createTextButton(i18nString4(UIStrings4.cancel), () => resolve(false), { jslogContext: "cancel" });
+      const allowButton = UI3.UIUtils.createTextButton(i18nString4(UIStrings4.allow), () => {
+        resolve(input.value === options.typePhrase || input.value === `'${options.typePhrase}'`);
+      }, {
+        jslogContext: "confirm",
+        variant: "primary"
+        /* Buttons.Button.Variant.PRIMARY */
+      });
+      allowButton.disabled = true;
+      buttonsBar.appendChild(allowButton);
+      buttonsBar.appendChild(cancelButton);
+      input.addEventListener("input", () => {
+        allowButton.disabled = !Boolean(input.value);
+      }, false);
+      input.addEventListener("paste", (e) => e.preventDefault());
+      input.addEventListener("drop", (e) => e.preventDefault());
+      dialog2.setOutsideClickCallback((event) => {
+        event.consume();
+        resolve(false);
+      });
+      dialog2.show();
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssWarningDialogShown);
+    });
+    dialog2.hide();
+    return result;
+  }
+};
 export {
   ButtonDialog_exports as ButtonDialog,
   Dialog_exports as Dialog,
-  ShortcutDialog_exports as ShortcutDialog
+  FreDialog_exports as FreDialog,
+  ShortcutDialog_exports as ShortcutDialog,
+  TypeToAllowDialog_exports as TypeToAllowDialog
 };
 //# sourceMappingURL=dialogs.js.map

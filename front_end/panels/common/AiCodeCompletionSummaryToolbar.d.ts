@@ -2,14 +2,14 @@ import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
 import '../../ui/kit/kit.js';
 import * as Host from '../../core/host/host.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { type DisclaimerTextVariant } from './AiCodeCompletionDisclaimer.js';
 export interface AiCodeCompletionSummaryToolbarProps {
     citationsTooltipId: string;
     disclaimerTooltipId?: string;
     spinnerTooltipId?: string;
     hasTopBorder?: boolean;
-    disclaimerTextVariant?: DisclaimerTextVariant;
+    disclaimerTextVariant?: TextEditor.AiCodeCompletionDisclaimer.DisclaimerTextVariant;
 }
 export interface ViewInput {
     disclaimerTooltipId?: string;
@@ -19,7 +19,7 @@ export interface ViewInput {
     loading: boolean;
     hasTopBorder: boolean;
     aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
-    disclaimerTextVariant?: DisclaimerTextVariant;
+    disclaimerTextVariant?: TextEditor.AiCodeCompletionDisclaimer.DisclaimerTextVariant;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_SUMMARY_TOOLBAR_VIEW: View;

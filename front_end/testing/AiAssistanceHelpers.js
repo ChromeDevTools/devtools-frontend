@@ -301,4 +301,21 @@ export async function createDummyImageFile(width, height) {
     }
     return new File([blob], 'dummy.jpg', { type: 'image/jpeg' });
 }
+export function makeFakeParsedTrace(options = {}) {
+    return {
+        insights: new Map(),
+        metadata: {},
+        data: {
+            Meta: {
+                mainFrameNavigations: [],
+                traceBounds: { min: options.min ?? 0, max: options.max ?? 100 },
+                mainFrameURL: options.mainFrameURL ?? 'https://example.com',
+            },
+        },
+    };
+}
+export function stubPerformanceTraceFormatter(traceContext, methods) {
+    return sinon.stub(traceContext, 'createFormatter')
+        .returns(methods);
+}
 //# sourceMappingURL=AiAssistanceHelpers.js.map

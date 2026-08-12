@@ -6,6 +6,8 @@
     "files": [
         "buttonDialog.css.js",
         "dialog.css.js",
-        "shortcutDialog.css.js"
+        "freDialog.css.js",
+        "shortcutDialog.css.js",
+        "typeToAllowDialog.css.js"
     ]
 }

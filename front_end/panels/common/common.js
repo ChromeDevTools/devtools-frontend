@@ -4,1283 +4,20 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/common/common.prebundle.js
-import * as Host10 from "./../../core/host/host.js";
-import * as i18n27 from "./../../core/i18n/i18n.js";
-import * as Geometry3 from "./../../models/geometry/geometry.js";
-import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
-import * as UI14 from "./../../ui/legacy/legacy.js";
-
-// gen/front_end/panels/common/common.css.js
-var common_css_default = `/*
- * Copyright 2025 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.type-to-allow-dialog {
-  width: 100%;
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    font: var(--sys-typescale-body2-medium);
-    margin: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
-  }
-
-  .title {
-    padding-top: var(--sys-size-3);
-  }
-
-  .dialog-close-button {
-    margin: var(--sys-size-3);
-    z-index: 1;
-  }
-
-  .message,
-  .text-input {
-    margin: 0 var(--sys-size-8);
-  }
-
-  .text-input {
-    margin-top: var(--sys-size-5);
-  }
-
-  .button {
-    text-align: right;
-    margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8);
-    gap: var(--sys-size-5);
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-start;
-  }
-
-  .button button {
-    min-width: var(--sys-size-19);
-  }
-}
-
-/*# sourceURL=${import.meta.resolve("./common.css")} */`;
-
-// gen/front_end/panels/common/AiCodeCompletionTeaser.js
-import "./../../ui/kit/kit.js";
-import * as Common from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Root from "./../../core/root/root.js";
-import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
-import * as AiCodeGeneration from "./../../models/ai_code_generation/ai_code_generation.js";
-import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import { html as html2, nothing, render as render2 } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
-
-// gen/front_end/panels/common/aiCodeCompletionTeaser.css.js
-var aiCodeCompletionTeaser_css_default = `/*
- * Copyright 2025 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-@scope to (devtools-widget > *) {
-    .ai-code-completion-teaser-screen-reader-only {
-        position: absolute;
-        overflow: hidden;
-        clip-path: rect(0 0 0 0);
-        height: var(--sys-size-1);
-        width: var(--sys-size-1);
-        margin: -1 * var(--sys-size-1);;
-        padding: 0;
-        border: 0;
-    }
-
-    .ai-code-completion-teaser {
-        padding-left: var(--sys-size-3);
-        line-height: var(--sys-size-7);
-        pointer-events: all;
-        align-items: center;
-        font-style: italic;
-
-        .ai-code-completion-teaser-dismiss {
-            text-decoration: underline;
-            cursor: pointer;
-
-            &:focus-visible {
-                border-radius: var(--sys-shape-corner-extra-small);
-                outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-                outline-offset: 0;
-            }
-        }
-
-        .ai-code-completion-teaser-action {
-            display: inline-flex;
-            gap: var(--sys-size-2);
-
-            span {
-                border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-                border-radius: var(--sys-shape-corner-extra-small);
-                padding: 0 var(--sys-size-3);
-            }
-        }
-
-        .new-badge {
-            font-style: normal;
-            display: inline-block;
-        }
-    }
-}
-
-/*# sourceURL=${import.meta.resolve("./aiCodeCompletionTeaser.css")} */`;
-
-// gen/front_end/panels/common/FreDialog.js
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import * as Lit from "./../../ui/lit/lit.js";
-
-// gen/front_end/panels/common/freDialog.css.js
-var freDialog_css_default = `/*
- * Copyright 2025 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-
-.fre-disclaimer {
-  overflow-y: auto;
-  width: var(--sys-size-33);
-  padding: var(--sys-size-9);
-
-  header {
-    display: flex;
-    gap: var(--sys-size-8);
-    margin-bottom: var(--sys-size-6);
-    align-items: center;
-
-    h2 {
-      margin: 0;
-      color: var(--sys-color-on-surface);
-      font: var(--sys-typescale-headline5);
-    }
-
-    .header-icon-container {
-      background: linear-gradient(
-        135deg,
-        var(--sys-color-gradient-primary),
-        var(--sys-color-gradient-tertiary)
-      );
-      border-radius: var(--sys-size-4);
-      min-height: var(--sys-size-14);
-      min-width: var(--sys-size-14);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      devtools-icon {
-        width: var(--sys-size-9);
-        height: var(--sys-size-9);
-      }
-    }
-  }
-
-  .reminder-container {
-    border-radius: var(--sys-size-6);
-    background-color: var(--sys-color-surface4);
-    padding: var(--sys-size-9);
-
-    h3 {
-      color: var(--sys-color-on-surface);
-      font: var(--sys-typescale-body4-medium);
-      margin: 0;
-    }
-
-    .reminder-item {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: var(--sys-size-5);
-      margin-top: var(--sys-size-6);
-      font: var(--sys-typescale-body5-regular);
-
-      devtools-icon.reminder-icon {
-        width: var(--sys-size-8);
-        height: var(--sys-size-8);
-      }
-
-      .link {
-        color: var(--sys-color-primary);
-        text-decoration-line: underline;
-      }
-    }
-  }
-
-  footer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: var(--sys-size-8);
-    min-width: var(--sys-size-28);
-
-    .right-buttons {
-      display: flex;
-      gap: var(--sys-size-5);
-    }
-  }
-}
-
-/*# sourceURL=${import.meta.resolve("./freDialog.css")} */`;
-
-// gen/front_end/panels/common/FreDialog.js
-var { html, Directives: { ifDefined } } = Lit;
-var UIStrings = {
-  /**
-   * @description Header text for the feature reminder dialog.
-   */
-  thingsToConsider: "Things to consider",
-  /**
-   * @description Text for the learn more button in the feature reminder dialog.
-   */
-  learnMore: "Learn more",
-  /**
-   * @description Text for the cancel button in the feature reminder dialog.
-   */
-  cancel: "Cancel",
-  /**
-   * @description Text for the got it button in the feature reminder dialog.
-   */
-  gotIt: "Got it"
-};
-var str_ = i18n.i18n.registerUIStrings("panels/common/FreDialog.ts", UIStrings);
-var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var FreDialog = class {
-  static show({ header, reminderItems, onLearnMoreClick, ariaLabel, learnMoreButtonText, learnMoreButtonAriaLabel }) {
-    const dialog2 = new UI.Dialog.Dialog();
-    if (ariaLabel) {
-      dialog2.setAriaLabel(ariaLabel);
-    }
-    dialog2.contentElement.tabIndex = -1;
-    const result = Promise.withResolvers();
-    Lit.render(html`
-      <div class="fre-disclaimer">
-        <style>
-          ${freDialog_css_default}
-        </style>
-        <header>
-          <div class="header-icon-container">
-            <devtools-icon name=${header.iconName}></devtools-icon>
-          </div>
-          <h2 tabindex="-1">
-            ${header.text}
-          </h2>
-        </header>
-        <main class="reminder-container">
-          <h3>${i18nString(UIStrings.thingsToConsider)}</h3>
-          ${reminderItems.map((reminderItem) => html`
-            <div class="reminder-item">
-              <devtools-icon class="reminder-icon" name=${reminderItem.iconName}></devtools-icon>
-              <span>${reminderItem.content}</span>
-            </div>
-          `)}
-        </main>
-        <footer>
-          <devtools-button
-            @click=${onLearnMoreClick}
-            .jslogContext=${"fre-disclaimer.learn-more"}
-            .variant=${"outlined"}
-            .title=${learnMoreButtonAriaLabel ?? i18nString(UIStrings.learnMore)}
-            aria-label=${ifDefined(learnMoreButtonAriaLabel)}>
-            ${learnMoreButtonText ?? i18nString(UIStrings.learnMore)}
-          </devtools-button>
-          <div class="right-buttons">
-            <devtools-button
-              @click=${() => {
-      result.resolve(false);
-      dialog2.hide();
-    }}
-              .jslogContext=${"fre-disclaimer.cancel"}
-              .variant=${"tonal"}>
-              ${i18nString(UIStrings.cancel)}
-            </devtools-button>
-            <devtools-button
-              @click=${() => {
-      result.resolve(true);
-      dialog2.hide();
-    }}
-              .jslogContext=${"fre-disclaimer.continue"}
-              .variant=${"primary"}>
-              ${i18nString(UIStrings.gotIt)}
-            </devtools-button>
-          </div>
-        </footer>
-      </div>`, dialog2.contentElement);
-    dialog2.setOutsideClickCallback((ev) => {
-      ev.consume(true);
-      dialog2.hide();
-      result.resolve(false);
-    });
-    dialog2.setOnHideCallback(() => {
-      result.resolve(false);
-    });
-    dialog2.setSizeBehavior(
-      "MeasureContent"
-      /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
-    );
-    dialog2.setDimmed(true);
-    dialog2.show();
-    dialog2.contentElement.focus();
-    return result.promise;
-  }
-  constructor() {
-  }
-};
-
-// gen/front_end/panels/common/AiCodeCompletionTeaser.js
-var UIStringsNotTranslate = {
-  /**
-   * @description Text for `ctrl` key.
-   */
-  ctrl: "ctrl",
-  /**
-   * @description Text for `cmd` key.
-   */
-  cmd: "cmd",
-  /**
-   * @description Text for `i` key.
-   */
-  i: "i",
-  /**
-   * @description Text for `x` key.
-   */
-  x: "x",
-  /**
-   * @description Text for dismissing teaser.
-   */
-  dontShowAgain: "Don\u2019t show again",
-  /**
-   * @description Text for teaser to turn on code suggestions.
-   */
-  toTurnOnCodeSuggestions: "to turn on code suggestions.",
-  /**
-   * @description Text for snackbar notification on dismissing the teaser.
-   */
-  turnOnCodeSuggestionsAtAnyTimeInSettings: "Turn on code suggestions at any time in Settings",
-  /**
-   * @description Text for snackbar action button to manage settings.
-   */
-  manage: "Manage",
-  /**
-   * @description The footer disclaimer that links to more information
-   * about the AI feature.
-   */
-  learnMore: "Learn more about AI code completion",
-  /**
-   * @description Header text for the AI-powered suggestions disclaimer dialog.
-   */
-  freDisclaimerHeader: "Code faster with AI-powered suggestions",
-  /**
-   * @description First disclaimer item text for the fre dialog.
-   */
-  freDisclaimerTextAiWontAlwaysGetItRight: "This feature uses AI and won\u2019t always get it right",
-  /**
-   * @description Code completion disclaimer item text for the fre dialog.
-   */
-  freDisclaimerTextAsYouType: "As you type, relevant data is being send to Google to generate code suggestions. Press Tab to accept.",
-  /**
-   * @description Code generation disclaimer item text for the fre dialog.
-   */
-  freDisclaimerDescribeCodeInComment: "In Console or Sources, describe the code you need in a comment, then press ctrl+i to generate it.",
-  /**
-   * @description Code generation disclaimer item text for the fre dialog.
-   */
-  freDisclaimerDescribeCodeInCommentForMacOs: "In Console or Sources, describe the code you need in a comment, then press cmd+i to generate it.",
-  /**
-   * @description Privacy disclaimer item text for the fre dialog.
-   */
-  freDisclaimerTextPrivacy: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.",
-  /**
-   * @description Privacy disclaimer item text for the fre dialog when enterprise logging is off.
-   */
-  freDisclaimerTextPrivacyNoLogging: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
-  /**
-   * @description Last disclaimer item text for the fre dialog.
-   */
-  freDisclaimerTextUseWithCaution: "Use generated code snippets with caution",
-  /**
-   *@description Text for ARIA label for the teaser.
-   */
-  press: "Press",
-  /**
-   *@description Text for ARIA label for the teaser.
-   */
-  toDisableCodeSuggestions: "to disable code suggestions."
-};
-var lockedString = i18n3.i18n.lockedString;
-var CODE_SNIPPET_WARNING_URL = "https://support.google.com/legal/answer/13505487";
-var PROMOTION_ID = "ai-code-completion";
-var DEFAULT_VIEW = (input, _output, target) => {
-  if (input.aidaAvailability !== "available") {
-    render2(nothing, target);
-    return;
-  }
-  const cmdOrCtrl = Host.Platform.isMac() ? lockedString(UIStringsNotTranslate.cmd) : lockedString(UIStringsNotTranslate.ctrl);
-  const teaserAriaLabel = lockedString(UIStringsNotTranslate.press) + " " + cmdOrCtrl + " " + lockedString(UIStringsNotTranslate.i) + " " + lockedString(UIStringsNotTranslate.toTurnOnCodeSuggestions) + " " + lockedString(UIStringsNotTranslate.press) + " " + cmdOrCtrl + " " + lockedString(UIStringsNotTranslate.x) + " " + lockedString(UIStringsNotTranslate.toDisableCodeSuggestions);
-  const newBadge = UI2.UIUtils.maybeCreateNewBadge(PROMOTION_ID);
-  const newBadgeTemplate = newBadge ? html2`&nbsp;${newBadge}` : nothing;
-  render2(html2`
-          <style>${aiCodeCompletionTeaser_css_default}</style>
-          <style>@scope to (devtools-widget > *) { ${UI2.inspectorCommonStyles} }</style>
-          <div class="ai-code-completion-teaser-screen-reader-only">${teaserAriaLabel}</div>
-          <div class="ai-code-completion-teaser" aria-hidden="true">
-            <span class="ai-code-completion-teaser-action">
-              <span>${cmdOrCtrl}</span>
-              <span>${lockedString(UIStringsNotTranslate.i)}</span>
-            </span>
-            </span>&nbsp;${lockedString(UIStringsNotTranslate.toTurnOnCodeSuggestions)}&nbsp;
-            <span role="button" class="ai-code-completion-teaser-dismiss"
-              tabindex="0"
-              @click=${input.onDismiss}
-              @keydown=${(e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      input.onDismiss(e);
-      e.stopPropagation();
-      e.preventDefault();
-    }
-  }}
-              jslog=${VisualLogging.action("ai-code-completion-teaser.dismiss").track({ click: true })}>
-                ${lockedString(UIStringsNotTranslate.dontShowAgain)}
-            </span>
-            ${newBadgeTemplate}
-          </div>
-        `, target);
-};
-var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
-  #view;
-  #aidaAvailability;
-  #boundOnAidaAvailabilityChange;
-  #boundOnAiCodeCompletionSettingChanged;
-  #onDetach;
-  #disclaimerTextVariant;
-  // Whether the user completed first run experience dialog or not.
-  #aiCodeCompletionFreCompletedSetting = Common.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
-  // Whether the user dismissed the teaser or not.
-  #aiCodeCompletionTeaserDismissedSetting = Common.Settings.Settings.instance().createSetting("ai-code-completion-teaser-dismissed", false);
-  #noLogging;
-  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
-  constructor(config, view) {
-    super();
-    this.markAsExternallyManaged();
-    this.#onDetach = config.onDetach;
-    this.#disclaimerTextVariant = config.disclaimerTextVariant;
-    this.#view = view ?? DEFAULT_VIEW;
-    this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
-    this.#boundOnAiCodeCompletionSettingChanged = this.#onAiCodeCompletionSettingChanged.bind(this);
-    this.#noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
-    this.requestUpdate();
-  }
-  #showReminderSnackbar() {
-    Snackbars.Snackbar.Snackbar.show({
-      message: lockedString(UIStringsNotTranslate.turnOnCodeSuggestionsAtAnyTimeInSettings),
-      actionProperties: {
-        label: lockedString(UIStringsNotTranslate.manage),
-        onClick: () => {
-          void UI2.ViewManager.ViewManager.instance().showView("chrome-ai");
-        }
-      },
-      closable: true
-    });
-  }
-  #updateAidaAvailability(aidaAvailability) {
-    if (aidaAvailability !== this.#aidaAvailability) {
-      this.#aidaAvailability = aidaAvailability;
-      this.requestUpdate();
-    }
-  }
-  #onAidaAvailabilityChange(ev) {
-    this.#updateAidaAvailability(ev.data);
-  }
-  #onAiCodeCompletionSettingChanged() {
-    if (this.#aiCodeCompletionFreCompletedSetting.get() || this.#aiCodeCompletionTeaserDismissedSetting.get()) {
-      this.detach();
-    }
-  }
-  #createReminderItems() {
-    const reminderItems = [{
-      iconName: "psychiatry",
-      content: lockedString(UIStringsNotTranslate.freDisclaimerTextAiWontAlwaysGetItRight)
-    }];
-    const devtoolsLocale = i18n3.DevToolsLocale.DevToolsLocale.instance();
-    if (AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale.locale)) {
-      reminderItems.push({
-        iconName: "code",
-        content: lockedString(UIStringsNotTranslate.freDisclaimerTextAsYouType)
-      }, {
-        iconName: "text-analysis",
-        content: Host.Platform.isMac() ? lockedString(UIStringsNotTranslate.freDisclaimerDescribeCodeInCommentForMacOs) : lockedString(UIStringsNotTranslate.freDisclaimerDescribeCodeInComment)
-      });
-    }
-    reminderItems.push({
-      iconName: "google",
-      content: this.#noLogging ? lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacyNoLogging) : lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacy)
-    }, {
-      iconName: "warning",
-      // clang-format off
-      content: html2`<devtools-link
-            href=${CODE_SNIPPET_WARNING_URL}
-            class="link devtools-link"
-            jslogcontext="code-snippets-explainer.ai-code-completion-teaser"
-          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</devtools-link>`
-      // clang-format on
-    });
-    return reminderItems;
-  }
-  onAction = async (event) => {
-    event.preventDefault();
-    const iconName = AIAssistance.AiUtils.getIconName();
-    const result = await FreDialog.show({
-      header: { iconName, text: lockedString(UIStringsNotTranslate.freDisclaimerHeader) },
-      reminderItems: this.#createReminderItems(),
-      onLearnMoreClick: () => {
-        void UI2.ViewManager.ViewManager.instance().showView("chrome-ai");
-      },
-      ariaLabel: lockedString(UIStringsNotTranslate.freDisclaimerHeader),
-      learnMoreButtonAriaLabel: lockedString(UIStringsNotTranslate.learnMore)
-    });
-    if (result) {
-      this.#aiCodeCompletionFreCompletedSetting.set(true);
-      if (this.#disclaimerTextVariant === "console") {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionFreCompletedFromConsole);
-      } else if (this.#disclaimerTextVariant === "sources") {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionFreCompletedFromSources);
-      }
-      this.detach();
-    } else {
-      this.requestUpdate();
-    }
-  };
-  onDismiss = (event) => {
-    event.preventDefault();
-    this.#aiCodeCompletionTeaserDismissedSetting.set(true);
-    this.#showReminderSnackbar();
-    this.detach();
-  };
-  performUpdate() {
-    const output = {};
-    this.#view({
-      aidaAvailability: this.#aidaAvailability,
-      onAction: this.onAction,
-      onDismiss: this.onDismiss
-    }, output, this.contentElement);
-  }
-  wasShown() {
-    super.wasShown();
-    Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
-    this.#aiCodeCompletionFreCompletedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
-    this.#aiCodeCompletionTeaserDismissedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
-    const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
-    if (initialAvailability !== void 0) {
-      this.#updateAidaAvailability(initialAvailability);
-    }
-  }
-  willHide() {
-    super.willHide();
-    Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
-    this.#aiCodeCompletionFreCompletedSetting.removeChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
-    this.#aiCodeCompletionTeaserDismissedSetting.removeChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
-  }
-  onDetach() {
-    this.#onDetach();
-  }
-};
-
-// gen/front_end/panels/common/AiCodeGenerationTeaser.js
-var AiCodeGenerationTeaser_exports = {};
-__export(AiCodeGenerationTeaser_exports, {
-  AiCodeGenerationTeaser: () => AiCodeGenerationTeaser,
-  AiCodeGenerationTeaserDisplayState: () => AiCodeGenerationTeaserDisplayState,
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
-  PROMOTION_ID: () => PROMOTION_ID2
-});
-import "./../../ui/components/tooltips/tooltips.js";
-import * as Common2 from "./../../core/common/common.js";
-import * as Host2 from "./../../core/host/host.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Root2 from "./../../core/root/root.js";
-import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html3, nothing as nothing2, render as render3 } from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
-
-// gen/front_end/panels/common/aiCodeGenerationTeaser.css.js
-var aiCodeGenerationTeaser_css_default = `/*
- * Copyright 2025 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-@scope to (devtools-widget > *) {
-    .ai-code-generation-teaser-screen-reader-only {
-        position: absolute;
-        overflow: hidden;
-        clip-path: rect(0 0 0 0);
-        height: var(--sys-size-1);
-        width: var(--sys-size-1);
-        margin: -1 * var(--sys-size-1);;
-        padding: 0;
-        border: 0;
-    }
-
-    .ai-code-generation-teaser {
-        pointer-events: all;
-        font-style: italic;
-        line-height: var(--sys-size-7);
-
-        .ai-code-generation-teaser-trigger {
-            display: inline-flex;
-            align-items: center;
-
-            devtools-button {
-                --override-button-icon-color: var(--sys-color-token-subtle);
-            }
-        }
-
-        .ai-code-generation-keyboard-action {
-            display: inline-flex;
-            gap: var(--sys-size-2);
-
-            span {
-                border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-                border-radius: var(--sys-shape-corner-extra-small);
-                padding: 0 var(--sys-size-3);
-            }
-        }
-
-        .ai-code-generation-teaser-generated {
-            display: inline-flex;
-            gap: var(--sys-size-2);
-            color: var(--sys-color-primary);
-
-            span {
-                border: var(--sys-size-1) solid var(--sys-color-primary);
-                border-radius: var(--sys-shape-corner-extra-small);
-                padding: 0 var(--sys-size-3);
-            }
-        }
-
-        .new-badge {
-            font-style: normal;
-            display: inline-block;
-        }
-
-        devtools-tooltip:popover-open {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            .disclaimer-tooltip-container {
-                padding: var(--sys-size-4) 0;
-                max-width: var(--sys-size-30);
-                white-space: normal;
-
-                .tooltip-text {
-                    color: var(--sys-color-on-surface-subtle);
-                    padding: 0 var(--sys-size-5);
-                    align-items: flex-start;
-                    gap: 10px;
-                }
-
-                .link {
-                    margin: var(--sys-size-5) var(--sys-size-8) 0 var(--sys-size-5);
-                    display: inline-block;
-                    color: var(--sys-color-on-surface-subtle);
-                }
-            }
-        }
-
-        .ai-code-generation-spinner::before {
-            content: "\u280B";
-            animation: teaser-spinner-animation 1s linear infinite;
-        }
-    }
-
-    @keyframes teaser-spinner-animation {
-        0% { content: "\u280B"; }
-        10% { content: "\u2819"; }
-        20% { content: "\u2839"; }
-        30% { content: "\u2838"; }
-        40% { content: "\u283C"; }
-        50% { content: "\u2834"; }
-        60% { content: "\u2826"; }
-        70% { content: "\u2827"; }
-        80% { content: "\u2807"; }
-        90% { content: "\u280F"; }
-    }
-}
-
-/*# sourceURL=${import.meta.resolve("./aiCodeGenerationTeaser.css")} */`;
-
-// gen/front_end/panels/common/AiCodeGenerationTeaser.js
-var UIStringsNotTranslate2 = {
-  /**
-   * @description Text for teaser to generate code.
-   */
-  toGenerateCode: "to generate code",
-  /**
-   * @description Text for teaser to generate code.
-   */
-  ctrlItoGenerateCode: "ctrl+i to generate code",
-  /**
-   * @description Text for teaser to generate code in Mac.
-   */
-  cmdItoGenerateCode: "cmd+i to generate code",
-  /**
-   * @description Text for teaser to learn how data is being used.
-   */
-  toLearnHowYourDataIsBeingUsed: "to learn how your data is being used.",
-  /**
-   * @description Aria label for teaser to generate code.
-   */
-  pressCtrlPeriodToLearnHowYourDataIsBeingUsed: "Press ctrl . (period) to learn how your data is being used.",
-  /**
-   * @description Aria label for teaser to generate code in Mac.
-   */
-  pressCmdPeriodToLearnHowYourDataIsBeingUsed: "Press cmd . (period) to learn how your data is being used.",
-  /**
-   * @description Text for teaser when generating suggestion.
-   */
-  generating: "Generating... (",
-  /**
-   * @description Text for teaser when generating suggestion.
-   */
-  toCancel: " to cancel)",
-  /**
-   * @description Text for teaser when generating suggestion.
-   */
-  generatingAriaLabel: "Generating. Press escape to cancel.",
-  /**
-   * @description Text for teaser for discoverability.
-   */
-  writeACommentToGenerateCode: "Write a comment to generate code",
-  /**
-   * @description Text for teaser for discoverability.
-   */
-  writeACommentToGenerateCodeInConsole: "Write a comment to generate code. Try typing: '// add red borders to all the divs'.",
-  /**
-   * @description Text for teaser when suggestion has been generated.
-   */
-  tab: "tab",
-  /**
-   * @description Text for teaser when suggestion has been generated.
-   */
-  or: "or",
-  /**
-   * @description Text for teaser when suggestion has been generated.
-   */
-  enter: "enter",
-  /**
-   * @description Text for teaser when suggestion has been generated.
-   */
-  toAccept: "to accept",
-  /**
-   * @description Text for teaser keys.
-   */
-  ctrl: "ctrl",
-  /**
-   * @description Text for teaser keys.
-   */
-  cmd: "cmd",
-  /**
-   * @description Text for teaser keys.
-   */
-  i: "i",
-  /**
-   * @description Text for teaser keys.
-   */
-  period: ".",
-  /**
-   * @description Text for teaser keys.
-   */
-  esc: "esc",
-  /**
-   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Console panel.
-   */
-  tooltipDisclaimerTextForAiCodeGenerationInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data may be seen by human reviewers to improve this feature.",
-  /**
-   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Console panel.
-   */
-  tooltipDisclaimerTextForAiCodeGenerationNoLoggingInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
-  /**
-   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
-   */
-  tooltipDisclaimerTextForAiCodeGenerationInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.",
-  /**
-   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
-   */
-  tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
-  /**
-   * @description Text for tooltip button which redirects to AI settings
-   */
-  manageInSettings: "Manage in settings",
-  /**
-   * @description Title for disclaimer info button in the teaser to generate code.
-   */
-  learnMoreAboutHowYourDataIsBeingUsed: "Learn more about how your data is being used"
-};
-var lockedString2 = i18n5.i18n.lockedString;
-var PROMOTION_ID2 = "ai-code-generation";
-var AiCodeGenerationTeaserDisplayState;
-(function(AiCodeGenerationTeaserDisplayState2) {
-  AiCodeGenerationTeaserDisplayState2["TRIGGER"] = "trigger";
-  AiCodeGenerationTeaserDisplayState2["DISCOVERY"] = "discovery";
-  AiCodeGenerationTeaserDisplayState2["LOADING"] = "loading";
-  AiCodeGenerationTeaserDisplayState2["GENERATED"] = "generated";
-})(AiCodeGenerationTeaserDisplayState || (AiCodeGenerationTeaserDisplayState = {}));
-function getTooltipDisclaimerText(noLogging, disclaimerTextVariant) {
-  switch (disclaimerTextVariant) {
-    case "console":
-      return noLogging ? lockedString2(UIStringsNotTranslate2.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInConsole) : lockedString2(UIStringsNotTranslate2.tooltipDisclaimerTextForAiCodeGenerationInConsole);
-    case "sources":
-      return noLogging ? lockedString2(UIStringsNotTranslate2.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources) : lockedString2(UIStringsNotTranslate2.tooltipDisclaimerTextForAiCodeGenerationInSources);
-    case "styles":
-      return "";
-  }
-}
-var DEFAULT_VIEW2 = (input, output, target) => {
-  if (!input.disclaimerTextVariant) {
-    render3(nothing2, target);
-    return;
-  }
-  let teaserLabel;
-  switch (input.displayState) {
-    case AiCodeGenerationTeaserDisplayState.TRIGGER: {
-      if (!input.disclaimerTooltipId) {
-        render3(nothing2, target);
-        return;
-      }
-      const toLearnHowYourDataIsBeingUsedScreenReaderOnly = Host2.Platform.isMac() ? UIStringsNotTranslate2.pressCmdPeriodToLearnHowYourDataIsBeingUsed : UIStringsNotTranslate2.pressCtrlPeriodToLearnHowYourDataIsBeingUsed;
-      const screenReaderText = (Host2.Platform.isMac() ? UIStringsNotTranslate2.cmdItoGenerateCode : UIStringsNotTranslate2.ctrlItoGenerateCode) + " " + toLearnHowYourDataIsBeingUsedScreenReaderOnly;
-      const cmdOrCtrl = Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.cmd) : lockedString2(UIStringsNotTranslate2.ctrl);
-      const toGenerateCode = html3`<span class="ai-code-generation-keyboard-action">
-          <span>${cmdOrCtrl}</span>
-          <span>${lockedString2(UIStringsNotTranslate2.i)}</span>
-        </span>&nbsp;${lockedString2(UIStringsNotTranslate2.toGenerateCode)}`;
-      const toLearnHowYourDataIsBeingUsedVisible = html3`<span class="ai-code-generation-keyboard-action">
-          <span>${cmdOrCtrl}</span>
-          <span>${lockedString2(UIStringsNotTranslate2.period)}</span>
-        </span>&nbsp;${lockedString2(UIStringsNotTranslate2.toLearnHowYourDataIsBeingUsed)}`;
-      const teaserText = input.showDataUsageTeaser ? html3`${toGenerateCode}.&nbsp;${toLearnHowYourDataIsBeingUsedVisible}` : toGenerateCode;
-      const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.disclaimerTextVariant);
-      teaserLabel = html3`<div class="ai-code-generation-teaser-trigger">
-        <span aria-hidden="true">${teaserText}</span>
-        <span class="ai-code-generation-teaser-screen-reader-only" aria-atomic="true" aria-live="assertive">
-          ${lockedString2(screenReaderText)}
-        </span>
-        &nbsp;<devtools-button
-          .data=${{
-        title: lockedString2(UIStringsNotTranslate2.learnMoreAboutHowYourDataIsBeingUsed),
-        size: "MICRO",
-        iconName: "info",
-        variant: "icon",
-        jslogContext: "ai-code-generation-teaser.info-button"
-      }}
-            aria-details=${input.disclaimerTooltipId}
-            aria-describedby=${input.disclaimerTooltipId}
-          ></devtools-button>
-          <devtools-tooltip
-              id=${input.disclaimerTooltipId}
-              variant="rich"
-              jslogContext="ai-code-generation-disclaimer"
-              ${Directives.ref((el) => {
-        if (el instanceof HTMLElement) {
-          output.hideTooltip = () => {
-            el.hidePopover();
-          };
-          output.showTooltip = () => {
-            el.showPopover();
-            UI3.ARIAUtils.LiveAnnouncer.status(tooltipDisclaimerText);
-          };
-        }
-      })}>
-            <div class="disclaimer-tooltip-container"><div class="tooltip-text">
-                ${tooltipDisclaimerText}
-                </div>
-                <span
-                    tabIndex="0"
-                    class="link"
-                    role="link"
-                    jslog=${VisualLogging2.link("open-ai-settings").track({
-        click: true
-      })}
-                    @click=${input.onManageInSettingsTooltipClick}
-                >${lockedString2(UIStringsNotTranslate2.manageInSettings)}</span></div></devtools-tooltip>
-                  </div>`;
-      break;
-    }
-    case AiCodeGenerationTeaserDisplayState.DISCOVERY: {
-      if (!input.showDiscoveryTeaser) {
-        teaserLabel = nothing2;
-        break;
-      }
-      const newBadge = UI3.UIUtils.maybeCreateNewBadge(PROMOTION_ID2);
-      const teaserText = input.disclaimerTextVariant === "console" ? lockedString2(UIStringsNotTranslate2.writeACommentToGenerateCodeInConsole) : lockedString2(UIStringsNotTranslate2.writeACommentToGenerateCode);
-      teaserLabel = newBadge ? html3`${teaserText}&nbsp;${newBadge}` : nothing2;
-      break;
-    }
-    case AiCodeGenerationTeaserDisplayState.LOADING: {
-      const teaserAriaLabel = lockedString2(UIStringsNotTranslate2.generatingAriaLabel);
-      teaserLabel = html3`
-        <div class="ai-code-generation-teaser-screen-reader-only">${teaserAriaLabel}</div>
-        <span class="ai-code-generation-spinner" aria-hidden="true">
-          &nbsp;${lockedString2(UIStringsNotTranslate2.generating)}
-          <span class="ai-code-generation-keyboard-action"><span>${lockedString2(UIStringsNotTranslate2.esc)}</span></span>
-          ${lockedString2(UIStringsNotTranslate2.toCancel)}&nbsp;
-        </span>
-        <span class="ai-code-generation-timer" aria-hidden="true" ${Directives.ref((el) => {
-        if (el) {
-          output.setTimerText = (text) => {
-            el.textContent = text;
-          };
-        }
-      })}></span>`;
-      break;
-    }
-    case AiCodeGenerationTeaserDisplayState.GENERATED: {
-      teaserLabel = html3`<div class="ai-code-generation-teaser-generated">
-          <span>${lockedString2(UIStringsNotTranslate2.tab)}</span>
-          &nbsp;${lockedString2(UIStringsNotTranslate2.or)}&nbsp;
-          <span>${lockedString2(UIStringsNotTranslate2.enter)}</span>
-          &nbsp;${lockedString2(UIStringsNotTranslate2.toAccept)}
-        </div>`;
-      break;
-    }
-  }
-  render3(html3`
-          <style>${aiCodeGenerationTeaser_css_default}</style>
-          <style>@scope to (devtools-widget > *) { ${UI3.inspectorCommonStyles} }</style>
-          <div class="ai-code-generation-teaser">
-            &nbsp;${teaserLabel}
-          </div>
-        `, target);
-};
-var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Widget {
-  #view;
-  #viewOutput = {};
-  #displayState = AiCodeGenerationTeaserDisplayState.DISCOVERY;
-  #disclaimerTooltipId;
-  #noLogging;
-  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
-  #disclaimerTextVariant;
-  #timerIntervalId;
-  #loadStartTime;
-  #aiCodeGenerationUsedSetting = Common2.Settings.Settings.instance().createSetting("ai-code-generation-used", false);
-  static #showDataUsageTeaser = true;
-  static #discoveryTeaserShownInSession = false;
-  constructor(view) {
-    super();
-    this.markAsExternallyManaged();
-    this.#noLogging = Root2.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root2.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
-    this.#view = view ?? DEFAULT_VIEW2;
-    this.requestUpdate();
-  }
-  performUpdate() {
-    this.#view({
-      displayState: this.#displayState,
-      onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
-      disclaimerTooltipId: this.#disclaimerTooltipId,
-      noLogging: this.#noLogging,
-      showDataUsageTeaser: _AiCodeGenerationTeaser.#showDataUsageTeaser,
-      showDiscoveryTeaser: !this.#aiCodeGenerationUsedSetting.get() && !_AiCodeGenerationTeaser.#discoveryTeaserShownInSession,
-      disclaimerTextVariant: this.#disclaimerTextVariant
-    }, this.#viewOutput, this.contentElement);
-  }
-  willHide() {
-    super.willHide();
-    this.#stopLoadingAnimation();
-  }
-  get displayState() {
-    return this.#displayState;
-  }
-  set displayState(displayState) {
-    if (displayState === this.#displayState) {
-      return;
-    }
-    if (this.#displayState === AiCodeGenerationTeaserDisplayState.TRIGGER) {
-      _AiCodeGenerationTeaser.#showDataUsageTeaser = false;
-    }
-    if (this.#displayState === AiCodeGenerationTeaserDisplayState.DISCOVERY) {
-      _AiCodeGenerationTeaser.#discoveryTeaserShownInSession = true;
-    }
-    this.#displayState = displayState;
-    this.requestUpdate();
-    if (this.#displayState === AiCodeGenerationTeaserDisplayState.LOADING) {
-      void this.updateComplete.then(() => {
-        void this.#startLoadingAnimation();
-      });
-    } else if (this.#loadStartTime) {
-      this.#stopLoadingAnimation();
-    }
-  }
-  #startLoadingAnimation() {
-    this.#stopLoadingAnimation();
-    this.#loadStartTime = performance.now();
-    this.#viewOutput.setTimerText?.("(0s)");
-    this.#timerIntervalId = window.setInterval(() => {
-      if (this.#loadStartTime) {
-        const elapsedSeconds = Math.floor((performance.now() - this.#loadStartTime) / 1e3);
-        this.#viewOutput.setTimerText?.(`(${elapsedSeconds}s)`);
-      }
-    }, 1e3);
-  }
-  #stopLoadingAnimation() {
-    if (this.#timerIntervalId) {
-      clearInterval(this.#timerIntervalId);
-      this.#timerIntervalId = void 0;
-    }
-    this.#loadStartTime = void 0;
-  }
-  set disclaimerTooltipId(disclaimerTooltipId) {
-    this.#disclaimerTooltipId = disclaimerTooltipId;
-    this.requestUpdate();
-  }
-  set disclaimerTextVariant(disclaimerTextVariant) {
-    this.#disclaimerTextVariant = disclaimerTextVariant;
-    this.requestUpdate();
-  }
-  #onManageInSettingsTooltipClick(event) {
-    event.stopPropagation();
-    this.#viewOutput.hideTooltip?.();
-    void UI3.ViewManager.ViewManager.instance().showView("chrome-ai");
-    event.consume(true);
-  }
-  showTooltip() {
-    this.#viewOutput.showTooltip?.();
-  }
-  static setDiscoveryTeaserShownInSessionForTest(value) {
-    _AiCodeGenerationTeaser.#discoveryTeaserShownInSession = value;
-  }
-  static setShowDataUsageTeaserForTest(value) {
-    _AiCodeGenerationTeaser.#showDataUsageTeaser = value;
-  }
-};
-
-// gen/front_end/panels/common/AiCodeGenerationUpgradeDialog.js
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
-
-// gen/front_end/panels/common/aiCodeGenerationUpgradeDialog.css.js
-var aiCodeGenerationUpgradeDialog_css_default = `/*
- * Copyright 2026 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-
-.ai-code-generation-upgrade-dialog {
-  width: var(--sys-size-33);
-  padding: var(--sys-size-9);
-
-  header {
-    display: flex;
-    gap: var(--sys-size-8);
-    margin-bottom: var(--sys-size-6);
-    align-items: center;
-
-    h2 {
-      margin: 0;
-      color: var(--sys-color-on-surface);
-      font: var(--sys-typescale-headline5);
-    }
-
-    .header-icon-container {
-      background: linear-gradient(
-        135deg,
-        var(--sys-color-gradient-primary),
-        var(--sys-color-gradient-tertiary)
-      );
-      border-radius: var(--sys-size-4);
-      min-height: var(--sys-size-14);
-      min-width: var(--sys-size-14);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      devtools-icon {
-        width: var(--sys-size-9);
-        height: var(--sys-size-9);
-      }
-    }
-  }
-
-  .reminder-container {
-    border-radius: var(--sys-size-6);
-    background-color: var(--sys-color-surface4);
-    padding: var(--sys-size-9);
-    gap: var(--sys-size-6);
-    display: flex;
-    flex-direction: column;
-
-    .reminder-item {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: var(--sys-size-5);
-      font: var(--sys-typescale-body4-regular);
-
-      devtools-icon.reminder-icon {
-        width: var(--sys-size-8);
-        height: var(--sys-size-8);
-      }
-    }
-  }
-
-  footer {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: flex-end;
-    margin-top: var(--sys-size-8);
-    min-width: var(--sys-size-28);
-
-    .right-buttons {
-      display: flex;
-      gap: var(--sys-size-5);
-    }
-  }
-}
-
-/*# sourceURL=${import.meta.resolve("./aiCodeGenerationUpgradeDialog.css")} */`;
-
-// gen/front_end/panels/common/AiCodeGenerationUpgradeDialog.js
-var { html: html4 } = Lit2;
-var UIStringsNotTranslate3 = {
-  /**
-   * @description Header text for the upgrade notice dialog.
-   */
-  codeCompletionJustGotBetter: "Code completion just got better",
-  /**
-   * @description First item in the description.
-   */
-  describeCodeInComment: "Pressing ctrl+i on a comment in the Console and Sources panels now generates entire code blocks based on the instructions in the comment",
-  /**
-   * @description First item in the description.
-   */
-  describeCodeInCommentForMacOs: "Pressing cmd+i on a comment in the Console and Sources panels now generates entire code blocks based on the instructions in the comment",
-  /**
-   * @description Second item in the description.
-   */
-  asYouType: "You will still receive the real-time, as-you-type suggestions to help you code faster",
-  /**
-   * @description Third item in the description.
-   */
-  disclaimerTextPrivacy: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.",
-  /**
-   * @description Third item in the description.
-   */
-  disclaimerTextPrivacyNoLogging: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
-  /**
-   * @description Text for the manage in settings button in the upgrade notice dialog.
-   */
-  manageInSettings: "Manage in settings",
-  /**
-   * @description Text for the generate code button in the upgrade notice dialog.
-   */
-  generateCode: "Generate code"
-};
-var lockedString3 = i18n7.i18n.lockedString;
-var AiCodeGenerationUpgradeDialog = class {
-  static show({ noLogging }) {
-    const dialog2 = new UI4.Dialog.Dialog();
-    dialog2.setAriaLabel(lockedString3(UIStringsNotTranslate3.codeCompletionJustGotBetter));
-    const result = Promise.withResolvers();
-    Lit2.render(html4`
-      <div class="ai-code-generation-upgrade-dialog">
-        <style>
-          ${aiCodeGenerationUpgradeDialog_css_default}
-        </style>
-        <header>
-          <div class="header-icon-container">
-            <devtools-icon name="pen-spark"></devtools-icon>
-          </div>
-          <h2 tabindex="-1">
-            ${lockedString3(UIStringsNotTranslate3.codeCompletionJustGotBetter)}
-          </h2>
-        </header>
-        <main class="reminder-container">
-          <div class="reminder-item">
-            <devtools-icon class="reminder-icon" name="text-analysis"></devtools-icon>
-            <span>
-              ${Host3.Platform.isMac() ? lockedString3(UIStringsNotTranslate3.describeCodeInCommentForMacOs) : lockedString3(UIStringsNotTranslate3.describeCodeInComment)}
-            </span>
-          </div>
-          <div class="reminder-item">
-            <devtools-icon class="reminder-icon" name="code"></devtools-icon>
-            <span>${lockedString3(UIStringsNotTranslate3.asYouType)}</span>
-          </div>
-          <div class="reminder-item">
-            <devtools-icon class="reminder-icon" name="google"></devtools-icon>
-            <span>${noLogging ? lockedString3(UIStringsNotTranslate3.disclaimerTextPrivacyNoLogging) : lockedString3(UIStringsNotTranslate3.disclaimerTextPrivacy)}
-            </span>
-          </div>
-        </main>
-        <footer>
-          <div class="right-buttons">
-            <devtools-button
-              @click=${() => {
-      result.resolve(false);
-      void UI4.ViewManager.ViewManager.instance().showView("chrome-ai");
-    }}
-              jslogcontext="ai-code-generation-upgrade-dialog.manage-in-settings"
-              .variant=${"outlined"}
-              aria-label=${lockedString3(UIStringsNotTranslate3.manageInSettings)}>
-              ${lockedString3(UIStringsNotTranslate3.manageInSettings)}
-            </devtools-button>
-            <devtools-button
-              @click=${() => {
-      result.resolve(true);
-      dialog2.hide();
-    }}
-              jslogcontext="ai-code-generation-upgrade-dialog.continue"
-              .variant=${"primary"}>
-              ${lockedString3(UIStringsNotTranslate3.generateCode)}
-            </devtools-button>
-          </div>
-        </footer>
-      </div>`, dialog2.contentElement);
-    dialog2.setOutsideClickCallback((ev) => {
-      ev.consume(true);
-    });
-    dialog2.setOnHideCallback(() => {
-      result.resolve(false);
-    });
-    dialog2.setSizeBehavior(
-      "MeasureContent"
-      /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
-    );
-    dialog2.setDimmed(true);
-    dialog2.show();
-    return result.promise;
-  }
-  constructor() {
-  }
-};
-
 // gen/front_end/panels/common/GdpSignUpDialog.js
 import "./../../ui/components/switch/switch.js";
 import "./../../ui/kit/kit.js";
-import * as Common3 from "./../../core/common/common.js";
-import * as Host4 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as Common from "./../../core/common/common.js";
+import * as Host from "./../../core/host/host.js";
+import * as i18n from "./../../core/i18n/i18n.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
-import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import * as Snackbars2 from "./../../ui/components/snackbars/snackbars.js";
+import * as Buttons from "./../../ui/components/buttons/buttons.js";
+import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import { html as html5, render as render5 } from "./../../ui/lit/lit.js";
+import * as UI from "./../../ui/legacy/legacy.js";
+import { html, render } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/common/gdpSignUpDialog.css.js
 var gdpSignUpDialog_css_default = `/*
@@ -1384,7 +121,7 @@ var gdpSignUpDialog_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./gdpSignUpDialog.css")} */`;
 
 // gen/front_end/panels/common/GdpSignUpDialog.js
-var UIStrings2 = {
+var UIStrings = {
   /**
    * @description ARIA label for the Google Developer Program sign up dialog.
    */
@@ -1453,14 +190,14 @@ var UIStrings2 = {
    */
   signUpFailed: "Your Google Developer Profile couldn\u2019t be created. Please try again later."
 };
-var str_2 = i18n9.i18n.registerUIStrings("panels/common/GdpSignUpDialog.ts", UIStrings2);
-var i18nString2 = i18n9.i18n.getLocalizedString.bind(void 0, str_2);
+var str_ = i18n.i18n.registerUIStrings("panels/common/GdpSignUpDialog.ts", UIStrings);
+var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var TERMS_OF_SERVICE_URL = "https://policies.google.com/terms";
 var PRIVACY_POLICY_URL = "https://policies.google.com/privacy";
 var CONTENT_POLICY_URL = "https://developers.google.com/profile/content-policy";
 var GDP_PROGRAM_URL = "https://developers.google.com/program";
-var DEFAULT_VIEW3 = (input, _output, target) => {
-  render5(html5`
+var DEFAULT_VIEW = (input, _output, target) => {
+  render(html`
       <style>${gdpSignUpDialog_css_default}</style>
       <div class="gdp-sign-up-dialog-header" role="img" aria-label="Google Developer Program"></div>
       <div class="main-content">
@@ -1469,8 +206,8 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             <devtools-icon name="trophy"></devtools-icon>
           </div>
           <div class="text-container">
-            <h2 class="section-title">${i18nString2(UIStrings2.designedForSuccess)}</h2>
-            <div class="section-text">${i18nString2(UIStrings2.designedForSuccessBody)}</div>
+            <h2 class="section-title">${i18nString(UIStrings.designedForSuccess)}</h2>
+            <div class="section-text">${i18nString(UIStrings.designedForSuccessBody)}</div>
           </div>
         </div>
         <div class="section">
@@ -1478,14 +215,14 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             <devtools-icon name="mark-email-unread"></devtools-icon>
           </div>
           <div class="text-container">
-            <h2 class="section-title">${i18nString2(UIStrings2.keepUpdated)}</h2>
-            <div class="section-text">${i18nString2(UIStrings2.keepUpdatedBody)}</div>
+            <h2 class="section-title">${i18nString(UIStrings.keepUpdated)}</h2>
+            <div class="section-text">${i18nString(UIStrings.keepUpdatedBody)}</div>
           </div>
           <div class="switch-container">
             <devtools-switch
             .checked=${input.keepMeUpdated}
             .jslogContext=${"keep-me-updated"}
-            .label=${i18nString2(UIStrings2.keepUpdated)}
+            .label=${i18nString(UIStrings.keepUpdated)}
             @switchchange=${(e) => input.onKeepMeUpdatedChange(e.checked)}
           >
             </devtools-switch>
@@ -1496,13 +233,13 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             <devtools-icon name="google"></devtools-icon>
           </div>
           <div class="text-container">
-            <h2 class="section-title">${i18nString2(UIStrings2.tailorProfile)}</h2>
+            <h2 class="section-title">${i18nString(UIStrings.tailorProfile)}</h2>
             <div class="section-text">
-              <div>${i18nString2(UIStrings2.tailorProfileBody)}</div><br/>
-              <div>${uiI18n.getFormatLocalizedStringTemplate(str_2, UIStrings2.tailorProfileBodyDisclaimer, {
-    PH1: html5`<devtools-link href=${CONTENT_POLICY_URL} class="link" jslogcontext="content-policy">${i18nString2(UIStrings2.contentPolicy)}</devtools-link>`,
-    PH2: html5`<devtools-link href=${TERMS_OF_SERVICE_URL} class="link" jslogcontext="terms-of-service">${i18nString2(UIStrings2.termsOfService)}</devtools-link>`,
-    PH3: html5`<devtools-link href=${PRIVACY_POLICY_URL} class="link" jslogcontext="privacy-policy">${i18nString2(UIStrings2.privacyPolicy)}</devtools-link>`
+              <div>${i18nString(UIStrings.tailorProfileBody)}</div><br/>
+              <div>${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.tailorProfileBodyDisclaimer, {
+    PH1: html`<devtools-link href=${CONTENT_POLICY_URL} class="link" jslogcontext="content-policy">${i18nString(UIStrings.contentPolicy)}</devtools-link>`,
+    PH2: html`<devtools-link href=${TERMS_OF_SERVICE_URL} class="link" jslogcontext="terms-of-service">${i18nString(UIStrings.termsOfService)}</devtools-link>`,
+    PH3: html`<devtools-link href=${PRIVACY_POLICY_URL} class="link" jslogcontext="privacy-policy">${i18nString(UIStrings.privacyPolicy)}</devtools-link>`
   })}</div>
             </div>
           </div>
@@ -1510,27 +247,27 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
       </div>
       <div class="buttons">
         <devtools-button
-          aria-label=${i18nString2(UIStrings2.learnMoreAccessibleText)}
-          .title=${i18nString2(UIStrings2.learnMoreAccessibleText)}
+          aria-label=${i18nString(UIStrings.learnMoreAccessibleText)}
+          .title=${i18nString(UIStrings.learnMoreAccessibleText)}
           .variant=${"outlined"}
           .jslogContext=${"learn-more"}
-          @click=${() => UIHelpers.openInNewTab(GDP_PROGRAM_URL)}>${i18nString2(UIStrings2.learnMore)}</devtools-button>
+          @click=${() => UIHelpers.openInNewTab(GDP_PROGRAM_URL)}>${i18nString(UIStrings.learnMore)}</devtools-button>
         <div class="right-buttons">
           <devtools-button
             .variant=${"tonal"}
             .jslogContext=${"cancel"}
-            @click=${input.onCancelClick}>${i18nString2(UIStrings2.cancel)}</devtools-button>
+            @click=${input.onCancelClick}>${i18nString(UIStrings.cancel)}</devtools-button>
           <devtools-button
             .variant=${"primary"}
             .jslogContext=${"sign-up"}
             .spinner=${input.isSigningUp}
             .disabled=${input.isSigningUp}
-            @click=${input.onSignUpClick}>${i18nString2(UIStrings2.signUp)}</devtools-button>
+            @click=${input.onSignUpClick}>${i18nString(UIStrings.signUp)}</devtools-button>
         </div>
       </div>
     `, target);
 };
-var GdpSignUpDialog = class _GdpSignUpDialog extends UI5.Widget.VBox {
+var GdpSignUpDialog = class _GdpSignUpDialog extends UI.Widget.VBox {
   #view;
   #dialog;
   #keepMeUpdated = false;
@@ -1542,24 +279,24 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI5.Widget.VBox {
     this.#dialog = options.dialog;
     this.#onSuccess = options.onSuccess;
     this.#onCancel = options.onCancel;
-    this.#view = view ?? DEFAULT_VIEW3;
+    this.#view = view ?? DEFAULT_VIEW;
     this.requestUpdate();
   }
   async #onSignUpClick() {
     this.#isSigningUp = true;
     this.requestUpdate();
-    const syncInfo = await new Promise((resolve) => Host4.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
+    const syncInfo = await new Promise((resolve) => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
     const user = syncInfo.accountFullName ?? "";
-    const emailPreference = this.#keepMeUpdated ? Host4.GdpClient.EmailPreference.ENABLED : Host4.GdpClient.EmailPreference.DISABLED;
-    const result = await Host4.GdpClient.GdpClient.instance().createProfile({ user, emailPreference });
+    const emailPreference = this.#keepMeUpdated ? Host.GdpClient.EmailPreference.ENABLED : Host.GdpClient.EmailPreference.DISABLED;
+    const result = await Host.GdpClient.GdpClient.instance().createProfile({ user, emailPreference });
     if (result) {
-      Common3.Settings.Settings.instance().moduleSetting("receive-gdp-badges").set(true);
+      Common.Settings.Settings.instance().moduleSetting("receive-gdp-badges").set(true);
       await Badges.UserBadges.instance().initialize();
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.GDP_SIGN_UP_COMPLETE);
       this.#onSuccess?.();
       this.#dialog.hide();
     } else {
-      Snackbars2.Snackbar.Snackbar.show({ message: i18nString2(UIStrings2.signUpFailed) }, this.#dialog.contentElement);
+      Snackbars.Snackbar.Snackbar.show({ message: i18nString(UIStrings.signUpFailed) }, this.#dialog.contentElement);
       this.#isSigningUp = false;
       this.requestUpdate();
     }
@@ -1581,8 +318,8 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI5.Widget.VBox {
     this.#view(viewInput, void 0, this.contentElement);
   }
   static show({ onSuccess, onCancel } = {}) {
-    const dialog2 = new UI5.Dialog.Dialog("gdp-sign-up-dialog");
-    dialog2.setAriaLabel(i18nString2(UIStrings2.gdpDialogAriaLabel));
+    const dialog2 = new UI.Dialog.Dialog("gdp-sign-up-dialog");
+    dialog2.setAriaLabel(i18nString(UIStrings.gdpDialogAriaLabel));
     dialog2.setMaxContentSize(new Geometry.Size(384, 500));
     dialog2.setSizeBehavior(
       "SetExactWidthMaxHeight"
@@ -1601,15 +338,15 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI5.Widget.VBox {
 // gen/front_end/panels/common/GeminiRebrandPromoDialog.js
 import "./../../ui/components/switch/switch.js";
 import "./../../ui/kit/kit.js";
-import * as Common4 from "./../../core/common/common.js";
-import * as Host5 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Common2 from "./../../core/common/common.js";
+import * as Host2 from "./../../core/host/host.js";
+import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as Root from "./../../core/root/root.js";
 import * as Geometry2 from "./../../models/geometry/geometry.js";
-import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
-import { html as html6, render as render6 } from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
+import * as UI2 from "./../../ui/legacy/legacy.js";
+import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
+import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/geminiRebrandPromoDialog.css.js
 var geminiRebrandPromoDialog_css_default = `/*
@@ -1663,7 +400,7 @@ var geminiRebrandPromoDialog_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./geminiRebrandPromoDialog.css")} */`;
 
 // gen/front_end/panels/common/GeminiRebrandPromoDialog.js
-var UIStrings3 = {
+var UIStrings2 = {
   /**
    * @description ARIA label for the dialog.
    */
@@ -1693,12 +430,12 @@ var UIStrings3 = {
    */
   detailPerformance: "Automatically find issues in performance traces"
 };
-var str_3 = i18n11.i18n.registerUIStrings("panels/common/GeminiRebrandPromoDialog.ts", UIStrings3);
-var i18nString3 = i18n11.i18n.getLocalizedString.bind(void 0, str_3);
+var str_2 = i18n3.i18n.registerUIStrings("panels/common/GeminiRebrandPromoDialog.ts", UIStrings2);
+var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var PROMO_IMAGE_1X = new URL("../../Images/geminiInDevTools.png", import.meta.url).toString();
 var PROMO_IMAGE_2X = new URL("../../Images/geminiInDevTools_2x.png", import.meta.url).toString();
-var DEFAULT_VIEW4 = (input, _output, target) => {
-  render6(html6`
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  render2(html2`
       <style>${geminiRebrandPromoDialog_css_default}</style>
 
       <div class="header">
@@ -1710,8 +447,8 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
             .iconName=${"cross"}
             .variant=${"icon"}
             .size=${"REGULAR"}
-            .title=${i18nString3(UIStrings3.dismiss)}
-            jslog=${VisualLogging3.close().track({ click: true }).context("gemini-promo-dismiss")}
+            .title=${i18nString2(UIStrings2.dismiss)}
+            jslog=${VisualLogging.close().track({ click: true }).context("gemini-promo-dismiss")}
             @click=${() => input.onCancelClick()}
           ></devtools-button>
         </div>
@@ -1722,46 +459,46 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
       <div class="main-content">
         <div class="detail-row">
           <devtools-icon name="performance"></devtools-icon>
-          <div>${i18nString3(UIStrings3.detailAiCompanion)}</div>
+          <div>${i18nString2(UIStrings2.detailAiCompanion)}</div>
         </div>
         <div class="detail-row">
           <devtools-icon name="lightbulb-spark"></devtools-icon>
-          <div>${i18nString3(UIStrings3.detailConsoleErrors)}</div>
+          <div>${i18nString2(UIStrings2.detailConsoleErrors)}</div>
         </div>
         <div class="detail-row">
           <devtools-icon name="text-analysis"></devtools-icon>
-          <div>${i18nString3(UIStrings3.detailGenerateCode)}</div>
+          <div>${i18nString2(UIStrings2.detailGenerateCode)}</div>
         </div>
         <div class="detail-row">
           <devtools-icon name="smart-assistant"></devtools-icon>
-          <div>${i18nString3(UIStrings3.detailPerformance)}</div>
+          <div>${i18nString2(UIStrings2.detailPerformance)}</div>
         </div>
       </div>
 
       <div class="buttons">
         <devtools-button
           .variant=${"outlined"}
-          jslog=${VisualLogging3.close().track({ click: true }).context("gemini-promo-dismiss")}
-          @click=${input.onCancelClick}>${i18nString3(UIStrings3.dismiss)}</devtools-button>
+          jslog=${VisualLogging.close().track({ click: true }).context("gemini-promo-dismiss")}
+          @click=${input.onCancelClick}>${i18nString2(UIStrings2.dismiss)}</devtools-button>
         <devtools-button
           .variant=${"primary"}
           .jslogContext=${"gemini-promo-get-started"}
-          @click=${input.onGetStartedClick}>${i18nString3(UIStrings3.getStarted)}</devtools-button>
+          @click=${input.onGetStartedClick}>${i18nString2(UIStrings2.getStarted)}</devtools-button>
       </div>
     `, target);
 };
-var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI6.Widget.VBox {
+var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI2.Widget.VBox {
   #view;
   #dialog;
   constructor(options, view) {
     super();
     this.#dialog = options.dialog;
-    this.#view = view ?? DEFAULT_VIEW4;
+    this.#view = view ?? DEFAULT_VIEW2;
     this.requestUpdate();
   }
   async #onGetStartedClick() {
     this.#dialog.hide();
-    await UI6.ViewManager.ViewManager.instance().showView("freestyler");
+    await UI2.ViewManager.ViewManager.instance().showView("freestyler");
   }
   #onCancelClick() {
     this.#dialog.hide();
@@ -1774,8 +511,8 @@ var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI6.Widge
     this.#view(viewInput, void 0, this.contentElement);
   }
   static show() {
-    const dialog2 = new UI6.Dialog.Dialog("gemini-promo-dialog");
-    dialog2.setAriaLabel(i18nString3(UIStrings3.dialogAriaLabel));
+    const dialog2 = new UI2.Dialog.Dialog("gemini-promo-dialog");
+    dialog2.setAriaLabel(i18nString2(UIStrings2.dialogAriaLabel));
     dialog2.setMaxContentSize(new Geometry2.Size(384, 500));
     dialog2.setSizeBehavior(
       "SetExactWidthMaxHeight"
@@ -1790,14 +527,14 @@ var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI6.Widge
     );
   }
   static async maybeShow() {
-    if (!Root3.Runtime.hostConfig.aidaAvailability?.enabled) {
+    if (!Root.Runtime.hostConfig.aidaAvailability?.enabled) {
       return;
     }
-    const currentAidaAvailability = Host5.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    const currentAidaAvailability = Host2.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (currentAidaAvailability !== "available") {
       return;
     }
-    const setting = Common4.Settings.Settings.instance().createSetting(
+    const setting = Common2.Settings.Settings.instance().createSetting(
       "gemini-promo-dialog-shown",
       false,
       "Synced"
@@ -1811,328 +548,20 @@ var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI6.Widge
   }
 };
 
-// gen/front_end/panels/common/AiCodeCompletionDisclaimer.js
-import "./../../ui/components/spinners/spinners.js";
-import "./../../ui/components/tooltips/tooltips.js";
-import * as Host6 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Root4 from "./../../core/root/root.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html7, nothing as nothing3, render as render7 } from "./../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
-
-// gen/front_end/panels/common/aiCodeCompletionDisclaimer.css.js
-var aiCodeCompletionDisclaimer_css_default = `/*
- * Copyright 2025 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-@scope to (devtools-widget > *) {
-    display: flex;
-
-    .ai-code-completion-disclaimer {
-        gap: 5px;
-        display: flex;
-        flex-shrink: 0;
-
-        span.link {
-            color: var(--sys-color-on-surface-subtle);
-
-            &:focus-visible {
-                outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-                outline-offset: 0;
-                border-radius: var(--sys-shape-corner-extra-small);
-            }
-        }
-
-        devtools-spinner {
-            margin-top: var(--sys-size-2);
-            padding: var(--sys-size-1);
-            height: var(--sys-size-6);
-            width: var(--sys-size-6);
-        }
-
-        devtools-tooltip:popover-open {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            .disclaimer-tooltip-container {
-                padding: var(--sys-size-4) 0;
-                max-width: var(--sys-size-30);
-                white-space: normal;
-
-                .tooltip-text {
-                    color: var(--sys-color-on-surface-subtle);
-                    padding: 0 var(--sys-size-5);
-                    align-items: flex-start;
-                    gap: 10px;
-                }
-
-                .link {
-                    margin: var(--sys-size-5) var(--sys-size-8) 0 var(--sys-size-5);
-                    display: inline-block;
-                }
-            }
-        }
-    }
-}
-
-/*# sourceURL=${import.meta.resolve("./aiCodeCompletionDisclaimer.css")} */`;
-
-// gen/front_end/panels/common/AiCodeCompletionDisclaimer.js
-var UIStringsNotTranslate4 = {
-  /**
-   * @description Disclaimer text for AI code completion
-   */
-  relevantData: "Relevant data",
-  /**
-   * @description Disclaimer text for AI code completion
-   */
-  isSentToGoogle: "is sent to Google",
-  /**
-   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
-   */
-  tooltipDisclaimerTextForAiCodeCompletionInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data may be seen by human reviewers to improve this feature.",
-  /**
-   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
-   */
-  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
-  /**
-   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
-   */
-  tooltipDisclaimerTextForAiCodeCompletionInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.",
-  /**
-   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
-   */
-  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
-  /**
-   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion in Styles pane.
-   */
-  tooltipDisclaimerTextForAiCodeCompletionInStyles: "To generate code suggestions, the CSS properties of the selected element and the relevant CSS files are shared with Google. This data may be seen by human reviewers to improve this feature.",
-  /**
-   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion in Styles pane.
-   */
-  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInStyles: "To generate code suggestions, the CSS properties of the selected element and the relevant CSS files are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
-  /**
-   * Text for tooltip shown on hovering over spinner.
-   */
-  tooltipTextForSpinner: "Shows when data is being sent to Google to generate code suggestions",
-  /**
-   * @description Text for tooltip button which redirects to AI settings
-   */
-  manageInSettings: "Manage in settings",
-  /**
-   *@description Text announced when request is sent to AIDA and the spinner is loading
-   */
-  dataIsBeingSentToGoogle: "Data is being sent to Google"
-};
-var lockedString4 = i18n13.i18n.lockedString;
-function getTooltipDisclaimerText2(noLogging, disclaimerTextVariant) {
-  switch (disclaimerTextVariant) {
-    case "console":
-      return noLogging ? lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole) : lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionInConsole);
-    case "sources":
-      return noLogging ? lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources) : lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionInSources);
-    case "styles":
-      return noLogging ? lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInStyles) : lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionInStyles);
-  }
-}
-var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
-  if (input.aidaAvailability !== "available" || !input.disclaimerTooltipId || !input.spinnerTooltipId || !input.disclaimerTextVariant) {
-    render7(nothing3, target);
-    return;
-  }
-  const tooltipDisclaimerText = getTooltipDisclaimerText2(input.noLogging, input.disclaimerTextVariant);
-  render7(html7`
-    <style>${aiCodeCompletionDisclaimer_css_default}</style>
-    <div class="ai-code-completion-disclaimer">
-      <devtools-spinner
-        .active=${false}
-        ${Directives2.ref((el) => {
-    if (el instanceof HTMLElement) {
-      output.setLoading = (isLoading) => {
-        el.toggleAttribute("active", isLoading);
-      };
-    }
-  })}
-        aria-details=${input.spinnerTooltipId}
-        aria-describedby=${input.spinnerTooltipId}>
-      </devtools-spinner>
-      <devtools-tooltip
-        id=${input.spinnerTooltipId}
-        variant="rich"
-        jslogContext="ai-code-completion-spinner-tooltip"
-      >
-        <div class="disclaimer-tooltip-container">
-          <div class="tooltip-text">
-            ${lockedString4(UIStringsNotTranslate4.tooltipTextForSpinner)}
-          </div>
-        </div>
-      </devtools-tooltip>
-      <span
-        tabIndex="0"
-        class="link"
-        role="link"
-        jslog=${VisualLogging4.link("open-ai-settings").track({
-    click: true
-  })}
-        aria-details=${input.disclaimerTooltipId}
-        aria-describedby=${input.disclaimerTooltipId}
-        @click=${() => {
-    void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
-  }}
-      >
-        ${lockedString4(UIStringsNotTranslate4.relevantData)}
-      </span>
-      ${lockedString4(UIStringsNotTranslate4.isSentToGoogle)}
-      <devtools-tooltip
-        id=${input.disclaimerTooltipId}
-        variant="rich"
-        jslogContext="ai-code-completion-disclaimer"
-        ${Directives2.ref((el) => {
-    if (el instanceof HTMLElement) {
-      output.hideTooltip = () => {
-        el.hidePopover();
-      };
-    }
-  })}
-      >
-        <div class="disclaimer-tooltip-container">
-          <div class="tooltip-text">
-            ${tooltipDisclaimerText}
-          </div>
-          <span
-            tabIndex="0"
-            class="link"
-            role="link"
-            jslog=${VisualLogging4.link("open-ai-settings").track({
-    click: true,
-    keydown: "Enter"
-  })}
-            @click=${input.onManageInSettingsTooltipClick}
-            @keydown=${(e) => {
-    if (e.key === "Enter") {
-      e.consume(true);
-      input.onManageInSettingsTooltipClick();
-    }
-  }}
-          >
-            ${lockedString4(UIStringsNotTranslate4.manageInSettings)}
-          </span>
-        </div>
-      </devtools-tooltip>
-    </div>`, target);
-};
-var MINIMUM_LOADING_STATE_TIMEOUT = 1e3;
-var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
-  #view;
-  #viewOutput = {};
-  #spinnerTooltipId;
-  #disclaimerTooltipId;
-  #noLogging;
-  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
-  #loading = false;
-  #loadingStartTime = 0;
-  #spinnerLoadingTimeout;
-  #disclaimerTextVariant;
-  #aidaAvailability;
-  #boundOnAidaAvailabilityChange;
-  constructor(element, view = DEFAULT_SUMMARY_TOOLBAR_VIEW) {
-    super(element);
-    this.markAsExternallyManaged();
-    this.#noLogging = Root4.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root4.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
-    this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
-    this.#view = view;
-  }
-  set disclaimerTooltipId(disclaimerTooltipId) {
-    this.#disclaimerTooltipId = disclaimerTooltipId;
-    this.requestUpdate();
-  }
-  set spinnerTooltipId(spinnerTooltipId) {
-    this.#spinnerTooltipId = spinnerTooltipId;
-    this.requestUpdate();
-  }
-  set loading(loading) {
-    if (!loading && !this.#loading) {
-      return;
-    }
-    if (loading) {
-      if (!this.#loading) {
-        this.#viewOutput.setLoading?.(true);
-        UI7.ARIAUtils.LiveAnnouncer.status(lockedString4(UIStringsNotTranslate4.dataIsBeingSentToGoogle));
-      }
-      if (this.#spinnerLoadingTimeout) {
-        clearTimeout(this.#spinnerLoadingTimeout);
-        this.#spinnerLoadingTimeout = void 0;
-      }
-      this.#loadingStartTime = performance.now();
-      this.#loading = true;
-    } else {
-      this.#loading = false;
-      const duration = performance.now() - this.#loadingStartTime;
-      const remainingTime = Math.max(MINIMUM_LOADING_STATE_TIMEOUT - duration, 0);
-      this.#spinnerLoadingTimeout = window.setTimeout(() => {
-        this.#viewOutput.setLoading?.(false);
-        this.#spinnerLoadingTimeout = void 0;
-      }, remainingTime);
-    }
-  }
-  set disclaimerTextVariant(disclaimerTextVariant) {
-    this.#disclaimerTextVariant = disclaimerTextVariant;
-    this.requestUpdate();
-  }
-  #updateAidaAvailability(aidaAvailability) {
-    if (aidaAvailability !== this.#aidaAvailability) {
-      this.#aidaAvailability = aidaAvailability;
-      this.requestUpdate();
-    }
-  }
-  #onAidaAvailabilityChange(ev) {
-    this.#updateAidaAvailability(ev.data);
-  }
-  #onManageInSettingsTooltipClick() {
-    this.#viewOutput.hideTooltip?.();
-    void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
-  }
-  performUpdate() {
-    this.#view({
-      disclaimerTooltipId: this.#disclaimerTooltipId,
-      spinnerTooltipId: this.#spinnerTooltipId,
-      noLogging: this.#noLogging,
-      aidaAvailability: this.#aidaAvailability,
-      onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
-      disclaimerTextVariant: this.#disclaimerTextVariant
-    }, this.#viewOutput, this.contentElement);
-  }
-  wasShown() {
-    super.wasShown();
-    Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
-    const initialAvailability = Host6.AidaClient.HostConfigTracker.instance().aidaAvailability;
-    if (initialAvailability !== void 0) {
-      this.#updateAidaAvailability(initialAvailability);
-    }
-  }
-  willHide() {
-    super.willHide();
-    Host6.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
-  }
-};
-
 // gen/front_end/panels/common/AiCodeCompletionSummaryToolbar.js
 var AiCodeCompletionSummaryToolbar_exports = {};
 __export(AiCodeCompletionSummaryToolbar_exports, {
   AiCodeCompletionSummaryToolbar: () => AiCodeCompletionSummaryToolbar,
-  DEFAULT_SUMMARY_TOOLBAR_VIEW: () => DEFAULT_SUMMARY_TOOLBAR_VIEW2
+  DEFAULT_SUMMARY_TOOLBAR_VIEW: () => DEFAULT_SUMMARY_TOOLBAR_VIEW
 });
 import "./../../ui/components/spinners/spinners.js";
 import "./../../ui/components/tooltips/tooltips.js";
 import "./../../ui/kit/kit.js";
-import * as Host7 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html8, nothing as nothing4, render as render8 } from "./../../ui/lit/lit.js";
+import * as Host3 from "./../../core/host/host.js";
+import * as i18n5 from "./../../core/i18n/i18n.js";
+import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
+import * as UI3 from "./../../ui/legacy/legacy.js";
+import { Directives, html as html3, nothing, render as render3 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/common/aiCodeCompletionSummaryToolbar.css.js
 var aiCodeCompletionSummaryToolbar_css_default = `/*
@@ -2240,7 +669,7 @@ var aiCodeCompletionSummaryToolbar_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./aiCodeCompletionSummaryToolbar.css")} */`;
 
 // gen/front_end/panels/common/AiCodeCompletionSummaryToolbar.js
-var UIStringsNotTranslate5 = {
+var UIStringsNotTranslate = {
   /**
    * @description Text for recitation notice
    */
@@ -2250,46 +679,46 @@ var UIStringsNotTranslate5 = {
    */
   viewSources: "View Sources"
 };
-var lockedString5 = i18n15.i18n.lockedString;
-var { widget } = UI8.Widget;
-var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
+var lockedString = i18n5.i18n.lockedString;
+var { widget } = UI3.Widget;
+var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
   if (input.aidaAvailability !== "available") {
-    render8(nothing4, target);
+    render3(nothing, target);
     return;
   }
-  const toolbarClasses = Directives3.classMap({
+  const toolbarClasses = Directives.classMap({
     "ai-code-completion-summary-toolbar": true,
     "has-disclaimer": Boolean(input.disclaimerTooltipId),
     "has-recitation-notice": Boolean(input.citations && input.citations.size > 0),
     "has-top-border": input.hasTopBorder
   });
-  const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ? html8`<devtools-widget
-            ${widget(AiCodeCompletionDisclaimer, {
+  const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ? html3`<devtools-widget
+            ${widget(TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer, {
     disclaimerTooltipId: input.disclaimerTooltipId,
     spinnerTooltipId: input.spinnerTooltipId,
     loading: input.loading,
     disclaimerTextVariant: input.disclaimerTextVariant
-  })} class="disclaimer-widget"></devtools-widget>` : nothing4;
-  const recitationNotice = input.citations && input.citations.size > 0 ? html8`<div class="ai-code-completion-recitation-notice">
-                ${lockedString5(UIStringsNotTranslate5.generatedCodeMayBeSubjectToALicense)}
+  })} class="disclaimer-widget"></devtools-widget>` : nothing;
+  const recitationNotice = input.citations && input.citations.size > 0 ? html3`<div class="ai-code-completion-recitation-notice">
+                ${lockedString(UIStringsNotTranslate.generatedCodeMayBeSubjectToALicense)}
                 <span class="link"
                     role="link"
                     aria-details=${input.citationsTooltipId}
                     aria-describedby=${input.citationsTooltipId}
                     tabIndex="0">
-                  ${lockedString5(UIStringsNotTranslate5.viewSources)}&nbsp;${lockedString5("(" + input.citations.size + ")")}
+                  ${lockedString(UIStringsNotTranslate.viewSources)}&nbsp;${lockedString("(" + input.citations.size + ")")}
                 </span>
                 <devtools-tooltip
                     id=${input.citationsTooltipId}
                     variant="rich"
                     jslogContext="ai-code-completion-citations"
                 ><div class="citations-tooltip-container">
-                    ${Directives3.repeat(input.citations, (citation) => html8`<devtools-link
+                    ${Directives.repeat(input.citations, (citation) => html3`<devtools-link
                         tabIndex="0"
                         href=${citation}
                         jslogcontext="ai-code-completion-citations.citation-link">${citation}</devtools-link>`)}</div></devtools-tooltip>
-            </div>` : nothing4;
-  render8(html8`
+            </div>` : nothing;
+  render3(html3`
         <style>${aiCodeCompletionSummaryToolbar_css_default}</style>
         <div class=${toolbarClasses}>
           ${disclaimer}
@@ -2297,7 +726,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
         </div>
         `, target);
 };
-var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
+var AiCodeCompletionSummaryToolbar = class extends UI3.Widget.Widget {
   #view;
   #disclaimerTooltipId;
   #spinnerTooltipId;
@@ -2316,7 +745,7 @@ var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
     this.#hasTopBorder = props.hasTopBorder ?? false;
     this.#disclaimerTextVariant = props.disclaimerTextVariant;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
-    this.#view = view ?? DEFAULT_SUMMARY_TOOLBAR_VIEW2;
+    this.#view = view ?? DEFAULT_SUMMARY_TOOLBAR_VIEW;
     this.requestUpdate();
   }
   #updateAidaAvailability(aidaAvailability) {
@@ -2354,31 +783,31 @@ var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
-    Host7.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
-    const initialAvailability = Host7.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    Host3.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    const initialAvailability = Host3.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (initialAvailability !== void 0) {
       this.#updateAidaAvailability(initialAvailability);
     }
   }
   willHide() {
     super.willHide();
-    Host7.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host3.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
   }
 };
 
 // gen/front_end/panels/common/BadgeNotification.js
 import "./../../ui/kit/kit.js";
-import * as Common5 from "./../../core/common/common.js";
-import * as Host8 from "./../../core/host/host.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as Common3 from "./../../core/common/common.js";
+import * as Host4 from "./../../core/host/host.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Badges2 from "./../../models/badges/badges.js";
-import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
-import * as UI9 from "./../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
-import { nothing as nothing5 } from "./../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
+import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as Lit from "./../../ui/lit/lit.js";
+import { nothing as nothing2 } from "./../../ui/lit/lit.js";
+import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/badgeNotification.css.js
 var badgeNotification_css_default = `/*
@@ -2478,8 +907,8 @@ var badgeNotification_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./badgeNotification.css")} */`;
 
 // gen/front_end/panels/common/BadgeNotification.js
-var { html: html9, render: render9 } = Lit3;
-var UIStrings4 = {
+var { html: html4, render: render4 } = Lit;
+var UIStrings3 = {
   /**
    * @description Title for close button.
    */
@@ -2522,38 +951,38 @@ var UIStrings4 = {
    */
   createProfile: "Create profile"
 };
-var str_4 = i18n17.i18n.registerUIStrings("panels/common/BadgeNotification.ts", UIStrings4);
-var i18nString4 = i18n17.i18n.getLocalizedString.bind(void 0, str_4);
-var i18nFormatStringTemplate = uiI18n2.getFormatLocalizedStringTemplate.bind(void 0, str_4);
-var lockedString6 = i18n17.i18n.lockedString;
+var str_3 = i18n7.i18n.registerUIStrings("panels/common/BadgeNotification.ts", UIStrings3);
+var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_3);
+var i18nFormatStringTemplate = uiI18n2.getFormatLocalizedStringTemplate.bind(void 0, str_3);
+var lockedString2 = i18n7.i18n.lockedString;
 var LEFT_OFFSET = 5;
 var BOTTOM_OFFSET = 5;
 var AUTO_CLOSE_TIME_IN_MS = 3e4;
-var DEFAULT_VIEW5 = (input, _output, target) => {
+var DEFAULT_VIEW3 = (input, _output, target) => {
   const actionButtons = input.actions.map((property) => {
-    return html9`<devtools-button
+    return html4`<devtools-button
         class="notification-button"
         @click=${() => property.onClick()}
-        jslog=${VisualLogging5.action(property.jslogContext).track({ click: true })}
+        jslog=${VisualLogging2.action(property.jslogContext).track({ click: true })}
         .variant=${"text"}
         .title=${property.title ?? ""}
         .inverseColorTheme=${true}
     >${property.label}</devtools-button>`;
   });
-  const crossButton = html9`<devtools-button
+  const crossButton = html4`<devtools-button
         class="dismiss notification-button"
         @click=${input.onDismissClick}
-        jslog=${VisualLogging5.action("badge-notification.dismiss").track({ click: true })}
-        aria-label=${i18nString4(UIStrings4.close)}
+        jslog=${VisualLogging2.action("badge-notification.dismiss").track({ click: true })}
+        aria-label=${i18nString3(UIStrings3.close)}
         .iconName=${"cross"}
         .variant=${"icon"}
-        .title=${i18nString4(UIStrings4.close)}
+        .title=${i18nString3(UIStrings3.close)}
         .inverseColorTheme=${true}
     ></devtools-button>`;
-  render9(html9`
+  render4(html4`
     <style>${badgeNotification_css_default}</style>
-    <div class="container" jslog=${VisualLogging5.dialog("badge-notification")}>
-      <div class="badge-container" jslog=${VisualLogging5.item(input.jslogContext)}>
+    <div class="container" jslog=${VisualLogging2.dialog("badge-notification")}>
+      <div class="badge-container" jslog=${VisualLogging2.item(input.jslogContext)}>
         <img class="badge-image" role="presentation" src=${input.imageUri}>
       </div>
       <div class="action-and-text-container">
@@ -2567,17 +996,17 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
   `, target);
 };
 function revealBadgeSettings() {
-  void Common5.Revealer.reveal(Common5.Settings.Settings.instance().moduleSetting("receive-gdp-badges"));
+  void Common3.Revealer.reveal(Common3.Settings.Settings.instance().moduleSetting("receive-gdp-badges"));
 }
-var BadgeNotification = class extends UI9.Widget.Widget {
+var BadgeNotification = class extends UI4.Widget.Widget {
   jslogContext = "";
-  message = nothing5;
+  message = nothing2;
   imageUri = "";
   actions = [];
   isStarterBadge = false;
   #autoCloseTimeout;
   #view;
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element);
     this.#view = view;
     this.contentElement.role = "alert";
@@ -2598,7 +1027,7 @@ var BadgeNotification = class extends UI9.Widget.Widget {
   }
   #positionNotification() {
     const boundingRect = this.contentElement.getBoundingClientRect();
-    const container = UI9.UIUtils.getDevToolsBoundingElement();
+    const container = UI4.UIUtils.getDevToolsBoundingElement();
     this.contentElement.positionAt(LEFT_OFFSET, container.clientHeight - boundingRect.height - BOTTOM_OFFSET, container);
   }
   #show(properties) {
@@ -2619,21 +1048,21 @@ var BadgeNotification = class extends UI9.Widget.Widget {
   }
   #presentStarterBadgeSettingsNudge(badge) {
     this.#show({
-      message: i18nFormatStringTemplate(UIStrings4.starterBadgeAwardMessageSettingDisabled, {
+      message: i18nFormatStringTemplate(UIStrings3.starterBadgeAwardMessageSettingDisabled, {
         PH1: badge.title,
-        PH2: html9`<devtools-link class="badge-link" href="https://developers.google.com/program" jslogcontext="program-link">${lockedString6("Google Developer Program")}</devtools-link>`
+        PH2: html4`<devtools-link class="badge-link" href="https://developers.google.com/program" jslogcontext="program-link">${lockedString2("Google Developer Program")}</devtools-link>`
       }),
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString4(UIStrings4.noThanks),
+          label: i18nString3(UIStrings3.noThanks),
           jslogContext: "no-thanks",
           onClick: () => {
             this.#onDismissClick();
           }
         },
         {
-          label: i18nString4(UIStrings4.receiveBadges),
+          label: i18nString3(UIStrings3.receiveBadges),
           jslogContext: "receive-badges",
           onClick: () => {
             this.detach();
@@ -2647,21 +1076,21 @@ var BadgeNotification = class extends UI9.Widget.Widget {
   }
   #presentStarterBadgeProfileNudge(badge) {
     this.#show({
-      message: i18nFormatStringTemplate(UIStrings4.starterBadgeAwardMessageNoGdpProfile, {
+      message: i18nFormatStringTemplate(UIStrings3.starterBadgeAwardMessageNoGdpProfile, {
         PH1: badge.title,
-        PH2: html9`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${"program-link"}>${lockedString6("Google Developer Program")}</devtools-link>`
+        PH2: html4`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${"program-link"}>${lockedString2("Google Developer Program")}</devtools-link>`
       }),
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString4(UIStrings4.noThanks),
+          label: i18nString3(UIStrings3.noThanks),
           jslogContext: "no-thanks",
           onClick: () => {
             this.#onDismissClick();
           }
         },
         {
-          label: i18nString4(UIStrings4.createProfile),
+          label: i18nString3(UIStrings3.createProfile),
           jslogContext: "create-profile",
           onClick: () => {
             this.detach();
@@ -2678,11 +1107,11 @@ var BadgeNotification = class extends UI9.Widget.Widget {
   }
   #presentActivityBasedBadge(badge) {
     this.#show({
-      message: i18nFormatStringTemplate(UIStrings4.activityBasedBadgeAwardMessage, { PH1: badge.title }),
+      message: i18nFormatStringTemplate(UIStrings3.activityBasedBadgeAwardMessage, { PH1: badge.title }),
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString4(UIStrings4.manageSettings),
+          label: i18nString3(UIStrings3.manageSettings),
           jslogContext: "manage-settings",
           onClick: () => {
             this.detach();
@@ -2690,10 +1119,10 @@ var BadgeNotification = class extends UI9.Widget.Widget {
           }
         },
         {
-          label: i18nString4(UIStrings4.viewProfile),
+          label: i18nString3(UIStrings3.viewProfile),
           jslogContext: "view-profile",
           onClick: () => {
-            UIHelpers2.openInNewTab(Host8.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
+            UIHelpers2.openInNewTab(Host4.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
           }
         }
       ],
@@ -2748,9 +1177,9 @@ __export(CPUThrottlingOption_exports, {
   cpuThrottlingPresets: () => cpuThrottlingPresets,
   determineOptionFromRate: () => determineOptionFromRate
 });
-import * as Common6 from "./../../core/common/common.js";
-import * as i18n19 from "./../../core/i18n/i18n.js";
-var UIStrings5 = {
+import * as Common4 from "./../../core/common/common.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
+var UIStrings4 = {
   /**
    * @description Text label for a menu item indicating that no throttling is applied.
    */
@@ -2773,9 +1202,9 @@ var UIStrings5 = {
    */
   calibrationErrorDeviceTooWeak: "Device is not powerful enough"
 };
-var str_5 = i18n19.i18n.registerUIStrings("panels/common/CPUThrottlingOption.ts", UIStrings5);
-var i18nString5 = i18n19.i18n.getLocalizedString.bind(void 0, str_5);
-var i18nLazyString = i18n19.i18n.getLazilyComputedLocalizedString.bind(void 0, str_5);
+var str_4 = i18n9.i18n.registerUIStrings("panels/common/CPUThrottlingOption.ts", UIStrings4);
+var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_4);
+var i18nLazyString = i18n9.i18n.getLazilyComputedLocalizedString.bind(void 0, str_4);
 var CPUThrottlingRates;
 (function(CPUThrottlingRates2) {
   CPUThrottlingRates2[CPUThrottlingRates2["NO_THROTTLING"] = 1] = "NO_THROTTLING";
@@ -2787,7 +1216,7 @@ var CPUThrottlingRates;
 })(CPUThrottlingRates || (CPUThrottlingRates = {}));
 function makeFixedPresetThrottlingOption(rate) {
   return {
-    title: rate === 1 ? i18nLazyString(UIStrings5.noThrottling) : i18nLazyString(UIStrings5.dSlowdown, { PH1: rate }),
+    title: rate === 1 ? i18nLazyString(UIStrings4.noThrottling) : i18nLazyString(UIStrings4.dSlowdown, { PH1: rate }),
     rate: () => rate,
     jslogContext: rate === 1 ? "cpu-no-throttling" : `cpu-throttled-${rate}`
   };
@@ -2798,7 +1227,7 @@ var LowTierThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates
 var ExtraSlowThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.EXTRA_SLOW);
 function makeCalibratedThrottlingOption(calibratedDeviceType) {
   const getSettingValue = () => {
-    const setting = Common6.Settings.Settings.instance().createSetting(
+    const setting = Common4.Settings.Settings.instance().createSetting(
       "calibrated-cpu-throttling",
       {},
       "Global"
@@ -2815,7 +1244,7 @@ function makeCalibratedThrottlingOption(calibratedDeviceType) {
   };
   return {
     title() {
-      const typeString = calibratedDeviceType === "low-tier-mobile" ? i18nString5(UIStrings5.calibratedLowTierMobile) : i18nString5(UIStrings5.calibratedMidTierMobile);
+      const typeString = calibratedDeviceType === "low-tier-mobile" ? i18nString4(UIStrings4.calibratedLowTierMobile) : i18nString4(UIStrings4.calibratedMidTierMobile);
       const value = getSettingValue();
       if (typeof value === "number") {
         return `${typeString} \u2013 ${value.toFixed(1)}\xD7`;
@@ -2841,7 +1270,7 @@ var CalibrationError;
 })(CalibrationError || (CalibrationError = {}));
 function calibrationErrorToString(error) {
   if (error === CalibrationError.DEVICE_TOO_WEAK) {
-    return i18nString5(UIStrings5.calibrationErrorDeviceTooWeak);
+    return i18nString4(UIStrings4.calibrationErrorDeviceTooWeak);
   }
   return error;
 }
@@ -2867,10 +1296,10 @@ __export(ExtensionPanel_exports, {
   ExtensionPanel: () => ExtensionPanel,
   ExtensionSidebarPane: () => ExtensionSidebarPane
 });
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Platform from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Extensions from "./../../models/extensions/extensions.js";
-import * as UI11 from "./../../ui/legacy/legacy.js";
+import * as UI6 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/common/ExtensionView.js
 var ExtensionView_exports = {};
@@ -2879,11 +1308,11 @@ __export(ExtensionView_exports, {
   ExtensionNotifierView: () => ExtensionNotifierView,
   ExtensionView: () => ExtensionView
 });
-import * as UI10 from "./../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
-var { render: render10, html: html10, Directives: { ref } } = Lit4;
-var DEFAULT_VIEW6 = (input, output, target) => {
-  render10(html10`<iframe
+import * as UI5 from "./../../ui/legacy/legacy.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
+var { render: render5, html: html5, Directives: { ref } } = Lit2;
+var DEFAULT_VIEW4 = (input, output, target) => {
+  render5(html5`<iframe
     ${ref((element) => {
     output.iframe = element;
   })}
@@ -2892,7 +1321,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     class=${input.className}
     @load=${input.onLoad}></iframe>`, target);
 };
-var ExtensionView = class extends UI10.Widget.Widget {
+var ExtensionView = class extends UI5.Widget.Widget {
   #server;
   #id;
   #src;
@@ -2900,7 +1329,7 @@ var ExtensionView = class extends UI10.Widget.Widget {
   #iframe;
   #frameIndex;
   #view;
-  constructor(server, id, src, className, view = DEFAULT_VIEW6) {
+  constructor(server, id, src, className, view = DEFAULT_VIEW4) {
     super();
     this.#view = view;
     this.#server = server;
@@ -2944,7 +1373,7 @@ var ExtensionView = class extends UI10.Widget.Widget {
     }
   }
 };
-var ExtensionNotifierView = class extends UI10.Widget.VBox {
+var ExtensionNotifierView = class extends UI5.Widget.VBox {
   server;
   id;
   constructor(server, id) {
@@ -3001,7 +1430,7 @@ var ExtensionIframe = class {
 };
 
 // gen/front_end/panels/common/ExtensionPanel.js
-var ExtensionPanel = class extends UI11.Panel.Panel {
+var ExtensionPanel = class extends UI6.Panel.Panel {
   server;
   id;
   panelToolbar;
@@ -3012,7 +1441,7 @@ var ExtensionPanel = class extends UI11.Panel.Panel {
     this.id = id;
     this.setHideOnDetach();
     this.panelToolbar = this.element.createChild("devtools-toolbar", "hidden");
-    this.#searchableView = new UI11.SearchableView.SearchableView(this, null);
+    this.#searchableView = new UI6.SearchableView.SearchableView(this, null);
     this.#searchableView.show(this.element);
     const extensionView = new ExtensionView(server, this.id, pageURL, "extension");
     extensionView.show(this.#searchableView.element);
@@ -3068,7 +1497,7 @@ var ExtensionButton = class {
   #toolbarButton;
   constructor(server, id, iconURL, tooltip, disabled) {
     this.id = id;
-    this.#toolbarButton = new UI11.Toolbar.ToolbarButton("", "");
+    this.#toolbarButton = new UI6.Toolbar.ToolbarButton("", "");
     this.#toolbarButton.addEventListener("Click", server.notifyButtonClicked.bind(server, this.id));
     this.update(iconURL, tooltip, disabled);
   }
@@ -3087,14 +1516,14 @@ var ExtensionButton = class {
     return this.#toolbarButton;
   }
 };
-var ExtensionSidebarPane = class extends UI11.View.SimpleView {
+var ExtensionSidebarPane = class extends UI6.View.SimpleView {
   #panelName;
   server;
   #id;
   extensionView;
   objectPropertiesView;
   constructor(server, panelName, title, id) {
-    const viewId = Platform4.StringUtilities.toKebabCase(title);
+    const viewId = Platform.StringUtilities.toKebabCase(title);
     super({ title, viewId });
     this.element.classList.add("fill");
     this.#panelName = panelName;
@@ -3159,7 +1588,7 @@ var ExtensionSidebarPane = class extends UI11.View.SimpleView {
       return;
     }
     objectPropertiesView.element.removeChildren();
-    void UI11.UIUtils.Renderer.render(object, { title, editable: false, expand: true }).then((result) => {
+    void UI6.UIUtils.Renderer.render(object, { title, editable: false, expand: true }).then((result) => {
       if (!result) {
         callback();
         return;
@@ -3178,11 +1607,11 @@ __export(ExtensionServer_exports, {
   HostsPolicy: () => HostsPolicy,
   RevealableNetworkRequestFilter: () => RevealableNetworkRequestFilter
 });
-import * as Common7 from "./../../core/common/common.js";
-import * as Host9 from "./../../core/host/host.js";
-import * as i18n21 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Common5 from "./../../core/common/common.js";
+import * as Host5 from "./../../core/host/host.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as Platform2 from "./../../core/platform/platform.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
@@ -3191,7 +1620,7 @@ import * as HAR from "./../../models/har/har.js";
 import * as Logs from "./../../models/logs/logs.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI12 from "./../../ui/legacy/legacy.js";
+import * as UI7 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js";
 var extensionOrigins = /* @__PURE__ */ new WeakMap();
 var kForbiddenSchemes = [
@@ -3266,7 +1695,7 @@ var RegisteredExtension = class {
     }
     if (parsedURL.protocol === "chrome-extension:") {
       if (parsedURL.origin !== this.origin) {
-        if (!Root5.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
+        if (!Root2.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
           return false;
         }
       }
@@ -3289,7 +1718,7 @@ var RevealableNetworkRequestFilter = class {
     this.filter = filter;
   }
 };
-var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.ObjectWrapper {
+var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.ObjectWrapper {
   clientObjects;
   handlers;
   subscribers;
@@ -3363,7 +1792,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
     if (existingTabId) {
       this.setInspectedTabId({ data: existingTabId });
     }
-    Host9.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host9.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host5.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
     this.initExtensions();
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
   }
@@ -3373,7 +1802,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
   dispose() {
     ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
     SDK2.TargetManager.TargetManager.instance().removeEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
-    Host9.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host9.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host5.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
     window.removeEventListener("message", this.onWindowMessage, false);
   }
   #onThemeChange = () => {
@@ -3392,14 +1821,14 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
   }
   initializeExtensions() {
     if (this.inspectedTabId !== null) {
-      Host9.InspectorFrontendHost.InspectorFrontendHostInstance.setAddExtensionCallback(this.addExtension.bind(this));
+      Host5.InspectorFrontendHost.InspectorFrontendHostInstance.setAddExtensionCallback(this.addExtension.bind(this));
     }
   }
   hasExtensions() {
     return Boolean(this.registeredExtensions.size);
   }
-  notifySearchAction(panelId, action3, searchString) {
-    this.postNotification("panel-search-" + panelId, [action3, searchString]);
+  notifySearchAction(panelId, action2, searchString) {
+    this.postNotification("panel-search-" + panelId, [action2, searchString]);
   }
   notifyViewShown(identifier, frameIndex) {
     this.postNotification("view-shown-" + identifier, [frameIndex]);
@@ -3574,7 +2003,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
     if (message.command !== "showNetworkPanel") {
       return this.status.E_BADARG("command", `expected ${"showNetworkPanel"}`);
     }
-    void Common7.Revealer.reveal(new RevealableNetworkRequestFilter(message.filter));
+    void Common5.Revealer.reveal(new RevealableNetworkRequestFilter(message.filter));
     return this.status.OK();
   }
   onCreateRecorderView(message, port) {
@@ -3718,7 +2147,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
       return this.status.E_BADARG("command", `expected ${"createPanel"}`);
     }
     const id = message.id;
-    if (this.clientObjects.has(id) || UI12.InspectorView.InspectorView.instance().hasPanel(id)) {
+    if (this.clientObjects.has(id) || UI7.InspectorView.InspectorView.instance().hasPanel(id)) {
       return this.status.E_EXISTS(id);
     }
     const page = _ExtensionServer.expandResourcePath(this.getExtensionOrigin(port), message.page);
@@ -3727,9 +2156,9 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
     }
     let persistentId = this.getExtensionOrigin(port) + message.title;
     persistentId = persistentId.replace(/\s|:\d+/g, "");
-    const panelView = new ExtensionServerPanelView(persistentId, i18n21.i18n.lockedString(message.title), new ExtensionPanel(this, persistentId, id, page));
+    const panelView = new ExtensionServerPanelView(persistentId, i18n11.i18n.lockedString(message.title), new ExtensionPanel(this, persistentId, id, page));
     this.clientObjects.set(id, panelView);
-    UI12.InspectorView.InspectorView.instance().addPanel(panelView);
+    UI7.InspectorView.InspectorView.instance().addPanel(panelView);
     return this.status.OK();
   }
   onShowPanel(message) {
@@ -3741,7 +2170,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
     if (panelView && panelView instanceof ExtensionServerPanelView) {
       panelViewId = panelView.viewId();
     }
-    void UI12.InspectorView.InspectorView.instance().showPanel(panelViewId);
+    void UI7.InspectorView.InspectorView.instance().showPanel(panelViewId);
     return void 0;
   }
   onCreateToolbarButton(message, port) {
@@ -3784,7 +2213,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
       return this.status.E_BADARG("command", `expected ${"createSidebarPane"}`);
     }
     const id = message.id;
-    const sidebar = new ExtensionSidebarPane(this, message.panel, i18n21.i18n.lockedString(message.title), id);
+    const sidebar = new ExtensionSidebarPane(this, message.panel, i18n11.i18n.lockedString(message.title), id);
     this.#sidebarPanes.push(sidebar);
     this.clientObjects.set(id, sidebar);
     this.dispatchEventToListeners("SidebarPaneAdded", sidebar);
@@ -3845,17 +2274,17 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
     }
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
-      void Common7.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
+      void Common5.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
       return this.status.OK();
     }
     const resource = Bindings.ResourceUtils.resourceForURL(message.url);
     if (resource) {
-      void Common7.Revealer.reveal(resource);
+      void Common5.Revealer.reveal(resource);
       return this.status.OK();
     }
     const request = Logs.NetworkLog.NetworkLog.instance().requestForURL(message.url);
     if (request) {
-      void Common7.Revealer.reveal(request);
+      void Common5.Revealer.reveal(request);
       return this.status.OK();
     }
     return this.status.E_NOTFOUND(message.url);
@@ -3920,7 +2349,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
       isAllowed = this.extensionAllowedOnContentProvider(contentProviderOrUrl, port);
     } else {
       const url = contentProviderOrUrl;
-      resource = { url, type: Common7.ResourceType.resourceTypes.Other.name() };
+      resource = { url, type: Common5.ResourceType.resourceTypes.Other.name() };
       isAllowed = this.extensionAllowedOnURL(url, port);
     }
     if (isAllowed) {
@@ -3951,7 +2380,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
         return false;
       }
     }
-    if (contentProvider instanceof Workspace.UISourceCode.UISourceCode && contentProvider.contentType() === Common7.ResourceType.resourceTypes.Script) {
+    if (contentProvider instanceof Workspace.UISourceCode.UISourceCode && contentProvider.contentType() === Common5.ResourceType.resourceTypes.Script) {
       const scripts = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(contentProvider);
       if (scripts.length > 0) {
         const uiSourceCodeTarget = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? void 0;
@@ -4255,7 +2684,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
     function keyCodeForEntry(entry) {
       let keyCode = entry.keyCode;
       if (!keyCode) {
-        if (entry.key === Platform5.KeyboardUtilities.ESCAPE_KEY) {
+        if (entry.key === Platform2.KeyboardUtilities.ESCAPE_KEY) {
           keyCode = 27;
         }
       }
@@ -4272,10 +2701,10 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
     this.registerAutosubscriptionHandler("resource-added", Workspace.Workspace.WorkspaceImpl.instance(), Workspace.Workspace.Events.UISourceCodeAdded, this.notifyResourceAdded);
     this.registerAutosubscriptionTargetManagerHandler("network-request-finished", SDK2.NetworkManager.NetworkManager, SDK2.NetworkManager.Events.RequestFinished, this.notifyRequestFinished);
     function onElementsSubscriptionStarted() {
-      UI12.Context.Context.instance().addFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
+      UI7.Context.Context.instance().addFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
     }
     function onElementsSubscriptionStopped() {
-      UI12.Context.Context.instance().removeFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
+      UI7.Context.Context.instance().removeFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
     }
     this.registerSubscriptionHandler("panel-objectSelected-elements", onElementsSubscriptionStarted.bind(this), onElementsSubscriptionStopped.bind(this));
     this.registerResourceContentCommittedHandler(this.notifyUISourceCodeContentCommitted);
@@ -4363,8 +2792,8 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
         return;
       }
       if (!this.registeredExtensions.get(extensionOrigin)) {
-        const injectedAPI = self.buildExtensionAPIInjectedScript(extensionInfo, this.inspectedTabId, ThemeSupport.ThemeSupport.instance().themeName(), UI12.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(), _ExtensionServer.instance().extensionAPITestHook);
-        Host9.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
+        const injectedAPI = self.buildExtensionAPIInjectedScript(extensionInfo, this.inspectedTabId, ThemeSupport.ThemeSupport.instance().themeName(), UI7.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(), _ExtensionServer.instance().extensionAPITestHook);
+        Host5.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
         this.registeredExtensions.set(extensionOrigin, extensionRegistration);
       }
       this.addExtensionFrame(extensionInfo);
@@ -4451,7 +2880,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
   }
   static expandResourcePath(extensionOrigin, resourcePath) {
     const strippedOrigin = new URL(extensionOrigin).origin;
-    const resourceURL = new URL(Common7.ParsedURL.normalizePath(resourcePath), strippedOrigin);
+    const resourceURL = new URL(Common5.ParsedURL.normalizePath(resourcePath), strippedOrigin);
     if (resourceURL.origin !== strippedOrigin) {
       return void 0;
     }
@@ -4631,12 +3060,12 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
     SDK2.NetworkManager.MultitargetNetworkManager.instance().setExtraHTTPHeaders(allHeaders);
   }
 };
-var ExtensionServerPanelView = class extends UI12.View.SimpleView {
+var ExtensionServerPanelView = class extends UI7.View.SimpleView {
   name;
   panel;
   constructor(name, title, panel) {
-    const kebabTitle = Platform5.StringUtilities.toKebabCase(title);
-    const viewId = Platform5.StringUtilities.isExtendedKebabCase(kebabTitle) ? kebabTitle : "extension-panel";
+    const kebabTitle = Platform2.StringUtilities.toKebabCase(title);
+    const viewId = Platform2.StringUtilities.isExtendedKebabCase(kebabTitle) ? kebabTitle : "extension-panel";
     super({ title, viewId });
     this.name = name;
     this.panel = panel;
@@ -4662,7 +3091,7 @@ var ExtensionStatus = class {
       const status = { code, description, details };
       if (code !== "OK") {
         status.isError = true;
-        console.error("Extension server error: " + Platform5.StringUtilities.sprintf(description, ...details));
+        console.error("Extension server error: " + Platform2.StringUtilities.sprintf(description, ...details));
       }
       return status;
     }
@@ -4684,14 +3113,14 @@ __export(PersistenceUtils_exports, {
   PersistenceUtils: () => PersistenceUtils
 });
 import "./../../ui/kit/kit.js";
-import * as Common8 from "./../../core/common/common.js";
-import * as i18n23 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
+import * as Common6 from "./../../core/common/common.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as Platform3 from "./../../core/platform/platform.js";
 import * as Persistence from "./../../models/persistence/persistence.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
-import { html as html11 } from "./../../ui/lit/lit.js";
-var UIStrings6 = {
+import { html as html6 } from "./../../ui/lit/lit.js";
+var UIStrings5 = {
   /**
    * @description Tooltip text indicating that a file is linked to a source map.
    * @example {example.url} PH1
@@ -4703,8 +3132,8 @@ var UIStrings6 = {
    */
   linkedToS: "Linked to {PH1}"
 };
-var str_6 = i18n23.i18n.registerUIStrings("panels/common/PersistenceUtils.ts", UIStrings6);
-var i18nString6 = i18n23.i18n.getLocalizedString.bind(void 0, str_6);
+var str_5 = i18n13.i18n.registerUIStrings("panels/common/PersistenceUtils.ts", UIStrings5);
+var i18nString5 = i18n13.i18n.getLocalizedString.bind(void 0, str_5);
 var PersistenceUtils = class _PersistenceUtils {
   static tooltipForUISourceCode(uiSourceCode) {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
@@ -4715,33 +3144,33 @@ var PersistenceUtils = class _PersistenceUtils {
       return Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.tooltipForUISourceCode(binding.fileSystem);
     }
     if (binding.network.contentType().isFromSourceMap()) {
-      return i18nString6(UIStrings6.linkedToSourceMapS, { PH1: Platform6.StringUtilities.trimMiddle(binding.network.url(), 150) });
+      return i18nString5(UIStrings5.linkedToSourceMapS, { PH1: Platform3.StringUtilities.trimMiddle(binding.network.url(), 150) });
     }
-    return i18nString6(UIStrings6.linkedToS, { PH1: Platform6.StringUtilities.trimMiddle(binding.network.url(), 150) });
+    return i18nString5(UIStrings5.linkedToS, { PH1: Platform3.StringUtilities.trimMiddle(binding.network.url(), 150) });
   }
   static iconForUISourceCode(uiSourceCode) {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
-      if (!Common8.ParsedURL.schemeIs(binding.fileSystem.url(), "file:")) {
+      if (!Common6.ParsedURL.schemeIs(binding.fileSystem.url(), "file:")) {
         return null;
       }
       const dotClass = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() === binding.fileSystem.project() ? "purple" : "green";
-      return html11`<devtools-icon class="small dot ${dotClass}" name="document"
+      return html6`<devtools-icon class="small dot ${dotClass}" name="document"
                                  title=${_PersistenceUtils.tooltipForUISourceCode(binding.network)}>
                   </devtools-icon>`;
     }
-    if (uiSourceCode.project().type() !== Workspace3.Workspace.projectTypes.FileSystem || !Common8.ParsedURL.schemeIs(uiSourceCode.url(), "file:")) {
+    if (uiSourceCode.project().type() !== Workspace3.Workspace.projectTypes.FileSystem || !Common6.ParsedURL.schemeIs(uiSourceCode.url(), "file:")) {
       return null;
     }
     if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(uiSourceCode)) {
-      return html11`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
+      return html6`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
     }
-    return html11`<devtools-icon class="small" name="document"
+    return html6`<devtools-icon class="small" name="document"
                                title=${_PersistenceUtils.tooltipForUISourceCode(uiSourceCode)}>
                 </devtools-icon>`;
   }
 };
-var LinkDecorator = class extends Common8.ObjectWrapper.ObjectWrapper {
+var LinkDecorator = class extends Common6.ObjectWrapper.ObjectWrapper {
   constructor(persistence) {
     super();
     persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.bindingChanged, this);
@@ -4763,12 +3192,12 @@ __export(DOMLinkifier_exports, {
   DeferredDOMNodeLink: () => DeferredDOMNodeLink,
   Linkifier: () => Linkifier2
 });
-import * as Common9 from "./../../core/common/common.js";
-import * as i18n25 from "./../../core/i18n/i18n.js";
+import * as Common7 from "./../../core/common/common.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as UI13 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html12, nothing as nothing6, render as render11 } from "./../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html7, nothing as nothing3, render as render6 } from "./../../ui/lit/lit.js";
+import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
 var domLinkifier_css_default = `/*
@@ -4829,9 +3258,9 @@ var domLinkifier_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./domLinkifier.css")} */`;
 
 // gen/front_end/panels/common/DOMLinkifier.js
-var { classMap, ifDefined: ifDefined2 } = Directives4;
-var { widget: widget2 } = UI13.Widget;
-var UIStrings7 = {
+var { classMap, ifDefined } = Directives2;
+var { widget: widget2 } = UI8.Widget;
+var UIStrings6 = {
   /**
    * @description Text displayed when trying to create a link to a node in the UI, but the node
    * location could not be found so we display this placeholder instead. Node refers to a DOM node.
@@ -4839,18 +3268,18 @@ var UIStrings7 = {
    */
   node: "<node>"
 };
-var str_7 = i18n25.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings7);
-var i18nString7 = i18n25.i18n.getLocalizedString.bind(void 0, str_7);
-var DEFAULT_VIEW7 = (input, _output, target) => {
-  render11(html12`${input.tagName || input.pseudo ? html12`
+var str_6 = i18n15.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings6);
+var i18nString6 = i18n15.i18n.getLocalizedString.bind(void 0, str_6);
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  render6(html7`${input.tagName || input.pseudo ? html7`
     <style>${domLinkifier_css_default}</style>
     <span class="monospace">
       <button class="node-link text-button link-style ${classMap({
     "dynamic-link": Boolean(input.dynamic),
     disabled: Boolean(input.disabled)
   })}"
-          aria-description=${ifDefined2(input.ariaDescription)}
-          jslog=${VisualLogging6.link("node").track({ click: true, keydown: "Enter" })}
+          aria-description=${ifDefined(input.ariaDescription)}
+          jslog=${VisualLogging3.link("node").track({ click: true, keydown: "Enter" })}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mouseover=${input.onMouseOver}
@@ -4861,18 +3290,18 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     ...input.classes.map((c) => `.${c}`),
     input.pseudo ? `::${input.pseudo}` : ""
   ].join(" ")}>${[
-    input.tagName ? html12`<span class="node-label-name">${input.tagName}</span>` : nothing6,
-    input.id ? html12`<span class="node-label-id">#${input.id}</span>` : nothing6,
-    ...input.classes.map((className) => html12`<span class="extra node-label-class">.${className}</span>`),
-    input.pseudo ? html12`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing6
+    input.tagName ? html7`<span class="node-label-name">${input.tagName}</span>` : nothing3,
+    input.id ? html7`<span class="node-label-id">#${input.id}</span>` : nothing3,
+    ...input.classes.map((className) => html7`<span class="extra node-label-class">.${className}</span>`),
+    input.pseudo ? html7`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing3
   ]}</button>
-    </span>` : i18nString7(UIStrings7.node)}`, target);
+    </span>` : i18nString6(UIStrings6.node)}`, target);
 };
-var DOMNodeLink = class extends UI13.Widget.Widget {
+var DOMNodeLink = class extends UI8.Widget.Widget {
   #node = void 0;
   #options = void 0;
   #view;
-  constructor(element, node, options, view = DEFAULT_VIEW7) {
+  constructor(element, node, options, view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: true });
     this.element.classList.remove("vbox");
     this.#node = node;
@@ -4903,7 +3332,7 @@ var DOMNodeLink = class extends UI13.Widget.Widget {
       preventKeyboardFocus: options.preventKeyboardFocus,
       classes: [],
       onClick: () => {
-        void Common9.Revealer.reveal(this.#node);
+        void Common7.Revealer.reveal(this.#node);
         void this.#node?.scrollIntoView();
         options.onClick?.();
         return false;
@@ -4966,17 +3395,17 @@ var DOMNodeLink = class extends UI13.Widget.Widget {
   }
 };
 var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
-  render11(html12`
+  render6(html7`
       <style>${domLinkifier_css_default}</style>
       <button class="node-link text-button link-style"
-          jslog=${VisualLogging6.link("node").track({ click: true })}
+          jslog=${VisualLogging3.link("node").track({ click: true })}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mousedown=${(e) => e.consume()}>
         <slot></slot>
       </button>`, target);
 };
-var DeferredDOMNodeLink = class extends UI13.Widget.Widget {
+var DeferredDOMNodeLink = class extends UI8.Widget.Widget {
   #deferredNode = void 0;
   #options = void 0;
   #styleSheetId = void 0;
@@ -4998,12 +3427,12 @@ var DeferredDOMNodeLink = class extends UI13.Widget.Widget {
           if (node && this.#styleSheetId) {
             for (const adoptedStyle of node.adoptedStyleSheetsForNode) {
               if (adoptedStyle.id === this.#styleSheetId) {
-                void Common9.Revealer.reveal(adoptedStyle);
+                void Common7.Revealer.reveal(adoptedStyle);
                 return;
               }
             }
           }
-          void Common9.Revealer.reveal(node);
+          void Common7.Revealer.reveal(node);
           void node?.scrollIntoView();
           this.#options?.onClick?.();
         });
@@ -5023,91 +3452,16 @@ var Linkifier2 = class _Linkifier {
   }
   linkify(node, options) {
     if (node instanceof SDK3.DOMModel.DOMNode) {
-      return html12`<devtools-widget ${widget2((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html12`${options.textContent}` : nothing6}</devtools-widget>`;
+      return html7`<devtools-widget ${widget2((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html7`${options.textContent}` : nothing3}</devtools-widget>`;
     }
     if (node instanceof SDK3.DOMModel.DeferredDOMNode) {
-      return html12`<devtools-widget ${widget2((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html12`${options.textContent}` : nothing6}</devtools-widget>`;
+      return html7`<devtools-widget ${widget2((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html7`${options.textContent}` : nothing3}</devtools-widget>`;
     }
     throw new Error("Can't linkify non-node");
   }
 };
-
-// gen/front_end/panels/common/common.prebundle.js
-var UIStrings8 = {
-  /**
-   * @description Text for the cancel button in the dialog.
-   */
-  cancel: "Cancel",
-  /**
-   * @description Text for the allow button in the "type to allow" dialog.
-   */
-  allow: "Allow"
-};
-var str_8 = i18n27.i18n.registerUIStrings("panels/common/common.ts", UIStrings8);
-var i18nString8 = i18n27.i18n.getLocalizedString.bind(void 0, str_8);
-var TypeToAllowDialog = class {
-  static async show(options) {
-    const dialog2 = new UI14.Dialog.Dialog(options.jslogContext.dialog);
-    dialog2.setMaxContentSize(new Geometry3.Size(504, 340));
-    dialog2.setSizeBehavior(
-      "SetExactWidthMaxHeight"
-      /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
-    );
-    dialog2.setDimmed(true);
-    const shadowRoot = UI14.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: common_css_default });
-    const content = shadowRoot.createChild("div", "type-to-allow-dialog");
-    const result = await new Promise((resolve) => {
-      const header = content.createChild("div", "header");
-      header.createChild("div", "title").textContent = options.header;
-      const closeButton = header.createChild("dt-close-button", "dialog-close-button");
-      closeButton.setTabbable(true);
-      self.onInvokeElement(closeButton, (event) => {
-        dialog2.hide();
-        event.consume(true);
-        resolve(false);
-      });
-      closeButton.setSize(
-        "SMALL"
-        /* Buttons.Button.Size.SMALL */
-      );
-      content.createChild("div", "message").textContent = options.message;
-      const input = UI14.UIUtils.createInput("text-input", "text", options.jslogContext.input);
-      input.placeholder = options.inputPlaceholder;
-      content.appendChild(input);
-      const buttonsBar = content.createChild("div", "button");
-      const cancelButton = UI14.UIUtils.createTextButton(i18nString8(UIStrings8.cancel), () => resolve(false), { jslogContext: "cancel" });
-      const allowButton = UI14.UIUtils.createTextButton(i18nString8(UIStrings8.allow), () => {
-        resolve(input.value === options.typePhrase || input.value === `'${options.typePhrase}'`);
-      }, {
-        jslogContext: "confirm",
-        variant: "primary"
-        /* Buttons.Button.Variant.PRIMARY */
-      });
-      allowButton.disabled = true;
-      buttonsBar.appendChild(allowButton);
-      buttonsBar.appendChild(cancelButton);
-      input.addEventListener("input", () => {
-        allowButton.disabled = !Boolean(input.value);
-      }, false);
-      input.addEventListener("paste", (e) => e.preventDefault());
-      input.addEventListener("drop", (e) => e.preventDefault());
-      dialog2.setOutsideClickCallback((event) => {
-        event.consume();
-        resolve(false);
-      });
-      dialog2.show();
-      Host10.userMetrics.actionTaken(Host10.UserMetrics.Action.SelfXssWarningDialogShown);
-    });
-    dialog2.hide();
-    return result;
-  }
-};
 export {
-  AiCodeCompletionDisclaimer,
   AiCodeCompletionSummaryToolbar_exports as AiCodeCompletionSummaryToolbar,
-  AiCodeCompletionTeaser,
-  AiCodeGenerationTeaser_exports as AiCodeGenerationTeaser,
-  AiCodeGenerationUpgradeDialog,
   BadgeNotification,
   CPUThrottlingOption_exports as CPUThrottlingOption,
   DOMLinkifier_exports as DOMLinkifier,
@@ -5115,10 +3469,8 @@ export {
   ExtensionPanel_exports as ExtensionPanel,
   ExtensionServer_exports as ExtensionServer,
   ExtensionView_exports as ExtensionView,
-  FreDialog,
   GdpSignUpDialog,
   GeminiRebrandPromoDialog,
-  PersistenceUtils_exports as PersistenceUtils,
-  TypeToAllowDialog
+  PersistenceUtils_exports as PersistenceUtils
 };
 //# sourceMappingURL=common.js.map

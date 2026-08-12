@@ -15,13 +15,6 @@ export interface TraceEngineLoaderOptions {
  **/
 export declare class TraceLoader {
     /**
-     * Parsing some trace files easily takes up more than our default Mocha timeout
-     * which is 2seconds. So for most tests that include parsing a trace, we have to
-     * increase the timeout. We use this function to ensure we set a consistent
-     * timeout across all trace model tests.
-     **/
-    static setTestTimeout(context: Mocha.Context | Mocha.Suite): void;
-    /**
      * Loads a trace file into memory and returns its contents after
      * JSON.parse-ing them
      *
@@ -45,10 +38,7 @@ export declare class TraceLoader {
     /**
      * Executes only the new trace engine on the fixture and returns the resulting parsed data.
      *
-     * @param context The Mocha test context. Processing a trace can easily
-     * takes up longer than the default Mocha timeout, which is 2s. So we have to
-     * increase this test's timeout. It might be null when we only render a
-     * component example. See TraceLoader.setTestTimeout.
+     * @param context The Mocha test context.
      * @param file The name of the trace file to be loaded.
      * The trace file should be in ../panels/timeline/fixtures/traces folder.
      * @param options Additional trace options.

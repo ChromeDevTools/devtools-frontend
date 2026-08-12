@@ -51,4 +51,4 @@ export default `/*
   }
 }
 
-/*# sourceURL=${import.meta.resolve('./common.css')} */`;
+/*# sourceURL=${import.meta.resolve('./typeToAllowDialog.css')} */`;

@@ -4,68 +4,68 @@ export declare const generatedProperties: ({
     runtime_flag: string;
     runtime_flag_status: string;
     is_property?: undefined;
-    devtools_keywords?: undefined;
-    keywords?: undefined;
     is_descriptor?: undefined;
+    devtools_keywords?: undefined;
     inherited?: undefined;
+    keywords?: undefined;
 } | {
     keywords: string[];
     name: string;
     runtime_flag: string;
     runtime_flag_status: string;
     is_property?: undefined;
-    devtools_keywords?: undefined;
     is_descriptor?: undefined;
-    inherited?: undefined;
     longhands?: undefined;
+    devtools_keywords?: undefined;
+    inherited?: undefined;
 } | {
     inherited: boolean;
     name: string;
     is_property?: undefined;
-    devtools_keywords?: undefined;
-    keywords?: undefined;
     is_descriptor?: undefined;
     longhands?: undefined;
+    devtools_keywords?: undefined;
+    keywords?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
     devtools_keywords: string[];
     name: string;
     is_property?: undefined;
-    keywords?: undefined;
     is_descriptor?: undefined;
-    inherited?: undefined;
     longhands?: undefined;
+    inherited?: undefined;
+    keywords?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
     keywords: string[];
     name: string;
     is_property?: undefined;
-    devtools_keywords?: undefined;
     is_descriptor?: undefined;
-    inherited?: undefined;
     longhands?: undefined;
+    devtools_keywords?: undefined;
+    inherited?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
     name: string;
     is_property?: undefined;
-    devtools_keywords?: undefined;
-    keywords?: undefined;
     is_descriptor?: undefined;
-    inherited?: undefined;
     longhands?: undefined;
+    devtools_keywords?: undefined;
+    inherited?: undefined;
+    keywords?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
     longhands: string[];
     name: string;
     is_property?: undefined;
-    devtools_keywords?: undefined;
-    keywords?: undefined;
     is_descriptor?: undefined;
+    devtools_keywords?: undefined;
     inherited?: undefined;
+    keywords?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
@@ -73,9 +73,9 @@ export declare const generatedProperties: ({
     keywords: string[];
     name: string;
     is_property?: undefined;
-    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     longhands?: undefined;
+    devtools_keywords?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
@@ -83,9 +83,9 @@ export declare const generatedProperties: ({
     longhands: string[];
     name: string;
     is_property?: undefined;
-    keywords?: undefined;
     is_descriptor?: undefined;
     inherited?: undefined;
+    keywords?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
@@ -93,19 +93,19 @@ export declare const generatedProperties: ({
     longhands: string[];
     name: string;
     is_property?: undefined;
+    is_descriptor?: undefined;
     devtools_keywords?: undefined;
     keywords?: undefined;
-    is_descriptor?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
     is_descriptor: boolean;
     is_property: boolean;
     name: string;
-    devtools_keywords?: undefined;
-    keywords?: undefined;
-    inherited?: undefined;
     longhands?: undefined;
+    devtools_keywords?: undefined;
+    inherited?: undefined;
+    keywords?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
@@ -114,10 +114,10 @@ export declare const generatedProperties: ({
     name: string;
     runtime_flag: string;
     runtime_flag_status: string;
-    devtools_keywords?: undefined;
-    keywords?: undefined;
-    inherited?: undefined;
     longhands?: undefined;
+    devtools_keywords?: undefined;
+    inherited?: undefined;
+    keywords?: undefined;
 } | {
     is_property?: undefined;
     inherited: boolean;
@@ -125,16 +125,16 @@ export declare const generatedProperties: ({
     name: string;
     runtime_flag: string;
     runtime_flag_status: string;
-    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     longhands?: undefined;
+    devtools_keywords?: undefined;
 } | {
     is_property?: undefined;
     keywords: string[];
     longhands: string[];
     name: string;
-    devtools_keywords?: undefined;
     is_descriptor?: undefined;
+    devtools_keywords?: undefined;
     inherited?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
@@ -145,8 +145,8 @@ export declare const generatedProperties: ({
     name: string;
     runtime_flag: string;
     runtime_flag_status: string;
-    devtools_keywords?: undefined;
     is_descriptor?: undefined;
+    devtools_keywords?: undefined;
     inherited?: undefined;
 } | {
     is_property?: undefined;
@@ -154,8 +154,8 @@ export declare const generatedProperties: ({
     keywords: string[];
     name: string;
     is_descriptor?: undefined;
-    inherited?: undefined;
     longhands?: undefined;
+    inherited?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
@@ -163,45 +163,45 @@ export declare const generatedProperties: ({
     name: string;
     runtime_flag: string;
     runtime_flag_status: string;
-    devtools_keywords?: undefined;
-    keywords?: undefined;
     is_descriptor?: undefined;
+    longhands?: undefined;
+    devtools_keywords?: undefined;
     inherited?: undefined;
-    longhands?: undefined;
+    keywords?: undefined;
 } | {
     is_property?: undefined;
     inherited: boolean;
     is_descriptor: boolean;
     name: string;
+    longhands?: undefined;
     devtools_keywords?: undefined;
     keywords?: undefined;
-    longhands?: undefined;
-    runtime_flag?: undefined;
-    runtime_flag_status?: undefined;
-} | {
-    is_property?: undefined;
-    inherited: boolean;
-    is_descriptor: boolean;
-    keywords: string[];
-    name: string;
-    devtools_keywords?: undefined;
-    longhands?: undefined;
-    runtime_flag?: undefined;
-    runtime_flag_status?: undefined;
-} | {
-    is_property?: undefined;
-    devtools_keywords: string[];
-    inherited: boolean;
-    longhands: string[];
-    name: string;
-    keywords?: undefined;
-    is_descriptor?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
     is_property?: undefined;
     inherited: boolean;
     is_descriptor: boolean;
+    keywords: string[];
+    name: string;
+    longhands?: undefined;
+    devtools_keywords?: undefined;
+    runtime_flag?: undefined;
+    runtime_flag_status?: undefined;
+} | {
+    is_property?: undefined;
+    devtools_keywords: string[];
+    inherited: boolean;
+    longhands: string[];
+    name: string;
+    is_descriptor?: undefined;
+    keywords?: undefined;
+    runtime_flag?: undefined;
+    runtime_flag_status?: undefined;
+} | {
+    is_property?: undefined;
+    inherited: boolean;
+    is_descriptor: boolean;
     longhands: string[];
     name: string;
     devtools_keywords?: undefined;
@@ -226,45 +226,55 @@ export declare const generatedProperties: ({
     runtime_flag: string;
     runtime_flag_status: string;
     is_descriptor?: undefined;
-    inherited?: undefined;
     longhands?: undefined;
+    inherited?: undefined;
 } | {
     is_property?: undefined;
-    devtools_keywords?: undefined;
     keywords: string[];
     name: string;
     runtime_flag: string;
     runtime_flag_status: null;
     is_descriptor?: undefined;
-    inherited?: undefined;
     longhands?: undefined;
+    devtools_keywords?: undefined;
+    inherited?: undefined;
 } | {
     is_property?: undefined;
-    devtools_keywords?: undefined;
     is_descriptor: boolean;
     keywords: string[];
     name: string;
     runtime_flag: string;
     runtime_flag_status: string;
-    inherited?: undefined;
     longhands?: undefined;
+    devtools_keywords?: undefined;
+    inherited?: undefined;
 } | {
     is_property?: undefined;
-    devtools_keywords?: undefined;
-    keywords?: undefined;
     is_descriptor: boolean;
     name: string;
-    inherited?: undefined;
     longhands?: undefined;
+    devtools_keywords?: undefined;
+    inherited?: undefined;
+    keywords?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
 } | {
     is_property?: undefined;
-    devtools_keywords?: undefined;
-    keywords?: undefined;
     is_descriptor?: undefined;
     inherited: boolean;
     longhands: string[];
+    name: string;
+    runtime_flag: string;
+    runtime_flag_status: string;
+    devtools_keywords?: undefined;
+    keywords?: undefined;
+} | {
+    is_property?: undefined;
+    is_descriptor?: undefined;
+    longhands?: undefined;
+    devtools_keywords: string[];
+    inherited: boolean;
+    keywords: string[];
     name: string;
     runtime_flag: string;
     runtime_flag_status: string;
@@ -382,6 +392,9 @@ export declare const generatedPropertyValues: {
         values: string[];
     };
     "animation-trigger": {
+        values: string[];
+    };
+    "app-region": {
         values: string[];
     };
     appearance: {

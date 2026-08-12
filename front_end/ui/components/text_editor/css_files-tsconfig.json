@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "aiCodeCompletionDisclaimer.css.js",
+        "aiCodeCompletionTeaser.css.js",
+        "aiCodeGenerationTeaser.css.js",
+        "aiCodeGenerationUpgradeDialog.css.js"
+    ]
+}

@@ -7,6 +7,11 @@ import { PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFo
 import type { AICallTree } from '../performance/AICallTree.js';
 import { AgentFocus } from '../performance/AIContext.js';
 /**
+ * Labels used to identify specific periods or categories in the trace for getting main thread summary.
+ * Supports hardcoded phases, dynamic navigation IDs (`NAVIGATION_X`), and insight models.
+ */
+export type MainThreadSectionLabel = 'nav-to-lcp' | 'lcp-ttfb' | 'lcp-render-delay' | 'trace-bounds' | 'NO_NAVIGATION' | `NAVIGATION_${string}` | keyof Trace.Insights.Types.InsightModels;
+/**
  * The conversation context for AI queries regarding performance traces.
  * Encapsulates the user's active trace selection/focus and handles formatting
  * the context data for the LLM prompt and user-facing accordion disclosures.
@@ -61,4 +66,7 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
      * the LLM prompt via `getPromptDetails()`.
      */
     getUserFacingDetails(): Promise<[ContextDetail, ...ContextDetail[]] | null>;
+    getBoundsForLabel(label: MainThreadSectionLabel): Trace.Types.Timing.TraceWindowMicro | null;
+    getLabelName(label: MainThreadSectionLabel): string;
+    createBounds(min?: number, max?: number): Trace.Types.Timing.TraceWindowMicro | null;
 }

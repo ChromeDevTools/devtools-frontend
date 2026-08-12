@@ -5,6 +5,7 @@ import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
 import * as Persistence from '../models/persistence/persistence.js';
+import type * as Trace from '../models/trace/trace.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as AiAssistancePanel from '../panels/ai_assistance/ai_assistance.js';
 import * as UI from '../ui/legacy/legacy.js';
@@ -96,3 +97,12 @@ export declare function assertIsContext<T>(response: AiAssistance.Tool.DataHandl
  * @param height Height of the dummy image in pixels (px).
  */
 export declare function createDummyImageFile(width: number, height: number): Promise<File>;
+export declare function makeFakeParsedTrace(options?: {
+    min?: number;
+    max?: number;
+    mainFrameURL?: string;
+}): Trace.TraceModel.ParsedTrace;
+export declare function stubPerformanceTraceFormatter(traceContext: AiAssistance.PerformanceTraceContext.PerformanceTraceContext, methods: {
+    formatMainThreadTrackSummary?: sinon.SinonStub;
+    formatNetworkTrackSummary?: sinon.SinonStub;
+}): sinon.SinonStub;

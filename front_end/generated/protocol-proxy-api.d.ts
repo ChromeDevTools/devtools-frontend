@@ -3479,6 +3479,16 @@ declare namespace ProtocolProxyApi {
     invoke_startScreencast(params: Protocol.Page.StartScreencastRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Starts screencast video recording.
+     */
+    invoke_startScreenRecording(params: Protocol.Page.StartScreenRecordingRequest): Promise<Protocol.Page.StartScreenRecordingResponse>;
+
+    /**
+     * Stops screencast video recording.
+     */
+    invoke_stopScreenRecording(): Promise<Protocol.Page.StopScreenRecordingResponse>;
+
+    /**
      * Force the page stop all navigations and pending resource fetches.
      */
     invoke_stopLoading(): Promise<Protocol.ProtocolResponseWithError>;

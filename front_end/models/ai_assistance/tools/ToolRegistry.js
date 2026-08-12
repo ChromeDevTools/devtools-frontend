@@ -5,11 +5,17 @@ import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
 import { GetElementAccessibilityDetailsTool } from './GetElementAccessibilityDetails.js';
 import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
+import { GetSourceContentTool } from './GetSourceContent.js';
 import { GetStylesTool } from './GetStyles.js';
+import { GetTraceEventByKeyTool } from './GetTraceEventByKey.js';
+import { GetTraceMainThreadSummaryTool } from './GetTraceMainThreadSummary.js';
+import { GetTraceNetworkSummaryTool } from './GetTraceNetworkSummary.js';
 import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
 import { ListPageOriginsTool } from './ListPageOrigins.js';
+import { ListSourcesTool } from './ListSources.js';
 import { RecordPerformanceTraceTool } from './RecordPerformanceTrace.js';
 import { ResolveDevtoolsNodePathTool } from './ResolveDevtoolsNodePath.js';
+import { SelectTraceEventByKeyTool } from './SelectTraceEventByKey.js';
 /**
  * Plain object registry containing concrete instantiated tools.
  *
@@ -28,6 +34,12 @@ export const TOOLS = {
     ["getElementAccessibilityDetails" /* ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS */]: new GetElementAccessibilityDetailsTool(),
     ["recordPerformanceTrace" /* ToolName.RECORD_PERFORMANCE_TRACE */]: new RecordPerformanceTraceTool(),
     ["listPageOrigins" /* ToolName.LIST_PAGE_ORIGINS */]: new ListPageOriginsTool(),
+    ["getTraceEventByKey" /* ToolName.GET_TRACE_EVENT_BY_KEY */]: new GetTraceEventByKeyTool(),
+    ["selectTraceEventByKey" /* ToolName.SELECT_TRACE_EVENT_BY_KEY */]: new SelectTraceEventByKeyTool(),
+    ["listSources" /* ToolName.LIST_SOURCES */]: new ListSourcesTool(),
+    ["getSourceContent" /* ToolName.GET_SOURCE_CONTENT */]: new GetSourceContentTool(),
+    ["getTraceMainThreadSummary" /* ToolName.GET_TRACE_MAIN_THREAD_SUMMARY */]: new GetTraceMainThreadSummaryTool(),
+    ["getTraceNetworkSummary" /* ToolName.GET_TRACE_NETWORK_SUMMARY */]: new GetTraceNetworkSummaryTool(),
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

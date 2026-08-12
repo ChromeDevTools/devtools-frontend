@@ -30,4 +30,9 @@ export const pauseOnCaughtExceptionSettingDescriptor = {
     type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
     defaultValue: false,
 };
+export const pauseOnUncaughtExceptionSettingDescriptor = {
+    name: 'pause-on-uncaught-exception',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+};
 //# sourceMappingURL=SDKSettings.js.map

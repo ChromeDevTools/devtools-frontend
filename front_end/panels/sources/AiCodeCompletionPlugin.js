@@ -87,7 +87,7 @@ export class AiCodeCompletionPlugin extends Plugin {
         if (this.#aiCodeCompletionDisclaimer) {
             return;
         }
-        this.#aiCodeCompletionDisclaimer = new PanelCommon.AiCodeCompletionDisclaimer();
+        this.#aiCodeCompletionDisclaimer = new TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer();
         this.#aiCodeCompletionDisclaimer.disclaimerTooltipId = DISCLAIMER_TOOLTIP_ID;
         this.#aiCodeCompletionDisclaimer.spinnerTooltipId = SPINNER_TOOLTIP_ID;
         this.#aiCodeCompletionDisclaimer.disclaimerTextVariant = 'sources';

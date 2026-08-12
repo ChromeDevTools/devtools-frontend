@@ -3,9 +3,13 @@
 // found in the LICENSE file.
 
 export * as AccessiblePlaceholder from './AccessiblePlaceholder.js';
+export * as AiCodeCompletionDisclaimer from './AiCodeCompletionDisclaimer.js';
 export * as AiCodeCompletionProvider from './AiCodeCompletionProvider.js';
+export * as AiCodeCompletionTeaser from './AiCodeCompletionTeaser.js';
 export * as AiCodeGenerationParser from './AiCodeGenerationParser.js';
 export * as AiCodeGenerationProvider from './AiCodeGenerationProvider.js';
+export * as AiCodeGenerationTeaser from './AiCodeGenerationTeaser.js';
+export * as AiCodeGenerationUpgradeDialog from './AiCodeGenerationUpgradeDialog.js';
 export * as AutocompleteHistory from './AutocompleteHistory.js';
 export * as Config from './config.js';
 export * as ExecutionPositionHighlighter from './ExecutionPositionHighlighter.js';

@@ -122,6 +122,9 @@
       "path": "../../ui/components/code_highlighter/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/dialogs/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/highlighting/bundle-tsconfig.json"
     },
     {

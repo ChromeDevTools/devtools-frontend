@@ -252,7 +252,7 @@ var AiCodeCompletionPlugin = class extends Plugin {
     if (this.#aiCodeCompletionDisclaimer) {
       return;
     }
-    this.#aiCodeCompletionDisclaimer = new PanelCommon.AiCodeCompletionDisclaimer();
+    this.#aiCodeCompletionDisclaimer = new TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer();
     this.#aiCodeCompletionDisclaimer.disclaimerTooltipId = DISCLAIMER_TOOLTIP_ID;
     this.#aiCodeCompletionDisclaimer.spinnerTooltipId = SPINNER_TOOLTIP_ID;
     this.#aiCodeCompletionDisclaimer.disclaimerTextVariant = "sources";
@@ -1373,7 +1373,7 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
     this.#breakpointManager.addEventListener(Breakpoints.BreakpointManager.Events.BreakpointRemoved, this.#onBreakpointRemoved, this);
     this.#breakpointsActiveSetting = settings.moduleSetting("breakpoints-active");
     this.#breakpointsActiveSetting.addChangeListener(this.update, this);
-    this.#pauseOnUncaughtExceptionSetting = settings.moduleSetting("pause-on-uncaught-exception");
+    this.#pauseOnUncaughtExceptionSetting = settings.resolve(SDK2.SDKSettings.pauseOnUncaughtExceptionSettingDescriptor);
     this.#pauseOnUncaughtExceptionSetting.addChangeListener(this.update, this);
     this.#pauseOnCaughtExceptionSetting = settings.resolve(SDK2.SDKSettings.pauseOnCaughtExceptionSettingDescriptor);
     this.#pauseOnCaughtExceptionSetting.addChangeListener(this.update, this);

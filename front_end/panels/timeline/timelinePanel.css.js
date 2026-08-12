@@ -156,16 +156,6 @@ export default `/*
   justify-content: space-between;
 }
 
-#memory-graphs-container .timeline-memory-header::after {
-  content: "";
-  /* stylelint-disable-next-line custom-property-pattern */
-  background-image: var(--image-file-toolbarResizerVertical);
-  background-repeat: no-repeat;
-  background-position: right center, center;
-  flex: 20px 0 0;
-  margin: 0 4px;
-}
-
 .timeline-memory-toolbar {
   flex-shrink: 1;
 }

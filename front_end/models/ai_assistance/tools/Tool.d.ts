@@ -123,6 +123,7 @@ export type AllToolsCapabilities = BaseToolCapability & PageExecutionCapability 
  * Base argument type for AI Tools.
  */
 export type ToolArgs = Record<string, unknown>;
+export declare const MAX_FUNCTION_RESULT_BYTE_LENGTH: number;
 export declare const enum ToolName {
     EXECUTE_JAVASCRIPT = "executeJavaScript",
     GET_STYLES = "getStyles",
@@ -132,7 +133,13 @@ export declare const enum ToolName {
     RESOLVE_DEVTOOLS_NODE_PATH = "resolveDevtoolsNodePath",
     GET_ELEMENT_ACCESSIBILITY_DETAILS = "getElementAccessibilityDetails",
     RECORD_PERFORMANCE_TRACE = "recordPerformanceTrace",
-    LIST_PAGE_ORIGINS = "listPageOrigins"
+    LIST_PAGE_ORIGINS = "listPageOrigins",
+    GET_TRACE_EVENT_BY_KEY = "getTraceEventByKey",
+    SELECT_TRACE_EVENT_BY_KEY = "selectTraceEventByKey",
+    LIST_SOURCES = "listSources",
+    GET_SOURCE_CONTENT = "getSourceContent",
+    GET_TRACE_MAIN_THREAD_SUMMARY = "getTraceMainThreadSummary",
+    GET_TRACE_NETWORK_SUMMARY = "getTraceNetworkSummary"
 }
 /**
  * Base metadata interface for a Tool.

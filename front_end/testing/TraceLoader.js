@@ -34,28 +34,11 @@ const traceEngineCache = new Map();
  **/
 export class TraceLoader {
     /**
-     * Parsing some trace files easily takes up more than our default Mocha timeout
-     * which is 2seconds. So for most tests that include parsing a trace, we have to
-     * increase the timeout. We use this function to ensure we set a consistent
-     * timeout across all trace model tests.
-     **/
-    static setTestTimeout(context) {
-        // Some traces take a long time to process, especially on our CQ machines.
-        // The trace that takes the longest on my Mac M1 Pro is ~3s (yahoo-news.json.gz).
-        // In CQ, that same trace takes ~10s (linux), ~7.5s (mac), ~11.5s (windows).
-        if (context.timeout() > 0) {
-            context.timeout(Math.max(context.timeout(), 45000));
-        }
-    }
-    /**
      * Loads a trace file into memory and returns its contents after
      * JSON.parse-ing them
      *
      **/
     static async fixtureContents(context, name) {
-        if (context) {
-            TraceLoader.setTestTimeout(context);
-        }
         const cached = fileContentsCache.get(name);
         if (cached) {
             return cached;
@@ -102,10 +85,7 @@ export class TraceLoader {
     /**
      * Executes only the new trace engine on the fixture and returns the resulting parsed data.
      *
-     * @param context The Mocha test context. Processing a trace can easily
-     * takes up longer than the default Mocha timeout, which is 2s. So we have to
-     * increase this test's timeout. It might be null when we only render a
-     * component example. See TraceLoader.setTestTimeout.
+     * @param context The Mocha test context.
      * @param file The name of the trace file to be loaded.
      * The trace file should be in ../panels/timeline/fixtures/traces folder.
      * @param options Additional trace options.
@@ -118,9 +98,6 @@ export class TraceLoader {
     static async traceEngine(context, name, config = Trace.Types.Configuration.defaults(), opts = {
         withTimelinePanel: true,
     }) {
-        if (context) {
-            TraceLoader.setTestTimeout(context);
-        }
         let timelineModule;
         if (opts.withTimelinePanel) {
             timelineModule = await import('../panels/timeline/timeline.js');

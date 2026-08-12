@@ -5,7 +5,7 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import { isOpaqueOrigin } from '../AiOrigins.js';
+import { areOriginsEquivalent, isOpaqueOrigin } from '../AiOrigins.js';
 import { isSamePageOrigin } from '../contexts/StorageContext.js';
 const lockedString = i18n.i18n.lockedString;
 export class ListPageOriginsTool {
@@ -28,16 +28,18 @@ export class ListPageOriginsTool {
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         const targetManager = SDK.TargetManager.TargetManager.instance();
         const primaryPageTarget = targetManager.primaryPageTarget();
-        const pageOrigin = primaryPageTarget && context.conversationContext ?
-            Common.ParsedURL.ParsedURL.extractOrigin(primaryPageTarget.inspectedURL()) :
-            '';
-        const isAllowed = pageOrigin !== '' && context.conversationContext?.isOriginAllowed(pageOrigin);
+        const allowedOrigin = context.getEstablishedOrigin();
+        if (!allowedOrigin || isOpaqueOrigin(allowedOrigin)) {
+            return { error: 'No origin available or not allowed.' };
+        }
+        const pageOrigin = primaryPageTarget ? Common.ParsedURL.ParsedURL.extractOrigin(primaryPageTarget.inspectedURL()) : '';
+        const isAllowed = pageOrigin !== '' && areOriginsEquivalent(pageOrigin, allowedOrigin);
         if (!isAllowed) {
             return { error: 'No origin available or not allowed.' };
         }
         const origins = new Set();
         for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
-            if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), context.conversationContext ?? undefined)) {
+            if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), allowedOrigin)) {
                 continue;
             }
             const origin = frame.securityOrigin;

@@ -28,6 +28,7 @@ export declare class ResourceTreeModel extends SDKModel<EventTypes> {
     frameNavigated(framePayload: Protocol.Page.Frame, type: Protocol.Page.NavigationType | undefined): void;
     primaryPageChanged(frame: ResourceTreeFrame, type: PrimaryPageChangeType): void;
     documentOpened(framePayload: Protocol.Page.Frame): void;
+    navigatedWithinDocument(frameId: Protocol.Page.FrameId, url: string): void;
     frameDetached(frameId: Protocol.Page.FrameId, isSwap: boolean): void;
     private onRequestFinished;
     private onRequestUpdateDropped;
@@ -66,6 +67,7 @@ export declare class ResourceTreeModel extends SDKModel<EventTypes> {
 export declare enum Events {
     FrameAdded = "FrameAdded",
     FrameNavigated = "FrameNavigated",
+    FrameNavigatedWithinDocument = "FrameNavigatedWithinDocument",
     FrameDetached = "FrameDetached",
     FrameResized = "FrameResized",
     FrameWillNavigate = "FrameWillNavigate",
@@ -87,6 +89,7 @@ export declare enum Events {
 export interface EventTypes {
     [Events.FrameAdded]: ResourceTreeFrame;
     [Events.FrameNavigated]: ResourceTreeFrame;
+    [Events.FrameNavigatedWithinDocument]: ResourceTreeFrame;
     [Events.FrameDetached]: {
         frame: ResourceTreeFrame;
         isSwap: boolean;
@@ -137,6 +140,7 @@ export declare class ResourceTreeFrame {
         creationStackTraceTarget: Target;
     };
     navigate(framePayload: Protocol.Page.Frame): void;
+    navigatedWithinDocument(url: Platform.DevToolsPath.UrlString): void;
     resourceTreeModel(): ResourceTreeModel;
     get id(): Protocol.Page.FrameId;
     get name(): string;
@@ -221,7 +225,7 @@ export declare class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
     frameScheduledNavigation({}: Protocol.Page.FrameScheduledNavigationEvent): void;
     frameClearedScheduledNavigation({}: Protocol.Page.FrameClearedScheduledNavigationEvent): void;
     frameStartedNavigating({}: Protocol.Page.FrameStartedNavigatingEvent): void;
-    navigatedWithinDocument({}: Protocol.Page.NavigatedWithinDocumentEvent): void;
+    navigatedWithinDocument({ frameId, url }: Protocol.Page.NavigatedWithinDocumentEvent): void;
     frameResized(): void;
     javascriptDialogOpening(event: Protocol.Page.JavascriptDialogOpeningEvent): void;
     javascriptDialogClosed({}: Protocol.Page.JavascriptDialogClosedEvent): void;

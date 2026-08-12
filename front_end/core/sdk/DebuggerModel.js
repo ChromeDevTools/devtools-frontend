@@ -9,7 +9,7 @@ import { Events as ResourceTreeModelEvents, ResourceTreeModel } from './Resource
 import { RuntimeModel } from './RuntimeModel.js';
 import { Script } from './Script.js';
 import { SDKModel } from './SDKModel.js';
-import { jsSourceMapsEnabledSettingDescriptor, pauseOnCaughtExceptionSettingDescriptor, pauseOnExceptionEnabledSettingDescriptor, } from './SDKSettings.js';
+import { jsSourceMapsEnabledSettingDescriptor, pauseOnCaughtExceptionSettingDescriptor, pauseOnExceptionEnabledSettingDescriptor, pauseOnUncaughtExceptionSettingDescriptor, } from './SDKSettings.js';
 import { SourceMap } from './SourceMap.js';
 import { SourceMapManager } from './SourceMapManager.js';
 const UIStrings = {
@@ -115,6 +115,11 @@ export const WASM_SYMBOLS_PRIORITY = [
     "EmbeddedDWARF" /* Protocol.Debugger.DebugSymbolsType.EmbeddedDWARF */,
     "SourceMap" /* Protocol.Debugger.DebugSymbolsType.SourceMap */,
 ];
+export const skipAllPausesSettingDescriptor = {
+    name: 'skip-all-pauses',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+};
 export class DebuggerModel extends SDKModel {
     agent;
     #runtimeModel;
@@ -127,6 +132,7 @@ export class DebuggerModel extends SDKModel {
     #selectedCallFrame = null;
     #debuggerEnabled = false;
     #debuggerId = null;
+    #skipAllPausesSetting;
     #skipAllPausesTimeout;
     #beforePausedCallback = null;
     #computeAutoStepRangesCallback = null;
@@ -147,11 +153,14 @@ export class DebuggerModel extends SDKModel {
         this.#sourceMapManager =
             new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script) => new SourceMap(compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
         const settings = this.target().targetManager().settings;
+        this.#skipAllPausesSetting = settings.resolve(skipAllPausesSettingDescriptor);
         settings.resolve(pauseOnExceptionEnabledSettingDescriptor)
             .addChangeListener(this.pauseOnExceptionStateChanged, this);
         settings.resolve(pauseOnCaughtExceptionSettingDescriptor)
             .addChangeListener(this.pauseOnExceptionStateChanged, this);
-        settings.moduleSetting('pause-on-uncaught-exception').addChangeListener(this.pauseOnExceptionStateChanged, this);
+        this.#skipAllPausesSetting.addChangeListener(this.skipAllPausesChanged, this);
+        settings.resolve(pauseOnUncaughtExceptionSettingDescriptor)
+            .addChangeListener(this.pauseOnExceptionStateChanged, this);
         settings.moduleSetting('disable-async-stack-traces').addChangeListener(this.asyncStackTracesStateChanged, this);
         settings.moduleSetting('breakpoints-active').addChangeListener(this.breakpointsActiveChanged, this);
         if (!target.suspended()) {
@@ -208,6 +217,10 @@ export class DebuggerModel extends SDKModel {
             return;
         }
         this.#debuggerEnabled = true;
+        let skipAllPausesPromise;
+        if (this.#skipAllPausesSetting.get()) {
+            skipAllPausesPromise = this.agent.invoke_setSkipAllPauses({ skip: true });
+        }
         // Set a limit for the total size of collected script sources retained by debugger.
         // 10MB for remote frontends, 100MB for others.
         const isRemoteFrontend = Root.Runtime.Runtime.queryParam('remoteFrontend') || Root.Runtime.Runtime.queryParam('ws');
@@ -219,14 +232,14 @@ export class DebuggerModel extends SDKModel {
                 instrumentation: "beforeScriptExecution" /* Protocol.Debugger.SetInstrumentationBreakpointRequestInstrumentation.BeforeScriptExecution */,
             });
         }
+        const settings = this.target().targetManager().settings;
         this.pauseOnExceptionStateChanged();
         void this.asyncStackTracesStateChanged();
-        const settings = this.target().targetManager().settings;
         if (!settings.moduleSetting('breakpoints-active').get()) {
             this.breakpointsActiveChanged();
         }
         this.dispatchEventToListeners(Events.DebuggerWasEnabled, this);
-        const [enableResult] = await Promise.all([enablePromise, instrumentationPromise]);
+        const [enableResult] = await Promise.all([enablePromise, instrumentationPromise, skipAllPausesPromise]);
         this.registerDebugger(enableResult);
     }
     async syncDebuggerId() {
@@ -286,10 +299,21 @@ export class DebuggerModel extends SDKModel {
         this.#debuggerId = null;
     }
     skipAllPauses(skip) {
+        if (this.#skipAllPausesSetting.get()) {
+            return;
+        }
+        clearTimeout(this.#skipAllPausesTimeout);
+        void this.agent.invoke_setSkipAllPauses({ skip });
+    }
+    skipAllPausesChanged() {
+        const skip = this.#skipAllPausesSetting.get();
         clearTimeout(this.#skipAllPausesTimeout);
         void this.agent.invoke_setSkipAllPauses({ skip });
     }
     skipAllPausesUntilReloadOrTimeout(timeout) {
+        if (this.#skipAllPausesSetting.get()) {
+            return;
+        }
         clearTimeout(this.#skipAllPausesTimeout);
         void this.agent.invoke_setSkipAllPauses({ skip: true });
         // If reload happens before the timeout, the flag will be already unset and the timeout callback won't change anything.
@@ -299,7 +323,7 @@ export class DebuggerModel extends SDKModel {
         const settings = this.target().targetManager().settings;
         const pauseOnCaughtEnabled = settings.resolve(pauseOnCaughtExceptionSettingDescriptor).get();
         let state;
-        const pauseOnUncaughtEnabled = settings.moduleSetting('pause-on-uncaught-exception').get();
+        const pauseOnUncaughtEnabled = settings.resolve(pauseOnUncaughtExceptionSettingDescriptor).get();
         if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
             state = "all" /* Protocol.Debugger.SetPauseOnExceptionsRequestState.All */;
         }
@@ -724,6 +748,9 @@ export class DebuggerModel extends SDKModel {
         settings.resolve(pauseOnExceptionEnabledSettingDescriptor)
             .removeChangeListener(this.pauseOnExceptionStateChanged, this);
         settings.resolve(pauseOnCaughtExceptionSettingDescriptor)
+            .removeChangeListener(this.pauseOnExceptionStateChanged, this);
+        this.#skipAllPausesSetting.removeChangeListener(this.skipAllPausesChanged, this);
+        settings.resolve(pauseOnUncaughtExceptionSettingDescriptor)
             .removeChangeListener(this.pauseOnExceptionStateChanged, this);
         settings.moduleSetting('disable-async-stack-traces').removeChangeListener(this.asyncStackTracesStateChanged, this);
     }

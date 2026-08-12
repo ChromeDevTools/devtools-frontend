@@ -6,9 +6,9 @@ import '../../ui/components/tooltips/tooltips.js';
 import '../../ui/kit/kit.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
-import { AiCodeCompletionDisclaimer } from './AiCodeCompletionDisclaimer.js';
 import styles from './aiCodeCompletionSummaryToolbar.css.js';
 const UIStringsNotTranslate = {
     /**
@@ -36,7 +36,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
     // clang-format off
     const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ?
         html `<devtools-widget
-            ${widget(AiCodeCompletionDisclaimer, {
+            ${widget(TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer, {
             disclaimerTooltipId: input.disclaimerTooltipId,
             spinnerTooltipId: input.spinnerTooltipId,
             loading: input.loading,

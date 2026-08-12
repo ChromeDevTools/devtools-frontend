@@ -206,6 +206,17 @@ export class ResourceTreeModel extends SDKModel {
             }
         }
     }
+    navigatedWithinDocument(frameId, url) {
+        const frame = this.framesInternal.get(frameId);
+        if (!frame) {
+            return;
+        }
+        frame.navigatedWithinDocument(url);
+        if (frame.isMainFrame()) {
+            this.target().setInspectedURL(frame.url);
+        }
+        this.dispatchEventToListeners(Events.FrameNavigatedWithinDocument, frame);
+    }
     frameDetached(frameId, isSwap) {
         // Do nothing unless cached resource tree is processed - it will overwrite everything.
         if (!this.#cachedResourcesProcessed) {
@@ -479,6 +490,7 @@ export var Events;
     /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
     Events["FrameAdded"] = "FrameAdded";
     Events["FrameNavigated"] = "FrameNavigated";
+    Events["FrameNavigatedWithinDocument"] = "FrameNavigatedWithinDocument";
     Events["FrameDetached"] = "FrameDetached";
     Events["FrameResized"] = "FrameResized";
     Events["FrameWillNavigate"] = "FrameWillNavigate";
@@ -587,6 +599,9 @@ export class ResourceTreeFrame {
         if (mainResource && mainResource.loaderId === this.#loaderId) {
             this.addResource(mainResource);
         }
+    }
+    navigatedWithinDocument(url) {
+        this.#url = url;
     }
     resourceTreeModel() {
         return this.#model;
@@ -884,7 +899,8 @@ export class PageDispatcher {
     }
     frameStartedNavigating({}) {
     }
-    navigatedWithinDocument({}) {
+    navigatedWithinDocument({ frameId, url }) {
+        this.#resourceTreeModel.navigatedWithinDocument(frameId, url);
     }
     frameResized() {
         this.#resourceTreeModel.dispatchEventToListeners(Events.FrameResized);

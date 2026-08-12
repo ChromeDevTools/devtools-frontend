@@ -2443,7 +2443,7 @@ export const NativeFunctions = [
     },
     {
         name: "importNode",
-        signatures: [["node", "?options"], ["node", "?deep"]]
+        signatures: [["node", "?options"]]
     },
     {
         name: "queryCommandEnabled",

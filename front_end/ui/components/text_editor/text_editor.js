@@ -59,6 +59,320 @@ var AccessiblePlaceholder = class extends CM.WidgetType {
   }
 };
 
+// gen/front_end/ui/components/text_editor/AiCodeCompletionDisclaimer.js
+var AiCodeCompletionDisclaimer_exports = {};
+__export(AiCodeCompletionDisclaimer_exports, {
+  AiCodeCompletionDisclaimer: () => AiCodeCompletionDisclaimer,
+  DEFAULT_SUMMARY_TOOLBAR_VIEW: () => DEFAULT_SUMMARY_TOOLBAR_VIEW
+});
+import "./../spinners/spinners.js";
+import "./../tooltips/tooltips.js";
+import * as Host from "./../../../core/host/host.js";
+import * as i18n from "./../../../core/i18n/i18n.js";
+import * as Root from "./../../../core/root/root.js";
+import * as UI from "./../../legacy/legacy.js";
+import { Directives, html, nothing, render } from "./../../lit/lit.js";
+import * as VisualLogging from "./../../visual_logging/visual_logging.js";
+
+// gen/front_end/ui/components/text_editor/aiCodeCompletionDisclaimer.css.js
+var aiCodeCompletionDisclaimer_css_default = `/*
+ * Copyright 2025 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+    display: flex;
+
+    .ai-code-completion-disclaimer {
+        gap: 5px;
+        display: flex;
+        flex-shrink: 0;
+
+        span.link {
+            color: var(--sys-color-on-surface-subtle);
+
+            &:focus-visible {
+                outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+                outline-offset: 0;
+                border-radius: var(--sys-shape-corner-extra-small);
+            }
+        }
+
+        devtools-spinner {
+            margin-top: var(--sys-size-2);
+            padding: var(--sys-size-1);
+            height: var(--sys-size-6);
+            width: var(--sys-size-6);
+        }
+
+        devtools-tooltip:popover-open {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .disclaimer-tooltip-container {
+                padding: var(--sys-size-4) 0;
+                max-width: var(--sys-size-30);
+                white-space: normal;
+
+                .tooltip-text {
+                    color: var(--sys-color-on-surface-subtle);
+                    padding: 0 var(--sys-size-5);
+                    align-items: flex-start;
+                    gap: 10px;
+                }
+
+                .link {
+                    margin: var(--sys-size-5) var(--sys-size-8) 0 var(--sys-size-5);
+                    display: inline-block;
+                }
+            }
+        }
+    }
+}
+
+/*# sourceURL=${import.meta.resolve("./aiCodeCompletionDisclaimer.css")} */`;
+
+// gen/front_end/ui/components/text_editor/AiCodeCompletionDisclaimer.js
+var UIStringsNotTranslate = {
+  /**
+   * @description Disclaimer text for AI code completion
+   */
+  relevantData: "Relevant data",
+  /**
+   * @description Disclaimer text for AI code completion
+   */
+  isSentToGoogle: "is sent to Google",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
+   */
+  tooltipDisclaimerTextForAiCodeCompletionInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data may be seen by human reviewers to improve this feature.",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
+   */
+  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
+   */
+  tooltipDisclaimerTextForAiCodeCompletionInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
+   */
+  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion in Styles pane.
+   */
+  tooltipDisclaimerTextForAiCodeCompletionInStyles: "To generate code suggestions, the CSS properties of the selected element and the relevant CSS files are shared with Google. This data may be seen by human reviewers to improve this feature.",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion in Styles pane.
+   */
+  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInStyles: "To generate code suggestions, the CSS properties of the selected element and the relevant CSS files are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  /**
+   * Text for tooltip shown on hovering over spinner.
+   */
+  tooltipTextForSpinner: "Shows when data is being sent to Google to generate code suggestions",
+  /**
+   * @description Text for tooltip button which redirects to AI settings
+   */
+  manageInSettings: "Manage in settings",
+  /**
+   *@description Text announced when request is sent to AIDA and the spinner is loading
+   */
+  dataIsBeingSentToGoogle: "Data is being sent to Google"
+};
+var lockedString = i18n.i18n.lockedString;
+function getTooltipDisclaimerText(noLogging, disclaimerTextVariant) {
+  switch (disclaimerTextVariant) {
+    case "console":
+      return noLogging ? lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole) : lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionInConsole);
+    case "sources":
+      return noLogging ? lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources) : lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionInSources);
+    case "styles":
+      return noLogging ? lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInStyles) : lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionInStyles);
+  }
+}
+var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
+  if (input.aidaAvailability !== "available" || !input.disclaimerTooltipId || !input.spinnerTooltipId || !input.disclaimerTextVariant) {
+    render(nothing, target);
+    return;
+  }
+  const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.disclaimerTextVariant);
+  render(html`
+    <style>${aiCodeCompletionDisclaimer_css_default}</style>
+    <div class="ai-code-completion-disclaimer">
+      <devtools-spinner
+        .active=${false}
+        ${Directives.ref((el) => {
+    if (el instanceof HTMLElement) {
+      output.setLoading = (isLoading) => {
+        el.toggleAttribute("active", isLoading);
+      };
+    }
+  })}
+        aria-details=${input.spinnerTooltipId}
+        aria-describedby=${input.spinnerTooltipId}>
+      </devtools-spinner>
+      <devtools-tooltip
+        id=${input.spinnerTooltipId}
+        variant="rich"
+        jslogContext="ai-code-completion-spinner-tooltip"
+      >
+        <div class="disclaimer-tooltip-container">
+          <div class="tooltip-text">
+            ${lockedString(UIStringsNotTranslate.tooltipTextForSpinner)}
+          </div>
+        </div>
+      </devtools-tooltip>
+      <span
+        tabIndex="0"
+        class="link"
+        role="link"
+        jslog=${VisualLogging.link("open-ai-settings").track({
+    click: true
+  })}
+        aria-details=${input.disclaimerTooltipId}
+        aria-describedby=${input.disclaimerTooltipId}
+        @click=${() => {
+    void UI.ViewManager.ViewManager.instance().showView("chrome-ai");
+  }}
+      >
+        ${lockedString(UIStringsNotTranslate.relevantData)}
+      </span>
+      ${lockedString(UIStringsNotTranslate.isSentToGoogle)}
+      <devtools-tooltip
+        id=${input.disclaimerTooltipId}
+        variant="rich"
+        jslogContext="ai-code-completion-disclaimer"
+        ${Directives.ref((el) => {
+    if (el instanceof HTMLElement) {
+      output.hideTooltip = () => {
+        el.hidePopover();
+      };
+    }
+  })}
+      >
+        <div class="disclaimer-tooltip-container">
+          <div class="tooltip-text">
+            ${tooltipDisclaimerText}
+          </div>
+          <span
+            tabIndex="0"
+            class="link"
+            role="link"
+            jslog=${VisualLogging.link("open-ai-settings").track({
+    click: true,
+    keydown: "Enter"
+  })}
+            @click=${input.onManageInSettingsTooltipClick}
+            @keydown=${(e) => {
+    if (e.key === "Enter") {
+      e.consume(true);
+      input.onManageInSettingsTooltipClick();
+    }
+  }}
+          >
+            ${lockedString(UIStringsNotTranslate.manageInSettings)}
+          </span>
+        </div>
+      </devtools-tooltip>
+    </div>`, target);
+};
+var MINIMUM_LOADING_STATE_TIMEOUT = 1e3;
+var AiCodeCompletionDisclaimer = class extends UI.Widget.Widget {
+  #view;
+  #viewOutput = {};
+  #spinnerTooltipId;
+  #disclaimerTooltipId;
+  #noLogging;
+  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
+  #loading = false;
+  #loadingStartTime = 0;
+  #spinnerLoadingTimeout;
+  #disclaimerTextVariant;
+  #aidaAvailability;
+  #boundOnAidaAvailabilityChange;
+  constructor(element, view = DEFAULT_SUMMARY_TOOLBAR_VIEW) {
+    super(element);
+    this.markAsExternallyManaged();
+    this.#noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
+    this.#view = view;
+  }
+  set disclaimerTooltipId(disclaimerTooltipId) {
+    this.#disclaimerTooltipId = disclaimerTooltipId;
+    this.requestUpdate();
+  }
+  set spinnerTooltipId(spinnerTooltipId) {
+    this.#spinnerTooltipId = spinnerTooltipId;
+    this.requestUpdate();
+  }
+  set loading(loading) {
+    if (!loading && !this.#loading) {
+      return;
+    }
+    if (loading) {
+      if (!this.#loading) {
+        this.#viewOutput.setLoading?.(true);
+        UI.ARIAUtils.LiveAnnouncer.status(lockedString(UIStringsNotTranslate.dataIsBeingSentToGoogle));
+      }
+      if (this.#spinnerLoadingTimeout) {
+        clearTimeout(this.#spinnerLoadingTimeout);
+        this.#spinnerLoadingTimeout = void 0;
+      }
+      this.#loadingStartTime = performance.now();
+      this.#loading = true;
+    } else {
+      this.#loading = false;
+      const duration = performance.now() - this.#loadingStartTime;
+      const remainingTime = Math.max(MINIMUM_LOADING_STATE_TIMEOUT - duration, 0);
+      this.#spinnerLoadingTimeout = window.setTimeout(() => {
+        this.#viewOutput.setLoading?.(false);
+        this.#spinnerLoadingTimeout = void 0;
+      }, remainingTime);
+    }
+  }
+  set disclaimerTextVariant(disclaimerTextVariant) {
+    this.#disclaimerTextVariant = disclaimerTextVariant;
+    this.requestUpdate();
+  }
+  #updateAidaAvailability(aidaAvailability) {
+    if (aidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = aidaAvailability;
+      this.requestUpdate();
+    }
+  }
+  #onAidaAvailabilityChange(ev) {
+    this.#updateAidaAvailability(ev.data);
+  }
+  #onManageInSettingsTooltipClick() {
+    this.#viewOutput.hideTooltip?.();
+    void UI.ViewManager.ViewManager.instance().showView("chrome-ai");
+  }
+  performUpdate() {
+    this.#view({
+      disclaimerTooltipId: this.#disclaimerTooltipId,
+      spinnerTooltipId: this.#spinnerTooltipId,
+      noLogging: this.#noLogging,
+      aidaAvailability: this.#aidaAvailability,
+      onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
+      disclaimerTextVariant: this.#disclaimerTextVariant
+    }, this.#viewOutput, this.contentElement);
+  }
+  wasShown() {
+    super.wasShown();
+    Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (initialAvailability !== void 0) {
+      this.#updateAidaAvailability(initialAvailability);
+    }
+  }
+  willHide() {
+    super.willHide();
+    Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+  }
+};
+
 // gen/front_end/ui/components/text_editor/AiCodeCompletionProvider.js
 var AiCodeCompletionProvider_exports = {};
 __export(AiCodeCompletionProvider_exports, {
@@ -70,16 +384,349 @@ __export(AiCodeCompletionProvider_exports, {
   aiCodeCompletionTeaserModeState: () => aiCodeCompletionTeaserModeState,
   setAiCodeCompletionTeaserMode: () => setAiCodeCompletionTeaserMode
 });
-import * as Common3 from "./../../../core/common/common.js";
-import * as Host2 from "./../../../core/host/host.js";
-import * as i18n4 from "./../../../core/i18n/i18n.js";
-import * as Root2 from "./../../../core/root/root.js";
+import * as Common5 from "./../../../core/common/common.js";
+import * as Host6 from "./../../../core/host/host.js";
+import * as i18n12 from "./../../../core/i18n/i18n.js";
+import * as Root5 from "./../../../core/root/root.js";
 import * as AiCodeCompletion from "./../../../models/ai_code_completion/ai_code_completion.js";
-import * as AiCodeGeneration3 from "./../../../models/ai_code_generation/ai_code_generation.js";
-import * as PanelCommon2 from "./../../../panels/common/common.js";
+import * as AiCodeGeneration5 from "./../../../models/ai_code_generation/ai_code_generation.js";
 import * as CodeMirror3 from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as UI3 from "./../../legacy/legacy.js";
-import * as VisualLogging3 from "./../../visual_logging/visual_logging.js";
+import * as UI7 from "./../../legacy/legacy.js";
+import * as VisualLogging6 from "./../../visual_logging/visual_logging.js";
+
+// gen/front_end/ui/components/text_editor/AiCodeCompletionTeaser.js
+var AiCodeCompletionTeaser_exports = {};
+__export(AiCodeCompletionTeaser_exports, {
+  AiCodeCompletionTeaser: () => AiCodeCompletionTeaser,
+  DEFAULT_VIEW: () => DEFAULT_VIEW
+});
+import "./../../kit/kit.js";
+import * as Common from "./../../../core/common/common.js";
+import * as Host2 from "./../../../core/host/host.js";
+import * as i18n3 from "./../../../core/i18n/i18n.js";
+import * as Root2 from "./../../../core/root/root.js";
+import * as AIAssistance from "./../../../models/ai_assistance/ai_assistance.js";
+import * as AiCodeGeneration from "./../../../models/ai_code_generation/ai_code_generation.js";
+import * as UI2 from "./../../legacy/legacy.js";
+import { html as html2, nothing as nothing2, render as render2 } from "./../../lit/lit.js";
+import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
+import * as Dialogs from "./../dialogs/dialogs.js";
+import * as Snackbars from "./../snackbars/snackbars.js";
+
+// gen/front_end/ui/components/text_editor/aiCodeCompletionTeaser.css.js
+var aiCodeCompletionTeaser_css_default = `/*
+ * Copyright 2025 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+    .ai-code-completion-teaser-screen-reader-only {
+        position: absolute;
+        overflow: hidden;
+        clip-path: rect(0 0 0 0);
+        height: var(--sys-size-1);
+        width: var(--sys-size-1);
+        margin: -1 * var(--sys-size-1);;
+        padding: 0;
+        border: 0;
+    }
+
+    .ai-code-completion-teaser {
+        padding-left: var(--sys-size-3);
+        line-height: var(--sys-size-7);
+        pointer-events: all;
+        align-items: center;
+        font-style: italic;
+
+        .ai-code-completion-teaser-dismiss {
+            text-decoration: underline;
+            cursor: pointer;
+
+            &:focus-visible {
+                border-radius: var(--sys-shape-corner-extra-small);
+                outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+                outline-offset: 0;
+            }
+        }
+
+        .ai-code-completion-teaser-action {
+            display: inline-flex;
+            gap: var(--sys-size-2);
+
+            span {
+                border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+                border-radius: var(--sys-shape-corner-extra-small);
+                padding: 0 var(--sys-size-3);
+            }
+        }
+
+        .new-badge {
+            font-style: normal;
+            display: inline-block;
+        }
+    }
+}
+
+/*# sourceURL=${import.meta.resolve("./aiCodeCompletionTeaser.css")} */`;
+
+// gen/front_end/ui/components/text_editor/AiCodeCompletionTeaser.js
+var UIStringsNotTranslate2 = {
+  /**
+   * @description Text for `ctrl` key.
+   */
+  ctrl: "ctrl",
+  /**
+   * @description Text for `cmd` key.
+   */
+  cmd: "cmd",
+  /**
+   * @description Text for `i` key.
+   */
+  i: "i",
+  /**
+   * @description Text for `x` key.
+   */
+  x: "x",
+  /**
+   * @description Text for dismissing teaser.
+   */
+  dontShowAgain: "Don\u2019t show again",
+  /**
+   * @description Text for teaser to turn on code suggestions.
+   */
+  toTurnOnCodeSuggestions: "to turn on code suggestions.",
+  /**
+   * @description Text for snackbar notification on dismissing the teaser.
+   */
+  turnOnCodeSuggestionsAtAnyTimeInSettings: "Turn on code suggestions at any time in Settings",
+  /**
+   * @description Text for snackbar action button to manage settings.
+   */
+  manage: "Manage",
+  /**
+   * @description The footer disclaimer that links to more information
+   * about the AI feature.
+   */
+  learnMore: "Learn more about AI code completion",
+  /**
+   * @description Header text for the AI-powered suggestions disclaimer dialog.
+   */
+  freDisclaimerHeader: "Code faster with AI-powered suggestions",
+  /**
+   * @description First disclaimer item text for the fre dialog.
+   */
+  freDisclaimerTextAiWontAlwaysGetItRight: "This feature uses AI and won\u2019t always get it right",
+  /**
+   * @description Code completion disclaimer item text for the fre dialog.
+   */
+  freDisclaimerTextAsYouType: "As you type, relevant data is being send to Google to generate code suggestions. Press Tab to accept.",
+  /**
+   * @description Code generation disclaimer item text for the fre dialog.
+   */
+  freDisclaimerDescribeCodeInComment: "In Console or Sources, describe the code you need in a comment, then press ctrl+i to generate it.",
+  /**
+   * @description Code generation disclaimer item text for the fre dialog.
+   */
+  freDisclaimerDescribeCodeInCommentForMacOs: "In Console or Sources, describe the code you need in a comment, then press cmd+i to generate it.",
+  /**
+   * @description Privacy disclaimer item text for the fre dialog.
+   */
+  freDisclaimerTextPrivacy: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.",
+  /**
+   * @description Privacy disclaimer item text for the fre dialog when enterprise logging is off.
+   */
+  freDisclaimerTextPrivacyNoLogging: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  /**
+   * @description Last disclaimer item text for the fre dialog.
+   */
+  freDisclaimerTextUseWithCaution: "Use generated code snippets with caution",
+  /**
+   *@description Text for ARIA label for the teaser.
+   */
+  press: "Press",
+  /**
+   *@description Text for ARIA label for the teaser.
+   */
+  toDisableCodeSuggestions: "to disable code suggestions."
+};
+var lockedString2 = i18n3.i18n.lockedString;
+var CODE_SNIPPET_WARNING_URL = "https://support.google.com/legal/answer/13505487";
+var PROMOTION_ID = "ai-code-completion";
+var DEFAULT_VIEW = (input, _output, target) => {
+  if (input.aidaAvailability !== "available") {
+    render2(nothing2, target);
+    return;
+  }
+  const cmdOrCtrl = Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.cmd) : lockedString2(UIStringsNotTranslate2.ctrl);
+  const teaserAriaLabel = lockedString2(UIStringsNotTranslate2.press) + " " + cmdOrCtrl + " " + lockedString2(UIStringsNotTranslate2.i) + " " + lockedString2(UIStringsNotTranslate2.toTurnOnCodeSuggestions) + " " + lockedString2(UIStringsNotTranslate2.press) + " " + cmdOrCtrl + " " + lockedString2(UIStringsNotTranslate2.x) + " " + lockedString2(UIStringsNotTranslate2.toDisableCodeSuggestions);
+  const newBadge = UI2.UIUtils.maybeCreateNewBadge(PROMOTION_ID);
+  const newBadgeTemplate = newBadge ? html2`&nbsp;${newBadge}` : nothing2;
+  render2(html2`
+          <style>${aiCodeCompletionTeaser_css_default}</style>
+          <style>@scope to (devtools-widget > *) { ${UI2.inspectorCommonStyles} }</style>
+          <div class="ai-code-completion-teaser-screen-reader-only">${teaserAriaLabel}</div>
+          <div class="ai-code-completion-teaser" aria-hidden="true">
+            <span class="ai-code-completion-teaser-action">
+              <span>${cmdOrCtrl}</span>
+              <span>${lockedString2(UIStringsNotTranslate2.i)}</span>
+            </span>
+            </span>&nbsp;${lockedString2(UIStringsNotTranslate2.toTurnOnCodeSuggestions)}&nbsp;
+            <span role="button" class="ai-code-completion-teaser-dismiss"
+              tabindex="0"
+              @click=${input.onDismiss}
+              @keydown=${(e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      input.onDismiss(e);
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  }}
+              jslog=${VisualLogging2.action("ai-code-completion-teaser.dismiss").track({ click: true })}>
+                ${lockedString2(UIStringsNotTranslate2.dontShowAgain)}
+            </span>
+            ${newBadgeTemplate}
+          </div>
+        `, target);
+};
+var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
+  #view;
+  #aidaAvailability;
+  #boundOnAidaAvailabilityChange;
+  #boundOnAiCodeCompletionSettingChanged;
+  #onDetach;
+  #disclaimerTextVariant;
+  // Whether the user completed first run experience dialog or not.
+  #aiCodeCompletionFreCompletedSetting = Common.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
+  // Whether the user dismissed the teaser or not.
+  #aiCodeCompletionTeaserDismissedSetting = Common.Settings.Settings.instance().createSetting("ai-code-completion-teaser-dismissed", false);
+  #noLogging;
+  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
+  constructor(config, view) {
+    super();
+    this.markAsExternallyManaged();
+    this.#onDetach = config.onDetach;
+    this.#disclaimerTextVariant = config.disclaimerTextVariant;
+    this.#view = view ?? DEFAULT_VIEW;
+    this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
+    this.#boundOnAiCodeCompletionSettingChanged = this.#onAiCodeCompletionSettingChanged.bind(this);
+    this.#noLogging = Root2.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root2.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    this.requestUpdate();
+  }
+  #showReminderSnackbar() {
+    Snackbars.Snackbar.Snackbar.show({
+      message: lockedString2(UIStringsNotTranslate2.turnOnCodeSuggestionsAtAnyTimeInSettings),
+      actionProperties: {
+        label: lockedString2(UIStringsNotTranslate2.manage),
+        onClick: () => {
+          void UI2.ViewManager.ViewManager.instance().showView("chrome-ai");
+        }
+      },
+      closable: true
+    });
+  }
+  #updateAidaAvailability(aidaAvailability) {
+    if (aidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = aidaAvailability;
+      this.requestUpdate();
+    }
+  }
+  #onAidaAvailabilityChange(ev) {
+    this.#updateAidaAvailability(ev.data);
+  }
+  #onAiCodeCompletionSettingChanged() {
+    if (this.#aiCodeCompletionFreCompletedSetting.get() || this.#aiCodeCompletionTeaserDismissedSetting.get()) {
+      this.detach();
+    }
+  }
+  #createReminderItems() {
+    const reminderItems = [{
+      iconName: "psychiatry",
+      content: lockedString2(UIStringsNotTranslate2.freDisclaimerTextAiWontAlwaysGetItRight)
+    }];
+    const devtoolsLocale = i18n3.DevToolsLocale.DevToolsLocale.instance();
+    if (AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale.locale)) {
+      reminderItems.push({
+        iconName: "code",
+        content: lockedString2(UIStringsNotTranslate2.freDisclaimerTextAsYouType)
+      }, {
+        iconName: "text-analysis",
+        content: Host2.Platform.isMac() ? lockedString2(UIStringsNotTranslate2.freDisclaimerDescribeCodeInCommentForMacOs) : lockedString2(UIStringsNotTranslate2.freDisclaimerDescribeCodeInComment)
+      });
+    }
+    reminderItems.push({
+      iconName: "google",
+      content: this.#noLogging ? lockedString2(UIStringsNotTranslate2.freDisclaimerTextPrivacyNoLogging) : lockedString2(UIStringsNotTranslate2.freDisclaimerTextPrivacy)
+    }, {
+      iconName: "warning",
+      // clang-format off
+      content: html2`<devtools-link
+            href=${CODE_SNIPPET_WARNING_URL}
+            class="link devtools-link"
+            jslogcontext="code-snippets-explainer.ai-code-completion-teaser"
+          >${lockedString2(UIStringsNotTranslate2.freDisclaimerTextUseWithCaution)}</devtools-link>`
+      // clang-format on
+    });
+    return reminderItems;
+  }
+  onAction = async (event) => {
+    event.preventDefault();
+    const iconName = AIAssistance.AiUtils.getIconName();
+    const result = await Dialogs.FreDialog.FreDialog.show({
+      header: { iconName, text: lockedString2(UIStringsNotTranslate2.freDisclaimerHeader) },
+      reminderItems: this.#createReminderItems(),
+      onLearnMoreClick: () => {
+        void UI2.ViewManager.ViewManager.instance().showView("chrome-ai");
+      },
+      ariaLabel: lockedString2(UIStringsNotTranslate2.freDisclaimerHeader),
+      learnMoreButtonAriaLabel: lockedString2(UIStringsNotTranslate2.learnMore)
+    });
+    if (result) {
+      this.#aiCodeCompletionFreCompletedSetting.set(true);
+      if (this.#disclaimerTextVariant === "console") {
+        Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionFreCompletedFromConsole);
+      } else if (this.#disclaimerTextVariant === "sources") {
+        Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionFreCompletedFromSources);
+      }
+      this.detach();
+    } else {
+      this.requestUpdate();
+    }
+  };
+  onDismiss = (event) => {
+    event.preventDefault();
+    this.#aiCodeCompletionTeaserDismissedSetting.set(true);
+    this.#showReminderSnackbar();
+    this.detach();
+  };
+  performUpdate() {
+    const output = {};
+    this.#view({
+      aidaAvailability: this.#aidaAvailability,
+      onAction: this.onAction,
+      onDismiss: this.onDismiss
+    }, output, this.contentElement);
+  }
+  wasShown() {
+    super.wasShown();
+    Host2.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    this.#aiCodeCompletionFreCompletedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
+    this.#aiCodeCompletionTeaserDismissedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
+    const initialAvailability = Host2.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (initialAvailability !== void 0) {
+      this.#updateAidaAvailability(initialAvailability);
+    }
+  }
+  willHide() {
+    super.willHide();
+    Host2.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    this.#aiCodeCompletionFreCompletedSetting.removeChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
+    this.#aiCodeCompletionTeaserDismissedSetting.removeChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
+  }
+  onDetach() {
+    this.#onDetach();
+  }
+};
 
 // gen/front_end/ui/components/text_editor/AiCodeGenerationProvider.js
 var AiCodeGenerationProvider_exports = {};
@@ -88,15 +735,14 @@ __export(AiCodeGenerationProvider_exports, {
   AiCodeGenerationTeaserMode: () => AiCodeGenerationTeaserMode,
   setAiCodeGenerationTeaserMode: () => setAiCodeGenerationTeaserMode
 });
-import * as Common2 from "./../../../core/common/common.js";
-import * as Host from "./../../../core/host/host.js";
-import * as i18n3 from "./../../../core/i18n/i18n.js";
-import * as Root from "./../../../core/root/root.js";
-import * as AiCodeGeneration from "./../../../models/ai_code_generation/ai_code_generation.js";
-import * as PanelCommon from "./../../../panels/common/common.js";
+import * as Common4 from "./../../../core/common/common.js";
+import * as Host5 from "./../../../core/host/host.js";
+import * as i18n11 from "./../../../core/i18n/i18n.js";
+import * as Root4 from "./../../../core/root/root.js";
+import * as AiCodeGeneration3 from "./../../../models/ai_code_generation/ai_code_generation.js";
 import * as CodeMirror2 from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as UI2 from "./../../legacy/legacy.js";
-import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
+import * as UI6 from "./../../legacy/legacy.js";
+import * as VisualLogging5 from "./../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/text_editor/AiCodeGenerationParser.js
 var AiCodeGenerationParser_exports = {};
@@ -192,6 +838,684 @@ var AiCodeGenerationParser = class {
   }
 };
 
+// gen/front_end/ui/components/text_editor/AiCodeGenerationTeaser.js
+var AiCodeGenerationTeaser_exports = {};
+__export(AiCodeGenerationTeaser_exports, {
+  AiCodeGenerationTeaser: () => AiCodeGenerationTeaser,
+  AiCodeGenerationTeaserDisplayState: () => AiCodeGenerationTeaserDisplayState,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  PROMOTION_ID: () => PROMOTION_ID2
+});
+import "./../tooltips/tooltips.js";
+import * as Common2 from "./../../../core/common/common.js";
+import * as Host3 from "./../../../core/host/host.js";
+import * as i18n5 from "./../../../core/i18n/i18n.js";
+import * as Root3 from "./../../../core/root/root.js";
+import * as UI3 from "./../../legacy/legacy.js";
+import { Directives as Directives2, html as html3, nothing as nothing3, render as render3 } from "./../../lit/lit.js";
+import * as VisualLogging3 from "./../../visual_logging/visual_logging.js";
+import * as Buttons from "./../buttons/buttons.js";
+
+// gen/front_end/ui/components/text_editor/aiCodeGenerationTeaser.css.js
+var aiCodeGenerationTeaser_css_default = `/*
+ * Copyright 2025 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+    .ai-code-generation-teaser-screen-reader-only {
+        position: absolute;
+        overflow: hidden;
+        clip-path: rect(0 0 0 0);
+        height: var(--sys-size-1);
+        width: var(--sys-size-1);
+        margin: -1 * var(--sys-size-1);;
+        padding: 0;
+        border: 0;
+    }
+
+    .ai-code-generation-teaser {
+        pointer-events: all;
+        font-style: italic;
+        line-height: var(--sys-size-7);
+
+        .ai-code-generation-teaser-trigger {
+            display: inline-flex;
+            align-items: center;
+
+            devtools-button {
+                --override-button-icon-color: var(--sys-color-token-subtle);
+            }
+        }
+
+        .ai-code-generation-keyboard-action {
+            display: inline-flex;
+            gap: var(--sys-size-2);
+
+            span {
+                border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+                border-radius: var(--sys-shape-corner-extra-small);
+                padding: 0 var(--sys-size-3);
+            }
+        }
+
+        .ai-code-generation-teaser-generated {
+            display: inline-flex;
+            gap: var(--sys-size-2);
+            color: var(--sys-color-primary);
+
+            span {
+                border: var(--sys-size-1) solid var(--sys-color-primary);
+                border-radius: var(--sys-shape-corner-extra-small);
+                padding: 0 var(--sys-size-3);
+            }
+        }
+
+        .new-badge {
+            font-style: normal;
+            display: inline-block;
+        }
+
+        devtools-tooltip:popover-open {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .disclaimer-tooltip-container {
+                padding: var(--sys-size-4) 0;
+                max-width: var(--sys-size-30);
+                white-space: normal;
+
+                .tooltip-text {
+                    color: var(--sys-color-on-surface-subtle);
+                    padding: 0 var(--sys-size-5);
+                    align-items: flex-start;
+                    gap: 10px;
+                }
+
+                .link {
+                    margin: var(--sys-size-5) var(--sys-size-8) 0 var(--sys-size-5);
+                    display: inline-block;
+                    color: var(--sys-color-on-surface-subtle);
+                }
+            }
+        }
+
+        .ai-code-generation-spinner::before {
+            content: "\u280B";
+            animation: teaser-spinner-animation 1s linear infinite;
+        }
+    }
+
+    @keyframes teaser-spinner-animation {
+        0% { content: "\u280B"; }
+        10% { content: "\u2819"; }
+        20% { content: "\u2839"; }
+        30% { content: "\u2838"; }
+        40% { content: "\u283C"; }
+        50% { content: "\u2834"; }
+        60% { content: "\u2826"; }
+        70% { content: "\u2827"; }
+        80% { content: "\u2807"; }
+        90% { content: "\u280F"; }
+    }
+}
+
+/*# sourceURL=${import.meta.resolve("./aiCodeGenerationTeaser.css")} */`;
+
+// gen/front_end/ui/components/text_editor/AiCodeGenerationTeaser.js
+var UIStringsNotTranslate3 = {
+  /**
+   * @description Text for teaser to generate code.
+   */
+  toGenerateCode: "to generate code",
+  /**
+   * @description Text for teaser to generate code.
+   */
+  ctrlItoGenerateCode: "ctrl+i to generate code",
+  /**
+   * @description Text for teaser to generate code in Mac.
+   */
+  cmdItoGenerateCode: "cmd+i to generate code",
+  /**
+   * @description Text for teaser to learn how data is being used.
+   */
+  toLearnHowYourDataIsBeingUsed: "to learn how your data is being used.",
+  /**
+   * @description Aria label for teaser to generate code.
+   */
+  pressCtrlPeriodToLearnHowYourDataIsBeingUsed: "Press ctrl . (period) to learn how your data is being used.",
+  /**
+   * @description Aria label for teaser to generate code in Mac.
+   */
+  pressCmdPeriodToLearnHowYourDataIsBeingUsed: "Press cmd . (period) to learn how your data is being used.",
+  /**
+   * @description Text for teaser when generating suggestion.
+   */
+  generating: "Generating... (",
+  /**
+   * @description Text for teaser when generating suggestion.
+   */
+  toCancel: " to cancel)",
+  /**
+   * @description Text for teaser when generating suggestion.
+   */
+  generatingAriaLabel: "Generating. Press escape to cancel.",
+  /**
+   * @description Text for teaser for discoverability.
+   */
+  writeACommentToGenerateCode: "Write a comment to generate code",
+  /**
+   * @description Text for teaser for discoverability.
+   */
+  writeACommentToGenerateCodeInConsole: "Write a comment to generate code. Try typing: '// add red borders to all the divs'.",
+  /**
+   * @description Text for teaser when suggestion has been generated.
+   */
+  tab: "tab",
+  /**
+   * @description Text for teaser when suggestion has been generated.
+   */
+  or: "or",
+  /**
+   * @description Text for teaser when suggestion has been generated.
+   */
+  enter: "enter",
+  /**
+   * @description Text for teaser when suggestion has been generated.
+   */
+  toAccept: "to accept",
+  /**
+   * @description Text for teaser keys.
+   */
+  ctrl: "ctrl",
+  /**
+   * @description Text for teaser keys.
+   */
+  cmd: "cmd",
+  /**
+   * @description Text for teaser keys.
+   */
+  i: "i",
+  /**
+   * @description Text for teaser keys.
+   */
+  period: ".",
+  /**
+   * @description Text for teaser keys.
+   */
+  esc: "esc",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Console panel.
+   */
+  tooltipDisclaimerTextForAiCodeGenerationInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data may be seen by human reviewers to improve this feature.",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Console panel.
+   */
+  tooltipDisclaimerTextForAiCodeGenerationNoLoggingInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
+   */
+  tooltipDisclaimerTextForAiCodeGenerationInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
+   */
+  tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  /**
+   * @description Text for tooltip button which redirects to AI settings
+   */
+  manageInSettings: "Manage in settings",
+  /**
+   * @description Title for disclaimer info button in the teaser to generate code.
+   */
+  learnMoreAboutHowYourDataIsBeingUsed: "Learn more about how your data is being used"
+};
+var lockedString3 = i18n5.i18n.lockedString;
+var PROMOTION_ID2 = "ai-code-generation";
+var AiCodeGenerationTeaserDisplayState;
+(function(AiCodeGenerationTeaserDisplayState2) {
+  AiCodeGenerationTeaserDisplayState2["TRIGGER"] = "trigger";
+  AiCodeGenerationTeaserDisplayState2["DISCOVERY"] = "discovery";
+  AiCodeGenerationTeaserDisplayState2["LOADING"] = "loading";
+  AiCodeGenerationTeaserDisplayState2["GENERATED"] = "generated";
+})(AiCodeGenerationTeaserDisplayState || (AiCodeGenerationTeaserDisplayState = {}));
+function getTooltipDisclaimerText2(noLogging, disclaimerTextVariant) {
+  switch (disclaimerTextVariant) {
+    case "console":
+      return noLogging ? lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInConsole) : lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeGenerationInConsole);
+    case "sources":
+      return noLogging ? lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources) : lockedString3(UIStringsNotTranslate3.tooltipDisclaimerTextForAiCodeGenerationInSources);
+    case "styles":
+      return "";
+  }
+}
+var DEFAULT_VIEW2 = (input, output, target) => {
+  if (!input.disclaimerTextVariant) {
+    render3(nothing3, target);
+    return;
+  }
+  let teaserLabel;
+  switch (input.displayState) {
+    case AiCodeGenerationTeaserDisplayState.TRIGGER: {
+      if (!input.disclaimerTooltipId) {
+        render3(nothing3, target);
+        return;
+      }
+      const toLearnHowYourDataIsBeingUsedScreenReaderOnly = Host3.Platform.isMac() ? UIStringsNotTranslate3.pressCmdPeriodToLearnHowYourDataIsBeingUsed : UIStringsNotTranslate3.pressCtrlPeriodToLearnHowYourDataIsBeingUsed;
+      const screenReaderText = (Host3.Platform.isMac() ? UIStringsNotTranslate3.cmdItoGenerateCode : UIStringsNotTranslate3.ctrlItoGenerateCode) + " " + toLearnHowYourDataIsBeingUsedScreenReaderOnly;
+      const cmdOrCtrl = Host3.Platform.isMac() ? lockedString3(UIStringsNotTranslate3.cmd) : lockedString3(UIStringsNotTranslate3.ctrl);
+      const toGenerateCode = html3`<span class="ai-code-generation-keyboard-action">
+          <span>${cmdOrCtrl}</span>
+          <span>${lockedString3(UIStringsNotTranslate3.i)}</span>
+        </span>&nbsp;${lockedString3(UIStringsNotTranslate3.toGenerateCode)}`;
+      const toLearnHowYourDataIsBeingUsedVisible = html3`<span class="ai-code-generation-keyboard-action">
+          <span>${cmdOrCtrl}</span>
+          <span>${lockedString3(UIStringsNotTranslate3.period)}</span>
+        </span>&nbsp;${lockedString3(UIStringsNotTranslate3.toLearnHowYourDataIsBeingUsed)}`;
+      const teaserText = input.showDataUsageTeaser ? html3`${toGenerateCode}.&nbsp;${toLearnHowYourDataIsBeingUsedVisible}` : toGenerateCode;
+      const tooltipDisclaimerText = getTooltipDisclaimerText2(input.noLogging, input.disclaimerTextVariant);
+      teaserLabel = html3`<div class="ai-code-generation-teaser-trigger">
+        <span aria-hidden="true">${teaserText}</span>
+        <span class="ai-code-generation-teaser-screen-reader-only" aria-atomic="true" aria-live="assertive">
+          ${lockedString3(screenReaderText)}
+        </span>
+        &nbsp;<devtools-button
+          .data=${{
+        title: lockedString3(UIStringsNotTranslate3.learnMoreAboutHowYourDataIsBeingUsed),
+        size: "MICRO",
+        iconName: "info",
+        variant: "icon",
+        jslogContext: "ai-code-generation-teaser.info-button"
+      }}
+            aria-details=${input.disclaimerTooltipId}
+            aria-describedby=${input.disclaimerTooltipId}
+          ></devtools-button>
+          <devtools-tooltip
+              id=${input.disclaimerTooltipId}
+              variant="rich"
+              jslogContext="ai-code-generation-disclaimer"
+              ${Directives2.ref((el) => {
+        if (el instanceof HTMLElement) {
+          output.hideTooltip = () => {
+            el.hidePopover();
+          };
+          output.showTooltip = () => {
+            el.showPopover();
+            UI3.ARIAUtils.LiveAnnouncer.status(tooltipDisclaimerText);
+          };
+        }
+      })}>
+            <div class="disclaimer-tooltip-container"><div class="tooltip-text">
+                ${tooltipDisclaimerText}
+                </div>
+                <span
+                    tabIndex="0"
+                    class="link"
+                    role="link"
+                    jslog=${VisualLogging3.link("open-ai-settings").track({
+        click: true
+      })}
+                    @click=${input.onManageInSettingsTooltipClick}
+                >${lockedString3(UIStringsNotTranslate3.manageInSettings)}</span></div></devtools-tooltip>
+                  </div>`;
+      break;
+    }
+    case AiCodeGenerationTeaserDisplayState.DISCOVERY: {
+      if (!input.showDiscoveryTeaser) {
+        teaserLabel = nothing3;
+        break;
+      }
+      const newBadge = UI3.UIUtils.maybeCreateNewBadge(PROMOTION_ID2);
+      const teaserText = input.disclaimerTextVariant === "console" ? lockedString3(UIStringsNotTranslate3.writeACommentToGenerateCodeInConsole) : lockedString3(UIStringsNotTranslate3.writeACommentToGenerateCode);
+      teaserLabel = newBadge ? html3`${teaserText}&nbsp;${newBadge}` : nothing3;
+      break;
+    }
+    case AiCodeGenerationTeaserDisplayState.LOADING: {
+      const teaserAriaLabel = lockedString3(UIStringsNotTranslate3.generatingAriaLabel);
+      teaserLabel = html3`
+        <div class="ai-code-generation-teaser-screen-reader-only">${teaserAriaLabel}</div>
+        <span class="ai-code-generation-spinner" aria-hidden="true">
+          &nbsp;${lockedString3(UIStringsNotTranslate3.generating)}
+          <span class="ai-code-generation-keyboard-action"><span>${lockedString3(UIStringsNotTranslate3.esc)}</span></span>
+          ${lockedString3(UIStringsNotTranslate3.toCancel)}&nbsp;
+        </span>
+        <span class="ai-code-generation-timer" aria-hidden="true" ${Directives2.ref((el) => {
+        if (el) {
+          output.setTimerText = (text) => {
+            el.textContent = text;
+          };
+        }
+      })}></span>`;
+      break;
+    }
+    case AiCodeGenerationTeaserDisplayState.GENERATED: {
+      teaserLabel = html3`<div class="ai-code-generation-teaser-generated">
+          <span>${lockedString3(UIStringsNotTranslate3.tab)}</span>
+          &nbsp;${lockedString3(UIStringsNotTranslate3.or)}&nbsp;
+          <span>${lockedString3(UIStringsNotTranslate3.enter)}</span>
+          &nbsp;${lockedString3(UIStringsNotTranslate3.toAccept)}
+        </div>`;
+      break;
+    }
+  }
+  render3(html3`
+          <style>${aiCodeGenerationTeaser_css_default}</style>
+          <style>@scope to (devtools-widget > *) { ${UI3.inspectorCommonStyles} }</style>
+          <div class="ai-code-generation-teaser">
+            &nbsp;${teaserLabel}
+          </div>
+        `, target);
+};
+var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Widget {
+  #view;
+  #viewOutput = {};
+  #displayState = AiCodeGenerationTeaserDisplayState.DISCOVERY;
+  #disclaimerTooltipId;
+  #noLogging;
+  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
+  #disclaimerTextVariant;
+  #timerIntervalId;
+  #loadStartTime;
+  #aiCodeGenerationUsedSetting = Common2.Settings.Settings.instance().createSetting("ai-code-generation-used", false);
+  static #showDataUsageTeaser = true;
+  static #discoveryTeaserShownInSession = false;
+  constructor(view) {
+    super();
+    this.markAsExternallyManaged();
+    this.#noLogging = Root3.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root3.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    this.#view = view ?? DEFAULT_VIEW2;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view({
+      displayState: this.#displayState,
+      onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
+      disclaimerTooltipId: this.#disclaimerTooltipId,
+      noLogging: this.#noLogging,
+      showDataUsageTeaser: _AiCodeGenerationTeaser.#showDataUsageTeaser,
+      showDiscoveryTeaser: !this.#aiCodeGenerationUsedSetting.get() && !_AiCodeGenerationTeaser.#discoveryTeaserShownInSession,
+      disclaimerTextVariant: this.#disclaimerTextVariant
+    }, this.#viewOutput, this.contentElement);
+  }
+  willHide() {
+    super.willHide();
+    this.#stopLoadingAnimation();
+  }
+  get displayState() {
+    return this.#displayState;
+  }
+  set displayState(displayState) {
+    if (displayState === this.#displayState) {
+      return;
+    }
+    if (this.#displayState === AiCodeGenerationTeaserDisplayState.TRIGGER) {
+      _AiCodeGenerationTeaser.#showDataUsageTeaser = false;
+    }
+    if (this.#displayState === AiCodeGenerationTeaserDisplayState.DISCOVERY) {
+      _AiCodeGenerationTeaser.#discoveryTeaserShownInSession = true;
+    }
+    this.#displayState = displayState;
+    this.requestUpdate();
+    if (this.#displayState === AiCodeGenerationTeaserDisplayState.LOADING) {
+      void this.updateComplete.then(() => {
+        void this.#startLoadingAnimation();
+      });
+    } else if (this.#loadStartTime) {
+      this.#stopLoadingAnimation();
+    }
+  }
+  #startLoadingAnimation() {
+    this.#stopLoadingAnimation();
+    this.#loadStartTime = performance.now();
+    this.#viewOutput.setTimerText?.("(0s)");
+    this.#timerIntervalId = window.setInterval(() => {
+      if (this.#loadStartTime) {
+        const elapsedSeconds = Math.floor((performance.now() - this.#loadStartTime) / 1e3);
+        this.#viewOutput.setTimerText?.(`(${elapsedSeconds}s)`);
+      }
+    }, 1e3);
+  }
+  #stopLoadingAnimation() {
+    if (this.#timerIntervalId) {
+      clearInterval(this.#timerIntervalId);
+      this.#timerIntervalId = void 0;
+    }
+    this.#loadStartTime = void 0;
+  }
+  set disclaimerTooltipId(disclaimerTooltipId) {
+    this.#disclaimerTooltipId = disclaimerTooltipId;
+    this.requestUpdate();
+  }
+  set disclaimerTextVariant(disclaimerTextVariant) {
+    this.#disclaimerTextVariant = disclaimerTextVariant;
+    this.requestUpdate();
+  }
+  #onManageInSettingsTooltipClick(event) {
+    event.stopPropagation();
+    this.#viewOutput.hideTooltip?.();
+    void UI3.ViewManager.ViewManager.instance().showView("chrome-ai");
+    event.consume(true);
+  }
+  showTooltip() {
+    this.#viewOutput.showTooltip?.();
+  }
+  static setDiscoveryTeaserShownInSessionForTest(value) {
+    _AiCodeGenerationTeaser.#discoveryTeaserShownInSession = value;
+  }
+  static setShowDataUsageTeaserForTest(value) {
+    _AiCodeGenerationTeaser.#showDataUsageTeaser = value;
+  }
+};
+
+// gen/front_end/ui/components/text_editor/AiCodeGenerationUpgradeDialog.js
+var AiCodeGenerationUpgradeDialog_exports = {};
+__export(AiCodeGenerationUpgradeDialog_exports, {
+  AiCodeGenerationUpgradeDialog: () => AiCodeGenerationUpgradeDialog
+});
+import * as Host4 from "./../../../core/host/host.js";
+import * as i18n7 from "./../../../core/i18n/i18n.js";
+import * as UI4 from "./../../legacy/legacy.js";
+import * as Lit from "./../../lit/lit.js";
+import * as Buttons2 from "./../buttons/buttons.js";
+
+// gen/front_end/ui/components/text_editor/aiCodeGenerationUpgradeDialog.css.js
+var aiCodeGenerationUpgradeDialog_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+
+.ai-code-generation-upgrade-dialog {
+  width: var(--sys-size-33);
+  padding: var(--sys-size-9);
+
+  header {
+    display: flex;
+    gap: var(--sys-size-8);
+    margin-bottom: var(--sys-size-6);
+    align-items: center;
+
+    h2 {
+      margin: 0;
+      color: var(--sys-color-on-surface);
+      font: var(--sys-typescale-headline5);
+    }
+
+    .header-icon-container {
+      background: linear-gradient(
+        135deg,
+        var(--sys-color-gradient-primary),
+        var(--sys-color-gradient-tertiary)
+      );
+      border-radius: var(--sys-size-4);
+      min-height: var(--sys-size-14);
+      min-width: var(--sys-size-14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      devtools-icon {
+        width: var(--sys-size-9);
+        height: var(--sys-size-9);
+      }
+    }
+  }
+
+  .reminder-container {
+    border-radius: var(--sys-size-6);
+    background-color: var(--sys-color-surface4);
+    padding: var(--sys-size-9);
+    gap: var(--sys-size-6);
+    display: flex;
+    flex-direction: column;
+
+    .reminder-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--sys-size-5);
+      font: var(--sys-typescale-body4-regular);
+
+      devtools-icon.reminder-icon {
+        width: var(--sys-size-8);
+        height: var(--sys-size-8);
+      }
+    }
+  }
+
+  footer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-top: var(--sys-size-8);
+    min-width: var(--sys-size-28);
+
+    .right-buttons {
+      display: flex;
+      gap: var(--sys-size-5);
+    }
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./aiCodeGenerationUpgradeDialog.css")} */`;
+
+// gen/front_end/ui/components/text_editor/AiCodeGenerationUpgradeDialog.js
+var { html: html4 } = Lit;
+var UIStringsNotTranslate4 = {
+  /**
+   * @description Header text for the upgrade notice dialog.
+   */
+  codeCompletionJustGotBetter: "Code completion just got better",
+  /**
+   * @description First item in the description.
+   */
+  describeCodeInComment: "Pressing ctrl+i on a comment in the Console and Sources panels now generates entire code blocks based on the instructions in the comment",
+  /**
+   * @description First item in the description.
+   */
+  describeCodeInCommentForMacOs: "Pressing cmd+i on a comment in the Console and Sources panels now generates entire code blocks based on the instructions in the comment",
+  /**
+   * @description Second item in the description.
+   */
+  asYouType: "You will still receive the real-time, as-you-type suggestions to help you code faster",
+  /**
+   * @description Third item in the description.
+   */
+  disclaimerTextPrivacy: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.",
+  /**
+   * @description Third item in the description.
+   */
+  disclaimerTextPrivacyNoLogging: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  /**
+   * @description Text for the manage in settings button in the upgrade notice dialog.
+   */
+  manageInSettings: "Manage in settings",
+  /**
+   * @description Text for the generate code button in the upgrade notice dialog.
+   */
+  generateCode: "Generate code"
+};
+var lockedString4 = i18n7.i18n.lockedString;
+var AiCodeGenerationUpgradeDialog = class {
+  static show({ noLogging }) {
+    const dialog = new UI4.Dialog.Dialog();
+    dialog.setAriaLabel(lockedString4(UIStringsNotTranslate4.codeCompletionJustGotBetter));
+    const result = Promise.withResolvers();
+    Lit.render(html4`
+      <div class="ai-code-generation-upgrade-dialog">
+        <style>
+          ${aiCodeGenerationUpgradeDialog_css_default}
+        </style>
+        <header>
+          <div class="header-icon-container">
+            <devtools-icon name="pen-spark"></devtools-icon>
+          </div>
+          <h2 tabindex="-1">
+            ${lockedString4(UIStringsNotTranslate4.codeCompletionJustGotBetter)}
+          </h2>
+        </header>
+        <main class="reminder-container">
+          <div class="reminder-item">
+            <devtools-icon class="reminder-icon" name="text-analysis"></devtools-icon>
+            <span>
+              ${Host4.Platform.isMac() ? lockedString4(UIStringsNotTranslate4.describeCodeInCommentForMacOs) : lockedString4(UIStringsNotTranslate4.describeCodeInComment)}
+            </span>
+          </div>
+          <div class="reminder-item">
+            <devtools-icon class="reminder-icon" name="code"></devtools-icon>
+            <span>${lockedString4(UIStringsNotTranslate4.asYouType)}</span>
+          </div>
+          <div class="reminder-item">
+            <devtools-icon class="reminder-icon" name="google"></devtools-icon>
+            <span>${noLogging ? lockedString4(UIStringsNotTranslate4.disclaimerTextPrivacyNoLogging) : lockedString4(UIStringsNotTranslate4.disclaimerTextPrivacy)}
+            </span>
+          </div>
+        </main>
+        <footer>
+          <div class="right-buttons">
+            <devtools-button
+              @click=${() => {
+      result.resolve(false);
+      void UI4.ViewManager.ViewManager.instance().showView("chrome-ai");
+    }}
+              jslogcontext="ai-code-generation-upgrade-dialog.manage-in-settings"
+              .variant=${"outlined"}
+              aria-label=${lockedString4(UIStringsNotTranslate4.manageInSettings)}>
+              ${lockedString4(UIStringsNotTranslate4.manageInSettings)}
+            </devtools-button>
+            <devtools-button
+              @click=${() => {
+      result.resolve(true);
+      dialog.hide();
+    }}
+              jslogcontext="ai-code-generation-upgrade-dialog.continue"
+              .variant=${"primary"}>
+              ${lockedString4(UIStringsNotTranslate4.generateCode)}
+            </devtools-button>
+          </div>
+        </footer>
+      </div>`, dialog.contentElement);
+    dialog.setOutsideClickCallback((ev) => {
+      ev.consume(true);
+    });
+    dialog.setOnHideCallback(() => {
+      result.resolve(false);
+    });
+    dialog.setSizeBehavior(
+      "MeasureContent"
+      /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
+    );
+    dialog.setDimmed(true);
+    dialog.show();
+    return result.promise;
+  }
+  constructor() {
+  }
+};
+
 // gen/front_end/ui/components/text_editor/config.js
 var config_exports = {};
 __export(config_exports, {
@@ -222,13 +1546,13 @@ __export(config_exports, {
   theme: () => theme,
   themeSelection: () => themeSelection
 });
-import * as Common from "./../../../core/common/common.js";
-import * as i18n from "./../../../core/i18n/i18n.js";
+import * as Common3 from "./../../../core/common/common.js";
+import * as i18n9 from "./../../../core/i18n/i18n.js";
 import * as TextUtils from "./../../../core/text_utils/text_utils.js";
 import * as CM3 from "./../../../third_party/codemirror.next/codemirror.next.js";
 import { Icon } from "./../../kit/kit.js";
-import * as UI from "./../../legacy/legacy.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
+import * as UI5 from "./../../legacy/legacy.js";
+import * as VisualLogging4 from "./../../visual_logging/visual_logging.js";
 import * as CodeHighlighter from "./../code_highlighter/code_highlighter.js";
 
 // gen/front_end/ui/components/text_editor/theme.js
@@ -441,8 +1765,8 @@ var UIStrings = {
    */
   sSuggestionSOfS: "{PH1}, suggestion {PH2} of {PH3}"
 };
-var str_ = i18n.i18n.registerUIStrings("ui/components/text_editor/config.ts", UIStrings);
-var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+var str_ = i18n9.i18n.registerUIStrings("ui/components/text_editor/config.ts", UIStrings);
+var i18nString = i18n9.i18n.getLocalizedString.bind(void 0, str_);
 var empty = [];
 var dynamicSetting = CM3.Facet.define();
 var DynamicSetting = class _DynamicSetting {
@@ -454,7 +1778,7 @@ var DynamicSetting = class _DynamicSetting {
     this.getExtension = getExtension;
   }
   settingValue() {
-    return Common.Settings.Settings.instance().moduleSetting(this.settingName).get();
+    return Common3.Settings.Settings.instance().moduleSetting(this.settingName).get();
   }
   instance() {
     return [
@@ -536,7 +1860,7 @@ function announceSelectedCompletionInfo(view) {
     PH2: (CM3.selectedCompletionIndex(view.state) || 0) + 1,
     PH3: CM3.currentCompletions(view.state).length
   });
-  UI.ARIAUtils.LiveAnnouncer.alert(ariaMessage);
+  UI5.ARIAUtils.LiveAnnouncer.alert(ariaMessage);
 }
 var autocompletion2 = new DynamicSetting("text-editor-autocompletion", (activateOnTyping) => [
   CM3.autocompletion({
@@ -570,7 +1894,7 @@ var codeFolding = DynamicSetting.bool("text-editor-code-folding", [
       const iconName = open ? "triangle-down" : "triangle-right";
       const icon = new Icon();
       icon.setAttribute("class", open ? "cm-foldGutterElement" : "cm-foldGutterElement cm-foldGutterElement-folded");
-      icon.setAttribute("jslog", `${VisualLogging.expand().track({ click: true })}`);
+      icon.setAttribute("jslog", `${VisualLogging4.expand().track({ click: true })}`);
       icon.name = iconName;
       icon.classList.add("small");
       return icon;
@@ -595,7 +1919,7 @@ function preservedLength(ch) {
 function detectIndentation(doc) {
   const lines = doc.iterLines(1, Math.min(doc.lines + 1, LINES_TO_SCAN_FOR_INDENTATION_GUESSING));
   const indentUnit3 = TextUtils.TextUtils.detectIndentation(lines);
-  return indentUnit3 ?? Common.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+  return indentUnit3 ?? Common3.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
 }
 var autoDetectIndent = DynamicSetting.bool("text-editor-auto-detect-indent", AutoDetectIndent);
 function matcher(decorator) {
@@ -672,7 +1996,7 @@ var baseKeymap = CM3.keymap.of([
   ...CM3.historyKeymap
 ]);
 function themeIsDark() {
-  const setting = Common.Settings.Settings.instance().moduleSetting("ui-theme").get();
+  const setting = Common3.Settings.Settings.instance().moduleSetting("ui-theme").get();
   return setting === "systemPreferred" ? window.matchMedia("(prefers-color-scheme: dark)").matches : setting === "dark";
 }
 var dummyDarkTheme = CM3.EditorView.theme({}, { dark: true });
@@ -683,7 +2007,7 @@ function theme() {
 var sideBarElement = null;
 function getTooltipSpace() {
   if (!sideBarElement) {
-    sideBarElement = UI.UIUtils.getDevToolsBoundingElement();
+    sideBarElement = UI5.UIUtils.getDevToolsBoundingElement();
   }
   return sideBarElement.getBoundingClientRect();
 }
@@ -955,32 +2279,32 @@ var aiCodeGenerationTeaserModeState = CodeMirror2.StateField.define({
 var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
   // 'ai-code-completion-enabled' setting controls both AI code completion and AI code generation.
   // Since this provider deals with code generation, the field has been named `#aiCodeGenerationEnabledSetting`.
-  #aiCodeGenerationEnabledSetting = Common2.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
+  #aiCodeGenerationEnabledSetting = Common4.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
   #aiCodeGenerationSettingEnabled = this.#aiCodeGenerationEnabledSetting.get();
-  #aiCodeGenerationOnboardingCompletedSetting = Common2.Settings.Settings.instance().createSetting("ai-code-generation-onboarding-completed", false);
-  #aiCodeGenerationUsedSetting = Common2.Settings.Settings.instance().createSetting("ai-code-generation-used", false);
+  #aiCodeGenerationOnboardingCompletedSetting = Common4.Settings.Settings.instance().createSetting("ai-code-generation-onboarding-completed", false);
+  #aiCodeGenerationUsedSetting = Common4.Settings.Settings.instance().createSetting("ai-code-generation-used", false);
   #generationTeaserCompartment = new CodeMirror2.Compartment();
   #generationTeaser;
   #editor;
   #aiCodeGenerationConfig;
   #aiCodeGeneration;
   #aiCodeGenerationCitations = [];
-  #aidaClient = new Host.AidaClient.AidaClient();
+  #aidaClient = new Host5.AidaClient.AidaClient();
   #boundOnAidaAvailabilityChange = (ev) => {
     void this.#updateAiCodeGenerationStateWithAvailability(ev.data);
   };
   #boundOnSettingChange = () => {
-    const aidaAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    const aidaAvailability = Host5.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (aidaAvailability !== void 0) {
       void this.#updateAiCodeGenerationStateWithAvailability(aidaAvailability);
     }
   };
   #controller = new AbortController();
   constructor(aiCodeGenerationConfig) {
-    if (!AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationAvailable()) {
+    if (!AiCodeGeneration3.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationAvailable()) {
       throw new Error("AI code generation feature is not available.");
     }
-    this.#generationTeaser = new PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser();
+    this.#generationTeaser = new AiCodeGenerationTeaser();
     this.#generationTeaser.disclaimerTooltipId = aiCodeGenerationConfig.disclaimerTooltipId;
     this.#generationTeaser.disclaimerTextVariant = aiCodeGenerationConfig.disclaimerTextVariant;
     this.#aiCodeGenerationConfig = aiCodeGenerationConfig;
@@ -1003,13 +2327,13 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     this.#controller.abort();
     this.#cleanupAiCodeGeneration();
     this.#aiCodeGenerationEnabledSetting.removeChangeListener(this.#boundOnSettingChange);
-    Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host5.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
   }
   editorInitialized(editor) {
     this.#editor = editor;
-    Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host5.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
     this.#aiCodeGenerationEnabledSetting.addChangeListener(this.#boundOnSettingChange);
-    const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    const initialAvailability = Host5.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (initialAvailability !== void 0) {
       void this.#updateAiCodeGenerationStateWithAvailability(initialAvailability);
     }
@@ -1018,9 +2342,9 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     if (this.#aiCodeGeneration) {
       return;
     }
-    this.#aiCodeGeneration = new AiCodeGeneration.AiCodeGeneration.AiCodeGeneration({
+    this.#aiCodeGeneration = new AiCodeGeneration3.AiCodeGeneration.AiCodeGeneration({
       aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging
+      serverSideLoggingEnabled: !Root4.Runtime.hostConfig.aidaAvailability?.disallowLogging
     });
     this.#editor?.dispatch({
       effects: [this.#generationTeaserCompartment.reconfigure([aiCodeGenerationTeaserExtension(this.#generationTeaser)])]
@@ -1037,8 +2361,8 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
   }
   async #updateAiCodeGenerationStateWithAvailability(aidaAvailability) {
     const isAvailable = aidaAvailability === "available";
-    const devtoolsLocale = i18n3.DevToolsLocale.DevToolsLocale.instance().locale;
-    const aiCodeGenerationEnabled = AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale);
+    const devtoolsLocale = i18n11.DevToolsLocale.DevToolsLocale.instance().locale;
+    const aiCodeGenerationEnabled = AiCodeGeneration3.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale);
     const isSettingEnabled = this.#aiCodeGenerationEnabledSetting.get();
     if (isAvailable && aiCodeGenerationEnabled && isSettingEnabled) {
       if (!this.#aiCodeGenerationSettingEnabled) {
@@ -1065,7 +2389,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
             this.#dismissTeaserAndSuggestion();
             return true;
           }
-          const generationTeaserIsLoading = this.#generationTeaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
+          const generationTeaserIsLoading = this.#generationTeaser.displayState === AiCodeGenerationTeaserDisplayState.LOADING;
           if (this.#generationTeaser.isShowing() && generationTeaserIsLoading) {
             this.#controller.abort();
             this.#controller = new AbortController();
@@ -1088,7 +2412,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
           if (!this.#editor || !this.#aiCodeGeneration || !this.#generationTeaser.isShowing()) {
             return false;
           }
-          if (UI2.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
+          if (UI6.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
             if (event.key === "i") {
               void this.#triggerAiCodeGenerationFlow(event);
               return true;
@@ -1105,13 +2429,13 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     if (!isOnboarded) {
       return;
     }
-    void VisualLogging2.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered");
+    void VisualLogging5.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered");
     if (this.#aiCodeGenerationConfig?.disclaimerTextVariant === "console") {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggeredFromConsole);
-      void VisualLogging2.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered-from-console");
+      Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiCodeGenerationRequestTriggeredFromConsole);
+      void VisualLogging5.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered-from-console");
     } else if (this.#aiCodeGenerationConfig?.disclaimerTextVariant === "sources") {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggeredFromSources);
-      void VisualLogging2.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered-from-sources");
+      Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiCodeGenerationRequestTriggeredFromSources);
+      void VisualLogging5.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered-from-sources");
     }
     void this.#triggerAiCodeGeneration({ signal: this.#controller.signal });
   }
@@ -1119,13 +2443,13 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     if (this.#aiCodeGenerationOnboardingCompletedSetting.get()) {
       return true;
     }
-    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
-    const resolved = await PanelCommon.AiCodeGenerationUpgradeDialog.show({ noLogging });
+    const noLogging = Root4.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root4.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    const resolved = await AiCodeGenerationUpgradeDialog.show({ noLogging });
     this.#aiCodeGenerationOnboardingCompletedSetting.set(resolved);
     return resolved;
   }
   #dismissTeaserAndSuggestion() {
-    this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
+    this.#generationTeaser.displayState = AiCodeGenerationTeaserDisplayState.TRIGGER;
     this.#editor?.dispatch({
       effects: [
         setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED),
@@ -1173,15 +2497,15 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     if (currentTeaserMode === AiCodeGenerationTeaserMode.DISMISSED) {
       return;
     }
-    if (this.#generationTeaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING) {
+    if (this.#generationTeaser.displayState === AiCodeGenerationTeaserDisplayState.LOADING) {
       this.#controller.abort();
       this.#controller = new AbortController();
       this.#dismissTeaserAndSuggestion();
       return;
     }
-    if (this.#generationTeaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED) {
+    if (this.#generationTeaser.displayState === AiCodeGenerationTeaserDisplayState.GENERATED) {
       update.view.dispatch({ effects: setAiAutoCompleteSuggestion.of(null) });
-      this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.DISCOVERY;
+      this.#generationTeaser.displayState = AiCodeGenerationTeaserDisplayState.DISCOVERY;
       return;
     }
   }
@@ -1201,12 +2525,12 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     if (!query || query.trim().length === 0) {
       return;
     }
-    this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING;
+    this.#generationTeaser.displayState = AiCodeGenerationTeaserDisplayState.LOADING;
     try {
       const startTime = performance.now();
       this.#aiCodeGenerationConfig.onRequestTriggered();
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggered);
-      const preamble = AiCodeGeneration.AiCodeGeneration.basePreamble + this.#aiCodeGenerationConfig.generationContext.additionalPreambleContext;
+      Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiCodeGenerationRequestTriggered);
+      const preamble = AiCodeGeneration3.AiCodeGeneration.basePreamble + this.#aiCodeGenerationConfig.generationContext.additionalPreambleContext;
       const generationResponse = await this.#aiCodeGeneration.generateCode(query, preamble, this.#aiCodeGenerationConfig.generationContext.inferenceLanguage, options);
       if (this.#generationTeaser) {
         this.#dismissTeaserAndSuggestion();
@@ -1216,7 +2540,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
         return;
       }
       const topSample = generationResponse.samples[0];
-      const shouldBlock = topSample.attributionMetadata?.attributionAction === Host.AidaClient.RecitationAction.BLOCK;
+      const shouldBlock = topSample.attributionMetadata?.attributionAction === Host5.AidaClient.RecitationAction.BLOCK;
       if (shouldBlock) {
         return;
       }
@@ -1237,19 +2561,19 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
           setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE)
         ]
       });
-      this.#generationTeaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED;
-      AiCodeGeneration.debugLog("Suggestion dispatched to the editor", suggestionText);
+      this.#generationTeaser.displayState = AiCodeGenerationTeaserDisplayState.GENERATED;
+      AiCodeGeneration3.debugLog("Suggestion dispatched to the editor", suggestionText);
       const citations = topSample.attributionMetadata?.citations ?? [];
       this.#aiCodeGenerationCitations = citations;
       this.#aiCodeGenerationConfig.onResponseReceived();
       return;
     } catch (e) {
-      if (e instanceof Host.AidaClient.AidaAbortError) {
+      if (e instanceof Host5.AidaClient.AidaAbortError) {
         return;
       }
-      AiCodeGeneration.debugLog("Error while fetching code generation suggestions from AIDA", e);
+      AiCodeGeneration3.debugLog("Error while fetching code generation suggestions from AIDA", e);
       this.#aiCodeGenerationConfig.onResponseReceived();
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationError);
+      Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiCodeGenerationError);
     }
     if (this.#generationTeaser) {
       this.#dismissTeaserAndSuggestion();
@@ -1277,7 +2601,7 @@ function aiCodeGenerationTeaserExtension(teaser) {
       const cursorPosition = this.#view.state.selection.main.head;
       const line = this.#view.state.doc.lineAt(cursorPosition);
       const isEmptyLine = line.length === 0;
-      const canShowDiscoveryState = UI2.UIUtils.PromotionManager.instance().canShowPromotion(PanelCommon.AiCodeGenerationTeaser.PROMOTION_ID);
+      const canShowDiscoveryState = UI6.UIUtils.PromotionManager.instance().canShowPromotion(PROMOTION_ID2);
       if (isEmptyLine && canShowDiscoveryState) {
         return CodeMirror2.Decoration.set([
           CodeMirror2.Decoration.widget({ widget: new AccessiblePlaceholder(teaser), side: 1 }).range(cursorPosition)
@@ -1293,16 +2617,16 @@ function aiCodeGenerationTeaserExtension(teaser) {
       return CodeMirror2.Decoration.none;
     }
     #updateTeaserState(state) {
-      if (teaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.LOADING || teaser.displayState === PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED) {
+      if (teaser.displayState === AiCodeGenerationTeaserDisplayState.LOADING || teaser.displayState === AiCodeGenerationTeaserDisplayState.GENERATED) {
         return;
       }
       const cursorPosition = state.selection.main.head;
       const line = state.doc.lineAt(cursorPosition);
       const isEmptyLine = line.length === 0;
       if (isEmptyLine) {
-        teaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.DISCOVERY;
+        teaser.displayState = AiCodeGenerationTeaserDisplayState.DISCOVERY;
       } else {
-        teaser.displayState = PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER;
+        teaser.displayState = AiCodeGenerationTeaserDisplayState.TRIGGER;
       }
     }
   }, {
@@ -1324,12 +2648,12 @@ function aiCodeGenerationTeaserExtension(teaser) {
         return true;
       },
       keydown(event) {
-        if (!UI2.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) || teaser.displayState !== PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.TRIGGER) {
+        if (!UI6.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) || teaser.displayState !== AiCodeGenerationTeaserDisplayState.TRIGGER) {
           return false;
         }
         if (event.key === ".") {
           event.consume(true);
-          void VisualLogging2.logKeyDown(event.currentTarget, event, "ai-code-generation-teaser.show-disclaimer-info-tooltip");
+          void VisualLogging5.logKeyDown(event.currentTarget, event, "ai-code-generation-teaser.show-disclaimer-info-tooltip");
           teaser.showTooltip();
           return true;
         }
@@ -1357,10 +2681,10 @@ var DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 var AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
 var MAX_PREFIX_SUFFIX_LENGTH = 2e4;
 var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
-  #aidaClient = new Host2.AidaClient.AidaClient();
+  #aidaClient = new Host6.AidaClient.AidaClient();
   #aiCodeCompletion;
-  #aiCodeCompletionSetting = Common3.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
-  #aiCodeCompletionTeaserDismissedSetting = Common3.Settings.Settings.instance().createSetting("ai-code-completion-teaser-dismissed", false);
+  #aiCodeCompletionSetting = Common5.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
+  #aiCodeCompletionTeaserDismissedSetting = Common5.Settings.Settings.instance().createSetting("ai-code-completion-teaser-dismissed", false);
   #teaserCompartment = new CodeMirror3.Compartment();
   #teaser;
   #suggestionRenderingTimeout;
@@ -1373,7 +2697,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     this.#updateAiCodeCompletionStateWithAvailability(ev.data);
   };
   #boundOnSettingChange = () => {
-    const aidaAvailability = Host2.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    const aidaAvailability = Host6.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (aidaAvailability !== void 0) {
       this.#updateAiCodeCompletionStateWithAvailability(aidaAvailability);
     }
@@ -1383,7 +2707,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
       throw new Error("AI code completion feature is not available.");
     }
     this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
-    if (AiCodeGeneration3.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationAvailable()) {
+    if (AiCodeGeneration5.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationAvailable()) {
       this.#aiCodeGenerationConfig = {
         generationContext: {
           inferenceLanguage: this.#aiCodeCompletionConfig.completionContext.inferenceLanguage,
@@ -1419,22 +2743,22 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     this.#detachTeaser();
     this.#teaser = void 0;
     this.#aiCodeCompletionSetting.removeChangeListener(this.#boundOnSettingChange);
-    Host2.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host6.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
     this.#cleanupAiCodeCompletion();
     this.#aiCodeGenerationProvider?.dispose();
   }
   editorInitialized(editor) {
     this.#editor = editor;
     if (!this.#aiCodeCompletionSetting.get() && !this.#aiCodeCompletionTeaserDismissedSetting.get()) {
-      this.#teaser = new PanelCommon2.AiCodeCompletionTeaser({
+      this.#teaser = new AiCodeCompletionTeaser({
         onDetach: () => this.#detachTeaser.bind(this),
         disclaimerTextVariant: this.#aiCodeCompletionConfig?.disclaimerTextVariant
       });
       this.#editor.editor.dispatch({ effects: this.#teaserCompartment.reconfigure([aiCodeCompletionTeaserExtension(this.#teaser)]) });
     }
-    Host2.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
     this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnSettingChange);
-    const initialAvailability = Host2.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    const initialAvailability = Host6.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (initialAvailability !== void 0) {
       this.#updateAiCodeCompletionStateWithAvailability(initialAvailability);
     }
@@ -1452,7 +2776,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     }
     this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({
       aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: !Root2.Runtime.hostConfig.aidaAvailability?.disallowLogging
+      serverSideLoggingEnabled: !Root5.Runtime.hostConfig.aidaAvailability?.disallowLogging
     }, void 0, this.#aiCodeCompletionConfig.completionContext.stopSequences);
     this.#aiCodeCompletionConfig.onFeatureEnabled();
   }
@@ -1472,7 +2796,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
   }
   #updateAiCodeCompletionStateWithAvailability(aidaAvailability) {
     const isAvailable = aidaAvailability === "available";
-    const devtoolsLocale = i18n4.DevToolsLocale.DevToolsLocale.instance().locale;
+    const devtoolsLocale = i18n12.DevToolsLocale.DevToolsLocale.instance().locale;
     const aiCodeCompletionEnabled = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale);
     const isSettingEnabled = this.#aiCodeCompletionSetting.get();
     if (isAvailable && aiCodeCompletionEnabled) {
@@ -1568,7 +2892,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     const suffix = query.substring(cursor, cursor + MAX_PREFIX_SUFFIX_LENGTH);
     this.#debouncedRequestAidaSuggestion(prefix, suffix, cursor, this.#aiCodeCompletionConfig?.completionContext.inferenceLanguage, this.#aiCodeCompletionConfig?.completionContext.additionalFiles);
   }
-  #debouncedRequestAidaSuggestion = Common3.Debouncer.debounce((prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles) => {
+  #debouncedRequestAidaSuggestion = Common5.Debouncer.debounce((prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles) => {
     void this.#requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles);
   }, AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
   async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles) {
@@ -1576,16 +2900,16 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     if (!this.#aiCodeCompletion) {
       AiCodeCompletion.debugLog("Ai Code Completion is not initialized");
       this.#aiCodeCompletionConfig?.onResponseReceived();
-      Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionError);
+      Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiCodeCompletionError);
       return;
     }
     const startTime = performance.now();
     this.#aiCodeCompletionConfig?.onRequestTriggered();
     const disclaimerTextVariant = this.#aiCodeCompletionConfig?.disclaimerTextVariant;
     if (disclaimerTextVariant === "console") {
-      Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromConsole);
+      Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromConsole);
     } else if (disclaimerTextVariant === "sources") {
-      Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromSources);
+      Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromSources);
     }
     try {
       const completionResponse = await this.#aiCodeCompletion.completeCode(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles);
@@ -1626,7 +2950,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
           });
         }
         if (fromCache) {
-          Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
+          Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
         }
         AiCodeCompletion.debugLog("Suggestion dispatched to the editor", suggestionText, "at cursor position", cursorPositionAtRequest);
         this.#aiCodeCompletionCitations = citations;
@@ -1635,7 +2959,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     } catch (e) {
       AiCodeCompletion.debugLog("Error while fetching code completion suggestions from AIDA", e);
       this.#aiCodeCompletionConfig?.onResponseReceived();
-      Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionError);
+      Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiCodeCompletionError);
     }
   }
   async #generateSampleForRequest(response, prefix, suffix) {
@@ -1643,7 +2967,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     if (!suggestionSample) {
       return null;
     }
-    const shouldBlock = suggestionSample.attributionMetadata?.attributionAction === Host2.AidaClient.RecitationAction.BLOCK;
+    const shouldBlock = suggestionSample.attributionMetadata?.attributionAction === Host6.AidaClient.RecitationAction.BLOCK;
     if (shouldBlock) {
       return null;
     }
@@ -1749,7 +3073,7 @@ function aiCodeCompletionTeaserExtension(teaser) {
         this.#teaserDecoration = CodeMirror3.Decoration.none;
       }
     }
-    #updateTeaserDecorationForOnMode = Common3.Debouncer.debounce(() => {
+    #updateTeaserDecorationForOnMode = Common5.Debouncer.debounce(() => {
       this.#teaserDisplayTimeout = window.setTimeout(() => {
         this.#updateTeaserDecorationForOnModeImmediately();
         this.view.dispatch({});
@@ -1774,18 +3098,18 @@ function aiCodeCompletionTeaserExtension(teaser) {
         return event.target instanceof Node && teaser.contentElement.contains(event.target);
       },
       keydown(event) {
-        if (!UI3.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) || !teaser.isShowing()) {
+        if (!UI7.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) || !teaser.isShowing()) {
           return false;
         }
         if (event.key === "i") {
           event.consume(true);
-          void VisualLogging3.logKeyDown(event.currentTarget, event, "ai-code-completion-teaser.fre");
+          void VisualLogging6.logKeyDown(event.currentTarget, event, "ai-code-completion-teaser.fre");
           void this.teaser.onAction(event);
           return true;
         }
         if (event.key === "x") {
           event.consume(true);
-          void VisualLogging3.logKeyDown(event.currentTarget, event, "ai-code-completion-teaser.dismiss");
+          void VisualLogging6.logKeyDown(event.currentTarget, event, "ai-code-completion-teaser.dismiss");
           this.teaser.onDismiss(event);
           return true;
         }
@@ -2068,7 +3392,7 @@ import * as Bindings from "./../../../models/bindings/bindings.js";
 import * as JavaScriptMetaData from "./../../../models/javascript_metadata/javascript_metadata.js";
 import * as SourceMapScopes from "./../../../models/source_map_scopes/source_map_scopes.js";
 import * as CodeMirror6 from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as UI4 from "./../../legacy/legacy.js";
+import * as UI8 from "./../../legacy/legacy.js";
 
 // gen/front_end/ui/components/text_editor/cursor_tooltip.js
 import * as CodeMirror5 from "./../../../third_party/codemirror.next/codemirror.next.js";
@@ -2353,7 +3677,7 @@ var SPAN_IDENT = /^#?(?:[$_\p{ID_Start}])(?:[$_\u200C\u200D\p{ID_Continue}])*$/u
 var SPAN_SINGLE_QUOTE = /^\'(\\.|[^\\'\n])*'?$/;
 var SPAN_DOUBLE_QUOTE = /^"(\\.|[^\\"\n])*"?$/;
 function getExecutionContext() {
-  return UI4.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+  return UI8.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
 }
 async function evaluateExpression(context, expression, group) {
   const result = await context.evaluate({
@@ -2386,7 +3710,7 @@ var PropertyCache = class _PropertyCache {
   constructor() {
     const clear = () => this.#cache.clear();
     SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, clear);
-    UI4.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, clear);
+    UI8.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, clear);
     SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, clear);
     SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, clear);
   }
@@ -2537,7 +3861,7 @@ async function completeExpressionGlobal() {
   return await fetchNames;
 }
 async function isExpressionComplete(expression) {
-  const currentExecutionContext = UI4.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+  const currentExecutionContext = UI8.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
   if (!currentExecutionContext) {
     return true;
   }
@@ -2833,9 +4157,9 @@ var TextEditor_exports = {};
 __export(TextEditor_exports, {
   TextEditor: () => TextEditor
 });
-import * as Common4 from "./../../../core/common/common.js";
+import * as Common6 from "./../../../core/common/common.js";
 import * as CodeMirror7 from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as UI5 from "./../../legacy/legacy.js";
+import * as UI9 from "./../../legacy/legacy.js";
 import * as ThemeSupport from "./../../legacy/theme_support/theme_support.js";
 import * as CodeHighlighter3 from "./../code_highlighter/code_highlighter.js";
 var TextEditor = class extends HTMLElement {
@@ -2961,13 +4285,13 @@ var TextEditor = class extends HTMLElement {
           this.#activeEditor.dispatch({ effects: change });
         }
       };
-      const setting = Common4.Settings.Settings.instance().moduleSetting(dynamicSetting2.settingName);
+      const setting = Common6.Settings.Settings.instance().moduleSetting(dynamicSetting2.settingName);
       setting.addChangeListener(handler);
       this.#activeSettingListeners.push([setting, handler]);
     }
   }
   #startObservingResize() {
-    const devtoolsElement = UI5.UIUtils.getDevToolsBoundingElement();
+    const devtoolsElement = UI9.UIUtils.getDevToolsBoundingElement();
     if (devtoolsElement) {
       this.#devtoolsResizeObserver.observe(devtoolsElement);
     }
@@ -3126,9 +4450,13 @@ var TextEditorHistory = class {
 };
 export {
   AccessiblePlaceholder_exports as AccessiblePlaceholder,
+  AiCodeCompletionDisclaimer_exports as AiCodeCompletionDisclaimer,
   AiCodeCompletionProvider_exports as AiCodeCompletionProvider,
+  AiCodeCompletionTeaser_exports as AiCodeCompletionTeaser,
   AiCodeGenerationParser_exports as AiCodeGenerationParser,
   AiCodeGenerationProvider_exports as AiCodeGenerationProvider,
+  AiCodeGenerationTeaser_exports as AiCodeGenerationTeaser,
+  AiCodeGenerationUpgradeDialog_exports as AiCodeGenerationUpgradeDialog,
   AutocompleteHistory_exports as AutocompleteHistory,
   config_exports as Config,
   ExecutionPositionHighlighter_exports as ExecutionPositionHighlighter,

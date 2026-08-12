@@ -312,7 +312,18 @@ export interface SourceCodeAiWidget {
         column?: number;
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget | TimelineEventSummaryAiWidget | NetworkRequestGeneralHeadersAiWidget | SourceCodeAiWidget | SourceFilesListAiWidget | NetworkRequestsListAiWidget | NetworkTrackAiWidget;
+export interface StorageBreakdownAiWidget {
+    name: 'STORAGE_BREAKDOWN';
+    data: {
+        totalUsageBytes: number;
+        totalQuotaBytes: number;
+        usageBreakdown: Array<{
+            storageType: string;
+            bytes: number;
+        }>;
+    };
+}
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget | TimelineEventSummaryAiWidget | NetworkRequestGeneralHeadersAiWidget | SourceCodeAiWidget | SourceFilesListAiWidget | NetworkRequestsListAiWidget | NetworkTrackAiWidget | StorageBreakdownAiWidget;
 /**
  * @deprecated Used for v1 agents. Once v2 is shipped, this can be removed.
  * Use `DataHandlerResult` or `ContextHandlerResult` from `Tool.js` instead.

@@ -38,9 +38,13 @@
   },
   "files": [
     "../../../../../../../front_end/ui/components/text_editor/AccessiblePlaceholder.ts",
+    "../../../../../../../front_end/ui/components/text_editor/AiCodeCompletionDisclaimer.ts",
     "../../../../../../../front_end/ui/components/text_editor/AiCodeCompletionProvider.ts",
+    "../../../../../../../front_end/ui/components/text_editor/AiCodeCompletionTeaser.ts",
     "../../../../../../../front_end/ui/components/text_editor/AiCodeGenerationParser.ts",
     "../../../../../../../front_end/ui/components/text_editor/AiCodeGenerationProvider.ts",
+    "../../../../../../../front_end/ui/components/text_editor/AiCodeGenerationTeaser.ts",
+    "../../../../../../../front_end/ui/components/text_editor/AiCodeGenerationUpgradeDialog.ts",
     "../../../../../../../front_end/ui/components/text_editor/AutocompleteHistory.ts",
     "../../../../../../../front_end/ui/components/text_editor/ExecutionPositionHighlighter.ts",
     "../../../../../../../front_end/ui/components/text_editor/TextEditor.ts",
@@ -74,6 +78,9 @@
       "path": "../../../core/text_utils/bundle-tsconfig.json"
     },
     {
+      "path": "../../../models/ai_assistance/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../models/ai_code_completion/bundle-tsconfig.json"
     },
     {
@@ -89,9 +96,6 @@
       "path": "../../../models/source_map_scopes/bundle-tsconfig.json"
     },
     {
-      "path": "../../../panels/common/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../third_party/codemirror.next/bundle-tsconfig.json"
     },
     {
@@ -104,10 +108,28 @@
       "path": "../../legacy/theme_support/bundle-tsconfig.json"
     },
     {
+      "path": "../../lit/bundle-tsconfig.json"
+    },
+    {
       "path": "../../visual_logging/bundle-tsconfig.json"
     },
     {
+      "path": "../buttons/bundle-tsconfig.json"
+    },
+    {
       "path": "../code_highlighter/bundle-tsconfig.json"
+    },
+    {
+      "path": "../dialogs/bundle-tsconfig.json"
+    },
+    {
+      "path": "../snackbars/bundle-tsconfig.json"
+    },
+    {
+      "path": "../spinners/bundle-tsconfig.json"
+    },
+    {
+      "path": "../tooltips/bundle-tsconfig.json"
     }
   ]
 }

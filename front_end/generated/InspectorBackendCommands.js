@@ -1080,6 +1080,8 @@ export function registerCommands(inspectorBackend) {
     inspectorBackend.registerCommand("Page.setTouchEmulationEnabled", [{ "name": "enabled", "type": "boolean", "optional": false, "description": "Whether the touch event emulation should be enabled.", "typeRef": null }, { "name": "configuration", "type": "string", "optional": true, "description": "Touch/gesture events configuration. Default: current platform.", "typeRef": "Page.SetTouchEmulationEnabledRequestConfiguration" }], [], "Toggles mouse event-based touch event emulation.");
     inspectorBackend.registerEnum("Page.StartScreencastRequestFormat", { Jpeg: "jpeg", Png: "png" });
     inspectorBackend.registerCommand("Page.startScreencast", [{ "name": "format", "type": "string", "optional": true, "description": "Image compression format.", "typeRef": "Page.StartScreencastRequestFormat" }, { "name": "quality", "type": "number", "optional": true, "description": "Compression quality from range [0..100].", "typeRef": null }, { "name": "maxWidth", "type": "number", "optional": true, "description": "Maximum screenshot width.", "typeRef": null }, { "name": "maxHeight", "type": "number", "optional": true, "description": "Maximum screenshot height.", "typeRef": null }, { "name": "everyNthFrame", "type": "number", "optional": true, "description": "Send every n-th frame.", "typeRef": null }], [], "Starts sending each frame using the `screencastFrame` event.");
+    inspectorBackend.registerCommand("Page.startScreenRecording", [{ "name": "audio", "type": "boolean", "optional": true, "description": "", "typeRef": null }, { "name": "maxWidth", "type": "number", "optional": true, "description": "Maximum frame width in pixels.", "typeRef": null }, { "name": "maxHeight", "type": "number", "optional": true, "description": "Maximum frame height in pixels.", "typeRef": null }, { "name": "frameRate", "type": "number", "optional": true, "description": "Maximum frame rate in frames per second.", "typeRef": null }], ["stream"], "Starts screencast video recording.");
+    inspectorBackend.registerCommand("Page.stopScreenRecording", [], ["stream"], "Stops screencast video recording.");
     inspectorBackend.registerCommand("Page.stopLoading", [], [], "Force the page stop all navigations and pending resource fetches.");
     inspectorBackend.registerCommand("Page.crash", [], [], "Crashes renderer on the IO thread, generates minidumps.");
     inspectorBackend.registerCommand("Page.close", [], [], "Tries to close page, running its beforeunload hooks, if any.");
@@ -1395,7 +1397,7 @@ export function registerCommands(inspectorBackend) {
     // WebAuthn.
     inspectorBackend.registerEnum("WebAuthn.AuthenticatorProtocol", { U2f: "u2f", Ctap2: "ctap2" });
     inspectorBackend.registerEnum("WebAuthn.Ctap2Version", { Ctap2_0: "ctap2_0", Ctap2_1: "ctap2_1", Ctap2_2: "ctap2_2" });
-    inspectorBackend.registerEnum("WebAuthn.AuthenticatorTransport", { Usb: "usb", Nfc: "nfc", Ble: "ble", Cable: "cable", Internal: "internal" });
+    inspectorBackend.registerEnum("WebAuthn.AuthenticatorTransport", { Usb: "usb", Nfc: "nfc", Ble: "ble", Cable: "cable", Hybrid: "hybrid", SmartCard: "smart-card", Internal: "internal" });
     inspectorBackend.registerEvent("WebAuthn.credentialAdded", ["authenticatorId", "credential"]);
     inspectorBackend.registerEvent("WebAuthn.credentialDeleted", ["authenticatorId", "credentialId"]);
     inspectorBackend.registerEvent("WebAuthn.credentialUpdated", ["authenticatorId", "credential"]);

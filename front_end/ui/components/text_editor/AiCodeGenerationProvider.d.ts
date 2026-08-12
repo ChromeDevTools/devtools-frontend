@@ -1,6 +1,6 @@
 import * as Host from '../../../core/host/host.js';
-import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
+import type { DisclaimerTextVariant } from './AiCodeCompletionDisclaimer.js';
 import type { TextEditor } from './TextEditor.js';
 export declare enum AiCodeGenerationTeaserMode {
     ACTIVE = "active",
@@ -16,7 +16,7 @@ export interface AiCodeGenerationConfig {
     onRequestTriggered: () => void;
     onResponseReceived: () => void;
     disclaimerTooltipId: string;
-    disclaimerTextVariant: PanelCommon.DisclaimerTextVariant;
+    disclaimerTextVariant: DisclaimerTextVariant;
 }
 export declare class AiCodeGenerationProvider {
     #private;

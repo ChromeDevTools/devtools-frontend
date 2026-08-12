@@ -37,18 +37,13 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/panels/common/AiCodeCompletionDisclaimer.ts",
     "../../../../../../front_end/panels/common/AiCodeCompletionSummaryToolbar.ts",
-    "../../../../../../front_end/panels/common/AiCodeCompletionTeaser.ts",
-    "../../../../../../front_end/panels/common/AiCodeGenerationTeaser.ts",
-    "../../../../../../front_end/panels/common/AiCodeGenerationUpgradeDialog.ts",
     "../../../../../../front_end/panels/common/BadgeNotification.ts",
     "../../../../../../front_end/panels/common/CPUThrottlingOption.ts",
     "../../../../../../front_end/panels/common/DOMLinkifier.ts",
     "../../../../../../front_end/panels/common/ExtensionPanel.ts",
     "../../../../../../front_end/panels/common/ExtensionServer.ts",
     "../../../../../../front_end/panels/common/ExtensionView.ts",
-    "../../../../../../front_end/panels/common/FreDialog.ts",
     "../../../../../../front_end/panels/common/GdpSignUpDialog.ts",
     "../../../../../../front_end/panels/common/GeminiRebrandPromoDialog.ts",
     "../../../../../../front_end/panels/common/PersistenceUtils.ts",
@@ -134,6 +129,9 @@
     },
     {
       "path": "../../ui/components/switch/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/text_editor/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/tooltips/bundle-tsconfig.json"

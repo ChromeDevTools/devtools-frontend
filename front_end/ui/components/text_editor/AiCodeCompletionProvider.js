@@ -7,11 +7,11 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
 import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
-import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import { AccessiblePlaceholder } from './AccessiblePlaceholder.js';
+import { AiCodeCompletionTeaser } from './AiCodeCompletionTeaser.js';
 import { AiCodeGenerationProvider } from './AiCodeGenerationProvider.js';
 import { acceptAiAutoCompleteSuggestion, aiAutoCompleteSuggestion, aiAutoCompleteSuggestionState, hasActiveAiSuggestion, setAiAutoCompleteSuggestion, showCompletionHint, } from './config.js';
 export var AiCodeCompletionTeaserMode;
@@ -100,7 +100,7 @@ export class AiCodeCompletionProvider {
     editorInitialized(editor) {
         this.#editor = editor;
         if (!this.#aiCodeCompletionSetting.get() && !this.#aiCodeCompletionTeaserDismissedSetting.get()) {
-            this.#teaser = new PanelCommon.AiCodeCompletionTeaser({
+            this.#teaser = new AiCodeCompletionTeaser({
                 onDetach: () => this.#detachTeaser.bind(this),
                 disclaimerTextVariant: this.#aiCodeCompletionConfig?.disclaimerTextVariant,
             });

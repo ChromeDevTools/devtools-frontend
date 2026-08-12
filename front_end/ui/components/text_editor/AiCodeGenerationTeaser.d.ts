@@ -1,5 +1,5 @@
-import '../../ui/components/tooltips/tooltips.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import '../tooltips/tooltips.js';
+import * as UI from '../../legacy/legacy.js';
 import type { DisclaimerTextVariant } from './AiCodeCompletionDisclaimer.js';
 export declare const PROMOTION_ID = "ai-code-generation";
 export declare enum AiCodeGenerationTeaserDisplayState {

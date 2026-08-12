@@ -16,6 +16,7 @@ export declare const enum StepMode {
     STEP_OVER = "StepOver"
 }
 export declare const WASM_SYMBOLS_PRIORITY: Protocol.Debugger.DebugSymbolsType[];
+export declare const skipAllPausesSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare class DebuggerModel extends SDKModel<EventTypes> {
     #private;
     readonly agent: ProtocolProxyApi.DebuggerApi;
@@ -36,6 +37,7 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
     static resyncDebuggerIdForModels(): Promise<void>;
     private disableDebugger;
     private skipAllPauses;
+    private skipAllPausesChanged;
     skipAllPausesUntilReloadOrTimeout(timeout: number): void;
     private pauseOnExceptionStateChanged;
     private asyncStackTracesStateChanged;

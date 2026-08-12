@@ -78,8 +78,7 @@ export class AIv2MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownInsi
             return html `${fallbackText}`;
         }
         if (href.startsWith('#file-')) {
-            const file = AiAssistanceModel.ContextSelectionAgent.ContextSelectionAgent.getUISourceCodes().find(file => AiAssistanceModel.ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.get(file) ===
-                Number(href.substring(6)));
+            const file = AiAssistanceModel.ListSources.ListSourcesTool.getUISourceCodes().find(file => AiAssistanceModel.ListSources.ListSourcesTool.uiSourceCodeId.get(file) === Number(href.substring(6)));
             if (file) {
                 return this.#revealableLink(file, file.name());
             }

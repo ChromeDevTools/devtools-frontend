@@ -13,4 +13,4 @@ export declare class StorageContext extends ConversationContext<StorageItem> {
     isLoggingEnabled(): boolean;
     getSuggestions(): Promise<ConversationSuggestions | undefined>;
 }
-export declare function isSamePageOrigin(target: SDK.Target.Target | null, context?: ConversationContext<unknown>): boolean;
+export declare function isSamePageOrigin(target: SDK.Target.Target | null, allowedOrigin: string): boolean;

@@ -510,6 +510,7 @@ export const knownContextValues = new Set([
   'ar',
   'architecture',
   'aria-attributes',
+  'aria-live-recording',
   'arial',
   'as',
   'ascent-override',

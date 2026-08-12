@@ -7,10 +7,14 @@ import '../../ui/components/switch/switch.js';
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
+import {
+  AccessibilityAnnouncementRecordingView,
+} from './AccessibilityAnnouncementRecordingView.js';
 import {AXNodeSubPane} from './AccessibilityNodeView.js';
 import accessibilitySidebarViewStyles from './accessibilitySidebarView.css.js';
 import {ARIAAttributesPane} from './ARIAAttributesView.js';
@@ -37,6 +41,7 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   private readonly ariaSubPane: ARIAAttributesPane;
   private readonly axNodeSubPane: AXNodeSubPane;
   private readonly sourceOrderSubPane: SourceOrderPane;
+  private readonly announcementsRecordingSubPane?: AccessibilityAnnouncementRecordingView;
   private readonly toggleContainer: HTMLElement;
   private readonly toggleAction: UI.ActionRegistration.Action;
 
@@ -63,6 +68,10 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
     void this.sidebarPaneStack.showView(this.axNodeSubPane);
     this.sourceOrderSubPane = new SourceOrderPane();
     void this.sidebarPaneStack.showView(this.sourceOrderSubPane);
+    if (Boolean(Root.Runtime.hostConfig.devToolsAriaLiveRecording?.enabled)) {
+      this.announcementsRecordingSubPane = new AccessibilityAnnouncementRecordingView();
+      void this.sidebarPaneStack.showView(this.announcementsRecordingSubPane);
+    }
     this.sidebarPaneStack.widget().show(this.element);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.pullNode, this);
     this.pullNode();

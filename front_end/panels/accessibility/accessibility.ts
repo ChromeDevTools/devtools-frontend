@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as AccessibilityAnnouncementRecordingView from './AccessibilityAnnouncementRecordingView.js';
 import * as AccessibilityNodeView from './AccessibilityNodeView.js';
 import * as AccessibilitySidebarView from './AccessibilitySidebarView.js';
 import * as AccessibilityStrings from './AccessibilityStrings.js';
@@ -10,6 +11,7 @@ import * as ARIAAttributesView from './ARIAAttributesView.js';
 import * as ARIAMetadata from './ARIAMetadata.js';
 
 export {
+  AccessibilityAnnouncementRecordingView,
   AccessibilityNodeView,
   AccessibilitySidebarView,
   AccessibilityStrings,

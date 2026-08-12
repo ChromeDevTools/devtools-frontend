@@ -21,6 +21,7 @@ devtools_ui_module("accessibility") {
   sources = [
     "ARIAAttributesView.ts",
     "ARIAMetadata.ts",
+    "AccessibilityAnnouncementRecordingView.ts",
     "AccessibilityNodeView.ts",
     "AccessibilitySidebarView.ts",
     "AccessibilityStrings.ts",
@@ -32,6 +33,7 @@ devtools_ui_module("accessibility") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
     "../../ui/components/switch:bundle",

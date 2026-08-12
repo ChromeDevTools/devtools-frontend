@@ -339,6 +339,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   reportingApiTreeElement: ReportingApiTreeElement;
   webMcpTreeElement?: WebMCPTreeElement;
   adsTreeElement?: ApplicationPanelTreeElement;
+  clearStorageTreeElement?: ClearStorageTreeElement;
   deviceBoundSessionsRootTreeElement: DeviceBoundSessionsRootTreeElement|undefined;
   deviceBoundSessionsModel: DeviceBoundSessionsModel|undefined;
   preloadingSummaryTreeElement: PreloadingSummaryTreeElement|undefined;
@@ -378,8 +379,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     manifestTreeElement.generateChildren();
     this.serviceWorkersTreeElement = new ServiceWorkersTreeElement(panel);
     this.applicationTreeElement.appendChild(this.serviceWorkersTreeElement);
-    const clearStorageTreeElement = new ClearStorageTreeElement(panel);
-    this.applicationTreeElement.appendChild(clearStorageTreeElement);
+    this.clearStorageTreeElement = new ClearStorageTreeElement(panel);
+    this.applicationTreeElement.appendChild(this.clearStorageTreeElement);
     if (Root.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
       this.webMcpTreeElement = new WebMCPTreeElement(panel);
       this.applicationTreeElement.appendChild(this.webMcpTreeElement);
@@ -935,6 +936,11 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     if (bucketsModel) {
       this.storageBucketsTreeElement?.getBucketTreeElement(bucketsModel, bucketInfo)?.revealAndSelect(true);
     }
+  }
+
+  // Selects the Storage tree element in the sidebar (which opens the StorageView component for the main Storage tab).
+  showStorage(): void {
+    this.clearStorageTreeElement?.select();
   }
 
   private onmousemove(event: MouseEvent): void {

@@ -1018,6 +1018,11 @@ async function resolveNode(backendNodeId: Protocol.DOM.BackendNodeId): Promise<S
 }
 
 async function makeStorageBreakdownWidget(widgetData: StorageBreakdownAiWidget): Promise<WidgetMakerResponse|null> {
+  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+  if (!target) {
+    return null;
+  }
+
   const breakdown = widgetData.data.usageBreakdown;
   const total = breakdown.reduce((sum, item) => sum + item.bytes, 0);
 
@@ -1051,7 +1056,7 @@ async function makeStorageBreakdownWidget(widgetData: StorageBreakdownAiWidget):
   return {
     renderedWidget,
     title: lockedString(UIStringsNotTranslate.storageBreakdown),
-    revealable: null,
+    revealable: new Application.StorageView.StorageRevealable(target),
     accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealStorageBreakdown),
     jslogContext: 'storage-breakdown-widget',
   };

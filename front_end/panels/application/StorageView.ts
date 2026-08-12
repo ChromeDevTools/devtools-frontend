@@ -17,6 +17,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {IndexedDBModel} from './IndexedDBModel.js';
+import {ResourcesPanel} from './ResourcesPanel.js';
 import storageViewStyles from './storageView.css.js';
 
 const UIStrings = {
@@ -734,5 +735,17 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       StorageView.clear(target, storageKey, securityOrigin, AllStorageTypes, includeThirdPartyCookies);
     }, _ => {});
     return true;
+  }
+}
+
+export class StorageRevealable {
+  constructor(public target: SDK.Target.Target) {
+  }
+}
+
+export class StorageRevealer implements Common.Revealer.Revealer<StorageRevealable> {
+  async reveal(_revealable: StorageRevealable): Promise<void> {
+    const sidebar = await ResourcesPanel.showAndGetSidebar();
+    sidebar.showStorage();
   }
 }

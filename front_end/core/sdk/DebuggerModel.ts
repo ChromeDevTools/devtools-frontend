@@ -158,6 +158,12 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   #selectedCallFrame: CallFrame|null = null;
   #debuggerEnabled = false;
   #debuggerId: string|null = null;
+  readonly #pauseOnExceptionEnabledSetting: Common.Settings.Setting<boolean>;
+  readonly #pauseOnCaughtExceptionSetting: Common.Settings.Setting<boolean>;
+  readonly #pauseOnUncaughtExceptionSetting: Common.Settings.Setting<boolean>;
+  readonly #disableAsyncStackTracesSetting: Common.Settings.Setting<boolean>;
+  readonly #breakpointsActiveSetting: Common.Settings.Setting<boolean>;
+  readonly #jsSourceMapsEnabledSetting: Common.Settings.Setting<boolean>;
   readonly #skipAllPausesSetting: Common.Settings.Setting<boolean>;
   #skipAllPausesTimeout?: ReturnType<typeof setTimeout>;
   #beforePausedCallback: ((arg0: DebuggerPausedDetails, stepOver: Location|null) => Promise<boolean>)|null = null;
@@ -189,25 +195,26 @@ export class DebuggerModel extends SDKModel<EventTypes> {
                                  compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
 
     const settings = this.target().targetManager().settings;
+    this.#pauseOnExceptionEnabledSetting = settings.resolve(pauseOnExceptionEnabledSettingDescriptor);
+    this.#pauseOnExceptionEnabledSetting.addChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#pauseOnCaughtExceptionSetting = settings.resolve(pauseOnCaughtExceptionSettingDescriptor);
+    this.#pauseOnCaughtExceptionSetting.addChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#pauseOnUncaughtExceptionSetting = settings.resolve(pauseOnUncaughtExceptionSettingDescriptor);
+    this.#pauseOnUncaughtExceptionSetting.addChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#disableAsyncStackTracesSetting = settings.resolve(disableAsyncStackTracesSettingDescriptor);
+    this.#disableAsyncStackTracesSetting.addChangeListener(this.asyncStackTracesStateChanged, this);
+    this.#breakpointsActiveSetting = settings.resolve(breakpointsActiveSettingDescriptor);
+    this.#breakpointsActiveSetting.addChangeListener(this.breakpointsActiveChanged, this);
     this.#skipAllPausesSetting = settings.resolve(skipAllPausesSettingDescriptor);
-    settings.resolve(pauseOnExceptionEnabledSettingDescriptor)
-        .addChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.resolve(pauseOnCaughtExceptionSettingDescriptor)
-        .addChangeListener(this.pauseOnExceptionStateChanged, this);
     this.#skipAllPausesSetting.addChangeListener(this.skipAllPausesChanged, this);
-    settings.resolve(pauseOnUncaughtExceptionSettingDescriptor)
-        .addChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.resolve(disableAsyncStackTracesSettingDescriptor)
-        .addChangeListener(this.asyncStackTracesStateChanged, this);
-    settings.resolve(breakpointsActiveSettingDescriptor).addChangeListener(this.breakpointsActiveChanged, this);
+
+    this.#jsSourceMapsEnabledSetting = settings.resolve(jsSourceMapsEnabledSettingDescriptor);
+    this.#jsSourceMapsEnabledSetting.addChangeListener(this.jsSourceMapsStateChanged, this);
+    this.#sourceMapManager.setEnabled(this.#jsSourceMapsEnabledSetting.get());
 
     if (!target.suspended()) {
       void this.enableDebugger();
     }
-
-    this.#sourceMapManager.setEnabled(settings.resolve(jsSourceMapsEnabledSettingDescriptor).get());
-    settings.resolve(jsSourceMapsEnabledSettingDescriptor)
-        .addChangeListener(event => this.#sourceMapManager.setEnabled((event.data as boolean)));
 
     const resourceTreeModel = (target.model(ResourceTreeModel) as ResourceTreeModel);
     if (resourceTreeModel) {
@@ -286,10 +293,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
         instrumentation: Protocol.Debugger.SetInstrumentationBreakpointRequestInstrumentation.BeforeScriptExecution,
       });
     }
-    const settings = this.target().targetManager().settings;
     this.pauseOnExceptionStateChanged();
     void this.asyncStackTracesStateChanged();
-    if (!settings.resolve(breakpointsActiveSettingDescriptor).get()) {
+    if (!this.#breakpointsActiveSetting.get()) {
       this.breakpointsActiveChanged();
     }
     this.dispatchEventToListeners(Events.DebuggerWasEnabled, this);
@@ -391,12 +397,15 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     );
   }
 
+  private jsSourceMapsStateChanged(): void {
+    this.#sourceMapManager.setEnabled(this.#jsSourceMapsEnabledSetting.get());
+  }
+
   private pauseOnExceptionStateChanged(): void {
-    const settings = this.target().targetManager().settings;
-    const pauseOnCaughtEnabled = settings.resolve(pauseOnCaughtExceptionSettingDescriptor).get();
+    const pauseOnCaughtEnabled = this.#pauseOnCaughtExceptionSetting.get();
     let state: Protocol.Debugger.SetPauseOnExceptionsRequestState;
 
-    const pauseOnUncaughtEnabled = settings.resolve(pauseOnUncaughtExceptionSettingDescriptor).get();
+    const pauseOnUncaughtEnabled = this.#pauseOnUncaughtExceptionSetting.get();
     if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
       state = Protocol.Debugger.SetPauseOnExceptionsRequestState.All;
     } else if (pauseOnCaughtEnabled) {
@@ -411,15 +420,13 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
   private asyncStackTracesStateChanged(): Promise<Protocol.ProtocolResponseWithError> {
     const maxAsyncStackChainDepth = 32;
-    const settings = this.target().targetManager().settings;
-    const enabled = !settings.resolve(disableAsyncStackTracesSettingDescriptor).get() && this.#debuggerEnabled;
+    const enabled = !this.#disableAsyncStackTracesSetting.get() && this.#debuggerEnabled;
     const maxDepth = enabled ? maxAsyncStackChainDepth : 0;
     return this.agent.invoke_setAsyncCallStackDepth({maxDepth});
   }
 
   private breakpointsActiveChanged(): void {
-    const settings = this.target().targetManager().settings;
-    void this.agent.invoke_setBreakpointsActive({active: settings.resolve(breakpointsActiveSettingDescriptor).get()});
+    void this.agent.invoke_setBreakpointsActive({active: this.#breakpointsActiveSetting.get()});
   }
 
   setComputeAutoStepRangesCallback(callback: ((arg0: StepMode, arg1: CallFrame) => Promise<LocationRange[]>)|null):
@@ -908,17 +915,13 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     if (this.#debuggerId) {
       debuggerIdToModel.delete(this.#debuggerId);
     }
-    const settings = this.target().targetManager().settings;
-    settings.resolve(pauseOnExceptionEnabledSettingDescriptor)
-        .removeChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.resolve(pauseOnCaughtExceptionSettingDescriptor)
-        .removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#pauseOnExceptionEnabledSetting.removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#pauseOnCaughtExceptionSetting.removeChangeListener(this.pauseOnExceptionStateChanged, this);
     this.#skipAllPausesSetting.removeChangeListener(this.skipAllPausesChanged, this);
-    settings.resolve(pauseOnUncaughtExceptionSettingDescriptor)
-        .removeChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.resolve(disableAsyncStackTracesSettingDescriptor)
-        .removeChangeListener(this.asyncStackTracesStateChanged, this);
-    settings.resolve(breakpointsActiveSettingDescriptor).removeChangeListener(this.breakpointsActiveChanged, this);
+    this.#pauseOnUncaughtExceptionSetting.removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#disableAsyncStackTracesSetting.removeChangeListener(this.asyncStackTracesStateChanged, this);
+    this.#breakpointsActiveSetting.removeChangeListener(this.breakpointsActiveChanged, this);
+    this.#jsSourceMapsEnabledSetting.removeChangeListener(this.jsSourceMapsStateChanged, this);
   }
 
   override async suspendModel(): Promise<void> {

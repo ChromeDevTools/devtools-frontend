@@ -14,7 +14,11 @@ import {DeferredDOMNode, DOMModel, type DOMNode, DOMNodeEvents, Events as DOMMod
 import {OverlayPersistentHighlighter} from './OverlayPersistentHighlighter.js';
 import type {RemoteObject} from './RemoteObject.js';
 import {SDKModel} from './SDKModel.js';
-import {apcaSettingDescriptor, showMetricsRulersSettingDescriptor} from './SDKSettings.js';
+import {
+  apcaSettingDescriptor,
+  showMetricsRulersSettingDescriptor,
+  showPaintRectsSettingDescriptor,
+} from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 import type {TargetManager} from './TargetManager.js';
 
@@ -127,7 +131,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#defaultHighlighter = new DefaultHighlighter(this);
     this.#highlighter = this.#defaultHighlighter;
 
-    this.#showPaintRectsSetting = settings.moduleSetting<boolean>('show-paint-rects');
+    this.#showPaintRectsSetting = settings.resolve(showPaintRectsSettingDescriptor);
     this.#showLayoutShiftRegionsSetting = settings.moduleSetting<boolean>('show-layout-shift-regions');
     this.#showAdHighlightsSetting = settings.moduleSetting<boolean>('show-ad-highlights');
     this.#showDebugBordersSetting = settings.moduleSetting<boolean>('show-debug-borders');

@@ -23,7 +23,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../entrypoints/main/*",
+    "../../entrypoints/*",
     "../../panels/*",
     "../../testing/*",
     "../components/*",

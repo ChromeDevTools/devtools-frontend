@@ -104,3 +104,10 @@ export const showGridLineLabelsSettingDescriptor: Common.Settings.SettingDescrip
   defaultValue: 'lineNumbers',
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const showPaintRectsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-paint-rects',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

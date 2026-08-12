@@ -4,11 +4,21 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import type * as InspectorMain from './inspector_main.js';
 
 const UIStrings = {
+  /**
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
+   */
+  showPaintFlashingRectangles: 'Show paint flashing rectangles',
+  /**
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
+   */
+  hidePaintFlashingRectangles: 'Hide paint flashing rectangles',
   /**
    * @description Title of the Rendering panel. The Rendering panel is a collection of settings that
    * lets the user debug the rendering (i.e. how the website is drawn onto the screen) of the
@@ -252,4 +262,18 @@ UI.Toolbar.registerToolbarItem({
   }) as () => Promise<UI.Toolbar.Provider>,
   order: 97,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showPaintRectsSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showPaintFlashingRectangles),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.hidePaintFlashingRectangles),
+    },
+  ],
 });

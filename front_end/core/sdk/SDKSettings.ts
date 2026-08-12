@@ -49,3 +49,9 @@ export const javaScriptDisabledSettingDescriptor: Common.Settings.SettingDescrip
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const disableAsyncStackTracesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'disable-async-stack-traces',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};

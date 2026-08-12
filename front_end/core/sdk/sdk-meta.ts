@@ -7,18 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting under the Debugger category in Settings.
-   */
-  disableAsyncStackTraces: 'Disable async stack traces',
-  /**
-   * @description Title of a setting under the Debugger category that can be invoked through the Command Menu.
-   */
-  doNotCaptureAsyncStackTraces: 'Do not capture async stack traces',
-  /**
-   * @description Title of a setting under the Debugger category that can be invoked through the Command Menu.
-   */
-  captureAsyncStackTraces: 'Capture async stack traces',
-  /**
    * @description Text of a setting that turn on the measuring rulers when hover over a target.
    */
   rulersOnHover: 'Rulers on hover',
@@ -446,25 +434,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.DEBUGGER,
-  title: i18nLazyString(UIStrings.disableAsyncStackTraces),
-  settingName: 'disable-async-stack-traces',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-  order: 2,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.doNotCaptureAsyncStackTraces),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.captureAsyncStackTraces),
-    },
-  ],
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.DEBUGGER,

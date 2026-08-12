@@ -16,6 +16,7 @@ import {type EvaluationOptions, type EvaluationResult, type ExecutionContext, Ru
 import {Script} from './Script.js';
 import {SDKModel} from './SDKModel.js';
 import {
+  disableAsyncStackTracesSettingDescriptor,
   jsSourceMapsEnabledSettingDescriptor,
   pauseOnCaughtExceptionSettingDescriptor,
   pauseOnExceptionEnabledSettingDescriptor,
@@ -195,7 +196,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#skipAllPausesSetting.addChangeListener(this.skipAllPausesChanged, this);
     settings.resolve(pauseOnUncaughtExceptionSettingDescriptor)
         .addChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.moduleSetting('disable-async-stack-traces').addChangeListener(this.asyncStackTracesStateChanged, this);
+    settings.resolve(disableAsyncStackTracesSettingDescriptor)
+        .addChangeListener(this.asyncStackTracesStateChanged, this);
     settings.moduleSetting('breakpoints-active').addChangeListener(this.breakpointsActiveChanged, this);
 
     if (!target.suspended()) {
@@ -409,7 +411,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   private asyncStackTracesStateChanged(): Promise<Protocol.ProtocolResponseWithError> {
     const maxAsyncStackChainDepth = 32;
     const settings = this.target().targetManager().settings;
-    const enabled = !settings.moduleSetting('disable-async-stack-traces').get() && this.#debuggerEnabled;
+    const enabled = !settings.resolve(disableAsyncStackTracesSettingDescriptor).get() && this.#debuggerEnabled;
     const maxDepth = enabled ? maxAsyncStackChainDepth : 0;
     return this.agent.invoke_setAsyncCallStackDepth({maxDepth});
   }
@@ -913,7 +915,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#skipAllPausesSetting.removeChangeListener(this.skipAllPausesChanged, this);
     settings.resolve(pauseOnUncaughtExceptionSettingDescriptor)
         .removeChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.moduleSetting('disable-async-stack-traces').removeChangeListener(this.asyncStackTracesStateChanged, this);
+    settings.resolve(disableAsyncStackTracesSettingDescriptor)
+        .removeChangeListener(this.asyncStackTracesStateChanged, this);
   }
 
   override async suspendModel(): Promise<void> {

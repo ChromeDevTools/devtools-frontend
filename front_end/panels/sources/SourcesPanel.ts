@@ -69,42 +69,6 @@ const UIStrings = {
    */
   moreOptions: 'More options',
   /**
-   * @description Tooltip for the navigator toggle in the Sources panel. Command to open or show the
-   * sidebar containing the navigator tool.
-   */
-  showNavigator: 'Show navigator',
-  /**
-   * @description Tooltip for the navigator toggle in the Sources panel. Command to close or hide
-   * the sidebar containing the navigator tool.
-   */
-  hideNavigator: 'Hide navigator',
-  /**
-   * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
-   */
-  navigatorShown: 'Navigator sidebar shown',
-  /**
-   * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
-   */
-  navigatorHidden: 'Navigator sidebar hidden',
-  /**
-   * @description Screen reader announcement when the debugger sidebar is shown in the Sources panel.
-   */
-  debuggerShown: 'Debugger sidebar shown',
-  /**
-   * @description Screen reader announcement when the debugger sidebar is hidden in the Sources panel.
-   */
-  debuggerHidden: 'Debugger sidebar hidden',
-  /**
-   * @description Tooltip for the debugger toggle in the Sources panel. Command to open or show the
-   * sidebar containing the debugger tool.
-   */
-  showDebugger: 'Show debugger',
-  /**
-   * @description Tooltip for the debugger toggle in the Sources panel. Command to close or hide the
-   * sidebar containing the debugger tool.
-   */
-  hideDebugger: 'Hide debugger',
-  /**
    * @description Text in Sources panel.
    */
   groupByFolder: 'Group by folder',
@@ -212,8 +176,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
   editorView: UI.SplitWidget.SplitWidget;
   private navigatorTabbedLocation: UI.View.TabbedViewLocation;
   #sourcesView: SourcesView;
-  private readonly toggleNavigatorSidebarButton: UI.Toolbar.ToolbarButton;
-  private readonly toggleDebuggerSidebarButton: UI.Toolbar.ToolbarButton;
   private threadsSidebarPane: UI.View.View|null;
   private readonly watchSidebarPane: UI.View.View;
   private readonly callstackPane: CallStackSidebarPane;
@@ -300,12 +262,18 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.#sourcesView = new SourcesView();
     this.#sourcesView.addEventListener(Events.EDITOR_SELECTED, this.editorSelected.bind(this));
 
-    this.toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(
-        i18nString(UIStrings.showNavigator), i18nString(UIStrings.hideNavigator), i18nString(UIStrings.navigatorShown),
-        i18nString(UIStrings.navigatorHidden), 'navigator');
-    this.toggleDebuggerSidebarButton = this.splitWidget.createShowHideSidebarButton(
-        i18nString(UIStrings.showDebugger), i18nString(UIStrings.hideDebugger), i18nString(UIStrings.debuggerShown),
-        i18nString(UIStrings.debuggerHidden), 'debugger');
+    this.#sourcesView.onToggleNavigatorSidebar = this.toggleNavigatorSidebar.bind(this);
+    this.#sourcesView.onToggleDebuggerSidebar = this.toggleDebuggerSidebar.bind(this);
+    this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
+    this.#sourcesView.isDebuggerSidebarOpen = this.splitWidget.sidebarIsShowing();
+
+    this.editorView.addEventListener(UI.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
+      this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
+    });
+
+    this.splitWidget.addEventListener(UI.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
+      this.#sourcesView.isDebuggerSidebarOpen = this.splitWidget.sidebarIsShowing();
+    });
     this.editorView.setMainWidget(this.#sourcesView);
 
     this.threadsSidebarPane = null;
@@ -356,28 +324,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   static updateResizerAndSidebarButtons(panel: SourcesPanel): void {
-    const leftItems: UI.Toolbar.ToolbarItem[] = [];
-    const rightItems: UI.Toolbar.ToolbarItem[] = [];
-    panel.#sourcesView.bottomToolbar().removeToolbarItems();
-    const isInWrapper = UI.Context.Context.instance().flavor(QuickSourceView) &&
+    const isInWrapper = Boolean(UI.Context.Context.instance().flavor(QuickSourceView)) &&
         !UI.InspectorView.InspectorView.instance().isDrawerMinimized();
-    if (panel.splitWidget.isVertical() || isInWrapper) {
-      panel.splitWidget.uninstallResizer(panel.#sourcesView.scriptViewToolbar());
-    } else {
-      panel.splitWidget.installResizer(panel.#sourcesView.scriptViewToolbar());
-    }
-    if (!isInWrapper) {
-      leftItems.push(panel.toggleNavigatorSidebarButton);
-      if (!Root.Runtime.Runtime.isTraceApp()) {
-        if (panel.splitWidget.isVertical()) {
-          rightItems.push(panel.toggleDebuggerSidebarButton);
-        } else {
-          panel.#sourcesView.bottomToolbar().appendToolbarItem(panel.toggleDebuggerSidebarButton);
-        }
-      }
-    }
-    panel.#sourcesView.leftToolbarItems = leftItems;
-    panel.#sourcesView.rightToolbarItems = rightItems;
+    panel.#sourcesView.setLayoutMode(panel.splitWidget, panel.splitWidget.isVertical(), isInWrapper);
   }
 
   targetAdded(_target: SDK.Target.Target): void {
@@ -412,7 +361,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     } else {
       this.#paused = false;
       this.clearInterface();
-      this.toggleDebuggerSidebarButton.setEnabled(true);
+      this.#sourcesView.toggleDebuggerSidebarButtonEnabled(true);
     }
   }
 
@@ -516,7 +465,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.#paused = true;
     void this.updateDebuggerButtonsAndStatus();
     UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.DebuggerPausedDetails, details);
-    this.toggleDebuggerSidebarButton.setEnabled(false);
+    this.#sourcesView.toggleDebuggerSidebarButtonEnabled(false);
     this.revealDebuggerSidebar();
     const pausedTarget = details.debuggerModel.target();
     if (this.threadsSidebarPane && this.#lastPausedTarget?.deref() !== pausedTarget &&
@@ -583,7 +532,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     }
     this.#paused = false;
     this.clearInterface();
-    this.toggleDebuggerSidebarButton.setEnabled(true);
+    this.#sourcesView.toggleDebuggerSidebarButtonEnabled(true);
     this.switchToPausedTargetTimeout = window.setTimeout(this.switchToPausedTarget.bind(this, debuggerModel), 500);
   }
 

@@ -6,7 +6,9 @@
 import '../../ui/legacy/legacy.js';
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -28,13 +30,51 @@ import {
 } from './TabbedEditorContainer.js';
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
 
+const UIStrings = {
+  /**
+   * @description Tooltip for the navigator toggle in the Sources panel. Command to open or show the
+   * sidebar containing the navigator tool.
+   */
+  showNavigator: 'Show navigator',
+  /**
+   * @description Tooltip for the navigator toggle in the Sources panel. Command to close or hide
+   * the sidebar containing the navigator tool.
+   */
+  hideNavigator: 'Hide navigator',
+  /**
+   * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
+   */
+  navigatorShown: 'Navigator sidebar shown',
+  /**
+   * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
+   */
+  navigatorHidden: 'Navigator sidebar hidden',
+  /**
+   * @description Screen reader announcement when the debugger sidebar is shown in the Sources panel.
+   */
+  debuggerShown: 'Debugger sidebar shown',
+  /**
+   * @description Screen reader announcement when the debugger sidebar is hidden in the Sources panel.
+   */
+  debuggerHidden: 'Debugger sidebar hidden',
+  /**
+   * @description Tooltip for the debugger toggle in the Sources panel. Command to open or show the
+   * sidebar containing the debugger tool.
+   */
+  showDebugger: 'Show debugger',
+  /**
+   * @description Tooltip for the debugger toggle in the Sources panel. Command to close or hide the
+   * sidebar containing the debugger tool.
+   */
+  hideDebugger: 'Hide debugger',
+} as const;
+const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {widget} = UI.Widget;
 
 export interface ViewInput {
   scriptViewToolbar: UI.Toolbar.Toolbar;
   bottomToolbar: UI.Toolbar.Toolbar;
-  leftToolbarItems: UI.Toolbar.ToolbarItem[];
-  rightToolbarItems: UI.Toolbar.ToolbarItem[];
   searchableView: UI.SearchableView.SearchableView;
   editorContainer: TabbedEditorContainer;
 }
@@ -67,9 +107,17 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   private toolbarChangedListener: Common.EventTarget.EventDescriptor|null;
   private searchView?: UISourceCodeFrame;
   private searchConfig?: UI.SearchableView.SearchConfig;
-  #leftToolbarItems: UI.Toolbar.ToolbarItem[] = [];
-  #rightToolbarItems: UI.Toolbar.ToolbarItem[] = [];
   #view: View = DEFAULT_VIEW;
+
+  #toggleNavigatorSidebarButton: UI.Toolbar.ToolbarButton;
+  #toggleDebuggerSidebarButton: UI.Toolbar.ToolbarButton;
+  #onToggleNavigatorSidebar?: () => void;
+  #onToggleDebuggerSidebar?: () => void;
+  #isNavigatorSidebarOpen = false;
+  #isDebuggerSidebarOpen = false;
+  #navigatorSidebarInitialized = false;
+  #debuggerSidebarInitialized = false;
+  #isVertical = false;
 
   constructor() {
     super({jslog: `${VisualLogging.pane('editor').track({keydown: 'Escape'})}`});
@@ -92,6 +140,22 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
     this.#searchableView = new UI.SearchableView.SearchableView(this, this, 'sources-view-search-config');
     this.#searchableView.setMinimalSearchQuerySize(0);
+
+    this.#toggleNavigatorSidebarButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showNavigator), 'left-panel-open');
+    this.#toggleNavigatorSidebarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
+      this.#onToggleNavigatorSidebar?.();
+    });
+    this.#toggleNavigatorSidebarButton.element.setAttribute(
+        'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('navigator')}`);
+
+    this.#toggleDebuggerSidebarButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showDebugger), 'right-panel-open');
+    this.#toggleDebuggerSidebarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
+      this.#onToggleDebuggerSidebar?.();
+    });
+    this.#toggleDebuggerSidebarButton.element.setAttribute(
+        'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('debugger')}`);
 
     const previouslyViewedFilesSetting =
         Common.Settings.Settings.instance().createLocalSetting('previously-viewed-files', []);
@@ -146,8 +210,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const input: ViewInput = {
       scriptViewToolbar: this.#scriptViewToolbar,
       bottomToolbar: this.#bottomToolbar,
-      leftToolbarItems: this.#leftToolbarItems,
-      rightToolbarItems: this.#rightToolbarItems,
       searchableView: this.#searchableView,
       editorContainer: this.editorContainer as TabbedEditorContainer,
     };
@@ -173,38 +235,97 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     return defaultScores;
   }
 
-  set leftToolbarItems(items: UI.Toolbar.ToolbarItem[]) {
-    this.#leftToolbarItems = items;
-    const container = this.editorContainer;
-    if (container) {
-      container.leftToolbar().removeToolbarItems();
-      items.forEach(item => container.leftToolbar().appendToolbarItem(item));
+  set onToggleNavigatorSidebar(callback: () => void) {
+    this.#onToggleNavigatorSidebar = callback;
+  }
+
+  set onToggleDebuggerSidebar(callback: () => void) {
+    this.#onToggleDebuggerSidebar = callback;
+  }
+
+  set isNavigatorSidebarOpen(isOpen: boolean) {
+    const isInitialized = this.#navigatorSidebarInitialized;
+    this.#navigatorSidebarInitialized = true;
+    if (this.#isNavigatorSidebarOpen === isOpen) {
+      return;
+    }
+    this.#isNavigatorSidebarOpen = isOpen;
+    this.#updateNavigatorSidebarButton();
+    if (isInitialized) {
+      UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.navigatorShown) :
+                                                i18nString(UIStrings.navigatorHidden));
     }
   }
 
-  get leftToolbarItems(): UI.Toolbar.ToolbarItem[] {
-    return this.#leftToolbarItems;
-  }
-
-  set rightToolbarItems(items: UI.Toolbar.ToolbarItem[]) {
-    this.#rightToolbarItems = items;
-    const container = this.editorContainer;
-    if (container) {
-      container.rightToolbar().removeToolbarItems();
-      items.forEach(item => container.rightToolbar().appendToolbarItem(item));
+  set isDebuggerSidebarOpen(isOpen: boolean) {
+    const isInitialized = this.#debuggerSidebarInitialized;
+    this.#debuggerSidebarInitialized = true;
+    if (this.#isDebuggerSidebarOpen === isOpen) {
+      return;
+    }
+    this.#isDebuggerSidebarOpen = isOpen;
+    this.#updateDebuggerSidebarButton();
+    if (isInitialized) {
+      UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.debuggerShown) :
+                                                i18nString(UIStrings.debuggerHidden));
     }
   }
 
-  get rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
-    return this.#rightToolbarItems;
+  #updateNavigatorSidebarButton(): void {
+    const navHidden = !this.#isNavigatorSidebarOpen;
+    this.#toggleNavigatorSidebarButton.setGlyph(navHidden ? 'left-panel-open' : 'left-panel-close');
+    this.#toggleNavigatorSidebarButton.setTitle(navHidden ? i18nString(UIStrings.showNavigator) :
+                                                            i18nString(UIStrings.hideNavigator));
   }
 
-  bottomToolbar(): UI.Toolbar.Toolbar {
-    return this.#bottomToolbar;
+  #updateDebuggerSidebarButton(): void {
+    const debuggerHidden = !this.#isDebuggerSidebarOpen;
+    const debuggerGlyph = debuggerHidden ? (this.#isVertical ? 'right-panel-open' : 'bottom-panel-open') :
+                                           (this.#isVertical ? 'right-panel-close' : 'bottom-panel-close');
+    this.#toggleDebuggerSidebarButton.setGlyph(debuggerGlyph);
+    this.#toggleDebuggerSidebarButton.setTitle(debuggerHidden ? i18nString(UIStrings.showDebugger) :
+                                                                i18nString(UIStrings.hideDebugger));
   }
 
-  scriptViewToolbar(): UI.Toolbar.Toolbar {
-    return this.#scriptViewToolbar;
+  toggleDebuggerSidebarButtonEnabled(enabled: boolean): void {
+    this.#toggleDebuggerSidebarButton.setEnabled(enabled);
+  }
+
+  setLayoutMode(splitWidget: UI.SplitWidget.SplitWidget, isVertical: boolean, isInWrapper: boolean): void {
+    this.#bottomToolbar.removeToolbarItems();
+
+    if (isVertical || isInWrapper) {
+      splitWidget.uninstallResizer(this.#scriptViewToolbar);
+    } else {
+      splitWidget.installResizer(this.#scriptViewToolbar);
+    }
+
+    this.#isVertical = isVertical;
+    this.#updateNavigatorSidebarButton();
+    this.#updateDebuggerSidebarButton();
+
+    const leftItems: UI.Toolbar.ToolbarItem[] = [];
+    const rightItems: UI.Toolbar.ToolbarItem[] = [];
+
+    if (!isInWrapper) {
+      leftItems.push(this.#toggleNavigatorSidebarButton);
+      if (!Root.Runtime.Runtime.isTraceApp()) {
+        if (isVertical) {
+          rightItems.push(this.#toggleDebuggerSidebarButton);
+        } else {
+          this.#bottomToolbar.appendToolbarItem(this.#toggleDebuggerSidebarButton);
+        }
+      }
+    }
+
+    if (this.editorContainer) {
+      const editorContainer = this.editorContainer;
+      editorContainer.leftToolbar().removeToolbarItems();
+      leftItems.forEach(item => editorContainer.leftToolbar().appendToolbarItem(item));
+
+      editorContainer.rightToolbar().removeToolbarItems();
+      rightItems.forEach(item => editorContainer.rightToolbar().appendToolbarItem(item));
+    }
   }
 
   override wasShown(): void {

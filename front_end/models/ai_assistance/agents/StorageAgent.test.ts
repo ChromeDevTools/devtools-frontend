@@ -730,6 +730,23 @@ describe('StorageAgent', function() {
         {storageType: 'session_storage', usage: AiAssistance.UnitFormatters.bytes(12)},
       ],
     });
+
+    assert.deepEqual(actionResponse.widgets, [
+      {
+        name: 'STORAGE_BREAKDOWN',
+        data: {
+          totalUsageBytes: 1000,
+          totalQuotaBytes: 10000,
+          usageBreakdown: [
+            {storageType: 'service_workers', bytes: 800},
+            {storageType: 'indexeddb', bytes: 200},
+            {storageType: 'local_storage', bytes: 20},
+            {storageType: 'cookies', bytes: 15},
+            {storageType: 'session_storage', bytes: 12},
+          ],
+        },
+      },
+    ]);
   });
 
   describe('findFrameForOrigin', () => {

@@ -140,7 +140,24 @@ const UIStrings = {
    * Storage quota refers to the amount of disk available for the website or app.
    */
   simulateCustomStorage: 'Simulate custom storage quota',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  localStorage: 'Local storage',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  sessionStorage: 'Session storage',
 } as const;
+
+export const storagePieColors = new Map<Protocol.Storage.StorageType, string>([
+  [Protocol.Storage.StorageType.Cache_storage, 'rgb(229, 113, 113)'],   // red
+  [Protocol.Storage.StorageType.Cookies, 'rgb(239, 196, 87)'],          // yellow
+  [Protocol.Storage.StorageType.Indexeddb, 'rgb(155, 127, 230)'],       // purple
+  [Protocol.Storage.StorageType.Local_storage, 'rgb(116, 178, 102)'],   // green
+  [Protocol.Storage.StorageType.Service_workers, 'rgb(255, 167, 36)'],  // orange
+]);
+
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -175,13 +192,7 @@ export class StorageView extends UI.Widget.VBox {
 
     this.contentElement.classList.add('clear-storage-container');
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('clear-storage')}`);
-    this.pieColors = new Map([
-      [Protocol.Storage.StorageType.Cache_storage, 'rgb(229, 113, 113)'],   // red
-      [Protocol.Storage.StorageType.Cookies, 'rgb(239, 196, 87)'],          // yellow
-      [Protocol.Storage.StorageType.Indexeddb, 'rgb(155, 127, 230)'],       // purple
-      [Protocol.Storage.StorageType.Local_storage, 'rgb(116, 178, 102)'],   // green
-      [Protocol.Storage.StorageType.Service_workers, 'rgb(255, 167, 36)'],  // orange
-    ]);
+    this.pieColors = storagePieColors;
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.reportView = new UI.ReportView.ReportView(i18nString(UIStrings.storageTitle));
@@ -628,7 +639,7 @@ export class StorageView extends UI.Widget.VBox {
           if (!value) {
             continue;
           }
-          const title = this.getStorageTypeName(usageForType.storageType);
+          const title = StorageView.getStorageTypeName(usageForType.storageType);
           const color = this.pieColors.get(usageForType.storageType) || '#ccc';
           slices.push({value, color, title});
         }
@@ -650,7 +661,7 @@ export class StorageView extends UI.Widget.VBox {
     };
   }
 
-  private getStorageTypeName(type: Protocol.Storage.StorageType): string {
+  static getStorageTypeName(type: Protocol.Storage.StorageType): string {
     switch (type) {
       case Protocol.Storage.StorageType.File_systems:
         return i18nString(UIStrings.fileSystem);
@@ -662,6 +673,30 @@ export class StorageView extends UI.Widget.VBox {
         return i18nString(UIStrings.serviceWorkers);
       default:
         return i18nString(UIStrings.other);
+    }
+  }
+
+  /**
+   * Returns the user-facing title of a storage type for the storage breakdown widget in AI assistance.
+   * This method accepts arbitrary strings to accommodate custom storage types (like session_storage)
+   * that do not exist in the Protocol.Storage.StorageType enum.
+   */
+  static getStorageTypeNameForWidget(type: string): string {
+    switch (type) {
+      case 'session_storage':
+        return i18nString(UIStrings.sessionStorage);
+      case 'local_storage':
+        return i18nString(UIStrings.localStorage);
+      case 'cookies':
+        return i18nString(UIStrings.cookies);
+      case 'indexeddb':
+        return i18nString(UIStrings.indexDB);
+      case 'cache_storage':
+        return i18nString(UIStrings.cacheStorage);
+      case 'service_workers':
+        return i18nString(UIStrings.serviceWorkers);
+      default:
+        return StorageView.getStorageTypeName(type as Protocol.Storage.StorageType);
     }
   }
 }

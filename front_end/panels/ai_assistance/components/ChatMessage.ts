@@ -32,9 +32,11 @@ import type * as MarkdownView from '../../../ui/components/markdown_view/markdow
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
 import * as UIHelpers from '../../../ui/helpers/helpers.js';
+import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as Application from '../../application/application.js';
 import * as Elements from '../../elements/elements.js';
 import * as Lighthouse from '../../lighthouse/lighthouse.js';
 import * as NetworkForward from '../../network/forward/forward.js';
@@ -1015,9 +1017,39 @@ async function resolveNode(backendNodeId: Protocol.DOM.BackendNodeId): Promise<S
   return resolved;
 }
 
-async function makeStorageBreakdownWidget(_widgetData: StorageBreakdownAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeStorageBreakdownWidget(widgetData: StorageBreakdownAiWidget): Promise<WidgetMakerResponse|null> {
+  const breakdown = widgetData.data.usageBreakdown;
+  const total = breakdown.reduce((sum, item) => sum + item.bytes, 0);
+
+  const slices = breakdown.map(item => {
+    const color = Application.StorageView.storagePieColors.get(item.storageType as Protocol.Storage.StorageType) ||
+        'rgb(180, 180, 180)';
+    const title = Application.StorageView.StorageView.getStorageTypeNameForWidget(item.storageType);
+
+    return {
+      value: item.bytes,
+      color,
+      title,
+    };
+  });
+
+  const chartData: PerfUI.PieChart.PieChartData = {
+    chartName: lockedString(UIStringsNotTranslate.storageBreakdown),
+    size: 110,
+    formatter: val => AiAssistanceModel.UnitFormatters.bytes(val),
+    showLegend: true,
+    total,
+    slices,
+  };
+
+  const renderedWidget = html`
+    <div class="storage-breakdown-widget">
+      <devtools-perf-piechart .data=${chartData}></devtools-perf-piechart>
+    </div>
+  `;
+
   return {
-    renderedWidget: html`<div>Storage Breakdown Stub</div>`,
+    renderedWidget,
     title: lockedString(UIStringsNotTranslate.storageBreakdown),
     revealable: null,
     accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealStorageBreakdown),

@@ -34,7 +34,10 @@ const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement
   const title = html`<span>${titleText}</span>`;
   render(html`
     <style>${jsonViewStyles}</style>
-    ${ObjectUI.ObjectPropertiesSection.renderObjectPropertiesSection(input.objectTree, title)}
+    ${UI.Widget.widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
+           objectTree: input.objectTree,
+           title,
+         })}
   `,
          target, {
 

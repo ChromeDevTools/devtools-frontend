@@ -417,6 +417,7 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
   get isWasm(): boolean {
     return isWasmObject(this.object);
   }
+
   get expanded(): boolean {
     return this.#expanded;
   }
@@ -444,6 +445,7 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
   get search(): UI.TreeOutline.TreeSearch<ObjectTreeNodeBase>|undefined {
     return this.options.search;
   }
+
   get includeNullOrUndefinedValues(): boolean {
     return this.filter?.includeNullOrUndefinedValues ?? true;
   }
@@ -1190,6 +1192,174 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   }
 }
 
+export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
+  #root?: ObjectTree;
+  #title?: Element|TemplateResult;
+  #skipProto = false;
+  #linkifier?: Components.Linkifier.Linkifier;
+  #showOverflow = true;
+  #rootContextMenuEnabled = false;
+  readonly #view: ObjectPropertiesSectionView = OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW;
+
+  constructor(element?: HTMLElement, view: ObjectPropertiesSectionView = OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  get root(): SDK.RemoteObject.RemoteObject|undefined {
+    return this.#root?.object;
+  }
+
+  set root(val: SDK.RemoteObject.RemoteObject) {
+    if (val === this.#root?.object) {
+      return;
+    }
+    this.objectTree = new ObjectTree(val, {
+      readOnly: false,
+      propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+    });
+  }
+
+  get objectTree(): ObjectTree|undefined {
+    return this.#root;
+  }
+
+  set objectTree(val: ObjectTree|undefined) {
+    if (val === this.#root) {
+      return;
+    }
+    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.#root = val;
+    this.#root?.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#root?.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.requestUpdate();
+  }
+
+  get title(): Element|TemplateResult|undefined {
+    return this.#title;
+  }
+
+  set title(val: Element|TemplateResult|undefined) {
+    if (val === this.#title) {
+      return;
+    }
+    this.#title = val;
+    this.requestUpdate();
+  }
+
+  get skipProto(): boolean {
+    return this.#skipProto;
+  }
+
+  set skipProto(val: boolean) {
+    if (val === this.#skipProto) {
+      return;
+    }
+    this.#skipProto = val;
+    this.requestUpdate();
+  }
+
+  get linkifier(): Components.Linkifier.Linkifier|undefined {
+    return this.#linkifier;
+  }
+
+  set linkifier(val: Components.Linkifier.Linkifier) {
+    if (val === this.#linkifier) {
+      return;
+    }
+    this.#linkifier = val;
+    this.requestUpdate();
+  }
+
+  get showOverflow(): boolean {
+    return this.#showOverflow;
+  }
+
+  set showOverflow(val: boolean) {
+    if (val === this.#showOverflow) {
+      return;
+    }
+    this.#showOverflow = val;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    if (!this.#root) {
+      return;
+    }
+    this.#view({
+      objectTree: this.#root,
+      title: this.#title,
+      linkifier: this.#linkifier,
+      skipProto: this.#skipProto,
+      showOverflow: this.#showOverflow,
+      onRootContextMenu: this.#rootContextMenuEnabled ? this.onRootContextMenu : undefined,
+      onRootItemContextMenu: this.onRootItemContextMenu,
+    },
+               {}, this.contentElement);
+  }
+
+  override onDetach(): void {
+    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.#root?.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#root?.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+  }
+
+  get rootContextMenuEnabled(): boolean {
+    return this.#rootContextMenuEnabled;
+  }
+
+  set rootContextMenuEnabled(val: boolean) {
+    if (this.#rootContextMenuEnabled === val) {
+      return;
+    }
+    this.#rootContextMenuEnabled = val;
+    this.requestUpdate();
+  }
+
+  private onRootContextMenu = (contextMenu: UI.ContextMenu.ContextMenu): void => {
+    if (!this.#root) {
+      return;
+    }
+    contextMenu.appendApplicableItems(this.#root);
+    if (this.#root.object instanceof SDK.RemoteObject.LocalJSONObject) {
+      contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively),
+                                           this.#root.expandRecursively.bind(this.#root, EXPANDABLE_MAX_DEPTH),
+                                           {jslogContext: 'expand-recursively'});
+      contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren),
+                                           this.#root.collapseRecursively.bind(this.#root),
+                                           {jslogContext: 'collapse-children'});
+    }
+  };
+
+  private onRootItemContextMenu = (contextMenu: UI.ContextMenu.ContextMenu): void => {
+    const root = this.#root;
+    if (!root) {
+      return;
+    }
+    populateObjectTreeContextMenu(
+        contextMenu,
+        root,
+        root.expandRecursively.bind(root, EXPANDABLE_MAX_DEPTH),
+        root.collapseRecursively.bind(root),
+        () => {
+          root.sortPropertiesAlphabetically = !root.sortPropertiesAlphabetically;
+        },
+        () => {
+          root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
+        },
+    );
+  };
+}
+
 /** @constant */
 const ARRAY_LOAD_THRESHOLD = 100;
 
@@ -1317,13 +1487,16 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
   get skipProto(): boolean {
     return this.#skipProto;
   }
+
   set skipProto(val: boolean) {
     this.#skipProto = val;
     this.requestUpdate();
   }
+
   get objectTree(): ObjectTree|undefined {
     return this.#objectTree;
   }
+
   set objectTree(val: ObjectTree) {
     if (val === this.#objectTree) {
       return;
@@ -1335,9 +1508,11 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
     this.#objectTree?.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
     this.requestUpdate();
   }
+
   get linkifier(): Components.Linkifier.Linkifier|undefined {
     return this.#linkifier;
   }
+
   set linkifier(val: Components.Linkifier.Linkifier) {
     if (val === this.#linkifier) {
       return;
@@ -1345,9 +1520,11 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
     this.#linkifier = val;
     this.requestUpdate();
   }
+
   get emptyPlaceholder(): string|undefined {
     return this.#emptyPlaceholder;
   }
+
   set emptyPlaceholder(val: string) {
     if (val === this.#emptyPlaceholder) {
       return;
@@ -1359,6 +1536,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
   get renderAsSubtree(): boolean {
     return this.#renderAsSubtree;
   }
+
   set renderAsSubtree(val: boolean) {
     if (val === this.#renderAsSubtree) {
       return;
@@ -1399,31 +1577,72 @@ export function renderObjectTree(
       widgetRef(ObjectTreeWidget, () => {})}></ul>`;
 }
 
-export function renderObjectPropertiesSection(
-    objectTree: ObjectTree,
-    title: LitTemplate,
-    linkifier?: Components.Linkifier.Linkifier,
-    skipProto = false,
-    showOverflow = true,
-    ): LitTemplate {
-  // clang-format off
-  return html`<devtools-tree
-      class="object-properties-section"
-      ?hide-overflow=${!showOverflow}
-      show-selection-on-keyboard-focus
-      .template=${html`
-    <ul role="tree" class="source-code object-properties-section">
-      <style>${objectValueStyles}</style>
-      <style>${objectPropertiesSectionStyles}</style>
-      <li role="treeitem" class="object-properties-section-root-element" ?open=${objectTree.expanded}>
-        ${title}
-        <ul role="group" ${widget(ObjectTreeWidget, {objectTree, linkifier, skipProto})} ${
-      /* The empty widgetRef forces the widget to be materialized in the template DOM */
-      widgetRef(ObjectTreeWidget, () => {})}></ul>
-      </li>
-    </ul>`}></devtools-tree>`;
-  // clang-format on
+export interface ObjectPropertiesSectionViewInput {
+  objectTree: ObjectTree;
+  title?: Element|TemplateResult;
+  linkifier?: Components.Linkifier.Linkifier;
+  skipProto: boolean;
+  showOverflow: boolean;
+  onRootContextMenu?: (menu: UI.ContextMenu.ContextMenu) => void;
+  onRootItemContextMenu: (menu: UI.ContextMenu.ContextMenu) => void;
 }
+
+export type ObjectPropertiesSectionView =
+    (input: ObjectPropertiesSectionViewInput, output: object, target: HTMLElement) => void;
+
+export const OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: ObjectPropertiesSectionView = (input, _output, target) => {
+  const contextMenuHandler = (event: Event): void => {
+    if (!input.onRootContextMenu) {
+      return;
+    }
+    event.consume(true);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    input.onRootContextMenu(contextMenu);
+    void contextMenu.show();
+  };
+
+  const onRootItemContextMenuHandler = (event: Event): void => {
+    event.consume(true);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    input.onRootItemContextMenu(contextMenu);
+    void contextMenu.show();
+  };
+
+  render(html`
+    <devtools-tree
+        class="object-properties-section"
+        ?hide-overflow=${!input.showOverflow}
+        show-selection-on-keyboard-focus
+        @contextmenu=${input.onRootContextMenu ? contextMenuHandler : undefined}
+        .template=${
+             input.title ?
+                 html`
+      <ul role="tree" class="source-code object-properties-section">
+        <style>${objectValueStyles}</style>
+        <style>${objectPropertiesSectionStyles}</style>
+        <li role="treeitem" class="object-properties-section-root-element" ?open=${
+                     input.objectTree.expanded} @contextmenu=${onRootItemContextMenuHandler}>
+          ${input.title}
+          <ul role="group" ${widget(ObjectTreeWidget, {
+                   objectTree: input.objectTree,
+                   linkifier: input.linkifier,
+                   skipProto: input.skipProto,
+                 })} ${widgetRef(ObjectTreeWidget, () => {})}></ul>
+        </li>
+      </ul>` :
+                 html`
+      <ul role="tree" class="source-code object-properties-section title-less-mode" open ${
+                     widget(ObjectTreeWidget,
+                            {objectTree: input.objectTree, linkifier: input.linkifier, skipProto: input.skipProto})} ${
+                     /* The empty widgetRef forces the widget to be materialized in the template DOM */
+                     widgetRef(ObjectTreeWidget, () => {})}>
+        <style>${objectValueStyles}</style>
+        <style>${objectPropertiesSectionStyles}</style>
+      </ul>`}>
+    </devtools-tree>`,
+         target);
+};
+
 class RootElement extends UI.TreeOutline.TreeElement {
   private readonly object: ObjectTree;
   private readonly linkifier: Components.Linkifier.Linkifier|undefined;
@@ -1630,7 +1849,9 @@ export function defaultObjectPresentation(objectOrTree: SDK.RemoteObject.RemoteO
   if (!object.hasChildren) {
     return title;
   }
-  return renderObjectPropertiesSection(objectTree, title, linkifier, skipProto, !readOnly);
+  return html`${
+      widget(ObjectPropertiesSectionWidget,
+             {objectTree, title, linkifier, skipProto: !!skipProto, showOverflow: !readOnly})}`;
 }
 
 /**
@@ -1792,6 +2013,7 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
   get property(): ObjectTreeNode|undefined {
     return this.#property;
   }
+
   set property(property: ObjectTreeNode) {
     if (this.#property) {
       this.#property.removeEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
@@ -1811,6 +2033,7 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
   get expanded(): boolean {
     return this.#expanded;
   }
+
   set expanded(expanded: boolean) {
     this.#expanded = expanded;
     this.requestUpdate();
@@ -1819,6 +2042,7 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
   get linkifier(): Components.Linkifier.Linkifier|undefined {
     return this.#linkifier;
   }
+
   set linkifier(linkifier: Components.Linkifier.Linkifier|undefined) {
     this.#linkifier = linkifier;
     this.requestUpdate();
@@ -1827,6 +2051,7 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
   get editable(): boolean {
     return this.#editable;
   }
+
   set editable(val: boolean) {
     this.#editable = val;
     this.requestUpdate();
@@ -2118,6 +2343,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   get editable(): boolean {
     return this.#widget.editable;
   }
+
   set editable(val: boolean) {
     this.#widget.editable = val;
   }

@@ -22,6 +22,27 @@ describe('ToolRegistry', () => {
     assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.GET_STYLES);
   });
 
+  it('can retrieve getDetailedCallTree tool by name', () => {
+    const tool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.GET_DETAILED_CALL_TREE);
+    assert.exists(tool);
+    assert.instanceOf(tool, AiAssistance.GetDetailedCallTree.GetDetailedCallTreeTool);
+    assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.GET_DETAILED_CALL_TREE);
+  });
+
+  it('can retrieve getFunctionCode tool by name', () => {
+    const tool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.GET_FUNCTION_CODE);
+    assert.exists(tool);
+    assert.instanceOf(tool, AiAssistance.GetFunctionCode.GetFunctionCodeTool);
+    assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.GET_FUNCTION_CODE);
+  });
+
+  it('can retrieve getResourceContent tool by name', () => {
+    const tool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.GET_RESOURCE_CONTENT);
+    assert.exists(tool);
+    assert.instanceOf(tool, AiAssistance.GetResourceContent.GetResourceContentTool);
+    assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.GET_RESOURCE_CONTENT);
+  });
+
   it('returns undefined for non-existent tools', () => {
     const tool = AiAssistance.ToolRegistry.ToolRegistry.get('nonExistentTool');
     assert.isUndefined(tool);

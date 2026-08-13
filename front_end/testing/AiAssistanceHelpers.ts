@@ -411,6 +411,9 @@ export function makeFakeParsedTrace(options: {
         traceBounds: {min: options.min ?? 0, max: options.max ?? 100},
         mainFrameURL: options.mainFrameURL ?? 'https://example.com',
       },
+      Scripts: {
+        scripts: [],
+      },
     },
   } as unknown as Trace.TraceModel.ParsedTrace;
 }
@@ -420,6 +423,9 @@ export function stubPerformanceTraceFormatter(
     methods: {
       formatMainThreadTrackSummary?: sinon.SinonStub,
       formatNetworkTrackSummary?: sinon.SinonStub,
+      formatCallTree?: sinon.SinonStub,
+      resolveFunctionCodeAtLocation?: sinon.SinonStub,
+      formatFunctionCode?: sinon.SinonStub,
     },
     ): sinon.SinonStub {
   return sinon.stub(traceContext, 'createFormatter')

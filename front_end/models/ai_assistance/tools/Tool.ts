@@ -169,6 +169,9 @@ export const enum ToolName {
   GET_TRACE_MAIN_THREAD_SUMMARY = 'getTraceMainThreadSummary',
   GET_TRACE_NETWORK_SUMMARY = 'getTraceNetworkSummary',
   RUN_LIGHTHOUSE = 'runLighthouse',
+  GET_DETAILED_CALL_TREE = 'getDetailedCallTree',
+  GET_FUNCTION_CODE = 'getFunctionCode',
+  GET_RESOURCE_CONTENT = 'getResourceContent',
 }
 
 /**

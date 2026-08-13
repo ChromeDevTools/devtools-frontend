@@ -3,9 +3,12 @@
 // found in the LICENSE file.
 
 import {ExecuteJavaScriptTool} from './ExecuteJavaScript.js';
+import {GetDetailedCallTreeTool} from './GetDetailedCallTree.js';
 import {GetElementAccessibilityDetailsTool} from './GetElementAccessibilityDetails.js';
+import {GetFunctionCodeTool} from './GetFunctionCode.js';
 import {GetLighthouseAuditsTool} from './GetLighthouseAudits.js';
 import {GetNetworkRequestDetailsTool} from './GetNetworkRequestDetails.js';
+import {GetResourceContentTool} from './GetResourceContent.js';
 import {GetSourceContentTool} from './GetSourceContent.js';
 import {GetStylesTool} from './GetStyles.js';
 import {GetTraceEventByKeyTool} from './GetTraceEventByKey.js';
@@ -45,6 +48,9 @@ export const TOOLS = {
   [ToolName.GET_TRACE_MAIN_THREAD_SUMMARY]: new GetTraceMainThreadSummaryTool(),
   [ToolName.GET_TRACE_NETWORK_SUMMARY]: new GetTraceNetworkSummaryTool(),
   [ToolName.RUN_LIGHTHOUSE]: new RunLighthouseTool(),
+  [ToolName.GET_DETAILED_CALL_TREE]: new GetDetailedCallTreeTool(),
+  [ToolName.GET_FUNCTION_CODE]: new GetFunctionCodeTool(),
+  [ToolName.GET_RESOURCE_CONTENT]: new GetResourceContentTool(),
 };
 
 /**

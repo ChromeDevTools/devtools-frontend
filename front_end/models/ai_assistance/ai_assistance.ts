@@ -40,9 +40,12 @@ import * as AIQueries from './performance/AIQueries.js';
 import * as PerformanceAnnotations from './PerformanceAnnotations.js';
 import * as StorageItem from './StorageItem.js';
 import * as ExecuteJavaScript from './tools/ExecuteJavaScript.js';
+import * as GetDetailedCallTree from './tools/GetDetailedCallTree.js';
 import * as GetElementAccessibilityDetails from './tools/GetElementAccessibilityDetails.js';
+import * as GetFunctionCode from './tools/GetFunctionCode.js';
 import * as GetLighthouseAudits from './tools/GetLighthouseAudits.js';
 import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
+import * as GetResourceContent from './tools/GetResourceContent.js';
 import * as GetSourceContent from './tools/GetSourceContent.js';
 import * as GetStyles from './tools/GetStyles.js';
 import * as GetTraceEventByKey from './tools/GetTraceEventByKey.js';
@@ -83,9 +86,12 @@ export {
   FileAgent,
   FileContext,
   FileFormatter,
+  GetDetailedCallTree,
   GetElementAccessibilityDetails,
+  GetFunctionCode,
   GetLighthouseAudits,
   GetNetworkRequestDetails,
+  GetResourceContent,
   GetSourceContent,
   GetStyles,
   GetTraceEventByKey,

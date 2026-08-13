@@ -10,7 +10,10 @@ import("../visibility.gni")
 devtools_foundation_module("comment_manager") {
   sources = [ "CommentManager.ts" ]
 
-  deps = [ "../../core/common:bundle" ]
+  deps = [
+    "../../core/common:bundle",
+    "../../core/root:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {
@@ -22,6 +25,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/main/*",
     "../../foundation/*",
+    "../../testing/*",
     "../../ui/comments/*",
   ]
 
@@ -36,6 +40,7 @@ devtools_foundation_module("foundation_unittests") {
   deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/root:bundle",
     "../../testing",
   ]
 }

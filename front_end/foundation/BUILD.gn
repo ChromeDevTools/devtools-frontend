@@ -18,6 +18,7 @@ devtools_foundation_module("foundation") {
     "../models/badges:bundle",
     "../models/bindings:bundle",
     "../models/breakpoints:bundle",
+    "../models/comment_manager:bundle",
     "../models/crux-manager:bundle",
     "../models/emulation:bundle",
     "../models/issues_manager:bundle",

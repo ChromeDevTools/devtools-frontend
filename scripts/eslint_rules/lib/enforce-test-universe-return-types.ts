@@ -19,6 +19,7 @@ const ALLOWED_RETURN_TYPES = new Set([
   'Badges.UserBadges',
   'Common.Console.Console',
   'Common.Settings.Settings',
+  'CommentManager.CommentManager.CommentManager',
   'CrUXManager.CrUXManager',
   'Host.AidaClient.HostConfigTracker',
   'Host.GdpClient.GdpClient',

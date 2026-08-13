@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 
 export interface EditorAnchorSignature {
   /** 1-based line number for CodeMirror text editor anchors */
@@ -42,6 +43,10 @@ export interface CommentThread {
   changes?: Array<Record<string, unknown>>;
 }
 
+export interface CommentManagerCreationOptions {
+  forceNew?: boolean|null;
+}
+
 export const enum Events {
   COMMENT_THREADS_CHANGED = 'CommentThreadsChanged',
   COMMENT_MODE_CHANGED = 'CommentModeChanged',
@@ -59,6 +64,22 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
   readonly #commentThreads = new Map<string, CommentThread>();
   #commentMode = false;
   #nextId = 1;
+
+  /**
+   * IMPORTANT: This method MUST only be called in MainImpl. All other components
+   * should receive CommentManager via dependency injection (INJECT or constructor argument).
+   */
+  static instance(opts: CommentManagerCreationOptions = {forceNew: null}): CommentManager {
+    const {forceNew} = opts;
+    if (!Root.DevToolsContext.globalInstance().has(CommentManager) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(CommentManager, new CommentManager());
+    }
+    return Root.DevToolsContext.globalInstance().get(CommentManager);
+  }
+
+  static removeInstance(): void {
+    Root.DevToolsContext.globalInstance().delete(CommentManager);
+  }
 
   setCommentMode(active: boolean): void {
     if (this.#commentMode === active) {

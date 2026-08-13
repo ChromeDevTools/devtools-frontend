@@ -1006,19 +1006,20 @@ let activeOverlayWidget: Comments.CommentsOverlayWidget.CommentsOverlayWidget|nu
 // Temporary for manual testing and experimentation.
 export async function comments(): Promise<Comments.CommentOverlayManager.CommentOverlayManager> {
   const Comments = await import('../../ui/comments/comments.js');
+  const CommentManager = await import('../../models/comment_manager/comment_manager.js');
+  const commentManager = CommentManager.CommentManager.CommentManager.instance();
   if (!activeOverlayManager || !activeOverlayWidget) {
-    activeOverlayManager = new Comments.CommentOverlayManager.CommentOverlayManager();
-    activeOverlayManager.start();
-
+    activeOverlayManager = new Comments.CommentOverlayManager.CommentOverlayManager(commentManager);
     activeOverlayWidget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(activeOverlayManager);
     activeOverlayWidget.markAsRoot();
     activeOverlayWidget.show(document.body);
-    activeOverlayManager.setCommentMode(true);
+    activeOverlayManager.start();
+    commentManager.setCommentMode(true);
     return activeOverlayManager;
   }
 
-  const newMode = !activeOverlayManager.isCommentMode();
-  activeOverlayManager.setCommentMode(newMode);
+  const newMode = !commentManager.isCommentMode();
+  commentManager.setCommentMode(newMode);
   if (newMode) {
     activeOverlayWidget.show(document.body);
   } else {

@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 
 import * as Comments from './comments.js';
@@ -16,7 +17,8 @@ describe('CommentOverlayManager', () => {
   beforeEach(() => {
     container = document.createElement('div');
     renderElementIntoDOM(container);
-    manager = new Comments.CommentOverlayManager.CommentOverlayManager();
+    const commentManager = new CommentManager.CommentManager.CommentManager();
+    manager = new Comments.CommentOverlayManager.CommentOverlayManager(commentManager);
   });
 
   afterEach(() => {

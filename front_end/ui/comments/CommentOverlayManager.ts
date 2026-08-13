@@ -63,8 +63,7 @@ export interface EventTypes {
  * and tracks live DOM element positions via observers and event listeners.
  */
 export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  // Temporary instantiation; will be replaced by INJECT.
-  readonly #commentManager = new CommentManager.CommentManager.CommentManager();
+  readonly #commentManager: CommentManager.CommentManager.CommentManager;
 
   readonly #liveNodeCache = new WeakMap<CommentThread, Element>();
   #observedThreads = new WeakSet<Element>();
@@ -106,8 +105,9 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
   #mutationObserver?: MutationObserver;
   #rematchTimeoutId?: ReturnType<typeof setTimeout>;
 
-  constructor() {
+  constructor(commentManager: CommentManager.CommentManager.CommentManager) {
     super();
+    this.#commentManager = commentManager;
     this.#commentManager.addEventListener(
         CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED,
         () => {

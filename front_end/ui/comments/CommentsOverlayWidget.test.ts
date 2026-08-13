@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -11,19 +12,22 @@ import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Comments from './comments.js';
 
 describeWithEnvironment('CommentsOverlayWidget', () => {
-  let manager: Comments.CommentOverlayManager.CommentOverlayManager;
+  let commentManager: CommentManager.CommentManager.CommentManager;
+  let overlayManager: Comments.CommentOverlayManager.CommentOverlayManager;
 
   beforeEach(() => {
-    manager = new Comments.CommentOverlayManager.CommentOverlayManager();
+    commentManager = new CommentManager.CommentManager.CommentManager();
+    overlayManager = new Comments.CommentOverlayManager.CommentOverlayManager(commentManager);
   });
 
   afterEach(() => {
-    manager.clear();
+    overlayManager.clear();
+    commentManager.clear();
   });
 
   it('renders pins and highlights into DOM via Lit-html view function stub', async () => {
     const view = createViewFunctionStub(Comments.CommentsOverlayWidget.CommentsOverlayWidget);
-    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(manager, undefined, view);
+    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(overlayManager, undefined, view);
 
     widget.markAsRoot();
     renderElementIntoDOM(widget, {allowMultipleChildren: true});
@@ -39,8 +43,8 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     testEl.textContent = 'test content';
     renderElementIntoDOM(testEl, {allowMultipleChildren: true});
 
-    manager.setCommentMode(true);
-    manager.createComment(testEl, 'Widget test comment');
+    commentManager.setCommentMode(true);
+    overlayManager.createComment(testEl, 'Widget test comment');
 
     const updatedInput = await view.nextInput;
     assert.isTrue(updatedInput.commentMode);
@@ -52,7 +56,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
   });
 
   it('renders live DOM elements for pins, anchor highlights, and hover highlights with DEFAULT_VIEW', async () => {
-    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(manager);
+    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(overlayManager);
     widget.markAsRoot();
     renderElementIntoDOM(widget, {allowMultipleChildren: true});
 
@@ -62,8 +66,8 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     testEl.getBoundingClientRect = () => new DOMRect(100, 200, 150, 40);
     renderElementIntoDOM(testEl, {allowMultipleChildren: true});
 
-    manager.setCommentMode(true);
-    const thread = manager.createComment(testEl, 'Live comment');
+    commentManager.setCommentMode(true);
+    const thread = overlayManager.createComment(testEl, 'Live comment');
     assert.isNotNull(thread);
 
     widget.requestUpdate();
@@ -87,7 +91,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
 
   it('does not respond to manager events when hidden/detached', async () => {
     const view = createViewFunctionStub(Comments.CommentsOverlayWidget.CommentsOverlayWidget);
-    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(manager, undefined, view);
+    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(overlayManager, undefined, view);
 
     widget.markAsRoot();
     renderElementIntoDOM(widget, {allowMultipleChildren: true});
@@ -95,7 +99,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
 
     widget.detach();
 
-    manager.setCommentMode(true);
+    commentManager.setCommentMode(true);
     assert.isFalse(view.input.commentMode);
   });
 });

@@ -81,6 +81,7 @@ ts_library("testing") {
     "../models/ai_assistance:bundle",
     "../models/bindings:bundle",
     "../models/breakpoints:bundle",
+    "../models/comment_manager:bundle",
     "../models/cpu_profile:bundle",
     "../models/crux-manager:bundle",
     "../models/extensions:bundle",

@@ -339,7 +339,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   reportingApiTreeElement: ReportingApiTreeElement;
   webMcpTreeElement?: WebMCPTreeElement;
   adsTreeElement?: ApplicationPanelTreeElement;
-  clearStorageTreeElement?: ClearStorageTreeElement;
+  storageTreeElement?: StorageTreeElement;
   deviceBoundSessionsRootTreeElement: DeviceBoundSessionsRootTreeElement|undefined;
   deviceBoundSessionsModel: DeviceBoundSessionsModel|undefined;
   preloadingSummaryTreeElement: PreloadingSummaryTreeElement|undefined;
@@ -379,8 +379,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     manifestTreeElement.generateChildren();
     this.serviceWorkersTreeElement = new ServiceWorkersTreeElement(panel);
     this.applicationTreeElement.appendChild(this.serviceWorkersTreeElement);
-    this.clearStorageTreeElement = new ClearStorageTreeElement(panel);
-    this.applicationTreeElement.appendChild(this.clearStorageTreeElement);
+    this.storageTreeElement = new StorageTreeElement(panel);
+    this.applicationTreeElement.appendChild(this.storageTreeElement);
     if (Root.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
       this.webMcpTreeElement = new WebMCPTreeElement(panel);
       this.applicationTreeElement.appendChild(this.webMcpTreeElement);
@@ -940,7 +940,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
   // Selects the Storage tree element in the sidebar (which opens the StorageView component for the main Storage tab).
   showStorage(): void {
-    this.clearStorageTreeElement?.select();
+    this.storageTreeElement?.select();
   }
 
   private onmousemove(event: MouseEvent): void {
@@ -1146,7 +1146,7 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
   }
 }
 
-export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
+export class StorageTreeElement extends ApplicationPanelTreeElement {
   private view?: StorageView;
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18nString(UIStrings.storage), false, 'storage');
@@ -1155,7 +1155,7 @@ export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
   }
 
   override get itemURL(): Platform.DevToolsPath.UrlString {
-    return 'clear-storage://' as Platform.DevToolsPath.UrlString;
+    return 'storage://' as Platform.DevToolsPath.UrlString;
   }
 
   override onselect(selectedByUser?: boolean): boolean {

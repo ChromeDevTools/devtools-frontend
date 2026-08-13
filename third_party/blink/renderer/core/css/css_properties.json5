@@ -2914,6 +2914,7 @@
       valid_for_permission_element: true,
       invalidate: ["paint", "visual-overflow"],
       includes_currentcolor: true,
+      affected_by_zoom: true,
     },
     {
       name: "box-sizing",
@@ -5031,6 +5032,17 @@
       runtime_flag: "OverscrollGestures",
     },
     {
+      name: "-internal-unbounded",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      field_group: "*",
+      field_template: "keyword",
+      keywords: ["none", "active"],
+      typedom_types: ["Keyword"],
+      default_value: "none",
+      runtime_flag: "UnboundedElement",
+      invalidate: ["layout", "paint"],
+    },
+    {
       name: "padding-bottom",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       interpolable: true,
@@ -5203,6 +5215,7 @@
       keywords: ["none"],
       typedom_types: ["Keyword", "Length"],
       invalidate: ["transform-other"],
+      affected_by_zoom: true,
     },
     {
       name: "perspective-origin",
@@ -6365,6 +6378,7 @@
       valid_for_page_context: true,
       invalidate: ["text-decoration"],
       percentages_depend_on_used_value: false,
+      affected_by_zoom: true,
     },
     {
       name: "text-indent",
@@ -6679,6 +6693,7 @@
       invalidate: ["has-transform", "transform-data", "transform-other"],
       percentages_depend_on_used_value: true,
       keywords: ["none"],
+      affected_by_zoom: true,
     },
     {
       name: "rotate",
@@ -6753,6 +6768,7 @@
       valid_for_permission_element: true,
       stored_on_extra_field: ["VerticalAlign", "VerticalAlignLength"],
       percentages_depend_on_used_value: false,
+      affected_by_zoom: true,
     },
     {
       name: "view-timeline-axis",
@@ -7377,7 +7393,7 @@
       include_paths: ["third_party/blink/renderer/core/style/gap_data_list.h"],
       type_name: "GapDataList<int>",
       computed_style_custom_functions: ["initial", "setter"],
-      style_builder_custom_functions: ["inherit"],
+      style_builder_custom_functions: ["initial", "inherit"],
       converter: "ConvertGapDecorationWidthDataList",
       keywords: ["thin", "medium", "thick"],
       typedom_types: ["Keyword", "Length"],
@@ -7394,10 +7410,12 @@
       include_paths: ["third_party/blink/renderer/core/style/gap_data_list.h"],
       type_name: "GapDataList<int>",
       computed_style_custom_functions: ["initial", "setter"],
+      style_builder_custom_functions: ["initial", "inherit"],
       converter: "ConvertGapDecorationWidthDataList",
       keywords: ["thin", "medium", "thick"],
       typedom_types: ["Keyword", "Length"],
       invalidate: ["paint"],
+      affected_by_zoom: true,
       runtime_flag: "CSSGapDecoration",
     },
     {
@@ -8446,6 +8464,7 @@
       valid_for_permission_element: true,
       valid_for_page_context: true,
       keywords: ["medium", "thick", "thin"],
+      typedom_types: ["Keyword", "Length"],
     },
     {
       name: "border-inline-start-style",
@@ -8458,6 +8477,7 @@
       valid_for_page_context: true,
       keywords: ["none", "hidden", "inset", "groove", "outset", "ridge",
                 "dotted", "dashed", "solid", "double"],
+      typedom_types: ["Keyword"],
     },
     {
       name: "border-inline-start-color",
@@ -8469,6 +8489,8 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["currentcolor"],
+      typedom_types: ["Keyword"],
     },
     {
       name: "border-inline-end-width",
@@ -8481,6 +8503,7 @@
       valid_for_permission_element: true,
       valid_for_page_context: true,
       keywords: ["medium", "thick", "thin"],
+      typedom_types: ["Keyword", "Length"],
     },
     {
       name: "border-inline-end-style",
@@ -8493,6 +8516,7 @@
       valid_for_page_context: true,
       keywords: ["none", "hidden", "inset", "groove", "outset", "ridge",
                 "dotted", "dashed", "solid", "double"],
+      typedom_types: ["Keyword"],
     },
     {
       name: "border-inline-end-color",
@@ -8504,6 +8528,8 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["currentcolor"],
+      typedom_types: ["Keyword"],
     },
     {
       name: "border-block-start-width",
@@ -8516,6 +8542,7 @@
       valid_for_permission_element: true,
       valid_for_page_context: true,
       keywords: ["medium", "thick", "thin"],
+      typedom_types: ["Keyword", "Length"],
     },
     {
       name: "border-block-start-style",
@@ -8528,6 +8555,7 @@
       valid_for_page_context: true,
       keywords: ["none", "hidden", "inset", "groove", "outset", "ridge",
                 "dotted", "dashed", "solid", "double"],
+      typedom_types: ["Keyword"],
     },
     {
       name: "border-block-start-color",
@@ -8539,6 +8567,8 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["currentcolor"],
+      typedom_types: ["Keyword"],
     },
     {
       name: "border-block-end-width",
@@ -8551,6 +8581,7 @@
       valid_for_permission_element: true,
       valid_for_page_context: true,
       keywords: ["medium", "thick", "thin"],
+      typedom_types: ["Keyword", "Length"],
     },
     {
       name: "border-block-end-style",
@@ -8563,6 +8594,7 @@
       valid_for_page_context: true,
       keywords: ["none", "hidden", "inset", "groove", "outset", "ridge",
                 "dotted", "dashed", "solid", "double"],
+      typedom_types: ["Keyword"],
     },
     {
       name: "border-block-end-color",
@@ -8574,6 +8606,8 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["currentcolor"],
+      typedom_types: ["Keyword"],
     },
     {
       name: "inset-inline-start",

@@ -1190,6 +1190,9 @@ export namespace Audits {
     InvalidAllowlistItemType = 'InvalidAllowlistItemType',
     ReportingEndpointNotToken = 'ReportingEndpointNotToken',
     InvalidUrlPattern = 'InvalidUrlPattern',
+    IFrameAttributeLoosensEmbeddingRequirement = 'IFrameAttributeLoosensEmbeddingRequirement',
+    InvalidAllowConnectionAllowlistFrom = 'InvalidAllowConnectionAllowlistFrom',
+    EmbeddingRequirementNotSatisfied = 'EmbeddingRequirementNotSatisfied',
   }
 
   /**
@@ -7381,6 +7384,10 @@ export namespace Emulation {
     insets: SafeAreaInsets;
   }
 
+  export interface SetVirtualKeyboardGeometryOverrideRequest {
+    keyboardRect?: DOM.Rect;
+  }
+
   export const enum SetDeviceMetricsOverrideRequestScrollbarType {
     Overlay = 'overlay',
     Default = 'default',
@@ -11521,16 +11528,6 @@ export namespace Network {
     errors?: SignedExchangeError[];
   }
 
-  /**
-   * List of content encodings supported by the backend.
-   */
-  export const enum ContentEncoding {
-    Deflate = 'deflate',
-    Gzip = 'gzip',
-    Br = 'br',
-    Zstd = 'zstd',
-  }
-
   export interface NetworkConditions {
     /**
      * Only matching requests will be affected by these conditions. Patterns use the URLPattern constructor string
@@ -12230,13 +12227,6 @@ export namespace Network {
   export interface LoadNetworkResourceOptions {
     disableCache: boolean;
     includeCredentials: boolean;
-  }
-
-  export interface SetAcceptedEncodingsRequest {
-    /**
-     * List of accepted content encodings.
-     */
-    encodings: ContentEncoding[];
   }
 
   export interface CanClearBrowserCacheResponse extends ProtocolResponseWithError {
@@ -14610,7 +14600,6 @@ export namespace Page {
     OtpCredentials = 'otp-credentials',
     Payment = 'payment',
     PictureInPicture = 'picture-in-picture',
-    PrivateAggregation = 'private-aggregation',
     PrivateStateTokenIssuance = 'private-state-token-issuance',
     PrivateStateTokenRedemption = 'private-state-token-redemption',
     PublickeyCredentialsCreate = 'publickey-credentials-create',
@@ -15502,6 +15491,7 @@ export namespace Page {
     EmbedderExtensionMessagingForOpenPort = 'EmbedderExtensionMessagingForOpenPort',
     EmbedderExtensionSentMessageToCachedFrame = 'EmbedderExtensionSentMessageToCachedFrame',
     EmbedderExtensionFrame = 'EmbedderExtensionFrame',
+    EmbedderPrivilegedWebContents = 'EmbedderPrivilegedWebContents',
     RequestedByWebViewClient = 'RequestedByWebViewClient',
     PostMessageByWebViewClient = 'PostMessageByWebViewClient',
     CacheControlNoStoreDeviceBoundSessionTerminated = 'CacheControlNoStoreDeviceBoundSessionTerminated',

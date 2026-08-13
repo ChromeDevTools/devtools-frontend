@@ -8,7 +8,7 @@ import sinon from 'sinon';
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as AiAssistance from './ai_assistance.js';
 import type {Skill, SkillName} from './skills/Skill.js';
@@ -454,5 +454,128 @@ describeWithEnvironment('AiAgent2', () => {
     assert.exists(thirdLearnSkills);
     assert.isFalse(thirdLearnSkills?.description.includes('styling'));
     assert.isFalse(thirdLearnSkills?.description.includes('network'));
+  });
+
+  it('falls back to document body for getExecutionContextNode when context is not DOMNodeContext', async () => {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    const mockBodyNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    mockDocument.body = mockBodyNode;
+    sinon.stub(domModel, 'existingDocument').returns(mockDocument);
+
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+      }],
+      [{
+        explanation: '',
+        functionCalls: [{name: 'executeJavaScript', args: {action: 'console.log(1)'}}],
+      }],
+      [{
+        explanation: 'Done',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+
+    const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
+    assert.exists(executeJsTool);
+    const handlerStub = sinon.stub(executeJsTool, 'handler').resolves({result: 'mocked result'});
+
+    await Array.fromAsync(agent.run('question', {selected: null}));
+
+    sinon.assert.calledOnce(handlerStub);
+    const [, context] = handlerStub.getCall(0).args;
+    assert.strictEqual(context.getExecutionContextNode(), mockBodyNode);
+  });
+
+  it('pushes body node to frontend during preRun when body is missing', async () => {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    mockDocument.body = null;
+    sinon.stub(domModel, 'existingDocument').returns(mockDocument);
+    const pushStub = sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(null);
+
+    const aidaClient = mockAidaClient([[{explanation: 'Done'}]]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+
+    await Array.fromAsync(agent.run('question', {selected: null}));
+
+    sinon.assert.calledOnceWithExactly(pushStub, '1,HTML,1,BODY');
+  });
+
+  it('returns null for getExecutionContextNode when body is absent and does not return document', async () => {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    mockDocument.body = null;
+    sinon.stub(domModel, 'existingDocument').returns(mockDocument);
+
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+      }],
+      [{
+        explanation: '',
+        functionCalls: [{name: 'executeJavaScript', args: {action: 'console.log(1)'}}],
+      }],
+      [{
+        explanation: 'Done',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+
+    const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
+    assert.exists(executeJsTool);
+    const handlerStub = sinon.stub(executeJsTool, 'handler').resolves({result: 'mocked result'});
+
+    await Array.fromAsync(agent.run('question', {selected: null}));
+
+    sinon.assert.calledOnce(handlerStub);
+    const [, context] = handlerStub.getCall(0).args;
+    assert.isNull(context.getExecutionContextNode());
+  });
+
+  it('creates ExtensionScope using document body when context is not DOMNodeContext', async () => {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    const mockBodyNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    mockBodyNode.domModel.returns(domModel);
+    mockDocument.body = mockBodyNode;
+    sinon.stub(domModel, 'existingDocument').returns(mockDocument);
+
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+      }],
+      [{
+        explanation: '',
+        functionCalls: [{name: 'executeJavaScript', args: {action: 'console.log(1)'}}],
+      }],
+      [{
+        explanation: 'Done',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+
+    const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
+    assert.exists(executeJsTool);
+    const handlerStub = sinon.stub(executeJsTool, 'handler').resolves({result: 'mocked result'});
+
+    await Array.fromAsync(agent.run('question', {selected: null}));
+
+    sinon.assert.calledOnce(handlerStub);
+    const [, context] = handlerStub.getCall(0).args;
+    const scope = context.createExtensionScope(new AiAssistance.ChangeManager.ChangeManager());
+    assert.exists(scope);
   });
 });

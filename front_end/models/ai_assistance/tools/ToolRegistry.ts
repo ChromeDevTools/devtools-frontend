@@ -16,6 +16,7 @@ import {ListPageOriginsTool} from './ListPageOrigins.js';
 import {ListSourcesTool} from './ListSources.js';
 import {RecordPerformanceTraceTool} from './RecordPerformanceTrace.js';
 import {ResolveDevtoolsNodePathTool} from './ResolveDevtoolsNodePath.js';
+import {RunLighthouseTool} from './RunLighthouse.js';
 import {SelectTraceEventByKeyTool} from './SelectTraceEventByKey.js';
 import {type AllToolsCapabilities, type Tool, type ToolArgs, ToolName} from './Tool.js';
 
@@ -43,6 +44,7 @@ export const TOOLS = {
   [ToolName.GET_SOURCE_CONTENT]: new GetSourceContentTool(),
   [ToolName.GET_TRACE_MAIN_THREAD_SUMMARY]: new GetTraceMainThreadSummaryTool(),
   [ToolName.GET_TRACE_NETWORK_SUMMARY]: new GetTraceNetworkSummaryTool(),
+  [ToolName.RUN_LIGHTHOUSE]: new RunLighthouseTool(),
 };
 
 /**

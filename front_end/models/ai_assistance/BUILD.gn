@@ -64,6 +64,7 @@ devtools_module("ai_assistance") {
     "tools/ListSources.ts",
     "tools/RecordPerformanceTrace.ts",
     "tools/ResolveDevtoolsNodePath.ts",
+    "tools/RunLighthouse.ts",
     "tools/SelectTraceEventByKey.ts",
     "tools/Tool.ts",
     "tools/ToolRegistry.ts",
@@ -173,6 +174,7 @@ ts_library("unittests") {
     "tools/ListSources.test.ts",
     "tools/RecordPerformanceTrace.test.ts",
     "tools/ResolveDevtoolsNodePath.test.ts",
+    "tools/RunLighthouse.test.ts",
     "tools/SelectTraceEventByKey.test.ts",
     "tools/ToolRegistry.test.ts",
   ]

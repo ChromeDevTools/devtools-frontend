@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a Rendering setting that can be invoked through the Command Menu.
-   */
-  emulateAFocusedPage: 'Emulate a focused page',
-  /**
-   * @description Title of a Rendering setting that can be invoked through the Command Menu.
-   */
-  doNotEmulateAFocusedPage: 'Do not emulate a focused page',
-  /**
    * @description Title of a setting under the Rendering category that can be invoked through the Command Menu.
    */
   doNotEmulateCssMediaType: 'Do not emulate CSS media type',
@@ -322,25 +314,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  title: i18nLazyString(UIStrings.emulateAFocusedPage),
-  settingName: 'emulate-page-focus',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.LOCAL,
-  defaultValue: false,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.emulateAFocusedPage),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.doNotEmulateAFocusedPage),
-    },
-  ],
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

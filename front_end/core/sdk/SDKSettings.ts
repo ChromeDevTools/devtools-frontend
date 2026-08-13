@@ -146,3 +146,10 @@ export const showScrollBottleneckRectsSettingDescriptor: Common.Settings.Setting
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const emulatePageFocusSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'emulate-page-focus',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.LOCAL,
+};

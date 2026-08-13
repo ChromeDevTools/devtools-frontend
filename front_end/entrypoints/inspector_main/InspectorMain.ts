@@ -254,7 +254,8 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
     this.#adBlockEnabledSetting = Common.Settings.Settings.instance().moduleSetting('network.ad-blocking-enabled');
     this.#adBlockEnabledSetting.addChangeListener(this.#update, this);
 
-    this.#emulatePageFocusSetting = Common.Settings.Settings.instance().moduleSetting('emulate-page-focus');
+    this.#emulatePageFocusSetting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatePageFocusSettingDescriptor);
     this.#emulatePageFocusSetting.addChangeListener(this.#update, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TARGET_INFO_CHANGED,

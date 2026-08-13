@@ -60,6 +60,14 @@ const UIStrings = {
    */
   hideScrollPerformanceBottlenecks: 'Hide scroll performance bottlenecks',
   /**
+   * @description Title of a Rendering setting that can be invoked through the Command Menu.
+   */
+  emulateAFocusedPage: 'Emulate a focused page',
+  /**
+   * @description Title of a Rendering setting that can be invoked through the Command Menu.
+   */
+  doNotEmulateAFocusedPage: 'Do not emulate a focused page',
+  /**
    * @description Title of the Rendering panel. The Rendering panel is a collection of settings that
    * lets the user debug the rendering (i.e. how the website is drawn onto the screen) of the
    * website (https://developer.chrome.com/docs/devtools/evaluate-performance/reference#rendering).
@@ -384,6 +392,21 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showScrollBottleneckRe
     {
       value: false,
       title: i18nLazyString(UIStrings.hideScrollPerformanceBottlenecks),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatePageFocusSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  title: i18nLazyString(UIStrings.emulateAFocusedPage),
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.emulateAFocusedPage),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotEmulateAFocusedPage),
     },
   ],
 });

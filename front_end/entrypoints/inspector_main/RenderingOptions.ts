@@ -227,10 +227,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     this.#appendCheckbox(
         i18nString(UIStrings.disableLocalFonts), i18nString(UIStrings.disablesLocalSourcesInFontface),
         Common.Settings.Settings.instance().moduleSetting('local-fonts-disabled'));
-    this.#appendCheckbox(
-        i18nString(UIStrings.emulateAFocusedPage), i18nString(UIStrings.emulatesAFocusedPage),
-        Common.Settings.Settings.instance().moduleSetting('emulate-page-focus'),
-        {toggle: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromRenderingTab});
+    this.#appendCheckbox(i18nString(UIStrings.emulateAFocusedPage), i18nString(UIStrings.emulatesAFocusedPage),
+                         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatePageFocusSettingDescriptor),
+                         {toggle: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromRenderingTab});
     const autoDarkModeSetting = Common.Settings.Settings.instance().moduleSetting('emulate-auto-dark-mode');
     this.#appendCheckbox(i18nString(UIStrings.emulateAutoDarkMode), i18nString(UIStrings.emulatesAutoDarkMode),
                          autoDarkModeSetting);

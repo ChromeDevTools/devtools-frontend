@@ -11,30 +11,6 @@ const UIStrings = {
    */
   noEmulation: 'No emulation',
   /**
-   * @description Text for the CPU Pressure type to simulate on a device.
-   */
-  cpuPressure: 'CPU Pressure',
-  /**
-   * @description Title of an option in Sensors tab cpu pressure emulation drop-down. Turns off emulation of cpu pressure state.
-   */
-  noPressureEmulation: 'No override',
-  /**
-   * @description An option that appears in a drop-down that represents the nominal state.
-   */
-  nominal: 'Nominal',
-  /**
-   * @description An option that appears in a drop-down that represents the fair state.
-   */
-  fair: 'Fair',
-  /**
-   * @description An option that appears in a drop-down that represents the serious state.
-   */
-  serious: 'Serious',
-  /**
-   * @description An option that appears in a drop-down that represents the critical state.
-   */
-  critical: 'Critical',
-  /**
    * @description Text for the touch type to simulate on a device. Refers to touch input as opposed to
    * mouse input.
    */
@@ -290,41 +266,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  title: i18nLazyString(UIStrings.cpuPressure),
-  reloadRequired: true,
-  settingName: 'emulation.cpu-pressure',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'none',
-  options: [
-    {
-      value: 'none',
-      title: i18nLazyString(UIStrings.noPressureEmulation),
-      text: i18nLazyString(UIStrings.noPressureEmulation),
-    },
-    {
-      value: 'nominal',
-      title: i18nLazyString(UIStrings.nominal),
-      text: i18nLazyString(UIStrings.nominal),
-    },
-    {
-      value: 'fair',
-      title: i18nLazyString(UIStrings.fair),
-      text: i18nLazyString(UIStrings.fair),
-    },
-    {
-      value: 'serious',
-      title: i18nLazyString(UIStrings.serious),
-      text: i18nLazyString(UIStrings.serious),
-    },
-    {
-      value: 'critical',
-      title: i18nLazyString(UIStrings.critical),
-      text: i18nLazyString(UIStrings.critical),
-    },
-  ],
-});
 
 Common.Settings.registerSettingExtension({
   title: i18nLazyString(UIStrings.touch),

@@ -9,7 +9,11 @@ import {CSSModel} from './CSSModel.js';
 import type {MultitargetNetworkManager} from './NetworkManager.js';
 import {Events, OverlayModel} from './OverlayModel.js';
 import {SDKModel} from './SDKModel.js';
-import {emulatedCSSMediaSettingDescriptor, javaScriptDisabledSettingDescriptor} from './SDKSettings.js';
+import {
+  cpuPressureSettingDescriptor,
+  emulatedCSSMediaSettingDescriptor,
+  javaScriptDisabledSettingDescriptor,
+} from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 
 export const enum DataSaverOverride {
@@ -83,7 +87,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
       await this.setIdleOverride(emulationParams);
     });
 
-    const cpuPressureDetectionSetting = settings.moduleSetting('emulation.cpu-pressure');
+    const cpuPressureDetectionSetting = settings.resolve(cpuPressureSettingDescriptor);
     cpuPressureDetectionSetting.addChangeListener(async () => {
       const settingValue = cpuPressureDetectionSetting.get();
 

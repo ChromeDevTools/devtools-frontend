@@ -160,3 +160,9 @@ export const emulatedCSSMediaSettingDescriptor: Common.Settings.SettingDescripto
   defaultValue: '',
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const cpuPressureSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'emulation.cpu-pressure',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'none',
+};

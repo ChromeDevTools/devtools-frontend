@@ -726,7 +726,7 @@ export class SensorsView extends UI.Widget.VBox {
   private createPressureSection(): void {
     const container = this.contentElement.createChild('div', 'pressure-section');
     const control = SettingsUI.SettingsUI.createControlForSetting(
-        Common.Settings.Settings.instance().moduleSetting('emulation.cpu-pressure'),
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPressureSettingDescriptor),
         i18nString(UIStrings.forcesSelectedPressureStateEmulation));
 
     if (control) {

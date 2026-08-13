@@ -32,6 +32,7 @@ import {
   type ViewFunctionStub,
 } from '../../../testing/ViewFunctionHelpers.js';
 import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
+import * as Lighthouse from '../../lighthouse/lighthouse.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 describeWithEnvironment('ChatMessage', () => {
@@ -1911,6 +1912,80 @@ describeWithEnvironment('ChatMessage', () => {
           errorP?.textContent,
           'The request payload is too large. Please try a smaller image or a screenshot.',
       );
+    });
+
+    it('renders LIGHTHOUSE_REPORT widget as revealer-only for snapshot reports without score gauges', async () => {
+      const mockReport = {
+        lighthouseVersion: '12.0.0',
+        fetchTime: '2026-08-13T09:00:00.000Z',
+        configSettings: {
+          gatherMode: 'snapshot',
+        },
+      } as unknown as Lighthouse.LighthousePanel.ActiveLighthouseReport['report'];
+
+      const message: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [
+          {
+            type: 'widget',
+            widgets: [
+              {
+                name: 'LIGHTHOUSE_REPORT',
+                data: {
+                  report: mockReport,
+                  snapshotReport: true,
+                },
+              },
+            ],
+          },
+        ],
+        rpcId: 99,
+        id: '1',
+      };
+
+      const targetElement = renderView({message});
+      const revealerContainer =
+          await waitFor<HTMLElement>('.widget-and-revealer-container.revealer-only', targetElement);
+      assert.isNotNull(revealerContainer);
+
+      const revealBtn = querySelectorErrorOnMissing(
+                            revealerContainer,
+                            'devtools-button.widget-reveal-button',
+                            ) as HTMLElement;
+      assert.strictEqual(revealBtn.textContent?.trim(), 'Reveal Lighthouse report');
+      assert.strictEqual(revealBtn.getAttribute('accessiblelabel'), 'Reveal Lighthouse report');
+
+      const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+      revealBtn.click();
+      sinon.assert.calledOnce(revealStub);
+      const [revealedObject] = revealStub.getCall(0).args;
+      assert.instanceOf(revealedObject, Lighthouse.LighthousePanel.ActiveLighthouseReport);
+      assert.strictEqual((revealedObject as Lighthouse.LighthousePanel.ActiveLighthouseReport).report, mockReport);
+      revealStub.restore();
+    });
+
+    it('does not render empty step-widgets-wrapper when step widgets return nothing', async () => {
+      const message: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [
+          {
+            type: 'step',
+            step: {
+              title: 'Investigating',
+              state: {type: 'completed'},
+              output: 'result',
+              widgets: [],
+            },
+          },
+        ],
+        rpcId: 99,
+        id: '1',
+      };
+
+      const targetElement = renderView({message});
+      await new Promise(resolve => setTimeout(resolve, 0));
+      const wrapper = targetElement.querySelector('.step-widgets-wrapper');
+      assert.isNull(wrapper);
     });
   });
 });

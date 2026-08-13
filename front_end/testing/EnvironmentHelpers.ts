@@ -247,13 +247,14 @@ export function updateHostConfig(config: Root.Runtime.HostConfig) {
   Object.assign(Root.Runtime.hostConfig, config);
 }
 
-export async function waitFor(selector: string, root?: Element|ShadowRoot): Promise<Element|null> {
+export async function waitFor<T extends Element = Element>(selector: string,
+                                                           root?: Element|ShadowRoot): Promise<T|null> {
   let element = null;
   let polls = 0;
   // Poll for element until found
   while (!element) {
     assert.isBelow(polls, 200, `Element with selector ${selector} was not found.`);
-    element = root ? root.querySelector(selector) : document.querySelector(selector);
+    element = root ? root.querySelector<T>(selector) : document.querySelector<T>(selector);
     await new Promise(resolve => setTimeout(resolve, 10));
     polls++;
   }

@@ -321,6 +321,20 @@ describeWithEnvironment('NetworkLogView', () => {
     );
   });
 
+  it('generates a valid curl command when header values contain dollar, parentheses and backtick', async () => {
+    const request = createNetworkRequest(urlString`http://localhost`, {
+      requestHeaders: [{name: 'cookie', value: 'query=$(calc)`whoami`'}],
+    });
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
+        'curl --url \'http://localhost\' -b \'query=$(calc)`whoami`\'',
+    );
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+        'curl --url ^"http://localhost^" -b ^"query=^$^(calc^)^`whoami^`^"',
+    );
+  });
+
   it('generates a valid curl command for a POST request with data', async () => {
     const request = createNetworkRequest(urlString`http://localhost`, {});
     request.requestMethod = 'POST';

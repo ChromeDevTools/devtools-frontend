@@ -67,10 +67,14 @@ describeWithEnvironment('DeviceModeView', () => {
       assert.isTrue(model.isDeviceModeOn());
       assert.isTrue(action.toggled());
 
+      model.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+      assert.strictEqual(model.type(), EmulationModel.DeviceModeModel.Type.Responsive);
+
       model.enabledSetting().set(false);
       await wrapper.updateComplete;
       assert.isFalse(model.isDeviceModeOn());
       assert.isFalse(action.toggled());
+      assert.strictEqual(model.type(), EmulationModel.DeviceModeModel.Type.None);
     });
 
     it('renders the view', async () => {

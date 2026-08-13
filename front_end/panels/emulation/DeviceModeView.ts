@@ -287,13 +287,21 @@ export class DeviceModeView extends UI.Widget.VBox {
     const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
     this.#showDeviceModeSetting = model.enabledSetting();
     this.#showDeviceModeSetting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam('hasOtherClients')));
-    this.#showDeviceModeSetting.addChangeListener(this.requestUpdate.bind(this));
+    this.#showDeviceModeSetting.addChangeListener(this.#showDeviceModeChanged, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel,
                                                                 SDK.OverlayModel.Events.SCREENSHOT_REQUESTED,
                                                                 this.screenshotRequestedFromOverlay, this);
 
     this.performUpdate();
     UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZOOM_CHANGED, this.zoomChanged, this);
+  }
+
+  #showDeviceModeChanged(): void {
+    if (!this.#showDeviceModeSetting.get()) {
+      this.model.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+      this.model.exitHingeMode();
+    }
+    this.requestUpdate();
   }
 
   override performUpdate(): void {

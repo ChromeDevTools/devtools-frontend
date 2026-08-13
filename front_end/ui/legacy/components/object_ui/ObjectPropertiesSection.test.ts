@@ -14,10 +14,20 @@ import {createTarget, describeWithEnvironment} from '../../../../testing/Environ
 import {expectCall} from '../../../../testing/ExpectStubCall.js';
 import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import {setupSettingsHooks} from '../../../../testing/SettingsHelpers.js';
-import {render} from '../../../lit/lit.js';
+import {html, render} from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import * as ObjectUI from './object_ui.js';
+
+function getRootTreeElement(section: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget):
+    UI.TreeOutline.TreeElement {
+  const tree = section.element.querySelector('devtools-tree') as UI.TreeOutline.TreeViewElement;
+  assert.exists(tree);
+  const outline = tree.getInternalTreeOutlineForTest();
+  const child = outline.firstChild();
+  assert.exists(child);
+  return child;
+}
 
 export type MockPropertyValue = number|string|MockPropertyValue[]|RecursiveObjectDefinition;
 
@@ -131,9 +141,15 @@ describe('ObjectPropertiesSection', () => {
         n: null,
         u: undefined,
       });
-      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
-      const rootElement = section.objectTreeElement();
-      await rootElement.onpopulate();
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+      section.root = object;
+      section.title = html`title`;
+      assert.exists(section.objectTree);
+      section.objectTree.expanded = true;
+      renderElementIntoDOM(section);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const rootElement = getRootTreeElement(section);
 
       assert.strictEqual(rootElement.childCount(), 3);
       const properties = [rootElement.childAt(0)!, rootElement.childAt(1)!, rootElement.childAt(2)!] as
@@ -153,10 +169,16 @@ describe('ObjectPropertiesSection', () => {
         n: null,
         u: undefined,
       });
-      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
-      section.root.includeNullOrUndefinedValues = false;
-      const rootElement = section.objectTreeElement();
-      await rootElement.onpopulate();
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+      section.root = object;
+      section.title = html`title`;
+      assert.exists(section.objectTree);
+      section.objectTree.includeNullOrUndefinedValues = false;
+      section.objectTree.expanded = true;
+      renderElementIntoDOM(section);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const rootElement = getRootTreeElement(section);
 
       const properties = [rootElement.childAt(0)!, rootElement.childAt(1)!, rootElement.childAt(2)!].map(
           x => x as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
@@ -225,21 +247,30 @@ describe('ObjectPropertiesSection', () => {
          assert.deepEqual(properties.map(property => property.name), ['visibleB', 'visibleA', 'hiddenB', 'hiddenA']);
        });
 
-    it('shows sorting and "Show all" toggles in context menu', () => {
+    it('shows sorting and "Show all" toggles in context menu', async () => {
       const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
-      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
-      const rootElement = section.objectTreeElement();
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+      section.root = object;
+      section.title = html`title`;
+      renderElementIntoDOM(section);
+      await UI.Widget.Widget.allUpdatesComplete;
+      const tree = section.element.querySelector('devtools-tree') as UI.TreeOutline.TreeViewElement;
+      assert.exists(tree);
+      const rootElement = tree.shadowRoot?.querySelector('.object-properties-section-root-element') ??
+          section.element.querySelector('.object-properties-section-root-element');
+      assert.exists(rootElement);
       const event = new MouseEvent('contextmenu');
 
       const showSpy = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
       const appendCheckboxItemSpy = sinon.spy(UI.ContextMenu.Section.prototype, 'appendCheckboxItem');
 
-      rootElement.listItemElement.dispatchEvent(event);
+      rootElement.dispatchEvent(event);
 
       sinon.assert.called(appendCheckboxItemSpy);
       const sortPropertiesItem = appendCheckboxItemSpy.args.find(args => args[0] === 'Sort properties alphabetically');
       assert.exists(sortPropertiesItem);
-      assert.strictEqual(sortPropertiesItem[2]?.checked, section.root.sortPropertiesAlphabetically);
+      assert.exists(section.objectTree);
+      assert.strictEqual(sortPropertiesItem[2]?.checked, section.objectTree.sortPropertiesAlphabetically);
 
       const showAllItem = appendCheckboxItemSpy.args.find(args => args[0] === 'Show all');
       assert.exists(showAllItem);
@@ -337,10 +368,15 @@ describe('ObjectPropertiesSection', () => {
         }
         array[100] = 100;
         const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
-        const rootElement = section.objectTreeElement();
-        await rootElement.onpopulate();
+        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+        section.root = object;
+        section.title = html`title`;
+        assert.exists(section.objectTree);
+        section.objectTree.expanded = true;
+        renderElementIntoDOM(section);
+        await UI.Widget.Widget.allUpdatesComplete;
         await raf();
+        const rootElement = getRootTreeElement(section);
 
         const children = rootElement.children();
         const childTexts = children.map(c => c.listItemElement.textContent || '');
@@ -353,7 +389,9 @@ describe('ObjectPropertiesSection', () => {
         ]);
 
         const group1 = children[0];
-        await group1.onpopulate();
+        group1.expand();
+        await raf();
+        await UI.Widget.Widget.allUpdatesComplete;
         await raf();
         const group1Children = group1.children().map(c => c.listItemElement.textContent || '');
         assert.lengthOf(group1Children, 20);
@@ -361,7 +399,9 @@ describe('ObjectPropertiesSection', () => {
         assert.strictEqual(group1Children[19], '19: 19');
 
         const group3 = children[2];
-        await group3.onpopulate();
+        group3.expand();
+        await raf();
+        await UI.Widget.Widget.allUpdatesComplete;
         await raf();
         const group3Children = group3.children().map(c => c.listItemElement.textContent || '');
         assert.deepEqual(group3Children, [
@@ -377,10 +417,15 @@ describe('ObjectPropertiesSection', () => {
           array[i] = undefined;
         }
         const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
-        const rootElement = section.objectTreeElement();
-        await rootElement.onpopulate();
+        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+        section.root = object;
+        section.title = html`title`;
+        assert.exists(section.objectTree);
+        section.objectTree.expanded = true;
+        renderElementIntoDOM(section);
+        await UI.Widget.Widget.allUpdatesComplete;
         await raf();
+        const rootElement = getRootTreeElement(section);
 
         const children = rootElement.children();
         const childTexts = children.map(c => c.listItemElement.textContent || '');
@@ -407,10 +452,15 @@ describe('ObjectPropertiesSection', () => {
         }
         array[100] = 100;
         const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
-        const rootElement = section.objectTreeElement();
-        await rootElement.onpopulate();
+        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+        section.root = object;
+        section.title = html`title`;
+        assert.exists(section.objectTree);
+        section.objectTree.expanded = true;
+        renderElementIntoDOM(section);
+        await UI.Widget.Widget.allUpdatesComplete;
         await raf();
+        const rootElement = getRootTreeElement(section);
 
         const children = rootElement.children();
         const childTexts = children.map(c => c.listItemElement.textContent || '');
@@ -437,10 +487,15 @@ describe('ObjectPropertiesSection', () => {
           array[i] = i;
         }
         const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
-        const rootElement = section.objectTreeElement();
-        await rootElement.onpopulate();
+        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+        section.root = object;
+        section.title = html`title`;
+        assert.exists(section.objectTree);
+        section.objectTree.expanded = true;
+        renderElementIntoDOM(section);
+        await UI.Widget.Widget.allUpdatesComplete;
         await raf();
+        const rootElement = getRootTreeElement(section);
 
         const children = rootElement.children();
         const childTexts = children.map(c => c.listItemElement.textContent || '');
@@ -452,7 +507,9 @@ describe('ObjectPropertiesSection', () => {
         ]);
 
         const group1 = children[0];
-        await group1.onpopulate();
+        group1.expand();
+        await raf();
+        await UI.Widget.Widget.allUpdatesComplete;
         await raf();
         const group1Children = group1.children().map(c => c.listItemElement.textContent || '');
         assert.lengthOf(group1Children, 20);
@@ -460,7 +517,9 @@ describe('ObjectPropertiesSection', () => {
         assert.strictEqual(group1Children[19], '[380 … 399]');
 
         const group2 = children[1];
-        await group2.onpopulate();
+        group2.expand();
+        await raf();
+        await UI.Widget.Widget.allUpdatesComplete;
         await raf();
         const group2Children = group2.children().map(c => c.listItemElement.textContent || '');
         assert.deepEqual(group2Children, [
@@ -488,10 +547,15 @@ describe('ObjectPropertiesSection', () => {
         arrayObj['NaN'] = NaN;
 
         const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
-        const rootElement = section.objectTreeElement();
-        await rootElement.onpopulate();
+        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+        section.root = object;
+        section.title = html`title`;
+        assert.exists(section.objectTree);
+        section.objectTree.expanded = true;
+        renderElementIntoDOM(section);
+        await UI.Widget.Widget.allUpdatesComplete;
         await raf();
+        const rootElement = getRootTreeElement(section);
 
         const children = rootElement.children();
         const childTexts = children.map(c => c.listItemElement.textContent || '');
@@ -528,10 +592,15 @@ describe('ObjectPropertiesSection', () => {
         }
 
         const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
-        const rootElement = section.objectTreeElement();
-        await rootElement.onpopulate();
+        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+        section.root = object;
+        section.title = html`title`;
+        assert.exists(section.objectTree);
+        section.objectTree.expanded = true;
+        renderElementIntoDOM(section);
+        await UI.Widget.Widget.allUpdatesComplete;
         await raf();
+        const rootElement = getRootTreeElement(section);
 
         const children = rootElement.children();
         const childTexts = children.map(c => c.listItemElement.textContent || '');
@@ -549,10 +618,15 @@ describe('ObjectPropertiesSection', () => {
       it('formats large typed arrays with consecutive range grouping', async () => {
         const array = new Uint8Array(64160003);
         const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
-        const rootElement = section.objectTreeElement();
-        await rootElement.onpopulate();
+        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+        section.root = object;
+        section.title = html`title`;
+        assert.exists(section.objectTree);
+        section.objectTree.expanded = true;
+        renderElementIntoDOM(section);
+        await UI.Widget.Widget.allUpdatesComplete;
         await raf();
+        const rootElement = getRootTreeElement(section);
 
         const children = rootElement.children();
         const childTexts = children.map(c => c.listItemElement.textContent || '');
@@ -730,11 +804,21 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
     assert.strictEqual(value.textContent, `"${longString}"`);
   });
 
-  it('escapes bidi characters in string titles', () => {
+  it('escapes bidi characters in string titles', async () => {
     const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
-    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title_with_\u202Ebidi');
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.root = object;
+    section.title = html`title_with_\\u202Ebidi`;
+    renderElementIntoDOM(section);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
 
-    assert.strictEqual(section.titleElement.textContent, 'title_with_\\u202Ebidi');
+    const tree = section.element.querySelector('devtools-tree') as UI.TreeOutline.TreeViewElement;
+    assert.exists(tree);
+    const rootItem = tree.shadowRoot?.querySelector('.object-properties-section-root-element') ??
+        section.element.querySelector('.object-properties-section-root-element');
+    assert.exists(rootItem);
+    assert.strictEqual(rootItem.textContent?.trim(), 'title_with_\\u202Ebidi');
   });
 
   it('escapes bidi characters in standalone string values', () => {
@@ -998,24 +1082,32 @@ describe('ObjectTree with TreeSearch', () => {
       str: hugeString,
     });
     const search = new UI.TreeOutline.TreeSearch<ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase>();
-    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(
-        object, /* title */ null, /* linkifier */ undefined, /* showOverflow */ true, /* editable */ false, search);
-    await section.root.populateChildrenIfNeeded();
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+      readOnly: true,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+      search,
+    });
+    section.title = html`title`;
 
-    const div = document.createElement('div');
-    renderElementIntoDOM(div);
-    div.appendChild(section.element);
-    await section.objectTreeElement().onpopulate();
+    section.objectTree.expanded = true;
+    renderElementIntoDOM(section);
+    await UI.Widget.Widget.allUpdatesComplete;
     await raf();
 
     const regex = /findme/;
-    search.search(section.root, false,
+    assert.exists(section.objectTree);
+    search.search(section.objectTree, false,
                   (node, isPostOrder) => isPostOrder ?
                       [] :
                       (node.match(regex) as ObjectUI.ObjectPropertiesSection.ObjectPropertySearchResult[]));
+    await UI.Widget.Widget.allUpdatesComplete;
     await raf();
 
-    const highlights = (section.element.shadowRoot || section.element).querySelectorAll('devtools-highlight');
+    const tree = section.element.querySelector('devtools-tree') as UI.TreeOutline.TreeViewElement;
+    assert.exists(tree);
+    assert.exists(tree.shadowRoot);
+    const highlights = tree.shadowRoot.querySelectorAll('devtools-highlight');
     assert.isAbove(highlights.length, 0);
   });
 });
@@ -1278,8 +1370,15 @@ describeWithEnvironment('ObjectTreeExpansionTracker', () => {
       },
     });
 
-    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'JSON');
-    const rootElement = section.objectTreeElement();
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.root = object;
+    section.title = html`JSON`;
+    assert.exists(section.objectTree);
+    section.objectTree.expanded = true;
+    renderElementIntoDOM(section);
+    await section.updateComplete;
+    await raf();
+    const rootElement = getRootTreeElement(section);
     await rootElement.expandRecursively(10);
 
     await new Promise(requestAnimationFrame);

@@ -1,0 +1,199 @@
+// Copyright 2021 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+/*
+ * Copyright (C) 2008 Nokia Inc.  All rights reserved.
+ * Copyright (C) 2013 Samsung Electronics. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL APPLE INC. OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+ * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import { KeyValueStorageItemsView } from './KeyValueStorageItemsView.js';
+const UIStrings = {
+    /**
+     * @description Name for the "DOM Storage Items" table that shows the content of the DOM Storage.
+     */
+    domStorageItems: 'DOM Storage Items',
+    /**
+     * @description Text for announcing that the "DOM Storage Items" table was cleared, that is, all
+     * entries were deleted.
+     */
+    domStorageItemsCleared: 'DOM Storage Items cleared',
+    /**
+     * @description Text for announcing a DOM Storage key/value item has been deleted
+     */
+    domStorageItemDeleted: 'The storage item was deleted.',
+    /**
+     * @description Text of a context menu item to start a chat with AI
+     */
+    startAChat: 'Start a chat',
+    /**
+     * @description Text of a context menu item to explain a storage item of a storage bucket with AI
+     */
+    explainItem: 'Explain this item',
+};
+const str_ = i18n.i18n.registerUIStrings('panels/application/DOMStorageItemsView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export class DOMStorageItemsView extends KeyValueStorageItemsView {
+    domStorage;
+    eventListeners;
+    constructor(domStorage) {
+        super(i18nString(UIStrings.domStorageItems), 'dom-storage', true, /* view=*/ undefined, /* metadataView=*/ undefined, 
+        /* jslog=*/ undefined, ['storage-view', 'table']);
+        this.domStorage = domStorage;
+        if (domStorage.storageKey) {
+            this.toolbar?.setStorageKey(domStorage.storageKey);
+        }
+        this.showPreview(null, null);
+        this.eventListeners = [];
+        this.setStorage(domStorage);
+    }
+    createPreview(key, value) {
+        const protocol = this.domStorage.isLocalStorage ? 'localstorage' : 'sessionstorage';
+        const url = `${protocol}://${key}`;
+        const provider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(url, Common.ResourceType.resourceTypes.XHR, value);
+        return SourceFrame.PreviewFactory.PreviewFactory.createPreview(provider, 'text/plain');
+    }
+    setStorage(domStorage) {
+        Common.EventTarget.removeEventListeners(this.eventListeners);
+        this.domStorage = domStorage;
+        const storageKind = domStorage.isLocalStorage ? 'local-storage-data' : 'session-storage-data';
+        this.jslog = `${VisualLogging.pane().context(storageKind)}`;
+        if (domStorage.storageKey) {
+            this.toolbar?.setStorageKey(domStorage.storageKey);
+        }
+        this.eventListeners = [
+            this.domStorage.addEventListener("DOMStorageItemsCleared" /* SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED */, this.domStorageItemsCleared, this),
+            this.domStorage.addEventListener("DOMStorageItemRemoved" /* SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED */, this.domStorageItemRemoved, this),
+            this.domStorage.addEventListener("DOMStorageItemAdded" /* SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_ADDED */, this.domStorageItemAdded, this),
+            this.domStorage.addEventListener("DOMStorageItemUpdated" /* SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED */, this.domStorageItemUpdated, this),
+        ];
+        this.refreshItems();
+    }
+    domStorageItemsCleared() {
+        if (!this.isShowing()) {
+            return;
+        }
+        this.itemsCleared();
+    }
+    itemsCleared() {
+        super.itemsCleared();
+        UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.domStorageItemsCleared));
+    }
+    domStorageItemRemoved(event) {
+        if (!this.isShowing()) {
+            return;
+        }
+        this.itemRemoved(event.data.key);
+    }
+    itemRemoved(key) {
+        super.itemRemoved(key);
+        UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.domStorageItemDeleted));
+    }
+    domStorageItemAdded(event) {
+        if (!this.isShowing()) {
+            return;
+        }
+        this.itemAdded(event.data.key, event.data.value);
+    }
+    domStorageItemUpdated(event) {
+        if (!this.isShowing()) {
+            return;
+        }
+        this.itemUpdated(event.data.key, event.data.value);
+    }
+    refreshItems() {
+        void this.#refreshItems();
+    }
+    async #refreshItems() {
+        const items = await this.domStorage.getItems();
+        if (!items || !this.toolbar) {
+            return;
+        }
+        const { filterRegex } = this.toolbar;
+        const filteredItems = items.map(item => ({ key: item[0], value: item[1] }))
+            .filter(item => filterRegex?.test(`${item.key} ${item.value}`) ?? true);
+        this.showItems(filteredItems);
+    }
+    #setAiStorageContext(item) {
+        const storageKey = this.domStorage.storageKey;
+        if (!storageKey) {
+            return;
+        }
+        const parsedKey = SDK.StorageKeyManager.parseStorageKey(storageKey);
+        const origin = parsedKey.origin;
+        const storageType = this.domStorage.isLocalStorage ? 'localStorage' : 'sessionStorage';
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const mainPageOrigin = target?.inspectedURL() ? Common.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : '';
+        if (!mainPageOrigin) {
+            // If we don't have a primary target origin, we shouldn't allow the AI assistance context to be attached.
+            UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
+            return;
+        }
+        const storageItem = new AiAssistanceModel.StorageItem.DOMStorageItem(mainPageOrigin, origin, storageKey, storageType, item ? item.key : undefined);
+        UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
+    }
+    deleteAllItems() {
+        this.domStorage.clear();
+        // explicitly clear the view because the event won't be fired when it has no items
+        this.domStorageItemsCleared();
+    }
+    selectedItemChanged(item) {
+        this.#setAiStorageContext(item);
+    }
+    isAiButtonEnabled() {
+        return UI.ActionRegistry.ActionRegistry.instance().hasAction('ai-assistance.storage-floating-button');
+    }
+    populateContextMenu(item, contextMenu) {
+        const openAiAssistanceId = 'ai-assistance.application-panel-context';
+        const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
+        if (actionRegistry.hasAction(openAiAssistanceId)) {
+            this.#setAiStorageContext(item);
+            const action = actionRegistry.getAction(openAiAssistanceId);
+            const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
+            submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
+            submenu.defaultSection().appendItem(i18nString(UIStrings.explainItem), () => action.execute({ prompt: 'Explain this storage item.' }), { disabled: !action.enabled(), jslogContext: openAiAssistanceId + '.storage' });
+        }
+    }
+    onAiButtonClick(item, _event) {
+        this.#setAiStorageContext(item);
+        const aiFloatingActionId = 'ai-assistance.storage-floating-button';
+        const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
+        if (actionRegistry.hasAction(aiFloatingActionId)) {
+            void actionRegistry.getAction(aiFloatingActionId).execute();
+        }
+    }
+    removeItem(key) {
+        this.domStorage?.removeItem(key);
+    }
+    setItem(key, value) {
+        this.domStorage?.setItem(key, value);
+    }
+}
+//# sourceMappingURL=DOMStorageItemsView.js.map

@@ -1,0 +1,205 @@
+var __defProp = Object.defineProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+
+// gen/front_end/models/web_mcp/WebMCPModel.js
+var WebMCPModel_exports = {};
+__export(WebMCPModel_exports, {
+  Result: () => Result,
+  Tool: () => Tool,
+  WebMCPModel: () => WebMCPModel
+});
+import * as SDK from "./../../core/sdk/sdk.js";
+import * as Bindings from "./../bindings/bindings.js";
+var Result = class {
+  status;
+  output;
+  errorText;
+  // TODO(crbug.com/494516094) Clean this up if the target disappears?
+  #exception;
+  #symbolizedError;
+  constructor(status, output, errorText, exception) {
+    this.status = status;
+    this.errorText = errorText;
+    this.#exception = exception;
+    this.output = output;
+  }
+  get symbolizedError() {
+    if (!this.#symbolizedError) {
+      if (this.#exception) {
+        const target = this.#exception.runtimeModel().target();
+        const debuggerWorkspaceBinding = target.targetManager().context.get(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
+        this.#symbolizedError = debuggerWorkspaceBinding.createSymbolizedError(this.#exception);
+      } else {
+        this.#symbolizedError = Promise.resolve(null);
+      }
+    }
+    return this.#symbolizedError;
+  }
+};
+var Tool = class {
+  #protocolTool;
+  #stackTrace;
+  #target;
+  constructor(tool, target) {
+    this.#target = new WeakRef(target);
+    this.#protocolTool = tool;
+    if (tool.stackTrace) {
+      const debuggerWorkspaceBinding = target.targetManager().context.get(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
+      this.#stackTrace = debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(tool.stackTrace, target);
+    }
+  }
+  get stackTrace() {
+    return this.#stackTrace;
+  }
+  get name() {
+    return this.#protocolTool.name;
+  }
+  get description() {
+    return this.#protocolTool.description;
+  }
+  get inputSchema() {
+    let rawSchema = this.#protocolTool.inputSchema;
+    if (typeof rawSchema === "string") {
+      try {
+        rawSchema = JSON.parse(rawSchema);
+      } catch {
+        rawSchema = {};
+      }
+    }
+    return typeof rawSchema === "object" && rawSchema !== null ? rawSchema : {};
+  }
+  get flags() {
+    const annotations = this.#protocolTool.annotations;
+    if (!annotations) {
+      return [];
+    }
+    return Object.keys(annotations).filter((key) => annotations[key] === true).sort();
+  }
+  get frame() {
+    return this.#target.deref()?.model(SDK.ResourceTreeModel.ResourceTreeModel)?.frameForId(this.#protocolTool.frameId) ?? void 0;
+  }
+  get isDeclarative() {
+    return Boolean(this.#protocolTool.backendNodeId);
+  }
+  get node() {
+    const target = this.#target.deref();
+    return this.#protocolTool.backendNodeId && target && new SDK.DOMModel.DeferredDOMNode(target, this.#protocolTool.backendNodeId);
+  }
+  async invoke(input) {
+    const target = this.#target.deref();
+    const response = await target?.webMCPAgent().invoke_invokeTool({
+      toolName: this.name,
+      frameId: this.#protocolTool.frameId,
+      input
+    });
+    if (!response || response.getError()) {
+      return void 0;
+    }
+    return response.invocationId;
+  }
+};
+var WebMCPModel = class extends SDK.SDKModel.SDKModel {
+  #tools = /* @__PURE__ */ new Map();
+  #calls = /* @__PURE__ */ new Map();
+  agent;
+  #enabled = false;
+  constructor(target) {
+    super(target);
+    this.agent = target.webMCPAgent();
+    target.registerWebMCPDispatcher(this);
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    if (runtimeModel) {
+      runtimeModel.addEventListener(SDK.RuntimeModel.Events.ExecutionContextDestroyed, this.#executionContextDestroyed, this);
+    }
+    void this.enable();
+  }
+  get tools() {
+    return this.#tools.values().flatMap((toolMap) => toolMap.values());
+  }
+  get toolCalls() {
+    return [...this.#calls.values()];
+  }
+  toolCallForId(invocationId) {
+    return this.#calls.get(invocationId);
+  }
+  clearCalls() {
+    this.#calls.clear();
+  }
+  async enable() {
+    if (this.#enabled) {
+      return;
+    }
+    await this.agent.invoke_enable();
+    this.#enabled = true;
+  }
+  #executionContextDestroyed(event) {
+    const executionContext = event.data;
+    if (executionContext.isDefault && executionContext.frameId) {
+      const frameTools = this.#tools.get(executionContext.frameId);
+      if (frameTools) {
+        const toolsToRemove = [...frameTools.values()];
+        this.#tools.delete(executionContext.frameId);
+        this.dispatchEventToListeners("ToolsRemoved", toolsToRemove);
+      }
+    }
+  }
+  toolsRemoved(params) {
+    const deletedTools = [];
+    for (const protocolTool of params.tools) {
+      const tool = this.#tools.get(protocolTool.frameId)?.get(protocolTool.name);
+      if (tool) {
+        this.#tools.get(protocolTool.frameId)?.delete(protocolTool.name);
+        deletedTools.push(tool);
+      }
+    }
+    this.dispatchEventToListeners("ToolsRemoved", deletedTools);
+  }
+  toolsAdded(params) {
+    const addedTools = [];
+    for (const protocolTool of params.tools) {
+      const tool = new Tool(protocolTool, this.target());
+      const frameTools = this.#tools.get(protocolTool.frameId) ?? /* @__PURE__ */ new Map();
+      if (!this.#tools.has(protocolTool.frameId)) {
+        this.#tools.set(protocolTool.frameId, frameTools);
+      }
+      frameTools.set(tool.name, tool);
+      addedTools.push(tool);
+    }
+    this.dispatchEventToListeners("ToolsAdded", addedTools);
+  }
+  toolInvoked(params) {
+    const tool = this.#tools.get(params.frameId)?.get(params.toolName);
+    if (!tool) {
+      return;
+    }
+    const call = {
+      tool,
+      input: params.input,
+      invocationId: params.invocationId,
+      cancel: () => {
+        if (call.result === void 0) {
+          void this.agent.invoke_cancelInvocation({ invocationId: params.invocationId });
+        }
+      }
+    };
+    this.#calls.set(params.invocationId, call);
+    this.dispatchEventToListeners("ToolInvoked", call);
+  }
+  toolResponded(params) {
+    const call = this.#calls.get(params.invocationId);
+    if (!call) {
+      return;
+    }
+    const exception = params.exception && this.target().model(SDK.RuntimeModel.RuntimeModel)?.createRemoteObject(params.exception);
+    call.result = new Result(params.status, params.output, params.errorText, exception);
+    this.dispatchEventToListeners("ToolResponded", call);
+  }
+};
+SDK.SDKModel.SDKModel.register(WebMCPModel, { capabilities: 2097152, autostart: true });
+export {
+  WebMCPModel_exports as WebMCPModel
+};
+//# sourceMappingURL=web_mcp.js.map

@@ -1384,7 +1384,7 @@ export class DebuggerPlugin extends Plugin {
         await this.setBreakpoint(origin.lineNumber, origin.columnNumber, condition, enabled, isLogpoint);
     }
     async setBreakpoint(lineNumber, columnNumber, condition, enabled, isLogpoint) {
-        Common.Settings.Settings.instance().moduleSetting('breakpoints-active').set(true);
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor).set(true);
         const bp = await this.breakpointManager.setBreakpoint(this.uiSourceCode, lineNumber, columnNumber, condition, enabled, isLogpoint, "USER_ACTION" /* Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION */);
         this.breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);
         if (bp) {

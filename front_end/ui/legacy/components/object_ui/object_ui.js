@@ -106,7 +106,6 @@ __export(ObjectPropertiesSection_exports, {
   ObjectTreeNode: () => ObjectTreeNode,
   ObjectTreeNodeBase: () => ObjectTreeNodeBase,
   ObjectTreeWidget: () => ObjectTreeWidget,
-  Renderer: () => Renderer,
   defaultObjectPresentation: () => defaultObjectPresentation,
   formatObjectAsFunction: () => formatObjectAsFunction,
   getObjectPropertiesSectionFrom: () => getObjectPropertiesSectionFrom,
@@ -2627,39 +2626,6 @@ var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement extends UI2.TreeO
   // These should be module constants but they are modified by layout tests.
   static bucketThreshold = 100;
   static sparseIterationThreshold = 25e4;
-};
-var rendererInstance;
-var Renderer = class _Renderer {
-  static instance(opts = { forceNew: false }) {
-    const { forceNew } = opts;
-    if (!rendererInstance || forceNew) {
-      rendererInstance = new _Renderer();
-    }
-    return rendererInstance;
-  }
-  async render(object, options) {
-    if (!(object instanceof SDK3.RemoteObject.RemoteObject)) {
-      throw new Error("Can't render " + object);
-    }
-    const title = options?.title;
-    const section = new ObjectPropertiesSection(object, title, void 0, void 0, Boolean(options?.editable));
-    if (!title) {
-      section.titleLessMode();
-    }
-    if (options?.expand) {
-      section.firstChild()?.expand();
-    }
-    const dispatchDimensionChange = () => {
-      section.element.dispatchEvent(new CustomEvent("dimensionschanged"));
-    };
-    section.addEventListener(UI2.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
-    section.addEventListener(UI2.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
-    section.addEventListener(UI2.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
-    return {
-      element: section.element,
-      forceSelect: section.forceSelect.bind(section)
-    };
-  }
 };
 var EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {
   const totalBytesText = i18n3.ByteUtilities.bytesToString(input.byteCount);

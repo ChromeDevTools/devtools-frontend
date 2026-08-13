@@ -1508,6 +1508,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "ease-out",
   "edit",
   "edit-and-resend",
+  "edit-and-resend-as-fetch",
   "edit-attribute",
   "edit-breakpoint",
   "edit-item",

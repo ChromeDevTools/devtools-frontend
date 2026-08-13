@@ -617,6 +617,12 @@ export default `/*
     flex-direction: column;
     gap: var(--sys-size-4);
   }
+
+  .storage-breakdown-widget {
+    display: flex;
+    justify-content: center;
+    padding: var(--sys-size-4);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('././components/chatMessage.css')} */`;

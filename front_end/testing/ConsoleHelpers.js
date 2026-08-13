@@ -10,6 +10,7 @@ import * as Components from '../ui/legacy/components/utils/utils.js';
 export function createConsoleViewMessageWithStubDeps(rawMessage) {
     const linkifier = sinon.createStubInstance(Components.Linkifier.Linkifier);
     const requestResolver = sinon.createStubInstance(Logs.RequestResolver.RequestResolver);
+    requestResolver.waitFor.returns(Promise.reject());
     const issuesResolver = sinon.createStubInstance(IssuesManager.IssueResolver.IssueResolver);
     const message = new Console.ConsoleViewMessage.ConsoleViewMessage(rawMessage, linkifier, requestResolver, issuesResolver, /* onResize */ () => { });
     return { message, linkifier };

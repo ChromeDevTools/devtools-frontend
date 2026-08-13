@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "JSONEditor.css.js",
+        "protocolMonitor.css.js"
+    ]
+}

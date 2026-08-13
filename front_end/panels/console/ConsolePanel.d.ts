@@ -19,6 +19,7 @@ export declare class WrapperView extends UI.Widget.VBox {
     wasShown(): void;
     willHide(): void;
     showViewInWrapper(): void;
+    insertIntoPrompt(text: string): void;
 }
 export declare class ConsoleRevealer implements Common.Revealer.Revealer<Common.Console.Console> {
     reveal(_object: Common.Console.Console): Promise<void>;

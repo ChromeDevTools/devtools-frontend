@@ -168,6 +168,9 @@
     },
     {
       "path": "../common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../elements/bundle-tsconfig.json"
     }
   ]
 }

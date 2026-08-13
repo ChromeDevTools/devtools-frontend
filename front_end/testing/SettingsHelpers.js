@@ -13,26 +13,31 @@ function createSettingValue(category, settingName, defaultValue, settingType = "
     };
 }
 export function stubNoopSettings() {
-    const createDummySetting = (name) => ({
-        name,
-        get: () => [],
-        set: () => { },
-        addChangeListener: () => { },
-        removeChangeListener: () => { },
-        title: () => { },
-        asRegExp: () => { },
-        type: () => "boolean" /* Common.Settings.SettingType.BOOLEAN */,
-        getAsArray: () => [],
-        descriptor: () => ({
-            name,
-            settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
-            defaultValue: false,
-        }),
-    });
+    const createDummySetting = (name) => {
+        const settingName = typeof name === 'string' ? name : name.name;
+        return {
+            name: settingName,
+            get: () => [],
+            set: () => { },
+            addChangeListener: () => { },
+            removeChangeListener: () => { },
+            title: () => { },
+            asRegExp: () => { },
+            type: () => "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+            getAsArray: () => [],
+            descriptor: () => ({
+                name: settingName,
+                settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+                defaultValue: false,
+            }),
+        };
+    };
     sinon.stub(Common.Settings.Settings, 'instance').returns({
         createSetting: createDummySetting,
         moduleSetting: createDummySetting,
         createLocalSetting: createDummySetting,
+        resolve: createDummySetting,
+        maybeResolve: createDummySetting,
     });
 }
 export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [

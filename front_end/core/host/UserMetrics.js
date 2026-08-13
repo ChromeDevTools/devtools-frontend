@@ -23,6 +23,9 @@ export class UserMetrics {
     resendRequest(resourceType) {
         InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ResendRequest" /* EnumeratedHistogram.ResendRequest */, resourceType, ResendRequestType.MAX_VALUE);
     }
+    editResendRequest(type) {
+        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.EditResendRequest" /* EnumeratedHistogram.EditResendRequest */, type, ResendRequestType.MAX_VALUE);
+    }
     keybindSetSettingChanged(keybindSet) {
         const value = KeybindSetSettings[keybindSet] || 0;
         InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.KeybindSetSettingChanged" /* EnumeratedHistogram.KeybindSetSettingChanged */, value, KeybindSetSettings.MAX_VALUE);

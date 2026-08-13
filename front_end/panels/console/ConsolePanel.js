@@ -84,6 +84,9 @@ export class WrapperView extends UI.Widget.VBox {
     showViewInWrapper() {
         this.view.show(this.element);
     }
+    insertIntoPrompt(text) {
+        this.view.insertIntoPrompt(text);
+    }
 }
 export class ConsoleRevealer {
     async reveal(_object) {

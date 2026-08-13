@@ -9749,7 +9749,20 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         return {
           result: {
             usageBreakdown
-          }
+          },
+          widgets: [
+            {
+              name: "STORAGE_BREAKDOWN",
+              data: {
+                totalUsageBytes: response.usage,
+                totalQuotaBytes: response.quota,
+                usageBreakdown: rawUsageBreakdown.map((entry) => ({
+                  storageType: entry.storageType,
+                  bytes: entry.rawUsage
+                }))
+              }
+            }
+          ]
         };
       }
     });

@@ -4,6 +4,7 @@
 import { CSSModel } from './CSSModel.js';
 import { OverlayModel } from './OverlayModel.js';
 import { SDKModel } from './SDKModel.js';
+import { javaScriptDisabledSettingDescriptor } from './SDKSettings.js';
 export class EmulationModel extends SDKModel {
     #multitargetNetworkManager;
     #emulationAgent;
@@ -34,7 +35,7 @@ export class EmulationModel extends SDKModel {
             }, this);
         }
         const settings = this.target().targetManager().settings;
-        const disableJavascriptSetting = settings.moduleSetting('java-script-disabled');
+        const disableJavascriptSetting = settings.resolve(javaScriptDisabledSettingDescriptor);
         disableJavascriptSetting.addChangeListener(async () => await this.#emulationAgent.invoke_setScriptExecutionDisabled({ value: disableJavascriptSetting.get() }));
         if (disableJavascriptSetting.get()) {
             void this.#emulationAgent.invoke_setScriptExecutionDisabled({ value: true });

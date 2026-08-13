@@ -1402,19 +1402,6 @@ export class ConfirmDialog {
         return result;
     }
 }
-export class Renderer {
-    static async render(object, options) {
-        if (!object) {
-            throw new Error('Can\'t render ' + object);
-        }
-        const extension = getApplicableRegisteredRenderers(object)[0];
-        if (!extension) {
-            return null;
-        }
-        const renderer = await extension.loadRenderer();
-        return await renderer.render(object, options);
-    }
-}
 export function formatTimestamp(timestamp, full) {
     const date = new Date(timestamp);
     const yymmdd = date.getFullYear() + '-' + leadZero(date.getMonth() + 1, 2) + '-' + leadZero(date.getDate(), 2);
@@ -1480,24 +1467,6 @@ export const deepElementFromEvent = (ev) => {
     const root = event.target && event.target.getComponentRoot();
     return root ? deepElementFromPoint(root, event.pageX, event.pageY) : null;
 };
-const registeredRenderers = [];
-export function registerRenderer(registration) {
-    registeredRenderers.push(registration);
-}
-export function getApplicableRegisteredRenderers(object) {
-    return registeredRenderers.filter(isRendererApplicableToContextTypes);
-    function isRendererApplicableToContextTypes(rendererRegistration) {
-        if (!rendererRegistration.contextTypes) {
-            return true;
-        }
-        for (const contextType of rendererRegistration.contextTypes()) {
-            if (object instanceof contextType) {
-                return true;
-            }
-        }
-        return false;
-    }
-}
 function updateWidgetfocusWidgetForNode(node) {
     while (node) {
         if (Widget.get(node)) {

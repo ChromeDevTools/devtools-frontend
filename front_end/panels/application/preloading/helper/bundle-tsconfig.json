@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../../front_end/panels/application/preloading/helper"},"files":["../../../../../../../../front_end/panels/application/preloading/helper/helper.ts"],"references":[{"path":"./helper-tsconfig.json"}]}

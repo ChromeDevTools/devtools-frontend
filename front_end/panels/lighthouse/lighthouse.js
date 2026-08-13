@@ -538,7 +538,7 @@ var LighthouseController = class extends Common.ObjectWrapper.ObjectWrapper {
     for (const runtimeSetting of getRuntimeSettings()) {
       runtimeSetting.setting.addChangeListener(this.recomputePageAuditability.bind(this));
     }
-    const javaScriptDisabledSetting = Common.Settings.Settings.instance().moduleSetting("java-script-disabled");
+    const javaScriptDisabledSetting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.javaScriptDisabledSettingDescriptor);
     javaScriptDisabledSetting.addChangeListener(this.recomputePageAuditability.bind(this));
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.ServiceWorkerManager.ServiceWorkerManager, this);
     SDK.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.recomputePageAuditability, this);
@@ -609,7 +609,7 @@ var LighthouseController = class extends Common.ObjectWrapper.ObjectWrapper {
     return null;
   }
   javaScriptDisabled() {
-    return Common.Settings.Settings.instance().moduleSetting("java-script-disabled").get();
+    return Common.Settings.Settings.instance().resolve(SDK.SDKSettings.javaScriptDisabledSettingDescriptor).get();
   }
   async hasImportantResourcesNotCleared() {
     const clearStorageSetting = getRuntimeSettings().find((runtimeSetting) => runtimeSetting.setting.name === "lighthouse.clear-storage");

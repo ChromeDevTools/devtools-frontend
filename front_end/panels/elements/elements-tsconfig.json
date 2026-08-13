@@ -54,7 +54,6 @@
     "../../../../../../front_end/panels/elements/ElementsSidebarPane.ts",
     "../../../../../../front_end/panels/elements/ElementsTreeElement.ts",
     "../../../../../../front_end/panels/elements/ElementsTreeOutline.ts",
-    "../../../../../../front_end/panels/elements/ElementsTreeOutlineRenderer.ts",
     "../../../../../../front_end/panels/elements/EventListenersWidget.ts",
     "../../../../../../front_end/panels/elements/ImagePreviewPopover.ts",
     "../../../../../../front_end/panels/elements/InspectElementModeController.ts",

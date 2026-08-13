@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/third_party/json5"},"files":["../../../../../../front_end/third_party/json5/json5.ts"],"references":[{"path":"./json5-tsconfig.json"}]}

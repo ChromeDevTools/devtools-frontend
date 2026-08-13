@@ -210,35 +210,13 @@ export declare class MessageDialog {
 export declare class ConfirmDialog {
     static show(message: string, header?: string, where?: Element | Document, options?: ConfirmDialogOptions): Promise<boolean>;
 }
-export interface RenderedObject {
-    element: HTMLElement;
-    forceSelect(): void;
-}
-export declare abstract class Renderer {
-    abstract render(object: Object, options?: Options): Promise<RenderedObject | null>;
-    static render(object: Object, options?: Options): Promise<RenderedObject | null>;
-}
 export declare function formatTimestamp(timestamp: number, full: boolean): string;
-export interface Options {
-    title?: string | Element;
-    editable?: boolean;
-    /**
-     * Should the resulting object be expanded.
-     */
-    expand?: boolean;
-}
 export declare const isScrolledToBottom: (element: Element) => boolean;
 export declare function createSVGChild<K extends keyof SVGElementTagNameMap>(element: Element, childType: K, className?: string): SVGElementTagNameMap[K];
 export declare const enclosingNodeOrSelfWithNodeNameInArray: <T extends keyof HTMLElementTagNameMap>(initialNode: Node, nameArray: T[]) => HTMLElementTagNameMap[T] | null;
 export declare const enclosingNodeOrSelfWithNodeName: <T extends keyof HTMLElementTagNameMap>(node: Node, nodeName: T) => HTMLElementTagNameMap[T] | null;
 export declare const deepElementFromPoint: (document: Document | ShadowRoot | null | undefined, x: number, y: number) => Node | null;
 export declare const deepElementFromEvent: (ev: Event) => Node | null;
-export declare function registerRenderer(registration: RendererRegistration): void;
-export declare function getApplicableRegisteredRenderers(object: Object): RendererRegistration[];
-export interface RendererRegistration {
-    loadRenderer: () => Promise<Renderer>;
-    contextTypes: () => Array<Platform.Constructor.ConstructorOrAbstract<unknown>>;
-}
 export interface ConfirmDialogOptions {
     okButtonLabel?: string;
     cancelButtonLabel?: string;

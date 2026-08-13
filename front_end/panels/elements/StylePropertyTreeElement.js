@@ -804,13 +804,16 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
             }
             return false;
         };
-        const childTracingContexts = context.tracing?.evaluation([match.space, match.color1, match.color2], { match, context });
-        const childRenderingContexts = childTracingContexts?.map(ctx => ctx.renderingContext(context)) ?? [context, context, context];
+        const childTracingContexts = context.tracing?.evaluation(match.space.length ? [match.color1, match.color2, match.space] : [match.color1, match.color2], { match, context });
+        const color1RenderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
+        const color2RenderingContext = childTracingContexts?.at(1)?.renderingContext(context) ?? context;
+        const spaceRenderingContext = childTracingContexts?.at(2)?.renderingContext(context) ?? context;
         const contentChild = document.createElement('span');
-        const color1 = Renderer.renderInto(match.color1, childRenderingContexts[1], contentChild);
-        const color2 = Renderer.renderInto(match.color2, childRenderingContexts[2], contentChild);
+        const color1 = Renderer.renderInto(match.color1, color1RenderingContext, contentChild);
+        const color2 = Renderer.renderInto(match.color2, color2RenderingContext, contentChild);
         render(html `${this.#treeElement?.getTracingTooltip('color-mix', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context) ??
-            'color-mix'}(${Renderer.render(match.space, childRenderingContexts[0]).nodes}, ${color1.nodes}, ${color2.nodes})`, contentChild);
+            'color-mix'}(${match.space.length ? html `${Renderer.render(match.space, spaceRenderingContext).nodes}, ` :
+            ''}${color1.nodes}, ${color2.nodes})`, contentChild);
         const color1Controls = color1.cssControls.get('color') ?? [];
         const color2Controls = color2.cssControls.get('color') ?? [];
         if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || color1Controls.length !== 1 ||
@@ -820,7 +823,7 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         const space = match.space.map(space => context.matchedResult.getComputedText(space)).join(' ');
         const color1Text = match.color1.map(color => context.matchedResult.getComputedText(color)).join(' ');
         const color2Text = match.color2.map(color => context.matchedResult.getComputedText(color)).join(' ');
-        const colorMixText = `color-mix(${space}, ${color1Text}, ${color2Text})`;
+        const colorMixText = `color-mix(${space ? `${space}, ` : ''}${color1Text}, ${color2Text})`;
         const nodeId = this.#stylesContainer.node()?.id;
         if (nodeId !== undefined && childTracingContexts) {
             const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {

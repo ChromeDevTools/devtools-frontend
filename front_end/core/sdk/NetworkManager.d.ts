@@ -24,7 +24,7 @@ export declare class NetworkManager extends SDKModel<EventTypes> {
     readonly activeNetworkThrottlingKey: Common.Settings.Setting<ThrottlingConditionKey>;
     constructor(target: Target);
     static forRequest(request: NetworkRequest): NetworkManager | null;
-    static canResendRequest(request: NetworkRequest): boolean;
+    static canResendRequest(request: NetworkRequest, fullFidelity: boolean): boolean;
     static replayRequest(request: NetworkRequest): void;
     static resendRequest(request: NetworkRequest): Promise<void>;
     static searchInRequest(request: NetworkRequest, query: string, caseSensitive: boolean, isRegex: boolean): Promise<TextUtils.ContentProvider.SearchMatch[]>;

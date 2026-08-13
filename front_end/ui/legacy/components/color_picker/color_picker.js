@@ -288,6 +288,7 @@ import * as Common2 from "./../../../../core/common/common.js";
 import * as Host from "./../../../../core/host/host.js";
 import * as i18n from "./../../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../../core/platform/platform.js";
+import * as SDK from "./../../../../core/sdk/sdk.js";
 import { createIcon, Icon } from "./../../../kit/kit.js";
 import * as UIHelpers from "./../../../helpers/helpers.js";
 import * as UI from "./../../legacy.js";
@@ -471,7 +472,7 @@ var ContrastDetails = class _ContrastDetails extends Common2.ObjectWrapper.Objec
     }
     this.setVisible(true);
     this.hideNoContrastInfoAvailableMessage();
-    const isAPCAEnabled = Common2.Settings.Settings.instance().moduleSetting("apca").get();
+    const isAPCAEnabled = Common2.Settings.Settings.instance().resolve(SDK.SDKSettings.apcaSettingDescriptor).get();
     const fgColor = this.contrastInfo.color();
     const bgColor = this.contrastInfo.bgColor();
     if (isAPCAEnabled) {
@@ -815,6 +816,7 @@ __export(ContrastOverlay_exports, {
   ContrastRatioLineBuilder: () => ContrastRatioLineBuilder
 });
 import * as Common4 from "./../../../../core/common/common.js";
+import * as SDK2 from "./../../../../core/sdk/sdk.js";
 import * as UI2 from "./../../legacy.js";
 var ContrastOverlay = class {
   contrastInfo;
@@ -831,7 +833,7 @@ var ContrastOverlay = class {
     this.visible = false;
     this.contrastRatioSVG = UI2.UIUtils.createSVGChild(colorElement, "svg", "spectrum-contrast-container fill");
     this.contrastRatioLines = /* @__PURE__ */ new Map();
-    if (Common4.Settings.Settings.instance().moduleSetting("apca").get()) {
+    if (Common4.Settings.Settings.instance().resolve(SDK2.SDKSettings.apcaSettingDescriptor).get()) {
       this.contrastRatioLines.set("APCA", UI2.UIUtils.createSVGChild(this.contrastRatioSVG, "path", "spectrum-contrast-line"));
     } else {
       this.contrastRatioLines.set("aa", UI2.UIUtils.createSVGChild(this.contrastRatioSVG, "path", "spectrum-contrast-line"));
@@ -848,7 +850,7 @@ var ContrastOverlay = class {
     if (!this.visible || this.contrastInfo.isNull()) {
       return;
     }
-    if (Common4.Settings.Settings.instance().moduleSetting("apca").get() && this.contrastInfo.contrastRatioAPCA() === null) {
+    if (Common4.Settings.Settings.instance().resolve(SDK2.SDKSettings.apcaSettingDescriptor).get() && this.contrastInfo.contrastRatioAPCA() === null) {
       return;
     }
     if (!this.contrastInfo.contrastRatio()) {
@@ -883,7 +885,7 @@ var ContrastRatioLineBuilder = class {
     this.contrastInfo = contrastInfo;
   }
   drawContrastRatioLine(width, height, level) {
-    const isAPCA = Common4.Settings.Settings.instance().moduleSetting("apca").get();
+    const isAPCA = Common4.Settings.Settings.instance().resolve(SDK2.SDKSettings.apcaSettingDescriptor).get();
     const requiredContrast = isAPCA ? this.contrastInfo.contrastRatioAPCAThreshold() : this.contrastInfo.contrastRatioThreshold(level);
     if (!width || !height || requiredContrast === null) {
       return null;
@@ -921,7 +923,7 @@ var ContrastRatioLineBuilder = class {
     let candidateLuminance = (candidateHSVA2) => {
       return Common4.ColorUtils.luminance(Common4.ColorUtils.blendColors(Common4.Color.Legacy.fromHSVA(candidateHSVA2).rgba(), bgRGBA));
     };
-    if (Common4.Settings.Settings.instance().moduleSetting("apca").get()) {
+    if (Common4.Settings.Settings.instance().resolve(SDK2.SDKSettings.apcaSettingDescriptor).get()) {
       candidateLuminance = (candidateHSVA2) => {
         return Common4.ColorUtils.luminanceAPCA(Common4.ColorUtils.blendColors(Common4.Color.Legacy.fromHSVA(candidateHSVA2).rgba(), bgRGBA));
       };
@@ -1072,7 +1074,7 @@ import * as Common6 from "./../../../../core/common/common.js";
 import * as Host2 from "./../../../../core/host/host.js";
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import * as Platform3 from "./../../../../core/platform/platform.js";
-import * as SDK from "./../../../../core/sdk/sdk.js";
+import * as SDK3 from "./../../../../core/sdk/sdk.js";
 import * as TextUtils from "./../../../../core/text_utils/text_utils.js";
 import * as SrgbOverlay from "./../../../components/srgb_overlay/srgb_overlay.js";
 import { createIcon as createIcon2, Icon as Icon2 } from "./../../../kit/kit.js";
@@ -2999,7 +3001,7 @@ var PaletteGenerator = class {
   constructor(callback) {
     this.callback = callback;
     const stylesheetPromises = [];
-    for (const cssModel of SDK.TargetManager.TargetManager.instance().models(SDK.CSSModel.CSSModel)) {
+    for (const cssModel of SDK3.TargetManager.TargetManager.instance().models(SDK3.CSSModel.CSSModel)) {
       for (const stylesheet of cssModel.allStyleSheets()) {
         stylesheetPromises.push(this.processStylesheet(stylesheet));
       }

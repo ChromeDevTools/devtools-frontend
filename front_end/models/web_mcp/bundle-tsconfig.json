@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/web_mcp"},"files":["../../../../../../front_end/models/web_mcp/web_mcp.ts"],"references":[{"path":"./web_mcp-tsconfig.json"}]}

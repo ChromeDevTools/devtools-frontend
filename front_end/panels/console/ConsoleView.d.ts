@@ -97,6 +97,12 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     wasShown(): void;
     focus(): void;
     focusPrompt(): void;
+    /**
+     * Inserts text into the console prompt (replacing any existing content)
+     * and focuses the prompt. Used by cross-panel features such as
+     * "Edit and resend as fetch".
+     */
+    insertIntoPrompt(text: string): void;
     restoreScrollPositions(): void;
     onResize(): void;
     private hidePromptSuggestBox;

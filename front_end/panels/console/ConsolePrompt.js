@@ -232,6 +232,17 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin(UI.Widget.Wid
             changes: { from: 0, to: this.editor.state.doc.length },
         });
     }
+    /**
+     * Replaces the full prompt content with the given text, places the caret
+     * at the end, and scrolls the editor into view.
+     */
+    insertText(text) {
+        this.editor.dispatch({
+            changes: { from: 0, to: this.editor.state.doc.length, insert: text },
+            selection: { anchor: text.length },
+            scrollIntoView: true,
+        });
+    }
     text() {
         return this.editor.state.doc.toString();
     }

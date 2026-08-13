@@ -1371,7 +1371,7 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
     this.#breakpointManager = breakpointManager;
     this.#breakpointManager.addEventListener(Breakpoints.BreakpointManager.Events.BreakpointAdded, this.#onBreakpointAdded, this);
     this.#breakpointManager.addEventListener(Breakpoints.BreakpointManager.Events.BreakpointRemoved, this.#onBreakpointRemoved, this);
-    this.#breakpointsActiveSetting = settings.moduleSetting("breakpoints-active");
+    this.#breakpointsActiveSetting = settings.resolve(SDK2.SDKSettings.breakpointsActiveSettingDescriptor);
     this.#breakpointsActiveSetting.addChangeListener(this.update, this);
     this.#pauseOnUncaughtExceptionSetting = settings.resolve(SDK2.SDKSettings.pauseOnUncaughtExceptionSettingDescriptor);
     this.#pauseOnUncaughtExceptionSetting.addChangeListener(this.update, this);
@@ -2102,7 +2102,7 @@ import * as StackTrace5 from "./../../models/stack_trace/stack_trace.js";
 import * as Workspace23 from "./../../models/workspace/workspace.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as UI18 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html8, render as render8 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html8, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/callStackSidebarPane.css.js
@@ -2264,7 +2264,7 @@ import * as Common12 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as Badges2 from "./../../models/badges/badges.js";
 import * as Bindings8 from "./../../models/bindings/bindings.js";
@@ -5159,9 +5159,9 @@ __export(SourcesView_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common11 from "./../../core/common/common.js";
-import * as Host7 from "./../../core/host/host.js";
 import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
+import * as Root from "./../../core/root/root.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Bindings7 from "./../../models/bindings/bindings.js";
 import * as Persistence9 from "./../../models/persistence/persistence.js";
@@ -5169,7 +5169,7 @@ import * as Workspace19 from "./../../models/workspace/workspace.js";
 import * as QuickOpen from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as SourceFrame10 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
-import { html as html6, render as render6 } from "./../../ui/lit/lit.js";
+import { html as html6, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 import * as Components2 from "./components/components.js";
 
@@ -5329,8 +5329,9 @@ __export(TabbedEditorContainer_exports, {
   TabbedEditorContainer: () => TabbedEditorContainer
 });
 import * as Common10 from "./../../core/common/common.js";
+import * as Host7 from "./../../core/host/host.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
-import * as Platform9 from "./../../core/platform/platform.js";
+import * as Platform10 from "./../../core/platform/platform.js";
 import * as TextUtils10 from "./../../core/text_utils/text_utils.js";
 import * as Persistence7 from "./../../models/persistence/persistence.js";
 import * as Workspace17 from "./../../models/workspace/workspace.js";
@@ -5339,7 +5340,7 @@ import * as uiI18n2 from "./../../ui/i18n/i18n.js";
 import { Icon as Icon2, Link } from "./../../ui/kit/kit.js";
 import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
-import { html as html5 } from "./../../ui/lit/lit.js";
+import { html as html5, render as render6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon2 from "./../common/common.js";
 import * as Snippets3 from "./../snippets/snippets.js";
@@ -5562,10 +5563,10 @@ function coverageGutter(url) {
         void UI8.ViewManager.ViewManager.instance().showView("coverage").then(() => {
           const view = UI8.ViewManager.ViewManager.instance().view("coverage");
           return view?.widget();
-        }).then((widget) => {
+        }).then((widget2) => {
           const matchFormattedSuffix = url.match(/(.*):formatted$/);
           const urlWithoutFormattedSuffix = matchFormattedSuffix?.[1] || url;
-          widget.selectCoverageItemByUrl(urlWithoutFormattedSuffix);
+          widget2.selectCoverageItemByUrl(urlWithoutFormattedSuffix);
         });
         return true;
       }
@@ -5797,7 +5798,7 @@ function createCSSTooltip(active) {
     arrow: false,
     create(view) {
       let text = active.text;
-      let widget, addListener;
+      let widget2, addListener;
       if (active.type === 0) {
         const spectrum = new ColorPicker.Spectrum.Spectrum();
         addListener = (handler) => {
@@ -5805,44 +5806,44 @@ function createCSSTooltip(active) {
         };
         spectrum.addEventListener("SizeChanged", () => view.requestMeasure());
         spectrum.setColor(active.color);
-        widget = spectrum;
+        widget2 = spectrum;
       } else {
         const spectrum = new InlineEditor.BezierEditor.BezierEditor(active.curve);
-        widget = spectrum;
+        widget2 = spectrum;
         addListener = (handler) => {
           spectrum.addEventListener("BezierChanged", handler);
         };
       }
       const dom = document.createElement("div");
       dom.className = "cm-tooltip-swatchEdit";
-      widget.markAsRoot();
-      widget.show(dom);
-      widget.showWidget();
-      widget.element.addEventListener("keydown", (event) => {
+      widget2.markAsRoot();
+      widget2.show(dom);
+      widget2.showWidget();
+      widget2.element.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
           event.consume();
           view.dispatch({
             effects: setTooltip.of(null),
             changes: text === active.text ? void 0 : { from: active.pos, to: active.pos + text.length, insert: active.text }
           });
-          widget.hideWidget();
+          widget2.hideWidget();
           view.focus();
         }
       });
-      widget.element.addEventListener("focusout", (event) => {
-        if (event.relatedTarget && !widget.element.contains(event.relatedTarget)) {
+      widget2.element.addEventListener("focusout", (event) => {
+        if (event.relatedTarget && !widget2.element.contains(event.relatedTarget)) {
           view.dispatch({ effects: setTooltip.of(null) });
-          widget.hideWidget();
+          widget2.hideWidget();
         }
       }, false);
-      widget.element.addEventListener("mousedown", (event) => event.consume());
+      widget2.element.addEventListener("mousedown", (event) => event.consume());
       return {
         dom,
         resize: false,
         offset: { x: -8, y: 0 },
         mount: () => {
-          widget.focus();
-          widget.wasShown();
+          widget2.focus();
+          widget2.wasShown();
           addListener((event) => {
             view.dispatch({
               changes: { from: active.pos, to: active.pos + text.length, insert: event.data },
@@ -7352,7 +7353,7 @@ var DebuggerPlugin = class extends Plugin {
     await this.setBreakpoint(origin.lineNumber, origin.columnNumber, condition, enabled, isLogpoint);
   }
   async setBreakpoint(lineNumber, columnNumber, condition, enabled, isLogpoint) {
-    Common8.Settings.Settings.instance().moduleSetting("breakpoints-active").set(true);
+    Common8.Settings.Settings.instance().resolve(SDK8.SDKSettings.breakpointsActiveSettingDescriptor).set(true);
     const bp = await this.breakpointManager.setBreakpoint(
       this.uiSourceCode,
       lineNumber,
@@ -7631,16 +7632,16 @@ var ValueDecoration = class extends CodeMirror4.WidgetType {
   }
   toDOM() {
     const formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
-    const widget = document.createElement("div");
-    widget.classList.add("cm-variableValues");
+    const widget2 = document.createElement("div");
+    widget2.classList.add("cm-variableValues");
     let first = true;
     for (const [name, value2] of this.pairs) {
       if (first) {
         first = false;
       } else {
-        UI10.UIUtils.createTextChild(widget, ", ");
+        UI10.UIUtils.createTextChild(widget2, ", ");
       }
-      const nameValuePair = widget.createChild("span");
+      const nameValuePair = widget2.createChild("span");
       UI10.UIUtils.createTextChild(nameValuePair, name + " = ");
       const propertyCount = value2.preview ? value2.preview.properties.length : 0;
       const entryCount = value2.preview?.entries ? value2.preview.entries.length : 0;
@@ -7659,7 +7660,7 @@ var ValueDecoration = class extends CodeMirror4.WidgetType {
         nameValuePair.appendChild(fragment);
       }
     }
-    return widget;
+    return widget2;
   }
 };
 var valueDecorations = defineStatefulDecoration();
@@ -9019,6 +9020,26 @@ function rowMessages(initialMessages) {
 // gen/front_end/panels/sources/TabbedEditorContainer.js
 var UIStrings14 = {
   /**
+   * @description Text to open a file.
+   */
+  openFile: "Open file",
+  /**
+   * @description Text to run commands.
+   */
+  runCommand: "Run command",
+  /**
+   * @description Text in Sources view of the Sources panel.
+   */
+  workspaceDropInAFolderToSyncSources: "To sync edits to the workspace, drop a folder with your sources here or",
+  /**
+   * @description Text in Sources view of the Sources panel.
+   */
+  selectFolder: "Select folder",
+  /**
+   * @description Accessible label for Sources placeholder view actions list.
+   */
+  sourceViewActions: "Source View Actions",
+  /**
    * @description Text in Tabbed editor container of the Sources panel.
    * @example {file.js} PH1
    */
@@ -9059,11 +9080,14 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
   currentView;
   scrollTimer;
   reentrantShow;
-  constructor(delegate, setting, placeholderElement, focusedPlaceholderElement, element) {
+  constructor(delegate, setting, element) {
     super();
     this.delegate = delegate;
     this.tabbedPane = new UI14.TabbedPane.TabbedPane(element);
-    this.tabbedPane.setPlaceholderElement(placeholderElement, focusedPlaceholderElement);
+    const placeholderElement = document.createElement("div");
+    placeholderElement.classList.add("sources-placeholder");
+    this.tabbedPane.setPlaceholderElement(placeholderElement);
+    this.#renderPlaceholder(placeholderElement);
     this.tabbedPane.setTabDelegate(new EditorContainerTabDelegate(this));
     this.tabbedPane.setCloseableTabs(true);
     this.tabbedPane.setAllowTabReorder(true, true);
@@ -9256,7 +9280,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
   }
   titleForFile(uiSourceCode) {
     const maxDisplayNameLength = 30;
-    let title = Platform9.StringUtilities.trimMiddle(uiSourceCode.displayName(true), maxDisplayNameLength);
+    let title = Platform10.StringUtilities.trimMiddle(uiSourceCode.displayName(true), maxDisplayNameLength);
     if (uiSourceCode.isDirty()) {
       title += "*";
     }
@@ -9546,6 +9570,62 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
   generateTabId() {
     return "tab-" + tabId++;
   }
+  #renderPlaceholder(placeholderElement) {
+    const shortcuts = [
+      { actionId: "quick-open.show", description: i18nString13(UIStrings14.openFile) },
+      { actionId: "quick-open.show-command-menu", description: i18nString13(UIStrings14.runCommand) }
+    ];
+    const separator = Host7.Platform.isMac() ? "\u2004" : "\u200A+\u200A";
+    const shortcutElements = shortcuts.map((shortcut) => {
+      const shortcutKeys = UI14.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(shortcut.actionId);
+      if (!shortcutKeys?.[0]) {
+        return {
+          description: shortcut.description,
+          onClick: () => {
+          },
+          keys: []
+        };
+      }
+      const action3 = UI14.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
+      const keys = shortcutKeys[0].descriptors.flatMap((descriptor) => descriptor.name.split(separator));
+      return {
+        description: shortcut.description,
+        onClick: () => {
+          void action3.execute();
+        },
+        keys
+      };
+    });
+    render6(html5`
+    <div class="tabbed-pane-placeholder-row workspace">
+      <span class="icon-container">
+        <devtools-icon name="sync" class="sync-icon"></devtools-icon>
+      </span>
+      <span>
+        ${i18nString13(UIStrings14.workspaceDropInAFolderToSyncSources)}
+        <button @click=${this.#addFileSystemClicked.bind(this)}>${i18nString13(UIStrings14.selectFolder)}</button>
+      </span>
+    </div>
+    <div class="shortcuts-list tabbed-pane-placeholder-row" role="list"
+         aria-label=${i18nString13(UIStrings14.sourceViewActions)}>
+      ${shortcutElements.map((shortcut) => !shortcut.keys.length ? html5`<div class="shortcut-line" role="listitem"></div>` : html5`<div class="shortcut-line" role="listitem">
+            <button @click=${shortcut.onClick}>${shortcut.description}</button>
+            <span class="shortcuts">
+              ${shortcut.keys.map((key) => html5`
+                <span class="keybinds-key"><span>${key}</span></span>
+              `)}
+            </span>
+          </div>`)}
+    </div>`, placeholderElement);
+  }
+  async #addFileSystemClicked() {
+    const result = await Persistence7.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
+    if (!result) {
+      return;
+    }
+    Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.WorkspaceSelectFolder);
+    void UI14.ViewManager.ViewManager.instance().showView("navigator-files");
+  }
   currentFile() {
     return this.#currentFile || null;
   }
@@ -9689,65 +9769,55 @@ var EditorContainerTabDelegate = class {
 // gen/front_end/panels/sources/SourcesView.js
 var UIStrings15 = {
   /**
-   * @description Text to open a file.
+   * @description Tooltip for the navigator toggle in the Sources panel. Command to open or show the
+   * sidebar containing the navigator tool.
    */
-  openFile: "Open file",
+  showNavigator: "Show navigator",
   /**
-   * @description Text to run commands.
+   * @description Tooltip for the navigator toggle in the Sources panel. Command to close or hide
+   * the sidebar containing the navigator tool.
    */
-  runCommand: "Run command",
+  hideNavigator: "Hide navigator",
   /**
-   * @description Text in Sources view of the Sources panel.
+   * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
    */
-  workspaceDropInAFolderToSyncSources: "To sync edits to the workspace, drop a folder with your sources here or",
+  navigatorShown: "Navigator sidebar shown",
   /**
-   * @description Text in Sources view of the Sources panel.
+   * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
    */
-  selectFolder: "Select folder",
+  navigatorHidden: "Navigator sidebar hidden",
   /**
-   * @description Accessible label for Sources placeholder view actions list.
+   * @description Screen reader announcement when the debugger sidebar is shown in the Sources panel.
    */
-  sourceViewActions: "Source View Actions"
+  debuggerShown: "Debugger sidebar shown",
+  /**
+   * @description Screen reader announcement when the debugger sidebar is hidden in the Sources panel.
+   */
+  debuggerHidden: "Debugger sidebar hidden",
+  /**
+   * @description Tooltip for the debugger toggle in the Sources panel. Command to open or show the
+   * sidebar containing the debugger tool.
+   */
+  showDebugger: "Show debugger",
+  /**
+   * @description Tooltip for the debugger toggle in the Sources panel. Command to close or hide the
+   * sidebar containing the debugger tool.
+   */
+  hideDebugger: "Hide debugger"
 };
 var str_15 = i18n29.i18n.registerUIStrings("panels/sources/SourcesView.ts", UIStrings15);
 var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var DEFAULT_VIEW5 = (input, output, target) => {
-  render6(html6`
-    <devtools-widget class="vbox flex-auto" ${UI15.Widget.widget(() => input.searchableView)}>
-      <devtools-widget class="vbox flex-auto" ${UI15.Widget.widget(() => input.editorContainer.view)}>
+var { widget } = UI15.Widget;
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  render7(html6`
+    <devtools-widget class="vbox flex-auto" ${widget(() => input.searchableView)}>
+      <devtools-widget class="vbox flex-auto" ${widget(() => input.editorContainer.view)}>
       </devtools-widget>
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging9.toolbar("bottom")}>
       ${input.scriptViewToolbar}
       ${input.bottomToolbar}
     </div>`, target);
-  render6(html6`
-    <div class="tabbed-pane-placeholder-row workspace">
-      <span class="icon-container">
-        <devtools-icon name="sync" class="sync-icon"></devtools-icon>
-      </span>
-      <span>
-        ${i18nString14(UIStrings15.workspaceDropInAFolderToSyncSources)}
-        <button @click=${() => output.onSelectFolderClicked()}>${i18nString14(UIStrings15.selectFolder)}</button>
-      </span>
-    </div>
-
-    <div class="shortcuts-list tabbed-pane-placeholder-row" role="list"
-         aria-label=${i18nString14(UIStrings15.sourceViewActions)}>
-      ${input.shortcuts.map((shortcut) => {
-    if (!shortcut.keys.length) {
-      return html6`<div class="shortcut-line" role="listitem"></div>`;
-    }
-    return html6`<div class="shortcut-line" role="listitem">
-            <button @click=${shortcut.onClick}>${shortcut.description}</button>
-            <span class="shortcuts">
-              ${shortcut.keys.map((key) => html6`
-                <span class="keybinds-key"><span>${key}</span></span>
-              `)}
-            </span>
-          </div>`;
-  })}
-    </div>`, input.placeholderElement);
 };
 var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(UI15.Widget.VBox) {
   #searchableView;
@@ -9758,21 +9828,24 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
   #scriptViewToolbar;
   #bottomToolbar;
   toolbarChangedListener;
-  focusedPlaceholderElement;
   searchView;
   searchConfig;
-  #leftToolbarItems = [];
-  #rightToolbarItems = [];
-  #placeholderElement;
   #view = DEFAULT_VIEW5;
+  #toggleNavigatorSidebarButton;
+  #toggleDebuggerSidebarButton;
+  #onToggleNavigatorSidebar;
+  #onToggleDebuggerSidebar;
+  #isNavigatorSidebarOpen = false;
+  #isDebuggerSidebarOpen = false;
+  #navigatorSidebarInitialized = false;
+  #debuggerSidebarInitialized = false;
+  #isVertical = false;
   constructor() {
     super({ jslog: `${VisualLogging9.pane("editor").track({ keydown: "Escape" })}` });
     this.registerRequiredCSS(sourcesView_css_default);
     this.element.id = "sources-panel-sources-view";
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
     const workspace = Workspace19.Workspace.WorkspaceImpl.instance();
-    this.#placeholderElement = document.createElement("div");
-    this.#placeholderElement.classList.add("sources-placeholder");
     this.sourceViewByUISourceCode = /* @__PURE__ */ new Map();
     this.historyManager = new EditingLocationHistoryManager(this);
     this.#scriptViewToolbar = document.createElement("devtools-toolbar");
@@ -9781,8 +9854,18 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     this.toolbarChangedListener = null;
     this.#searchableView = new UI15.SearchableView.SearchableView(this, this, "sources-view-search-config");
     this.#searchableView.setMinimalSearchQuerySize(0);
+    this.#toggleNavigatorSidebarButton = new UI15.Toolbar.ToolbarButton(i18nString14(UIStrings15.showNavigator), "left-panel-open");
+    this.#toggleNavigatorSidebarButton.addEventListener("Click", () => {
+      this.#onToggleNavigatorSidebar?.();
+    });
+    this.#toggleNavigatorSidebarButton.element.setAttribute("jslog", `${VisualLogging9.toggleSubpane().track({ click: true }).context("navigator")}`);
+    this.#toggleDebuggerSidebarButton = new UI15.Toolbar.ToolbarButton(i18nString14(UIStrings15.showDebugger), "right-panel-open");
+    this.#toggleDebuggerSidebarButton.addEventListener("Click", () => {
+      this.#onToggleDebuggerSidebar?.();
+    });
+    this.#toggleDebuggerSidebarButton.element.setAttribute("jslog", `${VisualLogging9.toggleSubpane().track({ click: true }).context("debugger")}`);
     const previouslyViewedFilesSetting = Common11.Settings.Settings.instance().createLocalSetting("previously-viewed-files", []);
-    this.editorContainer = new TabbedEditorContainer(this, previouslyViewedFilesSetting, this.#placeholderElement, this.focusedPlaceholderElement);
+    this.editorContainer = new TabbedEditorContainer(this, previouslyViewedFilesSetting);
     this.editorContainer.addEventListener("EditorSelected", this.editorSelected, this);
     this.editorContainer.addEventListener("EditorClosed", this.editorClosed, this);
     UI15.UIUtils.startBatchUpdate();
@@ -9821,60 +9904,16 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
   }
   performUpdate() {
     const input = {
-      placeholderElement: this.#placeholderElement,
       scriptViewToolbar: this.#scriptViewToolbar,
       bottomToolbar: this.#bottomToolbar,
-      leftToolbarItems: this.#leftToolbarItems,
-      rightToolbarItems: this.#rightToolbarItems,
       searchableView: this.#searchableView,
-      editorContainer: this.editorContainer,
-      shortcuts: this.#getPlaceholderShortcuts()
+      editorContainer: this.editorContainer
     };
-    const output = {
-      onSelectFolderClicked: () => {
-        void this.addFileSystemClicked();
-      }
-    };
-    this.#view(input, output, this.element);
+    this.#view(input, void 0, this.element);
   }
   onDetach() {
     super.onDetach();
     this.editorContainer?.view.detachChildWidgets();
-  }
-  async addFileSystemClicked() {
-    const result = await Persistence9.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
-    if (!result) {
-      return;
-    }
-    Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.WorkspaceSelectFolder);
-    void UI15.ViewManager.ViewManager.instance().showView("navigator-files");
-  }
-  #getPlaceholderShortcuts() {
-    const shortcuts = [
-      { actionId: "quick-open.show", description: i18nString14(UIStrings15.openFile) },
-      { actionId: "quick-open.show-command-menu", description: i18nString14(UIStrings15.runCommand) }
-    ];
-    const separator = Host7.Platform.isMac() ? "\u2004" : "\u200A+\u200A";
-    return shortcuts.map((shortcut) => {
-      const shortcutKeys = UI15.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(shortcut.actionId);
-      if (!shortcutKeys?.[0]) {
-        return {
-          description: shortcut.description,
-          onClick: () => {
-          },
-          keys: []
-        };
-      }
-      const action3 = UI15.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
-      const keys = shortcutKeys[0].descriptors.flatMap((descriptor) => descriptor.name.split(separator));
-      return {
-        description: shortcut.description,
-        onClick: () => {
-          void action3.execute();
-        },
-        keys
-      };
-    });
   }
   static defaultUISourceCodeScores() {
     const defaultScores = /* @__PURE__ */ new Map();
@@ -9887,33 +9926,79 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     }
     return defaultScores;
   }
-  set leftToolbarItems(items) {
-    this.#leftToolbarItems = items;
-    const container = this.editorContainer;
-    if (container) {
-      container.leftToolbar().removeToolbarItems();
-      items.forEach((item) => container.leftToolbar().appendToolbarItem(item));
+  set onToggleNavigatorSidebar(callback) {
+    this.#onToggleNavigatorSidebar = callback;
+  }
+  set onToggleDebuggerSidebar(callback) {
+    this.#onToggleDebuggerSidebar = callback;
+  }
+  set isNavigatorSidebarOpen(isOpen) {
+    const isInitialized = this.#navigatorSidebarInitialized;
+    this.#navigatorSidebarInitialized = true;
+    if (this.#isNavigatorSidebarOpen === isOpen) {
+      return;
+    }
+    this.#isNavigatorSidebarOpen = isOpen;
+    this.#updateNavigatorSidebarButton();
+    if (isInitialized) {
+      UI15.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString14(UIStrings15.navigatorShown) : i18nString14(UIStrings15.navigatorHidden));
     }
   }
-  get leftToolbarItems() {
-    return this.#leftToolbarItems;
-  }
-  set rightToolbarItems(items) {
-    this.#rightToolbarItems = items;
-    const container = this.editorContainer;
-    if (container) {
-      container.rightToolbar().removeToolbarItems();
-      items.forEach((item) => container.rightToolbar().appendToolbarItem(item));
+  set isDebuggerSidebarOpen(isOpen) {
+    const isInitialized = this.#debuggerSidebarInitialized;
+    this.#debuggerSidebarInitialized = true;
+    if (this.#isDebuggerSidebarOpen === isOpen) {
+      return;
+    }
+    this.#isDebuggerSidebarOpen = isOpen;
+    this.#updateDebuggerSidebarButton();
+    if (isInitialized) {
+      UI15.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString14(UIStrings15.debuggerShown) : i18nString14(UIStrings15.debuggerHidden));
     }
   }
-  get rightToolbarItems() {
-    return this.#rightToolbarItems;
+  #updateNavigatorSidebarButton() {
+    const navHidden = !this.#isNavigatorSidebarOpen;
+    this.#toggleNavigatorSidebarButton.setGlyph(navHidden ? "left-panel-open" : "left-panel-close");
+    this.#toggleNavigatorSidebarButton.setTitle(navHidden ? i18nString14(UIStrings15.showNavigator) : i18nString14(UIStrings15.hideNavigator));
   }
-  bottomToolbar() {
-    return this.#bottomToolbar;
+  #updateDebuggerSidebarButton() {
+    const debuggerHidden = !this.#isDebuggerSidebarOpen;
+    const debuggerGlyph = debuggerHidden ? this.#isVertical ? "right-panel-open" : "bottom-panel-open" : this.#isVertical ? "right-panel-close" : "bottom-panel-close";
+    this.#toggleDebuggerSidebarButton.setGlyph(debuggerGlyph);
+    this.#toggleDebuggerSidebarButton.setTitle(debuggerHidden ? i18nString14(UIStrings15.showDebugger) : i18nString14(UIStrings15.hideDebugger));
   }
-  scriptViewToolbar() {
-    return this.#scriptViewToolbar;
+  toggleDebuggerSidebarButtonEnabled(enabled) {
+    this.#toggleDebuggerSidebarButton.setEnabled(enabled);
+  }
+  setLayoutMode(splitWidget, isVertical, isInWrapper) {
+    this.#bottomToolbar.removeToolbarItems();
+    if (isVertical || isInWrapper) {
+      splitWidget.uninstallResizer(this.#scriptViewToolbar);
+    } else {
+      splitWidget.installResizer(this.#scriptViewToolbar);
+    }
+    this.#isVertical = isVertical;
+    this.#updateNavigatorSidebarButton();
+    this.#updateDebuggerSidebarButton();
+    const leftItems = [];
+    const rightItems = [];
+    if (!isInWrapper) {
+      leftItems.push(this.#toggleNavigatorSidebarButton);
+      if (!Root.Runtime.Runtime.isTraceApp()) {
+        if (isVertical) {
+          rightItems.push(this.#toggleDebuggerSidebarButton);
+        } else {
+          this.#bottomToolbar.appendToolbarItem(this.#toggleDebuggerSidebarButton);
+        }
+      }
+    }
+    if (this.editorContainer) {
+      const editorContainer = this.editorContainer;
+      editorContainer.leftToolbar().removeToolbarItems();
+      leftItems.forEach((item) => editorContainer.leftToolbar().appendToolbarItem(item));
+      editorContainer.rightToolbar().removeToolbarItems();
+      rightItems.forEach((item) => editorContainer.rightToolbar().appendToolbarItem(item));
+    }
   }
   wasShown() {
     super.wasShown();
@@ -10020,7 +10105,7 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
         } else {
           const wrapper = document.createElement("div");
           wrapper.style.display = "contents";
-          render6(items, wrapper);
+          render7(items, wrapper);
           this.#scriptViewToolbar.appendToolbarItem(new UI15.Toolbar.ToolbarItem(wrapper));
         }
       });
@@ -10058,14 +10143,14 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     this.sourceViewByUISourceCode.set(uiSourceCode, sourceView);
     return sourceView;
   }
-  #sourceViewTypeForWidget(widget) {
-    if (widget instanceof SourceFrame10.ImageView.ImageView) {
+  #sourceViewTypeForWidget(widget2) {
+    if (widget2 instanceof SourceFrame10.ImageView.ImageView) {
       return "ImageView";
     }
-    if (widget instanceof SourceFrame10.FontView.FontView) {
+    if (widget2 instanceof SourceFrame10.FontView.FontView) {
       return "FontView";
     }
-    if (widget instanceof Components2.HeadersView.HeadersView) {
+    if (widget2 instanceof Components2.HeadersView.HeadersView) {
       return "HeadersView";
     }
     return "SourceView";
@@ -10086,9 +10171,9 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
   }
   #uiSourceCodeTitleChanged(event) {
     const uiSourceCode = event.data;
-    const widget = this.sourceViewByUISourceCode.get(uiSourceCode);
-    if (widget) {
-      if (this.#sourceViewTypeForWidget(widget) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
+    const widget2 = this.sourceViewByUISourceCode.get(uiSourceCode);
+    if (widget2) {
+      if (this.#sourceViewTypeForWidget(widget2) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
         this.removeUISourceCodes([uiSourceCode]);
         this.#uiSourceCodes.add(uiSourceCode);
         void this.showSourceLocation(uiSourceCode);
@@ -10421,7 +10506,7 @@ var threadsSidebarPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./threadsSidebarPane.css")} */`;
 
 // gen/front_end/panels/sources/ThreadsSidebarPane.js
-var { html: html7, render: render7, nothing: nothing4 } = Lit3;
+var { html: html7, render: render8, nothing: nothing4 } = Lit3;
 var UIStrings16 = {
   /**
    * @description Text in Threads sidebar of the Sources panel.
@@ -10431,7 +10516,7 @@ var UIStrings16 = {
 var str_16 = i18n31.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var DEFAULT_VIEW6 = (input, _output, target) => {
-  render7(html7`
+  render8(html7`
     <style>${threadsSidebarPane_css_default}</style>
     <div role="listbox">
     ${input.threads.map((thread) => html7`
@@ -10527,42 +10612,6 @@ var UIStrings17 = {
    * @description Text to show more options.
    */
   moreOptions: "More options",
-  /**
-   * @description Tooltip for the navigator toggle in the Sources panel. Command to open or show the
-   * sidebar containing the navigator tool.
-   */
-  showNavigator: "Show navigator",
-  /**
-   * @description Tooltip for the navigator toggle in the Sources panel. Command to close or hide
-   * the sidebar containing the navigator tool.
-   */
-  hideNavigator: "Hide navigator",
-  /**
-   * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
-   */
-  navigatorShown: "Navigator sidebar shown",
-  /**
-   * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
-   */
-  navigatorHidden: "Navigator sidebar hidden",
-  /**
-   * @description Screen reader announcement when the debugger sidebar is shown in the Sources panel.
-   */
-  debuggerShown: "Debugger sidebar shown",
-  /**
-   * @description Screen reader announcement when the debugger sidebar is hidden in the Sources panel.
-   */
-  debuggerHidden: "Debugger sidebar hidden",
-  /**
-   * @description Tooltip for the debugger toggle in the Sources panel. Command to open or show the
-   * sidebar containing the debugger tool.
-   */
-  showDebugger: "Show debugger",
-  /**
-   * @description Tooltip for the debugger toggle in the Sources panel. Command to close or hide the
-   * sidebar containing the debugger tool.
-   */
-  hideDebugger: "Hide debugger",
   /**
    * @description Text in Sources panel.
    */
@@ -10667,8 +10716,6 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   editorView;
   navigatorTabbedLocation;
   #sourcesView;
-  toggleNavigatorSidebarButton;
-  toggleDebuggerSidebarButton;
   threadsSidebarPane;
   watchSidebarPane;
   callstackPane;
@@ -10698,7 +10745,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     const initialDebugSidebarWidth = 225;
     this.splitWidget = new UI17.SplitWidget.SplitWidget(true, true, "sources-panel-split-view-state", initialDebugSidebarWidth);
     this.splitWidget.show(this.element);
-    if (Root.Runtime.Runtime.isTraceApp()) {
+    if (Root2.Runtime.Runtime.isTraceApp()) {
       this.splitWidget.hideSidebar();
     } else {
       this.splitWidget.enableShowModeSaving();
@@ -10730,8 +10777,16 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     }
     this.#sourcesView = new SourcesView();
     this.#sourcesView.addEventListener("EditorSelected", this.editorSelected.bind(this));
-    this.toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(i18nString16(UIStrings17.showNavigator), i18nString16(UIStrings17.hideNavigator), i18nString16(UIStrings17.navigatorShown), i18nString16(UIStrings17.navigatorHidden), "navigator");
-    this.toggleDebuggerSidebarButton = this.splitWidget.createShowHideSidebarButton(i18nString16(UIStrings17.showDebugger), i18nString16(UIStrings17.hideDebugger), i18nString16(UIStrings17.debuggerShown), i18nString16(UIStrings17.debuggerHidden), "debugger");
+    this.#sourcesView.onToggleNavigatorSidebar = this.toggleNavigatorSidebar.bind(this);
+    this.#sourcesView.onToggleDebuggerSidebar = this.toggleDebuggerSidebar.bind(this);
+    this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
+    this.#sourcesView.isDebuggerSidebarOpen = this.splitWidget.sidebarIsShowing();
+    this.editorView.addEventListener("ShowModeChanged", () => {
+      this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
+    });
+    this.splitWidget.addEventListener("ShowModeChanged", () => {
+      this.#sourcesView.isDebuggerSidebarOpen = this.splitWidget.sidebarIsShowing();
+    });
     this.editorView.setMainWidget(this.#sourcesView);
     this.threadsSidebarPane = null;
     this.watchSidebarPane = UI17.ViewManager.ViewManager.instance().view("sources.watch");
@@ -10740,7 +10795,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     this.updateSidebarPosition();
     void this.updateDebuggerButtonsAndStatus();
     this.setTarget(UI17.Context.Context.instance().flavor(SDK11.Target.Target));
-    Common12.Settings.Settings.instance().moduleSetting("breakpoints-active").addChangeListener(this.breakpointsActiveStateChanged, this);
+    Common12.Settings.Settings.instance().resolve(SDK11.SDKSettings.breakpointsActiveSettingDescriptor).addChangeListener(this.breakpointsActiveStateChanged, this);
     UI17.Context.Context.instance().addFlavorChangeListener(SDK11.Target.Target, this.onCurrentTargetChanged, this);
     UI17.Context.Context.instance().addFlavorChangeListener(StackTrace3.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
     SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.DebuggerWasEnabled, this.debuggerWasEnabled, this);
@@ -10760,27 +10815,8 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     return sourcesPanelInstance;
   }
   static updateResizerAndSidebarButtons(panel2) {
-    const leftItems = [];
-    const rightItems = [];
-    panel2.#sourcesView.bottomToolbar().removeToolbarItems();
-    const isInWrapper = UI17.Context.Context.instance().flavor(QuickSourceView) && !UI17.InspectorView.InspectorView.instance().isDrawerMinimized();
-    if (panel2.splitWidget.isVertical() || isInWrapper) {
-      panel2.splitWidget.uninstallResizer(panel2.#sourcesView.scriptViewToolbar());
-    } else {
-      panel2.splitWidget.installResizer(panel2.#sourcesView.scriptViewToolbar());
-    }
-    if (!isInWrapper) {
-      leftItems.push(panel2.toggleNavigatorSidebarButton);
-      if (!Root.Runtime.Runtime.isTraceApp()) {
-        if (panel2.splitWidget.isVertical()) {
-          rightItems.push(panel2.toggleDebuggerSidebarButton);
-        } else {
-          panel2.#sourcesView.bottomToolbar().appendToolbarItem(panel2.toggleDebuggerSidebarButton);
-        }
-      }
-    }
-    panel2.#sourcesView.leftToolbarItems = leftItems;
-    panel2.#sourcesView.rightToolbarItems = rightItems;
+    const isInWrapper = Boolean(UI17.Context.Context.instance().flavor(QuickSourceView)) && !UI17.InspectorView.InspectorView.instance().isDrawerMinimized();
+    panel2.#sourcesView.setLayoutMode(panel2.splitWidget, panel2.splitWidget.isVertical(), isInWrapper);
   }
   targetAdded(_target) {
     this.showThreadsIfNeeded();
@@ -10808,7 +10844,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     } else {
       this.#paused = false;
       this.clearInterface();
-      this.toggleDebuggerSidebarButton.setEnabled(true);
+      this.#sourcesView.toggleDebuggerSidebarButtonEnabled(true);
     }
   }
   onCurrentTargetChanged({ data: target }) {
@@ -10895,7 +10931,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     this.#paused = true;
     void this.updateDebuggerButtonsAndStatus();
     UI17.Context.Context.instance().setFlavor(SDK11.DebuggerModel.DebuggerPausedDetails, details);
-    this.toggleDebuggerSidebarButton.setEnabled(false);
+    this.#sourcesView.toggleDebuggerSidebarButtonEnabled(false);
     this.revealDebuggerSidebar();
     const pausedTarget = details.debuggerModel.target();
     if (this.threadsSidebarPane && this.#lastPausedTarget?.deref() !== pausedTarget && pausedTarget !== SDK11.TargetManager.TargetManager.instance().primaryPageTarget()) {
@@ -10939,7 +10975,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     }
     this.#paused = false;
     this.clearInterface();
-    this.toggleDebuggerSidebarButton.setEnabled(true);
+    this.#sourcesView.toggleDebuggerSidebarButtonEnabled(true);
     this.switchToPausedTargetTimeout = window.setTimeout(this.switchToPausedTarget.bind(this, debuggerModel), 500);
   }
   debuggerWasEnabled(event) {
@@ -11161,10 +11197,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     }
   }
   toggleBreakpointsActive() {
-    Common12.Settings.Settings.instance().moduleSetting("breakpoints-active").set(!Common12.Settings.Settings.instance().moduleSetting("breakpoints-active").get());
+    const setting = Common12.Settings.Settings.instance().resolve(SDK11.SDKSettings.breakpointsActiveSettingDescriptor);
+    setting.set(!setting.get());
   }
   breakpointsActiveStateChanged() {
-    const active = Common12.Settings.Settings.instance().moduleSetting("breakpoints-active").get();
+    const active = Common12.Settings.Settings.instance().resolve(SDK11.SDKSettings.breakpointsActiveSettingDescriptor).get();
     this.toggleBreakpointsActiveAction.setToggled(!active);
     this.#sourcesView.toggleBreakpointsActiveState(active);
   }
@@ -11395,7 +11432,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     this.splitWidget.setVertical(!vertically);
     this.splitWidget.element.classList.toggle("sources-split-view-vertical", vertically);
     _SourcesPanel.updateResizerAndSidebarButtons(this);
-    if (Root.Runtime.Runtime.isTraceApp()) {
+    if (Root2.Runtime.Runtime.isTraceApp()) {
       return;
     }
     const vbox = new UI17.Widget.VBox();
@@ -11741,7 +11778,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
       this.requestUpdate();
     };
-    render8(html8`
+    render9(html8`
       <style>${callStackSidebarPane_css_default}</style>
       <div class='ignore-listed-message' ${ref2(ignoreListMessageRef)}>
         <label class='ignore-listed-message-label'>
@@ -13328,7 +13365,7 @@ import * as StackTrace7 from "./../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
-import { html as html13, nothing as nothing7, render as render9 } from "./../../ui/lit/lit.js";
+import { html as html13, nothing as nothing7, render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/scopeChainSidebarPane.css.js
@@ -13437,7 +13474,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
             ${objectTree.expanded ? ObjectUI3.ObjectPropertiesSection.renderObjectTree(objectTree, input.linkifier, emptyPlaceholder) : html13`<ul role="group"></ul>`}
           </li>`;
   };
-  render9(
+  render10(
     // clang-format off
     html13`
     <style>${scopeChainSidebarPane_css_default}</style>
@@ -14132,7 +14169,7 @@ var objectValue_css_default = `/*
 // gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html14, nothing as nothing8, render as render10 } from "./../../ui/lit/lit.js";
+import { Directives as Directives5, html as html14, nothing as nothing8, render as render11 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/watchExpressionsSidebarPane.css.js
@@ -14452,7 +14489,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
           </ul>`}
       </li>`
   );
-  render10(
+  render11(
     // clang-format off
     html14`
       ${input.watchExpressions.length === 0 ? html14`<div class=gray-info-message tabindex=-1 >

@@ -3362,6 +3362,9 @@ var UserMetrics = class {
   resendRequest(resourceType) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ResendRequest", resourceType, ResendRequestType2.MAX_VALUE);
   }
+  editResendRequest(type) {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.EditResendRequest", type, ResendRequestType2.MAX_VALUE);
+  }
   keybindSetSettingChanged(keybindSet) {
     const value = KeybindSetSettings2[keybindSet] || 0;
     InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.KeybindSetSettingChanged", value, KeybindSetSettings2.MAX_VALUE);

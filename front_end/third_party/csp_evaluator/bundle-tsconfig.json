@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/third_party/csp_evaluator"},"files":["../../../../../../front_end/third_party/csp_evaluator/csp_evaluator.ts"],"references":[{"path":"./package/csp_evaluator-tsconfig.json"}]}

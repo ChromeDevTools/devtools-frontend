@@ -10,7 +10,6 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import type { DirectiveResult } from '../../ui/lit/lit.js';
-import { type ElementsTreeOutline } from './ElementsTreeOutline.js';
 declare const enum TagType {
     OPENING = "OPENING_TAG",
     CLOSING = "CLOSING_TAG"
@@ -97,26 +96,63 @@ export interface Decoration {
     color: string;
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+type View = typeof DEFAULT_VIEW;
 export declare class ElementsTreeWidget extends UI.Widget.Widget {
     #private;
-    treeElement: ElementsTreeElement & {
-        treeOutline: ElementsTreeOutline | null;
-    };
-    nodeInternal: SDK.DOMModel.DOMNode;
+    isClosingTag: boolean;
+    isXMLMimeType: boolean;
+    disableEdits: boolean;
+    showAIButton: boolean;
+    isDOMNodeSelected: boolean;
+    expand?: () => void;
+    collapse?: () => void;
+    selectTreeElement?: (omitFocus?: boolean, selectedByUser?: boolean) => boolean | void;
+    expandRecursively?: (maxDepth?: number) => Promise<void>;
+    collapseChildren?: () => void;
+    childCount?: () => number;
+    closingTagElement?: () => Element | null;
+    updateShadowRootDepth?: (depth: number) => void;
+    computeLeftIndent?: () => number;
+    setChildrenListElementVisible?: (visible: boolean) => void;
+    findStartTagWidget?: () => ElementsTreeWidget | null;
+    selectDOMNode?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
+    revealInTopLayer?: (node: SDK.DOMModel.DOMNode) => void;
+    showContextMenu?: (event: Event) => void;
+    populateTreeElement?: () => Promise<void>;
+    updateNodeElementToIssue?: (nodeElement: Element, issues: IssuesManager.Issue.Issue[]) => void;
+    performCopyOrCut?: (isCut: boolean, node: SDK.DOMModel.DOMNode, isElement?: boolean) => void;
+    duplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
+    pasteNode?: (node: SDK.DOMModel.DOMNode) => void;
+    canPaste?: (node: SDK.DOMModel.DOMNode) => boolean;
+    toggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
+    isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
+    selectNodeAfterEdit?: (wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null) => ElementsTreeWidget | null;
+    runPendingUpdates?: () => void;
+    focusOutline?: () => void;
+    setMultilineEditing?: (multilineEditing: EditorHandles | null) => void;
+    visibleWidth?: () => number;
     private searchQuery;
     private readonly decorationsThrottler;
     private inClipboard;
     editing: EditorHandles | null;
     expandAllButtonElement: UI.TreeOutline.TreeElement | null;
-    constructor(treeElement: ElementsTreeElement);
-    static animateOnDOMUpdate(treeElement: ElementsTreeElement): void;
+    get node(): SDK.DOMModel.DOMNode;
+    set node(node: SDK.DOMModel.DOMNode);
+    get expanded(): boolean;
+    set expanded(expanded: boolean);
+    get isExpandable(): boolean;
+    set isExpandable(isExpandable: boolean);
+    get selected(): boolean;
+    set selected(selected: boolean);
+    get tagTypeContext(): TagTypeContext;
+    constructor(element?: HTMLElement, view?: View);
     static visibleShadowRoots(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[];
     static canShowInlineText(node: SDK.DOMModel.DOMNode): boolean;
     static populateForcedPseudoStateItems(contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void;
+    animateOnDOMUpdate(): void;
     performUpdate(): void;
     highlightAttribute(attributeName: string): void;
     isDisplayContents(): boolean;
-    node(): SDK.DOMModel.DOMNode;
     get isEditing(): boolean;
     highlightSearchResults(searchQuery: string): void;
     hideSearchHighlights(): void;
@@ -137,13 +173,11 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     onexpand(): void;
     oncollapse(): void;
     onselect(selectedByUser?: boolean): boolean;
-    ondelete(): boolean;
     onenter(): boolean;
     ondblclick(event: Event): boolean;
     hasEditableNode(): boolean;
     private insertInLastAttributePosition;
     private startEditingTarget;
-    private showContextMenu;
     private revealHTMLInSources;
     populateTagContextMenu(contextMenu: UI.ContextMenu.ContextMenu, event: Event): Promise<void>;
     populatePseudoElementContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void;
@@ -168,7 +202,6 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     editingCancelled(_element: Element, _tagName: string | null): void;
     private distinctClosingTagElement;
     updateTitle(updateRecord?: Elements.ElementUpdateRecord.ElementUpdateRecord | null): void;
-    private computeLeftIndent;
     updateDecorations(): void;
     remove(): Promise<void>;
     toggleEditAsHTML(callback?: ((arg0: boolean) => void), startEditing?: boolean): void;
@@ -181,10 +214,11 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     updateAdorners(): void;
 }
 export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
+    #private;
     widget: ElementsTreeWidget;
     widgetWrapper: HTMLElement;
     nodeInternal: SDK.DOMModel.DOMNode;
-    tagTypeContext: TagTypeContext;
+    get tagTypeContext(): TagTypeContext;
     constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean);
     highlightSearchResults(searchQuery: string): void;
     hideSearchHighlights(): void;
@@ -215,6 +249,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     oncollapse(): void;
     select(omitFocus?: boolean, selectedByUser?: boolean): boolean;
     onselect(selectedByUser?: boolean): boolean;
+    deselect(): void;
     ondelete(): boolean;
     onenter(): boolean;
     selectOnMouseDown(event: MouseEvent): void;

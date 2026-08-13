@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../../../core/common/common.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
 export class ContrastOverlay {
     contrastInfo;
@@ -18,7 +19,7 @@ export class ContrastOverlay {
         this.visible = false;
         this.contrastRatioSVG = UI.UIUtils.createSVGChild(colorElement, 'svg', 'spectrum-contrast-container fill');
         this.contrastRatioLines = new Map();
-        if (Common.Settings.Settings.instance().moduleSetting('apca').get()) {
+        if (Common.Settings.Settings.instance().resolve(SDK.SDKSettings.apcaSettingDescriptor).get()) {
             this.contrastRatioLines.set('APCA', UI.UIUtils.createSVGChild(this.contrastRatioSVG, 'path', 'spectrum-contrast-line'));
         }
         else {
@@ -36,7 +37,7 @@ export class ContrastOverlay {
         if (!this.visible || this.contrastInfo.isNull()) {
             return;
         }
-        if (Common.Settings.Settings.instance().moduleSetting('apca').get() &&
+        if (Common.Settings.Settings.instance().resolve(SDK.SDKSettings.apcaSettingDescriptor).get() &&
             this.contrastInfo.contrastRatioAPCA() === null) {
             return;
         }
@@ -73,7 +74,7 @@ export class ContrastRatioLineBuilder {
         this.contrastInfo = contrastInfo;
     }
     drawContrastRatioLine(width, height, level) {
-        const isAPCA = Common.Settings.Settings.instance().moduleSetting('apca').get();
+        const isAPCA = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.apcaSettingDescriptor).get();
         const requiredContrast = isAPCA ? this.contrastInfo.contrastRatioAPCAThreshold() : this.contrastInfo.contrastRatioThreshold(level);
         if (!width || !height || requiredContrast === null) {
             return null;
@@ -112,7 +113,7 @@ export class ContrastRatioLineBuilder {
         let candidateLuminance = (candidateHSVA) => {
             return Common.ColorUtils.luminance(Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
         };
-        if (Common.Settings.Settings.instance().moduleSetting('apca').get()) {
+        if (Common.Settings.Settings.instance().resolve(SDK.SDKSettings.apcaSettingDescriptor).get()) {
             candidateLuminance = (candidateHSVA) => {
                 return Common.ColorUtils.luminanceAPCA(Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
             };

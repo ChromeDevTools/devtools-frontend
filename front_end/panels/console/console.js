@@ -948,6 +948,7 @@ import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import { nothing as nothing3, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import * as Elements from "./../elements/elements.js";
 
 // gen/front_end/panels/console/consoleView.css.js
 var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
@@ -2330,6 +2331,16 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       UI3.UIUtils.createTextChild(anchorWrapperElement, " ");
       return anchorWrapperElement;
     }
+    const affectedResourceElements = this.createAffectedResourceLinks();
+    if (affectedResourceElements.length) {
+      const anchorWrapperElement = document.createElement("span");
+      anchorWrapperElement.classList.add("console-message-anchor");
+      for (const element of affectedResourceElements) {
+        anchorWrapperElement.append(element);
+      }
+      UI3.UIUtils.createTextChild(anchorWrapperElement, " ");
+      return anchorWrapperElement;
+    }
     return null;
   }
   buildMessageWithStackTrace(runtimeModel) {
@@ -2605,21 +2616,40 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (!domModel) {
       return result;
     }
-    void domModel.pushObjectAsNodeToFrontend(remoteObject).then(async (node) => {
+    void domModel.pushObjectAsNodeToFrontend(remoteObject).then((node) => {
       if (!node) {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
         return;
       }
-      const renderResult2 = await UI3.UIUtils.Renderer.render(node);
-      if (renderResult2) {
-        this.selectableChildren.push(renderResult2);
-        renderResult2.element.addEventListener("dimensionschanged", () => {
-          this.messageResized({ data: renderResult2.element });
-        });
-        result.appendChild(renderResult2.element);
-      } else {
-        result.appendChild(this.formatParameterAsObject(remoteObject, false));
-      }
+      const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+        /* omitRootDOMNode: */
+        false,
+        /* selectEnabled: */
+        true,
+        /* hideGutter: */
+        true
+      );
+      treeOutline.rootDOMNode = node;
+      treeOutline.deindentSingleNode();
+      treeOutline.setVisible(true);
+      treeOutline.element.treeElementForTest = treeOutline.firstChild();
+      treeOutline.setShowSelectionOnKeyboardFocus(
+        /* show: */
+        true,
+        /* preventTabOrder: */
+        true
+      );
+      this.selectableChildren.push({
+        element: treeOutline.element,
+        forceSelect: treeOutline.forceSelect.bind(treeOutline)
+      });
+      const dispatchDimensionChange = () => {
+        this.messageResized({ data: treeOutline.element });
+      };
+      treeOutline.addEventListener(UI3.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
+      treeOutline.addEventListener(UI3.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
+      treeOutline.addEventListener(UI3.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
+      result.appendChild(treeOutline.element);
       this.formattedParameterAsNodeForTest();
     });
     return result;
@@ -6894,6 +6924,15 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       this.viewport.element.scrollTop = oldScrollTop;
     }
   }
+  /**
+   * Inserts text into the console prompt (replacing any existing content)
+   * and focuses the prompt. Used by cross-panel features such as
+   * "Edit and resend as fetch".
+   */
+  insertIntoPrompt(text) {
+    this.prompt.insertText(text);
+    this.focusPrompt();
+  }
   restoreScrollPositions() {
     if (this.viewport.stickToBottom()) {
       this.immediatelyScrollToBottom();
@@ -7236,7 +7275,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     }
     if (consoleMessage) {
       const request = Logs3.NetworkLog.NetworkLog.requestForConsoleMessage(consoleMessage);
-      if (request && SDK7.NetworkManager.NetworkManager.canResendRequest(request)) {
+      if (request && SDK7.NetworkManager.NetworkManager.canResendRequest(request, true)) {
         contextMenu.debugSection().appendItem(i18nString5(UIStrings5.resend), SDK7.NetworkManager.NetworkManager.replayRequest.bind(null, request), { jslogContext: "resend" });
       }
     }
@@ -7916,6 +7955,9 @@ var WrapperView = class _WrapperView extends UI10.Widget.VBox {
   showViewInWrapper() {
     this.view.show(this.element);
   }
+  insertIntoPrompt(text) {
+    this.view.insertIntoPrompt(text);
+  }
 };
 var ConsoleRevealer = class {
   async reveal(_object) {
@@ -8205,6 +8247,17 @@ var ConsolePrompt = class extends Common7.ObjectWrapper.eventMixin(UI11.Widget.W
   clear() {
     this.editor.dispatch({
       changes: { from: 0, to: this.editor.state.doc.length }
+    });
+  }
+  /**
+   * Replaces the full prompt content with the given text, places the caret
+   * at the end, and scrolls the editor into view.
+   */
+  insertText(text) {
+    this.editor.dispatch({
+      changes: { from: 0, to: this.editor.state.doc.length, insert: text },
+      selection: { anchor: text.length },
+      scrollIntoView: true
     });
   }
   text() {

@@ -125,7 +125,7 @@ export class BreakpointsSidebarController {
         this.#breakpointManager = breakpointManager;
         this.#breakpointManager.addEventListener(Breakpoints.BreakpointManager.Events.BreakpointAdded, this.#onBreakpointAdded, this);
         this.#breakpointManager.addEventListener(Breakpoints.BreakpointManager.Events.BreakpointRemoved, this.#onBreakpointRemoved, this);
-        this.#breakpointsActiveSetting = settings.moduleSetting('breakpoints-active');
+        this.#breakpointsActiveSetting = settings.resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor);
         this.#breakpointsActiveSetting.addChangeListener(this.update, this);
         this.#pauseOnUncaughtExceptionSetting = settings.resolve(SDK.SDKSettings.pauseOnUncaughtExceptionSettingDescriptor);
         this.#pauseOnUncaughtExceptionSetting.addChangeListener(this.update, this);

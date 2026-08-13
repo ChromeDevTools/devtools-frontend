@@ -24,6 +24,7 @@ import * as UIHelpers from '../../../ui/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as Application from '../../application/application.js';
 import * as Elements from '../../elements/elements.js';
 import * as Lighthouse from '../../lighthouse/lighthouse.js';
 import * as NetworkForward from '../../network/forward/forward.js';
@@ -755,9 +756,34 @@ async function resolveNode(backendNodeId) {
     }
     return resolved;
 }
-async function makeStorageBreakdownWidget(_widgetData) {
+async function makeStorageBreakdownWidget(widgetData) {
+    const breakdown = widgetData.data.usageBreakdown;
+    const total = breakdown.reduce((sum, item) => sum + item.bytes, 0);
+    const slices = breakdown.map(item => {
+        const color = Application.StorageView.storagePieColors.get(item.storageType) ||
+            'rgb(180, 180, 180)';
+        const title = Application.StorageView.StorageView.getStorageTypeNameForWidget(item.storageType);
+        return {
+            value: item.bytes,
+            color,
+            title,
+        };
+    });
+    const chartData = {
+        chartName: lockedString(UIStringsNotTranslate.storageBreakdown),
+        size: 110,
+        formatter: val => AiAssistanceModel.UnitFormatters.bytes(val),
+        showLegend: true,
+        total,
+        slices,
+    };
+    const renderedWidget = html `
+    <div class="storage-breakdown-widget">
+      <devtools-perf-piechart .data=${chartData}></devtools-perf-piechart>
+    </div>
+  `;
     return {
-        renderedWidget: html `<div>Storage Breakdown Stub</div>`,
+        renderedWidget,
         title: lockedString(UIStringsNotTranslate.storageBreakdown),
         revealable: null,
         accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealStorageBreakdown),

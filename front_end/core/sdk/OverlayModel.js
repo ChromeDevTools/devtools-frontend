@@ -7,6 +7,7 @@ import { DebuggerModel, Events as DebuggerModelEvents } from './DebuggerModel.js
 import { DeferredDOMNode, DOMModel, DOMNodeEvents, Events as DOMModelEvents } from './DOMModel.js';
 import { OverlayPersistentHighlighter } from './OverlayPersistentHighlighter.js';
 import { SDKModel } from './SDKModel.js';
+import { apcaSettingDescriptor, showMetricsRulersSettingDescriptor, showPaintRectsSettingDescriptor, } from './SDKSettings.js';
 const UIStrings = {
     /**
      * @description Overlay message indicating that execution is paused in the debugger.
@@ -57,7 +58,7 @@ export class OverlayModel extends SDKModel {
         }
         this.#defaultHighlighter = new DefaultHighlighter(this);
         this.#highlighter = this.#defaultHighlighter;
-        this.#showPaintRectsSetting = settings.moduleSetting('show-paint-rects');
+        this.#showPaintRectsSetting = settings.resolve(showPaintRectsSettingDescriptor);
         this.#showLayoutShiftRegionsSetting = settings.moduleSetting('show-layout-shift-regions');
         this.#showAdHighlightsSetting = settings.moduleSetting('show-ad-highlights');
         this.#showDebugBordersSetting = settings.moduleSetting('show-debug-borders');
@@ -419,7 +420,7 @@ export class OverlayModel extends SDKModel {
     }
     buildHighlightConfig(mode = 'all', showDetailedToolip = false) {
         const settings = this.target().targetManager().settings;
-        const showRulers = settings.moduleSetting('show-metrics-rulers').get();
+        const showRulers = settings.resolve(showMetricsRulersSettingDescriptor).get();
         const highlightConfig = {
             showInfo: mode === 'all' || mode === 'container-outline',
             showRulers,
@@ -429,7 +430,7 @@ export class OverlayModel extends SDKModel {
             gridHighlightConfig: {},
             flexContainerHighlightConfig: {},
             flexItemHighlightConfig: {},
-            contrastAlgorithm: settings.moduleSetting('apca').get() ? "apca" /* Protocol.Overlay.ContrastAlgorithm.Apca */ : "aa" /* Protocol.Overlay.ContrastAlgorithm.Aa */,
+            contrastAlgorithm: settings.resolve(apcaSettingDescriptor).get() ? "apca" /* Protocol.Overlay.ContrastAlgorithm.Apca */ : "aa" /* Protocol.Overlay.ContrastAlgorithm.Aa */,
         };
         if (mode === 'all' || mode === 'content') {
             highlightConfig.contentColor = Common.Color.PageHighlight.Content.toProtocolRGBA();

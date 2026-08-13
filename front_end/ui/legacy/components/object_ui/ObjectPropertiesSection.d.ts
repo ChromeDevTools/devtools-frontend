@@ -273,12 +273,6 @@ export declare class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement
     static bucketThreshold: number;
     static sparseIterationThreshold: number;
 }
-export declare class Renderer implements UI.UIUtils.Renderer {
-    static instance(opts?: {
-        forceNew: boolean;
-    }): Renderer;
-    render(object: Object, options?: UI.UIUtils.Options): Promise<UI.UIUtils.RenderedObject | null>;
-}
 interface ExpandableTextViewInput {
     copyText: () => void;
     expandText: () => void;

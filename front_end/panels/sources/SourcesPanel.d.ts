@@ -22,8 +22,6 @@ export declare class SourcesPanel extends UI.Panel.Panel implements UI.ContextMe
     private splitWidget;
     editorView: UI.SplitWidget.SplitWidget;
     private navigatorTabbedLocation;
-    private readonly toggleNavigatorSidebarButton;
-    private readonly toggleDebuggerSidebarButton;
     private threadsSidebarPane;
     private readonly watchSidebarPane;
     private readonly callstackPane;

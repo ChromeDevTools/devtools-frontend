@@ -1,3 +1,4 @@
 core/sdk/CSSModel.test.api.js
 core/sdk/DOMModel.test.api.js
+core/sdk/DebuggerModel.test.api.js
 foundation/Universe.test.api.js

@@ -168,6 +168,8 @@ export declare class NetworkLogView extends NetworkLogView_base implements SDK.T
     private appendCopyAsPreloadItem;
     private copyFetchCall;
     private copyAllFetchCall;
+    private resendFromConsole;
+    private static logResendConsoleMessage;
     private copyPowerShellCommand;
     private copyAllPowerShellCommand;
     exportAll(options: HAR.Log.BuildOptions): Promise<void>;

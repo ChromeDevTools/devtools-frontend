@@ -45,7 +45,6 @@ import * as ElementsSidebarPane from './ElementsSidebarPane.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
 import * as ElementsTreeElement from './ElementsTreeElement.js';
 import * as ElementsTreeOutline from './ElementsTreeOutline.js';
-import * as ElementsTreeOutlineRenderer from './ElementsTreeOutlineRenderer.js';
 import * as EventListenersWidget from './EventListenersWidget.js';
 import * as ImagePreviewPopover from './ImagePreviewPopover.js';
 import * as InspectElementModeController from './InspectElementModeController.js';
@@ -83,7 +82,6 @@ export {
   ElementStatePaneWidget,
   ElementsTreeElement,
   ElementsTreeOutline,
-  ElementsTreeOutlineRenderer,
   EventListenersWidget,
   ImagePreviewPopover,
   InspectElementModeController,

@@ -1299,6 +1299,7 @@ __export(ExtensionPanel_exports, {
 import * as Platform from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Extensions from "./../../models/extensions/extensions.js";
+import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/common/ExtensionView.js
@@ -1588,14 +1589,20 @@ var ExtensionSidebarPane = class extends UI6.View.SimpleView {
       return;
     }
     objectPropertiesView.element.removeChildren();
-    void UI6.UIUtils.Renderer.render(object, { title, editable: false, expand: true }).then((result) => {
-      if (!result) {
-        callback();
-        return;
-      }
-      objectPropertiesView.element.appendChild(result.element);
-      callback();
-    });
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(
+      object,
+      title,
+      void 0,
+      void 0,
+      /* editable: */
+      false
+    );
+    if (!title) {
+      section.titleLessMode();
+    }
+    section.firstChild()?.expand();
+    objectPropertiesView.element.appendChild(section.element);
+    callback();
   }
 };
 

@@ -39,6 +39,7 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
     private skipAllPauses;
     private skipAllPausesChanged;
     skipAllPausesUntilReloadOrTimeout(timeout: number): void;
+    private jsSourceMapsStateChanged;
     private pauseOnExceptionStateChanged;
     private asyncStackTracesStateChanged;
     private breakpointsActiveChanged;

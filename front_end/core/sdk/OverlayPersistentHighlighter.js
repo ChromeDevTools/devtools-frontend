@@ -4,6 +4,7 @@
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import { OverlayColorGenerator } from './OverlayColorGenerator.js';
+import { extendGridLinesSettingDescriptor, showGridAreasSettingDescriptor, showGridLineLabelsSettingDescriptor, showGridTrackSizesSettingDescriptor, } from './SDKSettings.js';
 export class OverlayPersistentHighlighter {
     #model;
     #colors = new Map();
@@ -28,10 +29,10 @@ export class OverlayPersistentHighlighter {
         this.#callbacks = callbacks;
         this.#persistentHighlightSetting =
             settings.createLocalSetting('persistent-highlight-setting', []);
-        this.#showGridLineLabelsSetting = settings.moduleSetting('show-grid-line-labels');
-        this.#extendGridLinesSetting = settings.moduleSetting('extend-grid-lines');
-        this.#showGridAreasSetting = settings.moduleSetting('show-grid-areas');
-        this.#showGridTrackSizesSetting = settings.moduleSetting('show-grid-track-sizes');
+        this.#showGridLineLabelsSetting = settings.resolve(showGridLineLabelsSettingDescriptor);
+        this.#extendGridLinesSetting = settings.resolve(extendGridLinesSettingDescriptor);
+        this.#showGridAreasSetting = settings.resolve(showGridAreasSettingDescriptor);
+        this.#showGridTrackSizesSetting = settings.resolve(showGridTrackSizesSettingDescriptor);
         this.#showGridLineLabelsSetting.addChangeListener(this.onSettingChange, this);
         this.#extendGridLinesSetting.addChangeListener(this.onSettingChange, this);
         this.#showGridAreasSetting.addChangeListener(this.onSettingChange, this);

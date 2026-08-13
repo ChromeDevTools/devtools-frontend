@@ -452,14 +452,8 @@
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsia (no color)"
   },
-  "core/sdk/sdk-meta.ts | apca": {
-    "message": "Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines"
-  },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Blurred vision"
-  },
-  "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
-    "message": "Capture async stack traces"
   },
   "core/sdk/sdk-meta.ts | cpuPressure": {
     "message": "CPU Pressure"
@@ -476,17 +470,11 @@
   "core/sdk/sdk-meta.ts | devicebased": {
     "message": "Device-based"
   },
-  "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
-    "message": "Disable async stack traces"
-  },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Disable AVIF format"
   },
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Disable cache while DevTools is open"
-  },
-  "core/sdk/sdk-meta.ts | disableJavascript": {
-    "message": "Disable JavaScript"
   },
   "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
     "message": "Disable JPEG XL format"
@@ -503,9 +491,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Disable WebP format"
   },
-  "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
-    "message": "Do not capture async stack traces"
-  },
   "core/sdk/sdk-meta.ts | doNotEmulateAFocusedPage": {
     "message": "Do not emulate a focused page"
   },
@@ -521,20 +506,8 @@
   "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
     "message": "Do not emulate OS text scale"
   },
-  "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
-    "message": "Do not extend grid lines"
-  },
   "core/sdk/sdk-meta.ts | doNotHighlightAdFrames": {
     "message": "Do not highlight ad frames"
-  },
-  "core/sdk/sdk-meta.ts | doNotShowGridNamedAreas": {
-    "message": "Do not show grid named areas"
-  },
-  "core/sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
-    "message": "Do not show grid track sizes"
-  },
-  "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
-    "message": "Don’t show rulers on hover"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
     "message": "Emulate achromatopsia (no color)"
@@ -590,9 +563,6 @@
   "core/sdk/sdk-meta.ts | enableCache": {
     "message": "Enable cache"
   },
-  "core/sdk/sdk-meta.ts | enableJavascript": {
-    "message": "Enable JavaScript"
-  },
   "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
     "message": "Enable JPEG XL format"
   },
@@ -608,9 +578,6 @@
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Enable WebP format"
   },
-  "core/sdk/sdk-meta.ts | extendGridLines": {
-    "message": "Extend grid lines"
-  },
   "core/sdk/sdk-meta.ts | fair": {
     "message": "Fair"
   },
@@ -625,12 +592,6 @@
   },
   "core/sdk/sdk-meta.ts | hideLayoutShiftRegions": {
     "message": "Hide layout shift regions"
-  },
-  "core/sdk/sdk-meta.ts | hideLineLabels": {
-    "message": "Hide line labels"
-  },
-  "core/sdk/sdk-meta.ts | hidePaintFlashingRectangles": {
-    "message": "Hide paint flashing rectangles"
   },
   "core/sdk/sdk-meta.ts | hideScrollPerformanceBottlenecks": {
     "message": "Hide scroll performance bottlenecks"
@@ -707,26 +668,14 @@
   "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
     "message": "Example resources are source maps. Disabled by default for security reasons."
   },
-  "core/sdk/sdk-meta.ts | rulersOnHover": {
-    "message": "Rulers on hover"
-  },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "screen"
   },
   "core/sdk/sdk-meta.ts | serious": {
     "message": "Serious"
   },
-  "core/sdk/sdk-meta.ts | showAreaNames": {
-    "message": "Show area names"
-  },
   "core/sdk/sdk-meta.ts | showFramesPerSecondFpsMeter": {
     "message": "Show frames per second (FPS) meter"
-  },
-  "core/sdk/sdk-meta.ts | showGridNamedAreas": {
-    "message": "Show grid named areas"
-  },
-  "core/sdk/sdk-meta.ts | showGridTrackSizes": {
-    "message": "Show grid track sizes"
   },
   "core/sdk/sdk-meta.ts | showLayerBorders": {
     "message": "Show layer borders"
@@ -734,26 +683,8 @@
   "core/sdk/sdk-meta.ts | showLayoutShiftRegions": {
     "message": "Show layout shift regions"
   },
-  "core/sdk/sdk-meta.ts | showLineLabels": {
-    "message": "Show line labels"
-  },
-  "core/sdk/sdk-meta.ts | showLineNames": {
-    "message": "Show line names"
-  },
-  "core/sdk/sdk-meta.ts | showLineNumbers": {
-    "message": "Show line numbers"
-  },
-  "core/sdk/sdk-meta.ts | showPaintFlashingRectangles": {
-    "message": "Show paint flashing rectangles"
-  },
-  "core/sdk/sdk-meta.ts | showRulersOnHover": {
-    "message": "Show rulers on hover"
-  },
   "core/sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
     "message": "Show scroll performance bottlenecks"
-  },
-  "core/sdk/sdk-meta.ts | showTrackSizes": {
-    "message": "Show track sizes"
   },
   "core/sdk/sdk-meta.ts | touch": {
     "message": "Touch"
@@ -869,6 +800,9 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | hardReloadPage": {
     "message": "Hard reload page"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hidePaintFlashingRectangles": {
+    "message": "Hide paint flashing rectangles"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | layout": {
     "message": "layout"
   },
@@ -883,6 +817,9 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Show ads on this site, if allowed"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showPaintFlashingRectangles": {
+    "message": "Show paint flashing rectangles"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showRendering": {
     "message": "Show Rendering"
@@ -6170,6 +6107,9 @@
   "panels/application/StorageView.ts | localAndSessionStorage": {
     "message": "Local and session storage"
   },
+  "panels/application/StorageView.ts | localStorage": {
+    "message": "Local storage"
+  },
   "panels/application/StorageView.ts | mb": {
     "message": "MB"
   },
@@ -6187,6 +6127,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Service workers"
+  },
+  "panels/application/StorageView.ts | sessionStorage": {
+    "message": "Session storage"
   },
   "panels/application/StorageView.ts | sFailedToLoad": {
     "message": "{PH1} (failed to load)"
@@ -7778,6 +7721,9 @@
   "panels/elements/ElementIssueUtils.ts | nonPhrasingContentOptionChild": {
     "message": "Non-phrasing content used within an <option> element"
   },
+  "panels/elements/elements-meta.ts | apca": {
+    "message": "Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines"
+  },
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Capture area screenshot"
   },
@@ -7796,6 +7742,18 @@
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Detailed inspect tooltip"
   },
+  "panels/elements/elements-meta.ts | doNotExtendGridLines": {
+    "message": "Do not extend grid lines"
+  },
+  "panels/elements/elements-meta.ts | doNotShowGridNamedAreas": {
+    "message": "Do not show grid named areas"
+  },
+  "panels/elements/elements-meta.ts | doNotShowGridTrackSizes": {
+    "message": "Do not show grid track sizes"
+  },
+  "panels/elements/elements-meta.ts | doNotShowRulersOnHover": {
+    "message": "Don’t show rulers on hover"
+  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "Duplicate element"
   },
@@ -7808,6 +7766,9 @@
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "Event Listeners"
   },
+  "panels/elements/elements-meta.ts | extendGridLines": {
+    "message": "Extend grid lines"
+  },
   "panels/elements/elements-meta.ts | frameworkListeners": {
     "message": "Framework listeners"
   },
@@ -7816,6 +7777,9 @@
   },
   "panels/elements/elements-meta.ts | hideHtmlComments": {
     "message": "Hide HTML comments"
+  },
+  "panels/elements/elements-meta.ts | hideLineLabels": {
+    "message": "Hide line labels"
   },
   "panels/elements/elements-meta.ts | htmlComments": {
     "message": "HTML comments"
@@ -7838,8 +7802,14 @@
   "panels/elements/elements-meta.ts | revealDomNodeOnHover": {
     "message": "Reveal DOM node on hover"
   },
+  "panels/elements/elements-meta.ts | rulersOnHover": {
+    "message": "Rulers on hover"
+  },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Select an element in the page to inspect it"
+  },
+  "panels/elements/elements-meta.ts | showAreaNames": {
+    "message": "Show area names"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "Show Computed Styles"
@@ -7850,17 +7820,38 @@
   "panels/elements/elements-meta.ts | showEventListeners": {
     "message": "Show Event Listeners"
   },
+  "panels/elements/elements-meta.ts | showGridNamedAreas": {
+    "message": "Show grid named areas"
+  },
+  "panels/elements/elements-meta.ts | showGridTrackSizes": {
+    "message": "Show grid track sizes"
+  },
   "panels/elements/elements-meta.ts | showHtmlComments": {
     "message": "Show HTML comments"
   },
   "panels/elements/elements-meta.ts | showLayout": {
     "message": "Show Layout"
   },
+  "panels/elements/elements-meta.ts | showLineLabels": {
+    "message": "Show line labels"
+  },
+  "panels/elements/elements-meta.ts | showLineNames": {
+    "message": "Show line names"
+  },
+  "panels/elements/elements-meta.ts | showLineNumbers": {
+    "message": "Show line numbers"
+  },
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Show Properties"
   },
+  "panels/elements/elements-meta.ts | showRulersOnHover": {
+    "message": "Show rulers on hover"
+  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Show Styles"
+  },
+  "panels/elements/elements-meta.ts | showTrackSizes": {
+    "message": "Show track sizes"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Toggle accessibility tree"
@@ -10373,6 +10364,72 @@
   "panels/network/EventSourceMessagesView.ts | type": {
     "message": "Type"
   },
+  "panels/network/FetchHeaderCommenting.ts | browserAndProxiesManageMetadata": {
+    "message": "Browser and proxies manage forwarding metadata"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserBlocksForbiddenMethods": {
+    "message": "Browser blocks overrides to forbidden methods"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserCalculatesFromBody": {
+    "message": "Browser calculates from body"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserControlsRequestDate": {
+    "message": "Browser controls the request date"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserDerivesFromUrl": {
+    "message": "Browser will derive from URL"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesConnections": {
+    "message": "Browser manages connections"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesCookieJar": {
+    "message": "Browser manages this from the cookie jar"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesProtocolUpgrades": {
+    "message": "Browser manages protocol upgrades"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesRequestExpectations": {
+    "message": "Browser manages request expectations"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesRequestTrailers": {
+    "message": "Browser manages request trailers"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesTransferCodings": {
+    "message": "Browser manages transfer codings"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesTransferEncoding": {
+    "message": "Browser manages transfer encoding"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserNegotiatesCompression": {
+    "message": "Browser negotiates compression"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserSetsDuringCorsPreflight": {
+    "message": "Browser sets during CORS preflight"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserSetsPrivacyPreferences": {
+    "message": "Browser sets from user privacy preferences"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserSetsReferrer": {
+    "message": "Browser will set this from referrer option + policy"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserSetsRequestContext": {
+    "message": "Browser will set based on request context"
+  },
+  "panels/network/FetchHeaderCommenting.ts | deprecatedBrowserDoesNotSend": {
+    "message": "Deprecated; browser does not send this"
+  },
+  "panels/network/FetchHeaderCommenting.ts | deprecatedCookieHeader": {
+    "message": "Deprecated cookie header; browser blocks this"
+  },
+  "panels/network/FetchHeaderCommenting.ts | proxyHeadersSetByBrowser": {
+    "message": "All proxy-* headers are set by the browser"
+  },
+  "panels/network/FetchHeaderCommenting.ts | responseHeaderBlockedOnRequests": {
+    "message": "Response header; browser blocks it on requests"
+  },
+  "panels/network/FetchHeaderCommenting.ts | secHeadersSetByBrowser": {
+    "message": "All sec-* headers are set by the browser"
+  },
   "panels/network/network-meta.ts | addNetworkRequestBlockingOrThrottlingPattern": {
     "message": "Add network request blocking or throttling pattern"
   },
@@ -10889,6 +10946,12 @@
   "panels/network/NetworkLogView.ts | dropHarFilesHere": {
     "message": "Drop HAR files here"
   },
+  "panels/network/NetworkLogView.ts | editAndEnterToResend": {
+    "message": "// Make any edits, then ENTER to resend"
+  },
+  "panels/network/NetworkLogView.ts | editAndResendAsFetch": {
+    "message": "Edit and resend as fetch"
+  },
   "panels/network/NetworkLogView.ts | explainFailures": {
     "message": "Explain failures"
   },
@@ -10940,6 +11003,9 @@
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Show only requests with origin different from page origin"
   },
+  "panels/network/NetworkLogView.ts | originallyCalledFromContext": {
+    "message": "// Originally called from {PH1} context."
+  },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "Override headers"
   },
@@ -10961,6 +11027,9 @@
   "panels/network/NetworkLogView.ts | resend": {
     "message": "Resend"
   },
+  "panels/network/NetworkLogView.ts | resendableCopyOfRequest": {
+    "message": "Resendable copy of {PH1} request to {PH2}"
+  },
   "panels/network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
     "message": "{PH1} B resources loaded by the page"
   },
@@ -10972,6 +11041,9 @@
   },
   "panels/network/NetworkLogView.ts | sBTransferredOverNetwork": {
     "message": "{PH1} B transferred over network"
+  },
+  "panels/network/NetworkLogView.ts | selectExecutionContextInConsole": {
+    "message": "// To resend from the same execution context, select it in the Console’s toolbar."
   },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "Show only/hide requests"
@@ -14774,6 +14846,9 @@
   "panels/sources/sources-meta.ts | breakpoints": {
     "message": "Breakpoints"
   },
+  "panels/sources/sources-meta.ts | captureAsyncStackTraces": {
+    "message": "Capture async stack traces"
+  },
   "panels/sources/sources-meta.ts | closeAll": {
     "message": "Close all"
   },
@@ -14798,6 +14873,9 @@
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Detect indentation"
   },
+  "panels/sources/sources-meta.ts | disableAsyncStackTraces": {
+    "message": "Disable async stack traces"
+  },
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Disable autocompletion"
   },
@@ -14815,6 +14893,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Disable CSS source maps"
+  },
+  "panels/sources/sources-meta.ts | disableJavascript": {
+    "message": "Disable JavaScript"
   },
   "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
     "message": "Disable JavaScript source maps"
@@ -14836,6 +14917,9 @@
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
     "message": "Do not automatically reveal files in sidebar"
+  },
+  "panels/sources/sources-meta.ts | doNotCaptureAsyncStackTraces": {
+    "message": "Do not capture async stack traces"
   },
   "panels/sources/sources-meta.ts | doNotDetectIndentation": {
     "message": "Do not detect indentation"
@@ -14869,6 +14953,9 @@
   },
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Enable CSS source maps"
+  },
+  "panels/sources/sources-meta.ts | enableJavascript": {
+    "message": "Enable JavaScript"
   },
   "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
     "message": "Enable JavaScript source maps"
@@ -15146,12 +15233,6 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Copy string contents"
   },
-  "panels/sources/SourcesPanel.ts | debuggerHidden": {
-    "message": "Debugger sidebar hidden"
-  },
-  "panels/sources/SourcesPanel.ts | debuggerShown": {
-    "message": "Debugger sidebar shown"
-  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Drop workspace folder here"
   },
@@ -15167,23 +15248,11 @@
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Group by folder"
   },
-  "panels/sources/SourcesPanel.ts | hideDebugger": {
-    "message": "Hide debugger"
-  },
   "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
     "message": "Hide ignore-listed sources"
   },
-  "panels/sources/SourcesPanel.ts | hideNavigator": {
-    "message": "Hide navigator"
-  },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "More options"
-  },
-  "panels/sources/SourcesPanel.ts | navigatorHidden": {
-    "message": "Navigator sidebar hidden"
-  },
-  "panels/sources/SourcesPanel.ts | navigatorShown": {
-    "message": "Navigator sidebar shown"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Open in Sources panel"
@@ -15197,14 +15266,8 @@
   "panels/sources/SourcesPanel.ts | revealInSidebar": {
     "message": "Reveal in navigator sidebar"
   },
-  "panels/sources/SourcesPanel.ts | showDebugger": {
-    "message": "Show debugger"
-  },
   "panels/sources/SourcesPanel.ts | showFunctionDefinition": {
     "message": "Show function definition"
-  },
-  "panels/sources/SourcesPanel.ts | showNavigator": {
-    "message": "Show navigator"
   },
   "panels/sources/SourcesPanel.ts | startAChat": {
     "message": "Start a chat"
@@ -15215,20 +15278,29 @@
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Terminate current JavaScript call"
   },
-  "panels/sources/SourcesView.ts | openFile": {
-    "message": "Open file"
+  "panels/sources/SourcesView.ts | debuggerHidden": {
+    "message": "Debugger sidebar hidden"
   },
-  "panels/sources/SourcesView.ts | runCommand": {
-    "message": "Run command"
+  "panels/sources/SourcesView.ts | debuggerShown": {
+    "message": "Debugger sidebar shown"
   },
-  "panels/sources/SourcesView.ts | selectFolder": {
-    "message": "Select folder"
+  "panels/sources/SourcesView.ts | hideDebugger": {
+    "message": "Hide debugger"
   },
-  "panels/sources/SourcesView.ts | sourceViewActions": {
-    "message": "Source View Actions"
+  "panels/sources/SourcesView.ts | hideNavigator": {
+    "message": "Hide navigator"
   },
-  "panels/sources/SourcesView.ts | workspaceDropInAFolderToSyncSources": {
-    "message": "To sync edits to the workspace, drop a folder with your sources here or"
+  "panels/sources/SourcesView.ts | navigatorHidden": {
+    "message": "Navigator sidebar hidden"
+  },
+  "panels/sources/SourcesView.ts | navigatorShown": {
+    "message": "Navigator sidebar shown"
+  },
+  "panels/sources/SourcesView.ts | showDebugger": {
+    "message": "Show debugger"
+  },
+  "panels/sources/SourcesView.ts | showNavigator": {
+    "message": "Show navigator"
   },
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Are you sure you want to close unsaved file: {PH1}?"
@@ -15239,8 +15311,23 @@
   "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
     "message": "Changes weren’t saved to file system. To save, set up your {PH1}."
   },
+  "panels/sources/TabbedEditorContainer.ts | openFile": {
+    "message": "Open file"
+  },
+  "panels/sources/TabbedEditorContainer.ts | runCommand": {
+    "message": "Run command"
+  },
+  "panels/sources/TabbedEditorContainer.ts | selectFolder": {
+    "message": "Select folder"
+  },
+  "panels/sources/TabbedEditorContainer.ts | sourceViewActions": {
+    "message": "Source View Actions"
+  },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "Unable to load this content."
+  },
+  "panels/sources/TabbedEditorContainer.ts | workspaceDropInAFolderToSyncSources": {
+    "message": "To sync edits to the workspace, drop a folder with your sources here or"
   },
   "panels/sources/ThreadsSidebarPane.ts | paused": {
     "message": "paused"

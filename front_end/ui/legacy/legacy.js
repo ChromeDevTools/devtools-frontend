@@ -655,7 +655,6 @@ __export(UIUtils_exports, {
   MaxLengthForDisplayedURLsInConsole: () => MaxLengthForDisplayedURLsInConsole,
   MessageDialog: () => MessageDialog,
   PromotionManager: () => PromotionManager,
-  Renderer: () => Renderer,
   StyleValueDelimiters: () => StyleValueDelimiters,
   addPlatformClass: () => addPlatformClass,
   animateFunction: () => animateFunction,
@@ -694,7 +693,6 @@ __export(UIUtils_exports, {
   enclosingNodeOrSelfWithNodeNameInArray: () => enclosingNodeOrSelfWithNodeNameInArray,
   endBatchUpdate: () => endBatchUpdate,
   formatTimestamp: () => formatTimestamp,
-  getApplicableRegisteredRenderers: () => getApplicableRegisteredRenderers,
   getDevToolsBoundingElement: () => getDevToolsBoundingElement,
   getValueModificationDirection: () => getValueModificationDirection,
   handleElementValueModifications: () => handleElementValueModifications,
@@ -713,7 +711,6 @@ __export(UIUtils_exports, {
   measuredScrollbarWidth: () => measuredScrollbarWidth,
   modifiedFloatNumber: () => modifiedFloatNumber,
   openLinkExternallyLabel: () => openLinkExternallyLabel,
-  registerRenderer: () => registerRenderer,
   resetElementsBeingEditedForTest: () => resetElementsBeingEditedForTest,
   resetMeasuredScrollbarWidthForTest: () => resetMeasuredScrollbarWidthForTest,
   runCSSAnimationOnce: () => runCSSAnimationOnce,
@@ -16416,19 +16413,6 @@ var ConfirmDialog = class {
     return result;
   }
 };
-var Renderer = class {
-  static async render(object, options) {
-    if (!object) {
-      throw new Error("Can't render " + object);
-    }
-    const extension = getApplicableRegisteredRenderers(object)[0];
-    if (!extension) {
-      return null;
-    }
-    const renderer = await extension.loadRenderer();
-    return await renderer.render(object, options);
-  }
-};
 function formatTimestamp(timestamp, full) {
   const date = new Date(timestamp);
   const yymmdd = date.getFullYear() + "-" + leadZero(date.getMonth() + 1, 2) + "-" + leadZero(date.getDate(), 2);
@@ -16485,24 +16469,6 @@ var deepElementFromEvent = (ev) => {
   const root = event.target && event.target.getComponentRoot();
   return root ? deepElementFromPoint(root, event.pageX, event.pageY) : null;
 };
-var registeredRenderers = [];
-function registerRenderer(registration) {
-  registeredRenderers.push(registration);
-}
-function getApplicableRegisteredRenderers(object) {
-  return registeredRenderers.filter(isRendererApplicableToContextTypes);
-  function isRendererApplicableToContextTypes(rendererRegistration) {
-    if (!rendererRegistration.contextTypes) {
-      return true;
-    }
-    for (const contextType of rendererRegistration.contextTypes()) {
-      if (object instanceof contextType) {
-        return true;
-      }
-    }
-    return false;
-  }
-}
 function updateWidgetfocusWidgetForNode(node) {
   while (node) {
     if (Widget.get(node)) {

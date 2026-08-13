@@ -31,6 +31,7 @@ import './NetworkPanel.js';
 
 import * as BinaryResourceView from './BinaryResourceView.js';
 import * as EventSourceMessagesView from './EventSourceMessagesView.js';
+import * as FetchHeaderCommenting from './FetchHeaderCommenting.js';
 import * as LinkPreloadGenerator from './LinkPreloadGenerator.js';
 import * as NetworkConfigView from './NetworkConfigView.js';
 import * as NetworkDataGridNode from './NetworkDataGridNode.js';
@@ -61,6 +62,7 @@ import * as SignedExchangeInfoView from './SignedExchangeInfoView.js';
 export {
   BinaryResourceView,
   EventSourceMessagesView,
+  FetchHeaderCommenting,
   LinkPreloadGenerator,
   NetworkConfigView,
   NetworkDataGridNode,

@@ -5,6 +5,7 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Extensions from '../../models/extensions/extensions.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ExtensionNotifierView, ExtensionView } from './ExtensionView.js';
 export class ExtensionPanel extends UI.Panel.Panel {
@@ -158,14 +159,14 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
             return;
         }
         objectPropertiesView.element.removeChildren();
-        void UI.UIUtils.Renderer.render(object, { title, editable: false, expand: true }).then(result => {
-            if (!result) {
-                callback();
-                return;
-            }
-            objectPropertiesView.element.appendChild(result.element);
-            callback();
-        });
+        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, title, undefined, undefined, 
+        /* editable: */ false);
+        if (!title) {
+            section.titleLessMode();
+        }
+        section.firstChild()?.expand();
+        objectPropertiesView.element.appendChild(section.element);
+        callback();
     }
 }
 //# sourceMappingURL=ExtensionPanel.js.map

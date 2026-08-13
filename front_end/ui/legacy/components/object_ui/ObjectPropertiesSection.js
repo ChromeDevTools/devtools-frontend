@@ -2037,39 +2037,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     static bucketThreshold = 100;
     static sparseIterationThreshold = 250000;
 }
-let rendererInstance;
-export class Renderer {
-    static instance(opts = { forceNew: false }) {
-        const { forceNew } = opts;
-        if (!rendererInstance || forceNew) {
-            rendererInstance = new Renderer();
-        }
-        return rendererInstance;
-    }
-    async render(object, options) {
-        if (!(object instanceof SDK.RemoteObject.RemoteObject)) {
-            throw new Error('Can\'t render ' + object);
-        }
-        const title = options?.title;
-        const section = new ObjectPropertiesSection(object, title, undefined, undefined, Boolean(options?.editable));
-        if (!title) {
-            section.titleLessMode();
-        }
-        if (options?.expand) {
-            section.firstChild()?.expand();
-        }
-        const dispatchDimensionChange = () => {
-            section.element.dispatchEvent(new CustomEvent('dimensionschanged'));
-        };
-        section.addEventListener(UI.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
-        section.addEventListener(UI.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
-        section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
-        return {
-            element: section.element,
-            forceSelect: section.forceSelect.bind(section),
-        };
-    }
-}
 export const EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {
     const totalBytesText = i18n.ByteUtilities.bytesToString(input.byteCount);
     const canExpand = input.text.length < ExpandableTextPropertyValue.MAX_DISPLAYABLE_TEXT_LENGTH;

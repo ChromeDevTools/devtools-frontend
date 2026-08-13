@@ -38,6 +38,11 @@ export declare class ConsolePrompt extends ConsolePrompt_base {
     clearAiCodeCompletionCache(): void;
     moveCaretToEndOfPrompt(): void;
     clear(): void;
+    /**
+     * Replaces the full prompt content with the given text, places the caret
+     * at the end, and scrolls the editor into view.
+     */
+    insertText(text: string): void;
     text(): string;
     setAddCompletionsFromHistory(value: boolean): void;
     private editorKeymap;

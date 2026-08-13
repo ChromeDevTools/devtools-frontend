@@ -6,6 +6,7 @@ export declare class UserMetrics {
     networkPanelResponsePreviewOpened(mediaType: string): void;
     actionTaken(action: Action): void;
     resendRequest(resourceType: ResendRequestType): void;
+    editResendRequest(type: ResendRequestType): void;
     keybindSetSettingChanged(keybindSet: string): void;
     keyboardShortcutFired(actionId: string): void;
     issuesPanelOpenedFrom(issueOpener: IssueOpener): void;

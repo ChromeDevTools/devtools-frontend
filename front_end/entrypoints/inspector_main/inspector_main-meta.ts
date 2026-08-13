@@ -28,6 +28,14 @@ const UIStrings = {
    */
   hideLayoutShiftRegions: 'Hide layout shift regions',
   /**
+   * @description Text to highlight the rendering frames for ads.
+   */
+  highlightAdFrames: 'Highlight ad frames',
+  /**
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
+   */
+  doNotHighlightAdFrames: 'Do not highlight ad frames',
+  /**
    * @description Title of the Rendering panel. The Rendering panel is a collection of settings that
    * lets the user debug the rendering (i.e. how the website is drawn onto the screen) of the
    * website (https://developer.chrome.com/docs/devtools/evaluate-performance/reference#rendering).
@@ -296,6 +304,20 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showLayoutShiftRegions
     {
       value: false,
       title: i18nLazyString(UIStrings.hideLayoutShiftRegions),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showAdHighlightsSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.highlightAdFrames),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotHighlightAdFrames),
     },
   ],
 });

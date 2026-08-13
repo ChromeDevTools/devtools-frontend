@@ -336,7 +336,7 @@ describeWithEnvironment('AdsView', () => {
     await panel.updateComplete;
     await RenderCoordinator.done();
 
-    const setting = Common.Settings.Settings.instance().moduleSetting('show-ad-highlights');
+    const setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showAdHighlightsSettingDescriptor);
     setting.set(false);
     await panel.updateComplete;
     await RenderCoordinator.done();

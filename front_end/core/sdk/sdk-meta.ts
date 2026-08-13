@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Text to highlight the rendering frames for ads.
-   */
-  highlightAdFrames: 'Highlight ad frames',
-  /**
-   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
-   */
-  doNotHighlightAdFrames: 'Do not highlight ad frames',
-  /**
    * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
    */
   showLayerBorders: 'Show layer borders',
@@ -354,24 +346,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'show-ad-highlights',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.highlightAdFrames),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.doNotHighlightAdFrames),
-    },
-  ],
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

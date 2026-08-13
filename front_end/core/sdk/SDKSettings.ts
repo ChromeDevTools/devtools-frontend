@@ -118,3 +118,10 @@ export const showLayoutShiftRegionsSettingDescriptor: Common.Settings.SettingDes
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const showAdHighlightsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-ad-highlights',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

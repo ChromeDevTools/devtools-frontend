@@ -220,8 +220,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     // The 'Highlight ads' setting now lives in the Ads panel under Application.
     // We display this legacy setting only when the Ads panel isn't enabled.
     if (!Root.Runtime.hostConfig.devToolsAdsPanel?.enabled) {
-      this.#appendCheckbox(i18nString(UIStrings.highlightAds), i18nString(UIStrings.highlightsElementsRedDetectedToBe),
-                           Common.Settings.Settings.instance().moduleSetting('show-ad-highlights'));
+      this.#appendCheckbox(
+          i18nString(UIStrings.highlightAds), i18nString(UIStrings.highlightsElementsRedDetectedToBe),
+          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showAdHighlightsSettingDescriptor));
     }
 
     this.#appendCheckbox(

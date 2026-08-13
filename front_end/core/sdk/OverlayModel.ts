@@ -18,6 +18,7 @@ import {
   apcaSettingDescriptor,
   showAdHighlightsSettingDescriptor,
   showDebugBordersSettingDescriptor,
+  showFPSCounterSettingDescriptor,
   showLayoutShiftRegionsSettingDescriptor,
   showMetricsRulersSettingDescriptor,
   showPaintRectsSettingDescriptor,
@@ -138,7 +139,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#showLayoutShiftRegionsSetting = settings.resolve(showLayoutShiftRegionsSettingDescriptor);
     this.#showAdHighlightsSetting = settings.resolve(showAdHighlightsSettingDescriptor);
     this.#showDebugBordersSetting = settings.resolve(showDebugBordersSettingDescriptor);
-    this.#showFPSCounterSetting = settings.moduleSetting<boolean>('show-fps-counter');
+    this.#showFPSCounterSetting = settings.resolve(showFPSCounterSettingDescriptor);
     this.#showScrollBottleneckRectsSetting = settings.moduleSetting<boolean>('show-scroll-bottleneck-rects');
 
     if (!target.suspended()) {

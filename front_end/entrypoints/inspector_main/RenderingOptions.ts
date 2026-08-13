@@ -210,9 +210,8 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     this.#appendCheckbox(
         i18nString(UIStrings.layerBorders), i18nString(UIStrings.showsLayerBordersOrangeoliveAnd),
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showDebugBordersSettingDescriptor));
-    this.#appendCheckbox(
-        i18nString(UIStrings.frameRenderingStats), i18nString(UIStrings.plotsFrameThroughputDropped),
-        Common.Settings.Settings.instance().moduleSetting('show-fps-counter'));
+    this.#appendCheckbox(i18nString(UIStrings.frameRenderingStats), i18nString(UIStrings.plotsFrameThroughputDropped),
+                         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showFPSCounterSettingDescriptor));
     this.#appendCheckbox(
         i18nString(UIStrings.scrollingPerformanceIssues), i18nString(UIStrings.highlightsElementsTealThatCan),
         Common.Settings.Settings.instance().moduleSetting('show-scroll-bottleneck-rects'));

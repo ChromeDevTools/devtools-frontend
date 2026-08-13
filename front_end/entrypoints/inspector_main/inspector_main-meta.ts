@@ -44,6 +44,14 @@ const UIStrings = {
    */
   hideLayerBorders: 'Hide layer borders',
   /**
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
+   */
+  showFramesPerSecondFpsMeter: 'Show frames per second (FPS) meter',
+  /**
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
+   */
+  hideFramesPerSecondFpsMeter: 'Hide frames per second (FPS) meter',
+  /**
    * @description Title of the Rendering panel. The Rendering panel is a collection of settings that
    * lets the user debug the rendering (i.e. how the website is drawn onto the screen) of the
    * website (https://developer.chrome.com/docs/devtools/evaluate-performance/reference#rendering).
@@ -340,6 +348,20 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showDebugBordersSettin
     {
       value: false,
       title: i18nLazyString(UIStrings.hideLayerBorders),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showFPSCounterSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showFramesPerSecondFpsMeter),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.hideFramesPerSecondFpsMeter),
     },
   ],
 });

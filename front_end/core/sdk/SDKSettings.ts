@@ -132,3 +132,10 @@ export const showDebugBordersSettingDescriptor: Common.Settings.SettingDescripto
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const showFPSCounterSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-fps-counter',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

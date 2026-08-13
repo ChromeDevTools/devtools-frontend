@@ -931,6 +931,31 @@ describeWithEnvironment('Widget', () => {
       assert.deepEqual(widget2.params, {foo: 'baz'});
     });
 
+    const testWidgetReuse = (template: () => Lit.TemplateResult) => async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      Lit.render(template(), container);
+      await new Promise(resolve => setTimeout(resolve, 0));
+      assert.strictEqual(attachedCount, 1);
+      assert.strictEqual(detachedCount, 0);
+
+      Lit.render(template(), container);
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.strictEqual(detachedCount, 0);
+      assert.strictEqual(attachedCount, 1);
+    };
+
+    it('reuses the widget if the factory reference changes at child directive',
+       testWidgetReuse(() => html`${UI.Widget.widget(e => new TestWidget(e))}`));
+
+    it('reuses the widget if the factory reference changes at <devtools-widget>',
+       testWidgetReuse(() => html`<devtools-widget ${UI.Widget.widget(e => new TestWidget(e))}></devtools-widget>`));
+
+    it('reuses the widget if the factory reference changes at <span>',
+       testWidgetReuse(() => html`<span ${UI.Widget.widget(e => new TestWidget(e))}></span>`));
+
     it('detaches the widget when the Lit template re-renders and removes it', async () => {
       const container = document.createElement('div');
       renderElementIntoDOM(container);

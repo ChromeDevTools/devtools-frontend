@@ -378,6 +378,8 @@ customElements.define('devtools-widget', WidgetElement);
 
 export class WidgetDirective extends Lit.Directive.Directive {
   #partType: Lit.Directive.PartType;
+  #lastWidgetClass?: unknown;
+  #lastKey?: unknown;
 
   constructor(partInfo: Lit.Directive.PartInfo) {
     super(partInfo);
@@ -420,13 +422,20 @@ export class WidgetDirective extends Lit.Directive.Directive {
     if (this.#partType === Lit.Directive.PartType.ELEMENT) {
       return Lit.nothing;
     }
+    if (this.#lastWidgetClass !== widgetClass) {
+      this.#lastWidgetClass = widgetClass;
+      this.#lastKey = Widget.isPrototypeOf(widgetClass) ? widgetClass : widgetClass.toString();
+    }
     // We use `repeat` to force Lit to recreate the `<devtools-widget>` DOM node when the `widgetClass` changes.
     // If we didn't use `repeat` and used `html` directly, Lit would reuse the same `<devtools-widget>` instance
     // even if `widgetClass` changed (for example, in a ternary operator `condition ? widget(A) : widget(B)`).
     // This is because the template string is the same, so Lit reuses the DOM node and only updates `.widgetConfig`,
     // which does not properly recreate the widget instance.
+    // We use `#lastKey` (and stringify factory functions) instead of just using `widgetClass` as the key
+    // so that we intentionally ignore reference changes for identical inline factories. This prevents accidental
+    // recreation of the DOM node on every render when an anonymous inline arrow function is passed.
     return Lit.Directives.repeat(
-        [widgetClass], () => widgetClass,
+        [widgetClass], () => this.#lastKey,
         () => html`<devtools-widget ${widget<F, ParamKeys>(widgetClass, widgetParams)}></devtools-widget>`);
   }
 }

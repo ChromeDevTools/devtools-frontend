@@ -81,25 +81,33 @@ export interface TabbedEditorContainerDelegate {
 
 let tabId = 0;
 
-export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  private readonly delegate: TabbedEditorContainerDelegate;
+export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) {
+  delegate!: TabbedEditorContainerDelegate;
   private readonly tabbedPane: UI.TabbedPane.TabbedPane;
   private tabIds: Map<Workspace.UISourceCode.UISourceCode, string>;
   private readonly files: Map<string, Workspace.UISourceCode.UISourceCode>;
-  private readonly previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
-  private readonly history: History;
+  #previouslyViewedFilesSetting!: Common.Settings.Setting<SerializedHistoryItem[]>;
+  history!: History;
+  set previouslyViewedFilesSetting(setting: Common.Settings.Setting<SerializedHistoryItem[]>) {
+    this.#previouslyViewedFilesSetting = setting;
+    this.history = History.fromObject(this.#previouslyViewedFilesSetting.get());
+  }
+  get previouslyViewedFilesSetting(): Common.Settings.Setting<SerializedHistoryItem[]> {
+    return this.#previouslyViewedFilesSetting;
+  }
   private readonly uriToUISourceCode: Map<Platform.DevToolsPath.UrlString, Workspace.UISourceCode.UISourceCode>;
   private readonly idToUISourceCode: Map<string, Workspace.UISourceCode.UISourceCode>;
   #currentFile!: Workspace.UISourceCode.UISourceCode|null;
   private currentView!: UI.Widget.Widget|null;
   private scrollTimer?: number;
   private reentrantShow: boolean;
-  constructor(delegate: TabbedEditorContainerDelegate, setting: Common.Settings.Setting<SerializedHistoryItem[]>,
-              element?: HTMLElement) {
-    super();
-    this.delegate = delegate;
+  constructor(element?: HTMLElement) {
+    super(element);
 
-    this.tabbedPane = new UI.TabbedPane.TabbedPane(element);
+    this.tabbedPane = new UI.TabbedPane.TabbedPane();
+    // eslint-disable-next-line @devtools/no-imperative-dom-api
+    this.tabbedPane.show(this.contentElement);
     // eslint-disable-next-line @devtools/no-imperative-dom-api
     const placeholderElement = document.createElement('div');
     placeholderElement.classList.add('sources-placeholder');
@@ -128,11 +136,13 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     this.tabIds = new Map();
     this.files = new Map();
 
-    this.previouslyViewedFilesSetting = setting;
-    this.history = History.fromObject(this.previouslyViewedFilesSetting.get());
     this.uriToUISourceCode = new Map();
     this.idToUISourceCode = new Map();
     this.reentrantShow = false;
+  }
+
+  get tabbedPaneForTesting(): UI.TabbedPane.TabbedPane {
+    return this.tabbedPane;
   }
 
   private onBindingCreated(event: Common.EventTarget.EventTargetEvent<Persistence.Persistence.PersistenceBinding>):
@@ -185,10 +195,6 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     this.updateFileTitle(binding.fileSystem);
   }
 
-  get view(): UI.Widget.Widget {
-    return this.tabbedPane;
-  }
-
   get visibleView(): UI.Widget.Widget|null {
     return this.tabbedPane.visibleView as UI.Widget.Widget | null;
   }
@@ -203,10 +209,6 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
 
   rightToolbar(): UI.Toolbar.Toolbar {
     return this.tabbedPane.rightToolbar();
-  }
-
-  show(parentElement: Element): void {
-    this.tabbedPane.show(parentElement);
   }
 
   showFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
@@ -236,6 +238,10 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
 
   closeAllFiles(): void {
     this.closeTabs(this.tabbedPane.tabIds());
+  }
+
+  detachEditors(): void {
+    this.tabbedPane.detachChildWidgets();
   }
 
   historyUISourceCodes(): Workspace.UISourceCode.UISourceCode[] {

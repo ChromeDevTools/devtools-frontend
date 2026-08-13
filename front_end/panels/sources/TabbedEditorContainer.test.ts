@@ -171,7 +171,9 @@ describe('TabbedEditorContainer', () => {
         recycleUISourceCodeFrame: () => {},
       };
       const setting = createFakeSetting<LocalSerializedHistoryItem[]>('previously-viewed-files', []);
-      tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer(delegate, setting);
+      tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
+      tabbedEditorContainer.delegate = delegate;
+      tabbedEditorContainer.previouslyViewedFilesSetting = setting;
     });
 
     afterEach(() => {
@@ -195,12 +197,15 @@ describe('TabbedEditorContainer', () => {
       } as unknown as Sources.TabbedEditorContainer.TabbedEditorContainerDelegate;
 
       const setting = createFakeSetting<LocalSerializedHistoryItem[]>('previously-viewed-files', []);
-      const container = new Sources.TabbedEditorContainer.TabbedEditorContainer(delegate, setting);
+      const container = new Sources.TabbedEditorContainer.TabbedEditorContainer();
+      container.delegate = delegate;
+      container.previouslyViewedFilesSetting = setting;
 
-      renderElementIntoDOM(container.view);
-      await container.view.updateComplete;
+      renderElementIntoDOM(container);
+      const tabbedPane = container.tabbedPaneForTesting;
+      await tabbedPane.updateComplete;
 
-      const placeholder = container.view.element.shadowRoot?.querySelector('.sources-placeholder') as HTMLElement;
+      const placeholder = tabbedPane.element.shadowRoot?.querySelector('.sources-placeholder') as HTMLElement;
       assert.exists(placeholder);
 
       const shortcutLines = placeholder.querySelectorAll('.shortcut-line');
@@ -221,11 +226,11 @@ describe('TabbedEditorContainer', () => {
           sinon.stub(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(), 'addFileSystem')
               .resolves(null);
 
-      renderElementIntoDOM(tabbedEditorContainer.view);
-      await tabbedEditorContainer.view.updateComplete;
+      renderElementIntoDOM(tabbedEditorContainer);
+      const tabbedPane = tabbedEditorContainer.tabbedPaneForTesting;
+      await tabbedPane.updateComplete;
 
-      const placeholder =
-          tabbedEditorContainer.view.element.shadowRoot?.querySelector('.sources-placeholder') as HTMLElement;
+      const placeholder = tabbedPane.element.shadowRoot?.querySelector('.sources-placeholder') as HTMLElement;
       assert.exists(placeholder);
 
       const button = placeholder.querySelector('button');
@@ -268,7 +273,7 @@ describe('TabbedEditorContainer', () => {
       tabbedEditorContainer.showFile(networkSourceCode);
       tabbedEditorContainer.showFile(fsSourceCode);
 
-      const tabbedPane = tabbedEditorContainer.view as UI.TabbedPane.TabbedPane;
+      const tabbedPane = tabbedEditorContainer.tabbedPaneForTesting;
 
       // Verify initial tabs.
       let tabs = tabbedPane.tabs;
@@ -317,7 +322,7 @@ describe('TabbedEditorContainer', () => {
       // Open the network tab.
       tabbedEditorContainer.showFile(networkSourceCode);
 
-      const tabbedPane = tabbedEditorContainer.view as UI.TabbedPane.TabbedPane;
+      const tabbedPane = tabbedEditorContainer.tabbedPaneForTesting;
 
       // Verify that the network tab is opened.
       let tabs = tabbedPane.tabs;
@@ -360,7 +365,7 @@ describe('TabbedEditorContainer', () => {
       // Show the network file.
       tabbedEditorContainer.showFile(networkSourceCode);
 
-      const tabbedPane = tabbedEditorContainer.view as UI.TabbedPane.TabbedPane;
+      const tabbedPane = tabbedEditorContainer.tabbedPaneForTesting;
 
       // Verify that the filesystem tab is opened, not the network one.
       const tabs = tabbedPane.tabs;
@@ -407,7 +412,9 @@ describeWithEnvironment('TabbedEditorContainer', () => {
       const delegate = new MockDelegate();
       const setting =
           createFakeSetting<Sources.TabbedEditorContainer.SerializedHistoryItem[]>('previouslyViewedFilesSetting', []);
-      const tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer(delegate, setting);
+      const tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
+      tabbedEditorContainer.delegate = delegate;
+      tabbedEditorContainer.previouslyViewedFilesSetting = setting;
 
       const {uiSourceCode: uiSourceCode1} =
           createContentProviderUISourceCode({url: urlString`http://localhost/foo.js`, mimeType: 'text/javascript'});
@@ -438,7 +445,7 @@ describeWithEnvironment('TabbedEditorContainer', () => {
       Persistence.Persistence.PersistenceImpl.instance().dispatchEventToListeners(
           Persistence.Persistence.Events.BindingCreated, binding3);
 
-      const tabbedPane = tabbedEditorContainer.view as UI.TabbedPane.TabbedPane;
+      const tabbedPane = tabbedEditorContainer.tabbedPaneForTesting;
       const tabTitles = tabbedPane.tabs.map(t => t.title);
       assert.deepEqual(tabTitles, ['foo.js', 'bar.js', 'baz.js']);
       assert.strictEqual(tabbedEditorContainer.currentFile(), fsUiSourceCode3);

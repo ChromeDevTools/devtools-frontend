@@ -9,7 +9,7 @@ import {CSSModel} from './CSSModel.js';
 import type {MultitargetNetworkManager} from './NetworkManager.js';
 import {Events, OverlayModel} from './OverlayModel.js';
 import {SDKModel} from './SDKModel.js';
-import {javaScriptDisabledSettingDescriptor} from './SDKSettings.js';
+import {emulatedCSSMediaSettingDescriptor, javaScriptDisabledSettingDescriptor} from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 
 export const enum DataSaverOverride {
@@ -101,7 +101,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
       await this.setPressureStateOverride(settingValue);
     });
 
-    const mediaTypeSetting = settings.moduleSetting<string>('emulated-css-media');
+    const mediaTypeSetting = settings.resolve(emulatedCSSMediaSettingDescriptor);
     const mediaFeatureColorGamutSetting = settings.moduleSetting<string>('emulated-css-media-feature-color-gamut');
     const mediaFeaturePrefersColorSchemeSetting =
         settings.moduleSetting<string>('emulated-css-media-feature-prefers-color-scheme');

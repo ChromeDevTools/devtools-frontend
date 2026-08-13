@@ -7,10 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu.
-   */
-  doNotEmulateCssMediaType: 'Do not emulate CSS media type',
-  /**
    * @description A drop-down menu option to do not emulate css media type.
    */
   noEmulation: 'No emulation',
@@ -80,29 +76,9 @@ const UIStrings = {
    */
   userIdleScreenLocked: 'User idle, screen locked',
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu.
-   */
-  emulateCssPrintMediaType: 'Emulate CSS print media type',
-  /**
-   * @description A drop-down menu option to emulate css print media type.
-   */
-  print: 'print',
-  /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu.
-   */
-  emulateCssScreenMediaType: 'Emulate CSS screen media type',
-  /**
-   * @description A drop-down menu option to emulate css screen media type.
-   */
-  screen: 'screen',
-  /**
    * @description A tag of Emulate CSS screen media type setting that can be searched in the command menu.
    */
   query: 'query',
-  /**
-   * @description Title of a setting under the Rendering drawer.
-   */
-  emulateCssMediaType: 'Emulate CSS media type',
   /**
    * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
    * @example {prefers-color-scheme} PH1
@@ -314,35 +290,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'emulated-css-media',
-  settingType: Common.Settings.SettingType.ENUM,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  defaultValue: '',
-  options: [
-    {
-      title: i18nLazyString(UIStrings.doNotEmulateCssMediaType),
-      text: i18nLazyString(UIStrings.noEmulation),
-      value: '',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCssPrintMediaType),
-      text: i18nLazyString(UIStrings.print),
-      value: 'print',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCssScreenMediaType),
-      text: i18nLazyString(UIStrings.screen),
-      value: 'screen',
-    },
-  ],
-  tags: [
-    i18nLazyString(UIStrings.query),
-  ],
-  title: i18nLazyString(UIStrings.emulateCssMediaType),
-});
 
 Common.Settings.registerSettingExtension({
   title: i18nLazyString(UIStrings.cpuPressure),

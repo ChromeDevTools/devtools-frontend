@@ -68,6 +68,38 @@ const UIStrings = {
    */
   doNotEmulateAFocusedPage: 'Do not emulate a focused page',
   /**
+   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu.
+   */
+  doNotEmulateCssMediaType: 'Do not emulate CSS media type',
+  /**
+   * @description A drop-down menu option to do not emulate css media type.
+   */
+  noEmulation: 'No emulation',
+  /**
+   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu.
+   */
+  emulateCssPrintMediaType: 'Emulate CSS print media type',
+  /**
+   * @description A drop-down menu option to emulate css print media type.
+   */
+  print: 'print',
+  /**
+   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu.
+   */
+  emulateCssScreenMediaType: 'Emulate CSS screen media type',
+  /**
+   * @description A drop-down menu option to emulate css screen media type.
+   */
+  screen: 'screen',
+  /**
+   * @description A tag of Emulate CSS screen media type setting that can be searched in the command menu.
+   */
+  query: 'query',
+  /**
+   * @description Title of a setting under the Rendering drawer.
+   */
+  emulateCssMediaType: 'Emulate CSS media type',
+  /**
    * @description Title of the Rendering panel. The Rendering panel is a collection of settings that
    * lets the user debug the rendering (i.e. how the website is drawn onto the screen) of the
    * website (https://developer.chrome.com/docs/devtools/evaluate-performance/reference#rendering).
@@ -408,5 +440,30 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatePageFocusSettin
       value: false,
       title: i18nLazyString(UIStrings.doNotEmulateAFocusedPage),
     },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatedCSSMediaSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  title: i18nLazyString(UIStrings.emulateCssMediaType),
+  options: [
+    {
+      title: i18nLazyString(UIStrings.doNotEmulateCssMediaType),
+      text: i18nLazyString(UIStrings.noEmulation),
+      value: '',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCssPrintMediaType),
+      text: i18nLazyString(UIStrings.print),
+      value: 'print',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCssScreenMediaType),
+      text: i18nLazyString(UIStrings.screen),
+      value: 'screen',
+    },
+  ],
+  tags: [
+    i18nLazyString(UIStrings.query),
   ],
 });

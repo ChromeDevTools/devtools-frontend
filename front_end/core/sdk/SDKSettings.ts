@@ -153,3 +153,10 @@ export const emulatePageFocusSettingDescriptor: Common.Settings.SettingDescripto
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.LOCAL,
 };
+
+export const emulatedCSSMediaSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'emulated-css-media',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: '',
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

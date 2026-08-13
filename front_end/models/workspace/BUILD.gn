@@ -54,6 +54,7 @@ devtools_entrypoint("bundle") {
     "../../panels/lighthouse/*",
     "../../panels/network/*",
     "../../panels/profiler/*",
+    "../../panels/protocol_monitor/*",
     "../../panels/search/*",
     "../../panels/settings/*",
     "../../panels/snippets/*",
@@ -97,6 +98,7 @@ devtools_entrypoint("meta") {
     "../../../test/api/*",
     "../../entrypoints/*",
     "../../panels/greendev/*",
+    "../../panels/protocol_monitor/*",
   ]
 }
 
@@ -112,7 +114,6 @@ devtools_foundation_module("foundation_unittests") {
 
   deps = [
     ":bundle",
-    "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../core/text_utils:bundle",

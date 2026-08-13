@@ -32,7 +32,6 @@ devtools_ui_module("components") {
     "../../../../core/root:bundle",
     "../../../../models/ai_assistance:bundle",
     "../../../../models/trace:bundle",
-    "../../../../panels/common:bundle",
     "../../../../ui/components/buttons:bundle",
     "../../../../ui/components/dialogs:bundle",
     "../../../../ui/components/helpers:bundle",

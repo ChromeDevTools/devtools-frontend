@@ -52,8 +52,10 @@ devtools_ui_module("profiler") {
     "../../models/cpu_profile:bundle",
     "../../models/heap_snapshot:bundle",
     "../../models/network_time_calculator:bundle",
+    "../../models/workspace:bundle",
     "../../panels/elements:bundle",
     "../../ui/components/buttons:bundle",
+    "../../ui/components/icon_button:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
@@ -111,7 +113,8 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../core/common:bundle",
     "../../core/sdk:bundle",
-    "../../generated:protocol",
+    "../../generated",
     "../../testing",
+    "../../ui/lit:bundle",
   ]
 }

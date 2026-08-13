@@ -29,8 +29,5 @@ devtools_foundation_module("foundation_unittests") {
 
   sources = [ "Runtime.test.ts" ]
 
-  deps = [
-    ":bundle",
-    "../platform:bundle",
-  ]
+  deps = [ ":bundle" ]
 }

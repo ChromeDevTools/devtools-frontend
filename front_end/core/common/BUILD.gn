@@ -66,6 +66,7 @@ devtools_entrypoint("bundle") {
   deps = [
     ":ColorUtils",
     ":common",
+    "../platform:bundle",
   ]
 
   visibility = [ "*" ]

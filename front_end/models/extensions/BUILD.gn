@@ -21,6 +21,7 @@ devtools_module("extensions") {
     "../../../extension-api",
     "../../core/common:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
     "../../models/har:bundle",
@@ -60,5 +61,6 @@ ts_library("unittests") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../bindings:bundle",
   ]
 }

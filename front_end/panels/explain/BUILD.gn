@@ -67,6 +67,7 @@ devtools_entrypoint("meta") {
     "../../models/ai_assistance:bundle",
     "../../panels/console:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/settings:bundle",
   ]
 
   visibility = [ "../../entrypoints/*" ]

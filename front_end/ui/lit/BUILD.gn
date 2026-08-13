@@ -26,7 +26,10 @@ devtools_ui_module("lit") {
 devtools_entrypoint("bundle") {
   entrypoint = "lit.ts"
 
-  deps = [ ":lit" ]
+  deps = [
+    ":lit",
+    "../../third_party/lit:bundle",
+  ]
 
   visibility = [
     # IMPORTANT: Be careful when extending visibility of front_end/ui/lit,

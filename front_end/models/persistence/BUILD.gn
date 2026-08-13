@@ -103,6 +103,7 @@ ts_library("unittests") {
     "../../core/host:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../core/text_utils:bundle",
     "../../generated",
     "../../testing",
     "../bindings:bundle",

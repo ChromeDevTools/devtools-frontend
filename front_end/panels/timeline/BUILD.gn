@@ -145,6 +145,7 @@ devtools_ui_module("timeline") {
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
     "../../ui/lit:bundle",
+    "../../ui/settings:bundle",
     "../../ui/visual_logging:bundle",
     "../common:bundle",
     "./components:bundle",
@@ -164,6 +165,8 @@ devtools_entrypoint("bundle") {
   deps = [
     ":css_files",
     ":timeline",
+    "components:bundle",
+    "utils:bundle",
   ]
 
   visibility = [
@@ -242,6 +245,7 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../core/common:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
     "../../generated",

@@ -22,10 +22,10 @@ devtools_entrypoint("entrypoint") {
 
   deps = [
     ":worker_main",
+    "../../core/root:bundle",
     "../../panels/application:meta",
     "../../panels/browser_debugger:meta",
     "../../panels/developer_resources:meta",
-    "../../panels/elements:meta",
     "../../panels/issues:meta",
     "../../panels/layer_viewer:meta",
     "../../panels/mobile_throttling:meta",

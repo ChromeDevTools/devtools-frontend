@@ -35,10 +35,7 @@ devtools_foundation_module("puppeteer_devtools_connection") {
 devtools_entrypoint("bundle") {
   entrypoint = "protocol_client.ts"
 
-  deps = [
-    ":protocol_client",
-    "../../generated",
-  ]
+  deps = [ ":protocol_client" ]
 
   visibility = [ "*" ]
 }

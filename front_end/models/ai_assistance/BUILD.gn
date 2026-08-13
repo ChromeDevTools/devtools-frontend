@@ -84,12 +84,10 @@ devtools_module("ai_assistance") {
     "../../core/text_utils:bundle",
     "../../generated",
     "../../models/network_time_calculator:bundle",
-    "../../models/persistence:bundle",
     "../../services/tracing:bundle",
     "../../third_party/diff:bundle",
     "../bindings:bundle",
     "../crux-manager:bundle",
-    "../emulation:bundle",
     "../formatter:bundle",
     "../lighthouse:bundle",
     "../logs:bundle",
@@ -193,13 +191,13 @@ ts_library("unittests") {
     "../../testing",
     "../../ui/components/render_coordinator:bundle",
     "../bindings:bundle",
+    "../formatter:bundle",
     "../lighthouse:bundle",
     "../logs:bundle",
     "../network_time_calculator:bundle",
     "../source_map_scopes:bundle",
     "../trace:bundle",
     "../workspace:bundle",
-    "./data_formatters:unittests",
   ]
 }
 

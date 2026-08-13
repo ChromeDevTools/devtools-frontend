@@ -40,7 +40,10 @@ devtools_entrypoint("worker_entrypoint") {
 
   forward_variables_from(devtools_worker_config, "*")
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/platform:bundle",
+  ]
 
   visibility = [
     ":*",

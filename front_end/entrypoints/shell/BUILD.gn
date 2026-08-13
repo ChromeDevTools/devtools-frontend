@@ -17,7 +17,6 @@ devtools_entrypoint("shell") {
     "../../models/persistence:meta",
     "../../models/workspace:meta",
     "../../panels/ai_assistance:meta",
-    "../../panels/application:meta",
     "../../panels/changes:meta",
     "../../panels/console:meta",
     "../../panels/console_counters:meta",
@@ -32,6 +31,7 @@ devtools_entrypoint("shell") {
     "../../ui/legacy/components/perf_ui:meta",
     "../../ui/legacy/components/quick_open:meta",
     "../../ui/legacy/components/source_frame:meta",
+    "../main:bundle",
   ]
 
   visibility = [

@@ -30,6 +30,7 @@ devtools_entrypoint("bundle") {
     "../../panels/common/*",
     "../../panels/sources/*",
     "../../panels/utils:unittests",
+    "../../panels/utils/*",
     "../../ui/components/diff_view/*",
     "../../ui/legacy/components/quick_open/*",
     "../../ui/legacy/components/source_frame/*",

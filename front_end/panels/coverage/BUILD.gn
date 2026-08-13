@@ -89,6 +89,7 @@ devtools_ui_module("unittests") {
     "../../core/text_utils:bundle",
     "../../generated",
     "../../models/bindings:bundle",
+    "../../models/formatter:bundle",
     "../../models/workspace:bundle",
     "../../testing",
     "../../ui/components/render_coordinator:bundle",

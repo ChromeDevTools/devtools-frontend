@@ -11,7 +11,10 @@ import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import * as Root from '../root/root.js';
 
 import * as Host from './host.js';
-import type {DispatchHttpRequestRequest, DispatchHttpRequestResult} from './InspectorFrontendHostAPI.js';
+
+type DispatchHttpRequestRequest = Host.InspectorFrontendHostAPI.DispatchHttpRequestRequest;
+
+type DispatchHttpRequestResult = Host.InspectorFrontendHostAPI.DispatchHttpRequestResult;
 
 describe('GdpClient', () => {
   setupLocaleHooks();

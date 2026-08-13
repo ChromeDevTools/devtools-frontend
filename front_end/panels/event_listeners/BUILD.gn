@@ -27,6 +27,7 @@ devtools_ui_module("event_listeners") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]
 }
@@ -58,6 +59,8 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
   ]
 }

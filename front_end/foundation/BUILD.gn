@@ -55,7 +55,7 @@ devtools_api_test_module("api_tests") {
     ":bundle",
     "../core/common:bundle",
     "../core/root:bundle",
-    "../generated:protocol",
+    "../core/sdk:bundle",
     "../testing",
   ]
 }
@@ -68,8 +68,10 @@ devtools_foundation_module("unittests") {
   deps = [
     ":bundle",
     "../core/common:bundle",
+    "../core/host:bundle",
     "../core/root:bundle",
-    "../generated:protocol",
+    "../core/sdk:bundle",
+    "../generated",
     "../testing",
   ]
 }

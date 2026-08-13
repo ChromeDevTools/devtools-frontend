@@ -229,6 +229,7 @@ devtools_foundation_module("foundation_unittests") {
   deps = [
     ":bundle",
     "../../generated",
+    "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/persistence:bundle",
     "../../models/workspace:bundle",
@@ -252,5 +253,6 @@ devtools_api_test_module("api_tests") {
   deps = [
     ":bundle",
     "../../testing",
+    "../common:bundle",
   ]
 }

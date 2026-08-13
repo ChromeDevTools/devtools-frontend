@@ -92,5 +92,6 @@ devtools_ui_module("unittests") {
     "../../../../models/stack_trace:bundle",
     "../../../../models/workspace:bundle",
     "../../../../testing",
+    "../../../components/render_coordinator:bundle",
   ]
 }

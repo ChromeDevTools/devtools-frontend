@@ -90,5 +90,6 @@ devtools_ui_module("unittests") {
     "../../models/crux-manager:bundle",
     "../../testing",
     "../../ui/legacy:bundle",
+    "../common:bundle",
   ]
 }

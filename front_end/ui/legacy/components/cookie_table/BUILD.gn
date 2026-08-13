@@ -59,6 +59,7 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../..:bundle",
     "../../../../core/sdk:bundle",
+    "../../../../models/bindings:bundle",
     "../../../../testing",
   ]
 }

@@ -21,6 +21,7 @@ devtools_module("badges") {
   deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
+    "../../core/root:bundle",
   ]
 }
 
@@ -33,7 +34,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/main",
     "../../foundation/*",
-    "//front_end/panels/*",
+    "../../panels/*",
   ]
 
   visibility += devtools_models_visibility

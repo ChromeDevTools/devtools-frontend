@@ -46,8 +46,6 @@ devtools_ui_module("components") {
     "../../../../ui/components/buttons:bundle",
     "../../../../ui/components/code_highlighter:bundle",
     "../../../../ui/components/dialogs:bundle",
-    "../../../../ui/components/legacy_wrapper:bundle",
-    "../../../../ui/components/render_coordinator:bundle",
     "../../../../ui/components/report_view:bundle",
     "../../../../ui/components/request_link_icon:bundle",
     "../../../../ui/components/text_editor:bundle",

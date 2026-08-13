@@ -24,10 +24,7 @@ devtools_foundation_module("formatter") {
 devtools_entrypoint("bundle") {
   entrypoint = "formatter.ts"
 
-  deps = [
-    ":formatter",
-    "../../entrypoints/formatter_worker:worker_entrypoint",
-  ]
+  deps = [ ":formatter" ]
 
   visibility = [
     ":*",
@@ -50,6 +47,7 @@ devtools_entrypoint("bundle") {
     "../../ui/components/text_editor/*",
     "../../ui/legacy/components/object_ui/*",
     "../../ui/legacy/components/source_frame/*",
+    "../trace_source_maps_resolver/*",
   ]
 
   visibility += devtools_models_visibility

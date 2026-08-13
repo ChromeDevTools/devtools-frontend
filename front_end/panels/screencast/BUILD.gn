@@ -25,10 +25,12 @@ devtools_ui_module("screencast") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../foundation:bundle",
     "../../generated",
     "../../generated:protocol",
-    "../../ui/kit:bundle",
+    "../../ui/components/buttons:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/lit:bundle",
   ]
 }
 

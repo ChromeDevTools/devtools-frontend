@@ -17,5 +17,6 @@ devtools_entrypoint("bundle") {
     "../:web-vitals-injected",
     "../../:*",
     "../../:live-metrics",
+    "../../../../panels/timeline/components/*",
   ]
 }

@@ -125,7 +125,6 @@ devtools_entrypoint("bundle") {
   deps = [
     ":css_files",
     ":sources",
-    "../../ui/legacy/components/object_ui:bundle",
   ]
 
   visibility = [
@@ -196,6 +195,7 @@ devtools_ui_module("unittests") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
     "../../generated",
@@ -214,6 +214,7 @@ devtools_ui_module("unittests") {
     "../../ui/lit:bundle",
     "../common:bundle",
     "../coverage:bundle",
+    "../search:bundle",
     "components:bundle",
   ]
 }

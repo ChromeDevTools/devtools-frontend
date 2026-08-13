@@ -87,6 +87,7 @@ devtools_ui_module("unittests") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
+    "../../../models/bindings:bundle",
     "../../../models/persistence:bundle",
     "../../../models/workspace:bundle",
     "../../../testing",

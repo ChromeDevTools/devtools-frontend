@@ -105,6 +105,7 @@ devtools_ui_module("unittests") {
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/platform:bundle",
+    "../../../core/root:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
     "../../../models/ai_code_completion:bundle",
@@ -114,5 +115,7 @@ devtools_ui_module("unittests") {
     "../../../testing",
     "../../../third_party/codemirror.next:bundle",
     "../../legacy:bundle",
+    "../dialogs:bundle",
+    "../snackbars:bundle",
   ]
 }

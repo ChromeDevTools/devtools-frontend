@@ -53,6 +53,7 @@ devtools_foundation_module("foundation_unittests") {
   deps = [
     ":bundle",
     "../../testing",
+    "../common:bundle",
     "../platform:bundle",
     "../root:bundle",
   ]

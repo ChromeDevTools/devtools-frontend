@@ -104,6 +104,7 @@ devtools_ui_module("application") {
     "../../ui/components/node_text:bundle",
     "../../ui/components/report_view:bundle",
     "../../ui/components/tree_outline:bundle",
+    "../../ui/helpers:bundle",
     "../../ui/i18n:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
@@ -132,6 +133,7 @@ devtools_entrypoint("bundle") {
     ":css_files",
     "../../ui/legacy:css_files",
     "../../ui/legacy/components/data_grid:css_files",
+    "components:bundle",
   ]
 
   visibility = [
@@ -197,6 +199,7 @@ devtools_ui_module("unittests") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
     "../../generated:protocol",
@@ -207,6 +210,7 @@ devtools_ui_module("unittests") {
     "../../models/web_mcp:bundle",
     "../../models/workspace:bundle",
     "../../testing",
+    "../../ui/components/buttons:bundle",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/components/report_view:bundle",
     "../../ui/legacy:bundle",

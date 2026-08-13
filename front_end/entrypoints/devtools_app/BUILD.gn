@@ -8,6 +8,7 @@ devtools_entrypoint("entrypoint") {
   entrypoint = "devtools_app.ts"
 
   deps = [
+    "../../core/root:bundle",
     "../../entrypoints/inspector_main:meta",
     "../../panels/accessibility:meta",
     "../../panels/animation:meta",

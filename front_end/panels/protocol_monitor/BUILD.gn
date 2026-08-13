@@ -31,6 +31,7 @@ devtools_ui_module("protocol_monitor") {
     "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
     "../../models/bindings:bundle",
+    "../../models/workspace:bundle",
     "../../panels/elements/components:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/menus:bundle",

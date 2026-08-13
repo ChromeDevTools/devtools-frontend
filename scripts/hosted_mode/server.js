@@ -3,8 +3,11 @@
 // found in the LICENSE file.
 import * as fs from 'node:fs';
 import * as https from 'node:https';
+import {createRequire} from 'node:module';
 import * as path from 'node:path';
-import {WebSocketServer} from 'ws';
+
+const require = createRequire(import.meta.url);
+const {WebSocketServer} = require('ws');
 
 function parseURL(url) {
   return new URL(url, 'http://localhost');

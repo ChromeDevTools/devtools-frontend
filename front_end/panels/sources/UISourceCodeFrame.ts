@@ -255,7 +255,8 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
       plugin.editorInitialized(this.textEditor);
     }
     this.#recordSourcesPanelOpenedMetrics();
-    Common.EventTarget.fireEvent('source-file-loaded', this.#uiSourceCode.displayName(true));
+    window.dispatchEvent(new CustomEvent(
+        'source-file-loaded', {bubbles: true, cancelable: true, detail: this.#uiSourceCode.displayName(true)}));
   }
 
   private createMessage(origin: Workspace.UISourceCode.Message): RowMessage {

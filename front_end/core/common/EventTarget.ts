@@ -40,11 +40,6 @@ export interface EventTarget<Events> {
       ...[eventData]: EventPayloadToRestParameters<Events, T>): void;
 }
 
-export function fireEvent(name: string, detail: unknown = {}, target: HTMLElement|Window = window): void {
-  const evt = new CustomEvent(name, {bubbles: true, cancelable: true, detail});
-  target.dispatchEvent(evt);
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface EventTargetEvent<T, Events = any> {
   data: T;

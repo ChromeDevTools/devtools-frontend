@@ -682,8 +682,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       } else {
         void this.stepInto();
       }
-    } else {
-      Common.EventTarget.fireEvent('DevTools.DebuggerPaused');
     }
   }
 

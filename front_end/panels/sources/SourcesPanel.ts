@@ -447,6 +447,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     }
 
     Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DEBUGGER_PAUSED);
+    window.dispatchEvent(new CustomEvent('DevTools.DebuggerPaused', {bubbles: true, cancelable: true}));
   }
 
   private debugInfoAttached(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {

@@ -1405,7 +1405,8 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
         'navigator-' + uiSourceCode.contentType().name() + '-tree-item', 'navigator-file-tree-item');
     this.tooltip = uiSourceCode.url();
     UI.ARIAUtils.setLabel(this.listItemElement, `${uiSourceCode.name()}, ${this.nodeType}`);
-    Common.EventTarget.fireEvent('source-tree-file-added', uiSourceCode.fullDisplayName());
+    window.dispatchEvent(new CustomEvent('source-tree-file-added',
+                                         {bubbles: true, cancelable: true, detail: uiSourceCode.fullDisplayName()}));
     this.navigatorView = navigatorView;
     this.#uiSourceCode = uiSourceCode;
     this.updateIcon();

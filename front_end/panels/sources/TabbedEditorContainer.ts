@@ -219,7 +219,8 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     // Otherwise, this event will fire as soon as the content has been set.
     if (frame?.currentSourceFrame()?.contentSet && this.#currentFile === uiSourceCode &&
         frame?.currentUISourceCode() === uiSourceCode) {
-      Common.EventTarget.fireEvent('source-file-loaded', uiSourceCode.displayName(true));
+      window.dispatchEvent(new CustomEvent('source-file-loaded',
+                                           {bubbles: true, cancelable: true, detail: uiSourceCode.displayName(true)}));
     } else {
       this.#showFile(uiSourceCode, true);
     }

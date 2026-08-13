@@ -209,7 +209,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showLayoutShiftRegionsSettingDescriptor));
     this.#appendCheckbox(
         i18nString(UIStrings.layerBorders), i18nString(UIStrings.showsLayerBordersOrangeoliveAnd),
-        Common.Settings.Settings.instance().moduleSetting('show-debug-borders'));
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showDebugBordersSettingDescriptor));
     this.#appendCheckbox(
         i18nString(UIStrings.frameRenderingStats), i18nString(UIStrings.plotsFrameThroughputDropped),
         Common.Settings.Settings.instance().moduleSetting('show-fps-counter'));

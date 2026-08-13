@@ -125,3 +125,10 @@ export const showAdHighlightsSettingDescriptor: Common.Settings.SettingDescripto
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const showDebugBordersSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-debug-borders',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

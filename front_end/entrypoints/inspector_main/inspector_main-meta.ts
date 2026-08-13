@@ -36,6 +36,14 @@ const UIStrings = {
    */
   doNotHighlightAdFrames: 'Do not highlight ad frames',
   /**
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
+   */
+  showLayerBorders: 'Show layer borders',
+  /**
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
+   */
+  hideLayerBorders: 'Hide layer borders',
+  /**
    * @description Title of the Rendering panel. The Rendering panel is a collection of settings that
    * lets the user debug the rendering (i.e. how the website is drawn onto the screen) of the
    * website (https://developer.chrome.com/docs/devtools/evaluate-performance/reference#rendering).
@@ -318,6 +326,20 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showAdHighlightsSettin
     {
       value: false,
       title: i18nLazyString(UIStrings.doNotHighlightAdFrames),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showDebugBordersSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showLayerBorders),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.hideLayerBorders),
     },
   ],
 });

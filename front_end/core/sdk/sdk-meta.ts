@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
-   */
-  showScrollPerformanceBottlenecks: 'Show scroll performance bottlenecks',
-  /**
-   * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
-   */
-  hideScrollPerformanceBottlenecks: 'Hide scroll performance bottlenecks',
-  /**
    * @description Title of a Rendering setting that can be invoked through the Command Menu.
    */
   emulateAFocusedPage: 'Emulate a focused page',
@@ -330,24 +322,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'show-scroll-bottleneck-rects',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.showScrollPerformanceBottlenecks),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.hideScrollPerformanceBottlenecks),
-    },
-  ],
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

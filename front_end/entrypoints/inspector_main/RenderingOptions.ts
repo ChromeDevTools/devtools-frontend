@@ -214,7 +214,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
                          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showFPSCounterSettingDescriptor));
     this.#appendCheckbox(
         i18nString(UIStrings.scrollingPerformanceIssues), i18nString(UIStrings.highlightsElementsTealThatCan),
-        Common.Settings.Settings.instance().moduleSetting('show-scroll-bottleneck-rects'));
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showScrollBottleneckRectsSettingDescriptor));
 
     // The 'Highlight ads' setting now lives in the Ads panel under Application.
     // We display this legacy setting only when the Ads panel isn't enabled.

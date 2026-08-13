@@ -139,3 +139,10 @@ export const showFPSCounterSettingDescriptor: Common.Settings.SettingDescriptor<
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const showScrollBottleneckRectsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-scroll-bottleneck-rects',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

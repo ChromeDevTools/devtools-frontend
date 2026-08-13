@@ -22,6 +22,7 @@ import {
   showLayoutShiftRegionsSettingDescriptor,
   showMetricsRulersSettingDescriptor,
   showPaintRectsSettingDescriptor,
+  showScrollBottleneckRectsSettingDescriptor,
 } from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 import type {TargetManager} from './TargetManager.js';
@@ -140,7 +141,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#showAdHighlightsSetting = settings.resolve(showAdHighlightsSettingDescriptor);
     this.#showDebugBordersSetting = settings.resolve(showDebugBordersSettingDescriptor);
     this.#showFPSCounterSetting = settings.resolve(showFPSCounterSettingDescriptor);
-    this.#showScrollBottleneckRectsSetting = settings.moduleSetting<boolean>('show-scroll-bottleneck-rects');
+    this.#showScrollBottleneckRectsSetting = settings.resolve(showScrollBottleneckRectsSettingDescriptor);
 
     if (!target.suspended()) {
       void this.overlayAgent.invoke_enable();

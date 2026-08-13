@@ -14,12 +14,13 @@ generate_css("css_files") {
 devtools_ui_module("comments") {
   sources = [
     "CommentAnchorResolver.ts",
-    "CommentManager.ts",
+    "CommentOverlayManager.ts",
     "CommentsOverlayWidget.ts",
   ]
 
   deps = [
     "../../core/common:bundle",
+    "../../models/comment_manager:bundle",
     "../../third_party/codemirror.next:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
@@ -52,13 +53,14 @@ devtools_ui_module("unittests") {
 
   sources = [
     "CommentAnchorResolver.test.ts",
-    "CommentManager.test.ts",
+    "CommentOverlayManager.test.ts",
     "CommentsOverlayWidget.test.ts",
   ]
 
   deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../models/comment_manager:bundle",
     "../../testing",
     "../../third_party/codemirror.next:bundle",
     "../../ui/legacy:bundle",

@@ -9,14 +9,14 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 
 import * as Comments from './comments.js';
 
-describe('CommentManager', () => {
+describe('CommentOverlayManager', () => {
   let container: HTMLElement;
-  let manager: Comments.CommentManager.CommentManager;
+  let manager: Comments.CommentOverlayManager.CommentOverlayManager;
 
   beforeEach(() => {
     container = document.createElement('div');
     renderElementIntoDOM(container);
-    manager = new Comments.CommentManager.CommentManager();
+    manager = new Comments.CommentOverlayManager.CommentOverlayManager();
   });
 
   afterEach(() => {
@@ -24,7 +24,7 @@ describe('CommentManager', () => {
     container.remove();
   });
 
-  it('creates and retrieves comment threads', () => {
+  it('creates and retrieves comment threads and computes pin positions', () => {
     const item = document.createElement('div');
     item.setAttribute('jslog', 'TreeItem; context: test');
     item.textContent = 'font-size: 14px;';
@@ -67,11 +67,7 @@ describe('CommentManager', () => {
     assert.deepEqual(thread?.changes, changes);
   });
 
-  it('returns undefined for non-existent comment thread ID', () => {
-    assert.isUndefined(manager.getCommentThread('non-existent-id'));
-  });
-
-  it('removes comment threads and dispatches event', () => {
+  it('removes comment threads and cleans up DOM observer and pin positions', () => {
     const unobserveSpy = sinon.spy(IntersectionObserver.prototype, 'unobserve');
     try {
       const item = document.createElement('div');
@@ -79,36 +75,28 @@ describe('CommentManager', () => {
       item.textContent = 'delete me';
       container.appendChild(item);
 
-      let eventCount = 0;
-      manager.addEventListener(Comments.CommentManager.Events.COMMENT_THREADS_CHANGED, () => {
-        eventCount++;
-      });
-
       const thread = manager.createComment(item, 'To delete');
       assert.isNotNull(thread);
       assert.lengthOf(manager.getCommentThreads(), 1);
-      assert.strictEqual(eventCount, 1);
+      assert.lengthOf(manager.getPinPositions(), 1);
+
+      let eventCount = 0;
+      manager.addEventListener(Comments.CommentOverlayManager.Events.POSITIONS_UPDATED, () => {
+        eventCount++;
+      });
 
       manager.removeCommentThread(thread!.id);
       assert.lengthOf(manager.getCommentThreads(), 0);
-      assert.strictEqual(eventCount, 2);
+      assert.lengthOf(manager.getPinPositions(), 0);
+      assert.strictEqual(eventCount, 1);
       sinon.assert.calledWith(unobserveSpy, item);
     } finally {
       unobserveSpy.restore();
     }
   });
 
-  it('does not dispatch events when removing a non-existent comment thread ID', () => {
-    let eventDispatched = false;
-    manager.addEventListener(Comments.CommentManager.Events.COMMENT_THREADS_CHANGED, () => {
-      eventDispatched = true;
-    });
-
-    manager.removeCommentThread('non-existent-thread-id');
-    assert.isFalse(eventDispatched);
-  });
-
-  it('clears all comment threads when clear() is called', () => {
+  it('clears all comment threads, pin positions, and resets cursor when clear() is called', () => {
+    manager.setCommentMode(true);
     const item = document.createElement('div');
     item.setAttribute('jslog', 'TreeItem; context: clear-test');
     item.textContent = 'clear me';
@@ -116,47 +104,23 @@ describe('CommentManager', () => {
 
     manager.createComment(item, 'To clear');
     assert.lengthOf(manager.getCommentThreads(), 1);
-
-    manager.clear();
-    assert.lengthOf(manager.getCommentThreads(), 0);
-  });
-
-  it('toggles comment mode and dispatches COMMENT_MODE_CHANGED', () => {
-    manager.setCommentMode(true);
+    assert.lengthOf(manager.getPinPositions(), 1);
     assert.isTrue(manager.isCommentMode());
     assert.strictEqual(document.body.style.cursor, 'crosshair');
 
-    manager.setCommentMode(false);
+    manager.clear();
+    assert.lengthOf(manager.getCommentThreads(), 0);
+    assert.lengthOf(manager.getPinPositions(), 0);
     assert.isFalse(manager.isCommentMode());
     assert.strictEqual(document.body.style.cursor, '');
   });
 
-  it('does not dispatch COMMENT_MODE_CHANGED when setting comment mode to the same value', () => {
-    let modeChanges = 0;
-    manager.addEventListener(Comments.CommentManager.Events.COMMENT_MODE_CHANGED, () => {
-      modeChanges++;
-    });
-
-    manager.setCommentMode(true);
-    assert.strictEqual(modeChanges, 1);
-
-    manager.setCommentMode(true);
-    assert.strictEqual(modeChanges, 1);
-
-    manager.setCommentMode(false);
-    assert.strictEqual(modeChanges, 2);
-
-    manager.setCommentMode(false);
-    assert.strictEqual(modeChanges, 2);
-  });
-
-  it('resets comment mode when clear() is called', () => {
+  it('toggles comment mode and updates document cursor', () => {
     manager.setCommentMode(true);
     assert.isTrue(manager.isCommentMode());
     assert.strictEqual(document.body.style.cursor, 'crosshair');
 
-    manager.clear();
-
+    manager.setCommentMode(false);
     assert.isFalse(manager.isCommentMode());
     assert.strictEqual(document.body.style.cursor, '');
   });
@@ -310,7 +274,7 @@ describe('CommentManager', () => {
     container.appendChild(anchorEl);
 
     let eventCount = 0;
-    manager.addEventListener(Comments.CommentManager.Events.HOVER_HIGHLIGHT_CHANGED, () => {
+    manager.addEventListener(Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED, () => {
       eventCount++;
     });
 

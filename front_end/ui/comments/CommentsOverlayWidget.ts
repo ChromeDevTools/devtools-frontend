@@ -2,16 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
 import {
-  type CommentManager,
-  Events as CommentManagerEvents,
+  type CommentOverlayManager,
+  Events as CommentOverlayManagerEvents,
   type HighlightRectData,
   type HoverHighlightData,
   type PinPositionData,
-} from './CommentManager.js';
+} from './CommentOverlayManager.js';
 import commentsOverlayStyles from './commentsOverlay.css.js';
 
 const {html, render, nothing, Directives: {styleMap}} = Lit;
@@ -73,32 +74,44 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
 
 export class CommentsOverlayWidget extends UI.Widget.Widget {
   readonly #view: View;
-  readonly #commentManager: CommentManager;
+  readonly #commentOverlayManager: CommentOverlayManager;
 
   constructor(
-      commentManager: CommentManager,
+      commentOverlayManager: CommentOverlayManager,
       element?: HTMLElement,
       view: View = DEFAULT_VIEW,
   ) {
     super(element);
     this.#view = view;
-    this.#commentManager = commentManager;
+    this.#commentOverlayManager = commentOverlayManager;
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.#commentManager.addEventListener(CommentManagerEvents.POSITIONS_UPDATED, this.#onStateChanged, this);
-    this.#commentManager.addEventListener(CommentManagerEvents.COMMENT_THREADS_CHANGED, this.#onStateChanged, this);
-    this.#commentManager.addEventListener(CommentManagerEvents.COMMENT_MODE_CHANGED, this.#onStateChanged, this);
-    this.#commentManager.addEventListener(CommentManagerEvents.HOVER_HIGHLIGHT_CHANGED, this.#onStateChanged, this);
+    this.#commentOverlayManager.addEventListener(CommentOverlayManagerEvents.POSITIONS_UPDATED, this.#onStateChanged,
+                                                 this);
+    this.#commentOverlayManager.addEventListener(CommentOverlayManagerEvents.HOVER_HIGHLIGHT_CHANGED,
+                                                 this.#onStateChanged, this);
+
+    this.#commentOverlayManager.commentManager.addEventListener(
+        CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED, this.#onStateChanged, this);
+    this.#commentOverlayManager.commentManager.addEventListener(
+        CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED, this.#onStateChanged, this);
+
     this.requestUpdate();
   }
 
   override willHide(): void {
-    this.#commentManager.removeEventListener(CommentManagerEvents.POSITIONS_UPDATED, this.#onStateChanged, this);
-    this.#commentManager.removeEventListener(CommentManagerEvents.COMMENT_THREADS_CHANGED, this.#onStateChanged, this);
-    this.#commentManager.removeEventListener(CommentManagerEvents.COMMENT_MODE_CHANGED, this.#onStateChanged, this);
-    this.#commentManager.removeEventListener(CommentManagerEvents.HOVER_HIGHLIGHT_CHANGED, this.#onStateChanged, this);
+    this.#commentOverlayManager.removeEventListener(CommentOverlayManagerEvents.POSITIONS_UPDATED, this.#onStateChanged,
+                                                    this);
+    this.#commentOverlayManager.removeEventListener(CommentOverlayManagerEvents.HOVER_HIGHLIGHT_CHANGED,
+                                                    this.#onStateChanged, this);
+
+    this.#commentOverlayManager.commentManager.removeEventListener(
+        CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED, this.#onStateChanged, this);
+    this.#commentOverlayManager.commentManager.removeEventListener(
+        CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED, this.#onStateChanged, this);
+
     super.willHide();
   }
 
@@ -110,10 +123,10 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
 
   override performUpdate(): void {
     const viewInput: ViewInput = {
-      pins: this.#commentManager.getPinPositions(),
-      highlights: this.#commentManager.getHighlightRects(),
-      hoverHighlight: this.#commentManager.getHoverHighlight(),
-      commentMode: this.#commentManager.isCommentMode(),
+      pins: this.#commentOverlayManager.getPinPositions(),
+      highlights: this.#commentOverlayManager.getHighlightRects(),
+      hoverHighlight: this.#commentOverlayManager.getHoverHighlight(),
+      commentMode: this.#commentOverlayManager.isCommentMode(),
       onPinClick: this.#handlePinClick,
     };
     this.#view(viewInput, undefined, this.contentElement);

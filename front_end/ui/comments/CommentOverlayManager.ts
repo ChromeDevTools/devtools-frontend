@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 
 import {
   type CommentThread,
@@ -44,34 +45,30 @@ export interface HoverHighlightData {
   visible: boolean;
 }
 
+export const enum Events {
+  POSITIONS_UPDATED = 'PositionsUpdated',
+  HOVER_HIGHLIGHT_CHANGED = 'HoverHighlightChanged',
+}
+
 export interface EventTypes {
-  [Events.COMMENT_THREADS_CHANGED]: CommentThread[];
   [Events.POSITIONS_UPDATED]: {
     pins: PinPositionData[],
     highlights: HighlightRectData[],
   };
-  [Events.COMMENT_MODE_CHANGED]: boolean;
   [Events.HOVER_HIGHLIGHT_CHANGED]: HoverHighlightData|null;
 }
 
-export const enum Events {
-  COMMENT_THREADS_CHANGED = 'CommentThreadsChanged',
-  POSITIONS_UPDATED = 'PositionsUpdated',
-  COMMENT_MODE_CHANGED = 'CommentModeChanged',
-  HOVER_HIGHLIGHT_CHANGED = 'HoverHighlightChanged',
-}
-
 /**
- * Orchestrates comment threads, coordinates interactive commenting UI mode,
+ * Orchestrates live DOM overlay positioning, coordinates interactive commenting UI mode,
  * and tracks live DOM element positions via observers and event listeners.
  */
-export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  readonly #commentThreads = new Map<string, CommentThread>();
+export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+  // Temporary instantiation; will be replaced by INJECT.
+  readonly #commentManager = new CommentManager.CommentManager.CommentManager();
+
   readonly #liveNodeCache = new WeakMap<CommentThread, Element>();
   #observedThreads = new WeakSet<Element>();
   #intersectionObserver?: IntersectionObserver;
-  #commentMode = false;
-  #nextId = 1;
 
   #hoverData: HoverHighlightData|null = null;
   #pinPositions: PinPositionData[] = [];
@@ -109,6 +106,31 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
   #mutationObserver?: MutationObserver;
   #rematchTimeoutId?: ReturnType<typeof setTimeout>;
 
+  constructor() {
+    super();
+    this.#commentManager.addEventListener(
+        CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED,
+        () => {
+          this.#updatePositions();
+        },
+        this,
+    );
+    this.#commentManager.addEventListener(
+        CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED,
+        ({data: active}) => {
+          if (!active) {
+            this.#setHoverHighlight(null);
+          }
+          document.body.style.cursor = active ? 'crosshair' : '';
+        },
+        this,
+    );
+  }
+
+  get commentManager(): CommentManager.CommentManager.CommentManager {
+    return this.#commentManager;
+  }
+
   /**
    * Lazily creates an IntersectionObserver that monitors the visibility and viewport intersection
    * of elements with active comment anchors.
@@ -127,19 +149,11 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   setCommentMode(active: boolean): void {
-    if (this.#commentMode === active) {
-      return;
-    }
-    this.#commentMode = active;
-    if (!active) {
-      this.#setHoverHighlight(null);
-    }
-    document.body.style.cursor = active ? 'crosshair' : '';
-    this.dispatchEventToListeners(Events.COMMENT_MODE_CHANGED, active);
+    this.#commentManager.setCommentMode(active);
   }
 
   isCommentMode(): boolean {
-    return this.#commentMode;
+    return this.#commentManager.isCommentMode();
   }
 
   #setHoverHighlight(data: HoverHighlightData|null): void {
@@ -168,7 +182,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   handleElementClick(element: Element, commentText = 'New comment'): CommentThread|null {
-    if (!this.#commentMode) {
+    if (!this.isCommentMode()) {
       return null;
     }
     return this.createComment(element, commentText, 'DEVELOPER');
@@ -186,20 +200,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
       return null;
     }
 
-    const id = `comment-${this.#nextId++}`;
-    const thread: CommentThread = {
-      id,
-      anchor,
-      comments: [{
-        author,
-        text,
-        timestamp: Date.now(),
-      }],
-      status: 'ACTIVE',
-      changes,
-    };
-
-    this.#commentThreads.set(id, thread);
+    const thread = this.#commentManager.createCommentThread(anchor, text, author, changes);
     this.#liveNodeCache.set(thread, anchorEl);
 
     const observer = this.#getIntersectionObserver();
@@ -207,32 +208,29 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#observedThreads.add(anchorEl);
 
     this.#updatePositions();
-    this.dispatchEventToListeners(Events.COMMENT_THREADS_CHANGED, this.getCommentThreads());
-
     return thread;
   }
 
   getCommentThread(id: string): CommentThread|undefined {
-    return this.#commentThreads.get(id);
+    return this.#commentManager.getCommentThread(id);
   }
 
   getCommentThreads(): CommentThread[] {
-    return Array.from(this.#commentThreads.values());
+    return this.#commentManager.getCommentThreads();
   }
 
   removeCommentThread(id: string): void {
-    const thread = this.#commentThreads.get(id);
+    const thread = this.#commentManager.getCommentThread(id);
     if (!thread) {
       return;
     }
     const el = this.#liveNodeCache.get(thread);
-    this.#commentThreads.delete(id);
     this.#liveNodeCache.delete(thread);
 
     if (el && this.#intersectionObserver) {
       let isElementStillObserved = false;
-      for (const remainingThread of this.#commentThreads.values()) {
-        if (this.#liveNodeCache.get(remainingThread) === el) {
+      for (const remainingThread of this.#commentManager.getCommentThreads()) {
+        if (remainingThread.id !== id && this.#liveNodeCache.get(remainingThread) === el) {
           isElementStillObserved = true;
           break;
         }
@@ -243,8 +241,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
       }
     }
 
-    this.#updatePositions();
-    this.dispatchEventToListeners(Events.COMMENT_THREADS_CHANGED, this.getCommentThreads());
+    this.#commentManager.removeCommentThread(id);
   }
 
   /**
@@ -258,7 +255,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     const oldElements = new Set<Element>();
     const newElements = new Set<Element>();
 
-    for (const thread of this.#commentThreads.values()) {
+    for (const thread of this.#commentManager.getCommentThreads()) {
       const oldEl = this.#liveNodeCache.get(thread);
       if (oldEl) {
         oldElements.add(oldEl);
@@ -295,7 +292,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     const newHighlights: HighlightRectData[] = [];
     const elementPinCounts = new Map<Element, number>();
 
-    for (const thread of this.#commentThreads.values()) {
+    for (const thread of this.#commentManager.getCommentThreads()) {
       const el = this.#liveNodeCache.get(thread) || null;
       if (!el || !el.isConnected) {
         continue;
@@ -402,7 +399,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#clickContainer = container;
 
     this.#clickListener = (event: Event): void => {
-      if (!this.#commentMode) {
+      if (!this.isCommentMode()) {
         return;
       }
       const composedTarget = event.composedPath()[0];
@@ -417,7 +414,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     };
 
     this.#suppressListener = (event: Event): void => {
-      if (!this.#commentMode) {
+      if (!this.isCommentMode()) {
         return;
       }
       const composedTarget = event.composedPath()[0];
@@ -432,7 +429,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     };
 
     this.#hoverListener = (event: Event): void => {
-      if (!this.#commentMode) {
+      if (!this.isCommentMode()) {
         this.#setHoverHighlight(null);
         return;
       }
@@ -626,15 +623,13 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
    * and purging all active comment threads and overlay data.
    */
   clear(): void {
-    this.setCommentMode(false);
+    this.#commentManager.clear();
     this.stop();
     this.#intersectionObserver?.disconnect();
     this.#intersectionObserver = undefined;
     this.#observedThreads = new WeakSet();
-    this.#commentThreads.clear();
     this.#pinPositions = [];
     this.#highlightRects = [];
     this.#updatePositions();
-    this.dispatchEventToListeners(Events.COMMENT_THREADS_CHANGED, []);
   }
 }

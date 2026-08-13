@@ -11,10 +11,10 @@ import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Comments from './comments.js';
 
 describeWithEnvironment('CommentsOverlayWidget', () => {
-  let manager: Comments.CommentManager.CommentManager;
+  let manager: Comments.CommentOverlayManager.CommentOverlayManager;
 
   beforeEach(() => {
-    manager = new Comments.CommentManager.CommentManager();
+    manager = new Comments.CommentOverlayManager.CommentOverlayManager();
   });
 
   afterEach(() => {

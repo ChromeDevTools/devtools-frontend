@@ -1000,31 +1000,31 @@ export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegat
   }
 }
 
-let activeCommentManager: Comments.CommentManager.CommentManager|null = null;
+let activeOverlayManager: Comments.CommentOverlayManager.CommentOverlayManager|null = null;
 let activeOverlayWidget: Comments.CommentsOverlayWidget.CommentsOverlayWidget|null = null;
 
 // Temporary for manual testing and experimentation.
-export async function comments(): Promise<Comments.CommentManager.CommentManager> {
+export async function comments(): Promise<Comments.CommentOverlayManager.CommentOverlayManager> {
   const Comments = await import('../../ui/comments/comments.js');
-  if (!activeCommentManager || !activeOverlayWidget) {
-    activeCommentManager = new Comments.CommentManager.CommentManager();
-    activeCommentManager.start();
+  if (!activeOverlayManager || !activeOverlayWidget) {
+    activeOverlayManager = new Comments.CommentOverlayManager.CommentOverlayManager();
+    activeOverlayManager.start();
 
-    activeOverlayWidget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(activeCommentManager);
+    activeOverlayWidget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(activeOverlayManager);
     activeOverlayWidget.markAsRoot();
     activeOverlayWidget.show(document.body);
-    activeCommentManager.setCommentMode(true);
-    return activeCommentManager;
+    activeOverlayManager.setCommentMode(true);
+    return activeOverlayManager;
   }
 
-  const newMode = !activeCommentManager.isCommentMode();
-  activeCommentManager.setCommentMode(newMode);
+  const newMode = !activeOverlayManager.isCommentMode();
+  activeOverlayManager.setCommentMode(newMode);
   if (newMode) {
     activeOverlayWidget.show(document.body);
   } else {
     activeOverlayWidget.detach();
   }
-  return activeCommentManager;
+  return activeOverlayManager;
 }
 
 // @ts-expect-error global helper for manual testing

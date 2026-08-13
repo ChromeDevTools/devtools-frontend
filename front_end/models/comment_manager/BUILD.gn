@@ -1,0 +1,41 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/typescript/typescript.gni")
+import("../visibility.gni")
+
+devtools_foundation_module("comment_manager") {
+  sources = [ "CommentManager.ts" ]
+
+  deps = [ "../../core/common:bundle" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "comment_manager.ts"
+
+  deps = [ ":comment_manager" ]
+
+  visibility = [
+    ":*",
+    "../../entrypoints/main/*",
+    "../../foundation/*",
+    "../../ui/comments/*",
+  ]
+
+  visibility += devtools_models_visibility
+}
+
+devtools_foundation_module("foundation_unittests") {
+  testonly = true
+
+  sources = [ "CommentManager.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../testing",
+  ]
+}

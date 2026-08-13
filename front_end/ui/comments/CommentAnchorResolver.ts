@@ -2,44 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-export interface EditorAnchorSignature {
-  /** 1-based line number for CodeMirror text editor anchors */
-  lineNumber: number;
-  /** File path associated with the editor */
-  filePath?: string;
-}
-
-export interface CommentAnchorSignature {
-  /** Visual logging tree path, e.g. "Panel: elements > Pane: styles > TreeOutline > TreeItem: color" */
-  vePath: string;
-  /** Normalized text content of the target node */
-  textSignature: string;
-  /** Text content of the parent container VE node for sibling disambiguation */
-  parentTextSignature?: string;
-  /** 0-indexed position among siblings sharing the same visual logging path */
-  siblingIndex?: number;
-  /** Optional backend RequestId for Network panel elements (`data-network-request-id`) */
-  networkRequestId?: string;
-  /** Optional backend NodeId for Elements panel DOM nodes (`data-backend-node-id`) */
-  backendNodeId?: number;
-  /** Optional editor anchor coordinates for CodeMirror text editors */
-  editor?: EditorAnchorSignature;
-}
-
-export interface CommentThread {
-  id: string;
-  anchor: CommentAnchorSignature;
-  comments: Array<{
-    author: 'DEVELOPER' | 'AGENT',
-    text: string,
-    timestamp: number,
-  }>;
-  status: 'ACTIVE'|'RESOLVED';
-  changes?: Array<Record<string, unknown>>;
-}
+export type EditorAnchorSignature = CommentManager.CommentManager.EditorAnchorSignature;
+export type CommentAnchorSignature = CommentManager.CommentManager.CommentAnchorSignature;
+export type CommentThread = CommentManager.CommentManager.CommentThread;
 
 const IGNORED_MINOR_CONTROLS = new Set<number>([
   VisualLogging.VisualElements.Action,

@@ -283,6 +283,7 @@ group("foundation_unittests") {
     "entrypoints/heap_snapshot_worker:unittests",
     "foundation:unittests",
     "models/ai_assistance:foundation_unittests",
+    "models/comment_manager:foundation_unittests",
     "models/crux-manager:foundation_unittests",
     "models/formatter:unittests",
     "models/har:unittests",

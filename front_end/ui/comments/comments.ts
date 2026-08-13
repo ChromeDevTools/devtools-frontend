@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as CommentAnchorResolver from './CommentAnchorResolver.js';
-import * as CommentManager from './CommentManager.js';
+import * as CommentOverlayManager from './CommentOverlayManager.js';
 import * as CommentsOverlayWidget from './CommentsOverlayWidget.js';
 
 export {
   CommentAnchorResolver,
-  CommentManager,
+  CommentOverlayManager,
   CommentsOverlayWidget,
 };

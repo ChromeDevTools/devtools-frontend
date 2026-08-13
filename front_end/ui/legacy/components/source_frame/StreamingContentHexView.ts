@@ -22,8 +22,8 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
   #positionPercentageToReveal: number|null = null;
   #inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
 
-  constructor() {
-    super();
+  constructor(element?: HTMLElement) {
+    super(element);
     this.#inspector.addEventListener(
         LinearMemoryInspectorComponents.LinearMemoryInspector.Events.MEMORY_REQUEST, this.#memoryRequested, this);
     this.#inspector.addEventListener(
@@ -112,8 +112,8 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
 export class StreamingContentHexView extends LinearMemoryInspectorView {
   readonly #streamingContentData: TextUtils.StreamingContentData.StreamingContentData;
 
-  constructor(streamingContentData: TextUtils.StreamingContentData.StreamingContentData) {
-    super();
+  constructor(streamingContentData: TextUtils.StreamingContentData.StreamingContentData, element?: HTMLElement) {
+    super(element);
     this.#streamingContentData = streamingContentData;
   }
 

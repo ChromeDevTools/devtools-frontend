@@ -36,18 +36,18 @@ export class BinaryResourceViewFactory {
     return new TextUtils.ContentData.ContentData(this.base64(), /* isBase64 */ true, 'text/plain', 'utf-8').text;
   }
 
-  createBase64View(): ResourceSourceFrame {
+  createBase64View(element?: HTMLElement): ResourceSourceFrame {
     return new StreamingResourceSourceFrame(this.streamingContent, () => this.base64(), this.contentUrl,
-                                            this.resourceType, {lineNumbers: false, lineWrapping: true});
+                                            this.resourceType, {lineNumbers: false, lineWrapping: true}, element);
   }
 
-  createHexView(): StreamingContentHexView {
-    return new StreamingContentHexView(this.streamingContent);
+  createHexView(element?: HTMLElement): StreamingContentHexView {
+    return new StreamingContentHexView(this.streamingContent, element);
   }
 
-  createUtf8View(): ResourceSourceFrame {
+  createUtf8View(element?: HTMLElement): ResourceSourceFrame {
     return new StreamingResourceSourceFrame(this.streamingContent, () => this.utf8(), this.contentUrl,
-                                            this.resourceType, {lineNumbers: true, lineWrapping: true});
+                                            this.resourceType, {lineNumbers: true, lineWrapping: true}, element);
   }
 
   static #uint8ArrayToHexString(uint8Array: Uint8Array): string {
@@ -73,9 +73,9 @@ class StreamingResourceSourceFrame extends ResourceSourceFrame {
 
   constructor(streamingContent: TextUtils.StreamingContentData.StreamingContentData, getContent: () => string,
               contentUrl: Platform.DevToolsPath.UrlString, resourceType: Common.ResourceType.ResourceType,
-              options: {lineNumbers: boolean, lineWrapping: boolean}) {
+              options: {lineNumbers: boolean, lineWrapping: boolean}, element?: HTMLElement) {
     super(TextUtils.StaticContentProvider.StaticContentProvider.fromString(contentUrl, resourceType, getContent()),
-          resourceType.canonicalMimeType(), options);
+          resourceType.canonicalMimeType(), options, element);
     this.#streamingContent = streamingContent;
     this.#getContent = getContent;
   }

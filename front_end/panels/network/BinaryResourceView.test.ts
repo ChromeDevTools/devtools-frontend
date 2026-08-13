@@ -176,8 +176,7 @@ describeWithEnvironment('BinaryResourceView Position Syncing', () => {
 
     const currentViewWidget = view.element.querySelector('devtools-widget');
     assert.isOk(currentViewWidget);
-    const oldWrapper = UI.Widget.Widget.get(currentViewWidget) as UI.Widget.VBox;
-    const oldWidget = oldWrapper.children()[0] as unknown as {setPositionPercentage(p: number): void};
+    const oldWidget = UI.Widget.Widget.get(currentViewWidget) as unknown as {setPositionPercentage(p: number): void};
 
     // Fake the position percentage
     oldWidget.setPositionPercentage(0.42);
@@ -193,8 +192,7 @@ describeWithEnvironment('BinaryResourceView Position Syncing', () => {
     assert.isOk(newViewWidget);
     assert.notStrictEqual(currentViewWidget, newViewWidget, 'A new devtools-widget should have been rendered');
 
-    const newWrapper = UI.Widget.Widget.get(newViewWidget) as UI.Widget.VBox;
-    const newWidget = newWrapper.children()[0] as unknown as {getPositionPercentage(): number};
+    const newWidget = UI.Widget.Widget.get(newViewWidget) as unknown as {getPositionPercentage(): number};
     const newPercentage = newWidget.getPositionPercentage();
 
     // Due to character rounding on lines, it might not be exactly 0.42. Just check if it's close.

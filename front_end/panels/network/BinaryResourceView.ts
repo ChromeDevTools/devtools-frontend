@@ -90,20 +90,19 @@ const defaultView: View = (input, _output, target) => {
           <devtools-widget
             class="widget vbox flex-auto"
             ${widget((e: HTMLElement) => {
-              const wrapper = new UI.Widget.VBox(e);
               const factory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(
                   input.content, input.contentUrl, input.resourceType);
               let view: SourceFrame.ResourceSourceFrame.ResourceSourceFrame|
                   SourceFrame.StreamingContentHexView.StreamingContentHexView;
               switch (obj.type) {
                 case 'base64':
-                  view = factory.createBase64View();
+                  view = factory.createBase64View(e);
                   break;
                 case 'hex':
-                  view = factory.createHexView();
+                  view = factory.createHexView(e);
                   break;
                 case 'utf8':
-                  view = factory.createUtf8View();
+                  view = factory.createUtf8View(e);
                   break;
                 default:
                   throw new Error('Unsupported view type');
@@ -111,8 +110,7 @@ const defaultView: View = (input, _output, target) => {
               if ('setPositionPercentage' in view) {
                 view.setPositionPercentage(input.activePositionPercentage);
               }
-              view.show(wrapper.contentElement);
-              return wrapper;
+              return view;
             })}>
           </devtools-widget>
         ` : nothing,
@@ -241,13 +239,10 @@ export class BinaryResourceView extends UI.Widget.VBox {
 
     const currentViewWidget = this.litContainer.querySelector('devtools-widget');
     if (currentViewWidget) {
-      const wrapper = UI.Widget.Widget.get(currentViewWidget);
-      if (wrapper && wrapper.children().length > 0) {
-        const view = wrapper.children()[0] as SourceFrame.ResourceSourceFrame.ResourceSourceFrame |
-            SourceFrame.StreamingContentHexView.StreamingContentHexView;
-        if ('getPositionPercentage' in view) {
-          this.activePositionPercentage = view.getPositionPercentage();
-        }
+      const view = UI.Widget.Widget.get(currentViewWidget) as SourceFrame.ResourceSourceFrame.ResourceSourceFrame |
+          SourceFrame.StreamingContentHexView.StreamingContentHexView;
+      if (view && 'getPositionPercentage' in view) {
+        this.activePositionPercentage = view.getPositionPercentage();
       }
     }
 

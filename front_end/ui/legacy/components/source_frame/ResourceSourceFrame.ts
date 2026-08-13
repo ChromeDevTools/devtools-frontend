@@ -57,14 +57,14 @@ export class ResourceSourceFrame extends SourceFrameImpl {
   readonly #resource: TextUtils.ContentProvider.ContentProvider;
   readonly #givenContentType: string;
 
-  constructor(
-      resource: TextUtils.ContentProvider.ContentProvider, givenContentType: string, options?: SourceFrameOptions) {
+  constructor(resource: TextUtils.ContentProvider.ContentProvider, givenContentType: string,
+              options?: SourceFrameOptions, element?: HTMLElement) {
     const isStreamingProvider = TextUtils.ContentProvider.isStreamingContentProvider(resource);
 
     const lazyContent = isStreamingProvider ?
         () => resource.requestStreamingContent().then(TextUtils.StreamingContentData.asContentDataOrError) :
         () => resource.requestContentData();
-    super(lazyContent, options);
+    super(lazyContent, options, element);
 
     this.#givenContentType = givenContentType;
     this.#resource = resource;

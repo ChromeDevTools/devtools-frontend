@@ -157,10 +157,10 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   contentSet: boolean;
   private selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
 
-  constructor(
-      lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>,
-      private readonly options: SourceFrameOptions = {}) {
-    super({
+  constructor(lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>,
+              private readonly options: SourceFrameOptions = {}, element?: HTMLElement) {
+    // @ts-expect-error
+    super(...(element ? [element] : []), {
       title: i18nString(UIStrings.source),
       viewId: 'source',
     });

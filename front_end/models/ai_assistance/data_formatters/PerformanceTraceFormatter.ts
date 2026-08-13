@@ -1102,5 +1102,25 @@ export function formatEventForAI(event: Trace.Types.Events.Event): string {
     });
   }
 
+  if (Trace.Types.Events.isScreenshot(event) || Trace.Types.Events.isLegacyScreenshot(event)) {
+    return JSON.stringify({
+      ...event,
+      args: {
+        ...event.args,
+        snapshot: '<redacted base64 image data>',
+      },
+    });
+  }
+
+  if (Trace.Types.Events.isLegacySyntheticScreenshot(event)) {
+    return JSON.stringify({
+      ...event,
+      args: {
+        ...event.args,
+        dataUri: '<redacted base64 image data>',
+      },
+    });
+  }
+
   return JSON.stringify(event);
 }

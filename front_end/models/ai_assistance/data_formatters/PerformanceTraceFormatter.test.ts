@@ -478,6 +478,56 @@ describe('PerformanceTraceFormatter', function() {
       });
     });
 
+    it('redacts snapshot data for modern Screenshot events', () => {
+      const mockScreenshotEvent = {
+        name: Trace.Types.Events.Name.SCREENSHOT,
+        ph: Trace.Types.Events.Phase.INSTANT,
+        args: {
+          snapshot: 'base64rawimagedata...',
+          source_id: 1,
+          frame_sequence: 123,
+          expected_display_time: 456,
+        },
+      } as unknown as Trace.Types.Events.Event;
+
+      const output = PerformanceTraceFormatter.formatEventForAI(mockScreenshotEvent);
+      const parsed = JSON.parse(output);
+      assert.strictEqual(parsed.args.snapshot, '<redacted base64 image data>');
+      assert.strictEqual(parsed.args.source_id, 1);
+      assert.strictEqual(parsed.args.frame_sequence, 123);
+      assert.strictEqual(parsed.args.expected_display_time, 456);
+    });
+
+    it('redacts snapshot data for legacy Screenshot events', () => {
+      const mockLegacyScreenshotEvent = {
+        name: Trace.Types.Events.Name.SCREENSHOT,
+        ph: Trace.Types.Events.Phase.OBJECT_SNAPSHOT,
+        id: '0x1',
+        args: {
+          snapshot: 'legacybase64rawimagedata...',
+        },
+      } as unknown as Trace.Types.Events.Event;
+
+      const output = PerformanceTraceFormatter.formatEventForAI(mockLegacyScreenshotEvent);
+      const parsed = JSON.parse(output);
+      assert.strictEqual(parsed.args.snapshot, '<redacted base64 image data>');
+      assert.strictEqual(parsed.id, '0x1');
+    });
+
+    it('redacts dataUri data for legacy synthetic Screenshot events', () => {
+      const mockLegacySyntheticScreenshotEvent = {
+        name: Trace.Types.Events.Name.SCREENSHOT,
+        ph: Trace.Types.Events.Phase.OBJECT_SNAPSHOT,
+        args: {
+          dataUri: 'data:image/jpg;base64,legacybase64rawimagedata...',
+        },
+      } as unknown as Trace.Types.Events.Event;
+
+      const output = PerformanceTraceFormatter.formatEventForAI(mockLegacySyntheticScreenshotEvent);
+      const parsed = JSON.parse(output);
+      assert.strictEqual(parsed.args.dataUri, '<redacted base64 image data>');
+    });
+
     it('serializes other events as-is', () => {
       const mockGenericEvent = {
         name: 'generic-event',

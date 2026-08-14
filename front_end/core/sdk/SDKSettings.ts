@@ -213,3 +213,11 @@ export const emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor: Common.
   defaultValue: '',
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor:
+    Common.Settings.SettingDescriptor<string> = {
+  name: 'emulated-css-media-feature-prefers-reduced-transparency',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: '',
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

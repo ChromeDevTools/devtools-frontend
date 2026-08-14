@@ -603,3 +603,24 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatedCSSMediaFeatur
   ],
   title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-reduced-data'}),
 });
+
+SettingsUI.SettingUIRegistration.register(
+    SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor, {
+      category: Common.Settings.SettingCategory.RENDERING,
+      options: [
+        {
+          title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'prefers-reduced-transparency'}),
+          text: i18nLazyString(UIStrings.noEmulation),
+          value: '',
+        },
+        {
+          title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-reduced-transparency: reduce'}),
+          text: i18n.i18n.lockedLazyString('prefers-reduced-transparency: reduce'),
+          value: 'reduce',
+        },
+      ],
+      tags: [
+        i18nLazyString(UIStrings.query),
+      ],
+      title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-reduced-transparency'}),
+    });

@@ -16,6 +16,7 @@ import {
   emulatedCSSMediaFeaturePrefersContrastSettingDescriptor,
   emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor,
   emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor,
+  emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor,
   emulatedCSSMediaSettingDescriptor,
   idleDetectionSettingDescriptor,
   javaScriptDisabledSettingDescriptor,
@@ -122,7 +123,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
     const mediaFeaturePrefersReducedDataSetting =
         settings.resolve(emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor);
     const mediaFeaturePrefersReducedTransparencySetting =
-        settings.moduleSetting<string>('emulated-css-media-feature-prefers-reduced-transparency');
+        settings.resolve(emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor);
     const mediaFeaturePrefersReducedMotionSetting =
         settings.resolve(emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor);
     // Note: this uses a different format than what the CDP API expects,

@@ -227,26 +227,6 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 Common.Settings.registerSettingExtension({
-  settingName: 'emulated-css-media-feature-prefers-reduced-transparency',
-  settingType: Common.Settings.SettingType.ENUM,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  defaultValue: '',
-  options: [
-    {
-      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'prefers-reduced-transparency'}),
-      text: i18nLazyString(UIStrings.noEmulation),
-      value: '',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-reduced-transparency: reduce'}),
-      text: i18n.i18n.lockedLazyString('prefers-reduced-transparency: reduce'),
-      value: 'reduce',
-    },
-  ],
-  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-reduced-transparency'}),
-});
-
-Common.Settings.registerSettingExtension({
   settingName: 'emulated-css-media-feature-color-gamut',
   settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.SESSION,

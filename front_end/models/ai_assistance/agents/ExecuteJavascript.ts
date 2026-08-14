@@ -9,7 +9,6 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {ChangeManager} from '../ChangeManager.js';
-import {debugLog} from '../debug.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
 import {FREESTYLER_WORLD_CSP, FREESTYLER_WORLD_NAME} from '../injected.js';
 import type {DataHandlerResult} from '../tools/Tool.js';
@@ -115,8 +114,6 @@ export class JavascriptExecutor {
   }
 
   async executeAction(action: string, options?: FunctionHandlerOptions): Promise<DataHandlerResult<unknown>> {
-    debugLog(`Action to execute: ${action}`);
-
     if (options?.approved === false) {
       return {
         error: 'Error: User denied code execution with side effects.',
@@ -149,7 +146,6 @@ export class JavascriptExecutor {
       }
 
       const result = await this.generateObservation(action, {throwOnSideEffect});
-      debugLog(`Action result: ${JSON.stringify(result)}`);
       if (result.sideEffect) {
         if (this.#options.executionMode ===
             Root.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {

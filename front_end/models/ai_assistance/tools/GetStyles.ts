@@ -7,7 +7,6 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {ComputedStyleAiWidget, FunctionHandlerOptions} from '../agents/AiAgent.js';
 import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
-import {debugLog} from '../debug.js';
 
 import {
   type BaseToolCapability,
@@ -99,7 +98,6 @@ export class GetStylesTool implements
 
     for (const uid of params.elements) {
       result[uid] = {computed: {}, authored: {}};
-      debugLog(`Action to execute: uid=${uid}`);
       const node = new SDK.DOMModel.DeferredDOMNode(target, uid as Protocol.DOM.BackendNodeId);
       const resolved = await node.resolvePromise();
       if (!resolved) {

@@ -653,8 +653,6 @@ export abstract class AiAgent<T> {
     }
     const enableAidaFunctionCalling = declarations.length;
     const userTier = Host.AidaClient.convertToUserTierEnum(this.userTier);
-    const clientFeatureName = Host.AidaClient.getClientFeatureName(this.clientFeature);
-    debugLog(`Client ${clientFeatureName} running with userTier ${this.userTier}`);
     const preamble = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : undefined;
     const facts = Array.from(this.#facts);
     const request: Host.AidaClient.DoConversationRequest = {
@@ -812,12 +810,24 @@ export abstract class AiAgent<T> {
     // Request is built here to capture history up to this point.
     let request = this.buildRequest(query, Host.AidaClient.Role.USER);
 
+    const clientFeatureName = Host.AidaClient.getClientFeatureName(this.clientFeature);
+    debugLog(`[AiAgent] Starting conversation with client ${clientFeatureName}, userTier ${this.userTier}`);
+
     yield* this.handleContextDetails(options.selected);
 
     for (let i = 0; i < MAX_STEPS; i++) {
       yield {
         type: ResponseType.QUERYING,
       };
+
+      if (i === 0) {
+        debugLog('[AiAgent] Step 1: Sending user prompt to model:', enhancedQuery);
+      } else if (!Array.isArray(query) && 'functionResponse' in query) {
+        debugLog(`[AiAgent] Step ${i + 1}: Sending function response for '${query.functionResponse.name}' to model:`,
+                 query.functionResponse.response);
+      } else {
+        debugLog(`[AiAgent] Step ${i + 1}: Sending request to model:`, request.current_message);
+      }
 
       let rpcId: Host.AidaClient.RpcGlobalId|undefined;
       let textResponse = '';
@@ -858,6 +868,7 @@ export abstract class AiAgent<T> {
           throw new Error('Expected a completed response to have an answer');
         }
         if (!functionCall) {
+          debugLog(`[AiAgent] Step ${i + 1}: Model returned text response:`, parsedResponse.answer);
           this.#history.push({
             parts: [{
               text: parsedResponse.answer,
@@ -879,6 +890,7 @@ export abstract class AiAgent<T> {
       }
 
       if (functionCall) {
+        debugLog(`[AiAgent] Step ${i + 1}: Model requested function call: ${functionCall.name}`, functionCall.args);
         const allowedOriginResult = this.#allowedOrigin?.();
         if (allowedOriginResult && 'blocked' in allowedOriginResult) {
           // Abort immediately if the page navigated before we could lock the origin.
@@ -957,6 +969,7 @@ export abstract class AiAgent<T> {
     if (!call) {
       throw new Error(`Function ${name} is not found.`);
     }
+    debugLog(`[AiAgent] Executing tool '${name}' with args:`, args);
     const parts: Host.AidaClient.Part[] = [];
     if (options?.explanation) {
       parts.push({
@@ -1048,6 +1061,7 @@ export abstract class AiAgent<T> {
           output: 'Error: User denied code execution with side effects.',
           canceled: true,
         };
+        debugLog(`[AiAgent] Tool '${name}' denied by user.`);
         return {
           result: 'Error: User denied code execution with side effects.',
         };
@@ -1094,6 +1108,8 @@ export abstract class AiAgent<T> {
       };
     }
 
+    debugLog(`[AiAgent] Tool '${name}' result:`, result);
+
     if ('context' in result) {
       return result;
     }
@@ -1109,7 +1125,10 @@ export abstract class AiAgent<T> {
 
     for await (aidaResponse of this.#aidaClient.doConversation(request, options)) {
       if (aidaResponse.functionCalls?.length) {
-        debugLog('functionCalls.length', aidaResponse.functionCalls.length);
+        if (aidaResponse.functionCalls.length > 1) {
+          debugLog(`[AiAgent] Unexpected: received ${aidaResponse.functionCalls.length} function calls in response:`,
+                   aidaResponse.functionCalls);
+        }
         yield {
           rpcId,
           functionCall: aidaResponse.functionCalls[0],
@@ -1127,10 +1146,6 @@ export abstract class AiAgent<T> {
       };
     }
 
-    debugLog({
-      request,
-      response: aidaResponse,
-    });
     if (isStructuredLogEnabled() && aidaResponse) {
       this.#structuredLog.push({
         request: structuredClone(request),

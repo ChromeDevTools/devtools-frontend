@@ -12,6 +12,7 @@ import {SDKModel} from './SDKModel.js';
 import {
   cpuPressureSettingDescriptor,
   emulatedCSSMediaSettingDescriptor,
+  idleDetectionSettingDescriptor,
   javaScriptDisabledSettingDescriptor,
   touchSettingDescriptor,
 } from './SDKSettings.js';
@@ -73,7 +74,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
       void this.overrideEmulateTouch(settingValue === 'force');
     });
 
-    const idleDetectionSetting = settings.moduleSetting('emulation.idle-detection');
+    const idleDetectionSetting = settings.resolve(idleDetectionSettingDescriptor);
     idleDetectionSetting.addChangeListener(async () => {
       const settingValue = idleDetectionSetting.get();
       if (settingValue === 'none') {

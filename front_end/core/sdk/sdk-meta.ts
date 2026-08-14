@@ -11,31 +11,6 @@ const UIStrings = {
    */
   noEmulation: 'No emulation',
   /**
-   * @description Title of a section option in Sensors tab for idle emulation. This is a command, to
-   *emulate the state of the 'Idle Detector'.
-   */
-  emulateIdleDetectorState: 'Emulate Idle Detector state',
-  /**
-   * @description Title of an option in Sensors tab idle emulation drop-down. Turns off emulation of idle state.
-   */
-  noIdleEmulation: 'No idle emulation',
-  /**
-   * @description Title of an option in Sensors tab idle emulation drop-down.
-   */
-  userActiveScreenUnlocked: 'User active, screen unlocked',
-  /**
-   * @description Title of an option in Sensors tab idle emulation drop-down.
-   */
-  userActiveScreenLocked: 'User active, screen locked',
-  /**
-   * @description Title of an option in Sensors tab idle emulation drop-down.
-   */
-  userIdleScreenUnlocked: 'User idle, screen unlocked',
-  /**
-   * @description Title of an option in Sensors tab idle emulation drop-down.
-   */
-  userIdleScreenLocked: 'User idle, screen locked',
-  /**
    * @description A tag of Emulate CSS screen media type setting that can be searched in the command menu.
    */
   query: 'query',
@@ -250,40 +225,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  title: i18nLazyString(UIStrings.emulateIdleDetectorState),
-  settingName: 'emulation.idle-detection',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'none',
-  options: [
-    {
-      value: 'none',
-      title: i18nLazyString(UIStrings.noIdleEmulation),
-      text: i18nLazyString(UIStrings.noIdleEmulation),
-    },
-    {
-      value: '{\"isUserActive\":true,\"isScreenUnlocked\":true}',
-      title: i18nLazyString(UIStrings.userActiveScreenUnlocked),
-      text: i18nLazyString(UIStrings.userActiveScreenUnlocked),
-    },
-    {
-      value: '{\"isUserActive\":true,\"isScreenUnlocked\":false}',
-      title: i18nLazyString(UIStrings.userActiveScreenLocked),
-      text: i18nLazyString(UIStrings.userActiveScreenLocked),
-    },
-    {
-      value: '{\"isUserActive\":false,\"isScreenUnlocked\":true}',
-      title: i18nLazyString(UIStrings.userIdleScreenUnlocked),
-      text: i18nLazyString(UIStrings.userIdleScreenUnlocked),
-    },
-    {
-      value: '{\"isUserActive\":false,\"isScreenUnlocked\":false}',
-      title: i18nLazyString(UIStrings.userIdleScreenLocked),
-      text: i18nLazyString(UIStrings.userIdleScreenLocked),
-    },
-  ],
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

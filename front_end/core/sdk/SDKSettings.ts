@@ -172,3 +172,9 @@ export const touchSettingDescriptor: Common.Settings.SettingDescriptor<string> =
   type: Common.Settings.SettingType.ENUM,
   defaultValue: 'none',
 };
+
+export const idleDetectionSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'emulation.idle-detection',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'none',
+};

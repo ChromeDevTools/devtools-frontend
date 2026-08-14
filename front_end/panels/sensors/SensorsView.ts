@@ -978,7 +978,7 @@ export class SensorsView extends UI.Widget.VBox {
   private appendIdleEmulator(): void {
     const container = this.contentElement.createChild('div', 'idle-section');
     const control = SettingsUI.SettingsUI.createControlForSetting(
-        Common.Settings.Settings.instance().moduleSetting('emulation.idle-detection'),
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
         i18nString(UIStrings.forcesSelectedIdleStateEmulation));
 
     if (control) {

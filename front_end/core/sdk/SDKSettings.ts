@@ -237,3 +237,10 @@ export const emulatedVisionDeficiencySettingDescriptor:
   defaultValue: 'none' as Protocol.Emulation.SetEmulatedVisionDeficiencyRequestType,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const emulatedOSTextScaleSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'emulated-os-text-scale',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: '',
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

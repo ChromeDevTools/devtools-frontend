@@ -19,6 +19,7 @@ import {
   emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor,
   emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor,
   emulatedCSSMediaSettingDescriptor,
+  emulatedOSTextScaleSettingDescriptor,
   emulatedVisionDeficiencySettingDescriptor,
   idleDetectionSettingDescriptor,
   javaScriptDisabledSettingDescriptor,
@@ -193,7 +194,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
       void this.emulateVisionDeficiency(visionDeficiencySetting.get());
     }
 
-    const osTextScaleSetting = settings.moduleSetting('emulated-os-text-scale');
+    const osTextScaleSetting = settings.resolve(emulatedOSTextScaleSettingDescriptor);
     osTextScaleSetting.addChangeListener(() => {
       void this.emulateOSTextScale(parseFloat(osTextScaleSetting.get()) || undefined);
     });

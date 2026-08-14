@@ -221,6 +221,58 @@ const UIStrings = {
    */
   emulateVisionDeficiencies: 'Emulate vision deficiencies',
   /**
+   * @description Title of a setting under the Rendering drawer.
+   */
+  emulateOsTextScale: 'Emulate OS text scale',
+  /**
+   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu.
+   */
+  doNotEmulateOsTextScale: 'Do not emulate OS text scale',
+  /**
+   * @description A drop-down menu option to not emulate OS text scale.
+   */
+  osTextScaleEmulationNone: 'No emulation',
+  /**
+   * @description A drop-down menu option to emulate an OS text scale 85%.
+   */
+  osTextScaleEmulation85: '85%',
+  /**
+   * @description A drop-down menu option to emulate an OS text scale of 100%.
+   */
+  osTextScaleEmulation100: '100% (default)',
+  /**
+   * @description A drop-down menu option to emulate an OS text scale of 115%.
+   */
+  osTextScaleEmulation115: '115%',
+  /**
+   * @description A drop-down menu option to emulate an OS text scale of 130%.
+   */
+  osTextScaleEmulation130: '130%',
+  /**
+   * @description A drop-down menu option to emulate an OS text scale of 150%.
+   */
+  osTextScaleEmulation150: '150%',
+  /**
+   * @description A drop-down menu option to emulate an OS text scale of 180%.
+   */
+  osTextScaleEmulation180: '180%',
+  /**
+   * @description A drop-down menu option to emulate an OS text scale of 200%.
+   */
+  osTextScaleEmulation200: '200%',
+  /**
+   * @description A drop-down menu option to emulate an OS text scale of 250%.
+   */
+  osTextScaleEmulation250: '250%',
+  /**
+   * @description A drop-down menu option to emulate an OS text scale of 300%.
+   */
+  osTextScaleEmulation300: '300%',
+  /**
+   * @description A drop-down menu option to emulate an OS text scale of 350%.
+   */
+  osTextScaleEmulation350: '350%',
+  /**
    * @description Title of an action that reloads the inspected page.
    */
   reloadPage: 'Reload page',
@@ -754,4 +806,69 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatedVisionDeficien
     i18nLazyString(UIStrings.query),
   ],
   title: i18nLazyString(UIStrings.emulateVisionDeficiencies),
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatedOSTextScaleSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      title: i18nLazyString(UIStrings.doNotEmulateOsTextScale),
+      text: i18nLazyString(UIStrings.osTextScaleEmulationNone),
+      value: '',
+    },
+    {
+      title: i18nLazyString(UIStrings.osTextScaleEmulation85),
+      text: i18nLazyString(UIStrings.osTextScaleEmulation85),
+      value: '0.85',
+    },
+    {
+      title: i18nLazyString(UIStrings.osTextScaleEmulation100),
+      text: i18nLazyString(UIStrings.osTextScaleEmulation100),
+      value: '1',
+    },
+    {
+      title: i18nLazyString(UIStrings.osTextScaleEmulation115),
+      text: i18nLazyString(UIStrings.osTextScaleEmulation115),
+      value: '1.15',
+    },
+    {
+      title: i18nLazyString(UIStrings.osTextScaleEmulation130),
+      text: i18nLazyString(UIStrings.osTextScaleEmulation130),
+      value: '1.3',
+    },
+    {
+      title: i18nLazyString(UIStrings.osTextScaleEmulation150),
+      text: i18nLazyString(UIStrings.osTextScaleEmulation150),
+      value: '1.5',
+    },
+    {
+      title: i18nLazyString(UIStrings.osTextScaleEmulation180),
+      text: i18nLazyString(UIStrings.osTextScaleEmulation180),
+      value: '1.8',
+    },
+    {
+      title: i18nLazyString(UIStrings.osTextScaleEmulation200),
+      text: i18nLazyString(UIStrings.osTextScaleEmulation200),
+      value: '2',
+    },
+    {
+      title: i18nLazyString(UIStrings.osTextScaleEmulation250),
+      text: i18nLazyString(UIStrings.osTextScaleEmulation250),
+      value: '2.5',
+    },
+    {
+      title: i18nLazyString(UIStrings.osTextScaleEmulation300),
+      text: i18nLazyString(UIStrings.osTextScaleEmulation300),
+      value: '3',
+    },
+    {
+      title: i18nLazyString(UIStrings.osTextScaleEmulation350),
+      text: i18nLazyString(UIStrings.osTextScaleEmulation350),
+      value: '3.5',
+    },
+  ],
+  tags: [
+    i18nLazyString(UIStrings.query),
+  ],
+  title: i18nLazyString(UIStrings.emulateOsTextScale),
 });

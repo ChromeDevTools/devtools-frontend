@@ -276,7 +276,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
     this.#appendSelect(
         i18nString(UIStrings.forcesOsTextScaleEmulation),
-        Common.Settings.Settings.instance().moduleSetting('emulated-os-text-scale'));
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatedOSTextScaleSettingDescriptor));
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 

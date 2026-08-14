@@ -67,9 +67,6 @@
       "path": "../../models/geometry/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/components/tree_outline/bundle-tsconfig.json"
-    },
-    {
       "path": "../../ui/i18n/bundle-tsconfig.json"
     },
     {

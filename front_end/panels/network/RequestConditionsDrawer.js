@@ -25,11 +25,11 @@ const UIStrings = {
      */
     enableBlockingAndThrottling: 'Enable blocking and throttling',
     /**
-     * @description Tooltip text that appears when hovering over the plus button in the Blocked URLs Pane of the Network panel
+     * @description Tooltip text for add button in request blocking tool of the Network panel.
      */
     addRule: 'Add rule',
     /**
-     * @description Accessible label for the button to add request blocking patterns in the network request blocking tool
+     * @description Accessible label for the button to add request blocking patterns in the network request blocking tool.
      */
     addPatternLabel: 'Add network request throttling or blocking pattern',
     /**
@@ -40,14 +40,14 @@ const UIStrings = {
      * @description Text that shows in the network request blocking panel if no pattern has yet been added.
      * @example {Learn more} PH1
      */
-    noThrottlingOrBlockingPattern: `To throttle or block a network request, add a rule here manually or via the network panel’s context menu. {PH1}`,
+    noThrottlingOrBlockingPattern: `To throttle or block a network request, add a rule here manually or via the Network panel’s context menu. {PH1}`,
     /**
-     * @description Text in Blocked URLs Pane of the Network panel
+     * @description Text in request blocking tool of the Network panel.
      * @example {4} PH1
      */
     dAffected: '{PH1} affected',
     /**
-     * @description Text in Blocked URLs Pane of the Network panel
+     * @description Tooltip text for pattern input in request blocking tool of the Network panel.
      */
     textEditPattern: 'Text pattern to block or throttle matching requests; use URL Pattern syntax.',
     /**

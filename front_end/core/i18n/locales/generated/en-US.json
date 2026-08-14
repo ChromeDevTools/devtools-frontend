@@ -455,12 +455,6 @@
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Blurred vision"
   },
-  "core/sdk/sdk-meta.ts | cpuPressure": {
-    "message": "CPU Pressure"
-  },
-  "core/sdk/sdk-meta.ts | critical": {
-    "message": "Critical"
-  },
   "core/sdk/sdk-meta.ts | customFormatters": {
     "message": "Custom formatters"
   },
@@ -491,29 +485,17 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Disable WebP format"
   },
-  "core/sdk/sdk-meta.ts | doNotEmulateAFocusedPage": {
-    "message": "Do not emulate a focused page"
-  },
   "core/sdk/sdk-meta.ts | doNotEmulateAnyVisionDeficiency": {
     "message": "Do not emulate any vision deficiency"
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCss": {
     "message": "Do not emulate CSS {PH1}"
   },
-  "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
-    "message": "Do not emulate CSS media type"
-  },
   "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
     "message": "Do not emulate OS text scale"
   },
-  "core/sdk/sdk-meta.ts | doNotHighlightAdFrames": {
-    "message": "Do not highlight ad frames"
-  },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
     "message": "Emulate achromatopsia (no color)"
-  },
-  "core/sdk/sdk-meta.ts | emulateAFocusedPage": {
-    "message": "Emulate a focused page"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "Emulate auto dark mode"
@@ -526,15 +508,6 @@
   },
   "core/sdk/sdk-meta.ts | emulateCssMediaFeature": {
     "message": "Emulate CSS media feature {PH1}"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssMediaType": {
-    "message": "Emulate CSS media type"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssPrintMediaType": {
-    "message": "Emulate CSS print media type"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssScreenMediaType": {
-    "message": "Emulate CSS screen media type"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emulate deuteranopia (no green)"
@@ -578,26 +551,8 @@
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Enable WebP format"
   },
-  "core/sdk/sdk-meta.ts | fair": {
-    "message": "Fair"
-  },
   "core/sdk/sdk-meta.ts | forceEnabled": {
     "message": "Force enabled"
-  },
-  "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
-    "message": "Hide frames per second (FPS) meter"
-  },
-  "core/sdk/sdk-meta.ts | hideLayerBorders": {
-    "message": "Hide layer borders"
-  },
-  "core/sdk/sdk-meta.ts | hideLayoutShiftRegions": {
-    "message": "Hide layout shift regions"
-  },
-  "core/sdk/sdk-meta.ts | hideScrollPerformanceBottlenecks": {
-    "message": "Hide scroll performance bottlenecks"
-  },
-  "core/sdk/sdk-meta.ts | highlightAdFrames": {
-    "message": "Highlight ad frames"
   },
   "core/sdk/sdk-meta.ts | logXmlhttprequests": {
     "message": "Log XMLHttpRequests"
@@ -613,12 +568,6 @@
   },
   "core/sdk/sdk-meta.ts | noIdleEmulation": {
     "message": "No idle emulation"
-  },
-  "core/sdk/sdk-meta.ts | nominal": {
-    "message": "Nominal"
-  },
-  "core/sdk/sdk-meta.ts | noPressureEmulation": {
-    "message": "No override"
   },
   "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
     "message": "100% (default)"
@@ -653,9 +602,6 @@
   "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "No emulation"
   },
-  "core/sdk/sdk-meta.ts | print": {
-    "message": "print"
-  },
   "core/sdk/sdk-meta.ts | protanopia": {
     "message": "Protanopia (no red)"
   },
@@ -667,24 +613,6 @@
   },
   "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
     "message": "Example resources are source maps. Disabled by default for security reasons."
-  },
-  "core/sdk/sdk-meta.ts | screen": {
-    "message": "screen"
-  },
-  "core/sdk/sdk-meta.ts | serious": {
-    "message": "Serious"
-  },
-  "core/sdk/sdk-meta.ts | showFramesPerSecondFpsMeter": {
-    "message": "Show frames per second (FPS) meter"
-  },
-  "core/sdk/sdk-meta.ts | showLayerBorders": {
-    "message": "Show layer borders"
-  },
-  "core/sdk/sdk-meta.ts | showLayoutShiftRegions": {
-    "message": "Show layout shift regions"
-  },
-  "core/sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
-    "message": "Show scroll performance bottlenecks"
   },
   "core/sdk/sdk-meta.ts | touch": {
     "message": "Touch"
@@ -791,6 +719,27 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
     "message": "Do not auto-open DevTools for popups"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateAFocusedPage": {
+    "message": "Do not emulate a focused page"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCssMediaType": {
+    "message": "Do not emulate CSS media type"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotHighlightAdFrames": {
+    "message": "Do not highlight ad frames"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateAFocusedPage": {
+    "message": "Emulate a focused page"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateCssMediaType": {
+    "message": "Emulate CSS media type"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateCssPrintMediaType": {
+    "message": "Emulate CSS print media type"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateCssScreenMediaType": {
+    "message": "Emulate CSS screen media type"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | forceAdBlocking": {
     "message": "Force ad blocking on this site"
   },
@@ -800,14 +749,38 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | hardReloadPage": {
     "message": "Hard reload page"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hideFramesPerSecondFpsMeter": {
+    "message": "Hide frames per second (FPS) meter"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hideLayerBorders": {
+    "message": "Hide layer borders"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hideLayoutShiftRegions": {
+    "message": "Hide layout shift regions"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | hidePaintFlashingRectangles": {
     "message": "Hide paint flashing rectangles"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hideScrollPerformanceBottlenecks": {
+    "message": "Hide scroll performance bottlenecks"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | highlightAdFrames": {
+    "message": "Highlight ad frames"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | layout": {
     "message": "layout"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | noEmulation": {
+    "message": "No emulation"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | paint": {
     "message": "paint"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | print": {
+    "message": "print"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | query": {
+    "message": "query"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | reloadPage": {
     "message": "Reload page"
@@ -815,14 +788,29 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Rendering"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | screen": {
+    "message": "screen"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Show ads on this site, if allowed"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showFramesPerSecondFpsMeter": {
+    "message": "Show frames per second (FPS) meter"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showLayerBorders": {
+    "message": "Show layer borders"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showLayoutShiftRegions": {
+    "message": "Show layout shift regions"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showPaintFlashingRectangles": {
     "message": "Show paint flashing rectangles"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showRendering": {
     "message": "Show Rendering"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showScrollPerformanceBottlenecks": {
+    "message": "Show scroll performance bottlenecks"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
     "message": "Toggle CSS media feature prefers-color-scheme"
@@ -2641,6 +2629,9 @@
   },
   "panels/accessibility/accessibility-meta.ts | shoAccessibility": {
     "message": "Show Accessibility"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveRecording": {
+    "message": "A11y Announcements recording"
   },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Accessibility node not exposed"
@@ -10173,7 +10164,7 @@
     "message": "Copy to clipboard"
   },
   "panels/network/BinaryResourceView.ts | hexViewer": {
-    "message": "Hex Viewer"
+    "message": "Hex viewer"
   },
   "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusAborted": {
     "message": "Aborted"
@@ -10206,7 +10197,7 @@
     "message": "joinedMulticastGroups"
   },
   "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
-    "message": "Open Info"
+    "message": "Open info"
   },
   "panels/network/components/DirectSocketConnectionView.ts | options": {
     "message": "Options"
@@ -10215,7 +10206,7 @@
     "message": "Status"
   },
   "panels/network/components/DirectSocketConnectionView.ts | type": {
-    "message": "DirectSocket Type"
+    "message": "DirectSocket type"
   },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Active client experiment variation IDs."
@@ -10233,7 +10224,7 @@
     "message": "Override header"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "Header names should contain only letters, digits, hyphens or underscores"
+    "message": "Header names should contain only letters, digits, hyphens, or underscores"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Learn more"
@@ -10302,13 +10293,13 @@
     "message": "The operation failed for an unknown reason."
   },
   "panels/network/components/RequestTrustTokensView.ts | theOperationsResultWasServedFrom": {
-    "message": "The operations result was served from cache."
+    "message": "The operation’s result was served from cache."
   },
   "panels/network/components/RequestTrustTokensView.ts | theOperationWasFulfilledLocally": {
     "message": "The operation was fulfilled locally, no request was sent."
   },
   "panels/network/components/RequestTrustTokensView.ts | theServersResponseWasMalformedOr": {
-    "message": "The servers response was malformed or otherwise invalid."
+    "message": "The server’s response was malformed or otherwise invalid."
   },
   "panels/network/components/RequestTrustTokensView.ts | topLevelOrigin": {
     "message": "Top level origin"
@@ -10350,13 +10341,13 @@
     "message": "Data"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
-    "message": "Event Source"
+    "message": "Event source"
   },
   "panels/network/EventSourceMessagesView.ts | filterByRegex": {
     "message": "Filter using regex (example: https?)"
   },
   "panels/network/EventSourceMessagesView.ts | id": {
-    "message": "Id"
+    "message": "ID"
   },
   "panels/network/EventSourceMessagesView.ts | time": {
     "message": "Time"
@@ -10509,7 +10500,7 @@
     "message": "Show Network conditions"
   },
   "panels/network/network-meta.ts | showRequestConditions": {
-    "message": "Show Request conditions"
+    "message": "Show request conditions"
   },
   "panels/network/network-meta.ts | showSearch": {
     "message": "Show Search"
@@ -10551,10 +10542,10 @@
     "message": "User agent"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Chrome used a HTTP/3 connection induced by an 'Alt-Svc' header because it won a race against establishing a connection using a different HTTP version."
+    "message": "Chrome used HTTP/3 (advertised by the 'Alt-Svc' header) because it won the connection race against other HTTP versions"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Chrome used a HTTP/3 connection induced by an 'Alt-Svc' header without racing against establishing a connection using a different HTTP version."
+    "message": "Chrome used HTTP/3 (advertised by the 'Alt-Svc' header) without racing other HTTP versions"
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(blocked:{PH1})"
@@ -10566,7 +10557,7 @@
     "message": "Blocking"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Chrome did not try to establish a HTTP/3 connection because it was marked as broken."
+    "message": "Chrome didn’t attempt an HTTP/3 connection because HTTP/3 is marked as broken for this host"
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(canceled)"
@@ -10608,10 +10599,10 @@
     "message": "(disk cache)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Chrome used a HTTP/3 connection due to the DNS record indicating HTTP/3 support, which won a race against establishing a connection using a different HTTP version."
+    "message": "Chrome used HTTP/3 (advertised by the DNS record) because it won the connection race against other HTTP versions"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Chrome used a HTTP/3 connection due to the DNS record indicating HTTP/3 support. There was no race against establishing a connection using a different HTTP version."
+    "message": "Chrome used HTTP/3 (advertised by the DNS record) without racing other HTTP versions"
   },
   "panels/network/NetworkDataGridNode.ts | earlyHints": {
     "message": "Early-hints"
@@ -10635,10 +10626,10 @@
     "message": "level 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Chrome used this protocol because it won a race against establishing a HTTP/3 connection."
+    "message": "Chrome used this protocol because it won the connection race against HTTP/3"
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Chrome did not use an alternative HTTP version because no alternative protocol information was available when the request was issued, but an 'Alt-Svc' header was present in the response."
+    "message": "Chrome didn’t use an alternative HTTP version because none was cached when the request was sent, but an 'Alt-Svc' header was received in the response"
   },
   "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouter": {
     "message": "Matched to ServiceWorker router#{PH1}, resource size: {PH2}"
@@ -10746,7 +10737,7 @@
     "message": "Request was throttled ({PH1})"
   },
   "panels/network/NetworkItemView.ts | connectionInfo": {
-    "message": "Connection Info"
+    "message": "Connection info"
   },
   "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
     "message": "This response contains headers which are overridden by DevTools"
@@ -10989,7 +10980,7 @@
     "message": "More filters"
   },
   "panels/network/NetworkLogView.ts | networkDataAvailable": {
-    "message": "Network Data Available"
+    "message": "Network data available"
   },
   "panels/network/NetworkLogView.ts | noNetworkActivityRecorded": {
     "message": "No network activity recorded"
@@ -11121,7 +11112,7 @@
     "message": "Initiator address space"
   },
   "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
-    "message": "Is Ad-Related"
+    "message": "Is ad-related"
   },
   "panels/network/NetworkLogViewColumns.ts | isPreloaded": {
     "message": "Preloaded"
@@ -11175,7 +11166,7 @@
     "message": "Scheme"
   },
   "panels/network/NetworkLogViewColumns.ts | setCookies": {
-    "message": "Set Cookies"
+    "message": "Set cookies"
   },
   "panels/network/NetworkLogViewColumns.ts | size": {
     "message": "Size"
@@ -11208,7 +11199,7 @@
     "message": "Add custom header…"
   },
   "panels/network/NetworkManageCustomHeadersView.ts | headerName": {
-    "message": "Header Name"
+    "message": "Header name"
   },
   "panels/network/NetworkManageCustomHeadersView.ts | manageHeaderColumns": {
     "message": "Manage Header Columns"
@@ -11328,7 +11319,7 @@
     "message": "Nothing throttled or blocked"
   },
   "panels/network/RequestConditionsDrawer.ts | noThrottlingOrBlockingPattern": {
-    "message": "To throttle or block a network request, add a rule here manually or via the network panel’s context menu. {PH1}"
+    "message": "To throttle or block a network request, add a rule here manually or via the Network panel’s context menu. {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
     "message": "Pattern already exists."
@@ -11370,19 +11361,19 @@
     "message": "Learn more"
   },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
-    "message": "Malformed Response Cookies"
+    "message": "Malformed response cookies"
   },
   "panels/network/RequestCookiesView.ts | noRequestCookiesWereSent": {
     "message": "No request cookies were sent."
   },
   "panels/network/RequestCookiesView.ts | requestCookies": {
-    "message": "Request Cookies"
+    "message": "Request cookies"
   },
   "panels/network/RequestCookiesView.ts | responseCookies": {
-    "message": "Response Cookies"
+    "message": "Response cookies"
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
-    "message": "show filtered out request cookies"
+    "message": "Show filtered-out request cookies"
   },
   "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
     "message": "This site has cookies in another partition, that were not sent with this request. {PH1}"
@@ -11442,16 +11433,16 @@
     "message": "Raw"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Referrer Policy"
+    "message": "Referrer policy"
   },
   "panels/network/RequestHeadersView.ts | remoteAddress": {
-    "message": "Remote Address"
+    "message": "Remote address"
   },
   "panels/network/RequestHeadersView.ts | requestHeaders": {
-    "message": "Request Headers"
+    "message": "Request headers"
   },
   "panels/network/RequestHeadersView.ts | requestMethod": {
-    "message": "Request Method"
+    "message": "Request method"
   },
   "panels/network/RequestHeadersView.ts | requestUrl": {
     "message": "Request URL"
@@ -11463,7 +11454,7 @@
     "message": "Reveal header override definitions"
   },
   "panels/network/RequestHeadersView.ts | statusCode": {
-    "message": "Status Code"
+    "message": "Status code"
   },
   "panels/network/RequestInitiatorView.ts | console": {
     "message": "Console"
@@ -11487,13 +11478,13 @@
     "message": "(empty)"
   },
   "panels/network/RequestPayloadView.ts | formData": {
-    "message": "Form Data"
+    "message": "Form data"
   },
   "panels/network/RequestPayloadView.ts | queryStringParameters": {
-    "message": "Query String Parameters"
+    "message": "Query string parameters"
   },
   "panels/network/RequestPayloadView.ts | requestPayload": {
-    "message": "Request Payload"
+    "message": "Request payload"
   },
   "panels/network/RequestPayloadView.ts | unableToDecodeValue": {
     "message": "(unable to decode value)"
@@ -11532,16 +11523,16 @@
     "message": "Cache storage cache name: Unknown"
   },
   "panels/network/RequestTimingView.ts | cautionRequestIsNotFinishedYet": {
-    "message": "CAUTION: request is not finished yet!"
+    "message": "Caution: Request isn’t finished yet"
   },
   "panels/network/RequestTimingView.ts | connectionStart": {
-    "message": "Connection Start"
+    "message": "Connection start"
   },
   "panels/network/RequestTimingView.ts | contentDownload": {
-    "message": "Content Download"
+    "message": "Content download"
   },
   "panels/network/RequestTimingView.ts | dnsLookup": {
-    "message": "DNS Lookup"
+    "message": "DNS lookup"
   },
   "panels/network/RequestTimingView.ts | duration": {
     "message": "Duration"
@@ -11598,7 +11589,7 @@
     "message": "Request to ServiceWorker"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
-    "message": "Resource Scheduling"
+    "message": "Resource scheduling"
   },
   "panels/network/RequestTimingView.ts | respondwith": {
     "message": "respondWith"
@@ -11613,16 +11604,16 @@
     "message": "Actual source: {PH1}"
   },
   "panels/network/RequestTimingView.ts | routerCacheLookup": {
-    "message": "Cache Lookup"
+    "message": "Cache lookup"
   },
   "panels/network/RequestTimingView.ts | routerEvaluation": {
-    "message": "Router Evaluation"
+    "message": "Router evaluation"
   },
   "panels/network/RequestTimingView.ts | routerMatchedSource": {
     "message": "Matched source: {PH1}"
   },
   "panels/network/RequestTimingView.ts | serverPush": {
-    "message": "Server Push"
+    "message": "Server push"
   },
   "panels/network/RequestTimingView.ts | serverTiming": {
     "message": "Server Timing"
@@ -11670,7 +11661,7 @@
     "message": "All"
   },
   "panels/network/ResourceChunkView.ts | clearAll": {
-    "message": "Clear All"
+    "message": "Clear all"
   },
   "panels/network/ResourceChunkView.ts | copyMessage": {
     "message": "Copy message"
@@ -11709,7 +11700,7 @@
     "message": "Data"
   },
   "panels/network/ResourceDirectSocketChunkView.ts | directSocketChunk": {
-    "message": "Direct Socket Chunk"
+    "message": "Direct socket chunk"
   },
   "panels/network/ResourceDirectSocketChunkView.ts | filterUsingRegex": {
     "message": "Filter using regex (example: (direct)?socket)"
@@ -11724,13 +11715,13 @@
     "message": "Time"
   },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
-    "message": "Binary Message"
+    "message": "Binary message"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
-    "message": "Connection Close Message"
+    "message": "Connection close message"
   },
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
-    "message": "Continuation Frame"
+    "message": "Continuation frame"
   },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "Filter using regex (example: (web)?socket)"
@@ -11739,10 +11730,10 @@
     "message": "N/A"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
-    "message": "Ping Message"
+    "message": "Ping message"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
-    "message": "Pong Message"
+    "message": "Pong message"
   },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1} (Opcode {PH2})"
@@ -11751,10 +11742,10 @@
     "message": "{PH1} (Opcode {PH2}, mask)"
   },
   "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
-    "message": "Text Message"
+    "message": "Text message"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
-    "message": "Web Socket Frame"
+    "message": "WebSocket frame"
   },
   "panels/network/ShowMoreDetailsWidget.ts | showMore": {
     "message": "Show more"
@@ -13457,8 +13448,17 @@
   "panels/sensors/sensors-meta.ts | accelerometer": {
     "message": "accelerometer"
   },
+  "panels/sensors/sensors-meta.ts | cpuPressure": {
+    "message": "CPU Pressure"
+  },
+  "panels/sensors/sensors-meta.ts | critical": {
+    "message": "Critical"
+  },
   "panels/sensors/sensors-meta.ts | deviceOrientation": {
     "message": "device orientation"
+  },
+  "panels/sensors/sensors-meta.ts | fair": {
+    "message": "Fair"
   },
   "panels/sensors/sensors-meta.ts | geolocation": {
     "message": "geolocation"
@@ -13472,8 +13472,17 @@
   "panels/sensors/sensors-meta.ts | locations": {
     "message": "Locations"
   },
+  "panels/sensors/sensors-meta.ts | nominal": {
+    "message": "Nominal"
+  },
+  "panels/sensors/sensors-meta.ts | noPressureEmulation": {
+    "message": "No override"
+  },
   "panels/sensors/sensors-meta.ts | sensors": {
     "message": "Sensors"
+  },
+  "panels/sensors/sensors-meta.ts | serious": {
+    "message": "Serious"
   },
   "panels/sensors/sensors-meta.ts | showLocations": {
     "message": "Show Locations"

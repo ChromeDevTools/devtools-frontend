@@ -275,33 +275,33 @@ const UIStrings = {
      */
     timeSubtitleTooltipText: 'Latency (response received time - start time)',
     /**
-     * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+     * @description Tooltip text in the protocol column of the Network log table explaining that Chrome connected over HTTP/3 based on an Alt-Svc header without racing other HTTP versions.
      */
-    alternativeJobWonWithoutRace: '`Chrome` used a `HTTP/3` connection induced by an \'`Alt-Svc`\' header without racing against establishing a connection using a different `HTTP` version.',
+    alternativeJobWonWithoutRace: '`Chrome` used `HTTP/3` (advertised by the \'`Alt-Svc`\' header) without racing other `HTTP` versions',
     /**
-     * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+     * @description Tooltip text in the protocol column of the Network log table explaining that Chrome connected over HTTP/3 based on an Alt-Svc header because it won the connection race against other HTTP versions.
      */
-    alternativeJobWonRace: '`Chrome` used a `HTTP/3` connection induced by an \'`Alt-Svc`\' header because it won a race against establishing a connection using a different `HTTP` version.',
+    alternativeJobWonRace: '`Chrome` used `HTTP/3` (advertised by the \'`Alt-Svc`\' header) because it won the connection race against other `HTTP` versions',
     /**
-     * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+     * @description Tooltip text in the protocol column of the Network log table explaining that Chrome used this protocol because it won the connection race against HTTP/3.
      */
-    mainJobWonRace: '`Chrome` used this protocol because it won a race against establishing a `HTTP/3` connection.',
+    mainJobWonRace: '`Chrome` used this protocol because it won the connection race against `HTTP/3`',
     /**
-     * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+     * @description Tooltip text in the protocol column of the Network log table explaining that no alternative protocol was cached when the request was sent, but an Alt-Svc header was received in the response.
      */
-    mappingMissing: '`Chrome` did not use an alternative `HTTP` version because no alternative protocol information was available when the request was issued, but an \'`Alt-Svc`\' header was present in the response.',
+    mappingMissing: '`Chrome` didn’t use an alternative `HTTP` version because none was cached when the request was sent, but an \'`Alt-Svc`\' header was received in the response',
     /**
-     * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+     * @description Tooltip text in the protocol column of the Network log table explaining that Chrome did not attempt HTTP/3 because HTTP/3 was marked as broken for this host.
      */
-    broken: '`Chrome` did not try to establish a `HTTP/3` connection because it was marked as broken.',
+    broken: '`Chrome` didn’t attempt an `HTTP/3` connection because `HTTP/3` is marked as broken for this host',
     /**
-     * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+     * @description Tooltip text in the protocol column of the Network log table explaining that Chrome connected over HTTP/3 based on the DNS record without racing other HTTP versions.
      */
-    dnsAlpnH3JobWonWithoutRace: '`Chrome` used a `HTTP/3` connection due to the `DNS record` indicating `HTTP/3` support. There was no race against establishing a connection using a different `HTTP` version.',
+    dnsAlpnH3JobWonWithoutRace: '`Chrome` used `HTTP/3` (advertised by the `DNS record`) without racing other `HTTP` versions',
     /**
-     * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+     * @description Tooltip text in the protocol column of the Network log table explaining that Chrome connected over HTTP/3 based on the DNS record because it won the connection race against other HTTP versions.
      */
-    dnsAlpnH3JobWonRace: '`Chrome` used a `HTTP/3` connection due to the `DNS record` indicating `HTTP/3` support, which won a race against establishing a connection using a different `HTTP` version.',
+    dnsAlpnH3JobWonRace: '`Chrome` used `HTTP/3` (advertised by the `DNS record`) because it won the connection race against other `HTTP` versions',
     /**
      * @description Tooltip to explain the resource's initial priority
      * @example {High} PH1

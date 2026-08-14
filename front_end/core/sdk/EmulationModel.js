@@ -4,7 +4,7 @@
 import { CSSModel } from './CSSModel.js';
 import { OverlayModel } from './OverlayModel.js';
 import { SDKModel } from './SDKModel.js';
-import { javaScriptDisabledSettingDescriptor } from './SDKSettings.js';
+import { cpuPressureSettingDescriptor, emulatedCSSMediaSettingDescriptor, javaScriptDisabledSettingDescriptor, } from './SDKSettings.js';
 export class EmulationModel extends SDKModel {
     #multitargetNetworkManager;
     #emulationAgent;
@@ -55,7 +55,7 @@ export class EmulationModel extends SDKModel {
             const emulationParams = JSON.parse(settingValue);
             await this.setIdleOverride(emulationParams);
         });
-        const cpuPressureDetectionSetting = settings.moduleSetting('emulation.cpu-pressure');
+        const cpuPressureDetectionSetting = settings.resolve(cpuPressureSettingDescriptor);
         cpuPressureDetectionSetting.addChangeListener(async () => {
             const settingValue = cpuPressureDetectionSetting.get();
             if (settingValue === 'none') {
@@ -69,7 +69,7 @@ export class EmulationModel extends SDKModel {
             }
             await this.setPressureStateOverride(settingValue);
         });
-        const mediaTypeSetting = settings.moduleSetting('emulated-css-media');
+        const mediaTypeSetting = settings.resolve(emulatedCSSMediaSettingDescriptor);
         const mediaFeatureColorGamutSetting = settings.moduleSetting('emulated-css-media-feature-color-gamut');
         const mediaFeaturePrefersColorSchemeSetting = settings.moduleSetting('emulated-css-media-feature-prefers-color-scheme');
         const mediaFeatureForcedColorsSetting = settings.moduleSetting('emulated-css-media-feature-forced-colors');

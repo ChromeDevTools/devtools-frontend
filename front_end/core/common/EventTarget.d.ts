@@ -16,7 +16,6 @@ export interface EventTarget<Events> {
     hasEventListeners(eventType: keyof Events): boolean;
     dispatchEventToListeners<T extends keyof Events>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...[eventData]: EventPayloadToRestParameters<Events, T>): void;
 }
-export declare function fireEvent(name: string, detail?: unknown, target?: HTMLElement | Window): void;
 export interface EventTargetEvent<T, Events = any> {
     data: T;
     source?: EventTarget<Events>;

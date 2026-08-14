@@ -315,6 +315,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     reportingApiTreeElement;
     webMcpTreeElement;
     adsTreeElement;
+    storageTreeElement;
     deviceBoundSessionsRootTreeElement;
     deviceBoundSessionsModel;
     preloadingSummaryTreeElement;
@@ -349,8 +350,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
         manifestTreeElement.generateChildren();
         this.serviceWorkersTreeElement = new ServiceWorkersTreeElement(panel);
         this.applicationTreeElement.appendChild(this.serviceWorkersTreeElement);
-        const clearStorageTreeElement = new ClearStorageTreeElement(panel);
-        this.applicationTreeElement.appendChild(clearStorageTreeElement);
+        this.storageTreeElement = new StorageTreeElement(panel);
+        this.applicationTreeElement.appendChild(this.storageTreeElement);
         if (Root.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
             this.webMcpTreeElement = new WebMCPTreeElement(panel);
             this.applicationTreeElement.appendChild(this.webMcpTreeElement);
@@ -799,6 +800,10 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
             this.storageBucketsTreeElement?.getBucketTreeElement(bucketsModel, bucketInfo)?.revealAndSelect(true);
         }
     }
+    // Selects the Storage tree element in the sidebar (which opens the StorageView component for the main Storage tab).
+    showStorage() {
+        this.storageTreeElement?.select();
+    }
     onmousemove(event) {
         const nodeUnderMouse = event.target;
         if (!nodeUnderMouse) {
@@ -967,7 +972,7 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
         UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.onInvokeAlert, { PH1: this.listItemElement.title }));
     }
 }
-export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
+export class StorageTreeElement extends ApplicationPanelTreeElement {
     view;
     constructor(storagePanel) {
         super(storagePanel, i18nString(UIStrings.storage), false, 'storage');
@@ -975,7 +980,7 @@ export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
         this.setLeadingIcons([icon]);
     }
     get itemURL() {
-        return 'clear-storage://';
+        return 'storage://';
     }
     onselect(selectedByUser) {
         super.onselect(selectedByUser);

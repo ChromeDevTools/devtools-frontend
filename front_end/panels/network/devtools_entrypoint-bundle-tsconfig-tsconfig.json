@@ -50,6 +50,9 @@
       "path": "./network-tsconfig.json"
     },
     {
+      "path": "../../models/network_time_calculator/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/legacy/components/data_grid/css_files-tsconfig.json"
     },
     {

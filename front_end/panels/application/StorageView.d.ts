@@ -1,3 +1,4 @@
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -57,4 +58,11 @@ export declare const AllStorageTypes: Protocol.Storage.StorageType[];
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(_context: UI.Context.Context, actionId: string): boolean;
     private handleClear;
+}
+export declare class StorageRevealable {
+    target: SDK.Target.Target;
+    constructor(target: SDK.Target.Target);
+}
+export declare class StorageRevealer implements Common.Revealer.Revealer<StorageRevealable> {
+    reveal(_revealable: StorageRevealable): Promise<void>;
 }

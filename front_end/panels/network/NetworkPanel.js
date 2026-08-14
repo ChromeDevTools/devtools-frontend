@@ -80,7 +80,7 @@ const UIStrings = {
      */
     disableCache: 'Disable cache',
     /**
-     * @description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in network panel of the network panel
+     * @description Tooltip text for settings button in Network panel.
      */
     networkSettings: 'Network settings',
     /**

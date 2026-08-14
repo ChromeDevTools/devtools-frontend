@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import { AiAgent, } from './agents/AiAgent.js';
 import { executeJsCode } from './agents/ExecuteJavascript.js';
 import { ChangeManager } from './ChangeManager.js';
@@ -60,6 +61,29 @@ export class AiAgent2 extends AiAgent {
     async preRun() {
         if (this.context && !this.context.isLoggingEnabled()) {
             this.setServerSideLoggingActive(false);
+        }
+        const target = this.targetManager.primaryPageTarget();
+        const domModel = target?.model(SDK.DOMModel.DOMModel);
+        // Ensure the DOM document is requested and cached in DOMModel so that
+        // subsequent synchronous lookups via domModel.existingDocument() (e.g.,
+        // in #getDocumentBodyNode()) resolve the document and body immediately.
+        if (domModel) {
+            if (!domModel.existingDocument()) {
+                try {
+                    await domModel.requestDocument();
+                }
+                catch (e) {
+                    debugLog('AiAgent2: Failed to request document', e);
+                }
+            }
+            if (!domModel.existingDocument()?.body) {
+                try {
+                    await domModel.pushNodeByPathToFrontend('1,HTML,1,BODY');
+                }
+                catch (e) {
+                    debugLog('AiAgent2: Failed to push body node to frontend', e);
+                }
+            }
         }
     }
     #activeSkills = new Set();
@@ -179,7 +203,7 @@ User query: ${enhancedQuery}`;
         return response.trim();
     }
     #createExtensionScope(changes) {
-        const selectedNode = this.context && this.context instanceof DOMNodeContext ? this.context.getItem() : null;
+        const selectedNode = this.context && this.context instanceof DOMNodeContext ? this.context.getItem() : this.#getDocumentBodyNode();
         return new ExtensionScope(changes, this.sessionId, selectedNode);
     }
     /**
@@ -202,7 +226,7 @@ User query: ${enhancedQuery}`;
                     changeManager: this.#changes,
                     createExtensionScope: this.#createExtensionScope.bind(this),
                     execJs: this.#execJs,
-                    getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
+                    getExecutionContextNode: () => (this.context instanceof DOMNodeContext ? this.context.getItem() : this.#getDocumentBodyNode()),
                     getTarget: () => this.targetManager.primaryPageTarget(),
                     getEstablishedOrigin: () => this.#getConversationOrigin(),
                     lighthouseRecording: this.#lighthouseRecording,
@@ -214,6 +238,15 @@ User query: ${enhancedQuery}`;
                 return tool.handler(args, context, options);
             },
         });
+    }
+    /**
+     * For non-DOM contexts (e.g., Lighthouse accessibility reports or storage items),
+     * there is no user-selected DOM node. We fall back to the document body as the
+     * default execution context node so scripts have a valid `$0` target.
+     */
+    #getDocumentBodyNode() {
+        const document = this.targetManager.primaryPageTarget()?.model(SDK.DOMModel.DOMModel)?.existingDocument();
+        return document?.body ?? null;
     }
     #getConversationOrigin() {
         const allowed = this.#allowedOrigin?.();

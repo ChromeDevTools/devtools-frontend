@@ -24,87 +24,86 @@ import { ResourceDirectSocketChunkView } from './ResourceDirectSocketChunkView.j
 import { ResourceWebSocketFrameView } from './ResourceWebSocketFrameView.js';
 const UIStrings = {
     /**
-     * @description Text for network request headers
+     * @description Title of a tab in network item view of the Network panel for viewing HTTP request/response headers.
      */
     headers: 'Headers',
     /**
-     * @description Text for network connection info. In case the request is not made over http.
+     * @description Title of a tab in network item view of the Network panel for viewing DirectSocket connection info.
      */
-    connectionInfo: 'Connection Info',
+    connectionInfo: 'Connection info',
     /**
-     * @description Text in Network Item View of the Network panel
+     * @description Title of a tab in network item view of the Network panel for viewing request payload parameters and form data.
      */
     payload: 'Payload',
     /**
-     * @description Text in Network Item View of the Network panel
+     * @description Title of a tab in network item view of the Network panel for viewing WebSocket or DirectSocket messages.
      */
     messages: 'Messages',
     /**
-     * @description Text in Network Item View of the Network panel
+     * @description Accessible tooltip for the WebSocket messages tab in network item view of the Network panel.
      */
     websocketMessages: 'WebSocket messages',
     /**
-     * @description Text in Network Item View of the Network panel
+     * @description Accessible tooltip for the DirectSocket messages tab in network item view of the Network panel.
      */
     directsocketMessages: 'DirectSocket messages',
     /**
-     * @description Text in Network Item View of the Network panel
+     * @description Title of a tab in network item view of the Network panel for viewing Server-Sent Event (EventStream) messages.
      */
     eventstream: 'EventStream',
     /**
-     * @description Text for previewing items
+     * @description Title of a tab in network item view of the Network panel for previewing response content.
      */
     preview: 'Preview',
     /**
-     * @description Text in Network Item View of the Network panel
+     * @description Accessible tooltip for the response preview tab in network item view of the Network panel.
      */
     responsePreview: 'Response preview',
     /**
-     * @description Icon title in Network Item View of the Network panel
+     * @description Tooltip for error icon on preview tab in network item view of the Network panel when signed exchange has errors.
      */
     signedexchangeError: 'SignedExchange error',
     /**
-     * @description Title of a tab in the Network panel. A Network response refers to the act of acknowledging a
-     * network request. Should not be confused with answer.
+     * @description Title of a tab in network item view of the Network panel for viewing raw response content.
+     * A Network response refers to the act of acknowledging a network request. Should not be confused with answer.
      */
     response: 'Response',
     /**
-     * @description Text in Network Item View of the Network panel
+     * @description Accessible tooltip for the raw response data tab in network item view of the Network panel.
      */
     rawResponseData: 'Raw response data',
     /**
-     * @description Text for the initiator of something
+     * @description Title of a tab in network item view of the Network panel for viewing request initiator stack trace and chain.
      */
     initiator: 'Initiator',
     /**
-     * @description Tooltip for initiator view in Network panel. An initiator is a piece of code/entity
-     * in the code that initiated/started the network request, i.e. caused the network request. The 'call
-     * stack' is the location in the code where the initiation happened.
+     * @description Accessible tooltip for the request initiator tab in network item view of the Network panel.
+     * An initiator is a piece of code/entity in the code that initiated/started the network request, i.e. caused
+     * the network request. The 'call stack' is the location in the code where the initiation happened.
      */
     requestInitiatorCallStack: 'Request initiator call stack',
     /**
-     * @description Title of a tab in Network Item View of the Network panel.
-     *The tab displays the duration breakdown of a network request.
+     * @description Title of a tab in network item view of the Network panel for viewing request timing breakdown.
      */
     timing: 'Timing',
     /**
-     * @description Text in Network Item View of the Network panel
+     * @description Accessible tooltip for the request timing tab in network item view of the Network panel.
      */
     requestAndResponseTimeline: 'Request and response timeline',
     /**
-     * @description Tooltip to explain the warning icon of the Cookies panel
+     * @description Tooltip text for warning icon on cookies tab in network item view of the Network panel when third-party cookies are blocked.
      */
     thirdPartyPhaseout: 'Cookies blocked due to third-party cookie phaseout.',
     /**
-     * @description Label of a tab in the network panel. Previously known as 'Trust Tokens'.
+     * @description Title of a tab in network item view of the Network panel for viewing Private State Tokens operation details.
      */
     trustTokens: 'Private state tokens',
     /**
-     * @description Title of the Private State Token tab in the Network panel. Previously known as 'Trust Token tab'.
+     * @description Accessible tooltip for the Private State Tokens tab in network item view of the Network panel.
      */
     trustTokenOperationDetails: 'Private State Token operation details',
     /**
-     * @description Text for web cookies
+     * @description Title of a tab in network item view of the Network panel for viewing request and response cookies.
      */
     cookies: 'Cookies',
     /**
@@ -119,15 +118,15 @@ const UIStrings = {
      */
     deviceBoundSessions: 'Device bound sessions',
     /**
-     * @description Text in Network Item View of the Network panel
+     * @description Accessible tooltip for the cookies tab in network item view of the Network panel.
      */
     requestAndResponseCookies: 'Request and response cookies',
     /**
-     * @description Tooltip text explaining that DevTools has overridden the response's headers
+     * @description Tooltip text for status indicator dot on headers tab in network item view of the Network panel when headers are overridden by DevTools.
      */
     containsOverriddenHeaders: 'This response contains headers which are overridden by DevTools',
     /**
-     * @description Tooltip text explaining that DevTools has overridden the response
+     * @description Tooltip text for status indicator dot on response tab in network item view of the Network panel when response content is overridden by DevTools.
      */
     responseIsOverridden: 'This response is overridden by DevTools',
 };

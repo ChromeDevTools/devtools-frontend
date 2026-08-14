@@ -2734,6 +2734,7 @@ __export(Widget_exports, {
   registerWidgetConfig: () => registerWidgetConfig,
   widget: () => widget,
   widgetConfig: () => widgetConfig,
+  widgetConfigs: () => widgetConfigs,
   widgetRef: () => widgetRef
 });
 import "./../dom_extension/dom_extension.js";
@@ -3172,6 +3173,8 @@ var WidgetElement = class extends HTMLElement {
 customElements.define("devtools-widget", WidgetElement);
 var WidgetDirective = class extends Lit.Directive.Directive {
   #partType;
+  #lastWidgetClass;
+  #lastKey;
   constructor(partInfo) {
     super(partInfo);
     this.#partType = partInfo.type;
@@ -3206,7 +3209,11 @@ var WidgetDirective = class extends Lit.Directive.Directive {
     if (this.#partType === Lit.Directive.PartType.ELEMENT) {
       return Lit.nothing;
     }
-    return Lit.Directives.repeat([widgetClass], () => widgetClass, () => html`<devtools-widget ${widget(widgetClass, widgetParams)}></devtools-widget>`);
+    if (this.#lastWidgetClass !== widgetClass) {
+      this.#lastWidgetClass = widgetClass;
+      this.#lastKey = Widget.isPrototypeOf(widgetClass) ? widgetClass : widgetClass.toString();
+    }
+    return Lit.Directives.repeat([widgetClass], () => this.#lastKey, () => html`<devtools-widget ${widget(widgetClass, widgetParams)}></devtools-widget>`);
   }
 };
 var widget = Lit.Directive.directive(WidgetDirective);
@@ -16676,6 +16683,18 @@ var cloneCustomElement = (element, deep) => {
   }
   return clone;
 };
+var UIUtilsWidgetDirective = class extends WidgetDirective {
+  update(part, args) {
+    const result = super.update(part, args);
+    if (part.type === Lit2.Directive.PartType.ELEMENT) {
+      const lightNode = part.element;
+      for (const clone of HTMLElementWithLightDOMTemplate.getClones(lightNode)) {
+        super.update({ type: Lit2.Directive.PartType.ELEMENT, element: clone }, args);
+      }
+    }
+    return result;
+  }
+};
 var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate extends HTMLElement {
   #mutationObserver = new MutationObserver(this.#onChange.bind(this));
   #contentTemplate = null;
@@ -16683,13 +16702,40 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
     super();
     this.#mutationObserver.observe(this, { childList: true, attributes: true, subtree: true, characterData: true });
   }
+  static #originalToClones = /* @__PURE__ */ new WeakMap();
+  static getClones(node) {
+    const cloneSet = this.#originalToClones.get(node);
+    if (!cloneSet) {
+      return [];
+    }
+    const clones = [];
+    for (const cloneRef of cloneSet) {
+      const clone = cloneRef.deref();
+      if (clone) {
+        clones.push(clone);
+      } else {
+        cloneSet.delete(cloneRef);
+      }
+    }
+    return clones;
+  }
   static cloneNode(node) {
     const clone = node.cloneNode(false);
+    let cloneSet = _HTMLElementWithLightDOMTemplate.#originalToClones.get(node);
+    if (!cloneSet) {
+      cloneSet = /* @__PURE__ */ new Set();
+      _HTMLElementWithLightDOMTemplate.#originalToClones.set(node, cloneSet);
+    }
+    cloneSet.add(new WeakRef(clone));
     for (const child of node.childNodes) {
       clone.appendChild(_HTMLElementWithLightDOMTemplate.cloneNode(child));
     }
     if (node instanceof Element && clone instanceof Element) {
       Lit2.CustomDirectives.InterceptBindingDirective.setEventListeners(node, clone);
+      const currentConfig = widgetConfigs.get(node);
+      if (currentConfig) {
+        registerWidgetConfig(clone, currentConfig);
+      }
     }
     return clone;
   }
@@ -16724,6 +16770,10 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
         return value;
       }
       if (Lit2.isLitDirective(value)) {
+        const directiveValue = value;
+        if (directiveValue["_$litDirective$"] === WidgetDirective) {
+          directiveValue["_$litDirective$"] = UIUtilsWidgetDirective;
+        }
         for (let i = 0; i < value.values.length; i++) {
           const subvalue = value.values[i];
           if (isCallable(subvalue)) {
@@ -23759,16 +23809,11 @@ import * as Platform25 from "./../../core/platform/platform.js";
 var SimpleView = class extends VBox {
   #title;
   #viewId;
-  /**
-   * Constructs a new `SimpleView` with the given `options`.
-   *
-   * @param options the settings for the resulting view.
-   * @throws TypeError - if `options.viewId` is not in extended kebab case.
-   */
-  constructor(options) {
-    super(options);
-    this.#title = options.title;
-    this.#viewId = options.viewId;
+  constructor(elementOrOptions, options) {
+    super(elementOrOptions, options);
+    const optionsObj = elementOrOptions instanceof HTMLElement ? options : elementOrOptions;
+    this.#title = optionsObj.title;
+    this.#viewId = optionsObj.viewId;
     if (!Platform25.StringUtilities.isExtendedKebabCase(this.#viewId)) {
       throw new TypeError(`Invalid view ID '${this.#viewId}'`);
     }

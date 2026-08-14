@@ -1702,6 +1702,16 @@ declare namespace ProtocolProxyApi {
     invoke_setSafeAreaInsetsOverride(params: Protocol.Emulation.SetSafeAreaInsetsOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Overrides virtual keyboard geometry in CSS pixels, relative to the top-level viewport. The
+     * provided rect is used for navigator.virtualKeyboard.boundingRect, geometrychange events, and
+     * env(keyboard-inset-*) values on the inspected frame. The override applies independently of
+     * navigator.virtualKeyboard.overlaysContent so clients can preview overlay geometry without
+     * mutating page state. Values are rounded to the nearest CSS pixel. Omitting the rect clears the
+     * override.
+     */
+    invoke_setVirtualKeyboardGeometryOverride(params: Protocol.Emulation.SetVirtualKeyboardGeometryOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
      * window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
      * query results).
@@ -2534,16 +2544,6 @@ declare namespace ProtocolProxyApi {
   }
 
   export interface NetworkApi {
-    /**
-     * Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
-     */
-    invoke_setAcceptedEncodings(params: Protocol.Network.SetAcceptedEncodingsRequest): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Clears accepted encodings set by setAcceptedEncodings
-     */
-    invoke_clearAcceptedEncodingsOverride(): Promise<Protocol.ProtocolResponseWithError>;
-
     /**
      * Tells whether clearing browser cache is supported.
      * @deprecated
@@ -5006,13 +5006,8 @@ declare namespace ProtocolProxyApi {
     invoke_setReturnValue(params: Protocol.Debugger.SetReturnValueRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Edits JavaScript source live.
-     *
-     * In general, functions that are currently on the stack can not be edited with
-     * a single exception: If the edited function is the top-most stack frame and
-     * that is the only activation of that function on the stack. In this case
-     * the live edit will be successful and a `Debugger.restartFrame` for the
-     * top-most function is automatically triggered.
+     * Live edit is no longer supported and this command always fails with a "no longer available" error.
+     * @deprecated
      */
     invoke_setScriptSource(params: Protocol.Debugger.SetScriptSourceRequest): Promise<Protocol.Debugger.SetScriptSourceResponse>;
 

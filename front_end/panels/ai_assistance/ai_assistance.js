@@ -3508,6 +3508,10 @@ async function resolveNode(backendNodeId) {
   return resolved;
 }
 async function makeStorageBreakdownWidget(widgetData) {
+  const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
+  if (!target) {
+    return null;
+  }
   const breakdown = widgetData.data.usageBreakdown;
   const total = breakdown.reduce((sum, item) => sum + item.bytes, 0);
   const slices = breakdown.map((item) => {
@@ -3535,7 +3539,7 @@ async function makeStorageBreakdownWidget(widgetData) {
   return {
     renderedWidget,
     title: lockedString3(UIStringsNotTranslate2.storageBreakdown),
-    revealable: null,
+    revealable: new Application.StorageView.StorageRevealable(target),
     accessibleRevealLabel: lockedString3(UIStringsNotTranslate2.revealStorageBreakdown),
     jslogContext: "storage-breakdown-widget"
   };
@@ -4204,10 +4208,14 @@ async function renderWidgets(widgets, options = {}) {
     }
     return renderWidgetResponse(response);
   }));
-  if (options.wrapperClass) {
-    return html6`<div class=${options.wrapperClass}>${ui}</div>`;
+  const renderedItems = ui.filter((item) => item !== Lit6.nothing);
+  if (renderedItems.length === 0) {
+    return Lit6.nothing;
   }
-  return html6`${ui}`;
+  if (options.wrapperClass) {
+    return html6`<div class=${options.wrapperClass}>${renderedItems}</div>`;
+  }
+  return html6`${renderedItems}`;
 }
 function renderSideEffectConfirmationUi(step) {
   if (step.state.type !== "needs_approval") {
@@ -4675,16 +4683,22 @@ async function makeNetworkTrackWidget(widgetData) {
   };
 }
 async function makeLighthouseReportWidget(widgetData) {
-  const reportEl = Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.renderLighthouseScores(widgetData.data.report);
-  if (!reportEl) {
-    return null;
+  let reportEl = null;
+  try {
+    reportEl = Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.renderLighthouseScores(widgetData.data.report);
+  } catch {
+    reportEl = null;
   }
   const snapshotReport = widgetData.data.snapshotReport;
+  const revealLighthouseLabel = lockedString3(UIStringsNotTranslate2.revealLighthouse);
+  const title = reportEl ? lockedString3(UIStringsNotTranslate2.lighthouseReport) : null;
+  const customRevealTitle = reportEl ? void 0 : revealLighthouseLabel;
   return {
-    renderedWidget: html6`<div class="lighthouse-report-widget">${reportEl}</div>`,
+    renderedWidget: reportEl ? html6`<div class="lighthouse-report-widget">${reportEl}</div>` : null,
     revealable: new Lighthouse.LighthousePanel.ActiveLighthouseReport(widgetData.data.report),
-    accessibleRevealLabel: lockedString3(UIStringsNotTranslate2.revealLighthouse),
-    title: lockedString3(UIStringsNotTranslate2.lighthouseReport),
+    accessibleRevealLabel: revealLighthouseLabel,
+    customRevealTitle,
+    title,
     jslogContext: snapshotReport ? "lighthouse-snapshot-report-widget" : "lighthouse-report-widget"
   };
 }

@@ -95,9 +95,11 @@ __export(ObjectPropertiesSection_exports, {
   EXPANDABLE_TEXT_DEFAULT_VIEW: () => EXPANDABLE_TEXT_DEFAULT_VIEW,
   ExpandableTextPropertyValue: () => ExpandableTextPropertyValue,
   InitialVisibleChildrenLimit: () => InitialVisibleChildrenLimit,
+  OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: () => OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW,
   OBJECT_PROPERTY_DEFAULT_VIEW: () => OBJECT_PROPERTY_DEFAULT_VIEW,
   OBJECT_TREE_DEFAULT_VIEW: () => OBJECT_TREE_DEFAULT_VIEW,
   ObjectPropertiesSection: () => ObjectPropertiesSection,
+  ObjectPropertiesSectionWidget: () => ObjectPropertiesSectionWidget,
   ObjectPropertiesSectionsTreeOutline: () => ObjectPropertiesSectionsTreeOutline,
   ObjectPropertyTreeElement: () => ObjectPropertyTreeElement,
   ObjectPropertyWidget: () => ObjectPropertyWidget,
@@ -113,7 +115,6 @@ __export(ObjectPropertiesSection_exports, {
   objectPropertiesSectionStyles: () => objectPropertiesSection_css_default,
   objectValueStyles: () => objectValue_css_default,
   populateObjectTreeContextMenu: () => populateObjectTreeContextMenu,
-  renderObjectPropertiesSection: () => renderObjectPropertiesSection,
   renderObjectTree: () => renderObjectTree,
   renderPropertyName: () => renderPropertyName,
   renderPropertyValue: () => renderPropertyValue
@@ -1623,6 +1624,141 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     this.#objectTreeElement.expand();
   }
 };
+var ObjectPropertiesSectionWidget = class extends UI2.Widget.Widget {
+  #root;
+  #title;
+  #skipProto = false;
+  #linkifier;
+  #showOverflow = true;
+  #rootContextMenuEnabled = false;
+  #view = OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW;
+  constructor(element, view = OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+  get root() {
+    return this.#root?.object;
+  }
+  set root(val) {
+    if (val === this.#root?.object) {
+      return;
+    }
+    this.objectTree = new ObjectTree(val, {
+      readOnly: false,
+      propertiesMode: 1
+    });
+  }
+  get objectTree() {
+    return this.#root;
+  }
+  set objectTree(val) {
+    if (val === this.#root) {
+      return;
+    }
+    this.#root?.removeEventListener("children-changed", this.requestUpdate, this);
+    this.#root?.removeEventListener("expanded-changed", this.requestUpdate, this);
+    this.#root = val;
+    this.#root?.addEventListener("children-changed", this.requestUpdate, this);
+    this.#root?.addEventListener("expanded-changed", this.requestUpdate, this);
+    this.requestUpdate();
+  }
+  get title() {
+    return this.#title;
+  }
+  set title(val) {
+    if (val === this.#title) {
+      return;
+    }
+    this.#title = val;
+    this.requestUpdate();
+  }
+  get skipProto() {
+    return this.#skipProto;
+  }
+  set skipProto(val) {
+    if (val === this.#skipProto) {
+      return;
+    }
+    this.#skipProto = val;
+    this.requestUpdate();
+  }
+  get linkifier() {
+    return this.#linkifier;
+  }
+  set linkifier(val) {
+    if (val === this.#linkifier) {
+      return;
+    }
+    this.#linkifier = val;
+    this.requestUpdate();
+  }
+  get showOverflow() {
+    return this.#showOverflow;
+  }
+  set showOverflow(val) {
+    if (val === this.#showOverflow) {
+      return;
+    }
+    this.#showOverflow = val;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    if (!this.#root) {
+      return;
+    }
+    this.#view({
+      objectTree: this.#root,
+      title: this.#title,
+      linkifier: this.#linkifier,
+      skipProto: this.#skipProto,
+      showOverflow: this.#showOverflow,
+      onRootContextMenu: this.#rootContextMenuEnabled ? this.onRootContextMenu : void 0,
+      onRootItemContextMenu: this.onRootItemContextMenu
+    }, {}, this.contentElement);
+  }
+  onDetach() {
+    this.#root?.removeEventListener("children-changed", this.requestUpdate, this);
+    this.#root?.removeEventListener("expanded-changed", this.requestUpdate, this);
+  }
+  wasShown() {
+    super.wasShown();
+    this.#root?.removeEventListener("children-changed", this.requestUpdate, this);
+    this.#root?.removeEventListener("expanded-changed", this.requestUpdate, this);
+    this.#root?.addEventListener("children-changed", this.requestUpdate, this);
+    this.#root?.addEventListener("expanded-changed", this.requestUpdate, this);
+  }
+  get rootContextMenuEnabled() {
+    return this.#rootContextMenuEnabled;
+  }
+  set rootContextMenuEnabled(val) {
+    if (this.#rootContextMenuEnabled === val) {
+      return;
+    }
+    this.#rootContextMenuEnabled = val;
+    this.requestUpdate();
+  }
+  onRootContextMenu = (contextMenu) => {
+    if (!this.#root) {
+      return;
+    }
+    contextMenu.appendApplicableItems(this.#root);
+    if (this.#root.object instanceof SDK3.RemoteObject.LocalJSONObject) {
+      contextMenu.viewSection().appendItem(i18nString2(UIStrings2.expandRecursively), this.#root.expandRecursively.bind(this.#root, EXPANDABLE_MAX_DEPTH), { jslogContext: "expand-recursively" });
+      contextMenu.viewSection().appendItem(i18nString2(UIStrings2.collapseChildren), this.#root.collapseRecursively.bind(this.#root), { jslogContext: "collapse-children" });
+    }
+  };
+  onRootItemContextMenu = (contextMenu) => {
+    const root = this.#root;
+    if (!root) {
+      return;
+    }
+    populateObjectTreeContextMenu(contextMenu, root, root.expandRecursively.bind(root, EXPANDABLE_MAX_DEPTH), root.collapseRecursively.bind(root), () => {
+      root.sortPropertiesAlphabetically = !root.sortPropertiesAlphabetically;
+    }, () => {
+      root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
+    });
+  };
+};
 var ARRAY_LOAD_THRESHOLD = 100;
 var maxRenderableStringLength = 1e4;
 var ObjectPropertiesSectionsTreeOutline = class extends UI2.TreeOutline.TreeOutlineInShadow {
@@ -1775,23 +1911,50 @@ function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
   widgetRef(ObjectTreeWidget, () => {
   })}></ul>`;
 }
-function renderObjectPropertiesSection(objectTree, title, linkifier, skipProto = false, showOverflow = true) {
-  return html2`<devtools-tree
-      class="object-properties-section"
-      ?hide-overflow=${!showOverflow}
-      show-selection-on-keyboard-focus
-      .template=${html2`
-    <ul role="tree" class="source-code object-properties-section">
-      <style>${objectValue_css_default}</style>
-      <style>${objectPropertiesSection_css_default}</style>
-      <li role="treeitem" class="object-properties-section-root-element" ?open=${objectTree.expanded}>
-        ${title}
-        <ul role="group" ${widget(ObjectTreeWidget, { objectTree, linkifier, skipProto })} ${/* The empty widgetRef forces the widget to be materialized in the template DOM */
-  widgetRef(ObjectTreeWidget, () => {
+var OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW = (input, _output, target) => {
+  const contextMenuHandler = (event) => {
+    if (!input.onRootContextMenu) {
+      return;
+    }
+    event.consume(true);
+    const contextMenu = new UI2.ContextMenu.ContextMenu(event);
+    input.onRootContextMenu(contextMenu);
+    void contextMenu.show();
+  };
+  const onRootItemContextMenuHandler = (event) => {
+    event.consume(true);
+    const contextMenu = new UI2.ContextMenu.ContextMenu(event);
+    input.onRootItemContextMenu(contextMenu);
+    void contextMenu.show();
+  };
+  render2(html2`
+    <devtools-tree
+        class="object-properties-section"
+        ?hide-overflow=${!input.showOverflow}
+        show-selection-on-keyboard-focus
+        @contextmenu=${input.onRootContextMenu ? contextMenuHandler : void 0}
+        .template=${input.title ? html2`
+      <ul role="tree" class="source-code object-properties-section">
+        <style>${objectValue_css_default}</style>
+        <style>${objectPropertiesSection_css_default}</style>
+        <li role="treeitem" class="object-properties-section-root-element" ?open=${input.objectTree.expanded} @contextmenu=${onRootItemContextMenuHandler}>
+          ${input.title}
+          <ul role="group" ${widget(ObjectTreeWidget, {
+    objectTree: input.objectTree,
+    linkifier: input.linkifier,
+    skipProto: input.skipProto
+  })} ${widgetRef(ObjectTreeWidget, () => {
   })}></ul>
-      </li>
-    </ul>`}></devtools-tree>`;
-}
+        </li>
+      </ul>` : html2`
+      <ul role="tree" class="source-code object-properties-section title-less-mode" open ${widget(ObjectTreeWidget, { objectTree: input.objectTree, linkifier: input.linkifier, skipProto: input.skipProto })} ${/* The empty widgetRef forces the widget to be materialized in the template DOM */
+  widgetRef(ObjectTreeWidget, () => {
+  })}>
+        <style>${objectValue_css_default}</style>
+        <style>${objectPropertiesSection_css_default}</style>
+      </ul>`}>
+    </devtools-tree>`, target);
+};
 var RootElement = class extends UI2.TreeOutline.TreeElement {
   object;
   linkifier;
@@ -1960,7 +2123,7 @@ function defaultObjectPresentation(objectOrTree, linkifier, skipProto, readOnly)
   if (!object.hasChildren) {
     return title;
   }
-  return renderObjectPropertiesSection(objectTree, title, linkifier, skipProto, !readOnly);
+  return html2`${widget(ObjectPropertiesSectionWidget, { objectTree, title, linkifier, skipProto: !!skipProto, showOverflow: !readOnly })}`;
 }
 var InitialVisibleChildrenLimit = 200;
 var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {

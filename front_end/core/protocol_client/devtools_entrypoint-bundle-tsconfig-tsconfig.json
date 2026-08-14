@@ -45,9 +45,6 @@
   "references": [
     {
       "path": "./protocol_client-tsconfig.json"
-    },
-    {
-      "path": "../../generated/generated-tsconfig.json"
     }
   ]
 }

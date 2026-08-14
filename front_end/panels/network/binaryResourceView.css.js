@@ -9,20 +9,22 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.panel.network devtools-toolbar.binary-view-toolbar {
-  border-top: 1px solid var(--sys-color-divider);
-  border-bottom: 0;
-  padding-left: 5px;
-  flex: none;
-}
+@scope to (devtools-widget > *) {
+  .panel.network devtools-toolbar.binary-view-toolbar {
+    border-top: 1px solid var(--sys-color-divider);
+    border-bottom: 0;
+    padding-left: 5px;
+    flex: none;
+  }
 
-.binary-view-copied-text {
-  opacity: 100%;
-}
+  .binary-view-copied-text {
+    opacity: 100%;
+  }
 
-.binary-view-copied-text.fadeout {
-  opacity: 0%;
-  transition: opacity 1s;
+  .binary-view-copied-text.fadeout {
+    opacity: 0%;
+    transition: opacity 1s;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./binaryResourceView.css')} */`;

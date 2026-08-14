@@ -50,12 +50,12 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ResourceSourceFrame extends SourceFrameImpl {
     #resource;
     #givenContentType;
-    constructor(resource, givenContentType, options) {
+    constructor(resource, givenContentType, options, element) {
         const isStreamingProvider = TextUtils.ContentProvider.isStreamingContentProvider(resource);
         const lazyContent = isStreamingProvider ?
             () => resource.requestStreamingContent().then(TextUtils.StreamingContentData.asContentDataOrError) :
             () => resource.requestContentData();
-        super(lazyContent, options);
+        super(lazyContent, options, element);
         this.#givenContentType = givenContentType;
         this.#resource = resource;
         if (isStreamingProvider) {

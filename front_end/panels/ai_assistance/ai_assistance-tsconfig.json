@@ -99,16 +99,10 @@
       "path": "../../models/formatter/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/geometry/bundle-tsconfig.json"
-    },
-    {
       "path": "../../models/lighthouse/bundle-tsconfig.json"
     },
     {
       "path": "../../models/logs/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/persistence/bundle-tsconfig.json"
     },
     {
       "path": "../../models/trace/bundle-tsconfig.json"

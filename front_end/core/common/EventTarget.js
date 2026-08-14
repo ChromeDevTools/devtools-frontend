@@ -8,8 +8,4 @@ export function removeEventListeners(eventList) {
     // Do not hold references on unused event descriptors.
     eventList.splice(0);
 }
-export function fireEvent(name, detail = {}, target = window) {
-    const evt = new CustomEvent(name, { bubbles: true, cancelable: true, detail });
-    target.dispatchEvent(evt);
-}
 //# sourceMappingURL=EventTarget.js.map

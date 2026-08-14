@@ -1,7 +1,10 @@
 import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
+import { GetDetailedCallTreeTool } from './GetDetailedCallTree.js';
 import { GetElementAccessibilityDetailsTool } from './GetElementAccessibilityDetails.js';
+import { GetFunctionCodeTool } from './GetFunctionCode.js';
 import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
+import { GetResourceContentTool } from './GetResourceContent.js';
 import { GetSourceContentTool } from './GetSourceContent.js';
 import { GetStylesTool } from './GetStyles.js';
 import { GetTraceEventByKeyTool } from './GetTraceEventByKey.js';
@@ -12,6 +15,7 @@ import { ListPageOriginsTool } from './ListPageOrigins.js';
 import { ListSourcesTool } from './ListSources.js';
 import { RecordPerformanceTraceTool } from './RecordPerformanceTrace.js';
 import { ResolveDevtoolsNodePathTool } from './ResolveDevtoolsNodePath.js';
+import { RunLighthouseTool } from './RunLighthouse.js';
 import { SelectTraceEventByKeyTool } from './SelectTraceEventByKey.js';
 import { type AllToolsCapabilities, type Tool, type ToolArgs } from './Tool.js';
 /**
@@ -38,6 +42,10 @@ export declare const TOOLS: {
     getSourceContent: GetSourceContentTool;
     getTraceMainThreadSummary: GetTraceMainThreadSummaryTool;
     getTraceNetworkSummary: GetTraceNetworkSummaryTool;
+    runLighthouse: RunLighthouseTool;
+    getDetailedCallTree: GetDetailedCallTreeTool;
+    getFunctionCode: GetFunctionCodeTool;
+    getResourceContent: GetResourceContentTool;
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

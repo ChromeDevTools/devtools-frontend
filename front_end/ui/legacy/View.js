@@ -7,16 +7,12 @@ import { VBox } from './Widget.js';
 export class SimpleView extends VBox {
     #title;
     #viewId;
-    /**
-     * Constructs a new `SimpleView` with the given `options`.
-     *
-     * @param options the settings for the resulting view.
-     * @throws TypeError - if `options.viewId` is not in extended kebab case.
-     */
-    constructor(options) {
-        super(options);
-        this.#title = options.title;
-        this.#viewId = options.viewId;
+    constructor(elementOrOptions, options) {
+        // @ts-expect-error
+        super(elementOrOptions, options);
+        const optionsObj = (elementOrOptions instanceof HTMLElement ? options : elementOrOptions);
+        this.#title = optionsObj.title;
+        this.#viewId = optionsObj.viewId;
         if (!Platform.StringUtilities.isExtendedKebabCase(this.#viewId)) {
             throw new TypeError(`Invalid view ID '${this.#viewId}'`);
         }

@@ -48,6 +48,12 @@
     },
     {
       "path": "./timeline-tsconfig.json"
+    },
+    {
+      "path": "components/bundle-tsconfig.json"
+    },
+    {
+      "path": "utils/bundle-tsconfig.json"
     }
   ]
 }

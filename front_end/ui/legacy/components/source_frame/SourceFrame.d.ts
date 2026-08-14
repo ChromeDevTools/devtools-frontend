@@ -55,11 +55,12 @@ export declare class SourceFrameImpl extends SourceFrameImpl_base implements UI.
     private lineToScrollTo;
     private selectionToSet;
     private loadedInternal;
+    private positionPercentageToReveal;
     private contentRequested;
     private wasmDisassemblyInternal;
     contentSet: boolean;
     private selfXssWarningDisabledSetting;
-    constructor(lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>, options?: SourceFrameOptions);
+    constructor(lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>, options?: SourceFrameOptions, element?: HTMLElement);
     disposeView(): void;
     private placeholderEditorState;
     protected editorConfiguration(doc: string | CodeMirror.Text): CodeMirror.Extension;
@@ -99,6 +100,8 @@ export declare class SourceFrameImpl extends SourceFrameImpl_base implements UI.
     protected getContentType(): string;
     private ensureContentLoaded;
     protected setContentDataOrError(contentDataPromise: Promise<TextUtils.ContentData.ContentDataOrError>): Promise<void>;
+    getPositionPercentage(): number;
+    setPositionPercentage(percentage: number): void;
     revealPosition(position: RevealPosition, shouldHighlight?: boolean): void;
     private clearPositionToReveal;
     scrollToLine(line: number): void;

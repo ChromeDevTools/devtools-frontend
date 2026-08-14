@@ -48,6 +48,9 @@
     },
     {
       "path": "./common-tsconfig.json"
+    },
+    {
+      "path": "../platform/bundle-tsconfig.json"
     }
   ]
 }

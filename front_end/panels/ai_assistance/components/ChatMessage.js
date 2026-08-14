@@ -757,6 +757,10 @@ async function resolveNode(backendNodeId) {
     return resolved;
 }
 async function makeStorageBreakdownWidget(widgetData) {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+        return null;
+    }
     const breakdown = widgetData.data.usageBreakdown;
     const total = breakdown.reduce((sum, item) => sum + item.bytes, 0);
     const slices = breakdown.map(item => {
@@ -785,7 +789,7 @@ async function makeStorageBreakdownWidget(widgetData) {
     return {
         renderedWidget,
         title: lockedString(UIStringsNotTranslate.storageBreakdown),
-        revealable: null,
+        revealable: new Application.StorageView.StorageRevealable(target),
         accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealStorageBreakdown),
         jslogContext: 'storage-breakdown-widget',
     };
@@ -1506,10 +1510,16 @@ async function renderWidgets(widgets, options = {}) {
         }
         return renderWidgetResponse(response);
     }));
-    if (options.wrapperClass) {
-        return html `<div class=${options.wrapperClass}>${ui}</div>`;
+    // Omit the wrapper element entirely if every widget maker resolved to Lit.nothing
+    // so empty container elements do not occupy vertical layout space in the chat stream.
+    const renderedItems = ui.filter(item => item !== Lit.nothing);
+    if (renderedItems.length === 0) {
+        return Lit.nothing;
     }
-    return html `${ui}`;
+    if (options.wrapperClass) {
+        return html `<div class=${options.wrapperClass}>${renderedItems}</div>`;
+    }
+    return html `${renderedItems}`;
 }
 function renderSideEffectConfirmationUi(step) {
     if (step.state.type !== 'needs_approval') {
@@ -1981,16 +1991,29 @@ async function makeNetworkTrackWidget(widgetData) {
     };
 }
 async function makeLighthouseReportWidget(widgetData) {
-    const reportEl = Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.renderLighthouseScores(widgetData.data.report);
-    if (!reportEl) {
-        return null;
+    let reportEl = null;
+    try {
+        // Snapshot mode audits only collect individual audit results and do not generate
+        // top-level category score gauges.
+        reportEl =
+            Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.renderLighthouseScores(widgetData.data.report);
+    }
+    catch {
+        reportEl = null;
     }
     const snapshotReport = widgetData.data.snapshotReport;
+    const revealLighthouseLabel = lockedString(UIStringsNotTranslate.revealLighthouse);
+    // When score gauges are rendered, the widget header displays the title "Lighthouse report"
+    // and the header button defaults to "Reveal". When score gauges are absent (snapshot mode),
+    // no header is rendered, so customRevealTitle labels the standalone button ("Reveal Lighthouse report").
+    const title = reportEl ? lockedString(UIStringsNotTranslate.lighthouseReport) : null;
+    const customRevealTitle = reportEl ? undefined : revealLighthouseLabel;
     return {
-        renderedWidget: html `<div class="lighthouse-report-widget">${reportEl}</div>`,
+        renderedWidget: reportEl ? html `<div class="lighthouse-report-widget">${reportEl}</div>` : null,
         revealable: new Lighthouse.LighthousePanel.ActiveLighthouseReport(widgetData.data.report),
-        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealLighthouse),
-        title: lockedString(UIStringsNotTranslate.lighthouseReport),
+        accessibleRevealLabel: revealLighthouseLabel,
+        customRevealTitle,
+        title,
         jslogContext: snapshotReport ? 'lighthouse-snapshot-report-widget' : 'lighthouse-report-widget',
     };
 }

@@ -176,7 +176,7 @@ function runNextUpdate() {
     });
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const widgetConfigs = new WeakMap();
+export const widgetConfigs = new WeakMap();
 export function registerWidgetConfig(element, config) {
     if (!widgetConfigs.has(element)) {
         setUpLifecycleTracking(element);
@@ -325,6 +325,8 @@ export class WidgetElement extends HTMLElement {
 customElements.define('devtools-widget', WidgetElement);
 export class WidgetDirective extends Lit.Directive.Directive {
     #partType;
+    #lastWidgetClass;
+    #lastKey;
     constructor(partInfo) {
         super(partInfo);
         this.#partType = partInfo.type;
@@ -361,12 +363,19 @@ export class WidgetDirective extends Lit.Directive.Directive {
         if (this.#partType === Lit.Directive.PartType.ELEMENT) {
             return Lit.nothing;
         }
+        if (this.#lastWidgetClass !== widgetClass) {
+            this.#lastWidgetClass = widgetClass;
+            this.#lastKey = Widget.isPrototypeOf(widgetClass) ? widgetClass : widgetClass.toString();
+        }
         // We use `repeat` to force Lit to recreate the `<devtools-widget>` DOM node when the `widgetClass` changes.
         // If we didn't use `repeat` and used `html` directly, Lit would reuse the same `<devtools-widget>` instance
         // even if `widgetClass` changed (for example, in a ternary operator `condition ? widget(A) : widget(B)`).
         // This is because the template string is the same, so Lit reuses the DOM node and only updates `.widgetConfig`,
         // which does not properly recreate the widget instance.
-        return Lit.Directives.repeat([widgetClass], () => widgetClass, () => html `<devtools-widget ${widget(widgetClass, widgetParams)}></devtools-widget>`);
+        // We use `#lastKey` (and stringify factory functions) instead of just using `widgetClass` as the key
+        // so that we intentionally ignore reference changes for identical inline factories. This prevents accidental
+        // recreation of the DOM node on every render when an anonymous inline arrow function is passed.
+        return Lit.Directives.repeat([widgetClass], () => this.#lastKey, () => html `<devtools-widget ${widget(widgetClass, widgetParams)}></devtools-widget>`);
     }
 }
 export const widget = Lit.Directive.directive(WidgetDirective);

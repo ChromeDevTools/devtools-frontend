@@ -10,6 +10,15 @@ export declare class ListPageOriginsTool implements DataTool<Record<string, neve
         title: string;
         action: string;
     };
+    /**
+     * Retrieves the set of unique frame origins loaded within the primary page's target tree.
+     *
+     * To prevent data leakage across different tabs/windows, this tool:
+     * 1. Restricts the frame search to those belonging to the `primaryPageTarget`'s outermost target tree.
+     * 2. Filters out any origins that are not equivalent to the established allowed origin.
+     *    Note: Under site isolation, frames may be hosted on different sub-targets or processes,
+     *    so we check `frame.securityOrigin` directly instead of the frame's target origin.
+     */
     handler(_args: Record<string, never>, context: BaseToolCapability & OriginLockCapability): Promise<DataHandlerResult<{
         origins: string[];
     }>>;

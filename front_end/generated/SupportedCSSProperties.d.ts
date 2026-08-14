@@ -448,10 +448,16 @@ export declare const generatedPropertyValues: {
     border: {
         values: string[];
     };
+    "border-block-end-color": {
+        values: string[];
+    };
     "border-block-end-style": {
         values: string[];
     };
     "border-block-end-width": {
+        values: string[];
+    };
+    "border-block-start-color": {
         values: string[];
     };
     "border-block-start-style": {
@@ -484,10 +490,16 @@ export declare const generatedPropertyValues: {
     "border-image-width": {
         values: string[];
     };
+    "border-inline-end-color": {
+        values: string[];
+    };
     "border-inline-end-style": {
         values: string[];
     };
     "border-inline-end-width": {
+        values: string[];
+    };
+    "border-inline-start-color": {
         values: string[];
     };
     "border-inline-start-style": {

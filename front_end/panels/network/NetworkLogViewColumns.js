@@ -17,7 +17,7 @@ import { NetworkWaterfallColumn } from './NetworkWaterfallColumn.js';
 import { RequestInitiatorView } from './RequestInitiatorView.js';
 const UIStrings = {
     /**
-     * @description Data grid name for Network Log data grids
+     * @description Data grid name for network log data grids.
      */
     networkLog: 'Network Log',
     /**
@@ -37,131 +37,131 @@ const UIStrings = {
      */
     manageHeaderColumns: 'Manage Header Columns…',
     /**
-     * @description Text for the start time of an activity
+     * @description Column header for the request start time column in network log table of the Network panel.
      */
     startTime: 'Start time',
     /**
-     * @description Text in Network Log View Columns of the Network panel
+     * @description Column header for the response time column in network log table of the Network panel.
      */
     responseTime: 'Response time',
     /**
-     * @description Text in Network Log View Columns of the Network panel
+     * @description Column header for the request end time column in network log table of the Network panel.
      */
     endTime: 'End time',
     /**
-     * @description Text in Network Log View Columns of the Network panel
+     * @description Column header for the total request duration column in network log table of the Network panel.
      */
     totalDuration: 'Total duration',
     /**
-     * @description Text for the latency of a task
+     * @description Column header for the request latency column in network log table of the Network panel.
      */
     latency: 'Latency',
     /**
-     * @description Text for the name of something
+     * @description Column header for the request name column in network log table of the Network panel.
      */
     name: 'Name',
     /**
-     * @description Text that refers to a file path
+     * @description Column header for the request URL path column in network log table of the Network panel.
      */
     path: 'Path',
     /**
-     * @description Text in Timeline UIUtils of the Performance panel
+     * @description Column header for the full request URL column in network log table of the Network panel.
      */
     url: 'URL',
     /**
-     * @description Column header in the Network log view of the Network panel
+     * @description Column header for the request index number column in network log table of the Network panel.
      */
     requestNumber: 'Request #',
     /**
-     * @description Text for one or a group of functions
+     * @description Column header for the HTTP request method column in network log table of the Network panel.
      */
     method: 'Method',
     /**
-     * @description Text for the status of something
+     * @description Column header for the HTTP response status code column in network log table of the Network panel.
      */
     status: 'Status',
     /**
-     * @description Generic label for any text
+     * @description Column header for the HTTP response status text column in network log table of the Network panel.
      */
     text: 'Text',
     /**
-     * @description Text for security or network protocol
+     * @description Column header for the network transport protocol column in network log table of the Network panel.
      */
     protocol: 'Protocol',
     /**
-     * @description Text in Network Log View Columns of the Network panel
+     * @description Column header for the URL scheme column in network log table of the Network panel.
      */
     scheme: 'Scheme',
     /**
-     * @description Text for the domain of a website
+     * @description Column header for the request target domain column in network log table of the Network panel.
      */
     domain: 'Domain',
     /**
-     * @description Text in Network Log View Columns of the Network panel
+     * @description Column header for the remote IP address column in network log table of the Network panel.
      */
     remoteAddress: 'Remote address',
     /**
-     * @description Text that refers to some types
+     * @description Column header for the resource MIME type or category column in network log table of the Network panel.
      */
     type: 'Type',
     /**
-     * @description Text for the initiator of something
+     * @description Column header for the request initiator column in network log table of the Network panel.
      */
     initiator: 'Initiator',
     /**
-     * @description Column header in the Network log view of the Network panel
+     * @description Column header for the override status column in network log table of the Network panel.
      */
     hasOverrides: 'Has overrides',
     /**
-     * @description Column header in the Network log view of the Network panel
+     * @description Column header for the initiator IP address space column in network log table of the Network panel.
      */
     initiatorAddressSpace: 'Initiator address space',
     /**
-     * @description Text for web cookies
+     * @description Column header for the request cookie count column in network log table of the Network panel.
      */
     cookies: 'Cookies',
     /**
-     * @description Text in Network Log View Columns of the Network panel
+     * @description Column header for the set cookies count column in network log table of the Network panel.
      */
-    setCookies: 'Set Cookies',
+    setCookies: 'Set cookies',
     /**
-     * @description Text for the size of something
+     * @description Column header for the request transfer and resource size column in network log table of the Network panel.
      */
     size: 'Size',
     /**
-     * @description Text in Network Log View Columns of the Network panel
+     * @description Column header for the resource decoded content size column in network log table of the Network panel.
      */
     content: 'Content',
     /**
-     * @description Noun that refers to a duration in milliseconds.
+     * @description Column header for the total request duration column in network log table of the Network panel.
      */
     time: 'Time',
     /**
-     * @description Text to show the priority of an item
+     * @description Column header for the request fetch priority column in network log table of the Network panel.
      */
     priority: 'Priority',
     /**
-     * @description Text in Network Log View Columns of the Network panel
+     * @description Column header for the connection ID column in network log table of the Network panel.
      */
     connectionId: 'Connection ID',
     /**
-     * @description Text in Network Log View Columns of the Network panel
+     * @description Column header for the remote IP address space column in network log table of the Network panel.
      */
     remoteAddressSpace: 'Remote address space',
     /**
-     * @description Text to show whether a request is ad-related
+     * @description Column header for the ad-related status column in network log table of the Network panel.
      */
-    isAdRelated: 'Is Ad-Related',
+    isAdRelated: 'Is ad-related',
     /**
-     * @description Text in Network Log View Columns of the Network panel
+     * @description Column header for the render-blocking status column in network log table of the Network panel.
      */
     renderBlocking: 'Render-blocking',
     /**
-     * @description Text to show whether a request is preloaded
+     * @description Column header for the preloaded status column in network log table of the Network panel.
      */
     isPreloaded: 'Preloaded',
     /**
-     * @description Column header in the Network log view of the Network panel
+     * @description Column header for the execution context column in network log table of the Network panel.
      */
     executionContext: 'Execution context',
 };

@@ -45,39 +45,39 @@ const UIStrings = {
      */
     sOpcodeS: '{PH1} (Opcode {PH2})',
     /**
-     * @description Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel
+     * @description WebSocket opcode (operation code) name for a continuation frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type; continuation frames split large messages into multiple chunks.
      */
-    continuationFrame: 'Continuation Frame',
+    continuationFrame: 'Continuation frame',
     /**
-     * @description Op codes text frame of map in Resource Web Socket Frame View of the Network panel
+     * @description WebSocket opcode (operation code) name for a text message frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type.
      */
-    textMessage: 'Text Message',
+    textMessage: 'Text message',
     /**
-     * @description Op codes binary frame of map in Resource Web Socket Frame View of the Network panel
+     * @description WebSocket opcode (operation code) name for a binary message frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type.
      */
-    binaryMessage: 'Binary Message',
+    binaryMessage: 'Binary message',
     /**
-     * @description Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel indicating that the web socket connection has been closed.
+     * @description WebSocket opcode (operation code) name for a connection close frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type.
      */
-    connectionCloseMessage: 'Connection Close Message',
+    connectionCloseMessage: 'Connection close message',
     /**
-     * @description Op codes ping frame of map in Resource Web Socket Frame View of the Network panel
+     * @description WebSocket opcode (operation code) name for a ping frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type; ping frames check connection liveness.
      */
-    pingMessage: 'Ping Message',
+    pingMessage: 'Ping message',
     /**
-     * @description Op codes pong frame of map in Resource Web Socket Frame View of the Network panel
+     * @description WebSocket opcode (operation code) name for a pong frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type; pong frames reply to ping frames.
      */
-    pongMessage: 'Pong Message',
+    pongMessage: 'Pong message',
     /**
-     * @description Data grid name for Web Socket Frame data grids
+     * @description Accessible name for WebSocket message data grid in WebSocket messages view of the Network panel.
      */
-    webSocketFrame: 'Web Socket Frame',
+    webSocketFrame: 'WebSocket frame',
     /**
-     * @description Text for something not available
+     * @description Text shown when a value is not available in WebSocket messages view of the Network panel.
      */
     na: 'N/A',
     /**
-     * @description Example for placeholder text
+     * @description Placeholder text for filter input in WebSocket messages view of the Network panel.
      */
     filterUsingRegex: 'Filter using regex (example: (web)?socket)',
 };

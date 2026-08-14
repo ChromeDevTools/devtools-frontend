@@ -6660,7 +6660,7 @@ var NativeFunctions = [
   },
   {
     name: "WebSocket",
-    signatures: [["url", "?protocols"]]
+    signatures: [["url", "?protocolsOrOptions"]]
   },
   {
     name: "WebSocketError",
@@ -7105,10 +7105,6 @@ var NativeFunctions = [
   {
     name: "contributeToHistogram",
     signatures: [["contribution"]]
-  },
-  {
-    name: "contributeToHistogramOnEvent",
-    signatures: [["event", "contribution"]]
   },
   {
     name: "enableDebugMode",
@@ -8405,6 +8401,10 @@ var NativeFunctions = [
   {
     name: "markConditional",
     signatures: [["markName"]]
+  },
+  {
+    name: "measureConditional",
+    signatures: [["measureName", "?startMark", "?endMark"]]
   },
   {
     name: "PerformanceMark",

@@ -55,19 +55,19 @@ const UIStrings = {
     /**
      * @description Text in Request Headers View of the Network panel
      */
-    referrerPolicy: 'Referrer Policy',
+    referrerPolicy: 'Referrer policy',
     /**
      * @description Text in Network Log View Columns of the Network panel
      */
-    remoteAddress: 'Remote Address',
+    remoteAddress: 'Remote address',
     /**
      * @description Text in Request Headers View of the Network panel
      */
-    requestHeaders: 'Request Headers',
+    requestHeaders: 'Request headers',
     /**
      * @description The HTTP method of a request
      */
-    requestMethod: 'Request Method',
+    requestMethod: 'Request method',
     /**
      * @description The URL of a request
      */
@@ -87,7 +87,7 @@ const UIStrings = {
     /**
      * @description HTTP response code
      */
-    statusCode: 'Status Code',
+    statusCode: 'Status code',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

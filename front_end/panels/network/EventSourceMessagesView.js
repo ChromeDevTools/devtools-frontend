@@ -14,35 +14,35 @@ import eventSourceMessagesViewStyles from './eventSourceMessagesView.css.js';
 const { repeat } = Directives;
 const UIStrings = {
     /**
-     * @description Text in Event Source Messages View of the Network panel
+     * @description Column header for event ID in event source messages view of the Network panel.
      */
-    id: 'Id',
+    id: 'ID',
     /**
-     * @description Text that refers to some types
+     * @description Column header for event type in event source messages view of the Network panel.
      */
     type: 'Type',
     /**
-     * @description Text in Event Source Messages View of the Network panel
+     * @description Column header for event data in event source messages view of the Network panel.
      */
     data: 'Data',
     /**
-     * @description Text that refers to the time
+     * @description Column header for event time in event source messages view of the Network panel.
      */
     time: 'Time',
     /**
-     * @description Data grid name for Event Source data grids
+     * @description Data grid name for event source data grids.
      */
-    eventSource: 'Event Source',
+    eventSource: 'Event source',
     /**
-     * @description A context menu item in the Resource Web Socket Frame View of the Network panel
+     * @description Context menu item in event source messages view of the Network panel.
      */
     copyMessage: 'Copy message',
     /**
-     * @description Text to clear everything
+     * @description Tooltip text for clear button in event source messages view of the Network panel.
      */
     clearAll: 'Clear all',
     /**
-     * @description Example for placeholder text
+     * @description Placeholder text for filter input in event source messages view of the Network panel.
      */
     filterByRegex: 'Filter using regex (example: https?)',
 };

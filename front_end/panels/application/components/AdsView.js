@@ -211,7 +211,7 @@ const DEFAULT_VIEW = (input, output, target) => {
       <hr class="divider">
       <div class="settings-title">${i18nString(UIStrings.settings)}</div>
       <devtools-checkbox class="setting-container small"
-          ${bindToSetting(Common.Settings.Settings.instance().moduleSetting('show-ad-highlights'))}>
+          ${bindToSetting(Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showAdHighlightsSettingDescriptor))}>
         <div class="setting-text-container">
           <div class="setting-label">${i18nString(UIStrings.highlightAds)}</div>
           <div class="setting-explanation">${i18nString(UIStrings.highlightsElementsRedDetectedToBe)}</div>

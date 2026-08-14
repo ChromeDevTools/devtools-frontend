@@ -94,4 +94,51 @@ export const showPaintRectsSettingDescriptor = {
     defaultValue: false,
     storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
 };
+export const showLayoutShiftRegionsSettingDescriptor = {
+    name: 'show-layout-shift-regions',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const showAdHighlightsSettingDescriptor = {
+    name: 'show-ad-highlights',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const showDebugBordersSettingDescriptor = {
+    name: 'show-debug-borders',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const showFPSCounterSettingDescriptor = {
+    name: 'show-fps-counter',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const showScrollBottleneckRectsSettingDescriptor = {
+    name: 'show-scroll-bottleneck-rects',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const emulatePageFocusSettingDescriptor = {
+    name: 'emulate-page-focus',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Local" /* Common.Settings.SettingStorageType.LOCAL */,
+};
+export const emulatedCSSMediaSettingDescriptor = {
+    name: 'emulated-css-media',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: '',
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const cpuPressureSettingDescriptor = {
+    name: 'emulation.cpu-pressure',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: 'none',
+};
 //# sourceMappingURL=SDKSettings.js.map

@@ -42,9 +42,5 @@
     "../../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
-  "references": [
-    {
-      "path": "../../../core/platform/bundle-tsconfig.json"
-    }
-  ]
+  "references": []
 }

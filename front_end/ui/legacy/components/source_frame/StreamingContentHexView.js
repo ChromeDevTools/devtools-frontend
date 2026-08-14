@@ -15,9 +15,10 @@ const MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1000;
 class LinearMemoryInspectorView extends UI.Widget.VBox {
     #memory = new Uint8Array([0]);
     #address = 0;
+    #positionPercentageToReveal = null;
     #inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
-    constructor() {
-        super();
+    constructor(element) {
+        super(element);
         this.#inspector.addEventListener("MemoryRequest" /* LinearMemoryInspectorComponents.LinearMemoryInspector.Events.MEMORY_REQUEST */, this.#memoryRequested, this);
         this.#inspector.addEventListener("AddressChanged" /* LinearMemoryInspectorComponents.LinearMemoryInspector.Events.ADDRESS_CHANGED */, (event) => {
             this.#address = event.data;
@@ -30,7 +31,22 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     }
     setMemory(memory) {
         this.#memory = memory;
+        if (this.#positionPercentageToReveal !== null && this.#memory.length > 0) {
+            this.#address = Math.floor(this.#memory.length * this.#positionPercentageToReveal);
+            this.#positionPercentageToReveal = null;
+        }
         this.refreshData();
+    }
+    getPositionPercentage() {
+        return this.#memory.length === 0 ? 0 : this.#address / this.#memory.length;
+    }
+    setPositionPercentage(percentage) {
+        this.#positionPercentageToReveal = percentage;
+        if (this.#memory.length > 0 && this.#memory.length !== 1) { // 1 is default empty size
+            this.#address = Math.floor(this.#memory.length * percentage);
+            this.#positionPercentageToReveal = null;
+            this.refreshData();
+        }
     }
     refreshData() {
         // TODO(szuend): The following lines are copied from `LinearMemoryInspectorController`. We can't reuse them
@@ -75,8 +91,8 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
  */
 export class StreamingContentHexView extends LinearMemoryInspectorView {
     #streamingContentData;
-    constructor(streamingContentData) {
-        super();
+    constructor(streamingContentData, element) {
+        super(element);
         this.#streamingContentData = streamingContentData;
     }
     wasShown() {

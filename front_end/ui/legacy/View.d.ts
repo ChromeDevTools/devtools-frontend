@@ -40,6 +40,7 @@ export declare class SimpleView<ContentTypeT extends HTMLElement | DocumentFragm
      * @throws TypeError - if `options.viewId` is not in extended kebab case.
      */
     constructor(options: SimpleViewOptions<ContentTypeT>);
+    constructor(element: HTMLElement, options: SimpleViewOptions<ContentTypeT>);
     viewId(): string;
     title(): Platform.UIString.LocalizedString;
     isCloseable(): boolean;

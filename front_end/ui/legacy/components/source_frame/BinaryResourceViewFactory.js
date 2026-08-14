@@ -24,22 +24,14 @@ export class BinaryResourceViewFactory {
     utf8() {
         return new TextUtils.ContentData.ContentData(this.base64(), /* isBase64 */ true, 'text/plain', 'utf-8').text;
     }
-    createBase64View() {
-        const resourceFrame = new ResourceSourceFrame(TextUtils.StaticContentProvider.StaticContentProvider.fromString(this.contentUrl, this.resourceType, this.streamingContent.content().base64), this.resourceType.canonicalMimeType(), { lineNumbers: false, lineWrapping: true });
-        this.streamingContent.addEventListener("ChunkAdded" /* TextUtils.StreamingContentData.Events.CHUNK_ADDED */, () => {
-            void resourceFrame.setContent(this.base64());
-        });
-        return resourceFrame;
+    createBase64View(element) {
+        return new StreamingResourceSourceFrame(this.streamingContent, () => this.base64(), this.contentUrl, this.resourceType, { lineNumbers: false, lineWrapping: true }, element);
     }
-    createHexView() {
-        return new StreamingContentHexView(this.streamingContent);
+    createHexView(element) {
+        return new StreamingContentHexView(this.streamingContent, element);
     }
-    createUtf8View() {
-        const resourceFrame = new ResourceSourceFrame(TextUtils.StaticContentProvider.StaticContentProvider.fromString(this.contentUrl, this.resourceType, this.utf8()), this.resourceType.canonicalMimeType(), { lineNumbers: true, lineWrapping: true });
-        this.streamingContent.addEventListener("ChunkAdded" /* TextUtils.StreamingContentData.Events.CHUNK_ADDED */, () => {
-            void resourceFrame.setContent(this.utf8());
-        });
-        return resourceFrame;
+    createUtf8View(element) {
+        return new StreamingResourceSourceFrame(this.streamingContent, () => this.utf8(), this.contentUrl, this.resourceType, { lineNumbers: true, lineWrapping: true }, element);
     }
     static #uint8ArrayToHexString(uint8Array) {
         let output = '';
@@ -54,6 +46,26 @@ export class BinaryResourceViewFactory {
             hex = '0' + hex;
         }
         return hex;
+    }
+}
+class StreamingResourceSourceFrame extends ResourceSourceFrame {
+    #streamingContent;
+    #getContent;
+    constructor(streamingContent, getContent, contentUrl, resourceType, options, element) {
+        super(TextUtils.StaticContentProvider.StaticContentProvider.fromString(contentUrl, resourceType, getContent()), resourceType.canonicalMimeType(), options, element);
+        this.#streamingContent = streamingContent;
+        this.#getContent = getContent;
+    }
+    wasShown() {
+        super.wasShown();
+        this.#streamingContent.addEventListener("ChunkAdded" /* TextUtils.StreamingContentData.Events.CHUNK_ADDED */, this.#onChunkAdded, this);
+    }
+    willHide() {
+        super.willHide();
+        this.#streamingContent.removeEventListener("ChunkAdded" /* TextUtils.StreamingContentData.Events.CHUNK_ADDED */, this.#onChunkAdded, this);
+    }
+    #onChunkAdded() {
+        void this.setContent(this.#getContent());
     }
 }
 //# sourceMappingURL=BinaryResourceViewFactory.js.map

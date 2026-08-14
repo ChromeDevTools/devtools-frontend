@@ -8,31 +8,41 @@ export interface TabbedEditorContainerDelegate {
     viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget;
     recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame, uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
 }
-export declare class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+declare const TabbedEditorContainer_base: (new (...args: any[]) => {
+    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
+    addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
+    once<T extends keyof EventTypes>(eventType: T): Promise<EventTypes[T]>;
+    removeEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
+    hasEventListeners(eventType: keyof EventTypes): boolean;
+    dispatchEventToListeners<T extends keyof EventTypes>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
+}) & typeof UI.Widget.VBox;
+export declare class TabbedEditorContainer extends TabbedEditorContainer_base {
     #private;
-    private readonly delegate;
+    delegate: TabbedEditorContainerDelegate;
     private readonly tabbedPane;
     private tabIds;
     private readonly files;
-    private readonly previouslyViewedFilesSetting;
-    private readonly history;
+    history: History;
+    set previouslyViewedFilesSetting(setting: Common.Settings.Setting<SerializedHistoryItem[]>);
+    get previouslyViewedFilesSetting(): Common.Settings.Setting<SerializedHistoryItem[]>;
     private readonly uriToUISourceCode;
     private readonly idToUISourceCode;
     private currentView;
     private scrollTimer?;
     private reentrantShow;
-    constructor(delegate: TabbedEditorContainerDelegate, setting: Common.Settings.Setting<SerializedHistoryItem[]>, element?: HTMLElement);
+    constructor(element?: HTMLElement);
+    get tabbedPaneForTesting(): UI.TabbedPane.TabbedPane;
     private onBindingCreated;
     private onBindingRemoved;
-    get view(): UI.Widget.Widget;
     get visibleView(): UI.Widget.Widget | null;
     fileViews(): UI.Widget.Widget[];
     leftToolbar(): UI.Toolbar.Toolbar;
     rightToolbar(): UI.Toolbar.Toolbar;
-    show(parentElement: Element): void;
     showFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
     closeFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
     closeAllFiles(): void;
+    detachEditors(): void;
     historyUISourceCodes(): Workspace.UISourceCode.UISourceCode[];
     selectNextTab(): void;
     selectPrevTab(): void;

@@ -21,7 +21,7 @@ const UIStrings = {
      * @description Title for a table which shows all of the cookies associated with a selected network
      * request, in the Network panel. Noun phrase.
      */
-    requestCookies: 'Request Cookies',
+    requestCookies: 'Request cookies',
     /**
      * @description Tooltip to explain what request cookies are
      */
@@ -29,7 +29,7 @@ const UIStrings = {
     /**
      * @description Label for showing request cookies that were not actually sent
      */
-    showFilteredOutRequestCookies: 'show filtered out request cookies',
+    showFilteredOutRequestCookies: 'Show filtered-out request cookies',
     /**
      * @description Text in Request Headers View of the Network Panel
      */
@@ -37,7 +37,7 @@ const UIStrings = {
     /**
      * @description Text in Request Cookies View of the Network panel
      */
-    responseCookies: 'Response Cookies',
+    responseCookies: 'Response cookies',
     /**
      * @description Tooltip to explain what response cookies are
      */
@@ -45,7 +45,7 @@ const UIStrings = {
     /**
      * @description Label for response cookies with invalid syntax
      */
-    malformedResponseCookies: 'Malformed Response Cookies',
+    malformedResponseCookies: 'Malformed response cookies',
     /**
      * @description Tooltip to explain what malformed response cookies are. Malformed cookies are
      * cookies that did not match the expected format and could not be interpreted, and are invalid.

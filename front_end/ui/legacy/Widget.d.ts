@@ -27,6 +27,7 @@ export declare class WidgetConfig<WidgetT extends AnyWidget> {
     constructor(widgetClass: WidgetFactory<WidgetT>, widgetParams?: Partial<WidgetT> | undefined);
 }
 export declare function widgetConfig<F extends WidgetFactory<AnyWidget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>): WidgetConfig<any>;
+export declare const widgetConfigs: WeakMap<HTMLElement, WidgetConfig<any>>;
 export declare function registerWidgetConfig<WidgetT extends AnyWidget>(element: HTMLElement, config: WidgetConfig<WidgetT>): void;
 export declare function instantiateWidget<WidgetT extends AnyWidget>(element: HTMLElement, widgetConfig: WidgetConfig<WidgetT>): WidgetT;
 export declare class WidgetElement<WidgetT extends AnyWidget> extends HTMLElement {

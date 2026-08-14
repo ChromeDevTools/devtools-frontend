@@ -13,6 +13,7 @@ import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { IndexedDBModel } from './IndexedDBModel.js';
+import { ResourcesPanel } from './ResourcesPanel.js';
 import storageViewStyles from './storageView.css.js';
 const UIStrings = {
     /**
@@ -630,6 +631,18 @@ export class ActionDelegate {
             StorageView.clear(target, storageKey, securityOrigin, AllStorageTypes, includeThirdPartyCookies);
         }, _ => { });
         return true;
+    }
+}
+export class StorageRevealable {
+    target;
+    constructor(target) {
+        this.target = target;
+    }
+}
+export class StorageRevealer {
+    async reveal(_revealable) {
+        const sidebar = await ResourcesPanel.showAndGetSidebar();
+        sidebar.showStorage();
     }
 }
 //# sourceMappingURL=StorageView.js.map

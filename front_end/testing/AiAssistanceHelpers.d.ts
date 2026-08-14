@@ -105,4 +105,7 @@ export declare function makeFakeParsedTrace(options?: {
 export declare function stubPerformanceTraceFormatter(traceContext: AiAssistance.PerformanceTraceContext.PerformanceTraceContext, methods: {
     formatMainThreadTrackSummary?: sinon.SinonStub;
     formatNetworkTrackSummary?: sinon.SinonStub;
+    formatCallTree?: sinon.SinonStub;
+    resolveFunctionCodeAtLocation?: sinon.SinonStub;
+    formatFunctionCode?: sinon.SinonStub;
 }): sinon.SinonStub;

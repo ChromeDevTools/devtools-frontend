@@ -86,6 +86,7 @@ models/ai_assistance/data_formatters/LighthouseFormatter.test.js
 models/ai_assistance/data_formatters/NetworkRequestFormatter.test.js
 models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
 models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
+models/comment_manager/CommentManager.test.js
 models/crux-manager/CrUXManager.test.js
 models/formatter/FormatterWorkerPool.test.js
 models/formatter/ScriptFormatter.test.js
@@ -168,8 +169,6 @@ entrypoints/main/GlobalAiButton.test.js
 entrypoints/main/MainImpl.test.js
 entrypoints/node_app/app/NodeMain.test.js
 entrypoints/wasmparser_worker/wasmparser_worker.test.js
-models/ai_assistance/data_formatters/FileFormatter.test.js
-models/ai_assistance/data_formatters/UnitFormatters.test.js
 models/ai_assistance/AiAgent2.test.js
 models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
@@ -199,9 +198,12 @@ models/ai_assistance/performance/AICallTree.test.js
 models/ai_assistance/performance/AIContext.test.js
 models/ai_assistance/performance/AIQueries.test.js
 models/ai_assistance/tools/ExecuteJavaScript.test.js
+models/ai_assistance/tools/GetDetailedCallTree.test.js
 models/ai_assistance/tools/GetElementAccessibilityDetails.test.js
+models/ai_assistance/tools/GetFunctionCode.test.js
 models/ai_assistance/tools/GetLighthouseAudits.test.js
 models/ai_assistance/tools/GetNetworkRequestDetails.test.js
+models/ai_assistance/tools/GetResourceContent.test.js
 models/ai_assistance/tools/GetSourceContent.test.js
 models/ai_assistance/tools/GetStyles.test.js
 models/ai_assistance/tools/GetTraceEventByKey.test.js
@@ -212,6 +214,7 @@ models/ai_assistance/tools/ListPageOrigins.test.js
 models/ai_assistance/tools/ListSources.test.js
 models/ai_assistance/tools/RecordPerformanceTrace.test.js
 models/ai_assistance/tools/ResolveDevtoolsNodePath.test.js
+models/ai_assistance/tools/RunLighthouse.test.js
 models/ai_assistance/tools/SelectTraceEventByKey.test.js
 models/ai_assistance/tools/ToolRegistry.test.js
 models/ai_code_completion/AiCodeCompletion.test.js
@@ -511,6 +514,7 @@ panels/mobile_throttling/CPUThrottlingSelector.test.js
 panels/mobile_throttling/NetworkThrottlingSelector.test.js
 panels/mobile_throttling/ThrottlingManager.test.js
 panels/mobile_throttling/ThrottlingSettingsTab.test.js
+panels/network/BinaryResourceView.test.js
 panels/network/FetchHeaderCommenting.test.js
 panels/network/LinkPreloadGenerator.test.js
 panels/network/NetworkConfigView.test.js
@@ -570,12 +574,12 @@ panels/security/SecurityModel.test.js
 panels/security/SecurityPanel.test.js
 panels/sensors/LocationsSettingsTab.test.js
 panels/sensors/SensorsView.test.js
-panels/settings/emulation/DevicesSettingsTab.test.js
 panels/settings/AISettingsTab.test.js
 panels/settings/EditFileSystemView.test.js
 panels/settings/FrameworkIgnoreListSettingsTab.test.js
 panels/settings/WorkspaceSettingsTab.test.js
 panels/settings/components/SyncSection.test.js
+panels/settings/emulation/DevicesSettingsTab.test.js
 panels/settings/emulation/components/UserAgentClientHintsForm.test.js
 panels/settings/emulation/utils/StructuredHeaders.test.js
 panels/settings/emulation/utils/UserAgentMetadata.test.js
@@ -691,7 +695,7 @@ testing/SourceMapEncoder.test.js
 third_party/chromium/client-variations/ClientVariations.test.js
 third_party/i18n/i18n.test.js
 ui/comments/CommentAnchorResolver.test.js
-ui/comments/CommentManager.test.js
+ui/comments/CommentOverlayManager.test.js
 ui/comments/CommentsOverlayWidget.test.js
 ui/components/adorners/Adorner.test.js
 ui/components/buttons/Button.test.js

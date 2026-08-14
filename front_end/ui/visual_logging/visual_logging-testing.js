@@ -534,6 +534,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "ar",
   "architecture",
   "aria-attributes",
+  "aria-live-recording",
   "arial",
   "as",
   "ascent-override",

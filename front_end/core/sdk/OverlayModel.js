@@ -7,7 +7,7 @@ import { DebuggerModel, Events as DebuggerModelEvents } from './DebuggerModel.js
 import { DeferredDOMNode, DOMModel, DOMNodeEvents, Events as DOMModelEvents } from './DOMModel.js';
 import { OverlayPersistentHighlighter } from './OverlayPersistentHighlighter.js';
 import { SDKModel } from './SDKModel.js';
-import { apcaSettingDescriptor, showMetricsRulersSettingDescriptor, showPaintRectsSettingDescriptor, } from './SDKSettings.js';
+import { apcaSettingDescriptor, showAdHighlightsSettingDescriptor, showDebugBordersSettingDescriptor, showFPSCounterSettingDescriptor, showLayoutShiftRegionsSettingDescriptor, showMetricsRulersSettingDescriptor, showPaintRectsSettingDescriptor, showScrollBottleneckRectsSettingDescriptor, } from './SDKSettings.js';
 const UIStrings = {
     /**
      * @description Overlay message indicating that execution is paused in the debugger.
@@ -59,11 +59,11 @@ export class OverlayModel extends SDKModel {
         this.#defaultHighlighter = new DefaultHighlighter(this);
         this.#highlighter = this.#defaultHighlighter;
         this.#showPaintRectsSetting = settings.resolve(showPaintRectsSettingDescriptor);
-        this.#showLayoutShiftRegionsSetting = settings.moduleSetting('show-layout-shift-regions');
-        this.#showAdHighlightsSetting = settings.moduleSetting('show-ad-highlights');
-        this.#showDebugBordersSetting = settings.moduleSetting('show-debug-borders');
-        this.#showFPSCounterSetting = settings.moduleSetting('show-fps-counter');
-        this.#showScrollBottleneckRectsSetting = settings.moduleSetting('show-scroll-bottleneck-rects');
+        this.#showLayoutShiftRegionsSetting = settings.resolve(showLayoutShiftRegionsSettingDescriptor);
+        this.#showAdHighlightsSetting = settings.resolve(showAdHighlightsSettingDescriptor);
+        this.#showDebugBordersSetting = settings.resolve(showDebugBordersSettingDescriptor);
+        this.#showFPSCounterSetting = settings.resolve(showFPSCounterSettingDescriptor);
+        this.#showScrollBottleneckRectsSetting = settings.resolve(showScrollBottleneckRectsSettingDescriptor);
         if (!target.suspended()) {
             void this.overlayAgent.invoke_enable();
             void this.wireAgentToSettings();

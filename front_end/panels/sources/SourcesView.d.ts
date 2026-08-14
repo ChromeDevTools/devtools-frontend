@@ -4,15 +4,23 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { TabbedEditorContainer, type TabbedEditorContainerDelegate } from './TabbedEditorContainer.js';
+import { type SerializedHistoryItem, TabbedEditorContainer, type TabbedEditorContainerDelegate } from './TabbedEditorContainer.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
 export interface ViewInput {
-    scriptViewToolbar: UI.Toolbar.Toolbar;
-    bottomToolbar: UI.Toolbar.Toolbar;
-    searchableView: UI.SearchableView.SearchableView;
-    editorContainer: TabbedEditorContainer;
+    searchProvider: UI.SearchableView.Searchable;
+    replaceProvider: UI.SearchableView.Replaceable;
+    searchableViewId: string;
+    scriptViewToolbarItems: UI.Toolbar.ToolbarItem[];
+    bottomToolbarItems: UI.Toolbar.ToolbarItem[];
+    searchableViewFactory: () => UI.Widget.Widget;
+    delegate: TabbedEditorContainerDelegate;
+    previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
 }
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export interface ViewOutput {
+    scriptViewToolbar?: UI.Toolbar.Toolbar;
+    editorContainer?: TabbedEditorContainer;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 declare const SourcesView_base: (new (...args: any[]) => {
     __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
@@ -31,9 +39,11 @@ export declare class SourcesView extends SourcesView_base implements TabbedEdito
     private toolbarChangedListener;
     private searchView?;
     private searchConfig?;
+    readonly previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
     constructor();
     performUpdate(): void;
     onDetach(): void;
+    setEditorContainer(editorContainer: TabbedEditorContainer): void;
     static defaultUISourceCodeScores(): Map<Workspace.UISourceCode.UISourceCode, number>;
     set onToggleNavigatorSidebar(callback: () => void);
     set onToggleDebuggerSidebar(callback: () => void);

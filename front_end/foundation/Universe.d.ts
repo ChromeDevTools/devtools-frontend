@@ -7,6 +7,7 @@ import * as AutofillManager from '../models/autofill_manager/autofill_manager.js
 import * as Badges from '../models/badges/badges.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
+import * as CommentManager from '../models/comment_manager/comment_manager.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
 import * as Emulation from '../models/emulation/emulation.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
@@ -36,6 +37,7 @@ export declare class Universe {
     get aiHistoryStorage(): AiAssistance.AiHistoryStorage.AiHistoryStorage;
     get builtInAi(): AiAssistance.BuiltInAi.BuiltInAi;
     get breakpointManager(): Breakpoints.BreakpointManager.BreakpointManager;
+    get commentManager(): CommentManager.CommentManager.CommentManager;
     get cpuThrottlingManager(): SDK.CPUThrottlingManager.CPUThrottlingManager;
     get cruxManager(): CrUXManager.CrUXManager;
     get cssWorkspaceBinding(): Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding;

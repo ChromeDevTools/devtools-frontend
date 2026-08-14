@@ -9,10 +9,10 @@ var AccessibilityAgent_exports = {};
 __export(AccessibilityAgent_exports, {
   AccessibilityAgent: () => AccessibilityAgent
 });
-import * as Host19 from "./../../core/host/host.js";
-import * as i18n30 from "./../../core/i18n/i18n.js";
-import * as Root5 from "./../../core/root/root.js";
-import * as SDK12 from "./../../core/sdk/sdk.js";
+import * as Host23 from "./../../core/host/host.js";
+import * as i18n36 from "./../../core/i18n/i18n.js";
+import * as Root6 from "./../../core/root/root.js";
+import * as SDK13 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/AiUtils.js
 var AiUtils_exports = {};
@@ -1594,21 +1594,26 @@ const data = {
   }
 };
 
-// gen/front_end/models/ai_assistance/tools/GetElementAccessibilityDetails.js
-var GetElementAccessibilityDetails_exports = {};
-__export(GetElementAccessibilityDetails_exports, {
-  GetElementAccessibilityDetailsTool: () => GetElementAccessibilityDetailsTool
+// gen/front_end/models/ai_assistance/tools/GetDetailedCallTree.js
+var GetDetailedCallTree_exports = {};
+__export(GetDetailedCallTree_exports, {
+  GetDetailedCallTreeTool: () => GetDetailedCallTreeTool
 });
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n6 from "./../../core/i18n/i18n.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
-
-// gen/front_end/models/ai_assistance/contexts/DOMNodeContext.js
-var DOMNodeContext_exports = {};
-__export(DOMNodeContext_exports, {
-  DOMNodeContext: () => DOMNodeContext
-});
 import * as i18n4 from "./../../core/i18n/i18n.js";
+import * as Trace7 from "./../trace/trace.js";
+
+// gen/front_end/models/ai_assistance/contexts/PerformanceTraceContext.js
+var PerformanceTraceContext_exports = {};
+__export(PerformanceTraceContext_exports, {
+  PerformanceTraceContext: () => PerformanceTraceContext
+});
+import * as Common8 from "./../../core/common/common.js";
+import * as SDK6 from "./../../core/sdk/sdk.js";
+import * as Tracing from "./../../services/tracing/tracing.js";
+import * as Bindings from "./../bindings/bindings.js";
+import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
+import * as Trace6 from "./../trace/trace.js";
 
 // gen/front_end/models/ai_assistance/agents/AiAgent.js
 var AiAgent_exports = {};
@@ -2314,1235 +2319,12 @@ function aidaErrorToErrorType(err) {
   return "unknown";
 }
 
-// gen/front_end/models/ai_assistance/contexts/DOMNodeContext.js
-var UIStringsNotTranslate = {
-  /**
-   * @description Heading text for context details of DevTools AI Agent.
-   */
-  dataUsed: "Data used"
-};
-var lockedString2 = i18n4.i18n.lockedString;
-var DOMNodeContext = class extends ConversationContext {
-  #node;
-  constructor(node) {
-    super();
-    this.#node = node;
-  }
-  getURL() {
-    const ownerDocument = this.#node.ownerDocument;
-    if (!ownerDocument) {
-      return "detached";
-    }
-    return ownerDocument.documentURL;
-  }
-  getItem() {
-    return this.#node;
-  }
-  getTitle() {
-    throw new Error("Not implemented");
-  }
-  async getSuggestions() {
-    const layoutProps = await this.#node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.#node.id);
-    if (!layoutProps) {
-      return;
-    }
-    if (layoutProps.isFlex) {
-      return [
-        { title: "How can I make flex items wrap?", jslogContext: "flex-wrap" },
-        { title: "How do I distribute flex items evenly?", jslogContext: "flex-distribute" },
-        { title: "What is flexbox?", jslogContext: "flex-what" }
-      ];
-    }
-    if (layoutProps.isSubgrid) {
-      return [
-        { title: "Where is this grid defined?", jslogContext: "subgrid-where" },
-        { title: "How to overwrite parent grid properties?", jslogContext: "subgrid-override" },
-        { title: "How do subgrids work? ", jslogContext: "subgrid-how" }
-      ];
-    }
-    if (layoutProps.isGrid) {
-      return [
-        { title: "How do I align items in a grid?", jslogContext: "grid-align" },
-        { title: "How to add spacing between grid items?", jslogContext: "grid-gap" },
-        { title: "How does grid layout work?", jslogContext: "grid-how" }
-      ];
-    }
-    if (layoutProps.hasScroll) {
-      return [
-        { title: "How do I remove scrollbars for this element?", jslogContext: "scroll-remove" },
-        { title: "How can I style a scrollbar?", jslogContext: "scroll-style" },
-        { title: "Why does this element scroll?", jslogContext: "scroll-why" }
-      ];
-    }
-    if (layoutProps.containerType) {
-      return [
-        { title: "What are container queries?", jslogContext: "container-what" },
-        { title: "How do I use container-type?", jslogContext: "container-how" },
-        { title: "What's the container context for this element?", jslogContext: "container-context" }
-      ];
-    }
-    return;
-  }
-  async getPromptDetails() {
-    return `# Inspected element
-
-${await this.describe()}`;
-  }
-  async getUserFacingDetails() {
-    return [
-      {
-        title: lockedString2(UIStringsNotTranslate.dataUsed),
-        text: await this.describe()
-      }
-    ];
-  }
-  async describe() {
-    const element = this.#node;
-    let output = `* Element's uid is ${element.backendNodeId()}.
-* Its selector is \`${element.simpleSelector()}\``;
-    const childNodes = await element.getChildNodesPromise();
-    if (childNodes) {
-      const textChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.TEXT_NODE);
-      const elementChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.ELEMENT_NODE);
-      switch (elementChildNodes.length) {
-        case 0:
-          output += "\n* It doesn't have any child element nodes";
-          break;
-        case 1:
-          output += `
-* It only has 1 child element node: \`${elementChildNodes[0].simpleSelector()}\``;
-          break;
-        default:
-          output += `
-* It has ${elementChildNodes.length} child element nodes: ${elementChildNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
-      }
-      switch (textChildNodes.length) {
-        case 0:
-          output += "\n* It doesn't have any child text nodes";
-          break;
-        case 1:
-          output += "\n* It only has 1 child text node";
-          break;
-        default:
-          output += `
-* It has ${textChildNodes.length} child text nodes`;
-      }
-    }
-    if (element.nextSibling) {
-      const elementOrNodeElementNodeText = element.nextSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.nextSibling.backendNodeId()})` : "a non element";
-      output += `
-* It has a next sibling and it is ${elementOrNodeElementNodeText} node`;
-    }
-    if (element.previousSibling) {
-      const elementOrNodeElementNodeText = element.previousSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.previousSibling.backendNodeId()})` : "a non element";
-      output += `
-* It has a previous sibling and it is ${elementOrNodeElementNodeText} node`;
-    }
-    if (element.isInShadowTree()) {
-      output += "\n* It is in a shadow DOM tree.";
-    }
-    const parentNode = element.parentNode;
-    if (parentNode) {
-      const parentChildrenNodes = await parentNode.getChildNodesPromise();
-      output += `
-* Its parent's selector is \`${parentNode.simpleSelector()}\` (uid=${parentNode.backendNodeId()})`;
-      const elementOrNodeElementNodeText = parentNode.nodeType() === Node.ELEMENT_NODE ? "an element" : "a non element";
-      output += `
-* Its parent is ${elementOrNodeElementNodeText} node`;
-      if (parentNode.isShadowRoot()) {
-        output += "\n* Its parent is a shadow root.";
-      }
-      if (parentChildrenNodes) {
-        const childElementNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.ELEMENT_NODE);
-        switch (childElementNodes.length) {
-          case 0:
-            break;
-          case 1:
-            output += "\n* Its parent has only 1 child element node";
-            break;
-          default:
-            output += `
-* Its parent has ${childElementNodes.length} child element nodes: ${childElementNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
-            break;
-        }
-        const siblingTextNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.TEXT_NODE);
-        switch (siblingTextNodes.length) {
-          case 0:
-            break;
-          case 1:
-            output += "\n* Its parent has only 1 child text node";
-            break;
-          default:
-            output += `
-* Its parent has ${siblingTextNodes.length} child text nodes: ${siblingTextNodes.map((node) => `\`${node.simpleSelector()}\``).join(", ")}`;
-            break;
-        }
-      }
-    }
-    return output.trim();
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/GetElementAccessibilityDetails.js
-var GetElementAccessibilityDetailsTool = class {
-  name = "getElementAccessibilityDetails";
-  description = "Get detailed accessibility information for an element on the inspected page by its backend node ID.";
-  parameters = {
-    type: 6,
-    description: "Arguments for getting element accessibility details.",
-    nullable: false,
-    properties: {
-      explanation: {
-        type: 1,
-        description: "Reason for requesting accessibility details.",
-        nullable: false
-      },
-      element: {
-        type: 3,
-        description: "The backend node ID of the element.",
-        nullable: false
-      }
-    },
-    required: ["explanation", "element"]
-  };
-  displayInfoFromArgs(params) {
-    return {
-      title: "Reading accessibility details",
-      thought: params.explanation,
-      action: `getElementAccessibilityDetails(${params.element})`
-    };
-  }
-  /**
-   * Handles the request to retrieve accessibility details.
-   *
-   * Resolves the element backend node ID, validates its origin against the locked origin,
-   * requests the AX subtree via AccessibilityModel, and maps the relevant attributes.
-   */
-  async handler(params, context) {
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin) {
-      return { error: "Error: Origin lock is not established." };
-    }
-    const target = context.getTarget();
-    if (!target) {
-      return { error: "Error: Inspected target not found." };
-    }
-    const deferredNode = new SDK6.DOMModel.DeferredDOMNode(target, params.element);
-    const resolved = await deferredNode.resolvePromise();
-    if (!resolved) {
-      return { error: "Error: Could not resolve element by ID." };
-    }
-    const nodeContext = new DOMNodeContext(resolved);
-    if (!nodeContext.isOriginAllowed(establishedOrigin)) {
-      return { error: "Error: Node does not belong to the locked origin." };
-    }
-    const axModel = target.model(SDK6.AccessibilityModel.AccessibilityModel);
-    if (!axModel) {
-      return { error: "Error: Accessibility model not found." };
-    }
-    await axModel.requestAndLoadSubTreeToNode(resolved);
-    const axNode = axModel.axNodeForDOMNode(resolved);
-    if (!axNode) {
-      return { error: "Error: AX node details not found." };
-    }
-    const properties = {
-      role: axNode.role()?.value,
-      name: axNode.name()?.value,
-      properties: axNode.properties()?.map((p) => ({ name: p.name, value: p.value?.value })) ?? []
-    };
-    const snapshot = await resolved.takeSnapshot();
-    return {
-      result: JSON.stringify(properties, null, 2),
-      widgets: [{
-        name: "DOM_TREE",
-        data: {
-          root: snapshot,
-          title: i18n6.i18n.lockedString("Element details"),
-          accessibleRevealLabel: i18n6.i18n.lockedString("Reveal element")
-        }
-      }]
-    };
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/GetLighthouseAudits.js
-var GetLighthouseAudits_exports = {};
-__export(GetLighthouseAudits_exports, {
-  GetLighthouseAuditsTool: () => GetLighthouseAuditsTool
-});
-import * as Host6 from "./../../core/host/host.js";
-
-// gen/front_end/models/ai_assistance/contexts/AccessibilityContext.js
-var AccessibilityContext_exports = {};
-__export(AccessibilityContext_exports, {
-  AccessibilityContext: () => AccessibilityContext
-});
-var AccessibilityContext = class extends ConversationContext {
-  #lh;
-  #cachedPayload = null;
-  constructor(report) {
-    super();
-    this.#lh = report;
-  }
-  #url() {
-    return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
-  }
-  getURL() {
-    return this.#url();
-  }
-  getItem() {
-    return this.#lh;
-  }
-  getTitle() {
-    return `Lighthouse report: ${this.#url()}`;
-  }
-  #getInitialPayload() {
-    if (this.#cachedPayload !== null) {
-      return this.#cachedPayload;
-    }
-    const formatter = new LighthouseFormatter();
-    const summary = formatter.summary(this.#lh);
-    const audits = formatter.audits(this.#lh, "accessibility");
-    const allFailed = Object.values(this.#lh.categories).every((category) => category.score === null);
-    if (allFailed) {
-      this.#cachedPayload = "**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.";
-    } else {
-      this.#cachedPayload = `# Lighthouse Report:
-${summary}
-${audits}`;
-    }
-    return this.#cachedPayload;
-  }
-  async getPromptDetails() {
-    return this.#getInitialPayload();
-  }
-  async getUserFacingDetails() {
-    return [
-      {
-        title: "Lighthouse report",
-        text: this.#getInitialPayload()
-      }
-    ];
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/GetLighthouseAudits.js
-var GetLighthouseAuditsTool = class {
-  name = "getLighthouseAudits";
-  description = "Returns the audits for a specific Lighthouse category.";
-  parameters = {
-    type: 6,
-    description: "Arguments for retrieving Lighthouse category audits.",
-    nullable: false,
-    properties: {
-      categoryId: {
-        type: 1,
-        description: 'The category of audits to retrieve. E.g. "accessibility".',
-        nullable: false
-      }
-    },
-    required: ["categoryId"]
-  };
-  displayInfoFromArgs(params) {
-    return {
-      title: `Getting Lighthouse audits for ${params.categoryId}`,
-      action: `getLighthouseAudits('${params.categoryId}')`
-    };
-  }
-  async handler(params, context) {
-    if (!(context.conversationContext instanceof AccessibilityContext)) {
-      return { error: "Error: Active context is not a Lighthouse report." };
-    }
-    const report = context.conversationContext.getItem();
-    const audits = new LighthouseFormatter().audits(report, params.categoryId);
-    return {
-      result: { audits },
-      widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report } }]
-    };
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/GetNetworkRequestDetails.js
-var GetNetworkRequestDetails_exports = {};
-__export(GetNetworkRequestDetails_exports, {
-  GetNetworkRequestDetailsTool: () => GetNetworkRequestDetailsTool
-});
-import * as Host7 from "./../../core/host/host.js";
-import * as i18n10 from "./../../core/i18n/i18n.js";
-import * as Logs2 from "./../logs/logs.js";
-import * as NetworkTimeCalculator2 from "./../network_time_calculator/network_time_calculator.js";
-
-// gen/front_end/models/ai_assistance/contexts/RequestContext.js
-var RequestContext_exports = {};
-__export(RequestContext_exports, {
-  RequestContext: () => RequestContext,
-  getRequestContextOrigin: () => getRequestContextOrigin
-});
-import * as Common7 from "./../../core/common/common.js";
-import * as i18n8 from "./../../core/i18n/i18n.js";
-
-// gen/front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js
-var NetworkRequestFormatter_exports = {};
-__export(NetworkRequestFormatter_exports, {
-  NetworkRequestFormatter: () => NetworkRequestFormatter,
-  sanitizeHeaders: () => sanitizeHeaders
-});
-import * as Common6 from "./../../core/common/common.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Logs from "./../logs/logs.js";
-import * as NetworkTimeCalculator from "./../network_time_calculator/network_time_calculator.js";
-var _a2;
-var MAX_HEADERS_SIZE = 1e3;
-var MAX_BODY_SIZE = 1e4;
-function sanitizeHeaders(headers) {
-  return headers.map((header) => {
-    if (NetworkRequestFormatter.allowHeader(header.name)) {
-      return header;
-    }
-    return { name: header.name, value: "<redacted>" };
-  });
-}
-var NetworkRequestFormatter = class {
-  #calculator;
-  #request;
-  static allowHeader(headerName) {
-    return allowedHeaders.has(headerName.toLowerCase().trim());
-  }
-  static formatHeaders(title, headers, addListPrefixToEachLine) {
-    return formatLines(title, sanitizeHeaders(headers).map((header) => {
-      const prefix = addListPrefixToEachLine ? "- " : "";
-      return prefix + header.name + ": " + header.value + "\n";
-    }), MAX_HEADERS_SIZE);
-  }
-  static async formatBody(title, request, maxBodySize) {
-    const data = await request.requestContentData();
-    if (TextUtils.ContentData.ContentData.isError(data)) {
-      return "";
-    }
-    if (data.isEmpty) {
-      return `${title}
-<empty response>`;
-    }
-    if (data.isTextContent) {
-      const dataAsText = data.text;
-      if (dataAsText.length > maxBodySize) {
-        return `${title}
-${dataAsText.substring(0, maxBodySize) + "... <truncated>"}`;
-      }
-      return `${title}
-${dataAsText}`;
-    }
-    return `${title}
-<binary data>`;
-  }
-  static formatInitiatorUrl(initiatorUrl, allowedOrigin) {
-    const initiatorOrigin = Common6.ParsedURL.ParsedURL.extractOrigin(initiatorUrl);
-    if (initiatorOrigin && initiatorOrigin === allowedOrigin) {
-      return initiatorUrl;
-    }
-    return "<redacted cross-origin initiator URL>";
-  }
-  static formatStatus(status) {
-    let responseStatus = "";
-    if (status.statusCode) {
-      const statusText = status.statusText ? ` ${status.statusText}` : "";
-      responseStatus = `Response status: ${status.statusCode}${statusText}
-`;
-    }
-    const flags = [];
-    flags.push(status.finished ? "finished" : "pending");
-    if (status.failed) {
-      flags.push("failed");
-    }
-    if (status.canceled) {
-      flags.push("canceled");
-    }
-    if (status.preserved) {
-      flags.push("preserved");
-    }
-    const requestStatus = flags.length > 0 ? `Network request status: ${flags.join(", ")}
-` : "";
-    return `${responseStatus}${requestStatus}`;
-  }
-  static formatFailureReasons(reasons) {
-    const lines = [];
-    if (reasons.blockedReason) {
-      if (reasons.blockedReason === "inspector") {
-        lines.push("Blocked reason: a custom network condition in DevTools is blocking this request");
-      } else {
-        lines.push(`Blocked reason: ${reasons.blockedReason}`);
-      }
-    }
-    if (reasons.corsErrorStatus) {
-      lines.push(`CORS error: ${reasons.corsErrorStatus.corsError} ${reasons.corsErrorStatus.failedParameter}`);
-    }
-    if (reasons.localizedFailDescription) {
-      lines.push(`Fail description: ${reasons.localizedFailDescription}`);
-    }
-    return lines.length > 0 ? `${lines.join("\n")}
-` : "";
-  }
-  #networkLog;
-  constructor(request, calculator, networkLog = Logs.NetworkLog.NetworkLog.instance()) {
-    this.#request = request;
-    this.#calculator = calculator;
-    this.#networkLog = networkLog;
-  }
-  formatRequestHeaders() {
-    return _a2.formatHeaders("Request headers:", this.#request.requestHeaders());
-  }
-  formatResponseHeaders() {
-    return _a2.formatHeaders("Response headers:", this.#request.responseHeaders);
-  }
-  async formatResponseBody() {
-    return await _a2.formatBody("Response body:", this.#request, MAX_BODY_SIZE);
-  }
-  /**
-   * Note: nothing here should include information from origins other than
-   * the request's origin.
-   */
-  async formatNetworkRequest() {
-    let responseBody = await this.formatResponseBody();
-    if (responseBody) {
-      responseBody = `
-
-${responseBody}`;
-    }
-    return `Request: ${this.#request.url()}
-${this.formatRequestHeaders()}
-
-${this.formatResponseHeaders()}${responseBody}
-
-${this.formatStatus()}${this.formatFailureReasons()}
-Request timing:
-${this.formatNetworkRequestTiming()}
-
-Request initiator chain:
-${this.formatRequestInitiatorChain()}`;
-  }
-  formatStatus() {
-    return _a2.formatStatus({
-      statusCode: this.#request.statusCode,
-      statusText: this.#request.statusText,
-      failed: this.#request.failed,
-      canceled: this.#request.canceled,
-      preserved: this.#request.preserved,
-      finished: this.#request.finished
-    });
-  }
-  formatFailureReasons() {
-    return _a2.formatFailureReasons({
-      blockedReason: this.#request.blockedReason(),
-      corsErrorStatus: this.#request.corsErrorStatus(),
-      localizedFailDescription: this.#request.localizedFailDescription
-    });
-  }
-  /**
-   * Note: nothing here should include information from origins other than
-   * the request's origin.
-   */
-  formatRequestInitiatorChain() {
-    const allowedOrigin = Common6.ParsedURL.ParsedURL.extractOrigin(this.#request.url());
-    let initiatorChain = "";
-    let lineStart = "- URL: ";
-    const graph = this.#networkLog.initiatorGraphForRequest(this.#request);
-    for (const initiator of Array.from(graph.initiators).reverse()) {
-      initiatorChain = initiatorChain + lineStart + _a2.formatInitiatorUrl(initiator.url(), allowedOrigin) + "\n";
-      lineStart = "	" + lineStart;
-      if (initiator === this.#request) {
-        initiatorChain = this.#formatRequestInitiated(graph.initiated, this.#request, initiatorChain, lineStart, allowedOrigin);
-      }
-    }
-    return initiatorChain.trim();
-  }
-  formatNetworkRequestTiming() {
-    const results = NetworkTimeCalculator.calculateRequestTimeRanges(this.#request, this.#calculator.minimumBoundary());
-    const getDuration = (name) => {
-      const result = results.find((r) => r.name === name);
-      if (!result) {
-        return;
-      }
-      return seconds(result.end - result.start);
-    };
-    const labels = [
-      {
-        label: "Queued at (timestamp)",
-        value: seconds(this.#request.issueTime() - this.#calculator.zeroTime())
-      },
-      {
-        label: "Started at (timestamp)",
-        value: seconds(this.#request.startTime - this.#calculator.zeroTime())
-      },
-      {
-        label: "Queueing (duration)",
-        value: getDuration("queueing")
-      },
-      {
-        label: "Connection start (stalled) (duration)",
-        value: getDuration("blocking")
-      },
-      {
-        label: "Request sent (duration)",
-        value: getDuration("sending")
-      },
-      {
-        label: "Waiting for server response (duration)",
-        value: getDuration("waiting")
-      },
-      {
-        label: "Content download (duration)",
-        value: getDuration("receiving")
-      },
-      {
-        label: "Duration (duration)",
-        value: getDuration("total")
-      }
-    ];
-    return labels.filter((label) => !!label.value).map((label) => `${label.label}: ${label.value}`).join("\n");
-  }
-  #formatRequestInitiated(initiated, parentRequest, initiatorChain, lineStart, allowedOrigin) {
-    const visited = /* @__PURE__ */ new Set();
-    visited.add(this.#request);
-    for (const [keyRequest, initiatedRequest] of initiated.entries()) {
-      if (initiatedRequest === parentRequest) {
-        if (!visited.has(keyRequest)) {
-          visited.add(keyRequest);
-          initiatorChain = initiatorChain + lineStart + _a2.formatInitiatorUrl(keyRequest.url(), allowedOrigin) + "\n";
-          initiatorChain = this.#formatRequestInitiated(initiated, keyRequest, initiatorChain, "	" + lineStart, allowedOrigin);
-        }
-      }
-    }
-    return initiatorChain;
-  }
-};
-_a2 = NetworkRequestFormatter;
-var allowedHeaders = /* @__PURE__ */ new Set([
-  ":authority",
-  ":method",
-  ":path",
-  ":scheme",
-  "a-im",
-  "accept-ch",
-  "accept-charset",
-  "accept-datetime",
-  "accept-encoding",
-  "accept-language",
-  "accept-patch",
-  "accept-ranges",
-  "accept",
-  "access-control-allow-credentials",
-  "access-control-allow-headers",
-  "access-control-allow-methods",
-  "access-control-allow-origin",
-  "access-control-expose-headers",
-  "access-control-max-age",
-  "access-control-request-headers",
-  "access-control-request-method",
-  "age",
-  "allow",
-  "alt-svc",
-  "cache-control",
-  "connection",
-  "content-disposition",
-  "content-encoding",
-  "content-language",
-  "content-location",
-  "content-range",
-  "content-security-policy",
-  "content-type",
-  "correlation-id",
-  "date",
-  "delta-base",
-  "dnt",
-  "expect-ct",
-  "expect",
-  "expires",
-  "forwarded",
-  "front-end-https",
-  "host",
-  "http2-settings",
-  "if-modified-since",
-  "if-range",
-  "if-unmodified-source",
-  "im",
-  "last-modified",
-  "link",
-  "location",
-  "max-forwards",
-  "nel",
-  "origin",
-  "permissions-policy",
-  "pragma",
-  "preference-applied",
-  "proxy-connection",
-  "public-key-pins",
-  "range",
-  "referer",
-  "refresh",
-  "report-to",
-  "retry-after",
-  "save-data",
-  "sec-gpc",
-  "server",
-  "status",
-  "strict-transport-security",
-  "te",
-  "timing-allow-origin",
-  "tk",
-  "trailer",
-  "transfer-encoding",
-  "upgrade-insecure-requests",
-  "upgrade",
-  "user-agent",
-  "vary",
-  "via",
-  "warning",
-  "www-authenticate",
-  "x-att-deviceid",
-  "x-content-duration",
-  "x-content-security-policy",
-  "x-content-type-options",
-  "x-correlation-id",
-  "x-forwarded-for",
-  "x-forwarded-host",
-  "x-forwarded-proto",
-  "x-frame-options",
-  "x-http-method-override",
-  "x-powered-by",
-  "x-redirected-by",
-  "x-request-id",
-  "x-requested-with",
-  "x-ua-compatible",
-  "x-wap-profile",
-  "x-webkit-csp",
-  "x-xss-protection"
-]);
-function formatLines(title, lines, maxLength) {
-  let result = "";
-  for (const line of lines) {
-    if (result.length + line.length > maxLength) {
-      break;
-    }
-    result += line;
-  }
-  result = result.trim();
-  return result && title ? title + "\n" + result : result;
-}
-
-// gen/front_end/models/ai_assistance/contexts/RequestContext.js
-var UIStringsNotTranslate2 = {
-  request: "Request",
-  response: "Response",
-  requestUrl: "Request URL",
-  timing: "Timing",
-  requestInitiatorChain: "Request initiator chain"
-};
-var lockedString3 = i18n8.i18n.lockedString;
-function getRequestContextOrigin(request) {
-  const origin = extractContextOrigin(request.documentURL);
-  if (request.isImportedHar()) {
-    const parsed = Common7.ParsedURL.ParsedURL.fromString(origin);
-    return `imported-har://${parsed ? parsed.domain() : origin}`;
-  }
-  return origin;
-}
-var RequestContext = class extends ConversationContext {
-  #request;
-  #calculator;
-  constructor(request, calculator) {
-    super();
-    this.#request = request;
-    this.#calculator = calculator;
-  }
-  /**
-   * Note: this is not the literal origin of the network request. This URL
-   * is used to determine when we should force the user to start a new AI
-   * conversation when the context changes. We allow a single AI conversation to
-   * inspect all network requests that were made for that given target URL.
-   */
-  getURL() {
-    return this.#request.documentURL;
-  }
-  getOrigin() {
-    return getRequestContextOrigin(this.#request);
-  }
-  getItem() {
-    return this.#request;
-  }
-  getTitle() {
-    return this.#request.name();
-  }
-  async getPromptDetails() {
-    const formatter = new NetworkRequestFormatter(this.#request, this.#calculator);
-    return `# Selected network request
-${await formatter.formatNetworkRequest()}`;
-  }
-  async getUserFacingDetails() {
-    const formatter = new NetworkRequestFormatter(this.#request, this.#calculator);
-    const requestContextDetail = {
-      title: lockedString3(UIStringsNotTranslate2.request),
-      text: lockedString3(UIStringsNotTranslate2.requestUrl) + ": " + this.#request.url() + "\n\n" + formatter.formatRequestHeaders()
-    };
-    const responseBody = await formatter.formatResponseBody();
-    const responseBodyString = responseBody ? `
-
-${responseBody}` : "";
-    const responseContextDetail = {
-      title: lockedString3(UIStringsNotTranslate2.response),
-      text: formatter.formatResponseHeaders() + responseBodyString + `
-
-${formatter.formatStatus()}${formatter.formatFailureReasons()}`
-    };
-    const timingContextDetail = {
-      title: lockedString3(UIStringsNotTranslate2.timing),
-      text: formatter.formatNetworkRequestTiming()
-    };
-    const initiatorChainContextDetail = {
-      title: lockedString3(UIStringsNotTranslate2.requestInitiatorChain),
-      text: formatter.formatRequestInitiatorChain()
-    };
-    return [
-      requestContextDetail,
-      responseContextDetail,
-      timingContextDetail,
-      initiatorChainContextDetail
-    ];
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/GetNetworkRequestDetails.js
-var UIStringsNotTranslate3 = {
-  gettingNetworkRequestDetails: "Getting network request details"
-};
-var lockedString4 = i18n10.i18n.lockedString;
-var GetNetworkRequestDetailsTool = class {
-  name = "getNetworkRequestDetails";
-  description = "Retrieves the full headers, timing, status, and body details of a specific network request by ID.";
-  #networkLog;
-  constructor(networkLog) {
-    this.#networkLog = networkLog;
-  }
-  parameters = {
-    type: 6,
-    description: "Arguments for retrieving detailed information about a specific network request.",
-    nullable: false,
-    properties: {
-      id: {
-        type: 1,
-        description: "The id of the network request to inspect.",
-        nullable: false
-      }
-    },
-    required: ["id"]
-  };
-  displayInfoFromArgs(args) {
-    return {
-      title: lockedString4(UIStringsNotTranslate3.gettingNetworkRequestDetails),
-      action: `getNetworkRequestDetails(${args.id})`
-    };
-  }
-  /**
-   * Handles the request to retrieve details for a network request by its ID.
-   * Filters by the conversation's established origin to prevent cross-origin data exposure.
-   */
-  async handler(args, context) {
-    const origin = context.getEstablishedOrigin();
-    if (origin && isOpaqueOrigin(origin)) {
-      return {
-        error: "Opaque origin not allowed"
-      };
-    }
-    const networkLog = this.#networkLog ?? Logs2.NetworkLog.NetworkLog.instance();
-    const request = networkLog.requests().find((req) => {
-      if (req.requestId() !== args.id) {
-        return false;
-      }
-      const requestOrigin = getRequestContextOrigin(req);
-      return !origin || requestOrigin === origin;
-    });
-    if (!request) {
-      return {
-        error: "No request found"
-      };
-    }
-    const calculator = new NetworkTimeCalculator2.NetworkTransferTimeCalculator();
-    const formatter = new NetworkRequestFormatter(request, calculator, networkLog);
-    const formattedDetails = await formatter.formatNetworkRequest();
-    return {
-      result: formattedDetails,
-      widgets: [{
-        name: "NETWORK_REQUEST_GENERAL_HEADERS",
-        data: {
-          request
-        }
-      }]
-    };
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/GetSourceContent.js
-var GetSourceContent_exports = {};
-__export(GetSourceContent_exports, {
-  GetSourceContentTool: () => GetSourceContentTool
-});
-import * as Common9 from "./../../core/common/common.js";
-import * as Host9 from "./../../core/host/host.js";
-import * as i18n14 from "./../../core/i18n/i18n.js";
-import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
-
-// gen/front_end/models/ai_assistance/data_formatters/FileFormatter.js
-var FileFormatter_exports = {};
-__export(FileFormatter_exports, {
-  FileFormatter: () => FileFormatter
-});
-import * as Bindings from "./../bindings/bindings.js";
-import * as Logs3 from "./../logs/logs.js";
-import * as NetworkTimeCalculator3 from "./../network_time_calculator/network_time_calculator.js";
-var MAX_FILE_SIZE = 1e4;
-var FileFormatter = class _FileFormatter {
-  static formatSourceMapDetails(selectedFile, debuggerWorkspaceBinding) {
-    const mappedFileUrls = [];
-    const sourceMapUrls = [];
-    if (selectedFile.contentType().isFromSourceMap()) {
-      for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(selectedFile)) {
-        const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(script);
-        if (uiSourceCode) {
-          mappedFileUrls.push(uiSourceCode.url());
-          if (script.sourceMapURL !== void 0) {
-            sourceMapUrls.push(script.sourceMapURL);
-          }
-        }
-      }
-      for (const originURL of Bindings.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(selectedFile)) {
-        mappedFileUrls.push(originURL);
-      }
-    } else if (selectedFile.contentType().isScript()) {
-      for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(selectedFile)) {
-        if (script.sourceMapURL !== void 0 && script.sourceMapURL !== "") {
-          sourceMapUrls.push(script.sourceMapURL);
-        }
-      }
-    }
-    if (sourceMapUrls.length === 0) {
-      return "";
-    }
-    let sourceMapDetails = "Source map: " + sourceMapUrls;
-    if (mappedFileUrls.length > 0) {
-      sourceMapDetails += "\nSource mapped from: " + mappedFileUrls;
-    }
-    return sourceMapDetails;
-  }
-  #file;
-  #debuggerWorkspaceBinding;
-  #networkLog;
-  constructor(file, debuggerWorkspaceBinding = (
-    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-  ), networkLog = Logs3.NetworkLog.NetworkLog.instance()) {
-    this.#file = file;
-    this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    this.#networkLog = networkLog;
-  }
-  formatFile() {
-    const sourceMapDetails = _FileFormatter.formatSourceMapDetails(this.#file, this.#debuggerWorkspaceBinding);
-    const lines = [
-      `File name: ${this.#file.displayName()}`,
-      `URL: ${this.#file.url()}`,
-      sourceMapDetails
-    ];
-    const resource = Bindings.ResourceUtils.resourceForURL(this.#file.url());
-    if (resource?.request) {
-      const calculator = new NetworkTimeCalculator3.NetworkTransferTimeCalculator();
-      calculator.updateBoundaries(resource.request);
-      lines.push(`Request initiator chain:
-${new NetworkRequestFormatter(resource.request, calculator, this.#networkLog).formatRequestInitiatorChain()}`);
-    }
-    lines.push(`File content:
-${this.#formatFileContent()}`);
-    return lines.filter((line) => line.trim() !== "").join("\n");
-  }
-  #formatFileContent() {
-    const contentData = this.#file.workingCopyContentData();
-    const content = contentData.isTextContent ? contentData.text : "<binary data>";
-    const truncated = content.length > MAX_FILE_SIZE ? content.slice(0, MAX_FILE_SIZE) + "..." : content;
-    return `\`\`\`
-${truncated}
-\`\`\``;
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/ListSources.js
-var ListSources_exports = {};
-__export(ListSources_exports, {
-  ListSourcesTool: () => ListSourcesTool
-});
-import * as Common8 from "./../../core/common/common.js";
-import * as Host8 from "./../../core/host/host.js";
-import * as i18n12 from "./../../core/i18n/i18n.js";
-import * as Workspace from "./../workspace/workspace.js";
-var UIStringsNotTranslate4 = {
-  listingSources: "Listing workspace sources"
-};
-var lockedString5 = i18n12.i18n.lockedString;
-var ListSourcesTool = class _ListSourcesTool {
-  name = "listSources";
-  description = "Lists all source files in the workspace with their name and a unique ID.";
-  static lastSourceId = 0;
-  static uiSourceCodeId = /* @__PURE__ */ new WeakMap();
-  static reset() {
-    _ListSourcesTool.lastSourceId = 0;
-    _ListSourcesTool.uiSourceCodeId = /* @__PURE__ */ new WeakMap();
-  }
-  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-  static getUISourceCodes(workspace = Workspace.Workspace.WorkspaceImpl.instance()) {
-    const projects = workspace.projects().filter((project) => project.type() === Workspace.Workspace.projectTypes.Network);
-    const uiSourceCodes = /* @__PURE__ */ new Map();
-    for (const project of projects) {
-      for (const uiSourceCode of project.uiSourceCodes()) {
-        if (uiSourceCode.isIgnoreListed()) {
-          continue;
-        }
-        const url = uiSourceCode.url();
-        if (!uiSourceCodes.get(url) || uiSourceCode.contentType().isFromSourceMap()) {
-          uiSourceCodes.set(url, uiSourceCode);
-          if (!_ListSourcesTool.uiSourceCodeId.has(uiSourceCode)) {
-            _ListSourcesTool.uiSourceCodeId.set(uiSourceCode, ++_ListSourcesTool.lastSourceId);
-          }
-        }
-      }
-    }
-    return [...uiSourceCodes.values()];
-  }
-  parameters = {
-    type: 6,
-    description: "",
-    nullable: true,
-    required: [],
-    properties: {}
-  };
-  displayInfoFromArgs() {
-    return {
-      title: lockedString5(UIStringsNotTranslate4.listingSources),
-      action: "listSources()"
-    };
-  }
-  async handler(_params, context) {
-    const origin = context.getEstablishedOrigin();
-    if (origin && isOpaqueOrigin(origin)) {
-      return {
-        error: "Opaque origin not allowed"
-      };
-    }
-    const files = _ListSourcesTool.getUISourceCodes().filter((file) => {
-      const fileUrl = file.url();
-      const fileOrigin = Common8.ParsedURL.ParsedURL.extractOrigin(fileUrl);
-      return !origin || fileOrigin === origin;
-    });
-    return {
-      result: {
-        files: files.map((file) => ({
-          id: _ListSourcesTool.uiSourceCodeId.get(file) ?? 0,
-          name: file.fullDisplayName()
-        }))
-      }
-    };
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/GetSourceContent.js
-var UIStringsNotTranslate5 = {
-  readingSource: "Reading source content"
-};
-var lockedString6 = i18n14.i18n.lockedString;
-var GetSourceContentTool = class {
-  name = "getSourceContent";
-  description = "Gets the content and metadata of a source file by its ID.";
-  parameters = {
-    type: 6,
-    description: "",
-    properties: {
-      id: {
-        type: 3,
-        description: "The unique numeric ID of the source file to retrieve.",
-        nullable: false
-      }
-    },
-    required: ["id"]
-  };
-  displayInfoFromArgs(args) {
-    return {
-      title: lockedString6(UIStringsNotTranslate5.readingSource),
-      action: `getSourceContent(${args.id})`
-    };
-  }
-  async handler(args, context) {
-    const origin = context.getEstablishedOrigin();
-    const file = ListSourcesTool.getUISourceCodes().find((f) => ListSourcesTool.uiSourceCodeId.get(f) === args.id);
-    if (!file) {
-      return {
-        error: "Unable to find file."
-      };
-    }
-    const fileUrl = file.url();
-    const fileOrigin = Common9.ParsedURL.ParsedURL.extractOrigin(fileUrl);
-    if (origin && fileOrigin !== origin) {
-      return {
-        error: "Cross-origin access blocked."
-      };
-    }
-    const contentData = await file.requestContentData();
-    if (TextUtils2.ContentData.ContentData.isError(contentData)) {
-      return {
-        error: `Failed to load file content: ${contentData.error}`
-      };
-    }
-    const formatter = new FileFormatter(file);
-    return {
-      result: {
-        content: formatter.formatFile()
-      }
-    };
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/GetStyles.js
-var GetStyles_exports = {};
-__export(GetStyles_exports, {
-  GetStylesTool: () => GetStylesTool
-});
-import * as Host10 from "./../../core/host/host.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
-var GetStylesTool = class {
-  name = "getStyles";
-  description = `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
-
-**CRITICAL** An element uid is a number, not a selector.
-**CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.
-**CRITICAL** Always provide the explanation argument to explain what and why you query.
-**CRITICAL** You MUST provide a specific list of CSS property names. Do not use generic values like "all" or "*".`;
-  parameters = {
-    type: 6,
-    description: "",
-    nullable: false,
-    properties: {
-      explanation: {
-        type: 1,
-        description: "Explain why you want to get styles",
-        nullable: false
-      },
-      elements: {
-        type: 5,
-        description: "A list of element uids to get data for. These are numbers, not selectors.",
-        items: { type: 3, description: "An element uid." },
-        nullable: false
-      },
-      styleProperties: {
-        type: 5,
-        description: 'One or more specific CSS style property names to fetch. Generic values like "all" or "*" are not supported.',
-        nullable: false,
-        items: {
-          type: 1,
-          description: "A CSS style property name to retrieve. For example, 'background-color'."
-        }
-      }
-    },
-    required: ["explanation", "elements", "styleProperties"]
-  };
-  displayInfoFromArgs(params) {
-    return {
-      title: "Reading computed and source styles",
-      thought: params.explanation,
-      action: `getStyles(${JSON.stringify(params.elements)}, ${JSON.stringify(params.styleProperties)})`
-    };
-  }
-  async handler(params, context, _options) {
-    const widgets = [];
-    const result = {};
-    const target = context.getTarget();
-    if (!target) {
-      return { error: "Error: Could not find the inspected page." };
-    }
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin) {
-      return { error: "Error: Origin lock is not established." };
-    }
-    for (const uid of params.elements) {
-      result[uid] = { computed: {}, authored: {} };
-      debugLog(`Action to execute: uid=${uid}`);
-      const node = new SDK7.DOMModel.DeferredDOMNode(target, uid);
-      const resolved = await node.resolvePromise();
-      if (!resolved) {
-        return { error: "Error: Could not find the element with uid=" + uid };
-      }
-      const newContext = new DOMNodeContext(resolved);
-      if (!newContext.isOriginAllowed(establishedOrigin)) {
-        return { error: "Error: Node does not belong to the current origin." };
-      }
-      const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);
-      if (!styles) {
-        return { error: "Error: Could not get computed styles." };
-      }
-      const matchedStyles = await resolved.domModel().cssModel().getMatchedStyles(resolved.id);
-      if (!matchedStyles) {
-        return { error: "Error: Could not get authored styles." };
-      }
-      widgets.push({
-        name: "COMPUTED_STYLES",
-        data: {
-          computedStyles: styles,
-          backendNodeId: node.backendNodeId(),
-          matchedCascade: matchedStyles,
-          properties: params.styleProperties
-        }
-      });
-      for (const prop of params.styleProperties) {
-        result[uid].computed[prop] = styles.get(prop);
-      }
-      for (const style of matchedStyles.nodeStyles()) {
-        for (const property of style.allProperties()) {
-          if (!params.styleProperties.includes(property.name)) {
-            continue;
-          }
-          const state = matchedStyles.propertyState(property);
-          if (state === "Active") {
-            result[uid].authored[property.name] = property.value;
-          }
-        }
-      }
-    }
-    return {
-      result: JSON.stringify(result, null, 2),
-      widgets
-    };
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/GetTraceEventByKey.js
-var GetTraceEventByKey_exports = {};
-__export(GetTraceEventByKey_exports, {
-  GetTraceEventByKeyTool: () => GetTraceEventByKeyTool
-});
-import * as Host11 from "./../../core/host/host.js";
-import * as i18n16 from "./../../core/i18n/i18n.js";
-
-// gen/front_end/models/ai_assistance/contexts/PerformanceTraceContext.js
-var PerformanceTraceContext_exports = {};
-__export(PerformanceTraceContext_exports, {
-  PerformanceTraceContext: () => PerformanceTraceContext
-});
-import * as Common11 from "./../../core/common/common.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
-import * as Tracing from "./../../services/tracing/tracing.js";
-import * as Bindings2 from "./../bindings/bindings.js";
-import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
-import * as Trace6 from "./../trace/trace.js";
-
 // gen/front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js
 var PerformanceInsightFormatter_exports = {};
 __export(PerformanceInsightFormatter_exports, {
   PerformanceInsightFormatter: () => PerformanceInsightFormatter
 });
-import * as Common10 from "./../../core/common/common.js";
+import * as Common7 from "./../../core/common/common.js";
 import * as Trace4 from "./../trace/trace.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.js
@@ -3571,7 +2353,7 @@ __export(AICallTree_exports, {
 });
 import * as Trace from "./../trace/trace.js";
 import * as SourceMapsResolver from "./../trace_source_maps_resolver/trace_source_maps_resolver.js";
-import * as Workspace3 from "./../workspace/workspace.js";
+import * as Workspace from "./../workspace/workspace.js";
 function depthFirstWalk(nodes, callback) {
   for (const node of nodes) {
     if (callback?.(node)) {
@@ -3588,7 +2370,7 @@ var AICallTree = class _AICallTree {
   // Note: ideally this is passed in (or lived on ParsedTrace), but this class is
   // stateless (mostly, there's a cache for some stuff) so it doesn't match much.
   #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
-  constructor(selectedNode, rootNode, parsedTrace, workspace = Workspace3.Workspace.WorkspaceImpl.instance()) {
+  constructor(selectedNode, rootNode, parsedTrace, workspace = Workspace.Workspace.WorkspaceImpl.instance()) {
     this.selectedNode = selectedNode;
     this.rootNode = rootNode;
     this.parsedTrace = parsedTrace;
@@ -4047,6 +2829,354 @@ var AIQueries = class {
     }).filter((tree) => !!tree);
   }
 };
+
+// gen/front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js
+var NetworkRequestFormatter_exports = {};
+__export(NetworkRequestFormatter_exports, {
+  NetworkRequestFormatter: () => NetworkRequestFormatter,
+  sanitizeHeaders: () => sanitizeHeaders
+});
+import * as Common6 from "./../../core/common/common.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
+import * as Logs from "./../logs/logs.js";
+import * as NetworkTimeCalculator from "./../network_time_calculator/network_time_calculator.js";
+var _a2;
+var MAX_HEADERS_SIZE = 1e3;
+var MAX_BODY_SIZE = 1e4;
+function sanitizeHeaders(headers) {
+  return headers.map((header) => {
+    if (NetworkRequestFormatter.allowHeader(header.name)) {
+      return header;
+    }
+    return { name: header.name, value: "<redacted>" };
+  });
+}
+var NetworkRequestFormatter = class {
+  #calculator;
+  #request;
+  static allowHeader(headerName) {
+    return allowedHeaders.has(headerName.toLowerCase().trim());
+  }
+  static formatHeaders(title, headers, addListPrefixToEachLine) {
+    return formatLines(title, sanitizeHeaders(headers).map((header) => {
+      const prefix = addListPrefixToEachLine ? "- " : "";
+      return prefix + header.name + ": " + header.value + "\n";
+    }), MAX_HEADERS_SIZE);
+  }
+  static async formatBody(title, request, maxBodySize) {
+    const data = await request.requestContentData();
+    if (TextUtils.ContentData.ContentData.isError(data)) {
+      return "";
+    }
+    if (data.isEmpty) {
+      return `${title}
+<empty response>`;
+    }
+    if (data.isTextContent) {
+      const dataAsText = data.text;
+      if (dataAsText.length > maxBodySize) {
+        return `${title}
+${dataAsText.substring(0, maxBodySize) + "... <truncated>"}`;
+      }
+      return `${title}
+${dataAsText}`;
+    }
+    return `${title}
+<binary data>`;
+  }
+  static formatInitiatorUrl(initiatorUrl, allowedOrigin) {
+    const initiatorOrigin = Common6.ParsedURL.ParsedURL.extractOrigin(initiatorUrl);
+    if (initiatorOrigin && initiatorOrigin === allowedOrigin) {
+      return initiatorUrl;
+    }
+    return "<redacted cross-origin initiator URL>";
+  }
+  static formatStatus(status) {
+    let responseStatus = "";
+    if (status.statusCode) {
+      const statusText = status.statusText ? ` ${status.statusText}` : "";
+      responseStatus = `Response status: ${status.statusCode}${statusText}
+`;
+    }
+    const flags = [];
+    flags.push(status.finished ? "finished" : "pending");
+    if (status.failed) {
+      flags.push("failed");
+    }
+    if (status.canceled) {
+      flags.push("canceled");
+    }
+    if (status.preserved) {
+      flags.push("preserved");
+    }
+    const requestStatus = flags.length > 0 ? `Network request status: ${flags.join(", ")}
+` : "";
+    return `${responseStatus}${requestStatus}`;
+  }
+  static formatFailureReasons(reasons) {
+    const lines = [];
+    if (reasons.blockedReason) {
+      if (reasons.blockedReason === "inspector") {
+        lines.push("Blocked reason: a custom network condition in DevTools is blocking this request");
+      } else {
+        lines.push(`Blocked reason: ${reasons.blockedReason}`);
+      }
+    }
+    if (reasons.corsErrorStatus) {
+      lines.push(`CORS error: ${reasons.corsErrorStatus.corsError} ${reasons.corsErrorStatus.failedParameter}`);
+    }
+    if (reasons.localizedFailDescription) {
+      lines.push(`Fail description: ${reasons.localizedFailDescription}`);
+    }
+    return lines.length > 0 ? `${lines.join("\n")}
+` : "";
+  }
+  #networkLog;
+  constructor(request, calculator, networkLog = Logs.NetworkLog.NetworkLog.instance()) {
+    this.#request = request;
+    this.#calculator = calculator;
+    this.#networkLog = networkLog;
+  }
+  formatRequestHeaders() {
+    return _a2.formatHeaders("Request headers:", this.#request.requestHeaders());
+  }
+  formatResponseHeaders() {
+    return _a2.formatHeaders("Response headers:", this.#request.responseHeaders);
+  }
+  async formatResponseBody() {
+    return await _a2.formatBody("Response body:", this.#request, MAX_BODY_SIZE);
+  }
+  /**
+   * Note: nothing here should include information from origins other than
+   * the request's origin.
+   */
+  async formatNetworkRequest() {
+    let responseBody = await this.formatResponseBody();
+    if (responseBody) {
+      responseBody = `
+
+${responseBody}`;
+    }
+    return `Request: ${this.#request.url()}
+${this.formatRequestHeaders()}
+
+${this.formatResponseHeaders()}${responseBody}
+
+${this.formatStatus()}${this.formatFailureReasons()}
+Request timing:
+${this.formatNetworkRequestTiming()}
+
+Request initiator chain:
+${this.formatRequestInitiatorChain()}`;
+  }
+  formatStatus() {
+    return _a2.formatStatus({
+      statusCode: this.#request.statusCode,
+      statusText: this.#request.statusText,
+      failed: this.#request.failed,
+      canceled: this.#request.canceled,
+      preserved: this.#request.preserved,
+      finished: this.#request.finished
+    });
+  }
+  formatFailureReasons() {
+    return _a2.formatFailureReasons({
+      blockedReason: this.#request.blockedReason(),
+      corsErrorStatus: this.#request.corsErrorStatus(),
+      localizedFailDescription: this.#request.localizedFailDescription
+    });
+  }
+  /**
+   * Note: nothing here should include information from origins other than
+   * the request's origin.
+   */
+  formatRequestInitiatorChain() {
+    const allowedOrigin = Common6.ParsedURL.ParsedURL.extractOrigin(this.#request.url());
+    let initiatorChain = "";
+    let lineStart = "- URL: ";
+    const graph = this.#networkLog.initiatorGraphForRequest(this.#request);
+    for (const initiator of Array.from(graph.initiators).reverse()) {
+      initiatorChain = initiatorChain + lineStart + _a2.formatInitiatorUrl(initiator.url(), allowedOrigin) + "\n";
+      lineStart = "	" + lineStart;
+      if (initiator === this.#request) {
+        initiatorChain = this.#formatRequestInitiated(graph.initiated, this.#request, initiatorChain, lineStart, allowedOrigin);
+      }
+    }
+    return initiatorChain.trim();
+  }
+  formatNetworkRequestTiming() {
+    const results = NetworkTimeCalculator.calculateRequestTimeRanges(this.#request, this.#calculator.minimumBoundary());
+    const getDuration = (name) => {
+      const result = results.find((r) => r.name === name);
+      if (!result) {
+        return;
+      }
+      return seconds(result.end - result.start);
+    };
+    const labels = [
+      {
+        label: "Queued at (timestamp)",
+        value: seconds(this.#request.issueTime() - this.#calculator.zeroTime())
+      },
+      {
+        label: "Started at (timestamp)",
+        value: seconds(this.#request.startTime - this.#calculator.zeroTime())
+      },
+      {
+        label: "Queueing (duration)",
+        value: getDuration("queueing")
+      },
+      {
+        label: "Connection start (stalled) (duration)",
+        value: getDuration("blocking")
+      },
+      {
+        label: "Request sent (duration)",
+        value: getDuration("sending")
+      },
+      {
+        label: "Waiting for server response (duration)",
+        value: getDuration("waiting")
+      },
+      {
+        label: "Content download (duration)",
+        value: getDuration("receiving")
+      },
+      {
+        label: "Duration (duration)",
+        value: getDuration("total")
+      }
+    ];
+    return labels.filter((label) => !!label.value).map((label) => `${label.label}: ${label.value}`).join("\n");
+  }
+  #formatRequestInitiated(initiated, parentRequest, initiatorChain, lineStart, allowedOrigin) {
+    const visited = /* @__PURE__ */ new Set();
+    visited.add(this.#request);
+    for (const [keyRequest, initiatedRequest] of initiated.entries()) {
+      if (initiatedRequest === parentRequest) {
+        if (!visited.has(keyRequest)) {
+          visited.add(keyRequest);
+          initiatorChain = initiatorChain + lineStart + _a2.formatInitiatorUrl(keyRequest.url(), allowedOrigin) + "\n";
+          initiatorChain = this.#formatRequestInitiated(initiated, keyRequest, initiatorChain, "	" + lineStart, allowedOrigin);
+        }
+      }
+    }
+    return initiatorChain;
+  }
+};
+_a2 = NetworkRequestFormatter;
+var allowedHeaders = /* @__PURE__ */ new Set([
+  ":authority",
+  ":method",
+  ":path",
+  ":scheme",
+  "a-im",
+  "accept-ch",
+  "accept-charset",
+  "accept-datetime",
+  "accept-encoding",
+  "accept-language",
+  "accept-patch",
+  "accept-ranges",
+  "accept",
+  "access-control-allow-credentials",
+  "access-control-allow-headers",
+  "access-control-allow-methods",
+  "access-control-allow-origin",
+  "access-control-expose-headers",
+  "access-control-max-age",
+  "access-control-request-headers",
+  "access-control-request-method",
+  "age",
+  "allow",
+  "alt-svc",
+  "cache-control",
+  "connection",
+  "content-disposition",
+  "content-encoding",
+  "content-language",
+  "content-location",
+  "content-range",
+  "content-security-policy",
+  "content-type",
+  "correlation-id",
+  "date",
+  "delta-base",
+  "dnt",
+  "expect-ct",
+  "expect",
+  "expires",
+  "forwarded",
+  "front-end-https",
+  "host",
+  "http2-settings",
+  "if-modified-since",
+  "if-range",
+  "if-unmodified-source",
+  "im",
+  "last-modified",
+  "link",
+  "location",
+  "max-forwards",
+  "nel",
+  "origin",
+  "permissions-policy",
+  "pragma",
+  "preference-applied",
+  "proxy-connection",
+  "public-key-pins",
+  "range",
+  "referer",
+  "refresh",
+  "report-to",
+  "retry-after",
+  "save-data",
+  "sec-gpc",
+  "server",
+  "status",
+  "strict-transport-security",
+  "te",
+  "timing-allow-origin",
+  "tk",
+  "trailer",
+  "transfer-encoding",
+  "upgrade-insecure-requests",
+  "upgrade",
+  "user-agent",
+  "vary",
+  "via",
+  "warning",
+  "www-authenticate",
+  "x-att-deviceid",
+  "x-content-duration",
+  "x-content-security-policy",
+  "x-content-type-options",
+  "x-correlation-id",
+  "x-forwarded-for",
+  "x-forwarded-host",
+  "x-forwarded-proto",
+  "x-frame-options",
+  "x-http-method-override",
+  "x-powered-by",
+  "x-redirected-by",
+  "x-request-id",
+  "x-requested-with",
+  "x-ua-compatible",
+  "x-wap-profile",
+  "x-webkit-csp",
+  "x-xss-protection"
+]);
+function formatLines(title, lines, maxLength) {
+  let result = "";
+  for (const line of lines) {
+    if (result.length + line.length > maxLength) {
+      break;
+    }
+    result += line;
+  }
+  result = result.trim();
+  return result && title ? title + "\n" + result : result;
+}
 
 // gen/front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.js
 var PerformanceTraceFormatter = class {
@@ -5274,7 +4404,7 @@ Duplication grouped by Node modules: ${filesFormatted}`;
     for (const font of insight.fonts) {
       let fontName = font.name;
       if (!fontName) {
-        const url = new Common10.ParsedURL.ParsedURL(font.request.args.data.url);
+        const url = new Common7.ParsedURL.ParsedURL(font.request.args.data.url);
         fontName = url.isValid ? url.lastPathComponent : "(not available)";
       }
       output += `
@@ -6037,21 +5167,21 @@ function getPerformanceAgentFocusFromModel(model) {
 
 // gen/front_end/models/ai_assistance/contexts/PerformanceTraceContext.js
 var PerformanceTraceContext = class _PerformanceTraceContext extends ConversationContext {
-  static fromParsedTrace(parsedTrace, targetManager = SDK8.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromParsedTrace(parsedTrace, targetManager = SDK6.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
     return new _PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
   }
-  static fromInsight(parsedTrace, insight, targetManager = SDK8.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromInsight(parsedTrace, insight, targetManager = SDK6.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
     return new _PerformanceTraceContext(AgentFocus.fromInsight(parsedTrace, insight), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
   }
-  static fromCallTree(callTree, targetManager = SDK8.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromCallTree(callTree, targetManager = SDK6.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
     return new _PerformanceTraceContext(AgentFocus.fromCallTree(callTree), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
   }
@@ -6059,9 +5189,9 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
   #targetManager;
   #freshRecordingTracker;
   #debuggerWorkspaceBinding;
-  constructor(focus, targetManager = SDK8.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  constructor(focus, targetManager = SDK6.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
     super();
     this.#focus = focus;
@@ -6115,7 +5245,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
     const origin = extractContextOrigin(url);
     const isFresh = this.#freshRecordingTracker.recordingIsFresh(parsedTrace);
     if (!isFresh) {
-      const parsed = Common11.ParsedURL.ParsedURL.fromString(origin);
+      const parsed = Common8.ParsedURL.ParsedURL.fromString(origin);
       return `imported-trace://${parsed ? parsed.domain() : origin}`;
     }
     return origin;
@@ -6366,11 +5496,1130 @@ function getLabelName(label, parsedTrace) {
   return label;
 }
 
-// gen/front_end/models/ai_assistance/tools/GetTraceEventByKey.js
+// gen/front_end/models/ai_assistance/tools/GetDetailedCallTree.js
+var UIStringsNotTranslate = {
+  lookingAtCallTree: "Looking at call tree"
+};
+var lockedString2 = i18n4.i18n.lockedString;
+var GetDetailedCallTreeTool = class {
+  name = "getDetailedCallTree";
+  description = "Returns a detailed call tree for the given main thread event.";
+  parameters = {
+    type: 6,
+    description: "Arguments for looking up a call tree.",
+    nullable: false,
+    properties: {
+      eventKey: {
+        type: 1,
+        description: "The key for the event.",
+        nullable: false
+      }
+    },
+    required: ["eventKey"]
+  };
+  displayInfoFromArgs(params) {
+    return {
+      title: lockedString2(UIStringsNotTranslate.lookingAtCallTree),
+      action: `getDetailedCallTree('${params.eventKey}')`
+    };
+  }
+  async handler(params, capabilities) {
+    const conversationContext = capabilities.conversationContext;
+    if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+      return { error: "Performance trace context is not available." };
+    }
+    if (!params.eventKey) {
+      return { error: "Missing arg: eventKey" };
+    }
+    const focus = conversationContext.getItem();
+    const event = focus.lookupEvent(params.eventKey);
+    if (!event) {
+      return { error: "Invalid eventKey" };
+    }
+    const tree = AICallTree.fromEvent(event, focus.parsedTrace);
+    if (!tree) {
+      return { error: "No call tree found" };
+    }
+    const formatter = conversationContext.createFormatter();
+    const callTree = await formatter.formatCallTree(tree);
+    const bounds = Trace7.Helpers.Timing.traceWindowFromEvent(event);
+    return {
+      result: callTree,
+      widgets: [
+        {
+          name: "BOTTOM_UP_TREE",
+          data: {
+            bounds,
+            parsedTrace: focus.parsedTrace
+          }
+        },
+        {
+          name: "TIMELINE_RANGE_SUMMARY",
+          data: {
+            bounds,
+            parsedTrace: focus.parsedTrace,
+            track: "main"
+          }
+        }
+      ]
+    };
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetElementAccessibilityDetails.js
+var GetElementAccessibilityDetails_exports = {};
+__export(GetElementAccessibilityDetails_exports, {
+  GetElementAccessibilityDetailsTool: () => GetElementAccessibilityDetailsTool
+});
+import * as Host6 from "./../../core/host/host.js";
+import * as i18n8 from "./../../core/i18n/i18n.js";
+import * as SDK7 from "./../../core/sdk/sdk.js";
+
+// gen/front_end/models/ai_assistance/contexts/DOMNodeContext.js
+var DOMNodeContext_exports = {};
+__export(DOMNodeContext_exports, {
+  DOMNodeContext: () => DOMNodeContext
+});
+import * as i18n6 from "./../../core/i18n/i18n.js";
+var UIStringsNotTranslate2 = {
+  /**
+   * @description Heading text for context details of DevTools AI Agent.
+   */
+  dataUsed: "Data used"
+};
+var lockedString3 = i18n6.i18n.lockedString;
+var DOMNodeContext = class extends ConversationContext {
+  #node;
+  constructor(node) {
+    super();
+    this.#node = node;
+  }
+  getURL() {
+    const ownerDocument = this.#node.ownerDocument;
+    if (!ownerDocument) {
+      return "detached";
+    }
+    return ownerDocument.documentURL;
+  }
+  getItem() {
+    return this.#node;
+  }
+  getTitle() {
+    throw new Error("Not implemented");
+  }
+  async getSuggestions() {
+    const layoutProps = await this.#node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.#node.id);
+    if (!layoutProps) {
+      return;
+    }
+    if (layoutProps.isFlex) {
+      return [
+        { title: "How can I make flex items wrap?", jslogContext: "flex-wrap" },
+        { title: "How do I distribute flex items evenly?", jslogContext: "flex-distribute" },
+        { title: "What is flexbox?", jslogContext: "flex-what" }
+      ];
+    }
+    if (layoutProps.isSubgrid) {
+      return [
+        { title: "Where is this grid defined?", jslogContext: "subgrid-where" },
+        { title: "How to overwrite parent grid properties?", jslogContext: "subgrid-override" },
+        { title: "How do subgrids work? ", jslogContext: "subgrid-how" }
+      ];
+    }
+    if (layoutProps.isGrid) {
+      return [
+        { title: "How do I align items in a grid?", jslogContext: "grid-align" },
+        { title: "How to add spacing between grid items?", jslogContext: "grid-gap" },
+        { title: "How does grid layout work?", jslogContext: "grid-how" }
+      ];
+    }
+    if (layoutProps.hasScroll) {
+      return [
+        { title: "How do I remove scrollbars for this element?", jslogContext: "scroll-remove" },
+        { title: "How can I style a scrollbar?", jslogContext: "scroll-style" },
+        { title: "Why does this element scroll?", jslogContext: "scroll-why" }
+      ];
+    }
+    if (layoutProps.containerType) {
+      return [
+        { title: "What are container queries?", jslogContext: "container-what" },
+        { title: "How do I use container-type?", jslogContext: "container-how" },
+        { title: "What's the container context for this element?", jslogContext: "container-context" }
+      ];
+    }
+    return;
+  }
+  async getPromptDetails() {
+    return `# Inspected element
+
+${await this.describe()}`;
+  }
+  async getUserFacingDetails() {
+    return [
+      {
+        title: lockedString3(UIStringsNotTranslate2.dataUsed),
+        text: await this.describe()
+      }
+    ];
+  }
+  async describe() {
+    const element = this.#node;
+    let output = `* Element's uid is ${element.backendNodeId()}.
+* Its selector is \`${element.simpleSelector()}\``;
+    const childNodes = await element.getChildNodesPromise();
+    if (childNodes) {
+      const textChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.TEXT_NODE);
+      const elementChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.ELEMENT_NODE);
+      switch (elementChildNodes.length) {
+        case 0:
+          output += "\n* It doesn't have any child element nodes";
+          break;
+        case 1:
+          output += `
+* It only has 1 child element node: \`${elementChildNodes[0].simpleSelector()}\``;
+          break;
+        default:
+          output += `
+* It has ${elementChildNodes.length} child element nodes: ${elementChildNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
+      }
+      switch (textChildNodes.length) {
+        case 0:
+          output += "\n* It doesn't have any child text nodes";
+          break;
+        case 1:
+          output += "\n* It only has 1 child text node";
+          break;
+        default:
+          output += `
+* It has ${textChildNodes.length} child text nodes`;
+      }
+    }
+    if (element.nextSibling) {
+      const elementOrNodeElementNodeText = element.nextSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.nextSibling.backendNodeId()})` : "a non element";
+      output += `
+* It has a next sibling and it is ${elementOrNodeElementNodeText} node`;
+    }
+    if (element.previousSibling) {
+      const elementOrNodeElementNodeText = element.previousSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.previousSibling.backendNodeId()})` : "a non element";
+      output += `
+* It has a previous sibling and it is ${elementOrNodeElementNodeText} node`;
+    }
+    if (element.isInShadowTree()) {
+      output += "\n* It is in a shadow DOM tree.";
+    }
+    const parentNode = element.parentNode;
+    if (parentNode) {
+      const parentChildrenNodes = await parentNode.getChildNodesPromise();
+      output += `
+* Its parent's selector is \`${parentNode.simpleSelector()}\` (uid=${parentNode.backendNodeId()})`;
+      const elementOrNodeElementNodeText = parentNode.nodeType() === Node.ELEMENT_NODE ? "an element" : "a non element";
+      output += `
+* Its parent is ${elementOrNodeElementNodeText} node`;
+      if (parentNode.isShadowRoot()) {
+        output += "\n* Its parent is a shadow root.";
+      }
+      if (parentChildrenNodes) {
+        const childElementNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.ELEMENT_NODE);
+        switch (childElementNodes.length) {
+          case 0:
+            break;
+          case 1:
+            output += "\n* Its parent has only 1 child element node";
+            break;
+          default:
+            output += `
+* Its parent has ${childElementNodes.length} child element nodes: ${childElementNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
+            break;
+        }
+        const siblingTextNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.TEXT_NODE);
+        switch (siblingTextNodes.length) {
+          case 0:
+            break;
+          case 1:
+            output += "\n* Its parent has only 1 child text node";
+            break;
+          default:
+            output += `
+* Its parent has ${siblingTextNodes.length} child text nodes: ${siblingTextNodes.map((node) => `\`${node.simpleSelector()}\``).join(", ")}`;
+            break;
+        }
+      }
+    }
+    return output.trim();
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetElementAccessibilityDetails.js
+var GetElementAccessibilityDetailsTool = class {
+  name = "getElementAccessibilityDetails";
+  description = "Get detailed accessibility information for an element on the inspected page by its backend node ID.";
+  parameters = {
+    type: 6,
+    description: "Arguments for getting element accessibility details.",
+    nullable: false,
+    properties: {
+      explanation: {
+        type: 1,
+        description: "Reason for requesting accessibility details.",
+        nullable: false
+      },
+      element: {
+        type: 3,
+        description: "The backend node ID of the element.",
+        nullable: false
+      }
+    },
+    required: ["explanation", "element"]
+  };
+  displayInfoFromArgs(params) {
+    return {
+      title: "Reading accessibility details",
+      thought: params.explanation,
+      action: `getElementAccessibilityDetails(${params.element})`
+    };
+  }
+  /**
+   * Handles the request to retrieve accessibility details.
+   *
+   * Resolves the element backend node ID, validates its origin against the locked origin,
+   * requests the AX subtree via AccessibilityModel, and maps the relevant attributes.
+   */
+  async handler(params, context) {
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (!establishedOrigin) {
+      return { error: "Error: Origin lock is not established." };
+    }
+    const target = context.getTarget();
+    if (!target) {
+      return { error: "Error: Inspected target not found." };
+    }
+    const deferredNode = new SDK7.DOMModel.DeferredDOMNode(target, params.element);
+    const resolved = await deferredNode.resolvePromise();
+    if (!resolved) {
+      return { error: "Error: Could not resolve element by ID." };
+    }
+    const nodeContext = new DOMNodeContext(resolved);
+    if (!nodeContext.isOriginAllowed(establishedOrigin)) {
+      return { error: "Error: Node does not belong to the locked origin." };
+    }
+    const axModel = target.model(SDK7.AccessibilityModel.AccessibilityModel);
+    if (!axModel) {
+      return { error: "Error: Accessibility model not found." };
+    }
+    await axModel.requestAndLoadSubTreeToNode(resolved);
+    const axNode = axModel.axNodeForDOMNode(resolved);
+    if (!axNode) {
+      return { error: "Error: AX node details not found." };
+    }
+    const properties = {
+      role: axNode.role()?.value,
+      name: axNode.name()?.value,
+      properties: axNode.properties()?.map((p) => ({ name: p.name, value: p.value?.value })) ?? []
+    };
+    const snapshot = await resolved.takeSnapshot();
+    return {
+      result: JSON.stringify(properties, null, 2),
+      widgets: [{
+        name: "DOM_TREE",
+        data: {
+          root: snapshot,
+          title: i18n8.i18n.lockedString("Element details"),
+          accessibleRevealLabel: i18n8.i18n.lockedString("Reveal element")
+        }
+      }]
+    };
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetFunctionCode.js
+var GetFunctionCode_exports = {};
+__export(GetFunctionCode_exports, {
+  GetFunctionCodeTool: () => GetFunctionCodeTool
+});
+import * as Host7 from "./../../core/host/host.js";
+import * as i18n10 from "./../../core/i18n/i18n.js";
+var UIStringsNotTranslate3 = {
+  lookingUpFunctionCode: "Looking up function code"
+};
+var lockedString4 = i18n10.i18n.lockedString;
+var GetFunctionCodeTool = class {
+  name = "getFunctionCode";
+  description = "Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.";
+  parameters = {
+    type: 6,
+    description: "Arguments for looking up function code.",
+    nullable: false,
+    properties: {
+      scriptUrl: {
+        type: 1,
+        description: "The url of the function.",
+        nullable: false
+      },
+      line: {
+        type: 3,
+        description: "The line number where the function is defined.",
+        nullable: false
+      },
+      column: {
+        type: 3,
+        description: "The column number where the function is defined.",
+        nullable: false
+      }
+    },
+    required: ["scriptUrl", "line", "column"]
+  };
+  displayInfoFromArgs(params) {
+    return {
+      title: lockedString4(UIStringsNotTranslate3.lookingUpFunctionCode),
+      action: `getFunctionCode('${params.scriptUrl}', ${params.line}, ${params.column})`
+    };
+  }
+  async handler(params, capabilities) {
+    const conversationContext = capabilities.conversationContext;
+    if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+      return { error: "Performance trace context is not available." };
+    }
+    if (conversationContext.getOrigin().startsWith("imported-trace://")) {
+      return { error: "Cannot use this tool on an imported file." };
+    }
+    if (!params.scriptUrl) {
+      return { error: "Missing arg: scriptUrl" };
+    }
+    const allowedOrigin = conversationContext.getOrigin();
+    if (!canResourceContentsBeReadForTrace(params.scriptUrl, allowedOrigin)) {
+      return { error: "Script not found" };
+    }
+    if (params.line === void 0) {
+      return { error: "Missing arg: line" };
+    }
+    if (params.column === void 0) {
+      return { error: "Missing arg: column" };
+    }
+    const formatter = conversationContext.createFormatter();
+    const url = params.scriptUrl;
+    const code = await formatter.resolveFunctionCodeAtLocation(url, params.line, params.column);
+    if (!code) {
+      return { error: "Could not find code" };
+    }
+    const result = formatter.formatFunctionCode(code);
+    return {
+      result,
+      widgets: [{
+        name: "SOURCE_CODE",
+        data: {
+          url,
+          line: params.line,
+          column: params.column,
+          code: code.code
+        }
+      }]
+    };
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetLighthouseAudits.js
+var GetLighthouseAudits_exports = {};
+__export(GetLighthouseAudits_exports, {
+  GetLighthouseAuditsTool: () => GetLighthouseAuditsTool
+});
+import * as Host8 from "./../../core/host/host.js";
+
+// gen/front_end/models/ai_assistance/contexts/AccessibilityContext.js
+var AccessibilityContext_exports = {};
+__export(AccessibilityContext_exports, {
+  AccessibilityContext: () => AccessibilityContext
+});
+var AccessibilityContext = class extends ConversationContext {
+  #lh;
+  #cachedPayload = null;
+  constructor(report) {
+    super();
+    this.#lh = report;
+  }
+  #url() {
+    return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
+  }
+  getURL() {
+    return this.#url();
+  }
+  getItem() {
+    return this.#lh;
+  }
+  getTitle() {
+    return `Lighthouse report: ${this.#url()}`;
+  }
+  #getInitialPayload() {
+    if (this.#cachedPayload !== null) {
+      return this.#cachedPayload;
+    }
+    const formatter = new LighthouseFormatter();
+    const summary = formatter.summary(this.#lh);
+    const audits = formatter.audits(this.#lh, "accessibility");
+    const allFailed = Object.values(this.#lh.categories).every((category) => category.score === null);
+    if (allFailed) {
+      this.#cachedPayload = "**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.";
+    } else {
+      this.#cachedPayload = `# Lighthouse Report:
+${summary}
+${audits}`;
+    }
+    return this.#cachedPayload;
+  }
+  async getPromptDetails() {
+    return this.#getInitialPayload();
+  }
+  async getUserFacingDetails() {
+    return [
+      {
+        title: "Lighthouse report",
+        text: this.#getInitialPayload()
+      }
+    ];
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetLighthouseAudits.js
+var GetLighthouseAuditsTool = class {
+  name = "getLighthouseAudits";
+  description = "Returns the audits for a specific Lighthouse category.";
+  parameters = {
+    type: 6,
+    description: "Arguments for retrieving Lighthouse category audits.",
+    nullable: false,
+    properties: {
+      categoryId: {
+        type: 1,
+        description: 'The category of audits to retrieve. E.g. "accessibility".',
+        nullable: false
+      }
+    },
+    required: ["categoryId"]
+  };
+  displayInfoFromArgs(params) {
+    return {
+      title: `Getting Lighthouse audits for ${params.categoryId}`,
+      action: `getLighthouseAudits('${params.categoryId}')`
+    };
+  }
+  async handler(params, context) {
+    if (!(context.conversationContext instanceof AccessibilityContext)) {
+      return { error: "Error: Active context is not a Lighthouse report." };
+    }
+    const report = context.conversationContext.getItem();
+    const audits = new LighthouseFormatter().audits(report, params.categoryId);
+    return {
+      result: { audits },
+      widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report } }]
+    };
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetNetworkRequestDetails.js
+var GetNetworkRequestDetails_exports = {};
+__export(GetNetworkRequestDetails_exports, {
+  GetNetworkRequestDetailsTool: () => GetNetworkRequestDetailsTool
+});
+import * as Host9 from "./../../core/host/host.js";
+import * as i18n14 from "./../../core/i18n/i18n.js";
+import * as Logs2 from "./../logs/logs.js";
+import * as NetworkTimeCalculator2 from "./../network_time_calculator/network_time_calculator.js";
+
+// gen/front_end/models/ai_assistance/contexts/RequestContext.js
+var RequestContext_exports = {};
+__export(RequestContext_exports, {
+  RequestContext: () => RequestContext,
+  getRequestContextOrigin: () => getRequestContextOrigin
+});
+import * as Common9 from "./../../core/common/common.js";
+import * as i18n12 from "./../../core/i18n/i18n.js";
+var UIStringsNotTranslate4 = {
+  request: "Request",
+  response: "Response",
+  requestUrl: "Request URL",
+  timing: "Timing",
+  requestInitiatorChain: "Request initiator chain"
+};
+var lockedString5 = i18n12.i18n.lockedString;
+function getRequestContextOrigin(request) {
+  const origin = extractContextOrigin(request.documentURL);
+  if (request.isImportedHar()) {
+    const parsed = Common9.ParsedURL.ParsedURL.fromString(origin);
+    return `imported-har://${parsed ? parsed.domain() : origin}`;
+  }
+  return origin;
+}
+var RequestContext = class extends ConversationContext {
+  #request;
+  #calculator;
+  constructor(request, calculator) {
+    super();
+    this.#request = request;
+    this.#calculator = calculator;
+  }
+  /**
+   * Note: this is not the literal origin of the network request. This URL
+   * is used to determine when we should force the user to start a new AI
+   * conversation when the context changes. We allow a single AI conversation to
+   * inspect all network requests that were made for that given target URL.
+   */
+  getURL() {
+    return this.#request.documentURL;
+  }
+  getOrigin() {
+    return getRequestContextOrigin(this.#request);
+  }
+  getItem() {
+    return this.#request;
+  }
+  getTitle() {
+    return this.#request.name();
+  }
+  async getPromptDetails() {
+    const formatter = new NetworkRequestFormatter(this.#request, this.#calculator);
+    return `# Selected network request
+${await formatter.formatNetworkRequest()}`;
+  }
+  async getUserFacingDetails() {
+    const formatter = new NetworkRequestFormatter(this.#request, this.#calculator);
+    const requestContextDetail = {
+      title: lockedString5(UIStringsNotTranslate4.request),
+      text: lockedString5(UIStringsNotTranslate4.requestUrl) + ": " + this.#request.url() + "\n\n" + formatter.formatRequestHeaders()
+    };
+    const responseBody = await formatter.formatResponseBody();
+    const responseBodyString = responseBody ? `
+
+${responseBody}` : "";
+    const responseContextDetail = {
+      title: lockedString5(UIStringsNotTranslate4.response),
+      text: formatter.formatResponseHeaders() + responseBodyString + `
+
+${formatter.formatStatus()}${formatter.formatFailureReasons()}`
+    };
+    const timingContextDetail = {
+      title: lockedString5(UIStringsNotTranslate4.timing),
+      text: formatter.formatNetworkRequestTiming()
+    };
+    const initiatorChainContextDetail = {
+      title: lockedString5(UIStringsNotTranslate4.requestInitiatorChain),
+      text: formatter.formatRequestInitiatorChain()
+    };
+    return [
+      requestContextDetail,
+      responseContextDetail,
+      timingContextDetail,
+      initiatorChainContextDetail
+    ];
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetNetworkRequestDetails.js
+var UIStringsNotTranslate5 = {
+  gettingNetworkRequestDetails: "Getting network request details"
+};
+var lockedString6 = i18n14.i18n.lockedString;
+var GetNetworkRequestDetailsTool = class {
+  name = "getNetworkRequestDetails";
+  description = "Retrieves the full headers, timing, status, and body details of a specific network request by ID.";
+  #networkLog;
+  constructor(networkLog) {
+    this.#networkLog = networkLog;
+  }
+  parameters = {
+    type: 6,
+    description: "Arguments for retrieving detailed information about a specific network request.",
+    nullable: false,
+    properties: {
+      id: {
+        type: 1,
+        description: "The id of the network request to inspect.",
+        nullable: false
+      }
+    },
+    required: ["id"]
+  };
+  displayInfoFromArgs(args) {
+    return {
+      title: lockedString6(UIStringsNotTranslate5.gettingNetworkRequestDetails),
+      action: `getNetworkRequestDetails(${args.id})`
+    };
+  }
+  /**
+   * Handles the request to retrieve details for a network request by its ID.
+   * Filters by the conversation's established origin to prevent cross-origin data exposure.
+   */
+  async handler(args, context) {
+    const origin = context.getEstablishedOrigin();
+    if (origin && isOpaqueOrigin(origin)) {
+      return {
+        error: "Opaque origin not allowed"
+      };
+    }
+    const networkLog = this.#networkLog ?? Logs2.NetworkLog.NetworkLog.instance();
+    const request = networkLog.requests().find((req) => {
+      if (req.requestId() !== args.id) {
+        return false;
+      }
+      const requestOrigin = getRequestContextOrigin(req);
+      return !origin || requestOrigin === origin;
+    });
+    if (!request) {
+      return {
+        error: "No request found"
+      };
+    }
+    const calculator = new NetworkTimeCalculator2.NetworkTransferTimeCalculator();
+    const formatter = new NetworkRequestFormatter(request, calculator, networkLog);
+    const formattedDetails = await formatter.formatNetworkRequest();
+    return {
+      result: formattedDetails,
+      widgets: [{
+        name: "NETWORK_REQUEST_GENERAL_HEADERS",
+        data: {
+          request
+        }
+      }]
+    };
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetResourceContent.js
+var GetResourceContent_exports = {};
+__export(GetResourceContent_exports, {
+  GetResourceContentTool: () => GetResourceContentTool
+});
+import * as Host10 from "./../../core/host/host.js";
+import * as i18n16 from "./../../core/i18n/i18n.js";
+import * as Root5 from "./../../core/root/root.js";
+import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
 var UIStringsNotTranslate6 = {
-  lookingAtTraceEvent: "Looking at trace event"
+  lookingAtResourceContent: "Looking at resource content"
 };
 var lockedString7 = i18n16.i18n.lockedString;
+var GetResourceContentTool = class {
+  name = "getResourceContent";
+  description = "Returns the content of the resource with the given url. Only use this for text resource types.";
+  parameters = {
+    type: 6,
+    description: "Arguments for looking up resource content.",
+    nullable: false,
+    properties: {
+      url: {
+        type: 1,
+        description: "The url for the resource.",
+        nullable: false
+      }
+    },
+    required: ["url"]
+  };
+  displayInfoFromArgs(params) {
+    return {
+      title: lockedString7(UIStringsNotTranslate6.lookingAtResourceContent),
+      action: `getResourceContent('${params.url}')`
+    };
+  }
+  async handler(params, capabilities) {
+    const conversationContext = capabilities.conversationContext;
+    if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+      return { error: "Performance trace context is not available." };
+    }
+    if (conversationContext.getOrigin().startsWith("imported-trace://")) {
+      return { error: "Cannot use this tool on an imported file." };
+    }
+    const allowedOrigin = conversationContext.getOrigin();
+    if (!canResourceContentsBeReadForTrace(params.url, allowedOrigin)) {
+      return { error: "Resource not found" };
+    }
+    const focus = conversationContext.getItem();
+    const { parsedTrace } = focus;
+    let content;
+    const url = params.url;
+    const script = parsedTrace.data.Scripts?.scripts.find((script2) => script2.url === params.url);
+    if (script?.content !== void 0) {
+      content = script.content;
+    } else {
+      const target = capabilities.getTarget();
+      const isTraceApp = Root5.Runtime.Runtime.isTraceApp();
+      if (target || isTraceApp) {
+        const targetManager = target?.targetManager() ?? // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        SDK8.TargetManager.TargetManager.instance();
+        const resource = SDK8.ResourceTreeModel.ResourceTreeModel.resourceForURL(targetManager, url);
+        if (!resource) {
+          return { error: "Resource not found" };
+        }
+        const data = await resource.requestContentData();
+        if (TextUtils2.ContentData.ContentData.isError(data)) {
+          return { error: `Could not get resource content: ${data.error}` };
+        }
+        if (!data.isTextContent) {
+          return { error: "Cannot retrieve content for non-text resource" };
+        }
+        content = data.text;
+      } else {
+        return { error: "Resource not found" };
+      }
+    }
+    return {
+      result: { content },
+      widgets: [{
+        name: "SOURCE_CODE",
+        data: {
+          url,
+          code: content
+        }
+      }]
+    };
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetSourceContent.js
+var GetSourceContent_exports = {};
+__export(GetSourceContent_exports, {
+  GetSourceContentTool: () => GetSourceContentTool
+});
+import * as Common11 from "./../../core/common/common.js";
+import * as Host12 from "./../../core/host/host.js";
+import * as i18n20 from "./../../core/i18n/i18n.js";
+import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
+
+// gen/front_end/models/ai_assistance/data_formatters/FileFormatter.js
+var FileFormatter_exports = {};
+__export(FileFormatter_exports, {
+  FileFormatter: () => FileFormatter
+});
+import * as Bindings2 from "./../bindings/bindings.js";
+import * as Logs3 from "./../logs/logs.js";
+import * as NetworkTimeCalculator3 from "./../network_time_calculator/network_time_calculator.js";
+var MAX_FILE_SIZE = 1e4;
+var FileFormatter = class _FileFormatter {
+  static formatSourceMapDetails(selectedFile, debuggerWorkspaceBinding) {
+    const mappedFileUrls = [];
+    const sourceMapUrls = [];
+    if (selectedFile.contentType().isFromSourceMap()) {
+      for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(selectedFile)) {
+        const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(script);
+        if (uiSourceCode) {
+          mappedFileUrls.push(uiSourceCode.url());
+          if (script.sourceMapURL !== void 0) {
+            sourceMapUrls.push(script.sourceMapURL);
+          }
+        }
+      }
+      for (const originURL of Bindings2.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(selectedFile)) {
+        mappedFileUrls.push(originURL);
+      }
+    } else if (selectedFile.contentType().isScript()) {
+      for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(selectedFile)) {
+        if (script.sourceMapURL !== void 0 && script.sourceMapURL !== "") {
+          sourceMapUrls.push(script.sourceMapURL);
+        }
+      }
+    }
+    if (sourceMapUrls.length === 0) {
+      return "";
+    }
+    let sourceMapDetails = "Source map: " + sourceMapUrls;
+    if (mappedFileUrls.length > 0) {
+      sourceMapDetails += "\nSource mapped from: " + mappedFileUrls;
+    }
+    return sourceMapDetails;
+  }
+  #file;
+  #debuggerWorkspaceBinding;
+  #networkLog;
+  constructor(file, debuggerWorkspaceBinding = (
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+  ), networkLog = Logs3.NetworkLog.NetworkLog.instance()) {
+    this.#file = file;
+    this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.#networkLog = networkLog;
+  }
+  formatFile() {
+    const sourceMapDetails = _FileFormatter.formatSourceMapDetails(this.#file, this.#debuggerWorkspaceBinding);
+    const lines = [
+      `File name: ${this.#file.displayName()}`,
+      `URL: ${this.#file.url()}`,
+      sourceMapDetails
+    ];
+    const resource = Bindings2.ResourceUtils.resourceForURL(this.#file.url());
+    if (resource?.request) {
+      const calculator = new NetworkTimeCalculator3.NetworkTransferTimeCalculator();
+      calculator.updateBoundaries(resource.request);
+      lines.push(`Request initiator chain:
+${new NetworkRequestFormatter(resource.request, calculator, this.#networkLog).formatRequestInitiatorChain()}`);
+    }
+    lines.push(`File content:
+${this.#formatFileContent()}`);
+    return lines.filter((line) => line.trim() !== "").join("\n");
+  }
+  #formatFileContent() {
+    const contentData = this.#file.workingCopyContentData();
+    const content = contentData.isTextContent ? contentData.text : "<binary data>";
+    const truncated = content.length > MAX_FILE_SIZE ? content.slice(0, MAX_FILE_SIZE) + "..." : content;
+    return `\`\`\`
+${truncated}
+\`\`\``;
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/ListSources.js
+var ListSources_exports = {};
+__export(ListSources_exports, {
+  ListSourcesTool: () => ListSourcesTool
+});
+import * as Common10 from "./../../core/common/common.js";
+import * as Host11 from "./../../core/host/host.js";
+import * as i18n18 from "./../../core/i18n/i18n.js";
+import * as Workspace3 from "./../workspace/workspace.js";
+var UIStringsNotTranslate7 = {
+  listingSources: "Listing workspace sources"
+};
+var lockedString8 = i18n18.i18n.lockedString;
+var ListSourcesTool = class _ListSourcesTool {
+  name = "listSources";
+  description = "Lists all source files in the workspace with their name and a unique ID.";
+  static lastSourceId = 0;
+  static uiSourceCodeId = /* @__PURE__ */ new WeakMap();
+  static reset() {
+    _ListSourcesTool.lastSourceId = 0;
+    _ListSourcesTool.uiSourceCodeId = /* @__PURE__ */ new WeakMap();
+  }
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+  static getUISourceCodes(workspace = Workspace3.Workspace.WorkspaceImpl.instance()) {
+    const projects = workspace.projects().filter((project) => project.type() === Workspace3.Workspace.projectTypes.Network);
+    const uiSourceCodes = /* @__PURE__ */ new Map();
+    for (const project of projects) {
+      for (const uiSourceCode of project.uiSourceCodes()) {
+        if (uiSourceCode.isIgnoreListed()) {
+          continue;
+        }
+        const url = uiSourceCode.url();
+        if (!uiSourceCodes.get(url) || uiSourceCode.contentType().isFromSourceMap()) {
+          uiSourceCodes.set(url, uiSourceCode);
+          if (!_ListSourcesTool.uiSourceCodeId.has(uiSourceCode)) {
+            _ListSourcesTool.uiSourceCodeId.set(uiSourceCode, ++_ListSourcesTool.lastSourceId);
+          }
+        }
+      }
+    }
+    return [...uiSourceCodes.values()];
+  }
+  parameters = {
+    type: 6,
+    description: "",
+    nullable: true,
+    required: [],
+    properties: {}
+  };
+  displayInfoFromArgs() {
+    return {
+      title: lockedString8(UIStringsNotTranslate7.listingSources),
+      action: "listSources()"
+    };
+  }
+  async handler(_params, context) {
+    const origin = context.getEstablishedOrigin();
+    if (origin && isOpaqueOrigin(origin)) {
+      return {
+        error: "Opaque origin not allowed"
+      };
+    }
+    const files = _ListSourcesTool.getUISourceCodes().filter((file) => {
+      const fileUrl = file.url();
+      const fileOrigin = Common10.ParsedURL.ParsedURL.extractOrigin(fileUrl);
+      return !origin || fileOrigin === origin;
+    });
+    return {
+      result: {
+        files: files.map((file) => ({
+          id: _ListSourcesTool.uiSourceCodeId.get(file) ?? 0,
+          name: file.fullDisplayName()
+        }))
+      }
+    };
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetSourceContent.js
+var UIStringsNotTranslate8 = {
+  readingSource: "Reading source content"
+};
+var lockedString9 = i18n20.i18n.lockedString;
+var GetSourceContentTool = class {
+  name = "getSourceContent";
+  description = "Gets the content and metadata of a source file by its ID.";
+  parameters = {
+    type: 6,
+    description: "",
+    properties: {
+      id: {
+        type: 3,
+        description: "The unique numeric ID of the source file to retrieve.",
+        nullable: false
+      }
+    },
+    required: ["id"]
+  };
+  displayInfoFromArgs(args) {
+    return {
+      title: lockedString9(UIStringsNotTranslate8.readingSource),
+      action: `getSourceContent(${args.id})`
+    };
+  }
+  async handler(args, context) {
+    const origin = context.getEstablishedOrigin();
+    const file = ListSourcesTool.getUISourceCodes().find((f) => ListSourcesTool.uiSourceCodeId.get(f) === args.id);
+    if (!file) {
+      return {
+        error: "Unable to find file."
+      };
+    }
+    const fileUrl = file.url();
+    const fileOrigin = Common11.ParsedURL.ParsedURL.extractOrigin(fileUrl);
+    if (origin && fileOrigin !== origin) {
+      return {
+        error: "Cross-origin access blocked."
+      };
+    }
+    const contentData = await file.requestContentData();
+    if (TextUtils3.ContentData.ContentData.isError(contentData)) {
+      return {
+        error: `Failed to load file content: ${contentData.error}`
+      };
+    }
+    const formatter = new FileFormatter(file);
+    return {
+      result: {
+        content: formatter.formatFile()
+      }
+    };
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetStyles.js
+var GetStyles_exports = {};
+__export(GetStyles_exports, {
+  GetStylesTool: () => GetStylesTool
+});
+import * as Host13 from "./../../core/host/host.js";
+import * as SDK9 from "./../../core/sdk/sdk.js";
+var GetStylesTool = class {
+  name = "getStyles";
+  description = `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
+
+**CRITICAL** An element uid is a number, not a selector.
+**CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.
+**CRITICAL** Always provide the explanation argument to explain what and why you query.
+**CRITICAL** You MUST provide a specific list of CSS property names. Do not use generic values like "all" or "*".`;
+  parameters = {
+    type: 6,
+    description: "",
+    nullable: false,
+    properties: {
+      explanation: {
+        type: 1,
+        description: "Explain why you want to get styles",
+        nullable: false
+      },
+      elements: {
+        type: 5,
+        description: "A list of element uids to get data for. These are numbers, not selectors.",
+        items: { type: 3, description: "An element uid." },
+        nullable: false
+      },
+      styleProperties: {
+        type: 5,
+        description: 'One or more specific CSS style property names to fetch. Generic values like "all" or "*" are not supported.',
+        nullable: false,
+        items: {
+          type: 1,
+          description: "A CSS style property name to retrieve. For example, 'background-color'."
+        }
+      }
+    },
+    required: ["explanation", "elements", "styleProperties"]
+  };
+  displayInfoFromArgs(params) {
+    return {
+      title: "Reading computed and source styles",
+      thought: params.explanation,
+      action: `getStyles(${JSON.stringify(params.elements)}, ${JSON.stringify(params.styleProperties)})`
+    };
+  }
+  async handler(params, context, _options) {
+    const widgets = [];
+    const result = {};
+    const target = context.getTarget();
+    if (!target) {
+      return { error: "Error: Could not find the inspected page." };
+    }
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (!establishedOrigin) {
+      return { error: "Error: Origin lock is not established." };
+    }
+    for (const uid of params.elements) {
+      result[uid] = { computed: {}, authored: {} };
+      debugLog(`Action to execute: uid=${uid}`);
+      const node = new SDK9.DOMModel.DeferredDOMNode(target, uid);
+      const resolved = await node.resolvePromise();
+      if (!resolved) {
+        return { error: "Error: Could not find the element with uid=" + uid };
+      }
+      const newContext = new DOMNodeContext(resolved);
+      if (!newContext.isOriginAllowed(establishedOrigin)) {
+        return { error: "Error: Node does not belong to the current origin." };
+      }
+      const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);
+      if (!styles) {
+        return { error: "Error: Could not get computed styles." };
+      }
+      const matchedStyles = await resolved.domModel().cssModel().getMatchedStyles(resolved.id);
+      if (!matchedStyles) {
+        return { error: "Error: Could not get authored styles." };
+      }
+      widgets.push({
+        name: "COMPUTED_STYLES",
+        data: {
+          computedStyles: styles,
+          backendNodeId: node.backendNodeId(),
+          matchedCascade: matchedStyles,
+          properties: params.styleProperties
+        }
+      });
+      for (const prop of params.styleProperties) {
+        result[uid].computed[prop] = styles.get(prop);
+      }
+      for (const style of matchedStyles.nodeStyles()) {
+        for (const property of style.allProperties()) {
+          if (!params.styleProperties.includes(property.name)) {
+            continue;
+          }
+          const state = matchedStyles.propertyState(property);
+          if (state === "Active") {
+            result[uid].authored[property.name] = property.value;
+          }
+        }
+      }
+    }
+    return {
+      result: JSON.stringify(result, null, 2),
+      widgets
+    };
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetTraceEventByKey.js
+var GetTraceEventByKey_exports = {};
+__export(GetTraceEventByKey_exports, {
+  GetTraceEventByKeyTool: () => GetTraceEventByKeyTool
+});
+import * as Host14 from "./../../core/host/host.js";
+import * as i18n22 from "./../../core/i18n/i18n.js";
+var UIStringsNotTranslate9 = {
+  lookingAtTraceEvent: "Looking at trace event"
+};
+var lockedString10 = i18n22.i18n.lockedString;
 var GetTraceEventByKeyTool = class {
   name = "getTraceEventByKey";
   description = "Get details for a specific trace event by its event key.";
@@ -6389,7 +6638,7 @@ var GetTraceEventByKeyTool = class {
   };
   displayInfoFromArgs(params) {
     return {
-      title: lockedString7(UIStringsNotTranslate6.lookingAtTraceEvent),
+      title: lockedString10(UIStringsNotTranslate9.lookingAtTraceEvent),
       action: `getTraceEventByKey('${params.eventKey}')`
     };
   }
@@ -6422,8 +6671,8 @@ var GetTraceMainThreadSummary_exports = {};
 __export(GetTraceMainThreadSummary_exports, {
   GetTraceMainThreadSummaryTool: () => GetTraceMainThreadSummaryTool
 });
-import * as Host12 from "./../../core/host/host.js";
-import * as i18n18 from "./../../core/i18n/i18n.js";
+import * as Host15 from "./../../core/host/host.js";
+import * as i18n24 from "./../../core/i18n/i18n.js";
 
 // gen/front_end/models/ai_assistance/tools/Tool.js
 var Tool_exports = {};
@@ -6433,10 +6682,10 @@ __export(Tool_exports, {
 var MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
 
 // gen/front_end/models/ai_assistance/tools/GetTraceMainThreadSummary.js
-var UIStringsNotTranslate7 = {
+var UIStringsNotTranslate10 = {
   mainThreadActivity: "Main thread activity"
 };
-var lockedString8 = i18n18.i18n.lockedString;
+var lockedString11 = i18n24.i18n.lockedString;
 var GetTraceMainThreadSummaryTool = class {
   name = "getTraceMainThreadSummary";
   description = "Returns a focused, detailed summary of the main thread for a predefined labeled period.";
@@ -6455,7 +6704,7 @@ var GetTraceMainThreadSummaryTool = class {
   };
   displayInfoFromArgs(params) {
     return {
-      title: `${lockedString8(UIStringsNotTranslate7.mainThreadActivity)}: ${params.label}`,
+      title: `${lockedString11(UIStringsNotTranslate10.mainThreadActivity)}: ${params.label}`,
       action: `getTraceMainThreadSummary('${params.label}')`
     };
   }
@@ -6504,12 +6753,12 @@ var GetTraceNetworkSummary_exports = {};
 __export(GetTraceNetworkSummary_exports, {
   GetTraceNetworkSummaryTool: () => GetTraceNetworkSummaryTool
 });
-import * as Host13 from "./../../core/host/host.js";
-import * as i18n20 from "./../../core/i18n/i18n.js";
-var UIStringsNotTranslate8 = {
+import * as Host16 from "./../../core/host/host.js";
+import * as i18n26 from "./../../core/i18n/i18n.js";
+var UIStringsNotTranslate11 = {
   networkActivitySummary: "Network activity summary"
 };
-var lockedString9 = i18n20.i18n.lockedString;
+var lockedString12 = i18n26.i18n.lockedString;
 var GetTraceNetworkSummaryTool = class {
   name = "getTraceNetworkSummary";
   description = "Returns a summary of the network requests for the given bounds.";
@@ -6540,7 +6789,7 @@ var GetTraceNetworkSummaryTool = class {
       parts.push(`max: ${params.max}`);
     }
     return {
-      title: lockedString9(UIStringsNotTranslate8.networkActivitySummary),
+      title: lockedString12(UIStringsNotTranslate11.networkActivitySummary),
       action: `getTraceNetworkSummary({${parts.join(", ")}})`
     };
   }
@@ -6579,13 +6828,13 @@ var ListNetworkRequests_exports = {};
 __export(ListNetworkRequests_exports, {
   ListNetworkRequestsTool: () => ListNetworkRequestsTool
 });
-import * as Host14 from "./../../core/host/host.js";
-import * as i18n22 from "./../../core/i18n/i18n.js";
+import * as Host17 from "./../../core/host/host.js";
+import * as i18n28 from "./../../core/i18n/i18n.js";
 import * as Logs4 from "./../logs/logs.js";
-var UIStringsNotTranslate9 = {
+var UIStringsNotTranslate12 = {
   listingNetworkRequests: "Listing network requests"
 };
-var lockedString10 = i18n22.i18n.lockedString;
+var lockedString13 = i18n28.i18n.lockedString;
 var ListNetworkRequestsTool = class {
   name = "listNetworkRequests";
   description = "Gives a list of network requests including URL, status code, and duration.";
@@ -6602,7 +6851,7 @@ var ListNetworkRequestsTool = class {
   };
   displayInfoFromArgs() {
     return {
-      title: lockedString10(UIStringsNotTranslate9.listingNetworkRequests),
+      title: lockedString13(UIStringsNotTranslate12.listingNetworkRequests),
       action: "listNetworkRequests()"
     };
   }
@@ -6660,162 +6909,11 @@ var ListPageOrigins_exports = {};
 __export(ListPageOrigins_exports, {
   ListPageOriginsTool: () => ListPageOriginsTool
 });
-import * as Common13 from "./../../core/common/common.js";
-import * as Host15 from "./../../core/host/host.js";
-import * as i18n24 from "./../../core/i18n/i18n.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
-
-// gen/front_end/models/ai_assistance/contexts/StorageContext.js
-var StorageContext_exports = {};
-__export(StorageContext_exports, {
-  StorageContext: () => StorageContext,
-  isSamePageOrigin: () => isSamePageOrigin
-});
 import * as Common12 from "./../../core/common/common.js";
-
-// gen/front_end/models/ai_assistance/StorageItem.js
-var StorageItem_exports = {};
-__export(StorageItem_exports, {
-  CookieItem: () => CookieItem,
-  DOMStorageItem: () => DOMStorageItem,
-  EMPTY_ORIGIN: () => EMPTY_ORIGIN,
-  StorageItem: () => StorageItem
-});
-var EMPTY_ORIGIN = "";
-var StorageItem = class _StorageItem {
-  primaryTargetOrigin;
-  origin;
-  constructor(primaryTargetOrigin, origin = EMPTY_ORIGIN) {
-    this.primaryTargetOrigin = primaryTargetOrigin;
-    this.origin = origin;
-  }
-  get isGenericContext() {
-    return this.origin === EMPTY_ORIGIN;
-  }
-  static createGenericContext(primaryTargetOrigin, ..._args) {
-    return new _StorageItem(primaryTargetOrigin, EMPTY_ORIGIN);
-  }
-};
-var DOMStorageItem = class _DOMStorageItem extends StorageItem {
-  storageKey;
-  type;
-  key;
-  constructor(primaryTargetOrigin, origin, storageKey, type, key) {
-    super(primaryTargetOrigin, origin);
-    this.storageKey = storageKey;
-    this.type = type;
-    this.key = key;
-  }
-  static createGenericContext(primaryTargetOrigin, type) {
-    return new _DOMStorageItem(primaryTargetOrigin, EMPTY_ORIGIN, void 0, type);
-  }
-};
-var CookieItem = class _CookieItem extends StorageItem {
-  name;
-  constructor(primaryTargetOrigin, origin, name) {
-    super(primaryTargetOrigin, origin);
-    this.name = name;
-  }
-  static createGenericContext(primaryTargetOrigin) {
-    return new _CookieItem(primaryTargetOrigin, EMPTY_ORIGIN);
-  }
-};
-
-// gen/front_end/models/ai_assistance/contexts/StorageContext.js
-var StorageContext = class extends ConversationContext {
-  #item;
-  constructor(item) {
-    super();
-    this.#item = item;
-  }
-  getURL() {
-    return this.#item.primaryTargetOrigin;
-  }
-  getItem() {
-    return this.#item;
-  }
-  getTitle() {
-    if (this.#item instanceof CookieItem) {
-      if (this.#item.name) {
-        return `cookie: ${this.#item.name}${this.#item.origin ? ` ${this.#item.origin}` : ""}`;
-      }
-      return `cookies${this.#item.isGenericContext ? "" : `: ${this.#item.origin}`}`;
-    }
-    if (this.#item instanceof DOMStorageItem) {
-      if (this.#item.key) {
-        return `entry: ${this.#item.key}${this.#item.origin ? ` ${this.#item.origin}` : ""}`;
-      }
-      const prefix = this.#item.type === "localStorage" ? "local storage" : "session storage";
-      return `${prefix}${this.#item.isGenericContext ? "" : `: ${this.#item.origin}`}`;
-    }
-    return `Storage: ${this.getOrigin()}`;
-  }
-  /**
-   * @override
-   */
-  isLoggingEnabled() {
-    if (this.#item instanceof CookieItem && Boolean(this.#item.name)) {
-      return false;
-    }
-    if (this.#item instanceof DOMStorageItem && Boolean(this.#item.key)) {
-      return false;
-    }
-    return true;
-  }
-  async getSuggestions() {
-    if (this.#item instanceof CookieItem) {
-      if (this.#item.name) {
-        return [
-          {
-            title: "Why is this cookie set?",
-            jslogContext: "storage-cookie"
-          },
-          {
-            title: "Explain the value of this cookie",
-            jslogContext: "storage-cookie"
-          }
-        ];
-      }
-      return [
-        {
-          title: "Explain the cookies set by this page",
-          jslogContext: "storage-cookie"
-        }
-      ];
-    }
-    if (this.#item instanceof DOMStorageItem) {
-      if (this.#item.key) {
-        return [
-          {
-            title: "What is the purpose of this storage entry?",
-            jslogContext: "storage-domstorage"
-          },
-          {
-            title: "Explain the value of this storage entry",
-            jslogContext: "storage-domstorage"
-          }
-        ];
-      }
-      return [
-        {
-          title: "Explain these storage items",
-          jslogContext: "storage-domstorage"
-        }
-      ];
-    }
-    return void 0;
-  }
-};
-function isSamePageOrigin(target, allowedOrigin) {
-  if (!target) {
-    return false;
-  }
-  const pageOrigin = Common12.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL());
-  return pageOrigin !== "" && areOriginsEquivalent(pageOrigin, allowedOrigin);
-}
-
-// gen/front_end/models/ai_assistance/tools/ListPageOrigins.js
-var lockedString11 = i18n24.i18n.lockedString;
+import * as Host18 from "./../../core/host/host.js";
+import * as i18n30 from "./../../core/i18n/i18n.js";
+import * as SDK10 from "./../../core/sdk/sdk.js";
+var lockedString14 = i18n30.i18n.lockedString;
 var ListPageOriginsTool = class {
   name = "listPageOrigins";
   description = "Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies or listStorageKeys, unless the user's explicit request hints at focusing only on the primary page.";
@@ -6828,29 +6926,41 @@ var ListPageOriginsTool = class {
   };
   displayInfoFromArgs() {
     return {
-      title: lockedString11("Listing page origins"),
+      title: lockedString14("Listing page origins"),
       action: "listPageOrigins()"
     };
   }
+  /**
+   * Retrieves the set of unique frame origins loaded within the primary page's target tree.
+   *
+   * To prevent data leakage across different tabs/windows, this tool:
+   * 1. Restricts the frame search to those belonging to the `primaryPageTarget`'s outermost target tree.
+   * 2. Filters out any origins that are not equivalent to the established allowed origin.
+   *    Note: Under site isolation, frames may be hosted on different sub-targets or processes,
+   *    so we check `frame.securityOrigin` directly instead of the frame's target origin.
+   */
   async handler(_args, context) {
-    const targetManager = SDK9.TargetManager.TargetManager.instance();
+    const targetManager = SDK10.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
     const allowedOrigin = context.getEstablishedOrigin();
     if (!allowedOrigin || isOpaqueOrigin(allowedOrigin)) {
       return { error: "No origin available or not allowed." };
     }
-    const pageOrigin = primaryPageTarget ? Common13.ParsedURL.ParsedURL.extractOrigin(primaryPageTarget.inspectedURL()) : "";
+    const pageOrigin = primaryPageTarget ? Common12.ParsedURL.ParsedURL.extractOrigin(primaryPageTarget.inspectedURL()) : "";
     const isAllowed = pageOrigin !== "" && areOriginsEquivalent(pageOrigin, allowedOrigin);
     if (!isAllowed) {
       return { error: "No origin available or not allowed." };
     }
     const origins = /* @__PURE__ */ new Set();
-    for (const frame of SDK9.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
-      if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), allowedOrigin)) {
+    for (const frame of SDK10.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
+      if (frame.resourceTreeModel().target().outermostTarget() !== primaryPageTarget) {
         continue;
       }
       const origin = frame.securityOrigin;
-      if (!origin || isOpaqueOrigin(origin) || origins.has(origin)) {
+      if (!origin || !areOriginsEquivalent(origin, allowedOrigin)) {
+        continue;
+      }
+      if (origins.has(origin)) {
         continue;
       }
       origins.add(origin);
@@ -6864,12 +6974,12 @@ var RecordPerformanceTrace_exports = {};
 __export(RecordPerformanceTrace_exports, {
   RecordPerformanceTraceTool: () => RecordPerformanceTraceTool
 });
-import * as Host16 from "./../../core/host/host.js";
-import * as i18n26 from "./../../core/i18n/i18n.js";
-var UIStringsNotTranslate10 = {
+import * as Host19 from "./../../core/host/host.js";
+import * as i18n32 from "./../../core/i18n/i18n.js";
+var UIStringsNotTranslate13 = {
   recordingPerformanceTrace: "Recording a performance trace"
 };
-var lockedString12 = i18n26.i18n.lockedString;
+var lockedString15 = i18n32.i18n.lockedString;
 var RecordPerformanceTraceTool = class {
   name = "recordPerformanceTrace";
   description = "Records a new performance trace to measure, analyze, and debug page performance.";
@@ -6882,7 +6992,7 @@ var RecordPerformanceTraceTool = class {
   };
   displayInfoFromArgs() {
     return {
-      title: lockedString12(UIStringsNotTranslate10.recordingPerformanceTrace),
+      title: lockedString15(UIStringsNotTranslate13.recordingPerformanceTrace),
       action: "recordPerformanceTrace()"
     };
   }
@@ -6908,8 +7018,8 @@ var ResolveDevtoolsNodePath_exports = {};
 __export(ResolveDevtoolsNodePath_exports, {
   ResolveDevtoolsNodePathTool: () => ResolveDevtoolsNodePathTool
 });
-import * as Host17 from "./../../core/host/host.js";
-import * as SDK10 from "./../../core/sdk/sdk.js";
+import * as Host20 from "./../../core/host/host.js";
+import * as SDK11 from "./../../core/sdk/sdk.js";
 var ResolveDevtoolsNodePathTool = class {
   name = "resolveDevtoolsNodePath";
   description = "Resolves a DevTools node path to a backend node ID.";
@@ -6951,7 +7061,7 @@ var ResolveDevtoolsNodePathTool = class {
       return { error: "Error: Origin lock is not established." };
     }
     const target = context.getTarget();
-    const domModel = target?.model(SDK10.DOMModel.DOMModel);
+    const domModel = target?.model(SDK11.DOMModel.DOMModel);
     if (!domModel) {
       return { error: "Error: Inspected target not found." };
     }
@@ -6977,19 +7087,84 @@ var ResolveDevtoolsNodePathTool = class {
   }
 };
 
+// gen/front_end/models/ai_assistance/tools/RunLighthouse.js
+var RunLighthouse_exports = {};
+__export(RunLighthouse_exports, {
+  RunLighthouseTool: () => RunLighthouseTool
+});
+import * as Host21 from "./../../core/host/host.js";
+var RunLighthouseTool = class {
+  name = "runLighthouse";
+  description = 'Runs Lighthouse audits on the active page. Supports "navigation" (for full initial page load audits), "snapshot" (for inspecting live in-page modifications without reload), and "timespan" (for interactions).';
+  parameters = {
+    type: 6,
+    description: "Parameters for running Lighthouse audits.",
+    nullable: false,
+    properties: {
+      explanation: {
+        type: 1,
+        description: "Reason for running new audits.",
+        nullable: false
+      },
+      category: {
+        type: 1,
+        description: 'Lighthouse category. E.g. "accessibility", "performance".',
+        nullable: false
+      },
+      mode: {
+        type: 1,
+        description: 'Lighthouse execution mode: "navigation", "snapshot", "timespan". Use "navigation" for initial full audits unless the user requested otherwise or in-page changes are being evaluated. Defaults to "snapshot".',
+        nullable: true
+      }
+    },
+    required: ["explanation", "category"]
+  };
+  displayInfoFromArgs(params) {
+    return {
+      title: `Running Lighthouse audits: ${params.category} (${params.mode ?? "snapshot"})`,
+      thought: params.explanation,
+      action: `runLighthouse('${params.category}', '${params.mode ?? "snapshot"}')`
+    };
+  }
+  async handler(params, context) {
+    if (!context.lighthouseRecording) {
+      return { error: "Error: Lighthouse recording capability is not available." };
+    }
+    const mode = params.mode ?? "snapshot";
+    try {
+      const report = await context.lighthouseRecording({
+        mode,
+        categoryIds: [params.category],
+        isAIControlled: true
+      });
+      if (!report) {
+        return { error: "Error: Failed to record new audits." };
+      }
+      const audits = new LighthouseFormatter().audits(report, params.category);
+      const isSnapshot = mode === "snapshot";
+      return {
+        result: { audits },
+        widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report, snapshotReport: isSnapshot } }]
+      };
+    } catch (err) {
+      return { error: `Error: Failed to record new audits: ${err instanceof Error ? err.message : String(err)}` };
+    }
+  }
+};
+
 // gen/front_end/models/ai_assistance/tools/SelectTraceEventByKey.js
 var SelectTraceEventByKey_exports = {};
 __export(SelectTraceEventByKey_exports, {
   SelectTraceEventByKeyTool: () => SelectTraceEventByKeyTool
 });
-import * as Common14 from "./../../core/common/common.js";
-import * as Host18 from "./../../core/host/host.js";
-import * as i18n28 from "./../../core/i18n/i18n.js";
-import * as SDK11 from "./../../core/sdk/sdk.js";
-var UIStringsNotTranslate11 = {
+import * as Common13 from "./../../core/common/common.js";
+import * as Host22 from "./../../core/host/host.js";
+import * as i18n34 from "./../../core/i18n/i18n.js";
+import * as SDK12 from "./../../core/sdk/sdk.js";
+var UIStringsNotTranslate14 = {
   selectingTraceEvent: "Selecting trace event"
 };
-var lockedString13 = i18n28.i18n.lockedString;
+var lockedString16 = i18n34.i18n.lockedString;
 var SelectTraceEventByKeyTool = class {
   name = "selectTraceEventByKey";
   description = "Selects and reveals a specific event by its key in the Performance panel Flamechart.";
@@ -7008,7 +7183,7 @@ var SelectTraceEventByKeyTool = class {
   };
   displayInfoFromArgs(params) {
     return {
-      title: lockedString13(UIStringsNotTranslate11.selectingTraceEvent),
+      title: lockedString16(UIStringsNotTranslate14.selectingTraceEvent),
       action: `selectTraceEventByKey('${params.eventKey}')`
     };
   }
@@ -7022,9 +7197,9 @@ var SelectTraceEventByKeyTool = class {
     if (!event) {
       return { error: `Could not find event with key "${params.eventKey}".` };
     }
-    const revealable = new SDK11.TraceObject.RevealableEvent(event);
+    const revealable = new SDK12.TraceObject.RevealableEvent(event);
     try {
-      await Common14.Revealer.reveal(revealable);
+      await Common13.Revealer.reveal(revealable);
     } catch {
     }
     return {
@@ -7101,7 +7276,23 @@ var TOOLS = {
   [
     "getTraceNetworkSummary"
     /* ToolName.GET_TRACE_NETWORK_SUMMARY */
-  ]: new GetTraceNetworkSummaryTool()
+  ]: new GetTraceNetworkSummaryTool(),
+  [
+    "runLighthouse"
+    /* ToolName.RUN_LIGHTHOUSE */
+  ]: new RunLighthouseTool(),
+  [
+    "getDetailedCallTree"
+    /* ToolName.GET_DETAILED_CALL_TREE */
+  ]: new GetDetailedCallTreeTool(),
+  [
+    "getFunctionCode"
+    /* ToolName.GET_FUNCTION_CODE */
+  ]: new GetFunctionCodeTool(),
+  [
+    "getResourceContent"
+    /* ToolName.GET_RESOURCE_CONTENT */
+  ]: new GetResourceContentTool()
 };
 var ToolRegistry = class {
   static get(name) {
@@ -7156,7 +7347,7 @@ If the user asks a question that requires an investigation of a problem, use thi
 `;
 var AccessibilityAgent = class extends AiAgent {
   preamble = preamble;
-  clientFeature = Host19.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
+  clientFeature = Host23.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
   #lighthouseRecording;
   #execJs;
   #changes;
@@ -7171,14 +7362,14 @@ var AccessibilityAgent = class extends AiAgent {
     });
   }
   get userTier() {
-    return Root5.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root6.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get executionMode() {
-    return Root5.Runtime.hostConfig.devToolsFreestyler?.executionMode ?? Root5.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
+    return Root6.Runtime.hostConfig.devToolsFreestyler?.executionMode ?? Root6.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
   }
   get options() {
-    const temperature = Root5.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root5.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root6.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root6.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
     return {
       temperature,
       modelId
@@ -7186,7 +7377,7 @@ var AccessibilityAgent = class extends AiAgent {
   }
   async preRun() {
     const target = this.targetManager.primaryPageTarget();
-    const domModel = target?.model(SDK12.DOMModel.DOMModel);
+    const domModel = target?.model(SDK13.DOMModel.DOMModel);
     if (domModel && !domModel.existingDocument()) {
       try {
         await domModel.requestDocument();
@@ -7201,7 +7392,7 @@ var AccessibilityAgent = class extends AiAgent {
    * so that the AI has a valid $0 to start with.
    */
   #getDocumentBodyNode() {
-    const document2 = this.targetManager.primaryPageTarget()?.model(SDK12.DOMModel.DOMModel)?.existingDocument();
+    const document2 = this.targetManager.primaryPageTarget()?.model(SDK13.DOMModel.DOMModel)?.existingDocument();
     return document2?.body ?? document2 ?? null;
   }
   async *handleContextDetails(lhr) {
@@ -7221,7 +7412,7 @@ var AccessibilityAgent = class extends AiAgent {
     if (!target) {
       return null;
     }
-    const domModel = target.model(SDK12.DOMModel.DOMModel);
+    const domModel = target.model(SDK13.DOMModel.DOMModel);
     if (!domModel) {
       return null;
     }
@@ -7263,7 +7454,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n30.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
+          title: i18n36.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
           action: `getLighthouseAudits('${params.categoryId}')`
         };
       },
@@ -7323,7 +7514,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n30.i18n.lockedString("Running accessibility audits"),
+          title: i18n36.i18n.lockedString("Running accessibility audits"),
           thought: params.explanation,
           action: "runAccessibilityAudits()"
         };
@@ -7466,7 +7657,7 @@ var AccessibilityAgent = class extends AiAgent {
         if (!node) {
           return { error: `Could not find the element with path: ${params.path}` };
         }
-        const accessibilityModel = node.domModel().target().model(SDK12.AccessibilityModel.AccessibilityModel);
+        const accessibilityModel = node.domModel().target().model(SDK13.AccessibilityModel.AccessibilityModel);
         if (!accessibilityModel) {
           return { error: "Accessibility model not found." };
         }
@@ -7497,8 +7688,8 @@ var AccessibilityAgent = class extends AiAgent {
           name: "DOM_TREE",
           data: {
             root: snapshot,
-            title: i18n30.i18n.lockedString("Element details"),
-            accessibleRevealLabel: i18n30.i18n.lockedString("Reveal element")
+            title: i18n36.i18n.lockedString("Element details"),
+            accessibleRevealLabel: i18n36.i18n.lockedString("Reveal element")
           }
         });
         return {
@@ -7527,10 +7718,10 @@ var ContextSelectionAgent_exports = {};
 __export(ContextSelectionAgent_exports, {
   ContextSelectionAgent: () => ContextSelectionAgent
 });
-import * as Common15 from "./../../core/common/common.js";
-import * as Host20 from "./../../core/host/host.js";
-import * as i18n32 from "./../../core/i18n/i18n.js";
-import * as Root6 from "./../../core/root/root.js";
+import * as Common14 from "./../../core/common/common.js";
+import * as Host24 from "./../../core/host/host.js";
+import * as i18n38 from "./../../core/i18n/i18n.js";
+import * as Root7 from "./../../core/root/root.js";
 import * as Logs5 from "./../logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 import * as Workspace5 from "./../workspace/workspace.js";
@@ -7574,8 +7765,148 @@ ${new FileFormatter(this.#file, this.#debuggerWorkspaceBinding).formatFile()}`;
   }
 };
 
+// gen/front_end/models/ai_assistance/contexts/StorageContext.js
+var StorageContext_exports = {};
+__export(StorageContext_exports, {
+  StorageContext: () => StorageContext
+});
+
+// gen/front_end/models/ai_assistance/StorageItem.js
+var StorageItem_exports = {};
+__export(StorageItem_exports, {
+  CookieItem: () => CookieItem,
+  DOMStorageItem: () => DOMStorageItem,
+  EMPTY_ORIGIN: () => EMPTY_ORIGIN,
+  StorageItem: () => StorageItem
+});
+var EMPTY_ORIGIN = "";
+var StorageItem = class _StorageItem {
+  primaryTargetOrigin;
+  origin;
+  constructor(primaryTargetOrigin, origin = EMPTY_ORIGIN) {
+    this.primaryTargetOrigin = primaryTargetOrigin;
+    this.origin = origin;
+  }
+  get isGenericContext() {
+    return this.origin === EMPTY_ORIGIN;
+  }
+  static createGenericContext(primaryTargetOrigin, ..._args) {
+    return new _StorageItem(primaryTargetOrigin, EMPTY_ORIGIN);
+  }
+};
+var DOMStorageItem = class _DOMStorageItem extends StorageItem {
+  storageKey;
+  type;
+  key;
+  constructor(primaryTargetOrigin, origin, storageKey, type, key) {
+    super(primaryTargetOrigin, origin);
+    this.storageKey = storageKey;
+    this.type = type;
+    this.key = key;
+  }
+  static createGenericContext(primaryTargetOrigin, type) {
+    return new _DOMStorageItem(primaryTargetOrigin, EMPTY_ORIGIN, void 0, type);
+  }
+};
+var CookieItem = class _CookieItem extends StorageItem {
+  name;
+  constructor(primaryTargetOrigin, origin, name) {
+    super(primaryTargetOrigin, origin);
+    this.name = name;
+  }
+  static createGenericContext(primaryTargetOrigin) {
+    return new _CookieItem(primaryTargetOrigin, EMPTY_ORIGIN);
+  }
+};
+
+// gen/front_end/models/ai_assistance/contexts/StorageContext.js
+var StorageContext = class extends ConversationContext {
+  #item;
+  constructor(item) {
+    super();
+    this.#item = item;
+  }
+  getURL() {
+    return this.#item.primaryTargetOrigin;
+  }
+  getItem() {
+    return this.#item;
+  }
+  getTitle() {
+    if (this.#item instanceof CookieItem) {
+      if (this.#item.name) {
+        return `cookie: ${this.#item.name}${this.#item.origin ? ` ${this.#item.origin}` : ""}`;
+      }
+      return `cookies${this.#item.isGenericContext ? "" : `: ${this.#item.origin}`}`;
+    }
+    if (this.#item instanceof DOMStorageItem) {
+      if (this.#item.key) {
+        return `entry: ${this.#item.key}${this.#item.origin ? ` ${this.#item.origin}` : ""}`;
+      }
+      const prefix = this.#item.type === "localStorage" ? "local storage" : "session storage";
+      return `${prefix}${this.#item.isGenericContext ? "" : `: ${this.#item.origin}`}`;
+    }
+    return `Storage: ${this.getOrigin()}`;
+  }
+  /**
+   * @override
+   */
+  isLoggingEnabled() {
+    if (this.#item instanceof CookieItem && Boolean(this.#item.name)) {
+      return false;
+    }
+    if (this.#item instanceof DOMStorageItem && Boolean(this.#item.key)) {
+      return false;
+    }
+    return true;
+  }
+  async getSuggestions() {
+    if (this.#item instanceof CookieItem) {
+      if (this.#item.name) {
+        return [
+          {
+            title: "Why is this cookie set?",
+            jslogContext: "storage-cookie"
+          },
+          {
+            title: "Explain the value of this cookie",
+            jslogContext: "storage-cookie"
+          }
+        ];
+      }
+      return [
+        {
+          title: "Explain the cookies set by this page",
+          jslogContext: "storage-cookie"
+        }
+      ];
+    }
+    if (this.#item instanceof DOMStorageItem) {
+      if (this.#item.key) {
+        return [
+          {
+            title: "What is the purpose of this storage entry?",
+            jslogContext: "storage-domstorage"
+          },
+          {
+            title: "Explain the value of this storage entry",
+            jslogContext: "storage-domstorage"
+          }
+        ];
+      }
+      return [
+        {
+          title: "Explain these storage items",
+          jslogContext: "storage-domstorage"
+        }
+      ];
+    }
+    return void 0;
+  }
+};
+
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
-var lockedString14 = i18n32.i18n.lockedString;
+var lockedString17 = i18n38.i18n.lockedString;
 var preamble2 = `
 You are an advanced Web Development Assistant and AI routing agent integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise. You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
 
@@ -7613,13 +7944,13 @@ Your role is to understand the user's query, identify the appropriate specialize
 `;
 var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
   preamble = preamble2;
-  clientFeature = Host20.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
+  clientFeature = Host24.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
   get userTier() {
-    return Root6.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
-    const temperature = Root6.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root6.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
     return {
       temperature,
       modelId
@@ -7652,7 +7983,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString14("Listing network requests"),
+          title: lockedString17("Listing network requests"),
           action: "listNetworkRequest()"
         };
       },
@@ -7720,7 +8051,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString14("Getting network request"),
+          title: lockedString17("Getting network request"),
           action: `selectNetworkRequest(${args.id})`
         };
       },
@@ -7773,7 +8104,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString14("Listing source requests"),
+          title: lockedString17("Listing source requests"),
           action: "listSourceFiles()"
         };
       },
@@ -7789,7 +8120,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         const uiSourceCodes = [];
         for (const file of _ContextSelectionAgent.getUISourceCodes(this.#workspace)) {
           const fileUrl = file.url();
-          const fileOrigin = Common15.ParsedURL.ParsedURL.extractOrigin(fileUrl);
+          const fileOrigin = Common14.ParsedURL.ParsedURL.extractOrigin(fileUrl);
           if (origin && fileOrigin !== origin) {
             continue;
           }
@@ -7827,7 +8158,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString14("Getting source file"),
+          title: lockedString17("Getting source file"),
           action: `selectSourceFile(${args.id})`
         };
       },
@@ -7844,7 +8175,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
             return false;
           }
           const fileUrl = file2.url();
-          const fileOrigin = Common15.ParsedURL.ParsedURL.extractOrigin(fileUrl);
+          const fileOrigin = Common14.ParsedURL.ParsedURL.extractOrigin(fileUrl);
           return !origin || fileOrigin === origin;
         });
         if (!file) {
@@ -7948,7 +8279,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString14("Select an element on the page or in the Elements panel")
+          title: lockedString17("Select an element on the page or in the Elements panel")
         };
       },
       handler: async (_params, options) => {
@@ -7975,7 +8306,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         };
       }
     });
-    if (Root6.Runtime.hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
+    if (Root7.Runtime.hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
       this.declareFunction("analyzeStorage", {
         description: "Selects the page storage. Use this when asked about browser storage (localStorage, sessionStorage, cookies) and issues related to these.",
         parameters: {
@@ -7987,7 +8318,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         },
         displayInfoFromArgs: () => {
           return {
-            title: lockedString14("Prepare storage analysis"),
+            title: lockedString17("Prepare storage analysis"),
             action: "analyzeStorage()"
           };
         },
@@ -8060,8 +8391,8 @@ var FileAgent_exports = {};
 __export(FileAgent_exports, {
   FileAgent: () => FileAgent
 });
-import * as Host21 from "./../../core/host/host.js";
-import * as Root7 from "./../../core/root/root.js";
+import * as Host25 from "./../../core/host/host.js";
+import * as Root8 from "./../../core/root/root.js";
 var preamble3 = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
 You are provided with the content of a file from the Chrome DevTools Sources panel. To aid your analysis, you've been given the below links to understand the context of the code and its relationship to other files. When answering questions, prioritize providing these links directly.
 * Source-mapped from: If this code is the source for a mapped file, you'll have a link to that generated file.
@@ -8116,13 +8447,13 @@ MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web
 `;
 var FileAgent = class extends AiAgent {
   preamble = preamble3;
-  clientFeature = Host21.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+  clientFeature = Host25.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier() {
-    return Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
+    return Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
   }
   get options() {
-    const temperature = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
     return {
       temperature,
       modelId
@@ -8157,8 +8488,8 @@ var NetworkAgent_exports = {};
 __export(NetworkAgent_exports, {
   NetworkAgent: () => NetworkAgent
 });
-import * as Host22 from "./../../core/host/host.js";
-import * as Root8 from "./../../core/root/root.js";
+import * as Host26 from "./../../core/host/host.js";
+import * as Root9 from "./../../core/root/root.js";
 var preamble4 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
 Provide a comprehensive analysis of the network request, focusing on areas crucial for a software engineer. Your analysis should include:
@@ -8205,13 +8536,13 @@ This request aims to retrieve a list of products matching the search query "lapt
 `;
 var NetworkAgent = class extends AiAgent {
   preamble = preamble4;
-  clientFeature = Host22.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
+  clientFeature = Host26.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   get userTier() {
-    return Root8.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
+    return Root9.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
   }
   get options() {
-    const temperature = Root8.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
-    const modelId = Root8.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
+    const temperature = Root9.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
+    const modelId = Root9.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
     return {
       temperature,
       modelId
@@ -8252,15 +8583,15 @@ var PerformanceAgent_exports = {};
 __export(PerformanceAgent_exports, {
   PerformanceAgent: () => PerformanceAgent
 });
-import * as Common16 from "./../../core/common/common.js";
-import * as Host23 from "./../../core/host/host.js";
-import * as i18n34 from "./../../core/i18n/i18n.js";
-import * as Root9 from "./../../core/root/root.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
-import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
+import * as Common15 from "./../../core/common/common.js";
+import * as Host27 from "./../../core/host/host.js";
+import * as i18n40 from "./../../core/i18n/i18n.js";
+import * as Root10 from "./../../core/root/root.js";
+import * as SDK14 from "./../../core/sdk/sdk.js";
+import * as TextUtils4 from "./../../core/text_utils/text_utils.js";
 import * as Tracing2 from "./../../services/tracing/tracing.js";
 import * as Logs6 from "./../logs/logs.js";
-import * as Trace7 from "./../trace/trace.js";
+import * as Trace8 from "./../trace/trace.js";
 var UIStringsNotTranslated = {
   /**
    * @description Shown when the agent is investigating network activity
@@ -8271,7 +8602,7 @@ var UIStringsNotTranslated = {
    */
   mainThreadActivity: "Investigating main thread activity"
 };
-var lockedString15 = i18n34.i18n.lockedString;
+var lockedString18 = i18n40.i18n.lockedString;
 var preamble5 = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
 Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
@@ -8458,14 +8789,14 @@ var PerformanceAgent = class extends AiAgent {
    */
   #additionalSelectionsForDisclosure = [];
   get clientFeature() {
-    return Host23.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
+    return Host27.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
   }
   get userTier() {
-    return Root9.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+    return Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options() {
-    const temperature = Root9.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = Root9.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+    const temperature = Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
     return {
       temperature,
       modelId
@@ -8505,8 +8836,8 @@ var PerformanceAgent = class extends AiAgent {
     if (focus.callTree) {
       const event = focus.callTree.selectedNode?.event;
       if (event) {
-        const { startTime, endTime } = Trace7.Helpers.Timing.eventTimingsMicroSeconds(event);
-        const bounds = Trace7.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+        const { startTime, endTime } = Trace8.Helpers.Timing.eventTimingsMicroSeconds(event);
+        const bounds = Trace8.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
         widgets.push({
           name: "TIMELINE_RANGE_SUMMARY",
           data: {
@@ -8527,7 +8858,7 @@ var PerformanceAgent = class extends AiAgent {
     }
     if (focus.insight) {
       const insightKey = focus.insight.insightKey;
-      if (Trace7.Insights.Common.isInsightKey(insightKey)) {
+      if (Trace8.Insights.Common.isInsightKey(insightKey)) {
         widgets.push({
           name: "PERF_INSIGHT",
           data: {
@@ -8851,7 +9182,7 @@ ${result}`,
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: lockedString15(`Investigating insight ${params.insightName}`),
+          title: lockedString18(`Investigating insight ${params.insightName}`),
           action: `getInsightDetails('${params.insightSetId}', '${params.insightName}')`
         };
       },
@@ -8869,14 +9200,14 @@ ${result}`,
         }
         const details = new PerformanceInsightFormatter(focus, insight).formatInsight();
         const widgets = [];
-        if (Trace7.Insights.Models.LCPDiscovery.isLCPDiscoveryInsight(insight) || Trace7.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(insight)) {
-          const lcpMetric = Trace7.Insights.Common.getLCP(insightSet);
+        if (Trace8.Insights.Models.LCPDiscovery.isLCPDiscoveryInsight(insight) || Trace8.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(insight)) {
+          const lcpMetric = Trace8.Insights.Common.getLCP(insightSet);
           const lcpEvent = lcpMetric?.event;
-          if (lcpEvent && Trace7.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
+          if (lcpEvent && Trace8.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
             const nodeId = lcpEvent.args.data?.nodeId;
             if (nodeId) {
               const target = this.targetManager.primaryPageTarget();
-              const domModel = target?.model(SDK13.DOMModel.DOMModel);
+              const domModel = target?.model(SDK14.DOMModel.DOMModel);
               if (domModel) {
                 const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([nodeId]));
                 const node = nodeMap?.get(nodeId);
@@ -8901,8 +9232,8 @@ ${result}`,
                     data: {
                       root: snapshot,
                       networkRequest,
-                      title: lockedString15("LCP element"),
-                      accessibleRevealLabel: lockedString15("Reveal LCP element")
+                      title: lockedString18("LCP element"),
+                      accessibleRevealLabel: lockedString18("Reveal LCP element")
                     }
                   });
                 }
@@ -8911,7 +9242,7 @@ ${result}`,
           }
         }
         const insightKey = params.insightName;
-        if (Trace7.Insights.Common.isInsightKey(insightKey)) {
+        if (Trace8.Insights.Common.isInsightKey(insightKey)) {
           widgets.push({
             name: "PERF_INSIGHT",
             data: {
@@ -8941,7 +9272,7 @@ ${result}`,
         required: ["eventKey"]
       },
       displayInfoFromArgs: (params) => {
-        return { title: lockedString15("Looking at trace event"), action: `getEventByKey('${params.eventKey}')` };
+        return { title: lockedString18("Looking at trace event"), action: `getEventByKey('${params.eventKey}')` };
       },
       handler: async (params) => {
         debugLog("Function call: getEventByKey", params);
@@ -8982,7 +9313,7 @@ ${result}`,
       displayInfoFromArgs: (args) => {
         const labelName = context.getLabelName(args.label);
         return {
-          title: lockedString15(`${UIStringsNotTranslated.mainThreadActivity}: ${labelName}`),
+          title: lockedString18(`${UIStringsNotTranslated.mainThreadActivity}: ${labelName}`),
           action: `getMainThreadTrackSummaryByLabel('${args.label}')`
         };
       },
@@ -9020,7 +9351,7 @@ ${result}`,
         const min = args.min ?? parsedTrace.data.Meta.traceBounds.min;
         const max = args.max ?? parsedTrace.data.Meta.traceBounds.max;
         return {
-          title: lockedString15(UIStringsNotTranslated.networkActivitySummary),
+          title: lockedString18(UIStringsNotTranslated.networkActivitySummary),
           action: `getNetworkTrackSummary({min: ${min}, max: ${max}})`
         };
       },
@@ -9069,7 +9400,7 @@ ${result}`,
         required: ["eventKey"]
       },
       displayInfoFromArgs: (args) => {
-        return { title: lockedString15("Looking at call tree"), action: `getDetailedCallTree('${args.eventKey}')` };
+        return { title: lockedString18("Looking at call tree"), action: `getDetailedCallTree('${args.eventKey}')` };
       },
       handler: async (args) => {
         debugLog("Function call: getDetailedCallTree");
@@ -9088,8 +9419,8 @@ ${result}`,
         const callTree = await formatter.formatCallTree(tree);
         const key = `getDetailedCallTree(${args.eventKey})`;
         this.#cacheFunctionResult(focus, key, callTree);
-        const { startTime, endTime } = Trace7.Helpers.Timing.eventTimingsMicroSeconds(event);
-        const bounds = Trace7.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+        const { startTime, endTime } = Trace8.Helpers.Timing.eventTimingsMicroSeconds(event);
+        const bounds = Trace8.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
         const widgets = [
           {
             name: "BOTTOM_UP_TREE",
@@ -9137,7 +9468,7 @@ ${result}`,
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString15("Looking up function code"),
+          title: lockedString18("Looking up function code"),
           action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
         };
       },
@@ -9183,7 +9514,7 @@ ${result}`,
         };
       }
     });
-    const isTraceApp = Root9.Runtime.Runtime.isTraceApp();
+    const isTraceApp = Root10.Runtime.Runtime.isTraceApp();
     this.declareFunction("getResourceContent", {
       description: "Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.",
       parameters: {
@@ -9200,7 +9531,7 @@ ${result}`,
         required: ["url"]
       },
       displayInfoFromArgs: (args) => {
-        return { title: lockedString15("Looking at resource content"), action: `getResourceContent('${args.url}')` };
+        return { title: lockedString18("Looking at resource content"), action: `getResourceContent('${args.url}')` };
       },
       handler: async (args) => {
         debugLog("Function call: getResourceContent");
@@ -9217,7 +9548,7 @@ ${result}`,
         if (script?.content !== void 0) {
           content = script.content;
         } else if (isFresh || isTraceApp) {
-          const resource = SDK13.ResourceTreeModel.ResourceTreeModel.resourceForURL(this.targetManager, url);
+          const resource = SDK14.ResourceTreeModel.ResourceTreeModel.resourceForURL(this.targetManager, url);
           if (!resource) {
             return { error: "Resource not found" };
           }
@@ -9262,7 +9593,7 @@ ${result}`,
         required: ["eventKey"]
       },
       displayInfoFromArgs: (params) => {
-        return { title: lockedString15("Selecting event"), action: `selectEventByKey('${params.eventKey}')` };
+        return { title: lockedString18("Selecting event"), action: `selectEventByKey('${params.eventKey}')` };
       },
       handler: async (params) => {
         debugLog("Function call: selectEventByKey", params);
@@ -9270,8 +9601,8 @@ ${result}`,
         if (!event) {
           return { error: "Invalid eventKey" };
         }
-        const revealable = new SDK13.TraceObject.RevealableEvent(event);
-        await Common16.Revealer.reveal(revealable);
+        const revealable = new SDK14.TraceObject.RevealableEvent(event);
+        await Common15.Revealer.reveal(revealable);
         return {
           result: { success: true },
           widgets: [{
@@ -9287,7 +9618,7 @@ ${result}`,
   }
   async #getNetworkRequestImageData(lcpRequest) {
     const target = this.targetManager.primaryPageTarget();
-    const networkManager = target?.model(SDK13.NetworkManager.NetworkManager);
+    const networkManager = target?.model(SDK14.NetworkManager.NetworkManager);
     if (!target || !networkManager) {
       return void 0;
     }
@@ -9296,7 +9627,7 @@ ${result}`,
     const sdkRequest = networkLog.requestByManagerAndId(networkManager, requestId);
     if (sdkRequest?.contentType().isImage()) {
       const contentData = await sdkRequest.requestContentData();
-      if (!TextUtils3.ContentData.ContentData.isError(contentData)) {
+      if (!TextUtils4.ContentData.ContentData.isError(contentData)) {
         return contentData;
       }
     }
@@ -9310,15 +9641,15 @@ __export(StorageAgent_exports, {
   StorageAgent: () => StorageAgent,
   findFrameForOrigin: () => findFrameForOrigin,
   getCookiesForDomain: () => getCookiesForDomain,
-  isSamePageOrigin: () => isSamePageOrigin2,
+  isSamePageOrigin: () => isSamePageOrigin,
   resolveDOMStorages: () => resolveDOMStorages
 });
-import * as Common17 from "./../../core/common/common.js";
-import * as Host24 from "./../../core/host/host.js";
-import * as i18n36 from "./../../core/i18n/i18n.js";
-import * as Root10 from "./../../core/root/root.js";
-import * as SDK14 from "./../../core/sdk/sdk.js";
-var lockedString16 = i18n36.i18n.lockedString;
+import * as Common16 from "./../../core/common/common.js";
+import * as Host28 from "./../../core/host/host.js";
+import * as i18n42 from "./../../core/i18n/i18n.js";
+import * as Root11 from "./../../core/root/root.js";
+import * as SDK15 from "./../../core/sdk/sdk.js";
+var lockedString19 = i18n42.i18n.lockedString;
 var preamble6 = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
 
  You have access to the site's storage using tools like \`getStorageBreakdown\`, \`listPageOrigins\`, \`listStorageKeys\`, \`getStorageValues\`, \`listCookies\`, and \`getCookieValues\`.
@@ -9359,13 +9690,13 @@ var preamble6 = `You are a Senior Software Engineer specializing in state audit 
  `;
 function isSamePrimaryPageOrigin(targetManager, context) {
   const primaryPageTarget = targetManager.primaryPageTarget();
-  return isSamePageOrigin2(primaryPageTarget, context);
+  return isSamePageOrigin(primaryPageTarget, context);
 }
-function isSamePageOrigin2(target, context) {
+function isSamePageOrigin(target, context) {
   if (!target || !context) {
     return false;
   }
-  const pageOrigin = Common17.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL());
+  const pageOrigin = Common16.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL());
   return pageOrigin !== "" && context.isOriginAllowed(pageOrigin);
 }
 var MAX_TARGET_ORIGINS = 100;
@@ -9378,13 +9709,13 @@ function resolveTargetOrigins(context, origins) {
 var MAX_NUM_CHAR_LENGTH = 1e4;
 var StorageAgent = class _StorageAgent extends AiAgent {
   preamble = preamble6;
-  clientFeature = Host24.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
+  clientFeature = Host28.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
   get userTier() {
-    return Root10.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root11.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
-    const temperature = Root10.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root10.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    const temperature = Root11.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root11.Runtime.hostConfig.devToolsFreestyler?.modelId;
     return {
       temperature,
       modelId
@@ -9403,7 +9734,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString16("Listing page origins"),
+          title: lockedString19("Listing page origins"),
           action: "listPageOrigins()"
         };
       },
@@ -9412,8 +9743,8 @@ var StorageAgent = class _StorageAgent extends AiAgent {
           return { error: "No origin available or not allowed." };
         }
         const origins = /* @__PURE__ */ new Set();
-        for (const frame of SDK14.ResourceTreeModel.ResourceTreeModel.frames(this.targetManager)) {
-          if (!isSamePageOrigin2(frame.resourceTreeModel().target().outermostTarget(), this.context)) {
+        for (const frame of SDK15.ResourceTreeModel.ResourceTreeModel.frames(this.targetManager)) {
+          if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), this.context)) {
             continue;
           }
           const origin = frame.securityOrigin;
@@ -9453,7 +9784,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString16("Reading storage keys"),
+          title: lockedString19("Reading storage keys"),
           action: `listStorageKeys('${args.type}', ${JSON.stringify(args.origins)})`
         };
       },
@@ -9520,7 +9851,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString16("Reading storage values"),
+          title: lockedString19("Reading storage values"),
           action: `getStorageValues('${args.type}', ${JSON.stringify(args.keys)}, ${JSON.stringify(args.origins)}${args.storageKey ? `, '${args.storageKey}'` : ""})`
         };
       },
@@ -9548,7 +9879,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
           const targetsDesc = Object.keys(allStoragesMap).join(", ");
           return {
             requiresApproval: true,
-            description: lockedString16(`The AI wants to access the value(s) of ${args.type} keys ${keyString} on ${targetsDesc}.`)
+            description: lockedString19(`The AI wants to access the value(s) of ${args.type} keys ${keyString} on ${targetsDesc}.`)
           };
         }
         const storageValuesByOrigin = {};
@@ -9598,7 +9929,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString16("Reading cookies"),
+          title: lockedString19("Reading cookies"),
           action: `listCookies(${JSON.stringify(args.origins)})`
         };
       },
@@ -9647,7 +9978,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString16("Reading cookie values and metadata"),
+          title: lockedString19("Reading cookie values and metadata"),
           action: `getCookieValues(${JSON.stringify(args.cookieNames)}, ${JSON.stringify(args.origins)})`
         };
       },
@@ -9660,7 +9991,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         if (options?.approved !== true) {
           return {
             requiresApproval: true,
-            description: lockedString16(`The AI wants to access the value(s) and metadata of cookie(s) ${args.cookieNames.map((name) => `\`${name}\``).join(", ")} on ${targetOrigins.join(", ")}.`)
+            description: lockedString19(`The AI wants to access the value(s) and metadata of cookie(s) ${args.cookieNames.map((name) => `\`${name}\``).join(", ")} on ${targetOrigins.join(", ")}.`)
           };
         }
         const cookiesByOrigin = {};
@@ -9710,13 +10041,13 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString16("Retrieving storage breakdown"),
+          title: lockedString19("Retrieving storage breakdown"),
           action: "getStorageBreakdown()"
         };
       },
       handler: async () => {
         const target = this.targetManager.primaryPageTarget();
-        if (!target || !this.context || !isSamePageOrigin2(target, this.context)) {
+        if (!target || !this.context || !isSamePageOrigin(target, this.context)) {
           return { error: "No origin available or not allowed." };
         }
         const origin = this.context.getItem().primaryTargetOrigin;
@@ -9724,7 +10055,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         if (response.getError()) {
           return { error: response.getError() || "Unknown CDP error" };
         }
-        const mainStorageKey = target.model(SDK14.StorageKeyManager.StorageKeyManager)?.mainStorageKey() || void 0;
+        const mainStorageKey = target.model(SDK15.StorageKeyManager.StorageKeyManager)?.mainStorageKey() || void 0;
         const localStorages = resolveDOMStorages(this.context, "localStorage", origin, this.targetManager, mainStorageKey);
         const localStorageBytes = await calculateDOMStoragesUsage(localStorages);
         const sessionStorages = resolveDOMStorages(this.context, "sessionStorage", origin, this.targetManager, mainStorageKey);
@@ -9770,7 +10101,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
   static #formatContext(item) {
     const primaryTargetOrigin = `Primary target: ${item.primaryTargetOrigin}`;
     if (item instanceof CookieItem) {
-      const parsedURL = Common17.ParsedURL.ParsedURL.fromString(item.origin);
+      const parsedURL = Common16.ParsedURL.ParsedURL.fromString(item.origin);
       const domain = parsedURL ? parsedURL.host : item.origin;
       return `${primaryTargetOrigin}
 User-selected Context: Cookies${item.isGenericContext ? "" : `
@@ -9820,7 +10151,7 @@ ${query}`;
   }
 };
 async function getCookiesForDomain(target, origin) {
-  const cookieModel = target.model(SDK14.CookieModel.CookieModel);
+  const cookieModel = target.model(SDK15.CookieModel.CookieModel);
   if (!cookieModel) {
     return null;
   }
@@ -9831,10 +10162,10 @@ async function getCookiesForDomain(target, origin) {
   return allCookies.filter((cookie) => !cookie.httpOnly());
 }
 function findFrameForOrigin(context, origin, targetManager) {
-  for (const frame of SDK14.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
+  for (const frame of SDK15.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
     if (frame.securityOrigin === origin) {
       const target = frame.resourceTreeModel().target();
-      if (isSamePageOrigin2(target.outermostTarget(), context)) {
+      if (isSamePageOrigin(target.outermostTarget(), context)) {
         return frame;
       }
     }
@@ -9856,9 +10187,9 @@ async function calculateDOMStoragesUsage(storages) {
 function resolveDOMStorages(context, type, origin, targetManager, storageKey) {
   const resolvedStorages = [];
   const isLocalStorage = type === "localStorage";
-  const domStorageModels = targetManager.models(SDK14.DOMStorageModel.DOMStorageModel);
+  const domStorageModels = targetManager.models(SDK15.DOMStorageModel.DOMStorageModel);
   for (const domStorageModel of domStorageModels) {
-    if (!isSamePageOrigin2(domStorageModel.target().outermostTarget(), context)) {
+    if (!isSamePageOrigin(domStorageModel.target().outermostTarget(), context)) {
       continue;
     }
     for (const storage of domStorageModel.storages()) {
@@ -9871,14 +10202,14 @@ function resolveDOMStorages(context, type, origin, targetManager, storageKey) {
       }
       if (storageKey) {
         if (storageKey === currentStorageKey) {
-          const parsedKey2 = SDK14.StorageKeyManager.parseStorageKey(currentStorageKey);
+          const parsedKey2 = SDK15.StorageKeyManager.parseStorageKey(currentStorageKey);
           if (parsedKey2.origin === origin) {
             resolvedStorages.push(storage);
           }
         }
         continue;
       }
-      const parsedKey = SDK14.StorageKeyManager.parseStorageKey(currentStorageKey);
+      const parsedKey = SDK15.StorageKeyManager.parseStorageKey(currentStorageKey);
       if (parsedKey.origin === origin) {
         resolvedStorages.push(storage);
       }
@@ -9893,8 +10224,8 @@ __export(StylingAgent_exports, {
   AI_ASSISTANCE_FILTER_REGEX: () => AI_ASSISTANCE_FILTER_REGEX,
   StylingAgent: () => StylingAgent
 });
-import * as Host25 from "./../../core/host/host.js";
-import * as Root11 from "./../../core/root/root.js";
+import * as Host29 from "./../../core/host/host.js";
+import * as Root12 from "./../../core/root/root.js";
 var preamble7 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
@@ -9963,23 +10294,23 @@ var MULTIMODAL_ENHANCEMENT_PROMPTS = {
 var AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 var StylingAgent = class extends AiAgent {
   preamble = preamble7;
-  clientFeature = Host25.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
+  clientFeature = Host29.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier() {
-    return Root11.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root12.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get executionMode() {
-    return Root11.Runtime.hostConfig.devToolsFreestyler?.executionMode ?? Root11.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
+    return Root12.Runtime.hostConfig.devToolsFreestyler?.executionMode ?? Root12.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
   }
   get options() {
-    const temperature = Root11.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root11.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    const temperature = Root12.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root12.Runtime.hostConfig.devToolsFreestyler?.modelId;
     return {
       temperature,
       modelId
     };
   }
   get multimodalInputEnabled() {
-    return Boolean(Root11.Runtime.hostConfig.devToolsFreestyler?.multimodal);
+    return Boolean(Root12.Runtime.hostConfig.devToolsFreestyler?.multimodal);
   }
   #execJs;
   #changes;
@@ -10065,7 +10396,8 @@ var AiAgent2_exports = {};
 __export(AiAgent2_exports, {
   AiAgent2: () => AiAgent2
 });
-import * as Host26 from "./../../core/host/host.js";
+import * as Host30 from "./../../core/host/host.js";
+import * as SDK16 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/skills/accessibility.skill.js
 var skill = {
@@ -10075,9 +10407,11 @@ var skill = {
     "getLighthouseAudits",
     "resolveDevtoolsNodePath",
     "getStyles",
-    "getElementAccessibilityDetails"
+    "getElementAccessibilityDetails",
+    "runLighthouse",
+    "executeJavaScript"
   ],
-  "instructions": "You are an expert accessibility debugging assistant.\nUse getLighthouseAudits to query details from the active report.\n\n* ALWAYS use resolveDevtoolsNodePath to resolve failing element paths to backend node IDs.\n* Once resolved, use getStyles on the backend node ID to inspect layout and styling properties.\n* Use getElementAccessibilityDetails to query detailed accessibility properties (ARIA properties, role, name, focus state) for a resolved element backend node ID."
+  "instructions": 'You are an expert accessibility debugging assistant.\nUse getLighthouseAudits to query details from the active report.\n\n* ALWAYS use resolveDevtoolsNodePath to resolve failing element paths to backend node IDs.\n* Once resolved, use getStyles on the backend node ID to inspect layout and styling properties.\n* Use getElementAccessibilityDetails to query detailed accessibility properties (ARIA properties, role, name, focus state) for a resolved element backend node ID.\n* If the user explicitly specifies a Lighthouse mode (e.g. "snapshot", "timespan", or "navigation"), ALWAYS honor the requested mode.\n* When running an initial audit (and no specific mode was requested), use runLighthouse with mode "navigation" for comprehensive page load coverage.\n* When re-auditing after in-page DOM/CSS modifications or fixes, use mode "snapshot" to evaluate live page state without reloading (noting that fewer audits run in snapshot mode).\n* Use mode "timespan" for measuring user interaction periods.\n* Use executeJavaScript to run layout/interaction scripts to verify fixes or dynamic accessibility behaviors.'
 };
 
 // gen/front_end/models/ai_assistance/skills/network.skill.js
@@ -10100,9 +10434,12 @@ var skill3 = {
     "getTraceEventByKey",
     "selectTraceEventByKey",
     "getTraceMainThreadSummary",
-    "getTraceNetworkSummary"
+    "getTraceNetworkSummary",
+    "getDetailedCallTree",
+    "getFunctionCode",
+    "getResourceContent"
   ],
-  "instructions": "You are an expert web performance assistant integrated into Chrome DevTools.\nYour goal is to help users analyze, measure, and improve web page performance.\n\nUse `recordPerformanceTrace` to record a new performance trace when requested by the user or when live measurement is required.\n- Trace events in the provided insights or summaries may have an `eventKey`. Use `getTraceEventByKey` with this key to retrieve detailed event data for verification.\n- If the user asks to see, locate, or show a specific event, use `selectTraceEventByKey` to reveal and select it in the Flamechart.\n- Use `getTraceMainThreadSummary` to get a bottom-up activity summary of the main thread for a specific labeled period.\n- Use `getTraceNetworkSummary` to get a summary of network requests within a specific microsecond time range."
+  "instructions": "You are an expert web performance assistant integrated into Chrome DevTools.\nYour goal is to help users analyze, measure, and improve web page performance.\n\n- Use `recordPerformanceTrace` to record a new performance trace when requested by the user or when live measurement is required.\n- Trace events in the provided insights or summaries may have an `eventKey`. Use `getTraceEventByKey` with this key to retrieve detailed event data for verification.\n- If the user asks to see, locate, or show a specific event, use `selectTraceEventByKey` to reveal and select it in the Flamechart.\n- Use `getTraceMainThreadSummary` with a section label to get a bottom-up activity summary of the main thread for a specific labeled period.\n- Use `getTraceNetworkSummary` to get a summary of network requests within a specific microsecond time range.\n- Use `getDetailedCallTree` with an `eventKey` to retrieve the detailed call tree for a specific main thread trace event.\n- Use `getFunctionCode` with a script URL, line, and column to view annotated runtime performance of a function.\n- Use `getResourceContent` with a resource URL to inspect text resource or script contents for further root-cause analysis."
 };
 
 // gen/front_end/models/ai_assistance/skills/sources.skill.js
@@ -10209,7 +10546,7 @@ If the user asks a question that requires an investigation or debugging, use thi
 var AiAgent2 = class extends AiAgent {
   // TODO: The static preamble is a placeholder and will eventually live server-side.
   preamble = preamble8;
-  clientFeature = Host26.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
+  clientFeature = Host30.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
   userTier = "TESTERS";
   #changes;
   #execJs;
@@ -10222,6 +10559,24 @@ var AiAgent2 = class extends AiAgent {
   async preRun() {
     if (this.context && !this.context.isLoggingEnabled()) {
       this.setServerSideLoggingActive(false);
+    }
+    const target = this.targetManager.primaryPageTarget();
+    const domModel = target?.model(SDK16.DOMModel.DOMModel);
+    if (domModel) {
+      if (!domModel.existingDocument()) {
+        try {
+          await domModel.requestDocument();
+        } catch (e) {
+          debugLog("AiAgent2: Failed to request document", e);
+        }
+      }
+      if (!domModel.existingDocument()?.body) {
+        try {
+          await domModel.pushNodeByPathToFrontend("1,HTML,1,BODY");
+        } catch (e) {
+          debugLog("AiAgent2: Failed to push body node to frontend", e);
+        }
+      }
     }
   }
   #activeSkills = /* @__PURE__ */ new Set();
@@ -10342,7 +10697,7 @@ ${skillObj.instructions}
     return response.trim();
   }
   #createExtensionScope(changes) {
-    const selectedNode = this.context && this.context instanceof DOMNodeContext ? this.context.getItem() : null;
+    const selectedNode = this.context && this.context instanceof DOMNodeContext ? this.context.getItem() : this.#getDocumentBodyNode();
     return new ExtensionScope(changes, this.sessionId, selectedNode);
   }
   /**
@@ -10365,7 +10720,7 @@ ${skillObj.instructions}
           changeManager: this.#changes,
           createExtensionScope: this.#createExtensionScope.bind(this),
           execJs: this.#execJs,
-          getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
+          getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : this.#getDocumentBodyNode(),
           getTarget: () => this.targetManager.primaryPageTarget(),
           getEstablishedOrigin: () => this.#getConversationOrigin(),
           lighthouseRecording: this.#lighthouseRecording,
@@ -10377,6 +10732,15 @@ ${skillObj.instructions}
         return tool.handler(args, context, options);
       }
     });
+  }
+  /**
+   * For non-DOM contexts (e.g., Lighthouse accessibility reports or storage items),
+   * there is no user-selected DOM node. We fall back to the document body as the
+   * default execution context node so scripts have a valid `$0` target.
+   */
+  #getDocumentBodyNode() {
+    const document2 = this.targetManager.primaryPageTarget()?.model(SDK16.DOMModel.DOMModel)?.existingDocument();
+    return document2?.body ?? null;
   }
   #getConversationOrigin() {
     const allowed = this.#allowedOrigin?.();
@@ -10396,11 +10760,11 @@ __export(AiConversation_exports, {
   NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA,
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
-import * as Common19 from "./../../core/common/common.js";
-import * as Host27 from "./../../core/host/host.js";
+import * as Common18 from "./../../core/common/common.js";
+import * as Host31 from "./../../core/host/host.js";
 import * as Platform4 from "./../../core/platform/platform.js";
-import * as Root13 from "./../../core/root/root.js";
-import * as SDK15 from "./../../core/sdk/sdk.js";
+import * as Root14 from "./../../core/root/root.js";
+import * as SDK17 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
 var AiHistoryStorage_exports = {};
@@ -10410,19 +10774,19 @@ __export(AiHistoryStorage_exports, {
   MAX_RECENT_PROMPTS_COUNT: () => MAX_RECENT_PROMPTS_COUNT,
   RECENT_PROMPTS_SIZE_LIMIT: () => RECENT_PROMPTS_SIZE_LIMIT
 });
-import * as Common18 from "./../../core/common/common.js";
-import * as Root12 from "./../../core/root/root.js";
+import * as Common17 from "./../../core/common/common.js";
+import * as Root13 from "./../../core/root/root.js";
 var DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 var MAX_RECENT_PROMPTS_COUNT = 20;
 var MAX_CONVERSATIONS_COUNT = 50;
 var RECENT_PROMPTS_SIZE_LIMIT = 100 * 1024;
-var AiHistoryStorage = class _AiHistoryStorage extends Common18.ObjectWrapper.ObjectWrapper {
+var AiHistoryStorage = class _AiHistoryStorage extends Common17.ObjectWrapper.ObjectWrapper {
   #historySetting;
   #imageHistorySettings;
   #recentPromptsSetting;
-  #mutex = new Common18.Mutex.Mutex();
+  #mutex = new Common17.Mutex.Mutex();
   #maxStorageSize;
-  constructor(settings = Common18.Settings.Settings.instance(), maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
+  constructor(settings = Common17.Settings.Settings.instance(), maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
     super();
     this.#historySetting = settings.createSetting("ai-assistance-history-entries", []);
     this.#imageHistorySettings = settings.createSetting("ai-assistance-history-images", []);
@@ -10560,17 +10924,17 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common18.ObjectWrapper.Ob
   }
   static instance(opts = { forceNew: false, maxStorageSize: DEFAULT_MAX_STORAGE_SIZE }) {
     const { forceNew, maxStorageSize, settings } = opts;
-    if (!Root12.DevToolsContext.globalInstance().has(_AiHistoryStorage) || forceNew) {
-      Root12.DevToolsContext.globalInstance().set(_AiHistoryStorage, new _AiHistoryStorage(
+    if (!Root13.DevToolsContext.globalInstance().has(_AiHistoryStorage) || forceNew) {
+      Root13.DevToolsContext.globalInstance().set(_AiHistoryStorage, new _AiHistoryStorage(
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        settings ?? Common18.Settings.Settings.instance(),
+        settings ?? Common17.Settings.Settings.instance(),
         maxStorageSize
       ));
     }
-    return Root12.DevToolsContext.globalInstance().get(_AiHistoryStorage);
+    return Root13.DevToolsContext.globalInstance().get(_AiHistoryStorage);
   }
   static removeInstance() {
-    Root12.DevToolsContext.globalInstance().delete(_AiHistoryStorage);
+    Root13.DevToolsContext.globalInstance().delete(_AiHistoryStorage);
   }
 };
 
@@ -10633,7 +10997,7 @@ var AiConversation = class _AiConversation {
       data = [],
       id = crypto.randomUUID(),
       isReadOnly = true,
-      aidaClient = new Host27.AidaClient.AidaClient(),
+      aidaClient = new Host31.AidaClient.AidaClient(),
       changeManager,
       performanceRecordAndReload,
       onInspectElement,
@@ -10641,7 +11005,7 @@ var AiConversation = class _AiConversation {
       lighthouseRecording,
       aiHistoryStorage = AiHistoryStorage.instance(),
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-      targetManager = SDK15.TargetManager.TargetManager.instance()
+      targetManager = SDK17.TargetManager.TargetManager.instance()
     } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
@@ -10900,7 +11264,7 @@ ${item.text.trim()}`);
       history,
       targetManager: this.#targetManager
     };
-    this.#agent = Root13.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2(options) : this.#createV1Agent(type, options);
+    this.#agent = Root14.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2(options) : this.#createV1Agent(type, options);
   }
   #createV1Agent(type, options) {
     switch (type) {
@@ -10932,14 +11296,14 @@ ${item.text.trim()}`);
       }
     };
     const targetManager = this.#targetManager;
-    targetManager.addModelListener(SDK15.ResourceTreeModel.ResourceTreeModel, SDK15.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+    targetManager.addModelListener(SDK17.ResourceTreeModel.ResourceTreeModel, SDK17.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
     try {
       if (this.isBlockedByOrigin) {
         throw new Error("cross-origin context data should not be included");
       }
       yield* this.#runAgent(initialQuery, options, { isInitialCall: true });
     } finally {
-      targetManager.removeModelListener(SDK15.ResourceTreeModel.ResourceTreeModel, SDK15.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+      targetManager.removeModelListener(SDK17.ResourceTreeModel.ResourceTreeModel, SDK17.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
     }
   }
   #getQueryAfterSelection(initialQuery, selection) {
@@ -11015,15 +11379,15 @@ Original user query: ${initialQuery}`;
   };
 };
 function isAiAssistanceServerSideLoggingAllowed() {
-  return !Root13.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+  return !Root14.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 function isAiAssistanceContextSelectionAgentEnabled() {
-  return Boolean(Root13.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+  return Boolean(Root14.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 function getPrimaryPageOrigin(targetManager) {
   const target = targetManager.primaryPageTarget();
   const inspectedURL = target?.inspectedURL();
-  return inspectedURL ? new Common19.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
+  return inspectedURL ? new Common18.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
 }
 
 // gen/front_end/models/ai_assistance/AiSetting.js
@@ -11031,10 +11395,10 @@ var AiSetting_exports = {};
 __export(AiSetting_exports, {
   AiSetting: () => AiSetting
 });
-import * as Common20 from "./../../core/common/common.js";
-import * as Host28 from "./../../core/host/host.js";
-import * as Root14 from "./../../core/root/root.js";
-var AiSetting = class extends Common20.ObjectWrapper.ObjectWrapper {
+import * as Common19 from "./../../core/common/common.js";
+import * as Host32 from "./../../core/host/host.js";
+import * as Root15 from "./../../core/root/root.js";
+var AiSetting = class extends Common19.ObjectWrapper.ObjectWrapper {
   #setting;
   #descriptor;
   #hostConfigTracker;
@@ -11100,15 +11464,15 @@ var AiSetting = class extends Common20.ObjectWrapper.ObjectWrapper {
     }
   }
   get unavailable() {
-    const availability = this.#descriptor.isAvailable(Root14.Runtime.hostConfig);
+    const availability = this.#descriptor.isAvailable(Root15.Runtime.hostConfig);
     return availability.status === 2;
   }
   get disabled() {
-    const availability = this.#descriptor.isAvailable(Root14.Runtime.hostConfig);
+    const availability = this.#descriptor.isAvailable(Root15.Runtime.hostConfig);
     return availability.status === 3;
   }
   get disabledReasons() {
-    const availability = this.#descriptor.isAvailable(Root14.Runtime.hostConfig);
+    const availability = this.#descriptor.isAvailable(Root15.Runtime.hostConfig);
     if (availability.status === 3) {
       return availability.reason;
     }
@@ -11154,10 +11518,10 @@ var BuiltInAi_exports = {};
 __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
-import * as Common21 from "./../../core/common/common.js";
-import * as Host29 from "./../../core/host/host.js";
-import * as Root15 from "./../../core/root/root.js";
-var BuiltInAi = class _BuiltInAi extends Common21.ObjectWrapper.ObjectWrapper {
+import * as Common20 from "./../../core/common/common.js";
+import * as Host33 from "./../../core/host/host.js";
+import * as Root16 from "./../../core/root/root.js";
+var BuiltInAi = class _BuiltInAi extends Common20.ObjectWrapper.ObjectWrapper {
   #availability = null;
   #hasGpu;
   #consoleInsightsSession;
@@ -11165,10 +11529,10 @@ var BuiltInAi = class _BuiltInAi extends Common21.ObjectWrapper.ObjectWrapper {
   #downloadProgress = null;
   #currentlyCreatingSession = false;
   static instance() {
-    if (!Root15.DevToolsContext.globalInstance().has(_BuiltInAi)) {
-      Root15.DevToolsContext.globalInstance().set(_BuiltInAi, new _BuiltInAi());
+    if (!Root16.DevToolsContext.globalInstance().has(_BuiltInAi)) {
+      Root16.DevToolsContext.globalInstance().set(_BuiltInAi, new _BuiltInAi());
     }
-    return Root15.DevToolsContext.globalInstance().get(_BuiltInAi);
+    return Root16.DevToolsContext.globalInstance().get(_BuiltInAi);
   }
   constructor() {
     super();
@@ -11176,7 +11540,7 @@ var BuiltInAi = class _BuiltInAi extends Common21.ObjectWrapper.ObjectWrapper {
     this.initDoneForTesting = this.getLanguageModelAvailability().then(() => this.#sendAvailabilityMetrics()).then(() => this.initialize());
   }
   async getLanguageModelAvailability() {
-    if (!Root15.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
+    if (!Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
       this.#availability = "disabled";
       return this.#availability;
     }
@@ -11200,7 +11564,7 @@ var BuiltInAi = class _BuiltInAi extends Common21.ObjectWrapper.ObjectWrapper {
     return this.#availability === "downloading";
   }
   isEventuallyAvailable() {
-    if (!this.#hasGpu && !Boolean(Root15.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
+    if (!this.#hasGpu && !Boolean(Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
       return false;
     }
     return this.#availability === "available" || this.#availability === "downloading" || this.#availability === "downloadable";
@@ -11213,7 +11577,7 @@ var BuiltInAi = class _BuiltInAi extends Common21.ObjectWrapper.ObjectWrapper {
     return this.#downloadProgress;
   }
   startDownloadingModel() {
-    if (!Root15.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "downloadable") {
@@ -11251,7 +11615,7 @@ var BuiltInAi = class _BuiltInAi extends Common21.ObjectWrapper.ObjectWrapper {
     return Boolean(this.#consoleInsightsSession);
   }
   async initialize() {
-    if (!Root15.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "available" && this.#availability !== "downloading") {
@@ -11313,7 +11677,7 @@ Your instructions are as follows:
     this.#currentlyCreatingSession = false;
   }
   static removeInstance() {
-    Root15.DevToolsContext.globalInstance().delete(_BuiltInAi);
+    Root16.DevToolsContext.globalInstance().delete(_BuiltInAi);
   }
   async *getConsoleInsight(prompt, abortController) {
     if (!this.#consoleInsightsSession) {
@@ -11338,37 +11702,37 @@ Your instructions are as follows:
     if (this.#hasGpu) {
       switch (this.#availability) {
         case "unavailable":
-          Host29.userMetrics.builtInAiAvailability(Host29.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU);
+          Host33.userMetrics.builtInAiAvailability(Host33.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU);
           break;
         case "downloadable":
-          Host29.userMetrics.builtInAiAvailability(Host29.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU);
+          Host33.userMetrics.builtInAiAvailability(Host33.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU);
           break;
         case "downloading":
-          Host29.userMetrics.builtInAiAvailability(Host29.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU);
+          Host33.userMetrics.builtInAiAvailability(Host33.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU);
           break;
         case "available":
-          Host29.userMetrics.builtInAiAvailability(Host29.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU);
+          Host33.userMetrics.builtInAiAvailability(Host33.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU);
           break;
         case "disabled":
-          Host29.userMetrics.builtInAiAvailability(Host29.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU);
+          Host33.userMetrics.builtInAiAvailability(Host33.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU);
           break;
       }
     } else {
       switch (this.#availability) {
         case "unavailable":
-          Host29.userMetrics.builtInAiAvailability(Host29.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU);
+          Host33.userMetrics.builtInAiAvailability(Host33.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU);
           break;
         case "downloadable":
-          Host29.userMetrics.builtInAiAvailability(Host29.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU);
+          Host33.userMetrics.builtInAiAvailability(Host33.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU);
           break;
         case "downloading":
-          Host29.userMetrics.builtInAiAvailability(Host29.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU);
+          Host33.userMetrics.builtInAiAvailability(Host33.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU);
           break;
         case "available":
-          Host29.userMetrics.builtInAiAvailability(Host29.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU);
+          Host33.userMetrics.builtInAiAvailability(Host33.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU);
           break;
         case "disabled":
-          Host29.userMetrics.builtInAiAvailability(Host29.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU);
+          Host33.userMetrics.builtInAiAvailability(Host33.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU);
           break;
       }
     }
@@ -11380,8 +11744,8 @@ var ConversationSummary_exports = {};
 __export(ConversationSummary_exports, {
   ConversationSummary: () => ConversationSummary
 });
-import * as Host30 from "./../../core/host/host.js";
-import * as Root16 from "./../../core/root/root.js";
+import * as Host34 from "./../../core/host/host.js";
+import * as Root17 from "./../../core/root/root.js";
 var preamble9 = `### Role
 You are a Conversation Summarizer. Your task is to take a transcript of a conversation between a user and a DevTools AI agent and produce a succinct, actionable Markdown summary. This summary will be used to help apply fixes in an IDE, so it must capture all relevant technical details, findings, and proposed code changes without any conversational fluff.
 
@@ -11483,14 +11847,14 @@ var ConversationSummary = class {
     const enhancedQuery = `Summarize the following conversation:
 
 ${conversation}`;
-    const temperature = Root16.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root16.Runtime.hostConfig.devToolsFreestyler?.modelId;
-    const userTier = Root16.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    const temperature = Root17.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root17.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    const userTier = Root17.Runtime.hostConfig.devToolsFreestyler?.userTier;
     const resultText = await runOneShotPrompt({
       aidaClient: this.#aidaClient,
       preamble: preamble9,
       query: enhancedQuery,
-      clientFeature: Host30.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
+      clientFeature: Host34.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
       temperature,
       modelId,
       userTier,
@@ -11511,8 +11875,8 @@ var PerformanceAnnotations_exports = {};
 __export(PerformanceAnnotations_exports, {
   PerformanceAnnotations: () => PerformanceAnnotations
 });
-import * as Host31 from "./../../core/host/host.js";
-import * as Root17 from "./../../core/root/root.js";
+import * as Host35 from "./../../core/host/host.js";
+import * as Root18 from "./../../core/root/root.js";
 var callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
 You will receive a structured text representation of a call tree, derived from a user-selected call frame within a performance trace's flame chart.
@@ -11603,14 +11967,14 @@ var PerformanceAnnotations = class {
 # User request
 
 ${AI_LABEL_GENERATION_PROMPT}`;
-    const temperature = Root17.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = Root17.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
-    const userTier = Root17.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+    const temperature = Root18.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root18.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+    const userTier = Root18.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
     const resultText = await runOneShotPrompt({
       aidaClient: this.#aidaClient,
       preamble: callTreePreamble,
       query,
-      clientFeature: Host31.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT,
+      clientFeature: Host35.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT,
       temperature,
       modelId,
       userTier,
@@ -11647,9 +12011,12 @@ export {
   FileAgent_exports as FileAgent,
   FileContext_exports as FileContext,
   FileFormatter_exports as FileFormatter,
+  GetDetailedCallTree_exports as GetDetailedCallTree,
   GetElementAccessibilityDetails_exports as GetElementAccessibilityDetails,
+  GetFunctionCode_exports as GetFunctionCode,
   GetLighthouseAudits_exports as GetLighthouseAudits,
   GetNetworkRequestDetails_exports as GetNetworkRequestDetails,
+  GetResourceContent_exports as GetResourceContent,
   GetSourceContent_exports as GetSourceContent,
   GetStyles_exports as GetStyles,
   GetTraceEventByKey_exports as GetTraceEventByKey,
@@ -11670,6 +12037,7 @@ export {
   RecordPerformanceTrace_exports as RecordPerformanceTrace,
   RequestContext_exports as RequestContext,
   ResolveDevtoolsNodePath_exports as ResolveDevtoolsNodePath,
+  RunLighthouse_exports as RunLighthouse,
   SelectTraceEventByKey_exports as SelectTraceEventByKey,
   StorageAgent_exports as StorageAgent,
   StorageContext_exports as StorageContext,

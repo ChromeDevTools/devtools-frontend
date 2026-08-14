@@ -1107,7 +1107,10 @@ export declare namespace Audits {
         ItemNotInnerList = "ItemNotInnerList",
         InvalidAllowlistItemType = "InvalidAllowlistItemType",
         ReportingEndpointNotToken = "ReportingEndpointNotToken",
-        InvalidUrlPattern = "InvalidUrlPattern"
+        InvalidUrlPattern = "InvalidUrlPattern",
+        IFrameAttributeLoosensEmbeddingRequirement = "IFrameAttributeLoosensEmbeddingRequirement",
+        InvalidAllowConnectionAllowlistFrom = "InvalidAllowConnectionAllowlistFrom",
+        EmbeddingRequirementNotSatisfied = "EmbeddingRequirementNotSatisfied"
     }
     /**
      * Details for issues about documents in Quirks Mode
@@ -6820,6 +6823,9 @@ export declare namespace Emulation {
     interface SetSafeAreaInsetsOverrideRequest {
         insets: SafeAreaInsets;
     }
+    interface SetVirtualKeyboardGeometryOverrideRequest {
+        keyboardRect?: DOM.Rect;
+    }
     const enum SetDeviceMetricsOverrideRequestScrollbarType {
         Overlay = "overlay",
         Default = "default"
@@ -10682,15 +10688,6 @@ export declare namespace Network {
          */
         errors?: SignedExchangeError[];
     }
-    /**
-     * List of content encodings supported by the backend.
-     */
-    const enum ContentEncoding {
-        Deflate = "deflate",
-        Gzip = "gzip",
-        Br = "br",
-        Zstd = "zstd"
-    }
     interface NetworkConditions {
         /**
          * Only matching requests will be affected by these conditions. Patterns use the URLPattern constructor string
@@ -11347,12 +11344,6 @@ export declare namespace Network {
     interface LoadNetworkResourceOptions {
         disableCache: boolean;
         includeCredentials: boolean;
-    }
-    interface SetAcceptedEncodingsRequest {
-        /**
-         * List of accepted content encodings.
-         */
-        encodings: ContentEncoding[];
     }
     interface CanClearBrowserCacheResponse extends ProtocolResponseWithError {
         /**
@@ -13556,7 +13547,6 @@ export declare namespace Page {
         OtpCredentials = "otp-credentials",
         Payment = "payment",
         PictureInPicture = "picture-in-picture",
-        PrivateAggregation = "private-aggregation",
         PrivateStateTokenIssuance = "private-state-token-issuance",
         PrivateStateTokenRedemption = "private-state-token-redemption",
         PublickeyCredentialsCreate = "publickey-credentials-create",
@@ -14402,6 +14392,7 @@ export declare namespace Page {
         EmbedderExtensionMessagingForOpenPort = "EmbedderExtensionMessagingForOpenPort",
         EmbedderExtensionSentMessageToCachedFrame = "EmbedderExtensionSentMessageToCachedFrame",
         EmbedderExtensionFrame = "EmbedderExtensionFrame",
+        EmbedderPrivilegedWebContents = "EmbedderPrivilegedWebContents",
         RequestedByWebViewClient = "RequestedByWebViewClient",
         PostMessageByWebViewClient = "PostMessageByWebViewClient",
         CacheControlNoStoreDeviceBoundSessionTerminated = "CacheControlNoStoreDeviceBoundSessionTerminated",

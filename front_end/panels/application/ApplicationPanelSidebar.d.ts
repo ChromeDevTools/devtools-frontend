@@ -42,6 +42,7 @@ export declare class ApplicationPanelSidebar extends UI.Widget.VBox implements S
     reportingApiTreeElement: ReportingApiTreeElement;
     webMcpTreeElement?: WebMCPTreeElement;
     adsTreeElement?: ApplicationPanelTreeElement;
+    storageTreeElement?: StorageTreeElement;
     deviceBoundSessionsRootTreeElement: DeviceBoundSessionsRootTreeElement | undefined;
     deviceBoundSessionsModel: DeviceBoundSessionsModel | undefined;
     preloadingSummaryTreeElement: PreloadingSummaryTreeElement | undefined;
@@ -87,6 +88,7 @@ export declare class ApplicationPanelSidebar extends UI.Widget.VBox implements S
     showPreloadingRuleSetView(revealInfo: PreloadingHelper.PreloadingForward.RuleSetView): void;
     showPreloadingAttemptViewWithFilter(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): void;
     showStorageBucket(bucketInfo: Protocol.Storage.StorageBucketInfo): void;
+    showStorage(): void;
     private onmousemove;
     private onmouseleave;
 }
@@ -116,7 +118,7 @@ export declare class AppManifestTreeElement extends ApplicationPanelTreeElement 
     generateChildren(): void;
     onInvoke(): void;
 }
-export declare class ClearStorageTreeElement extends ApplicationPanelTreeElement {
+export declare class StorageTreeElement extends ApplicationPanelTreeElement {
     private view?;
     constructor(storagePanel: ResourcesPanel);
     get itemURL(): Platform.DevToolsPath.UrlString;

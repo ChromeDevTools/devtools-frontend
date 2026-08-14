@@ -2,9 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
+import { GetDetailedCallTreeTool } from './GetDetailedCallTree.js';
 import { GetElementAccessibilityDetailsTool } from './GetElementAccessibilityDetails.js';
+import { GetFunctionCodeTool } from './GetFunctionCode.js';
 import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
+import { GetResourceContentTool } from './GetResourceContent.js';
 import { GetSourceContentTool } from './GetSourceContent.js';
 import { GetStylesTool } from './GetStyles.js';
 import { GetTraceEventByKeyTool } from './GetTraceEventByKey.js';
@@ -15,6 +18,7 @@ import { ListPageOriginsTool } from './ListPageOrigins.js';
 import { ListSourcesTool } from './ListSources.js';
 import { RecordPerformanceTraceTool } from './RecordPerformanceTrace.js';
 import { ResolveDevtoolsNodePathTool } from './ResolveDevtoolsNodePath.js';
+import { RunLighthouseTool } from './RunLighthouse.js';
 import { SelectTraceEventByKeyTool } from './SelectTraceEventByKey.js';
 /**
  * Plain object registry containing concrete instantiated tools.
@@ -40,6 +44,10 @@ export const TOOLS = {
     ["getSourceContent" /* ToolName.GET_SOURCE_CONTENT */]: new GetSourceContentTool(),
     ["getTraceMainThreadSummary" /* ToolName.GET_TRACE_MAIN_THREAD_SUMMARY */]: new GetTraceMainThreadSummaryTool(),
     ["getTraceNetworkSummary" /* ToolName.GET_TRACE_NETWORK_SUMMARY */]: new GetTraceNetworkSummaryTool(),
+    ["runLighthouse" /* ToolName.RUN_LIGHTHOUSE */]: new RunLighthouseTool(),
+    ["getDetailedCallTree" /* ToolName.GET_DETAILED_CALL_TREE */]: new GetDetailedCallTreeTool(),
+    ["getFunctionCode" /* ToolName.GET_FUNCTION_CODE */]: new GetFunctionCodeTool(),
+    ["getResourceContent" /* ToolName.GET_RESOURCE_CONTENT */]: new GetResourceContentTool(),
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

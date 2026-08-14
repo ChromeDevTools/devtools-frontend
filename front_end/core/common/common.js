@@ -3794,7 +3794,6 @@ function disableTestOverride() {
 // gen/front_end/core/common/EventTarget.js
 var EventTarget_exports = {};
 __export(EventTarget_exports, {
-  fireEvent: () => fireEvent,
   removeEventListeners: () => removeEventListeners
 });
 function removeEventListeners(eventList) {
@@ -3802,10 +3801,6 @@ function removeEventListeners(eventList) {
     eventInfo.eventTarget.removeEventListener(eventInfo.eventType, eventInfo.listener, eventInfo.thisObject);
   }
   eventList.splice(0);
-}
-function fireEvent(name, detail = {}, target = window) {
-  const evt = new CustomEvent(name, { bubbles: true, cancelable: true, detail });
-  target.dispatchEvent(evt);
 }
 
 // gen/front_end/core/common/Gzip.js

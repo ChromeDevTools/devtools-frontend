@@ -311,6 +311,9 @@ export function makeFakeParsedTrace(options = {}) {
                 traceBounds: { min: options.min ?? 0, max: options.max ?? 100 },
                 mainFrameURL: options.mainFrameURL ?? 'https://example.com',
             },
+            Scripts: {
+                scripts: [],
+            },
         },
     };
 }

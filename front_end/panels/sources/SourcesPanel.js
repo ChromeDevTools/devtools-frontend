@@ -384,6 +384,7 @@ export class SourcesPanel extends UI.Panel.Panel {
             UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());
         }
         Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DEBUGGER_PAUSED);
+        window.dispatchEvent(new CustomEvent('DevTools.DebuggerPaused', { bubbles: true, cancelable: true }));
     }
     debugInfoAttached(event) {
         const { debuggerModel } = event.data;

@@ -8,9 +8,11 @@ import * as UI from '../../legacy.js';
  */
 declare class LinearMemoryInspectorView extends UI.Widget.VBox {
     #private;
-    constructor();
+    constructor(element?: HTMLElement);
     wasShown(): void;
     setMemory(memory: Uint8Array<ArrayBuffer>): void;
+    getPositionPercentage(): number;
+    setPositionPercentage(percentage: number): void;
     refreshData(): void;
 }
 /**
@@ -18,7 +20,7 @@ declare class LinearMemoryInspectorView extends UI.Widget.VBox {
  */
 export declare class StreamingContentHexView extends LinearMemoryInspectorView {
     #private;
-    constructor(streamingContentData: TextUtils.StreamingContentData.StreamingContentData);
+    constructor(streamingContentData: TextUtils.StreamingContentData.StreamingContentData, element?: HTMLElement);
     wasShown(): void;
     willHide(): void;
 }

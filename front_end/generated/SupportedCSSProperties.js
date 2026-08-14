@@ -1304,6 +1304,9 @@ export const generatedProperties = [
         "name": "border-block-end"
     },
     {
+        "keywords": [
+            "currentcolor"
+        ],
         "name": "border-block-end-color"
     },
     {
@@ -1338,6 +1341,9 @@ export const generatedProperties = [
         "name": "border-block-start"
     },
     {
+        "keywords": [
+            "currentcolor"
+        ],
         "name": "border-block-start-color"
     },
     {
@@ -1514,6 +1520,9 @@ export const generatedProperties = [
         "name": "border-inline-end"
     },
     {
+        "keywords": [
+            "currentcolor"
+        ],
         "name": "border-inline-end-color"
     },
     {
@@ -1548,6 +1557,9 @@ export const generatedProperties = [
         "name": "border-inline-start"
     },
     {
+        "keywords": [
+            "currentcolor"
+        ],
         "name": "border-inline-start-color"
     },
     {
@@ -6593,6 +6605,11 @@ export const generatedPropertyValues = {
             "currentcolor"
         ]
     },
+    "border-block-end-color": {
+        "values": [
+            "currentcolor"
+        ]
+    },
     "border-block-end-style": {
         "values": [
             "none",
@@ -6612,6 +6629,11 @@ export const generatedPropertyValues = {
             "medium",
             "thick",
             "thin"
+        ]
+    },
+    "border-block-start-color": {
+        "values": [
+            "currentcolor"
         ]
     },
     "border-block-start-style": {
@@ -6694,6 +6716,11 @@ export const generatedPropertyValues = {
             "auto"
         ]
     },
+    "border-inline-end-color": {
+        "values": [
+            "currentcolor"
+        ]
+    },
     "border-inline-end-style": {
         "values": [
             "none",
@@ -6713,6 +6740,11 @@ export const generatedPropertyValues = {
             "medium",
             "thick",
             "thin"
+        ]
+    },
+    "border-inline-start-color": {
+        "values": [
+            "currentcolor"
         ]
     },
     "border-inline-start-style": {

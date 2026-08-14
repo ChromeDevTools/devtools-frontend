@@ -83,22 +83,10 @@
       "path": "../../generated/generated-tsconfig.json"
     },
     {
-      "path": "../../models/ai_assistance/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/ai_code_completion/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/ai_code_generation/bundle-tsconfig.json"
-    },
-    {
       "path": "../../models/badges/bundle-tsconfig.json"
     },
     {
       "path": "../../models/bindings/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/crux-manager/bundle-tsconfig.json"
     },
     {
       "path": "../../models/extensions/bundle-tsconfig.json"

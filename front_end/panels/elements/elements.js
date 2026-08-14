@@ -21317,6 +21317,7 @@ __export(ElementStatePaneWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW12,
   ElementStatePaneWidget: () => ElementStatePaneWidget
 });
+import * as Common18 from "./../../core/common/common.js";
 import * as i18n44 from "./../../core/i18n/i18n.js";
 import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
@@ -21455,7 +21456,7 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
         jslog=${VisualLogging17.pane("element-states")}>
       <div class="page-state-checkbox">
         <devtools-checkbox class="small" title=${i18nString21(UIStrings22.emulatesAFocusedPage)}
-            ${bindToSetting4("emulate-page-focus")}>${i18nString21(UIStrings22.emulateFocusedPage)}</devtools-checkbox>
+            ${bindToSetting4(Common18.Settings.Settings.instance().resolve(SDK22.SDKSettings.emulatePageFocusSettingDescriptor))}>${i18nString21(UIStrings22.emulateFocusedPage)}</devtools-checkbox>
         <devtools-button
             @click=${() => UIHelpers.openInNewTab("https://developer.chrome.com/docs/devtools/rendering/apply-effects#emulate_a_focused_page")}
            .data=${{
@@ -21746,7 +21747,7 @@ __export(StandaloneStylesContainer_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW13,
   StandaloneStylesContainer: () => StandaloneStylesContainer
 });
-import * as Common18 from "./../../core/common/common.js";
+import * as Common19 from "./../../core/common/common.js";
 import * as ComputedStyle4 from "./../../models/computed_style/computed_style.js";
 import * as InlineEditor5 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components7 from "./../../ui/legacy/components/utils/utils.js";
@@ -21766,7 +21767,7 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
     </div>
   `, target);
 };
-var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(UI27.Widget.VBox) {
+var StandaloneStylesContainer = class extends Common19.ObjectWrapper.eventMixin(UI27.Widget.VBox) {
   activeCSSAngle = null;
   isEditingStyle = false;
   sectionByElement = /* @__PURE__ */ new WeakMap();
@@ -21783,7 +21784,7 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
   #computedStyleModelInternal = new ComputedStyle4.ComputedStyleModel.ComputedStyleModel();
   #view;
   #filter = null;
-  #rebuildThrottler = new Common18.Throttler.Throttler(200);
+  #rebuildThrottler = new Common19.Throttler.Throttler(200);
   constructor(element, view = DEFAULT_VIEW13) {
     super(element, { useShadowDom: true });
     this.#view = view;
@@ -21813,7 +21814,7 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
     this.#rebuildAndUpdate();
   }
   get webCustomData() {
-    if (!this.#webCustomData && Common18.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
+    if (!this.#webCustomData && Common19.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
       this.#webCustomData = WebCustomData.create();
     }
     return this.#webCustomData;

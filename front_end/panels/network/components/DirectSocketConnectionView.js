@@ -22,11 +22,11 @@ const UIStrings = {
     /**
      * @description Section header for a list of the main aspects of a direct socket connection
      */
-    openInfo: 'Open Info',
+    openInfo: 'Open info',
     /**
      * @description Text in Connection info View of the Network panel
      */
-    type: 'DirectSocket Type',
+    type: 'DirectSocket type',
     /**
      * @description Text in Connection info View of the Network panel
      */

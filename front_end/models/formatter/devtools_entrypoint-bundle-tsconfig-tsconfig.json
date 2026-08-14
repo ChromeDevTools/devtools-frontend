@@ -45,9 +45,6 @@
   "references": [
     {
       "path": "./formatter-tsconfig.json"
-    },
-    {
-      "path": "../../entrypoints/formatter_worker/worker_entrypoint-tsconfig.json"
     }
   ]
 }

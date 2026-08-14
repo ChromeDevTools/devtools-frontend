@@ -568,9 +568,6 @@ export class DebuggerModel extends SDKModel {
                 void this.stepInto();
             }
         }
-        else {
-            Common.EventTarget.fireEvent('DevTools.DebuggerPaused');
-        }
     }
     resumedScript() {
         this.resetDebuggerPausedDetails();

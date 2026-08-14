@@ -141,6 +141,29 @@ export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineI
     private contextMenuEventFired;
     titleLessMode(): void;
 }
+export declare class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
+    #private;
+    constructor(element?: HTMLElement, view?: ObjectPropertiesSectionView);
+    get root(): SDK.RemoteObject.RemoteObject | undefined;
+    set root(val: SDK.RemoteObject.RemoteObject);
+    get objectTree(): ObjectTree | undefined;
+    set objectTree(val: ObjectTree | undefined);
+    get title(): Element | TemplateResult | undefined;
+    set title(val: Element | TemplateResult | undefined);
+    get skipProto(): boolean;
+    set skipProto(val: boolean);
+    get linkifier(): Components.Linkifier.Linkifier | undefined;
+    set linkifier(val: Components.Linkifier.Linkifier);
+    get showOverflow(): boolean;
+    set showOverflow(val: boolean);
+    performUpdate(): void;
+    onDetach(): void;
+    wasShown(): void;
+    get rootContextMenuEnabled(): boolean;
+    set rootContextMenuEnabled(val: boolean);
+    private onRootContextMenu;
+    private onRootItemContextMenu;
+}
 export interface TreeOutlineOptions {
     readOnly?: boolean;
 }
@@ -181,7 +204,17 @@ export declare class ObjectTreeWidget extends UI.Widget.Widget {
     wasShown(): void;
 }
 export declare function renderObjectTree(objectTree: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string): LitTemplate | DirectiveResult;
-export declare function renderObjectPropertiesSection(objectTree: ObjectTree, title: LitTemplate, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, showOverflow?: boolean): LitTemplate;
+export interface ObjectPropertiesSectionViewInput {
+    objectTree: ObjectTree;
+    title?: Element | TemplateResult;
+    linkifier?: Components.Linkifier.Linkifier;
+    skipProto: boolean;
+    showOverflow: boolean;
+    onRootContextMenu?: (menu: UI.ContextMenu.ContextMenu) => void;
+    onRootItemContextMenu: (menu: UI.ContextMenu.ContextMenu) => void;
+}
+export type ObjectPropertiesSectionView = (input: ObjectPropertiesSectionViewInput, output: object, target: HTMLElement) => void;
+export declare const OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: ObjectPropertiesSectionView;
 export declare function renderPropertyName(name: string | null, isPrivate?: boolean, title?: string): TemplateResult;
 export declare function formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject, linkify: boolean, includePreview?: boolean): Promise<LitTemplate>;
 export declare function renderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean, useCustomPreview?: boolean, valueRef?: (element: Element | undefined) => void): LitTemplate;

@@ -36,7 +36,7 @@ const UIStrings = {
     /**
      * @description Data grid name for Direct Socket Chunk data grids
      */
-    directSocketChunk: 'Direct Socket Chunk',
+    directSocketChunk: 'Direct socket chunk',
     /**
      * @description Example for placeholder text. Note: "(direct)?socket)" is an example code and should not be translated.
      */

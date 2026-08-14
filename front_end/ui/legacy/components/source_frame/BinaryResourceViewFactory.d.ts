@@ -12,7 +12,7 @@ export declare class BinaryResourceViewFactory {
     hex(): string;
     base64(): string;
     utf8(): string;
-    createBase64View(): ResourceSourceFrame;
-    createHexView(): StreamingContentHexView;
-    createUtf8View(): ResourceSourceFrame;
+    createBase64View(element?: HTMLElement): ResourceSourceFrame;
+    createHexView(element?: HTMLElement): StreamingContentHexView;
+    createUtf8View(element?: HTMLElement): ResourceSourceFrame;
 }

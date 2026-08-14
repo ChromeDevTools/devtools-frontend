@@ -123,12 +123,14 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin(UI.View.Sim
     lineToScrollTo;
     selectionToSet;
     loadedInternal;
+    positionPercentageToReveal = null;
     contentRequested;
     wasmDisassemblyInternal;
     contentSet;
     selfXssWarningDisabledSetting;
-    constructor(lazyContent, options = {}) {
-        super({
+    constructor(lazyContent, options = {}, element) {
+        // @ts-expect-error
+        super(...(element ? [element] : []), {
             title: i18nString(UIStrings.source),
             viewId: 'source',
         });
@@ -488,6 +490,32 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin(UI.View.Sim
             await this.setContent(this.rawContent || '');
         }
     }
+    getPositionPercentage() {
+        const { textEditor } = this;
+        if (!textEditor) {
+            return 0;
+        }
+        const docLength = textEditor.state.doc.length;
+        if (docLength === 0) {
+            return 0;
+        }
+        const pos = textEditor.state.selection.main.head;
+        return pos / docLength;
+    }
+    setPositionPercentage(percentage) {
+        this.positionPercentageToReveal = percentage;
+        this.#setPercentagePositionIfNeeded();
+    }
+    #setPercentagePositionIfNeeded() {
+        if (this.positionPercentageToReveal !== null && this.loadedInternal) {
+            const docLength = this.textEditor.state.doc.length;
+            if (docLength > 0) {
+                const pos = Math.floor(docLength * this.positionPercentageToReveal);
+                this.revealPosition(pos);
+            }
+            this.positionPercentageToReveal = null;
+        }
+    }
     revealPosition(position, shouldHighlight) {
         this.lineToScrollTo = null;
         this.selectionToSet = null;
@@ -560,6 +588,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin(UI.View.Sim
         }
     }
     wasShownOrLoaded() {
+        this.#setPercentagePositionIfNeeded();
         this.#revealPositionIfNeeded();
         this.#setSelectionIfNeeded();
         this.#scrollToLineIfNeeded();

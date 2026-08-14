@@ -79,9 +79,12 @@
     "../../../../../../front_end/models/ai_assistance/skills/Skill.ts",
     "../../../../../../front_end/models/ai_assistance/skills/SkillRegistry.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ExecuteJavaScript.ts",
+    "../../../../../../front_end/models/ai_assistance/tools/GetDetailedCallTree.ts",
     "../../../../../../front_end/models/ai_assistance/tools/GetElementAccessibilityDetails.ts",
+    "../../../../../../front_end/models/ai_assistance/tools/GetFunctionCode.ts",
     "../../../../../../front_end/models/ai_assistance/tools/GetLighthouseAudits.ts",
     "../../../../../../front_end/models/ai_assistance/tools/GetNetworkRequestDetails.ts",
+    "../../../../../../front_end/models/ai_assistance/tools/GetResourceContent.ts",
     "../../../../../../front_end/models/ai_assistance/tools/GetSourceContent.ts",
     "../../../../../../front_end/models/ai_assistance/tools/GetStyles.ts",
     "../../../../../../front_end/models/ai_assistance/tools/GetTraceEventByKey.ts",
@@ -92,6 +95,7 @@
     "../../../../../../front_end/models/ai_assistance/tools/ListSources.ts",
     "../../../../../../front_end/models/ai_assistance/tools/RecordPerformanceTrace.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ResolveDevtoolsNodePath.ts",
+    "../../../../../../front_end/models/ai_assistance/tools/RunLighthouse.ts",
     "../../../../../../front_end/models/ai_assistance/tools/SelectTraceEventByKey.ts",
     "../../../../../../front_end/models/ai_assistance/tools/Tool.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ToolRegistry.ts",
@@ -128,9 +132,6 @@
       "path": "../network_time_calculator/bundle-tsconfig.json"
     },
     {
-      "path": "../persistence/bundle-tsconfig.json"
-    },
-    {
       "path": "../../services/tracing/bundle-tsconfig.json"
     },
     {
@@ -141,9 +142,6 @@
     },
     {
       "path": "../crux-manager/bundle-tsconfig.json"
-    },
-    {
-      "path": "../emulation/bundle-tsconfig.json"
     },
     {
       "path": "../formatter/bundle-tsconfig.json"

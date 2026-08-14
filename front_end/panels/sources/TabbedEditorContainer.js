@@ -68,23 +68,31 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/TabbedEditorContainer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let tabId = 0;
-export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
+export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
     delegate;
     tabbedPane;
     tabIds;
     files;
-    previouslyViewedFilesSetting;
+    #previouslyViewedFilesSetting;
     history;
+    set previouslyViewedFilesSetting(setting) {
+        this.#previouslyViewedFilesSetting = setting;
+        this.history = History.fromObject(this.#previouslyViewedFilesSetting.get());
+    }
+    get previouslyViewedFilesSetting() {
+        return this.#previouslyViewedFilesSetting;
+    }
     uriToUISourceCode;
     idToUISourceCode;
     #currentFile;
     currentView;
     scrollTimer;
     reentrantShow;
-    constructor(delegate, setting, element) {
-        super();
-        this.delegate = delegate;
-        this.tabbedPane = new UI.TabbedPane.TabbedPane(element);
+    constructor(element) {
+        super(element);
+        this.tabbedPane = new UI.TabbedPane.TabbedPane();
+        // eslint-disable-next-line @devtools/no-imperative-dom-api
+        this.tabbedPane.show(this.contentElement);
         // eslint-disable-next-line @devtools/no-imperative-dom-api
         const placeholderElement = document.createElement('div');
         placeholderElement.classList.add('sources-placeholder');
@@ -101,11 +109,12 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("RequestsForHeaderOverridesFileChanged" /* Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED */, this.#onRequestsForHeaderOverridesFileChanged, this);
         this.tabIds = new Map();
         this.files = new Map();
-        this.previouslyViewedFilesSetting = setting;
-        this.history = History.fromObject(this.previouslyViewedFilesSetting.get());
         this.uriToUISourceCode = new Map();
         this.idToUISourceCode = new Map();
         this.reentrantShow = false;
+    }
+    get tabbedPaneForTesting() {
+        return this.tabbedPane;
     }
     onBindingCreated(event) {
         const binding = event.data;
@@ -146,9 +155,6 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
         const binding = event.data;
         this.updateFileTitle(binding.fileSystem);
     }
-    get view() {
-        return this.tabbedPane;
-    }
     get visibleView() {
         return this.tabbedPane.visibleView;
     }
@@ -161,9 +167,6 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
     rightToolbar() {
         return this.tabbedPane.rightToolbar();
     }
-    show(parentElement) {
-        this.tabbedPane.show(parentElement);
-    }
     showFile(uiSourceCode) {
         const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
         uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
@@ -173,7 +176,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
         // Otherwise, this event will fire as soon as the content has been set.
         if (frame?.currentSourceFrame()?.contentSet && this.#currentFile === uiSourceCode &&
             frame?.currentUISourceCode() === uiSourceCode) {
-            Common.EventTarget.fireEvent('source-file-loaded', uiSourceCode.displayName(true));
+            window.dispatchEvent(new CustomEvent('source-file-loaded', { bubbles: true, cancelable: true, detail: uiSourceCode.displayName(true) }));
         }
         else {
             this.#showFile(uiSourceCode, true);
@@ -188,6 +191,9 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
     }
     closeAllFiles() {
         this.closeTabs(this.tabbedPane.tabIds());
+    }
+    detachEditors() {
+        this.tabbedPane.detachChildWidgets();
     }
     historyUISourceCodes() {
         const result = [];

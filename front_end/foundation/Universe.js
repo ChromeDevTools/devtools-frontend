@@ -10,6 +10,7 @@ import * as AutofillManager from '../models/autofill_manager/autofill_manager.js
 import * as Badges from '../models/badges/badges.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
+import * as CommentManager from '../models/comment_manager/comment_manager.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
 import * as Emulation from '../models/emulation/emulation.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
@@ -132,6 +133,8 @@ export class Universe {
         context.set(AiAssistance.AiHistoryStorage.AiHistoryStorage, aiHistoryStorage);
         const builtInAi = new AiAssistance.BuiltInAi.BuiltInAi();
         context.set(AiAssistance.BuiltInAi.BuiltInAi, builtInAi);
+        const commentManager = new CommentManager.CommentManager.CommentManager();
+        context.set(CommentManager.CommentManager.CommentManager, commentManager);
         this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
         context.set(AutofillManager.AutofillManager.AutofillManager, this.autofillManager);
     }
@@ -159,6 +162,9 @@ export class Universe {
     }
     get breakpointManager() {
         return this.context.get(Breakpoints.BreakpointManager.BreakpointManager);
+    }
+    get commentManager() {
+        return this.context.get(CommentManager.CommentManager.CommentManager);
     }
     get cpuThrottlingManager() {
         return this.context.get(SDK.CPUThrottlingManager.CPUThrottlingManager);

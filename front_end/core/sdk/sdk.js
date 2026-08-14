@@ -1367,6 +1367,9 @@ var generatedProperties = [
     "name": "border-block-end"
   },
   {
+    "keywords": [
+      "currentcolor"
+    ],
     "name": "border-block-end-color"
   },
   {
@@ -1401,6 +1404,9 @@ var generatedProperties = [
     "name": "border-block-start"
   },
   {
+    "keywords": [
+      "currentcolor"
+    ],
     "name": "border-block-start-color"
   },
   {
@@ -1577,6 +1583,9 @@ var generatedProperties = [
     "name": "border-inline-end"
   },
   {
+    "keywords": [
+      "currentcolor"
+    ],
     "name": "border-inline-end-color"
   },
   {
@@ -1611,6 +1620,9 @@ var generatedProperties = [
     "name": "border-inline-start"
   },
   {
+    "keywords": [
+      "currentcolor"
+    ],
     "name": "border-inline-start-color"
   },
   {
@@ -6656,6 +6668,11 @@ var generatedPropertyValues = {
       "currentcolor"
     ]
   },
+  "border-block-end-color": {
+    "values": [
+      "currentcolor"
+    ]
+  },
   "border-block-end-style": {
     "values": [
       "none",
@@ -6675,6 +6692,11 @@ var generatedPropertyValues = {
       "medium",
       "thick",
       "thin"
+    ]
+  },
+  "border-block-start-color": {
+    "values": [
+      "currentcolor"
     ]
   },
   "border-block-start-style": {
@@ -6757,6 +6779,11 @@ var generatedPropertyValues = {
       "auto"
     ]
   },
+  "border-inline-end-color": {
+    "values": [
+      "currentcolor"
+    ]
+  },
   "border-inline-end-style": {
     "values": [
       "none",
@@ -6776,6 +6803,11 @@ var generatedPropertyValues = {
       "medium",
       "thick",
       "thin"
+    ]
+  },
+  "border-inline-start-color": {
+    "values": [
+      "currentcolor"
     ]
   },
   "border-inline-start-style": {
@@ -17928,8 +17960,11 @@ var SDKSettings_exports = {};
 __export(SDKSettings_exports, {
   apcaSettingDescriptor: () => apcaSettingDescriptor,
   breakpointsActiveSettingDescriptor: () => breakpointsActiveSettingDescriptor,
+  cpuPressureSettingDescriptor: () => cpuPressureSettingDescriptor,
   cssSourceMapsEnabledSettingDescriptor: () => cssSourceMapsEnabledSettingDescriptor,
   disableAsyncStackTracesSettingDescriptor: () => disableAsyncStackTracesSettingDescriptor,
+  emulatePageFocusSettingDescriptor: () => emulatePageFocusSettingDescriptor,
+  emulatedCSSMediaSettingDescriptor: () => emulatedCSSMediaSettingDescriptor,
   extendGridLinesSettingDescriptor: () => extendGridLinesSettingDescriptor,
   javaScriptDisabledSettingDescriptor: () => javaScriptDisabledSettingDescriptor,
   jsSourceMapsEnabledSettingDescriptor: () => jsSourceMapsEnabledSettingDescriptor,
@@ -17937,11 +17972,16 @@ __export(SDKSettings_exports, {
   pauseOnExceptionEnabledSettingDescriptor: () => pauseOnExceptionEnabledSettingDescriptor,
   pauseOnUncaughtExceptionSettingDescriptor: () => pauseOnUncaughtExceptionSettingDescriptor,
   preserveConsoleLogSettingDescriptor: () => preserveConsoleLogSettingDescriptor,
+  showAdHighlightsSettingDescriptor: () => showAdHighlightsSettingDescriptor,
+  showDebugBordersSettingDescriptor: () => showDebugBordersSettingDescriptor,
+  showFPSCounterSettingDescriptor: () => showFPSCounterSettingDescriptor,
   showGridAreasSettingDescriptor: () => showGridAreasSettingDescriptor,
   showGridLineLabelsSettingDescriptor: () => showGridLineLabelsSettingDescriptor,
   showGridTrackSizesSettingDescriptor: () => showGridTrackSizesSettingDescriptor,
+  showLayoutShiftRegionsSettingDescriptor: () => showLayoutShiftRegionsSettingDescriptor,
   showMetricsRulersSettingDescriptor: () => showMetricsRulersSettingDescriptor,
-  showPaintRectsSettingDescriptor: () => showPaintRectsSettingDescriptor
+  showPaintRectsSettingDescriptor: () => showPaintRectsSettingDescriptor,
+  showScrollBottleneckRectsSettingDescriptor: () => showScrollBottleneckRectsSettingDescriptor
 });
 import * as Common6 from "./../common/common.js";
 var jsSourceMapsEnabledSettingDescriptor = {
@@ -18035,6 +18075,53 @@ var showPaintRectsSettingDescriptor = {
   type: "boolean",
   defaultValue: false,
   storageType: "Session"
+};
+var showLayoutShiftRegionsSettingDescriptor = {
+  name: "show-layout-shift-regions",
+  type: "boolean",
+  defaultValue: false,
+  storageType: "Session"
+};
+var showAdHighlightsSettingDescriptor = {
+  name: "show-ad-highlights",
+  type: "boolean",
+  defaultValue: false,
+  storageType: "Session"
+};
+var showDebugBordersSettingDescriptor = {
+  name: "show-debug-borders",
+  type: "boolean",
+  defaultValue: false,
+  storageType: "Session"
+};
+var showFPSCounterSettingDescriptor = {
+  name: "show-fps-counter",
+  type: "boolean",
+  defaultValue: false,
+  storageType: "Session"
+};
+var showScrollBottleneckRectsSettingDescriptor = {
+  name: "show-scroll-bottleneck-rects",
+  type: "boolean",
+  defaultValue: false,
+  storageType: "Session"
+};
+var emulatePageFocusSettingDescriptor = {
+  name: "emulate-page-focus",
+  type: "boolean",
+  defaultValue: false,
+  storageType: "Local"
+};
+var emulatedCSSMediaSettingDescriptor = {
+  name: "emulated-css-media",
+  type: "enum",
+  defaultValue: "",
+  storageType: "Session"
+};
+var cpuPressureSettingDescriptor = {
+  name: "emulation.cpu-pressure",
+  type: "enum",
+  defaultValue: "none"
 };
 
 // gen/front_end/core/sdk/SourceMapManager.js
@@ -22374,11 +22461,11 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     this.#defaultHighlighter = new DefaultHighlighter(this);
     this.#highlighter = this.#defaultHighlighter;
     this.#showPaintRectsSetting = settings.resolve(showPaintRectsSettingDescriptor);
-    this.#showLayoutShiftRegionsSetting = settings.moduleSetting("show-layout-shift-regions");
-    this.#showAdHighlightsSetting = settings.moduleSetting("show-ad-highlights");
-    this.#showDebugBordersSetting = settings.moduleSetting("show-debug-borders");
-    this.#showFPSCounterSetting = settings.moduleSetting("show-fps-counter");
-    this.#showScrollBottleneckRectsSetting = settings.moduleSetting("show-scroll-bottleneck-rects");
+    this.#showLayoutShiftRegionsSetting = settings.resolve(showLayoutShiftRegionsSettingDescriptor);
+    this.#showAdHighlightsSetting = settings.resolve(showAdHighlightsSettingDescriptor);
+    this.#showDebugBordersSetting = settings.resolve(showDebugBordersSettingDescriptor);
+    this.#showFPSCounterSetting = settings.resolve(showFPSCounterSettingDescriptor);
+    this.#showScrollBottleneckRectsSetting = settings.resolve(showScrollBottleneckRectsSettingDescriptor);
     if (!target.suspended()) {
       void this.overlayAgent.invoke_enable();
       void this.wireAgentToSettings();
@@ -27204,8 +27291,6 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       } else {
         void this.stepInto();
       }
-    } else {
-      Common23.EventTarget.fireEvent("DevTools.DebuggerPaused");
     }
   }
   resumedScript() {
@@ -36512,7 +36597,7 @@ var EmulationModel = class extends SDKModel {
       const emulationParams = JSON.parse(settingValue);
       await this.setIdleOverride(emulationParams);
     });
-    const cpuPressureDetectionSetting = settings.moduleSetting("emulation.cpu-pressure");
+    const cpuPressureDetectionSetting = settings.resolve(cpuPressureSettingDescriptor);
     cpuPressureDetectionSetting.addChangeListener(async () => {
       const settingValue = cpuPressureDetectionSetting.get();
       if (settingValue === "none") {
@@ -36526,7 +36611,7 @@ var EmulationModel = class extends SDKModel {
       }
       await this.setPressureStateOverride(settingValue);
     });
-    const mediaTypeSetting = settings.moduleSetting("emulated-css-media");
+    const mediaTypeSetting = settings.resolve(emulatedCSSMediaSettingDescriptor);
     const mediaFeatureColorGamutSetting = settings.moduleSetting("emulated-css-media-feature-color-gamut");
     const mediaFeaturePrefersColorSchemeSetting = settings.moduleSetting("emulated-css-media-feature-prefers-color-scheme");
     const mediaFeatureForcedColorsSetting = settings.moduleSetting("emulated-css-media-feature-forced-colors");

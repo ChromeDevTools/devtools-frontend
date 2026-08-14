@@ -11,6 +11,7 @@ import * as AutofillManager from '../models/autofill_manager/autofill_manager.js
 import * as Badges from '../models/badges/badges.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
+import * as CommentManager from '../models/comment_manager/comment_manager.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
 import * as Emulation from '../models/emulation/emulation.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
@@ -82,6 +83,10 @@ export class TestUniverse {
         [
             Breakpoints.BreakpointManager.BreakpointManager,
             () => new Breakpoints.BreakpointManager.BreakpointManager(this.targetManager, this.workspace, this.debuggerWorkspaceBinding, this.settings),
+        ],
+        [
+            CommentManager.CommentManager.CommentManager,
+            () => new CommentManager.CommentManager.CommentManager(),
         ],
         [
             Common.Console.Console,
@@ -307,6 +312,9 @@ export class TestUniverse {
     }
     get breakpointManager() {
         return this.get(Breakpoints.BreakpointManager.BreakpointManager);
+    }
+    get commentManager() {
+        return this.get(CommentManager.CommentManager.CommentManager);
     }
     get console() {
         return this.get(Common.Console.Console);

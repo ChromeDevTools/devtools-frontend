@@ -59,7 +59,7 @@ const UIStrings = {
     /**
      * @description Detailed text for a success status in the Network panel
      */
-    theOperationsResultWasServedFrom: 'The operations result was served from cache.',
+    theOperationsResultWasServedFrom: 'The operation’s result was served from cache.',
     /**
      * @description Detailed text for a success status in the Network panel
      */
@@ -79,7 +79,7 @@ const UIStrings = {
     /**
      * @description Text for an error status in the Network panel
      */
-    theServersResponseWasMalformedOr: 'The servers response was malformed or otherwise invalid.',
+    theServersResponseWasMalformedOr: 'The server’s response was malformed or otherwise invalid.',
     /**
      * @description Text for an error status in the Network panel
      */

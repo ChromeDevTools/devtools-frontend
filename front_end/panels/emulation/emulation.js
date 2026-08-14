@@ -2214,10 +2214,17 @@ var DeviceModeView = class _DeviceModeView extends UI4.Widget.VBox {
     const model = EmulationModel2.DeviceModeModel.DeviceModeModel.instance();
     this.#showDeviceModeSetting = model.enabledSetting();
     this.#showDeviceModeSetting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam("hasOtherClients")));
-    this.#showDeviceModeSetting.addChangeListener(this.requestUpdate.bind(this));
+    this.#showDeviceModeSetting.addChangeListener(this.#showDeviceModeChanged, this);
     SDK2.TargetManager.TargetManager.instance().addModelListener(SDK2.OverlayModel.OverlayModel, "ScreenshotRequested", this.screenshotRequestedFromOverlay, this);
     this.performUpdate();
     UI4.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged", this.zoomChanged, this);
+  }
+  #showDeviceModeChanged() {
+    if (!this.#showDeviceModeSetting.get()) {
+      this.model.emulate(EmulationModel2.DeviceModeModel.Type.None, null, null);
+      this.model.exitHingeMode();
+    }
+    this.requestUpdate();
   }
   performUpdate() {
     this.#toggleDeviceModeAction.setToggled(this.#showDeviceModeSetting.get());

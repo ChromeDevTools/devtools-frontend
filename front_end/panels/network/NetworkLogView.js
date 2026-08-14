@@ -158,7 +158,7 @@ const UIStrings = {
     /**
      * @description Text to announce to screen readers that network data is available.
      */
-    networkDataAvailable: 'Network Data Available',
+    networkDataAvailable: 'Network data available',
     /**
      * @description Text in Network Log View of the Network panel
      * @example {3} PH1
@@ -2190,7 +2190,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
             return encapsChars +
                 str.replace(/\\/g, '\\\\')
                     .replace(/"/g, '\\"')
-                    .replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;()*`]/g, '^$&')
+                    .replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;*]/g, '^$&')
                     .replace(/%(?=[a-zA-Z0-9_])/g, '%^')
                     .replace(/[^ -~\r\n]/g, ' ')
                     .replace(/\r?\n|\r/g, '^\n\n') +

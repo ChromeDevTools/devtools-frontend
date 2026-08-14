@@ -14,43 +14,43 @@ import * as EmulationComponents from '../settings/emulation/components/component
 import networkConfigViewStyles from './networkConfigView.css.js';
 const UIStrings = {
     /**
-     * @description Text in the Network conditions panel shown in the dropdown where the user chooses the user agent.
+     * @description Option in network conditions view of the Network panel shown in user agent dropdown.
      */
     custom: 'Custom…',
     /**
-     * @description Placeholder text shown in the input box where a user is expected to add a custom user agent.
+     * @description Placeholder text for custom user agent input in network conditions view of the Network panel.
      */
     enterACustomUserAgent: 'Enter a custom user agent',
     /**
-     * @description Error message when the custom user agent field is empty.
+     * @description Error message in network conditions view of the Network panel when custom user agent is empty.
      */
     customUserAgentFieldIsRequired: 'Custom user agent field is required',
     /**
-     * @description Header for the caching settings within the network conditions panel.
+     * @description Section header for caching settings in network conditions view of the Network panel.
      */
     caching: 'Caching',
     /**
-     * @description Option in the network conditions panel to disable the cache.
+     * @description Checkbox label to disable cache in network conditions view of the Network panel.
      */
     disableCache: 'Disable cache',
     /**
-     * @description Header in Network conditions panel for the network throttling and emulation settings.
+     * @description Section header for network throttling settings in network conditions view of the Network panel.
      */
     networkThrottling: 'Network',
     /**
-     * @description Header in the network conditions panel for the user agent settings.
+     * @description Section header for user agent settings in network conditions view of the Network panel.
      */
     userAgent: 'User agent',
     /**
-     * @description User agent setting in the network conditions panel to use the browser's default value.
+     * @description Checkbox label in network conditions view of the Network panel to use browser default user agent.
      */
     selectAutomatically: 'Use browser default',
     /**
-     * @description Status text displayed after updating user agent client hints.
+     * @description Status message in network conditions view of the Network panel after updating user agent client hints.
      */
     clientHintsStatusText: 'User agent updated.',
     /**
-     * @description The aria alert message when the Network conditions panel is shown.
+     * @description Accessible announcement when network conditions view is shown.
      */
     networkConditionsPanelShown: 'Network conditions shown.',
 };

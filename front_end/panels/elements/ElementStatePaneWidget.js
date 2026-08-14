@@ -1,6 +1,7 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -86,7 +87,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         jslog=${VisualLogging.pane('element-states')}>
       <div class="page-state-checkbox">
         <devtools-checkbox class="small" title=${i18nString(UIStrings.emulatesAFocusedPage)}
-            ${bindToSetting('emulate-page-focus')}>${i18nString(UIStrings.emulateFocusedPage)}</devtools-checkbox>
+            ${bindToSetting(Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatePageFocusSettingDescriptor))}>${i18nString(UIStrings.emulateFocusedPage)}</devtools-checkbox>
         <devtools-button
             @click=${() => UIHelpers.openInNewTab('https://developer.chrome.com/docs/devtools/rendering/apply-effects#emulate_a_focused_page')}
            .data=${{

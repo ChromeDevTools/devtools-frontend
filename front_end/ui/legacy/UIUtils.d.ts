@@ -272,6 +272,7 @@ export declare const cloneCustomElement: <T extends HTMLElement>(element: T, dee
 export declare class HTMLElementWithLightDOMTemplate extends HTMLElement {
     #private;
     constructor();
+    static getClones(node: Node): Node[];
     static cloneNode(node: Node): Node;
     private static patchLitTemplate;
     get templateRoot(): DocumentFragment | HTMLElement;

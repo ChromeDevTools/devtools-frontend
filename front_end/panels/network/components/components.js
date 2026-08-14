@@ -220,11 +220,11 @@ var UIStrings = {
   /**
    * @description Section header for a list of the main aspects of a direct socket connection
    */
-  openInfo: "Open Info",
+  openInfo: "Open info",
   /**
    * @description Text in Connection info View of the Network panel
    */
-  type: "DirectSocket Type",
+  type: "DirectSocket type",
   /**
    * @description Text in Connection info View of the Network panel
    */
@@ -813,7 +813,7 @@ var UIStrings2 = {
   /**
    * @description Description of which letters the name of an HTTP header may contain (a-z, A-Z, 0-9, '-', or '_').
    */
-  headerNamesOnlyLetters: "Header names should contain only letters, digits, hyphens or underscores",
+  headerNamesOnlyLetters: "Header names should contain only letters, digits, hyphens, or underscores",
   /**
    * @description Text that is usually a hyperlink to more documentation
    */
@@ -1456,7 +1456,7 @@ var UIStrings4 = {
   /**
    * @description Detailed text for a success status in the Network panel
    */
-  theOperationsResultWasServedFrom: "The operations result was served from cache.",
+  theOperationsResultWasServedFrom: "The operation\u2019s result was served from cache.",
   /**
    * @description Detailed text for a success status in the Network panel
    */
@@ -1476,7 +1476,7 @@ var UIStrings4 = {
   /**
    * @description Text for an error status in the Network panel
    */
-  theServersResponseWasMalformedOr: "The servers response was malformed or otherwise invalid.",
+  theServersResponseWasMalformedOr: "The server\u2019s response was malformed or otherwise invalid.",
   /**
    * @description Text for an error status in the Network panel
    */

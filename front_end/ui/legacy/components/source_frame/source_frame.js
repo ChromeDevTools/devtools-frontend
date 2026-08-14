@@ -185,12 +185,13 @@ var SourceFrameImpl = class extends Common.ObjectWrapper.eventMixin(UI.View.Simp
   lineToScrollTo;
   selectionToSet;
   loadedInternal;
+  positionPercentageToReveal = null;
   contentRequested;
   wasmDisassemblyInternal;
   contentSet;
   selfXssWarningDisabledSetting;
-  constructor(lazyContent, options = {}) {
-    super({
+  constructor(lazyContent, options = {}, element) {
+    super(...element ? [element] : [], {
       title: i18nString(UIStrings.source),
       viewId: "source"
     });
@@ -533,6 +534,32 @@ var SourceFrameImpl = class extends Common.ObjectWrapper.eventMixin(UI.View.Simp
       await this.setContent(this.rawContent || "");
     }
   }
+  getPositionPercentage() {
+    const { textEditor } = this;
+    if (!textEditor) {
+      return 0;
+    }
+    const docLength = textEditor.state.doc.length;
+    if (docLength === 0) {
+      return 0;
+    }
+    const pos = textEditor.state.selection.main.head;
+    return pos / docLength;
+  }
+  setPositionPercentage(percentage) {
+    this.positionPercentageToReveal = percentage;
+    this.#setPercentagePositionIfNeeded();
+  }
+  #setPercentagePositionIfNeeded() {
+    if (this.positionPercentageToReveal !== null && this.loadedInternal) {
+      const docLength = this.textEditor.state.doc.length;
+      if (docLength > 0) {
+        const pos = Math.floor(docLength * this.positionPercentageToReveal);
+        this.revealPosition(pos);
+      }
+      this.positionPercentageToReveal = null;
+    }
+  }
   revealPosition(position, shouldHighlight) {
     this.lineToScrollTo = null;
     this.selectionToSet = null;
@@ -602,6 +629,7 @@ var SourceFrameImpl = class extends Common.ObjectWrapper.eventMixin(UI.View.Simp
     }
   }
   wasShownOrLoaded() {
+    this.#setPercentagePositionIfNeeded();
     this.#revealPositionIfNeeded();
     this.#setSelectionIfNeeded();
     this.#scrollToLineIfNeeded();
@@ -1083,10 +1111,10 @@ var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var ResourceSourceFrame = class extends SourceFrameImpl {
   #resource;
   #givenContentType;
-  constructor(resource, givenContentType, options) {
+  constructor(resource, givenContentType, options, element) {
     const isStreamingProvider = TextUtils3.ContentProvider.isStreamingContentProvider(resource);
     const lazyContent = isStreamingProvider ? () => resource.requestStreamingContent().then(TextUtils3.StreamingContentData.asContentDataOrError) : () => resource.requestContentData();
-    super(lazyContent, options);
+    super(lazyContent, options, element);
     this.#givenContentType = givenContentType;
     this.#resource = resource;
     if (isStreamingProvider) {
@@ -1159,9 +1187,10 @@ var MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1e3;
 var LinearMemoryInspectorView = class extends UI3.Widget.VBox {
   #memory = new Uint8Array([0]);
   #address = 0;
+  #positionPercentageToReveal = null;
   #inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
-  constructor() {
-    super();
+  constructor(element) {
+    super(element);
     this.#inspector.addEventListener("MemoryRequest", this.#memoryRequested, this);
     this.#inspector.addEventListener("AddressChanged", (event) => {
       this.#address = event.data;
@@ -1174,7 +1203,22 @@ var LinearMemoryInspectorView = class extends UI3.Widget.VBox {
   }
   setMemory(memory) {
     this.#memory = memory;
+    if (this.#positionPercentageToReveal !== null && this.#memory.length > 0) {
+      this.#address = Math.floor(this.#memory.length * this.#positionPercentageToReveal);
+      this.#positionPercentageToReveal = null;
+    }
     this.refreshData();
+  }
+  getPositionPercentage() {
+    return this.#memory.length === 0 ? 0 : this.#address / this.#memory.length;
+  }
+  setPositionPercentage(percentage) {
+    this.#positionPercentageToReveal = percentage;
+    if (this.#memory.length > 0 && this.#memory.length !== 1) {
+      this.#address = Math.floor(this.#memory.length * percentage);
+      this.#positionPercentageToReveal = null;
+      this.refreshData();
+    }
   }
   refreshData() {
     const memoryChunkStart = Math.max(0, this.#address - MEMORY_TRANSFER_MIN_CHUNK_SIZE / 2);
@@ -1205,8 +1249,8 @@ var LinearMemoryInspectorView = class extends UI3.Widget.VBox {
 };
 var StreamingContentHexView = class extends LinearMemoryInspectorView {
   #streamingContentData;
-  constructor(streamingContentData) {
-    super();
+  constructor(streamingContentData, element) {
+    super(element);
     this.#streamingContentData = streamingContentData;
   }
   wasShown() {
@@ -1252,22 +1296,14 @@ var BinaryResourceViewFactory = class _BinaryResourceViewFactory {
       "utf-8"
     ).text;
   }
-  createBase64View() {
-    const resourceFrame = new ResourceSourceFrame(TextUtils5.StaticContentProvider.StaticContentProvider.fromString(this.contentUrl, this.resourceType, this.streamingContent.content().base64), this.resourceType.canonicalMimeType(), { lineNumbers: false, lineWrapping: true });
-    this.streamingContent.addEventListener("ChunkAdded", () => {
-      void resourceFrame.setContent(this.base64());
-    });
-    return resourceFrame;
+  createBase64View(element) {
+    return new StreamingResourceSourceFrame(this.streamingContent, () => this.base64(), this.contentUrl, this.resourceType, { lineNumbers: false, lineWrapping: true }, element);
   }
-  createHexView() {
-    return new StreamingContentHexView(this.streamingContent);
+  createHexView(element) {
+    return new StreamingContentHexView(this.streamingContent, element);
   }
-  createUtf8View() {
-    const resourceFrame = new ResourceSourceFrame(TextUtils5.StaticContentProvider.StaticContentProvider.fromString(this.contentUrl, this.resourceType, this.utf8()), this.resourceType.canonicalMimeType(), { lineNumbers: true, lineWrapping: true });
-    this.streamingContent.addEventListener("ChunkAdded", () => {
-      void resourceFrame.setContent(this.utf8());
-    });
-    return resourceFrame;
+  createUtf8View(element) {
+    return new StreamingResourceSourceFrame(this.streamingContent, () => this.utf8(), this.contentUrl, this.resourceType, { lineNumbers: true, lineWrapping: true }, element);
   }
   static #uint8ArrayToHexString(uint8Array) {
     let output = "";
@@ -1282,6 +1318,26 @@ var BinaryResourceViewFactory = class _BinaryResourceViewFactory {
       hex = "0" + hex;
     }
     return hex;
+  }
+};
+var StreamingResourceSourceFrame = class extends ResourceSourceFrame {
+  #streamingContent;
+  #getContent;
+  constructor(streamingContent, getContent, contentUrl, resourceType, options, element) {
+    super(TextUtils5.StaticContentProvider.StaticContentProvider.fromString(contentUrl, resourceType, getContent()), resourceType.canonicalMimeType(), options, element);
+    this.#streamingContent = streamingContent;
+    this.#getContent = getContent;
+  }
+  wasShown() {
+    super.wasShown();
+    this.#streamingContent.addEventListener("ChunkAdded", this.#onChunkAdded, this);
+  }
+  willHide() {
+    super.willHide();
+    this.#streamingContent.removeEventListener("ChunkAdded", this.#onChunkAdded, this);
+  }
+  #onChunkAdded() {
+    void this.setContent(this.#getContent());
   }
 };
 
@@ -1783,7 +1839,10 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   const title = html2`<span>${titleText}</span>`;
   render3(html2`
     <style>${jsonView_css_default}</style>
-    ${ObjectUI.ObjectPropertiesSection.renderObjectPropertiesSection(input.objectTree, title)}
+    ${UI6.Widget.widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
+    objectTree: input.objectTree,
+    title
+  })}
   `, target, {
     container: {
       classes: ["json-view"],

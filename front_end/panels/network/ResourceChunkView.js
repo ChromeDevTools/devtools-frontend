@@ -30,7 +30,7 @@ const UIStrings = {
     /**
      * @description Text to clear everything
      */
-    clearAll: 'Clear All',
+    clearAll: 'Clear all',
     /**
      * @description Text to filter result items
      */

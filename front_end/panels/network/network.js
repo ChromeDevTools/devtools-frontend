@@ -14,8 +14,11 @@ import "./../../ui/legacy/legacy.js";
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
+import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as SourceFrame from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI from "./../../ui/legacy/legacy.js";
+import { html, nothing, render } from "./../../ui/lit/lit.js";
+import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/binaryResourceView.css.js
 var binaryResourceView_css_default = `/*
@@ -24,109 +27,156 @@ var binaryResourceView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.panel.network devtools-toolbar.binary-view-toolbar {
-  border-top: 1px solid var(--sys-color-divider);
-  border-bottom: 0;
-  padding-left: 5px;
-  flex: none;
-}
+@scope to (devtools-widget > *) {
+  .panel.network devtools-toolbar.binary-view-toolbar {
+    border-top: 1px solid var(--sys-color-divider);
+    border-bottom: 0;
+    padding-left: 5px;
+    flex: none;
+  }
 
-.binary-view-copied-text {
-  opacity: 100%;
-}
+  .binary-view-copied-text {
+    opacity: 100%;
+  }
 
-.binary-view-copied-text.fadeout {
-  opacity: 0%;
-  transition: opacity 1s;
+  .binary-view-copied-text.fadeout {
+    opacity: 0%;
+    transition: opacity 1s;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./binaryResourceView.css")} */`;
 
 // gen/front_end/panels/network/BinaryResourceView.js
+var { widget } = UI.Widget;
 var UIStrings = {
   /**
-   * @description Text in Binary Resource View of the Network panel. Shown to the user as a status
+   * @description Text in binary resource view of the Network panel. Shown to the user as a status
    * message after the current text has been copied to the clipboard. Base64 is a format for encoding
    * data.
    */
   copiedAsBase: "Copied as `Base64`",
   /**
-   * @description Text in Binary Resource View of the Network panel
+   * @description Option label in binary resource view of the Network panel to view data in hexadecimal (Hex) format.
    */
-  hexViewer: "`Hex` Viewer",
+  hexViewer: "`Hex` viewer",
   /**
-   * @description Text in Binary Resource View of the Network panel. Shown to the user as a status
-   * message after the current text has been copied to the clipboard. Hex is short for hexadecimal,
-   * and is a format for encoding data.
+   * @description Status message in binary resource view of the Network panel after copying text in hexadecimal (Hex) format. Hex is short for hexadecimal.
    */
   copiedAsHex: "Copied as `Hex`",
   /**
-   * @description Text in Binary Resource View of the Network panel. Shown to the user as a status
+   * @description Text in binary resource view of the Network panel. Shown to the user as a status
    * message after the current text has been copied to the clipboard. UTF-8 is a format for encoding data.
    */
   copiedAsUtf: "Copied as `UTF-8`",
   /**
-   * @description Screen reader label for a select box that chooses how to display binary data in the Network panel
+   * @description Screen reader label for a select box that chooses how to display binary data in the Network panel.
    */
   binaryViewType: "Binary view type",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon copy button in the Binary Resource View of the Network panel
+   * @description Tooltip text that appears when hovering over the largeicon copy button in the binary resource view of the Network panel.
    */
   copyToClipboard: "Copy to clipboard",
   /**
-   * @description A context menu command in the Binary Resource View of the Network panel, for
+   * @description A context menu command in the binary resource view of the Network panel, for
    * copying to the clipboard. Base64 is a format for encoding data.
    */
   copyAsBase: "Copy as `Base64`",
   /**
-   * @description A context menu command in the Binary Resource View of the Network panel, for copying
-   * to the clipboard. Hex is short for hexadecimal, and is a format for encoding data.
+   * @description A context menu command in the binary resource view of the Network panel, for copying
+   * to the clipboard in hexadecimal (Hex) format. Hex is short for hexadecimal.
    */
   copyAsHex: "Copy as `Hex`",
   /**
-   * @description A context menu command in the Binary Resource View of the Network panel, for copying
-   *to the clipboard. UTF-8 is a format for encoding data.
+   * @description A context menu command in the binary resource view of the Network panel, for copying
+   * to the clipboard. UTF-8 is a format for encoding data.
    */
   copyAsUtf: "Copy as `UTF-8`"
 };
 var str_ = i18n.i18n.registerUIStrings("panels/network/BinaryResourceView.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+var defaultView = (input, _output, target) => {
+  render(html`
+    <style>${binaryResourceView_css_default}</style>
+    <div class="vbox flex-auto">
+      ${input.binaryViewObjects.map((obj) => obj.type === input.binaryViewTypeSetting.get() ? html`
+          <devtools-widget
+            class="widget vbox flex-auto"
+            ${widget((e) => {
+    const factory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(input.content, input.contentUrl, input.resourceType);
+    let view;
+    switch (obj.type) {
+      case "base64":
+        view = factory.createBase64View(e);
+        break;
+      case "hex":
+        view = factory.createHexView(e);
+        break;
+      case "utf8":
+        view = factory.createUtf8View(e);
+        break;
+      default:
+        throw new Error("Unsupported view type");
+    }
+    if ("setPositionPercentage" in view) {
+      view.setPositionPercentage(input.activePositionPercentage);
+    }
+    return view;
+  })}>
+          </devtools-widget>
+        ` : nothing)}
+      <devtools-toolbar class="binary-view-toolbar">
+          <select class="toolbar-item" title=${i18nString(UIStrings.binaryViewType)}
+              aria-label=${i18nString(UIStrings.binaryViewType)}
+              @change=${input.binaryViewTypeChanged}>
+            ${input.binaryViewObjects.map((viewObject) => html`
+              <option value=${viewObject.type}
+                  ?selected=${viewObject.type === input.binaryViewTypeSetting.get()}
+                  jslog=${VisualLogging.item(viewObject.type).track({ click: true })}>${viewObject.label}</option>
+            `)}
+          </select>
+        <devtools-button class="toolbar-button toolbar-item" title=${i18nString(UIStrings.copyToClipboard)}
+            @click=${input.copySelectedViewToClipboard}
+            .data=${{
+    variant: "icon",
+    iconName: "copy",
+    jslogContext: "copy"
+  }}></devtools-button>
+        ${input.copiedText.element}
+      </devtools-toolbar>
+    </div>
+  `, target);
+};
 var BinaryResourceView = class extends UI.Widget.VBox {
+  activePositionPercentage = 0;
   binaryResourceViewFactory;
-  toolbar;
+  streamingContent;
+  contentUrl;
+  resourceType;
   binaryViewObjects;
   binaryViewTypeSetting;
-  binaryViewTypeCombobox;
   copiedText;
   addFadeoutSettimeoutId;
-  lastView;
+  litContainer;
+  #view = defaultView;
   constructor(content, contentUrl, resourceType, element) {
     super(element);
     this.registerRequiredCSS(binaryResourceView_css_default);
+    this.streamingContent = content;
+    this.contentUrl = contentUrl;
+    this.resourceType = resourceType;
     this.binaryResourceViewFactory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(content, contentUrl, resourceType);
-    this.toolbar = this.element.createChild("devtools-toolbar", "binary-view-toolbar");
     this.binaryViewObjects = [
-      new BinaryViewObject("base64", i18n.i18n.lockedString("Base64"), i18nString(UIStrings.copiedAsBase), this.binaryResourceViewFactory.createBase64View.bind(this.binaryResourceViewFactory), this.binaryResourceViewFactory.base64.bind(this.binaryResourceViewFactory)),
-      new BinaryViewObject("hex", i18nString(UIStrings.hexViewer), i18nString(UIStrings.copiedAsHex), this.binaryResourceViewFactory.createHexView.bind(this.binaryResourceViewFactory), this.binaryResourceViewFactory.hex.bind(this.binaryResourceViewFactory)),
-      new BinaryViewObject("utf8", i18n.i18n.lockedString("UTF-8"), i18nString(UIStrings.copiedAsUtf), this.binaryResourceViewFactory.createUtf8View.bind(this.binaryResourceViewFactory), this.binaryResourceViewFactory.utf8.bind(this.binaryResourceViewFactory))
+      new BinaryViewObject("base64", i18n.i18n.lockedString("Base64"), i18nString(UIStrings.copiedAsBase), this.binaryResourceViewFactory.base64.bind(this.binaryResourceViewFactory)),
+      new BinaryViewObject("hex", i18nString(UIStrings.hexViewer), i18nString(UIStrings.copiedAsHex), this.binaryResourceViewFactory.hex.bind(this.binaryResourceViewFactory)),
+      new BinaryViewObject("utf8", i18n.i18n.lockedString("UTF-8"), i18nString(UIStrings.copiedAsUtf), this.binaryResourceViewFactory.utf8.bind(this.binaryResourceViewFactory))
     ];
     this.binaryViewTypeSetting = Common.Settings.Settings.instance().createSetting("binary-view-type", "hex");
-    this.binaryViewTypeCombobox = new UI.Toolbar.ToolbarComboBox(this.binaryViewTypeChanged.bind(this), i18nString(UIStrings.binaryViewType));
-    for (const viewObject of this.binaryViewObjects) {
-      this.binaryViewTypeCombobox.addOption(this.binaryViewTypeCombobox.createOption(viewObject.label, viewObject.type));
-    }
-    this.toolbar.appendToolbarItem(this.binaryViewTypeCombobox);
-    const copyButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyToClipboard), "copy");
-    copyButton.addEventListener("Click", (_event) => {
-      this.copySelectedViewToClipboard();
-    }, this);
-    this.toolbar.appendToolbarItem(copyButton);
     this.copiedText = new UI.Toolbar.ToolbarText();
     this.copiedText.element.classList.add("binary-view-copied-text");
-    this.toolbar.appendChild(this.copiedText.element);
     this.addFadeoutSettimeoutId = null;
-    this.lastView = null;
-    this.updateView();
+    this.litContainer = this.element.createChild("div", "vbox flex-auto");
+    this.performUpdate();
   }
   getCurrentViewObject() {
     const filter = (obj) => obj.type === this.binaryViewTypeSetting.get();
@@ -142,42 +192,43 @@ var BinaryResourceView = class extends UI.Widget.VBox {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(viewObject.content());
     this.copiedText.setText(viewObject.copiedMessage);
     this.copiedText.element.classList.remove("fadeout");
-    function addFadeoutClass() {
+    const addFadeoutClass = () => {
       this.copiedText.element.classList.add("fadeout");
-    }
+    };
     if (this.addFadeoutSettimeoutId) {
       clearTimeout(this.addFadeoutSettimeoutId);
       this.addFadeoutSettimeoutId = null;
     }
-    this.addFadeoutSettimeoutId = window.setTimeout(addFadeoutClass.bind(this), 2e3);
+    this.addFadeoutSettimeoutId = window.setTimeout(addFadeoutClass, 2e3);
   }
-  updateView() {
-    const newViewObject = this.getCurrentViewObject();
-    if (!newViewObject) {
-      return;
-    }
-    const newView = newViewObject.getView();
-    if (newView === this.lastView) {
-      return;
-    }
-    if (this.lastView) {
-      this.lastView.detach();
-    }
-    this.lastView = newView;
-    newView.show(this.element, this.toolbar);
-    this.binaryViewTypeCombobox.element.value = this.binaryViewTypeSetting.get();
+  performUpdate() {
+    const viewInput = {
+      activePositionPercentage: this.activePositionPercentage,
+      content: this.streamingContent,
+      contentUrl: this.contentUrl,
+      resourceType: this.resourceType,
+      binaryViewObjects: this.binaryViewObjects,
+      binaryViewTypeSetting: this.binaryViewTypeSetting,
+      binaryViewTypeChanged: this.binaryViewTypeChanged.bind(this),
+      copySelectedViewToClipboard: this.copySelectedViewToClipboard.bind(this),
+      copiedText: this.copiedText
+    };
+    this.#view(viewInput, void 0, this.litContainer);
   }
-  binaryViewTypeChanged() {
-    const selectedOption = this.binaryViewTypeCombobox.selectedOption();
-    if (!selectedOption) {
-      return;
-    }
-    const newViewType = selectedOption.value;
+  binaryViewTypeChanged(event) {
+    const newViewType = event.target.value;
     if (this.binaryViewTypeSetting.get() === newViewType) {
       return;
     }
+    const currentViewWidget = this.litContainer.querySelector("devtools-widget");
+    if (currentViewWidget) {
+      const view = UI.Widget.Widget.get(currentViewWidget);
+      if (view && "getPositionPercentage" in view) {
+        this.activePositionPercentage = view.getPositionPercentage();
+      }
+    }
     this.binaryViewTypeSetting.set(newViewType);
-    this.updateView();
+    this.performUpdate();
   }
   addCopyToContextMenu(contextMenu, submenuItemText) {
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(submenuItemText, false, "copy");
@@ -201,21 +252,11 @@ var BinaryViewObject = class {
   label;
   copiedMessage;
   content;
-  createViewFn;
-  view;
-  constructor(type, label, copiedMessage, createViewFn, content) {
+  constructor(type, label, copiedMessage, content) {
     this.type = type;
     this.label = label;
     this.copiedMessage = copiedMessage;
     this.content = content;
-    this.createViewFn = createViewFn;
-    this.view = null;
-  }
-  getView() {
-    if (!this.view) {
-      this.view = this.createViewFn();
-    }
-    return this.view;
   }
 };
 
@@ -237,11 +278,11 @@ import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Logs from "./../../models/logs/logs.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
+import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
-import { Directives, html, nothing, render } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import { Directives, html as html2, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
+import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling from "./../mobile_throttling/mobile_throttling.js";
 import * as PanelUtils from "./../utils/utils.js";
 
@@ -344,18 +385,18 @@ var requestConditionsDrawer_css_default = `/*
 
 // gen/front_end/panels/network/RequestConditionsDrawer.js
 var { ref, live, ifDefined } = Directives;
-var { widget } = UI2.Widget;
+var { widget: widget2 } = UI2.Widget;
 var UIStrings2 = {
   /**
    * @description Text to enable blocking of network requests
    */
   enableBlockingAndThrottling: "Enable blocking and throttling",
   /**
-   * @description Tooltip text that appears when hovering over the plus button in the Blocked URLs Pane of the Network panel
+   * @description Tooltip text for add button in request blocking tool of the Network panel.
    */
   addRule: "Add rule",
   /**
-   * @description Accessible label for the button to add request blocking patterns in the network request blocking tool
+   * @description Accessible label for the button to add request blocking patterns in the network request blocking tool.
    */
   addPatternLabel: "Add network request throttling or blocking pattern",
   /**
@@ -366,14 +407,14 @@ var UIStrings2 = {
    * @description Text that shows in the network request blocking panel if no pattern has yet been added.
    * @example {Learn more} PH1
    */
-  noThrottlingOrBlockingPattern: `To throttle or block a network request, add a rule here manually or via the network panel\u2019s context menu. {PH1}`,
+  noThrottlingOrBlockingPattern: `To throttle or block a network request, add a rule here manually or via the Network panel\u2019s context menu. {PH1}`,
   /**
-   * @description Text in Blocked URLs Pane of the Network panel
+   * @description Text in request blocking tool of the Network panel.
    * @example {4} PH1
    */
   dAffected: "{PH1} affected",
   /**
-   * @description Text in Blocked URLs Pane of the Network panel
+   * @description Tooltip text for pattern input in request blocking tool of the Network panel.
    */
   textEditPattern: "Text pattern to block or throttle matching requests; use URL Pattern syntax.",
   /**
@@ -438,11 +479,11 @@ var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var NETWORK_REQUEST_BLOCKING_EXPLANATION_URL = "https://developer.chrome.com/docs/devtools/network-request-blocking";
 var { bindToAction } = UI2.UIUtils;
 var DEFAULT_VIEW = (input, output, target) => {
-  render(
+  render2(
     // clang-format off
-    html`
+    html2`
     <style>${requestConditionsDrawer_css_default}</style>
-    <devtools-toolbar jslog=${VisualLogging.toolbar()}>
+    <devtools-toolbar jslog=${VisualLogging2.toolbar()}>
       <devtools-checkbox
         ?checked=${input.enabled}
         @click=${input.toggleEnabled}
@@ -453,7 +494,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       <devtools-button ${bindToAction("network.add-network-request-blocking-pattern")}></devtools-button>
       <devtools-button ${bindToAction("network.remove-all-network-request-blocking-patterns")}></devtools-button>
     </devtools-toolbar>
-    ${input.conditions.length === 0 ? html`
+    ${input.conditions.length === 0 ? html2`
     <div class="list">
       <div class=empty-state>
       <span class=empty-state-header>${i18nString2(UIStrings2.noPattern)}</span>
@@ -470,13 +511,13 @@ var DEFAULT_VIEW = (input, output, target) => {
       </devtools-button>
     </div>
     </div>
-    ` : html`
+    ` : html2`
     <devtools-list
         class="blocked-urls list square-corners"
         ?deletable=${input.enabled}
         @edit=${(e) => input.onBeginEdit(input.conditions[e.detail.index])}
         @delete=${(e) => input.onRemove(input.conditions[e.detail.index])}>
-      ${input.conditions.map((condition, index) => html`
+      ${input.conditions.map((condition, index) => html2`
         <div class="blocked-url" ${ref((e) => {
       output.itemRefs.set(condition, e);
     })}>
@@ -536,14 +577,14 @@ function renderItem({ condition, editing, editable, index, onToggle, onCondition
       e.consume(true);
     }
   };
-  return html`
+  return html2`
     <input class=blocked-url-checkbox
       @change=${toggle3}
       type=checkbox
       title=${i18nString2(UIStrings2.enableThrottlingToggleLabel, { PH1: constructorStringOrWildcardURL })}
       .checked=${live(enabled)}
       .disabled=${!editable || !originalOrUpgradedURLPattern}
-      jslog=${VisualLogging.toggle().track({ change: true })}>
+      jslog=${VisualLogging2.toggle().track({ change: true })}>
     <devtools-button
       .iconName=${"arrow-up"}
       .variant=${"icon"}
@@ -559,7 +600,7 @@ function renderItem({ condition, editing, editable, index, onToggle, onCondition
       .jslogContext=${"increase-priority"}
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       @click=${moveDown}></devtools-button>
-    ${!editing && originalOrUpgradedURLPattern ? html`
+    ${!editing && originalOrUpgradedURLPattern ? html2`
       <devtools-tooltip variant=rich jslogcontext=url-pattern id=url-pattern-${index}>
         <div>hash: ${originalOrUpgradedURLPattern.hash}</div>
         <div>hostname: ${originalOrUpgradedURLPattern.hostname}</div>
@@ -571,21 +612,21 @@ function renderItem({ condition, editing, editable, index, onToggle, onCondition
         <div>username: ${originalOrUpgradedURLPattern.username}</div>
         <hr />
         ${learnMore()}
-      </devtools-tooltip>` : nothing}
-    ${!editing && wildcardURL ? html`
+      </devtools-tooltip>` : nothing2}
+    ${!editing && wildcardURL ? html2`
       <devtools-icon name=warning-filled class="small warning" aria-details=url-pattern-warning-${index}>
       </devtools-icon>
       <devtools-tooltip variant=rich jslogcontext=url-pattern-warning id=url-pattern-warning-${index}>
         ${i18nString2(UIStrings2.patternWasUpgraded, { PH1: wildcardURL })}
       </devtools-tooltip>
-      ` : nothing}
-    ${!editing && !originalOrUpgradedURLPattern ? html`
+      ` : nothing2}
+    ${!editing && !originalOrUpgradedURLPattern ? html2`
       <devtools-icon name=cross-circle-filled class=small aria-details=url-pattern-error-${index}>
       </devtools-icon>
       <devtools-tooltip variant=rich jslogcontext=url-pattern-warning id=url-pattern-error-${index}>
         ${SDK.NetworkManager.RequestURLPattern.isValidPattern(constructorStringOrWildcardURL) === "has-regexp-groups" ? i18nString2(UIStrings2.patternFailedWithRegExpGroups) : i18nString2(UIStrings2.patternFailedToParse)}
         ${learnMore()}
-      </devtools-tooltip>` : nothing}
+      </devtools-tooltip>` : nothing2}
     <devtools-prompt
       @click=${onPromptActivate}
       @keydown=${promptKeyDown}
@@ -608,7 +649,7 @@ function renderItem({ condition, editing, editable, index, onToggle, onCondition
        @ConditionsChanged=${(e) => {
     onConditionsChanged(condition, e.detail);
   }}
-       ${widget(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
+       ${widget2(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
     variant: "individual-request-conditions",
     jslogContext: "request-conditions",
     disabled: !editable,
@@ -616,10 +657,10 @@ function renderItem({ condition, editing, editable, index, onToggle, onCondition
   })}></select>
     <devtools-widget
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
-      ${widget(AffectedCountWidget, { condition, lookUpRequestCount })}></devtools-widget>`;
+      ${widget2(AffectedCountWidget, { condition, lookUpRequestCount })}></devtools-widget>`;
 }
 var AFFECTED_COUNT_DEFAULT_VIEW = (input, output, target) => {
-  render(html`${i18nString2(UIStrings2.dAffected, { PH1: input.count })}`, target, { container: { classes: ["blocked-url-count"] } });
+  render2(html2`${i18nString2(UIStrings2.dAffected, { PH1: input.count })}`, target, { container: { classes: ["blocked-url-count"] } });
 };
 function matchesUrl(conditions, url) {
   return Boolean(conditions.originalOrUpgradedURLPattern?.test(url));
@@ -672,7 +713,7 @@ var AffectedCountWidget = class extends UI2.Widget.Widget {
   }
 };
 function learnMore() {
-  return html`<devtools-link
+  return html2`<devtools-link
         href=${NETWORK_REQUEST_BLOCKING_EXPLANATION_URL}
         tabindex=0
         class=devtools-link
@@ -689,7 +730,7 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
   #editingCondition;
   constructor(target, view = DEFAULT_VIEW) {
     super(target, {
-      jslog: `${VisualLogging.panel("network.blocked-urls").track({ resize: true })}`,
+      jslog: `${VisualLogging2.panel("network.blocked-urls").track({ resize: true })}`,
       useShadowDom: true
     });
     this.#view = view;
@@ -907,8 +948,8 @@ import "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
-import { html as html2, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import { html as html3, nothing as nothing3, render as render3 } from "./../../ui/lit/lit.js";
+import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestDeviceBoundSessionsView.css.js
 var requestDeviceBoundSessionsView_css_default = `/*
@@ -983,11 +1024,11 @@ var str_3 = i18n5.i18n.registerUIStrings("panels/network/RequestDeviceBoundSessi
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var DEFAULT_VIEW2 = (input, _output, target) => {
   const { deviceBoundSessionUsages } = input;
-  render2(html2`
+  render3(html3`
       <style>${UI3.inspectorCommonStyles}</style>
       <style>${requestDeviceBoundSessionsView_css_default}</style>
       <div class="request-device-bound-sessions-view">
-        ${deviceBoundSessionUsages.length > 0 ? html2`
+        ${deviceBoundSessionUsages.length > 0 ? html3`
             <div class="device-bound-session-grid-wrapper">
               <devtools-data-grid striped inline>
                 <table>
@@ -998,7 +1039,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                     </tr>
                   </thead>
                   <tbody>
-                    ${deviceBoundSessionUsages.map((session) => html2`
+                    ${deviceBoundSessionUsages.map((session) => html3`
                       <tr>
                         <td>${session.sessionKey.id}</td>
                         <td>${getDeferralDecision(session.usage)}</td>
@@ -1008,9 +1049,9 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                 </table>
               </devtools-data-grid>
             </div>
-          ` : nothing2}
+          ` : nothing3}
       </div>
-    `, target, { container: { attributes: { jslog: `${VisualLogging2.pane("device-bound-sessions-request")}` } } });
+    `, target, { container: { attributes: { jslog: `${VisualLogging3.pane("device-bound-sessions-request")}` } } });
 };
 var RequestDeviceBoundSessionsView = class extends UI3.Widget.VBox {
   #request;
@@ -1066,10 +1107,10 @@ import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html3, render as render3 } from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives2, html as html4, render as render4 } from "./../../ui/lit/lit.js";
+import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/eventSourceMessagesView.css.js
 var eventSourceMessagesView_css_default = `/*
@@ -1098,42 +1139,42 @@ var eventSourceMessagesView_css_default = `/*
 var { repeat } = Directives2;
 var UIStrings4 = {
   /**
-   * @description Text in Event Source Messages View of the Network panel
+   * @description Column header for event ID in event source messages view of the Network panel.
    */
-  id: "Id",
+  id: "ID",
   /**
-   * @description Text that refers to some types
+   * @description Column header for event type in event source messages view of the Network panel.
    */
   type: "Type",
   /**
-   * @description Text in Event Source Messages View of the Network panel
+   * @description Column header for event data in event source messages view of the Network panel.
    */
   data: "Data",
   /**
-   * @description Text that refers to the time
+   * @description Column header for event time in event source messages view of the Network panel.
    */
   time: "Time",
   /**
-   * @description Data grid name for Event Source data grids
+   * @description Data grid name for event source data grids.
    */
-  eventSource: "Event Source",
+  eventSource: "Event source",
   /**
-   * @description A context menu item in the Resource Web Socket Frame View of the Network panel
+   * @description Context menu item in event source messages view of the Network panel.
    */
   copyMessage: "Copy message",
   /**
-   * @description Text to clear everything
+   * @description Tooltip text for clear button in event source messages view of the Network panel.
    */
   clearAll: "Clear all",
   /**
-   * @description Example for placeholder text
+   * @description Placeholder text for filter input in event source messages view of the Network panel.
    */
   filterByRegex: "Filter using regex (example: https?)"
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/network/EventSourceMessagesView.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render3(html3`
+  render4(html4`
     <style>
       ${eventSourceMessagesView_css_default}
     </style>
@@ -1151,7 +1192,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             style="flex-grow: 0.4"></devtools-toolbar-input>
       </devtools-toolbar>
       <devtools-data-grid name=${i18nString4(UIStrings4.eventSource)} autoscroll striped
-        .template=${html3`
+        .template=${html4`
           <table>
             <thead>
               <tr>
@@ -1164,7 +1205,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             <tbody>
               ${repeat(input.messages, (message) => message, (message) => {
     const date = new Date(message.time * 1e3);
-    return html3`<tr @contextmenu=${(e) => {
+    return html4`<tr @contextmenu=${(e) => {
       e.preventDefault();
       input.onRowContextMenu(message, e);
     }}>
@@ -1186,7 +1227,7 @@ var EventSourceMessagesView = class extends UI4.Widget.VBox {
   filterRegex = null;
   #view;
   constructor(request, view = DEFAULT_VIEW3) {
-    super({ jslog: `${VisualLogging3.pane("event-stream").track({ resize: true })}` });
+    super({ jslog: `${VisualLogging4.pane("event-stream").track({ resize: true })}` });
     this.#view = view;
     this.request = request;
     this.messageFilterSetting = Common3.Settings.Settings.instance().createSetting("network-event-source-message-filter", "");
@@ -1270,7 +1311,7 @@ import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling2 from "./../mobile_throttling/mobile_throttling.js";
 import * as EmulationComponents from "./../settings/emulation/components/components.js";
 
@@ -1398,43 +1439,43 @@ devtools-user-agent-client-hints-form {
 // gen/front_end/panels/network/NetworkConfigView.js
 var UIStrings5 = {
   /**
-   * @description Text in the Network conditions panel shown in the dropdown where the user chooses the user agent.
+   * @description Option in network conditions view of the Network panel shown in user agent dropdown.
    */
   custom: "Custom\u2026",
   /**
-   * @description Placeholder text shown in the input box where a user is expected to add a custom user agent.
+   * @description Placeholder text for custom user agent input in network conditions view of the Network panel.
    */
   enterACustomUserAgent: "Enter a custom user agent",
   /**
-   * @description Error message when the custom user agent field is empty.
+   * @description Error message in network conditions view of the Network panel when custom user agent is empty.
    */
   customUserAgentFieldIsRequired: "Custom user agent field is required",
   /**
-   * @description Header for the caching settings within the network conditions panel.
+   * @description Section header for caching settings in network conditions view of the Network panel.
    */
   caching: "Caching",
   /**
-   * @description Option in the network conditions panel to disable the cache.
+   * @description Checkbox label to disable cache in network conditions view of the Network panel.
    */
   disableCache: "Disable cache",
   /**
-   * @description Header in Network conditions panel for the network throttling and emulation settings.
+   * @description Section header for network throttling settings in network conditions view of the Network panel.
    */
   networkThrottling: "Network",
   /**
-   * @description Header in the network conditions panel for the user agent settings.
+   * @description Section header for user agent settings in network conditions view of the Network panel.
    */
   userAgent: "User agent",
   /**
-   * @description User agent setting in the network conditions panel to use the browser's default value.
+   * @description Checkbox label in network conditions view of the Network panel to use browser default user agent.
    */
   selectAutomatically: "Use browser default",
   /**
-   * @description Status text displayed after updating user agent client hints.
+   * @description Status message in network conditions view of the Network panel after updating user agent client hints.
    */
   clientHintsStatusText: "User agent updated.",
   /**
-   * @description The aria alert message when the Network conditions panel is shown.
+   * @description Accessible announcement when network conditions view is shown.
    */
   networkConditionsPanelShown: "Network conditions shown."
 };
@@ -1444,7 +1485,7 @@ var networkConfigViewInstance;
 var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
   constructor() {
     super({
-      jslog: `${VisualLogging4.panel("network-conditions").track({ resize: true })}`,
+      jslog: `${VisualLogging5.panel("network-conditions").track({ resize: true })}`,
       useShadowDom: true
     });
     this.registerRequiredCSS(networkConfigView_css_default);
@@ -1466,7 +1507,7 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
     const userAgentSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent", "");
     const userAgentMetadataSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent-metadata", null);
     const userAgentSelectElement = document.createElement("select");
-    userAgentSelectElement.setAttribute("jslog", `${VisualLogging4.dropDown().track({ change: true }).context(userAgentSetting.name)}`);
+    userAgentSelectElement.setAttribute("jslog", `${VisualLogging5.dropDown().track({ change: true }).context(userAgentSetting.name)}`);
     UI5.ARIAUtils.setLabel(userAgentSelectElement, title);
     const customOverride = { title: i18nString5(UIStrings5.custom), value: "custom" };
     userAgentSelectElement.appendChild(UI5.UIUtils.createOption(customOverride.title, customOverride.value, "custom"));
@@ -1480,7 +1521,7 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
     }
     userAgentSelectElement.selectedIndex = 0;
     const otherUserAgentElement = UI5.UIUtils.createInput("", "text");
-    otherUserAgentElement.setAttribute("jslog", `${VisualLogging4.textField().track({ change: true }).context(userAgentSetting.name)}`);
+    otherUserAgentElement.setAttribute("jslog", `${VisualLogging5.textField().track({ change: true }).context(userAgentSetting.name)}`);
     otherUserAgentElement.value = userAgentSetting.get();
     UI5.Tooltip.Tooltip.install(otherUserAgentElement, userAgentSetting.get());
     otherUserAgentElement.placeholder = i18nString5(UIStrings5.enterACustomUserAgent);
@@ -2091,13 +2132,13 @@ import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Logs2 from "./../../models/logs/logs.js";
 import * as StackTrace from "./../../models/stack_trace/stack_trace.js";
 import * as NetworkForward from "./forward/forward.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import { createIcon } from "./../../ui/kit/kit.js";
 import * as DataGrid from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
-import { render as render4 } from "./../../ui/lit/lit.js";
+import { render as render5 } from "./../../ui/lit/lit.js";
 import { PanelUtils as PanelUtils3 } from "./../utils/utils.js";
 var UIStrings6 = {
   /**
@@ -2323,33 +2364,33 @@ var UIStrings6 = {
    */
   timeSubtitleTooltipText: "Latency (response received time - start time)",
   /**
-   * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+   * @description Tooltip text in the protocol column of the Network log table explaining that Chrome connected over HTTP/3 based on an Alt-Svc header without racing other HTTP versions.
    */
-  alternativeJobWonWithoutRace: "`Chrome` used a `HTTP/3` connection induced by an '`Alt-Svc`' header without racing against establishing a connection using a different `HTTP` version.",
+  alternativeJobWonWithoutRace: "`Chrome` used `HTTP/3` (advertised by the '`Alt-Svc`' header) without racing other `HTTP` versions",
   /**
-   * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+   * @description Tooltip text in the protocol column of the Network log table explaining that Chrome connected over HTTP/3 based on an Alt-Svc header because it won the connection race against other HTTP versions.
    */
-  alternativeJobWonRace: "`Chrome` used a `HTTP/3` connection induced by an '`Alt-Svc`' header because it won a race against establishing a connection using a different `HTTP` version.",
+  alternativeJobWonRace: "`Chrome` used `HTTP/3` (advertised by the '`Alt-Svc`' header) because it won the connection race against other `HTTP` versions",
   /**
-   * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+   * @description Tooltip text in the protocol column of the Network log table explaining that Chrome used this protocol because it won the connection race against HTTP/3.
    */
-  mainJobWonRace: "`Chrome` used this protocol because it won a race against establishing a `HTTP/3` connection.",
+  mainJobWonRace: "`Chrome` used this protocol because it won the connection race against `HTTP/3`",
   /**
-   * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+   * @description Tooltip text in the protocol column of the Network log table explaining that no alternative protocol was cached when the request was sent, but an Alt-Svc header was received in the response.
    */
-  mappingMissing: "`Chrome` did not use an alternative `HTTP` version because no alternative protocol information was available when the request was issued, but an '`Alt-Svc`' header was present in the response.",
+  mappingMissing: "`Chrome` didn\u2019t use an alternative `HTTP` version because none was cached when the request was sent, but an '`Alt-Svc`' header was received in the response",
   /**
-   * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+   * @description Tooltip text in the protocol column of the Network log table explaining that Chrome did not attempt HTTP/3 because HTTP/3 was marked as broken for this host.
    */
-  broken: "`Chrome` did not try to establish a `HTTP/3` connection because it was marked as broken.",
+  broken: "`Chrome` didn\u2019t attempt an `HTTP/3` connection because `HTTP/3` is marked as broken for this host",
   /**
-   * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+   * @description Tooltip text in the protocol column of the Network log table explaining that Chrome connected over HTTP/3 based on the DNS record without racing other HTTP versions.
    */
-  dnsAlpnH3JobWonWithoutRace: "`Chrome` used a `HTTP/3` connection due to the `DNS record` indicating `HTTP/3` support. There was no race against establishing a connection using a different `HTTP` version.",
+  dnsAlpnH3JobWonWithoutRace: "`Chrome` used `HTTP/3` (advertised by the `DNS record`) without racing other `HTTP` versions",
   /**
-   * @description Tooltip text giving the reason why a specific HTTP transport protocol has been used
+   * @description Tooltip text in the protocol column of the Network log table explaining that Chrome connected over HTTP/3 based on the DNS record because it won the connection race against other HTTP versions.
    */
-  dnsAlpnH3JobWonRace: "`Chrome` used a `HTTP/3` connection due to the `DNS record` indicating `HTTP/3` support, which won a race against establishing a connection using a different `HTTP` version.",
+  dnsAlpnH3JobWonRace: "`Chrome` used `HTTP/3` (advertised by the `DNS record`) because it won the connection race against other `HTTP` versions",
   /**
    * @description Tooltip to explain the resource's initial priority
    * @example {High} PH1
@@ -3213,7 +3254,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       });
       cell.addEventListener("focus", () => this.parentView().resetFocus());
       const iconElement = PanelUtils3.getIconForNetworkRequest(this.requestInternal);
-      render4(iconElement, cell);
+      render5(iconElement, cell);
       if (this.isConsoleOriginated()) {
         const consoleIcon = createIcon("terminal", "network-console-icon");
         UI6.Tooltip.Tooltip.install(consoleIcon, i18nString6(UIStrings6.requestOriginatedFromConsole));
@@ -3564,7 +3605,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       const aiButtonContainer = document.createElement("span");
       aiButtonContainer.classList.add("ai-button-container");
       const icon = AiAssistance.AiUtils.getIconName();
-      const floatingButton = Buttons3.FloatingButton.create(icon, action2.title(), "ask-ai");
+      const floatingButton = Buttons4.FloatingButton.create(icon, action2.title(), "ask-ai");
       floatingButton.addEventListener("click", (ev) => {
         ev.stopPropagation();
         this.select();
@@ -3623,7 +3664,7 @@ import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as NetworkForward3 from "./forward/forward.js";
 import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as UI18 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 import * as NetworkComponents2 from "./components/components.js";
 
 // gen/front_end/panels/network/RequestCookiesView.js
@@ -3639,7 +3680,7 @@ import * as uiI18n2 from "./../../ui/i18n/i18n.js";
 import * as CookieTable from "./../../ui/legacy/components/cookie_table/cookie_table.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestCookiesView.css.js
 var requestCookiesView_css_default = `/*
@@ -3678,8 +3719,8 @@ var requestCookiesView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestCookiesView.css")} */`;
 
 // gen/front_end/panels/network/RequestCookiesView.js
-var { render: render5, html: html4 } = Lit;
-var { widget: widget2 } = UI7.Widget;
+var { render: render6, html: html5 } = Lit;
+var { widget: widget3 } = UI7.Widget;
 var UIStrings7 = {
   /**
    * @description Text in Request Cookies View of the Network panel
@@ -3689,7 +3730,7 @@ var UIStrings7 = {
    * @description Title for a table which shows all of the cookies associated with a selected network
    * request, in the Network panel. Noun phrase.
    */
-  requestCookies: "Request Cookies",
+  requestCookies: "Request cookies",
   /**
    * @description Tooltip to explain what request cookies are
    */
@@ -3697,7 +3738,7 @@ var UIStrings7 = {
   /**
    * @description Label for showing request cookies that were not actually sent
    */
-  showFilteredOutRequestCookies: "show filtered out request cookies",
+  showFilteredOutRequestCookies: "Show filtered-out request cookies",
   /**
    * @description Text in Request Headers View of the Network Panel
    */
@@ -3705,7 +3746,7 @@ var UIStrings7 = {
   /**
    * @description Text in Request Cookies View of the Network panel
    */
-  responseCookies: "Response Cookies",
+  responseCookies: "Response cookies",
   /**
    * @description Tooltip to explain what response cookies are
    */
@@ -3713,7 +3754,7 @@ var UIStrings7 = {
   /**
    * @description Label for response cookies with invalid syntax
    */
-  malformedResponseCookies: "Malformed Response Cookies",
+  malformedResponseCookies: "Malformed response cookies",
   /**
    * @description Tooltip to explain what malformed response cookies are. Malformed cookies are
    * cookies that did not match the expected format and could not be interpreted, and are invalid.
@@ -3734,11 +3775,11 @@ var UIStrings7 = {
 var str_7 = i18n13.i18n.registerUIStrings("panels/network/RequestCookiesView.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var DEFAULT_VIEW4 = (input, _output, target) => {
-  render5(html4`
+  render6(html5`
     <style>${requestCookiesView_css_default}</style>
     <style>${UI7.inspectorCommonStyles}</style>
     <div class="request-cookies-view">
-      ${input.gotCookies ? Lit.nothing : widget2(UI7.EmptyWidget.EmptyWidget, {
+      ${input.gotCookies ? Lit.nothing : widget3(UI7.EmptyWidget.EmptyWidget, {
     header: i18nString7(UIStrings7.thisRequestHasNoCookies)
   })}
 
@@ -3757,8 +3798,8 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
         ${i18nString7(UIStrings7.noRequestCookiesWereSent)}
       </div>
 
-      ${input.requestCookies.cookies.length > 0 ? html4`
-        <devtools-widget ${widget2(CookieTable.CookiesTable.CookiesTable, {
+      ${input.requestCookies.cookies.length > 0 ? html5`
+        <devtools-widget ${widget3(CookieTable.CookiesTable.CookiesTable, {
     cookiesData: input.requestCookies,
     inline: true
   })} class="cookie-table cookies-panel-item"></devtools-widget>
@@ -3766,7 +3807,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
 
       <div class="cookies-panel-item site-has-cookies-in-other-partition ${input.siteHasCookieInOtherPartition ? "" : "hidden"}">
         ${uiI18n2.getFormatLocalizedStringTemplate(str_7, UIStrings7.siteHasCookieInOtherPartition, {
-    PH1: html4`<devtools-link href="https://developer.chrome.com/en/docs/privacy-sandbox/chips/" .jslogContext=${"learn-more"}>${i18nString7(UIStrings7.learnMore)}</devtools-link>`
+    PH1: html5`<devtools-link href="https://developer.chrome.com/en/docs/privacy-sandbox/chips/" .jslogContext=${"learn-more"}>${i18nString7(UIStrings7.learnMore)}</devtools-link>`
   })}
       </div>
 
@@ -3775,8 +3816,8 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
           ${i18nString7(UIStrings7.responseCookies)}
       </div>
 
-      ${input.responseCookies.cookies.length ? html4`
-        <devtools-widget ${widget2(CookieTable.CookiesTable.CookiesTable, {
+      ${input.responseCookies.cookies.length ? html5`
+        <devtools-widget ${widget3(CookieTable.CookiesTable.CookiesTable, {
     cookiesData: input.responseCookies,
     inline: true
   })} class="cookie-table cookies-panel-item"></devtools-widget>
@@ -3787,7 +3828,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
       </div>
 
       <div class=${input.malformedResponseCookies.length ? "" : "hidden"}>
-        ${input.malformedResponseCookies.map((malformedCookie) => html4`
+        ${input.malformedResponseCookies.map((malformedCookie) => html5`
           <span class="cookie-line source-code" title=${getMalformedCookieTooltip(malformedCookie)}>
             <devtools-icon class="cookie-warning-icon small" .name=${"cross-circle-filled"}></devtools-icon>
             ${malformedCookie.cookieLine}
@@ -3795,7 +3836,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
         `)}
       </div>
     </div>
-  `, target, { container: { attributes: { jslog: `${VisualLogging5.pane("cookies").track({ resize: true })}` } } });
+  `, target, { container: { attributes: { jslog: `${VisualLogging6.pane("cookies").track({ resize: true })}` } } });
 };
 function getMalformedCookieTooltip(malformedCookie) {
   if (malformedCookie.blockedReasons.includes(
@@ -3958,7 +3999,7 @@ import * as NetworkForward2 from "./forward/forward.js";
 import * as Input from "./../../ui/components/input/input.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 import * as Sources from "./../sources/sources.js";
 import * as NetworkComponents from "./components/components.js";
 
@@ -3969,7 +4010,7 @@ __export(ShowMoreDetailsWidget_exports, {
   ShowMoreDetailsWidget: () => ShowMoreDetailsWidget
 });
 import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../ui/lit/lit.js";
 var UIStrings8 = {
@@ -3980,7 +4021,7 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/network/ShowMoreDetailsWidget.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var { render: render6, html: html5 } = Lit2;
+var { render: render7, html: html6 } = Lit2;
 var MAX_LENGTH = 3e3;
 var DEFAULT_VIEW5 = (input, output, target) => {
   const onContextMenuShowMore = (event) => {
@@ -3993,10 +4034,10 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     }
     void contextMenu.show();
   };
-  render6(html5`<span
+  render7(html6`<span
             @contextmenu=${onContextMenuShowMore}
             >${input.showMore ? input.text : input.text.substr(0, MAX_LENGTH)}</span>
-          ${!input.showMore && input.text.length > MAX_LENGTH ? html5`<devtools-button
+          ${!input.showMore && input.text.length > MAX_LENGTH ? html6`<devtools-button
             .variant=${"outlined"}
             .jslogContext=${"show-more"}
             @click=${input.onToggle}>
@@ -4037,8 +4078,8 @@ var ShowMoreDetailsWidget = class extends UI8.Widget.Widget {
 };
 
 // gen/front_end/panels/network/RequestHeadersView.js
-var { render: render7, html: html6 } = Lit3;
-var { widget: widget3 } = UI9.Widget;
+var { render: render8, html: html7 } = Lit3;
+var { widget: widget4 } = UI9.Widget;
 var UIStrings9 = {
   /**
    * @description Text in Request Headers View of the Network panel
@@ -4075,19 +4116,19 @@ var UIStrings9 = {
   /**
    * @description Text in Request Headers View of the Network panel
    */
-  referrerPolicy: "Referrer Policy",
+  referrerPolicy: "Referrer policy",
   /**
    * @description Text in Network Log View Columns of the Network panel
    */
-  remoteAddress: "Remote Address",
+  remoteAddress: "Remote address",
   /**
    * @description Text in Request Headers View of the Network panel
    */
-  requestHeaders: "Request Headers",
+  requestHeaders: "Request headers",
   /**
    * @description The HTTP method of a request
    */
-  requestMethod: "Request Method",
+  requestMethod: "Request method",
   /**
    * @description The URL of a request
    */
@@ -4107,7 +4148,7 @@ var UIStrings9 = {
   /**
    * @description HTTP response code
    */
-  statusCode: "Status Code"
+  statusCode: "Status code"
 };
 var str_9 = i18n17.i18n.registerUIStrings("panels/network/RequestHeadersView.ts", UIStrings9);
 var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
@@ -4138,7 +4179,7 @@ function renderGeneralRows(input) {
     statusClasses.push("status-with-comment");
   }
   const statusText = [input.request.statusCode, input.request.getInferredStatusText(), comment].join(" ");
-  return html6`<div jslog=${VisualLogging6.section("general")}>
+  return html7`<div jslog=${VisualLogging7.section("general")}>
     ${renderGeneralRow(input, i18nString9(UIStrings9.requestUrl), input.request.url(), "request-url")}
     ${input.request.statusCode ? renderGeneralRow(input, i18nString9(UIStrings9.requestMethod), input.request.requestMethod, "request-method") : Lit3.nothing}
     ${input.request.statusCode ? renderGeneralRow(input, i18nString9(UIStrings9.statusCode), statusText, "status-code", statusClasses) : Lit3.nothing}
@@ -4157,8 +4198,8 @@ function renderGeneralSection(input, forceOpen) {
 }
 var DEFAULT_VIEW6 = (input, _output, target) => {
   const requestHeadersText = input.request.requestHeadersText();
-  render7(
-    html6`
+  render8(
+    html7`
         <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
         <style>${Input.checkboxStyles}</style>
         ${renderGeneralSection(
@@ -4175,7 +4216,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       additionalContent: void 0,
       forceOpen: input.toReveal?.section === "EarlyHints",
       loggingContext: "early-hints-headers",
-      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html6`
+      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html7`
             <devtools-early-hints-header-section .data=${{
         request: input.request,
         toReveal: input.toReveal
@@ -4191,11 +4232,11 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       additionalContent: renderHeaderOverridesLink(input),
       forceOpen: input.toReveal?.section === "Response",
       loggingContext: "response-headers",
-      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html6`
+      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html7`
           <devtools-response-header-section .data=${{
         request: input.request,
         toReveal: input.toReveal
-      }} jslog=${VisualLogging6.section("response-headers")}></devtools-response-header-section>
+      }} jslog=${VisualLogging7.section("response-headers")}></devtools-response-header-section>
             `
     })}
         ${renderCategory({
@@ -4206,24 +4247,24 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       checked: requestHeadersText ? input.showRequestHeadersText : void 0,
       forceOpen: input.toReveal?.section === "Request",
       loggingContext: "request-headers",
-      contents: input.showRequestHeadersText && requestHeadersText ? renderRawHeaders(requestHeadersText) : html6`
-          <devtools-widget ${widget3(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
+      contents: input.showRequestHeadersText && requestHeadersText ? renderRawHeaders(requestHeadersText) : html7`
+          <devtools-widget ${widget4(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
         request: input.request,
         toReveal: input.toReveal
-      })} jslog=${VisualLogging6.section("request-headers")}></devtools-widget>`
+      })} jslog=${VisualLogging7.section("request-headers")}></devtools-widget>`
     })}
       `,
     // clang-format on
     target,
-    { container: { attributes: { jslog: `${VisualLogging6.pane("headers").track({ resize: true })}` } } }
+    { container: { attributes: { jslog: `${VisualLogging7.pane("headers").track({ resize: true })}` } } }
   );
 };
 var GENERAL_HEADERS_ONLY_VIEW = (input, _output, target) => {
-  render7(html6`
+  render8(html7`
         <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
         <style>${Input.checkboxStyles}</style>
         ${renderGeneralRows(input)}
-      `, target, { container: { attributes: { jslog: `${VisualLogging6.pane("headers").track({ resize: true })}` } } });
+      `, target, { container: { attributes: { jslog: `${VisualLogging7.pane("headers").track({ resize: true })}` } } });
 };
 var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
   #request;
@@ -4343,10 +4384,10 @@ function renderHeaderOverridesLink(input) {
     input.revealHeadersFile?.();
   };
   const overridesSetting = Common7.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled");
-  const fileIcon = html6`
+  const fileIcon = html7`
       <devtools-icon name="document" class=${"medium" + overridesSetting.get() ? "inline-icon dot purple" : "inline-icon"}>
       </devtools-icon>`;
-  return html6`
+  return html7`
       <devtools-link
           href="https://goo.gle/devtools-override"
           class="link devtools-link"
@@ -4366,12 +4407,12 @@ function renderHeaderOverridesLink(input) {
     `;
 }
 function renderRawHeaders(text) {
-  return html6`<div class="row raw-headers-row"><devtools-widget  class=raw-headers
-      ${widget3(ShowMoreDetailsWidget, { text })}></devtools-widget></div>`;
+  return html7`<div class="row raw-headers-row"><devtools-widget  class=raw-headers
+      ${widget4(ShowMoreDetailsWidget, { text })}></devtools-widget></div>`;
 }
 function renderGeneralRow(input, name, value, id, classNames) {
   const isHighlighted = input.toReveal?.section === "General" && name.toLowerCase() === input.toReveal?.header?.toLowerCase();
-  return html6`
+  return html7`
       <div class="row ${isHighlighted ? "header-highlight" : ""}">
         <div class="header-name">${name}</div>
         <div
@@ -4385,21 +4426,21 @@ function renderGeneralRow(input, name, value, id, classNames) {
 function renderCategory(data) {
   const expandedSetting = Common7.Settings.Settings.instance().createSetting("request-info-" + data.name + "-category-expanded", true);
   const isOpen = (expandedSetting ? expandedSetting.get() : true) || data.forceOpen;
-  return html6`
+  return html7`
       <details ?open=${isOpen} @toggle=${onToggle} aria-label=${data.title}>
         <summary
           class="header"
           @keydown=${onSummaryKeyDown}
-          jslog=${VisualLogging6.sectionHeader().track({ click: true }).context(data.loggingContext)}
+          jslog=${VisualLogging7.sectionHeader().track({ click: true }).context(data.loggingContext)}
         >
           <div class="header-grid-container">
             <div>
-              ${data.title}${data.headerCount !== void 0 ? html6`<span class="header-count"> (${data.headerCount})</span>` : Lit3.nothing}
+              ${data.title}${data.headerCount !== void 0 ? html7`<span class="header-count"> (${data.headerCount})</span>` : Lit3.nothing}
             </div>
             <div class="hide-when-closed">
-              ${data.checked !== void 0 ? html6`
+              ${data.checked !== void 0 ? html7`
                 <devtools-checkbox .checked=${data.checked} @change=${data.onToggleRawHeaders}
-                         jslog=${VisualLogging6.toggle("raw-headers").track({ change: true })}>
+                         jslog=${VisualLogging7.toggle("raw-headers").track({ change: true })}>
                   ${i18nString9(UIStrings9.raw)}
               </devtools-checkbox>` : Lit3.nothing}
             </div>
@@ -4444,8 +4485,8 @@ import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as Logs3 from "./../../models/logs/logs.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html7, nothing as nothing6, render as render8 } from "./../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives3, html as html8, nothing as nothing7, render as render9 } from "./../../ui/lit/lit.js";
+import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestInitiatorView.css.js
 var requestInitiatorView_css_default = `/*
@@ -4501,7 +4542,7 @@ var requestInitiatorViewTree_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestInitiatorViewTree.css")} */`;
 
 // gen/front_end/panels/network/RequestInitiatorView.js
-var { widget: widget4 } = UI10.Widget;
+var { widget: widget5 } = UI10.Widget;
 var UIStrings10 = {
   /**
    * @description Text in Request Initiator View of the Network panel if the request has no initiator data
@@ -4533,7 +4574,7 @@ function trimUrl(url) {
 var DEFAULT_VIEW7 = (input, _output, target) => {
   const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
   if (!hasInitiatorData) {
-    render8(html7`
+    render9(html8`
       <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
         ${i18nString10(UIStrings10.noInitiator)}
       </div>
@@ -4542,47 +4583,47 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
   }
   const renderStackTraceSection = () => {
     if (!input.stackTrace) {
-      return html7`${nothing6}`;
+      return html8`${nothing7}`;
     }
-    return html7`
+    return html8`
       <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true" open>
         ${i18nString10(UIStrings10.requestCallStack)}
         <ul role="group">
           <li role="treeitem">
-            ${widget4(Components2.JSPresentationUtils.StackTracePreviewContent, {
+            ${widget5(Components2.JSPresentationUtils.StackTracePreviewContent, {
       options: { tabStops: true },
       stackTrace: input.stackTrace
     })}
           </li>
-          ${input.isConsoleOriginated ? html7`
+          ${input.isConsoleOriginated ? html8`
             <li role="treeitem" class="console-origin-label">
               ${i18nString10(UIStrings10.console)}
             </li>
-          ` : nothing6}
+          ` : nothing7}
         </ul>
       </li>
     `;
   };
   const renderInitiatorNodes = (initiators, index, initiated, visited) => {
     if (index >= initiators.length) {
-      return html7`${nothing6}`;
+      return html8`${nothing7}`;
     }
     const request = initiators[index];
     const isCurrentRequest = index === initiators.length - 1;
     const hasFurtherInitiatedNodes = index + 1 < initiators.length;
-    const renderedChildren = isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing6;
+    const renderedChildren = isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing7;
     const url = request.url();
     const title = url.length < 2e3 ? url : void 0;
-    return html7`
+    return html8`
           <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true" open>
             <span style=${isCurrentRequest ? "font-weight: bold" : ""} title=${Directives3.ifDefined(title)}>
               ${trimUrl(url)}
             </span>
-            ${hasFurtherInitiatedNodes || renderedChildren !== nothing6 ? html7`
+            ${hasFurtherInitiatedNodes || renderedChildren !== nothing7 ? html8`
               <ul role="group">
                 ${renderInitiatorNodes(initiators, index + 1, initiated, visited)}
                 ${renderedChildren}
-              </ul>` : nothing6}
+              </ul>` : nothing7}
           </li>`;
   };
   const renderInitiatedNodes = (initiated, parentRequest, visited) => {
@@ -4593,23 +4634,23 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       }
     }
     if (children.length === 0) {
-      return nothing6;
+      return nothing7;
     }
-    return html7`
+    return html8`
       ${children.map((child) => {
       const shouldRecurse = !visited.has(child);
       if (shouldRecurse) {
         visited.add(child);
       }
-      const renderedChildren = shouldRecurse ? renderInitiatedNodes(initiated, child, visited) : nothing6;
+      const renderedChildren = shouldRecurse ? renderInitiatedNodes(initiated, child, visited) : nothing7;
       const url = child.url();
       const title = url.length < 2e3 ? url : void 0;
-      return html7`
+      return html8`
         <li role="treeitem" aria-expanded="true" open>
           <span title=${Directives3.ifDefined(title)}>
             ${trimUrl(url)}
           </span>
-          ${renderedChildren !== nothing6 ? html7`<ul role="group">${renderedChildren}</ul>` : nothing6}
+          ${renderedChildren !== nothing7 ? html8`<ul role="group">${renderedChildren}</ul>` : nothing7}
         </li>
       `;
     })}
@@ -4620,31 +4661,31 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     const visited = /* @__PURE__ */ new Set();
     visited.add(input.request);
     const hasInitiatorChain2 = initiators.length > 0;
-    return html7`
+    return html8`
       <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true" open>
         ${i18nString10(UIStrings10.requestInitiatorChain)}
-        ${hasInitiatorChain2 ? html7`
+        ${hasInitiatorChain2 ? html8`
           <ul role="group">
-            ${input.isConsoleOriginated ? html7`
+            ${input.isConsoleOriginated ? html8`
               <li role="treeitem" aria-expanded="true" open>
                 <span>${i18nString10(UIStrings10.console)}</span>
                 <ul role="group">
                   ${renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
                 </ul>
               </li>` : renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
-          </ul>` : nothing6}
+          </ul>` : nothing7}
       </li>`;
   };
   const hasInitiatorChain = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.isConsoleOriginated;
-  render8(html7`
-    <div class="request-initiator-view-tree" jslog=${VisualLogging7.tree("initiator-tree")}>
-      <devtools-tree .template=${html7`
+  render9(html8`
+    <div class="request-initiator-view-tree" jslog=${VisualLogging8.tree("initiator-tree")}>
+      <devtools-tree .template=${html8`
         <style>${requestInitiatorViewTree_css_default}</style>
-        ${input.stackTrace || hasInitiatorChain ? html7`
+        ${input.stackTrace || hasInitiatorChain ? html8`
           <ul role="tree">
             ${renderStackTraceSection()}
-            ${hasInitiatorChain ? renderInitiatorChain(input.initiatorGraph) : nothing6}
-          </ul>` : nothing6}
+            ${hasInitiatorChain ? renderInitiatorChain(input.initiatorGraph) : nothing7}
+          </ul>` : nothing7}
       `}></devtools-tree>
     </div>
   `, target);
@@ -4653,7 +4694,7 @@ var RequestInitiatorView = class extends UI10.Widget.VBox {
   request;
   #view;
   constructor(request, view = DEFAULT_VIEW7) {
-    super({ jslog: `${VisualLogging7.pane("initiator").track({ resize: true })}` });
+    super({ jslog: `${VisualLogging8.pane("initiator").track({ resize: true })}` });
     this.element.classList.add("request-initiator-view");
     this.request = request;
     this.#view = view;
@@ -4713,7 +4754,7 @@ import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 
 // gen/front_end/ui/legacy/components/object_ui/objectPropertiesSection.css.js
@@ -4962,8 +5003,8 @@ var objectValue_css_default = `/*
 
 // gen/front_end/panels/network/RequestPayloadView.js
 import * as UI11 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html8, nothing as nothing7, render as render9 } from "./../../ui/lit/lit.js";
-import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives4, html as html9, nothing as nothing8, render as render10 } from "./../../ui/lit/lit.js";
+import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestPayloadTree.css.js
 var requestPayloadTree_css_default = `/*
@@ -5122,7 +5163,7 @@ var requestPayloadView_css_default = `/*
 
 // gen/front_end/panels/network/RequestPayloadView.js
 var { classMap } = Directives4;
-var { widget: widget5 } = UI11.Widget;
+var { widget: widget6 } = UI11.Widget;
 var { ifExpanded } = UI11.TreeOutline;
 var UIStrings11 = {
   /**
@@ -5137,7 +5178,7 @@ var UIStrings11 = {
    * @description Text in Request Payload View of the Network panel. This is a noun-phrase meaning the
    * payload of a network request.
    */
-  requestPayload: "Request Payload",
+  requestPayload: "Request payload",
   /**
    * @description Text in Request Payload View of the Network panel
    */
@@ -5145,11 +5186,11 @@ var UIStrings11 = {
   /**
    * @description Text in Request Payload View of the Network panel
    */
-  queryStringParameters: "Query String Parameters",
+  queryStringParameters: "Query string parameters",
   /**
    * @description Text in Request Payload View of the Network panel
    */
-  formData: "Form Data",
+  formData: "Form data",
   /**
    * @description Text for toggling the view of payload data (e.g. query string parameters) from source to parsed in the payload tab
    */
@@ -5176,9 +5217,9 @@ var UIStrings11 = {
 var str_11 = i18n21.i18n.registerUIStrings("panels/network/RequestPayloadView.ts", UIStrings11);
 var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
 var DEFAULT_VIEW8 = (input, output, target) => {
-  const createViewSourceToggle = (viewSource, callback) => html8`<devtools-button
+  const createViewSourceToggle = (viewSource, callback) => html9`<devtools-button
       class="payload-toggle"
-      jslog=${VisualLogging8.action().track({ click: true }).context("source-parse")}
+      jslog=${VisualLogging9.action().track({ click: true }).context("source-parse")}
       .variant=${"outlined"}
       @click=${(e) => {
     e.consume();
@@ -5193,16 +5234,16 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     contextMenu.clipboardSection().appendItem(title, copyValueHandler, { jslogContext });
     void contextMenu.show();
   };
-  const createSourceText = (text) => html8`<li role=treeitem
+  const createSourceText = (text) => html9`<li role=treeitem
       @contextmenu=${copyValueContextmenu(i18nString11(UIStrings11.copyPayload), () => text, "copy-payload")}>
-        <devtools-widget class='payload-value source-code' ${widget5(ShowMoreDetailsWidget, { text })}>
+        <devtools-widget class='payload-value source-code' ${widget6(ShowMoreDetailsWidget, { text })}>
         </devtools-widget>
       </li>`;
   const createParsedParams = (params, decodeParameters) => params.map((param) => {
-    return html8`
+    return html9`
         <li role=treeitem
             @contextmenu=${copyValueContextmenu(i18nString11(UIStrings11.copyValue), () => decodeURIComponent(param.value), "copy-value")}>
-          ${param.name !== "" ? html8`
+          ${param.name !== "" ? html9`
             ${RequestPayloadView.formatParameter(param.name, "payload-name", decodeParameters)}
             ${RequestPayloadView.formatParameter(param.value, "payload-value source-code", decodeParameters)}
           ` : RequestPayloadView.formatParameter(i18nString11(UIStrings11.empty), "empty-request-payload", decodeParameters)}
@@ -5220,7 +5261,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
   })();
   const createPayload = (parsedFormData2) => {
     if (!parsedFormData2) {
-      return nothing7;
+      return nothing8;
     }
     const object = new SDK9.RemoteObject.LocalJSONObject(parsedFormData2);
     const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
@@ -5228,10 +5269,10 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       propertiesMode: 1
     });
     objectTree.expanded = true;
-    return html8`
+    return html9`
       <li role=treeitem class="source-code object-properties-section-root-element object-properties-section" open>
         ${object.description}
-        ${object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing7}
+        ${object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing8}
       </li>
     `;
   };
@@ -5252,8 +5293,8 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     }
     void contextMenu.show();
   };
-  render9(html8`<style>${requestPayloadView_css_default}</style>
-   <devtools-tree dense class=request-payload-tree .template=${html8`
+  render10(html9`<style>${requestPayloadView_css_default}</style>
+   <devtools-tree dense class=request-payload-tree .template=${html9`
      <style>${objectValue_css_default}</style>
      <style>${objectPropertiesSection_css_default}</style>
      <style>${requestPayloadTree_css_default}</style>
@@ -5261,7 +5302,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       <li
           role=treeitem
           ?hidden=${!input.queryParameters}
-          jslog=${VisualLogging8.section().context("query-string")}
+          jslog=${VisualLogging9.section().context("query-string")}
           @contextmenu=${onContextMenu(input.viewQueryParamSource, input.setViewQueryParamSource, {
     decode: input.decodeQueryParameters,
     toggleDecode: () => input.setDecodeQueryParameters(!input.decodeQueryParameters)
@@ -5274,7 +5315,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
         <devtools-button
             class=payload-toggle
             ?hidden=${input.viewQueryParamSource}
-            jslog=${VisualLogging8.action().track({ click: true }).context("decode-encode")}
+            jslog=${VisualLogging9.action().track({ click: true }).context("decode-encode")}
             .variant=${"outlined"}
             @click=${(e) => {
     e.consume();
@@ -5289,7 +5330,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       <li
           role=treeitem
           ?hidden=${!input.formData || !input.formParameters}
-          jslog=${VisualLogging8.section().context("form-data")}
+          jslog=${VisualLogging9.section().context("form-data")}
           @contextmenu=${onContextMenu(input.viewFormParamSource, input.setViewFormParamSource, {
     decode: input.decodeFormParameters,
     toggleDecode: () => input.setDecodeFormParameters(!input.decodeFormParameters)
@@ -5302,7 +5343,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
         <devtools-button
             class=payload-toggle
             ?hidden=${input.viewFormParamSource}
-            jslog=${VisualLogging8.action().track({ click: true }).context("decode-encode")}
+            jslog=${VisualLogging9.action().track({ click: true }).context("decode-encode")}
             .variant=${"outlined"}
             @click=${(e) => {
     e.consume();
@@ -5317,7 +5358,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       <li
           role=treeitem
           ?hidden=${!input.formData || Boolean(input.formParameters) || Boolean(input.binaryPayloadContentData)}
-          jslog=${VisualLogging8.section().context("request-payload")}
+          jslog=${VisualLogging9.section().context("request-payload")}
           @contextmenu=${onContextMenu(input.viewJSONPayloadSource, input.setViewJSONPayloadSource)}
           @expanded=${(e) => requestPayloadExpandedSetting.set(e.detail.expanded)}
           ?open=${requestPayloadExpandedSetting.get()}
@@ -5329,19 +5370,19 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       </li>
      </ul>
      `}></devtools-tree>
-   ${input.binaryPayloadContentData ? html8`
+   ${input.binaryPayloadContentData ? html9`
      <div class="raw-payload-section"
-          jslog=${VisualLogging8.section().context("binary-request-payload")}>
-       ${widget5((element) => {
+          jslog=${VisualLogging9.section().context("binary-request-payload")}>
+       ${widget6((element) => {
     const streamingContent = TextUtils.StreamingContentData.StreamingContentData.from(input.binaryPayloadContentData);
     return new BinaryResourceView(streamingContent, input.requestUrl, Common8.ResourceType.resourceTypes.XHR, element);
   })}
-     </div>` : nothing7}
+     </div>` : nothing8}
    `, target, {
     container: {
       classes: ["request-payload-view"],
       attributes: {
-        jslog: `${VisualLogging8.pane("payload").track({ resize: true })}`
+        jslog: `${VisualLogging9.pane("payload").track({ resize: true })}`
       }
     }
   });
@@ -5479,8 +5520,8 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
       }
     }
     const classes = classMap({ [className]: !!className, "empty-value": value === "" });
-    return html8`<div class=${classes}>
-      ${errorDecoding ? html8`<span class=payload-decode-error>${i18nString11(UIStrings11.unableToDecodeValue)}</span>` : value}
+    return html9`<div class=${classes}>
+      ${errorDecoding ? html9`<span class=payload-decode-error>${i18nString11(UIStrings11.unableToDecodeValue)}</span>` : value}
     </div>`;
   }
 };
@@ -5495,8 +5536,8 @@ import * as i18n25 from "./../../core/i18n/i18n.js";
 import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
 import * as SourceFrame2 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
-import { render as render11 } from "./../../ui/lit/lit.js";
-import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
+import { render as render12 } from "./../../ui/lit/lit.js";
+import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/RequestHTMLView.js
 var RequestHTMLView_exports = {};
@@ -5505,7 +5546,7 @@ __export(RequestHTMLView_exports, {
   RequestHTMLView: () => RequestHTMLView
 });
 import * as UI12 from "./../../ui/legacy/legacy.js";
-import { html as html9, nothing as nothing8, render as render10 } from "./../../ui/lit/lit.js";
+import { html as html10, nothing as nothing9, render as render11 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/requestHTMLView.css.js
 var requestHTMLView_css_default = `/*
@@ -5528,14 +5569,14 @@ var requestHTMLView_css_default = `/*
 
 // gen/front_end/panels/network/RequestHTMLView.js
 var DEFAULT_VIEW9 = (input, _output, target) => {
-  render10(html9`
+  render11(html10`
     <style>${requestHTMLView_css_default}</style>
     <div class="html request-view widget vbox">
-      ${input.dataURL ? html9`
+      ${input.dataURL ? html10`
         <!-- @ts-ignore -->
         <iframe class="html-preview-frame" sandbox
           csp="default-src 'none';img-src data:;style-src 'unsafe-inline'" src=${input.dataURL}
-          tabindex="-1" role="presentation"></iframe>` : nothing8}
+          tabindex="-1" role="presentation"></iframe>` : nothing9}
     </div>`, target);
 };
 var RequestHTMLView = class _RequestHTMLView extends UI12.Widget.VBox {
@@ -5960,7 +6001,7 @@ var RequestPreviewView = class extends UI14.Widget.VBox {
   request;
   contentViewPromise;
   constructor(request) {
-    super({ jslog: `${VisualLogging9.pane("preview").track({ resize: true })}` });
+    super({ jslog: `${VisualLogging10.pane("preview").track({ resize: true })}` });
     this.element.classList.add("request-view");
     this.request = request;
     this.contentViewPromise = null;
@@ -5975,9 +6016,9 @@ var RequestPreviewView = class extends UI14.Widget.VBox {
     const toolbar5 = this.element.createChild("devtools-toolbar", "network-item-preview-toolbar");
     void view.toolbarItems().then((items) => {
       if (Array.isArray(items)) {
-        items.map((item2) => toolbar5.appendToolbarItem(item2));
+        items.map((item3) => toolbar5.appendToolbarItem(item3));
       } else {
-        render11(items, toolbar5);
+        render12(items, toolbar5);
       }
     });
     return view;
@@ -6036,7 +6077,7 @@ import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
 import * as SourceFrame3 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as Lit4 from "./../../ui/lit/lit.js";
-var { html: html10, render: render12 } = Lit4;
+var { html: html11, render: render13 } = Lit4;
 var UIStrings14 = {
   /**
    * @description Text in Request Response View of the Network panel if no preview can be shown
@@ -6053,22 +6094,22 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("panels/network/RequestResponseView.ts", UIStrings14);
 var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var { widgetRef, widget: widget6 } = UI15.Widget;
+var { widgetRef, widget: widget7 } = UI15.Widget;
 var DEFAULT_VIEW10 = (input, output, target) => {
   let widgetTemplate;
   if (TextUtils3.StreamingContentData.isError(input.contentData)) {
-    widgetTemplate = html10`${widget6((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.failedToLoadResponseData), input.contentData.error, element))}`;
+    widgetTemplate = html11`${widget7((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.failedToLoadResponseData), input.contentData.error, element))}`;
   } else if (input.request.statusCode === 204 || input.request.failed) {
-    widgetTemplate = html10`${widget6((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.noPreview), i18nString14(UIStrings14.thisRequestHasNoResponseData), element))}`;
+    widgetTemplate = html11`${widget7((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.noPreview), i18nString14(UIStrings14.thisRequestHasNoResponseData), element))}`;
   } else if (input.renderAsText) {
-    widgetTemplate = html10`<devtools-widget ${widget6((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
-                    ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget7) => {
-      output.revealPosition = widget7.revealPosition.bind(widget7);
+    widgetTemplate = html11`<devtools-widget ${widget7((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
+                    ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget8) => {
+      output.revealPosition = widget8.revealPosition.bind(widget8);
     })}></devtools-widget>`;
   } else {
-    widgetTemplate = html10`${widget6((element) => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}`;
+    widgetTemplate = html11`${widget7((element) => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}`;
   }
-  render12(widgetTemplate, target);
+  render13(widgetTemplate, target);
 };
 var RequestResponseView = class extends UI15.Widget.VBox {
   request;
@@ -6133,8 +6174,8 @@ import * as NetworkTimeCalculator from "./../../models/network_time_calculator/n
 import * as uiI18n3 from "./../../ui/i18n/i18n.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html11, nothing as nothing9, render as render13 } from "./../../ui/lit/lit.js";
-import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives5, html as html12, nothing as nothing10, render as render14 } from "./../../ui/lit/lit.js";
+import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/networkTimingTable.css.js
 var networkTimingTable_css_default = `/*
@@ -6429,7 +6470,7 @@ var UIStrings15 = {
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  dnsLookup: "DNS Lookup",
+  dnsLookup: "DNS lookup",
   /**
    * @description Text in Request Timing View of the Network panel
    */
@@ -6441,7 +6482,7 @@ var UIStrings15 = {
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  contentDownload: "Content Download",
+  contentDownload: "Content download",
   /**
    * @description Text in Request Timing View of the Network panel
    */
@@ -6477,11 +6518,11 @@ var UIStrings15 = {
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  routerEvaluation: "Router Evaluation",
+  routerEvaluation: "Router evaluation",
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  routerCacheLookup: "Cache Lookup",
+  routerCacheLookup: "Cache lookup",
   /**
    * @description Inner element text content in Network Log View Columns of the Network panel
    */
@@ -6503,15 +6544,15 @@ var UIStrings15 = {
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  serverPush: "Server Push",
+  serverPush: "Server push",
   /**
    * @description Text of a DOM element in Request Timing View of the Network panel
    */
-  resourceScheduling: "Resource Scheduling",
+  resourceScheduling: "Resource scheduling",
   /**
    * @description Text in Request Timing View of the Network panel
    */
-  connectionStart: "Connection Start",
+  connectionStart: "Connection start",
   /**
    * @description Text in Request Timing View of the Network panel
    */
@@ -6519,7 +6560,7 @@ var UIStrings15 = {
   /**
    * @description Text of a DOM element in Request Timing View of the Network panel
    */
-  cautionRequestIsNotFinishedYet: "CAUTION: request is not finished yet!",
+  cautionRequestIsNotFinishedYet: "Caution: Request isn\u2019t finished yet",
   /**
    * @description Text in Request Timing View of the Network panel
    */
@@ -6706,15 +6747,15 @@ var DEFAULT_VIEW11 = (input, output, target) => {
       // Mark entries from a bespoke format
       ["synthetic"]: serverTiming.metric.startsWith("(c")
     });
-    return html11`
+    return html12`
       <tr class=${classes2}>
         <td title=${metricDesc} class=network-timing-metric>
           ${metricDesc}
         </td>
-        ${serverTiming.value === null ? nothing9 : html11`
+        ${serverTiming.value === null ? nothing10 : html12`
           <td class=server-timing-cell--value-bar>
             <div class=network-timing-row>
-              ${left < 0 ? nothing9 : html11`<span
+              ${left < 0 ? nothing10 : html12`<span
                     class="network-timing-bar server-timing"
                     data-background=${ifDefined2(isTotal ? void 0 : colorGenerator.colorForID(serverTiming.metric))}
                     data-left=${left}
@@ -6734,7 +6775,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     const matchedSourceTypeString = String(matchedSourceType) || i18nString15(UIStrings15.unknown);
     const actualSourceType = serviceWorkerRouterInfo.actualSourceType;
     const actualSourceTypeString = String(actualSourceType) || i18nString15(UIStrings15.unknown);
-    return html11`<devtools-tree>
+    return html12`<devtools-tree>
       <ul role=tree>
         <li role=treeitem>
           <div class=network-fetch-details-treeitem>
@@ -6763,16 +6804,16 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     const swResponseSource = input.request.serviceWorkerResponseSource();
     const responseCacheStorageName = input.request.getResponseCacheStorageCacheName();
     const retrievalTime = input.request.getResponseRetrievalTime();
-    return html11`<devtools-tree>
+    return html12`<devtools-tree>
       <ul role=tree>
-        ${origRequestTree ? html11`<li role=treeitem class="object-properties-section-root-element object-properties-section" open>
+        ${origRequestTree ? html12`<li role=treeitem class="object-properties-section-root-element object-properties-section" open>
             ${i18nString15(UIStrings15.originalRequest)}
             ${ObjectUI2.ObjectPropertiesSection.renderObjectTree(origRequestTree)}
-          </li>` : nothing9}
-        ${responseTree ? html11`<li role=treeitem class="object-properties-section-root-element object-properties-section" open>
+          </li>` : nothing10}
+        ${responseTree ? html12`<li role=treeitem class="object-properties-section-root-element object-properties-section" open>
             ${i18nString15(UIStrings15.responseReceived)}
             ${ObjectUI2.ObjectPropertiesSection.renderObjectTree(responseTree)}
-          </li>` : nothing9}
+          </li>` : nothing10}
         <li role=treeitem>
           <div class=network-fetch-details-treeitem>
             ${i18nString15(UIStrings15.sourceOfResponseS, { PH1: swResponseSource ? getLocalizedResponseSourceForCode(swResponseSource) : i18nString15(UIStrings15.unknown) })}
@@ -6783,11 +6824,11 @@ var DEFAULT_VIEW11 = (input, output, target) => {
             ${responseCacheStorageName ? i18nString15(UIStrings15.cacheStorageCacheNameS, { PH1: responseCacheStorageName }) : i18nString15(UIStrings15.cacheStorageCacheNameUnknown)}
           </div>
         </li>
-        ${retrievalTime ? html11`<li role=treeitem>
+        ${retrievalTime ? html12`<li role=treeitem>
             <div class=network-fetch-details-treeitem>
               ${i18nString15(UIStrings15.retrievalTimeS, { PH1: retrievalTime.toString() })}
             </div>
-          </li>` : nothing9}
+          </li>` : nothing10}
       </ul>
     </devtools-tree>`;
   };
@@ -6825,11 +6866,11 @@ var DEFAULT_VIEW11 = (input, output, target) => {
       tail.ranges.push(range);
     }
   }
-  render13(html11`
+  render14(html12`
     <style>${networkTimingTable_css_default}</style>
     <table
       class=${classes}
-      jslog=${VisualLogging10.pane("timing").track({
+      jslog=${VisualLogging11.pane("timing").track({
     resize: true
   })}>
         <colgroup>
@@ -6860,7 +6901,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
             </td>
           </tr>
         </thead>
-        ${timeRangeGroups.map((group) => html11`
+        ${timeRangeGroups.map((group) => html12`
           <tr class=network-timing-table-header>
             <td role=heading aria-level=2>
               ${group.name}
@@ -6868,9 +6909,9 @@ var DEFAULT_VIEW11 = (input, output, target) => {
             <td></td>
             <td>${i18nString15(UIStrings15.durationC)}</td>
           </tr>
-          ${repeat2(group.ranges, (range) => html11`
+          ${repeat2(group.ranges, (range) => html12`
             <tr>
-              ${isClickable(range) ? html11`<td
+              ${isClickable(range) ? html12`<td
                   tabindex=0
                   role=button
                   aria-expanded=false
@@ -6878,7 +6919,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
                   @keydown=${onActivate}
                   class=network-fetch-timing-bar-clickable>
                     ${timeRangeTitle(range.name)}
-                </td>` : html11`<td>
+                </td>` : html12`<td>
                     ${timeRangeTitle(range.name)}
                 </td>`}
               <td>
@@ -6897,22 +6938,22 @@ var DEFAULT_VIEW11 = (input, output, target) => {
                 </div>
               </td>
             </tr>
-            ${range.name === "serviceworker-respondwith" && input.request.fetchedViaServiceWorker ? html11`
+            ${range.name === "serviceworker-respondwith" && input.request.fetchedViaServiceWorker ? html12`
               <tr class="network-fetch-timing-bar-details network-fetch-timing-bar-details-collapsed">
                 ${fetchDetailsTree()}
-              </tr>` : nothing9}
-            ${range.name === "serviceworker-routerevaluation" && routerDetails ? html11`
+              </tr>` : nothing10}
+            ${range.name === "serviceworker-routerevaluation" && routerDetails ? html12`
               <tr class="router-evaluation-timing-bar-details network-fetch-timing-bar-details-collapsed">
                 ${routerDetailsTree(routerDetails)}
-              </tr>` : nothing9}
+              </tr>` : nothing10}
           `)}
         `)}
-        ${requestUnfinished ? html11`
+        ${requestUnfinished ? html12`
           <tr>
             <td class=caution colspan=3>
               ${i18nString15(UIStrings15.cautionRequestIsNotFinishedYet)}
             </td>
-          </tr>` : nothing9}
+          </tr>` : nothing10}
        <tr class=network-timing-footer>
          <td colspan=1>
            <devtools-link
@@ -6923,7 +6964,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
            </devtools-link>
          <td></td>
          <td class=${input.wasThrottled ? "throttled" : ""} title=${ifDefined2(throttledRequestTitle)}>
-           ${input.wasThrottled ? html11` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing9}
+           ${input.wasThrottled ? html12` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing10}
            ${i18n29.TimeUtilities.secondsToString(input.totalDuration, true)}
          </td>
        </tr>
@@ -6937,14 +6978,14 @@ var DEFAULT_VIEW11 = (input, output, target) => {
          <td></td>
          <td>${i18nString15(UIStrings15.time)}</td>
        </tr>
-       ${repeat2(serverTimings.filter((item2) => item2.metric.toLowerCase() !== "total"), addServerTiming)}
-       ${repeat2(serverTimings.filter((item2) => item2.metric.toLowerCase() === "total"), addServerTiming)}
-       ${serverTimings.length === 0 ? html11`
+       ${repeat2(serverTimings.filter((item3) => item3.metric.toLowerCase() !== "total"), addServerTiming)}
+       ${repeat2(serverTimings.filter((item3) => item3.metric.toLowerCase() === "total"), addServerTiming)}
+       ${serverTimings.length === 0 ? html12`
          <tr>
            <td colspan=3>
-${uiI18n3.getFormatLocalizedStringTemplate(str_15, UIStrings15.duringDevelopmentYouCanUseSToAdd, { PH1: html11`<devtools-link href="https://web.dev/custom-metrics/#server-timing-api" .jslogContext=${"server-timing-api"}>${i18nString15(UIStrings15.theServerTimingApi)}</devtools-link>` })}
+${uiI18n3.getFormatLocalizedStringTemplate(str_15, UIStrings15.duringDevelopmentYouCanUseSToAdd, { PH1: html12`<devtools-link href="https://web.dev/custom-metrics/#server-timing-api" .jslogContext=${"server-timing-api"}>${i18nString15(UIStrings15.theServerTimingApi)}</devtools-link>` })}
            </td>
-         </tr>` : nothing9}
+         </tr>` : nothing10}
       </table>`, target, { container: { classes: ["resource-timing-view"] } });
 };
 var RequestTimingView = class _RequestTimingView extends UI16.Widget.VBox {
@@ -7036,7 +7077,7 @@ import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
 import * as DataGrid3 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as Lit6 from "./../../ui/lit/lit.js";
-import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/ResourceChunkView.js
 import * as Common11 from "./../../core/common/common.js";
@@ -7044,12 +7085,12 @@ import * as Host9 from "./../../core/host/host.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
-import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
 import * as DataGrid2 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as SourceFrame4 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../ui/lit/lit.js";
-import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/resourceChunkView.css.js
 var resourceChunkView_css_default = `/*
@@ -7110,7 +7151,7 @@ var resourceChunkView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./resourceChunkView.css")} */`;
 
 // gen/front_end/panels/network/ResourceChunkView.js
-var { html: html12, render: render14, Directives: { ifDefined: ifDefined3 } } = Lit5;
+var { html: html13, render: render15, Directives: { ifDefined: ifDefined3 } } = Lit5;
 var UIStrings16 = {
   /**
    * @description Text in Event Source Messages View of the Network panel
@@ -7127,7 +7168,7 @@ var UIStrings16 = {
   /**
    * @description Text to clear everything
    */
-  clearAll: "Clear All",
+  clearAll: "Clear all",
   /**
    * @description Text to filter result items
    */
@@ -7165,7 +7206,7 @@ var str_16 = i18n31.i18n.registerUIStrings("panels/network/ResourceChunkView.ts"
 var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var i18nLazyString = i18n31.i18n.getLazilyComputedLocalizedString.bind(void 0, str_16);
 function defaultHeaderTemplate() {
-  return html12`
+  return html13`
     <tr>
       <th id="data" weight="88">${i18nString16(UIStrings16.data)}</th>
       <th id="length" align="right" weight="5">${i18nString16(UIStrings16.length)}</th>
@@ -7173,10 +7214,10 @@ function defaultHeaderTemplate() {
     </tr>`;
 }
 var DEFAULT_VIEW12 = (input, _output, target) => {
-  render14(html12`
+  render15(html13`
       <style>${resourceChunkView_css_default}</style>
       <div class="resource-chunk-view vbox">
-        <devtools-toolbar class="resource-chunk-view-toolbar" jslog=${VisualLogging11.toolbar()}>
+        <devtools-toolbar class="resource-chunk-view-toolbar" jslog=${VisualLogging12.toolbar()}>
           <devtools-button
               .data=${{
     variant: "toolbar",
@@ -7191,13 +7232,13 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
               class="chrome-select"
               aria-label=${i18nString16(UIStrings16.filter)}
               @change=${input.onFilterTypeChange}>
-            ${FILTER_TYPES.map((item2) => html12`
+            ${FILTER_TYPES.map((item3) => html13`
               <option
-                  value=${item2.name}
-                  .selected=${input.selectedFilterType === item2.name}
-                  jslog=${VisualLogging11.item(item2.name).track({ click: true })}
-                  aria-label=${item2.label()}>
-                ${item2.label()}
+                  value=${item3.name}
+                  .selected=${input.selectedFilterType === item3.name}
+                  jslog=${VisualLogging12.item(item3.name).track({ click: true })}
+                  aria-label=${item3.label()}>
+                ${item3.label()}
               </option>
             `)}
           </select>
@@ -7214,11 +7255,11 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
             <devtools-data-grid autoscroll name=${input.dataGridDisplayName} striped autofocus
                 resize="last"
                 @deselect=${input.onDeselect}
-                .template=${html12`
+                .template=${html13`
                   <style>${resourceChunkView_css_default}</style>
                   <table>
                     ${input.headerTemplate}
-                    ${Lit5.Directives.repeat(input.rows, (row) => row.chunk, (row) => html12`
+                    ${Lit5.Directives.repeat(input.rows, (row) => row.chunk, (row) => html13`
                       <tr class=${ifDefined3(row.cssClass)}
                           ?selected=${row.selected}
                           data-index=${row.index}
@@ -7231,7 +7272,7 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
                         ${input.columns.map((col) => {
     const value = col.id === "time" ? row.timeText : row.item.data[col.id] ?? "";
     const title = col.id === "time" ? row.timeTooltip : void 0;
-    return html12`
+    return html13`
                               <td class="resource-chunk-view-td" title=${ifDefined3(title)}
                                   data-value=${ifDefined3(typeof value === "string" ? value : void 0)}>
                                 ${value}
@@ -7243,11 +7284,11 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
                 `}>
             </devtools-data-grid>
           </div>
-          <div slot="sidebar" class="vbox flex-auto" jslog=${VisualLogging11.pane("preview").track({ resize: true })}>
-            ${input.sidebarWidget ? html12`
+          <div slot="sidebar" class="vbox flex-auto" jslog=${VisualLogging12.pane("preview").track({ resize: true })}>
+            ${input.sidebarWidget ? html13`
               <devtools-widget class="vbox flex-auto">
                 ${input.sidebarWidget.element}
-              </devtools-widget>` : html12`
+              </devtools-widget>` : html13`
               <devtools-widget
                   ${UI17.Widget.widget(UI17.EmptyWidget.EmptyWidget, {
     header: i18nString16(UIStrings16.noMessageSelected),
@@ -7346,12 +7387,12 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
     }
     this.requestUpdate();
   }
-  async onChunkSelected(chunk, item2) {
-    if (this.selectedChunk === chunk && this.currentSelectedNode === item2 && this.sidebarWidget) {
+  async onChunkSelected(chunk, item3) {
+    if (this.selectedChunk === chunk && this.currentSelectedNode === item3 && this.sidebarWidget) {
       return;
     }
     this.selectedChunk = chunk;
-    this.currentSelectedNode = item2;
+    this.currentSelectedNode = item3;
     await this.updateSidebar();
   }
   onChunkDeselected() {
@@ -7390,14 +7431,14 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
     const offset = clearChunkOffsets.get(this.request) || 0;
     chunks = chunks.slice(offset).filter(this.chunkFilter.bind(this));
     const rows = chunks.map((chunk, index) => {
-      const item2 = this.createGridItem(chunk);
-      const time = new Date(item2.getTime() * 1e3);
+      const item3 = this.createGridItem(chunk);
+      const time = new Date(item3.getTime() * 1e3);
       const timeText = ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2) + ":" + ("0" + time.getSeconds()).slice(-2) + "." + ("00" + time.getMilliseconds()).slice(-3);
       return {
         chunk,
-        item: item2,
+        item: item3,
         selected: chunk === this.selectedChunk,
-        cssClass: item2.cssClass,
+        cssClass: item3.cssClass,
         index,
         timeTooltip: time.toLocaleString(),
         timeText
@@ -7426,8 +7467,8 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
         }
       },
       onDeselect: this.onChunkDeselected.bind(this),
-      onContextMenu: (item2, menu) => {
-        this.onRowContextMenu(menu, item2);
+      onContextMenu: (item3, menu) => {
+        this.onRowContextMenu(menu, item3);
       },
       sidebarWidget: this.sidebarWidget
     };
@@ -7447,7 +7488,7 @@ var DataGridItem = class {
 var clearChunkOffsets = /* @__PURE__ */ new WeakMap();
 
 // gen/front_end/panels/network/ResourceDirectSocketChunkView.js
-var { html: html13 } = Lit6;
+var { html: html14 } = Lit6;
 var UIStrings17 = {
   /**
    * @description Text in Event Source Messages View of the Network panel
@@ -7472,7 +7513,7 @@ var UIStrings17 = {
   /**
    * @description Data grid name for Direct Socket Chunk data grids
    */
-  directSocketChunk: "Direct Socket Chunk",
+  directSocketChunk: "Direct socket chunk",
   /**
    * @description Example for placeholder text. Note: "(direct)?socket)" is an example code and should not be translated.
    */
@@ -7482,7 +7523,7 @@ var str_17 = i18n33.i18n.registerUIStrings("panels/network/ResourceDirectSocketC
 var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var i18nLazyString2 = i18n33.i18n.getLazilyComputedLocalizedString.bind(void 0, str_17);
 function udpBoundHeaderTemplate() {
-  return html13`
+  return html14`
     <tr>
       <th id="data" weight="63">${i18nLazyString2(UIStrings17.data)}</th>
           <th id="address" align="right" weight="15">${i18nLazyString2(UIStrings17.address)}</th>
@@ -7499,7 +7540,7 @@ var ResourceDirectSocketChunkView = class extends ResourceChunkView {
     return defaultHeaderTemplate();
   }
   constructor(request) {
-    super(request, "network-direct-socket-chunk-filter", "resource-direct-socket-chunk-split-view-state", i18nString17(UIStrings17.directSocketChunk), i18nString17(UIStrings17.filterUsingRegex), { jslog: `${VisualLogging12.pane("direct-socket-messages").track({ resize: true })}` });
+    super(request, "network-direct-socket-chunk-filter", "resource-direct-socket-chunk-split-view-state", i18nString17(UIStrings17.directSocketChunk), i18nString17(UIStrings17.filterUsingRegex), { jslog: `${VisualLogging13.pane("direct-socket-messages").track({ resize: true })}` });
   }
   getRequestChunks() {
     return this.request.directSocketChunks();
@@ -7630,7 +7671,7 @@ import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as TextUtils7 from "./../../core/text_utils/text_utils.js";
-import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings18 = {
   /**
    * @description Text in Resource Web Socket Frame View of the Network panel. Displays which Opcode
@@ -7650,39 +7691,39 @@ var UIStrings18 = {
    */
   sOpcodeS: "{PH1} (Opcode {PH2})",
   /**
-   * @description Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel
+   * @description WebSocket opcode (operation code) name for a continuation frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type; continuation frames split large messages into multiple chunks.
    */
-  continuationFrame: "Continuation Frame",
+  continuationFrame: "Continuation frame",
   /**
-   * @description Op codes text frame of map in Resource Web Socket Frame View of the Network panel
+   * @description WebSocket opcode (operation code) name for a text message frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type.
    */
-  textMessage: "Text Message",
+  textMessage: "Text message",
   /**
-   * @description Op codes binary frame of map in Resource Web Socket Frame View of the Network panel
+   * @description WebSocket opcode (operation code) name for a binary message frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type.
    */
-  binaryMessage: "Binary Message",
+  binaryMessage: "Binary message",
   /**
-   * @description Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel indicating that the web socket connection has been closed.
+   * @description WebSocket opcode (operation code) name for a connection close frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type.
    */
-  connectionCloseMessage: "Connection Close Message",
+  connectionCloseMessage: "Connection close message",
   /**
-   * @description Op codes ping frame of map in Resource Web Socket Frame View of the Network panel
+   * @description WebSocket opcode (operation code) name for a ping frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type; ping frames check connection liveness.
    */
-  pingMessage: "Ping Message",
+  pingMessage: "Ping message",
   /**
-   * @description Op codes pong frame of map in Resource Web Socket Frame View of the Network panel
+   * @description WebSocket opcode (operation code) name for a pong frame in WebSocket messages view of the Network panel. In the WebSocket protocol, an opcode defines the frame payload type; pong frames reply to ping frames.
    */
-  pongMessage: "Pong Message",
+  pongMessage: "Pong message",
   /**
-   * @description Data grid name for Web Socket Frame data grids
+   * @description Accessible name for WebSocket message data grid in WebSocket messages view of the Network panel.
    */
-  webSocketFrame: "Web Socket Frame",
+  webSocketFrame: "WebSocket frame",
   /**
-   * @description Text for something not available
+   * @description Text shown when a value is not available in WebSocket messages view of the Network panel.
    */
   na: "N/A",
   /**
-   * @description Example for placeholder text
+   * @description Placeholder text for filter input in WebSocket messages view of the Network panel.
    */
   filterUsingRegex: "Filter using regex (example: (web)?socket)"
 };
@@ -7691,7 +7732,7 @@ var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var i18nLazyString3 = i18n35.i18n.getLazilyComputedLocalizedString.bind(void 0, str_18);
 var ResourceWebSocketFrameView = class extends ResourceChunkView {
   constructor(request) {
-    super(request, "network-web-socket-message-filter", "resource-web-socket-frame-split-view-state", i18nString18(UIStrings18.webSocketFrame), i18nString18(UIStrings18.filterUsingRegex), { jslog: `${VisualLogging13.pane("web-socket-messages").track({ resize: true })}` });
+    super(request, "network-web-socket-message-filter", "resource-web-socket-frame-split-view-state", i18nString18(UIStrings18.webSocketFrame), i18nString18(UIStrings18.filterUsingRegex), { jslog: `${VisualLogging14.pane("web-socket-messages").track({ resize: true })}` });
   }
   getRequestChunks() {
     return this.request.frames();
@@ -7814,87 +7855,86 @@ var ResourceFrameNode = class extends DataGridItem {
 // gen/front_end/panels/network/NetworkItemView.js
 var UIStrings19 = {
   /**
-   * @description Text for network request headers
+   * @description Title of a tab in network item view of the Network panel for viewing HTTP request/response headers.
    */
   headers: "Headers",
   /**
-   * @description Text for network connection info. In case the request is not made over http.
+   * @description Title of a tab in network item view of the Network panel for viewing DirectSocket connection info.
    */
-  connectionInfo: "Connection Info",
+  connectionInfo: "Connection info",
   /**
-   * @description Text in Network Item View of the Network panel
+   * @description Title of a tab in network item view of the Network panel for viewing request payload parameters and form data.
    */
   payload: "Payload",
   /**
-   * @description Text in Network Item View of the Network panel
+   * @description Title of a tab in network item view of the Network panel for viewing WebSocket or DirectSocket messages.
    */
   messages: "Messages",
   /**
-   * @description Text in Network Item View of the Network panel
+   * @description Accessible tooltip for the WebSocket messages tab in network item view of the Network panel.
    */
   websocketMessages: "WebSocket messages",
   /**
-   * @description Text in Network Item View of the Network panel
+   * @description Accessible tooltip for the DirectSocket messages tab in network item view of the Network panel.
    */
   directsocketMessages: "DirectSocket messages",
   /**
-   * @description Text in Network Item View of the Network panel
+   * @description Title of a tab in network item view of the Network panel for viewing Server-Sent Event (EventStream) messages.
    */
   eventstream: "EventStream",
   /**
-   * @description Text for previewing items
+   * @description Title of a tab in network item view of the Network panel for previewing response content.
    */
   preview: "Preview",
   /**
-   * @description Text in Network Item View of the Network panel
+   * @description Accessible tooltip for the response preview tab in network item view of the Network panel.
    */
   responsePreview: "Response preview",
   /**
-   * @description Icon title in Network Item View of the Network panel
+   * @description Tooltip for error icon on preview tab in network item view of the Network panel when signed exchange has errors.
    */
   signedexchangeError: "SignedExchange error",
   /**
-   * @description Title of a tab in the Network panel. A Network response refers to the act of acknowledging a
-   * network request. Should not be confused with answer.
+   * @description Title of a tab in network item view of the Network panel for viewing raw response content.
+   * A Network response refers to the act of acknowledging a network request. Should not be confused with answer.
    */
   response: "Response",
   /**
-   * @description Text in Network Item View of the Network panel
+   * @description Accessible tooltip for the raw response data tab in network item view of the Network panel.
    */
   rawResponseData: "Raw response data",
   /**
-   * @description Text for the initiator of something
+   * @description Title of a tab in network item view of the Network panel for viewing request initiator stack trace and chain.
    */
   initiator: "Initiator",
   /**
-   * @description Tooltip for initiator view in Network panel. An initiator is a piece of code/entity
-   * in the code that initiated/started the network request, i.e. caused the network request. The 'call
-   * stack' is the location in the code where the initiation happened.
+   * @description Accessible tooltip for the request initiator tab in network item view of the Network panel.
+   * An initiator is a piece of code/entity in the code that initiated/started the network request, i.e. caused
+   * the network request. The 'call stack' is the location in the code where the initiation happened.
    */
   requestInitiatorCallStack: "Request initiator call stack",
   /**
-   * @description Title of a tab in Network Item View of the Network panel.
-   *The tab displays the duration breakdown of a network request.
+   * @description Title of a tab in network item view of the Network panel for viewing request timing breakdown.
    */
   timing: "Timing",
   /**
-   * @description Text in Network Item View of the Network panel
+   * @description Accessible tooltip for the request timing tab in network item view of the Network panel.
    */
   requestAndResponseTimeline: "Request and response timeline",
   /**
-   * @description Tooltip to explain the warning icon of the Cookies panel
+   * @description Tooltip text for warning icon on cookies tab in network item view of the Network panel when third-party cookies are blocked.
    */
   thirdPartyPhaseout: "Cookies blocked due to third-party cookie phaseout.",
   /**
-   * @description Label of a tab in the network panel. Previously known as 'Trust Tokens'.
+   * @description Title of a tab in network item view of the Network panel for viewing Private State Tokens operation details.
    */
   trustTokens: "Private state tokens",
   /**
-   * @description Title of the Private State Token tab in the Network panel. Previously known as 'Trust Token tab'.
+   * @description Accessible tooltip for the Private State Tokens tab in network item view of the Network panel.
    */
   trustTokenOperationDetails: "Private State Token operation details",
   /**
-   * @description Text for web cookies
+   * @description Title of a tab in network item view of the Network panel for viewing request and response cookies.
    */
   cookies: "Cookies",
   /**
@@ -7909,15 +7949,15 @@ var UIStrings19 = {
    */
   deviceBoundSessions: "Device bound sessions",
   /**
-   * @description Text in Network Item View of the Network panel
+   * @description Accessible tooltip for the cookies tab in network item view of the Network panel.
    */
   requestAndResponseCookies: "Request and response cookies",
   /**
-   * @description Tooltip text explaining that DevTools has overridden the response's headers
+   * @description Tooltip text for status indicator dot on headers tab in network item view of the Network panel when headers are overridden by DevTools.
    */
   containsOverriddenHeaders: "This response contains headers which are overridden by DevTools",
   /**
-   * @description Tooltip text explaining that DevTools has overridden the response
+   * @description Tooltip text for status indicator dot on response tab in network item view of the Network panel when response content is overridden by DevTools.
    */
   responseIsOverridden: "This response is overridden by DevTools"
 };
@@ -7939,7 +7979,7 @@ var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
     super();
     this.#request = request;
     this.element.classList.add("network-item-view");
-    this.headerElement().setAttribute("jslog", `${VisualLogging14.toolbar("request-details").track({
+    this.headerElement().setAttribute("jslog", `${VisualLogging15.toolbar("request-details").track({
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
     if (request.resourceType() === Common14.ResourceType.resourceTypes.DirectSocket) {
@@ -8148,7 +8188,7 @@ import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as NetworkForward4 from "./forward/forward.js";
 import * as Sources2 from "./../sources/sources.js";
 import * as Adorners from "./../../ui/components/adorners/adorners.js";
-import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons8 from "./../../ui/components/buttons/buttons.js";
 import * as RenderCoordinator3 from "./../../ui/components/render_coordinator/render_coordinator.js";
 import * as DataGrid6 from "./../../ui/legacy/components/data_grid/data_grid.js";
 
@@ -8180,7 +8220,7 @@ var dataGridAiButton_css_default = `/*
 import * as PerfUI4 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/FetchHeaderCommenting.js
 var FetchHeaderCommenting_exports = {};
@@ -9007,7 +9047,7 @@ import * as DataGrid4 from "./../../ui/legacy/components/data_grid/data_grid.js"
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport5 from "./../../ui/legacy/theme_support/theme_support.js";
-import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/NetworkManageCustomHeadersView.js
 var NetworkManageCustomHeadersView_exports = {};
@@ -9073,7 +9113,7 @@ var UIStrings21 = {
   /**
    * @description Text in Network Manage Custom Headers View of the Network panel
    */
-  headerName: "Header Name"
+  headerName: "Header name"
 };
 var str_21 = i18n41.i18n.registerUIStrings("panels/network/NetworkManageCustomHeadersView.ts", UIStrings21);
 var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
@@ -9118,38 +9158,38 @@ var NetworkManageCustomHeadersView = class extends UI20.Widget.VBox {
   addButtonClicked() {
     this.list.addNewItem(this.columnConfigs.size, { header: "" });
   }
-  renderItem(item2, _editable) {
+  renderItem(item3, _editable) {
     const element = document.createElement("div");
     element.classList.add("custom-headers-list-item");
     const header = element.createChild("div", "custom-header-name");
-    header.textContent = item2.header;
-    UI20.Tooltip.Tooltip.install(header, item2.header);
+    header.textContent = item3.header;
+    UI20.Tooltip.Tooltip.install(header, item3.header);
     return element;
   }
-  removeItemRequested(item2, _index) {
-    this.removeHeaderColumnCallback(item2.header);
-    this.columnConfigs.delete(item2.header.toLowerCase());
+  removeItemRequested(item3, _index) {
+    this.removeHeaderColumnCallback(item3.header);
+    this.columnConfigs.delete(item3.header.toLowerCase());
     this.headersUpdated();
   }
-  commitEdit(item2, editor, isNew) {
+  commitEdit(item3, editor, isNew) {
     const headerId = editor.control("header").value.trim();
     let success;
     if (isNew) {
       success = this.addHeaderColumnCallback(headerId);
     } else {
-      success = this.changeHeaderColumnCallback(item2.header, headerId);
+      success = this.changeHeaderColumnCallback(item3.header, headerId);
     }
     if (success && !isNew) {
-      this.columnConfigs.delete(item2.header.toLowerCase());
+      this.columnConfigs.delete(item3.header.toLowerCase());
     }
     if (success) {
       this.columnConfigs.set(headerId.toLowerCase(), { title: headerId, editable: true });
     }
     this.headersUpdated();
   }
-  beginEdit(item2) {
+  beginEdit(item3) {
     const editor = this.createEditor();
-    editor.control("header").value = item2.header;
+    editor.control("header").value = item3.header;
     return editor;
   }
   createEditor() {
@@ -9164,10 +9204,10 @@ var NetworkManageCustomHeadersView = class extends UI20.Widget.VBox {
     const fields = content.createChild("div", "custom-headers-edit-row");
     fields.createChild("div", "custom-headers-header").appendChild(editor.createInput("header", "text", "x-custom-header", validateHeader.bind(this)));
     return editor;
-    function validateHeader(item2, _index, _input) {
+    function validateHeader(item3, _index, _input) {
       let valid = true;
       const headerId = editor.control("header").value.trim().toLowerCase();
-      if (this.columnConfigs.has(headerId) && item2.header !== headerId) {
+      if (this.columnConfigs.has(headerId) && item3.header !== headerId) {
         valid = false;
       }
       return {
@@ -10137,7 +10177,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
 // gen/front_end/panels/network/NetworkLogViewColumns.js
 var UIStrings22 = {
   /**
-   * @description Data grid name for Network Log data grids
+   * @description Data grid name for network log data grids.
    */
   networkLog: "Network Log",
   /**
@@ -10157,131 +10197,131 @@ var UIStrings22 = {
    */
   manageHeaderColumns: "Manage Header Columns\u2026",
   /**
-   * @description Text for the start time of an activity
+   * @description Column header for the request start time column in network log table of the Network panel.
    */
   startTime: "Start time",
   /**
-   * @description Text in Network Log View Columns of the Network panel
+   * @description Column header for the response time column in network log table of the Network panel.
    */
   responseTime: "Response time",
   /**
-   * @description Text in Network Log View Columns of the Network panel
+   * @description Column header for the request end time column in network log table of the Network panel.
    */
   endTime: "End time",
   /**
-   * @description Text in Network Log View Columns of the Network panel
+   * @description Column header for the total request duration column in network log table of the Network panel.
    */
   totalDuration: "Total duration",
   /**
-   * @description Text for the latency of a task
+   * @description Column header for the request latency column in network log table of the Network panel.
    */
   latency: "Latency",
   /**
-   * @description Text for the name of something
+   * @description Column header for the request name column in network log table of the Network panel.
    */
   name: "Name",
   /**
-   * @description Text that refers to a file path
+   * @description Column header for the request URL path column in network log table of the Network panel.
    */
   path: "Path",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Column header for the full request URL column in network log table of the Network panel.
    */
   url: "URL",
   /**
-   * @description Column header in the Network log view of the Network panel
+   * @description Column header for the request index number column in network log table of the Network panel.
    */
   requestNumber: "Request #",
   /**
-   * @description Text for one or a group of functions
+   * @description Column header for the HTTP request method column in network log table of the Network panel.
    */
   method: "Method",
   /**
-   * @description Text for the status of something
+   * @description Column header for the HTTP response status code column in network log table of the Network panel.
    */
   status: "Status",
   /**
-   * @description Generic label for any text
+   * @description Column header for the HTTP response status text column in network log table of the Network panel.
    */
   text: "Text",
   /**
-   * @description Text for security or network protocol
+   * @description Column header for the network transport protocol column in network log table of the Network panel.
    */
   protocol: "Protocol",
   /**
-   * @description Text in Network Log View Columns of the Network panel
+   * @description Column header for the URL scheme column in network log table of the Network panel.
    */
   scheme: "Scheme",
   /**
-   * @description Text for the domain of a website
+   * @description Column header for the request target domain column in network log table of the Network panel.
    */
   domain: "Domain",
   /**
-   * @description Text in Network Log View Columns of the Network panel
+   * @description Column header for the remote IP address column in network log table of the Network panel.
    */
   remoteAddress: "Remote address",
   /**
-   * @description Text that refers to some types
+   * @description Column header for the resource MIME type or category column in network log table of the Network panel.
    */
   type: "Type",
   /**
-   * @description Text for the initiator of something
+   * @description Column header for the request initiator column in network log table of the Network panel.
    */
   initiator: "Initiator",
   /**
-   * @description Column header in the Network log view of the Network panel
+   * @description Column header for the override status column in network log table of the Network panel.
    */
   hasOverrides: "Has overrides",
   /**
-   * @description Column header in the Network log view of the Network panel
+   * @description Column header for the initiator IP address space column in network log table of the Network panel.
    */
   initiatorAddressSpace: "Initiator address space",
   /**
-   * @description Text for web cookies
+   * @description Column header for the request cookie count column in network log table of the Network panel.
    */
   cookies: "Cookies",
   /**
-   * @description Text in Network Log View Columns of the Network panel
+   * @description Column header for the set cookies count column in network log table of the Network panel.
    */
-  setCookies: "Set Cookies",
+  setCookies: "Set cookies",
   /**
-   * @description Text for the size of something
+   * @description Column header for the request transfer and resource size column in network log table of the Network panel.
    */
   size: "Size",
   /**
-   * @description Text in Network Log View Columns of the Network panel
+   * @description Column header for the resource decoded content size column in network log table of the Network panel.
    */
   content: "Content",
   /**
-   * @description Noun that refers to a duration in milliseconds.
+   * @description Column header for the total request duration column in network log table of the Network panel.
    */
   time: "Time",
   /**
-   * @description Text to show the priority of an item
+   * @description Column header for the request fetch priority column in network log table of the Network panel.
    */
   priority: "Priority",
   /**
-   * @description Text in Network Log View Columns of the Network panel
+   * @description Column header for the connection ID column in network log table of the Network panel.
    */
   connectionId: "Connection ID",
   /**
-   * @description Text in Network Log View Columns of the Network panel
+   * @description Column header for the remote IP address space column in network log table of the Network panel.
    */
   remoteAddressSpace: "Remote address space",
   /**
-   * @description Text to show whether a request is ad-related
+   * @description Column header for the ad-related status column in network log table of the Network panel.
    */
-  isAdRelated: "Is Ad-Related",
+  isAdRelated: "Is ad-related",
   /**
-   * @description Text in Network Log View Columns of the Network panel
+   * @description Column header for the render-blocking status column in network log table of the Network panel.
    */
   renderBlocking: "Render-blocking",
   /**
-   * @description Text to show whether a request is preloaded
+   * @description Column header for the preloaded status column in network log table of the Network panel.
    */
   isPreloaded: "Preloaded",
   /**
-   * @description Column header in the Network log view of the Network panel
+   * @description Column header for the execution context column in network log table of the Network panel.
    */
   executionContext: "Execution context"
 };
@@ -10391,9 +10431,9 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.activeWaterfallSortId = WaterfallSortIds.StartTime;
     this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid4.DataGrid.Order.Ascending);
     this.splitWidget = new UI22.SplitWidget.SplitWidget(true, true, "network-panel-split-view-waterfall", 200);
-    const widget7 = this.#dataGrid.asWidget();
-    widget7.setMinimumSize(150, 0);
-    this.splitWidget.setMainWidget(widget7);
+    const widget8 = this.#dataGrid.asWidget();
+    widget8.setMinimumSize(150, 0);
+    this.splitWidget.setMainWidget(widget8);
   }
   setupWaterfall() {
     this.waterfallColumn = new NetworkWaterfallColumn(this.networkLogView.calculator());
@@ -10484,7 +10524,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
   }
   createWaterfallHeader() {
     this.waterfallHeaderElement = this.waterfallColumn.contentElement.createChild("div", "network-waterfall-header");
-    this.waterfallHeaderElement.setAttribute("jslog", `${VisualLogging15.tableHeader("waterfall").track({ click: true, resize: true })}`);
+    this.waterfallHeaderElement.setAttribute("jslog", `${VisualLogging16.tableHeader("waterfall").track({ click: true, resize: true })}`);
     this.waterfallHeaderElement.addEventListener("click", waterfallHeaderClicked.bind(this));
     this.waterfallHeaderElement.addEventListener("contextmenu", (event) => {
       const contextMenu = new UI22.ContextMenu.ContextMenu(event);
@@ -11298,7 +11338,7 @@ var UIStrings23 = {
   /**
    * @description Text to announce to screen readers that network data is available.
    */
-  networkDataAvailable: "Network Data Available",
+  networkDataAvailable: "Network data available",
   /**
    * @description Text in Network Log View of the Network panel
    * @example {3} PH1
@@ -12219,7 +12259,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
         }
         if (SDK16.NetworkManager.NetworkManager.canResendRequest(request, true)) {
           SDK16.NetworkManager.NetworkManager.replayRequest(request);
-          void VisualLogging16.logKeyDown(this.dataGrid.selectedNode.element(), event, "resend");
+          void VisualLogging17.logKeyDown(this.dataGrid.selectedNode.element(), event, "resend");
         }
       }
     });
@@ -12895,8 +12935,8 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     if (!consoleViewWrapper) {
       return;
     }
-    const widget7 = await consoleViewWrapper.widget();
-    const consoleView = widget7;
+    const widget8 = await consoleViewWrapper.widget();
+    const consoleView = widget8;
     if (typeof consoleView.insertIntoPrompt !== "function") {
       return;
     }
@@ -13265,7 +13305,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     const ignoredHeaders = /* @__PURE__ */ new Set(["accept-encoding", "host", "method", "path", "scheme", "version", "authority", "protocol"]);
     function escapeStringWin(str) {
       const encapsChars = '^"';
-      return encapsChars + str.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;()*`]/g, "^$&").replace(/%(?=[a-zA-Z0-9_])/g, "%^").replace(/[^ -~\r\n]/g, " ").replace(/\r?\n|\r/g, "^\n\n") + encapsChars;
+      return encapsChars + str.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;*]/g, "^$&").replace(/%(?=[a-zA-Z0-9_])/g, "%^").replace(/[^ -~\r\n]/g, " ").replace(/\r?\n|\r/g, "^\n\n") + encapsChars;
     }
     function escapeStringPosix(str) {
       function escapeCharacter(x) {
@@ -13462,7 +13502,7 @@ var MoreFiltersDropDownUI = class extends Common19.ObjectWrapper.ObjectWrapper {
     this.networkOnlyThirdPartySetting = Common19.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
     this.filterElement = document.createElement("div");
     this.filterElement.setAttribute("aria-label", "Show only/hide requests dropdown");
-    this.filterElement.setAttribute("jslog", `${VisualLogging16.dropDown("more-filters").track({ click: true })}`);
+    this.filterElement.setAttribute("jslog", `${VisualLogging17.dropDown("more-filters").track({ click: true })}`);
     this.activeFiltersCountAdorner = new Adorners.Adorner.Adorner();
     this.activeFiltersCountAdorner.name = "countWrapper";
     this.activeFiltersCount = document.createElement("span");
@@ -13748,7 +13788,7 @@ import * as Tracing from "./../../services/tracing/tracing.js";
 import * as PerfUI5 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as SettingsUI3 from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling3 from "./../mobile_throttling/mobile_throttling.js";
 import * as Search from "./../search/search.js";
 
@@ -13962,7 +14002,7 @@ var UIStrings25 = {
    */
   disableCache: "Disable cache",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in network panel of the network panel
+   * @description Tooltip text for settings button in Network panel.
    */
   networkSettings: "Network settings",
   /**
@@ -14114,7 +14154,7 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
     this.panelToolbar = networkToolbarContainer.createChild("devtools-toolbar");
     this.panelToolbar.role = "presentation";
     this.panelToolbar.wrappable = true;
-    this.panelToolbar.setAttribute("jslog", `${VisualLogging17.toolbar("network-main")}`);
+    this.panelToolbar.setAttribute("jslog", `${VisualLogging18.toolbar("network-main")}`);
     this.rightToolbar = networkToolbarContainer.createChild("devtools-toolbar");
     this.rightToolbar.role = "presentation";
     this.filterBar = new UI24.FilterBar.FilterBar("network-panel", true);
@@ -14155,11 +14195,11 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
       }
       splitWidget.hideSidebar();
       event.consume();
-      void VisualLogging17.logKeyDown(event.currentTarget, event, "hide-sidebar");
+      void VisualLogging18.logKeyDown(event.currentTarget, event, "hide-sidebar");
     });
     const closeSidebar = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings25.close), "cross");
     closeSidebar.addEventListener("Click", () => splitWidget.hideSidebar());
-    closeSidebar.element.setAttribute("jslog", `${VisualLogging17.close().track({ click: true })}`);
+    closeSidebar.element.setAttribute("jslog", `${VisualLogging18.close().track({ click: true })}`);
     tabbedPane.rightToolbar().appendToolbarItem(closeSidebar);
     splitWidget.setSidebarWidget(tabbedPane);
     splitWidget.setMainWidget(panel3);
@@ -14376,7 +14416,7 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
     if (toggled && !this.filmStripRecorder) {
       this.filmStripView = new PerfUI5.FilmStripView.FilmStripView();
       this.filmStripView.element.classList.add("network-film-strip");
-      this.filmStripView.element.setAttribute("jslog", `${VisualLogging17.section("film-strip")}`);
+      this.filmStripView.element.setAttribute("jslog", `${VisualLogging18.section("film-strip")}`);
       this.filmStripRecorder = new FilmStripRecorder(this.networkLogView.timeCalculator(), this.filmStripView);
       this.filmStripView.show(this.filmStripPlaceholderElement);
       this.filmStripView.addEventListener("FrameSelected", this.onFilmFrameSelected, this);

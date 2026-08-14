@@ -1,4 +1,3 @@
-import type * as SDK from '../../../core/sdk/sdk.js';
 import { ConversationContext, type ConversationSuggestions } from '../agents/AiAgent.js';
 import { type StorageItem } from '../StorageItem.js';
 export declare class StorageContext extends ConversationContext<StorageItem> {
@@ -13,4 +12,3 @@ export declare class StorageContext extends ConversationContext<StorageItem> {
     isLoggingEnabled(): boolean;
     getSuggestions(): Promise<ConversationSuggestions | undefined>;
 }
-export declare function isSamePageOrigin(target: SDK.Target.Target | null, allowedOrigin: string): boolean;

@@ -21,7 +21,7 @@ const UIStrings = {
     /**
      * @description Text in Network Manage Custom Headers View of the Network panel
      */
-    headerName: 'Header Name',
+    headerName: 'Header name',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkManageCustomHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

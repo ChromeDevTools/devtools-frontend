@@ -19,6 +19,7 @@ import {
   emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor,
   emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor,
   emulatedCSSMediaSettingDescriptor,
+  emulatedVisionDeficiencySettingDescriptor,
   idleDetectionSettingDescriptor,
   javaScriptDisabledSettingDescriptor,
   touchSettingDescriptor,
@@ -186,7 +187,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
       void this.emulateAutoDarkMode(true);
     }
 
-    const visionDeficiencySetting = settings.moduleSetting('emulated-vision-deficiency');
+    const visionDeficiencySetting = settings.resolve(emulatedVisionDeficiencySettingDescriptor);
     visionDeficiencySetting.addChangeListener(() => this.emulateVisionDeficiency(visionDeficiencySetting.get()));
     if (visionDeficiencySetting.get()) {
       void this.emulateVisionDeficiency(visionDeficiencySetting.get());

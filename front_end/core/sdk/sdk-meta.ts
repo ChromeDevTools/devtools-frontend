@@ -7,69 +7,9 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description A drop-down menu option to do not emulate css media type.
-   */
-  noEmulation: 'No emulation',
-  /**
    * @description A tag of Emulate CSS screen media type setting that can be searched in the command menu.
    */
   query: 'query',
-  /**
-   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
-   */
-  doNotEmulateAnyVisionDeficiency: 'Do not emulate any vision deficiency',
-  /**
-   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
-   */
-  emulateBlurredVision: 'Emulate blurred vision',
-  /**
-   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
-   */
-  emulateReducedContrast: 'Emulate reduced contrast',
-  /**
-   * @description Name of a vision deficiency that can be emulated via the Rendering drawer.
-   */
-  blurredVision: 'Blurred vision',
-  /**
-   * @description Name of a vision deficiency that can be emulated via the Rendering drawer.
-   */
-  reducedContrast: 'Reduced contrast',
-  /**
-   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
-   */
-  emulateProtanopia: 'Emulate protanopia (no red)',
-  /**
-   * @description Name of a color vision deficiency that can be emulated via the Rendering drawer.
-   */
-  protanopia: 'Protanopia (no red)',
-  /**
-   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
-   */
-  emulateDeuteranopia: 'Emulate deuteranopia (no green)',
-  /**
-   * @description Name of a color vision deficiency that can be emulated via the Rendering drawer.
-   */
-  deuteranopia: 'Deuteranopia (no green)',
-  /**
-   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
-   */
-  emulateTritanopia: 'Emulate tritanopia (no blue)',
-  /**
-   * @description Name of a color vision deficiency that can be emulated via the Rendering drawer.
-   */
-  tritanopia: 'Tritanopia (no blue)',
-  /**
-   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
-   */
-  emulateAchromatopsia: 'Emulate achromatopsia (no color)',
-  /**
-   * @description Name of a color vision deficiency that can be emulated via the Rendering drawer.
-   */
-  achromatopsia: 'Achromatopsia (no color)',
-  /**
-   * @description Title of a setting under the Rendering drawer.
-   */
-  emulateVisionDeficiencies: 'Emulate vision deficiencies',
   /**
    * @description Title of a setting under the Rendering drawer.
    */
@@ -210,55 +150,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'emulated-vision-deficiency',
-  settingType: Common.Settings.SettingType.ENUM,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  defaultValue: 'none',
-  options: [
-    {
-      title: i18nLazyString(UIStrings.doNotEmulateAnyVisionDeficiency),
-      text: i18nLazyString(UIStrings.noEmulation),
-      value: 'none',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateBlurredVision),
-      text: i18nLazyString(UIStrings.blurredVision),
-      value: 'blurredVision',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateReducedContrast),
-      text: i18nLazyString(UIStrings.reducedContrast),
-      value: 'reducedContrast',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateProtanopia),
-      text: i18nLazyString(UIStrings.protanopia),
-      value: 'protanopia',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateDeuteranopia),
-      text: i18nLazyString(UIStrings.deuteranopia),
-      value: 'deuteranopia',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateTritanopia),
-      text: i18nLazyString(UIStrings.tritanopia),
-      value: 'tritanopia',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateAchromatopsia),
-      text: i18nLazyString(UIStrings.achromatopsia),
-      value: 'achromatopsia',
-    },
-  ],
-  tags: [
-    i18nLazyString(UIStrings.query),
-  ],
-  title: i18nLazyString(UIStrings.emulateVisionDeficiencies),
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

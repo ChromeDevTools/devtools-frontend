@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 
 export const jsSourceMapsEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
@@ -226,5 +227,13 @@ export const emulatedCSSMediaFeatureColorGamutSettingDescriptor: Common.Settings
   name: 'emulated-css-media-feature-color-gamut',
   type: Common.Settings.SettingType.ENUM,
   defaultValue: '',
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};
+
+export const emulatedVisionDeficiencySettingDescriptor:
+    Common.Settings.SettingDescriptor<Protocol.Emulation.SetEmulatedVisionDeficiencyRequestType> = {
+  name: 'emulated-vision-deficiency',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'none' as Protocol.Emulation.SetEmulatedVisionDeficiencyRequestType,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };

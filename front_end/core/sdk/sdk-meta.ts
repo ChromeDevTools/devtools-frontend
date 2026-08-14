@@ -227,39 +227,6 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 Common.Settings.registerSettingExtension({
-  settingName: 'emulated-css-media-feature-prefers-contrast',
-  settingType: Common.Settings.SettingType.ENUM,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  defaultValue: '',
-  options: [
-    {
-      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'prefers-contrast'}),
-      text: i18nLazyString(UIStrings.noEmulation),
-      value: '',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-contrast: more'}),
-      text: i18n.i18n.lockedLazyString('prefers-contrast: more'),
-      value: 'more',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-contrast: less'}),
-      text: i18n.i18n.lockedLazyString('prefers-contrast: less'),
-      value: 'less',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-contrast: custom'}),
-      text: i18n.i18n.lockedLazyString('prefers-contrast: custom'),
-      value: 'custom',
-    },
-  ],
-  tags: [
-    i18nLazyString(UIStrings.query),
-  ],
-  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-contrast'}),
-});
-
-Common.Settings.registerSettingExtension({
   settingName: 'emulated-css-media-feature-prefers-reduced-data',
   settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.SESSION,

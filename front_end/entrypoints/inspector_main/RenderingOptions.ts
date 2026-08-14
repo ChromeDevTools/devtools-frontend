@@ -254,9 +254,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
                        Common.Settings.Settings.instance().resolve(
                            SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor));
     if (supportsPrefersReducedData()) {
-      this.#appendSelect(
-          i18nString(UIStrings.forcesCssPrefersreduceddataMedia),
-          Common.Settings.Settings.instance().moduleSetting('emulated-css-media-feature-prefers-reduced-data'));
+      this.#appendSelect(i18nString(UIStrings.forcesCssPrefersreduceddataMedia),
+                         Common.Settings.Settings.instance().resolve(
+                             SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor));
     }
     if (supportsPrefersReducedTransparency()) {
       this.#appendSelect(

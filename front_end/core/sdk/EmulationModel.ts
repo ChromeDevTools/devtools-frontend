@@ -14,6 +14,7 @@ import {
   emulatedCSSMediaFeatureForcedColorsSettingDescriptor,
   emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor,
   emulatedCSSMediaFeaturePrefersContrastSettingDescriptor,
+  emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor,
   emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor,
   emulatedCSSMediaSettingDescriptor,
   idleDetectionSettingDescriptor,
@@ -119,7 +120,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
     const mediaFeaturePrefersContrastSetting =
         settings.resolve(emulatedCSSMediaFeaturePrefersContrastSettingDescriptor);
     const mediaFeaturePrefersReducedDataSetting =
-        settings.moduleSetting<string>('emulated-css-media-feature-prefers-reduced-data');
+        settings.resolve(emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor);
     const mediaFeaturePrefersReducedTransparencySetting =
         settings.moduleSetting<string>('emulated-css-media-feature-prefers-reduced-transparency');
     const mediaFeaturePrefersReducedMotionSetting =

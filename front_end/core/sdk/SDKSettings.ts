@@ -206,3 +206,10 @@ export const emulatedCSSMediaFeaturePrefersContrastSettingDescriptor: Common.Set
   defaultValue: '',
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'emulated-css-media-feature-prefers-reduced-data',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: '',
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

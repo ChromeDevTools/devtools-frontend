@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting that disables WebP format.
-   */
-  disableWebpFormat: 'Disable `WebP` format',
-  /**
-   * @description Title of a setting that enables WebP format.
-   */
-  enableWebpFormat: 'Enable `WebP` format',
-  /**
    * @description Title of a setting under the Console category in Settings.
    */
   customFormatters: 'Custom formatters',
@@ -70,24 +62,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'webp-format-disabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.disableWebpFormat),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.enableWebpFormat),
-    },
-  ],
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,

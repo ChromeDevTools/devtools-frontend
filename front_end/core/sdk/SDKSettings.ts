@@ -265,3 +265,10 @@ export const jpegXlFormatDisabledSettingDescriptor: Common.Settings.SettingDescr
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const webpFormatDisabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'webp-format-disabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

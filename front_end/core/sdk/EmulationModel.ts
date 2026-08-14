@@ -27,6 +27,7 @@ import {
   jpegXlFormatDisabledSettingDescriptor,
   localFontsDisabledSettingDescriptor,
   touchSettingDescriptor,
+  webpFormatDisabledSettingDescriptor,
 } from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 
@@ -213,7 +214,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
 
     const avifFormatDisabledSetting = settings.resolve(avifFormatDisabledSettingDescriptor);
     const jpegXlFormatDisabledSetting = settings.resolve(jpegXlFormatDisabledSettingDescriptor);
-    const webpFormatDisabledSetting = settings.moduleSetting('webp-format-disabled');
+    const webpFormatDisabledSetting = settings.resolve(webpFormatDisabledSettingDescriptor);
 
     const updateDisabledImageFormats = (): void => {
       const types = [];

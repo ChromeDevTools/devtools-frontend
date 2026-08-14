@@ -297,6 +297,14 @@ const UIStrings = {
    */
   enableJpegXlFormat: 'Enable `JPEG XL` format',
   /**
+   * @description Title of a setting that disables WebP format.
+   */
+  disableWebpFormat: 'Disable `WebP` format',
+  /**
+   * @description Title of a setting that enables WebP format.
+   */
+  enableWebpFormat: 'Enable `WebP` format',
+  /**
    * @description Title of an action that reloads the inspected page.
    */
   reloadPage: 'Reload page',
@@ -935,6 +943,20 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.jpegXlFormatDisabledSe
     {
       value: false,
       title: i18nLazyString(UIStrings.enableJpegXlFormat),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.webpFormatDisabledSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.disableWebpFormat),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.enableWebpFormat),
     },
   ],
 });

@@ -3,14 +3,14 @@
  * Copyright 2023 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { debugError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 /**
  * @internal
  */
 export class BidiDeserializer {
-    static deserialize(result) {
+    static deserialize(result, logger) {
         if (!result) {
-            debugError?.('Service did not produce a result.');
+            logger?.(DEBUG_PREFIXES.error)?.('Service did not produce a result.');
             return undefined;
         }
         switch (result.type) {
@@ -52,7 +52,7 @@ export class BidiDeserializer {
             case 'string':
                 return result.value;
         }
-        debugError?.(`Deserialization of type ${result.type} not supported.`);
+        logger?.(DEBUG_PREFIXES.error)?.(`Deserialization of type ${result.type} not supported.`);
         return undefined;
     }
     static #deserializeNumber(value) {

@@ -38,7 +38,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 import { bindIsolatedHandle, ElementHandle, } from '../api/ElementHandle.js';
-import { debugError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { environment } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
@@ -73,8 +73,10 @@ let CdpElementHandle = (() => {
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         #backendNodeId = __runInitializers(this, _instanceExtraInitializers);
-        constructor(world, remoteObject) {
-            super(new CdpJSHandle(world, remoteObject));
+        #logger;
+        constructor(world, remoteObject, logger) {
+            super(new CdpJSHandle(world, remoteObject, logger), logger);
+            this.#logger = logger;
         }
         get realm() {
             return this.handle.realm;
@@ -108,7 +110,7 @@ let CdpElementHandle = (() => {
                 });
             }
             catch (error) {
-                debugError?.(error);
+                this.#logger?.(DEBUG_PREFIXES.error)?.(error);
                 // Fallback to Element.scrollIntoView if DOM.scrollIntoViewIfNeeded is not supported
                 await super.scrollIntoView();
             }

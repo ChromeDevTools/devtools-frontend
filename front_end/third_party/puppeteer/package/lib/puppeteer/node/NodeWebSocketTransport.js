@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import NodeWebSocket from 'ws';
-import { debugCatchError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { packageVersion } from '../util/version.js';
 /**
  * @internal
  */
 export class NodeWebSocketTransport {
-    static create(url, headers) {
+    static create(url, headers, logger) {
         return new Promise((resolve, reject) => {
             const ws = new NodeWebSocket(url, [], {
                 followRedirects: true,
@@ -23,16 +23,18 @@ export class NodeWebSocketTransport {
                 },
             });
             ws.addEventListener('open', () => {
-                return resolve(new NodeWebSocketTransport(ws));
+                return resolve(new NodeWebSocketTransport(ws, logger));
             });
             ws.addEventListener('error', reject);
         });
     }
     #ws;
+    #logger;
     onmessage;
     onclose;
-    constructor(ws) {
+    constructor(ws, logger) {
         this.#ws = ws;
+        this.#logger = logger;
         this.#ws.addEventListener('message', event => {
             if (this.onmessage) {
                 this.onmessage.call(null, event.data);
@@ -44,7 +46,9 @@ export class NodeWebSocketTransport {
             }
         });
         // Silently log all errors - we don't know what to do with them.
-        this.#ws.addEventListener('error', debugCatchError);
+        this.#ws.addEventListener('error', err => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+        });
     }
     send(message) {
         this.#ws.send(message);

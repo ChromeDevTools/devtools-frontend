@@ -26,8 +26,8 @@ import {
 import {CDPSessionEvent} from '../api/CDPSession.js';
 import type {BoundingBox} from '../api/ElementHandle.js';
 import type {Page, VideoFormat} from '../api/Page.js';
-import {debug, DEBUG_PREFIXES, type Logger} from '../common/Debug.js';
-import {fromEmitterEvent, debugCatchError} from '../common/util.js';
+import {DEBUG_PREFIXES, type Logger} from '../common/Debug.js';
+import {fromEmitterEvent} from '../common/util.js';
 import {guarded} from '../util/decorators.js';
 import {asyncDisposeSymbol} from '../util/disposable.js';
 
@@ -94,7 +94,7 @@ export class ScreenRecorder extends PassThrough {
   #lastFrame: Promise<readonly [Buffer, number]>;
 
   #fps: number;
-  #debugFfmpeg: ((...args: unknown[]) => void) | undefined;
+  #logger?: Logger;
 
   /**
    * @internal
@@ -117,11 +117,11 @@ export class ScreenRecorder extends PassThrough {
       path,
       overwrite,
     }: ScreenRecorderOptions = {},
-    logger: Logger = debug,
+    logger?: Logger,
   ) {
     super({allowHalfOpen: false});
 
-    this.#debugFfmpeg = logger(DEBUG_PREFIXES.ffmpeg);
+    this.#logger = logger;
 
     ffmpegPath ??= 'ffmpeg';
     format ??= 'webm';
@@ -218,14 +218,16 @@ export class ScreenRecorder extends PassThrough {
     );
     this.#process.stdout.pipe(this);
     this.#process.stderr.on('data', (data: Buffer) => {
-      this.#debugFfmpeg?.(data.toString('utf8'));
+      this.#logger?.(DEBUG_PREFIXES.ffmpeg)?.(data.toString('utf8'));
     });
 
     this.#page = page;
 
     const {client} = this.#page.mainFrame();
     client.once(CDPSessionEvent.Disconnected, () => {
-      void this.stop().catch(debugCatchError);
+      void this.stop().catch(err => {
+        this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+      });
     });
 
     // Anchor for the constant-fps grid; set to the first frame's timestamp.
@@ -353,7 +355,9 @@ export class ScreenRecorder extends PassThrough {
       return;
     }
     // Stopping the screencast will flush the frames.
-    await this.#page._stopScreencast().catch(debugCatchError);
+    await this.#page._stopScreencast().catch(err => {
+      this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+    });
 
     this.#controller.abort();
 

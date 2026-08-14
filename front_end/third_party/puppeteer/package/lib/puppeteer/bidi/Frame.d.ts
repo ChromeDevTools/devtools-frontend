@@ -10,6 +10,7 @@ import { Frame, type GoToOptions, type SetContentWaitForOptions, type WaitForOpt
 import { type WaitTimeoutOptions } from '../api/Page.js';
 import type { Realm } from '../api/Realm.js';
 import { Accessibility } from '../cdp/Accessibility.js';
+import { type Logger } from '../common/Debug.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Awaitable, HandleFor } from '../common/types.js';
 import { BidiCdpSession } from './CDPSession.js';
@@ -21,7 +22,7 @@ import type { BidiRealm } from './Realm.js';
 import { BidiFrameRealm } from './Realm.js';
 export declare class BidiFrame extends Frame {
     #private;
-    static from(parent: BidiPage | BidiFrame, browsingContext: BrowsingContext): BidiFrame;
+    static from(parent: BidiPage | BidiFrame, browsingContext: BrowsingContext, logger: Logger): BidiFrame;
     readonly browsingContext: BrowsingContext;
     readonly realms: {
         default: BidiFrameRealm;

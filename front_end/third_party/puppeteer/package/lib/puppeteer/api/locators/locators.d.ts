@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Observable, OperatorFunction } from '../../../third_party/rxjs/rxjs.js';
+import { type Logger } from '../../common/Debug.js';
 import type { EventType } from '../../common/EventEmitter.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import type { Awaitable, HandleFor, NodeFor } from '../../common/types.js';
@@ -80,6 +81,14 @@ export interface LocatorEvents extends Record<EventType, unknown> {
  */
 export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
     #private;
+    /**
+     * @internal
+     */
+    constructor(logger: Logger);
+    /**
+     * @internal
+     */
+    get logger(): Logger;
     /**
      * Creates a race between multiple locators trying to locate elements in
      * parallel but ensures that only a single element receives the action.

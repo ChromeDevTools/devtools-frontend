@@ -22,11 +22,13 @@ export class Tracing {
     #client;
     #recording = false;
     #path;
+    #logger;
     /**
      * @internal
      */
-    constructor(client) {
+    constructor(client, logger) {
         this.#client = client;
+        this.#logger = logger;
     }
     /**
      * @internal
@@ -56,7 +58,7 @@ export class Tracing {
             'disabled-by-default-devtools.timeline.stack',
             'disabled-by-default-v8.cpu_profiler',
         ];
-        const { path, screenshots = false, categories = defaultCategories } = options;
+        const { path, screenshots = false, categories = defaultCategories, bufferSize, } = options;
         if (screenshots) {
             categories.push('disabled-by-default-devtools.screenshot');
         }
@@ -77,6 +79,7 @@ export class Tracing {
             traceConfig: {
                 excludedCategories,
                 includedCategories,
+                traceBufferSizeInKb: bufferSize,
             },
         });
     }
@@ -90,7 +93,7 @@ export class Tracing {
             try {
                 assert(event.stream, 'Missing "stream"');
                 const readable = await getReadableFromProtocolStream(this.#client, event.stream);
-                const typedArray = await getReadableAsTypedArray(readable, this.#path);
+                const typedArray = await getReadableAsTypedArray(readable, this.#path, this.#logger);
                 contentDeferred.resolve(typedArray ?? undefined);
             }
             catch (error) {

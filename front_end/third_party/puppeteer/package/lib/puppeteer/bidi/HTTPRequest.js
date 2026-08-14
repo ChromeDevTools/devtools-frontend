@@ -8,8 +8,8 @@ export const requests = new WeakMap();
  * @internal
  */
 export class BidiHTTPRequest extends HTTPRequest {
-    static from(bidiRequest, frame, isNetworkInterceptionEnabled, redirect) {
-        const request = new _a(bidiRequest, frame, isNetworkInterceptionEnabled, redirect);
+    static from(bidiRequest, frame, isNetworkInterceptionEnabled, redirect, logger) {
+        const request = new _a(bidiRequest, frame, isNetworkInterceptionEnabled, redirect, logger);
         request.#initialize();
         return request;
     }
@@ -18,8 +18,10 @@ export class BidiHTTPRequest extends HTTPRequest {
     id;
     #frame;
     #request;
-    constructor(request, frame, isNetworkInterceptionEnabled, redirect) {
+    #logger;
+    constructor(request, frame, isNetworkInterceptionEnabled, redirect, logger) {
         super();
+        this.#logger = logger;
         requests.set(request, this);
         this.interception.enabled = isNetworkInterceptionEnabled;
         this.#request = request;
@@ -32,7 +34,7 @@ export class BidiHTTPRequest extends HTTPRequest {
     }
     #initialize() {
         this.#request.on('redirect', request => {
-            const httpRequest = _a.from(request, this.#frame, this.interception.enabled, this);
+            const httpRequest = _a.from(request, this.#frame, this.interception.enabled, this, this.#logger);
             this.#redirectChain.push(this);
             request.once('success', () => {
                 this.#frame
@@ -145,7 +147,7 @@ export class BidiHTTPRequest extends HTTPRequest {
         })
             .catch(error => {
             this.interception.handled = false;
-            return handleError(error);
+            return handleError(error, this.#logger);
         });
     }
     async _abort() {

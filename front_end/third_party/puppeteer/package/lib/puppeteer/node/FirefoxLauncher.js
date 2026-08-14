@@ -8,7 +8,7 @@ import { rename, unlink, mkdtemp } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { Browser as SupportedBrowsers, createProfile } from '@puppeteer/browsers';
-import { debugError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { assert } from '../util/assert.js';
 import { BrowserLauncher } from './BrowserLauncher.js';
 import { rm } from './util/fs.js';
@@ -16,8 +16,8 @@ import { rm } from './util/fs.js';
  * @internal
  */
 export class FirefoxLauncher extends BrowserLauncher {
-    constructor(puppeteer) {
-        super(puppeteer, 'firefox');
+    constructor(puppeteer, logger) {
+        super(puppeteer, 'firefox', logger);
     }
     static getPreferences(extraPrefsFirefox) {
         return {
@@ -103,7 +103,7 @@ export class FirefoxLauncher extends BrowserLauncher {
                 await rm(userDataDir);
             }
             catch (error) {
-                debugError?.(error);
+                this.logger(DEBUG_PREFIXES.error)?.(error);
                 throw error;
             }
         }
@@ -126,7 +126,7 @@ export class FirefoxLauncher extends BrowserLauncher {
                 }
             }
             catch (error) {
-                debugError?.(error);
+                this.logger(DEBUG_PREFIXES.error)?.(error);
             }
         }
     }

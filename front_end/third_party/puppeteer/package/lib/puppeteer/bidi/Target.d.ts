@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Target, TargetType } from '../api/Target.js';
+import type { Logger } from '../common/Debug.js';
 import type { CDPSession } from '../puppeteer-core.js';
 import type { BidiBrowser } from './Browser.js';
 import type { BidiBrowserContext } from './BrowserContext.js';
@@ -15,7 +16,7 @@ import type { BidiWebWorker } from './WebWorker.js';
  */
 export declare class BidiBrowserTarget extends Target {
     #private;
-    constructor(browser: BidiBrowser);
+    constructor(browser: BidiBrowser, logger: Logger);
     asPage(): Promise<BidiPage>;
     url(): string;
     createCDPSession(): Promise<CDPSession>;
@@ -29,7 +30,7 @@ export declare class BidiBrowserTarget extends Target {
  */
 export declare class BidiPageTarget extends Target {
     #private;
-    constructor(page: BidiPage);
+    constructor(page: BidiPage, logger: Logger);
     page(): Promise<BidiPage>;
     asPage(): Promise<BidiPage>;
     url(): string;
@@ -44,7 +45,7 @@ export declare class BidiPageTarget extends Target {
  */
 export declare class BidiFrameTarget extends Target {
     #private;
-    constructor(frame: BidiFrame);
+    constructor(frame: BidiFrame, logger: Logger);
     page(): Promise<BidiPage>;
     asPage(): Promise<BidiPage>;
     url(): string;
@@ -59,7 +60,7 @@ export declare class BidiFrameTarget extends Target {
  */
 export declare class BidiWorkerTarget extends Target {
     #private;
-    constructor(worker: BidiWebWorker);
+    constructor(worker: BidiWebWorker, logger: Logger);
     page(): Promise<BidiPage>;
     asPage(): Promise<BidiPage>;
     url(): string;

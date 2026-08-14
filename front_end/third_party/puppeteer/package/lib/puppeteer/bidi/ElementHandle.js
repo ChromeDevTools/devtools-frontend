@@ -117,7 +117,7 @@ let BidiElementHandle = (() => {
             return new BidiElementHandle(value, realm);
         }
         constructor(value, realm) {
-            super(BidiJSHandle.from(value, realm));
+            super(BidiJSHandle.from(value, realm), realm.logger);
         }
         get realm() {
             // SAFETY: See the super call in the constructor.

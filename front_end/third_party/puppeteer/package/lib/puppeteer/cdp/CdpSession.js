@@ -23,11 +23,11 @@ export class CdpCDPSession extends CDPSession {
     /**
      * @internal
      */
-    constructor(connection, targetType, sessionId, parentSessionId, rawErrors) {
+    constructor(connection, targetType, sessionId, parentSessionId, rawErrors, logger) {
         super();
         this.#connection = connection;
         this.#targetType = targetType;
-        this.#callbacks = new CallbackRegistry(connection._idGenerator);
+        this.#callbacks = new CallbackRegistry(connection._idGenerator, logger);
         this.#sessionId = sessionId;
         this.#parentSessionId = parentSessionId;
         this.#rawErrors = rawErrors;

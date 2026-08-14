@@ -5,7 +5,9 @@
  */
 import { Browser as BrowserBase, } from '../api/Browser.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
+import { EventEmitter } from '../common/EventEmitter.js';
 import { Deferred } from '../util/Deferred.js';
+import { DisposableStack } from '../util/disposable.js';
 import { CdpBrowserContext } from './BrowserContext.js';
 import { CdpExtension } from './Extension.js';
 import { DevToolsTarget, InitializationStatus, OtherTarget, PageTarget, WorkerTarget, } from './Target.js';
@@ -21,8 +23,8 @@ function isDevToolsPageTarget(url) {
  */
 export class CdpBrowser extends BrowserBase {
     protocol = 'cdp';
-    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blocklist, allowlist) {
-        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, issuesEnabled, handleDevToolsAsPage, blocklist, allowlist);
+    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport = undefined, downloadBehavior = undefined, process = undefined, closeCallback = undefined, targetFilterCallback = undefined, isPageTargetCallback = undefined, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blocklist = undefined, allowlist = undefined, logger) {
+        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, issuesEnabled, handleDevToolsAsPage, blocklist, allowlist, logger);
         if (allowlist) {
             const version = await browser.#getVersion();
             const majorVersion = parseInt(version.product.match(/\d+/)?.[0] ?? '0', 10);
@@ -53,8 +55,9 @@ export class CdpBrowser extends BrowserBase {
     #extensions = new Map();
     #version;
     #hasNetworkRestrictions = false;
-    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blocklist, allowlist) {
-        super();
+    #subscriptions = new DisposableStack();
+    constructor(connection, contextIds, defaultViewport = undefined, process = undefined, closeCallback = undefined, targetFilterCallback = undefined, isPageTargetCallback = undefined, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blocklist = undefined, allowlist = undefined, logger) {
+        super(logger);
         this.#networkEnabled = networkEnabled;
         this.#issuesEnabled = issuesEnabled;
         this.#defaultViewport = defaultViewport;
@@ -72,32 +75,30 @@ export class CdpBrowser extends BrowserBase {
             (allowlist && allowlist.length > 0));
         connection.rejectEmulateNetworkConditionsCalls =
             this.#hasNetworkRestrictions;
-        this.#targetManager = new TargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets, blocklist, allowlist);
-        this.#defaultContext = new CdpBrowserContext(this.#connection, this);
+        this.#targetManager = new TargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets, blocklist, allowlist, logger);
+        this.#defaultContext = new CdpBrowserContext(this.#connection, this, undefined, logger);
         for (const contextId of contextIds) {
-            this.#contexts.set(contextId, new CdpBrowserContext(this.#connection, this, contextId));
+            this.#contexts.set(contextId, new CdpBrowserContext(this.#connection, this, contextId, logger));
         }
     }
     #emitDisconnected = () => {
         this.emit("disconnected" /* BrowserEvent.Disconnected */, undefined);
     };
     async _attach(downloadBehavior) {
-        this.#connection.on(CDPSessionEvent.Disconnected, this.#emitDisconnected);
+        const connectionEmitter = this.#subscriptions.use(new EventEmitter(this.#connection));
+        connectionEmitter.on(CDPSessionEvent.Disconnected, this.#emitDisconnected);
         if (downloadBehavior) {
             await this.#defaultContext.setDownloadBehavior(downloadBehavior);
         }
-        this.#targetManager.on("targetAvailable" /* TargetManagerEvent.TargetAvailable */, this.#onAttachedToTarget);
-        this.#targetManager.on("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
-        this.#targetManager.on("targetChanged" /* TargetManagerEvent.TargetChanged */, this.#onTargetChanged);
-        this.#targetManager.on("targetDiscovered" /* TargetManagerEvent.TargetDiscovered */, this.#onTargetDiscovered);
+        const targetManagerEmitter = this.#subscriptions.use(new EventEmitter(this.#targetManager));
+        targetManagerEmitter.on("targetAvailable" /* TargetManagerEvent.TargetAvailable */, this.#onAttachedToTarget);
+        targetManagerEmitter.on("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
+        targetManagerEmitter.on("targetChanged" /* TargetManagerEvent.TargetChanged */, this.#onTargetChanged);
+        targetManagerEmitter.on("targetDiscovered" /* TargetManagerEvent.TargetDiscovered */, this.#onTargetDiscovered);
         await this.#targetManager.initialize();
     }
     _detach() {
-        this.#connection.off(CDPSessionEvent.Disconnected, this.#emitDisconnected);
-        this.#targetManager.off("targetAvailable" /* TargetManagerEvent.TargetAvailable */, this.#onAttachedToTarget);
-        this.#targetManager.off("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
-        this.#targetManager.off("targetChanged" /* TargetManagerEvent.TargetChanged */, this.#onTargetChanged);
-        this.#targetManager.off("targetDiscovered" /* TargetManagerEvent.TargetDiscovered */, this.#onTargetDiscovered);
+        this.#subscriptions.dispose();
     }
     process() {
         return this.#process ?? null;
@@ -126,7 +127,7 @@ export class CdpBrowser extends BrowserBase {
             proxyServer,
             proxyBypassList: proxyBypassList && proxyBypassList.join(','),
         });
-        const context = new CdpBrowserContext(this.#connection, this, browserContextId);
+        const context = new CdpBrowserContext(this.#connection, this, browserContextId, this.logger);
         if (downloadBehavior) {
             await context.setDownloadBehavior(downloadBehavior);
         }
@@ -159,16 +160,16 @@ export class CdpBrowser extends BrowserBase {
         const createSession = (isAutoAttachEmulated) => {
             return this.#connection._createSession(targetInfo, isAutoAttachEmulated);
         };
-        const otherTarget = new OtherTarget(targetInfo, session, context, this.#targetManager, createSession);
+        const otherTarget = new OtherTarget(targetInfo, session, context, this.#targetManager, createSession, this.logger);
         if (targetInfo.url && isDevToolsPageTarget(targetInfo.url)) {
-            return new DevToolsTarget(targetInfo, session, context, this.#targetManager, createSession, this.#defaultViewport ?? null);
+            return new DevToolsTarget(targetInfo, session, context, this.#targetManager, createSession, this.#defaultViewport ?? null, this.logger);
         }
         if (this.#isPageTargetCallback(otherTarget)) {
-            return new PageTarget(targetInfo, session, context, this.#targetManager, createSession, this.#defaultViewport ?? null);
+            return new PageTarget(targetInfo, session, context, this.#targetManager, createSession, this.#defaultViewport ?? null, this.logger);
         }
         if (targetInfo.type === 'service_worker' ||
             targetInfo.type === 'shared_worker') {
-            return new WorkerTarget(targetInfo, session, context, this.#targetManager, createSession);
+            return new WorkerTarget(targetInfo, session, context, this.#targetManager, createSession, this.logger);
         }
         return otherTarget;
     };
@@ -454,7 +455,7 @@ export class CdpBrowser extends BrowserBase {
                 extensionsMap.set(currExtension.id, this.#extensions.get(currExtension.id));
             }
             else {
-                const newExtension = new CdpExtension(currExtension.id, currExtension.version, currExtension.name, currExtension.path, currExtension.enabled, this);
+                const newExtension = new CdpExtension(currExtension.id, currExtension.version, currExtension.name, currExtension.path, currExtension.enabled, this, this.logger);
                 extensionsMap.set(currExtension.id, newExtension);
             }
         }

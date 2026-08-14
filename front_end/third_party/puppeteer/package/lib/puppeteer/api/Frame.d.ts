@@ -9,6 +9,7 @@ import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { Page, QueryOptions, WaitForSelectorOptions, WaitTimeoutOptions } from '../api/Page.js';
 import type { Accessibility } from '../cdp/Accessibility.js';
 import type { PuppeteerLifeCycleEvent } from '../cdp/LifecycleWatcher.js';
+import type { Logger } from '../common/Debug.js';
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
 import type { Awaitable, EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from '../common/types.js';
 import type { CDPSession } from './CDPSession.js';
@@ -273,7 +274,11 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
     /**
      * @internal
      */
-    constructor();
+    logger: Logger;
+    /**
+     * @internal
+     */
+    constructor(logger: Logger);
     /**
      * The page associated with the frame.
      */

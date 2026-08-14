@@ -90,10 +90,11 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 import { concat, distinctUntilChanged, EMPTY, filter, first, firstValueFrom, from, map, merge, mergeMap, mergeScan, of, raceWith, ReplaySubject, startWith, switchMap, take, takeUntil, timer, } from '../../third_party/rxjs/rxjs.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter, } from '../common/EventEmitter.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
-import { fromEmitterEvent, filterAsync, isString, NETWORK_IDLE_TIME, timeout, withSourcePuppeteerURLIfNone, fromAbortSignal, debugCatchError, } from '../common/util.js';
+import { fromEmitterEvent, filterAsync, isString, NETWORK_IDLE_TIME, timeout, withSourcePuppeteerURLIfNone, fromAbortSignal, } from '../common/util.js';
 import { environment } from '../environment.js';
 import { guarded } from '../util/decorators.js';
 import { AsyncDisposableStack, asyncDisposeSymbol, DisposableStack, disposeSymbol, } from '../util/disposable.js';
@@ -189,8 +190,13 @@ let Page = (() => {
         /**
          * @internal
          */
-        constructor() {
-            super();
+        logger;
+        /**
+         * @internal
+         */
+        constructor(logger) {
+            super(undefined, logger);
+            this.logger = logger;
             fromEmitterEvent(this, "request" /* PageEvent.Request */)
                 .pipe(mergeMap(originalRequest => {
                 return concat(of(1), merge(fromEmitterEvent(this, "requestfailed" /* PageEvent.RequestFailed */), fromEmitterEvent(this, "requestfinished" /* PageEvent.RequestFinished */), fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(map(response => {
@@ -910,7 +916,7 @@ let Page = (() => {
             const recorder = new ScreenRecorder(this, width, height, {
                 ...options,
                 crop,
-            });
+            }, this.logger);
             try {
                 await this._startScreencast();
             }
@@ -970,7 +976,9 @@ let Page = (() => {
                 if (viewport && viewport.deviceScaleFactor !== 0) {
                     await this.setViewport({ ...viewport, deviceScaleFactor: 0 });
                     stack.defer(() => {
-                        void this.setViewport(viewport).catch(debugCatchError);
+                        void this.setViewport(viewport).catch(error => {
+                            this.logger?.(DEBUG_PREFIXES.error)?.(error);
+                        });
                     });
                 }
                 return await this.mainFrame()
@@ -1068,7 +1076,9 @@ let Page = (() => {
                                 ...scrollDimensions,
                             });
                             stack.defer(async () => {
-                                await this.setViewport(viewport).catch(debugCatchError);
+                                await this.setViewport(viewport).catch(error => {
+                                    this.logger?.(DEBUG_PREFIXES.error)?.(error);
+                                });
                             });
                         }
                     }
@@ -1449,7 +1459,9 @@ let Page = (() => {
         [(_screenshot_decorators = [guarded(function () {
                 return this.browser();
             })], disposeSymbol)]() {
-            return void this[asyncDisposeSymbol]().catch(debugCatchError);
+            return void this[asyncDisposeSymbol]().catch(error => {
+                this.logger?.(DEBUG_PREFIXES.error)?.(error);
+            });
         }
         async [asyncDisposeSymbol]() {
             await this.close();

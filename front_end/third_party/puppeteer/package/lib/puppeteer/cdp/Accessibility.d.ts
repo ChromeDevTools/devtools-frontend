@@ -5,6 +5,7 @@
  */
 import type { ElementHandle } from '../api/ElementHandle.js';
 import type { Realm } from '../api/Realm.js';
+import { type Logger } from '../common/Debug.js';
 /**
  * Represents a Node and the properties of it that are relevant to Accessibility.
  * @public
@@ -178,7 +179,7 @@ export declare class Accessibility {
     /**
      * @internal
      */
-    constructor(realm: Realm, frameId?: string);
+    constructor(realm: Realm, frameId?: string, logger?: Logger);
     /**
      * Captures the current state of the accessibility tree.
      * The returned object represents the root accessible node of the page.

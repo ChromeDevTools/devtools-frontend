@@ -11,8 +11,9 @@ import { firstValueFrom, from, map, race, timer, } from '../../third_party/rxjs/
 import { CdpBrowser } from '../cdp/Browser.js';
 import { Connection } from '../cdp/Connection.js';
 import { assertSupportedUrlRestrictions } from '../common/BrowserConnector.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { TimeoutError } from '../common/Errors.js';
-import { debugError, DEFAULT_VIEWPORT } from '../common/util.js';
+import { DEFAULT_VIEWPORT } from '../common/util.js';
 import { createIncrementalIdGenerator, } from '../util/incremental-id-generator.js';
 import { NodeWebSocketTransport as WebSocketTransport } from './NodeWebSocketTransport.js';
 import { PipeTransport } from './PipeTransport.js';
@@ -35,6 +36,10 @@ export function getBrowserTypeDisplayName(browserType) {
  */
 export class BrowserLauncher {
     #browser;
+    #logger;
+    /**
+     * @internal
+     */
     /**
      * @internal
      */
@@ -42,14 +47,22 @@ export class BrowserLauncher {
     /**
      * @internal
      */
-    constructor(puppeteer, browser) {
+    constructor(puppeteer, browser, logger) {
         this.puppeteer = puppeteer;
         this.#browser = browser;
+        this.#logger = logger;
+    }
+    /**
+     * @internal
+     */
+    get logger() {
+        return this.#logger;
     }
     get browser() {
         return this.#browser;
     }
     async launch(options = {}) {
+        options.logger ??= this.#logger;
         const { dumpio = false, enableExtensions = false, extensionsEnabledInIncognito = [], env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, issuesEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, handleDevToolsAsPage, idGenerator = createIncrementalIdGenerator(), blocklist, allowlist, } = options;
         let { protocol } = options;
         // Default to 'webDriverBiDi' for Firefox.
@@ -93,6 +106,7 @@ export class BrowserLauncher {
             pipe: usePipe,
             onExit: onProcessExit,
             signal: options.signal,
+            logger: options.logger,
         });
         let browser;
         let cdpConnection;
@@ -114,6 +128,7 @@ export class BrowserLauncher {
                     acceptInsecureCerts,
                     networkEnabled,
                     idGenerator,
+                    logger: options.logger,
                 });
             }
             else {
@@ -123,6 +138,7 @@ export class BrowserLauncher {
                         protocolTimeout,
                         slowMo,
                         idGenerator,
+                        logger: options.logger,
                     });
                 }
                 else {
@@ -131,6 +147,7 @@ export class BrowserLauncher {
                         protocolTimeout,
                         slowMo,
                         idGenerator,
+                        logger: options.logger,
                     });
                 }
                 if (protocol === 'webDriverBiDi') {
@@ -139,10 +156,11 @@ export class BrowserLauncher {
                         acceptInsecureCerts,
                         networkEnabled,
                         issuesEnabled,
+                        logger: options.logger,
                     });
                 }
                 else {
-                    browser = await CdpBrowser._create(cdpConnection, [], acceptInsecureCerts, defaultViewport, downloadBehavior, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter, undefined, undefined, networkEnabled, issuesEnabled, handleDevToolsAsPage, blocklist, allowlist);
+                    browser = await CdpBrowser._create(cdpConnection, [], acceptInsecureCerts, defaultViewport, downloadBehavior, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter, undefined, undefined, networkEnabled, issuesEnabled, handleDevToolsAsPage, blocklist, allowlist, options.logger);
                 }
             }
         }
@@ -189,7 +207,7 @@ export class BrowserLauncher {
                 await browserProcess.hasClosed();
             }
             catch (error) {
-                debugError?.(error);
+                this.#logger?.(DEBUG_PREFIXES.error)?.(error);
                 await browserProcess.close();
             }
         }
@@ -219,9 +237,9 @@ export class BrowserLauncher {
      */
     async createCdpSocketConnection(browserProcess, opts) {
         const browserWSEndpoint = await browserProcess.waitForLineOutput(CDP_WEBSOCKET_ENDPOINT_REGEX, opts.timeout);
-        const transport = await WebSocketTransport.create(browserWSEndpoint);
+        const transport = await WebSocketTransport.create(browserWSEndpoint, undefined, opts.logger);
         return new Connection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout, 
-        /* rawErrors */ false, opts.idGenerator);
+        /* rawErrors */ false, opts.idGenerator, opts.logger);
     }
     /**
      * @internal
@@ -230,9 +248,9 @@ export class BrowserLauncher {
         // stdio was assigned during start(), and the 'pipe' option there adds the
         // 4th and 5th items to stdio array
         const { 3: pipeWrite, 4: pipeRead } = browserProcess.nodeProcess.stdio;
-        const transport = new PipeTransport(pipeWrite, pipeRead);
+        const transport = new PipeTransport(pipeWrite, pipeRead, opts.logger);
         return new Connection('', transport, opts.slowMo, opts.protocolTimeout, 
-        /* rawErrors */ false, opts.idGenerator);
+        /* rawErrors */ false, opts.idGenerator, opts.logger);
     }
     /**
      * @internal
@@ -240,7 +258,7 @@ export class BrowserLauncher {
     async createBiDiOverCdpBrowser(browserProcess, cdpConnection, closeCallback, opts) {
         const bidiOnly = process.env['PUPPETEER_WEBDRIVER_BIDI_ONLY'] === 'true';
         const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
-        const bidiConnection = await BiDi.connectBidiOverCdp(cdpConnection);
+        const bidiConnection = await BiDi.connectBidiOverCdp(cdpConnection, opts.logger);
         return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
             // Do not provide CDP connection to Browser, if BiDi-only mode is enabled. This
@@ -252,6 +270,7 @@ export class BrowserLauncher {
             acceptInsecureCerts: opts.acceptInsecureCerts,
             networkEnabled: opts.networkEnabled,
             issuesEnabled: opts.issuesEnabled,
+            logger: opts.logger,
         });
     }
     /**
@@ -259,9 +278,9 @@ export class BrowserLauncher {
      */
     async createBiDiBrowser(browserProcess, closeCallback, opts) {
         const browserWSEndpoint = (await browserProcess.waitForLineOutput(WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX, opts.timeout)) + '/session';
-        const transport = await WebSocketTransport.create(browserWSEndpoint);
+        const transport = await WebSocketTransport.create(browserWSEndpoint, undefined, opts.logger);
         const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
-        const bidiConnection = new BiDi.BidiConnection(browserWSEndpoint, transport, opts.idGenerator, opts.slowMo, opts.protocolTimeout);
+        const bidiConnection = new BiDi.BidiConnection(browserWSEndpoint, transport, opts.idGenerator, opts.slowMo, opts.protocolTimeout, opts.logger);
         return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
             closeCallback,
@@ -270,6 +289,7 @@ export class BrowserLauncher {
             acceptInsecureCerts: opts.acceptInsecureCerts,
             networkEnabled: opts.networkEnabled ?? true,
             issuesEnabled: opts.issuesEnabled ?? true,
+            logger: opts.logger,
         });
     }
     /**

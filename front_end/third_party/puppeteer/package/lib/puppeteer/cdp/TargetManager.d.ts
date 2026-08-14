@@ -5,6 +5,7 @@
  */
 import type { Protocol } from 'devtools-protocol';
 import type { TargetFilterCallback } from '../api/Browser.js';
+import { type Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { CdpCDPSession } from './CdpSession.js';
 import type { Connection } from './Connection.js';
@@ -28,7 +29,7 @@ export type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: C
  */
 export declare class TargetManager extends EventEmitter<TargetManagerEvents> implements TargetManager {
     #private;
-    constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback, waitForInitiallyDiscoveredTargets?: boolean, blocklist?: string[], allowlist?: string[]);
+    constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback, waitForInitiallyDiscoveredTargets?: boolean, blocklist?: string[], allowlist?: string[], logger?: Logger);
     initialize(): Promise<void>;
     addToIgnoreTarget(targetId: string): void;
     getChildTargets(target: CdpTarget): ReadonlySet<CdpTarget>;

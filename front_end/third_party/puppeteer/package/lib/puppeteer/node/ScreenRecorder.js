@@ -48,8 +48,8 @@ import { dirname } from 'node:path';
 import { PassThrough } from 'node:stream';
 import { bufferCount, concatMap, filter, from, fromEvent, lastValueFrom, map, takeUntil, tap, } from '../../third_party/rxjs/rxjs.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
-import { debug, DEBUG_PREFIXES } from '../common/Debug.js';
-import { fromEmitterEvent, debugCatchError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
+import { fromEmitterEvent } from '../common/util.js';
 import { guarded } from '../util/decorators.js';
 import { asyncDisposeSymbol } from '../util/disposable.js';
 const CRF_VALUE = 30;
@@ -106,13 +106,13 @@ let ScreenRecorder = (() => {
         #controller = new AbortController();
         #lastFrame;
         #fps;
-        #debugFfmpeg;
+        #logger;
         /**
          * @internal
          */
-        constructor(page, width, height, { ffmpegPath, speed, scale, crop, format, fps, loop, delay, quality, colors, path, overwrite, } = {}, logger = debug) {
+        constructor(page, width, height, { ffmpegPath, speed, scale, crop, format, fps, loop, delay, quality, colors, path, overwrite, } = {}, logger) {
             super({ allowHalfOpen: false });
-            this.#debugFfmpeg = logger(DEBUG_PREFIXES.ffmpeg);
+            this.#logger = logger;
             ffmpegPath ??= 'ffmpeg';
             format ??= 'webm';
             fps ??= DEFAULT_FPS;
@@ -192,12 +192,14 @@ let ScreenRecorder = (() => {
             ].flat(), { stdio: ['pipe', 'pipe', 'pipe'] });
             this.#process.stdout.pipe(this);
             this.#process.stderr.on('data', (data) => {
-                this.#debugFfmpeg?.(data.toString('utf8'));
+                this.#logger?.(DEBUG_PREFIXES.ffmpeg)?.(data.toString('utf8'));
             });
             this.#page = page;
             const { client } = this.#page.mainFrame();
             client.once(CDPSessionEvent.Disconnected, () => {
-                void this.stop().catch(debugCatchError);
+                void this.stop().catch(err => {
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+                });
             });
             // Anchor for the constant-fps grid; set to the first frame's timestamp.
             let startTimestamp;
@@ -284,7 +286,9 @@ let ScreenRecorder = (() => {
                 return;
             }
             // Stopping the screencast will flush the frames.
-            await this.#page._stopScreencast().catch(debugCatchError);
+            await this.#page._stopScreencast().catch(err => {
+                this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+            });
             this.#controller.abort();
             // Repeat the last frame for the remaining frames.
             const [buffer, timestamp] = await this.#lastFrame;

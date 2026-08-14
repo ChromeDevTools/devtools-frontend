@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Browser as browsers_SupportedBrowser, resolveBuildId, detectBrowserPlatform, getInstalledBrowsers, uninstall, } from '@puppeteer/browsers';
+import { debug } from '../common/Debug.js';
 import { Puppeteer } from '../common/Puppeteer.js';
 import { PUPPETEER_REVISIONS } from '../revisions.js';
 import { ChromeLauncher } from './ChromeLauncher.js';
@@ -72,6 +73,7 @@ export class PuppeteerNode extends Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
+        options.logger ??= debug;
         return super.connect(options);
     }
     /**
@@ -111,39 +113,37 @@ export class PuppeteerNode extends Puppeteer {
      * @param options - Options to configure launching behavior.
      */
     async launch(options = {}) {
+        options.logger ??= debug;
         const { browser = await this.defaultBrowser() } = options;
         this.#lastLaunchedBrowser = browser;
         if (!['chrome', 'firefox'].includes(browser)) {
             throw new Error(`Unknown product: ${browser}`);
         }
-        this.#launcher = this.#getLauncher(browser);
+        this.#launcher = this.#getLauncher(browser, options.logger);
         return await this.#launcher.launch(options);
     }
-    /**
-     * @internal
-     */
-    #getLauncher(browser) {
+    #getLauncher(browser, logger) {
         if (this.#launcher && this.#launcher.browser === browser) {
             return this.#launcher;
         }
         switch (browser) {
             case 'chrome':
-                return new ChromeLauncher(this);
+                return new ChromeLauncher(this, logger);
             case 'firefox':
-                return new FirefoxLauncher(this);
+                return new FirefoxLauncher(this, logger);
             default:
                 throw new Error(`Unknown product: ${browser}`);
         }
     }
     async executablePath(optsOrChannel) {
         if (optsOrChannel === undefined) {
-            return await this.#getLauncher(await this.lastLaunchedBrowser()).executablePath(undefined, /* validatePath= */ false);
+            return await this.#getLauncher(await this.lastLaunchedBrowser(), debug).executablePath(undefined, /* validatePath= */ false);
         }
         if (typeof optsOrChannel === 'string') {
-            return await this.#getLauncher('chrome').executablePath(optsOrChannel, 
+            return await this.#getLauncher('chrome', debug).executablePath(optsOrChannel, 
             /* validatePath= */ false);
         }
-        return await this.#getLauncher(optsOrChannel.browser ?? (await this.lastLaunchedBrowser())).resolveExecutablePath(optsOrChannel.headless, /* validatePath= */ false);
+        return await this.#getLauncher(optsOrChannel.browser ?? (await this.lastLaunchedBrowser()), optsOrChannel.logger ?? debug).resolveExecutablePath(optsOrChannel.headless, /* validatePath= */ false);
     }
     /**
      * @internal
@@ -184,7 +184,7 @@ export class PuppeteerNode extends Puppeteer {
      * @returns The default arguments that the browser will be launched with.
      */
     async defaultArgs(options = {}) {
-        return this.#getLauncher(options.browser ?? (await this.lastLaunchedBrowser())).defaultArgs(options);
+        return this.#getLauncher(options.browser ?? (await this.lastLaunchedBrowser()), options.logger ?? debug).defaultArgs(options);
     }
     /**
      * Removes all non-current Firefox and Chrome binaries in the cache directory

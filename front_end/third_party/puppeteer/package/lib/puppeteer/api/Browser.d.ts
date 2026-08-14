@@ -8,6 +8,7 @@ import type { ChildProcess } from 'node:child_process';
 import type { Protocol } from 'devtools-protocol';
 import type { ProtocolType } from '../common/ConnectOptions.js';
 import type { Cookie, CookieData, DeleteCookiesRequest } from '../common/Cookie.js';
+import { type Logger } from '../common/Debug.js';
 import type { DownloadBehavior } from '../common/DownloadBehavior.js';
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
@@ -383,10 +384,15 @@ export interface PWAState {
  * @public
  */
 export declare abstract class Browser extends EventEmitter<BrowserEvents> {
+    #private;
     /**
      * @internal
      */
-    constructor();
+    constructor(logger: Logger);
+    /**
+     * @internal
+     */
+    protected get logger(): Logger;
     /**
      * Gets the associated
      * {@link https://nodejs.org/api/child_process.html#class-childprocess | ChildProcess}.

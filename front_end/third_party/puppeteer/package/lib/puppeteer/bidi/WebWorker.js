@@ -10,16 +10,16 @@ import { BidiWorkerRealm } from './Realm.js';
  * @internal
  */
 export class BidiWebWorker extends WebWorker {
-    static from(frame, realm) {
-        const worker = new BidiWebWorker(frame, realm);
+    static from(frame, realm, logger) {
+        const worker = new BidiWebWorker(frame, realm, logger);
         return worker;
     }
     #frame;
     #realm;
-    constructor(frame, realm) {
+    constructor(frame, realm, logger) {
         super(realm.origin);
         this.#frame = frame;
-        this.#realm = BidiWorkerRealm.from(realm, this);
+        this.#realm = BidiWorkerRealm.from(realm, this, logger);
     }
     get frame() {
         return this.#frame;

@@ -5,6 +5,7 @@
  */
 import type { Protocol } from 'devtools-protocol';
 import type { Frame } from '../api/Frame.js';
+import type { Logger } from '../common/Debug.js';
 import type { AwaitableIterable, ElementFor, EvaluateFuncWith, HandleFor, HandleOr, NodeFor } from '../common/types.js';
 import type { KeyInput } from '../common/USKeyboardLayout.js';
 import { _isElementHandle } from './ElementHandleSymbol.js';
@@ -146,7 +147,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
     /**
      * @internal
      */
-    constructor(handle: JSHandle<ElementType>);
+    constructor(handle: JSHandle<ElementType>, logger: Logger);
     /**
      * @internal
      */

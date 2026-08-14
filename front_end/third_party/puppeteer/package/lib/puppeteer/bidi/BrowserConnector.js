@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Connection } from '../cdp/Connection.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { ProtocolError, UnsupportedOperation } from '../common/Errors.js';
-import { DEFAULT_VIEWPORT, debugCatchError } from '../common/util.js';
+import { DEFAULT_VIEWPORT } from '../common/util.js';
 import { createIncrementalIdGenerator } from '../util/incremental-id-generator.js';
 /**
  * Users should never call this directly; it's called when calling `puppeteer.connect`
@@ -15,9 +16,9 @@ import { createIncrementalIdGenerator } from '../util/incremental-id-generator.j
  *
  * @internal
  */
-export async function _connectToBiDiBrowser(connectionTransport, url, options) {
+export async function _connectToBiDiBrowser(connectionTransport, url, options, logger) {
     const { acceptInsecureCerts = false, networkEnabled = true, issuesEnabled = true, defaultViewport = DEFAULT_VIEWPORT, } = options;
-    const { bidiConnection, cdpConnection, closeCallback } = await getBiDiConnection(connectionTransport, url, options);
+    const { bidiConnection, cdpConnection, closeCallback } = await getBiDiConnection(connectionTransport, url, options, logger);
     const BiDi = await import(/* webpackIgnore: true */ './bidi.js');
     const bidiBrowser = await BiDi.BidiBrowser.create({
         connection: bidiConnection,
@@ -29,6 +30,7 @@ export async function _connectToBiDiBrowser(connectionTransport, url, options) {
         networkEnabled,
         issuesEnabled,
         capabilities: options.capabilities,
+        logger,
     });
     return bidiBrowser;
 }
@@ -39,11 +41,11 @@ export async function _connectToBiDiBrowser(connectionTransport, url, options) {
  * The method tries to connect to the browser using pure BiDi protocol, and falls back
  * to BiDi over CDP.
  */
-async function getBiDiConnection(connectionTransport, url, options) {
+async function getBiDiConnection(connectionTransport, url, options, logger) {
     const BiDi = await import(/* webpackIgnore: true */ './bidi.js');
     const { slowMo = 0, protocolTimeout, idGenerator = createIncrementalIdGenerator(), } = options;
     // Try pure BiDi first.
-    const pureBidiConnection = new BiDi.BidiConnection(url, connectionTransport, idGenerator, slowMo, protocolTimeout);
+    const pureBidiConnection = new BiDi.BidiConnection(url, connectionTransport, idGenerator, slowMo, protocolTimeout, options.logger ?? logger);
     try {
         const result = await pureBidiConnection.send('session.status', {});
         if ('type' in result && result.type === 'success') {
@@ -51,9 +53,9 @@ async function getBiDiConnection(connectionTransport, url, options) {
             return {
                 bidiConnection: pureBidiConnection,
                 closeCallback: async () => {
-                    await pureBidiConnection
-                        .send('browser.close', {})
-                        .catch(debugCatchError);
+                    await pureBidiConnection.send('browser.close', {}).catch(error => {
+                        logger?.(DEBUG_PREFIXES.error)?.(error);
+                    });
                 },
             };
         }
@@ -68,18 +70,20 @@ async function getBiDiConnection(connectionTransport, url, options) {
     pureBidiConnection.unbind();
     // Fall back to CDP over BiDi reusing the WS connection.
     const cdpConnection = new Connection(url, connectionTransport, slowMo, protocolTimeout, 
-    /* rawErrors= */ true, idGenerator);
+    /* rawErrors= */ true, idGenerator, options.logger ?? logger);
     const version = await cdpConnection.send('Browser.getVersion');
     if (version.product.toLowerCase().includes('firefox')) {
         throw new UnsupportedOperation('Firefox is not supported in BiDi over CDP mode.');
     }
-    const bidiOverCdpConnection = await BiDi.connectBidiOverCdp(cdpConnection);
+    const bidiOverCdpConnection = await BiDi.connectBidiOverCdp(cdpConnection, logger);
     return {
         cdpConnection,
         bidiConnection: bidiOverCdpConnection,
         closeCallback: async () => {
             // In case of BiDi over CDP, we need to close browser via CDP.
-            await cdpConnection.send('Browser.close').catch(debugCatchError);
+            await cdpConnection.send('Browser.close').catch(error => {
+                logger?.(DEBUG_PREFIXES.error)?.(error);
+            });
         },
     };
 }

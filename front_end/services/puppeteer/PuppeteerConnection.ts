@@ -33,7 +33,15 @@ export class PuppeteerConnectionAdapter extends puppeteer.Connection implements
     // url is an empty string in this case parallel to:
     // https://github.com/puppeteer/puppeteer/blob/f63a123ecef86693e6457b07437a96f108f3e3c5/src/common/BrowserConnector.ts#L72
     // Pass a 'null' transport, it should never actually be used, otherwise we do something wrong overwriting connection.
-    super('', {close: () => undefined} as puppeteer.ConnectionTransport);
+    super(
+        '' /* url */,
+        {close: () => undefined} as puppeteer.ConnectionTransport,
+        undefined /* delay */,
+        undefined /* timeout */,
+        undefined /* rawErrors */,
+        undefined /* idGenerator */,
+        () => undefined /* logger */,
+    );
     this.#connection = connection;
     this.#connection.observe(this);
     this.#sessionId = sessionId;
@@ -105,8 +113,16 @@ export class PuppeteerConnectionHelper {
         undefined /* process */,
         undefined /* closeCallback */,
         undefined /* targetFilterCallback */,
-        target => isPageTargetCallback((target as puppeteer.Target)._getTargetInfo() as Protocol.Target.TargetInfo),
+        target => isPageTargetCallback(
+            (target as puppeteer.Target)._getTargetInfo() as Protocol.Target.TargetInfo,
+            ),
         false /* waitForInitiallyDiscoveredTargets */,
+        undefined /* networkEnabled */,
+        undefined /* issuesEnabled */,
+        undefined /* handleDevToolsAsPage */,
+        undefined /* blocklist */,
+        undefined /* allowlist */,
+        () => undefined /* logger */,
     );
 
     const [, browser] = await Promise.all([

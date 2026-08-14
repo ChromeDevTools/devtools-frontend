@@ -9,6 +9,7 @@ import type { ElementHandle } from '../api/ElementHandle.js';
 import type { Extension } from '../api/Extension.js';
 import type { JSHandle } from '../api/JSHandle.js';
 import { Realm } from '../api/Realm.js';
+import type { Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { EvaluateFunc, HandleFor } from '../common/types.js';
@@ -48,7 +49,7 @@ export type IsolatedWorldEmitter = EventEmitter<{
  */
 export declare class IsolatedWorld extends Realm {
     #private;
-    constructor(frameOrWorker: CdpFrame | CdpWebWorker, timeoutSettings: TimeoutSettings, worldId: string | symbol);
+    constructor(frameOrWorker: CdpFrame | CdpWebWorker, timeoutSettings: TimeoutSettings, worldId: string | symbol, logger: Logger);
     get environment(): CdpFrame | CdpWebWorker;
     get client(): CDPSession;
     get emitter(): IsolatedWorldEmitter;

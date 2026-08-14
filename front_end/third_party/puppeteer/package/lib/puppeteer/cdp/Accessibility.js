@@ -55,7 +55,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { debugError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 /**
  * The Accessibility class provides methods for inspecting the browser's
  * accessibility tree. The accessibility tree is used by assistive technology
@@ -81,12 +81,14 @@ import { debugError } from '../common/util.js';
 export class Accessibility {
     #realm;
     #frameId;
+    #logger;
     /**
      * @internal
      */
-    constructor(realm, frameId = '') {
+    constructor(realm, frameId = '', logger) {
         this.#realm = realm;
         this.#frameId = frameId;
+        this.#logger = logger;
     }
     /**
      * Captures the current state of the accessibility tree.
@@ -161,7 +163,7 @@ export class Accessibility {
                     }
                     catch (error) {
                         // Frames can get detached at any time resulting in errors.
-                        debugError?.(error);
+                        this.#logger?.(DEBUG_PREFIXES.error)?.(error);
                     }
                 }
                 catch (e_1) {

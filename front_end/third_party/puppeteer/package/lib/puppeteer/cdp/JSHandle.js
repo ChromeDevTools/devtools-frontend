@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { JSHandle } from '../api/JSHandle.js';
-import { debugError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { valueFromPrimitiveRemoteObject } from './utils.js';
 /**
  * @internal
@@ -13,10 +13,12 @@ export class CdpJSHandle extends JSHandle {
     #disposed = false;
     #remoteObject;
     #world;
-    constructor(world, remoteObject) {
-        super();
+    #logger;
+    constructor(world, remoteObject, logger) {
+        super(logger);
         this.#world = world;
         this.#remoteObject = remoteObject;
+        this.#logger = logger;
     }
     get disposed() {
         return this.#disposed;
@@ -51,7 +53,7 @@ export class CdpJSHandle extends JSHandle {
             return;
         }
         this.#disposed = true;
-        await releaseObject(this.client, this.#remoteObject);
+        await releaseObject(this.client, this.#remoteObject, this.#logger);
     }
     toString() {
         if (!this.#remoteObject.objectId) {
@@ -86,7 +88,7 @@ export class CdpJSHandle extends JSHandle {
 /**
  * @internal
  */
-export async function releaseObject(client, remoteObject) {
+export async function releaseObject(client, remoteObject, logger) {
     if (!remoteObject.objectId) {
         return;
     }
@@ -95,7 +97,7 @@ export async function releaseObject(client, remoteObject) {
         .catch(error => {
         // Exceptions might happen in case of a page been navigated or closed.
         // Swallow these since they are harmless and we don't leak anything in this case.
-        debugError?.(error);
+        logger?.(DEBUG_PREFIXES.error)?.(error);
     });
 }
 //# sourceMappingURL=JSHandle.js.map

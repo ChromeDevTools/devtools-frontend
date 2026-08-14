@@ -8,6 +8,7 @@ import type * as Bidi from 'webdriver-bidi-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { ContinueRequestOverrides, InterceptResolutionState, ResponseForRequest } from '../api/HTTPRequest.js';
 import { HTTPRequest, type ResourceType } from '../api/HTTPRequest.js';
+import type { Logger } from '../common/Debug.js';
 import type { Request } from './core/Request.js';
 import type { BidiFrame } from './Frame.js';
 import { BidiHTTPResponse } from './HTTPResponse.js';
@@ -17,7 +18,7 @@ export declare const requests: WeakMap<Request, BidiHTTPRequest>;
  */
 export declare class BidiHTTPRequest extends HTTPRequest {
     #private;
-    static from(bidiRequest: Request, frame: BidiFrame, isNetworkInterceptionEnabled: boolean, redirect?: BidiHTTPRequest): BidiHTTPRequest;
+    static from(bidiRequest: Request, frame: BidiFrame, isNetworkInterceptionEnabled: boolean, redirect: BidiHTTPRequest | undefined, logger: Logger): BidiHTTPRequest;
     readonly id: string;
     private constructor();
     get client(): CDPSession;

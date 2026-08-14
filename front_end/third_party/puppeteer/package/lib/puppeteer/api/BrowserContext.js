@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { firstValueFrom, from, merge, raceWith, } from '../../third_party/rxjs/rxjs.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { fromEmitterEvent, filterAsync, timeout, debugCatchError, } from '../common/util.js';
+import { fromEmitterEvent, filterAsync, timeout } from '../common/util.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 import { Mutex } from '../util/Mutex.js';
 /**
@@ -47,11 +48,19 @@ import { Mutex } from '../util/Mutex.js';
  * @public
  */
 export class BrowserContext extends EventEmitter {
+    #logger;
     /**
      * @internal
      */
-    constructor() {
-        super();
+    constructor(logger) {
+        super(undefined, logger);
+        this.#logger = logger;
+    }
+    /**
+     * @internal
+     */
+    get logger() {
+        return this.#logger;
     }
     /**
      * If defined, indicates an ongoing screenshot operation.
@@ -171,7 +180,9 @@ export class BrowserContext extends EventEmitter {
         return undefined;
     }
     [disposeSymbol]() {
-        return void this[asyncDisposeSymbol]().catch(debugCatchError);
+        return void this[asyncDisposeSymbol]().catch(error => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+        });
     }
     async [asyncDisposeSymbol]() {
         await this.close();

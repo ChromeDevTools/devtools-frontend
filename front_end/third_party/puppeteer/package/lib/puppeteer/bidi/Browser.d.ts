@@ -11,6 +11,7 @@ import type { Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
 import type { Connection as CdpConnection } from '../cdp/Connection.js';
 import type { SupportedWebDriverCapabilities } from '../common/ConnectOptions.js';
+import { type Logger } from '../common/Debug.js';
 import type { Viewport } from '../common/Viewport.js';
 import { BidiBrowserContext } from './BrowserContext.js';
 import type { BidiConnection, CdpEvent } from './Connection.js';
@@ -28,6 +29,7 @@ export interface BidiBrowserOptions {
     capabilities?: SupportedWebDriverCapabilities;
     networkEnabled: boolean;
     issuesEnabled: boolean;
+    logger: Logger;
 }
 /**
  * @internal

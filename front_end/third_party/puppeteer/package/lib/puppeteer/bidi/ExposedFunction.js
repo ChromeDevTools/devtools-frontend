@@ -55,8 +55,8 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError, debugCatchError } from '../common/util.js';
 import { DisposableStack } from '../util/disposable.js';
 import { interpolateFunction, stringifyFunction } from '../util/Function.js';
 import { BidiElementHandle } from './ElementHandle.js';
@@ -65,8 +65,8 @@ import { BidiJSHandle } from './JSHandle.js';
  * @internal
  */
 export class ExposableFunction {
-    static async from(frame, name, apply, isolate = false) {
-        const func = new ExposableFunction(frame, name, apply, isolate);
+    static async from(frame, name, apply, isolate = false, logger) {
+        const func = new ExposableFunction(frame, name, apply, isolate, logger);
         await func.#initialize();
         return func;
     }
@@ -74,14 +74,16 @@ export class ExposableFunction {
     name;
     #apply;
     #isolate;
+    #logger;
     #channel;
     #scripts = [];
     #disposables = new DisposableStack();
-    constructor(frame, name, apply, isolate = false) {
+    constructor(frame, name, apply, isolate = false, logger) {
         this.#frame = frame;
         this.name = name;
         this.#apply = apply;
         this.#isolate = isolate;
+        this.#logger = logger;
         this.#channel = `__puppeteer__${this.#frame._id}_page_exposeFunction_${this.name}`;
     }
     async #initialize() {
@@ -93,7 +95,7 @@ export class ExposableFunction {
                 ownership: "root" /* Bidi.Script.ResultOwnership.Root */,
             },
         };
-        const connectionEmitter = this.#disposables.use(new EventEmitter(connection));
+        const connectionEmitter = this.#disposables.use(new EventEmitter(connection, this.#logger));
         connectionEmitter.on('script.message', this.#handleMessage);
         const functionDeclaration = stringifyFunction(interpolateFunction((callback) => {
             Object.assign(globalThis, {
@@ -125,7 +127,7 @@ export class ExposableFunction {
             catch (error) {
                 // If it errors, the frame probably doesn't support call function. We
                 // fail gracefully.
-                debugError?.(error);
+                this.#logger?.(DEBUG_PREFIXES.error)?.(error);
             }
         }));
     }
@@ -193,7 +195,7 @@ export class ExposableFunction {
                     }
                 }
                 catch (error) {
-                    debugError?.(error);
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
                 }
                 return;
             }
@@ -203,7 +205,7 @@ export class ExposableFunction {
                 }, result);
             }
             catch (error) {
-                debugError?.(error);
+                this.#logger?.(DEBUG_PREFIXES.error)?.(error);
             }
         }
         catch (e_2) {
@@ -233,7 +235,9 @@ export class ExposableFunction {
         return;
     }
     [Symbol.dispose]() {
-        void this[Symbol.asyncDispose]().catch(debugCatchError);
+        void this[Symbol.asyncDispose]().catch(error => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+        });
     }
     async [Symbol.asyncDispose]() {
         this.#disposables.dispose();
@@ -253,7 +257,7 @@ export class ExposableFunction {
                 ]);
             }
             catch (error) {
-                debugError?.(error);
+                this.#logger?.(DEBUG_PREFIXES.error)?.(error);
             }
         }));
     }

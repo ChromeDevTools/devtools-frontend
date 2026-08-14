@@ -5,7 +5,8 @@
  */
 import { isNode, environment } from '../environment.js';
 /**
- * @internal
+ * @public
+ * @experimental
  */
 export const DEBUG_PREFIXES = {
     cdpSend: 'puppeteer:protocol:SEND ►',

@@ -6,19 +6,9 @@
 import type { OperatorFunction } from '../../third_party/rxjs/rxjs.js';
 import { Observable } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
+import { type Logger } from './Debug.js';
 import type { EventEmitter, EventType } from './EventEmitter.js';
 import type { ParsedPDFOptions, PDFOptions } from './PDFOptions.js';
-/**
- * @internal
- */
-export declare const debugError: import("./Debug.js").LoggerFunction | undefined;
-/**
- * @internal
- *
- * Use this instead of debugError so the catch functions
- * don't re-throw the error.
- */
-export declare const debugCatchError: import("./Debug.js").LoggerFunction;
 /**
  * @internal
  */
@@ -74,7 +64,7 @@ export declare function evaluationString(fun: Function | string, ...args: unknow
 /**
  * @internal
  */
-export declare function getReadableAsTypedArray(readable: ReadableStream<Uint8Array>, path?: string): Promise<Uint8Array | null>;
+export declare function getReadableAsTypedArray(readable: ReadableStream<Uint8Array>, path: string | undefined, logger: Logger): Promise<Uint8Array | null>;
 /**
  * @internal
  */

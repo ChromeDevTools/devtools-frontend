@@ -5,6 +5,7 @@
  */
 import type { ConnectionTransport } from '../common/ConnectionTransport.js';
 import type { ConnectOptions } from '../common/ConnectOptions.js';
+import { type Logger } from '../common/Debug.js';
 import type { BidiBrowser } from './Browser.js';
 /**
  * Users should never call this directly; it's called when calling `puppeteer.connect`
@@ -14,5 +15,5 @@ import type { BidiBrowser } from './Browser.js';
  *
  * @internal
  */
-export declare function _connectToBiDiBrowser(connectionTransport: ConnectionTransport, url: string, options: ConnectOptions): Promise<BidiBrowser>;
+export declare function _connectToBiDiBrowser(connectionTransport: ConnectionTransport, url: string, options: ConnectOptions, logger: Logger): Promise<BidiBrowser>;
 //# sourceMappingURL=BrowserConnector.d.ts.map

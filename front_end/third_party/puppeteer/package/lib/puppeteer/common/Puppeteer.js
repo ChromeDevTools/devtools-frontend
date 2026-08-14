@@ -5,6 +5,7 @@
  */
 import { _connectToBrowser } from './BrowserConnector.js';
 import { customQueryHandlers, } from './CustomQueryHandler.js';
+import { debug } from './Debug.js';
 /**
  * The main Puppeteer class.
  *
@@ -92,7 +93,11 @@ export class Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
-        return _connectToBrowser(options);
+        const withLogger = {
+            logger: debug,
+            ...options,
+        };
+        return _connectToBrowser(withLogger);
     }
 }
 //# sourceMappingURL=Puppeteer.js.map

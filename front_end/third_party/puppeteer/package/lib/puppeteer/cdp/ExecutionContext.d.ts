@@ -6,10 +6,12 @@
 import type { Protocol } from 'devtools-protocol';
 import { type CDPSession } from '../api/CDPSession.js';
 import type { JSHandle } from '../api/JSHandle.js';
+import { type Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { EvaluateFunc, HandleFor } from '../common/types.js';
 import type { PuppeteerInjectedUtil } from '../injected/injected.js';
 import { disposeSymbol } from '../util/disposable.js';
+import { Binding } from './Binding.js';
 import type { IsolatedWorld } from './IsolatedWorld.js';
 /**
  * @internal
@@ -22,8 +24,13 @@ export declare class ExecutionContext extends EventEmitter<{
     bindingcalled: Protocol.Runtime.BindingCalledEvent;
 }> implements Disposable {
     #private;
-    constructor(client: CDPSession, contextPayload: Protocol.Runtime.ExecutionContextDescription, world: IsolatedWorld);
+    static getOrCreateAriaQuerySelectorBinding(logger: Logger): Binding;
+    static getOrCreateAriaQuerySelectorAllBinding(logger: Logger): Binding;
+    constructor(client: CDPSession, contextPayload: Protocol.Runtime.ExecutionContextDescription, world: IsolatedWorld, logger: Logger);
     get id(): number;
+    /**
+     * @internal
+     */
     get puppeteerUtil(): Promise<JSHandle<PuppeteerInjectedUtil>>;
     /**
      * Evaluates the given function.

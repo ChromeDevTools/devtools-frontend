@@ -5,7 +5,7 @@
  */
 import { CDPSessionEvent, } from '../api/CDPSession.js';
 import { CallbackRegistry } from '../common/CallbackRegistry.js';
-import { debug, DEBUG_PREFIXES } from '../common/Debug.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { ConnectionClosedError, TargetCloseError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { createProtocolErrorMessage } from '../util/ErrorLike.js';
@@ -28,17 +28,19 @@ export class Connection extends EventEmitter {
     #idGenerator;
     #debugProtocolSend;
     #debugProtocolReceive;
+    #logger;
     /**
      * @internal
      */
-    constructor(url, transport, delay = 0, timeout, rawErrors = false, idGenerator = createIncrementalIdGenerator(), logger = debug) {
+    constructor(url, transport, delay = 0, timeout = undefined, rawErrors = false, idGenerator = createIncrementalIdGenerator(), logger) {
         super();
+        this.#logger = logger;
         this.#rawErrors = rawErrors;
         this.#idGenerator = idGenerator;
-        this.#callbacks = new CallbackRegistry(idGenerator);
+        this.#callbacks = new CallbackRegistry(idGenerator, logger);
         this.#url = url;
-        this.#debugProtocolSend = logger(DEBUG_PREFIXES.cdpSend);
-        this.#debugProtocolReceive = logger(DEBUG_PREFIXES.cdpReceive);
+        this.#debugProtocolSend = logger?.(DEBUG_PREFIXES.cdpSend);
+        this.#debugProtocolReceive = logger?.(DEBUG_PREFIXES.cdpReceive);
         this.#delay = delay;
         this.#timeout = timeout ?? 180_000;
         this.#transport = transport;
@@ -150,7 +152,7 @@ export class Connection extends EventEmitter {
         const object = JSON.parse(message);
         if (object.method === 'Target.attachedToTarget') {
             const sessionId = object.params.sessionId;
-            const session = new CdpCDPSession(this, object.params.targetInfo.type, sessionId, object.sessionId, this.#rawErrors);
+            const session = new CdpCDPSession(this, object.params.targetInfo.type, sessionId, object.sessionId, this.#rawErrors, this.#logger);
             this.#sessions.set(sessionId, session);
             this.emit(CDPSessionEvent.SessionAttached, session);
             const parentSession = this.#sessions.get(object.sessionId);

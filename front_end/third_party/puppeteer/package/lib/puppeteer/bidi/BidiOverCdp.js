@@ -4,16 +4,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { BidiMapper } from 'chromium-bidi';
-import { debug } from '../common/Debug.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { BidiConnection } from './Connection.js';
 /**
  * @internal
  */
-export async function connectBidiOverCdp(cdp, logger = debug) {
-    const bidiServerLogger = (prefix) => {
-        return logger(`bidi:${prefix}`);
-    };
+export async function connectBidiOverCdp(cdp, logger) {
+    const bidiServerLogger = logger
+        ? (prefix) => {
+            return logger(`bidi:${prefix}`);
+        }
+        : undefined;
     const transportBiDi = new NoOpTransport();
     const cdpConnectionAdapter = new CdpConnectionAdapter(cdp);
     const pptrTransport = {

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type Protocol from 'devtools-protocol';
+import { type Logger } from '../common/Debug.js';
 import type { EvaluateFuncWith, HandleFor, HandleOr } from '../common/types.js';
 import { disposeSymbol, asyncDisposeSymbol } from '../util/disposable.js';
 import type { ElementHandle } from './ElementHandle.js';
@@ -30,6 +31,7 @@ import type { Realm } from './Realm.js';
  * @public
  */
 export declare abstract class JSHandle<T = unknown> {
+    #private;
     move: () => this;
     /**
      * Used for nominally typing {@link JSHandle}.
@@ -38,7 +40,11 @@ export declare abstract class JSHandle<T = unknown> {
     /**
      * @internal
      */
-    constructor();
+    constructor(logger: Logger);
+    /**
+     * @internal
+     */
+    protected get logger(): Logger;
     /**
      * @internal
      */

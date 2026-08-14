@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { CDPSessionEvent } from '../api/CDPSession.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { NetworkManagerEvent, } from '../common/NetworkManagerEvents.js';
-import { debugError, isString, debugCatchError } from '../common/util.js';
+import { isString } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { DisposableStack } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
@@ -46,10 +47,12 @@ export class NetworkManager extends EventEmitter {
     ];
     #clients = new Map();
     #networkEnabled;
-    constructor(frameManager, networkEnabled) {
-        super();
+    #logger;
+    constructor(frameManager, networkEnabled = true, logger) {
+        super(undefined, logger);
         this.#frameManager = frameManager;
         this.#networkEnabled = networkEnabled ?? true;
+        this.#logger = logger;
     }
     #canIgnoreError(error) {
         return (isErrorLike(error) &&
@@ -326,7 +329,9 @@ export class NetworkManager extends EventEmitter {
             requestId: event.requestId,
             authChallengeResponse: { response, username, password },
         })
-            .catch(debugCatchError);
+            .catch(err => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+        });
     }
     /**
      * CDP may send a Fetch.requestPaused without or before a
@@ -342,7 +347,9 @@ export class NetworkManager extends EventEmitter {
                 .send('Fetch.continueRequest', {
                 requestId: event.requestId,
             })
-                .catch(debugCatchError);
+                .catch(err => {
+                this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+            });
         }
         const { networkId: networkRequestId, requestId: fetchRequestId } = event;
         if (!networkRequestId) {
@@ -381,7 +388,7 @@ export class NetworkManager extends EventEmitter {
         const frame = event.frameId
             ? this.#frameManager.frame(event.frameId)
             : null;
-        const request = new CdpHTTPRequest(client, frame, event.requestId, this.#userRequestInterceptionEnabled, event, []);
+        const request = new CdpHTTPRequest(client, frame, event.requestId, this.#userRequestInterceptionEnabled, event, [], this.#logger);
         this.emit(NetworkManagerEvent.Request, request);
         void request.finalizeInterceptions();
     }
@@ -425,7 +432,7 @@ export class NetworkManager extends EventEmitter {
         const frame = event.frameId
             ? this.#frameManager.frame(event.frameId)
             : null;
-        const request = new CdpHTTPRequest(client, frame, fetchRequestId, this.#userRequestInterceptionEnabled, event, redirectChain);
+        const request = new CdpHTTPRequest(client, frame, fetchRequestId, this.#userRequestInterceptionEnabled, event, redirectChain, this.#logger);
         const extraInfo = this.#networkEventManager
             .requestExtraInfo(event.requestId)
             .shift();
@@ -460,7 +467,7 @@ export class NetworkManager extends EventEmitter {
             request = this.#networkEventManager.getRequest(event.requestId);
         }
         if (!request) {
-            debugError?.(new Error(`Request ${event.requestId} was served from cache but we could not find the corresponding request object`));
+            this.#logger?.(DEBUG_PREFIXES.error)?.(new Error(`Request ${event.requestId} was served from cache but we could not find the corresponding request object`));
             return;
         }
         this.emit(NetworkManagerEvent.RequestServedFromCache, request);
@@ -482,7 +489,7 @@ export class NetworkManager extends EventEmitter {
         }
         const extraInfos = this.#networkEventManager.responseExtraInfo(responseReceived.requestId);
         if (extraInfos.length) {
-            debugError?.(new Error('Unexpected extraInfo events for request ' +
+            this.#logger?.(DEBUG_PREFIXES.error)?.(new Error('Unexpected extraInfo events for request ' +
                 responseReceived.requestId));
         }
         // Chromium sends wrong extraInfo events for responses served from cache.

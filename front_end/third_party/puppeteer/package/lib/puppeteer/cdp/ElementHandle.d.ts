@@ -6,6 +6,7 @@
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import { ElementHandle, type AutofillData } from '../api/ElementHandle.js';
+import { type Logger } from '../common/Debug.js';
 import type { AwaitableIterable } from '../common/types.js';
 import type { CdpFrame } from './Frame.js';
 import type { IsolatedWorld } from './IsolatedWorld.js';
@@ -20,7 +21,7 @@ import { CdpJSHandle } from './JSHandle.js';
 export declare class CdpElementHandle<ElementType extends Node = Element> extends ElementHandle<ElementType> {
     #private;
     protected readonly handle: CdpJSHandle<ElementType>;
-    constructor(world: IsolatedWorld, remoteObject: Protocol.Runtime.RemoteObject);
+    constructor(world: IsolatedWorld, remoteObject: Protocol.Runtime.RemoteObject, logger: Logger);
     get realm(): IsolatedWorld;
     get client(): CDPSession;
     remoteObject(): Protocol.Runtime.RemoteObject;

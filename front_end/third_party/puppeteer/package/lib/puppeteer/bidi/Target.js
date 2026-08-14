@@ -11,8 +11,8 @@ import { BidiPage } from './Page.js';
  */
 export class BidiBrowserTarget extends Target {
     #browser;
-    constructor(browser) {
-        super();
+    constructor(browser, logger) {
+        super(logger);
         this.#browser = browser;
     }
     asPage() {
@@ -42,8 +42,8 @@ export class BidiBrowserTarget extends Target {
  */
 export class BidiPageTarget extends Target {
     #page;
-    constructor(page) {
-        super();
+    constructor(page, logger) {
+        super(logger);
         this.#page = page;
     }
     async page() {
@@ -77,13 +77,13 @@ export class BidiPageTarget extends Target {
 export class BidiFrameTarget extends Target {
     #frame;
     #page;
-    constructor(frame) {
-        super();
+    constructor(frame, logger) {
+        super(logger);
         this.#frame = frame;
     }
     async page() {
         if (this.#page === undefined) {
-            this.#page = BidiPage.from(this.browserContext(), this.#frame.browsingContext);
+            this.#page = BidiPage.from(this.browserContext(), this.#frame.browsingContext, this.logger);
         }
         return this.#page;
     }
@@ -114,8 +114,8 @@ export class BidiFrameTarget extends Target {
  */
 export class BidiWorkerTarget extends Target {
     #worker;
-    constructor(worker) {
-        super();
+    constructor(worker, logger) {
+        super(logger);
         this.#worker = worker;
     }
     async page() {

@@ -1,10 +1,11 @@
+import { type Logger } from '../common/Debug.js';
 import type { ExecutionContext } from './ExecutionContext.js';
 /**
  * @internal
  */
 export declare class Binding {
     #private;
-    constructor(name: string, fn: (...args: unknown[]) => unknown, initSource: string);
+    constructor(name: string, fn: (...args: unknown[]) => unknown, initSource: string, logger: Logger);
     get name(): string;
     get initSource(): string;
     /**

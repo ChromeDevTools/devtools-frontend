@@ -5,6 +5,7 @@
  */
 import { type Emitter } from '../../third_party/mitt/mitt.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
+import { type Logger } from './Debug.js';
 /**
  * @public
  */
@@ -49,7 +50,7 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      *
      * @internal
      */
-    constructor(emitter?: Emitter<EventsWithWildcard<Events>> | EventEmitter<Events>);
+    constructor(emitter?: Emitter<EventsWithWildcard<Events>> | EventEmitter<Events>, logger?: Logger);
     /**
      * Bind an event listener to fire when an event occurs.
      * @param type - the event type you'd like to listen to. Can be a string or symbol.

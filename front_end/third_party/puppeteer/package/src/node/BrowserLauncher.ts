@@ -27,9 +27,10 @@ import type {Browser, BrowserCloseCallback} from '../api/Browser.js';
 import {CdpBrowser} from '../cdp/Browser.js';
 import {Connection} from '../cdp/Connection.js';
 import {assertSupportedUrlRestrictions} from '../common/BrowserConnector.js';
+import {DEBUG_PREFIXES, type Logger} from '../common/Debug.js';
 import {TimeoutError} from '../common/Errors.js';
 import type {SupportedBrowser} from '../common/SupportedBrowser.js';
-import {debugError, DEFAULT_VIEWPORT} from '../common/util.js';
+import {DEFAULT_VIEWPORT} from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
 import {
   createIncrementalIdGenerator,
@@ -73,7 +74,11 @@ export function getBrowserTypeDisplayName(
  */
 export abstract class BrowserLauncher {
   #browser: SupportedBrowser;
+  #logger: Logger;
 
+  /**
+   * @internal
+   */
   /**
    * @internal
    */
@@ -82,9 +87,21 @@ export abstract class BrowserLauncher {
   /**
    * @internal
    */
-  constructor(puppeteer: PuppeteerNode, browser: SupportedBrowser) {
+  constructor(
+    puppeteer: PuppeteerNode,
+    browser: SupportedBrowser,
+    logger: Logger,
+  ) {
     this.puppeteer = puppeteer;
     this.#browser = browser;
+    this.#logger = logger;
+  }
+
+  /**
+   * @internal
+   */
+  protected get logger(): Logger {
+    return this.#logger;
   }
 
   get browser(): SupportedBrowser {
@@ -92,6 +109,7 @@ export abstract class BrowserLauncher {
   }
 
   async launch(options: LaunchOptions = {}): Promise<Browser> {
+    options.logger ??= this.#logger;
     const {
       dumpio = false,
       enableExtensions = false,
@@ -172,6 +190,7 @@ export abstract class BrowserLauncher {
       pipe: usePipe,
       onExit: onProcessExit,
       signal: options.signal,
+      logger: options.logger,
     });
 
     let browser: Browser;
@@ -199,6 +218,7 @@ export abstract class BrowserLauncher {
             acceptInsecureCerts,
             networkEnabled,
             idGenerator,
+            logger: options.logger,
           },
         );
       } else {
@@ -208,6 +228,7 @@ export abstract class BrowserLauncher {
             protocolTimeout,
             slowMo,
             idGenerator,
+            logger: options.logger,
           });
         } else {
           cdpConnection = await this.createCdpSocketConnection(browserProcess, {
@@ -215,6 +236,7 @@ export abstract class BrowserLauncher {
             protocolTimeout,
             slowMo,
             idGenerator,
+            logger: options.logger,
           });
         }
 
@@ -228,6 +250,7 @@ export abstract class BrowserLauncher {
               acceptInsecureCerts,
               networkEnabled,
               issuesEnabled,
+              logger: options.logger,
             },
           );
         } else {
@@ -247,6 +270,7 @@ export abstract class BrowserLauncher {
             handleDevToolsAsPage,
             blocklist,
             allowlist,
+            options.logger,
           );
         }
       }
@@ -329,7 +353,7 @@ export abstract class BrowserLauncher {
         await cdpConnection.closeBrowser();
         await browserProcess.hasClosed();
       } catch (error) {
-        debugError?.(error);
+        this.#logger?.(DEBUG_PREFIXES.error)?.(error);
         await browserProcess.close();
       }
     } else {
@@ -377,13 +401,18 @@ export abstract class BrowserLauncher {
       protocolTimeout: number | undefined;
       slowMo: number;
       idGenerator: GetIdFn;
+      logger: Logger;
     },
   ): Promise<Connection> {
     const browserWSEndpoint = await browserProcess.waitForLineOutput(
       CDP_WEBSOCKET_ENDPOINT_REGEX,
       opts.timeout,
     );
-    const transport = await WebSocketTransport.create(browserWSEndpoint);
+    const transport = await WebSocketTransport.create(
+      browserWSEndpoint,
+      undefined,
+      opts.logger,
+    );
     return new Connection(
       browserWSEndpoint,
       transport,
@@ -391,6 +420,7 @@ export abstract class BrowserLauncher {
       opts.protocolTimeout,
       /* rawErrors */ false,
       opts.idGenerator,
+      opts.logger,
     );
   }
 
@@ -404,6 +434,7 @@ export abstract class BrowserLauncher {
       protocolTimeout: number | undefined;
       slowMo: number;
       idGenerator: GetIdFn;
+      logger: Logger;
     },
   ): Promise<Connection> {
     // stdio was assigned during start(), and the 'pipe' option there adds the
@@ -412,6 +443,7 @@ export abstract class BrowserLauncher {
     const transport = new PipeTransport(
       pipeWrite as NodeJS.WritableStream,
       pipeRead as NodeJS.ReadableStream,
+      opts.logger,
     );
     return new Connection(
       '',
@@ -420,6 +452,7 @@ export abstract class BrowserLauncher {
       opts.protocolTimeout,
       /* rawErrors */ false,
       opts.idGenerator,
+      opts.logger,
     );
   }
 
@@ -435,11 +468,15 @@ export abstract class BrowserLauncher {
       acceptInsecureCerts?: boolean;
       networkEnabled: boolean;
       issuesEnabled: boolean;
+      logger: Logger;
     },
   ): Promise<Browser> {
     const bidiOnly = process.env['PUPPETEER_WEBDRIVER_BIDI_ONLY'] === 'true';
     const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
-    const bidiConnection = await BiDi.connectBidiOverCdp(cdpConnection);
+    const bidiConnection = await BiDi.connectBidiOverCdp(
+      cdpConnection,
+      opts.logger,
+    );
     return await BiDi.BidiBrowser.create({
       connection: bidiConnection,
       // Do not provide CDP connection to Browser, if BiDi-only mode is enabled. This
@@ -451,6 +488,7 @@ export abstract class BrowserLauncher {
       acceptInsecureCerts: opts.acceptInsecureCerts,
       networkEnabled: opts.networkEnabled,
       issuesEnabled: opts.issuesEnabled,
+      logger: opts.logger,
     });
   }
 
@@ -469,6 +507,7 @@ export abstract class BrowserLauncher {
       acceptInsecureCerts?: boolean;
       networkEnabled?: boolean;
       issuesEnabled?: boolean;
+      logger: Logger;
     },
   ): Promise<Browser> {
     const browserWSEndpoint =
@@ -476,7 +515,11 @@ export abstract class BrowserLauncher {
         WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX,
         opts.timeout,
       )) + '/session';
-    const transport = await WebSocketTransport.create(browserWSEndpoint);
+    const transport = await WebSocketTransport.create(
+      browserWSEndpoint,
+      undefined,
+      opts.logger,
+    );
     const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
     const bidiConnection = new BiDi.BidiConnection(
       browserWSEndpoint,
@@ -484,6 +527,7 @@ export abstract class BrowserLauncher {
       opts.idGenerator,
       opts.slowMo,
       opts.protocolTimeout,
+      opts.logger,
     );
     return await BiDi.BidiBrowser.create({
       connection: bidiConnection,
@@ -493,6 +537,7 @@ export abstract class BrowserLauncher {
       acceptInsecureCerts: opts.acceptInsecureCerts,
       networkEnabled: opts.networkEnabled ?? true,
       issuesEnabled: opts.issuesEnabled ?? true,
+      logger: opts.logger,
     });
   }
 

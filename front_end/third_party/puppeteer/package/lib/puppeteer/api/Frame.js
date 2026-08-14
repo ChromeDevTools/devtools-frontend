@@ -273,8 +273,13 @@ let Frame = (() => {
         /**
          * @internal
          */
-        constructor() {
-            super();
+        logger;
+        /**
+         * @internal
+         */
+        constructor(logger) {
+            super(undefined, logger);
+            this.logger = logger;
         }
         #_document;
         /**

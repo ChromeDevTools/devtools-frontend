@@ -37,7 +37,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
 import { CDPSessionEvent } from '../api/CDPSession.js';
-import { debugError, debugCatchError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { assert } from '../util/assert.js';
 import { invokeAtMostOnceForArguments } from '../util/decorators.js';
 import { isErrorLike } from '../util/ErrorLike.js';
@@ -118,7 +118,9 @@ let EmulationManager = (() => {
                             client.send('Emulation.setTouchEmulationEnabled', {
                                 enabled: false,
                             }),
-                        ]).catch(debugCatchError);
+                        ]).catch(err => {
+                            return this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+                        });
                         return;
                     }
                     const { viewport } = viewportState;
@@ -141,7 +143,7 @@ let EmulationManager = (() => {
                         })
                             .catch(err => {
                             if (err.message.includes('Target does not support metrics override')) {
-                                debugError?.(err);
+                                this.#logger?.(DEBUG_PREFIXES.error)?.(err);
                                 return;
                             }
                             throw err;
@@ -302,7 +304,9 @@ let EmulationManager = (() => {
             active: false,
         }, this, this.#emulateFocus);
         #secondaryClients = new Set();
-        constructor(client) {
+        #logger;
+        constructor(client, logger) {
+            this.#logger = logger;
             this.#client = client;
         }
         updateClient(client) {
@@ -323,7 +327,9 @@ let EmulationManager = (() => {
             // We don't await here because we want to register all state changes before
             // the target is unpaused.
             void Promise.all(this.#states.map(s => {
-                return s.sync().catch(debugCatchError);
+                return s.sync().catch(err => {
+                    return this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+                });
             }));
         }
         get javascriptEnabled() {

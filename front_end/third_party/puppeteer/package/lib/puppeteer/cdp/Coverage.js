@@ -3,8 +3,9 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError, PuppeteerURL } from '../common/util.js';
+import { PuppeteerURL } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { DisposableStack } from '../util/disposable.js';
 /**
@@ -120,10 +121,12 @@ export class JSCoverage {
     #resetOnNavigation = false;
     #reportAnonymousScripts = false;
     #includeRawScriptCoverage = false;
+    #logger;
     /**
      * @internal
      */
-    constructor(client) {
+    constructor(client, logger) {
+        this.#logger = logger;
         this.#client = client;
     }
     /**
@@ -180,7 +183,7 @@ export class JSCoverage {
         }
         catch (error) {
             // This might happen if the page has already navigated away.
-            debugError?.(error);
+            this.#logger?.(DEBUG_PREFIXES.error)?.(error);
         }
     }
     async stop() {
@@ -229,7 +232,9 @@ export class CSSCoverage {
     #stylesheetSources = new Map();
     #eventListeners;
     #resetOnNavigation = false;
-    constructor(client) {
+    #logger;
+    constructor(client, logger) {
+        this.#logger = logger;
         this.#client = client;
     }
     /**
@@ -277,7 +282,7 @@ export class CSSCoverage {
         }
         catch (error) {
             // This might happen if the page has already navigated away.
-            debugError?.(error);
+            this.#logger?.(DEBUG_PREFIXES.error)?.(error);
         }
     }
     async stop() {

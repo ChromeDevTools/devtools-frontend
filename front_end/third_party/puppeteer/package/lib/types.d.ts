@@ -351,6 +351,7 @@ export declare interface BoxModel {
  * @public
  */
 export declare abstract class Browser extends EventEmitter<BrowserEvents> {
+  #private;
   /**
    * Gets the associated
    * {@link https://nodejs.org/api/child_process.html#class-childprocess | ChildProcess}.
@@ -1490,6 +1491,25 @@ export declare interface ConnectOptions {
    * @experimental
    */
   allowlist?: string[];
+  /**
+   * When provided, Puppeteer calls the logger with a debug channel prefix
+   * {@link DebugPrefix}. If the logger returns a
+   * {@link LoggerFunction}, Puppeteer uses it to log details for that channel.
+   *
+   * @example
+   *
+   * ```ts
+   * const browser = await puppeteer.connect({
+   *   browserWSEndpoint,
+   *   logger: prefix => {
+   *     return (...args) => console.log(`[${prefix}]`, ...args);
+   *   },
+   * });
+   * ```
+   *
+   * @experimental The API may change in future releases.
+   */
+  logger?: Logger;
 }
 
 /**
@@ -1913,7 +1933,7 @@ export declare interface Credentials {
  */
 export declare class CSSCoverage {
   #private;
-  constructor(client: CDPSession);
+  constructor(client: CDPSession, logger?: Logger);
   start(options?: {resetOnNavigation?: boolean}): Promise<void>;
   stop(): Promise<CoverageEntry[]>;
 }
@@ -1972,9 +1992,29 @@ declare namespace CustomQuerySelectors {
  * @public
  * @experimental
  */
+export declare const DEBUG_PREFIXES: {
+  readonly cdpSend: 'puppeteer:protocol:SEND ►';
+  readonly cdpReceive: 'puppeteer:protocol:RECV ◀';
+  readonly bidiSend: 'puppeteer:webDriverBiDi:SEND ►';
+  readonly bidiReceive: 'puppeteer:webDriverBiDi:RECV ◀';
+  readonly error: 'puppeteer:error';
+  readonly ffmpeg: 'puppeteer:ffmpeg';
+};
+
+/**
+ * @public
+ * @experimental
+ */
 export declare interface DebugInfo {
   pendingProtocolErrors: Error[];
 }
+
+/**
+ * @public
+ * @experimental
+ */
+export declare type DebugPrefix =
+  (typeof DEBUG_PREFIXES)[keyof typeof DEBUG_PREFIXES];
 
 /**
  * The default cooperative request interception resolution priority
@@ -4377,6 +4417,7 @@ export declare interface JSCoverageOptions {
  * @public
  */
 export declare abstract class JSHandle<T = unknown> {
+  #private;
   move: () => this;
   /**
    * Used for nominally typing {@link JSHandle}.
@@ -5418,12 +5459,36 @@ export declare interface LocatorScrollOptions extends ActionOptions {
 }
 
 /**
+ * A logger factory function that receives a debug channel prefix and returns
+ * a {@link LoggerFunction} to emit logs for that channel, or `undefined` if
+ * logging is disabled for that channel.
+ *
+ * @example
+ *
+ * ```ts
+ * const customLogger: Logger = (prefix: string) => {
+ *   if (prefix.includes('protocol')) {
+ *     return (...args: unknown[]) =>
+ *       console.log(`[DEBUG: ${prefix}]`, ...args);
+ *   }
+ *   return undefined;
+ * };
+ * ```
+ *
+ * @param prefix - A debug channel prefix, one of {@link DebugPrefix}.
+ * @returns A {@link LoggerFunction} to log messages for the channel,
+ * or `undefined` if logging is disabled.
+ *
  * @public
  * @experimental
  */
 export declare type Logger = (prefix: string) => LoggerFunction | undefined;
 
 /**
+ * A function called by Puppeteer to output debug messages.
+ *
+ * @param args - Arbitrary values to log for a debug event.
+ *
  * @public
  * @experimental
  */
@@ -8479,6 +8544,7 @@ declare namespace Puppeteer_2 {
     CookieData,
     DeleteCookiesRequest,
     CustomQueryHandler,
+    DebugPrefix,
     LoggerFunction,
     Logger,
     Device,
@@ -8554,6 +8620,7 @@ declare namespace Puppeteer_2 {
     WebMCPToolCall,
     WebMCP,
     ConsoleMessage,
+    DEBUG_PREFIXES,
     KnownDevices,
     PuppeteerError,
     TimeoutError,
@@ -9386,6 +9453,7 @@ export declare type SupportedWebDriverCapability = Exclude<
  * @public
  */
 export declare abstract class Target {
+  protected logger: Logger;
   /**
    * If the target is not of type `"service_worker"` or `"shared_worker"`, returns `null`.
    */
@@ -9556,9 +9624,32 @@ export declare class Tracing {
  * @public
  */
 export declare interface TracingOptions {
+  /**
+   * The file path to write the trace to.
+   * If no path is specified, the trace will not be written to disk, but can
+   * still be retrieved as a `Uint8Array` from `tracing.stop()`.
+   */
   path?: string;
+  /**
+   * Whether to capture screenshots in the trace.
+   *
+   * @defaultValue `false`
+   */
   screenshots?: boolean;
+  /**
+   * The tracing categories to include/exclude.
+   *
+   * To exclude a category, prefix it with `-` (e.g., `-toplevel`).
+   *
+   * @defaultValue Default categories listed in the implementation.
+   */
   categories?: string[];
+  /**
+   * Size of the trace buffer in kilobytes.
+   * If not specified or zero is passed, the default value of 200 MB
+   * (200,000 KB) is used by Chromium.
+   */
+  bufferSize?: number;
 }
 
 /**
@@ -9844,6 +9935,7 @@ export declare class WebMCPTool extends EventEmitter<{
  * @public
  */
 export declare class WebMCPToolCall {
+  #private;
   /**
    * Tool invocation identifier.
    */

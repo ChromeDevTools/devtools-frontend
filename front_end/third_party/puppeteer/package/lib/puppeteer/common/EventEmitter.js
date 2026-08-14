@@ -5,7 +5,7 @@
  */
 import mitt from '../../third_party/mitt/mitt.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
-import { debugCatchError } from './util.js';
+import { DEBUG_PREFIXES } from './Debug.js';
 /**
  * The EventEmitter class that many Puppeteer classes extend.
  *
@@ -21,13 +21,15 @@ import { debugCatchError } from './util.js';
 export class EventEmitter {
     #emitter;
     #handlers = new Map();
+    #logger;
     /**
      * If you pass an emitter, the returned emitter will wrap the passed emitter.
      *
      * @internal
      */
-    constructor(emitter = mitt(new Map())) {
+    constructor(emitter = mitt(new Map()), logger) {
         this.#emitter = emitter;
+        this.#logger = logger;
     }
     /**
      * Bind an event listener to fire when an event occurs.
@@ -115,7 +117,9 @@ export class EventEmitter {
         return this;
     }
     [disposeSymbol]() {
-        return void this[asyncDisposeSymbol]().catch(debugCatchError);
+        return void this[asyncDisposeSymbol]().catch(error => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+        });
     }
     async [asyncDisposeSymbol]() {
         for (const [type, handlers] of this.#handlers) {

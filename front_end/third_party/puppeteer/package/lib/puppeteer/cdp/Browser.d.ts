@@ -8,6 +8,7 @@ import type { CreatePageOptions, DebugInfo, ExtensionInstallOptions } from '../a
 import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type TargetFilterCallback, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId, type InstallPWAOptions, type UninstallPWAOptions, type LaunchPWAOptions, type GetPWAStateOptions, type PWAState } from '../api/Browser.js';
 import type { Extension } from '../api/Extension.js';
 import type { Page } from '../api/Page.js';
+import type { Logger } from '../common/Debug.js';
 import type { DownloadBehavior } from '../common/DownloadBehavior.js';
 import type { Viewport } from '../common/Viewport.js';
 import { CdpBrowserContext } from './BrowserContext.js';
@@ -20,8 +21,8 @@ import { TargetManager } from './TargetManager.js';
 export declare class CdpBrowser extends BrowserBase {
     #private;
     readonly protocol = "cdp";
-    static _create(connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport?: Viewport | null, downloadBehavior?: DownloadBehavior, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, issuesEnabled?: boolean, handleDevToolsAsPage?: boolean, blocklist?: string[], allowlist?: string[]): Promise<CdpBrowser>;
-    constructor(connection: Connection, contextIds: string[], defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, issuesEnabled?: boolean, handleDevToolsAsPage?: boolean, blocklist?: string[], allowlist?: string[]);
+    static _create(connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport: Viewport | null | undefined, downloadBehavior: DownloadBehavior | undefined, process: ChildProcess | undefined, closeCallback: BrowserCloseCallback | undefined, targetFilterCallback: TargetFilterCallback | undefined, isPageTargetCallback: IsPageTargetCallback | undefined, waitForInitiallyDiscoveredTargets: boolean | undefined, networkEnabled: boolean | undefined, issuesEnabled: boolean | undefined, handleDevToolsAsPage: boolean | undefined, blocklist: string[] | undefined, allowlist: string[] | undefined, logger: Logger): Promise<CdpBrowser>;
+    constructor(connection: Connection, contextIds: string[], defaultViewport: Viewport | null | undefined, process: ChildProcess | undefined, closeCallback: BrowserCloseCallback | undefined, targetFilterCallback: TargetFilterCallback | undefined, isPageTargetCallback: IsPageTargetCallback | undefined, waitForInitiallyDiscoveredTargets: boolean | undefined, networkEnabled: boolean | undefined, issuesEnabled: boolean | undefined, handleDevToolsAsPage: boolean | undefined, blocklist: string[] | undefined, allowlist: string[] | undefined, logger: Logger);
     _attach(downloadBehavior: DownloadBehavior | undefined): Promise<void>;
     _detach(): void;
     process(): ChildProcess | null;

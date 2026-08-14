@@ -5,15 +5,16 @@
  */
 import NodeWebSocket from 'ws';
 import type { ConnectionTransport } from '../common/ConnectionTransport.js';
+import { type Logger } from '../common/Debug.js';
 /**
  * @internal
  */
 export declare class NodeWebSocketTransport implements ConnectionTransport {
     #private;
-    static create(url: string, headers?: Record<string, string>): Promise<NodeWebSocketTransport>;
+    static create(url: string, headers: Record<string, string> | undefined, logger: Logger): Promise<NodeWebSocketTransport>;
     onmessage?: (message: NodeWebSocket.Data) => void;
     onclose?: () => void;
-    constructor(ws: NodeWebSocket);
+    constructor(ws: NodeWebSocket, logger: Logger);
     send(message: string): void;
     close(): void;
 }

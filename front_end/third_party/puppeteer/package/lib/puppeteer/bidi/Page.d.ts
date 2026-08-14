@@ -20,6 +20,7 @@ import type { NetworkConditions } from '../cdp/NetworkManager.js';
 import { Tracing } from '../cdp/Tracing.js';
 import type { WebMCP } from '../cdp/WebMCP.js';
 import type { CookiePartitionKey, Cookie, CookieParam, CookieSameSite, DeleteCookiesRequest } from '../common/Cookie.js';
+import type { Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { FileChooser } from '../common/FileChooser.js';
 import type { PDFOptions } from '../common/PDFOptions.js';
@@ -42,7 +43,7 @@ import type { BidiWebWorker } from './WebWorker.js';
  */
 export declare class BidiPage extends Page {
     #private;
-    static from(browserContext: BidiBrowserContext, browsingContext: BrowsingContext): BidiPage;
+    static from(browserContext: BidiBrowserContext, browsingContext: BrowsingContext, logger: Logger): BidiPage;
     accessor trustedEmitter: EventEmitter<PageEvents>;
     readonly keyboard: BidiKeyboard;
     readonly mouse: BidiMouse;

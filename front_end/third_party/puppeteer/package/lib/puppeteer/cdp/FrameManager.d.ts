@@ -5,6 +5,7 @@
  */
 import { type CDPSession } from '../api/CDPSession.js';
 import { type NewDocumentScriptEvaluation } from '../api/Page.js';
+import { type Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Binding } from './Binding.js';
@@ -27,7 +28,7 @@ export declare class FrameManager extends EventEmitter<FrameManagerEvents> {
     get timeoutSettings(): TimeoutSettings;
     get networkManager(): NetworkManager;
     get client(): CdpCDPSession;
-    constructor(client: CdpCDPSession, page: CdpPage, timeoutSettings: TimeoutSettings);
+    constructor(client: CdpCDPSession, page: CdpPage, timeoutSettings: TimeoutSettings, logger: Logger);
     /**
      * When the main frame is replaced by another main frame,
      * we maintain the main frame object identity while updating

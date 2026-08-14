@@ -1,5 +1,5 @@
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugCatchError } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { DisposableStack } from '../util/disposable.js';
 /**
@@ -8,16 +8,18 @@ import { DisposableStack } from '../util/disposable.js';
 export class PipeTransport {
     #pipeWrite;
     #subscriptions = new DisposableStack();
+    #logger;
     #isClosed = false;
     #pendingMessage = [];
     onclose;
     onmessage;
-    constructor(pipeWrite, pipeRead) {
+    constructor(pipeWrite, pipeRead, logger) {
         this.#pipeWrite = pipeWrite;
+        this.#logger = logger;
         const pipeReadEmitter = this.#subscriptions.use(
         // NodeJS event emitters don't support `*` so we need to typecast
         // As long as we don't use it we should be OK.
-        new EventEmitter(pipeRead));
+        new EventEmitter(pipeRead, logger));
         pipeReadEmitter.on('data', buffer => {
             return this.#dispatch(buffer);
         });
@@ -26,12 +28,16 @@ export class PipeTransport {
                 this.onclose.call(null);
             }
         });
-        pipeReadEmitter.on('error', debugCatchError);
+        pipeReadEmitter.on('error', err => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+        });
         const pipeWriteEmitter = this.#subscriptions.use(
         // NodeJS event emitters don't support `*` so we need to typecast
         // As long as we don't use it we should be OK.
         new EventEmitter(pipeWrite));
-        pipeWriteEmitter.on('error', debugCatchError);
+        pipeWriteEmitter.on('error', err => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+        });
     }
     send(message) {
         assert(!this.#isClosed, '`PipeTransport` is closed.');

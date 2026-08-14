@@ -89,7 +89,8 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { withSourcePuppeteerURLIfNone, debugCatchError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
+import { withSourcePuppeteerURLIfNone } from '../common/util.js';
 import { moveable, throwIfDisposed } from '../util/decorators.js';
 import { disposeSymbol, asyncDisposeSymbol } from '../util/disposable.js';
 /**
@@ -132,11 +133,18 @@ let JSHandle = (() => {
             if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
             __runInitializers(_classThis, _classExtraInitializers);
         }
+        #logger = __runInitializers(this, _instanceExtraInitializers);
         /**
          * @internal
          */
-        constructor() {
-            __runInitializers(this, _instanceExtraInitializers);
+        constructor(logger) {
+            this.#logger = logger;
+        }
+        /**
+         * @internal
+         */
+        get logger() {
+            return this.#logger;
         }
         /**
          * Evaluates the given function with the current handle as its first argument.
@@ -206,7 +214,9 @@ let JSHandle = (() => {
             return map;
         }
         [(_getProperty_decorators = [throwIfDisposed()], _getProperties_decorators = [throwIfDisposed()], disposeSymbol)]() {
-            return void this[asyncDisposeSymbol]().catch(debugCatchError);
+            return void this[asyncDisposeSymbol]().catch(error => {
+                this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+            });
         }
         [asyncDisposeSymbol]() {
             return this.dispose();

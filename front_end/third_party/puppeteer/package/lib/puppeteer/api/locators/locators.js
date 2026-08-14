@@ -51,8 +51,9 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 import { EMPTY, catchError, defaultIfEmpty, defer, filter, first, firstValueFrom, from, identity, ignoreElements, map, merge, mergeMap, noop, of, pipe, race, raceWith, retry, tap, throwIfEmpty, } from '../../../third_party/rxjs/rxjs.js';
+import { DEBUG_PREFIXES } from '../../common/Debug.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
-import { fromAbortSignal, timeout, debugCatchError } from '../../common/util.js';
+import { fromAbortSignal, timeout } from '../../common/util.js';
 /**
  * All the events that a locator instance may emit.
  *
@@ -76,6 +77,20 @@ export var LocatorEvent;
  * @public
  */
 export class Locator extends EventEmitter {
+    #logger;
+    /**
+     * @internal
+     */
+    constructor(logger) {
+        super(undefined, logger);
+        this.#logger = logger;
+    }
+    /**
+     * @internal
+     */
+    get logger() {
+        return this.#logger;
+    }
     /**
      * Creates a race between multiple locators trying to locate elements in
      * parallel but ensures that only a single element receives the action.
@@ -284,7 +299,9 @@ export class Locator extends EventEmitter {
             return this.emit(LocatorEvent.Action, undefined);
         }), mergeMap(handle => {
             return from(handle.click(options)).pipe(catchError(err => {
-                void handle.dispose().catch(debugCatchError);
+                void handle.dispose().catch(error => {
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                });
                 throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
@@ -429,7 +446,9 @@ export class Locator extends EventEmitter {
                 }
             }))
                 .pipe(catchError(err => {
-                void handle.dispose().catch(debugCatchError);
+                void handle.dispose().catch(error => {
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                });
                 throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
@@ -444,7 +463,9 @@ export class Locator extends EventEmitter {
             return this.emit(LocatorEvent.Action, undefined);
         }), mergeMap(handle => {
             return from(handle.hover()).pipe(catchError(err => {
-                void handle.dispose().catch(debugCatchError);
+                void handle.dispose().catch(error => {
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                });
                 throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
@@ -466,7 +487,9 @@ export class Locator extends EventEmitter {
                     el.scrollLeft = scrollLeft;
                 }
             }, options?.scrollTop, options?.scrollLeft)).pipe(catchError(err => {
-                void handle.dispose().catch(debugCatchError);
+                void handle.dispose().catch(error => {
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                });
                 throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
@@ -590,7 +613,7 @@ export class FunctionLocator extends Locator {
     #pageOrFrame;
     #func;
     constructor(pageOrFrame, func) {
-        super();
+        super(pageOrFrame.logger);
         this.#pageOrFrame = pageOrFrame;
         this.#func = func;
     }
@@ -613,7 +636,7 @@ export class FunctionLocator extends Locator {
 export class DelegatedLocator extends Locator {
     #delegate;
     constructor(delegate) {
-        super();
+        super(delegate.logger);
         this.#delegate = delegate;
         this.copyOptions(this.#delegate);
     }
@@ -704,7 +727,7 @@ export class NodeLocator extends Locator {
     #pageOrFrame;
     #selectorOrHandle;
     constructor(pageOrFrame, selectorOrHandle) {
-        super();
+        super(pageOrFrame.logger);
         this.#pageOrFrame = pageOrFrame;
         this.#selectorOrHandle = selectorOrHandle;
     }
@@ -772,7 +795,10 @@ export class RaceLocator extends Locator {
     }
     #locators;
     constructor(locators) {
-        super();
+        super(locators[0]?.logger ??
+            (() => {
+                return undefined;
+            }));
         this.#locators = locators;
     }
     _clone() {

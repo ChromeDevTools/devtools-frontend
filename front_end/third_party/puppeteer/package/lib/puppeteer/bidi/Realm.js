@@ -53,9 +53,10 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 import { Realm } from '../api/Realm.js';
 import { WebWorkerEvent } from '../api/WebWorker.js';
 import { ARIAQueryHandler } from '../common/AriaQueryHandler.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { LazyArg } from '../common/LazyArg.js';
 import { scriptInjector } from '../common/ScriptInjector.js';
-import { debugError, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, PuppeteerURL, SOURCE_URL_REGEX, } from '../common/util.js';
+import { getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, PuppeteerURL, SOURCE_URL_REGEX, } from '../common/util.js';
 import { UnsupportedOperation } from '../index-browser.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { stringifyFunction } from '../util/Function.js';
@@ -70,9 +71,17 @@ import { createEvaluationError, getConsoleMessage, isConsoleLogEntry, rewriteEva
  */
 export class BidiRealm extends Realm {
     realm;
-    constructor(realm, timeoutSettings) {
+    #logger;
+    constructor(realm, timeoutSettings, logger) {
         super(timeoutSettings);
         this.realm = realm;
+        this.#logger = logger;
+    }
+    /**
+     * @internal
+     */
+    get logger() {
+        return this.#logger;
     }
     initialize() {
         this.realm.on('destroyed', reason => {
@@ -205,10 +214,10 @@ export class BidiRealm extends Realm {
         if (handleIds.length === 0) {
             return;
         }
-        await this.realm.disown(handleIds).catch(error => {
+        void this.realm.disown(handleIds).catch(error => {
             // Exceptions might happen in case of a page been navigated or closed.
             // Swallow these since they are harmless and we don't leak anything in this case.
-            debugError?.(error);
+            this.#logger?.(DEBUG_PREFIXES.error)?.(error);
         });
     }
     async adoptHandle(handle) {
@@ -235,14 +244,14 @@ export class BidiRealm extends Realm {
  * @internal
  */
 export class BidiFrameRealm extends BidiRealm {
-    static from(realm, frame) {
-        const frameRealm = new BidiFrameRealm(realm, frame);
+    static from(realm, frame, logger) {
+        const frameRealm = new BidiFrameRealm(realm, frame, logger);
         frameRealm.#initialize();
         return frameRealm;
     }
     #frame;
-    constructor(realm, frame) {
-        super(realm, frame.timeoutSettings);
+    constructor(realm, frame, logger) {
+        super(realm, frame.timeoutSettings, logger);
         this.#frame = frame;
     }
     #initialize() {
@@ -258,13 +267,13 @@ export class BidiFrameRealm extends BidiRealm {
         let promise = Promise.resolve();
         if (!this.#bindingsInstalled) {
             promise = Promise.all([
-                ExposableFunction.from(this.environment, '__ariaQuerySelector', ARIAQueryHandler.queryOne, !!this.sandbox),
+                ExposableFunction.from(this.environment, '__ariaQuerySelector', ARIAQueryHandler.queryOne, !!this.sandbox, this.logger),
                 ExposableFunction.from(this.environment, '__ariaQuerySelectorAll', async (element, selector) => {
                     const results = ARIAQueryHandler.queryAll(element, selector);
                     return await element.realm.evaluateHandle((...elements) => {
                         return elements;
                     }, ...(await AsyncIterableUtil.collect(results)));
-                }, !!this.sandbox),
+                }, !!this.sandbox, this.logger),
             ]);
             this.#bindingsInstalled = true;
         }
@@ -307,14 +316,14 @@ export class BidiFrameRealm extends BidiRealm {
  * @internal
  */
 export class BidiWorkerRealm extends BidiRealm {
-    static from(realm, worker) {
-        const workerRealm = new BidiWorkerRealm(realm, worker);
+    static from(realm, worker, logger) {
+        const workerRealm = new BidiWorkerRealm(realm, worker, logger);
         workerRealm.initialize();
         return workerRealm;
     }
     #worker;
-    constructor(realm, frame) {
-        super(realm, frame.timeoutSettings);
+    constructor(realm, frame, logger) {
+        super(realm, frame.timeoutSettings, logger);
         this.#worker = frame;
     }
     initialize() {

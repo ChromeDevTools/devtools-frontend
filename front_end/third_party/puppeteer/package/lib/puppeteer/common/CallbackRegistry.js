@@ -5,8 +5,8 @@
  */
 import { Deferred } from '../util/Deferred.js';
 import { rewriteError } from '../util/ErrorLike.js';
+import { DEBUG_PREFIXES } from './Debug.js';
 import { ProtocolError, TargetCloseError } from './Errors.js';
-import { debugCatchError } from './util.js';
 /**
  * Manages callbacks and their IDs for the protocol request/response communication.
  *
@@ -15,8 +15,10 @@ import { debugCatchError } from './util.js';
 export class CallbackRegistry {
     #callbacks = new Map();
     #idGenerator;
-    constructor(idGenerator) {
+    #logger;
+    constructor(idGenerator, logger) {
         this.#idGenerator = idGenerator;
+        this.#logger = logger;
     }
     has(id) {
         return this.#callbacks.has(id);
@@ -30,7 +32,11 @@ export class CallbackRegistry {
         catch (error) {
             // We still throw sync errors synchronously and clean up the scheduled
             // callback.
-            void callback.promise.catch(debugCatchError).finally(() => {
+            void callback.promise
+                .catch(err => {
+                this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+            })
+                .finally(() => {
                 this.#callbacks.delete(callback.id);
             });
             callback.reject(error);

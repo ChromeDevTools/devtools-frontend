@@ -306,8 +306,8 @@ let ElementHandle = (() => {
         /**
          * @internal
          */
-        constructor(handle) {
-            super();
+        constructor(handle, logger) {
+            super(logger);
             this.handle = handle;
             this[_isElementHandle] = true;
         }

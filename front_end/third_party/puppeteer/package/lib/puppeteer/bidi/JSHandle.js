@@ -17,7 +17,7 @@ export class BidiJSHandle extends JSHandle {
     realm;
     #disposed = false;
     constructor(value, realm) {
-        super();
+        super(realm.logger);
         this.#remoteValue = value;
         this.realm = realm;
     }

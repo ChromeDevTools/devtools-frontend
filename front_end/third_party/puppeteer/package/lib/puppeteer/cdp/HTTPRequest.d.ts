@@ -7,6 +7,7 @@ import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { Frame } from '../api/Frame.js';
 import { type ContinueRequestOverrides, HTTPRequest, type ResourceType, type ResponseForRequest } from '../api/HTTPRequest.js';
+import { type Logger } from '../common/Debug.js';
 import type { CdpHTTPResponse } from './HTTPResponse.js';
 /**
  * @internal
@@ -43,7 +44,7 @@ export declare class CdpHTTPRequest extends HTTPRequest {
          * Type of this resource.
          */
         type?: Protocol.Network.ResourceType;
-    }, redirectChain: CdpHTTPRequest[]);
+    }, redirectChain: CdpHTTPRequest[], logger: Logger);
     updateHeaders(headers: Protocol.Network.Headers): void;
     url(): string;
     resourceType(): ResourceType;

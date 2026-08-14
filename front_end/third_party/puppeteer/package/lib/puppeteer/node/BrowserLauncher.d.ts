@@ -1,6 +1,7 @@
 import { Browser as InstalledBrowser, launch } from '@puppeteer/browsers';
 import type { Browser, BrowserCloseCallback } from '../api/Browser.js';
 import { Connection } from '../cdp/Connection.js';
+import { type Logger } from '../common/Debug.js';
 import type { SupportedBrowser } from '../common/SupportedBrowser.js';
 import type { Viewport } from '../common/Viewport.js';
 import { type GetIdFn } from '../util/incremental-id-generator.js';
@@ -29,11 +30,18 @@ export declare abstract class BrowserLauncher {
     /**
      * @internal
      */
+    /**
+     * @internal
+     */
     puppeteer: PuppeteerNode;
     /**
      * @internal
      */
-    constructor(puppeteer: PuppeteerNode, browser: SupportedBrowser);
+    constructor(puppeteer: PuppeteerNode, browser: SupportedBrowser, logger: Logger);
+    /**
+     * @internal
+     */
+    protected get logger(): Logger;
     get browser(): SupportedBrowser;
     launch(options?: LaunchOptions): Promise<Browser>;
     abstract executablePath(channel?: ChromeReleaseChannel, validatePath?: boolean): Promise<string>;
@@ -64,6 +72,7 @@ export declare abstract class BrowserLauncher {
         protocolTimeout: number | undefined;
         slowMo: number;
         idGenerator: GetIdFn;
+        logger: Logger;
     }): Promise<Connection>;
     /**
      * @internal
@@ -73,6 +82,7 @@ export declare abstract class BrowserLauncher {
         protocolTimeout: number | undefined;
         slowMo: number;
         idGenerator: GetIdFn;
+        logger: Logger;
     }): Promise<Connection>;
     /**
      * @internal
@@ -82,6 +92,7 @@ export declare abstract class BrowserLauncher {
         acceptInsecureCerts?: boolean;
         networkEnabled: boolean;
         issuesEnabled: boolean;
+        logger: Logger;
     }): Promise<Browser>;
     /**
      * @internal
@@ -95,6 +106,7 @@ export declare abstract class BrowserLauncher {
         acceptInsecureCerts?: boolean;
         networkEnabled?: boolean;
         issuesEnabled?: boolean;
+        logger: Logger;
     }): Promise<Browser>;
     /**
      * @internal

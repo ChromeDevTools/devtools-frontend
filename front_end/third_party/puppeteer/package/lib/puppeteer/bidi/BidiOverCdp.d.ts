@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Connection as CdpConnection } from '../cdp/Connection.js';
-import { type Logger } from '../common/Debug.js';
+import type { Logger } from '../common/Debug.js';
 import { BidiConnection } from './Connection.js';
 /**
  * @internal
  */
-export declare function connectBidiOverCdp(cdp: CdpConnection, logger?: Logger): Promise<BidiConnection>;
+export declare function connectBidiOverCdp(cdp: CdpConnection, logger: Logger): Promise<BidiConnection>;
 //# sourceMappingURL=BidiOverCdp.d.ts.map

@@ -56,7 +56,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
  * SPDX-License-Identifier: Apache-2.0
  */
 import { JSHandle } from '../api/JSHandle.js';
-import { debugCatchError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { DisposableStack } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 /**
@@ -66,10 +66,12 @@ export class Binding {
     #name;
     #fn;
     #initSource;
-    constructor(name, fn, initSource) {
+    #logger;
+    constructor(name, fn, initSource, logger) {
         this.#name = name;
         this.#fn = fn;
         this.#initSource = initSource;
+        this.#logger = logger;
     }
     get name() {
         return this.#name;
@@ -144,7 +146,9 @@ export class Binding {
                     callbacks.get(seq).reject(error);
                     callbacks.delete(seq);
                 }, this.#name, id, error.message, error.stack)
-                    .catch(debugCatchError);
+                    .catch(error => {
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                });
             }
             else {
                 await context
@@ -154,7 +158,9 @@ export class Binding {
                     callbacks.get(seq).reject(error);
                     callbacks.delete(seq);
                 }, this.#name, id, error)
-                    .catch(debugCatchError);
+                    .catch(error => {
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                });
             }
         }
     }

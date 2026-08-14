@@ -38,8 +38,8 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 import { Frame, FrameEvent, throwIfDetached } from '../api/Frame.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { UnsupportedOperation } from '../common/Errors.js';
-import { debugCatchError } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
@@ -85,20 +85,22 @@ let CdpFrame = (() => {
         accessibility;
         worlds;
         extensionWorlds = {};
-        constructor(frameManager, frameId, parentFrameId, client) {
-            super();
+        #logger;
+        constructor(frameManager, frameId, parentFrameId, client, logger) {
+            super(logger);
             this._frameManager = frameManager;
             this.#url = '';
             this._id = frameId;
             this._parentId = parentFrameId;
             this.#detached = false;
             this.#client = client;
+            this.#logger = logger;
             this._loaderId = '';
             this.worlds = {
-                [MAIN_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings, MAIN_WORLD),
-                [PUPPETEER_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings, PUPPETEER_WORLD),
+                [MAIN_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings, MAIN_WORLD, logger),
+                [PUPPETEER_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings, PUPPETEER_WORLD, logger),
             };
-            this.accessibility = new Accessibility(this.worlds[MAIN_WORLD], frameId);
+            this.accessibility = new Accessibility(this.worlds[MAIN_WORLD], frameId, logger);
             this.on(FrameEvent.FrameSwappedByActivation, () => {
                 // Emulate loading process for swapped frames.
                 this._onLoadingStarted();
@@ -276,7 +278,9 @@ let CdpFrame = (() => {
                 this.#client.send('Runtime.addBinding', {
                     name: CDP_BINDING_PREFIX + binding.name,
                 }),
-                this.evaluate(binding.initSource).catch(debugCatchError),
+                this.evaluate(binding.initSource).catch(error => {
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                }),
             ]);
         }
         async removeExposedFunctionBinding(binding) {
@@ -293,7 +297,9 @@ let CdpFrame = (() => {
                     // Removes the dangling Puppeteer binding wrapper.
                     // @ts-expect-error: In a different context.
                     globalThis[name] = undefined;
-                }, binding.name).catch(debugCatchError),
+                }, binding.name).catch(error => {
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                }),
             ]);
         }
         async waitForDevicePrompt(options = {}) {

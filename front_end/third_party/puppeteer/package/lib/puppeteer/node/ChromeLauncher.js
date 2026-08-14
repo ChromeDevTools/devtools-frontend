@@ -7,7 +7,7 @@ import { mkdtemp } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { computeSystemExecutablePath, Browser as SupportedBrowsers, } from '@puppeteer/browsers';
-import { debugError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { assert } from '../util/assert.js';
 import { BrowserLauncher } from './BrowserLauncher.js';
 import { convertPuppeteerChannelToBrowsersChannel, } from './LaunchOptions.js';
@@ -16,8 +16,8 @@ import { rm } from './util/fs.js';
  * @internal
  */
 export class ChromeLauncher extends BrowserLauncher {
-    constructor(puppeteer) {
-        super(puppeteer, 'chrome');
+    constructor(puppeteer, logger) {
+        super(puppeteer, 'chrome', logger);
     }
     async launch(options = {}) {
         const config = await this.puppeteer.configuration();
@@ -107,7 +107,7 @@ export class ChromeLauncher extends BrowserLauncher {
                 await rm(path);
             }
             catch (error) {
-                debugError?.(error);
+                this.logger(DEBUG_PREFIXES.error)?.(error);
                 throw error;
             }
         }

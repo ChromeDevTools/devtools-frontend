@@ -8,6 +8,7 @@ import type { CDPSession } from '../api/CDPSession.js';
 import type { ElementHandle } from '../api/ElementHandle.js';
 import type { Frame } from '../api/Frame.js';
 import type { ConsoleMessageLocation } from '../common/ConsoleMessage.js';
+import { type Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { FrameManager } from './FrameManager.js';
 /**
@@ -83,6 +84,7 @@ export interface WebMCPToolsRemovedEvent {
  * @public
  */
 export declare class WebMCPToolCall {
+    #private;
     /**
      * Tool invocation identifier.
      */
@@ -98,7 +100,7 @@ export declare class WebMCPToolCall {
     /**
      * @internal
      */
-    constructor(invocationId: string, tool: WebMCPTool, input: string);
+    constructor(invocationId: string, tool: WebMCPTool, input: string, logger?: Logger);
 }
 /**
  * @public
@@ -164,7 +166,7 @@ export declare class WebMCP extends EventEmitter<{
     /**
      * @internal
      */
-    constructor(client: CDPSession, frameManager: FrameManager);
+    constructor(client: CDPSession, frameManager: FrameManager, logger?: Logger);
     /**
      * @internal
      */

@@ -28,10 +28,13 @@ export var TargetType;
  * @public
  */
 export class Target {
+    logger;
     /**
      * @internal
      */
-    constructor() { }
+    constructor(logger) {
+        this.logger = logger;
+    }
     /**
      * If the target is not of type `"service_worker"` or `"shared_worker"`, returns `null`.
      */

@@ -5,6 +5,7 @@
  */
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
+import type { Logger } from '../common/Debug.js';
 /**
  * The CoverageEntry class represents one entry of the coverage report.
  * @public
@@ -164,7 +165,7 @@ export declare class JSCoverage {
     /**
      * @internal
      */
-    constructor(client: CDPSession);
+    constructor(client: CDPSession, logger?: Logger);
     /**
      * @internal
      */
@@ -182,7 +183,7 @@ export declare class JSCoverage {
  */
 export declare class CSSCoverage {
     #private;
-    constructor(client: CDPSession);
+    constructor(client: CDPSession, logger?: Logger);
     /**
      * @internal
      */

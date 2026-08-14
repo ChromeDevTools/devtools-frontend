@@ -7,6 +7,7 @@ import * as Bidi from 'webdriver-bidi-protocol';
 import type { Extension } from '../api/Extension.js';
 import type { JSHandle } from '../api/JSHandle.js';
 import { Realm } from '../api/Realm.js';
+import { type Logger } from '../common/Debug.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { EvaluateFunc, HandleFor } from '../common/types.js';
 import type { PuppeteerInjectedUtil } from '../injected/injected.js';
@@ -22,7 +23,11 @@ import type { BidiWebWorker } from './WebWorker.js';
 export declare abstract class BidiRealm extends Realm {
     #private;
     readonly realm: BidiRealmCore;
-    constructor(realm: BidiRealmCore, timeoutSettings: TimeoutSettings);
+    constructor(realm: BidiRealmCore, timeoutSettings: TimeoutSettings, logger: Logger);
+    /**
+     * @internal
+     */
+    get logger(): Logger;
     protected initialize(): void;
     protected internalPuppeteerUtil?: Promise<BidiJSHandle<PuppeteerInjectedUtil>>;
     get puppeteerUtil(): Promise<BidiJSHandle<PuppeteerInjectedUtil>>;
@@ -42,7 +47,7 @@ export declare abstract class BidiRealm extends Realm {
  */
 export declare class BidiFrameRealm extends BidiRealm {
     #private;
-    static from(realm: WindowRealm, frame: BidiFrame): BidiFrameRealm;
+    static from(realm: WindowRealm, frame: BidiFrame, logger: Logger): BidiFrameRealm;
     readonly realm: WindowRealm;
     private constructor();
     get puppeteerUtil(): Promise<BidiJSHandle<PuppeteerInjectedUtil>>;
@@ -55,7 +60,7 @@ export declare class BidiFrameRealm extends BidiRealm {
  */
 export declare class BidiWorkerRealm extends BidiRealm {
     #private;
-    static from(realm: DedicatedWorkerRealm | SharedWorkerRealm, worker: BidiWebWorker): BidiWorkerRealm;
+    static from(realm: DedicatedWorkerRealm | SharedWorkerRealm, worker: BidiWebWorker, logger: Logger): BidiWorkerRealm;
     readonly realm: DedicatedWorkerRealm | SharedWorkerRealm;
     private constructor();
     initialize(): void;

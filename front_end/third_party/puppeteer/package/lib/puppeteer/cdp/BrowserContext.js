@@ -66,8 +66,8 @@ export class CdpBrowserContext extends BrowserContext {
     #connection;
     #browser;
     #id;
-    constructor(connection, browser, contextId) {
-        super();
+    constructor(connection, browser, contextId = undefined, logger) {
+        super(logger);
         this.#connection = connection;
         this.#browser = browser;
         this.#id = contextId;

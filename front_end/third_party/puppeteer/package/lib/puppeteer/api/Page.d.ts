@@ -14,6 +14,7 @@ import type { Tracing } from '../cdp/Tracing.js';
 import type { WebMCP } from '../cdp/WebMCP.js';
 import type { ConsoleMessage } from '../common/ConsoleMessage.js';
 import type { Cookie, CookieParam, DeleteCookiesRequest } from '../common/Cookie.js';
+import type { Logger } from '../common/Debug.js';
 import type { Device } from '../common/Device.js';
 import { EventEmitter, type EventsWithWildcard, type EventType } from '../common/EventEmitter.js';
 import type { FileChooser } from '../common/FileChooser.js';
@@ -672,7 +673,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     /**
      * @internal
      */
-    constructor();
+    logger: Logger;
+    /**
+     * @internal
+     */
+    constructor(logger: Logger);
     /**
      * `true` if the service worker are being bypassed, `false` otherwise.
      */

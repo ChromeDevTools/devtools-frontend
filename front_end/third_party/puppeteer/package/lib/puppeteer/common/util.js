@@ -8,20 +8,9 @@ import { environment } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { mergeUint8Arrays, stringToTypedArray } from '../util/encoding.js';
 import { packageVersion } from '../util/version.js';
-import { debug, DEBUG_PREFIXES } from './Debug.js';
+import { DEBUG_PREFIXES } from './Debug.js';
 import { TimeoutError } from './Errors.js';
 import { paperFormats } from './PDFOptions.js';
-/**
- * @internal
- */
-export const debugError = debug(DEBUG_PREFIXES.error);
-/**
- * @internal
- *
- * Use this instead of debugError so the catch functions
- * don't re-throw the error.
- */
-export const debugCatchError = debugError ?? (() => { });
 /**
  * @internal
  */
@@ -148,7 +137,7 @@ fun, ...args) {
 /**
  * @internal
  */
-export async function getReadableAsTypedArray(readable, path) {
+export async function getReadableAsTypedArray(readable, path, logger) {
     const buffers = [];
     const reader = readable.getReader();
     if (path) {
@@ -184,7 +173,7 @@ export async function getReadableAsTypedArray(readable, path) {
         return concat;
     }
     catch (error) {
-        debugError?.(error);
+        logger?.(DEBUG_PREFIXES.error)?.(error);
         return null;
     }
 }

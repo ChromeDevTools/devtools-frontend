@@ -3,8 +3,9 @@
  * Copyright 2026 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError, debugCatchError } from '../common/util.js';
+import { DisposableStack } from '../util/disposable.js';
 import { MAIN_WORLD } from './IsolatedWorlds.js';
 /**
  * Represents a registered WebMCP tool available on the page.
@@ -111,18 +112,20 @@ export class WebMCPToolCall {
      * The input parameters used for the call.
      */
     input;
+    #logger;
     /**
      * @internal
      */
-    constructor(invocationId, tool, input) {
+    constructor(invocationId, tool, input, logger) {
         this.id = invocationId;
         this.tool = tool;
+        this.#logger = logger;
         try {
             this.input = JSON.parse(input);
         }
         catch (error) {
             this.input = {};
-            debugError?.(error);
+            this.#logger?.(DEBUG_PREFIXES.error)?.(error);
         }
     }
 }
@@ -151,6 +154,8 @@ export class WebMCP extends EventEmitter {
     #frameManager;
     #tools = new Map();
     #pendingCalls = new Map();
+    #logger;
+    #subscriptions = new DisposableStack();
     #onToolsAdded = (event) => {
         const tools = [];
         for (const tool of event.tools) {
@@ -185,7 +190,7 @@ export class WebMCP extends EventEmitter {
         if (!tool) {
             return;
         }
-        const call = new WebMCPToolCall(event.invocationId, tool, event.input);
+        const call = new WebMCPToolCall(event.invocationId, tool, event.input, this.#logger);
         this.#pendingCalls.set(call.id, call);
         tool.emit('toolinvoked', call);
         this.emit('toolinvoked', call);
@@ -225,17 +230,20 @@ export class WebMCP extends EventEmitter {
     /**
      * @internal
      */
-    constructor(client, frameManager) {
-        super();
+    constructor(client, frameManager, logger) {
+        super(undefined, logger);
         this.#client = client;
         this.#frameManager = frameManager;
+        this.#logger = logger;
         this.#bindListeners();
     }
     /**
      * @internal
      */
     async initialize() {
-        return await this.#client.send('WebMCP.enable').catch(debugCatchError);
+        return await this.#client.send('WebMCP.enable').catch(err => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+        });
     }
     /**
      * @internal
@@ -256,19 +264,18 @@ export class WebMCP extends EventEmitter {
         });
     }
     #bindListeners() {
-        this.#client.on('WebMCP.toolsAdded', this.#onToolsAdded);
-        this.#client.on('WebMCP.toolsRemoved', this.#onToolsRemoved);
-        this.#client.on('WebMCP.toolInvoked', this.#onToolInvoked);
-        this.#client.on('WebMCP.toolResponded', this.#onToolResponded);
+        const clientEmitter = this.#subscriptions.use(new EventEmitter(this.#client));
+        clientEmitter.on('WebMCP.toolsAdded', this.#onToolsAdded);
+        clientEmitter.on('WebMCP.toolsRemoved', this.#onToolsRemoved);
+        clientEmitter.on('WebMCP.toolInvoked', this.#onToolInvoked);
+        clientEmitter.on('WebMCP.toolResponded', this.#onToolResponded);
     }
     /**
      * @internal
      */
     updateClient(client) {
-        this.#client.off('WebMCP.toolsAdded', this.#onToolsAdded);
-        this.#client.off('WebMCP.toolsRemoved', this.#onToolsRemoved);
-        this.#client.off('WebMCP.toolInvoked', this.#onToolInvoked);
-        this.#client.off('WebMCP.toolResponded', this.#onToolResponded);
+        this.#subscriptions.dispose();
+        this.#subscriptions = new DisposableStack();
         this.#client = client;
         this.#bindListeners();
     }

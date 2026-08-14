@@ -8,6 +8,7 @@ import { type Permission, type PermissionDescriptor, type PermissionState } from
 import { BrowserContext } from '../api/BrowserContext.js';
 import type { Page } from '../api/Page.js';
 import type { Cookie, CookieData } from '../common/Cookie.js';
+import type { Logger } from '../common/Debug.js';
 import type { DownloadBehavior } from '../common/DownloadBehavior.js';
 import type { CdpBrowser } from './Browser.js';
 import type { Connection } from './Connection.js';
@@ -17,7 +18,7 @@ import type { CdpTarget } from './Target.js';
  */
 export declare class CdpBrowserContext extends BrowserContext {
     #private;
-    constructor(connection: Connection, browser: CdpBrowser, contextId?: string);
+    constructor(connection: Connection, browser: CdpBrowser, contextId: string | undefined, logger: Logger);
     get id(): string | undefined;
     targets(): CdpTarget[];
     pages(includeAll?: boolean): Promise<Page[]>;

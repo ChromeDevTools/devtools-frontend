@@ -5,6 +5,7 @@
  */
 import type { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
 import { type CDPEvents, CDPSession, type CommandOptions } from '../api/CDPSession.js';
+import type { Logger } from '../common/Debug.js';
 import type { Connection } from './Connection.js';
 import type { CdpTarget } from './Target.js';
 /**
@@ -15,7 +16,7 @@ export declare class CdpCDPSession extends CDPSession {
     /**
      * @internal
      */
-    constructor(connection: Connection, targetType: string, sessionId: string, parentSessionId: string | undefined, rawErrors: boolean);
+    constructor(connection: Connection, targetType: string, sessionId: string, parentSessionId: string | undefined, rawErrors: boolean, logger: Logger);
     /**
      * Sets the {@link CdpTarget} associated with the session instance.
      *

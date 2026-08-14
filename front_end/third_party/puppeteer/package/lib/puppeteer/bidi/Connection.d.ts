@@ -33,7 +33,7 @@ export interface Commands extends BidiCommands {
  */
 export declare class BidiConnection extends EventEmitter<BidiEvents> implements Connection {
     #private;
-    constructor(url: string, transport: ConnectionTransport, idGenerator: GetIdFn, delay?: number, timeout?: number, logger?: Logger);
+    constructor(url: string, transport: ConnectionTransport, idGenerator: GetIdFn, delay: number | undefined, timeout: number | undefined, logger: Logger);
     get closed(): boolean;
     get url(): string;
     pipeTo<Events extends BidiEvents>(emitter: EventEmitter<Events>): void;

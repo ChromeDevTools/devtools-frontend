@@ -5,10 +5,11 @@
  */
 import type { Page, WebWorker } from '../api/api.js';
 import { Extension } from '../api/api.js';
+import { type Logger } from '../common/Debug.js';
 import type { CdpBrowser } from './Browser.js';
 export declare class CdpExtension extends Extension {
     #private;
-    constructor(id: string, version: string, name: string, path: string, enabled: boolean, browser: CdpBrowser);
+    constructor(id: string, version: string, name: string, path: string, enabled: boolean, browser: CdpBrowser, logger?: Logger);
     workers(): Promise<WebWorker[]>;
     pages(): Promise<Page[]>;
     triggerAction(page: Page): Promise<void>;

@@ -6,6 +6,7 @@
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import { JSHandle } from '../api/JSHandle.js';
+import { type Logger } from '../common/Debug.js';
 import type { CdpElementHandle } from './ElementHandle.js';
 import type { IsolatedWorld } from './IsolatedWorld.js';
 /**
@@ -13,7 +14,7 @@ import type { IsolatedWorld } from './IsolatedWorld.js';
  */
 export declare class CdpJSHandle<T = unknown> extends JSHandle<T> {
     #private;
-    constructor(world: IsolatedWorld, remoteObject: Protocol.Runtime.RemoteObject);
+    constructor(world: IsolatedWorld, remoteObject: Protocol.Runtime.RemoteObject, logger: Logger);
     get disposed(): boolean;
     get realm(): IsolatedWorld;
     get client(): CDPSession;
@@ -32,5 +33,5 @@ export declare class CdpJSHandle<T = unknown> extends JSHandle<T> {
 /**
  * @internal
  */
-export declare function releaseObject(client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject): Promise<void>;
+export declare function releaseObject(client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject, logger?: Logger): Promise<void>;
 //# sourceMappingURL=JSHandle.d.ts.map

@@ -3,6 +3,7 @@
  * Copyright 2023 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import type { Logger } from '../common/Debug.js';
 import type { Browser } from './Browser.js';
 import type { BrowserContext } from './BrowserContext.js';
 import type { CDPSession } from './CDPSession.js';
@@ -32,10 +33,11 @@ export declare enum TargetType {
  * @public
  */
 export declare abstract class Target {
+    protected logger: Logger;
     /**
      * @internal
      */
-    protected constructor();
+    protected constructor(logger: Logger);
     /**
      * If the target is not of type `"service_worker"` or `"shared_worker"`, returns `null`.
      */

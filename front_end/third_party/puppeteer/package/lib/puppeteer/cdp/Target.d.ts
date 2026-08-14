@@ -8,6 +8,7 @@ import type { Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
 import { type Page } from '../api/Page.js';
 import { Target, TargetType } from '../api/Target.js';
+import { type Logger } from '../common/Debug.js';
 import type { Viewport } from '../common/Viewport.js';
 import { Deferred } from '../util/Deferred.js';
 import type { CdpCDPSession } from './CdpSession.js';
@@ -36,7 +37,7 @@ export declare class CdpTarget extends Target {
      *
      * @internal
      */
-    constructor(targetInfo: Protocol.Target.TargetInfo, session: CdpCDPSession | undefined, browserContext: BrowserContext | undefined, targetManager: TargetManager | undefined, sessionFactory: ((isAutoAttachEmulated: boolean) => Promise<CdpCDPSession>) | undefined);
+    constructor(targetInfo: Protocol.Target.TargetInfo, session: CdpCDPSession | undefined, browserContext: BrowserContext | undefined, targetManager: TargetManager | undefined, sessionFactory: ((isAutoAttachEmulated: boolean) => Promise<CdpCDPSession>) | undefined, logger: Logger);
     asPage(): Promise<Page>;
     _subtype(): string | undefined;
     _session(): CdpCDPSession | undefined;
@@ -62,7 +63,7 @@ export declare class CdpTarget extends Target {
  */
 export declare class PageTarget extends CdpTarget {
     #private;
-    constructor(targetInfo: Protocol.Target.TargetInfo, session: CdpCDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CdpCDPSession>, defaultViewport: Viewport | null);
+    constructor(targetInfo: Protocol.Target.TargetInfo, session: CdpCDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CdpCDPSession>, defaultViewport: Viewport | null, logger: Logger);
     _initialize(): void;
     page(): Promise<Page | null>;
     _checkIfInitialized(): void;

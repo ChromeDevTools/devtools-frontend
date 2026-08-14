@@ -21,7 +21,7 @@ export declare class Connection extends EventEmitter<CDPSessionEvents> {
     /**
      * @internal
      */
-    constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number, rawErrors?: boolean, idGenerator?: () => number, logger?: Logger);
+    constructor(url: string, transport: ConnectionTransport, delay: number | undefined, timeout: number | undefined, rawErrors: boolean | undefined, idGenerator: (() => number) | undefined, logger: Logger);
     static fromSession(session: CDPSession): Connection | undefined;
     /**
      * @internal

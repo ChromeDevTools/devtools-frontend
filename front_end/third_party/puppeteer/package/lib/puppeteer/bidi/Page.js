@@ -123,8 +123,8 @@ let BidiPage = (() => {
             __esDecorate(this, null, _trustedEmitter_decorators, { kind: "accessor", name: "trustedEmitter", static: false, private: false, access: { has: obj => "trustedEmitter" in obj, get: obj => obj.trustedEmitter, set: (obj, value) => { obj.trustedEmitter = value; } }, metadata: _metadata }, _trustedEmitter_initializers, _trustedEmitter_extraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        static from(browserContext, browsingContext) {
-            const page = new BidiPage(browserContext, browsingContext);
+        static from(browserContext, browsingContext, logger) {
+            const page = new BidiPage(browserContext, browsingContext, logger);
             page.#initialize();
             return page;
         }
@@ -149,12 +149,12 @@ let BidiPage = (() => {
         _client() {
             return this.#frame.client;
         }
-        constructor(browserContext, browsingContext) {
-            super();
+        constructor(browserContext, browsingContext, logger) {
+            super(logger);
             this.#browserContext = browserContext;
-            this.#frame = BidiFrame.from(this, browsingContext);
-            this.#cdpEmulationManager = new EmulationManager(this.#frame.client);
-            this.tracing = new Tracing(this.#frame.client);
+            this.#frame = BidiFrame.from(this, browsingContext, logger);
+            this.#cdpEmulationManager = new EmulationManager(this.#frame.client, logger);
+            this.tracing = new Tracing(this.#frame.client, logger);
             this.coverage = new Coverage(this.#frame.client);
             this.keyboard = new BidiKeyboard(this);
             this.mouse = new BidiMouse(this);

@@ -9,6 +9,7 @@ import { BrowserContext } from '../api/BrowserContext.js';
 import { type Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
 import type { Cookie, CookieData } from '../common/Cookie.js';
+import { type Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { Viewport } from '../common/Viewport.js';
 import type { BidiBrowser } from './Browser.js';
@@ -26,7 +27,7 @@ export interface BidiBrowserContextOptions {
  */
 export declare class BidiBrowserContext extends BrowserContext {
     #private;
-    static from(browser: BidiBrowser, userContext: UserContext, options: BidiBrowserContextOptions): BidiBrowserContext;
+    static from(browser: BidiBrowser, userContext: UserContext, options: BidiBrowserContextOptions, logger: Logger): BidiBrowserContext;
     accessor trustedEmitter: EventEmitter<BrowserContextEvents>;
     readonly userContext: UserContext;
     private constructor();

@@ -1,5 +1,5 @@
 import { headersArray, HTTPRequest, STATUS_TEXTS, handleError, } from '../api/HTTPRequest.js';
-import { debugError } from '../common/util.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { mergeUint8Arrays, stringToBase64, stringToTypedArray, } from '../util/encoding.js';
 /**
  * @internal
@@ -16,14 +16,16 @@ export class CdpHTTPRequest extends HTTPRequest {
     #headers = {};
     #frame;
     #initiator;
+    #logger;
     get client() {
         return this.#client;
     }
     set client(newClient) {
         this.#client = newClient;
     }
-    constructor(client, frame, interceptionId, allowInterception, data, redirectChain) {
+    constructor(client, frame, interceptionId, allowInterception, data, redirectChain, logger) {
         super();
+        this.#logger = logger;
         this.#client = client;
         this.id = data.requestId;
         this.#isNavigationRequest =
@@ -80,7 +82,7 @@ export class CdpHTTPRequest extends HTTPRequest {
             return result.postData;
         }
         catch (err) {
-            debugError?.(err);
+            this.#logger?.(DEBUG_PREFIXES.error)?.(err);
             return;
         }
     }
@@ -136,7 +138,7 @@ export class CdpHTTPRequest extends HTTPRequest {
         })
             .catch(error => {
             this.interception.handled = false;
-            return handleError(error);
+            return handleError(error, this.#logger);
         });
     }
     async _respond(response) {
@@ -176,7 +178,7 @@ export class CdpHTTPRequest extends HTTPRequest {
         })
             .catch(error => {
             this.interception.handled = false;
-            return handleError(error);
+            return handleError(error, this.#logger);
         });
     }
     async _abort(errorReason) {
@@ -189,7 +191,9 @@ export class CdpHTTPRequest extends HTTPRequest {
             requestId: this._interceptionId,
             errorReason: errorReason || 'Failed',
         })
-            .catch(handleError);
+            .catch(error => {
+            return handleError(error, this.#logger);
+        });
     }
 }
 //# sourceMappingURL=HTTPRequest.js.map

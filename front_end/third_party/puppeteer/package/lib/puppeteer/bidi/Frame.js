@@ -44,8 +44,9 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
 import { combineLatest, defer, delayWhen, filter, first, firstValueFrom, map, of, race, raceWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { Accessibility } from '../cdp/Accessibility.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
-import { debugError, fromAbortSignal, fromEmitterEvent, timeout, } from '../common/util.js';
+import { fromAbortSignal, fromEmitterEvent, timeout } from '../common/util.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { BidiCdpSession } from './CDPSession.js';
 import { BidiDialog } from './Dialog.js';
@@ -143,8 +144,8 @@ let BidiFrame = (() => {
             __esDecorate(this, null, _locateNodes_decorators, { kind: "method", name: "locateNodes", static: false, private: false, access: { has: obj => "locateNodes" in obj, get: obj => obj.locateNodes }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        static from(parent, browsingContext) {
-            const frame = new BidiFrame(parent, browsingContext);
+        static from(parent, browsingContext, logger) {
+            const frame = new BidiFrame(parent, browsingContext, logger);
             frame.#initialize();
             return frame;
         }
@@ -152,20 +153,22 @@ let BidiFrame = (() => {
         browsingContext;
         #frames = new WeakMap();
         realms;
+        #logger;
         _id;
         client;
         accessibility;
-        constructor(parent, browsingContext) {
-            super();
+        constructor(parent, browsingContext, logger) {
+            super(logger);
             this.#parent = parent;
             this.browsingContext = browsingContext;
+            this.#logger = logger;
             this._id = browsingContext.id;
             this.client = new BidiCdpSession(this);
             this.realms = {
-                default: BidiFrameRealm.from(this.browsingContext.defaultRealm, this),
-                internal: BidiFrameRealm.from(this.browsingContext.createWindowRealm(`__puppeteer_internal_${Math.ceil(Math.random() * 10000)}`), this),
+                default: BidiFrameRealm.from(this.browsingContext.defaultRealm, this, logger),
+                internal: BidiFrameRealm.from(this.browsingContext.createWindowRealm(`__puppeteer_internal_${Math.ceil(Math.random() * 10000)}`), this, logger),
             };
-            this.accessibility = new Accessibility(this.realms.default, this._id);
+            this.accessibility = new Accessibility(this.realms.default, this._id, logger);
         }
         #initialize() {
             for (const browsingContext of this.browsingContext.children) {
@@ -183,7 +186,7 @@ let BidiFrame = (() => {
                 this.page().trustedEmitter.emit("framedetached" /* PageEvent.FrameDetached */, this);
             });
             this.browsingContext.on('request', request => {
-                const httpRequest = BidiHTTPRequest.from(request, this, this.page().isNetworkInterceptionEnabled);
+                const httpRequest = BidiHTTPRequest.from(request, this, this.page().isNetworkInterceptionEnabled, undefined, this.logger);
                 request.once('success', () => {
                     this.page().trustedEmitter.emit("requestfinished" /* PageEvent.RequestFinished */, httpRequest);
                 });
@@ -239,11 +242,11 @@ let BidiFrame = (() => {
                     this.page().trustedEmitter.emit("pageerror" /* PageEvent.PageError */, error);
                 }
                 else {
-                    debugError?.(`Unhandled LogEntry with type "${entry.type}", text "${entry.text}" and level "${entry.level}"`);
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(`Unhandled LogEntry with type "${entry.type}", text "${entry.text}" and level "${entry.level}"`);
                 }
             });
             this.browsingContext.on('worker', realm => {
-                const worker = BidiWebWorker.from(this, realm);
+                const worker = BidiWebWorker.from(this, realm, this.#logger);
                 realm.on('destroyed', () => {
                     this.page().trustedEmitter.emit("workerdestroyed" /* PageEvent.WorkerDestroyed */, worker);
                 });
@@ -251,7 +254,7 @@ let BidiFrame = (() => {
             });
         }
         #createFrameTarget(browsingContext) {
-            const frame = BidiFrame.from(this, browsingContext);
+            const frame = BidiFrame.from(this, browsingContext, this.#logger);
             this.#frames.set(browsingContext, frame);
             this.page().trustedEmitter.emit("frameattached" /* PageEvent.FrameAttached */, frame);
             browsingContext.on('closed', () => {
@@ -414,7 +417,7 @@ let BidiFrame = (() => {
             if (this.#exposedFunctions.has(name)) {
                 throw new Error(`Failed to add page binding with name ${name}: globalThis['${name}'] already exists!`);
             }
-            const exposable = await ExposableFunction.from(this, name, apply);
+            const exposable = await ExposableFunction.from(this, name, apply, false, this.#logger);
             this.#exposedFunctions.set(name, exposable);
         }
         async removeExposedFunction(name) {

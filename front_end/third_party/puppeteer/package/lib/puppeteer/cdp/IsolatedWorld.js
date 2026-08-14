@@ -21,10 +21,12 @@ export class IsolatedWorld extends Realm {
     #worldId;
     #origin;
     #frameOrWorker;
-    constructor(frameOrWorker, timeoutSettings, worldId) {
+    #logger;
+    constructor(frameOrWorker, timeoutSettings, worldId, logger) {
         super(timeoutSettings);
         this.#frameOrWorker = frameOrWorker;
         this.#worldId = worldId;
+        this.#logger = logger;
     }
     get environment() {
         return this.#frameOrWorker;
@@ -148,9 +150,9 @@ export class IsolatedWorld extends Realm {
      */
     createCdpHandle(remoteObject) {
         if (remoteObject.subtype === 'node') {
-            return new CdpElementHandle(this, remoteObject);
+            return new CdpElementHandle(this, remoteObject, this.#logger);
         }
-        return new CdpJSHandle(this, remoteObject);
+        return new CdpJSHandle(this, remoteObject, this.#logger);
     }
     [disposeSymbol]() {
         this.#context?.[disposeSymbol]();

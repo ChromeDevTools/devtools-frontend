@@ -40,21 +40,25 @@ export function assertSupportedUrlRestrictions(options) {
         }
     }
 }
+/**
+ * @internal
+ */
 export async function _connectToBrowser(options) {
     assertSupportedUrlRestrictions(options);
     const { connectionTransport, endpointUrl } = await getConnectionTransport(options);
     if (options.protocol === 'webDriverBiDi') {
-        const bidiBrowser = await _connectToBiDiBrowser(connectionTransport, endpointUrl, options);
+        const bidiBrowser = await _connectToBiDiBrowser(connectionTransport, endpointUrl, options, options.logger);
         return bidiBrowser;
     }
     else {
-        const cdpBrowser = await _connectToCdpBrowser(connectionTransport, endpointUrl, options);
+        const cdpBrowser = await _connectToCdpBrowser(connectionTransport, endpointUrl, options, options.logger);
         return cdpBrowser;
     }
 }
 /**
  * Establishes a websocket connection by given options and returns both transport and
  * endpoint url the transport is connected to.
+ * @internal
  */
 async function getConnectionTransport(options) {
     const { browserWSEndpoint, browserURL, channel, transport, headers = {}, } = options;
@@ -68,7 +72,7 @@ async function getConnectionTransport(options) {
     }
     else if (browserWSEndpoint) {
         const WebSocketClass = await getWebSocketTransportClass();
-        const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers);
+        const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers, options.logger);
         return {
             connectionTransport: connectionTransport,
             endpointUrl: browserWSEndpoint,
@@ -77,7 +81,7 @@ async function getConnectionTransport(options) {
     else if (browserURL) {
         const connectionURL = await getWSEndpoint(browserURL, headers);
         const WebSocketClass = await getWebSocketTransportClass();
-        const connectionTransport = await WebSocketClass.create(connectionURL, headers);
+        const connectionTransport = await WebSocketClass.create(connectionURL, headers, options.logger);
         return {
             connectionTransport: connectionTransport,
             endpointUrl: connectionURL,
@@ -112,7 +116,7 @@ async function getConnectionTransport(options) {
             }
             const browserWSEndpoint = `ws://localhost:${port}${rawPath}`;
             const WebSocketClass = await getWebSocketTransportClass();
-            const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers);
+            const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers, options.logger);
             return {
                 connectionTransport: connectionTransport,
                 endpointUrl: browserWSEndpoint,

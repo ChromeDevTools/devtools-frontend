@@ -60,11 +60,12 @@ import { CDPSessionEvent } from '../api/CDPSession.js';
 import { Page, } from '../api/Page.js';
 import { WebWorker, WebWorkerEvent } from '../api/WebWorker.js';
 import { ConsoleMessage } from '../common/ConsoleMessage.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { FileChooser } from '../common/FileChooser.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
-import { debugError, evaluationString, getReadableAsTypedArray, getReadableFromProtocolStream, parsePDFOptions, timeout, validateDialogType, debugCatchError, } from '../common/util.js';
+import { evaluationString, getReadableAsTypedArray, getReadableFromProtocolStream, parsePDFOptions, timeout, validateDialogType, } from '../common/util.js';
 import { environment } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
@@ -103,8 +104,8 @@ export function convertSameSiteFromPuppeteerToCdp(sameSite) {
  * @internal
  */
 export class CdpPage extends Page {
-    static async _create(client, target, defaultViewport) {
-        const page = new CdpPage(client, target);
+    static async _create(client, target, defaultViewport, logger) {
+        const page = new CdpPage(client, target, logger);
         await page.#initialize();
         if (defaultViewport) {
             try {
@@ -112,7 +113,7 @@ export class CdpPage extends Page {
             }
             catch (err) {
                 if (isErrorLike(err) && isTargetClosedError(err)) {
-                    debugError?.(err);
+                    page.logger?.(DEBUG_PREFIXES.error)?.(err);
                 }
                 else {
                     throw err;
@@ -144,8 +145,8 @@ export class CdpPage extends Page {
     #sessionCloseDeferred = Deferred.create();
     #serviceWorkerBypassed = false;
     #userDragInterceptionEnabled = false;
-    constructor(client, target) {
-        super();
+    constructor(client, target, logger) {
+        super(logger);
         this.#primaryTargetClient = client;
         this.#tabTargetClient = client.parentSession();
         assert(this.#tabTargetClient, 'Tab target session is not defined.');
@@ -157,10 +158,10 @@ export class CdpPage extends Page {
         this.#keyboard = new CdpKeyboard(client);
         this.#mouse = new CdpMouse(client, this.#keyboard);
         this.#touchscreen = new CdpTouchscreen(client, this.#keyboard);
-        this.#frameManager = new FrameManager(client, this, this._timeoutSettings);
-        this.#emulationManager = new EmulationManager(client);
-        this.#tracing = new Tracing(client);
-        this.#webmcp = new WebMCP(client, this.#frameManager);
+        this.#frameManager = new FrameManager(client, this, this._timeoutSettings, logger);
+        this.#emulationManager = new EmulationManager(client, this.logger);
+        this.#tracing = new Tracing(client, this.logger);
+        this.#webmcp = new WebMCP(client, this.#frameManager, logger);
         this.#coverage = new Coverage(client);
         this.#viewport = null;
         // Use browser context's connection, as current Bluetooth emulation in Chromium is
@@ -208,7 +209,9 @@ export class CdpPage extends Page {
             this.emit("close" /* PageEvent.Close */, undefined);
             this.#closed = true;
         })
-            .catch(debugCatchError);
+            .catch(error => {
+            this.logger?.(DEBUG_PREFIXES.error)?.(error);
+        });
         this.#setupPrimaryTargetListeners();
         this.#attachExistingTargets();
     }
@@ -251,12 +254,14 @@ export class CdpPage extends Page {
         if (session.target()._subtype() !== 'prerender') {
             return;
         }
-        void this.#frameManager
-            .registerSpeculativeSession(session)
-            .catch(debugCatchError);
+        void this.#frameManager.registerSpeculativeSession(session).catch(error => {
+            this.logger?.(DEBUG_PREFIXES.error)?.(error);
+        });
         void this.#emulationManager
             .registerSpeculativeSession(session)
-            .catch(debugCatchError);
+            .catch(error => {
+            this.logger?.(DEBUG_PREFIXES.error)?.(error);
+        });
     }
     /**
      * Sets up listeners for the primary target. The primary target can change
@@ -294,7 +299,7 @@ export class CdpPage extends Page {
         assert(session instanceof CdpCDPSession);
         this.#frameManager.onAttachedToTarget(session.target());
         if (session.target()._getTargetInfo().type === 'worker') {
-            const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), this.#handleException.bind(this), this.#frameManager.networkManager);
+            const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), this.#handleException.bind(this), this.#frameManager.networkManager, this.logger);
             this.#workers.set(session.id(), worker);
             worker.internalEmitter.on(WebWorkerEvent.Console, message => {
                 const noListenersForConsoleOnPage = this.listenerCount("console" /* PageEvent.Console */) === 0;
@@ -303,7 +308,9 @@ export class CdpPage extends Page {
                     // eslint-disable-next-line max-len -- The comment is long.
                     // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
                     for (const arg of message.args()) {
-                        void arg.dispose().catch(debugCatchError);
+                        void arg.dispose().catch(error => {
+                            this.logger?.(DEBUG_PREFIXES.error)?.(error);
+                        });
                     }
                     return;
                 }
@@ -326,7 +333,7 @@ export class CdpPage extends Page {
         }
         catch (err) {
             if (isErrorLike(err) && isTargetClosedError(err)) {
-                debugError?.(err);
+                this.logger?.(DEBUG_PREFIXES.error)?.(err);
             }
             else {
                 throw err;
@@ -449,7 +456,7 @@ export class CdpPage extends Page {
         const { level, text, args, source, url, lineNumber, stackTrace } = event.entry;
         if (args) {
             args.map(arg => {
-                void releaseObject(this.#primaryTargetClient, arg);
+                void releaseObject(this.#primaryTargetClient, arg, this.logger);
             });
         }
         if (source !== 'worker') {
@@ -605,10 +612,10 @@ export class CdpPage extends Page {
         let binding;
         switch (typeof pptrFunction) {
             case 'function':
-                binding = new Binding(name, pptrFunction, source);
+                binding = new Binding(name, pptrFunction, source, this.logger);
                 break;
             default:
-                binding = new Binding(name, pptrFunction.default, source);
+                binding = new Binding(name, pptrFunction.default, source, this.logger);
                 break;
         }
         this.#bindings.set(name, binding);
@@ -652,30 +659,39 @@ export class CdpPage extends Page {
         return this.#buildMetricsObject(response.metrics);
     }
     async captureHeapSnapshot(options) {
-        const { createWriteStream } = environment.value.fs;
-        const stream = createWriteStream(options.path);
-        const streamPromise = new Promise((resolve, reject) => {
-            stream.on('error', reject);
-            stream.on('finish', resolve);
-        });
-        const client = this.#primaryTargetClient;
-        await client.send('HeapProfiler.enable');
-        await client.send('HeapProfiler.collectGarbage');
-        const handler = (event) => {
-            stream.write(event.chunk);
-        };
-        client.on('HeapProfiler.addHeapSnapshotChunk', handler);
+        const env_2 = { stack: [], error: void 0, hasError: false };
         try {
-            await client.send('HeapProfiler.takeHeapSnapshot', {
-                reportProgress: false,
+            const { createWriteStream } = environment.value.fs;
+            const stream = createWriteStream(options.path);
+            const streamPromise = new Promise((resolve, reject) => {
+                stream.on('error', reject);
+                stream.on('finish', resolve);
             });
+            const client = this.#primaryTargetClient;
+            await client.send('HeapProfiler.enable');
+            await client.send('HeapProfiler.collectGarbage');
+            const clientEmitter = __addDisposableResource(env_2, new EventEmitter(client), false);
+            clientEmitter.on('HeapProfiler.addHeapSnapshotChunk', event => {
+                stream.write(event.chunk);
+            });
+            try {
+                await client.send('HeapProfiler.takeHeapSnapshot', {
+                    reportProgress: false,
+                });
+            }
+            finally {
+                await client.send('HeapProfiler.disable');
+            }
+            stream.end();
+            await streamPromise;
+        }
+        catch (e_2) {
+            env_2.error = e_2;
+            env_2.hasError = true;
         }
         finally {
-            client.off('HeapProfiler.addHeapSnapshotChunk', handler);
-            await client.send('HeapProfiler.disable');
+            __disposeResources(env_2);
         }
-        stream.end();
-        await streamPromise;
     }
     #emitMetrics(event) {
         this.emit("metrics" /* PageEvent.Metrics */, {
@@ -709,7 +725,9 @@ export class CdpPage extends Page {
                 // eslint-disable-next-line max-len -- The comment is long.
                 // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
                 for (const value of values) {
-                    void value.dispose().catch(debugCatchError);
+                    void value.dispose().catch(error => {
+                        this.logger?.(DEBUG_PREFIXES.error)?.(error);
+                    });
                 }
             }
             return;
@@ -836,16 +854,18 @@ export class CdpPage extends Page {
         await this.#frameManager.networkManager.setCacheEnabled(enabled);
     }
     async _screenshot(options) {
-        const env_2 = { stack: [], error: void 0, hasError: false };
+        const env_3 = { stack: [], error: void 0, hasError: false };
         try {
             const { fromSurface, omitBackground, optimizeForSpeed, quality, clip: userClip, type, captureBeyondViewport, } = options;
-            const stack = __addDisposableResource(env_2, new AsyncDisposableStack(), true);
+            const stack = __addDisposableResource(env_3, new AsyncDisposableStack(), true);
             if (omitBackground && (type === 'png' || type === 'webp')) {
                 await this.#emulationManager.setTransparentBackgroundColor();
                 stack.defer(async () => {
                     await this.#emulationManager
                         .resetDefaultBackgroundColor()
-                        .catch(debugCatchError);
+                        .catch(error => {
+                        this.logger?.(DEBUG_PREFIXES.error)?.(error);
+                    });
                 });
             }
             let clip = userClip;
@@ -868,12 +888,12 @@ export class CdpPage extends Page {
             });
             return data;
         }
-        catch (e_2) {
-            env_2.error = e_2;
-            env_2.hasError = true;
+        catch (e_3) {
+            env_3.error = e_3;
+            env_3.hasError = true;
         }
         finally {
-            const result_1 = __disposeResources(env_2);
+            const result_1 = __disposeResources(env_3);
             if (result_1)
                 await result_1;
         }
@@ -920,14 +940,14 @@ export class CdpPage extends Page {
     async pdf(options = {}) {
         const { path = undefined } = options;
         const readable = await this.createPDFStream(options);
-        const typedArray = await getReadableAsTypedArray(readable, path);
+        const typedArray = await getReadableAsTypedArray(readable, path, this.logger);
         assert(typedArray, 'Could not create typed array');
         return typedArray;
     }
     async close(options = { runBeforeUnload: undefined }) {
-        const env_3 = { stack: [], error: void 0, hasError: false };
+        const env_4 = { stack: [], error: void 0, hasError: false };
         try {
-            const _guard = __addDisposableResource(env_3, await this.browserContext().waitForScreenshotOperations(), false);
+            const _guard = __addDisposableResource(env_4, await this.browserContext().waitForScreenshotOperations(), false);
             const connection = this.#primaryTargetClient.connection();
             assert(connection, 'Connection closed. Most likely the page has been closed.');
             const runBeforeUnload = !!options.runBeforeUnload;
@@ -941,12 +961,12 @@ export class CdpPage extends Page {
                 await this.#tabTarget._isClosedDeferred.valueOrThrow();
             }
         }
-        catch (e_3) {
-            env_3.error = e_3;
-            env_3.hasError = true;
+        catch (e_4) {
+            env_4.error = e_4;
+            env_4.hasError = true;
         }
         finally {
-            __disposeResources(env_3);
+            __disposeResources(env_4);
         }
     }
     isClosed() {

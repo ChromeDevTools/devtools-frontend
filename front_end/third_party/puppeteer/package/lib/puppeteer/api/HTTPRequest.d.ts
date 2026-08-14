@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Protocol } from 'devtools-protocol';
+import type { Logger } from '../common/Debug.js';
 import type { ProtocolError } from '../common/Errors.js';
 import type { CDPSession } from './CDPSession.js';
 import type { Frame } from './Frame.js';
@@ -425,5 +426,5 @@ export declare const STATUS_TEXTS: Record<string, string>;
 /**
  * @internal
  */
-export declare function handleError(error: ProtocolError): void;
+export declare function handleError(error: ProtocolError, logger: Logger): void;
 //# sourceMappingURL=HTTPRequest.d.ts.map

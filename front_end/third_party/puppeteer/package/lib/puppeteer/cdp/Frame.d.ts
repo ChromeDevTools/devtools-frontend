@@ -11,6 +11,7 @@ import type { SetContentWaitForOptions, WaitForOptions } from '../api/Frame.js';
 import { Frame } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { WaitTimeoutOptions } from '../api/Page.js';
+import { type Logger } from '../common/Debug.js';
 import type { Realm } from '../puppeteer-core.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { Accessibility } from './Accessibility.js';
@@ -34,7 +35,7 @@ export declare class CdpFrame extends Frame {
     accessibility: Accessibility;
     worlds: IsolatedWorldChart;
     extensionWorlds: Record<string, IsolatedWorld>;
-    constructor(frameManager: FrameManager, frameId: string, parentFrameId: string | undefined, client: CDPSession);
+    constructor(frameManager: FrameManager, frameId: string, parentFrameId: string | undefined, client: CDPSession, logger: Logger);
     /**
      * @internal
      */

@@ -8,6 +8,7 @@ import { type CDPSession } from '../api/CDPSession.js';
 import type { Realm } from '../api/Realm.js';
 import { TargetType } from '../api/Target.js';
 import { WebWorker, type WebWorkerEvents } from '../api/WebWorker.js';
+import type { Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { EvaluateFunc, HandleFor } from '../index-browser.js';
 import type { NetworkManager } from './NetworkManager.js';
@@ -21,7 +22,7 @@ export type ExceptionThrownCallback = (event: Protocol.Runtime.ExceptionThrownEv
 export declare class CdpWebWorker extends WebWorker {
     #private;
     get internalEmitter(): EventEmitter<WebWorkerEvents>;
-    constructor(client: CDPSession, url: string, targetId: string, targetType: TargetType, exceptionThrown: ExceptionThrownCallback, networkManager?: NetworkManager);
+    constructor(client: CDPSession, url: string, targetId: string, targetType: TargetType, exceptionThrown: ExceptionThrownCallback, networkManager: NetworkManager | undefined, logger: Logger);
     mainRealm(): Realm;
     get client(): CDPSession;
     close(): Promise<void>;

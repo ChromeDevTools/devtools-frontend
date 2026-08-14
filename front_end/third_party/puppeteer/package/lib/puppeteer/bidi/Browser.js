@@ -42,9 +42,9 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
 import { Browser, } from '../api/Browser.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { ProtocolError, UnsupportedOperation } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError } from '../common/util.js';
 import { bubble } from '../util/decorators.js';
 import { BidiBrowserContext } from './BrowserContext.js';
 import { Session } from './core/Session.js';
@@ -128,14 +128,14 @@ let BidiBrowser = (() => {
                 }
                 catch (err) {
                     if (err instanceof ProtocolError) {
-                        debugError?.(err);
+                        opts.logger?.(DEBUG_PREFIXES.error)?.(err);
                     }
                     else {
                         throw err;
                     }
                 }
             }));
-            const browser = new BidiBrowser(session.browser, opts);
+            const browser = new BidiBrowser(session.browser, opts, opts.logger);
             browser.#initialize();
             return browser;
         }
@@ -147,12 +147,13 @@ let BidiBrowser = (() => {
         #browserCore;
         #defaultViewport;
         #browserContexts = new WeakMap();
-        #target = new BidiBrowserTarget(this);
+        #target;
         #cdpConnection;
         #networkEnabled;
         #issuesEnabled;
-        constructor(browserCore, opts) {
-            super();
+        #logger;
+        constructor(browserCore, opts, logger) {
+            super(logger);
             this.#process = opts.process;
             this.#closeCallback = opts.closeCallback;
             this.#browserCore = browserCore;
@@ -160,6 +161,8 @@ let BidiBrowser = (() => {
             this.#cdpConnection = opts.cdpConnection;
             this.#networkEnabled = opts.networkEnabled;
             this.#issuesEnabled = opts.issuesEnabled;
+            this.#logger = logger;
+            this.#target = new BidiBrowserTarget(this, logger);
         }
         #initialize() {
             // Initializing existing contexts.
@@ -193,7 +196,7 @@ let BidiBrowser = (() => {
         #createBrowserContext(userContext) {
             const browserContext = BidiBrowserContext.from(this, userContext, {
                 defaultViewport: this.#defaultViewport,
-            });
+            }, this.#logger);
             this.#browserContexts.set(userContext, browserContext);
             browserContext.trustedEmitter.on("targetcreated" /* BrowserContextEvent.TargetCreated */, target => {
                 this.#trustedEmitter.emit("targetcreated" /* BrowserEvent.TargetCreated */, target);
@@ -223,7 +226,7 @@ let BidiBrowser = (() => {
             }
             catch (error) {
                 // Fail silently.
-                debugError?.(error);
+                this.#logger?.(DEBUG_PREFIXES.error)?.(error);
             }
             finally {
                 this.connection.dispose();
@@ -328,7 +331,7 @@ let BidiBrowser = (() => {
             }
             catch (error) {
                 // Fail silently.
-                debugError?.(error);
+                this.#logger?.(DEBUG_PREFIXES.error)?.(error);
             }
             finally {
                 this.connection.dispose();

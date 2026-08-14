@@ -5,10 +5,11 @@
  */
 import { URLPattern } from '../../third_party/urlpattern-polyfill/urlpattern-polyfill.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugCatchError } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
+import { DisposableStack } from '../util/disposable.js';
 import { CdpCDPSession } from './CdpSession.js';
 import { InitializationStatus } from './Target.js';
 function isPageTargetBecomingPrimary(target, newTargetInfo) {
@@ -55,8 +56,8 @@ export class TargetManager extends EventEmitter {
     #ignoredTargets = new Set();
     #targetFilterCallback;
     #targetFactory;
-    #attachedToTargetListenersBySession = new WeakMap();
-    #detachedFromTargetListenersBySession = new WeakMap();
+    #subscriptions = new DisposableStack();
+    #attachmentSubscriptions = new WeakMap();
     #initializeDeferred = Deferred.create();
     #waitForInitiallyDiscoveredTargets = true;
     #discoveryFilter = [{}];
@@ -73,8 +74,9 @@ export class TargetManager extends EventEmitter {
     #initialAttachDone = false;
     #blocklist = [];
     #allowlist = [];
-    constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true, blocklist, allowlist) {
-        super();
+    #logger;
+    constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true, blocklist, allowlist, logger) {
+        super(undefined, logger);
         if (blocklist && allowlist) {
             throw new Error('Cannot specify both blockList and allowList');
         }
@@ -82,12 +84,14 @@ export class TargetManager extends EventEmitter {
         this.#targetFilterCallback = targetFilterCallback;
         this.#targetFactory = targetFactory;
         this.#waitForInitiallyDiscoveredTargets = waitForInitiallyDiscoveredTargets;
+        this.#logger = logger;
         this.#blocklist = this.#mapPatterns(blocklist);
         this.#allowlist = this.#mapPatterns(allowlist);
-        this.#connection.on('Target.targetCreated', this.#onTargetCreated);
-        this.#connection.on('Target.targetDestroyed', this.#onTargetDestroyed);
-        this.#connection.on('Target.targetInfoChanged', this.#onTargetInfoChanged);
-        this.#connection.on(CDPSessionEvent.SessionDetached, this.#onSessionDetached);
+        const connectionEmitter = this.#subscriptions.use(new EventEmitter(this.#connection));
+        connectionEmitter.on('Target.targetCreated', this.#onTargetCreated);
+        connectionEmitter.on('Target.targetDestroyed', this.#onTargetDestroyed);
+        connectionEmitter.on('Target.targetInfoChanged', this.#onTargetInfoChanged);
+        connectionEmitter.on(CDPSessionEvent.SessionDetached, this.#onSessionDetached);
         this.#setupAttachmentListeners(this.#connection);
     }
     async initialize() {
@@ -118,10 +122,7 @@ export class TargetManager extends EventEmitter {
         return target._childTargets();
     }
     dispose() {
-        this.#connection.off('Target.targetCreated', this.#onTargetCreated);
-        this.#connection.off('Target.targetDestroyed', this.#onTargetDestroyed);
-        this.#connection.off('Target.targetInfoChanged', this.#onTargetInfoChanged);
-        this.#connection.off(CDPSessionEvent.SessionDetached, this.#onSessionDetached);
+        this.#subscriptions.dispose();
         this.#removeAttachmentListeners(this.#connection);
     }
     getAvailableTargets() {
@@ -131,42 +132,37 @@ export class TargetManager extends EventEmitter {
         return this.#discoveredTargetsByTargetId;
     }
     #setupAttachmentListeners(session) {
-        const listener = (event) => {
+        assert(!this.#attachmentSubscriptions.has(session));
+        const subscriptions = new DisposableStack();
+        const sessionEmitter = subscriptions.use(new EventEmitter(session));
+        sessionEmitter.on('Target.attachedToTarget', event => {
             void this.#onAttachedToTarget(session, event);
-        };
-        assert(!this.#attachedToTargetListenersBySession.has(session));
-        this.#attachedToTargetListenersBySession.set(session, listener);
-        session.on('Target.attachedToTarget', listener);
-        const detachedListener = (event) => {
+        });
+        sessionEmitter.on('Target.detachedFromTarget', event => {
             return this.#onDetachedFromTarget(session, event);
-        };
-        assert(!this.#detachedFromTargetListenersBySession.has(session));
-        this.#detachedFromTargetListenersBySession.set(session, detachedListener);
-        session.on('Target.detachedFromTarget', detachedListener);
+        });
+        this.#attachmentSubscriptions.set(session, subscriptions);
     }
     #removeAttachmentListeners(session) {
-        const listener = this.#attachedToTargetListenersBySession.get(session);
-        if (listener) {
-            session.off('Target.attachedToTarget', listener);
-            this.#attachedToTargetListenersBySession.delete(session);
-        }
-        const detachedListener = this.#detachedFromTargetListenersBySession.get(session);
-        if (detachedListener) {
-            session.off('Target.detachedFromTarget', detachedListener);
-            this.#detachedFromTargetListenersBySession.delete(session);
+        const subscriptions = this.#attachmentSubscriptions.get(session);
+        if (subscriptions) {
+            subscriptions.dispose();
+            this.#attachmentSubscriptions.delete(session);
         }
     }
     #silentDetach = async (session, parentSession) => {
-        await session
-            .send('Runtime.runIfWaitingForDebugger')
-            .catch(debugCatchError);
+        await session.send('Runtime.runIfWaitingForDebugger').catch(error => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+        });
         // We don't use `session.detach()` because that dispatches all commands on
         // the connection instead of the parent session.
         await parentSession
             .send('Target.detachFromTarget', {
             sessionId: session.id(),
         })
-            .catch(debugCatchError);
+            .catch(error => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+        });
     };
     #getParentTarget = (parentSession) => {
         return parentSession instanceof CdpCDPSession
@@ -259,7 +255,9 @@ export class TargetManager extends EventEmitter {
                 await Promise.all([
                     this.#maybeSetupNetworkConditions(session, targetInfo),
                     session.send('Runtime.runIfWaitingForDebugger'),
-                ]).catch(debugCatchError);
+                ]).catch(error => {
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                });
                 return;
             }
             await this.#silentDetach(session, parentSession);
@@ -322,7 +320,9 @@ export class TargetManager extends EventEmitter {
             }),
             this.#maybeSetupNetworkConditions(session, targetInfo),
             session.send('Runtime.runIfWaitingForDebugger'),
-        ]).catch(debugCatchError);
+        ]).catch(error => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+        });
     };
     #finishInitializationIfReady(targetId) {
         if (targetId !== undefined) {
@@ -425,7 +425,9 @@ export class TargetManager extends EventEmitter {
             offline: this.#blocklist.length > 0 ? true : undefined,
             matchedNetworkConditions,
         }));
-        await Promise.all(promises).catch(debugCatchError);
+        await Promise.all(promises).catch(error => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+        });
     };
 }
 //# sourceMappingURL=TargetManager.js.map

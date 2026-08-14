@@ -7,7 +7,8 @@ declare global {
     const __PUPPETEER_DEBUG: string;
 }
 /**
- * @internal
+ * @public
+ * @experimental
  */
 export declare const DEBUG_PREFIXES: {
     readonly cdpSend: "puppeteer:protocol:SEND ►";
@@ -18,15 +19,40 @@ export declare const DEBUG_PREFIXES: {
     readonly ffmpeg: "puppeteer:ffmpeg";
 };
 /**
- * @internal
+ * @public
+ * @experimental
  */
 export type DebugPrefix = (typeof DEBUG_PREFIXES)[keyof typeof DEBUG_PREFIXES];
 /**
+ * A function called by Puppeteer to output debug messages.
+ *
+ * @param args - Arbitrary values to log for a debug event.
+ *
  * @public
  * @experimental
  */
 export type LoggerFunction = (...args: unknown[]) => void;
 /**
+ * A logger factory function that receives a debug channel prefix and returns
+ * a {@link LoggerFunction} to emit logs for that channel, or `undefined` if
+ * logging is disabled for that channel.
+ *
+ * @example
+ *
+ * ```ts
+ * const customLogger: Logger = (prefix: string) => {
+ *   if (prefix.includes('protocol')) {
+ *     return (...args: unknown[]) =>
+ *       console.log(`[DEBUG: ${prefix}]`, ...args);
+ *   }
+ *   return undefined;
+ * };
+ * ```
+ *
+ * @param prefix - A debug channel prefix, one of {@link DebugPrefix}.
+ * @returns A {@link LoggerFunction} to log messages for the channel,
+ * or `undefined` if logging is disabled.
+ *
  * @public
  * @experimental
  */

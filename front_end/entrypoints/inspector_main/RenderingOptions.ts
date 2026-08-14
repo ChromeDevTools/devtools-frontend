@@ -250,9 +250,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
           i18nString(UIStrings.forcesCssPreferscontrastMedia),
           Common.Settings.Settings.instance().moduleSetting('emulated-css-media-feature-prefers-contrast'));
     }
-    this.#appendSelect(
-        i18nString(UIStrings.forcesCssPrefersreducedmotion),
-        Common.Settings.Settings.instance().moduleSetting('emulated-css-media-feature-prefers-reduced-motion'));
+    this.#appendSelect(i18nString(UIStrings.forcesCssPrefersreducedmotion),
+                       Common.Settings.Settings.instance().resolve(
+                           SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor));
     if (supportsPrefersReducedData()) {
       this.#appendSelect(
           i18nString(UIStrings.forcesCssPrefersreduceddataMedia),

@@ -227,30 +227,6 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'emulated-css-media-feature-prefers-reduced-motion',
-  settingType: Common.Settings.SettingType.ENUM,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  defaultValue: '',
-  options: [
-    {
-      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'prefers-reduced-motion'}),
-      text: i18nLazyString(UIStrings.noEmulation),
-      value: '',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-reduced-motion: reduce'}),
-      text: i18n.i18n.lockedLazyString('prefers-reduced-motion: reduce'),
-      value: 'reduce',
-    },
-  ],
-  tags: [
-    i18nLazyString(UIStrings.query),
-  ],
-  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-reduced-motion'}),
-});
-
-Common.Settings.registerSettingExtension({
   settingName: 'emulated-css-media-feature-prefers-contrast',
   settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.SESSION,

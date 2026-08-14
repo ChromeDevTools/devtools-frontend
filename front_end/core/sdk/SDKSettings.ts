@@ -192,3 +192,10 @@ export const emulatedCSSMediaFeatureForcedColorsSettingDescriptor: Common.Settin
   defaultValue: '',
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'emulated-css-media-feature-prefers-reduced-motion',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: '',
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

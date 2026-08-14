@@ -13,6 +13,7 @@ import {
   cpuPressureSettingDescriptor,
   emulatedCSSMediaFeatureForcedColorsSettingDescriptor,
   emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor,
+  emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor,
   emulatedCSSMediaSettingDescriptor,
   idleDetectionSettingDescriptor,
   javaScriptDisabledSettingDescriptor,
@@ -121,7 +122,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
     const mediaFeaturePrefersReducedTransparencySetting =
         settings.moduleSetting<string>('emulated-css-media-feature-prefers-reduced-transparency');
     const mediaFeaturePrefersReducedMotionSetting =
-        settings.moduleSetting<string>('emulated-css-media-feature-prefers-reduced-motion');
+        settings.resolve(emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor);
     // Note: this uses a different format than what the CDP API expects,
     // because we want to update these values per media type/feature
     // without having to search the `features` array (inefficient) or

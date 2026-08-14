@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting that disables JPEG XL format.
-   */
-  disableJpegXlFormat: 'Disable `JPEG XL` format',
-  /**
-   * @description Title of a setting that enables JPEG XL format.
-   */
-  enableJpegXlFormat: 'Enable `JPEG XL` format',
-  /**
    * @description Title of a setting that disables WebP format.
    */
   disableWebpFormat: 'Disable `WebP` format',
@@ -78,24 +70,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'jpeg-xl-format-disabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.disableJpegXlFormat),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.enableJpegXlFormat),
-    },
-  ],
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

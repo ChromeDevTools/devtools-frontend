@@ -282,7 +282,8 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
     const avifFormatDisabledSetting =
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.avifFormatDisabledSettingDescriptor);
-    const jpegXlFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('jpeg-xl-format-disabled');
+    const jpegXlFormatDisabledSetting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.jpegXlFormatDisabledSettingDescriptor);
     const webpFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('webp-format-disabled');
 
     this.#appendCheckbox(

@@ -258,3 +258,10 @@ export const avifFormatDisabledSettingDescriptor: Common.Settings.SettingDescrip
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const jpegXlFormatDisabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'jpeg-xl-format-disabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

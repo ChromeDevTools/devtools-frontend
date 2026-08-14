@@ -99,7 +99,8 @@ describe('EmulationModel', () => {
     const emulationAgent = target.emulationAgent();
     const spySetDisabledImageTypes = sinon.stub(emulationAgent, 'invoke_setDisabledImageTypes');
 
-    const jpegXlFormatDisabledSetting = universe.settings.moduleSetting('jpeg-xl-format-disabled');
+    const jpegXlFormatDisabledSetting =
+        universe.settings.resolve(SDK.SDKSettings.jpegXlFormatDisabledSettingDescriptor);
     jpegXlFormatDisabledSetting.set(true);
 
     sinon.assert.calledOnce(spySetDisabledImageTypes);

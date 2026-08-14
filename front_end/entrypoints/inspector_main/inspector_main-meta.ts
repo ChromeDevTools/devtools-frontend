@@ -289,6 +289,14 @@ const UIStrings = {
    */
   enableAvifFormat: 'Enable `AVIF` format',
   /**
+   * @description Title of a setting that disables JPEG XL format.
+   */
+  disableJpegXlFormat: 'Disable `JPEG XL` format',
+  /**
+   * @description Title of a setting that enables JPEG XL format.
+   */
+  enableJpegXlFormat: 'Enable `JPEG XL` format',
+  /**
    * @description Title of an action that reloads the inspected page.
    */
   reloadPage: 'Reload page',
@@ -913,6 +921,20 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.avifFormatDisabledSett
     {
       value: false,
       title: i18nLazyString(UIStrings.enableAvifFormat),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.jpegXlFormatDisabledSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.disableJpegXlFormat),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.enableJpegXlFormat),
     },
   ],
 });

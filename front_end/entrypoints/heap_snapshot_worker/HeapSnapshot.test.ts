@@ -1180,6 +1180,59 @@ describe('HeapSnapshot', () => {
     assert.strictEqual(JSON.stringify(referenceToCompare), JSON.stringify(resultToCompare));
   });
 
+  it('heapSnapshotLoaderThrowsOnMalformedSnapshot', async () => {
+    const dispatcher = new HeapSnapshotWorker.HeapSnapshotWorkerDispatcher.HeapSnapshotWorkerDispatcher(() => {});
+    const loader = new HeapSnapshotWorker.HeapSnapshotLoader.HeapSnapshotLoader(dispatcher);
+    loader.write('{"invalid_snapshot": true}');
+    loader.close();
+
+    const channel = new MessageChannel();
+    new HeapSnapshotWorker.HeapSnapshot.SecondaryInitManager(channel.port2);
+    try {
+      await loader.buildSnapshot(channel.port1);
+      assert.fail('Expected buildSnapshot to throw on invalid input');
+    } catch (error) {
+      assert.instanceOf(error, Error);
+      assert.include((error as Error).message, 'Token "snapshot" not found');
+    } finally {
+      channel.port1.close();
+      channel.port2.close();
+    }
+  });
+
+  it('heapSnapshotLoaderThrowsOnTruncatedData', async () => {
+    const dispatcher = new HeapSnapshotWorker.HeapSnapshotWorkerDispatcher.HeapSnapshotWorkerDispatcher(() => {});
+    const loader = new HeapSnapshotWorker.HeapSnapshotLoader.HeapSnapshotLoader(dispatcher);
+    const truncatedSnapshot = JSON.stringify({
+      snapshot: {
+        meta: {
+          node_fields: ['type', 'name', 'id', 'self_size', 'retained_size', 'dominator', 'edge_count'],
+          node_types: [['hidden', 'object'], '', '', '', '', '', ''],
+          edge_fields: ['type', 'name_or_index', 'to_node'],
+          edge_types: [['element', 'property'], '', ''],
+        },
+        node_count: 5,
+        edge_count: 5,
+      },
+      nodes: [0, 1, 2],
+    });
+    loader.write(truncatedSnapshot);
+    loader.close();
+
+    const channel = new MessageChannel();
+    new HeapSnapshotWorker.HeapSnapshot.SecondaryInitManager(channel.port2);
+    try {
+      await loader.buildSnapshot(channel.port1);
+      assert.fail('Expected buildSnapshot to throw on truncated input');
+    } catch (error) {
+      assert.instanceOf(error, Error);
+      assert.include((error as Error).message, 'unexpected end of input');
+    } finally {
+      channel.port1.close();
+      channel.port2.close();
+    }
+  });
+
   it('heapSnapshotNodeIndexForId', async () => {
     const builder = new HeapSnapshotBuilder();
     const root = builder.rootNode;

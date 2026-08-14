@@ -251,3 +251,10 @@ export const localFontsDisabledSettingDescriptor: Common.Settings.SettingDescrip
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const avifFormatDisabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'avif-format-disabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

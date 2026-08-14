@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting that disables AVIF format.
-   */
-  disableAvifFormat: 'Disable `AVIF` format',
-  /**
-   * @description Title of a setting that enables AVIF format.
-   */
-  enableAvifFormat: 'Enable `AVIF` format',
-  /**
    * @description Title of a setting that disables JPEG XL format.
    */
   disableJpegXlFormat: 'Disable `JPEG XL` format',
@@ -86,24 +78,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'avif-format-disabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.disableAvifFormat),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.enableAvifFormat),
-    },
-  ],
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

@@ -280,7 +280,8 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    const avifFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('avif-format-disabled');
+    const avifFormatDisabledSetting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.avifFormatDisabledSettingDescriptor);
     const jpegXlFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('jpeg-xl-format-disabled');
     const webpFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('webp-format-disabled');
 

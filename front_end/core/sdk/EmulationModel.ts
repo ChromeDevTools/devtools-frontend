@@ -10,6 +10,7 @@ import type {MultitargetNetworkManager} from './NetworkManager.js';
 import {Events, OverlayModel} from './OverlayModel.js';
 import {SDKModel} from './SDKModel.js';
 import {
+  avifFormatDisabledSettingDescriptor,
   cpuPressureSettingDescriptor,
   emulatedCSSMediaFeatureColorGamutSettingDescriptor,
   emulatedCSSMediaFeatureForcedColorsSettingDescriptor,
@@ -209,7 +210,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
       this.setLocalFontsDisabled(localFontsDisabledSetting.get());
     }
 
-    const avifFormatDisabledSetting = settings.moduleSetting('avif-format-disabled');
+    const avifFormatDisabledSetting = settings.resolve(avifFormatDisabledSettingDescriptor);
     const jpegXlFormatDisabledSetting = settings.moduleSetting('jpeg-xl-format-disabled');
     const webpFormatDisabledSetting = settings.moduleSetting('webp-format-disabled');
 

@@ -281,6 +281,14 @@ const UIStrings = {
    */
   enableLocalFonts: 'Enable local fonts',
   /**
+   * @description Title of a setting that disables AVIF format.
+   */
+  disableAvifFormat: 'Disable `AVIF` format',
+  /**
+   * @description Title of a setting that enables AVIF format.
+   */
+  enableAvifFormat: 'Enable `AVIF` format',
+  /**
    * @description Title of an action that reloads the inspected page.
    */
   reloadPage: 'Reload page',
@@ -891,6 +899,20 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.localFontsDisabledSett
     {
       value: false,
       title: i18nLazyString(UIStrings.enableLocalFonts),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.avifFormatDisabledSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.disableAvifFormat),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.enableAvifFormat),
     },
   ],
 });

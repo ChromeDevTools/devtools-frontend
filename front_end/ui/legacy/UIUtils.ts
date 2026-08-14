@@ -60,6 +60,7 @@ import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import smallBubbleStyles from './smallBubble.css.js';
 import {Tooltip} from './Tooltip.js';
+import * as WidgetUtils from './Widget.js';
 import {Widget} from './Widget.js';
 
 declare global {
@@ -1983,6 +1984,20 @@ export const cloneCustomElement = <T extends HTMLElement>(element: T, deep?: boo
   return clone;
 };
 
+class UIUtilsWidgetDirective extends WidgetUtils.WidgetDirective {
+  override update(part: Lit.Directive.Part, args: Parameters<WidgetUtils.WidgetDirective['render']>): unknown {
+    const result = super.update(part, args as unknown as Parameters<this['render']>);
+    if (part.type === Lit.Directive.PartType.ELEMENT) {
+      const lightNode = (part as Lit.Directive.ElementPart).element;
+      for (const clone of HTMLElementWithLightDOMTemplate.getClones(lightNode)) {
+        super.update({type: Lit.Directive.PartType.ELEMENT, element: clone} as Lit.Directive.ElementPart,
+                     args as unknown as Parameters<this['render']>);
+      }
+    }
+    return result;
+  }
+}
+
 export class HTMLElementWithLightDOMTemplate extends HTMLElement {
   readonly #mutationObserver = new MutationObserver(this.#onChange.bind(this));
   #contentTemplate: HTMLTemplateElement|null = null;
@@ -1992,13 +2007,43 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     this.#mutationObserver.observe(this, {childList: true, attributes: true, subtree: true, characterData: true});
   }
 
+  static readonly #originalToClones = new WeakMap<Node, Set<WeakRef<Node>>>();
+  static getClones(node: Node): Node[] {
+    const cloneSet = this.#originalToClones.get(node);
+    if (!cloneSet) {
+      return [];
+    }
+    const clones: Node[] = [];
+    for (const cloneRef of cloneSet) {
+      const clone = cloneRef.deref();
+      if (clone) {
+        clones.push(clone);
+      } else {
+        cloneSet.delete(cloneRef);
+      }
+    }
+    return clones;
+  }
+
   static cloneNode(node: Node): Node {
     const clone = node.cloneNode(false);
+
+    let cloneSet = HTMLElementWithLightDOMTemplate.#originalToClones.get(node);
+    if (!cloneSet) {
+      cloneSet = new Set();
+      HTMLElementWithLightDOMTemplate.#originalToClones.set(node, cloneSet);
+    }
+    cloneSet.add(new WeakRef(clone));
+
     for (const child of node.childNodes) {
       clone.appendChild(HTMLElementWithLightDOMTemplate.cloneNode(child));
     }
     if (node instanceof Element && clone instanceof Element) {
       Lit.CustomDirectives.InterceptBindingDirective.setEventListeners(node, clone);
+      const currentConfig = WidgetUtils.widgetConfigs.get(node as HTMLElement);
+      if (currentConfig) {
+        WidgetUtils.registerWidgetConfig(clone as HTMLElement, currentConfig);
+      }
     }
     return clone;
   }
@@ -2044,6 +2089,10 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
         return value;
       }
       if (Lit.isLitDirective(value)) {
+        const directiveValue = value as unknown as {_$litDirective$?: unknown};
+        if (directiveValue['_$litDirective$'] === WidgetUtils.WidgetDirective) {
+          directiveValue['_$litDirective$'] = UIUtilsWidgetDirective;
+        }
         for (let i = 0; i < value.values.length; i++) {
           const subvalue = value.values[i];
           if (isCallable(subvalue)) {

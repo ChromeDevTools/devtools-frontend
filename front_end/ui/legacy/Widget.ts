@@ -212,7 +212,7 @@ function runNextUpdate(): void {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const widgetConfigs = new WeakMap<HTMLElement, WidgetConfig<any>>();
+export const widgetConfigs = new WeakMap<HTMLElement, WidgetConfig<any>>();
 
 export function registerWidgetConfig<WidgetT extends AnyWidget>(element: HTMLElement,
                                                                 config: WidgetConfig<WidgetT>): void {

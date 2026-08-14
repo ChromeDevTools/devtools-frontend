@@ -133,9 +133,8 @@ describe('UIUtils', () => {
       const container = document.createElement('div');
       renderElementIntoDOM(container);
       const buttonRef = Lit.Directives.createRef<Buttons.Button.Button>();
-      Lit.render(
-          html`<devtools-button ${Lit.Directives.ref(buttonRef)} ${bindToAction(actionId)}></devtools-button>`,
-          container);
+      Lit.render(html`<devtools-button ${Lit.Directives.ref(buttonRef)} ${bindToAction(actionId)}></devtools-button>`,
+                 container);
 
       const button = buttonRef.value;
       assert.exists(button);
@@ -198,13 +197,12 @@ describe('UIUtils', () => {
 
     it('renders its input into a template', async () => {
       const container = document.createElement('div');
-      Lit.render(
-          html`
+      Lit.render(html`
         <test-element
           .template=${html`
             <button id=button>button</button>
           `}></test-element>`,
-          container);
+                 container);
       const element = container.firstElementChild;
       assert.instanceOf(element, TestElement);
       assert.lengthOf(element.children, 1);
@@ -230,27 +228,24 @@ describe('UIUtils', () => {
       await raf();
       assert.deepEqual(nodeContents(container.additions), [{DIV: 'add'}]);
       assert.deepEqual(nodeContents(container.removals), []);
-      assert.deepEqual(
-          container.updates,
-          [{node: 'TEST-ELEMENT', attributeName: null}, {node: 'TEST-ELEMENT', attributeName: null}]);
+      assert.deepEqual(container.updates,
+                       [{node: 'TEST-ELEMENT', attributeName: null}, {node: 'TEST-ELEMENT', attributeName: null}]);
 
       container.clear();
       Lit.render(html`<div attribute>add</div>`, container);
       await raf();
       assert.deepEqual(nodeContents(container.additions), [{DIV: 'add'}]);
       assert.deepEqual(nodeContents(container.removals), [{DIV: 'add'}]);
-      assert.deepEqual(
-          container.updates,
-          [{node: 'TEST-ELEMENT', attributeName: null}, {node: 'TEST-ELEMENT', attributeName: null}]);
+      assert.deepEqual(container.updates,
+                       [{node: 'TEST-ELEMENT', attributeName: null}, {node: 'TEST-ELEMENT', attributeName: null}]);
 
       container.clear();
       Lit.render(html`<div attribute><p>inner</p></div>`, container);
       await raf();
       assert.deepEqual(nodeContents(container.additions), [{DIV: 'inner'}]);
       assert.deepEqual(nodeContents(container.removals), [{DIV: 'add'}]);
-      assert.deepEqual(
-          container.updates,
-          [{node: 'TEST-ELEMENT', attributeName: null}, {node: 'TEST-ELEMENT', attributeName: null}]);
+      assert.deepEqual(container.updates,
+                       [{node: 'TEST-ELEMENT', attributeName: null}, {node: 'TEST-ELEMENT', attributeName: null}]);
 
       container.clear();
       Lit.render(nothing, container);
@@ -264,11 +259,10 @@ describe('UIUtils', () => {
       const container = document.createElement('div');
       renderElementIntoDOM(container);
 
-      Lit.render(
-          html`
+      Lit.render(html`
         <test-element ?attribute=${false}>
         </test-element>`,
-          container);
+                 container);
 
       await raf();
       {
@@ -279,11 +273,10 @@ describe('UIUtils', () => {
         assert.deepEqual(element.updates, []);
       }
 
-      Lit.render(
-          html`
+      Lit.render(html`
         <test-element ?attribute=${true}>
         </test-element>`,
-          container);
+                 container);
 
       await raf();
       {
@@ -303,11 +296,10 @@ describe('UIUtils', () => {
 
       const interception = sinon.stub(Lit.CustomDirectives.InterceptBindingDirective.prototype, 'render');
 
-      Lit.render(
-          html`
+      Lit.render(html`
         <test-element
           .template=${html`<button @click=${onClick}>button</button>`}></test-element>`,
-          container);
+                 container);
 
       await raf();
 
@@ -415,6 +407,58 @@ describe('UIUtils', () => {
       await raf();
 
       assert.instanceOf(instantiatedWidget, MockWidget);
+    });
+
+    it('synchronizes widget config updates to cloned template', async () => {
+      class MockWidget extends UI.Widget.Widget {
+        payload = '';
+      }
+
+      class TestComponent2 extends UI.UIUtils.HTMLElementWithLightDOMTemplate {}
+      if (!customElements.get('test-component-reactivity')) {
+        customElements.define('test-component-reactivity', TestComponent2);
+      }
+
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      function renderMockWidget(payload: string) {
+        Lit.render(html`
+          <test-component-reactivity
+            .template=${
+                       html`<devtools-widget ${
+                           UI.Widget.widget(MockWidget, {payload})}></devtools-widget>`}></test-component-reactivity>`,
+                   container);
+      }
+
+      renderMockWidget('initial');
+
+      await raf();
+
+      const el = container.querySelector('test-component-reactivity');
+      assert.exists(el);
+      const template = el.querySelector('template');
+      assert.exists(template);
+      const lightWidgetStr = template.content.querySelector('devtools-widget');
+      assert.exists(lightWidgetStr);
+
+      // Simulate DevTools cloning the template into a shadow root
+      const shadowRootMock = document.createElement('div');
+      container.appendChild(shadowRootMock);
+      const shadowWidgetStr = UI.UIUtils.HTMLElementWithLightDOMTemplate.cloneNode(lightWidgetStr);
+      shadowRootMock.appendChild(shadowWidgetStr);
+
+      const widget = UI.Widget.Widget.get(shadowWidgetStr) as MockWidget;
+      assert.instanceOf(widget, MockWidget);
+      assert.strictEqual(widget.payload, 'initial');
+
+      // Re-render with new payload
+      renderMockWidget('updated');
+
+      await raf();
+
+      // The update is successfully synchronized to the clone!
+      assert.strictEqual(widget.payload, 'updated');
     });
   });
 
@@ -768,20 +812,20 @@ describe('bindCheckbox', () => {
 
     it('returns "Promise resolved (async)" if description is "Promise.resolve"', () => {
       const stackTrace = StubStackTrace.create([], [{description: 'Promise.resolve', frames: []}]);
-      assert.strictEqual(
-          UI.UIUtils.asyncFragmentLabel(stackTrace, stackTrace.asyncFragments[0]), 'Promise resolved (async)');
+      assert.strictEqual(UI.UIUtils.asyncFragmentLabel(stackTrace, stackTrace.asyncFragments[0]),
+                         'Promise resolved (async)');
     });
 
     it('returns "Promise rejected (async)" if description is "Promise.reject"', () => {
       const stackTrace = StubStackTrace.create([], [{description: 'Promise.reject', frames: []}]);
-      assert.strictEqual(
-          UI.UIUtils.asyncFragmentLabel(stackTrace, stackTrace.asyncFragments[0]), 'Promise rejected (async)');
+      assert.strictEqual(UI.UIUtils.asyncFragmentLabel(stackTrace, stackTrace.asyncFragments[0]),
+                         'Promise rejected (async)');
     });
 
     it('returns "await in <functionName>" if description is "await" and there is a previous frame', () => {
       const stackTrace = StubStackTrace.create(['url:1:functionName:10:1'], [{description: 'await', frames: []}]);
-      assert.strictEqual(
-          UI.UIUtils.asyncFragmentLabel(stackTrace, stackTrace.asyncFragments[0]), 'await in functionName');
+      assert.strictEqual(UI.UIUtils.asyncFragmentLabel(stackTrace, stackTrace.asyncFragments[0]),
+                         'await in functionName');
     });
 
     it('returns "await" if description is "await" and there is no previous frame', () => {
@@ -795,8 +839,8 @@ describe('bindCheckbox', () => {
            {description: 'someAsyncCall', frames: ['url:1:asyncFunction:10:1']},
            {description: 'await', frames: []},
          ]);
-         assert.strictEqual(
-             UI.UIUtils.asyncFragmentLabel(stackTrace, stackTrace.asyncFragments[1]), 'await in asyncFunction');
+         assert.strictEqual(UI.UIUtils.asyncFragmentLabel(stackTrace, stackTrace.asyncFragments[1]),
+                            'await in asyncFunction');
        });
   });
 });

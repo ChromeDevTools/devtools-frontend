@@ -178,3 +178,10 @@ export const idleDetectionSettingDescriptor: Common.Settings.SettingDescriptor<s
   type: Common.Settings.SettingType.ENUM,
   defaultValue: 'none',
 };
+
+export const emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'emulated-css-media-feature-prefers-color-scheme',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: '',
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

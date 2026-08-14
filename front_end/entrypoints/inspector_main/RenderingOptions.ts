@@ -236,10 +236,10 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    this.#appendSelect(
-        i18nString(UIStrings.forcesCssPreferscolorschemeMedia),
-        Common.Settings.Settings.instance().moduleSetting('emulated-css-media-feature-prefers-color-scheme'),
-        autoDarkModeSetting.get());
+    this.#appendSelect(i18nString(UIStrings.forcesCssPreferscolorschemeMedia),
+                       Common.Settings.Settings.instance().resolve(
+                           SDK.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor),
+                       autoDarkModeSetting.get());
     this.#appendSelect(i18nString(UIStrings.forcesMediaTypeForTestingPrint),
                        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatedCSSMediaSettingDescriptor));
     this.#appendSelect(
@@ -328,8 +328,8 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
 export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
-    const emulatedCSSMediaFeaturePrefersColorSchemeSetting =
-        Common.Settings.Settings.instance().moduleSetting('emulated-css-media-feature-prefers-color-scheme');
+    const emulatedCSSMediaFeaturePrefersColorSchemeSetting = Common.Settings.Settings.instance().resolve(
+        SDK.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor);
 
     switch (actionId) {
       case 'rendering.toggle-prefers-color-scheme': {

@@ -100,6 +100,21 @@ const UIStrings = {
    */
   emulateCssMediaType: 'Emulate CSS media type',
   /**
+   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
+   * @example {prefers-color-scheme} PH1
+   */
+  doNotEmulateCss: 'Do not emulate CSS {PH1}',
+  /**
+   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
+   * @example {prefers-color-scheme: light} PH1
+   */
+  emulateCss: 'Emulate CSS {PH1}',
+  /**
+   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
+   * @example {prefers-color-scheme} PH1
+   */
+  emulateCssMediaFeature: 'Emulate CSS media feature {PH1}',
+  /**
    * @description Title of the Rendering panel. The Rendering panel is a collection of settings that
    * lets the user debug the rendering (i.e. how the website is drawn onto the screen) of the
    * website (https://developer.chrome.com/docs/devtools/evaluate-performance/reference#rendering).
@@ -466,4 +481,29 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatedCSSMediaSettin
   tags: [
     i18nLazyString(UIStrings.query),
   ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'prefers-color-scheme'}),
+      text: i18nLazyString(UIStrings.noEmulation),
+      value: '',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-color-scheme: light'}),
+      text: i18n.i18n.lockedLazyString('prefers-color-scheme: light'),
+      value: 'light',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-color-scheme: dark'}),
+      text: i18n.i18n.lockedLazyString('prefers-color-scheme: dark'),
+      value: 'dark',
+    },
+  ],
+  tags: [
+    i18nLazyString(UIStrings.query),
+  ],
+  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-color-scheme'}),
 });

@@ -228,35 +228,6 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'emulated-css-media-feature-prefers-color-scheme',
-  settingType: Common.Settings.SettingType.ENUM,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  defaultValue: '',
-  options: [
-    {
-      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'prefers-color-scheme'}),
-      text: i18nLazyString(UIStrings.noEmulation),
-      value: '',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-color-scheme: light'}),
-      text: i18n.i18n.lockedLazyString('prefers-color-scheme: light'),
-      value: 'light',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-color-scheme: dark'}),
-      text: i18n.i18n.lockedLazyString('prefers-color-scheme: dark'),
-      value: 'dark',
-    },
-  ],
-  tags: [
-    i18nLazyString(UIStrings.query),
-  ],
-  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-color-scheme'}),
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'emulated-css-media-feature-forced-colors',
   settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.SESSION,

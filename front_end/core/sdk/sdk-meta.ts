@@ -11,22 +11,6 @@ const UIStrings = {
    */
   noEmulation: 'No emulation',
   /**
-   * @description Text for the touch type to simulate on a device. Refers to touch input as opposed to
-   * mouse input.
-   */
-  touch: 'Touch',
-  /**
-   * @description Text in Sensors View of the Device Toolbar. Means that touch input will be forced
-   *on, even if the device type e.g. desktop computer does not normally have touch input.
-   */
-  forceEnabled: 'Force enabled',
-  /**
-   * @description Text in Sensors View of the Device Toolbar. Refers to device-based touch input,
-   *which means the input type will be 'touch' only if the device normally has touch input e.g. a
-   *phone or tablet.
-   */
-  devicebased: 'Device-based',
-  /**
    * @description Title of a section option in Sensors tab for idle emulation. This is a command, to
    *emulate the state of the 'Idle Detector'.
    */
@@ -266,26 +250,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  title: i18nLazyString(UIStrings.touch),
-  reloadRequired: true,
-  settingName: 'emulation.touch',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'none',
-  options: [
-    {
-      value: 'none',
-      title: i18nLazyString(UIStrings.devicebased),
-      text: i18nLazyString(UIStrings.devicebased),
-    },
-    {
-      value: 'force',
-      title: i18nLazyString(UIStrings.forceEnabled),
-      text: i18nLazyString(UIStrings.forceEnabled),
-    },
-  ],
-});
 
 Common.Settings.registerSettingExtension({
   title: i18nLazyString(UIStrings.emulateIdleDetectorState),

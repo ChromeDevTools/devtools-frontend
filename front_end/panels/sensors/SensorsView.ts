@@ -967,7 +967,7 @@ export class SensorsView extends UI.Widget.VBox {
   private appendTouchControl(): void {
     const container = this.contentElement.createChild('div', 'touch-section');
     const control = SettingsUI.SettingsUI.createControlForSetting(
-        Common.Settings.Settings.instance().moduleSetting('emulation.touch'),
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
         i18nString(UIStrings.forcesTouchInsteadOfClick));
 
     if (control) {

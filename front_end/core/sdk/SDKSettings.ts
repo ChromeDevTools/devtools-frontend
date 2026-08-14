@@ -166,3 +166,9 @@ export const cpuPressureSettingDescriptor: Common.Settings.SettingDescriptor<str
   type: Common.Settings.SettingType.ENUM,
   defaultValue: 'none',
 };
+
+export const touchSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'emulation.touch',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'none',
+};

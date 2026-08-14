@@ -36,6 +36,22 @@ const UIStrings = {
    */
   critical: 'Critical',
   /**
+   * @description Text for the touch type to simulate on a device. Refers to touch input as opposed to
+   * mouse input.
+   */
+  touch: 'Touch',
+  /**
+   * @description Text in Sensors View of the Device Toolbar. Means that touch input will be forced
+   *on, even if the device type e.g. desktop computer does not normally have touch input.
+   */
+  forceEnabled: 'Force enabled',
+  /**
+   * @description Text in Sensors View of the Device Toolbar. Refers to device-based touch input,
+   *which means the input type will be 'touch' only if the device normally has touch input e.g. a
+   *phone or tablet.
+   */
+  devicebased: 'Device-based',
+  /**
    * @description Title of the Sensors view. The Sensors view contains GPS, orientation sensors, touch
    * settings, and more.
    */
@@ -238,6 +254,23 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.cpuPressureSettingDesc
       value: 'critical',
       title: i18nLazyString(UIStrings.critical),
       text: i18nLazyString(UIStrings.critical),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.touchSettingDescriptor, {
+  title: i18nLazyString(UIStrings.touch),
+  reloadRequired: true,
+  options: [
+    {
+      value: 'none',
+      title: i18nLazyString(UIStrings.devicebased),
+      text: i18nLazyString(UIStrings.devicebased),
+    },
+    {
+      value: 'force',
+      title: i18nLazyString(UIStrings.forceEnabled),
+      text: i18nLazyString(UIStrings.forceEnabled),
     },
   ],
 });

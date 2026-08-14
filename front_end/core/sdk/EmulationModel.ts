@@ -13,6 +13,7 @@ import {
   cpuPressureSettingDescriptor,
   emulatedCSSMediaSettingDescriptor,
   javaScriptDisabledSettingDescriptor,
+  touchSettingDescriptor,
 } from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 
@@ -65,7 +66,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
       void this.#emulationAgent.invoke_setScriptExecutionDisabled({value: true});
     }
 
-    const touchSetting = settings.moduleSetting('emulation.touch');
+    const touchSetting = settings.resolve(touchSettingDescriptor);
     touchSetting.addChangeListener(() => {
       const settingValue = touchSetting.get();
 

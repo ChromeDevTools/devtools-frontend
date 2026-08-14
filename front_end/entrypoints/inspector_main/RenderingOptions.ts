@@ -226,7 +226,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
     this.#appendCheckbox(
         i18nString(UIStrings.disableLocalFonts), i18nString(UIStrings.disablesLocalSourcesInFontface),
-        Common.Settings.Settings.instance().moduleSetting('local-fonts-disabled'));
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.localFontsDisabledSettingDescriptor));
     this.#appendCheckbox(i18nString(UIStrings.emulateAFocusedPage), i18nString(UIStrings.emulatesAFocusedPage),
                          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatePageFocusSettingDescriptor),
                          {toggle: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromRenderingTab});

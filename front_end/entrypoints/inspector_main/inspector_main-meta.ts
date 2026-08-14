@@ -273,6 +273,14 @@ const UIStrings = {
    */
   osTextScaleEmulation350: '350%',
   /**
+   * @description Text that refers to disabling local fonts.
+   */
+  disableLocalFonts: 'Disable local fonts',
+  /**
+   * @description Text that refers to enabling local fonts.
+   */
+  enableLocalFonts: 'Enable local fonts',
+  /**
    * @description Title of an action that reloads the inspected page.
    */
   reloadPage: 'Reload page',
@@ -871,4 +879,18 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatedOSTextScaleSet
     i18nLazyString(UIStrings.query),
   ],
   title: i18nLazyString(UIStrings.emulateOsTextScale),
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.localFontsDisabledSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.disableLocalFonts),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.enableLocalFonts),
+    },
+  ],
 });

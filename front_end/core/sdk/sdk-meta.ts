@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Text that refers to disabling local fonts.
-   */
-  disableLocalFonts: 'Disable local fonts',
-  /**
-   * @description Text that refers to enabling local fonts.
-   */
-  enableLocalFonts: 'Enable local fonts',
-  /**
    * @description Title of a setting that disables AVIF format.
    */
   disableAvifFormat: 'Disable `AVIF` format',
@@ -94,24 +86,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'local-fonts-disabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.disableLocalFonts),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.enableLocalFonts),
-    },
-  ],
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

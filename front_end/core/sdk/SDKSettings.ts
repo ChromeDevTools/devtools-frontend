@@ -244,3 +244,10 @@ export const emulatedOSTextScaleSettingDescriptor: Common.Settings.SettingDescri
   defaultValue: '',
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const localFontsDisabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'local-fonts-disabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

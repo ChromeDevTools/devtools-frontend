@@ -23,6 +23,7 @@ import {
   emulatedVisionDeficiencySettingDescriptor,
   idleDetectionSettingDescriptor,
   javaScriptDisabledSettingDescriptor,
+  localFontsDisabledSettingDescriptor,
   touchSettingDescriptor,
 } from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
@@ -202,7 +203,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
       void this.emulateOSTextScale(parseFloat(osTextScaleSetting.get()) || undefined);
     }
 
-    const localFontsDisabledSetting = settings.moduleSetting('local-fonts-disabled');
+    const localFontsDisabledSetting = settings.resolve(localFontsDisabledSettingDescriptor);
     localFontsDisabledSetting.addChangeListener(() => this.setLocalFontsDisabled(localFontsDisabledSetting.get()));
     if (localFontsDisabledSetting.get()) {
       this.setLocalFontsDisabled(localFontsDisabledSetting.get());

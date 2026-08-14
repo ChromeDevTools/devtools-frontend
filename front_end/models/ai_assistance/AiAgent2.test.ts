@@ -609,4 +609,58 @@ describeWithEnvironment('AiAgent2', () => {
     const scope = context.createExtensionScope(new AiAssistance.ChangeManager.ChangeManager());
     assert.exists(scope);
   });
+
+  it('can learn storage skill and declare listStorageKeys and getStorageValues', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['storage']}}],
+      }],
+      [{
+        explanation: 'Storage skill learned.',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+
+    await Array.fromAsync(agent.run('question', {selected: null}));
+
+    sinon.assert.callCount(aidaClient.doConversation, 2);
+    const postLearnDeclarations = aidaClient.doConversation.getCall(1).args[0].function_declarations ?? [];
+    const declaredNames = postLearnDeclarations.map(d => d.name);
+
+    assert.include(declaredNames, 'listPageOrigins');
+    assert.include(declaredNames, 'listStorageKeys');
+    assert.include(declaredNames, 'getStorageValues');
+  });
+
+  it('disables server logging when calling storage tools in AiAgent2', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['storage']}}],
+      }],
+      [{
+        explanation: 'I will list keys',
+        functionCalls: [{name: 'listStorageKeys', args: {type: 'localStorage', origins: ['https://example.com']}}],
+      }],
+      [{
+        explanation: 'Keys listed.',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+
+    const listStorageKeysTool = AiAssistance.ToolRegistry.ToolRegistry.get('listStorageKeys');
+    assert.exists(listStorageKeysTool);
+    const handlerStub = sinon.stub(listStorageKeysTool, 'handler').callsFake(async (_args, context) => {
+      context.setLoggingEnabled(false);
+      return {result: {storageKeysByOrigin: {}}};
+    });
+
+    await Array.fromAsync(agent.run('list keys', {selected: null}));
+
+    sinon.assert.calledOnce(handlerStub);
+    sinon.assert.callCount(aidaClient.doConversation, 3);
+    const thirdCallArgs = aidaClient.doConversation.getCall(2).args[0];
+    assert.isTrue(thirdCallArgs.metadata?.disable_user_content_logging);
+  });
 });

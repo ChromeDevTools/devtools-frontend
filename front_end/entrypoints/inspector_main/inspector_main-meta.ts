@@ -507,3 +507,28 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatedCSSMediaFeatur
   ],
   title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-color-scheme'}),
 });
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatedCSSMediaFeatureForcedColorsSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'forced-colors'}),
+      text: i18nLazyString(UIStrings.noEmulation),
+      value: '',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'forced-colors: active'}),
+      text: i18n.i18n.lockedLazyString('forced-colors: active'),
+      value: 'active',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'forced-colors: none'}),
+      text: i18n.i18n.lockedLazyString('forced-colors: none'),
+      value: 'none',
+    },
+  ],
+  tags: [
+    i18nLazyString(UIStrings.query),
+  ],
+  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'forced-colors'}),
+});

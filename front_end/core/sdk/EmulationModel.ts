@@ -11,6 +11,7 @@ import {Events, OverlayModel} from './OverlayModel.js';
 import {SDKModel} from './SDKModel.js';
 import {
   cpuPressureSettingDescriptor,
+  emulatedCSSMediaFeatureForcedColorsSettingDescriptor,
   emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor,
   emulatedCSSMediaSettingDescriptor,
   idleDetectionSettingDescriptor,
@@ -112,7 +113,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
     const mediaFeatureColorGamutSetting = settings.moduleSetting<string>('emulated-css-media-feature-color-gamut');
     const mediaFeaturePrefersColorSchemeSetting =
         settings.resolve(emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor);
-    const mediaFeatureForcedColorsSetting = settings.moduleSetting('emulated-css-media-feature-forced-colors');
+    const mediaFeatureForcedColorsSetting = settings.resolve(emulatedCSSMediaFeatureForcedColorsSettingDescriptor);
     const mediaFeaturePrefersContrastSetting =
         settings.moduleSetting<string>('emulated-css-media-feature-prefers-contrast');
     const mediaFeaturePrefersReducedDataSetting =

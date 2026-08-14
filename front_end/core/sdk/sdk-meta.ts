@@ -228,35 +228,6 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'emulated-css-media-feature-forced-colors',
-  settingType: Common.Settings.SettingType.ENUM,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  defaultValue: '',
-  options: [
-    {
-      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'forced-colors'}),
-      text: i18nLazyString(UIStrings.noEmulation),
-      value: '',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'forced-colors: active'}),
-      text: i18n.i18n.lockedLazyString('forced-colors: active'),
-      value: 'active',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'forced-colors: none'}),
-      text: i18n.i18n.lockedLazyString('forced-colors: none'),
-      value: 'none',
-    },
-  ],
-  tags: [
-    i18nLazyString(UIStrings.query),
-  ],
-  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'forced-colors'}),
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'emulated-css-media-feature-prefers-reduced-motion',
   settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.SESSION,

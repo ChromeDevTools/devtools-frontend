@@ -185,3 +185,10 @@ export const emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor: Common.
   defaultValue: '',
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const emulatedCSSMediaFeatureForcedColorsSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'emulated-css-media-feature-forced-colors',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: '',
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

@@ -242,9 +242,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
                        autoDarkModeSetting.get());
     this.#appendSelect(i18nString(UIStrings.forcesMediaTypeForTestingPrint),
                        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatedCSSMediaSettingDescriptor));
-    this.#appendSelect(
-        i18nString(UIStrings.forcesCssForcedColors),
-        Common.Settings.Settings.instance().moduleSetting('emulated-css-media-feature-forced-colors'));
+    this.#appendSelect(i18nString(UIStrings.forcesCssForcedColors),
+                       Common.Settings.Settings.instance().resolve(
+                           SDK.SDKSettings.emulatedCSSMediaFeatureForcedColorsSettingDescriptor));
     if (supportsPrefersContrast()) {
       this.#appendSelect(
           i18nString(UIStrings.forcesCssPreferscontrastMedia),

@@ -263,9 +263,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
                          Common.Settings.Settings.instance().resolve(
                              SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor));
     }
-    this.#appendSelect(
-        i18nString(UIStrings.forcesCssColorgamutMediaFeature),
-        Common.Settings.Settings.instance().moduleSetting('emulated-css-media-feature-color-gamut'));
+    this.#appendSelect(i18nString(UIStrings.forcesCssColorgamutMediaFeature),
+                       Common.Settings.Settings.instance().resolve(
+                           SDK.SDKSettings.emulatedCSSMediaFeatureColorGamutSettingDescriptor));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this.#appendSelect(

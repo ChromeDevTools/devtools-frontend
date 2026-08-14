@@ -16,21 +16,6 @@ const UIStrings = {
   query: 'query',
   /**
    * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
-   * @example {prefers-color-scheme} PH1
-   */
-  doNotEmulateCss: 'Do not emulate CSS {PH1}',
-  /**
-   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
-   * @example {prefers-color-scheme: light} PH1
-   */
-  emulateCss: 'Emulate CSS {PH1}',
-  /**
-   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
-   * @example {prefers-color-scheme} PH1
-   */
-  emulateCssMediaFeature: 'Emulate CSS media feature {PH1}',
-  /**
-   * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
    */
   doNotEmulateAnyVisionDeficiency: 'Do not emulate any vision deficiency',
   /**
@@ -225,36 +210,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  settingName: 'emulated-css-media-feature-color-gamut',
-  settingType: Common.Settings.SettingType.ENUM,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  defaultValue: '',
-  options: [
-    {
-      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'color-gamut'}),
-      text: i18nLazyString(UIStrings.noEmulation),
-      value: '',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'color-gamut: srgb'}),
-      text: i18n.i18n.lockedLazyString('color-gamut: srgb'),
-      value: 'srgb',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'color-gamut: p3'}),
-      text: i18n.i18n.lockedLazyString('color-gamut: p3'),
-      value: 'p3',
-    },
-    {
-      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'color-gamut: rec2020'}),
-      text: i18n.i18n.lockedLazyString('color-gamut: rec2020'),
-      value: 'rec2020',
-    },
-  ],
-  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'color-gamut'}),
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

@@ -221,3 +221,10 @@ export const emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor:
   defaultValue: '',
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const emulatedCSSMediaFeatureColorGamutSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'emulated-css-media-feature-color-gamut',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: '',
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

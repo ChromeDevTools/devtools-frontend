@@ -624,3 +624,33 @@ SettingsUI.SettingUIRegistration.register(
       ],
       title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-reduced-transparency'}),
     });
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulatedCSSMediaFeatureColorGamutSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  options: [
+    {
+      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'color-gamut'}),
+      text: i18nLazyString(UIStrings.noEmulation),
+      value: '',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'color-gamut: srgb'}),
+      text: i18n.i18n.lockedLazyString('color-gamut: srgb'),
+      value: 'srgb',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'color-gamut: p3'}),
+      text: i18n.i18n.lockedLazyString('color-gamut: p3'),
+      value: 'p3',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'color-gamut: rec2020'}),
+      text: i18n.i18n.lockedLazyString('color-gamut: rec2020'),
+      value: 'rec2020',
+    },
+  ],
+  tags: [
+    i18nLazyString(UIStrings.query),
+  ],
+  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'color-gamut'}),
+});

@@ -197,11 +197,15 @@ User query: ${enhancedQuery}`;
   override async *
       handleContextDetails(selected: ConversationContext<unknown>|null): AsyncGenerator<ContextResponse, void, void> {
     if (selected) {
-      const details = await selected.getUserFacingDetails();
+      const [details, widgets] = await Promise.all([
+        selected.getUserFacingDetails(),
+        selected.getWidgets(),
+      ]);
       if (details) {
         yield {
           type: ResponseType.CONTEXT,
           details,
+          ...(widgets.length > 0 ? {widgets} : {}),
         };
       }
     }

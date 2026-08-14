@@ -259,6 +259,15 @@ export abstract class ConversationContext<T> {
   async getUserFacingDetails(): Promise<[ContextDetail, ...ContextDetail[]]|null> {
     return null;
   }
+
+  /**
+   * Returns initial UI widgets to display in the conversation context header
+   * when this context is active (e.g. Core Web Vitals summary for a performance trace).
+   * Used by PerformanceAgent and AiAgent2.
+   */
+  async getWidgets(): Promise<AiWidget[]> {
+    return [];
+  }
 }
 
 export interface ComputedStyleAiWidget {

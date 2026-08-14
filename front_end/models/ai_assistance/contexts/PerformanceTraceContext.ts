@@ -11,6 +11,7 @@ import * as Bindings from '../../bindings/bindings.js';
 import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
 import {
+  type AiWidget,
   type ContextDetail,
   ConversationContext,
   type ConversationSuggestions,
@@ -345,6 +346,71 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     }
 
     return details.length > 0 ? (details as [ContextDetail, ...ContextDetail[]]) : null;
+  }
+
+  /**
+   * Returns initial UI widgets to display with the conversation context header
+   * depending on the active focus:
+   * - Specific task (call tree) -> timeline summary & bottom up tree widgets
+   * - Insight -> PERF_INSIGHT widget & Core Web Vitals widget
+   * - Whole Trace -> Core Web Vitals widget
+   */
+  override async getWidgets(): Promise<AiWidget[]> {
+    const widgets: AiWidget[] = [];
+    const focus = this.#focus;
+
+    // Case 1: Specific task (call tree) -> timeline summary & bottom up tree widgets
+    if (focus.callTree) {
+      const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
+      if (event) {
+        const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
+        const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+        widgets.push({
+          name: 'TIMELINE_RANGE_SUMMARY',
+          data: {
+            bounds,
+            parsedTrace: focus.parsedTrace,
+            track: 'main',
+          },
+        });
+        widgets.push({
+          name: 'BOTTOM_UP_TREE',
+          data: {
+            bounds,
+            parsedTrace: focus.parsedTrace,
+          },
+        });
+      }
+      return widgets;
+    }
+
+    // Case 2: Insight -> PERF_INSIGHT widget
+    if (focus.insight) {
+      const insightKey = focus.insight.insightKey;
+      if (Trace.Insights.Common.isInsightKey(insightKey)) {
+        widgets.push({
+          name: 'PERF_INSIGHT',
+          data: {
+            insight: insightKey,
+            insightData: focus.insight,
+          },
+        });
+      }
+    }
+
+    // Case 3: Whole Trace or insight -> CWV widget
+    const primaryInsightSet = focus.primaryInsightSet;
+    if (primaryInsightSet) {
+      widgets.push({
+        name: 'CORE_VITALS',
+        data: {
+          parsedTrace: focus.parsedTrace,
+          insightSetKey: primaryInsightSet.id,
+        },
+      });
+    }
+
+    return widgets;
   }
 
   getBoundsForLabel(label: MainThreadSectionLabel): Trace.Types.Timing.TraceWindowMicro|null {

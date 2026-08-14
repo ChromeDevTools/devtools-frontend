@@ -9,6 +9,7 @@ import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import type * as Trace from '../trace/trace.js';
 
 import * as AiAssistance from './ai_assistance.js';
 import type {Skill, SkillName} from './skills/Skill.js';
@@ -304,6 +305,36 @@ describeWithEnvironment('AiAgent2', () => {
                        title: 'Data used',
                        text: 'element-description',
                      }]);
+    assert.isUndefined(contextResponse?.widgets);
+  });
+
+  it('yields context widgets in handleContextDetails if available', async () => {
+    const aidaClient = mockAidaClient();
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    const nodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
+    sinon.stub(nodeContext, 'getUserFacingDetails').resolves([{
+      title: 'Data used',
+      text: 'element-description',
+    }]);
+    const fakeWidget: AiAssistance.AiAgent.AiWidget = {
+      name: 'CORE_VITALS',
+      data: {
+        parsedTrace: {} as Trace.TraceModel.ParsedTrace,
+        insightSetKey: 'set-1',
+      },
+    };
+    sinon.stub(nodeContext, 'getWidgets').resolves([fakeWidget]);
+
+    const responses = await Array.fromAsync(agent.handleContextDetails(nodeContext));
+
+    const contextResponse = responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT);
+    assert.exists(contextResponse);
+    assert.deepEqual(contextResponse?.details, [{
+                       title: 'Data used',
+                       text: 'element-description',
+                     }]);
+    assert.deepEqual(contextResponse?.widgets, [fakeWidget]);
   });
 
   it('handles invalid skill names with overridden skills gracefully', async () => {

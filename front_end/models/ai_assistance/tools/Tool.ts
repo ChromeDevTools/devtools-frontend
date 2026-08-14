@@ -172,6 +172,7 @@ export const enum ToolName {
   GET_DETAILED_CALL_TREE = 'getDetailedCallTree',
   GET_FUNCTION_CODE = 'getFunctionCode',
   GET_RESOURCE_CONTENT = 'getResourceContent',
+  GET_INSIGHT_DETAILS = 'getInsightDetails',
 }
 
 /**

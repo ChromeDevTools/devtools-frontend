@@ -43,6 +43,7 @@ import * as ExecuteJavaScript from './tools/ExecuteJavaScript.js';
 import * as GetDetailedCallTree from './tools/GetDetailedCallTree.js';
 import * as GetElementAccessibilityDetails from './tools/GetElementAccessibilityDetails.js';
 import * as GetFunctionCode from './tools/GetFunctionCode.js';
+import * as GetInsightDetails from './tools/GetInsightDetails.js';
 import * as GetLighthouseAudits from './tools/GetLighthouseAudits.js';
 import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
 import * as GetResourceContent from './tools/GetResourceContent.js';
@@ -89,6 +90,7 @@ export {
   GetDetailedCallTree,
   GetElementAccessibilityDetails,
   GetFunctionCode,
+  GetInsightDetails,
   GetLighthouseAudits,
   GetNetworkRequestDetails,
   GetResourceContent,

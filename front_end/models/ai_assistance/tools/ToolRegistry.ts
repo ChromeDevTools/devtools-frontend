@@ -6,6 +6,7 @@ import {ExecuteJavaScriptTool} from './ExecuteJavaScript.js';
 import {GetDetailedCallTreeTool} from './GetDetailedCallTree.js';
 import {GetElementAccessibilityDetailsTool} from './GetElementAccessibilityDetails.js';
 import {GetFunctionCodeTool} from './GetFunctionCode.js';
+import {GetInsightDetailsTool} from './GetInsightDetails.js';
 import {GetLighthouseAuditsTool} from './GetLighthouseAudits.js';
 import {GetNetworkRequestDetailsTool} from './GetNetworkRequestDetails.js';
 import {GetResourceContentTool} from './GetResourceContent.js';
@@ -51,6 +52,7 @@ export const TOOLS = {
   [ToolName.GET_DETAILED_CALL_TREE]: new GetDetailedCallTreeTool(),
   [ToolName.GET_FUNCTION_CODE]: new GetFunctionCodeTool(),
   [ToolName.GET_RESOURCE_CONTENT]: new GetResourceContentTool(),
+  [ToolName.GET_INSIGHT_DETAILS]: new GetInsightDetailsTool(),
 };
 
 /**

@@ -6,14 +6,20 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('WatchExpression', () => {
   it('creates read-only object properties for watch expression', async () => {
@@ -227,6 +233,117 @@ describeWithEnvironment('WatchExpression', () => {
     await pane.updateComplete;
 
     await assertScreenshot('sources/watch-expression-delete-button.png');
+  });
+
+  it('screenshot for expanded function expression', async () => {
+    Common.Settings.Settings.instance().createLocalSetting<string[]>('watch-expressions', []).set(['f']);
+
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+      ignoreListManager,
+      workspace,
+    });
+    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+    });
+
+    const target = createTarget();
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(runtimeModel);
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assert.exists(debuggerModel);
+
+    debuggerModel.parsedScriptSource('1' as Protocol.Runtime.ScriptId, urlString`http://example.com/test.js`, 0, 0, 10,
+                                     0, 0, '', undefined, undefined, false, false, 100, null, null, null, null, null,
+                                     null, null);
+
+    const executionContext = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
+    executionContext.debuggerModel = debuggerModel;
+    executionContext.runtimeModel = runtimeModel;
+
+    const functionObject = new SDK.RemoteObject.RemoteObjectImpl(
+        runtimeModel,
+        'mock-f-id' as Protocol.Runtime.RemoteObjectId,
+        'function',
+        undefined,
+        undefined,
+        undefined,
+        'ƒ () {}',
+    );
+
+    const locationObject = new SDK.RemoteObject.RemoteObjectImpl(
+        runtimeModel,
+        undefined,
+        'object',
+        'internal#location',
+        {scriptId: '1' as Protocol.Runtime.ScriptId, lineNumber: 0, columnNumber: 0},
+    );
+
+    const protoObject = new SDK.RemoteObject.RemoteObjectImpl(
+        runtimeModel,
+        'mock-proto-id' as Protocol.Runtime.RemoteObjectId,
+        'function',
+        undefined,
+        undefined,
+        undefined,
+        'function () {}',
+    );
+
+    const properties = [
+      new SDK.RemoteObject.RemoteObjectProperty('arguments', SDK.RemoteObject.RemoteObject.fromLocalObject(null), false,
+                                                false, true),
+      new SDK.RemoteObject.RemoteObjectProperty('caller', SDK.RemoteObject.RemoteObject.fromLocalObject(null), false,
+                                                false, true),
+      new SDK.RemoteObject.RemoteObjectProperty('length', SDK.RemoteObject.RemoteObject.fromLocalObject(0), false,
+                                                false, true),
+      new SDK.RemoteObject.RemoteObjectProperty('name', SDK.RemoteObject.RemoteObject.fromLocalObject('f'), false,
+                                                false, true),
+      new SDK.RemoteObject.RemoteObjectProperty('prototype', SDK.RemoteObject.RemoteObject.fromLocalObject({}), false,
+                                                true, true),
+    ];
+    const internalProperties = [
+      new SDK.RemoteObject.RemoteObjectProperty('[[FunctionLocation]]', locationObject, true, false, undefined,
+                                                undefined, undefined, true),
+      new SDK.RemoteObject.RemoteObjectProperty('[[Prototype]]', protoObject, true, false, undefined, undefined,
+                                                undefined, true),
+      new SDK.RemoteObject.RemoteObjectProperty('[[Scopes]]',
+                                                SDK.RemoteObject.RemoteObject.fromLocalObject('Scopes[0]'), true, false,
+                                                undefined, undefined, undefined, true),
+    ];
+
+    sinon.stub(functionObject, 'getOwnProperties').resolves({properties, internalProperties});
+    sinon.stub(functionObject, 'getAllProperties').resolves({properties: [], internalProperties: null});
+
+    executionContext.evaluate.resolves({object: functionObject, exceptionDetails: undefined});
+
+    sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
+    const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
+
+    pane.element.style.width = '300px';
+    pane.element.style.height = '200px';
+    renderElementIntoDOM(pane, {includeCommonStyles: true});
+    await raf();
+    await pane.updateComplete;
+
+    const watchExpressions = pane.watchExpressions;
+    assert.lengthOf(watchExpressions, 1);
+
+    const treeComponent = pane.contentElement.querySelector('devtools-tree');
+    assert.exists(treeComponent);
+    const treeOutline = treeComponent.getInternalTreeOutlineForTest();
+    treeOutline.firstChild()?.expand();
+    await raf();
+    await pane.updateComplete;
+
+    await assertScreenshot('sources/watch-expressions-function.png');
   });
 
   it('preserves expansion state across updates', async () => {

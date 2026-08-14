@@ -368,7 +368,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           !e.result.hasChildren || e.result.object.customPreview() ? nothing : html`
           <ul role=group>
             ${ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(
-                        e.result.children ?? {}, true /* skipProto */, true /* skipGettersAndSetters */).map(
+                        e.result.children ?? {}, false /* skipProto */, false /* skipGettersAndSetters */, input.linkifier).map(
                      node => html`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
           </ul>`}
       </li>`;

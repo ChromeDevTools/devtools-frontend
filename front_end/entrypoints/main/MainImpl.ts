@@ -49,7 +49,6 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
-import type * as Comments from '../../ui/comments/comments.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbar from '../../ui/components/snackbars/snackbars.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
@@ -999,34 +998,3 @@ export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegat
     return false;
   }
 }
-
-let activeOverlayManager: Comments.CommentOverlayManager.CommentOverlayManager|null = null;
-let activeOverlayWidget: Comments.CommentsOverlayWidget.CommentsOverlayWidget|null = null;
-
-// Temporary for manual testing and experimentation.
-export async function comments(): Promise<Comments.CommentOverlayManager.CommentOverlayManager> {
-  const Comments = await import('../../ui/comments/comments.js');
-  const CommentManager = await import('../../models/comment_manager/comment_manager.js');
-  const commentManager = CommentManager.CommentManager.CommentManager.instance();
-  if (!activeOverlayManager || !activeOverlayWidget) {
-    activeOverlayManager = new Comments.CommentOverlayManager.CommentOverlayManager(commentManager);
-    activeOverlayWidget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(activeOverlayManager);
-    activeOverlayWidget.markAsRoot();
-    activeOverlayWidget.show(document.body);
-    activeOverlayManager.start();
-    commentManager.setCommentMode(true);
-    return activeOverlayManager;
-  }
-
-  const newMode = !commentManager.isCommentMode();
-  commentManager.setCommentMode(newMode);
-  if (newMode) {
-    activeOverlayWidget.show(document.body);
-  } else {
-    activeOverlayWidget.detach();
-  }
-  return activeOverlayManager;
-}
-
-// @ts-expect-error global helper for manual testing
-globalThis.comments = comments;

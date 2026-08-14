@@ -123,29 +123,4 @@ describe('CommentManager', () => {
     assert.lengthOf(manager.getCommentThreads(), 0);
     assert.isFalse(manager.isCommentMode());
   });
-
-  describe('singleton management', () => {
-    afterEach(() => {
-      CommentManager.CommentManager.CommentManager.removeInstance();
-    });
-
-    it('returns a singleton instance from instance()', () => {
-      const instance1 = CommentManager.CommentManager.CommentManager.instance();
-      const instance2 = CommentManager.CommentManager.CommentManager.instance();
-      assert.strictEqual(instance1, instance2);
-    });
-
-    it('creates a new instance when forceNew is true', () => {
-      const instance1 = CommentManager.CommentManager.CommentManager.instance();
-      const instance2 = CommentManager.CommentManager.CommentManager.instance({forceNew: true});
-      assert.notStrictEqual(instance1, instance2);
-    });
-
-    it('removes instance on removeInstance()', () => {
-      const instance1 = CommentManager.CommentManager.CommentManager.instance();
-      CommentManager.CommentManager.CommentManager.removeInstance();
-      const instance2 = CommentManager.CommentManager.CommentManager.instance();
-      assert.notStrictEqual(instance1, instance2);
-    });
-  });
 });

@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
 import {
-  type CommentOverlayManager,
+  CommentOverlayManager,
   Events as CommentOverlayManagerEvents,
   type HighlightRectData,
   type HoverHighlightData,
@@ -74,45 +76,87 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
 
 export class CommentsOverlayWidget extends UI.Widget.Widget {
   readonly #view: View;
-  readonly #commentOverlayManager: CommentOverlayManager;
+  readonly #commentManager: CommentManager.CommentManager.CommentManager;
+  #commentOverlayManager: CommentOverlayManager;
 
   constructor(
-      commentOverlayManager: CommentOverlayManager,
-      element?: HTMLElement,
+      element: HTMLElement|undefined,
+      commentManager: CommentManager.CommentManager.CommentManager,
       view: View = DEFAULT_VIEW,
   ) {
-    super(element);
+    super(element, {useShadowDom: false});
     this.#view = view;
-    this.#commentOverlayManager = commentOverlayManager;
+    this.#commentManager = commentManager;
+    this.#commentOverlayManager = new CommentOverlayManager(this.#commentManager);
+  }
+
+  setOverlayManagerForTest(overlayManager: CommentOverlayManager): void {
+    this.#commentOverlayManager = overlayManager;
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.#commentOverlayManager.addEventListener(CommentOverlayManagerEvents.POSITIONS_UPDATED, this.#onStateChanged,
-                                                 this);
-    this.#commentOverlayManager.addEventListener(CommentOverlayManagerEvents.HOVER_HIGHLIGHT_CHANGED,
-                                                 this.#onStateChanged, this);
+    this.#commentOverlayManager.start();
+    this.#commentOverlayManager.addEventListener(
+        CommentOverlayManagerEvents.POSITIONS_UPDATED,
+        this.#onStateChanged,
+        this,
+    );
+    this.#commentOverlayManager.addEventListener(
+        CommentOverlayManagerEvents.HOVER_HIGHLIGHT_CHANGED,
+        this.#onStateChanged,
+        this,
+    );
 
-    this.#commentOverlayManager.commentManager.addEventListener(
-        CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED, this.#onStateChanged, this);
-    this.#commentOverlayManager.commentManager.addEventListener(
-        CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED, this.#onStateChanged, this);
+    this.#commentManager.addEventListener(
+        CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED,
+        this.#onStateChanged,
+        this,
+    );
+    this.#commentManager.addEventListener(
+        CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED,
+        this.#onCommentModeChanged,
+        this,
+    );
 
     this.requestUpdate();
   }
 
   override willHide(): void {
-    this.#commentOverlayManager.removeEventListener(CommentOverlayManagerEvents.POSITIONS_UPDATED, this.#onStateChanged,
-                                                    this);
-    this.#commentOverlayManager.removeEventListener(CommentOverlayManagerEvents.HOVER_HIGHLIGHT_CHANGED,
-                                                    this.#onStateChanged, this);
+    this.#commentOverlayManager.stop();
+    this.#commentOverlayManager.removeEventListener(
+        CommentOverlayManagerEvents.POSITIONS_UPDATED,
+        this.#onStateChanged,
+        this,
+    );
+    this.#commentOverlayManager.removeEventListener(
+        CommentOverlayManagerEvents.HOVER_HIGHLIGHT_CHANGED,
+        this.#onStateChanged,
+        this,
+    );
 
-    this.#commentOverlayManager.commentManager.removeEventListener(
-        CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED, this.#onStateChanged, this);
-    this.#commentOverlayManager.commentManager.removeEventListener(
-        CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED, this.#onStateChanged, this);
+    this.#commentManager.removeEventListener(
+        CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED,
+        this.#onStateChanged,
+        this,
+    );
+    this.#commentManager.removeEventListener(
+        CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED,
+        this.#onCommentModeChanged,
+        this,
+    );
 
     super.willHide();
+  }
+
+  #onCommentModeChanged(
+      event: Common.EventTarget.EventTargetEvent<
+          CommentManager.CommentManager.EventTypes[CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED]>,
+      ): void {
+    const isModeActive = event.data;
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('comments.toggle-comment-mode');
+    action?.setToggled(isModeActive);
+    this.requestUpdate();
   }
 
   #onStateChanged(): void {
@@ -126,9 +170,35 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
       pins: this.#commentOverlayManager.getPinPositions(),
       highlights: this.#commentOverlayManager.getHighlightRects(),
       hoverHighlight: this.#commentOverlayManager.getHoverHighlight(),
-      commentMode: this.#commentOverlayManager.isCommentMode(),
+      commentMode: this.#commentManager.isCommentMode(),
       onPinClick: this.#handlePinClick,
     };
     this.#view(viewInput, undefined, this.contentElement);
+  }
+}
+
+let widgetInstance: CommentsOverlayWidget|null = null;
+
+export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  readonly #commentManager: CommentManager.CommentManager.CommentManager;
+
+  constructor(commentManager?: CommentManager.CommentManager.CommentManager) {
+    this.#commentManager = commentManager ??
+        Root.DevToolsContext.globalInstance().get(
+            CommentManager.CommentManager.CommentManager,
+        );
+  }
+
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
+    if (actionId === 'comments.toggle-comment-mode') {
+      if (!widgetInstance) {
+        widgetInstance = new CommentsOverlayWidget(undefined, this.#commentManager);
+        widgetInstance.markAsRoot();
+        widgetInstance.show(document.body);
+      }
+      this.#commentManager.setCommentMode(!this.#commentManager.isCommentMode());
+      return true;
+    }
+    return false;
   }
 }

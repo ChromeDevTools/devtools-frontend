@@ -161,7 +161,7 @@ UI.Toolbar.registerToolbarItem({
   actionId: 'emulation.toggle-device-mode',
   condition: Root.Runtime.conditions.canDock,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_LEFT,
-  order: 1,
+  order: 2,
 });
 
 UI.AppProvider.registerAppProvider({

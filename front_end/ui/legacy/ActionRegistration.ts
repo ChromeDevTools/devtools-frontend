@@ -406,6 +406,7 @@ export const enum IconClass {
   UNDO = 'undo',
   COPY = 'copy',
   IMPORT = 'import',
+  COMMENT_MODE = 'comment-mode',
 }
 
 export const enum KeybindSet {

@@ -8,33 +8,67 @@ import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
+const COMMENT_TOGGLE_SELECTOR = '[aria-label="Add comments to send to your AI coding agent"]';
+
 describe('Click-to-Comment mode across DevTools panels', function() {
   async function setupForTests(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+    await devToolsPage.setupMockHostConfigAndReload({
+      devToolsComments: {
+        enabled: true,
+      },
+    });
     await inspectedPage.goToResource('cross_tool/default.html');
     await devToolsPage.closeAllCloseableTabs();
   }
 
   async function enableCommentMode(devToolsPage: DevToolsPage) {
-    await devToolsPage.evaluate(async () => {
-      // @ts-expect-error global helper defined in MainImpl
-      const mgr = await globalThis.comments();
-      // @ts-expect-error test hook
-      window.__testCommentManager = mgr;
+    await devToolsPage.waitFor(COMMENT_TOGGLE_SELECTOR);
+    await devToolsPage.click(COMMENT_TOGGLE_SELECTOR);
+    await devToolsPage.waitForFunction(async () => {
+      return await devToolsPage.evaluate(async () => {
+        // @ts-expect-error Evaluated in DevTools context
+        const Root = await import('./core/root/root.js');
+        // @ts-expect-error Evaluated in DevTools context
+        const CommentManager = await import('./models/comment_manager/comment_manager.js');
+        const mgr = Root.DevToolsContext.globalInstance().get(CommentManager.CommentManager.CommentManager);
+        return mgr?.isCommentMode() === true;
+      });
     });
   }
 
   async function getCommentThreadsCount(devToolsPage: DevToolsPage): Promise<number> {
-    return await devToolsPage.evaluate(() => {
-      // @ts-expect-error test hook
-      const mgr = window.__testCommentManager;
+    return await devToolsPage.evaluate(async () => {
+      // @ts-expect-error Evaluated in DevTools context
+      const Root = await import('./core/root/root.js');
+      // @ts-expect-error Evaluated in DevTools context
+      const CommentManager = await import('./models/comment_manager/comment_manager.js');
+      const mgr = Root.DevToolsContext.globalInstance().get(CommentManager.CommentManager.CommentManager);
       return mgr?.getCommentThreads().length ?? 0;
     });
   }
 
+  async function waitForCommentThreadCount(devToolsPage: DevToolsPage, minCount = 1): Promise<number> {
+    await devToolsPage.waitForFunction(async () => {
+      const count = await devToolsPage.evaluate(async () => {
+        // @ts-expect-error Evaluated in DevTools context
+        const Root = await import('./core/root/root.js');
+        // @ts-expect-error Evaluated in DevTools context
+        const CommentManager = await import('./models/comment_manager/comment_manager.js');
+        const mgr = Root.DevToolsContext.globalInstance().get(CommentManager.CommentManager.CommentManager);
+        return mgr?.getCommentThreads().length ?? 0;
+      });
+      return count >= minCount;
+    });
+    return await getCommentThreadsCount(devToolsPage);
+  }
+
   async function getLastCommentVePath(devToolsPage: DevToolsPage): Promise<string> {
-    return await devToolsPage.evaluate(() => {
-      // @ts-expect-error test hook
-      const mgr = window.__testCommentManager;
+    return await devToolsPage.evaluate(async () => {
+      // @ts-expect-error Evaluated in DevTools context
+      const Root = await import('./core/root/root.js');
+      // @ts-expect-error Evaluated in DevTools context
+      const CommentManager = await import('./models/comment_manager/comment_manager.js');
+      const mgr = Root.DevToolsContext.globalInstance().get(CommentManager.CommentManager.CommentManager);
       const threads = mgr?.getCommentThreads() ?? [];
       const last = threads[threads.length - 1];
       return last ? last.anchor.vePath : '';
@@ -42,13 +76,9 @@ describe('Click-to-Comment mode across DevTools panels', function() {
   }
 
   async function isPinAndHighlightVisible(devToolsPage: DevToolsPage): Promise<boolean> {
-    return await devToolsPage.evaluate(() => {
-      // @ts-expect-error test hook
-      const mgr = window.__testCommentManager;
-      const pins = mgr?.getPinPositions() ?? [];
-      const highlights = mgr?.getHighlightRects() ?? [];
-      return pins.some((p: {visible: boolean}) => p.visible) || highlights.some((h: {visible: boolean}) => h.visible);
-    });
+    const pin = await devToolsPage.$('.comment-pin');
+    const highlight = await devToolsPage.$('.comment-anchor-highlight');
+    return pin !== null && highlight !== null;
   }
 
   it('creates comment on DOM tree item in Elements panel with TreeItem vePath',
@@ -60,7 +90,7 @@ describe('Click-to-Comment mode across DevTools panels', function() {
        await enableCommentMode(devToolsPage);
        await devToolsPage.click('[role="treeitem"]');
 
-       const count = await getCommentThreadsCount(devToolsPage);
+       const count = await waitForCommentThreadCount(devToolsPage, 1);
        assert.isAbove(count, 0);
 
        const vePath = await getLastCommentVePath(devToolsPage);
@@ -78,7 +108,7 @@ describe('Click-to-Comment mode across DevTools panels', function() {
     await enableCommentMode(devToolsPage);
     await devToolsPage.click('.console-message-wrapper');
 
-    const count = await getCommentThreadsCount(devToolsPage);
+    const count = await waitForCommentThreadCount(devToolsPage, 1);
     assert.isAbove(count, 0);
 
     const visible = await isPinAndHighlightVisible(devToolsPage);
@@ -93,7 +123,7 @@ describe('Click-to-Comment mode across DevTools panels', function() {
     await enableCommentMode(devToolsPage);
     await devToolsPage.click('.navigator-file-tree-item, .empty-state');
 
-    const count = await getCommentThreadsCount(devToolsPage);
+    const count = await waitForCommentThreadCount(devToolsPage, 1);
     assert.isAbove(count, 0);
   });
 
@@ -107,7 +137,7 @@ describe('Click-to-Comment mode across DevTools panels', function() {
     await enableCommentMode(devToolsPage);
     await devToolsPage.click('.network-log-grid tbody .name-column');
 
-    const count = await getCommentThreadsCount(devToolsPage);
+    const count = await waitForCommentThreadCount(devToolsPage, 1);
     assert.isAbove(count, 0);
 
     const vePath = await getLastCommentVePath(devToolsPage);

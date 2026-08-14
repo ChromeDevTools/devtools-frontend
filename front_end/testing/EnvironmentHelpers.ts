@@ -11,7 +11,6 @@ import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
-import * as CommentManager from '../models/comment_manager/comment_manager.js';
 import * as EmulationModel from '../models/emulation/emulation.js';
 import * as Formatter from '../models/formatter/formatter.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
@@ -93,7 +92,6 @@ export async function deinitializeGlobalVars() {
   SDK.FrameManager.FrameManager.removeInstance();
   SDK.EventBreakpointsModel.EventBreakpointsManager.removeInstance();
   SDK.PageResourceLoader.PageResourceLoader.removeInstance();
-  CommentManager.CommentManager.CommentManager.removeInstance();
   Common.Settings.Settings.removeInstance();
   Common.Revealer.RevealerRegistry.removeInstance();
   Common.Console.Console.removeInstance();

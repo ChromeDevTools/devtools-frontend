@@ -28,6 +28,7 @@ import '../../ui/legacy/components/source_frame/source_frame-meta.js';
 import '../../panels/console_counters/console_counters-meta.js';
 import '../../panels/explain/explain-meta.js';
 import '../../panels/ai_assistance/ai_assistance-meta.js';
+import '../../ui/comments/comments-meta.js';
 import '../main/main.js';
 
 // We generate the descriptors in this file, which depend on the runtime.

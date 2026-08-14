@@ -27,6 +27,7 @@ devtools_entrypoint("shell") {
     "../../panels/protocol_monitor:meta",
     "../../panels/settings:meta",
     "../../panels/sources:meta",
+    "../../ui/comments:meta",
     "../../ui/dom_extension:bundle",
     "../../ui/legacy/components/perf_ui:meta",
     "../../ui/legacy/components/quick_open:meta",

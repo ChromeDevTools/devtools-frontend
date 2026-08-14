@@ -454,7 +454,7 @@ describe('The Console Tab', () => {
          assert.lengthOf(memoryIcons, 2);
 
          // Confirm that the second memory icon is next to the `buffer`.
-         const arrayBufferProperty = await devToolsPage.waitFor('.object-value-arraybuffer');
+         const arrayBufferProperty = await devToolsPage.waitFor('.value.object-value-arraybuffer');
          const arrayBufferMemoryIcon = await devToolsPage.$(MEMORY_ICON_SELECTOR, arrayBufferProperty);
          assert.isOk(arrayBufferMemoryIcon);
        });

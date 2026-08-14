@@ -424,6 +424,18 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
         if (node.expandStackTraceForTest) {
           node.expandStackTraceForTest();
         }
+        if (node.tagName === 'DEVTOOLS-TREE') {
+          const treeOutline = node.getInternalTreeOutlineForTest();
+          const treeElements = treeOutline.rootElement().children();
+          for (let j = 0; j < treeElements.length; ++j) {
+            for (let treeElement = treeElements[j]; treeElement;
+                 treeElement = treeElement.traverseNextTreeElement(true, null, true)) {
+              if (!deepFilter || deepFilter(treeElement)) {
+                treeElement.expand();
+              }
+            }
+          }
+        }
         const section = ObjectUI.ObjectPropertiesSection.getObjectPropertiesSectionFrom(node);
         if (!section) {
           continue;
@@ -481,6 +493,10 @@ ConsoleTestRunner.expandGettersInConsoleMessages = async function(callback) {
         properties.push(node.parentElement.parentElement);
       }
     }
+  }
+  if (propertiesCount === 0) {
+    TestRunner.deprecatedRunAfterPendingDispatches(callback);
+    return;
   }
 
   async function propertyExpandableUpdated() {

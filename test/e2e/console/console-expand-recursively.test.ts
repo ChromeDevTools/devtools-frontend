@@ -18,7 +18,7 @@ describe('The Console Tab', () => {
 
     // Expand the object node recursively
     await clickOnContextMenu(devToolsPage, '.console-view-object-properties-section', 'expand-recursively');
-    const root = await devToolsPage.waitFor('.console-view-object-properties-section.expanded');
+    const root = await devToolsPage.waitFor('.console-view-object-properties-section');
 
     // Ensure that both a and b are expanded.
     const [aChildren, bChildren] = await Promise.all([

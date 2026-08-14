@@ -57,7 +57,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../elements/elements.js';
 
@@ -238,6 +238,14 @@ const UIStrings = {
    * @description Submenu item to copy table as CSV.
    */
   copyAsCsv: 'Copy as CSV',
+  /**
+   * @description Text to expand something recursively
+   */
+  expandRecursively: 'Expand recursively',
+  /**
+   * @description Text to collapse children of a parent group
+   */
+  collapseChildren: 'Collapse children',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleViewMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -881,6 +889,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   private formatParameterAsObject(obj: SDK.RemoteObject.RemoteObject, includePreview?: boolean): HTMLElement {
     const titleElement = document.createElement('span');
+    titleElement.tabIndex = -1;
     titleElement.classList.add('console-object');
     const renderPreview = (includeNullOrUndefined: boolean): void => {
       if (obj.preview) {
@@ -911,25 +920,52 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       return titleElement;
     }
 
-    const note = titleElement.createChild('span', 'object-state-note info-note');
-    if (this.message.type === SDK.ConsoleModel.FrontendMessageType.QueryObjectResult) {
-      UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.thisValueWillNotBeCollectedUntil));
-    } else {
-      UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.thisValueWasEvaluatedUponFirst));
-    }
+    const container = document.createElement('span');
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.markAsRoot();
+    const treeElement = section.element;
+    treeElement.classList.add('console-view-object-properties-section');
 
-    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(obj, titleElement, this.linkifier);
-    section.element.classList.add('console-view-object-properties-section');
-    section.enableContextMenu();
-    section.setShowSelectionOnKeyboardFocus(true, true);
-    this.selectableChildren.push(section);
-    section.addEventListener(UI.TreeOutline.Events.ElementAttached, this.messageResized);
-    section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this.messageResized);
-    section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this.messageResized);
-    section.root.addEventListener(
-        ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.FILTER_CHANGED,
-        () => renderPreview(section.root.includeNullOrUndefinedValues));
-    return section.element;
+    titleElement.addEventListener('contextmenu', (event: Event) => {
+      event.consume(true);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
+      contextMenu.appendApplicableItems(obj);
+      if (obj instanceof SDK.RemoteObject.LocalJSONObject) {
+        contextMenu.viewSection().appendItem(
+            i18nString(UIStrings.expandRecursively),
+            () => section.objectTree?.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH),
+            {jslogContext: 'expand-recursively'});
+        contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren),
+                                             () => section.objectTree?.collapseRecursively(),
+                                             {jslogContext: 'collapse-children'});
+      }
+      void contextMenu.show();
+    });
+
+    section.root = obj;
+    section.title =
+        html`<style>${consoleViewStyles}</style>${titleElement}<span class="object-state-note info-note" title=${
+            this.message.type === SDK.ConsoleModel.FrontendMessageType.QueryObjectResult ?
+                i18nString(UIStrings.thisValueWillNotBeCollectedUntil) :
+                i18nString(UIStrings.thisValueWasEvaluatedUponFirst)}></span>`;
+    section.linkifier = this.linkifier;
+    this.selectableChildren.push({
+      element: treeElement,
+      forceSelect: () => {},
+    });
+    if (section.objectTree) {
+      const resizeEvent = {data: treeElement} as unknown as
+          Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>;
+      section.objectTree.addEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED,
+                                          () => this.messageResized(resizeEvent));
+      section.objectTree.addEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED,
+                                          () => this.messageResized(resizeEvent));
+      section.objectTree.addEventListener(
+          ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.FILTER_CHANGED,
+          () => renderPreview(section.objectTree?.includeNullOrUndefinedValues || false));
+    }
+    section.show(container);
+    return container;
   }
 
   private formatParameterAsFunction(originalFunction: SDK.RemoteObject.RemoteObject, includePreview?: boolean):

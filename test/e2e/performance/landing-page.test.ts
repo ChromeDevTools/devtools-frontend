@@ -429,7 +429,10 @@ describe('The Performance panel landing page', function() {
       assert.lengthOf(messages, 4);
       assert.match(messages[0], /^\[DevTools\] Long animation frames for \d+ms pointer interaction$/);
       assert.strictEqual(messages[1], 'Scripts:');
-      assert.strictEqual(messages[2], 'Array(3)');
+      assert.include(messages[2], 'Array(3)');
+      assert.include(messages[2], 'BUTTON#long-click.onpointerdown');
+      assert.include(messages[2], 'BUTTON#long-click.onpointerup');
+      assert.include(messages[2], 'BUTTON#long-click.onclick');
       assert.strictEqual(messages[3], 'Intersecting long animation frame events: [{…}]');
     } finally {
       await inspectedPageSession.detach();

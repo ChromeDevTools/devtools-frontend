@@ -163,10 +163,10 @@ describe('The Console Tab', () => {
       // Note depending on whether we got a remote object or not we have
       // slightly different representations of DOM. Both are correct.
       assert.deepEqual(messages, [
-        '',
-        '',
-        '',
-        '',
+        '<div id=\u200b"p">\u200b</div>\u200b',
+        'attr=\u200b""',
+        'attr=\u200b"value"',
+        'id=\u200b"first-child"',
         '#text',
         'HTMLCollection\xA0[select, sel: select]',
         'HTMLCollection\xA0[]',

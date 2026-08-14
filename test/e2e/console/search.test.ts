@@ -61,8 +61,9 @@ describe('Console search', () => {
     await devToolsPage.typeText('field_');
 
     await waitForHighlightedCurrentSearchResult(devToolsPage, 'field_');
+    const match = await devToolsPage.waitFor('.current-search-result');
     assert.strictEqual(
-        await devToolsPage.getTextContent('.console-message-text:has(.current-search-result)'),
+        await match.evaluate(el => el.closest('.object-properties-section-root-element')?.deepTextContent()),
         '{field_0: \'value #0\', field_1: \'value #1\'}');
   });
 });

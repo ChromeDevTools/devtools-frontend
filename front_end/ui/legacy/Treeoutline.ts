@@ -1688,6 +1688,7 @@ class TreeViewTreeElement extends TreeElement {
     }
 
     this.hidden = hasBooleanAttribute(this.configElement, 'hidden');
+    this.toggleOnClick = hasBooleanAttribute(this.configElement, 'toggle-on-click');
     this.updateExpansionFromAttribute();
 
     Highlighting.HighlightManager.HighlightManager.instance().apply(this.titleElement);
@@ -1903,6 +1904,9 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     }
     if (node === treeNode && attributeName === 'open') {
       treeElement.updateExpansionFromAttribute();
+    }
+    if (node === treeNode && attributeName === 'toggle-on-click') {
+      treeElement.toggleOnClick = hasBooleanAttribute(treeNode, 'toggle-on-click');
     }
   }
 

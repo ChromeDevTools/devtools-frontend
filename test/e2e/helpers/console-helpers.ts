@@ -88,7 +88,7 @@ export async function waitForConsoleMessagesToBeNonEmpty(devToolsPage: DevToolsP
       return false;
     }
     const textContents =
-        await Promise.all(messages.map(message => message.evaluate(message => message.textContent || '')));
+        await Promise.all(messages.map(message => message.evaluate(message => message.deepTextContent() || '')));
     return textContents.every(text => text !== '');
   });
   await expectVeEvents(devToolsPage, [veImpressionForConsoleMessage()], await veRoot(devToolsPage));
@@ -98,7 +98,7 @@ export async function waitForExactConsoleMessageCount(devToolsPage: DevToolsPage
   const messageCount = await devToolsPage.waitForFunction(async () => {
     const selected = await devToolsPage.$$(CONSOLE_ALL_MESSAGES_SELECTOR);
     const messageTexts =
-        await Promise.all(selected.map(message => message.evaluate(message => message.textContent || '')));
+        await Promise.all(selected.map(message => message.evaluate(message => message.deepTextContent() || '')));
     const validMessages = messageTexts.filter(text => text !== '');
     return validMessages.length;
   });
@@ -112,7 +112,7 @@ export async function waitForLastConsoleMessageToHaveContent(devToolsPage: DevTo
     if (messages.length === 0) {
       return false;
     }
-    const lastMessageContent = await messages[messages.length - 1].evaluate(message => message.textContent);
+    const lastMessageContent = await messages[messages.length - 1].evaluate(message => message.deepTextContent());
     return lastMessageContent === expectedTextContent;
   });
   await expectVeEvents(devToolsPage, [veImpressionForConsoleMessage()], await veRoot(devToolsPage));
@@ -160,7 +160,7 @@ export async function getCurrentConsoleMessages(devToolsPage: DevToolsPage, with
 
   // Get the messages from the console.
   return await devToolsPage.page.evaluate(selector => {
-    return Array.from(document.querySelectorAll(selector)).map(message => message.textContent as string);
+    return Array.from(document.querySelectorAll(selector)).map(message => message.deepTextContent() as string);
   }, selector);
 }
 
@@ -188,7 +188,7 @@ export async function maybeGetCurrentConsoleMessages(devToolsPage: DevToolsPage,
 
   // Get the messages from the console.
   const result = await devToolsPage.evaluate(selector => {
-    return Array.from(document.querySelectorAll(selector)).map(message => message.textContent);
+    return Array.from(document.querySelectorAll(selector)).map(message => message.deepTextContent());
   }, selector);
 
   if (result.length) {
@@ -220,7 +220,7 @@ export async function getStructuredConsoleMessages(devToolsPage: DevToolsPage) {
 
   return await devToolsPage.evaluate(selector => {
     return Array.from(document.querySelectorAll(selector)).map(wrapper => {
-      const message = wrapper.querySelector('.console-message-text')?.textContent;
+      const message = wrapper.querySelector('.console-message-text')?.deepTextContent();
       const source = wrapper.querySelector('.devtools-link')?.textContent;
       const consoleMessage = wrapper.querySelector('.console-message');
       const repeatCount = wrapper.querySelector('.console-message-repeat-count');
@@ -393,12 +393,13 @@ export async function clickOnContextMenu(devToolsPage: DevToolsPage, selectorFor
   const menuItem = await devToolsPage.waitFor(`[jslog*="context: ${jslogContext}"]`);
   await menuItem.click();
   const isObject = ['copy-object', 'expand-recursively'].includes(jslogContext);
+  const prefix = isObject ? 'Tree > TreeItem > ' : '';
   await expectVeEvents(devToolsPage,
                        [
                          veClick(isObject ? 'Tree > TreeItem' : ''),
                          veImpressionForConsoleMessageContextMenu(jslogContext),
-                         veClick(`Menu > Action: ${jslogContext}`),
-                         veResize('Menu'),
+                         veClick(`${prefix}Menu > Action: ${jslogContext}`),
+                         veResize(`${prefix}Menu`),
                        ],
                        `${await veRoot(devToolsPage)} > Item: console-message`);
 }
@@ -473,7 +474,8 @@ function veImpressionForConsoleMessageContextMenu(expectedItem: string) {
   if (isString) {
     menuItems.add('copy-string-as-js-literal').add('copy-string-as-json-literal').add('copy-string-contents');
   }
-  return veImpression('Menu', undefined, [...menuItems].map(i => veImpression('Action', i)));
+  const prefix = isObject ? 'Tree > TreeItem > ' : '';
+  return veImpression(`${prefix}Menu`, undefined, [...menuItems].map(i => veImpression('Action', i)));
 }
 
 async function veRoot(devToolsPage: DevToolsPage): Promise<string> {

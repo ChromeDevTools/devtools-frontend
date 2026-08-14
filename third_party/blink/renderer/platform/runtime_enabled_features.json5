@@ -1006,7 +1006,7 @@
       // embed camera and microphone permission request controls directly in the page.
       // https://chromestatus.com/feature/5153829504024576
       name: "CameraAndMicrophoneElements",
-      status: "test",
+      status: "experimental",
       public: true,
     },
     {
@@ -2604,6 +2604,10 @@
       status: "stable",
     },
     {
+      name: "ElementCanvasTransform",
+      status: "experimental",
+    },
+    {
       public: true,
       name: "ElementCapture",
       status: {"Android": "experimental", "iOS": "", "default": "stable"},
@@ -2903,6 +2907,7 @@
       // Enables the Blink feature only when the base::Feature is overridden by
       // field trial or command line.
       copied_from_base_feature_if: "overridden",
+      browser_process_read_access: true,
     },
     {
       name: "FetchUploadStreaming",
@@ -5763,13 +5768,6 @@
     {
       // See crbug.com/502616235.
       name: "SkipViewTransitionSnapshotResumeRendering",
-      status: "stable",
-    },
-    {
-      // Fix for notifying changed slots in different shadow roots during
-      // manual assignment. crbug.com/517322978
-      // Enabled in M151, safe to remove in M153.
-      name: "SlotAssignNotifyDifferentShadowRoots",
       status: "stable",
     },
     {

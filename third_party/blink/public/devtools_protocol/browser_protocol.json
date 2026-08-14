@@ -18072,7 +18072,9 @@
                         "CrossOriginRegistrationSiteNotIncluded",
                         "InvalidPreProvisionedKeyInitiatorMissing",
                         "PreProvisionedKeyAccessNotGranted",
-                        "PreProvisionedKeyNotFound"
+                        "PreProvisionedKeyNotFound",
+                        "AttestationCertificationError",
+                        "AttestationSigningError"
                     ]
                 },
                 {
@@ -25688,6 +25690,7 @@
                         "PrefetchIsStale",
                         "PrefetchNotEligibleBlockedByConnectionAllowlist",
                         "PrefetchNotEligibleBrowserContextOffTheRecord",
+                        "PrefetchNotEligibleCrossOrigin",
                         "PrefetchNotEligibleDataSaverEnabled",
                         "PrefetchNotEligibleExistingProxy",
                         "PrefetchNotEligibleHostIsNonUnique",

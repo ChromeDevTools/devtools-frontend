@@ -12068,6 +12068,8 @@ export namespace Network {
     InvalidPreProvisionedKeyInitiatorMissing = 'InvalidPreProvisionedKeyInitiatorMissing',
     PreProvisionedKeyAccessNotGranted = 'PreProvisionedKeyAccessNotGranted',
     PreProvisionedKeyNotFound = 'PreProvisionedKeyNotFound',
+    AttestationCertificationError = 'AttestationCertificationError',
+    AttestationSigningError = 'AttestationSigningError',
   }
 
   /**
@@ -17236,6 +17238,7 @@ export namespace Preload {
     PrefetchIsStale = 'PrefetchIsStale',
     PrefetchNotEligibleBlockedByConnectionAllowlist = 'PrefetchNotEligibleBlockedByConnectionAllowlist',
     PrefetchNotEligibleBrowserContextOffTheRecord = 'PrefetchNotEligibleBrowserContextOffTheRecord',
+    PrefetchNotEligibleCrossOrigin = 'PrefetchNotEligibleCrossOrigin',
     PrefetchNotEligibleDataSaverEnabled = 'PrefetchNotEligibleDataSaverEnabled',
     PrefetchNotEligibleExistingProxy = 'PrefetchNotEligibleExistingProxy',
     PrefetchNotEligibleHostIsNonUnique = 'PrefetchNotEligibleHostIsNonUnique',

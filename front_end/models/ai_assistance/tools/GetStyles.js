@@ -4,7 +4,6 @@
 import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
-import { debugLog } from '../debug.js';
 export class GetStylesTool {
     name = "getStyles" /* ToolName.GET_STYLES */;
     description = `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
@@ -61,7 +60,6 @@ export class GetStylesTool {
         }
         for (const uid of params.elements) {
             result[uid] = { computed: {}, authored: {} };
-            debugLog(`Action to execute: uid=${uid}`);
             const node = new SDK.DOMModel.DeferredDOMNode(target, uid);
             const resolved = await node.resolvePromise();
             if (!resolved) {

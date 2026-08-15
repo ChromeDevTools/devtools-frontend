@@ -9637,7 +9637,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     }
   }
   createRenderingShortcuts() {
-    const prefersColorSchemeSetting = Common5.Settings.Settings.instance().moduleSetting("emulated-css-media-feature-prefers-color-scheme");
+    const prefersColorSchemeSetting = Common5.Settings.Settings.instance().resolve(SDK7.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor);
     const autoDarkModeSetting = Common5.Settings.Settings.instance().moduleSetting("emulate-auto-dark-mode");
     const decorateStatus = (condition, title) => `${condition ? "\u2713 " : ""}${title}`;
     const button = new UI10.Toolbar.ToolbarToggle(i18nString8(UIStrings8.toggleRenderingEmulations), "brush", "brush-filled", void 0, false);

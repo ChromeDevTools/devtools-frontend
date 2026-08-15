@@ -461,9 +461,6 @@
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopia (no green)"
   },
-  "core/sdk/sdk-meta.ts | devicebased": {
-    "message": "Device-based"
-  },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Disable AVIF format"
   },
@@ -512,9 +509,6 @@
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emulate deuteranopia (no green)"
   },
-  "core/sdk/sdk-meta.ts | emulateIdleDetectorState": {
-    "message": "Emulate Idle Detector state"
-  },
   "core/sdk/sdk-meta.ts | emulateOsTextScale": {
     "message": "Emulate OS text scale"
   },
@@ -551,9 +545,6 @@
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Enable WebP format"
   },
-  "core/sdk/sdk-meta.ts | forceEnabled": {
-    "message": "Force enabled"
-  },
   "core/sdk/sdk-meta.ts | logXmlhttprequests": {
     "message": "Log XMLHttpRequests"
   },
@@ -565,9 +556,6 @@
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "No emulation"
-  },
-  "core/sdk/sdk-meta.ts | noIdleEmulation": {
-    "message": "No idle emulation"
   },
   "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
     "message": "100% (default)"
@@ -614,23 +602,8 @@
   "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
     "message": "Example resources are source maps. Disabled by default for security reasons."
   },
-  "core/sdk/sdk-meta.ts | touch": {
-    "message": "Touch"
-  },
   "core/sdk/sdk-meta.ts | tritanopia": {
     "message": "Tritanopia (no blue)"
-  },
-  "core/sdk/sdk-meta.ts | userActiveScreenLocked": {
-    "message": "User active, screen locked"
-  },
-  "core/sdk/sdk-meta.ts | userActiveScreenUnlocked": {
-    "message": "User active, screen unlocked"
-  },
-  "core/sdk/sdk-meta.ts | userIdleScreenLocked": {
-    "message": "User idle, screen locked"
-  },
-  "core/sdk/sdk-meta.ts | userIdleScreenUnlocked": {
-    "message": "User idle, screen unlocked"
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
     "message": "Deprecated syntax found for metric \"{PH1}\". Use: <name>;dur=<duration>;desc=<description>"
@@ -722,6 +695,9 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateAFocusedPage": {
     "message": "Do not emulate a focused page"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCss": {
+    "message": "Do not emulate CSS {PH1}"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCssMediaType": {
     "message": "Do not emulate CSS media type"
   },
@@ -730,6 +706,12 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateAFocusedPage": {
     "message": "Emulate a focused page"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateCss": {
+    "message": "Emulate CSS {PH1}"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateCssMediaFeature": {
+    "message": "Emulate CSS media feature {PH1}"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateCssMediaType": {
     "message": "Emulate CSS media type"
@@ -13454,11 +13436,20 @@
   "panels/sensors/sensors-meta.ts | critical": {
     "message": "Critical"
   },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Device-based"
+  },
   "panels/sensors/sensors-meta.ts | deviceOrientation": {
     "message": "device orientation"
   },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Emulate Idle Detector state"
+  },
   "panels/sensors/sensors-meta.ts | fair": {
     "message": "Fair"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Force enabled"
   },
   "panels/sensors/sensors-meta.ts | geolocation": {
     "message": "geolocation"
@@ -13471,6 +13462,9 @@
   },
   "panels/sensors/sensors-meta.ts | locations": {
     "message": "Locations"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "No idle emulation"
   },
   "panels/sensors/sensors-meta.ts | nominal": {
     "message": "Nominal"
@@ -13492,6 +13486,21 @@
   },
   "panels/sensors/sensors-meta.ts | timezones": {
     "message": "timezones"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Touch"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "User active, screen locked"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "User active, screen unlocked"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "User idle, screen locked"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "User idle, screen unlocked"
   },
   "panels/sensors/SensorsView.ts | accuracy": {
     "message": "Accuracy"
@@ -17374,6 +17383,9 @@
   },
   "panels/whats_new/whats_new-meta.ts | whatsNew": {
     "message": "What’s new"
+  },
+  "ui/comments/comments-meta.ts | toggleCommentMode": {
+    "message": "Add comments to send to your AI coding agent"
   },
   "ui/components/dialogs/Dialog.ts | close": {
     "message": "Close"

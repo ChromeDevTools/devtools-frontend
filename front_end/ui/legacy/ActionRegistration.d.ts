@@ -101,7 +101,8 @@ export declare const enum IconClass {
     PLUS = "plus",
     UNDO = "undo",
     COPY = "copy",
-    IMPORT = "import"
+    IMPORT = "import",
+    COMMENT_MODE = "comment-mode"
 }
 export declare const enum KeybindSet {
     DEVTOOLS_DEFAULT = "devToolsDefault",

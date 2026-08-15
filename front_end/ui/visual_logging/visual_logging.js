@@ -888,6 +888,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "command",
   "command-editor",
   "command-input",
+  "comments.toggle-comment-mode",
   "commit",
   "compatibility-lookup-link",
   "components.collect-garbage",

@@ -2,10 +2,12 @@ import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
 import { GetDetailedCallTreeTool } from './GetDetailedCallTree.js';
 import { GetElementAccessibilityDetailsTool } from './GetElementAccessibilityDetails.js';
 import { GetFunctionCodeTool } from './GetFunctionCode.js';
+import { GetInsightDetailsTool } from './GetInsightDetails.js';
 import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
 import { GetResourceContentTool } from './GetResourceContent.js';
 import { GetSourceContentTool } from './GetSourceContent.js';
+import { GetStorageValuesTool } from './GetStorageValues.js';
 import { GetStylesTool } from './GetStyles.js';
 import { GetTraceEventByKeyTool } from './GetTraceEventByKey.js';
 import { GetTraceMainThreadSummaryTool } from './GetTraceMainThreadSummary.js';
@@ -13,6 +15,7 @@ import { GetTraceNetworkSummaryTool } from './GetTraceNetworkSummary.js';
 import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
 import { ListPageOriginsTool } from './ListPageOrigins.js';
 import { ListSourcesTool } from './ListSources.js';
+import { ListStorageKeysTool } from './ListStorageKeys.js';
 import { RecordPerformanceTraceTool } from './RecordPerformanceTrace.js';
 import { ResolveDevtoolsNodePathTool } from './ResolveDevtoolsNodePath.js';
 import { RunLighthouseTool } from './RunLighthouse.js';
@@ -36,6 +39,8 @@ export declare const TOOLS: {
     getElementAccessibilityDetails: GetElementAccessibilityDetailsTool;
     recordPerformanceTrace: RecordPerformanceTraceTool;
     listPageOrigins: ListPageOriginsTool;
+    listStorageKeys: ListStorageKeysTool;
+    getStorageValues: GetStorageValuesTool;
     getTraceEventByKey: GetTraceEventByKeyTool;
     selectTraceEventByKey: SelectTraceEventByKeyTool;
     listSources: ListSourcesTool;
@@ -46,6 +51,7 @@ export declare const TOOLS: {
     getDetailedCallTree: GetDetailedCallTreeTool;
     getFunctionCode: GetFunctionCodeTool;
     getResourceContent: GetResourceContentTool;
+    getInsightDetails: GetInsightDetailsTool;
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

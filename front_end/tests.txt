@@ -201,10 +201,12 @@ models/ai_assistance/tools/ExecuteJavaScript.test.js
 models/ai_assistance/tools/GetDetailedCallTree.test.js
 models/ai_assistance/tools/GetElementAccessibilityDetails.test.js
 models/ai_assistance/tools/GetFunctionCode.test.js
+models/ai_assistance/tools/GetInsightDetails.test.js
 models/ai_assistance/tools/GetLighthouseAudits.test.js
 models/ai_assistance/tools/GetNetworkRequestDetails.test.js
 models/ai_assistance/tools/GetResourceContent.test.js
 models/ai_assistance/tools/GetSourceContent.test.js
+models/ai_assistance/tools/GetStorageValues.test.js
 models/ai_assistance/tools/GetStyles.test.js
 models/ai_assistance/tools/GetTraceEventByKey.test.js
 models/ai_assistance/tools/GetTraceMainThreadSummary.test.js
@@ -212,6 +214,7 @@ models/ai_assistance/tools/GetTraceNetworkSummary.test.js
 models/ai_assistance/tools/ListNetworkRequests.test.js
 models/ai_assistance/tools/ListPageOrigins.test.js
 models/ai_assistance/tools/ListSources.test.js
+models/ai_assistance/tools/ListStorageKeys.test.js
 models/ai_assistance/tools/RecordPerformanceTrace.test.js
 models/ai_assistance/tools/ResolveDevtoolsNodePath.test.js
 models/ai_assistance/tools/RunLighthouse.test.js

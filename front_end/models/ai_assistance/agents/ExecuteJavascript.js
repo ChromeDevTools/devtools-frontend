@@ -6,7 +6,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import { debugLog } from '../debug.js';
 import { EvaluateAction, formatError, SideEffectError } from '../EvaluateAction.js';
 import { FREESTYLER_WORLD_CSP, FREESTYLER_WORLD_NAME } from '../injected.js';
 const lockedString = i18n.i18n.lockedString;
@@ -65,7 +64,6 @@ export class JavascriptExecutor {
         this.#execJs = execJs;
     }
     async executeAction(action, options) {
-        debugLog(`Action to execute: ${action}`);
         if (options?.approved === false) {
             return {
                 error: 'Error: User denied code execution with side effects.',
@@ -94,7 +92,6 @@ export class JavascriptExecutor {
                 throwOnSideEffect = false;
             }
             const result = await this.generateObservation(action, { throwOnSideEffect });
-            debugLog(`Action result: ${JSON.stringify(result)}`);
             if (result.sideEffect) {
                 if (this.#options.executionMode ===
                     Root.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {

@@ -17,7 +17,7 @@ const SKILL_DISPLAY_NAMES = {
     accessibility: 'Accessibility',
     performance: 'Performance',
     storage: 'Storage',
-    sources: 'Workspace files and sources',
+    sources: 'Sources',
 };
 const preamble = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
 Your role is to help web developers debug, analyze, and optimize web applications by learning specialized skills and utilizing tools.
@@ -161,11 +161,15 @@ User query: ${enhancedQuery}`;
     }
     async *handleContextDetails(selected) {
         if (selected) {
-            const details = await selected.getUserFacingDetails();
+            const [details, widgets] = await Promise.all([
+                selected.getUserFacingDetails(),
+                selected.getWidgets(),
+            ]);
             if (details) {
                 yield {
                     type: "context" /* ResponseType.CONTEXT */,
                     details,
+                    ...(widgets.length > 0 ? { widgets } : {}),
                 };
             }
         }
@@ -177,16 +181,15 @@ User query: ${enhancedQuery}`;
         let response = '';
         const skills = this.getSkills();
         for (const name of names) {
-            debugLog(`AiAgent2: Attempting to load skill ${name}`);
             if (this.#activeSkills.has(name)) {
-                debugLog(`AiAgent2: Skill ${name} is already loaded`);
+                debugLog(`[AiAgent2] Skill '${name}' is already loaded`);
                 response += `Error: Skill '${name}' is already loaded. Call its tools directly instead of invoking learnSkills for '${name}' again.\n`;
                 continue;
             }
             const skillObj = skills[name];
             if (skillObj) {
                 this.#activeSkills.add(name);
-                debugLog(`AiAgent2: Skill ${name} loaded successfully`);
+                debugLog(`[AiAgent2] Loaded skill '${name}' with tools: [${skillObj.allowedTools.join(', ')}]`);
                 response += `Skill ${name} loaded. Instructions:\n${skillObj.instructions}\n`;
                 for (const toolName of skillObj.allowedTools) {
                     const tool = ToolRegistry.get(toolName);
@@ -196,7 +199,7 @@ User query: ${enhancedQuery}`;
                 }
             }
             else {
-                debugLog(`AiAgent2: Failed to load skill ${name}`);
+                debugLog(`[AiAgent2] Failed to load skill '${name}'`);
                 response += `Failed to load skill ${name}. Valid skills are: ${Object.keys(skills).join(', ')}.\n`;
             }
         }
@@ -212,7 +215,6 @@ User query: ${enhancedQuery}`;
      */
     #declareTool(tool) {
         if (this.#declaredTools.has(tool.name)) {
-            debugLog(`AiAgent2: Tool ${tool.name} is already declared`);
             return;
         }
         this.#declaredTools.add(tool.name);

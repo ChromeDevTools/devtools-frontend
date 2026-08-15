@@ -6212,7 +6212,8 @@ var PrefetchReasonDescription = {
   PrefetchNotEligibleRedirectToServiceWorker: { name: () => i18n19.i18n.lockedString("Unknown") },
   PrefetchEvictedAfterBrowsingDataRemoved: { name: i18nLazyString(UIStrings10.PrefetchEvictedAfterBrowsingDataRemoved) },
   PrefetchNotEligibleBlockedByConnectionAllowlist: { name: () => i18n19.i18n.lockedString("Unknown") },
-  PrefetchCancelledOnUserNavigation: { name: () => i18n19.i18n.lockedString("Unknown") }
+  PrefetchCancelledOnUserNavigation: { name: () => i18n19.i18n.lockedString("Unknown") },
+  PrefetchNotEligibleCrossOrigin: { name: () => i18n19.i18n.lockedString("Unknown") }
 };
 function ruleSetLocationShort(ruleSet, pageURL2) {
   const url = ruleSet.url === void 0 ? pageURL2 : ruleSet.url;

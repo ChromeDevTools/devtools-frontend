@@ -2,7 +2,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Bindings from '../../bindings/bindings.js';
 import * as Trace from '../../trace/trace.js';
-import { type ContextDetail, ConversationContext, type ConversationSuggestions } from '../agents/AiAgent.js';
+import { type AiWidget, type ContextDetail, ConversationContext, type ConversationSuggestions } from '../agents/AiAgent.js';
 import { PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
 import type { AICallTree } from '../performance/AICallTree.js';
 import { AgentFocus } from '../performance/AIContext.js';
@@ -66,6 +66,14 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
      * the LLM prompt via `getPromptDetails()`.
      */
     getUserFacingDetails(): Promise<[ContextDetail, ...ContextDetail[]] | null>;
+    /**
+     * Returns initial UI widgets to display with the conversation context header
+     * depending on the active focus:
+     * - Specific task (call tree) -> timeline summary & bottom up tree widgets
+     * - Insight -> PERF_INSIGHT widget & Core Web Vitals widget
+     * - Whole Trace -> Core Web Vitals widget
+     */
+    getWidgets(): Promise<AiWidget[]>;
     getBoundsForLabel(label: MainThreadSectionLabel): Trace.Types.Timing.TraceWindowMicro | null;
     getLabelName(label: MainThreadSectionLabel): string;
     createBounds(min?: number, max?: number): Trace.Types.Timing.TraceWindowMicro | null;

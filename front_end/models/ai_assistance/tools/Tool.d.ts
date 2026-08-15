@@ -134,6 +134,8 @@ export declare const enum ToolName {
     GET_ELEMENT_ACCESSIBILITY_DETAILS = "getElementAccessibilityDetails",
     RECORD_PERFORMANCE_TRACE = "recordPerformanceTrace",
     LIST_PAGE_ORIGINS = "listPageOrigins",
+    LIST_STORAGE_KEYS = "listStorageKeys",
+    GET_STORAGE_VALUES = "getStorageValues",
     GET_TRACE_EVENT_BY_KEY = "getTraceEventByKey",
     SELECT_TRACE_EVENT_BY_KEY = "selectTraceEventByKey",
     LIST_SOURCES = "listSources",
@@ -143,7 +145,8 @@ export declare const enum ToolName {
     RUN_LIGHTHOUSE = "runLighthouse",
     GET_DETAILED_CALL_TREE = "getDetailedCallTree",
     GET_FUNCTION_CODE = "getFunctionCode",
-    GET_RESOURCE_CONTENT = "getResourceContent"
+    GET_RESOURCE_CONTENT = "getResourceContent",
+    GET_INSIGHT_DETAILS = "getInsightDetails"
 }
 /**
  * Base metadata interface for a Tool.

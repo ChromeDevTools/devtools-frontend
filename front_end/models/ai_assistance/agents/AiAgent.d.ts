@@ -191,6 +191,12 @@ export declare abstract class ConversationContext<T> {
      * Currently only used by AiAgent2.
      */
     getUserFacingDetails(): Promise<[ContextDetail, ...ContextDetail[]] | null>;
+    /**
+     * Returns initial UI widgets to display in the conversation context header
+     * when this context is active (e.g. Core Web Vitals summary for a performance trace).
+     * Used by PerformanceAgent and AiAgent2.
+     */
+    getWidgets(): Promise<AiWidget[]>;
 }
 export interface ComputedStyleAiWidget {
     name: 'COMPUTED_STYLES';

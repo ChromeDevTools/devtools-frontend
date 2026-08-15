@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 /**
  * Headless model managing comment thread data, CRUD operations, and comment mode.
  */
@@ -10,20 +9,6 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
     #commentThreads = new Map();
     #commentMode = false;
     #nextId = 1;
-    /**
-     * IMPORTANT: This method MUST only be called in MainImpl. All other components
-     * should receive CommentManager via dependency injection (INJECT or constructor argument).
-     */
-    static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
-        if (!Root.DevToolsContext.globalInstance().has(CommentManager) || forceNew) {
-            Root.DevToolsContext.globalInstance().set(CommentManager, new CommentManager());
-        }
-        return Root.DevToolsContext.globalInstance().get(CommentManager);
-    }
-    static removeInstance() {
-        Root.DevToolsContext.globalInstance().delete(CommentManager);
-    }
     setCommentMode(active) {
         if (this.#commentMode === active) {
             return;

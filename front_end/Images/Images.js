@@ -98,6 +98,7 @@ style.setProperty('--image-file-code', 'url(\"' + new URL(new URL('code.svg', im
 style.setProperty('--image-file-colon', 'url(\"' + new URL(new URL('colon.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-color-picker-filled', 'url(\"' + new URL(new URL('color-picker-filled.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-color-picker', 'url(\"' + new URL(new URL('color-picker.svg', import.meta.url).href).toString() + '\")');
+style.setProperty('--image-file-comment-mode', 'url(\"' + new URL(new URL('comment-mode.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-compress', 'url(\"' + new URL(new URL('compress.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-console-conditional-breakpoint', 'url(\"' + new URL(new URL('console-conditional-breakpoint.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-console-logpoint', 'url(\"' + new URL(new URL('console-logpoint.svg', import.meta.url).href).toString() + '\")');

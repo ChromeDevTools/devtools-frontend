@@ -184,6 +184,11 @@ var IssueCounter = class extends HTMLElement {
       }
     };
     const iconSize = "2ex";
+    const accessibleName = this.#accessibleName ?? getIssueCountsEnumeration(
+      this.#issuesManager,
+      this.#displayMode !== "ShowAlways"
+      /* DisplayMode.SHOW_ALWAYS */
+    );
     const data = {
       groups: [
         {
@@ -210,7 +215,7 @@ var IssueCounter = class extends HTMLElement {
       ],
       clickHandler: this.#clickHandler,
       leadingText: this.#leadingText,
-      accessibleName: this.#accessibleName,
+      accessibleName,
       compact: this.#compact
     };
     render(html`

@@ -9115,6 +9115,10 @@ var NativeFunctions = [
     signatures: [["html", "?options"]]
   },
   {
+    name: "setCanvasTransform",
+    signatures: [["?matrix"]]
+  },
+  {
     name: "matchContainer",
     signatures: [["query"]]
   },

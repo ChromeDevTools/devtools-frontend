@@ -39,14 +39,17 @@ import * as AIContext from './performance/AIContext.js';
 import * as AIQueries from './performance/AIQueries.js';
 import * as PerformanceAnnotations from './PerformanceAnnotations.js';
 import * as StorageItem from './StorageItem.js';
+import * as DOMStorageUtils from './tools/DOMStorageUtils.js';
 import * as ExecuteJavaScript from './tools/ExecuteJavaScript.js';
 import * as GetDetailedCallTree from './tools/GetDetailedCallTree.js';
 import * as GetElementAccessibilityDetails from './tools/GetElementAccessibilityDetails.js';
 import * as GetFunctionCode from './tools/GetFunctionCode.js';
+import * as GetInsightDetails from './tools/GetInsightDetails.js';
 import * as GetLighthouseAudits from './tools/GetLighthouseAudits.js';
 import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
 import * as GetResourceContent from './tools/GetResourceContent.js';
 import * as GetSourceContent from './tools/GetSourceContent.js';
+import * as GetStorageValues from './tools/GetStorageValues.js';
 import * as GetStyles from './tools/GetStyles.js';
 import * as GetTraceEventByKey from './tools/GetTraceEventByKey.js';
 import * as GetTraceMainThreadSummary from './tools/GetTraceMainThreadSummary.js';
@@ -54,6 +57,7 @@ import * as GetTraceNetworkSummary from './tools/GetTraceNetworkSummary.js';
 import * as ListNetworkRequests from './tools/ListNetworkRequests.js';
 import * as ListPageOrigins from './tools/ListPageOrigins.js';
 import * as ListSources from './tools/ListSources.js';
+import * as ListStorageKeys from './tools/ListStorageKeys.js';
 import * as RecordPerformanceTrace from './tools/RecordPerformanceTrace.js';
 import * as ResolveDevtoolsNodePath from './tools/ResolveDevtoolsNodePath.js';
 import * as RunLighthouse from './tools/RunLighthouse.js';
@@ -80,6 +84,7 @@ export {
   ConversationSummary,
   Debug,
   DOMNodeContext,
+  DOMStorageUtils,
   EvaluateAction,
   ExecuteJavaScript,
   ExtensionScope,
@@ -89,10 +94,12 @@ export {
   GetDetailedCallTree,
   GetElementAccessibilityDetails,
   GetFunctionCode,
+  GetInsightDetails,
   GetLighthouseAudits,
   GetNetworkRequestDetails,
   GetResourceContent,
   GetSourceContent,
+  GetStorageValues,
   GetStyles,
   GetTraceEventByKey,
   GetTraceMainThreadSummary,
@@ -102,6 +109,7 @@ export {
   ListNetworkRequests,
   ListPageOrigins,
   ListSources,
+  ListStorageKeys,
   NetworkAgent,
   NetworkRequestFormatter,
   PerformanceAgent,

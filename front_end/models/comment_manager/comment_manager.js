@@ -10,25 +10,10 @@ __export(CommentManager_exports, {
   CommentManager: () => CommentManager
 });
 import * as Common from "./../../core/common/common.js";
-import * as Root from "./../../core/root/root.js";
-var CommentManager = class _CommentManager extends Common.ObjectWrapper.ObjectWrapper {
+var CommentManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #commentThreads = /* @__PURE__ */ new Map();
   #commentMode = false;
   #nextId = 1;
-  /**
-   * IMPORTANT: This method MUST only be called in MainImpl. All other components
-   * should receive CommentManager via dependency injection (INJECT or constructor argument).
-   */
-  static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
-    if (!Root.DevToolsContext.globalInstance().has(_CommentManager) || forceNew) {
-      Root.DevToolsContext.globalInstance().set(_CommentManager, new _CommentManager());
-    }
-    return Root.DevToolsContext.globalInstance().get(_CommentManager);
-  }
-  static removeInstance() {
-    Root.DevToolsContext.globalInstance().delete(_CommentManager);
-  }
   setCommentMode(active) {
     if (this.#commentMode === active) {
       return;

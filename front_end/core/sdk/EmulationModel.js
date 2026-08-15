@@ -4,7 +4,7 @@
 import { CSSModel } from './CSSModel.js';
 import { OverlayModel } from './OverlayModel.js';
 import { SDKModel } from './SDKModel.js';
-import { cpuPressureSettingDescriptor, emulatedCSSMediaSettingDescriptor, javaScriptDisabledSettingDescriptor, } from './SDKSettings.js';
+import { cpuPressureSettingDescriptor, emulatedCSSMediaFeatureForcedColorsSettingDescriptor, emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor, emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor, emulatedCSSMediaSettingDescriptor, idleDetectionSettingDescriptor, javaScriptDisabledSettingDescriptor, touchSettingDescriptor, } from './SDKSettings.js';
 export class EmulationModel extends SDKModel {
     #multitargetNetworkManager;
     #emulationAgent;
@@ -40,12 +40,12 @@ export class EmulationModel extends SDKModel {
         if (disableJavascriptSetting.get()) {
             void this.#emulationAgent.invoke_setScriptExecutionDisabled({ value: true });
         }
-        const touchSetting = settings.moduleSetting('emulation.touch');
+        const touchSetting = settings.resolve(touchSettingDescriptor);
         touchSetting.addChangeListener(() => {
             const settingValue = touchSetting.get();
             void this.overrideEmulateTouch(settingValue === 'force');
         });
-        const idleDetectionSetting = settings.moduleSetting('emulation.idle-detection');
+        const idleDetectionSetting = settings.resolve(idleDetectionSettingDescriptor);
         idleDetectionSetting.addChangeListener(async () => {
             const settingValue = idleDetectionSetting.get();
             if (settingValue === 'none') {
@@ -71,12 +71,12 @@ export class EmulationModel extends SDKModel {
         });
         const mediaTypeSetting = settings.resolve(emulatedCSSMediaSettingDescriptor);
         const mediaFeatureColorGamutSetting = settings.moduleSetting('emulated-css-media-feature-color-gamut');
-        const mediaFeaturePrefersColorSchemeSetting = settings.moduleSetting('emulated-css-media-feature-prefers-color-scheme');
-        const mediaFeatureForcedColorsSetting = settings.moduleSetting('emulated-css-media-feature-forced-colors');
+        const mediaFeaturePrefersColorSchemeSetting = settings.resolve(emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor);
+        const mediaFeatureForcedColorsSetting = settings.resolve(emulatedCSSMediaFeatureForcedColorsSettingDescriptor);
         const mediaFeaturePrefersContrastSetting = settings.moduleSetting('emulated-css-media-feature-prefers-contrast');
         const mediaFeaturePrefersReducedDataSetting = settings.moduleSetting('emulated-css-media-feature-prefers-reduced-data');
         const mediaFeaturePrefersReducedTransparencySetting = settings.moduleSetting('emulated-css-media-feature-prefers-reduced-transparency');
-        const mediaFeaturePrefersReducedMotionSetting = settings.moduleSetting('emulated-css-media-feature-prefers-reduced-motion');
+        const mediaFeaturePrefersReducedMotionSetting = settings.resolve(emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor);
         // Note: this uses a different format than what the CDP API expects,
         // because we want to update these values per media type/feature
         // without having to search the `features` array (inefficient) or

@@ -1272,7 +1272,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         }
     }
     createRenderingShortcuts() {
-        const prefersColorSchemeSetting = Common.Settings.Settings.instance().moduleSetting('emulated-css-media-feature-prefers-color-scheme');
+        const prefersColorSchemeSetting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor);
         const autoDarkModeSetting = Common.Settings.Settings.instance().moduleSetting('emulate-auto-dark-mode');
         const decorateStatus = (condition, title) => `${condition ? '✓ ' : ''}${title}`;
         const button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleRenderingEmulations), 'brush', 'brush-filled', undefined, false);

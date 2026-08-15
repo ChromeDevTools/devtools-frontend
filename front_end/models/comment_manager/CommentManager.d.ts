@@ -33,9 +33,6 @@ export interface CommentThread {
     status: 'ACTIVE' | 'RESOLVED';
     changes?: Array<Record<string, unknown>>;
 }
-export interface CommentManagerCreationOptions {
-    forceNew?: boolean | null;
-}
 export declare const enum Events {
     COMMENT_THREADS_CHANGED = "CommentThreadsChanged",
     COMMENT_MODE_CHANGED = "CommentModeChanged"
@@ -49,12 +46,6 @@ export interface EventTypes {
  */
 export declare class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    /**
-     * IMPORTANT: This method MUST only be called in MainImpl. All other components
-     * should receive CommentManager via dependency injection (INJECT or constructor argument).
-     */
-    static instance(opts?: CommentManagerCreationOptions): CommentManager;
-    static removeInstance(): void;
     setCommentMode(active: boolean): void;
     isCommentMode(): boolean;
     createCommentThread(anchor: CommentAnchorSignature, text: string, author?: 'DEVELOPER' | 'AGENT', changes?: Array<Record<string, unknown>>): CommentThread;

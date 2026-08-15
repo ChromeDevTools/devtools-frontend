@@ -11194,7 +11194,9 @@ export declare namespace Network {
         CrossOriginRegistrationSiteNotIncluded = "CrossOriginRegistrationSiteNotIncluded",
         InvalidPreProvisionedKeyInitiatorMissing = "InvalidPreProvisionedKeyInitiatorMissing",
         PreProvisionedKeyAccessNotGranted = "PreProvisionedKeyAccessNotGranted",
-        PreProvisionedKeyNotFound = "PreProvisionedKeyNotFound"
+        PreProvisionedKeyNotFound = "PreProvisionedKeyNotFound",
+        AttestationCertificationError = "AttestationCertificationError",
+        AttestationSigningError = "AttestationSigningError"
     }
     /**
      * Details about a failed device bound session network request.
@@ -16001,6 +16003,7 @@ export declare namespace Preload {
         PrefetchIsStale = "PrefetchIsStale",
         PrefetchNotEligibleBlockedByConnectionAllowlist = "PrefetchNotEligibleBlockedByConnectionAllowlist",
         PrefetchNotEligibleBrowserContextOffTheRecord = "PrefetchNotEligibleBrowserContextOffTheRecord",
+        PrefetchNotEligibleCrossOrigin = "PrefetchNotEligibleCrossOrigin",
         PrefetchNotEligibleDataSaverEnabled = "PrefetchNotEligibleDataSaverEnabled",
         PrefetchNotEligibleExistingProxy = "PrefetchNotEligibleExistingProxy",
         PrefetchNotEligibleHostIsNonUnique = "PrefetchNotEligibleHostIsNonUnique",

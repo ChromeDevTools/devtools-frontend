@@ -406,7 +406,8 @@ var PrefetchReasonDescription = {
   PrefetchNotEligibleRedirectToServiceWorker: { name: () => i18n.i18n.lockedString("Unknown") },
   PrefetchEvictedAfterBrowsingDataRemoved: { name: i18nLazyString(UIStrings.PrefetchEvictedAfterBrowsingDataRemoved) },
   PrefetchNotEligibleBlockedByConnectionAllowlist: { name: () => i18n.i18n.lockedString("Unknown") },
-  PrefetchCancelledOnUserNavigation: { name: () => i18n.i18n.lockedString("Unknown") }
+  PrefetchCancelledOnUserNavigation: { name: () => i18n.i18n.lockedString("Unknown") },
+  PrefetchNotEligibleCrossOrigin: { name: () => i18n.i18n.lockedString("Unknown") }
 };
 function prefetchFailureReason({ prefetchStatus }, statusCode) {
   switch (prefetchStatus) {
@@ -492,6 +493,8 @@ function prefetchFailureReason({ prefetchStatus }, statusCode) {
       return PrefetchReasonDescription["PrefetchNotEligibleBlockedByConnectionAllowlist"].name();
     case "PrefetchCancelledOnUserNavigation":
       return PrefetchReasonDescription["PrefetchCancelledOnUserNavigation"].name();
+    case "PrefetchNotEligibleCrossOrigin":
+      return PrefetchReasonDescription["PrefetchNotEligibleCrossOrigin"].name();
     default:
       return i18n.i18n.lockedString(`Unknown failure reason: ${prefetchStatus}`);
   }

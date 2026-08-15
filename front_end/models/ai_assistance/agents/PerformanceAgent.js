@@ -256,8 +256,7 @@ export class PerformanceAgent extends AiAgent {
             contextDisclosure.push(fact.text);
         }
         contextDisclosure.push(...this.#additionalSelectionsForDisclosure);
-        const focus = context.getItem();
-        const widgets = this.#getWidgetsForFocus(focus);
+        const widgets = await context.getWidgets();
         yield {
             type: "context" /* ResponseType.CONTEXT */,
             details: [
@@ -268,62 +267,6 @@ export class PerformanceAgent extends AiAgent {
             ],
             widgets,
         };
-    }
-    // Show different widgets with the first reply depending on the initial context:
-    // Specific task (call tree) -> timeline summary & bottom up tree widgets
-    // LCP Insight -> LCP breakdown & CWV widgets
-    // Whole Trace or insight other than LCP -> CWV widget
-    #getWidgetsForFocus(focus) {
-        const widgets = [];
-        // Case 1: Specific task (call tree) -> timeline summary & bottom up tree widgets
-        if (focus.callTree) {
-            const event = focus.callTree.selectedNode?.event;
-            if (event) {
-                const { startTime, endTime } = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
-                const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
-                widgets.push({
-                    name: 'TIMELINE_RANGE_SUMMARY',
-                    data: {
-                        bounds,
-                        parsedTrace: focus.parsedTrace,
-                        track: 'main',
-                    },
-                });
-                widgets.push({
-                    name: 'BOTTOM_UP_TREE',
-                    data: {
-                        bounds,
-                        parsedTrace: focus.parsedTrace,
-                    },
-                });
-            }
-            return widgets;
-        }
-        // Case 2: Insight -> PERF_INSIGHT widget
-        if (focus.insight) {
-            const insightKey = focus.insight.insightKey;
-            if (Trace.Insights.Common.isInsightKey(insightKey)) {
-                widgets.push({
-                    name: 'PERF_INSIGHT',
-                    data: {
-                        insight: insightKey,
-                        insightData: focus.insight,
-                    },
-                });
-            }
-        }
-        // Case 3: Whole Trace or insight other than LCP -> CWV widget
-        const primaryInsightSet = focus.primaryInsightSet;
-        if (primaryInsightSet) {
-            widgets.push({
-                name: 'CORE_VITALS',
-                data: {
-                    parsedTrace: focus.parsedTrace,
-                    insightSetKey: primaryInsightSet.id,
-                },
-            });
-        }
-        return widgets;
     }
     #callTreeContextSet = new WeakSet();
     #isFunctionResponseTooLarge(response) {

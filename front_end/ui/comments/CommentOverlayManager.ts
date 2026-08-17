@@ -458,15 +458,36 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
         const cmLine = target.closest('.cm-line');
         const highlightTarget = (cmLine && anchorEl.classList.contains('cm-editor')) ? cmLine : anchorEl;
         const rect = highlightTarget.getBoundingClientRect();
-        const scrollX = window.scrollX;
-        const scrollY = window.scrollY;
-        this.#setHoverHighlight({
-          top: scrollY + rect.top,
-          left: scrollX + rect.left,
-          width: rect.width,
-          height: rect.height,
-          visible: true,
-        });
+        let visibleLeft = rect.left;
+        let visibleRight = rect.right;
+        let visibleTop = rect.top;
+        let visibleBottom = rect.bottom;
+
+        if (anchorEl.classList.contains('cm-editor')) {
+          const scroller = anchorEl.querySelector('.cm-scroller') || anchorEl;
+          const scrollerRect = scroller.getBoundingClientRect();
+          visibleLeft = Math.max(visibleLeft, scrollerRect.left);
+          visibleRight = Math.min(visibleRight, scrollerRect.right);
+          visibleTop = Math.max(visibleTop, scrollerRect.top);
+          visibleBottom = Math.min(visibleBottom, scrollerRect.bottom);
+        }
+
+        const visibleWidth = Math.max(0, visibleRight - visibleLeft);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+        if (visibleWidth > 0 && visibleHeight > 0) {
+          const scrollX = window.scrollX;
+          const scrollY = window.scrollY;
+          this.#setHoverHighlight({
+            top: scrollY + visibleTop,
+            left: scrollX + visibleLeft,
+            width: visibleWidth,
+            height: visibleHeight,
+            visible: true,
+          });
+        } else {
+          this.#setHoverHighlight(null);
+        }
         event.consume(true);
       } else {
         this.#setHoverHighlight(null);

@@ -7,10 +7,30 @@ import sinon from 'sinon';
 
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as TextEditor from '../components/text_editor/text_editor.js';
 
 import * as Comments from './comments.js';
 
-describe('CommentOverlayManager', () => {
+function createTextEditor(doc: string, filePath?: string): TextEditor.TextEditor.TextEditor {
+  const state = CodeMirror.EditorState.create({
+    doc,
+    extensions: [
+      CodeMirror.lineNumbers(),
+      TextEditor.Config.baseConfiguration(doc),
+    ],
+  });
+  const textEditor = new TextEditor.TextEditor.TextEditor(state);
+  textEditor.setAttribute('jslog', 'TextField; context: editor');
+  textEditor.editor.dom.setAttribute('jslog', 'TextField; context: editor');
+  if (filePath) {
+    textEditor.editor.dom.setAttribute('data-file-path', filePath);
+  }
+  return textEditor;
+}
+
+describeWithEnvironment('CommentOverlayManager', () => {
   let container: HTMLElement;
   let manager: Comments.CommentOverlayManager.CommentOverlayManager;
 
@@ -446,5 +466,110 @@ describe('CommentOverlayManager', () => {
       unobserveSpy.restore();
       clock.restore();
     }
+  });
+
+  describe('CodeMirror editor comments and clipping', () => {
+    it('creates comment attached to CodeMirror editor when line is clicked', () => {
+      const textEditor = createTextEditor('const a = 1;\nconst b = 2;\nconst c = 3;', 'src/code.ts');
+      container.appendChild(textEditor);
+
+      manager.start(container);
+      manager.setCommentMode(true);
+
+      const lines = textEditor.editor.dom.querySelectorAll('.cm-content > .cm-line');
+      const line2 = lines[1];
+      assert.isDefined(line2);
+
+      line2.dispatchEvent(new MouseEvent('click', {bubbles: true, composed: true}));
+
+      const threads = manager.getCommentThreads();
+      assert.lengthOf(threads, 1);
+      assert.strictEqual(threads[0].anchor.editor?.lineNumber, 2);
+      assert.strictEqual(threads[0].anchor.editor?.filePath, 'src/code.ts');
+
+      const highlights = manager.getHighlightRects();
+      assert.lengthOf(highlights, 1);
+      const editorRect = textEditor.editor.dom.getBoundingClientRect();
+      assert.strictEqual(highlights[0].top, editorRect.top);
+      assert.strictEqual(highlights[0].height, editorRect.height);
+
+      const pins = manager.getPinPositions();
+      assert.lengthOf(pins, 1);
+      assert.strictEqual(pins[0].top, editorRect.top - 12);
+      assert.strictEqual(pins[0].left, editorRect.right - 12);
+    });
+
+    it('clips hover highlight to visible editor area when hovering over wide line in CodeMirror', () => {
+      const longText = 'const longHover = "' +
+          'B'.repeat(2000) + '";';
+      const textEditor = createTextEditor(longText, 'src/hover.ts');
+      textEditor.style.width = '300px';
+      container.appendChild(textEditor);
+
+      manager.start(container);
+      manager.setCommentMode(true);
+
+      const line1 = textEditor.editor.dom.querySelector('.cm-content > .cm-line');
+      assert.isNotNull(line1);
+
+      line1!.dispatchEvent(new MouseEvent('mousemove', {bubbles: true, composed: true}));
+
+      const scroller = textEditor.editor.dom.querySelector('.cm-scroller');
+      assert.isNotNull(scroller);
+      const scrollerRect = scroller!.getBoundingClientRect();
+
+      const hover = manager.getHoverHighlight();
+      assert.isNotNull(hover);
+      assert.isTrue(hover!.left >= scrollerRect.left - 1);
+      assert.isTrue(hover!.left + hover!.width <= scrollerRect.right + 1);
+    });
+
+    it('rematches CodeMirror comments across dynamic updates when jslog is on host element', async () => {
+      const clock = sinon.useFakeTimers();
+      try {
+        const textEditor = createTextEditor('const val = 42;\nconst next = 43;', 'src/rematch.ts');
+        container.appendChild(textEditor);
+
+        manager.start(container);
+        manager.setCommentMode(true);
+
+        const lines = textEditor.editor.dom.querySelectorAll('.cm-content > .cm-line');
+        const line2 = lines[1];
+        assert.isDefined(line2);
+
+        line2.dispatchEvent(new MouseEvent('click', {bubbles: true, composed: true}));
+        assert.lengthOf(manager.getPinPositions(), 1);
+
+        // Trigger rematch observer debounced timer
+        await Promise.resolve();
+        clock.tick(250);
+
+        assert.lengthOf(manager.getPinPositions(), 1);
+        assert.isTrue(manager.getPinPositions()[0].visible);
+      } finally {
+        clock.restore();
+      }
+    });
+
+    it('staggers pins vertically when multiple comments are on the CodeMirror editor', () => {
+      const textEditor = createTextEditor('const item1 = 1;\nconst item2 = 2;', 'src/stagger.ts');
+      container.appendChild(textEditor);
+
+      manager.start(container);
+      manager.setCommentMode(true);
+
+      const lines = textEditor.editor.dom.querySelectorAll('.cm-content > .cm-line');
+      const line1 = lines[0];
+      const line2 = lines[1];
+      assert.isDefined(line1);
+      assert.isDefined(line2);
+
+      manager.createComment(line1, 'First comment on editor');
+      manager.createComment(line2, 'Second comment on editor');
+
+      const pins = manager.getPinPositions();
+      assert.lengthOf(pins, 2);
+      assert.strictEqual(pins[1].top, pins[0].top + 26);
+    });
   });
 });

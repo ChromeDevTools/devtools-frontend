@@ -61,7 +61,7 @@ export class PatchingExecutor implements TargetExecutor {
       score: error ? 0.25 : Math.max((1 - (assertionFailures.length * 0.25)), 0.25),
       request: test.query,
       response: debugInfo,
-      exampleId,
+      session_id: exampleId,
       error,
       assertionFailures,
     }];

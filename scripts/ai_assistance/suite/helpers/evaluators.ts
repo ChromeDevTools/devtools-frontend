@@ -122,13 +122,13 @@ function parseScoringInstructions(instructions: string): {scoringPrompt: string,
 export class FunctionCalled extends Evaluator {
   static nameOnly(example: Conversation, funcName: string): boolean {
     return example.queries.some(q => {
-      return q.response.functionCallRequests?.some(call => call.name === funcName);
+      return q.response.tool_calls?.some(call => call.name === funcName);
     });
   }
 
   static nameAndArguments(example: Conversation, funcName: string, argCheck: Record<string, unknown>): boolean {
     return example.queries.some(q => {
-      return q.response.functionCallRequests?.some(call => {
+      return q.response.tool_calls?.some(call => {
         if (call.name !== funcName) {
           return false;
         }
@@ -355,7 +355,7 @@ export async function itEval(config: ItEval): Promise<void> {
   let goldenText = '';
   if ('rouge' in config) {
     const golden = await getGolden(state.store.type, state.store.label);
-    goldenText = golden?.queries.at(-1)?.response.text ?? '';
+    goldenText = golden?.queries.at(-1)?.response.content ?? '';
   }
 
   for (const [date, outputs] of Object.entries(state.outputsByDate)) {
@@ -395,7 +395,7 @@ export async function itEval(config: ItEval): Promise<void> {
       });
     } else if ('rouge' in config) {
       const details = conversations.map(conversation => {
-        const candidateText = conversation.queries.at(-1)?.response.text ?? '';
+        const candidateText = conversation.queries.at(-1)?.response.content ?? '';
         return {
           conversation,
           score: ROUGE.score(candidateText, goldenText),

@@ -12,12 +12,13 @@ import yargs from 'yargs/yargs';
 import type {Conversation, EvalFileOutput, ProcessedQuery} from './types.js';
 
 /** Note: non-exhaustive. **/
+/* eslint-disable @typescript-eslint/naming-convention */
 export interface RawOutput {
-  metadata: Array<{exampleId: string, explanation: string}>;
+  metadata: Array<{session_id: string, explanation: string}>;
   examples: Array<{
-    exampleId: string,
+    session_id: string,
     request: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       current_message: {
         parts: Array<{
           text?: string,
@@ -27,7 +28,7 @@ export interface RawOutput {
           },
         }>,
       },
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       function_declarations: Array<{
         name: string,
         description: string,
@@ -36,7 +37,7 @@ export interface RawOutput {
         },
       }>,
       metadata: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+
         client_version: string,
       },
     },
@@ -54,6 +55,7 @@ export interface RawOutput {
     },
   }>;
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 interface RawToEvalOptions {
   inputFromAutoRun: RawOutput;
@@ -62,12 +64,12 @@ interface RawToEvalOptions {
 
 export function convertRawOutputToEval(opts: RawToEvalOptions): EvalFileOutput {
   const inputHash = hash(JSON.stringify(opts.inputFromAutoRun));
-  const exampleIds = opts.inputFromAutoRun.metadata.map(m => m.exampleId);
+  const sessionIds = opts.inputFromAutoRun.metadata.map(m => m.session_id);
 
   const processedExamples: Conversation[] =
-      exampleIds
-          .map((exampleIdFromInput, index) => {
-            const data = opts.inputFromAutoRun.examples.filter(e => e.exampleId === exampleIdFromInput);
+      sessionIds
+          .map((sessionIdFromInput, index) => {
+            const data = opts.inputFromAutoRun.examples.filter(e => e.session_id === sessionIdFromInput);
             if (!data.length) {
               return null;
             }
@@ -78,9 +80,10 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): EvalFileOutput {
             assert.ok(chromeVersion, 'No client_version');
             const modelData = data.at(0)?.aidaResponse.metadata.inferenceOptionMetadata;
             assert.ok(modelData, 'No inferenceOptionMetadata');
+
             const processed: Conversation = {
-              id,
-              autoRunExampleId: exampleIdFromInput,
+              session_id: id,
+              autoRunExampleId: sessionIdFromInput,
               chromeVersion,
               explanation: exampleMetadata?.explanation ?? '',
               model: {
@@ -99,15 +102,15 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): EvalFileOutput {
 
               const query: ProcessedQuery = {
                 request: {
-                  prompt: request.current_message.parts[0].text,
+                  content: request.current_message.parts[0].text,
                   functionCallResponse: request.current_message.parts[0].functionResponse?.name,
                   availableFunctionNames:
                       request.function_declarations ? request.function_declarations.map(dec => dec.name) : [],
                 },
                 response: {
                   rpcGlobalId: aidaResponse.metadata.rcpGlobalId ?? '',
-                  text: responseText,
-                  functionCallRequests: aidaResponse.functionCalls?.map(call => {
+                  content: responseText,
+                  tool_calls: aidaResponse.functionCalls?.map(call => {
                     return {
                       name: call.name,
                       args: call.args,
@@ -120,10 +123,11 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): EvalFileOutput {
             return processed;
           })
           .filter(x => x !== null);
+
   const finalOutput: EvalFileOutput = {
     metadata: {
-      createdAt: new Date().toISOString(),
-      id: hash(processedExamples.map(x => x.id).join('')),
+      start_time: new Date().toISOString(),
+      id: hash(processedExamples.map(x => x.session_id).join('')),
     },
     conversations: processedExamples,
   };

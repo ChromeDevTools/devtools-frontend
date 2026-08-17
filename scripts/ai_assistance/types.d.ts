@@ -48,10 +48,11 @@ export interface ExecutedExample {
 /**
  * The result of making a single request to Aida.
  */
+/* eslint-disable @typescript-eslint/naming-convention */
 export interface IndividualPromptRequestResponse {
   request: string|DoConversationRequest;
   aidaResponse: string|DoConversationResponse;
-  exampleId: string;
+  session_id: string;
   /** Automatically computed score [0-1]. */
   score?: number;
   error?: string;
@@ -59,9 +60,10 @@ export interface IndividualPromptRequestResponse {
 }
 
 export interface ExampleMetadata {
-  exampleId: string;
+  session_id: string;
   explanation: string;
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export type TestTarget =
     'elements'|'performance-main-thread'|'performance'|'performance-insights'|'elements-multimodal'|'patching';

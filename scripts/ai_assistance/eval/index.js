@@ -172,10 +172,10 @@ const API = {
     }
 
     const {examples, metadata} = await (await fetch(`${DATA_URL}/${title}`)).json();
-    examples.sort((ex1, ex2) => ex1.exampleId > ex2.exampleId ? 1 : ex1.exampleId < ex2.exampleId ? -1 : 0);
+    examples.sort((ex1, ex2) => ex1.session_id > ex2.session_id ? 1 : ex1.session_id < ex2.session_id ? -1 : 0);
     const examplesMap = {};
     for (const example of examples) {
-      const exampleId = example.exampleId;
+      const exampleId = example.session_id;
       const request = example.request.input || example.request.current_message.parts[0].text ||
           serializeFunctionResponse(example.request.current_message.parts[0].functionResponse);
       // Even though we don't collect `response` texts anymore, we still need it for backwards compatibility.
@@ -473,7 +473,7 @@ async function renderMainPage() {
     exampleHeading.textContent = exampleId;
     exampleDescriptionContainer.append(exampleHeading);
     const explanationContainer = document.createElement('div');
-    const explanation = metadata.find(data => data.exampleId === exampleId)?.explanation;
+    const explanation = metadata.find(data => data.session_id === exampleId)?.explanation;
     explanationContainer.innerHTML = explanation ? `Evaluation tip: <strong>${explanation}</strong>` : '';
     exampleDescriptionContainer.append(explanationContainer);
   }

@@ -280,7 +280,7 @@ export class Example {
 
       return {
         results: filteredResults,
-        metadata: {exampleId: this.id(), explanation: this.#preparationResult.explanation},
+        metadata: {session_id: this.id(), explanation: this.#preparationResult.explanation},
         label: this.#label,
       };
 

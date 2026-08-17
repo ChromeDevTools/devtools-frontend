@@ -14,19 +14,20 @@ export function getMarkdownConversation(example: Conversation): string {
   let markdown = '';
   for (const query of example.queries) {
     markdown += '## REQUEST FROM CLIENT:\n';
-    if (query.request.prompt) {
-      markdown += `### QUERY:\n${query.request.prompt}\n`;
+    if (query.request.content) {
+      markdown += `### QUERY:\n${query.request.content}\n`;
     }
     if (query.request.functionCallResponse) {
       markdown += `### FUNCTION CALL RESPONSE:\n${query.request.functionCallResponse}\n`;
     }
 
     markdown += '## RESPONSE FROM SERVER:\n';
-    if (query.response.text) {
-      markdown += `### EXPLANATION:\n${query.response.text}\n`;
+    if (query.response.content) {
+      markdown += `### EXPLANATION:\n${query.response.content}\n`;
     }
-    if (query.response.functionCallRequests?.length) {
-      markdown += `### FUNCTION CALL REQUESTS:\n${query.response.functionCallRequests.join(', ')}\n`;
+    if (query.response.tool_calls?.length) {
+      const calls = query.response.tool_calls.map(tc => tc.name).join(', ');
+      markdown += `### FUNCTION CALL REQUESTS:\n${calls}\n`;
     }
     markdown += '\n';
   }

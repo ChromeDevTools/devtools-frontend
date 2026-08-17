@@ -109,7 +109,7 @@ export async function executePromptCycle(
   }
   const results = JSON.parse(logs) as IndividualPromptRequestResponse[];
 
-  return results.map(r => ({...r, exampleId}));
+  return results.map(r => ({...r, session_id: exampleId}));
 }
 
 /**

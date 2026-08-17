@@ -104,7 +104,7 @@ function renderConversationCard(
   return `
     <div class="card">
       <div class="card-header" onclick="toggleCard(this)">
-        <span>${headerLabel} <code>${conversation.id}</code></span>
+        <span>${headerLabel} <code>${conversation.session_id}</code></span>
         ${scoreElement}
       </div>
       <div class="card-content">
@@ -125,24 +125,24 @@ function renderConversationTranscript(conversation: Conversation): string {
   return conversation.queries
       .map(query => {
         let html = '';
-        if (query.request.prompt || query.request.functionCallResponse) {
+        if (query.request.content || query.request.functionCallResponse) {
           html += '<div class="transcript-header">Request</div>';
-          if (query.request.prompt) {
-            html += `<pre><strong>Query:</strong>\n${query.request.prompt}</pre>`;
+          if (query.request.content) {
+            html += `<pre><strong>Query:</strong>\n${query.request.content}</pre>`;
           }
           if (query.request.functionCallResponse) {
             html += `<pre><strong>Function Response:</strong>\n${query.request.functionCallResponse}</pre>`;
           }
         }
 
-        if (query.response.text || query.response.functionCallRequests?.length) {
+        if (query.response.content || query.response.tool_calls?.length) {
           html += '<div class="transcript-header">Response</div>';
-          if (query.response.text) {
-            html += `<pre><strong>Explanation:</strong>\n${query.response.text}</pre>`;
+          if (query.response.content) {
+            html += `<pre><strong>Explanation:</strong>\n${query.response.content}</pre>`;
           }
-          if (query.response.functionCallRequests?.length) {
-            const calls = query.response.functionCallRequests.map(r => `${r.name}(${JSON.stringify(r.args, null, 2)})`)
-                              .join('\n\n');
+          if (query.response.tool_calls?.length) {
+            const calls =
+                query.response.tool_calls.map(r => `${r.name}(${JSON.stringify(r.args, null, 2)})`).join('\n\n');
             html += `<pre><strong>Function Calls:</strong>\n${calls}</pre>`;
           }
         }

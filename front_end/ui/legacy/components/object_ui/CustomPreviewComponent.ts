@@ -23,7 +23,7 @@ import {
 
 const UIStrings = {
   /**
-   * @description A context menu item in the Custom Preview Component
+   * @description Context menu item to show a custom formatted object as a standard JavaScript object.
    */
   showAsJavascriptObject: 'Show as JavaScript object',
 } as const;

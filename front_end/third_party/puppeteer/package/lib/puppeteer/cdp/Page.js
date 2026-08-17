@@ -661,8 +661,7 @@ export class CdpPage extends Page {
     async captureHeapSnapshot(options) {
         const env_2 = { stack: [], error: void 0, hasError: false };
         try {
-            const { createWriteStream } = environment.value.fs;
-            const stream = createWriteStream(options.path);
+            const stream = environment.value.createWriteStream(options.path);
             const streamPromise = new Promise((resolve, reject) => {
                 stream.on('error', reject);
                 stream.on('finish', resolve);

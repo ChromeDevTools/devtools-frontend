@@ -838,7 +838,7 @@ let Page = (() => {
             if (!path) {
                 return;
             }
-            await environment.value.fs.promises.writeFile(path, typedArray);
+            await environment.value.writeFile(path, typedArray);
         }
         /**
          * Captures a screencast of this {@link Page | page}.
@@ -913,6 +913,15 @@ let Page = (() => {
             if (options.scale !== undefined && options.scale <= 0) {
                 throw new Error(`\`scale\` must be greater than 0.`);
             }
+            if (options.path && environment.value.path) {
+                await environment.value.mkdir(environment.value.path.dirname(options.path), { recursive: options.overwrite ?? true });
+            }
+            const stream = options.path
+                ? environment.value.createWriteStream(options.path, {
+                    encoding: 'binary',
+                    overwrite: options.overwrite,
+                })
+                : undefined;
             const recorder = new ScreenRecorder(this, width, height, {
                 ...options,
                 crop,
@@ -924,9 +933,7 @@ let Page = (() => {
                 void recorder.stop();
                 throw error;
             }
-            if (options.path) {
-                const { createWriteStream } = environment.value.fs;
-                const stream = createWriteStream(options.path, 'binary');
+            if (stream) {
                 recorder.pipe(stream);
             }
             return recorder;

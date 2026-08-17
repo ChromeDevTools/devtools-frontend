@@ -42,8 +42,6 @@ export interface ScreenRecorderOptions {
     quality?: number;
     colors?: number;
     scale?: number;
-    path?: `${string}.${VideoFormat}`;
-    overwrite?: boolean;
 }
 /**
  * @public
@@ -53,7 +51,7 @@ export declare class ScreenRecorder extends PassThrough {
     /**
      * @internal
      */
-    constructor(page: Page, width: number, height: number, { ffmpegPath, speed, scale, crop, format, fps, loop, delay, quality, colors, path, overwrite, }?: ScreenRecorderOptions, logger?: Logger);
+    constructor(page: Page, width: number, height: number, { ffmpegPath, speed, scale, crop, format, fps, loop, delay, quality, colors, }?: ScreenRecorderOptions, logger?: Logger);
     /**
      * Stops the recorder.
      *

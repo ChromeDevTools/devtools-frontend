@@ -108,7 +108,6 @@ export class ChromeLauncher extends BrowserLauncher {
             }
             catch (error) {
                 this.logger(DEBUG_PREFIXES.error)?.(error);
-                throw error;
             }
         }
     }
@@ -220,7 +219,7 @@ export class ChromeLauncher extends BrowserLauncher {
             return computeSystemExecutablePath({
                 browser: SupportedBrowsers.CHROME,
                 channel: convertPuppeteerChannelToBrowsersChannel(channel),
-            });
+            }, validatePath);
         }
         else {
             return await this.resolveExecutablePath(undefined, validatePath);

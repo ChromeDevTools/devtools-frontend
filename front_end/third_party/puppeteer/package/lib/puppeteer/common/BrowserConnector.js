@@ -98,7 +98,7 @@ async function getConnectionTransport(options) {
         const userDataDir = resolveDefaultUserDataDir(Browser.CHROME, platform, convertPuppeteerChannelToBrowsersChannel(options.channel));
         const portPath = join(userDataDir, 'DevToolsActivePort');
         try {
-            const fileContent = await environment.value.fs.promises.readFile(portPath, 'ascii');
+            const fileContent = await environment.value.readFile(portPath, 'ascii');
             const [rawPort, rawPath] = fileContent
                 .split('\n')
                 .map(line => {

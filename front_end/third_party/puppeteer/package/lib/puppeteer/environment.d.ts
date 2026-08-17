@@ -3,8 +3,9 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type FS from 'node:fs';
+import type { FileHandle } from 'node:fs/promises';
 import type Path from 'node:path';
+import type { Writable } from 'node:stream';
 import type { debuglog } from 'node:util';
 import type { ScreenRecorder } from './node/ScreenRecorder.js';
 /**
@@ -12,10 +13,23 @@ import type { ScreenRecorder } from './node/ScreenRecorder.js';
  */
 export declare const isNode: boolean;
 export interface EnvironmentDependencies {
-    fs: typeof FS;
     path?: typeof Path;
     ScreenRecorder: typeof ScreenRecorder;
     debuglog?: typeof debuglog;
+    followSymlinks: boolean;
+    readFile: {
+        (path: string, encoding: 'utf8' | 'ascii'): Promise<string>;
+        (path: string): Promise<Uint8Array>;
+    };
+    writeFile: (path: string, data: Uint8Array | string) => Promise<void>;
+    openFileForWriting: (path: string) => Promise<FileHandle>;
+    createWriteStream: (path: string, options?: {
+        encoding?: BufferEncoding;
+        overwrite?: boolean;
+    }) => Writable;
+    mkdir: (path: string, options?: {
+        recursive?: boolean;
+    }) => Promise<void>;
 }
 /**
  * Holder for environment dependencies. These dependencies cannot

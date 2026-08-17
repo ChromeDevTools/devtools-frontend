@@ -104,7 +104,6 @@ export class FirefoxLauncher extends BrowserLauncher {
             }
             catch (error) {
                 this.logger(DEBUG_PREFIXES.error)?.(error);
-                throw error;
             }
         }
         else {

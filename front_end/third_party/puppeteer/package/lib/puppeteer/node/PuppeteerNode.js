@@ -6,6 +6,7 @@
 import { Browser as browsers_SupportedBrowser, resolveBuildId, detectBrowserPlatform, getInstalledBrowsers, uninstall, } from '@puppeteer/browsers';
 import { debug } from '../common/Debug.js';
 import { Puppeteer } from '../common/Puppeteer.js';
+import { environment } from '../environment.js';
 import { PUPPETEER_REVISIONS } from '../revisions.js';
 import { ChromeLauncher } from './ChromeLauncher.js';
 import { FirefoxLauncher } from './FirefoxLauncher.js';
@@ -249,6 +250,16 @@ export class PuppeteerNode extends Puppeteer {
                 buildId: installedBrowser.buildId,
             });
         }
+    }
+    /**
+     * Defines whether Puppeteer should follow symlinks for file operations.
+     *
+     * @param followSymlinks - Whether Puppeteer should follow symlinks.
+     *
+     * @public
+     */
+    setFollowSymlinks(followSymlinks) {
+        environment.value.followSymlinks = followSymlinks;
     }
 }
 //# sourceMappingURL=PuppeteerNode.js.map

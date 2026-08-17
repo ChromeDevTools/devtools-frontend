@@ -42,9 +42,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
 import { spawn, spawnSync } from 'node:child_process';
-import fs from 'node:fs';
 import os from 'node:os';
-import { dirname } from 'node:path';
 import { PassThrough } from 'node:stream';
 import { bufferCount, concatMap, filter, from, fromEvent, lastValueFrom, map, takeUntil, tap, } from '../../third_party/rxjs/rxjs.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
@@ -110,7 +108,7 @@ let ScreenRecorder = (() => {
         /**
          * @internal
          */
-        constructor(page, width, height, { ffmpegPath, speed, scale, crop, format, fps, loop, delay, quality, colors, path, overwrite, } = {}, logger) {
+        constructor(page, width, height, { ffmpegPath, speed, scale, crop, format, fps, loop, delay, quality, colors, } = {}, logger) {
             super({ allowHalfOpen: false });
             this.#logger = logger;
             ffmpegPath ??= 'ffmpeg';
@@ -121,7 +119,6 @@ let ScreenRecorder = (() => {
             delay ??= -1;
             quality ??= CRF_VALUE;
             colors ??= 256;
-            overwrite ??= true;
             this.#fps = fps;
             // Tests if `ffmpeg` exists.
             const { error } = spawnSync(ffmpegPath);
@@ -145,10 +142,6 @@ let ScreenRecorder = (() => {
             const vf = formatArgs.indexOf('-vf');
             if (vf !== -1) {
                 filters.push(formatArgs.splice(vf, 2).at(-1) ?? '');
-            }
-            // Ensure provided output directory path exists.
-            if (path) {
-                fs.mkdirSync(dirname(path), { recursive: overwrite });
             }
             this.#process = spawn(ffmpegPath, 
             // See https://trac.ffmpeg.org/wiki/Encode/VP9 for more information on flags.
@@ -186,8 +179,6 @@ let ScreenRecorder = (() => {
                 // Filters to ensure the images are piped correctly,
                 // combined with any format-specific filters.
                 ['-vf', filters.join()],
-                // Overwrite output, or exit immediately if file already exists.
-                [overwrite ? '-y' : '-n'],
                 'pipe:1',
             ].flat(), { stdio: ['pipe', 'pipe', 'pipe'] });
             this.#process.stdout.pipe(this);

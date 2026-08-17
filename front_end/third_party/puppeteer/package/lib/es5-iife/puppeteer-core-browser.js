@@ -2438,13 +2438,26 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   const environment = {
     value: {
-      get fs() {
-        throw new Error('fs is not available in this environment');
-      },
+      followSymlinks: true,
       ScreenRecorder: class {
         constructor() {
           throw new Error('ScreenRecorder is not available in this environment');
         }
+      },
+      readFile: () => {
+        throw new Error('readFile is not available in this environment');
+      },
+      writeFile: () => {
+        throw new Error('writeFile is not available in this environment');
+      },
+      openFileForWriting: () => {
+        throw new Error('openFileForWriting is not available in this environment');
+      },
+      createWriteStream: () => {
+        throw new Error('createWriteStream is not available in this environment');
+      },
+      mkdir: () => {
+        throw new Error('mkdir is not available in this environment');
       }
     }
   };
@@ -3165,7 +3178,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.7.0';
+  const packageVersion = '25.8.0';
   // x-release-please-end
 
   /**
@@ -3526,7 +3539,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     const buffers = [];
     const reader = readable.getReader();
     if (path) {
-      const fileHandle = await environment.value.fs.promises.open(path, 'w+');
+      const fileHandle = await environment.value.openFileForWriting(path);
       try {
         while (true) {
           const {
@@ -9538,7 +9551,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
         }
         if (path) {
-          content = await environment.value.fs.promises.readFile(path, 'utf8');
+          content = await environment.value.readFile(path, 'utf8');
           content += `//# sourceURL=${path.replace(/\n/g, '')}`;
         }
         type = type ?? 'text/javascript';
@@ -9593,7 +9606,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
         }
         if (path) {
-          content = await environment.value.fs.promises.readFile(path, 'utf8');
+          content = await environment.value.readFile(path, 'utf8');
           content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
           options.content = content;
         }
@@ -11727,7 +11740,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         if (!path) {
           return;
         }
-        await environment.value.fs.promises.writeFile(path, typedArray);
+        await environment.value.writeFile(path, typedArray);
       }
       /**
        * Captures a screencast of this {@link Page | page}.
@@ -11807,6 +11820,15 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         if (options.scale !== undefined && options.scale <= 0) {
           throw new Error(`\`scale\` must be greater than 0.`);
         }
+        if (options.path && environment.value.path) {
+          await environment.value.mkdir(environment.value.path.dirname(options.path), {
+            recursive: options.overwrite ?? true
+          });
+        }
+        const stream = options.path ? environment.value.createWriteStream(options.path, {
+          encoding: 'binary',
+          overwrite: options.overwrite
+        }) : undefined;
         const recorder = new ScreenRecorder(this, width, height, {
           ...options,
           crop
@@ -11817,11 +11839,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           void recorder.stop();
           throw error;
         }
-        if (options.path) {
-          const {
-            createWriteStream
-          } = environment.value.fs;
-          const stream = createWriteStream(options.path, 'binary');
+        if (stream) {
           recorder.pipe(stream);
         }
         return recorder;
@@ -22534,10 +22552,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         hasError: false
       };
       try {
-        const {
-          createWriteStream
-        } = environment.value.fs;
-        const stream = createWriteStream(options.path);
+        const stream = environment.value.createWriteStream(options.path);
         const streamPromise = new Promise((resolve, reject) => {
           stream.on('error', reject);
           stream.on('finish', resolve);
@@ -27489,7 +27504,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       const userDataDir = resolveDefaultUserDataDir(Browser.CHROME, platform, convertPuppeteerChannelToBrowsersChannel(options.channel));
       const portPath = join(userDataDir, 'DevToolsActivePort');
       try {
-        const fileContent = await environment.value.fs.promises.readFile(portPath, 'ascii');
+        const fileContent = await environment.value.readFile(portPath, 'ascii');
         const [rawPort, rawPath] = fileContent.split('\n').map(line => {
           return line.trim();
         }).filter(line => {

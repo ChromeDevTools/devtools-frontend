@@ -8798,6 +8798,14 @@ export declare class PuppeteerNode extends Puppeteer {
    * @public
    */
   trimCache(): Promise<void>;
+  /**
+   * Defines whether Puppeteer should follow symlinks for file operations.
+   *
+   * @param followSymlinks - Whether Puppeteer should follow symlinks.
+   *
+   * @public
+   */
+  setFollowSymlinks(followSymlinks: boolean): void;
 }
 
 /**

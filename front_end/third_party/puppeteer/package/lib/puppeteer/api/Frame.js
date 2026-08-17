@@ -661,7 +661,7 @@ let Frame = (() => {
                 throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
             }
             if (path) {
-                content = await environment.value.fs.promises.readFile(path, 'utf8');
+                content = await environment.value.readFile(path, 'utf8');
                 content += `//# sourceURL=${path.replace(/\n/g, '')}`;
             }
             type = type ?? 'text/javascript';
@@ -700,7 +700,7 @@ let Frame = (() => {
                 throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
             }
             if (path) {
-                content = await environment.value.fs.promises.readFile(path, 'utf8');
+                content = await environment.value.readFile(path, 'utf8');
                 content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
                 options.content = content;
             }

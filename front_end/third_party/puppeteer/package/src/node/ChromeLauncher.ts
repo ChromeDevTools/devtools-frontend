@@ -160,7 +160,6 @@ export class ChromeLauncher extends BrowserLauncher {
         await rm(path);
       } catch (error) {
         this.logger(DEBUG_PREFIXES.error)?.(error);
-        throw error;
       }
     }
   }
@@ -302,10 +301,13 @@ export class ChromeLauncher extends BrowserLauncher {
     validatePath = true,
   ): Promise<string> {
     if (channel) {
-      return computeSystemExecutablePath({
-        browser: SupportedBrowsers.CHROME,
-        channel: convertPuppeteerChannelToBrowsersChannel(channel),
-      });
+      return computeSystemExecutablePath(
+        {
+          browser: SupportedBrowsers.CHROME,
+          channel: convertPuppeteerChannelToBrowsersChannel(channel),
+        },
+        validatePath,
+      );
     } else {
       return await this.resolveExecutablePath(undefined, validatePath);
     }

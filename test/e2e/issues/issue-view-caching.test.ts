@@ -64,23 +64,23 @@ describe('IssueView cache', () => {
     const header = [
       'Request',
       'Status',
-      'Preflight Request (if problematic)',
-      'Access-Control-Allow-Credentials Header Value',
+      'Preflight request (if problematic)',
+      'Access-Control-Allow-Credentials header value',
     ];
     const expectedRow1 = [
       'acac-invalid.rawresponse',
-      'blocked',
+      'Blocked',
       'acac-invalid.rawresponse',
       'false',
     ];
     const expectedRow2 = [
       'acac-invalid.rawresponse',
-      'blocked',
+      'Blocked',
       '',
       'false',
     ];
     await waitForResources(2, [header, expectedRow1, expectedRow2]);
-    await devToolsPage.setCheckBox('[title="Include cookie Issues caused by third-party sites"]', true);
+    await devToolsPage.setCheckBox('[title="Include cookie issues caused by third-party sites"]', true);
 
     // Trigger issue again to see if resources are updated.
     await triggerIssue();

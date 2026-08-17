@@ -16,29 +16,29 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
   /**
-   * @description Label for number of affected resources indication in issue view
+   * @description Label in the Issues panel for the number of affected violations in the selective permissions intervention table.
    */
   nViolations: '{n, plural, =1 {# violation} other {# violations}}',
   /**
-   * @description Title for the API column in the Selective Permissions Intervention affected resources list
+   * @description Column header in the Issues panel for API names in the selective permissions intervention affected resources table.
    */
   api: 'API',
   /**
-   * @description Title for the Script column in the Selective Permissions Intervention affected resources list
+   * @description Column header in the Issues panel for scripts in the selective permissions intervention affected resources table.
    */
   script: 'Script',
   /**
-   * @description Title for the Ad Ancestry column in the Selective Permissions Intervention affected resources list
+   * @description Column header in the Issues panel for ad ancestry in the selective permissions intervention affected resources table.
    */
-  adAncestry: 'Ad Ancestry',
+  adAncestry: 'Ad ancestry',
   /**
-   * @description Text for unknown value
+   * @description Fallback text in the Issues panel when a stack trace is unknown in the selective permissions intervention affected resources table.
    */
-  unknown: 'unknown',
+  unknown: 'Unknown',
   /**
-   * @description Text for loading state
+   * @description Text in the Issues panel displayed while a stack trace is loading in the selective permissions intervention affected resources table.
    */
-  loading: 'loading…',
+  loading: 'Loading…',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedSelectivePermissionsInterventionView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

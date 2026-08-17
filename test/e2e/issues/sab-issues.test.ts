@@ -26,9 +26,9 @@ describe('SAB issues test', () => {
          assert.strictEqual(text, '2 violations');
          await ensureResourceSectionIsExpanded(devToolsPage, section);
          const expectedTableRows = [
-           ['Source Location', 'Trigger', 'Status'],
-           ['corp-frame.rawresponse:1', 'Instantiation', /warning|blocked/],
-           ['corp-frame.rawresponse:1', 'Transfer', /warning|blocked/],
+           ['Source location', 'Trigger', 'Status'],
+           ['corp-frame.rawresponse:1', 'Instantiation', /Warning|Blocked/],
+           ['corp-frame.rawresponse:1', 'Transfer', /Warning|Blocked/],
          ];
          await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
        }

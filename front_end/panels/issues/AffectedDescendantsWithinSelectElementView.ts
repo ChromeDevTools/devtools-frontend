@@ -11,11 +11,11 @@ import {AffectedElementsView} from './AffectedElementsView.js';
 
 const UIStrings = {
   /**
-   * @description Noun for singular or plural number of affected descendant nodes indication in issue view.
+   * @description Label in the Issues panel for the number of affected descendant nodes.
    */
   nDescendants: '{n, plural, =1 { descendant} other { descendants}}',
   /**
-   * @description Label for the disallowed node link in the issue view.
+   * @description Link text in the Issues panel for a disallowed descendant node.
    */
   disallowedNode: 'Disallowed descendant',
 } as const;

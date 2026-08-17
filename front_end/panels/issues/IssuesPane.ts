@@ -21,94 +21,89 @@ import {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
-   * @description Category title for a group of cross origin embedder policy (COEP) issues
+   * @description Category title in the Issues panel for a group of Cross-Origin Embedder Policy (COEP) issues.
    */
-  crossOriginEmbedderPolicy: 'Cross Origin Embedder Policy',
+  crossOriginEmbedderPolicy: 'Cross-Origin Embedder Policy',
   /**
-   * @description Category title for a group of mixed content issues
+   * @description Category title in the Issues panel for a group of mixed content issues.
    */
-  mixedContent: 'Mixed Content',
+  mixedContent: 'Mixed content',
   /**
-   * @description Category title for a group of SameSite cookie issues
+   * @description Category title in the Issues panel for a group of SameSite cookie issues.
    */
-  samesiteCookie: 'SameSite Cookie',
+  samesiteCookie: 'SameSite cookie',
   /**
-   * @description Category title for a group of heavy ads issues
+   * @description Category title in the Issues panel for a group of heavy ads issues.
    */
-  heavyAds: 'Heavy Ads',
+  heavyAds: 'Heavy ads',
   /**
-   * @description Category title for a group of content security policy (CSP) issues
+   * @description Category title in the Issues panel for a group of Content Security Policy (CSP) issues.
    */
   contentSecurityPolicy: 'Content Security Policy',
   /**
-   * @description Text for other types of items
+   * @description Category title in the Issues panel for other types of issues.
    */
   other: 'Other',
   /**
-   * @description Category title for the different 'low text contrast' issues. Low text contrast refers
-   *              to the difference between the color of a text and the background color where that text
-   *              appears.
+   * @description Category title in the Issues panel for a group of low text contrast issues.
    */
-  lowTextContrast: 'Low Text Contrast',
+  lowTextContrast: 'Low text contrast',
   /**
-   * @description Category title for the different 'Cross-Origin Resource Sharing' (CORS) issues. CORS
-   *              refers to one origin (e.g 'a.com') loading resources from another origin (e.g. 'b.com').
+   * @description Category title in the Issues panel for a group of Cross-Origin Resource Sharing (CORS) issues.
    */
-  cors: 'Cross Origin Resource Sharing',
+  cors: 'Cross-Origin Resource Sharing',
   /**
-   * @description Title for a checkbox which toggles grouping by category in the issues tab
+   * @description Tooltip in the Issues panel for the checkbox to group issues by category.
    */
   groupDisplayedIssuesUnder: 'Group displayed issues under associated categories',
   /**
-   * @description Label for a checkbox which toggles grouping by category in the issues tab
+   * @description Label in the Issues panel for the checkbox to group issues by category.
    */
   groupByCategory: 'Group by category',
   /**
-   * @description Title for a checkbox which toggles grouping by kind in the issues tab
+   * @description Tooltip in the Issues panel for the checkbox to group issues by kind.
    */
-  groupDisplayedIssuesUnderKind: 'Group displayed issues as Page errors, Breaking changes and Improvements',
+  groupDisplayedIssuesUnderKind: 'Group displayed issues as page errors, breaking changes, and improvements',
   /**
-   * @description Label for a checkbox which toggles grouping by kind in the issues tab
+   * @description Label in the Issues panel for the checkbox to group issues by kind.
    */
   groupByKind: 'Group by kind',
   /**
-   * @description Title for a checkbox. Whether the issues tab should include third-party issues or not.
+   * @description Tooltip in the Issues panel for the checkbox to include cookie issues caused by third-party sites.
    */
-  includeCookieIssuesCausedBy: 'Include cookie Issues caused by third-party sites',
+  includeCookieIssuesCausedBy: 'Include cookie issues caused by third-party sites',
   /**
-   * @description Label for a checkbox. Whether the issues tab should include third-party issues or not.
+   * @description Label in the Issues panel for the checkbox to include cookie issues caused by third-party sites.
    */
   includeThirdpartyCookieIssues: 'Include third-party cookie issues',
   /**
-   * @description Label on the issues tab
+   * @description Message in the Issues panel displayed when only third-party cookie issues are detected.
    */
   onlyThirdpartyCookieIssues: 'Only third-party cookie issues detected',
   /**
-   * @description Label in the issues panel
+   * @description Message in the Issues panel displayed when no issues are detected.
    */
   noIssues: 'No issues detected',
   /**
-   * @description Text that explains the issues panel that is shown if no issues are shown.
+   * @description Explanation text in the Issues panel shown when no issues are detected.
    */
   issuesPanelDescription: 'On this page you can find warnings from the browser.',
   /**
-   * @description Category title for the different 'Quirks Mode' issues. Quirks Mode refers
-   *              to the legacy browser modes that displays web content according to outdated
-   *              browser behaviors.
+   * @description Category title in the Issues panel for a group of quirks mode issues.
    */
-  quirksMode: 'Quirks Mode',
+  quirksMode: 'Quirks mode',
   /**
-   * @description Category title for the different 'Generic' issues.
+   * @description Category title in the Issues panel for a group of generic issues.
    */
   generic: 'Generic',
   /**
-   * @description Category title for a group of permission element issues
+   * @description Category title in the Issues panel for a group of permission element issues.
    */
-  permissionElement: 'PEPC Element',
+  permissionElement: 'Permission element',
   /**
-   * @description Category title for the different 'Selective Permissions Intervention' issues.
+   * @description Category title in the Issues panel for a group of selective permissions intervention issues.
    */
-  selectivePermissionsIntervention: 'Selective Permissions Intervention',
+  selectivePermissionsIntervention: 'Selective permissions intervention',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssuesPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

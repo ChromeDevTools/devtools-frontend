@@ -16,40 +16,39 @@ import * as IssuesComponents from './components/components.js';
 
 const UIStrings = {
   /**
-   * @description Singular or plural label for number of affected CSP (content security policy,
-   * see https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) directives in issue view.
+   * @description Label in the Issues panel for the number of affected Content Security Policy (CSP) directives. See https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP.
    */
   nDirectives: '{n, plural, =1 {# directive} other {# directives}}',
   /**
-   * @description Indicates that a CSP error should be treated as a warning
+   * @description Resolution status in the Issues panel indicating that a Content Security Policy violation is report-only.
    */
-  reportonly: 'report-only',
+  reportonly: 'Report-only',
   /**
-   * @description The kind of resolution for a mixed content issue
+   * @description Resolution status in the Issues panel indicating that a Content Security Policy violation was blocked.
    */
-  blocked: 'blocked',
+  blocked: 'Blocked',
   /**
-   * @description Tooltip for button linking to the Elements panel
+   * @description Tooltip in the Issues panel for the button to reveal a violating DOM node in the Elements panel.
    */
   clickToRevealTheViolatingDomNode: 'Click to reveal the violating DOM node in the Elements panel',
   /**
-   * @description Header for the section listing affected directives
+   * @description Column header in the Issues panel for Content Security Policy directives in the affected directives table.
    */
   directiveC: 'Directive',
   /**
-   * @description Label for the column in the element list in the CSS overview report
+   * @description Column header in the Issues panel for DOM elements in the affected directives table.
    */
   element: 'Element',
   /**
-   * @description Header for the source location column
+   * @description Column header in the Issues panel for source locations in the affected directives table.
    */
   sourceLocation: 'Source location',
   /**
-   * @description Text for the status of something
+   * @description Column header in the Issues panel for violation status in the affected directives table.
    */
   status: 'Status',
   /**
-   * @description Text that refers to the resources of the web page
+   * @description Column header in the Issues panel for blocked resources in the affected directives table.
    */
   resourceC: 'Resource',
 } as const;

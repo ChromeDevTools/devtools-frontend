@@ -68,23 +68,23 @@ describe('Cors Local Network issues', () => {
       [
         'Request',
         'Status',
-        'Resource Address',
-        'Initiator Address',
-        'Initiator Context',
+        'Resource address',
+        'Initiator address',
+        'Initiator context',
       ],
       [
         'localhost/',
-        'warning',
+        'Warning',
         'Local',
         'Public',
-        'insecure',
+        'Insecure',
       ],
       [
         'example.com/',
-        'warning',
+        'Warning',
         'Local',
         'Unknown',
-        'insecure',
+        'Insecure',
       ],
     ];
     await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
@@ -143,23 +143,23 @@ describe('Cors Local Network issues', () => {
       [
         'Request',
         'Status',
-        'Resource Address',
-        'Initiator Address',
-        'Initiator Context',
+        'Resource address',
+        'Initiator address',
+        'Initiator context',
       ],
       [
         'localhost/',
-        'warning',
+        'Warning',
         'Local',
         'Public',
-        'secure',
+        'Secure',
       ],
       [
         'example.com/',
-        'warning',
+        'Warning',
         'Local',
         'Unknown',
-        'secure',
+        'Secure',
       ],
     ];
     await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);

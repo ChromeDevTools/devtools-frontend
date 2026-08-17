@@ -134,8 +134,8 @@ export async function getIssueHeaderByTitle(
   return undefined;
 }
 
-export async function assertStatus(devToolsPage: DevToolsPage, status: 'blocked'|'report-only') {
-  const classStatus = status === 'blocked' ? BLOCKED_STATUS : REPORT_ONLY_STATUS;
+export async function assertStatus(devToolsPage: DevToolsPage, status: 'Blocked'|'Report-only') {
+  const classStatus = status === 'Blocked' ? BLOCKED_STATUS : REPORT_ONLY_STATUS;
   const issueMessageElement = await devToolsPage.waitFor(classStatus);
   const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
   assert.strictEqual(selectedIssueMessage, status);

@@ -12,19 +12,19 @@ import {AffectedElementsView} from './AffectedElementsView.js';
 
 const UIStrings = {
   /**
-   * @description Noun for singular or plural number of affected document nodes indication in issue view.
+   * @description Label in the Issues panel for the number of affected document nodes.
    */
   nDocuments: '{n, plural, =1 { document} other { documents}}',
   /**
-   * @description Column title for the Document in the DOM tree column in the quirks mode issue view
+   * @description Column header in the Issues panel for document DOM nodes in the quirks mode affected documents table.
    */
   documentInTheDOMTree: 'Document in the DOM tree',
   /**
-   * @description Column title for the url column in the quirks mode issue view
+   * @description Column header in the Issues panel for URLs in the quirks mode affected documents table.
    */
   url: 'URL',
   /**
-   * @description Column title for the Mode column in the quirks mode issue view
+   * @description Column header in the Issues panel for document quirks mode in the quirks mode affected documents table.
    */
   mode: 'Mode',
 } as const;

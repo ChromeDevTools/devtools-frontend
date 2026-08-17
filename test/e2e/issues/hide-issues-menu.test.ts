@@ -201,7 +201,7 @@ describe('After enabling grouping by IssueKind, Hide issues menu', () => {
     await (await devToolsPage.waitFor('.issue-kind .header')).hover();
     const hideIssuesMenu = await devToolsPage.waitFor('.hide-available-issues');
     await hideIssuesMenu.click();
-    const menuItem = await devToolsPage.waitFor('[aria-label="Hide all current Page Errors"]');
+    const menuItem = await devToolsPage.waitFor('[aria-label="Hide all current page errors"]');
     await menuItem.click();
     await devToolsPage.waitFor('.hidden-issue');
   });

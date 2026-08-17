@@ -11,11 +11,11 @@ import type * as Issues from './issues.js';
 
 const UIStrings = {
   /**
-   * @description Label for the issues pane
+   * @description Title for the Issues panel.
    */
   issues: 'Issues',
   /**
-   * @description Command for showing the 'Issues' tool
+   * @description Command menu command for showing the Issues panel.
    */
   showIssues: 'Show Issues',
 } as const;

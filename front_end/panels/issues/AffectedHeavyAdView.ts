@@ -12,43 +12,39 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
   /**
-   * @description Label for number of affected resources indication in issue view
+   * @description Label in the Issues panel for the number of affected heavy ad resources.
    */
   nResources: '{n, plural, =1 {# resource} other {# resources}}',
   /**
-   * @description Title for a column in an Heavy Ads issue view
+   * @description Column header in the Issues panel for the exceeded limit type in the heavy ads affected resources table.
    */
   limitExceeded: 'Limit exceeded',
   /**
-   * @description Title for a column in an Heavy Ads issue view
+   * @description Column header in the Issues panel for the resolution status in the heavy ads affected resources table.
    */
-  resolutionStatus: 'Resolution Status',
+  resolutionStatus: 'Resolution status',
   /**
-   * @description Title for a column in an Heavy Ads issue view
+   * @description Column header in the Issues panel for the frame URL in the heavy ads affected resources table.
    */
   frameUrl: 'Frame URL',
   /**
-   * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
-   * This string indicates that the ad was bad enough that it was removed.
+   * @description Resolution status in the Issues panel indicating that a heavy ad was removed.
    */
   removed: 'Removed',
   /**
-   * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
-   * This string indicates that the ad was only warned, and not removed.
+   * @description Resolution status in the Issues panel indicating that a heavy ad received a warning.
    */
   warned: 'Warned',
   /**
-   * @description Reason for a Heavy Ad being flagged in issue view. The Ad has been flagged as a
-   *Heavy Ad because it exceeded the set limit for peak CPU usage, e.g. it blocked the main thread
-   *for more than 15 seconds in any 30-second window.
+   * @description Reason in the Issues panel for a heavy ad issue indicating peak CPU usage limit was exceeded.
    */
   cpuPeakLimit: 'CPU peak limit',
   /**
-   * @description Reason for a Heavy Ad being flagged in issue view
+   * @description Reason in the Issues panel for a heavy ad issue indicating total CPU usage limit was exceeded.
    */
   cpuTotalLimit: 'CPU total limit',
   /**
-   * @description Reason for a Heavy Ad being flagged in issue view
+   * @description Reason in the Issues panel for a heavy ad issue indicating total network bandwidth limit was exceeded.
    */
   networkLimit: 'Network limit',
 } as const;

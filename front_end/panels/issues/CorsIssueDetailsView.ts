@@ -15,113 +15,113 @@ import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
-   * @description Label for number of affected resources indication in issue view
+   * @description Label in the Issues panel for the number of affected requests in the CORS affected resources table.
    */
   nRequests: '{n, plural, =1 {# request} other {# requests}}',
   /**
-   * @description Value for the status column in SharedArrayBuffer issues
+   * @description Violation status in the Issues panel indicating that a CORS issue produced a warning.
    */
-  warning: 'warning',
+  warning: 'Warning',
   /**
-   * @description The kind of resolution for a mixed content issue
+   * @description Violation status in the Issues panel indicating that a CORS request was blocked.
    */
-  blocked: 'blocked',
+  blocked: 'Blocked',
   /**
-   * @description Text for the status column in the item list in the CORS issue details view
+   * @description Column header in the Issues panel for request status in the CORS affected resources table.
    */
   status: 'Status',
   /**
-   * @description Text for the column showing the associated network request in the item list in the CORS issue details view
+   * @description Column header in the Issues panel for network requests in the CORS affected resources table.
    */
   request: 'Request',
   /**
-   * @description Text for the column showing the resource's address in the item list in the CORS issue details view
+   * @description Column header in the Issues panel for resource addresses in the CORS affected resources table.
    */
-  resourceAddressSpace: 'Resource Address',
+  resourceAddressSpace: 'Resource address',
   /**
-   * @description Text for the column showing the address of the resource load initiator in the item list in the CORS issue details view
+   * @description Column header in the Issues panel for initiator addresses in the CORS affected resources table.
    */
-  initiatorAddressSpace: 'Initiator Address',
+  initiatorAddressSpace: 'Initiator address',
   /**
-   * @description Text for the status of the initiator context
+   * @description Context status in the Issues panel indicating a secure initiator context.
    */
-  secure: 'secure',
+  secure: 'Secure',
   /**
-   * @description Text for the status of the initiator context
+   * @description Context status in the Issues panel indicating an insecure initiator context.
    */
-  insecure: 'insecure',
+  insecure: 'Insecure',
   /**
-   * @description Title for a column showing the status of the initiator context. The initiator context is either secure or insecure depending on whether it was loaded via HTTP or HTTPS.
+   * @description Column header in the Issues panel for initiator context in the CORS affected resources table.
    */
-  initiatorContext: 'Initiator Context',
+  initiatorContext: 'Initiator context',
   /**
-   * @description Title for a column in the affected resources for a CORS issue showing a link to the associated preflight request in case the preflight request caused the issue.
+   * @description Column header in the Issues panel for preflight requests when problematic in the CORS affected resources table.
    */
-  preflightRequestIfProblematic: 'Preflight Request (if problematic)',
+  preflightRequestIfProblematic: 'Preflight request (if problematic)',
   /**
-   * @description Title for a column in the affected resources for a CORS issue showing a link to the associated preflight request.
+   * @description Column header in the Issues panel for preflight requests in the CORS affected resources table.
    */
-  preflightRequest: 'Preflight Request',
+  preflightRequest: 'Preflight request',
   /**
-   * @description Title for a column in the affected resources for a CORS issue showing the name of the problematic HTTP response header.
+   * @description Column header in the Issues panel for HTTP header names in the CORS affected resources table.
    */
   header: 'Header',
   /**
-   * @description Title for a column in the affected resources for a CORS issue showing the problem associated with the resource.
+   * @description Column header in the Issues panel for problem descriptions in the CORS affected resources table.
    */
   problem: 'Problem',
   /**
-   * @description Title for a column in the affected resources for a CORS issue showing the value that was invalid and caused the problem if it is available.
+   * @description Column header in the Issues panel for invalid header values in the CORS affected resources table.
    */
-  invalidValue: 'Invalid Value (if available)',
+  invalidValue: 'Invalid value (if available)',
   /**
-   * @description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header was missing.
+   * @description Problem description in the Issues panel indicating that a required CORS response header was missing.
    */
-  problemMissingHeader: 'Missing Header',
+  problemMissingHeader: 'Missing header',
   /**
-   * @description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header contained multiple values.
+   * @description Problem description in the Issues panel indicating that a CORS response header contained multiple values.
    */
-  problemMultipleValues: 'Multiple Values',
+  problemMultipleValues: 'Multiple values',
   /**
-   * @description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header contained an invalid value.
+   * @description Problem description in the Issues panel indicating that a CORS response header contained an invalid value.
    */
-  problemInvalidValue: 'Invalid Value',
+  problemInvalidValue: 'Invalid value',
   /**
-   * @description Content for the problem column in the affected resources table for a CORS issue that indicates that the response to the preflight request was a redirect.
+   * @description Problem description in the Issues panel indicating that the preflight response was a redirect.
    */
   preflightDisallowedRedirect: 'Response to preflight was a redirect',
   /**
-   * @description Content for the problem column in the affected resources table for a CORS issue that indicates that the HTTP status the preflight request was not successful.
+   * @description Problem description in the Issues panel indicating that the preflight request HTTP status was not successful.
    */
   preflightInvalidStatus: 'HTTP status of preflight request didn’t indicate success',
   /**
-   * @description Title for a column in the affected resources for a CORS issue showing the origin that was allowed according to CORS headers.
+   * @description Column header in the Issues panel for allowed origins in the CORS affected resources table.
    */
-  allowedOrigin: 'Allowed Origin (from header)',
+  allowedOrigin: 'Allowed origin (from header)',
   /**
-   * @description Title for a column in the affected resources for a CORS issue showing the value of the Access-Control-Allow-Credentials response header.
+   * @description Column header in the Issues panel for the Access-Control-Allow-Credentials header value in the CORS affected resources table.
    */
-  allowCredentialsValueFromHeader: '`Access-Control-Allow-Credentials` Header Value',
+  allowCredentialsValueFromHeader: '`Access-Control-Allow-Credentials` header value',
   /**
-   * @description Title for a column in the affected resources for a CORS issue showing the request method that was disallowed.
+   * @description Column header in the Issues panel for disallowed request methods in the CORS affected resources table.
    */
-  disallowedRequestMethod: 'Disallowed Request Method',
+  disallowedRequestMethod: 'Disallowed request method',
   /**
-   * @description Title for a column in the affected resources for a CORS issue showing the request header that was disallowed.
+   * @description Column header in the Issues panel for disallowed request headers in the CORS affected resources table.
    */
-  disallowedRequestHeader: 'Disallowed Request Header',
+  disallowedRequestHeader: 'Disallowed request header',
   /**
-   * @description Header for the source location column
+   * @description Column header in the Issues panel for source locations in the CORS affected resources table.
    */
-  sourceLocation: 'Source Location',
+  sourceLocation: 'Source location',
   /**
-   * @description Header for the column with the URL scheme that is not supported by fetch
+   * @description Column header in the Issues panel for unsupported URL schemes in the CORS affected resources table.
    */
-  unsupportedScheme: 'Unsupported Scheme',
+  unsupportedScheme: 'Unsupported scheme',
   /**
-   * @description A failed network request.
+   * @description Problem description in the Issues panel indicating that a network request failed.
    */
-  failedRequest: 'Failed Request',
+  failedRequest: 'Failed request',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

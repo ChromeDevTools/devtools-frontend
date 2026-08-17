@@ -16,17 +16,17 @@ import * as Components from './components/components.js';
 
 const UIStrings = {
   /**
-   * @description Menu entry for hiding all current Page Errors.
+   * @description Context menu item in the Issues panel to hide all current page errors.
    */
-  hideAllCurrentPageErrors: 'Hide all current Page Errors',
+  hideAllCurrentPageErrors: 'Hide all current page errors',
   /**
-   * @description Menu entry for hiding all current Breaking Changes.
+   * @description Context menu item in the Issues panel to hide all current breaking changes.
    */
-  hideAllCurrentBreakingChanges: 'Hide all current Breaking Changes',
+  hideAllCurrentBreakingChanges: 'Hide all current breaking changes',
   /**
-   * @description Menu entry for hiding all current Page Errors.
+   * @description Context menu item in the Issues panel to hide all current improvements.
    */
-  hideAllCurrentImprovements: 'Hide all current Improvements',
+  hideAllCurrentImprovements: 'Hide all current improvements',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueKindView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

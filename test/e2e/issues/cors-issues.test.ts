@@ -33,33 +33,33 @@ describe('CORS issues', () => {
       [
         'Request',
         'Status',
-        'Preflight Request (if problematic)',
+        'Preflight request (if problematic)',
         'Header',
         'Problem',
-        'Invalid Value (if available)',
+        'Invalid value (if available)',
       ],
       [
         /^devtools.oopif.test:.*/,
-        'blocked',
+        'Blocked',
         '',
         'Access-Control-Allow-Origin',
-        'Missing Header',
+        'Missing header',
         '',
       ],
       [
         /^devtools.oopif.test:.*/,
-        'blocked',
+        'Blocked',
         /^devtools.oopif.test:.*/,
         'Access-Control-Allow-Origin',
-        'Missing Header',
+        'Missing header',
         '',
       ],
       [
         /.*invalid-preflight.*/,
-        'blocked',
+        'Blocked',
         /.*invalid-preflight.*/,
         'Access-Control-Allow-Origin',
-        'Missing Header',
+        'Missing header',
         '',
       ],
     ];
@@ -92,11 +92,11 @@ describe('CORS issues', () => {
          [
            'Request',
            'Status',
-           'Preflight Request (if problematic)',
+           'Preflight request (if problematic)',
          ],
          [
            'origin-wildcard.rawresponse',
-           'blocked',
+           'Blocked',
            '',
          ],
        ];
@@ -140,18 +140,18 @@ describe('CORS issues', () => {
          [
            'Request',
            'Status',
-           'Preflight Request',
+           'Preflight request',
            'Problem',
          ],
          [
            'invalid-response-code.rawresponse',
-           'blocked',
+           'Blocked',
            'invalid-response-code.rawresponse',
            'HTTP status of preflight request didn’t indicate success',
          ],
          [
            'redirect.rawresponse',
-           'blocked',
+           'Blocked',
            'redirect.rawresponse',
            'Response to preflight was a redirect',
          ],
@@ -194,20 +194,20 @@ describe('CORS issues', () => {
          [
            'Request',
            'Status',
-           'Preflight Request (if problematic)',
-           'Initiator Context',
-           'Allowed Origin (from header)',
+           'Preflight request (if problematic)',
+           'Initiator context',
+           'Allowed origin (from header)',
          ],
          [
            'acao-mismatch.rawresponse',
-           'blocked',
+           'Blocked',
            'acao-mismatch.rawresponse',
            /^https:\/\/localhost.*/,
            'https://devtools.oopif.test',
          ],
          [
            'acao-mismatch.rawresponse',
-           'blocked',
+           'Blocked',
            '',
            /^https:\/\/localhost.*/,
            'https://devtools.oopif.test',
@@ -251,18 +251,18 @@ describe('CORS issues', () => {
          [
            'Request',
            'Status',
-           'Preflight Request (if problematic)',
-           'Access-Control-Allow-Credentials Header Value',
+           'Preflight request (if problematic)',
+           'Access-Control-Allow-Credentials header value',
          ],
          [
            'acac-invalid.rawresponse',
-           'blocked',
+           'Blocked',
            'acac-invalid.rawresponse',
            'false',
          ],
          [
            'acac-invalid.rawresponse',
-           'blocked',
+           'Blocked',
            '',
            'false',
          ],
@@ -299,12 +299,12 @@ describe('CORS issues', () => {
          [
            'Request',
            'Status',
-           'Preflight Request',
-           'Disallowed Request Method',
+           'Preflight request',
+           'Disallowed request method',
          ],
          [
            'method-disallowed.rawresponse',
-           'blocked',
+           'Blocked',
            'method-disallowed.rawresponse',
            'PUT',
          ],
@@ -317,7 +317,7 @@ describe('CORS issues', () => {
        await inspectedPage.goToResource('empty.html');
        await inspectedPage.evaluate(async () => {
          try {
-           // We can re-use \`method-disallowed.rawresponse\` for this test.
+           // We can reuse `method-disallowed.rawresponse` for this test.
            const url = new URL('./issues/method-disallowed.rawresponse', document.location.toString())
                            .toString()
                            .replace('localhost', 'devtools.oopif.test');
@@ -341,12 +341,12 @@ describe('CORS issues', () => {
          [
            'Request',
            'Status',
-           'Preflight Request',
-           'Disallowed Request Header',
+           'Preflight request',
+           'Disallowed request header',
          ],
          [
            'method-disallowed.rawresponse',
-           'blocked',
+           'Blocked',
            'method-disallowed.rawresponse',
            'x-foo',
          ],
@@ -382,7 +382,7 @@ describe('CORS issues', () => {
       ],
       [
         'credentialed-redirect.rawresponse',
-        'blocked',
+        'Blocked',
       ],
     ];
     await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);
@@ -411,12 +411,12 @@ describe('CORS issues', () => {
       [
         'Request',
         'Status',
-        'Initiator Context',
-        'Source Location',
+        'Initiator context',
+        'Source location',
       ],
       [
         /^devtools.oopif.test.*\//,
-        'blocked',
+        'Blocked',
         /^https:\/\/localhost.*/,
         /.*:\d+/,
       ],
@@ -448,13 +448,13 @@ describe('CORS issues', () => {
       [
         'Request',
         'Status',
-        'Initiator Context',
-        'Source Location',
-        'Unsupported Scheme',
+        'Initiator context',
+        'Source location',
+        'Unsupported scheme',
       ],
       [
         /^devtools.oopif.test.*\//,
-        'blocked',
+        'Blocked',
         /^https:\/\/localhost.*/,
         /.*:\d+/,
         'webdav',
@@ -487,11 +487,11 @@ describe('CORS issues', () => {
       [
         'Request',
         'Status',
-        'Source Location',
+        'Source location',
       ],
       [
         /^devtools.oopif.test.*\//,
-        'blocked',
+        'Blocked',
         /.*:\d+/,
       ],
     ];

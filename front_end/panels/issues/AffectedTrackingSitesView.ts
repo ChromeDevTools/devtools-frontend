@@ -10,11 +10,7 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
   /**
-   * @description Label for the the number of affected `Potentially-tracking Sites` associated with a
-   *DevTools issue. In this context, `tracking` refers to bounce tracking and `Site` is equivalent
-   *to eTLD+1.
-   *See https://github.com/privacycg/nav-tracking-mitigations/blob/main/bounce-tracking-explainer.md
-   *and https://developer.mozilla.org/en-US/docs/Glossary/eTLD.
+   * @description Label in the Issues panel for the number of affected potentially tracking websites. See https://github.com/privacycg/nav-tracking-mitigations/blob/main/bounce-tracking-explainer.md and https://developer.mozilla.org/en-US/docs/Glossary/eTLD.
    */
   nTrackingSites: '{n, plural, =1 {1 potentially tracking website} other {# potentially tracking websites}}',
 } as const;

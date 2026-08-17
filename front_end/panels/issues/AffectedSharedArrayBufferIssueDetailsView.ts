@@ -12,43 +12,44 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
   /**
-   * @description Label for number of affected resources indication in issue view
+   * @description Label in the Issues panel for the number of affected violations in the SharedArrayBuffer affected resources table.
    */
   nViolations: '{n, plural, =1 {# violation} other {# violations}}',
   /**
-   * @description Value for the status column in SharedArrayBuffer issues
+   * @description Violation status in the Issues panel indicating that a SharedArrayBuffer issue produced a warning.
    */
-  warning: 'warning',
+  warning: 'Warning',
   /**
-   * @description The kind of resolution for a mixed content issue
+   * @description Violation status in the Issues panel indicating that a SharedArrayBuffer operation was blocked.
    */
-  blocked: 'blocked',
+  blocked: 'Blocked',
   /**
-   * @description Value for the 'Trigger' column in the SAB affected resources list
+   * @description Trigger type in the Issues panel indicating that a SharedArrayBuffer was instantiated.
    */
   instantiation: 'Instantiation',
   /**
-   * @description Tooltip for the 'Trigger' column in the SAB affected resources list
+   * @description Tooltip in the Issues panel explaining that a SharedArrayBuffer was instantiated in a non-cross-origin-isolated context.
    */
   aSharedarraybufferWas: 'A `SharedArrayBuffer` was instantiated in a context that is not cross-origin isolated',
   /**
-   * @description Value for the 'Trigger' column in the SAB affected resources list
+   * @description Trigger type in the Issues panel indicating that a SharedArrayBuffer was transferred.
    */
   transfer: 'Transfer',
   /**
-   * @description Tooltip for the 'Trigger' column in the SAB affected resources list
+   * @description Tooltip in the Issues panel explaining that a SharedArrayBuffer was transferred to a non-cross-origin-isolated context.
    */
-  sharedarraybufferWasTransferedTo: '`SharedArrayBuffer` was transfered to a context that is not cross-origin isolated',
+  sharedarraybufferWasTransferedTo:
+      '`SharedArrayBuffer` was transferred to a context that is not cross-origin isolated',
   /**
-   * @description Header for the source location column
+   * @description Column header in the Issues panel for source locations in the SharedArrayBuffer affected resources table.
    */
-  sourceLocation: 'Source Location',
+  sourceLocation: 'Source location',
   /**
-   * @description Title for the 'Trigger' column in the SAB affected resources list
+   * @description Column header in the Issues panel for trigger types in the SharedArrayBuffer affected resources table.
    */
   trigger: 'Trigger',
   /**
-   * @description Title for the status column in the SAB affected resources list
+   * @description Column header in the Issues panel for violation status in the SharedArrayBuffer affected resources table.
    */
   status: 'Status',
 } as const;

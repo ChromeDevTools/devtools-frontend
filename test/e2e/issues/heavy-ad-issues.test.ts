@@ -49,7 +49,7 @@ describe('Heavy Ad issue', () => {
     const section = await getResourcesElement(devToolsPage, '2 resources', issueElement, undefined);
     await ensureResourceSectionIsExpanded(devToolsPage, section);
     const expectedTableRows = [
-      ['Limit exceeded', 'Resolution Status', 'Frame URL'],
+      ['Limit exceeded', 'Resolution status', 'Frame URL'],
       ['Network limit', 'Removed', /.*/],
       ['CPU peak limit', 'Warned', /.*/],
     ];

@@ -41,49 +41,48 @@ import {GenericIssueDetailsView} from './GenericIssueDetailsView.js';
 
 const UIStrings = {
   /**
-   * @description Noun, singular. Label for a column or field containing the name of an entity.
+   * @description Column header in the Issues panel for the resource name in the mixed content affected resources table.
    */
   name: 'Name',
   /**
-   * @description The kind of resolution for a mixed content issue
+   * @description Resolution status in the Issues panel indicating that a mixed content resource was blocked.
    */
-  blocked: 'blocked',
+  blocked: 'Blocked',
   /**
-   * @description Label for a type of issue that can appear in the Issues view. Noun for singular or plural number of network requests.
+   * @description Label in the Issues panel for the number of affected network requests.
    */
   nRequests: '{n, plural, =1 {# request} other {# requests}}',
   /**
-   * @description Label for singular or plural number of affected resources in issue view
+   * @description Label in the Issues panel for the number of affected mixed content resources.
    */
   nResources: '{n, plural, =1 {# resource} other {# resources}}',
   /**
-   * @description Label for mixed content issue's restriction status
+   * @description Column header in the Issues panel for the restriction status of a mixed content resource.
    */
-  restrictionStatus: 'Restriction Status',
+  restrictionStatus: 'Restriction status',
   /**
-   * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
-   * This string indicates that the ad was only warned, and not removed.
+   * @description Resolution status in the Issues panel indicating that a mixed content resource produced a warning.
    */
   warned: 'Warned',
   /**
-   * @description Header for the section listing affected resources
+   * @description Header in the Issues panel for the section listing affected resources for an issue.
    */
-  affectedResources: 'Affected Resources',
+  affectedResources: 'Affected resources',
   /**
-   * @description Title for a link to further information in issue view
+   * @description Link text in the Issues panel to learn more about an issue.
    * @example {SameSite Cookies Explained} PH1
    */
   learnMoreS: 'Learn more: {PH1}',
   /**
-   * @description The kind of resolution for a mixed content issue
+   * @description Resolution status in the Issues panel indicating that a mixed content resource was automatically upgraded to HTTPS.
    */
-  automaticallyUpgraded: 'automatically upgraded',
+  automaticallyUpgraded: 'Automatically upgraded',
   /**
-   * @description Menu entry for hiding a particular issue, in the Hide Issues context menu.
+   * @description Context menu item in the Issues panel to hide issues of the same type.
    */
   hideIssuesLikeThis: 'Hide issues like this',
   /**
-   * @description Menu entry for unhiding a particular issue, in the Hide Issues context menu.
+   * @description Context menu item in the Issues panel to unhide issues of the same type.
    */
   unhideIssuesLikeThis: 'Unhide issues like this',
 } as const;

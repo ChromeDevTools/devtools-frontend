@@ -11,11 +11,7 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
   /**
-   * @description Label for the the number of affected `Allowed Sites` associated with a
-   *DevTools issue. In this context, `Allowed` refers to permission to access cookies
-   *via the third-party cookie deprecation global metadata, and `Site` is equivalent
-   *to eTLD+1.
-   *See https://developer.mozilla.org/en-US/docs/Glossary/eTLD.
+   * @description Label in the Issues panel for the number of affected websites allowed to access cookies. See https://developer.mozilla.org/en-US/docs/Glossary/eTLD.
    */
   nAllowedSites: '{n, plural, =1 {1 website allowed to access cookies} other {# websites allowed to access cookies}}',
 } as const;

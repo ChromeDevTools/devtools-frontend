@@ -37,7 +37,7 @@ describe('Cookie domain attribute should not contain non-ASCII characters issue'
            await getIssueByTitle(devToolsPage, 'Ensure cookie `Domain` attribute values only contain ASCII characters');
        assert.isOk(issueElement);
        const section =
-           await getResourcesElement(devToolsPage, '1 Raw Set-Cookie header', issueElement, '.affected-resource-label');
+           await getResourcesElement(devToolsPage, '1 raw Set-Cookie header', issueElement, '.affected-resource-label');
        await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['tasty_cookie=yum; Domain=öxample.com'],

@@ -13,11 +13,11 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
   /**
-   * @description Title for the hidden issues row
+   * @description Title in the Issues panel for the hidden issues row.
    */
   hiddenIssues: 'Hidden issues',
   /**
-   * @description Label for the button to unhide all hidden issues
+   * @description Label in the Issues panel for the button to unhide all hidden issues.
    */
   unhideAll: 'Unhide all',
 } as const;

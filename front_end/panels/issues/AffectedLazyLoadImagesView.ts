@@ -12,7 +12,7 @@ import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
-   * @description Noun for singular or plural number of affected element resource indication in issue view.
+   * @description Label in the Issues panel for the number of affected elements for lazy-load image issues.
    */
   nElements: '{n, plural, =1 {# element} other {# elements}}',
 } as const;

@@ -80,7 +80,6 @@ export interface ViewInput {
   searchableViewId: string;
   scriptViewToolbarItems: UI.Toolbar.ToolbarItem[];
   bottomToolbarItems: UI.Toolbar.ToolbarItem[];
-  searchableViewFactory: () => UI.Widget.Widget;
   delegate: TabbedEditorContainerDelegate;
   previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
 }
@@ -88,6 +87,7 @@ export interface ViewInput {
 export interface ViewOutput {
   scriptViewToolbar?: UI.Toolbar.Toolbar;
   editorContainer?: TabbedEditorContainer;
+  searchableView?: UI.SearchableView.SearchableView;
 }
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
@@ -95,7 +95,14 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 export const DEFAULT_VIEW: View = (input, output, target): void => {
   // clang-format off
   render(html`
-    <devtools-widget class="vbox flex-auto" ${widget(input.searchableViewFactory)}>
+    <devtools-widget class="vbox flex-auto"
+      ${widget(element => {
+        const searchableView = new UI.SearchableView.SearchableView(input.searchProvider, input.replaceProvider, input.searchableViewId, element);
+        searchableView.setMinimalSearchQuerySize(0);
+        return searchableView;
+      })}
+      ${widgetRef(UI.SearchableView.SearchableView, e => { output.searchableView = e; })}
+    >
       <devtools-widget class="vbox flex-auto"
         ${widget(TabbedEditorContainer, {delegate: input.delegate, previouslyViewedFilesSetting: input.previouslyViewedFilesSetting})}
         ${widgetRef(TabbedEditorContainer, e => { output.editorContainer = e; })}>
@@ -229,7 +236,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       searchableViewId: 'sources-view-search-config',
       scriptViewToolbarItems: this.#scriptViewToolbarItems,
       bottomToolbarItems: this.#bottomToolbarItems,
-      searchableViewFactory: this.#searchableViewFactory,
       delegate: this,
       previouslyViewedFilesSetting: this.previouslyViewedFilesSetting,
     };
@@ -241,6 +247,9 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       },
       set editorContainer(value: TabbedEditorContainer) {
         that.setEditorContainer(value);
+      },
+      set searchableView(value: UI.SearchableView.SearchableView) {
+        that.#searchableView = value;
       },
     };
 
@@ -412,7 +421,10 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   searchableView(): UI.SearchableView.SearchableView {
-    return this.#searchableViewFactory();
+    if (!this.#searchableView) {
+      this.performUpdate();
+    }
+    return this.#searchableView;
   }
 
   visibleView(): UI.Widget.Widget|null {
@@ -808,14 +820,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const uiSourceCodeFrame = sourceFrame;
     uiSourceCodeFrame.commitEditing();
   }
-
-  #searchableViewFactory = (): UI.SearchableView.SearchableView => {
-    if (!this.#searchableView) {
-      this.#searchableView = new UI.SearchableView.SearchableView(this, this, 'sources.search-sources-tab');
-      this.#searchableView.setMinimalSearchQuerySize(0);
-    }
-    return this.#searchableView;
-  };
 
   toggleBreakpointsActiveState(active: boolean): void {
     this.#breakpointsActive = active;

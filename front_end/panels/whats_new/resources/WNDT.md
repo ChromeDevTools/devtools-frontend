@@ -1,14 +1,11 @@
 ### [DevTools for agents](devtools-for-agents)
 
-DevTools for agents 1.6 and later brings various improvements to the memory debugging tools,
-experimental GCF support as an alternative to JSON for token savings, and improved multi-page support.
+DevTools for agents 1.7 improves memory profiling with the `get_heapsnapshot_object_details` tool and native V8 context filtering.
 
-### [AI assistance](ai-assistance)
+### [Soft navigation metrics in Live Metrics](performance)
 
-AI assistance continues to evolve with additional Network track and Network requests list
-widgets for the agent walkthrough, as well as support for table rendering in responses.
+The Live Metrics view in the Performance panel now captures and reports metrics like LCP and INP for client-side soft navigations in single-page applications by default.
 
-### [CSS specificity breakdowns](css-specificity)
+### [Nested CSS parent selector interactions](nested-selectors)
 
-Hovering over selector names in the Styles tab now shows a tooltip breaking down
-how each part contributes to the (a, b, c) specificity calculation.
+Hovering over parent selectors highlights matching elements on the page, nested rules respond to Styles tab filtering, and `@nested-declarations` include specificity tooltips.

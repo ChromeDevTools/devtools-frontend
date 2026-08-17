@@ -19917,6 +19917,7 @@ export namespace WebAudio {
      * Context sample rate.
      */
     sampleRate: number;
+    renderQuantumSize: number;
   }
 
   /**

@@ -29860,6 +29860,10 @@
                             "name": "sampleRate",
                             "description": "Context sample rate.",
                             "type": "number"
+                        },
+                        {
+                            "name": "renderQuantumSize",
+                            "type": "number"
                         }
                     ]
                 },

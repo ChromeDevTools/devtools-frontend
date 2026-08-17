@@ -597,12 +597,6 @@
       status: "stable",
     },
     {
-      // This is a bug fix for rendering a missing focus ring on <a> elements.
-      // Shipping in M147, safe to remove in M150.
-      name: "AnchorFocusRingFix",
-      status: "stable",
-    },
-    {
       // Kill switch for https://crbug.com/415834974 which changes anchor
       // positioning adjustments to occur even in cases where there is no
       // scrollable overflow.
@@ -902,12 +896,6 @@
     {
       name: "BlinkExtensionChromeOS",
       browser_process_read_write_access: true,
-    },
-    {
-      name: "BlinkExtensionChromeOSIsolatedWebAppSetShape",
-      status: {"ChromeOS": "experimental", "default": ""},
-      browser_process_read_write_access: true,
-      depends_on: ["BlinkExtensionChromeOS"],
     },
     {
       name: "BlinkExtensionWebView",
@@ -2803,12 +2791,6 @@
       base_feature: "none",
     },
     {
-      name: "FedCmErrorAttribute",
-      depends_on: ["FedCm"],
-      public: true,
-      base_feature: "none",
-    },
-    {
       name: "FedCmIdPRegistration",
       depends_on: ["FedCm"],
       public: true,
@@ -3490,6 +3472,12 @@
       status: "stable",
     },
     {
+      // Kill switch for making <area> display:none by default according to the
+      // HTML rendering specification. https://crbug.com/1231263
+      name: "HTMLAreaElementDisplayNone",
+      status: "stable",
+    },
+    {
       name: "HTMLAreaHreflangType",
       status: "test",
     },
@@ -3571,6 +3559,12 @@
       // Parse processing instructions in HTML.
       name: "HTMLProcessingInstruction",
       status: "stable",
+    },
+    {
+      // Enables the switch attribute on <input type="checkbox">.
+      // https://open-ui.org/components/switch.attribute.explainer/
+      name: "HTMLSwitchAttribute",
+      status: "experimental",
     },
     {
       name: "ICUCapitalization",
@@ -4706,7 +4700,8 @@
       // Simplifies the behavior and stacking interactions of popover=hint and
       // popover=auto. See https://crbug.com/499019927.
       // This shipped in M150, was disabled via Finch, and was re-enabled in
-      // M151. It can be removed in M153.
+      // M151. The behavior was tweaked slightly in M153, and milestones
+      // now happen twice as quickly, so the flag can be removed in M157.
       name: "PopoverHintNewBehavior",
       status: "stable",
     },
@@ -5640,6 +5635,11 @@
       name: "SetSequentialFocusStartingPoint",
       status: "experimental",
     },
+    {
+      name: "SetShape",
+      status: {"ChromeOS": "experimental", "default": ""},
+      browser_process_read_write_access: true,
+    },
     // https://chromestatus.com/feature/5176753681203200
     {
       name: "ShadowContourFollowsBorder",
@@ -6466,6 +6466,7 @@
     },
     {
       name: "UAImageReplacementAPI",
+      origin_trial_feature_name: "UAImageReplacementAPI",
     },
     {
       // The Unbounded Element API. See crbug.com/508672616.

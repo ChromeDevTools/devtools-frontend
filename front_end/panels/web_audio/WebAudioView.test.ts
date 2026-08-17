@@ -21,6 +21,7 @@ const context1: Protocol.WebAudio.BaseAudioContext = {
   sampleRate: 44100,
   callbackBufferSize: 1024,
   maxOutputChannelCount: 2,
+  renderQuantumSize: 0,
 };
 
 const context2: Protocol.WebAudio.BaseAudioContext = {
@@ -30,6 +31,7 @@ const context2: Protocol.WebAudio.BaseAudioContext = {
   sampleRate: 44100,
   callbackBufferSize: 1024,
   maxOutputChannelCount: 2,
+  renderQuantumSize: 0,
 };
 
 describeWithEnvironment('WebAudioView', () => {

@@ -14,24 +14,24 @@ import filmStripViewStyles from './filmStripView.css.js';
 
 const UIStrings = {
   /**
-   * @description Element title in Film Strip View of the Performance panel
+   * @description Tooltip text for a screenshot frame in the film strip view of the Performance panel.
    */
-  doubleclickToZoomImageClickTo: 'Doubleclick to zoom image. Click to view preceding requests.',
+  doubleclickToZoomImageClickTo: 'Double-click to zoom image. Click to view preceding requests.',
   /**
-   * @description Aria label for captured screenshots in network panel.
+   * @description Accessible label for a screenshot frame in the film strip view of the Network panel.
    * @example {3ms} PH1
    */
   screenshotForSSelectToView: 'Screenshot for {PH1} - select to view preceding requests.',
   /**
-   * @description Text for one or a group of screenshots
+   * @description Alt text for a screenshot thumbnail image in the film strip view.
    */
   screenshot: 'Screenshot',
   /**
-   * @description Prev button title in Film Strip View of the Performance panel
+   * @description Tooltip text for the previous frame button in the film strip dialog.
    */
   previousFrame: 'Previous frame',
   /**
-   * @description Next button title in Film Strip View of the Performance panel
+   * @description Tooltip text for the next frame button in the film strip dialog.
    */
   nextFrame: 'Next frame',
 } as const;

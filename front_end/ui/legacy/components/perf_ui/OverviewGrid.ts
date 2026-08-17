@@ -16,17 +16,17 @@ import {TimelineGrid} from './TimelineGrid.js';
 
 const UIStrings = {
   /**
-   * @description Label for the window for Overview grids
+   * @description Accessible label for the selection window in the overview grid.
    */
   overviewGridWindow: 'Overview grid window',
   /**
-   * @description Label for left window resizer for Overview grids
+   * @description Accessible label for the left window resizer in the overview grid.
    */
-  leftResizer: 'Left Resizer',
+  leftResizer: 'Left resizer',
   /**
-   * @description Label for right window resizer for Overview grids
+   * @description Accessible label for the right window resizer in the overview grid.
    */
-  rightResizer: 'Right Resizer',
+  rightResizer: 'Right resizer',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/OverviewGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

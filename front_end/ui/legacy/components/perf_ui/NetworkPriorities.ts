@@ -7,23 +7,23 @@ import * as Protocol from '../../../../generated/protocol.js';
 
 const UIStrings = {
   /**
-   * @description Text in Network Priorities of the Performance panel
+   * @description Label for lowest network priority.
    */
   lowest: 'Lowest',
   /**
-   * @description Text in Network Priorities of the Performance panel
+   * @description Label for low network priority.
    */
   low: 'Low',
   /**
-   * @description Text in Network Priorities of the Performance panel
+   * @description Label for medium network priority.
    */
   medium: 'Medium',
   /**
-   * @description Text in Network Priorities of the Performance panel
+   * @description Label for high network priority.
    */
   high: 'High',
   /**
-   * @description Text in Network Priorities of the Performance panel
+   * @description Label for highest network priority.
    */
   highest: 'Highest',
 } as const;

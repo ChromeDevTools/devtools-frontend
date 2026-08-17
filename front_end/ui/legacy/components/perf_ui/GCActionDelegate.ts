@@ -9,7 +9,7 @@ import type * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
-   * @description Notification message shown to the user when garbage collection has completed.
+   * @description Notification message shown when garbage collection completes.
    */
   garbageCollectionCompleted: 'Garbage collection completed',
 } as const;

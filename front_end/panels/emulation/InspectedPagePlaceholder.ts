@@ -11,11 +11,9 @@ let inspectedPagePlaceholderInstance: InspectedPagePlaceholder;
 
 export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
     UI.Widget.Widget) {
-  private updateId?: number;
   constructor() {
     super({useShadowDom: true});
     this.registerRequiredCSS(inspectedPagePlaceholderStyles);
-    UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZOOM_CHANGED, this.onResize, this);
     this.restoreMinimumSize();
   }
 
@@ -28,13 +26,6 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<Ev
     }
 
     return inspectedPagePlaceholderInstance;
-  }
-
-  override onResize(): void {
-    if (this.updateId) {
-      this.element.window().cancelAnimationFrame(this.updateId);
-    }
-    this.updateId = this.element.window().requestAnimationFrame(this.update.bind(this, false));
   }
 
   restoreMinimumSize(): void {
@@ -64,7 +55,6 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<Ev
   }
 
   update(force?: boolean): void {
-    delete this.updateId;
     const rect = this.dipPageRect();
     const bounds = {
       x: Math.round(rect.x),

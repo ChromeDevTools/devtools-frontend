@@ -498,6 +498,7 @@ export class DeviceModeView extends UI.Widget.VBox {
       if (contentAreaResized) {
         this.contentAreaResized();
       }
+      InspectedPagePlaceholder.instance().update();
     });
   }
 
@@ -520,13 +521,21 @@ export class DeviceModeView extends UI.Widget.VBox {
 
   private zoomChanged(): void {
     if (this.isShowing()) {
-      this.contentAreaResized();
+      if (this.#showDeviceModeSetting.get()) {
+        this.contentAreaResized();
+      } else {
+        InspectedPagePlaceholder.instance().update();
+      }
     }
   }
 
   override onResize(): void {
     if (this.isShowing()) {
-      this.contentAreaResized();
+      if (this.#showDeviceModeSetting.get()) {
+        this.contentAreaResized();
+      } else {
+        InspectedPagePlaceholder.instance().update();
+      }
     }
   }
 

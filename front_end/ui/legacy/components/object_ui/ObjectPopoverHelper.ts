@@ -15,7 +15,7 @@ import * as Components from '../utils/utils.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
 import objectPopoverStyles from './objectPopover.css.js';
-import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
+import {ObjectPropertiesSection, ObjectPropertiesSectionWidget} from './ObjectPropertiesSection.js';
 import objectValueStyles from './objectValue.css.js';
 
 const UIStrings = {
@@ -74,10 +74,15 @@ export class ObjectPopoverHelper {
           titleElement.createChild('span').textContent = description;
         }
         linkifier = new Components.Linkifier.Linkifier();
-        const section = new ObjectPropertiesSection(result, '', linkifier, true /* showOverflow */);
+        const section = new ObjectPropertiesSectionWidget();
         section.element.classList.add('object-popover-tree');
-        section.titleLessMode();
-        popoverContentElement.appendChild(section.element);
+        section.root = result;
+        if (section.objectTree) {
+          section.objectTree.expanded = true;
+        }
+        section.linkifier = linkifier;
+        section.showOverflow = true;
+        section.show(popoverContentElement, null, true);
       }
       popoverContentElement.dataset.stableNameForTest = 'object-popover-content';
       popover.setMaxContentSize(new Geometry.Size(300, 250));

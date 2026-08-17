@@ -1434,7 +1434,6 @@ export const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) 
   render(entry.nodes.map(node => html`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`), target, {
     container: {
       classes,
-      attributes: {role: 'group'},
       interceptedListeners: {
         expand: (e: Event) => input.onExpand((e as UI.TreeOutline.TreeViewElement.ExpandEvent).detail.expanded),
       },

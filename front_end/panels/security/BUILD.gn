@@ -79,6 +79,7 @@ devtools_ui_module("unittests") {
   sources = [
     "SecurityModel.test.ts",
     "SecurityPanel.test.ts",
+    "SecurityPanelSidebar.test.ts",
   ]
 
   deps = [

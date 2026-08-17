@@ -91,96 +91,95 @@ const {repeat, ifDefined} = Directives;
 
 const UIStrings = {
   /**
-   * @description Cookie table cookies table expires session value in Cookies Table of the Cookies table in the Application panel
+   * @description Table cell text in the expires or max-age column indicating that the cookie expires at the end of the session.
    */
   session: 'Session',
   /**
-   * @description Text for the name of something
+   * @description Header for the cookie name column in the cookies table.
    */
   name: 'Name',
   /**
-   * @description Text for the value of something
+   * @description Header for the cookie value column in the cookies table.
    */
   value: 'Value',
   /**
-   * @description Text for the size of something
+   * @description Header for the cookie size column in the cookies table.
    */
   size: 'Size',
   /**
-   * @description Text for the "Domain" of the cookie
+   * @description Header for the cookie domain column in the cookies table.
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie#domaindomain-value
    */
   domain: 'Domain',
   /**
-   * @description Text for the "Path" of the cookie
+   * @description Header for the cookie path column in the cookies table.
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie#pathpath-value
    */
   path: 'Path',
   /**
-   * @description Text for the "Secure" property of the cookie
+   * @description Header for the secure attribute column in the cookies table.
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie#secure
    */
   secure: 'Secure',
   /**
-   * @description Text for the "Partition Key Site" property of the cookie
+   * @description Header for the partition key site column in the cookies table.
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie#partitioned
    */
-  partitionKeySite: 'Partition Key Site',
+  partitionKeySite: 'Partition key site',
   /**
-   * @description Text for the "Priority" property of the cookie
-   * Contains Low, Medium (default), or High if using deprecated cookie Priority attribute.
+   * @description Header for the priority attribute column in the cookies table. Contains Low, Medium (default), or High if using deprecated cookie Priority attribute.
    * https://bugs.chromium.org/p/chromium/issues/detail?id=232693
    */
   priority: 'Priority',
   /**
-   * @description Data grid name for Editable Cookies data grid
+   * @description Accessible name for the editable cookies table.
    */
-  editableCookies: 'Editable Cookies',
+  editableCookies: 'Editable cookies',
   /**
-   * @description Text for web cookies
+   * @description Accessible name for the cookies table.
    */
   cookies: 'Cookies',
   /**
-   * @description Text for something not available
+   * @description Table cell text indicating that a cookie property is not available.
    */
   na: 'N/A',
   /**
-   * @description Text for Context Menu entry
+   * @description Context menu item in the cookies table to show network requests associated with the selected cookie.
    */
   showRequestsWithThisCookie: 'Show requests with this cookie',
   /**
-   * @description Text for Context Menu entry
+   * @description Context menu item in the cookies table to show the issue associated with the selected cookie.
    */
   showIssueAssociatedWithThis: 'Show issue associated with this cookie',
   /**
-   * @description Tooltip for the cell that shows the sourcePort property of a cookie in the cookie table. The source port is numberic attribute of a cookie.
+   * @description Tooltip text for the source port column cell in the cookies table. The source port is a numeric attribute indicating the port number (1-65535) on which the cookie was set, or -1 if unknown.
    */
   sourcePortTooltip:
       'Shows the source port (range 1-65535) the cookie was set on. If the port is unknown, this shows -1.',
   /**
-   * @description Tooltip for the cell that shows the sourceScheme property of a cookie in the cookie table. The source scheme is a trinary attribute of a cookie.
+   * @description Tooltip text for the source scheme column cell in the cookies table. The source scheme is a trinary (three-state) attribute indicating whether the cookie was set on a secure scheme (`Secure`), non-secure scheme (`NonSecure`), or unset (`Unset`).
    */
   sourceSchemeTooltip:
       'Shows the source scheme (`Secure`, `NonSecure`) the cookie was set on. If the scheme is unknown, this shows `Unset`.',
   /**
-   * @description Text for the date column displayed if the expiration time of the cookie is extremely far out in the future.
+   * @description Table cell text in the expires column when the expiration time of the cookie is in the far future.
    * @example {+275760-09-13T00:00:00.000Z} date
    */
   timeAfter: 'after {date}',
   /**
-   * @description Tooltip for the date column displayed if the expiration time of the cookie is extremely far out in the future.
+   * @description Tooltip text in the expires column when the expiration time of the cookie is in the far future.
    * @example {+275760-09-13T00:00:00.000Z} date
    * @example {9001628746521180} seconds
    */
   timeAfterTooltip: 'The expiration timestamp is {seconds}, which corresponds to a date after {date}',
   /**
-   * @description Text to be show in the Partition Key column in case it is an opaque origin.
+   * @description Table cell text in the partition key site column when the origin is opaque.
    */
   opaquePartitionKey: '(opaque)',
   /**
-   * @description Tooltip for the disabled AI button on HttpOnly cookies, explaining why they cannot be debugged.
+   * @description Tooltip for the disabled AI button on HttpOnly cookies explaining why they cannot be added as context.
    */
-  httpOnlyCookiesCannotBeAdded: 'HttpOnly cookies cannot be added as context',
+  httpOnlyCookiesCannotBeAdded: 'HttpOnly cookies can’t be added as context',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/cookie_table/CookiesTable.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

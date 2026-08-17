@@ -1656,11 +1656,10 @@ class TreeViewTreeElement extends TreeElement {
     });
   }
 
-  refresh(): void {
+  updateAttributes(): void {
     const expandable = Boolean(this.configElement.querySelector(':scope > ul[role="group"]'));
     this.setExpandable(expandable);
 
-    this.titleElement.textContent = '';
     this.#clonedAttributes.forEach(attr => this.listItemElement.attributes.removeNamedItem(attr));
     this.#clonedClasses.forEach(className => this.listItemElement.classList.remove(className));
     this.#clonedAttributes.clear();
@@ -1676,6 +1675,13 @@ class TreeViewTreeElement extends TreeElement {
       this.listItemElement.classList.add(className);
       this.#clonedClasses.add(className);
     }
+    this.hidden = hasBooleanAttribute(this.configElement, 'hidden');
+    this.updateExpansionFromAttribute();
+  }
+
+  refresh(): void {
+    this.titleElement.textContent = '';
+    this.updateAttributes();
     const childUl = this.configElement.querySelector(':scope > ul[role="group"]');
     const templateElements = childUl ? [this.configElement, childUl] : [this.configElement];
     Lit.CustomDirectives.InterceptBindingDirective.setEventListeners(templateElements, this.listItemElement);
@@ -1887,10 +1893,11 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
   }
 
   protected override updateNode(node: Node, attributeName: string|null): void {
-    while (node?.parentNode && !(node instanceof HTMLElement)) {
-      node = node.parentNode;
+    let current: Node|null = node;
+    while (current?.parentNode && !(current instanceof HTMLElement)) {
+      current = current.parentNode;
     }
-    const treeNode = node instanceof HTMLElement ? node.closest('li[role="treeitem"]') : null;
+    const treeNode = current instanceof HTMLElement ? current.closest('li[role="treeitem"]') : null;
     if (!treeNode) {
       return;
     }
@@ -1898,16 +1905,17 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     if (!treeElement) {
       return;
     }
-    treeElement.refreshSoon();
-    if (node === treeNode && attributeName === 'selected' && hasBooleanAttribute(treeNode, 'selected')) {
-      treeElement.revealAndSelect(true);
-    }
-    if (node === treeNode && attributeName === 'open') {
-      treeElement.updateExpansionFromAttribute();
+    if (node === treeNode) {
+      treeElement.updateAttributes();
+      if (attributeName === 'selected' && hasBooleanAttribute(treeNode, 'selected')) {
+        treeElement.revealAndSelect(true);
+      }
+      return;
     }
     if (node === treeNode && attributeName === 'toggle-on-click') {
       treeElement.toggleOnClick = hasBooleanAttribute(treeNode, 'toggle-on-click');
     }
+    treeElement.refreshSoon();
   }
 
   protected override addNodes(nodes: NodeList|Node[]): void {

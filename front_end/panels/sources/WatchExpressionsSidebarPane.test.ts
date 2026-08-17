@@ -9,6 +9,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {spyCall} from '../../testing/ExpectStubCall.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -84,7 +85,7 @@ describeWithEnvironment('WatchExpression', () => {
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     renderElementIntoDOM(pane);
     await raf();
-    await pane.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const treeElement = pane.contentElement.querySelector('devtools-tree');
     const listItemElement = treeElement?.shadowRoot?.querySelector('.watch-expression-tree-item') as HTMLElement;
@@ -96,15 +97,15 @@ describeWithEnvironment('WatchExpression', () => {
     // Double click to start editing
     headerElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
     await raf();
-    await pane.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
 
-    const textPromptElement = listItemElement.querySelector('devtools-prompt') as HTMLElement;
+    const textPromptElement = treeElement?.shadowRoot?.querySelector('devtools-prompt') as HTMLElement;
     assert.exists(textPromptElement);
 
+    const savePromise = spyCall(pane, 'saveExpressions');
     textPromptElement.dispatchEvent(new CustomEvent('commit', {detail: '2 + 2'}));
-
-    await raf();
-    await pane.updateComplete;
+    await savePromise;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.deepEqual(setting.get(), ['2 + 2']);
 
@@ -318,12 +319,13 @@ describeWithEnvironment('WatchExpression', () => {
     const headerElement = listItemElement.querySelector('.watch-expression-header') as HTMLElement;
     headerElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
     await raf();
-    await pane.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
 
-    const textPromptElement = listItemElement.querySelector('devtools-prompt') as HTMLElement;
+    const textPromptElement = treeElement?.shadowRoot?.querySelector('devtools-prompt') as HTMLElement;
+    const savePromise = spyCall(pane, 'saveExpressions');
     textPromptElement.dispatchEvent(new CustomEvent('commit', {detail: 'obj2'}));
-    await raf();
-    await pane.updateComplete;
+    await savePromise;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const newWatchExpression = pane.watchExpressions[0];
     const newTree = newWatchExpression.result as ObjectUI.ObjectPropertiesSection.ObjectTree;
@@ -354,7 +356,7 @@ describeWithEnvironment('WatchExpression', () => {
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     renderElementIntoDOM(pane);
     await raf();
-    await pane.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const watchExpression = pane.watchExpressions[0];
     const tree = watchExpression.result as ObjectUI.ObjectPropertiesSection.ObjectTree;
@@ -375,24 +377,26 @@ describeWithEnvironment('WatchExpression', () => {
     let headerElement = listItemElement.querySelector('.watch-expression-header') as HTMLElement;
     headerElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
     await raf();
-    await pane.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
 
-    let textPromptElement = listItemElement.querySelector('devtools-prompt') as HTMLElement;
+    let textPromptElement = treeElement?.shadowRoot?.querySelector('devtools-prompt') as HTMLElement;
+    let savePromise = spyCall(pane, 'saveExpressions');
     textPromptElement.dispatchEvent(new CustomEvent('commit', {detail: 'obj2'}));
-    await raf();
-    await pane.updateComplete;
+    await savePromise;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     // Change expression back to obj1
     listItemElement = treeElement?.shadowRoot?.querySelector('.watch-expression-tree-item') as HTMLElement;
     headerElement = listItemElement.querySelector('.watch-expression-header') as HTMLElement;
     headerElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
     await raf();
-    await pane.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
 
-    textPromptElement = listItemElement.querySelector('devtools-prompt') as HTMLElement;
+    textPromptElement = treeElement?.shadowRoot?.querySelector('devtools-prompt') as HTMLElement;
+    savePromise = spyCall(pane, 'saveExpressions');
     textPromptElement.dispatchEvent(new CustomEvent('commit', {detail: 'obj1'}));
-    await raf();
-    await pane.updateComplete;
+    await savePromise;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const newWatchExpression = pane.watchExpressions[0];
     const finalTree = newWatchExpression.result as ObjectUI.ObjectPropertiesSection.ObjectTree;
@@ -404,5 +408,66 @@ describeWithEnvironment('WatchExpression', () => {
     assert.exists(finalFooProperty);
     assert.notStrictEqual(fooProperty, finalFooProperty);
     assert.isFalse(finalFooProperty.expanded);
+  });
+
+  it('updates completions on beforeautocomplete without cancelling editing', async () => {
+    Common.Settings.Settings.instance().createLocalSetting<string[]>('watch-expressions', []).set(['as']);
+
+    const executionContext = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
+    const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
+    const runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel);
+    debuggerModel.selectedCallFrame.returns(null);
+    executionContext.debuggerModel = debuggerModel;
+    executionContext.runtimeModel = runtimeModel;
+    executionContext.globalLexicalScopeNames.resolves([]);
+    executionContext.evaluate.resolves(
+        {object: SDK.RemoteObject.RemoteObject.fromLocalObject(123), exceptionDetails: undefined});
+    sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
+
+    const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
+    renderElementIntoDOM(pane);
+    await raf();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const treeElement = pane.contentElement.querySelector('devtools-tree');
+    const listItemElement = treeElement?.shadowRoot?.querySelector('.watch-expression-tree-item') as HTMLElement;
+    assert.exists(listItemElement);
+
+    const headerElement = listItemElement.querySelector('.watch-expression-header') as HTMLElement;
+    assert.exists(headerElement);
+
+    headerElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
+    await raf();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const textPromptElement = treeElement?.shadowRoot?.querySelector('devtools-prompt') as HTMLElement;
+    assert.exists(textPromptElement);
+    assert.isTrue(textPromptElement.hasAttribute('editing'));
+
+    const widgetElement = treeElement?.shadowRoot?.querySelector('devtools-widget') as HTMLElement;
+    const promptWidget = UI.Widget.Widget.get(widgetElement);
+    assert.exists(promptWidget);
+    const updatePromise = spyCall(promptWidget, 'performUpdate');
+    textPromptElement.dispatchEvent(new UI.TextPrompt.TextPromptElement.BeforeAutoCompleteEvent({
+      expression: '',
+      filter: 'as',
+      force: false,
+    }));
+    await updatePromise;
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const datalist = textPromptElement.querySelector('datalist');
+    assert.exists(datalist);
+    const options = Array.from(datalist.querySelectorAll('option')).map(opt => opt.value || opt.textContent);
+    assert.include(options, 'async');
+    assert.isTrue(textPromptElement.hasAttribute('editing'));
+
+    const savePromise = spyCall(pane, 'saveExpressions');
+    textPromptElement.dispatchEvent(new CustomEvent('commit', {detail: 'async'}));
+    await savePromise;
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const clearedDatalist = textPromptElement.querySelector('datalist');
+    assert.isNull(clearedDatalist);
   });
 });

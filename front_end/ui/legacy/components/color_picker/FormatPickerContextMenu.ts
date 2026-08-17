@@ -8,7 +8,7 @@ import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
-   * @description Menu warning that some color will be clipped after conversion to match the target gamut
+   * @description Warning item in the color format picker context menu indicating that converting to a narrower gamut will cause color shifts.
    */
   colorShiftWarning: '⚠️ Conversion to a narrow gamut will cause color shifts',
 } as const;

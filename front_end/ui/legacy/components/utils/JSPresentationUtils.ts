@@ -49,19 +49,19 @@ const {classMap} = Directives;
 
 const UIStrings = {
   /**
-   * @description Text to stop preventing the debugger from stepping into library code
+   * @description Context menu item on a stack trace link to remove the script from the ignore list.
    */
   removeFromIgnore: 'Remove from ignore list',
   /**
-   * @description Text for scripts that should not be stepped into when debugging
+   * @description Context menu item on a stack trace link to add the script to the ignore list.
    */
   addToIgnore: 'Add script to ignore list',
   /**
-   * @description A link to show more frames when they are available.
+   * @description Link text in a stack trace preview to show ignore-listed frames.
    */
   showMoreFrames: 'Show ignore-listed frames',
   /**
-   * @description A link to rehide frames that are by default hidden.
+   * @description Link text in a stack trace preview to hide ignore-listed frames.
    */
   showLess: 'Show less',
 } as const;

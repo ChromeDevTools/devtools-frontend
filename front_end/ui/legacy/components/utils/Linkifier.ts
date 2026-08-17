@@ -25,33 +25,31 @@ const {ref, ifDefined, classMap} = Directives;
 
 const UIStrings = {
   /**
-   * @description Text in Linkifier
+   * @description Fallback text displayed for a link when the URL or text is unknown.
    */
   unknown: '(unknown)',
   /**
-   * @description Text short for automatic
+   * @description Option in the link handling dropdown to automatically select the handler.
    */
-  auto: 'auto',
+  auto: 'Auto',
   /**
-   * @description Text in Linkifier
+   * @description Context menu item to reveal an item in a specific destination panel or tool.
    * @example {Sources panel} PH1
    */
   revealInS: 'Reveal in {PH1}',
   /**
-   * @description Text for revealing an item in its destination
+   * @description Context menu item to reveal an item in its destination.
    */
   reveal: 'Reveal',
   /**
-   * @description A context menu item in the Linkifier
+   * @description Context menu item to open a link or resource using a registered extension.
    * @example {Extension} PH1
    */
   openUsingS: 'Open using {PH1}',
   /**
-   * @description The name of a setting which controls how links are handled in the UI. 'Handling'
-   * refers to the ability of extensions to DevTools to be able to intercept link clicks so that they
-   * can react to them.
+   * @description Label for the setting that controls how links are handled in the UI.
    */
-  linkHandling: 'Link handling:',
+  linkHandling: 'Link handling',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/Linkifier.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

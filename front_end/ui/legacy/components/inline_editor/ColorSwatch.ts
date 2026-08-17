@@ -15,7 +15,7 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   * @description Icon element title in Color Swatch of the inline editor in the Styles tab
+   * @description Tooltip text for the color swatch in the inline editor.
    */
   shiftclickToChangeColorFormat: 'Shift-click to change color format',
 } as const;

@@ -12,6 +12,7 @@ import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {setupUserMetricHooks} from '../../../testing/UserMetricsHelpers.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
+import * as UI from '../../legacy/legacy.js';
 
 import {
   AiCodeGenerationProvider,
@@ -80,6 +81,8 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
     } as unknown as Host.AidaClient.HostConfigTracker);
     Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
     Common.Settings.Settings.instance().createSetting('ai-code-generation-onboarding-completed', true);
+    sinon.stub(UI.UIUtils.PromotionManager.instance(), 'canShowPromotion').returns(true);
+    sinon.stub(UI.UIUtils.PromotionManager.instance(), 'maybeShowPromotion').returns(true);
     generateCodeStub = sinon.stub(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'generateCode');
     sinon.stub(AiCodeGenerationTeaser.AiCodeGenerationTeaser.prototype, 'displayState').set(_ => {});
   });
@@ -330,7 +333,6 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
     it('aborts code generation request when Escape is pressed while loading', async () => {
       generateCodeStub.returns(new Promise(() => {}));
       const generationTeaser = AiCodeGenerationTeaser.AiCodeGenerationTeaser.prototype;
-      const abortSpy = sinon.spy(AbortController.prototype, 'abort');
       const {editor, provider} = createEditorWithProvider('// Hello');
       editor.dispatch({selection: {anchor: 8}});
       await clock.tickAsync(0);
@@ -341,11 +343,13 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
       await clock.tickAsync(0);
 
       sinon.assert.calledOnce(generateCodeStub);
+      const signal = generateCodeStub.firstCall.args[3]?.signal;
+      assert.isFalse(signal?.aborted);
 
       editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
       await clock.tickAsync(0);
 
-      sinon.assert.calledOnce(abortSpy);
+      assert.isTrue(signal?.aborted);
       const suggestion = editor.editor.state.field(Config.aiAutoCompleteSuggestionState);
       assert.notExists(suggestion);
       provider.dispose();
@@ -355,7 +359,6 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
   it('aborts code generation request when user starts typing again', async () => {
     generateCodeStub.returns(new Promise(() => {}));
     const generationTeaser = AiCodeGenerationTeaser.AiCodeGenerationTeaser.prototype;
-    const abortSpy = sinon.spy(AbortController.prototype, 'abort');
     const {editor, provider} = createEditorWithProvider('// Hello');
     editor.dispatch({selection: {anchor: 8}});
     await clock.tickAsync(0);
@@ -366,11 +369,13 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
     await clock.tickAsync(0);
 
     sinon.assert.calledOnce(generateCodeStub);
+    const signal = generateCodeStub.firstCall.args[3]?.signal;
+    assert.isFalse(signal?.aborted);
 
     editor.dispatch({changes: {from: 8, insert: '!'}});
     await clock.tickAsync(0);
 
-    sinon.assert.calledOnce(abortSpy);
+    assert.isTrue(signal?.aborted);
     const suggestion = editor.editor.state.field(Config.aiAutoCompleteSuggestionState);
     assert.notExists(suggestion);
     provider.dispose();

@@ -18,28 +18,28 @@ import filteredListWidgetStyles from './filteredListWidget.css.js';
 
 const UIStrings = {
   /**
-   * @description Aria label for quick open dialog prompt
+   * @description Accessible name for the input prompt in the quick open dialog.
    */
   quickOpenPrompt: 'Quick open prompt',
   /**
-   * @description Title of quick open dialog
+   * @description Title for the quick open dialog.
    */
   quickOpen: 'Quick open',
   /**
-   * @description Text to show no results have been found
+   * @description Message displayed when a search returns no matching items.
    */
   noResultsFound: 'No results found',
   /**
-   * @description Aria alert to read the item in list when navigating with screen readers
-   * @example {name} PH1
+   * @description Announcement for screen readers when navigating items in a list.
+   * @example {Show Console} PH1
    * @example {2} PH2
    * @example {5} PH3
    */
   sItemSOfS: '{PH1}, item {PH2} of {PH3}',
   /**
-   * @description Text that should be read out by screen readers when a new badge is available
+   * @description Text announced by screen readers when an item has a new feature badge.
    */
-  newFeature: 'This is a new feature',
+  newFeature: 'New feature',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/FilteredListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

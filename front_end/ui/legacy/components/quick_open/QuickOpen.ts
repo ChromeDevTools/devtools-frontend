@@ -14,7 +14,7 @@ import {
 
 const UIStrings = {
   /**
-   * @description Text of the hint shows under Quick Open input box
+   * @description Hint text displayed below the quick open input prompt.
    */
   typeToSeeAvailableCommands: 'Type ? to see available commands',
 } as const;

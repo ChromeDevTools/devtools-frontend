@@ -9,11 +9,11 @@ import type * as QuickOpen from './quick_open.js';
 
 const UIStrings = {
   /**
-   * @description Title of action that opens a file
+   * @description Title of an action that opens a file.
    */
   openFile: 'Open file',
   /**
-   * @description Title of command that runs a Quick Open command
+   * @description Title of an action that opens the command menu.
    */
   runCommand: 'Run command',
 } as const;

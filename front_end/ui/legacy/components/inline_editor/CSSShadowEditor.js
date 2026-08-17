@@ -11,24 +11,23 @@ import * as UI from '../../legacy.js';
 import cssShadowEditorStyles from './cssShadowEditor.css.js';
 const UIStrings = {
     /**
-     * @description Text that refers to some types
+     * @description Label for the shadow type selector in the CSS shadow editor.
      */
     type: 'Type',
     /**
-     * @description Text in CSSShadow Editor of the inline editor in the Styles tab
+     * @description Label for the X offset input in the CSS shadow editor.
      */
     xOffset: 'X offset',
     /**
-     * @description Text in CSSShadow Editor of the inline editor in the Styles tab
+     * @description Label for the Y offset input in the CSS shadow editor.
      */
     yOffset: 'Y offset',
     /**
-     * @description Text in CSSShadow Editor of the inline editor in the Styles tab. Noun which is a
-     * label for an input that allows the user to specify how blurred the box-shadow should be.
+     * @description Label for the blur radius input in the CSS shadow editor.
      */
     blur: 'Blur',
     /**
-     * @description Text in CSSShadow Editor of the inline editor in the Styles tab
+     * @description Label for the spread radius input in the CSS shadow editor.
      */
     spread: 'Spread',
 };

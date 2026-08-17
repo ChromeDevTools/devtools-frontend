@@ -4,7 +4,7 @@
 import { CSSModel } from './CSSModel.js';
 import { OverlayModel } from './OverlayModel.js';
 import { SDKModel } from './SDKModel.js';
-import { cpuPressureSettingDescriptor, emulatedCSSMediaFeatureForcedColorsSettingDescriptor, emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor, emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor, emulatedCSSMediaSettingDescriptor, idleDetectionSettingDescriptor, javaScriptDisabledSettingDescriptor, touchSettingDescriptor, } from './SDKSettings.js';
+import { cpuPressureSettingDescriptor, emulatedCSSMediaFeatureForcedColorsSettingDescriptor, emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor, emulatedCSSMediaFeaturePrefersContrastSettingDescriptor, emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor, emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor, emulatedCSSMediaSettingDescriptor, idleDetectionSettingDescriptor, javaScriptDisabledSettingDescriptor, touchSettingDescriptor, } from './SDKSettings.js';
 export class EmulationModel extends SDKModel {
     #multitargetNetworkManager;
     #emulationAgent;
@@ -73,8 +73,8 @@ export class EmulationModel extends SDKModel {
         const mediaFeatureColorGamutSetting = settings.moduleSetting('emulated-css-media-feature-color-gamut');
         const mediaFeaturePrefersColorSchemeSetting = settings.resolve(emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor);
         const mediaFeatureForcedColorsSetting = settings.resolve(emulatedCSSMediaFeatureForcedColorsSettingDescriptor);
-        const mediaFeaturePrefersContrastSetting = settings.moduleSetting('emulated-css-media-feature-prefers-contrast');
-        const mediaFeaturePrefersReducedDataSetting = settings.moduleSetting('emulated-css-media-feature-prefers-reduced-data');
+        const mediaFeaturePrefersContrastSetting = settings.resolve(emulatedCSSMediaFeaturePrefersContrastSettingDescriptor);
+        const mediaFeaturePrefersReducedDataSetting = settings.resolve(emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor);
         const mediaFeaturePrefersReducedTransparencySetting = settings.moduleSetting('emulated-css-media-feature-prefers-reduced-transparency');
         const mediaFeaturePrefersReducedMotionSetting = settings.resolve(emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor);
         // Note: this uses a different format than what the CDP API expects,

@@ -169,4 +169,16 @@ export const emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor = {
     defaultValue: '',
     storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
 };
+export const emulatedCSSMediaFeaturePrefersContrastSettingDescriptor = {
+    name: 'emulated-css-media-feature-prefers-contrast',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: '',
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor = {
+    name: 'emulated-css-media-feature-prefers-reduced-data',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: '',
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
 //# sourceMappingURL=SDKSettings.js.map

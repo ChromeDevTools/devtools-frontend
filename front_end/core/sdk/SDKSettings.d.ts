@@ -28,3 +28,5 @@ export declare const idleDetectionSettingDescriptor: Common.Settings.SettingDesc
 export declare const emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor: Common.Settings.SettingDescriptor<string>;
 export declare const emulatedCSSMediaFeatureForcedColorsSettingDescriptor: Common.Settings.SettingDescriptor<string>;
 export declare const emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const emulatedCSSMediaFeaturePrefersContrastSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor: Common.Settings.SettingDescriptor<string>;

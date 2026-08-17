@@ -1,14 +1,18 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
+import '../../ui/legacy/components/data_grid/data_grid.js';
+
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as Elements from '../elements/elements.js';
+
+import heapDetachedElementsDataGridStyles from './heapDetachedElementsDataGrid.css.js';
+
+const {html, render} = Lit;
 
 const {widget} = UI.Widget;
 
@@ -29,104 +33,115 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapDetachedElementsDataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class HeapDetachedElementsDataGrid extends DataGrid.DataGrid.DataGridImpl<unknown> {
-  constructor() {
-    const columns: DataGrid.DataGrid.ColumnDescriptor[] = [];
-    columns.push({
-      id: 'detached-node',
-      title: i18nString(UIStrings.detachedNodes),
-      sortable: false,
-    });
-    columns.push({
-      id: 'detached-node-count',
-      title: i18nString(UIStrings.nodeSize),
-      sortable: false,
-      disclosure: true,
-    });
-
-    super({
-      displayName: i18nString(UIStrings.detachedElementsList),
-      columns,
-    });
-
-    this.setStriped(true);
-  }
+export interface HeapDetachedElements {
+  detachedElements: Protocol.DOM.DetachedElementInfo[];
+  domModel: SDK.DOMModel.DOMModel;
 }
 
-export class HeapDetachedElementsDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown> {
-  private detachedElementInfo: Protocol.DOM.DetachedElementInfo;
-  domModel: SDK.DOMModel.DOMModel;
-  retainedNodeIds: Set<number> = new Set<number>();
+export interface ParsedElement {
+  elementInfo: Protocol.DOM.DetachedElementInfo;
+  node: SDK.DOMModel.DOMNode;
+  nodeCount: number;
+}
 
-  constructor(detachedElementInfo: Protocol.DOM.DetachedElementInfo, domModel: SDK.DOMModel.DOMModel) {
-    super(null);
-    this.detachedElementInfo = detachedElementInfo;
-    this.domModel = domModel;
-    for (const retainedNodeId of detachedElementInfo.retainedNodeIds) {
-      this.retainedNodeIds.add(retainedNodeId as number);
+export interface ViewInput {
+  parsedElements: ParsedElement[];
+}
+
+export type ViewOutput = undefined;
+
+const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|ShadowRoot): void => {
+  // clang-format off
+  render(html`
+    <devtools-data-grid striped name=${i18nString(UIStrings.detachedElementsList)}>
+      <table>
+        <tr>
+          <th id="detached-node">${i18nString(UIStrings.detachedNodes)}</th>
+          <th id="detached-node-count">${i18nString(UIStrings.nodeSize)}</th>
+        </tr>
+        ${input.parsedElements.map(parsed => html`
+          <tr>
+            <td>
+              <devtools-widget
+                ${widget(Elements.ElementsTreeOutline.DOMTreeWidget, {
+                  omitRootDOMNode: false,
+                  selectEnabled: true,
+                  hideGutter: true,
+                  rootDOMNode: parsed.node,
+                  showSelectionOnKeyboardFocus: true,
+                  preventTabOrder: true,
+                  deindentSingleNode: true,
+                })}
+              ></devtools-widget>
+            </td>
+            <td>${parsed.nodeCount}</td>
+          </tr>
+        `)}
+      </table>
+    </devtools-data-grid>
+  `, target);
+  // clang-format on
+};
+
+function calculateDetachedNodeCount(treeNode?: Protocol.DOM.Node): number {
+  if (!treeNode) {
+    return 0;
+  }
+  let count = 1;
+  const queue: Protocol.DOM.Node[] = [];
+  let node: Protocol.DOM.Node|undefined;
+  queue.push(treeNode);
+  while (queue.length > 0) {
+    node = queue.shift();
+    if (!node) {
+      break;
+    }
+    if (node.childNodeCount) {
+      count += node.childNodeCount;
+    }
+    if (node.children) {
+      for (const child of node.children) {
+        queue.push(child);
+      }
     }
   }
+  return count;
+}
 
-  override createCell(columnId: string): HTMLElement {
-    const cell = this.createTD(columnId);
-    switch (columnId) {
-      case 'detached-node': {
-        const node = SDK.DOMModel.DOMNode.create(
-            this.domModel, null, false, this.detachedElementInfo.treeNode,
-            this.retainedNodeIds as Set<Protocol.DOM.BackendNodeId>);
-        node.detached = true;
-        this.#renderNode(node, cell);
-        return cell;
-      }
+type View = typeof DEFAULT_VIEW;
 
-      case 'detached-node-count': {
-        const size = this.#getNodeSize(this.detachedElementInfo);
-        render(html`${size}`, cell);
-        return cell;
-      }
-    }
-    return cell;
+export class HeapDetachedElementsDataGrid extends UI.Widget.Widget {
+  #view: View;
+  #parsedElements: ParsedElement[] = [];
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
+    this.registerRequiredCSS(heapDetachedElementsDataGridStyles);
   }
 
-  #getNodeSize(detachedElementInfo: Protocol.DOM.DetachedElementInfo): number {
-    let count = 1;
-    const queue: Protocol.DOM.Node[] = [];
-    let node: Protocol.DOM.Node|undefined;
-    queue.push(detachedElementInfo.treeNode);
-    while (queue.length > 0) {
-      node = queue.shift();
-      if (!node) {
-        break;
-      }
-      if (node.childNodeCount) {
-        count += node.childNodeCount;
-      }
-      if (node.children) {
-        for (const child of node.children) {
-          queue.push(child);
-        }
-      }
-    }
-
-    return count;
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 
-  #renderNode(node: SDK.DOMModel.DOMNode, target: HTMLElement): void {
-    render(
-        html`
-          <devtools-widget
-            ${widget(Elements.ElementsTreeOutline.DOMTreeWidget, {
-          omitRootDOMNode: false,
-          selectEnabled: true,
-          hideGutter: true,
-          rootDOMNode: node,
-          showSelectionOnKeyboardFocus: true,
-          preventTabOrder: true,
-          deindentSingleNode: true,
-        })}
-          ></devtools-widget>
-        `,
-        target,
-    );
+  override performUpdate(): void {
+    this.#view({parsedElements: this.#parsedElements}, undefined, this.contentElement);
+  }
+
+  set data(data: HeapDetachedElements) {
+    this.#parsedElements = [];
+    if (!data || !data.detachedElements || !data.domModel) {
+      this.requestUpdate();
+      return;
+    }
+    for (const elementInfo of data.detachedElements) {
+      const retainedNodeIds = new Set((elementInfo.retainedNodeIds ?? []) as unknown as Protocol.DOM.BackendNodeId[]);
+      const node = SDK.DOMModel.DOMNode.create(data.domModel, null, false, elementInfo.treeNode, retainedNodeIds);
+      node.detached = true;
+
+      this.#parsedElements.push({elementInfo, node, nodeCount: calculateDetachedNodeCount(elementInfo.treeNode)});
+    }
+    this.requestUpdate();
   }
 }

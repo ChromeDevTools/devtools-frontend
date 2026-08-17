@@ -7,10 +7,9 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import type * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {HeapDetachedElementsDataGrid, HeapDetachedElementsDataGridNode} from './HeapDetachedElementsDataGrid.js';
+import {HeapDetachedElementsDataGrid} from './HeapDetachedElementsDataGrid.js';
 import {
   type DataDisplayDelegate,
   ProfileEvents as ProfileTypeEvents,
@@ -43,7 +42,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DetachedElementsProfileView extends UI.View.SimpleView implements DataDisplayDelegate {
   readonly selectedSizeText: UI.Toolbar.ToolbarText;
-  dataGrid: DataGrid.DataGrid.DataGridImpl<unknown>;
+  dataGrid: HeapDetachedElementsDataGrid;
   profile: DetachedElementsProfileHeader;
   readonly parentDataDisplayDelegate: DataDisplayDelegate;
 
@@ -57,8 +56,8 @@ export class DetachedElementsProfileView extends UI.View.SimpleView implements D
     this.parentDataDisplayDelegate = dataDisplayDelegate;
     this.selectedSizeText = new UI.Toolbar.ToolbarText();
     this.dataGrid = new HeapDetachedElementsDataGrid();
+    this.dataGrid.show(this.element);
     this.populateElementsGrid(profile.detachedElements);
-    this.dataGrid.asWidget().show(this.element);
   }
 
   showProfile(profile: ProfileHeader|null): UI.Widget.Widget|null {
@@ -84,9 +83,7 @@ export class DetachedElementsProfileView extends UI.View.SimpleView implements D
       return;
     }
 
-    for (const detachedElement of detachedElements) {
-      this.dataGrid.rootNode().appendChild(new HeapDetachedElementsDataGridNode(detachedElement, domModel));
-    }
+    this.dataGrid.data = {detachedElements, domModel};
   }
 
   override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {

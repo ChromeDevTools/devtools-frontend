@@ -347,6 +347,7 @@ devtools_entrypoint("bundle") {
     "../../panels/elements/*",
     "../../panels/issues/*",
     "../../panels/network/*",
+    "../../panels/profiler/*",
     "../../panels/security/*",
     "../../panels/sources/*",
     "../../testing/*",

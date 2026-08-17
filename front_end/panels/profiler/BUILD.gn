@@ -115,6 +115,8 @@ devtools_ui_module("unittests") {
     "../../core/common:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../models/bindings:bundle",
+    "../../models/issues_manager:bundle",
     "../../testing",
     "../../ui/lit:bundle",
   ]

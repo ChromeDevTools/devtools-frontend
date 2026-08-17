@@ -17,8 +17,8 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
 import * as Host from './host.js';
-import type {AidaCodeCompleteResult} from './InspectorFrontendHostAPI.js';
 
+type AidaCodeCompleteResult = Host.InspectorFrontendHostAPI.AidaCodeCompleteResult;
 const TEST_MODEL_ID = 'testModelId';
 
 describe('AidaClient', () => {

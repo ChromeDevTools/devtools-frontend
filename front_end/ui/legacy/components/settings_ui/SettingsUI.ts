@@ -19,11 +19,11 @@ const {createRef, ref} = Directives;
 
 const UIStrings = {
   /**
-   * @description Note when a setting change will require the user to reload DevTools
+   * @description Warning note displayed below a setting dropdown when changing the setting requires reloading DevTools.
    */
   srequiresReload: '*Requires reload',
   /**
-   * @description Message to display if a setting change requires a reload of DevTools
+   * @description Message displayed in a warning bar when a setting change requires reloading DevTools.
    */
   settingsChangedReloadDevTools: 'Settings changed. To apply, reload DevTools.',
 } as const;

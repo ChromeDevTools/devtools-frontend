@@ -433,7 +433,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
 
     const event = new Event('contextmenu');
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    await treeElement.populateNodeContextMenu(contextMenu);
+    await Elements.DOMTreeContextMenu.populateNodeContextMenu(contextMenu, treeElement);
     return contextMenu;
   }
 

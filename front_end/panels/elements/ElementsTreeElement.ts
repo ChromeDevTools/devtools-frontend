@@ -62,11 +62,10 @@ import * as Lit from '../../ui/lit/lit.js';
 import type {DirectiveResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
-import * as Emulation from '../emulation/emulation.js';
 import * as Media from '../media/media.js';
 
 import * as ElementsComponents from './components/components.js';
-import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
+import {cssPath, jsPath, xPath} from './DOMPath.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {type ElementsTreeOutline, MappedCharToEntity} from './ElementsTreeOutline.js';
@@ -107,37 +106,10 @@ const UIStrings = {
    */
   useSInTheConsoleToReferToThis: 'Use {PH1} in the console to refer to this element.',
   /**
-   * @description A context menu item in the Elements Tree Element of the Elements panel
+   * @description Context menu item in the Edit as HTML editor that selects the editor's entire
+   * contents. "Select all" should be used as a verb.
    */
-  addAttribute: 'Add attribute',
-  /**
-   * @description Text to modify the attribute of an item
-   */
-  editAttribute: 'Edit attribute',
-  /**
-   * @description Text to focus on something
-   */
-  focus: 'Focus',
-  /**
-   * @description Text to scroll the displayed content into view
-   */
-  scrollIntoView: 'Scroll into view',
-  /**
-   * @description A context menu item in the Elements panel to switch to Accessibility tree
-   */
-  switchToAccessibilityTree: 'Switch to accessibility tree',
-  /**
-   * @description A context menu item in the Elements Tree Element of the Elements panel
-   */
-  editText: 'Edit text',
-  /**
-   * @description A context menu item in the Elements Tree Element of the Elements panel
-   */
-  editAsHtml: 'Edit as HTML',
-  /**
-   * @description A context menu item in the Elements Tree Element of the Elements panel
-   */
-  editData: 'Edit data',
+  selectAll: 'Select all',
   /**
    * @description Text to cut an element, cut should be used as a verb
    */
@@ -150,67 +122,6 @@ const UIStrings = {
    * @description Text to paste an element, paste should be used as a verb
    */
   paste: 'Paste',
-  /**
-   * @description Context menu item in the Edit as HTML editor that selects the editor's entire
-   * contents. "Select all" should be used as a verb.
-   */
-  selectAll: 'Select all',
-  /**
-   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-   */
-  copyOuterhtml: 'Copy outerHTML',
-  /**
-   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-   */
-  copySelector: 'Copy `selector`',
-  /**
-   * @description Text in Elements Tree Element of the Elements panel
-   */
-  copyJsPath: 'Copy JS path',
-  /**
-   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-   */
-  copyStyles: 'Copy styles',
-  /**
-   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-   */
-  copyXpath: 'Copy XPath',
-  /**
-   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-   */
-  copyFullXpath: 'Copy full XPath',
-  /**
-   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-   */
-  copyElement: 'Copy element',
-  /**
-   * @description A context menu item in the Elements Tree Element of the Elements panel
-   */
-  duplicateElement: 'Duplicate element',
-  /**
-   * @description Text to hide an element
-   */
-  hideElement: 'Hide element',
-  /**
-   * @description A context menu item in the Elements Tree Element of the Elements panel
-   */
-  deleteElement: 'Delete element',
-  /**
-   * @description Text to expand something recursively
-   */
-  expandRecursively: 'Expand recursively',
-  /**
-   * @description Text to collapse children of a parent group
-   */
-  collapseChildren: 'Collapse children',
-  /**
-   * @description Title of an action in the emulation tool to capture node screenshot
-   */
-  captureNodeScreenshot: 'Capture node screenshot',
-  /**
-   * @description Title of a context menu item. When clicked DevTools goes to the Application panel and shows this specific iframe's details
-   */
-  showFrameDetails: 'Show `iframe` details',
   /**
    * @description Text in Elements Tree Element of the Elements panel
    */
@@ -227,9 +138,6 @@ const UIStrings = {
    * @description ARIA label for Elements Tree adorners
    */
   disableGridMode: 'Disable grid mode',
-  /**
-   * @description ARIA label for Elements Tree adorners
-   */
   /**
    * @description ARIA label for Elements Tree adorners
    */
@@ -314,10 +222,6 @@ const UIStrings = {
    */
   elementHasScrollableOverflow: 'This element has a scrollable overflow',
   /**
-   * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
-   */
-  startAChat: 'Start a chat',
-  /**
    * @description Label of an adorner next to the html node in the Elements panel.
    */
   viewSourceCode: 'View source code',
@@ -326,74 +230,6 @@ const UIStrings = {
    * the definition of the custom element in the Sources panel.
    */
   showCustomElementDefinition: 'Show custom element definition',
-  /**
-   * @description Context menu item in Elements panel to assess visibility of an element via AI.
-   */
-  assessVisibility: 'Assess visibility',
-  /**
-   * @description Context menu item in Elements panel to center an element via AI.
-   */
-  centerElement: 'Center element',
-  /**
-   * @description Context menu item in Elements panel to wrap flex items via AI.
-   */
-  wrapTheseItems: 'Wrap these items',
-  /**
-   * @description Context menu item in Elements panel to distribute flex items evenly via AI.
-   */
-  distributeItemsEvenly: 'Distribute items evenly',
-  /**
-   * @description Context menu item in Elements panel to explain flexbox via AI.
-   */
-  explainFlexbox: 'Explain flexbox',
-  /**
-   * @description Context menu item in Elements panel to align grid items via AI.
-   */
-  alignItems: 'Align items',
-  /**
-   * @description Context menu item in Elements panel to add padding/gap to grid via AI.
-   */
-  addPadding: 'Add padding',
-  /**
-   * @description Context menu item in Elements panel to explain grid layout via AI.
-   */
-  explainGridLayout: 'Explain grid layout',
-  /**
-   * @description Context menu item in Elements panel to find grid definition for a subgrid item via AI.
-   */
-  findGridDefinition: 'Find grid definition',
-  /**
-   * @description Context menu item in Elements panel to change parent grid properties for a subgrid item via AI.
-   */
-  changeParentProperties: 'Change parent properties',
-  /**
-   * @description Context menu item in Elements panel to explain subgrids via AI.
-   */
-  explainSubgrids: 'Explain subgrids',
-  /**
-   * @description Context menu item in Elements panel to remove scrollbars via AI.
-   */
-  removeScrollbars: 'Remove scrollbars',
-  /**
-   * @description Context menu item in Elements panel to style scrollbars via AI.
-   */
-  styleScrollbars: 'Style scrollbars',
-  /**
-   * @description Context menu item in Elements panel to explain scrollbars via AI.
-   */
-  explainScrollbars: 'Explain scrollbars',
-  /**
-   * @description Context menu item in Elements panel to explain container queries via AI.
-   */
-  explainContainerQueries: 'Explain container queries',
-  /**
-   * @description Context menu item in Elements panel to explain container types via AI.
-   */
-  explainContainerTypes: 'Explain container types',
-  /**
-   * @description Context menu item in Elements panel to explain container context via AI.
-   */
-  explainContainerContext: 'Explain container context',
   /**
    * @description Link text content in Elements Tree Outline of the Elements panel. When clicked, it "reveals" the true location of an element.
    */
@@ -2134,317 +1970,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
   }
 
-  async populateTagContextMenu(contextMenu: UI.ContextMenu.ContextMenu, event: Event): Promise<void> {
-    const targetWidget = this.isClosingTag ? this.findStartTagWidget?.() : this;
-    if (!targetWidget) {
-      return;
-    }
-    contextMenu.editSection().appendItem(i18nString(UIStrings.addAttribute),
-                                         targetWidget.addNewAttribute.bind(targetWidget),
-                                         {jslogContext: 'add-attribute'});
-
-    const target = (event.composedPath()[0] || event.target) as Element;
-    const attribute = target.enclosingNodeOrSelfWithClass('webkit-html-attribute');
-    const newAttribute = target.enclosingNodeOrSelfWithClass('add-attribute');
-    if (attribute && !newAttribute) {
-      contextMenu.editSection().appendItem(
-          i18nString(UIStrings.editAttribute), this.startEditingAttribute.bind(this, attribute, target),
-          {jslogContext: 'edit-attribute'});
-    }
-    await this.populateNodeContextMenu(contextMenu);
-    ElementsTreeWidget.populateForcedPseudoStateItems(contextMenu, this.node);
-    this.populateScrollIntoView(contextMenu);
-    contextMenu.viewSection().appendItem(i18nString(UIStrings.focus), async () => {
-      await this.node.focus();
-    }, {jslogContext: 'focus'});
-  }
-
-  populatePseudoElementContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
-    if ((this.childCount?.() ?? 0) !== 0) {
-      this.populateExpandRecursively(contextMenu);
-    }
-
-    this.populateScrollIntoView(contextMenu);
-  }
-
-  private populateExpandRecursively(contextMenu: UI.ContextMenu.ContextMenu): void {
-    if (this.expandRecursively) {
-      contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively),
-                                           () => void this.expandRecursively?.(), {jslogContext: 'expand-recursively'});
-    }
-  }
-
-  private populateScrollIntoView(contextMenu: UI.ContextMenu.ContextMenu): void {
-    contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => this.node.scrollIntoView(),
-                                         {jslogContext: 'scroll-into-view'});
-  }
-
   private isAiButtonEnabled(): boolean {
     return UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button');
-  }
-
-  async populateTextContextMenu(contextMenu: UI.ContextMenu.ContextMenu, textNode: Node): Promise<void> {
-    if (!this.editing) {
-      contextMenu.editSection().appendItem(i18nString(UIStrings.editText),
-                                           this.startEditingTextNode.bind(this, textNode as Element),
-                                           {jslogContext: 'edit-text'});
-    }
-    return await this.populateNodeContextMenu(contextMenu);
-  }
-
-  async populateNodeContextMenu(contextMenu: UI.ContextMenu.ContextMenu): Promise<void> {
-    // Add free-form node-related actions.
-    const isEditable = this.hasEditableNode();
-    // clang-format off
-    if (isEditable && !this.editing) {
-      contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml), this.editAsHTML.bind(this), { jslogContext: 'elements.edit-as-html' });
-    }
-    // clang-format on
-    const isShadowRoot = this.node.isShadowRoot();
-
-    const createShortcut = UI.KeyboardShortcut.KeyboardShortcut.shortcutToString.bind(null);
-    const modifier = UI.KeyboardShortcut.Modifiers.CtrlOrMeta.value;
-    let menuItem;
-
-    const openAiAssistanceId = 'freestyler.element-panel-context';
-    if (UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
-      function appendSubmenuPromptAction(
-          submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action, label: Common.UIString.LocalizedString,
-          prompt: string, jslogContext: string): void {
-        submenu.defaultSection().appendItem(label, () => {
-          void action.execute({prompt});
-          UI.UIUtils.PromotionManager.instance().recordFeatureInteraction(openAiAssistanceId);
-        }, {disabled: !action.enabled(), jslogContext});
-      }
-      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, this.node);
-      const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-      const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
-      submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
-
-      const submenuConfigs = [
-        {
-          condition: (props: SDK.CSSModel.LayoutProperties|null): boolean => Boolean(props?.isFlex),
-          items: [
-            {
-              label: i18nString(UIStrings.wrapTheseItems),
-              prompt: 'How can I make flex items wrap?',
-              jslogContextSuffix: '.flex-wrap',
-            },
-            {
-              label: i18nString(UIStrings.distributeItemsEvenly),
-              prompt: 'How do I distribute flex items evenly?',
-              jslogContextSuffix: '.flex-distribute',
-            },
-            {
-              label: i18nString(UIStrings.explainFlexbox),
-              prompt: 'What is flexbox?',
-              jslogContextSuffix: '.flex-what',
-            },
-          ],
-        },
-        {
-          condition: (props: SDK.CSSModel.LayoutProperties|null): boolean =>
-              Boolean(props?.isGrid && !props?.isSubgrid),
-          items: [
-            {
-              label: i18nString(UIStrings.alignItems),
-              prompt: 'How do I align items in a grid?',
-              jslogContextSuffix: '.grid-align',
-            },
-            {
-              label: i18nString(UIStrings.addPadding),
-              prompt: 'How to add spacing between grid items?',
-              jslogContextSuffix: '.grid-gap',
-            },
-            {
-              label: i18nString(UIStrings.explainGridLayout),
-              prompt: 'How does grid layout work?',
-              jslogContextSuffix: '.grid-how',
-            },
-          ],
-        },
-        {
-          condition: (props: SDK.CSSModel.LayoutProperties|null): boolean => Boolean(props?.isSubgrid),
-          items: [
-            {
-              label: i18nString(UIStrings.findGridDefinition),
-              prompt: 'Where is this grid defined?',
-              jslogContextSuffix: '.subgrid-where',
-            },
-            {
-              label: i18nString(UIStrings.changeParentProperties),
-              prompt: 'How to overwrite parent grid properties?',
-              jslogContextSuffix: '.subgrid-override',
-            },
-            {
-              label: i18nString(UIStrings.explainSubgrids),
-              prompt: 'How do subgrids work?',
-              jslogContextSuffix: '.subgrid-how',
-            },
-          ],
-        },
-        {
-          condition: (props: SDK.CSSModel.LayoutProperties|null): boolean => Boolean(props?.hasScroll),
-          items: [
-            {
-              label: i18nString(UIStrings.removeScrollbars),
-              prompt: 'How do I remove scrollbars for this element?',
-              jslogContextSuffix: '.scroll-remove',
-            },
-            {
-              label: i18nString(UIStrings.styleScrollbars),
-              prompt: 'How can I style a scrollbar?',
-              jslogContextSuffix: '.scroll-style',
-            },
-            {
-              label: i18nString(UIStrings.explainScrollbars),
-              prompt: 'Why does this element scroll?',
-              jslogContextSuffix: '.scroll-why',
-            },
-          ],
-        },
-        {
-          condition: (props: SDK.CSSModel.LayoutProperties|null): boolean => Boolean(props?.containerType),
-          items: [
-            {
-              label: i18nString(UIStrings.explainContainerQueries),
-              prompt: 'What are container queries?',
-              jslogContextSuffix: '.container-what',
-            },
-            {
-              label: i18nString(UIStrings.explainContainerTypes),
-              prompt: 'How do I use container-type?',
-              jslogContextSuffix: '.container-how',
-            },
-            {
-              label: i18nString(UIStrings.explainContainerContext),
-              prompt: 'What\'s the container context for this element?',
-              jslogContextSuffix: '.container-context',
-            },
-          ],
-        },
-        {
-          // Default items
-          condition: (): boolean => true,
-          items: [
-            {
-              label: i18nString(UIStrings.assessVisibility),
-              prompt: 'Why isn’t this element visible?',
-              jslogContextSuffix: '.visibility',
-            },
-            {
-              label: i18nString(UIStrings.centerElement),
-              prompt: 'How do I center this element?',
-              jslogContextSuffix: '.center',
-            },
-          ],
-        },
-      ];
-
-      const layoutProps = await this.node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.node.id);
-      const config = submenuConfigs.find(c => c.condition(layoutProps));
-      if (config) {
-        for (const item of config.items) {
-          appendSubmenuPromptAction(
-              submenu, action, item.label, item.prompt, openAiAssistanceId + item.jslogContextSuffix);
-        }
-      }
-    }
-
-    menuItem = contextMenu.clipboardSection().appendItem(i18nString(UIStrings.cut),
-                                                         () => this.performCopyOrCut?.(true, this.node),
-                                                         {disabled: !this.hasEditableNode(), jslogContext: 'cut'});
-    menuItem.setShortcut(createShortcut('X', modifier));
-
-    // Place it here so that all "Copy"-ing items stick together.
-    const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString(UIStrings.copy), false, 'copy');
-    const section = copyMenu.section();
-    if (!isShadowRoot) {
-      menuItem = section.appendItem(i18nString(UIStrings.copyOuterhtml),
-                                    () => this.performCopyOrCut?.(false, this.node), {jslogContext: 'copy-outer-html'});
-      menuItem.setShortcut(createShortcut('V', modifier));
-    }
-    if (this.node.nodeType() === Node.ELEMENT_NODE) {
-      section.appendItem(
-          i18nString(UIStrings.copySelector), this.copyCSSPath.bind(this), {jslogContext: 'copy-selector'});
-      section.appendItem(i18nString(UIStrings.copyJsPath), this.copyJSPath.bind(this),
-                         {disabled: !canGetJSPath(this.node), jslogContext: 'copy-js-path'});
-      section.appendItem(
-          i18nString(UIStrings.copyStyles), this.copyStyles.bind(this), {jslogContext: 'elements.copy-styles'});
-    }
-    if (!isShadowRoot) {
-      section.appendItem(i18nString(UIStrings.copyXpath), this.copyXPath.bind(this), {jslogContext: 'copy-xpath'});
-      section.appendItem(
-          i18nString(UIStrings.copyFullXpath), this.copyFullXPath.bind(this), {jslogContext: 'copy-full-xpath'});
-    }
-
-    menuItem = copyMenu.clipboardSection().appendItem(i18nString(UIStrings.copyElement),
-                                                      () => this.performCopyOrCut?.(false, this.node, true),
-                                                      {jslogContext: 'copy-element'});
-    menuItem.setShortcut(createShortcut('C', modifier));
-
-    if (!isShadowRoot) {
-      // Duplicate element, disabled on root element and ShadowDOM.
-      const isRootElement = !this.node.parentNode || this.node.parentNode.nodeName() === '#document';
-      menuItem = contextMenu.editSection().appendItem(i18nString(UIStrings.duplicateElement),
-                                                      () => this.duplicateNode?.(this.node), {
-                                                        disabled: (this.node.isInShadowTree() || isRootElement),
-                                                        jslogContext: 'elements.duplicate-element',
-                                                      });
-    }
-
-    menuItem =
-        contextMenu.clipboardSection().appendItem(i18nString(UIStrings.paste), () => this.pasteNode?.(this.node),
-                                                  {disabled: !this.canPaste?.(this.node), jslogContext: 'paste'});
-    menuItem.setShortcut(createShortcut('V', modifier));
-
-    menuItem = contextMenu.debugSection().appendCheckboxItem(i18nString(UIStrings.hideElement),
-                                                             () => this.toggleHideElement?.(this.node), {
-                                                               checked: Boolean(this.isToggledToHidden?.(this.node)),
-                                                               jslogContext: 'elements.hide-element',
-                                                             });
-    menuItem.setShortcut(
-        UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('elements.hide-element') || '');
-
-    if (isEditable) {
-      contextMenu.editSection().appendItem(
-          i18nString(UIStrings.deleteElement), this.remove.bind(this), {jslogContext: 'delete-element'});
-    }
-
-    this.populateExpandRecursively(contextMenu);
-    contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), () => this.collapseChildren?.(),
-                                         {jslogContext: 'collapse-children'});
-    contextMenu.viewSection().appendItem(i18nString(UIStrings.switchToAccessibilityTree),
-                                         () => ElementsPanel.instance().toggleAccessibilityTree(),
-                                         {jslogContext: 'switch-to-accessibility-tree'});
-    const deviceModeWrapperAction = new Emulation.DeviceModeView.ActionDelegate();
-    contextMenu.viewSection().appendItem(
-        i18nString(UIStrings.captureNodeScreenshot),
-        deviceModeWrapperAction.handleAction.bind(
-            null, UI.Context.Context.instance(), 'emulation.capture-node-screenshot'),
-        {jslogContext: 'emulation.capture-node-screenshot'});
-    if (this.node.frameOwnerFrameId()) {
-      contextMenu.viewSection().appendItem(i18nString(UIStrings.showFrameDetails), () => {
-        const frameOwnerFrameId = this.node.frameOwnerFrameId();
-        if (frameOwnerFrameId) {
-          const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameOwnerFrameId);
-          void Common.Revealer.reveal(frame);
-        }
-      }, {jslogContext: 'show-frame-details'});
-    }
-  }
-
-  async populateProcessingElementContextMenu(contextMenu: UI.ContextMenu.ContextMenu): Promise<void> {
-    contextMenu.editSection().appendItem(
-        i18nString(UIStrings.editData), this.startEditingProcessingInstructionValue.bind(this),
-        {jslogContext: 'elements.edit-data'});
-    contextMenu.editSection().appendItem(i18nString(UIStrings.duplicateElement), () => this.duplicateNode?.(this.node),
-                                         {
-                                           disabled: (this.node.isInShadowTree()),
-                                           jslogContext: 'elements.duplicate-element',
-                                         });
-    contextMenu.editSection().appendItem(
-        i18nString(UIStrings.deleteElement), this.remove.bind(this), {jslogContext: 'delete-element'});
   }
 
   private startEditing(): boolean|undefined {
@@ -2522,7 +2049,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     return;
   }
 
-  private startEditingAttribute(attribute: Element, elementForSelection: Element): boolean {
+  startEditingAttribute(attribute: Element, elementForSelection: Element): boolean {
     console.assert(this.element.isAncestor(attribute));
 
     if (UI.UIUtils.isBeingEdited(attribute)) {
@@ -2598,7 +2125,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     return true;
   }
 
-  private startEditingTextNode(textNodeElement: Element): boolean {
+  startEditingTextNode(textNodeElement: Element): boolean {
     if (UI.UIUtils.isBeingEdited(textNodeElement)) {
       return true;
     }
@@ -3162,19 +2689,19 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     void node.getOuterHTML().then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback));
   }
 
-  private copyCSSPath(): void {
+  copyCSSPath(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssPath(this.node, true));
   }
 
-  private copyJSPath(): void {
+  copyJSPath(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(jsPath(this.node, true));
   }
 
-  private copyXPath(): void {
+  copyXPath(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.node, true));
   }
 
-  private copyFullXPath(): void {
+  copyFullXPath(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.node, false));
   }
 
@@ -3235,7 +2762,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.contentElement, matchRanges);
   }
 
-  private editAsHTML(): void {
+  editAsHTML(): void {
     const promise = Common.Revealer.reveal(this.node);
     void promise.then(() => {
       const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.edit-as-html');
@@ -3439,20 +2966,26 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   highlightAttribute(name: string): void {
     this.widget.highlightAttribute(name);
   }
-  populateTextContextMenu(contextMenu: UI.ContextMenu.ContextMenu, textNode: Node): Promise<void> {
-    return this.widget.populateTextContextMenu(contextMenu, textNode);
+  startEditingAttribute(attribute: Element, elementForSelection: Element): boolean {
+    return this.widget.startEditingAttribute(attribute, elementForSelection);
   }
-  populateTagContextMenu(contextMenu: UI.ContextMenu.ContextMenu, event: Event): Promise<void> {
-    return this.widget.populateTagContextMenu(contextMenu, event);
+  startEditingTextNode(textNodeElement: Element): boolean {
+    return this.widget.startEditingTextNode(textNodeElement);
   }
-  populateNodeContextMenu(contextMenu: UI.ContextMenu.ContextMenu): Promise<void> {
-    return this.widget.populateNodeContextMenu(contextMenu);
+  editAsHTML(): void {
+    this.widget.editAsHTML();
   }
-  populatePseudoElementContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
-    this.widget.populatePseudoElementContextMenu(contextMenu);
+  copyCSSPath(): void {
+    this.widget.copyCSSPath();
   }
-  populateProcessingElementContextMenu(contextMenu: UI.ContextMenu.ContextMenu): Promise<void> {
-    return this.widget.populateProcessingElementContextMenu(contextMenu);
+  copyJSPath(): void {
+    this.widget.copyJSPath();
+  }
+  copyXPath(): void {
+    this.widget.copyXPath();
+  }
+  copyFullXPath(): void {
+    this.widget.copyFullXPath();
   }
   hasEditableNode(): boolean {
     return this.widget.hasEditableNode();

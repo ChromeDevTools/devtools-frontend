@@ -49,8 +49,8 @@ import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement} from './AdoptedStyleSheetTreeElement.js';
+import {showContextMenu} from './DOMTreeContextMenu.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
-import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsTreeElement, InitialChildrenLimit, isOpeningTag} from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
@@ -63,10 +63,6 @@ const UIStrings = {
    * @description ARIA accessible name in Elements Tree Outline of the Elements panel
    */
   pageDom: 'Page DOM',
-  /**
-   * @description A context menu item to store a value as a global variable the Elements Panel
-   */
-  storeAsGlobalVariable: 'Store as global variable',
   /**
    * @description Tree element expand all button element button text content in Elements Tree Outline of the Elements panel
    * @example {3} PH1
@@ -117,6 +113,7 @@ interface ViewInput {
   onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void;
   onElementCollapsed: () => void;
   onElementExpanded: () => void;
+  onSaveNodeToTempVariable?: (node: SDK.DOMModel.DOMNode) => void;
 }
 
 interface ViewOutput {
@@ -148,6 +145,12 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         elementsTreeOutline.maxRowsShown = undefined;
       }
     }, this);
+    elementsTreeOutline.elementInternal.addEventListener('contextmenu', (event: MouseEvent) => {
+      const treeElement = elementsTreeOutline.treeElementFromEventInternal(event);
+      if (treeElement instanceof ElementsTreeElement) {
+        output.elementsTreeOutline?.showContextMenu(treeElement, event);
+      }
+    }, false);
     output.imagePreviewPopover = new ImagePreviewPopover(
         elementsTreeOutline.contentElement,
         event => {
@@ -213,6 +216,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 
   output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
   output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
+  output.elementsTreeOutline.showContextMenu = (treeElement, event) => {
+    void showContextMenu(treeElement, event, input.onSaveNodeToTempVariable);
+  };
   let needsUpdate = false;
   const showComments = input.showComments ?? true;
   if (output.elementsTreeOutline.showComments !== showComments) {
@@ -509,40 +515,42 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   override performUpdate(): void {
     const firstRender = !this.#viewOutput.elementsTreeOutline;
-    this.#view(
-        {
-          omitRootDOMNode: this.omitRootDOMNode,
-          selectEnabled: this.selectEnabled,
-          hideGutter: this.hideGutter,
-          maxTreeDepth: this.#maxTreeDepth,
-          enableContextMenu: this.#enableContextMenu,
-          showComments: this.#showComments,
-          showAIButton: this.#showAIButton,
-          disableEdits: this.#disableEdits,
-          expandRoot: this.#expandRoot,
-          visibleWidth: this.#visibleWidth,
-          visible: this.#visible,
-          wrap: this.#wrap,
-          maxRowsShown: this.#maxRows,
-          showSelectionOnKeyboardFocus: this.showSelectionOnKeyboardFocus,
-          preventTabOrder: this.preventTabOrder,
-          deindentSingleNode: this.deindentSingleNode,
+    this.#view({
+      omitRootDOMNode: this.omitRootDOMNode,
+      selectEnabled: this.selectEnabled,
+      hideGutter: this.hideGutter,
+      maxTreeDepth: this.#maxTreeDepth,
+      enableContextMenu: this.#enableContextMenu,
+      showComments: this.#showComments,
+      showAIButton: this.#showAIButton,
+      disableEdits: this.#disableEdits,
+      expandRoot: this.#expandRoot,
+      visibleWidth: this.#visibleWidth,
+      visible: this.#visible,
+      wrap: this.#wrap,
+      maxRowsShown: this.#maxRows,
+      showSelectionOnKeyboardFocus: this.showSelectionOnKeyboardFocus,
+      preventTabOrder: this.preventTabOrder,
+      deindentSingleNode: this.deindentSingleNode,
 
-          currentHighlightedNode: this.#currentHighlightedNode,
-          selectedNode: this.selectedDOMNode(),
-          onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
-          onSelectedNodeChanged: event => {
-            this.#clearHighlightedNode();
-            this.onSelectedNodeChanged(event);
-          },
-          onElementCollapsed: () => {
-            this.#clearHighlightedNode();
-          },
-          onElementExpanded: () => {
-            this.#clearHighlightedNode();
-          },
-        },
-        this.#viewOutput, this.contentElement);
+      currentHighlightedNode: this.#currentHighlightedNode,
+      selectedNode: this.selectedDOMNode(),
+      onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
+      onSelectedNodeChanged: event => {
+        this.#clearHighlightedNode();
+        this.onSelectedNodeChanged(event);
+      },
+      onElementCollapsed: () => {
+        this.#clearHighlightedNode();
+      },
+      onElementExpanded: () => {
+        this.#clearHighlightedNode();
+      },
+      onSaveNodeToTempVariable: node => {
+        void this.saveNodeToTempVariable(node);
+      },
+    },
+               this.#viewOutput, this.contentElement);
     if (firstRender && this.#viewOutput.elementsTreeOutline) {
       this.#viewOutput.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
         this.maxRows = undefined;
@@ -630,6 +638,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   copyStyles(node: SDK.DOMModel.DOMNode): void {
     void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.copyStyles();
+  }
+
+  async saveNodeToTempVariable(node: SDK.DOMModel.DOMNode): Promise<void> {
+    await this.#viewOutput.elementsTreeOutline?.saveNodeToTempVariable(node);
   }
 
   /**
@@ -764,9 +776,6 @@ export class ElementsTreeOutline extends
       this.elementInternal.addEventListener('clipboard-copy', this.onCopyOrCut.bind(this, false), false);
       this.elementInternal.addEventListener('clipboard-cut', this.onCopyOrCut.bind(this, true), false);
       this.elementInternal.addEventListener('clipboard-paste', this.onPaste.bind(this), false);
-    }
-    if (this.enableContextMenu) {
-      this.elementInternal.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
     }
 
     outlineDisclosureElement.appendChild(this.elementInternal);
@@ -1539,60 +1548,9 @@ export class ElementsTreeOutline extends
     }
   }
 
-  private contextMenuEventFired(event: MouseEvent): void {
-    const treeElement = this.treeElementFromEventInternal(event);
-    if (treeElement instanceof ElementsTreeElement) {
-      void this.showContextMenu(treeElement, event);
-    }
-  }
+  showContextMenu: (treeElement: ElementsTreeElement, event: Event) => void = () => {};
 
-  async showContextMenu(treeElement: ElementsTreeElement, event: Event): Promise<void> {
-    if (UI.UIUtils.isEditing() || !this.enableContextMenu) {
-      return;
-    }
-
-    const node = (event.target as Node | null);
-    if (!node) {
-      return;
-    }
-
-    // The context menu construction may be async. In order to
-    // make sure that no other (default) context menu shows up, we need
-    // to stop propagating and prevent the default action.
-    event.stopPropagation();
-    event.preventDefault();
-
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const isPseudoElement = Boolean(treeElement.node().pseudoType());
-    const isTag = treeElement.node().nodeType() === Node.ELEMENT_NODE && !isPseudoElement;
-
-    let textNode: Element|null = node.enclosingNodeOrSelfWithClass('webkit-html-text-node');
-    if (textNode?.classList.contains('bogus')) {
-      textNode = null;
-    }
-    const commentNode = node.enclosingNodeOrSelfWithClass('webkit-html-comment');
-    contextMenu.saveSection().appendItem(
-        i18nString(UIStrings.storeAsGlobalVariable), this.saveNodeToTempVariable.bind(this, treeElement.node()),
-        {jslogContext: 'store-as-global-variable'});
-    if (textNode) {
-      await treeElement.populateTextContextMenu(contextMenu, textNode);
-    } else if (isTag) {
-      await treeElement.populateTagContextMenu(contextMenu, event);
-    } else if (commentNode) {
-      await treeElement.populateNodeContextMenu(contextMenu);
-    } else if (isPseudoElement) {
-      treeElement.populatePseudoElementContextMenu(contextMenu);
-    } else if (treeElement.node().nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-      await treeElement.populateProcessingElementContextMenu(contextMenu);
-    }
-
-    ElementsPanel.instance().populateAdornerSettingsContextMenu(contextMenu);
-
-    contextMenu.appendApplicableItems(treeElement.node());
-    void contextMenu.show();
-  }
-
-  private async saveNodeToTempVariable(node: SDK.DOMModel.DOMNode): Promise<void> {
+  async saveNodeToTempVariable(node: SDK.DOMModel.DOMNode): Promise<void> {
     const remoteObjectForConsole = await node.resolveToObject();
     const consoleModel = remoteObjectForConsole?.runtimeModel().target()?.model(SDK.ConsoleModel.ConsoleModel);
     await consoleModel?.saveToTempVariable(

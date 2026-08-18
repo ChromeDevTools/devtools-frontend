@@ -1613,6 +1613,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/elements/ColorSwatchPopoverIcon.js",
   "front_end/panels/elements/ComputedStyleWidget.js",
   "front_end/panels/elements/DOMPath.js",
+  "front_end/panels/elements/DOMTreeContextMenu.js",
   "front_end/panels/elements/ElementIssueUtils.js",
   "front_end/panels/elements/ElementStatePaneWidget.js",
   "front_end/panels/elements/ElementsPanel.js",

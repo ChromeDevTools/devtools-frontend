@@ -40,6 +40,7 @@ devtools_ui_module("elements") {
     "ColorSwatchPopoverIcon.ts",
     "ComputedStyleWidget.ts",
     "DOMPath.ts",
+    "DOMTreeContextMenu.ts",
     "ElementIssueUtils.ts",
     "ElementStatePaneWidget.ts",
     "ElementsPanel.ts",

@@ -114,7 +114,12 @@ export async function run(options: Omit<Options, OmitOptions>) {
     if (testIds.size === 0) {
       return true;
     }
-    return testIds.has(testId);
+    for (const id of testIds) {
+      if (testId === id || testId.startsWith(`${id}:`)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   pruneSuite(mocha.suite, shouldIncludeTest);

@@ -17,7 +17,7 @@ import {
   type ResourceTreeFrame,
   ResourceTreeModel,
 } from './ResourceTreeModel.js';
-import {cacheDisabledSettingDescriptor} from './SDKSettings.js';
+import {cacheDisabledSettingDescriptor, enableRemoteFileLoadingSettingDescriptor} from './SDKSettings.js';
 import type {Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 
@@ -475,7 +475,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       headers['Cache-Control'] = 'no-cache';
     }
 
-    const allowRemoteFilePaths = this.#settings.moduleSetting('network.enable-remote-file-loading').get();
+    const allowRemoteFilePaths = this.#settings.resolve(enableRemoteFileLoadingSettingDescriptor).get();
 
     return await new Promise(
         resolve => Host.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {

@@ -19,6 +19,14 @@ import type * as Sources from './sources.js';
 
 const UIStrings = {
   /**
+   * @description Label of a checkbox in the DevTools settings UI.
+   */
+  enableRemoteFileLoading: 'Allow loading remote file path resources in DevTools',
+  /**
+   * @description Tooltip text for a setting that controls whether external resource can be loaded in DevTools.
+   */
+  remoteFileLoadingInfo: 'Example resources are source maps. Disabled by default for security reasons.',
+  /**
    * @description Title of a setting under the Debugger category in Settings.
    */
   disableAsyncStackTraces: 'Disable async stack traces',
@@ -1609,6 +1617,14 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.cssSourceMapsEnabledSe
       title: i18nLazyString(UIStrings.disableCssSourceMaps),
     },
   ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.enableRemoteFileLoadingSettingDescriptor, {
+  category: Common.Settings.SettingCategory.SOURCES,
+  title: i18nLazyString(UIStrings.enableRemoteFileLoading),
+  learnMore: {
+    tooltip: i18nLazyString(UIStrings.remoteFileLoadingInfo),
+  },
 });
 
 SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.javaScriptDisabledSettingDescriptor, {

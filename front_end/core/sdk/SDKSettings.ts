@@ -298,3 +298,10 @@ export const emulateAutoDarkModeSettingDescriptor: Common.Settings.SettingDescri
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const enableRemoteFileLoadingSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'network.enable-remote-file-loading',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

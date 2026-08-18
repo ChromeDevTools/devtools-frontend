@@ -230,7 +230,7 @@ describe('PageResourceLoader', () => {
           callback({statusCode: 200});
         });
 
-    settings.moduleSetting('network.enable-remote-file-loading').set(true);
+    settings.resolve(SDK.SDKSettings.enableRemoteFileLoadingSettingDescriptor).set(true);
     const response = await loader.loadResource(urlString`file://host/source-map.js.map`, initiator);
 
     assert.strictEqual(response.content, 'content of the source map');
@@ -248,7 +248,7 @@ describe('PageResourceLoader', () => {
           callback({statusCode: 200});
         });
 
-    settings.moduleSetting('network.enable-remote-file-loading').set(true);
+    settings.resolve(SDK.SDKSettings.enableRemoteFileLoadingSettingDescriptor).set(true);
     const response = await loader.loadResource(urlString`file:////127.0.0.1/share/source-map.js.map`, initiator);
 
     assert.strictEqual(response.content, 'content of the source map');

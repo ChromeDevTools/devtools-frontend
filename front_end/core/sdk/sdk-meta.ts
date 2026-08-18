@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Label of a checkbox in the DevTools settings UI.
-   */
-  enableRemoteFileLoading: 'Allow loading remote file path resources in DevTools',
-  /**
-   * @description Tooltip text for a setting that controls whether external resource can be loaded in DevTools.
-   */
-  remoteFileLoadingInfo: 'Example resources are source maps. Disabled by default for security reasons.',
-  /**
    * @description Title of a setting under the Console category in Settings.
    */
   logXmlhttprequests: 'Log XMLHttpRequests',
@@ -28,18 +20,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.enableRemoteFileLoading),
-  settingName: 'network.enable-remote-file-loading',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-  learnMore: {
-    tooltip: i18nLazyString(UIStrings.remoteFileLoadingInfo),
-  },
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,

@@ -1568,6 +1568,7 @@ export const knownContextValues = new Set([
   'emulated-css-media-feature-prefers-reduced-motion',
   'emulated-css-media-feature-prefers-reduced-motion-reduce',
   'emulated-css-media-feature-prefers-reduced-transparency',
+  'emulated-css-media-feature-prefers-reduced-transparency-reduce',
   'emulated-css-media-print',
   'emulated-css-media-screen',
   'emulated-os-text-scale',

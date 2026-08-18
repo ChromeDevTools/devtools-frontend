@@ -175,8 +175,8 @@ describe('isIgnoreListedEntry', () => {
        const resolver = new SourceMapsResolver.SourceMapsResolver(parsedTrace);
        await resolver.install();
        assert.isTrue(Utils.IgnoreList.isIgnoreListedEntry(profileCallWithMappings));
-       const ignoreKnownThirdPartySetting =
-           Common.Settings.Settings.instance().moduleSetting('automatically-ignore-list-known-third-party-scripts');
+       const ignoreKnownThirdPartySetting = Common.Settings.Settings.instance().resolve(
+           Workspace.IgnoreListManager.automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor);
        const ignoreKnownThirdPartySettingValue = ignoreKnownThirdPartySetting.get();
 
        ignoreKnownThirdPartySetting.set(true);

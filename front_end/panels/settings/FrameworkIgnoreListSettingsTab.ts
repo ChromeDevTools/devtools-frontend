@@ -134,7 +134,8 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     const automaticallyIgnoreList =
         automaticallyIgnoreListContainer.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
             i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScripts),
-            Common.Settings.Settings.instance().moduleSetting('automatically-ignore-list-known-third-party-scripts')));
+            Common.Settings.Settings.instance().resolve(
+                Workspace.IgnoreListManager.automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor)));
 
     const automaticallyIgnoreLinkButton = new Buttons.Button.Button();
     automaticallyIgnoreLinkButton.data = {

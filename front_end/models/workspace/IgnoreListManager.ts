@@ -61,6 +61,14 @@ export const skipContentScriptsSettingDescriptor: Common.Settings.SettingDescrip
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
 
+export const automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor:
+    Common.Settings.SettingDescriptor<boolean> = {
+  name: 'automatically-ignore-list-known-third-party-scripts',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};
+
 export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly #settings: Common.Settings.Settings;
@@ -86,7 +94,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
         this.onExecutionContextDestroyed, this, {scoped: true});
     this.#settings.resolve(skipStackFramesPatternSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
     this.#settings.resolve(skipContentScriptsSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
-    this.#settings.moduleSetting('automatically-ignore-list-known-third-party-scripts')
+    this.#settings.resolve(automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor)
         .addChangeListener(this.patternChanged.bind(this));
     this.#settings.moduleSetting('enable-ignore-listing').addChangeListener(this.patternChanged.bind(this));
     this.#settings.moduleSetting('skip-anonymous-scripts').addChangeListener(this.patternChanged.bind(this));
@@ -355,7 +363,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
 
   get automaticallyIgnoreListKnownThirdPartyScripts(): boolean {
     return this.enableIgnoreListing &&
-        this.#settings.moduleSetting('automatically-ignore-list-known-third-party-scripts').get();
+        this.#settings.resolve(automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor).get();
   }
 
   ignoreListContentScripts(): void {
@@ -384,11 +392,11 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     if (!this.enableIgnoreListing) {
       this.enableIgnoreListing = true;
     }
-    this.#settings.moduleSetting('automatically-ignore-list-known-third-party-scripts').set(true);
+    this.#settings.resolve(automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor).set(true);
   }
 
   unIgnoreListThirdParty(): void {
-    this.#settings.moduleSetting('automatically-ignore-list-known-third-party-scripts').set(false);
+    this.#settings.resolve(automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor).set(false);
   }
 
   ignoreListURL(url: Platform.DevToolsPath.UrlString): void {

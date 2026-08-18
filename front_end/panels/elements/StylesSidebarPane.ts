@@ -1562,7 +1562,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private createRenderingShortcuts(): UI.Toolbar.ToolbarButton {
     const prefersColorSchemeSetting = Common.Settings.Settings.instance().resolve(
         SDK.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor);
-    const autoDarkModeSetting = Common.Settings.Settings.instance().moduleSetting('emulate-auto-dark-mode');
+    const autoDarkModeSetting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulateAutoDarkModeSettingDescriptor);
     const decorateStatus = (condition: boolean, title: string): string => `${condition ? '✓ ' : ''}${title}`;
 
     const button = new UI.Toolbar.ToolbarToggle(

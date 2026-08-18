@@ -12,6 +12,7 @@ import {SDKModel} from './SDKModel.js';
 import {
   avifFormatDisabledSettingDescriptor,
   cpuPressureSettingDescriptor,
+  emulateAutoDarkModeSettingDescriptor,
   emulatedCSSMediaFeatureColorGamutSettingDescriptor,
   emulatedCSSMediaFeatureForcedColorsSettingDescriptor,
   emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor,
@@ -181,7 +182,7 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
     });
     void this.updateCssMedia();
 
-    const autoDarkModeSetting = settings.moduleSetting('emulate-auto-dark-mode');
+    const autoDarkModeSetting = settings.resolve(emulateAutoDarkModeSettingDescriptor);
     autoDarkModeSetting.addChangeListener(() => {
       const enabled = autoDarkModeSetting.get();
       mediaFeaturePrefersColorSchemeSetting.set(enabled ? 'dark' : '');

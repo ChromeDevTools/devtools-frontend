@@ -12,6 +12,11 @@ import type * as InspectorMain from './inspector_main.js';
 
 const UIStrings = {
   /**
+   * @description The name of a checkbox setting in the Rendering tool. This setting
+   * emulates that the webpage is in auto dark mode.
+   */
+  emulateAutoDarkMode: 'Emulate auto dark mode',
+  /**
    * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
    */
   showPaintFlashingRectangles: 'Show paint flashing rectangles',
@@ -959,4 +964,9 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.webpFormatDisabledSett
       title: i18nLazyString(UIStrings.enableWebpFormat),
     },
   ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.emulateAutoDarkModeSettingDescriptor, {
+  category: Common.Settings.SettingCategory.RENDERING,
+  title: i18nLazyString(UIStrings.emulateAutoDarkMode),
 });

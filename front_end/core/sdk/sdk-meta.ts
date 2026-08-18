@@ -7,11 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description The name of a checkbox setting in the Rendering tool. This setting
-   * emulates that the webpage is in auto dark mode.
-   */
-  emulateAutoDarkMode: 'Emulate auto dark mode',
-  /**
    * @description Label of a checkbox in the DevTools settings UI.
    */
   enableRemoteFileLoading: 'Allow loading remote file path resources in DevTools',
@@ -33,15 +28,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  title: i18nLazyString(UIStrings.emulateAutoDarkMode),
-  settingName: 'emulate-auto-dark-mode',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,

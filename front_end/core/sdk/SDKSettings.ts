@@ -291,3 +291,10 @@ export const cacheDisabledSettingDescriptor: Common.Settings.SettingDescriptor<b
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 };
+
+export const emulateAutoDarkModeSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'emulate-auto-dark-mode',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

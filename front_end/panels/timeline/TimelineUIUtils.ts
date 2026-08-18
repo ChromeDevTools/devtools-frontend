@@ -62,6 +62,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {html, render} from '../../ui/lit/lit.js';
 import * as SettingUIRegistration from '../../ui/settings/settings.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
 import {getDurationString} from './AppenderUtils.js';
@@ -2235,6 +2236,7 @@ export class TimelineDetailsContentHelper {
 
     this.element = document.createElement('div');
     this.element.classList.add('timeline-details-view-block');
+    this.element.setAttribute('jslog', `${VisualLogging.section('timeline.event-details')}`);
     this.tableElement = this.element.createChild('div', 'vbox timeline-details-chip-body');
     this.fragment.appendChild(this.element);
   }
@@ -2245,6 +2247,7 @@ export class TimelineDetailsContentHelper {
     } else {
       this.element = document.createElement('div');
       this.element.classList.add('timeline-details-view-block');
+      this.element.setAttribute('jslog', `${VisualLogging.section('timeline.event-details')}`);
       this.fragment.appendChild(this.element);
     }
 
@@ -2309,12 +2312,14 @@ export class TimelineDetailsContentHelper {
 
   appendTextRow(title: string, value: string|number|boolean): void {
     const rowElement = this.tableElement.createChild('div', 'timeline-details-view-row');
+    rowElement.setAttribute('jslog', `${VisualLogging.item('detail-row')}`);
     rowElement.createChild('div', 'timeline-details-view-row-title').textContent = title;
     rowElement.createChild('div', 'timeline-details-view-row-value').textContent = value.toString();
   }
 
   appendElementRow(title: string, content: string|Node, isWarning?: boolean, isStacked?: boolean): void {
     const rowElement = this.tableElement.createChild('div', 'timeline-details-view-row');
+    rowElement.setAttribute('jslog', `${VisualLogging.item('detail-row')}`);
     rowElement.setAttribute('data-row-title', title);
     if (isWarning) {
       rowElement.classList.add('timeline-details-warning');
@@ -2403,6 +2408,7 @@ export class TimelineDetailsContentHelper {
 
     const stackTraceElement = document.createElement('div');
     stackTraceElement.classList.add('timeline-details-view-row', 'timeline-details-stack-values');
+    stackTraceElement.setAttribute('jslog', `${VisualLogging.item('detail-row')}`);
     callFrameContents.markAsRoot();
     callFrameContents.show(stackTraceElement);
     return stackTraceElement;

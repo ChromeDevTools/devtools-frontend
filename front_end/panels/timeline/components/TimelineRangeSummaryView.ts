@@ -54,7 +54,7 @@ export const TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW: View = (input, _output, t
     if (!value) {
       continue;
     }
-    categories.push({value, color: category.getCSSValue(), title: category.title});
+    categories.push({value, color: category.getCSSValue(), title: category.title, name: category.name});
   }
   categories.sort((a, b) => b.value - a.value);
 

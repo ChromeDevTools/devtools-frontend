@@ -284,7 +284,7 @@ describe('PageResourceLoader', () => {
     for (const disableCache of [true, false]) {
       it(`loads with ${disableCache ? 'disabled' : 'enabled'} cache based on the setting`, async () => {
         const {loader, settings, targetManager} = setup();
-        settings.moduleSetting('cache-disabled').set(disableCache);
+        settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(disableCache);
         const connection = new MockCDPConnection();
         const target = createTarget({connection, targetManager});
         const initiator = {target, frameId: null, initiatorUrl};
@@ -303,7 +303,7 @@ describe('PageResourceLoader', () => {
   describe('loadResource with CSP', () => {
     it('does not fall back to host bindings if frame has restrictive CSP', async () => {
       const {loader, settings, targetManager} = setup();
-      settings.moduleSetting('cache-disabled').set(false);
+      settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(false);
       const connection = new MockCDPConnection();
 
       connection.setSuccessHandler('Network.getSecurityIsolationStatus', () => {
@@ -345,7 +345,7 @@ describe('PageResourceLoader', () => {
 
     it('falls back to host bindings if frame has no restrictive CSP', async () => {
       const {loader, settings, targetManager} = setup();
-      settings.moduleSetting('cache-disabled').set(false);
+      settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(false);
       const connection = new MockCDPConnection();
 
       connection.setSuccessHandler('Network.getSecurityIsolationStatus', () => {
@@ -383,7 +383,7 @@ describe('PageResourceLoader', () => {
       // If getSecurityIsolationStatus returns null (e.g. because the frame was removed before the query completed),
       // the unsafe fallback must not execute.
       const {loader, settings, targetManager} = setup();
-      settings.moduleSetting('cache-disabled').set(false);
+      settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(false);
       const connection = new MockCDPConnection();
 
       connection.setFailureHandler('Network.getSecurityIsolationStatus', () => {

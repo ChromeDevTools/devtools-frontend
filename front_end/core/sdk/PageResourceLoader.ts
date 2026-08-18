@@ -17,6 +17,7 @@ import {
   type ResourceTreeFrame,
   ResourceTreeModel,
 } from './ResourceTreeModel.js';
+import {cacheDisabledSettingDescriptor} from './SDKSettings.js';
 import type {Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 
@@ -433,7 +434,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
   }> {
     const networkManager = (target.model(NetworkManager) as NetworkManager);
     const ioModel = (target.model(IOModel) as IOModel);
-    const disableCache = this.#settings.moduleSetting('cache-disabled').get();
+    const disableCache = this.#settings.resolve(cacheDisabledSettingDescriptor).get();
     const resource = await networkManager.loadNetworkResource(frameId, url, {disableCache, includeCredentials: true});
     try {
       const content = resource.stream ?
@@ -470,7 +471,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       headers['User-Agent'] = currentUserAgent;
     }
 
-    if (this.#settings.moduleSetting('cache-disabled').get()) {
+    if (this.#settings.resolve(cacheDisabledSettingDescriptor).get()) {
       headers['Cache-Control'] = 'no-cache';
     }
 

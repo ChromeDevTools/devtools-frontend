@@ -26,7 +26,7 @@ import {
 } from './NetworkRequest.js';
 import {type ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {SDKModel} from './SDKModel.js';
-import {requestBlockingEnabledSettingDescriptor} from './SDKSettings.js';
+import {cacheDisabledSettingDescriptor, requestBlockingEnabledSettingDescriptor} from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 import {type SDKModelObserver, TargetManager} from './TargetManager.js';
 
@@ -188,7 +188,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     const settings = this.target().targetManager().settings;
     this.activeNetworkThrottlingKey = activeNetworkThrottlingKeySetting(settings);
 
-    if (settings.moduleSetting('cache-disabled').get()) {
+    if (settings.resolve(cacheDisabledSettingDescriptor).get()) {
       void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: true});
     }
 
@@ -212,7 +212,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     }
     this.#bypassServiceWorkerSetting.addChangeListener(this.bypassServiceWorkerChanged, this);
 
-    settings.moduleSetting('cache-disabled').addChangeListener(this.cacheDisabledSettingChanged, this);
+    settings.resolve(cacheDisabledSettingDescriptor).addChangeListener(this.cacheDisabledSettingChanged, this);
   }
 
   static forRequest(request: NetworkRequest): NetworkManager|null {
@@ -556,7 +556,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
 
   override dispose(): void {
     const settings = this.target().targetManager().settings;
-    settings.moduleSetting('cache-disabled').removeChangeListener(this.cacheDisabledSettingChanged, this);
+    settings.resolve(cacheDisabledSettingDescriptor).removeChangeListener(this.cacheDisabledSettingChanged, this);
     settings.moduleSetting('network-log.preserve-log').removeChangeListener(this.preserveLogChanged, this);
   }
 
@@ -2434,8 +2434,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
   private async updateInterceptionPatterns(): Promise<void> {
     const settings = this.#targetManager.settings;
-    if (!settings.moduleSetting('cache-disabled').get()) {
-      settings.moduleSetting('cache-disabled').set(true);
+    if (!settings.resolve(cacheDisabledSettingDescriptor).get()) {
+      settings.resolve(cacheDisabledSettingDescriptor).set(true);
     }
     this.#updatingInterceptionPatternsPromise = null;
     const promises = ([] as Array<Promise<unknown>>);

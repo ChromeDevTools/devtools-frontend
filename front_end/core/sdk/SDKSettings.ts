@@ -285,3 +285,9 @@ export const requestBlockingEnabledSettingDescriptor: Common.Settings.SettingDes
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.LOCAL,
 };
+
+export const cacheDisabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'cache-disabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};

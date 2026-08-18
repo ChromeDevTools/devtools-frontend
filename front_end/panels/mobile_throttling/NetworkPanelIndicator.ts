@@ -36,7 +36,9 @@ export class NetworkPanelIndicator {
         SDK.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED, updateVisibility);
     manager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.INTERCEPTORS_CHANGED, updateVisibility);
-    Common.Settings.Settings.instance().moduleSetting('cache-disabled').addChangeListener(updateVisibility, this);
+    Common.Settings.Settings.instance()
+        .resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor)
+        .addChangeListener(updateVisibility, this);
 
     updateVisibility();
 

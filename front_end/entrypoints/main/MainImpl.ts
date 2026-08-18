@@ -216,7 +216,7 @@ export class MainImpl {
 
     // Mark 'cache-disabled' as requiring user interaction when multiple CDP clients are attached.
     if (Root.Runtime.Runtime.queryParam('hasOtherClients')) {
-      this.#universe.settings.moduleSetting('cache-disabled').setRequiresUserAction(true);
+      this.#universe.settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).setRequiresUserAction(true);
     }
 
     Root.Runtime.experiments.removeAllExperimentsFromLocalStorage();

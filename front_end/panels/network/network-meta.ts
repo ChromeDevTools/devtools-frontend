@@ -17,6 +17,19 @@ import type * as Network from './network.js';
 
 const UIStrings = {
   /**
+   * @description Title of a setting under the Network category that can be invoked through the Command Menu.
+   */
+  enableCache: 'Enable cache',
+  /**
+   * @description Title of a setting under the Network category that can be invoked through the Command Menu.
+   */
+  disableCache: 'Disable cache while DevTools is open',
+  /**
+   * @description Tooltip text for a setting that controls the network cache. Disabling the network cache can simulate the network connections of users that are visiting a page for the first time.
+   */
+  networkCacheExplanation:
+      'Disabling the network cache will simulate a network experience similar to a first time visitor.',
+  /**
    * @description Title of a setting under the Network category.
    */
   networkRequestBlocking: 'Network request blocking',
@@ -454,6 +467,25 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.requestBlockingEnabled
       title: i18nLazyString(UIStrings.disableNetworkRequestBlocking),
     },
   ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.cacheDisabledSettingDescriptor, {
+  category: Common.Settings.SettingCategory.NETWORK,
+  title: i18nLazyString(UIStrings.disableCache),
+  order: 0,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.disableCache),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.enableCache),
+    },
+  ],
+  learnMore: {
+    tooltip: i18nLazyString(UIStrings.networkCacheExplanation),
+  },
 });
 
 UI.ViewManager.registerLocationResolver({

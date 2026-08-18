@@ -662,7 +662,7 @@ function renderRecordingSettings(input: ViewInput): Lit.LitTemplate {
       <setting-checkbox
         class="network-cache-setting"
         .data=${{
-          setting: Common.Settings.Settings.instance().moduleSetting('cache-disabled'),
+          setting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor),
           textOverride: i18nString(UIStrings.disableNetworkCache),
         } as Settings.SettingCheckbox.SettingCheckboxData}
       ></setting-checkbox>

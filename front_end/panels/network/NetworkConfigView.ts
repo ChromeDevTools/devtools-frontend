@@ -203,7 +203,8 @@ export class NetworkConfigView extends UI.Widget.VBox {
   private createCacheSection(): void {
     const section = this.createSection(i18nString(UIStrings.caching), 'network-config-disable-cache');
     section.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.disableCache), Common.Settings.Settings.instance().moduleSetting('cache-disabled')));
+        i18nString(UIStrings.disableCache),
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor)));
   }
 
   private createNetworkThrottlingSection(): void {

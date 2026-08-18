@@ -416,13 +416,9 @@ Common.Settings.registerSettingExtension({
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.consoleUserActivationEvalSettingDescriptor, {
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.evaluateTriggersUserActivation),
-  settingName: 'console-user-activation-eval',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

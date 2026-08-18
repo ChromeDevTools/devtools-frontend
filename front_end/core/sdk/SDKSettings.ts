@@ -305,3 +305,10 @@ export const enableRemoteFileLoadingSettingDescriptor: Common.Settings.SettingDe
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const consoleUserActivationEvalSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'console-user-activation-eval',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

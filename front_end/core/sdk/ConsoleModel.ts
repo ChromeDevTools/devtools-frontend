@@ -34,7 +34,7 @@ import {
   RuntimeModel,
 } from './RuntimeModel.js';
 import {SDKModel} from './SDKModel.js';
-import {preserveConsoleLogSettingDescriptor} from './SDKSettings.js';
+import {consoleUserActivationEvalSettingDescriptor, preserveConsoleLogSettingDescriptor} from './SDKSettings.js';
 import {Capability, type Target, Type} from './Target.js';
 import type {TargetManager} from './TargetManager.js';
 
@@ -156,13 +156,16 @@ export class ConsoleModel extends SDKModel<EventTypes> {
           replMode: true,
           allowUnsafeEvalBlockedByCSP: false,
         },
-        this.target().targetManager().settings.moduleSetting('console-user-activation-eval').get(),
+        this.target().targetManager().settings.resolve(consoleUserActivationEvalSettingDescriptor).get(),
         /* awaitPromise */ false);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
     if ('error' in result) {
       return;
     }
-    await this.#console.showPromise();
+    try {
+      await this.#console.showPromise();
+    } catch {
+    }
     this.dispatchEventToListeners(
         Events.CommandEvaluated,
         {result: result.object, commandMessage: originatingMessage, exceptionDetails: result.exceptionDetails});

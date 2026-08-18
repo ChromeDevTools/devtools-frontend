@@ -495,7 +495,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     const consoleEagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-eager-eval');
     const preserveConsoleLogSetting =
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveConsoleLogSettingDescriptor);
-    const userActivationEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-user-activation-eval');
+    const userActivationEvalSetting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.consoleUserActivationEvalSettingDescriptor);
     settingsPane.append(
         SettingsUI.SettingsUI.createSettingCheckbox(
             i18nString(UIStrings.networkMessages), this.filter.networkMessagesSetting,

@@ -534,6 +534,58 @@ describe('DOMModel', () => {
         assert.isFalse(domNode.isCustomElement());
       });
     });
+
+    describe('duplicate', () => {
+      it('calls copyTo on parent node with nextSibling as anchor', () => {
+        const target = universe.createTarget();
+        const model = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+        const parentNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+          nodeId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+          nodeType: NodeType.ELEMENT_NODE,
+          nodeName: 'div',
+          localName: 'div',
+          nodeValue: '',
+        });
+        const childNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+          nodeId: 2 as Protocol.DOM.NodeId,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: NodeType.ELEMENT_NODE,
+          nodeName: 'span',
+          localName: 'span',
+          nodeValue: '',
+        });
+        childNode.parentNode = parentNode;
+        const copyToSpy = sinon.spy(childNode, 'copyTo');
+        childNode.duplicate();
+        sinon.assert.calledOnceWithExactly(copyToSpy, parentNode, null);
+      });
+    });
+
+    describe('toggleHideElement and isToggledToHidden', () => {
+      it('toggles hidden-marker on node', async () => {
+        const target = universe.createTarget();
+        const model = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+        const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+          nodeId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+          nodeType: NodeType.ELEMENT_NODE,
+          nodeName: 'div',
+          localName: 'div',
+          nodeValue: '',
+        });
+        assert.isFalse(domNode.isToggledToHidden());
+
+        const mockResolveToObject = sinon.mock().twice().returns({callFunction: () => {}, release: () => {}});
+        domNode.resolveToObject = mockResolveToObject;
+
+        await domNode.toggleHideElement();
+        assert.isTrue(domNode.isToggledToHidden());
+
+        await domNode.toggleHideElement();
+        assert.isFalse(domNode.isToggledToHidden());
+      });
+    });
   });
 
   describe('document.open() URL update (crbug.com/370690261)', () => {

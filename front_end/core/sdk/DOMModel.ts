@@ -1066,6 +1066,102 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
         });
   }
 
+  duplicate(): void {
+    if (this.isInShadowTree()) {
+      return;
+    }
+
+    const parentNode = this.parentNode ? this.parentNode : this;
+    if (parentNode.nodeName() === '#document') {
+      return;
+    }
+
+    this.copyTo(parentNode, this.nextSibling);
+  }
+
+  /**
+   * Runs a script on the node's remote object that toggles a class name on
+   * the node and injects a stylesheet into the head of the node's document
+   * containing a rule to set "visibility: hidden" on the class and all it's
+   * ancestors.
+   */
+  async toggleHideElement(): Promise<void> {
+    let pseudoElementName = this.pseudoType() ? this.nodeName() : null;
+    if (pseudoElementName && this.pseudoIdentifier()) {
+      pseudoElementName += `(${this.pseudoIdentifier()})`;
+    }
+
+    let effectiveNode: DOMNode|null = this;
+    while (effectiveNode?.pseudoType()) {
+      if (effectiveNode !== this && effectiveNode.pseudoType() === 'column') {
+        // Ideally we would select the specific column pseudo element, but
+        // we don't have a way to do that at the moment.
+        pseudoElementName = '::column' + pseudoElementName;
+      }
+      effectiveNode = effectiveNode.parentNode;
+    }
+    if (!effectiveNode) {
+      return;
+    }
+
+    const hidden = this.marker('hidden-marker');
+    const object = await effectiveNode.resolveToObject('');
+
+    if (!object) {
+      return;
+    }
+
+    await object.callFunction((toggleClassAndInjectStyleRule as (this: Object, ...arg1: unknown[]) => void),
+                              [{value: pseudoElementName}, {value: !hidden}]);
+    object.release();
+    this.setMarker('hidden-marker', hidden ? null : true);
+
+    function toggleClassAndInjectStyleRule(this: Element, pseudoElementName: string|null, hidden: boolean): void {
+      const classNamePrefix = '__web-inspector-hide';
+      const classNameSuffix = '-shortcut__';
+      const styleTagId = '__web-inspector-hide-shortcut-style__';
+      const pseudoElementNameEscaped = pseudoElementName ? pseudoElementName.replace(/[\(\)\:]/g, '_') : '';
+      const className = classNamePrefix + pseudoElementNameEscaped + classNameSuffix;
+      this.classList.toggle(className, hidden);
+
+      let localRoot: Element|HTMLHeadElement = this;
+      while (localRoot.parentNode) {
+        localRoot = (localRoot.parentNode as Element);
+      }
+      if (localRoot.nodeType === Node.DOCUMENT_NODE) {
+        localRoot = document.head;
+      }
+
+      let style = localRoot.querySelector('style#' + styleTagId);
+      if (!style) {
+        const selectors = [];
+        selectors.push('.__web-inspector-hide-shortcut__');
+        selectors.push('.__web-inspector-hide-shortcut__ *');
+        const selector = selectors.join(', ');
+        const ruleBody = '    visibility: hidden !important;';
+        const rule = '\n' + selector + '\n{\n' + ruleBody + '\n}\n';
+
+        style = document.createElement('style');
+        style.id = styleTagId;
+        style.textContent = rule;
+
+        localRoot.appendChild(style);
+      }
+
+      // In addition to putting them on the element we want to hide, we will
+      // also add pseudo element classes to the style element to keep track of
+      // which pseudo elements we have style rules for.
+      if (pseudoElementName && !style.classList.contains(className)) {
+        style.classList.add(className);
+        style.textContent = `.${className}${pseudoElementName}, ${style.textContent}`;
+      }
+    }
+  }
+
+  isToggledToHidden(): boolean {
+    return Boolean(this.marker('hidden-marker'));
+  }
+
   isXMLNode(): boolean {
     return Boolean(this.#xmlVersion);
   }
@@ -2425,6 +2521,9 @@ export class DOMNodeSnapshot extends DOMNode {
       _callback?: ((arg0: string|null, arg1: DOMNode|null) => void)|undefined): void {
   }
 
+  override duplicate(): void {
+  }
+
   override canInspectNode(): boolean {
     return false;
   }
@@ -2472,6 +2571,9 @@ export class DOMDocumentSnapshot extends DOMDocument {
   override moveTo(
       _targetNode: DOMNode, _anchorNode: DOMNode|null,
       _callback?: ((arg0: string|null, arg1: DOMNode|null) => void)|undefined): void {
+  }
+
+  override duplicate(): void {
   }
 
   override canInspectNode(): boolean {

@@ -548,7 +548,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   toggleHideElement(node: SDK.DOMModel.DOMNode): void {
-    void this.#viewOutput.elementsTreeOutline?.toggleHideElement(node);
+    void node.toggleHideElement();
+  }
+
+  isToggledToHidden(node: SDK.DOMModel.DOMNode): boolean {
+    return node.isToggledToHidden();
   }
 
   toggleEditAsHTML(node: SDK.DOMModel.DOMNode): void {
@@ -556,7 +560,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   duplicateNode(node: SDK.DOMModel.DOMNode): void {
-    this.#viewOutput.elementsTreeOutline?.duplicateNode(node);
+    node.duplicate();
   }
 
   copyStyles(node: SDK.DOMModel.DOMNode): void {
@@ -994,7 +998,7 @@ export class ElementsTreeOutline extends
   }
 
   duplicateNode(targetNode: SDK.DOMModel.DOMNode): void {
-    this.performDuplicate(targetNode);
+    targetNode.duplicate();
   }
 
   private onPaste(event: Event): void {
@@ -1030,19 +1034,6 @@ export class ElementsTreeOutline extends
       }
       this.selectDOMNode(pastedNode);
     }
-  }
-
-  private performDuplicate(targetNode: SDK.DOMModel.DOMNode): void {
-    if (targetNode.isInShadowTree()) {
-      return;
-    }
-
-    const parentNode = targetNode.parentNode ? targetNode.parentNode : targetNode;
-    if (parentNode.nodeName() === '#document') {
-      return;
-    }
-
-    targetNode.copyTo(parentNode, targetNode.nextSibling);
   }
 
   setVisible(visible: boolean): void {
@@ -1702,88 +1693,12 @@ export class ElementsTreeOutline extends
     return newTreeItem;
   }
 
-  /**
-   * Runs a script on the node's remote object that toggles a class name on
-   * the node and injects a stylesheet into the head of the node's document
-   * containing a rule to set "visibility: hidden" on the class and all it's
-   * ancestors.
-   */
   async toggleHideElement(node: SDK.DOMModel.DOMNode): Promise<void> {
-    let pseudoElementName = node.pseudoType() ? node.nodeName() : null;
-    if (pseudoElementName && node.pseudoIdentifier()) {
-      pseudoElementName += `(${node.pseudoIdentifier()})`;
-    }
-
-    let effectiveNode: SDK.DOMModel.DOMNode|null = node;
-    while (effectiveNode?.pseudoType()) {
-      if (effectiveNode !== node && effectiveNode.pseudoType() === 'column') {
-        // Ideally we would select the specific column pseudo element, but
-        // we don't have a way to do that at the moment.
-        pseudoElementName = '::column' + pseudoElementName;
-      }
-      effectiveNode = effectiveNode.parentNode;
-    }
-    if (!effectiveNode) {
-      return;
-    }
-
-    const hidden = node.marker('hidden-marker');
-    const object = await effectiveNode.resolveToObject('');
-
-    if (!object) {
-      return;
-    }
-
-    await object.callFunction(
-        (toggleClassAndInjectStyleRule as (this: Object, ...arg1: unknown[]) => void),
-        [{value: pseudoElementName}, {value: !hidden}]);
-    object.release();
-    node.setMarker('hidden-marker', hidden ? null : true);
-
-    function toggleClassAndInjectStyleRule(this: Element, pseudoElementName: string|null, hidden: boolean): void {
-      const classNamePrefix = '__web-inspector-hide';
-      const classNameSuffix = '-shortcut__';
-      const styleTagId = '__web-inspector-hide-shortcut-style__';
-      const pseudoElementNameEscaped = pseudoElementName ? pseudoElementName.replace(/[\(\)\:]/g, '_') : '';
-      const className = classNamePrefix + pseudoElementNameEscaped + classNameSuffix;
-      this.classList.toggle(className, hidden);
-
-      let localRoot: Element|HTMLHeadElement = this;
-      while (localRoot.parentNode) {
-        localRoot = (localRoot.parentNode as Element);
-      }
-      if (localRoot.nodeType === Node.DOCUMENT_NODE) {
-        localRoot = document.head;
-      }
-
-      let style = localRoot.querySelector('style#' + styleTagId);
-      if (!style) {
-        const selectors = [];
-        selectors.push('.__web-inspector-hide-shortcut__');
-        selectors.push('.__web-inspector-hide-shortcut__ *');
-        const selector = selectors.join(', ');
-        const ruleBody = '    visibility: hidden !important;';
-        const rule = '\n' + selector + '\n{\n' + ruleBody + '\n}\n';
-
-        style = document.createElement('style');
-        style.id = styleTagId;
-        style.textContent = rule;
-
-        localRoot.appendChild(style);
-      }
-
-      // In addition to putting them on the element we want to hide, we will
-      // also add pseudo element classes to the style element to keep track of
-      // which pseudo elements we have style rules for.
-      if (pseudoElementName && !style.classList.contains(className)) {
-        style.classList.add(className);
-        style.textContent = `.${className}${pseudoElementName}, ${style.textContent}`;
-      }
-    }
+    await node.toggleHideElement();
   }
 
   isToggledToHidden(node: SDK.DOMModel.DOMNode): boolean {
-    return Boolean(node.marker('hidden-marker'));
+    return node.isToggledToHidden();
   }
 
   private reset(): void {

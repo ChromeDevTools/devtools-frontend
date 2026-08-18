@@ -14,12 +14,11 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
-import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import * as Components from './components/components.js';
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
 import sourcesViewStyles from './sourcesView.css.js';
 import {
@@ -27,7 +26,6 @@ import {
   Events as TabbedEditorContainerEvents,
   type SerializedHistoryItem,
   TabbedEditorContainer,
-  type TabbedEditorContainerDelegate,
 } from './TabbedEditorContainer.js';
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
 
@@ -80,7 +78,7 @@ export interface ViewInput {
   searchableViewId: string;
   scriptViewToolbarItems: UI.Toolbar.ToolbarItem[];
   bottomToolbarItems: UI.Toolbar.ToolbarItem[];
-  delegate: TabbedEditorContainerDelegate;
+  historyManager: EditingLocationHistoryManager;
   previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
 }
 
@@ -104,7 +102,7 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
       ${widgetRef(UI.SearchableView.SearchableView, e => { output.searchableView = e; })}
     >
       <devtools-widget class="vbox flex-auto"
-        ${widget(TabbedEditorContainer, {delegate: input.delegate, previouslyViewedFilesSetting: input.previouslyViewedFilesSetting})}
+        ${widget(TabbedEditorContainer, {historyManager: input.historyManager, previouslyViewedFilesSetting: input.previouslyViewedFilesSetting})}
         ${widgetRef(TabbedEditorContainer, e => { output.editorContainer = e; })}>
       </devtools-widget>
     </devtools-widget>
@@ -120,9 +118,8 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
 };
 
 export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
-    implements TabbedEditorContainerDelegate, UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
+    implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
   #searchableView!: UI.SearchableView.SearchableView;
-  private readonly sourceViewByUISourceCode: Map<Workspace.UISourceCode.UISourceCode, UI.Widget.Widget>;
   editorContainer?: TabbedEditorContainer;
   #uiSourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
   private readonly historyManager: EditingLocationHistoryManager;
@@ -161,8 +158,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-
-    this.sourceViewByUISourceCode = new Map();
 
     this.historyManager = new EditingLocationHistoryManager(this);
 
@@ -236,7 +231,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       searchableViewId: 'sources-view-search-config',
       scriptViewToolbarItems: this.#scriptViewToolbarItems,
       bottomToolbarItems: this.#bottomToolbarItems,
-      delegate: this,
+      historyManager: this.historyManager,
       previouslyViewedFilesSetting: this.previouslyViewedFilesSetting,
     };
 
@@ -512,7 +507,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     uiSourceCodes.forEach(ui => this.#uiSourceCodes.delete(ui));
     this.editorContainer?.removeUISourceCodes(uiSourceCodes);
     for (let i = 0; i < uiSourceCodes.length; ++i) {
-      this.removeSourceFrame(uiSourceCodes[i]);
       this.historyManager.removeHistoryForSourceCode(uiSourceCodes[i]);
     }
   }
@@ -563,96 +557,12 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     }
   }
 
-  private createSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
-    let sourceView;
-    const contentType = uiSourceCode.contentType();
-
-    if (contentType === Common.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith('image/')) {
-      sourceView = new SourceFrame.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
-    } else if (contentType === Common.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes('font')) {
-      sourceView = new SourceFrame.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
-    } else if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
-      sourceView = new Components.HeadersView.HeadersView(uiSourceCode);
-    } else {
-      sourceView = new UISourceCodeFrame(uiSourceCode);
-      this.historyManager.trackSourceFrameCursorJumps(sourceView);
-    }
-
-    uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
-
-    this.sourceViewByUISourceCode.set(uiSourceCode, sourceView);
-    return sourceView;
-  }
-
-  #sourceViewTypeForWidget(widget: UI.Widget.Widget): SourceViewType {
-    if (widget instanceof SourceFrame.ImageView.ImageView) {
-      return SourceViewType.IMAGE_VIEW;
-    }
-    if (widget instanceof SourceFrame.FontView.FontView) {
-      return SourceViewType.FONT_VIEW;
-    }
-    if (widget instanceof Components.HeadersView.HeadersView) {
-      return SourceViewType.HEADERS_VIEW;
-    }
-    return SourceViewType.SOURCE_VIEW;
-  }
-
-  #sourceViewTypeForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SourceViewType {
-    if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
-      return SourceViewType.HEADERS_VIEW;
-    }
-    const contentType = uiSourceCode.contentType();
-    switch (contentType) {
-      case Common.ResourceType.resourceTypes.Image:
-        return SourceViewType.IMAGE_VIEW;
-      case Common.ResourceType.resourceTypes.Font:
-        return SourceViewType.FONT_VIEW;
-      default:
-        return SourceViewType.SOURCE_VIEW;
-    }
-  }
-
-  #uiSourceCodeTitleChanged(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
-    const uiSourceCode = event.data;
-    const widget = this.sourceViewByUISourceCode.get(uiSourceCode);
-    if (widget) {
-      if (this.#sourceViewTypeForWidget(widget) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
-        // Remove the existing editor tab and create a new one of the correct type.
-        this.removeUISourceCodes([uiSourceCode]);
-        this.#uiSourceCodes.add(uiSourceCode);
-        void this.showSourceLocation(uiSourceCode);
-      }
-    }
+  viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget|undefined {
+    return this.editorContainer?.viewForFile(uiSourceCode);
   }
 
   getSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget|undefined {
-    return this.sourceViewByUISourceCode.get(uiSourceCode);
-  }
-
-  private getOrCreateSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
-    return this.sourceViewByUISourceCode.get(uiSourceCode) || this.createSourceView(uiSourceCode);
-  }
-
-  recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame, uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    sourceFrame.uiSourceCode().removeEventListener(Workspace.UISourceCode.Events.TitleChanged,
-                                                   this.#uiSourceCodeTitleChanged, this);
-    this.sourceViewByUISourceCode.delete(sourceFrame.uiSourceCode());
-    sourceFrame.setUISourceCode(uiSourceCode);
-    this.sourceViewByUISourceCode.set(uiSourceCode, sourceFrame);
-    uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
-  }
-
-  viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
-    return this.getOrCreateSourceView(uiSourceCode);
-  }
-
-  private removeSourceFrame(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const sourceView = this.sourceViewByUISourceCode.get(uiSourceCode);
-    this.sourceViewByUISourceCode.delete(uiSourceCode);
-    if (sourceView && sourceView instanceof UISourceCodeFrame) {
-      (sourceView).dispose();
-    }
-    uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
+    return this.editorContainer?.getCreatedSourceView(uiSourceCode);
   }
 
   private editorClosed(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
@@ -932,13 +842,4 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 
     return false;
   }
-}
-
-const HEADER_OVERRIDES_FILENAME = '.headers';
-
-const enum SourceViewType {
-  IMAGE_VIEW = 'ImageView',
-  FONT_VIEW = 'FontView',
-  HEADERS_VIEW = 'HeadersView',
-  SOURCE_VIEW = 'SourceView',
 }

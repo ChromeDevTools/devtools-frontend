@@ -159,21 +159,21 @@ describe('TabbedEditorContainer', () => {
       UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
       void testUniverse.networkPersistenceManager;
 
-      const delegate: Sources.TabbedEditorContainer.TabbedEditorContainerDelegate = {
-        viewForFile: uiSourceCode => {
-          let view = views.get(uiSourceCode);
-          if (!view) {
-            view = new UI.Widget.Widget();
-            views.set(uiSourceCode, view);
-          }
-          return view;
-        },
-        recycleUISourceCodeFrame: () => {},
-      };
       const setting = createFakeSetting<LocalSerializedHistoryItem[]>('previously-viewed-files', []);
       tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
-      tabbedEditorContainer.delegate = delegate;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tabbedEditorContainer.historyManager = {trackSourceFrameCursorJumps: () => {}} as any;
       tabbedEditorContainer.previouslyViewedFilesSetting = setting;
+      // Hook getOrCreateSourceView for tests replacing the view caching
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      sinon.stub(tabbedEditorContainer as any, 'getOrCreateSourceView').callsFake(uiSourceCode => {
+        let view = views.get(uiSourceCode as Workspace.UISourceCode.UISourceCode);
+        if (!view) {
+          view = new UI.Widget.Widget();
+          views.set(uiSourceCode as Workspace.UISourceCode.UISourceCode, view);
+        }
+        return view;
+      });
     });
 
     afterEach(() => {
@@ -191,15 +191,13 @@ describe('TabbedEditorContainer', () => {
         return {execute: () => Promise.resolve()} as unknown as UI.ActionRegistration.Action;
       });
 
-      const delegate = {
-        viewForFile: () => new UI.Widget.Widget(),
-        recycleUISourceCodeFrame: () => {},
-      } as unknown as Sources.TabbedEditorContainer.TabbedEditorContainerDelegate;
-
       const setting = createFakeSetting<LocalSerializedHistoryItem[]>('previously-viewed-files', []);
       const container = new Sources.TabbedEditorContainer.TabbedEditorContainer();
-      container.delegate = delegate;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      container.historyManager = {trackSourceFrameCursorJumps: () => {}} as any;
       container.previouslyViewedFilesSetting = setting;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      sinon.stub(container as any, 'getOrCreateSourceView').returns(new UI.Widget.Widget());
 
       renderElementIntoDOM(container);
       const tabbedPane = container.tabbedPaneForTesting;
@@ -402,19 +400,14 @@ describeWithEnvironment('TabbedEditorContainer', () => {
       Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
       UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
 
-      class MockDelegate implements Sources.TabbedEditorContainer.TabbedEditorContainerDelegate {
-        viewForFile(_uiSourceCode: Workspace.UISourceCode.UISourceCode) {
-          return new UI.Widget.Widget();
-        }
-        recycleUISourceCodeFrame() {
-        }
-      }
-      const delegate = new MockDelegate();
       const setting =
           createFakeSetting<Sources.TabbedEditorContainer.SerializedHistoryItem[]>('previouslyViewedFilesSetting', []);
       const tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
-      tabbedEditorContainer.delegate = delegate;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tabbedEditorContainer.historyManager = {trackSourceFrameCursorJumps: () => {}} as any;
       tabbedEditorContainer.previouslyViewedFilesSetting = setting;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      sinon.stub(tabbedEditorContainer as any, 'getOrCreateSourceView').returns(new UI.Widget.Widget());
 
       const {uiSourceCode: uiSourceCode1} =
           createContentProviderUISourceCode({url: urlString`http://localhost/foo.js`, mimeType: 'text/javascript'});

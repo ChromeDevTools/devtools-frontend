@@ -405,6 +405,7 @@ export class DeviceModeView extends UI.Widget.VBox {
             if (contentAreaResized) {
                 this.contentAreaResized();
             }
+            InspectedPagePlaceholder.instance().update();
         });
     }
     contentAreaResized() {
@@ -422,12 +423,22 @@ export class DeviceModeView extends UI.Widget.VBox {
     }
     zoomChanged() {
         if (this.isShowing()) {
-            this.contentAreaResized();
+            if (this.#showDeviceModeSetting.get()) {
+                this.contentAreaResized();
+            }
+            else {
+                InspectedPagePlaceholder.instance().update();
+            }
         }
     }
     onResize() {
         if (this.isShowing()) {
-            this.contentAreaResized();
+            if (this.#showDeviceModeSetting.get()) {
+                this.contentAreaResized();
+            }
+            else {
+                InspectedPagePlaceholder.instance().update();
+            }
         }
     }
     wasShown() {

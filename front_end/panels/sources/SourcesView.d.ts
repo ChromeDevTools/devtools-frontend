@@ -12,13 +12,13 @@ export interface ViewInput {
     searchableViewId: string;
     scriptViewToolbarItems: UI.Toolbar.ToolbarItem[];
     bottomToolbarItems: UI.Toolbar.ToolbarItem[];
-    searchableViewFactory: () => UI.Widget.Widget;
     delegate: TabbedEditorContainerDelegate;
     previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
 }
 export interface ViewOutput {
     scriptViewToolbar?: UI.Toolbar.Toolbar;
     editorContainer?: TabbedEditorContainer;
+    searchableView?: UI.SearchableView.SearchableView;
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;

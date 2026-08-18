@@ -5563,10 +5563,10 @@ function coverageGutter(url) {
         void UI8.ViewManager.ViewManager.instance().showView("coverage").then(() => {
           const view = UI8.ViewManager.ViewManager.instance().view("coverage");
           return view?.widget();
-        }).then((widget2) => {
+        }).then((widget3) => {
           const matchFormattedSuffix = url.match(/(.*):formatted$/);
           const urlWithoutFormattedSuffix = matchFormattedSuffix?.[1] || url;
-          widget2.selectCoverageItemByUrl(urlWithoutFormattedSuffix);
+          widget3.selectCoverageItemByUrl(urlWithoutFormattedSuffix);
         });
         return true;
       }
@@ -5798,7 +5798,7 @@ function createCSSTooltip(active) {
     arrow: false,
     create(view) {
       let text = active.text;
-      let widget2, addListener;
+      let widget3, addListener;
       if (active.type === 0) {
         const spectrum = new ColorPicker.Spectrum.Spectrum();
         addListener = (handler) => {
@@ -5806,44 +5806,44 @@ function createCSSTooltip(active) {
         };
         spectrum.addEventListener("SizeChanged", () => view.requestMeasure());
         spectrum.setColor(active.color);
-        widget2 = spectrum;
+        widget3 = spectrum;
       } else {
         const spectrum = new InlineEditor.BezierEditor.BezierEditor(active.curve);
-        widget2 = spectrum;
+        widget3 = spectrum;
         addListener = (handler) => {
           spectrum.addEventListener("BezierChanged", handler);
         };
       }
       const dom = document.createElement("div");
       dom.className = "cm-tooltip-swatchEdit";
-      widget2.markAsRoot();
-      widget2.show(dom);
-      widget2.showWidget();
-      widget2.element.addEventListener("keydown", (event) => {
+      widget3.markAsRoot();
+      widget3.show(dom);
+      widget3.showWidget();
+      widget3.element.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
           event.consume();
           view.dispatch({
             effects: setTooltip.of(null),
             changes: text === active.text ? void 0 : { from: active.pos, to: active.pos + text.length, insert: active.text }
           });
-          widget2.hideWidget();
+          widget3.hideWidget();
           view.focus();
         }
       });
-      widget2.element.addEventListener("focusout", (event) => {
-        if (event.relatedTarget && !widget2.element.contains(event.relatedTarget)) {
+      widget3.element.addEventListener("focusout", (event) => {
+        if (event.relatedTarget && !widget3.element.contains(event.relatedTarget)) {
           view.dispatch({ effects: setTooltip.of(null) });
-          widget2.hideWidget();
+          widget3.hideWidget();
         }
       }, false);
-      widget2.element.addEventListener("mousedown", (event) => event.consume());
+      widget3.element.addEventListener("mousedown", (event) => event.consume());
       return {
         dom,
         resize: false,
         offset: { x: -8, y: 0 },
         mount: () => {
-          widget2.focus();
-          widget2.wasShown();
+          widget3.focus();
+          widget3.wasShown();
           addListener((event) => {
             view.dispatch({
               changes: { from: active.pos, to: active.pos + text.length, insert: event.data },
@@ -7632,16 +7632,16 @@ var ValueDecoration = class extends CodeMirror4.WidgetType {
   }
   toDOM() {
     const formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
-    const widget2 = document.createElement("div");
-    widget2.classList.add("cm-variableValues");
+    const widget3 = document.createElement("div");
+    widget3.classList.add("cm-variableValues");
     let first = true;
     for (const [name, value2] of this.pairs) {
       if (first) {
         first = false;
       } else {
-        UI10.UIUtils.createTextChild(widget2, ", ");
+        UI10.UIUtils.createTextChild(widget3, ", ");
       }
-      const nameValuePair = widget2.createChild("span");
+      const nameValuePair = widget3.createChild("span");
       UI10.UIUtils.createTextChild(nameValuePair, name + " = ");
       const propertyCount = value2.preview ? value2.preview.properties.length : 0;
       const entryCount = value2.preview?.entries ? value2.preview.entries.length : 0;
@@ -7660,7 +7660,7 @@ var ValueDecoration = class extends CodeMirror4.WidgetType {
         nameValuePair.appendChild(fragment);
       }
     }
-    return widget2;
+    return widget3;
   }
 };
 var valueDecorations = defineStatefulDecoration();
@@ -9815,7 +9815,16 @@ var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var { widget, widgetRef } = UI15.Widget;
 var DEFAULT_VIEW5 = (input, output, target) => {
   render7(html6`
-    <devtools-widget class="vbox flex-auto" ${widget(input.searchableViewFactory)}>
+    <devtools-widget class="vbox flex-auto"
+      ${widget((element) => {
+    const searchableView = new UI15.SearchableView.SearchableView(input.searchProvider, input.replaceProvider, input.searchableViewId, element);
+    searchableView.setMinimalSearchQuerySize(0);
+    return searchableView;
+  })}
+      ${widgetRef(UI15.SearchableView.SearchableView, (e) => {
+    output.searchableView = e;
+  })}
+    >
       <devtools-widget class="vbox flex-auto"
         ${widget(TabbedEditorContainer, { delegate: input.delegate, previouslyViewedFilesSetting: input.previouslyViewedFilesSetting })}
         ${widgetRef(TabbedEditorContainer, (e) => {
@@ -9926,7 +9935,6 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
       searchableViewId: "sources-view-search-config",
       scriptViewToolbarItems: this.#scriptViewToolbarItems,
       bottomToolbarItems: this.#bottomToolbarItems,
-      searchableViewFactory: this.#searchableViewFactory,
       delegate: this,
       previouslyViewedFilesSetting: this.previouslyViewedFilesSetting
     };
@@ -9937,6 +9945,9 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
       },
       set editorContainer(value2) {
         that.setEditorContainer(value2);
+      },
+      set searchableView(value2) {
+        that.#searchableView = value2;
       }
     };
     this.#view(input, output, this.element);
@@ -10079,7 +10090,10 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     super.willHide();
   }
   searchableView() {
-    return this.#searchableViewFactory();
+    if (!this.#searchableView) {
+      this.performUpdate();
+    }
+    return this.#searchableView;
   }
   visibleView() {
     return this.editorContainer?.visibleView ?? null;
@@ -10216,14 +10230,14 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     this.sourceViewByUISourceCode.set(uiSourceCode, sourceView);
     return sourceView;
   }
-  #sourceViewTypeForWidget(widget2) {
-    if (widget2 instanceof SourceFrame10.ImageView.ImageView) {
+  #sourceViewTypeForWidget(widget3) {
+    if (widget3 instanceof SourceFrame10.ImageView.ImageView) {
       return "ImageView";
     }
-    if (widget2 instanceof SourceFrame10.FontView.FontView) {
+    if (widget3 instanceof SourceFrame10.FontView.FontView) {
       return "FontView";
     }
-    if (widget2 instanceof Components2.HeadersView.HeadersView) {
+    if (widget3 instanceof Components2.HeadersView.HeadersView) {
       return "HeadersView";
     }
     return "SourceView";
@@ -10244,9 +10258,9 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
   }
   #uiSourceCodeTitleChanged(event) {
     const uiSourceCode = event.data;
-    const widget2 = this.sourceViewByUISourceCode.get(uiSourceCode);
-    if (widget2) {
-      if (this.#sourceViewTypeForWidget(widget2) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
+    const widget3 = this.sourceViewByUISourceCode.get(uiSourceCode);
+    if (widget3) {
+      if (this.#sourceViewTypeForWidget(widget3) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
         this.removeUISourceCodes([uiSourceCode]);
         this.#uiSourceCodes.add(uiSourceCode);
         void this.showSourceLocation(uiSourceCode);
@@ -10411,13 +10425,6 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     const uiSourceCodeFrame = sourceFrame;
     uiSourceCodeFrame.commitEditing();
   }
-  #searchableViewFactory = () => {
-    if (!this.#searchableView) {
-      this.#searchableView = new UI15.SearchableView.SearchableView(this, this, "sources.search-sources-tab");
-      this.#searchableView.setMinimalSearchQuerySize(0);
-    }
-    return this.#searchableView;
-  };
   toggleBreakpointsActiveState(active) {
     this.#breakpointsActive = active;
     this.editorContainer?.element.classList.toggle("breakpoints-deactivated", !active);
@@ -14124,8 +14131,10 @@ var ActionDelegate5 = class {
 // gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
 var WatchExpressionsSidebarPane_exports = {};
 __export(WatchExpressionsSidebarPane_exports, {
+  DEFAULT_PROMPT_VIEW: () => DEFAULT_PROMPT_VIEW,
   DEFAULT_VIEW: () => DEFAULT_VIEW8,
   WatchExpression: () => WatchExpression,
+  WatchExpressionPromptWidget: () => WatchExpressionPromptWidget,
   WatchExpressionsSidebarPane: () => WatchExpressionsSidebarPane
 });
 import * as Common18 from "./../../core/common/common.js";
@@ -14138,6 +14147,7 @@ import * as Formatter3 from "./../../models/formatter/formatter.js";
 import * as SourceMapScopes3 from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as StackTrace9 from "./../../models/stack_trace/stack_trace.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
+import * as TextEditor6 from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI4 from "./../../ui/legacy/components/object_ui/object_ui.js";
 
 // gen/front_end/ui/legacy/components/object_ui/objectValue.css.js
@@ -14466,6 +14476,174 @@ var str_25 = i18n49.i18n.registerUIStrings("panels/sources/WatchExpressionsSideb
 var i18nString24 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
 var watchExpressionsSidebarPaneInstance;
 var { classMap: classMap3, ifDefined: ifDefined3 } = Directives6;
+var { widget: widget2 } = UI24.Widget;
+var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
+  const e = input.expression;
+  if (!e) {
+    render11(nothing8, target);
+    return;
+  }
+  const stopPropagationIfEditing = (event) => {
+    if (e.editing) {
+      event.stopPropagation();
+    }
+  };
+  const renderNameElement = () => ObjectUI4.ObjectPropertiesSection.renderPropertyName(
+    e.expression,
+    /* isPrivate= */
+    false,
+    e.expression ?? void 0
+  );
+  render11(html14`
+        <devtools-prompt
+            class=${classMap3({
+    monospace: true,
+    "watch-expression": true,
+    "watch-expression-text-prompt-proxy": Boolean(e.editing)
+  })}
+            value=${e.expression ?? ""}
+            ?editing=${Boolean(e.editing)}
+            completions=${input.completionsId}
+            @commit=${(event) => input.onCommit(event.detail)}
+            @cancel=${() => input.onCancel()}
+            @beforeautocomplete=${input.onBeforeAutoComplete}
+            @mousedown=${stopPropagationIfEditing}
+            @click=${stopPropagationIfEditing}
+            @dblclick=${stopPropagationIfEditing}>
+          <div class=${classMap3({
+    "watch-expression-header": true,
+    "watch-expression-object-header": !e.exceptionDetails && e.result !== void 0 && e.result.hasChildren && !e.result.object.customPreview()
+  })}
+               @contextmenu=${input.onContextMenu}
+               @dblclick=${input.onStartEditing}>
+            <div class=${classMap3({
+    "watch-expression-title": true,
+    "tree-element-title": true,
+    dimmed: Boolean(e.exceptionDetails) && !e.result
+  })}>
+              <devtools-button
+                .data=${{
+    variant: "icon",
+    iconName: "bin",
+    size: "SMALL",
+    jslogContext: "delete-watch-expression"
+  }}
+                class=watch-expression-delete-button
+                title=${i18nString24(UIStrings25.deleteWatchExpression)}
+                @click=${input.onDelete}></devtools-button>
+              ${renderNameElement()}
+              <span class=watch-expressions-separator>: </span>
+              ${e.exceptionDetails || !e.result ? html14`<span
+                    class="watch-expression-error value"
+                    title=${ifDefined3(e.exceptionDetails?.exception?.description)}
+                    >${i18nString24(UIStrings25.notAvailable)}</span>` : ObjectUI4.ObjectPropertiesSection.renderPropertyValue(
+    e.result.object,
+    Boolean(e.exceptionDetails),
+    false,
+    input.linkifier,
+    false,
+    void 0,
+    void 0,
+    /* useCustomPreview */
+    true
+  )}
+            </div>
+          </div>
+          ${e.editing ? html14`
+            <datalist id=${input.completionsId}>
+              ${input.completions.map((c) => html14`<option>${c}</option>`)}
+            </datalist>
+          ` : nothing8}
+        </devtools-prompt>
+      `, target);
+};
+var WatchExpressionPromptWidget = class extends UI24.Widget.Widget {
+  #expression;
+  #linkifier;
+  #completions = [];
+  #completionsId = "";
+  #view;
+  onCommit;
+  onCancel;
+  onStartEditing;
+  onDelete;
+  onContextMenu;
+  set expression(expression) {
+    if (this.#expression !== expression) {
+      this.#completions = [];
+      this.#expression = expression;
+    }
+    this.requestUpdate();
+  }
+  get expression() {
+    return this.#expression;
+  }
+  set linkifier(linkifier) {
+    if (this.#linkifier === linkifier) {
+      return;
+    }
+    this.#linkifier = linkifier;
+    this.requestUpdate();
+  }
+  get linkifier() {
+    return this.#linkifier;
+  }
+  set completionsId(completionsId) {
+    if (this.#completionsId === completionsId) {
+      return;
+    }
+    this.#completionsId = completionsId;
+    this.requestUpdate();
+  }
+  get completionsId() {
+    return this.#completionsId;
+  }
+  constructor(element, view = DEFAULT_PROMPT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  wasHidden() {
+    super.wasHidden();
+    this.#completions = [];
+  }
+  #handleBeforeAutoComplete = async (event) => {
+    const suggestions = await TextEditor6.JavaScript.completeInContext(event.detail.expression, event.detail.filter, event.detail.force);
+    this.#completions = suggestions.map((v) => v.text);
+    this.requestUpdate();
+  };
+  performUpdate() {
+    if (!this.#expression?.editing) {
+      this.#completions = [];
+    }
+    const viewInput = {
+      expression: this.#expression,
+      linkifier: this.#linkifier,
+      completionsId: this.#completionsId,
+      completions: this.#completions,
+      onCommit: (detail) => {
+        this.#completions = [];
+        this.requestUpdate();
+        this.onCommit?.(detail);
+      },
+      onCancel: () => {
+        this.#completions = [];
+        this.requestUpdate();
+        this.onCancel?.();
+      },
+      onBeforeAutoComplete: (event) => {
+        void this.#handleBeforeAutoComplete(event);
+      },
+      onStartEditing: () => this.onStartEditing?.(),
+      onDelete: () => this.onDelete?.(),
+      onContextMenu: (event) => this.onContextMenu?.(event)
+    };
+    this.#view(viewInput, void 0, this.contentElement);
+  }
+};
 var DEFAULT_VIEW8 = (input, output, target) => {
   const onContextMenu = (watchExpression, event) => {
     const contextMenu = new UI24.ContextMenu.ContextMenu(event);
@@ -14497,81 +14675,29 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       input.onDelete(expression);
     }
   };
-  const renderNameElement = (e) => ObjectUI4.ObjectPropertiesSection.renderPropertyName(
-    e.expression,
-    /* isPrivate= */
-    false,
-    e.expression ?? void 0
-  );
-  const renderTreeElement = (e) => (
-    // clang-format off
-    html14`<li
+  const renderTreeElement = (e) => {
+    const completionsId = `watch-expression-completions-${input.watchExpressions.indexOf(e)}`;
+    return html14`<li
           class=${classMap3({ "watch-expression-tree-item": true, "watch-expression-editing": e.editing })}
           @keydown=${onExpressionKeydown.bind(void 0, e)}
           @expand=${(event) => input.onExpand(e, event.detail.expanded)}
           role=treeitem>
-        <devtools-prompt
-            value=${e.expression ?? ""}
-            @commit=${(event) => input.onFinishEditing(e, event.detail)}
-            @cancel=${() => input.onFinishEditing(e, null)}
-            ?editing=${e.editing}
-            @mousedown=${(event) => e.editing && event.stopPropagation()}
-            @click=${(event) => e.editing && event.stopPropagation()}
-            @dblclick=${(event) => e.editing && event.stopPropagation()}
-            class=${classMap3({
-      monospace: true,
-      "watch-expression": true,
-      "watch-expression-text-prompt-proxy": e.editing
-    })}>
-          <div class=${classMap3({
-      "watch-expression-header": true,
-      "watch-expression-object-header": !e.exceptionDetails && e.result !== void 0 && e.result.hasChildren && !e.result.object.customPreview()
-    })}
-               @contextmenu=${onContextMenu.bind(void 0, e)}
-               @dblclick=${() => input.onStartEditing(e)}>
-            <div class=${classMap3({
-      "watch-expression-title": true,
-      "tree-element-title": true,
-      dimmed: Boolean(e.exceptionDetails) && !e.result
-    })}>
-              <devtools-button
-                .data=${{
-      variant: "icon",
-      iconName: "bin",
-      size: "SMALL",
-      jslogContext: "delete-watch-expression"
-    }}
-                class=watch-expression-delete-button
-                title=${i18nString24(UIStrings25.deleteWatchExpression)}
-                @click=${() => input.onDelete(e)}></devtools-button>
-              ${renderNameElement(e)}<span class=watch-expressions-separator>: </span>${e.exceptionDetails || !e.result ? html14`<span
-                    class="watch-expression-error value"
-                    title=${ifDefined3(e.exceptionDetails?.exception?.description)}
-                    >${i18nString24(UIStrings25.notAvailable)}</span>` : ObjectUI4.ObjectPropertiesSection.renderPropertyValue(
-      e.result.object,
-      Boolean(e.exceptionDetails),
-      false,
-      input.linkifier,
-      false,
-      void 0,
-      void 0,
-      /* useCustomPreview */
-      true
-    )}
-            </div>
-          </div>
-        </devtools-prompt>
+            <devtools-widget ${widget2(WatchExpressionPromptWidget, {
+      expression: e,
+      linkifier: input.linkifier,
+      completionsId,
+      onCommit: (detail) => input.onFinishEditing(e, detail),
+      onCancel: () => input.onFinishEditing(e, null),
+      onStartEditing: () => input.onStartEditing(e),
+      onDelete: () => input.onDelete(e),
+      onContextMenu: (event) => onContextMenu(e, event)
+    })}></devtools-widget>
         ${e.editing || !e.result || e.exceptionDetails || !e.result.hasChildren || e.result.object.customPreview() ? nothing8 : html14`
           <ul role=group>
-            ${ObjectUI4.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(
-      e.result.children ?? {},
-      true,
-      true
-      /* skipGettersAndSetters */
-    ).map((node) => html14`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+            ${ObjectUI4.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(e.result.children ?? {}, false, false, input.linkifier).map((node) => html14`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
           </ul>`}
-      </li>`
-  );
+      </li>`;
+  };
   render11(
     // clang-format off
     html14`

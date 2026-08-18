@@ -120,7 +120,7 @@ export class CSSMetadata {
                 if (partialValueKeywordsNoPresets.get(name)?.has(value)) {
                     return false;
                 }
-                return CSS.supports(name, value);
+                return true;
             })
                 .sort(CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
             const presets = values.map(value => `${name}: ${value}`);
@@ -270,11 +270,6 @@ export class CSSMetadata {
         let keywords = propertyValues.get(propertyName) || propertyValues.get(unprefixedName);
         if (!keywords) {
             keywords = [];
-            for (const commonKeyword of CommonKeywords) {
-                if (CSS.supports(propertyName, commonKeyword)) {
-                    keywords.push(commonKeyword);
-                }
-            }
             propertyValues.set(propertyName, keywords);
         }
         return keywords;

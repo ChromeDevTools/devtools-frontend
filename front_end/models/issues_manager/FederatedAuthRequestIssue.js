@@ -9,6 +9,10 @@ const UIStrings = {
      * @description Title for Federated Credential Management API specification URL link.
      */
     fedCm: 'Federated Credential Management API',
+    /**
+     * @description Title for Connection Allowlists API specification URL link.
+     */
+    connectionAllowlist: 'Connection Allowlists API',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/FederatedAuthRequestIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -59,6 +63,17 @@ const issueDescriptions = new Map([
         },
     ],
     [
+        "WellKnownBlockedByConnectionAllowlist" /* Protocol.Audits.FederatedAuthRequestIssueReason.WellKnownBlockedByConnectionAllowlist */,
+        {
+            file: 'federatedAuthRequestWellKnownBlockedByConnectionAllowlist.md',
+            links: [{
+                    // TODO(crbug.com/543660447): Update this link once connection allowlist is moved out of WICG repo.
+                    link: 'https://github.com/WICG/connection-allowlists',
+                    linkTitle: i18nLazyString(UIStrings.connectionAllowlist),
+                }],
+        },
+    ],
+    [
         "ConfigHttpNotFound" /* Protocol.Audits.FederatedAuthRequestIssueReason.ConfigHttpNotFound */,
         {
             file: 'federatedAuthRequestManifestHttpNotFound.md',
@@ -75,6 +90,17 @@ const issueDescriptions = new Map([
             links: [{
                     link: 'https://fedidcg.github.io/FedCM/',
                     linkTitle: i18nLazyString(UIStrings.fedCm),
+                }],
+        },
+    ],
+    [
+        "ConfigBlockedByConnectionAllowlist" /* Protocol.Audits.FederatedAuthRequestIssueReason.ConfigBlockedByConnectionAllowlist */,
+        {
+            file: 'federatedAuthRequestConfigBlockedByConnectionAllowlist.md',
+            links: [{
+                    // TODO(crbug.com/543660447): Update this link once connection allowlist is moved out of WICG repo.
+                    link: 'https://github.com/WICG/connection-allowlists',
+                    linkTitle: i18nLazyString(UIStrings.connectionAllowlist),
                 }],
         },
     ],
@@ -129,6 +155,17 @@ const issueDescriptions = new Map([
         },
     ],
     [
+        "AccountsBlockedByConnectionAllowlist" /* Protocol.Audits.FederatedAuthRequestIssueReason.AccountsBlockedByConnectionAllowlist */,
+        {
+            file: 'federatedAuthRequestAccountsBlockedByConnectionAllowlist.md',
+            links: [{
+                    // TODO(crbug.com/543660447): Update this link once connection allowlist is moved out of WICG repo.
+                    link: 'https://github.com/WICG/connection-allowlists',
+                    linkTitle: i18nLazyString(UIStrings.connectionAllowlist),
+                }],
+        },
+    ],
+    [
         "AccountsInvalidResponse" /* Protocol.Audits.FederatedAuthRequestIssueReason.AccountsInvalidResponse */,
         {
             file: 'federatedAuthRequestAccountsInvalidResponse.md',
@@ -155,6 +192,17 @@ const issueDescriptions = new Map([
             links: [{
                     link: 'https://fedidcg.github.io/FedCM/',
                     linkTitle: i18nLazyString(UIStrings.fedCm),
+                }],
+        },
+    ],
+    [
+        "IdTokenBlockedByConnectionAllowlist" /* Protocol.Audits.FederatedAuthRequestIssueReason.IdTokenBlockedByConnectionAllowlist */,
+        {
+            file: 'federatedAuthRequestIdTokenBlockedByConnectionAllowlist.md',
+            links: [{
+                    // TODO(crbug.com/543660447): Update this link once connection allowlist is moved out of WICG repo.
+                    link: 'https://github.com/WICG/connection-allowlists',
+                    linkTitle: i18nLazyString(UIStrings.connectionAllowlist),
                 }],
         },
     ],

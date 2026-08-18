@@ -946,7 +946,7 @@ var objectValue_css_default = `/*
 // gen/front_end/panels/console/ConsoleViewMessage.js
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
-import { nothing as nothing3, render as render3 } from "./../../ui/lit/lit.js";
+import { html as html3, nothing as nothing3, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import * as Elements from "./../elements/elements.js";
 
@@ -1309,7 +1309,8 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
   content: "i";
 }
 
-.console-view-object-properties-section:not(.expanded) .info-note {
+.console-view-object-properties-section:not(.expanded) .info-note,
+.object-properties-section-root-element:not(.expanded) .info-note {
   display: none;
 }
 
@@ -1337,7 +1338,8 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
   margin-bottom: -2px;
 }
 
-.console-object-preview {
+.console-object-preview,
+.console-object-preview + .info-note {
   white-space: normal;
   overflow-wrap: break-word;
   font-style: italic;
@@ -1985,7 +1987,15 @@ var UIStrings2 = {
   /**
    * @description Submenu item to copy table as CSV.
    */
-  copyAsCsv: "Copy as CSV"
+  copyAsCsv: "Copy as CSV",
+  /**
+   * @description Text to expand something recursively
+   */
+  expandRecursively: "Expand recursively",
+  /**
+   * @description Text to collapse children of a parent group
+   */
+  collapseChildren: "Collapse children"
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/console/ConsoleViewMessage.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -2536,6 +2546,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   formatParameterAsObject(obj, includePreview) {
     const titleElement = document.createElement("span");
+    titleElement.tabIndex = -1;
     titleElement.classList.add("console-object");
     const renderPreview = (includeNullOrUndefined) => {
       if (obj.preview) {
@@ -2561,22 +2572,37 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (!obj.hasChildren || obj.customPreview()) {
       return titleElement;
     }
-    const note = titleElement.createChild("span", "object-state-note info-note");
-    if (this.message.type === SDK3.ConsoleModel.FrontendMessageType.QueryObjectResult) {
-      UI3.Tooltip.Tooltip.install(note, i18nString2(UIStrings2.thisValueWillNotBeCollectedUntil));
-    } else {
-      UI3.Tooltip.Tooltip.install(note, i18nString2(UIStrings2.thisValueWasEvaluatedUponFirst));
+    const container = document.createElement("span");
+    const section = new ObjectUI2.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.markAsRoot();
+    const treeElement = section.element;
+    treeElement.classList.add("console-view-object-properties-section");
+    titleElement.addEventListener("contextmenu", (event) => {
+      event.consume(true);
+      const contextMenu = new UI3.ContextMenu.ContextMenu(event);
+      contextMenu.appendApplicableItems(obj);
+      if (obj instanceof SDK3.RemoteObject.LocalJSONObject) {
+        contextMenu.viewSection().appendItem(i18nString2(UIStrings2.expandRecursively), () => section.objectTree?.expandRecursively(ObjectUI2.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH), { jslogContext: "expand-recursively" });
+        contextMenu.viewSection().appendItem(i18nString2(UIStrings2.collapseChildren), () => section.objectTree?.collapseRecursively(), { jslogContext: "collapse-children" });
+      }
+      void contextMenu.show();
+    });
+    section.root = obj;
+    section.title = html3`<style>${consoleView_css_default}</style>${titleElement}<span class="object-state-note info-note" title=${this.message.type === SDK3.ConsoleModel.FrontendMessageType.QueryObjectResult ? i18nString2(UIStrings2.thisValueWillNotBeCollectedUntil) : i18nString2(UIStrings2.thisValueWasEvaluatedUponFirst)}></span>`;
+    section.linkifier = this.linkifier;
+    this.selectableChildren.push({
+      element: treeElement,
+      forceSelect: () => {
+      }
+    });
+    if (section.objectTree) {
+      const resizeEvent = { data: treeElement };
+      section.objectTree.addEventListener("children-changed", () => this.messageResized(resizeEvent));
+      section.objectTree.addEventListener("expanded-changed", () => this.messageResized(resizeEvent));
+      section.objectTree.addEventListener("filter-changed", () => renderPreview(section.objectTree?.includeNullOrUndefinedValues || false));
     }
-    const section = new ObjectUI2.ObjectPropertiesSection.ObjectPropertiesSection(obj, titleElement, this.linkifier);
-    section.element.classList.add("console-view-object-properties-section");
-    section.enableContextMenu();
-    section.setShowSelectionOnKeyboardFocus(true, true);
-    this.selectableChildren.push(section);
-    section.addEventListener(UI3.TreeOutline.Events.ElementAttached, this.messageResized);
-    section.addEventListener(UI3.TreeOutline.Events.ElementExpanded, this.messageResized);
-    section.addEventListener(UI3.TreeOutline.Events.ElementCollapsed, this.messageResized);
-    section.root.addEventListener("filter-changed", () => renderPreview(section.root.includeNullOrUndefinedValues));
-    return section.element;
+    section.show(container);
+    return container;
   }
   formatParameterAsFunction(originalFunction, includePreview) {
     const result = document.createElement("span");
@@ -4000,7 +4026,7 @@ async function formatStackTrace(message) {
 }
 
 // gen/front_end/panels/console/ConsoleInsightTeaser.js
-var { render: render4, html: html3, Directives: { ref } } = Lit3;
+var { render: render4, html: html4, Directives: { ref } } = Lit3;
 var BUILT_IN_AI_DOCUMENTATION = "https://developer.chrome.com/docs/ai/built-in";
 var UIStringsNotTranslate = {
   /**
@@ -4099,7 +4125,7 @@ var DATA_USAGE_URL = "https://developer.chrome.com/docs/devtools/ai-assistance/g
 var EXPLAIN_TEASER_ACTION_ID = "explain.console-message.teaser";
 var SLOW_GENERATION_CUTOFF_MILLISECONDS = 3500;
 function renderNoModel(input) {
-  return html3`
+  return html4`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${input.isForWarning ? lockedString(UIStringsNotTranslate.getHelpForWarning) : lockedString(UIStringsNotTranslate.getHelpForError)}
@@ -4134,14 +4160,14 @@ function renderNoModel(input) {
 }
 function renderDownloading(input) {
   const percent = ((input.downloadProgress || 0) * 100).toFixed(0);
-  return html3`
+  return html4`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${lockedString(UIStringsNotTranslate.downloadingAiModel)}</h2>
         <div class="progress-line">
-          ${input.downloadProgress === null ? html3`
+          ${input.downloadProgress === null ? html4`
               <div class="label">${lockedString(UIStringsNotTranslate.progressUnknown)}</div>
-            ` : html3`
+            ` : html4`
               <div class="label">${lockedString(UIStringsNotTranslate.progress)}</div>
               <div class="indicator-container">
                 <div
@@ -4170,7 +4196,7 @@ function renderDownloading(input) {
   `;
 }
 function renderGenerating(input) {
-  return html3`
+  return html4`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${input.isSlowGeneration ? lockedString(UIStringsNotTranslate.summarizingTakesABitLonger) : lockedString(UIStringsNotTranslate.summarizing)}</h2>
@@ -4196,7 +4222,7 @@ function renderGenerating(input) {
   `;
 }
 function renderError(input) {
-  return html3`
+  return html4`
     <div class="teaser-tooltip-container">
       <h2>${lockedString(UIStringsNotTranslate.summaryNotAvailable)}</h2>
       ${renderFooter(input)}
@@ -4204,7 +4230,7 @@ function renderError(input) {
   `;
 }
 function renderDontShowCheckbox(input) {
-  return html3`
+  return html4`
     <devtools-checkbox
       aria-label=${lockedString(UIStringsNotTranslate.dontShow)}
       @change=${input.dontShowChanged}
@@ -4214,9 +4240,9 @@ function renderDontShowCheckbox(input) {
   `;
 }
 function renderFooter(input) {
-  return html3`
+  return html4`
     <div class="tooltip-footer">
-      ${input.hasTellMeMoreButton ? html3`
+      ${input.hasTellMeMoreButton ? html4`
         <devtools-button
           title=${lockedString(UIStringsNotTranslate.tellMeMore)}
           .jslogContext=${"insights-teaser-tell-me-more"}
@@ -4255,7 +4281,7 @@ function renderFooter(input) {
   `;
 }
 function renderTeaser(input) {
-  return html3`
+  return html4`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${input.headerText}</h2>
@@ -4270,7 +4296,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     render4(Lit3.nothing, target);
     return;
   }
-  render4(html3`
+  render4(html4`
     <style>${consoleInsightTeaser_css_default}</style>
     <devtools-tooltip
       ${ref((element) => {
@@ -4402,7 +4428,7 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
         {
           iconName: "warning",
           // clang-format off
-          content: html3`<devtools-link
+          content: html4`<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
             jslogcontext="explain.teaser.code-snippets-explainer"
@@ -4632,7 +4658,7 @@ import * as Dialogs2 from "./../../ui/components/dialogs/dialogs.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html4, nothing as nothing5, render as render5 } from "./../../ui/lit/lit.js";
+import { Directives, html as html5, nothing as nothing5, render as render5 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/consolePinPane.css.js
@@ -4772,7 +4798,7 @@ var UIStrings3 = {
 var str_3 = i18n7.i18n.registerUIStrings("panels/console/ConsolePinPane.ts", UIStrings3);
 var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_3);
 var DEFAULT_PANE_VIEW = (input, _output, target) => {
-  render5(html4`
+  render5(html5`
     <style>${consolePinPane_css_default}</style>
     <div class='console-pins monospace' jslog=${VisualLogging3.pane("console-pins")} @contextmenu=${input.onContextMenu}>
     ${repeat(input.pins, (pin) => pin, (pin) => widget(ConsolePinPresenter, {
@@ -4854,7 +4880,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
   const deleteRef = createRef();
   const editorRef = createRef();
   const isError = input.result && !("error" in input.result) && input.result?.exceptionDetails && !SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(input.result);
-  render5(html4`
+  render5(html5`
     <style>${consolePinPane_css_default}</style>
     <style>${objectValue_css_default}</style>
     <div class='console-pin ${isError ? "error-level" : ""}'>
@@ -4908,11 +4934,11 @@ function renderResult(result, isEditing) {
     return nothing5;
   }
   if (result && SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
-    return html4`<span class='object-value-calculate-value-button' title=${i18nString3(UIStrings3.evaluateAllowingSideEffects)}>(…)</span>`;
+    return html5`<span class='object-value-calculate-value-button' title=${i18nString3(UIStrings3.evaluateAllowingSideEffects)}>(…)</span>`;
   }
   const renderedPreview = FORMATTER.renderEvaluationResultPreview(result, !isEditing);
   if (renderedPreview === nothing5 && !isEditing) {
-    return html4`${i18nString3(UIStrings3.notAvailable)}`;
+    return html5`${i18nString3(UIStrings3.notAvailable)}`;
   }
   return renderedPreview;
 }
@@ -5348,7 +5374,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n9.i18n.registerUIStrings("panels/console/ConsoleSidebar.ts", UIStrings4);
 var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_4);
-var { render: render6, html: html5, nothing: nothing6 } = Lit4;
+var { render: render6, html: html6, nothing: nothing6 } = Lit4;
 var GROUP_ICONS = {
   [
     "message"
@@ -5376,12 +5402,12 @@ var GROUP_ICONS = {
   ]: { icon: "bug", label: UIStrings4.dVerbose }
 };
 var DEFAULT_VIEW5 = (input, output, target) => {
-  render6(html5`<devtools-tree
+  render6(html6`<devtools-tree
         navigation-variant
         hide-overflow
-        .template=${html5`
+        .template=${html6`
           <ul role="tree">
-            ${input.groups.map((group) => html5`
+            ${input.groups.map((group) => html6`
               <li
                 role="treeitem"
                 @select=${() => input.onSelectionChanged(group.filter)}
@@ -5392,9 +5418,9 @@ var DEFAULT_VIEW5 = (input, output, target) => {
   i18nString4(GROUP_ICONS[group.name].label, {
     n: group.messageCount
   })}
-                  ${group.messageCount === 0 ? nothing6 : html5`
+                  ${group.messageCount === 0 ? nothing6 : html6`
                   <ul role="group">
-                    ${group.urlGroups.values().map((urlGroup) => html5`
+                    ${group.urlGroups.values().map((urlGroup) => html6`
                       <li
                         @select=${() => input.onSelectionChanged(urlGroup.filter)}
                         role="treeitem"

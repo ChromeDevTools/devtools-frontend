@@ -48,6 +48,7 @@ export interface DOMNodeEventTypes {
         enabled: boolean;
     };
 }
+export declare function cssEscape(value: string): string;
 export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventTypes> {
     #private;
     ownerDocument: DOMDocument | null;

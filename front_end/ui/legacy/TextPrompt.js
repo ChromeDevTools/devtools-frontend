@@ -175,7 +175,7 @@ export class TextPromptElement extends HTMLElement {
         }
     }
     #updateCompletions() {
-        if (this.isConnected) {
+        if (this.isConnected && this.#isEditing) {
             void this.#textPrompt.complete(/* force=*/ true);
         }
     }

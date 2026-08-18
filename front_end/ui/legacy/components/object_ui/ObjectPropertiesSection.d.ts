@@ -156,12 +156,10 @@ export declare class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
     set linkifier(val: Components.Linkifier.Linkifier);
     get showOverflow(): boolean;
     set showOverflow(val: boolean);
+    onExpand: (expanded: boolean) => void;
     performUpdate(): void;
     onDetach(): void;
     wasShown(): void;
-    get rootContextMenuEnabled(): boolean;
-    set rootContextMenuEnabled(val: boolean);
-    private onRootContextMenu;
     private onRootItemContextMenu;
 }
 export interface TreeOutlineOptions {
@@ -210,8 +208,8 @@ export interface ObjectPropertiesSectionViewInput {
     linkifier?: Components.Linkifier.Linkifier;
     skipProto: boolean;
     showOverflow: boolean;
-    onRootContextMenu?: (menu: UI.ContextMenu.ContextMenu) => void;
     onRootItemContextMenu: (menu: UI.ContextMenu.ContextMenu) => void;
+    onExpand: (expanded: boolean) => void;
 }
 export type ObjectPropertiesSectionView = (input: ObjectPropertiesSectionViewInput, output: object, target: HTMLElement) => void;
 export declare const OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: ObjectPropertiesSectionView;

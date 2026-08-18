@@ -6,11 +6,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import inspectedPagePlaceholderStyles from './inspectedPagePlaceholder.css.js';
 let inspectedPagePlaceholderInstance;
 export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
-    updateId;
     constructor() {
         super({ useShadowDom: true });
         this.registerRequiredCSS(inspectedPagePlaceholderStyles);
-        UI.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.onResize, this);
         this.restoreMinimumSize();
     }
     static instance(opts = { forceNew: null }) {
@@ -19,12 +17,6 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin(UI
             inspectedPagePlaceholderInstance = new InspectedPagePlaceholder();
         }
         return inspectedPagePlaceholderInstance;
-    }
-    onResize() {
-        if (this.updateId) {
-            this.element.window().cancelAnimationFrame(this.updateId);
-        }
-        this.updateId = this.element.window().requestAnimationFrame(this.update.bind(this, false));
     }
     restoreMinimumSize() {
         this.setMinimumSize(150, 150);
@@ -43,7 +35,6 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin(UI
         return { x: left, y: top, width: right - left, height: bottom - top };
     }
     update(force) {
-        delete this.updateId;
         const rect = this.dipPageRect();
         const bounds = {
             x: Math.round(rect.x),

@@ -181,4 +181,52 @@ export const emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor = {
     defaultValue: '',
     storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
 };
+export const emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor = {
+    name: 'emulated-css-media-feature-prefers-reduced-transparency',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: '',
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const emulatedCSSMediaFeatureColorGamutSettingDescriptor = {
+    name: 'emulated-css-media-feature-color-gamut',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: '',
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const emulatedVisionDeficiencySettingDescriptor = {
+    name: 'emulated-vision-deficiency',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: 'none',
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const emulatedOSTextScaleSettingDescriptor = {
+    name: 'emulated-os-text-scale',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: '',
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const localFontsDisabledSettingDescriptor = {
+    name: 'local-fonts-disabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const avifFormatDisabledSettingDescriptor = {
+    name: 'avif-format-disabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const jpegXlFormatDisabledSettingDescriptor = {
+    name: 'jpeg-xl-format-disabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const webpFormatDisabledSettingDescriptor = {
+    name: 'webp-format-disabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
 //# sourceMappingURL=SDKSettings.js.map

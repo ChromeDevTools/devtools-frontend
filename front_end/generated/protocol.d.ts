@@ -18455,6 +18455,7 @@ export declare namespace WebAudio {
          * Context sample rate.
          */
         sampleRate: number;
+        renderQuantumSize: number;
     }
     /**
      * Protocol object for AudioListener

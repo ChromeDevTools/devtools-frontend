@@ -65,7 +65,14 @@ const { widget, widgetRef } = UI.Widget;
 export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format off
     render(html `
-    <devtools-widget class="vbox flex-auto" ${widget(input.searchableViewFactory)}>
+    <devtools-widget class="vbox flex-auto"
+      ${widget(element => {
+        const searchableView = new UI.SearchableView.SearchableView(input.searchProvider, input.replaceProvider, input.searchableViewId, element);
+        searchableView.setMinimalSearchQuerySize(0);
+        return searchableView;
+    })}
+      ${widgetRef(UI.SearchableView.SearchableView, e => { output.searchableView = e; })}
+    >
       <devtools-widget class="vbox flex-auto"
         ${widget(TabbedEditorContainer, { delegate: input.delegate, previouslyViewedFilesSetting: input.previouslyViewedFilesSetting })}
         ${widgetRef(TabbedEditorContainer, e => { output.editorContainer = e; })}>
@@ -176,7 +183,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox)
             searchableViewId: 'sources-view-search-config',
             scriptViewToolbarItems: this.#scriptViewToolbarItems,
             bottomToolbarItems: this.#bottomToolbarItems,
-            searchableViewFactory: this.#searchableViewFactory,
             delegate: this,
             previouslyViewedFilesSetting: this.previouslyViewedFilesSetting,
         };
@@ -187,6 +193,9 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox)
             },
             set editorContainer(value) {
                 that.setEditorContainer(value);
+            },
+            set searchableView(value) {
+                that.#searchableView = value;
             },
         };
         this.#view(input, output, this.element);
@@ -337,7 +346,10 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox)
         super.willHide();
     }
     searchableView() {
-        return this.#searchableViewFactory();
+        if (!this.#searchableView) {
+            this.performUpdate();
+        }
+        return this.#searchableView;
     }
     visibleView() {
         return (this.editorContainer?.visibleView ?? null);
@@ -677,13 +689,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox)
         const uiSourceCodeFrame = sourceFrame;
         uiSourceCodeFrame.commitEditing();
     }
-    #searchableViewFactory = () => {
-        if (!this.#searchableView) {
-            this.#searchableView = new UI.SearchableView.SearchableView(this, this, 'sources.search-sources-tab');
-            this.#searchableView.setMinimalSearchQuerySize(0);
-        }
-        return this.#searchableView;
-    };
     toggleBreakpointsActiveState(active) {
         this.#breakpointsActive = active;
         this.editorContainer?.element.classList.toggle('breakpoints-deactivated', !active);

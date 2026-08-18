@@ -449,29 +449,11 @@
   "core/sdk/Script.ts | unableToFetchScriptSource": {
     "message": "Unable to fetch script source."
   },
-  "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "Achromatopsia (no color)"
-  },
-  "core/sdk/sdk-meta.ts | blurredVision": {
-    "message": "Blurred vision"
-  },
   "core/sdk/sdk-meta.ts | customFormatters": {
     "message": "Custom formatters"
   },
-  "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "Deuteranopia (no green)"
-  },
-  "core/sdk/sdk-meta.ts | disableAvifFormat": {
-    "message": "Disable AVIF format"
-  },
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Disable cache while DevTools is open"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Disable JPEG XL format"
-  },
-  "core/sdk/sdk-meta.ts | disableLocalFonts": {
-    "message": "Disable local fonts"
   },
   "core/sdk/sdk-meta.ts | disableNetworkRequestBlocking": {
     "message": "Disable network request blocking"
@@ -479,71 +461,17 @@
   "core/sdk/sdk-meta.ts | disablePaused": {
     "message": "Disable paused state overlay"
   },
-  "core/sdk/sdk-meta.ts | disableWebpFormat": {
-    "message": "Disable WebP format"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateAnyVisionDeficiency": {
-    "message": "Do not emulate any vision deficiency"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateCss": {
-    "message": "Do not emulate CSS {PH1}"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
-    "message": "Do not emulate OS text scale"
-  },
-  "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "Emulate achromatopsia (no color)"
-  },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "Emulate auto dark mode"
   },
-  "core/sdk/sdk-meta.ts | emulateBlurredVision": {
-    "message": "Emulate blurred vision"
-  },
-  "core/sdk/sdk-meta.ts | emulateCss": {
-    "message": "Emulate CSS {PH1}"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssMediaFeature": {
-    "message": "Emulate CSS media feature {PH1}"
-  },
-  "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "Emulate deuteranopia (no green)"
-  },
-  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
-    "message": "Emulate OS text scale"
-  },
-  "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "Emulate protanopia (no red)"
-  },
-  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
-    "message": "Emulate reduced contrast"
-  },
-  "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "Emulate tritanopia (no blue)"
-  },
-  "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
-    "message": "Emulate vision deficiencies"
-  },
-  "core/sdk/sdk-meta.ts | enableAvifFormat": {
-    "message": "Enable AVIF format"
-  },
   "core/sdk/sdk-meta.ts | enableCache": {
     "message": "Enable cache"
-  },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Enable JPEG XL format"
-  },
-  "core/sdk/sdk-meta.ts | enableLocalFonts": {
-    "message": "Enable local fonts"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Enable network request blocking"
   },
   "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
     "message": "Allow loading remote file path resources in DevTools"
-  },
-  "core/sdk/sdk-meta.ts | enableWebpFormat": {
-    "message": "Enable WebP format"
   },
   "core/sdk/sdk-meta.ts | logXmlhttprequests": {
     "message": "Log XMLHttpRequests"
@@ -554,56 +482,8 @@
   "core/sdk/sdk-meta.ts | networkRequestBlocking": {
     "message": "Network request blocking"
   },
-  "core/sdk/sdk-meta.ts | noEmulation": {
-    "message": "No emulation"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
-    "message": "100% (default)"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
-    "message": "115%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
-    "message": "130%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
-    "message": "150%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
-    "message": "180%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
-    "message": "200%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation250": {
-    "message": "250%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation300": {
-    "message": "300%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation350": {
-    "message": "350%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
-    "message": "85%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
-    "message": "No emulation"
-  },
-  "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "Protanopia (no red)"
-  },
-  "core/sdk/sdk-meta.ts | query": {
-    "message": "query"
-  },
-  "core/sdk/sdk-meta.ts | reducedContrast": {
-    "message": "Reduced contrast"
-  },
   "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
     "message": "Example resources are source maps. Disabled by default for security reasons."
-  },
-  "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "Tritanopia (no blue)"
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
     "message": "Deprecated syntax found for metric \"{PH1}\". Use: <name>;dur=<duration>;desc=<description>"
@@ -674,11 +554,17 @@
   "core/sdk/SourceMapScopeChainEntry.ts | returnValue": {
     "message": "Return value"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | achromatopsia": {
+    "message": "Achromatopsia (no color)"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
     "message": "Auto-open DevTools for popups"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | blockAds": {
     "message": "Block ads on this site"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | blurredVision": {
+    "message": "Blurred vision"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | colorVisionDeficiency": {
     "message": "color vision deficiency"
@@ -689,11 +575,29 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | cssMediaType": {
     "message": "CSS media type"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | deuteranopia": {
+    "message": "Deuteranopia (no green)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disableAvifFormat": {
+    "message": "Disable AVIF format"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disableJpegXlFormat": {
+    "message": "Disable JPEG XL format"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disableLocalFonts": {
+    "message": "Disable local fonts"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disableWebpFormat": {
+    "message": "Disable WebP format"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
     "message": "Do not auto-open DevTools for popups"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateAFocusedPage": {
     "message": "Do not emulate a focused page"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateAnyVisionDeficiency": {
+    "message": "Do not emulate any vision deficiency"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCss": {
     "message": "Do not emulate CSS {PH1}"
@@ -701,11 +605,20 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCssMediaType": {
     "message": "Do not emulate CSS media type"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Do not emulate OS text scale"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotHighlightAdFrames": {
     "message": "Do not highlight ad frames"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateAchromatopsia": {
+    "message": "Emulate achromatopsia (no color)"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateAFocusedPage": {
     "message": "Emulate a focused page"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateBlurredVision": {
+    "message": "Emulate blurred vision"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateCss": {
     "message": "Emulate CSS {PH1}"
@@ -721,6 +634,36 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateCssScreenMediaType": {
     "message": "Emulate CSS screen media type"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateDeuteranopia": {
+    "message": "Emulate deuteranopia (no green)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateOsTextScale": {
+    "message": "Emulate OS text scale"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateProtanopia": {
+    "message": "Emulate protanopia (no red)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateReducedContrast": {
+    "message": "Emulate reduced contrast"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateTritanopia": {
+    "message": "Emulate tritanopia (no blue)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateVisionDeficiencies": {
+    "message": "Emulate vision deficiencies"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | enableAvifFormat": {
+    "message": "Enable AVIF format"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | enableJpegXlFormat": {
+    "message": "Enable JPEG XL format"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | enableLocalFonts": {
+    "message": "Enable local fonts"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | enableWebpFormat": {
+    "message": "Enable WebP format"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | forceAdBlocking": {
     "message": "Force ad blocking on this site"
@@ -755,14 +698,53 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | noEmulation": {
     "message": "No emulation"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (default)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation250": {
+    "message": "250%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation300": {
+    "message": "300%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation350": {
+    "message": "350%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulationNone": {
+    "message": "No emulation"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | paint": {
     "message": "paint"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | print": {
     "message": "print"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | protanopia": {
+    "message": "Protanopia (no red)"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | query": {
     "message": "query"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | reducedContrast": {
+    "message": "Reduced contrast"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | reloadPage": {
     "message": "Reload page"
@@ -796,6 +778,9 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
     "message": "Toggle CSS media feature prefers-color-scheme"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | tritanopia": {
+    "message": "Tritanopia (no blue)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "vision deficiency"
@@ -1546,6 +1531,9 @@
   },
   "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
     "message": "Email Verification Protocol"
+  },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | connectionAllowlist": {
+    "message": "Connection Allowlists API"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -7016,6 +7004,9 @@
   "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
     "message": "Conditional breakpoint"
   },
+  "panels/console/ConsoleViewMessage.ts | collapseChildren": {
+    "message": "Collapse children"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "Console"
   },
@@ -7048,6 +7039,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | exception": {
     "message": "<exception>"
+  },
+  "panels/console/ConsoleViewMessage.ts | expandRecursively": {
+    "message": "Expand recursively"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisError": {
     "message": "Understand this error"
@@ -8670,13 +8664,13 @@
     "message": "Understand this warning"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
-    "message": "Blocked Resource"
+    "message": "Blocked resource"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | nRequests": {
     "message": "{n, plural, =1 {# request} other {# requests}}"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | parentFrame": {
-    "message": "Parent Frame"
+    "message": "Parent frame"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | requestC": {
     "message": "Request"
@@ -8685,7 +8679,7 @@
     "message": "Domain"
   },
   "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
-    "message": "Show network requests that include this Set-Cookie header in the network panel"
+    "message": "Show network requests that include this Set-Cookie header in the Network panel"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Name"
@@ -8694,7 +8688,7 @@
     "message": "{n, plural, =1 {# cookie} other {# cookies}}"
   },
   "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
-    "message": "{n, plural, =1 {1 Raw Set-Cookie header} other {# Raw Set-Cookie headers}}"
+    "message": "{n, plural, =1 {1 raw Set-Cookie header} other {# raw Set-Cookie headers}}"
   },
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "Path"
@@ -8706,7 +8700,7 @@
     "message": "{n, plural, =1 { descendant} other { descendants}}"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
-    "message": "blocked"
+    "message": "Blocked"
   },
   "panels/issues/AffectedDirectivesView.ts | clickToRevealTheViolatingDomNode": {
     "message": "Click to reveal the violating DOM node in the Elements panel"
@@ -8721,7 +8715,7 @@
     "message": "{n, plural, =1 {# directive} other {# directives}}"
   },
   "panels/issues/AffectedDirectivesView.ts | reportonly": {
-    "message": "report-only"
+    "message": "Report-only"
   },
   "panels/issues/AffectedDirectivesView.ts | resourceC": {
     "message": "Resource"
@@ -8769,7 +8763,7 @@
     "message": "Removed"
   },
   "panels/issues/AffectedHeavyAdView.ts | resolutionStatus": {
-    "message": "Resolution Status"
+    "message": "Resolution status"
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Warned"
@@ -8799,19 +8793,19 @@
     "message": "Click to reveal the frame’s DOM node in the Elements panel"
   },
   "panels/issues/AffectedResourcesView.ts | unavailable": {
-    "message": "unavailable"
+    "message": "Unavailable"
   },
   "panels/issues/AffectedResourcesView.ts | unknown": {
-    "message": "unknown"
+    "message": "Unknown"
   },
   "panels/issues/AffectedSelectivePermissionsInterventionView.ts | adAncestry": {
-    "message": "Ad Ancestry"
+    "message": "Ad ancestry"
   },
   "panels/issues/AffectedSelectivePermissionsInterventionView.ts | api": {
     "message": "API"
   },
   "panels/issues/AffectedSelectivePermissionsInterventionView.ts | loading": {
-    "message": "loading…"
+    "message": "Loading…"
   },
   "panels/issues/AffectedSelectivePermissionsInterventionView.ts | nViolations": {
     "message": "{n, plural, =1 {# violation} other {# violations}}"
@@ -8820,13 +8814,13 @@
     "message": "Script"
   },
   "panels/issues/AffectedSelectivePermissionsInterventionView.ts | unknown": {
-    "message": "unknown"
+    "message": "Unknown"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
     "message": "A SharedArrayBuffer was instantiated in a context that is not cross-origin isolated"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | blocked": {
-    "message": "blocked"
+    "message": "Blocked"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | instantiation": {
     "message": "Instantiation"
@@ -8835,10 +8829,10 @@
     "message": "{n, plural, =1 {# violation} other {# violations}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
-    "message": "SharedArrayBuffer was transfered to a context that is not cross-origin isolated"
+    "message": "SharedArrayBuffer was transferred to a context that is not cross-origin isolated"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sourceLocation": {
-    "message": "Source Location"
+    "message": "Source location"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | status": {
     "message": "Status"
@@ -8850,7 +8844,7 @@
     "message": "Trigger"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
-    "message": "warning"
+    "message": "Warning"
   },
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n, plural, =1 {# source} other {# sources}}"
@@ -8862,37 +8856,37 @@
     "message": "Hide issues"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
-    "message": "Access-Control-Allow-Credentials Header Value"
+    "message": "Access-Control-Allow-Credentials header value"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowedOrigin": {
-    "message": "Allowed Origin (from header)"
+    "message": "Allowed origin (from header)"
   },
   "panels/issues/CorsIssueDetailsView.ts | blocked": {
-    "message": "blocked"
+    "message": "Blocked"
   },
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestHeader": {
-    "message": "Disallowed Request Header"
+    "message": "Disallowed request header"
   },
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestMethod": {
-    "message": "Disallowed Request Method"
+    "message": "Disallowed request method"
   },
   "panels/issues/CorsIssueDetailsView.ts | failedRequest": {
-    "message": "Failed Request"
+    "message": "Failed request"
   },
   "panels/issues/CorsIssueDetailsView.ts | header": {
     "message": "Header"
   },
   "panels/issues/CorsIssueDetailsView.ts | initiatorAddressSpace": {
-    "message": "Initiator Address"
+    "message": "Initiator address"
   },
   "panels/issues/CorsIssueDetailsView.ts | initiatorContext": {
-    "message": "Initiator Context"
+    "message": "Initiator context"
   },
   "panels/issues/CorsIssueDetailsView.ts | insecure": {
-    "message": "insecure"
+    "message": "Insecure"
   },
   "panels/issues/CorsIssueDetailsView.ts | invalidValue": {
-    "message": "Invalid Value (if available)"
+    "message": "Invalid value (if available)"
   },
   "panels/issues/CorsIssueDetailsView.ts | nRequests": {
     "message": "{n, plural, =1 {# request} other {# requests}}"
@@ -8904,43 +8898,43 @@
     "message": "HTTP status of preflight request didn’t indicate success"
   },
   "panels/issues/CorsIssueDetailsView.ts | preflightRequest": {
-    "message": "Preflight Request"
+    "message": "Preflight request"
   },
   "panels/issues/CorsIssueDetailsView.ts | preflightRequestIfProblematic": {
-    "message": "Preflight Request (if problematic)"
+    "message": "Preflight request (if problematic)"
   },
   "panels/issues/CorsIssueDetailsView.ts | problem": {
     "message": "Problem"
   },
   "panels/issues/CorsIssueDetailsView.ts | problemInvalidValue": {
-    "message": "Invalid Value"
+    "message": "Invalid value"
   },
   "panels/issues/CorsIssueDetailsView.ts | problemMissingHeader": {
-    "message": "Missing Header"
+    "message": "Missing header"
   },
   "panels/issues/CorsIssueDetailsView.ts | problemMultipleValues": {
-    "message": "Multiple Values"
+    "message": "Multiple values"
   },
   "panels/issues/CorsIssueDetailsView.ts | request": {
     "message": "Request"
   },
   "panels/issues/CorsIssueDetailsView.ts | resourceAddressSpace": {
-    "message": "Resource Address"
+    "message": "Resource address"
   },
   "panels/issues/CorsIssueDetailsView.ts | secure": {
-    "message": "secure"
+    "message": "Secure"
   },
   "panels/issues/CorsIssueDetailsView.ts | sourceLocation": {
-    "message": "Source Location"
+    "message": "Source location"
   },
   "panels/issues/CorsIssueDetailsView.ts | status": {
     "message": "Status"
   },
   "panels/issues/CorsIssueDetailsView.ts | unsupportedScheme": {
-    "message": "Unsupported Scheme"
+    "message": "Unsupported scheme"
   },
   "panels/issues/CorsIssueDetailsView.ts | warning": {
-    "message": "warning"
+    "message": "Warning"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
     "message": "Frame"
@@ -8958,13 +8952,13 @@
     "message": "Unhide all"
   },
   "panels/issues/IssueKindView.ts | hideAllCurrentBreakingChanges": {
-    "message": "Hide all current Breaking Changes"
+    "message": "Hide all current breaking changes"
   },
   "panels/issues/IssueKindView.ts | hideAllCurrentImprovements": {
-    "message": "Hide all current Improvements"
+    "message": "Hide all current improvements"
   },
   "panels/issues/IssueKindView.ts | hideAllCurrentPageErrors": {
-    "message": "Hide all current Page Errors"
+    "message": "Hide all current page errors"
   },
   "panels/issues/issues-meta.ts | issues": {
     "message": "Issues"
@@ -8976,10 +8970,10 @@
     "message": "Content Security Policy"
   },
   "panels/issues/IssuesPane.ts | cors": {
-    "message": "Cross Origin Resource Sharing"
+    "message": "Cross-Origin Resource Sharing"
   },
   "panels/issues/IssuesPane.ts | crossOriginEmbedderPolicy": {
-    "message": "Cross Origin Embedder Policy"
+    "message": "Cross-Origin Embedder Policy"
   },
   "panels/issues/IssuesPane.ts | generic": {
     "message": "Generic"
@@ -8994,13 +8988,13 @@
     "message": "Group displayed issues under associated categories"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Group displayed issues as page errors, breaking changes, and improvements"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
-    "message": "Heavy Ads"
+    "message": "Heavy ads"
   },
   "panels/issues/IssuesPane.ts | includeCookieIssuesCausedBy": {
-    "message": "Include cookie Issues caused by third-party sites"
+    "message": "Include cookie issues caused by third-party sites"
   },
   "panels/issues/IssuesPane.ts | includeThirdpartyCookieIssues": {
     "message": "Include third-party cookie issues"
@@ -9009,10 +9003,10 @@
     "message": "On this page you can find warnings from the browser."
   },
   "panels/issues/IssuesPane.ts | lowTextContrast": {
-    "message": "Low Text Contrast"
+    "message": "Low text contrast"
   },
   "panels/issues/IssuesPane.ts | mixedContent": {
-    "message": "Mixed Content"
+    "message": "Mixed content"
   },
   "panels/issues/IssuesPane.ts | noIssues": {
     "message": "No issues detected"
@@ -9024,25 +9018,25 @@
     "message": "Other"
   },
   "panels/issues/IssuesPane.ts | permissionElement": {
-    "message": "PEPC Element"
+    "message": "Permission element"
   },
   "panels/issues/IssuesPane.ts | quirksMode": {
-    "message": "Quirks Mode"
+    "message": "Quirks mode"
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
-    "message": "SameSite Cookie"
+    "message": "SameSite cookie"
   },
   "panels/issues/IssuesPane.ts | selectivePermissionsIntervention": {
-    "message": "Selective Permissions Intervention"
+    "message": "Selective permissions intervention"
   },
   "panels/issues/IssueView.ts | affectedResources": {
-    "message": "Affected Resources"
+    "message": "Affected resources"
   },
   "panels/issues/IssueView.ts | automaticallyUpgraded": {
-    "message": "automatically upgraded"
+    "message": "Automatically upgraded"
   },
   "panels/issues/IssueView.ts | blocked": {
-    "message": "blocked"
+    "message": "Blocked"
   },
   "panels/issues/IssueView.ts | hideIssuesLikeThis": {
     "message": "Hide issues like this"
@@ -9060,7 +9054,7 @@
     "message": "{n, plural, =1 {# resource} other {# resources}}"
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
-    "message": "Restriction Status"
+    "message": "Restriction status"
   },
   "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
     "message": "Unhide issues like this"

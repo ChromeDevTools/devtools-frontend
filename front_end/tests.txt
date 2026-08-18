@@ -54,6 +54,8 @@ core/sdk/AnimationModel.test.js
 core/sdk/AutofillModel.test.js
 core/sdk/CPUThrottlingManager.test.js
 core/sdk/CSSContainerQuery.test.js
+core/sdk/CSSModel.test.js
+core/sdk/DOMModel.test.js
 core/sdk/DebuggerModel.test.js
 core/sdk/FrameManager.test.js
 core/sdk/NetworkManager.test.js
@@ -61,6 +63,7 @@ core/sdk/OverlayPersistentHighlighter.test.js
 core/sdk/PageResourceLoader.test.js
 core/sdk/RuntimeModel.test.js
 core/sdk/ServerSentEventsProtocol.test.js
+core/sdk/SourceMapManager.test.js
 core/sdk/Target.test.js
 core/sdk/TargetManager.test.js
 core/text_utils/ContentData.test.js
@@ -97,6 +100,7 @@ models/heap_snapshot/heap_snapshot.test.js
 models/issues_manager/ConnectionAllowlistIssue.test.js
 models/issues_manager/DeprecationIssue.test.js
 models/issues_manager/ElementAccessibilityIssue.test.js
+models/issues_manager/FederatedAuthRequestIssue.test.js
 models/issues_manager/FederatedAuthUserInfoRequestIssue.test.js
 models/issues_manager/GenericIssue.test.js
 models/issues_manager/Issue.test.js
@@ -123,7 +127,6 @@ models/workspace/WorkspaceImpl.test.js
 testing/TestIdGeneration.test.js
 core/sdk/CSSMatchedStyles.test.js
 core/sdk/CSSMetadata.test.js
-core/sdk/CSSModel.test.js
 core/sdk/CSSProperty.test.js
 core/sdk/CSSPropertyParser.test.js
 core/sdk/CSSPropertyParserMatchers.test.js
@@ -135,7 +138,6 @@ core/sdk/Cookie.test.js
 core/sdk/CookieModel.test.js
 core/sdk/CookieParser.test.js
 core/sdk/CrashReportContextModel.test.js
-core/sdk/DOMModel.test.js
 core/sdk/DOMStorageModel.test.js
 core/sdk/EmulationModel.test.js
 core/sdk/EnhancedTracesParser.test.js
@@ -156,7 +158,6 @@ core/sdk/ServiceWorkerManager.test.js
 core/sdk/SourceMap.test.js
 core/sdk/SourceMapCache.test.js
 core/sdk/SourceMapFunctionRanges.test.js
-core/sdk/SourceMapManager.test.js
 core/sdk/SourceMapScopeChainEntry.test.js
 core/sdk/SourceMapScopesInfo.test.js
 core/sdk/StorageBucketsModel.test.js

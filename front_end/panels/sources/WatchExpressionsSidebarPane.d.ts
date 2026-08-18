@@ -15,6 +15,38 @@ interface ViewInput {
     onExpand(e: WatchExpression, expanded: boolean): unknown;
     watchExpressions: WatchExpression[];
 }
+export interface WatchExpressionPromptViewInput {
+    expression?: WatchExpression;
+    linkifier?: Components.Linkifier.Linkifier;
+    completionsId: string;
+    completions: string[];
+    onCommit: (detail: string) => void;
+    onCancel: () => void;
+    onBeforeAutoComplete: (event: UI.TextPrompt.TextPromptElement.BeforeAutoCompleteEvent) => void;
+    onStartEditing: () => void;
+    onDelete: () => void;
+    onContextMenu: (event: Event) => void;
+}
+type PromptView = (input: WatchExpressionPromptViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_PROMPT_VIEW: PromptView;
+export declare class WatchExpressionPromptWidget extends UI.Widget.Widget {
+    #private;
+    onCommit?: (value: string) => void;
+    onCancel?: () => void;
+    onStartEditing?: () => void;
+    onDelete?: () => void;
+    onContextMenu?: (event: Event) => void;
+    set expression(expression: WatchExpression | undefined);
+    get expression(): WatchExpression | undefined;
+    set linkifier(linkifier: Components.Linkifier.Linkifier | undefined);
+    get linkifier(): Components.Linkifier.Linkifier | undefined;
+    set completionsId(completionsId: string);
+    get completionsId(): string;
+    constructor(element?: HTMLElement, view?: PromptView);
+    wasShown(): void;
+    wasHidden(): void;
+    performUpdate(): void;
+}
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.ActionRegistration.ActionDelegate, UI.Toolbar.ItemsProvider {
@@ -24,7 +56,7 @@ export declare class WatchExpressionsSidebarPane extends UI.Widget.VBox implemen
     static instance(): WatchExpressionsSidebarPane;
     get watchExpressions(): WatchExpression[];
     toolbarItems(): TemplateResult;
-    private saveExpressions;
+    saveExpressions(): void;
     private addButtonClicked;
     private refreshButtonClicked;
     performUpdate(): Promise<void>;

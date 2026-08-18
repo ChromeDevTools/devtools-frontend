@@ -1630,7 +1630,6 @@ var ObjectPropertiesSectionWidget = class extends UI2.Widget.Widget {
   #skipProto = false;
   #linkifier;
   #showOverflow = true;
-  #rootContextMenuEnabled = false;
   #view = OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW;
   constructor(element, view = OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW) {
     super(element);
@@ -1702,6 +1701,11 @@ var ObjectPropertiesSectionWidget = class extends UI2.Widget.Widget {
     this.#showOverflow = val;
     this.requestUpdate();
   }
+  onExpand = (expanded) => {
+    if (this.#root) {
+      this.#root.expanded = expanded;
+    }
+  };
   performUpdate() {
     if (!this.#root) {
       return;
@@ -1712,8 +1716,8 @@ var ObjectPropertiesSectionWidget = class extends UI2.Widget.Widget {
       linkifier: this.#linkifier,
       skipProto: this.#skipProto,
       showOverflow: this.#showOverflow,
-      onRootContextMenu: this.#rootContextMenuEnabled ? this.onRootContextMenu : void 0,
-      onRootItemContextMenu: this.onRootItemContextMenu
+      onRootItemContextMenu: this.onRootItemContextMenu,
+      onExpand: this.onExpand
     }, {}, this.contentElement);
   }
   onDetach() {
@@ -1727,26 +1731,6 @@ var ObjectPropertiesSectionWidget = class extends UI2.Widget.Widget {
     this.#root?.addEventListener("children-changed", this.requestUpdate, this);
     this.#root?.addEventListener("expanded-changed", this.requestUpdate, this);
   }
-  get rootContextMenuEnabled() {
-    return this.#rootContextMenuEnabled;
-  }
-  set rootContextMenuEnabled(val) {
-    if (this.#rootContextMenuEnabled === val) {
-      return;
-    }
-    this.#rootContextMenuEnabled = val;
-    this.requestUpdate();
-  }
-  onRootContextMenu = (contextMenu) => {
-    if (!this.#root) {
-      return;
-    }
-    contextMenu.appendApplicableItems(this.#root);
-    if (this.#root.object instanceof SDK3.RemoteObject.LocalJSONObject) {
-      contextMenu.viewSection().appendItem(i18nString2(UIStrings2.expandRecursively), this.#root.expandRecursively.bind(this.#root, EXPANDABLE_MAX_DEPTH), { jslogContext: "expand-recursively" });
-      contextMenu.viewSection().appendItem(i18nString2(UIStrings2.collapseChildren), this.#root.collapseRecursively.bind(this.#root), { jslogContext: "collapse-children" });
-    }
-  };
   onRootItemContextMenu = (contextMenu) => {
     const root = this.#root;
     if (!root) {
@@ -1814,7 +1798,6 @@ var OBJECT_TREE_DEFAULT_VIEW = (input, output, target) => {
   render2(entry.nodes.map((node) => html2`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`), target, {
     container: {
       classes,
-      attributes: { role: "group" },
       interceptedListeners: {
         expand: (e) => input.onExpand(e.detail.expanded)
       }
@@ -1912,15 +1895,6 @@ function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
   })}></ul>`;
 }
 var OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW = (input, _output, target) => {
-  const contextMenuHandler = (event) => {
-    if (!input.onRootContextMenu) {
-      return;
-    }
-    event.consume(true);
-    const contextMenu = new UI2.ContextMenu.ContextMenu(event);
-    input.onRootContextMenu(contextMenu);
-    void contextMenu.show();
-  };
   const onRootItemContextMenuHandler = (event) => {
     event.consume(true);
     const contextMenu = new UI2.ContextMenu.ContextMenu(event);
@@ -1932,12 +1906,11 @@ var OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW = (input, _output, target) => {
         class="object-properties-section"
         ?hide-overflow=${!input.showOverflow}
         show-selection-on-keyboard-focus
-        @contextmenu=${input.onRootContextMenu ? contextMenuHandler : void 0}
         .template=${input.title ? html2`
       <ul role="tree" class="source-code object-properties-section">
         <style>${objectValue_css_default}</style>
         <style>${objectPropertiesSection_css_default}</style>
-        <li role="treeitem" class="object-properties-section-root-element" ?open=${input.objectTree.expanded} @contextmenu=${onRootItemContextMenuHandler}>
+        <li role="treeitem" class="object-properties-section-root-element" toggle-on-click ?open=${input.objectTree.expanded} @expand=${(e) => input.onExpand(e.detail.expanded)} @contextmenu=${onRootItemContextMenuHandler}>
           ${input.title}
           <ul role="group" ${widget(ObjectTreeWidget, {
     objectTree: input.objectTree,
@@ -3194,16 +3167,15 @@ var ObjectPopoverHelper = class _ObjectPopoverHelper {
           titleElement.createChild("span").textContent = description;
         }
         linkifier = new Components.Linkifier.Linkifier();
-        const section = new ObjectPropertiesSection(
-          result,
-          "",
-          linkifier,
-          true
-          /* showOverflow */
-        );
+        const section = new ObjectPropertiesSectionWidget();
         section.element.classList.add("object-popover-tree");
-        section.titleLessMode();
-        popoverContentElement.appendChild(section.element);
+        section.root = result;
+        if (section.objectTree) {
+          section.objectTree.expanded = true;
+        }
+        section.linkifier = linkifier;
+        section.showOverflow = true;
+        section.show(popoverContentElement, null, true);
       }
       popoverContentElement.dataset.stableNameForTest = "object-popover-content";
       popover.setMaxContentSize(new Geometry.Size(300, 250));

@@ -40,6 +40,7 @@ import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
@@ -87,6 +88,162 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/WatchExpressionsSidebar
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let watchExpressionsSidebarPaneInstance;
 const { classMap, ifDefined } = Directives;
+const { widget } = UI.Widget;
+export const DEFAULT_PROMPT_VIEW = (input, _output, target) => {
+    const e = input.expression;
+    if (!e) {
+        render(nothing, target);
+        return;
+    }
+    const stopPropagationIfEditing = (event) => {
+        if (e.editing) {
+            event.stopPropagation();
+        }
+    };
+    const renderNameElement = () => ObjectUI.ObjectPropertiesSection.renderPropertyName(e.expression, /* isPrivate= */ false, e.expression ?? undefined);
+    // clang-format off
+    render(html `
+        <devtools-prompt
+            class=${classMap({
+        monospace: true,
+        'watch-expression': true,
+        'watch-expression-text-prompt-proxy': Boolean(e.editing),
+    })}
+            value=${e.expression ?? ''}
+            ?editing=${Boolean(e.editing)}
+            completions=${input.completionsId}
+            @commit=${(event) => input.onCommit(event.detail)}
+            @cancel=${() => input.onCancel()}
+            @beforeautocomplete=${input.onBeforeAutoComplete}
+            @mousedown=${stopPropagationIfEditing}
+            @click=${stopPropagationIfEditing}
+            @dblclick=${stopPropagationIfEditing}>
+          <div class=${classMap({
+        'watch-expression-header': true,
+        'watch-expression-object-header': !e.exceptionDetails && e.result !== undefined &&
+            e.result.hasChildren && !e.result.object.customPreview(),
+    })}
+               @contextmenu=${input.onContextMenu}
+               @dblclick=${input.onStartEditing}>
+            <div class=${classMap({ 'watch-expression-title': true,
+        'tree-element-title': true,
+        dimmed: Boolean(e.exceptionDetails) && !e.result })}>
+              <devtools-button
+                .data=${{
+        variant: "icon" /* Buttons.Button.Variant.ICON */,
+        iconName: 'bin',
+        size: "SMALL" /* Buttons.Button.Size.SMALL */,
+        jslogContext: 'delete-watch-expression',
+    }}
+                class=watch-expression-delete-button
+                title=${i18nString(UIStrings.deleteWatchExpression)}
+                @click=${input.onDelete}></devtools-button>
+              ${renderNameElement()}
+              <span class=watch-expressions-separator>: </span>
+              ${e.exceptionDetails || !e.result
+        ? html `<span
+                    class="watch-expression-error value"
+                    title=${ifDefined(e.exceptionDetails?.exception?.description)}
+                    >${i18nString(UIStrings.notAvailable)}</span>`
+        : ObjectUI.ObjectPropertiesSection.renderPropertyValue(e.result.object, Boolean(e.exceptionDetails), false /* showPreview */, input.linkifier, false /* isSyntheticProperty */, undefined /* variableName */, undefined /* includeNullOrUndefined */, /* useCustomPreview */ true)}
+            </div>
+          </div>
+          ${e.editing ? html `
+            <datalist id=${input.completionsId}>
+              ${input.completions.map(c => html `<option>${c}</option>`)}
+            </datalist>
+          ` : nothing}
+        </devtools-prompt>
+      `, target);
+    // clang-format on
+};
+export class WatchExpressionPromptWidget extends UI.Widget.Widget {
+    #expression;
+    #linkifier;
+    #completions = [];
+    #completionsId = '';
+    #view;
+    onCommit;
+    onCancel;
+    onStartEditing;
+    onDelete;
+    onContextMenu;
+    set expression(expression) {
+        if (this.#expression !== expression) {
+            this.#completions = [];
+            this.#expression = expression;
+        }
+        this.requestUpdate();
+    }
+    get expression() {
+        return this.#expression;
+    }
+    set linkifier(linkifier) {
+        if (this.#linkifier === linkifier) {
+            return;
+        }
+        this.#linkifier = linkifier;
+        this.requestUpdate();
+    }
+    get linkifier() {
+        return this.#linkifier;
+    }
+    set completionsId(completionsId) {
+        if (this.#completionsId === completionsId) {
+            return;
+        }
+        this.#completionsId = completionsId;
+        this.requestUpdate();
+    }
+    get completionsId() {
+        return this.#completionsId;
+    }
+    constructor(element, view = DEFAULT_PROMPT_VIEW) {
+        super(element);
+        this.#view = view;
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    wasHidden() {
+        super.wasHidden();
+        this.#completions = [];
+    }
+    #handleBeforeAutoComplete = async (event) => {
+        const suggestions = await TextEditor.JavaScript.completeInContext(event.detail.expression, event.detail.filter, event.detail.force);
+        this.#completions = suggestions.map(v => v.text);
+        this.requestUpdate();
+    };
+    performUpdate() {
+        if (!this.#expression?.editing) {
+            this.#completions = [];
+        }
+        const viewInput = {
+            expression: this.#expression,
+            linkifier: this.#linkifier,
+            completionsId: this.#completionsId,
+            completions: this.#completions,
+            onCommit: (detail) => {
+                this.#completions = [];
+                this.requestUpdate();
+                this.onCommit?.(detail);
+            },
+            onCancel: () => {
+                this.#completions = [];
+                this.requestUpdate();
+                this.onCancel?.();
+            },
+            onBeforeAutoComplete: (event) => {
+                void this.#handleBeforeAutoComplete(event);
+            },
+            onStartEditing: () => this.onStartEditing?.(),
+            onDelete: () => this.onDelete?.(),
+            onContextMenu: (event) => this.onContextMenu?.(event),
+        };
+        this.#view(viewInput, undefined, this.contentElement);
+    }
+}
 export const DEFAULT_VIEW = (input, output, target) => {
     const onContextMenu = (watchExpression, event) => {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -120,60 +277,32 @@ export const DEFAULT_VIEW = (input, output, target) => {
             input.onDelete(expression);
         }
     };
-    const renderNameElement = (e) => ObjectUI.ObjectPropertiesSection.renderPropertyName(e.expression, /* isPrivate= */ false, e.expression ?? undefined);
-    const renderTreeElement = (e) => 
-    // clang-format off
-    html `<li
+    const renderTreeElement = (e) => {
+        const completionsId = `watch-expression-completions-${input.watchExpressions.indexOf(e)}`;
+        // clang-format off
+        return html `<li
           class=${classMap({ 'watch-expression-tree-item': true, 'watch-expression-editing': e.editing })}
           @keydown=${onExpressionKeydown.bind(undefined, e)}
           @expand=${(event) => input.onExpand(e, event.detail.expanded)}
           role=treeitem>
-        <devtools-prompt
-            value=${e.expression ?? ''}
-            @commit=${(event) => input.onFinishEditing(e, event.detail)}
-            @cancel=${() => input.onFinishEditing(e, null)}
-            ?editing=${e.editing}
-            @mousedown=${(event) => e.editing && event.stopPropagation()}
-            @click=${(event) => e.editing && event.stopPropagation()}
-            @dblclick=${(event) => e.editing && event.stopPropagation()}
-            class=${classMap({ monospace: true, 'watch-expression': true,
-        'watch-expression-text-prompt-proxy': e.editing })}>
-          <div class=${classMap({
-        'watch-expression-header': true,
-        'watch-expression-object-header': !e.exceptionDetails && e.result !== undefined &&
-            e.result.hasChildren && !e.result.object.customPreview(),
-    })}
-               @contextmenu=${onContextMenu.bind(undefined, e)}
-               @dblclick=${() => input.onStartEditing(e)}>
-            <div class=${classMap({ 'watch-expression-title': true,
-        'tree-element-title': true,
-        dimmed: Boolean(e.exceptionDetails) && !e.result })}>
-              <devtools-button
-                .data=${{
-        variant: "icon" /* Buttons.Button.Variant.ICON */,
-        iconName: 'bin',
-        size: "SMALL" /* Buttons.Button.Size.SMALL */,
-        jslogContext: 'delete-watch-expression',
-    }}
-                class=watch-expression-delete-button
-                title=${i18nString(UIStrings.deleteWatchExpression)}
-                @click=${() => input.onDelete(e)}></devtools-button>
-              ${renderNameElement(e)}<span class=watch-expressions-separator>: </span>${e.exceptionDetails || !e.result
-        ? html `<span
-                    class="watch-expression-error value"
-                    title=${ifDefined(e.exceptionDetails?.exception?.description)}
-                    >${i18nString(UIStrings.notAvailable)}</span>`
-        : ObjectUI.ObjectPropertiesSection.renderPropertyValue(e.result.object, Boolean(e.exceptionDetails), false /* showPreview */, input.linkifier, false /* isSyntheticProperty */, undefined /* variableName */, undefined /* includeNullOrUndefined */, /* useCustomPreview */ true)}
-            </div>
-          </div>
-        </devtools-prompt>
+            <devtools-widget ${widget(WatchExpressionPromptWidget, {
+            expression: e,
+            linkifier: input.linkifier,
+            completionsId,
+            onCommit: (detail) => input.onFinishEditing(e, detail),
+            onCancel: () => input.onFinishEditing(e, null),
+            onStartEditing: () => input.onStartEditing(e),
+            onDelete: () => input.onDelete(e),
+            onContextMenu: (event) => onContextMenu(e, event),
+        })}></devtools-widget>
         ${e.editing || !e.result || e.exceptionDetails ||
-        !e.result.hasChildren || e.result.object.customPreview() ? nothing : html `
+            !e.result.hasChildren || e.result.object.customPreview() ? nothing : html `
           <ul role=group>
-            ${ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(e.result.children ?? {}, true /* skipProto */, true /* skipGettersAndSetters */).map(node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+            ${ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(e.result.children ?? {}, false /* skipProto */, false /* skipGettersAndSetters */, input.linkifier).map(node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
           </ul>`}
       </li>`;
-    // clang-format on
+        // clang-format on
+    };
     render(
     // clang-format off
     html `

@@ -361,7 +361,8 @@ export default `/* Copyright 2021 The Chromium Authors
   content: "i";
 }
 
-.console-view-object-properties-section:not(.expanded) .info-note {
+.console-view-object-properties-section:not(.expanded) .info-note,
+.object-properties-section-root-element:not(.expanded) .info-note {
   display: none;
 }
 
@@ -389,7 +390,8 @@ export default `/* Copyright 2021 The Chromium Authors
   margin-bottom: -2px;
 }
 
-.console-object-preview {
+.console-object-preview,
+.console-object-preview + .info-note {
   white-space: normal;
   overflow-wrap: break-word;
   font-style: italic;

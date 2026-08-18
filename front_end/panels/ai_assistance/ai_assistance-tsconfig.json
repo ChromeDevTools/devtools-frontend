@@ -111,13 +111,7 @@
       "path": "../../models/workspace/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/workspace_diff/bundle-tsconfig.json"
-    },
-    {
       "path": "../application/bundle-tsconfig.json"
-    },
-    {
-      "path": "../changes/bundle-tsconfig.json"
     },
     {
       "path": "../common/bundle-tsconfig.json"

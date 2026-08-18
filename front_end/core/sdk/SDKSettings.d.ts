@@ -1,3 +1,4 @@
+import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 export declare const jsSourceMapsEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const cssSourceMapsEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
@@ -30,3 +31,11 @@ export declare const emulatedCSSMediaFeatureForcedColorsSettingDescriptor: Commo
 export declare const emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor: Common.Settings.SettingDescriptor<string>;
 export declare const emulatedCSSMediaFeaturePrefersContrastSettingDescriptor: Common.Settings.SettingDescriptor<string>;
 export declare const emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const emulatedCSSMediaFeatureColorGamutSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const emulatedVisionDeficiencySettingDescriptor: Common.Settings.SettingDescriptor<Protocol.Emulation.SetEmulatedVisionDeficiencyRequestType>;
+export declare const emulatedOSTextScaleSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const localFontsDisabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const avifFormatDisabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const jpegXlFormatDisabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const webpFormatDisabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;

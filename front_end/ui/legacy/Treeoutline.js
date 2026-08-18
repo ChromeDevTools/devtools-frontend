@@ -1403,10 +1403,9 @@ class TreeViewTreeElement extends TreeElement {
             this.refresh();
         });
     }
-    refresh() {
+    updateAttributes() {
         const expandable = Boolean(this.configElement.querySelector(':scope > ul[role="group"]'));
         this.setExpandable(expandable);
-        this.titleElement.textContent = '';
         this.#clonedAttributes.forEach(attr => this.listItemElement.attributes.removeNamedItem(attr));
         this.#clonedClasses.forEach(className => this.listItemElement.classList.remove(className));
         this.#clonedAttributes.clear();
@@ -1422,6 +1421,12 @@ class TreeViewTreeElement extends TreeElement {
             this.listItemElement.classList.add(className);
             this.#clonedClasses.add(className);
         }
+        this.hidden = hasBooleanAttribute(this.configElement, 'hidden');
+        this.updateExpansionFromAttribute();
+    }
+    refresh() {
+        this.titleElement.textContent = '';
+        this.updateAttributes();
         const childUl = this.configElement.querySelector(':scope > ul[role="group"]');
         const templateElements = childUl ? [this.configElement, childUl] : [this.configElement];
         Lit.CustomDirectives.InterceptBindingDirective.setEventListeners(templateElements, this.listItemElement);
@@ -1432,6 +1437,7 @@ class TreeViewTreeElement extends TreeElement {
             this.titleElement.appendChild(HTMLElementWithLightDOMTemplate.cloneNode(child));
         }
         this.hidden = hasBooleanAttribute(this.configElement, 'hidden');
+        this.toggleOnClick = hasBooleanAttribute(this.configElement, 'toggle-on-click');
         this.updateExpansionFromAttribute();
         Highlighting.HighlightManager.HighlightManager.instance().apply(this.titleElement);
     }
@@ -1615,10 +1621,11 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
         return treeElement ? { expanded, treeElement, classes: subtreeRoot.classList } : null;
     }
     updateNode(node, attributeName) {
-        while (node?.parentNode && !(node instanceof HTMLElement)) {
-            node = node.parentNode;
+        let current = node;
+        while (current?.parentNode && !(current instanceof HTMLElement)) {
+            current = current.parentNode;
         }
-        const treeNode = node instanceof HTMLElement ? node.closest('li[role="treeitem"]') : null;
+        const treeNode = current instanceof HTMLElement ? current.closest('li[role="treeitem"]') : null;
         if (!treeNode) {
             return;
         }
@@ -1626,13 +1633,17 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
         if (!treeElement) {
             return;
         }
+        if (node === treeNode) {
+            treeElement.updateAttributes();
+            if (attributeName === 'selected' && hasBooleanAttribute(treeNode, 'selected')) {
+                treeElement.revealAndSelect(true);
+            }
+            return;
+        }
+        if (node === treeNode && attributeName === 'toggle-on-click') {
+            treeElement.toggleOnClick = hasBooleanAttribute(treeNode, 'toggle-on-click');
+        }
         treeElement.refreshSoon();
-        if (node === treeNode && attributeName === 'selected' && hasBooleanAttribute(treeNode, 'selected')) {
-            treeElement.revealAndSelect(true);
-        }
-        if (node === treeNode && attributeName === 'open') {
-            treeElement.updateExpansionFromAttribute();
-        }
     }
     addNodes(nodes) {
         for (const node of getTreeNodes(nodes)) {

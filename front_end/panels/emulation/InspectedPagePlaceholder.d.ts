@@ -10,12 +10,10 @@ declare const InspectedPagePlaceholder_base: (new (...args: any[]) => {
     dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.Widget;
 export declare class InspectedPagePlaceholder extends InspectedPagePlaceholder_base {
-    private updateId?;
     constructor();
     static instance(opts?: {
         forceNew: boolean | null;
     }): InspectedPagePlaceholder;
-    onResize(): void;
     restoreMinimumSize(): void;
     clearMinimumSize(): void;
     private dipPageRect;

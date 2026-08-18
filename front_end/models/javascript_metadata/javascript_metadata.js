@@ -7147,6 +7147,10 @@ var NativeFunctions = [
     signatures: [["?faceDetectorOptions"]]
   },
   {
+    name: "setShape",
+    signatures: [["rects"]]
+  },
+  {
     name: "ExtendableEvent",
     signatures: [["type", "?eventInitDict"]]
   },

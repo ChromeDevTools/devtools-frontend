@@ -2557,6 +2557,9 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     return this.#mode.insets;
   }
   currentSafeAreaInsets() {
+    if (!Root2.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
+      return null;
+    }
     if (this.#type !== Type2.Device || !this.#mode) {
       return null;
     }
@@ -2566,7 +2569,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     if (!this.#emulationModel) {
       return;
     }
-    if (insets) {
+    if (insets && Root2.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
       void this.#emulationModel.setSafeAreaInsets({ top: insets.top, left: insets.left, bottom: insets.bottom, right: insets.right });
     } else {
       void this.#emulationModel.setSafeAreaInsets({});
@@ -2919,9 +2922,12 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     } else {
       overlayModel.showHingeForDualScreen(null);
     }
-    overlayModel.showDisplayCutout(this.currentDisplayCutout());
+    overlayModel.showDisplayCutout(Root2.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled ? this.currentDisplayCutout() : null);
   }
   currentDisplayCutout() {
+    if (!Root2.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
+      return null;
+    }
     const device = this.#device;
     const mode = this.#mode;
     if (!device || !mode || !device.modes.includes(mode)) {

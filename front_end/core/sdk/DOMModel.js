@@ -77,6 +77,40 @@ export var DOMNodeEvents;
     DOMNodeEvents["SCROLL_SNAP_OVERLAY_STATE_CHANGED"] = "ScrollSnapOverlayStateChanged";
     DOMNodeEvents["CONTAINER_QUERY_OVERLAY_STATE_CHANGED"] = "ContainerQueryOverlayStateChanged";
 })(DOMNodeEvents || (DOMNodeEvents = {}));
+export function cssEscape(value) {
+    const length = value.length;
+    let index = -1;
+    let codeUnit;
+    let result = '';
+    const firstCodeUnit = value.charCodeAt(0);
+    if (length === 0) {
+        return '';
+    }
+    if (length === 1 && firstCodeUnit === 0x002D) {
+        return '\\' + value;
+    }
+    while (++index < length) {
+        codeUnit = value.charCodeAt(index);
+        if (codeUnit === 0x0000) {
+            result += '\uFFFD';
+            continue;
+        }
+        if ((codeUnit >= 0x0001 && codeUnit <= 0x001F) || codeUnit === 0x007F ||
+            (index === 0 && codeUnit >= 0x0030 && codeUnit <= 0x0039) ||
+            (index === 1 && codeUnit >= 0x0030 && codeUnit <= 0x0039 && firstCodeUnit === 0x002D)) {
+            result += '\\' + codeUnit.toString(16) + ' ';
+            continue;
+        }
+        if (codeUnit >= 0x0080 || codeUnit === 0x002D || codeUnit === 0x005F ||
+            (codeUnit >= 0x0030 && codeUnit <= 0x0039) || (codeUnit >= 0x0041 && codeUnit <= 0x005A) ||
+            (codeUnit >= 0x0061 && codeUnit <= 0x007A)) {
+            result += value.charAt(index);
+            continue;
+        }
+        result += '\\' + value.charAt(index);
+    }
+    return result;
+}
 export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     #domModel;
     #frameManager;
@@ -1019,14 +1053,14 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         const id = this.getAttribute('id');
         const classes = this.getAttribute('class');
         if (lowerCaseName === 'input' && type && !id && !classes) {
-            return lowerCaseName + '[type="' + CSS.escape(type) + '"]';
+            return lowerCaseName + '[type="' + cssEscape(type) + '"]';
         }
         if (id) {
-            return lowerCaseName + '#' + CSS.escape(id);
+            return lowerCaseName + '#' + cssEscape(id);
         }
         if (classes) {
             const classList = classes.trim().split(/\s+/g);
-            return (lowerCaseName === 'div' ? '' : lowerCaseName) + '.' + classList.map(cls => CSS.escape(cls)).join('.');
+            return (lowerCaseName === 'div' ? '' : lowerCaseName) + '.' + classList.map(cls => cssEscape(cls)).join('.');
         }
         if (this.pseudoIdentifier()) {
             return `${lowerCaseName}(${this.pseudoIdentifier()})`;

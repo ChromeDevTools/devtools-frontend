@@ -1361,11 +1361,9 @@ var inspectedPagePlaceholder_css_default = `/*
 // gen/front_end/panels/emulation/InspectedPagePlaceholder.js
 var inspectedPagePlaceholderInstance;
 var InspectedPagePlaceholder = class _InspectedPagePlaceholder extends Common2.ObjectWrapper.eventMixin(UI2.Widget.Widget) {
-  updateId;
   constructor() {
     super({ useShadowDom: true });
     this.registerRequiredCSS(inspectedPagePlaceholder_css_default);
-    UI2.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged", this.onResize, this);
     this.restoreMinimumSize();
   }
   static instance(opts = { forceNew: null }) {
@@ -1374,12 +1372,6 @@ var InspectedPagePlaceholder = class _InspectedPagePlaceholder extends Common2.O
       inspectedPagePlaceholderInstance = new _InspectedPagePlaceholder();
     }
     return inspectedPagePlaceholderInstance;
-  }
-  onResize() {
-    if (this.updateId) {
-      this.element.window().cancelAnimationFrame(this.updateId);
-    }
-    this.updateId = this.element.window().requestAnimationFrame(this.update.bind(this, false));
   }
   restoreMinimumSize() {
     this.setMinimumSize(150, 150);
@@ -1398,7 +1390,6 @@ var InspectedPagePlaceholder = class _InspectedPagePlaceholder extends Common2.O
     return { x: left, y: top, width: right - left, height: bottom - top };
   }
   update(force) {
-    delete this.updateId;
     const rect = this.dipPageRect();
     const bounds = {
       x: Math.round(rect.x),
@@ -2381,6 +2372,7 @@ var DeviceModeView = class _DeviceModeView extends UI4.Widget.VBox {
       if (contentAreaResized) {
         this.contentAreaResized();
       }
+      InspectedPagePlaceholder.instance().update();
     });
   }
   contentAreaResized() {
@@ -2398,12 +2390,20 @@ var DeviceModeView = class _DeviceModeView extends UI4.Widget.VBox {
   }
   zoomChanged() {
     if (this.isShowing()) {
-      this.contentAreaResized();
+      if (this.#showDeviceModeSetting.get()) {
+        this.contentAreaResized();
+      } else {
+        InspectedPagePlaceholder.instance().update();
+      }
     }
   }
   onResize() {
     if (this.isShowing()) {
-      this.contentAreaResized();
+      if (this.#showDeviceModeSetting.get()) {
+        this.contentAreaResized();
+      } else {
+        InspectedPagePlaceholder.instance().update();
+      }
     }
   }
   wasShown() {

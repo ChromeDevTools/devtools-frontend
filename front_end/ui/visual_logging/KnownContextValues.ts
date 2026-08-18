@@ -2350,6 +2350,8 @@ export const knownContextValues = new Set([
   'latency',
   'latitude',
   'layer',
+  'layer-details',
+  'layer-item',
   'layers',
   'layers-3d-view',
   'layers-details',

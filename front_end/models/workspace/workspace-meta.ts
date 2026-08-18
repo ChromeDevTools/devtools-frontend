@@ -6,13 +6,6 @@ import * as Common from '../../core/common/common.js';
 
 Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.SYNCED,
-  settingName: 'skip-content-scripts',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
-});
-
-Common.Settings.registerSettingExtension({
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   settingName: 'automatically-ignore-list-known-third-party-scripts',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,

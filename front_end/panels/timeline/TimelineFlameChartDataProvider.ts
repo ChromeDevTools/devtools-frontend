@@ -177,7 +177,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         .resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor)
         .addChangeListener(this.#onIgnoreListChanged.bind(this));
     Common.Settings.Settings.instance()
-        .moduleSetting('skip-content-scripts')
+        .resolve(Workspace.IgnoreListManager.skipContentScriptsSettingDescriptor)
         .addChangeListener(this.#onIgnoreListChanged.bind(this));
     Common.Settings.Settings.instance()
         .moduleSetting('automatically-ignore-list-known-third-party-scripts')

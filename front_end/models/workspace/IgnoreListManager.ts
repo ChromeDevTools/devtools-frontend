@@ -54,6 +54,13 @@ export const skipStackFramesPatternSettingDescriptor: Common.Settings.SettingDes
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
 
+export const skipContentScriptsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'skip-content-scripts',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};
+
 export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly #settings: Common.Settings.Settings;
@@ -78,7 +85,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
         SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextDestroyed,
         this.onExecutionContextDestroyed, this, {scoped: true});
     this.#settings.resolve(skipStackFramesPatternSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
-    this.#settings.moduleSetting('skip-content-scripts').addChangeListener(this.patternChanged.bind(this));
+    this.#settings.resolve(skipContentScriptsSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
     this.#settings.moduleSetting('automatically-ignore-list-known-third-party-scripts')
         .addChangeListener(this.patternChanged.bind(this));
     this.#settings.moduleSetting('enable-ignore-listing').addChangeListener(this.patternChanged.bind(this));
@@ -339,7 +346,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 
   get skipContentScripts(): boolean {
-    return this.enableIgnoreListing && this.#settings.moduleSetting('skip-content-scripts').get();
+    return this.enableIgnoreListing && this.#settings.resolve(skipContentScriptsSettingDescriptor).get();
   }
 
   get skipAnonymousScripts(): boolean {
@@ -355,11 +362,11 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     if (!this.enableIgnoreListing) {
       this.enableIgnoreListing = true;
     }
-    this.#settings.moduleSetting('skip-content-scripts').set(true);
+    this.#settings.resolve(skipContentScriptsSettingDescriptor).set(true);
   }
 
   unIgnoreListContentScripts(): void {
-    this.#settings.moduleSetting('skip-content-scripts').set(false);
+    this.#settings.resolve(skipContentScriptsSettingDescriptor).set(false);
   }
 
   ignoreListAnonymousScripts(): void {

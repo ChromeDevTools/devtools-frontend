@@ -124,11 +124,11 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     const generalExclusionGroup = this.createSettingGroup();
     generalExclusionGroup.classList.add('general-exclusion-group');
-    const ignoreListContentScripts =
-        generalExclusionGroup.createChild('div', 'ignore-list-option')
-            .appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
-                i18nString(UIStrings.ignoreListContentScripts),
-                Common.Settings.Settings.instance().moduleSetting('skip-content-scripts')));
+    const ignoreListContentScripts = generalExclusionGroup.createChild('div', 'ignore-list-option')
+                                         .appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
+                                             i18nString(UIStrings.ignoreListContentScripts),
+                                             Common.Settings.Settings.instance().resolve(
+                                                 Workspace.IgnoreListManager.skipContentScriptsSettingDescriptor)));
 
     const automaticallyIgnoreListContainer = generalExclusionGroup.createChild('div', 'ignore-list-option');
     const automaticallyIgnoreList =

@@ -220,7 +220,8 @@ describe('isIgnoreListedEntry', () => {
     await resolver.install();
     assert.isTrue(Utils.IgnoreList.isIgnoreListedEntry(profileCallWithContentScript));
 
-    const ignoreContentScriptSetting = Common.Settings.Settings.instance().moduleSetting('skip-content-scripts');
+    const ignoreContentScriptSetting =
+        Common.Settings.Settings.instance().resolve(Workspace.IgnoreListManager.skipContentScriptsSettingDescriptor);
     const ignoreContentScriptSettingValue = ignoreContentScriptSetting.get();
 
     ignoreContentScriptSetting.set(true);

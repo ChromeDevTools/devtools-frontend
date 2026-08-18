@@ -65,7 +65,9 @@ describeWithEnvironment('FrameworkIgnoreListSettingsTab', () => {
     const checkboxInput0 = generalCheckboxes[0].shadowRoot?.querySelector('input');
     assert.exists(checkboxInput0);
     checkboxInput0.click();
-    assert.isFalse(Common.Settings.Settings.instance().moduleSetting('skip-content-scripts').get());
+    assert.isFalse(Common.Settings.Settings.instance()
+                       .resolve(Workspace.IgnoreListManager.skipContentScriptsSettingDescriptor)
+                       .get());
 
     // Toggle skip-anonymous-scripts (default false -> true)
     const checkboxInput1 = generalCheckboxes[2].shadowRoot?.querySelector('input');
@@ -81,7 +83,9 @@ describeWithEnvironment('FrameworkIgnoreListSettingsTab', () => {
     const generalCheckboxes =
         shadowRoot.querySelectorAll<UI.UIUtils.CheckboxLabel>('.general-exclusion-group devtools-checkbox');
 
-    Common.Settings.Settings.instance().moduleSetting('skip-content-scripts').set(false);
+    Common.Settings.Settings.instance()
+        .resolve(Workspace.IgnoreListManager.skipContentScriptsSettingDescriptor)
+        .set(false);
     assert.isFalse(generalCheckboxes[0].checked);
 
     Common.Settings.Settings.instance().moduleSetting('skip-anonymous-scripts').set(true);

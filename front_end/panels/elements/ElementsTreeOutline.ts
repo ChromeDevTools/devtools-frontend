@@ -132,23 +132,24 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     // FIXME: this is basically a ref to existing imperative
     // implementation. Once this is declarative the ref should not be
     // needed.
-    output.elementsTreeOutline = new ElementsTreeOutline(
-        input.omitRootDOMNode, input.selectEnabled, input.hideGutter, input.maxTreeDepth, input.enableContextMenu,
-        input.showComments, input.showAIButton, input.disableEdits, input.expandRoot);
-    output.elementsTreeOutline.addEventListener(
-        ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged, this);
-    output.elementsTreeOutline.addEventListener(
-        ElementsTreeOutline.Events.ElementsTreeUpdated, input.onElementsTreeUpdated, this);
-    output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, input.onElementExpanded, this);
-    output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, input.onElementCollapsed, this);
-    output.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
-      if (output.elementsTreeOutline?.maxRowsShown) {
+    const elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter,
+                                                        input.maxTreeDepth, input.enableContextMenu, input.showComments,
+                                                        input.showAIButton, input.disableEdits, input.expandRoot);
+    output.elementsTreeOutline = elementsTreeOutline;
+    elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged,
+                                         this);
+    elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ElementsTreeUpdated, input.onElementsTreeUpdated,
+                                         this);
+    elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, input.onElementExpanded, this);
+    elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, input.onElementCollapsed, this);
+    elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
+      if (elementsTreeOutline.maxRowsShown) {
         // Set max to undefined to show all rows
-        output.elementsTreeOutline.maxRowsShown = undefined;
+        elementsTreeOutline.maxRowsShown = undefined;
       }
     }, this);
     output.imagePreviewPopover = new ImagePreviewPopover(
-        output.elementsTreeOutline.contentElement,
+        elementsTreeOutline.contentElement,
         event => {
           let link: (Element|null) = (event.target as Element | null);
           while (link && !ImagePreviewPopover.getImageURL(link)) {
@@ -166,7 +167,48 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               (UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem) as ElementsTreeElement | undefined);
           return await UIComponentUtils.ImagePreview.loadPrecomputedFeatures(treeElement?.node());
         });
-    target.appendChild(output.elementsTreeOutline.element);
+    // TODO(changhaohan): refactor the popover to use tooltip component.
+    const popupHelper = new UI.PopoverHelper.PopoverHelper(elementsTreeOutline.elementInternal, event => {
+      const hoveredNode = event.composedPath()[0];
+      if (!(hoveredNode instanceof Element) || !hoveredNode.matches('.violating-element')) {
+        return null;
+      }
+
+      const issues = elementsTreeOutline.issuesByNodeElement(hoveredNode);
+      if (!issues) {
+        return null;
+      }
+
+      return {
+        box: hoveredNode.boxInWindow(),
+        show: async (popover: UI.GlassPane.GlassPane) => {
+          popover.setIgnoreLeftMargin(true);
+          // clang-format off
+          render(html`
+            <div class="squiggles-content">
+              ${issues.map(issue => {
+            const elementIssueDetails = getElementIssueDetails(issue);
+            if (!elementIssueDetails) {
+              // This shouldn't happen, but add this if check to pass ts check.
+              return nothing;
+            }
+            const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
+            const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
+            return html`
+                  <div class="squiggles-content-item">
+                  <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
+                  <devtools-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</devtools-link>
+                  <span>${elementIssueDetails.tooltip}</span>
+                  </div>`;
+          })}
+            </div>`, popover.contentElement);
+          // clang-format on
+          return true;
+        },
+      };
+    }, 'elements.issue');
+    popupHelper.setTimeout(300);
+    target.appendChild(elementsTreeOutline.element);
   }
 
   output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
@@ -669,7 +711,6 @@ export class ElementsTreeOutline extends
   private updateModifiedNodesTimeout?: number;
   #topLayerContainerByDocument = new WeakMap<SDK.DOMModel.DOMDocument, TopLayerContainer>();
   #issuesManager?: IssuesManager.IssuesManager.IssuesManager;
-  #popupHelper?: UI.PopoverHelper.PopoverHelper;
   #nodeElementToIssues = new Map<Element, IssuesManager.Issue.Issue[]>();
   maxTreeDepth?: number;
   enableContextMenu: boolean;
@@ -744,47 +785,6 @@ export class ElementsTreeOutline extends
 
     this.decoratorExtensions = null;
     this.setUseLightSelectionColor(true);
-    // TODO(changhaohan): refactor the popover to use tooltip component.
-    this.#popupHelper = new UI.PopoverHelper.PopoverHelper(this.elementInternal, event => {
-      const hoveredNode = event.composedPath()[0] as Element;
-      if (!hoveredNode?.matches('.violating-element')) {
-        return null;
-      }
-
-      const issues = this.#nodeElementToIssues.get(hoveredNode);
-      if (!issues) {
-        return null;
-      }
-
-      return {
-        box: hoveredNode.boxInWindow(),
-        show: async (popover: UI.GlassPane.GlassPane) => {
-          popover.setIgnoreLeftMargin(true);
-          // clang-format off
-          render(html`
-            <div class="squiggles-content">
-              ${issues.map(issue => {
-            const elementIssueDetails = getElementIssueDetails(issue);
-            if (!elementIssueDetails) {
-              // This shouldn't happen, but add this if check to pass ts check.
-              return nothing;
-            }
-            const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
-            const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
-            return html`
-                  <div class="squiggles-content-item">
-                  <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
-                  <devtools-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</devtools-link>
-                  <span>${elementIssueDetails.tooltip}</span>
-                  </div>`;
-          })}
-            </div>`, popover.contentElement);
-          // clang-format on
-          return true;
-        },
-      };
-    }, 'elements.issue');
-    this.#popupHelper.setTimeout(300);
   }
 
   static forDOMModel(domModel: SDK.DOMModel.DOMModel): ElementsTreeOutline|null {
@@ -884,6 +884,10 @@ export class ElementsTreeOutline extends
       return;
     }
     this.#nodeElementToIssues.set(element, issues);
+  }
+
+  issuesByNodeElement(element: Element): IssuesManager.Issue.Issue[]|undefined {
+    return this.#nodeElementToIssues.get(element);
   }
 
   setWordWrap(wrap: boolean): void {

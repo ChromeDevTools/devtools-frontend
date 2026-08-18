@@ -325,7 +325,7 @@ describe('NetworkLog', () => {
 
     beforeEach(() => {
       const universe = new TestUniverse();
-      universe.settings.moduleSetting('network-log.preserve-log').set(false);
+      universe.settings.resolve(SDK.SDKSettings.preserveNetworkLogSettingDescriptor).set(false);
       target = universe.createTarget();
       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
       assert.exists(networkManager);

@@ -45,7 +45,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.#targetManager.observeModels(SDK.NetworkManager.NetworkManager, this);
     const recordLogSetting: Common.Settings.Setting<boolean> = this.#settings.moduleSetting('network-log.record-log');
     recordLogSetting.addChangeListener(() => {
-      const preserveLogSetting = this.#settings.moduleSetting('network-log.preserve-log');
+      const preserveLogSetting = this.#settings.resolve(SDK.SDKSettings.preserveNetworkLogSettingDescriptor);
       if (!preserveLogSetting.get() && recordLogSetting.get()) {
         this.reset(true);
       }
@@ -296,7 +296,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   }
 
   private willReloadPage(): void {
-    if (!this.#settings.moduleSetting('network-log.preserve-log').get()) {
+    if (!this.#settings.resolve(SDK.SDKSettings.preserveNetworkLogSettingDescriptor).get()) {
       this.reset(true);
     }
   }
@@ -317,7 +317,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       return;
     }
 
-    const preserveLog = this.#settings.moduleSetting('network-log.preserve-log').get();
+    const preserveLog = this.#settings.resolve(SDK.SDKSettings.preserveNetworkLogSettingDescriptor).get();
 
     const oldRequests = this.#requests;
     const oldManagerRequests =

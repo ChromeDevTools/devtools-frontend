@@ -17,6 +17,42 @@ import type * as Network from './network.js';
 
 const UIStrings = {
   /**
+   * @description Text to keep the log after refreshing.
+   */
+  keepLog: 'Keep log',
+  /**
+   * @description A term that can be used to search in the command menu, and will find the search
+   * result 'Keep log on page reload / navigation'. This is an additional search term to help
+   * the user find the setting even when they don't know the exact name of it.
+   */
+  keep: 'keep',
+  /**
+   * @description A term that can be used to search in the command menu, and will find the search
+   * result 'Keep log on page reload / navigation'. This is an additional search term to help
+   * the user find the setting even when they don't know the exact name of it.
+   */
+  preserve: 'preserve',
+  /**
+   * @description A term that can be used to search in the command menu, and will find the search
+   * result 'Keep log on page reload / navigation'. This is an additional search term to help
+   * the user find the setting even when they don't know the exact name of it.
+   */
+  clearTag: 'clear',
+  /**
+   * @description A term that can be used to search in the command menu, and will find the search
+   * result 'Keep log on page reload / navigation'. This is an additional search term to help
+   * the user find the setting even when they don't know the exact name of it.
+   */
+  reset: 'reset',
+  /**
+   * @description Title of a setting under the Network category that can be invoked through the Command Menu.
+   */
+  keepLogOnPageReload: 'Keep log on page reload / navigation',
+  /**
+   * @description Title of a setting under the Network category that can be invoked through the Command Menu.
+   */
+  doNotKeepLogOnPageReload: 'Don’t keep log on page reload / navigation',
+  /**
    * @description Title of a setting under the Network category that can be invoked through the Command Menu.
    */
   enableCache: 'Enable cache',
@@ -486,6 +522,27 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.cacheDisabledSettingDe
   learnMore: {
     tooltip: i18nLazyString(UIStrings.networkCacheExplanation),
   },
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.preserveNetworkLogSettingDescriptor, {
+  category: Common.Settings.SettingCategory.NETWORK,
+  title: i18nLazyString(UIStrings.keepLog),
+  tags: [
+    i18nLazyString(UIStrings.keep),
+    i18nLazyString(UIStrings.preserve),
+    i18nLazyString(UIStrings.clearTag),
+    i18nLazyString(UIStrings.reset),
+  ],
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.keepLogOnPageReload),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotKeepLogOnPageReload),
+    },
+  ],
 });
 
 UI.ViewManager.registerLocationResolver({

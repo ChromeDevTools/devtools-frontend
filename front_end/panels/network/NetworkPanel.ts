@@ -354,7 +354,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.networkLogLargeRowsSetting.addChangeListener(this.toggleLargerRequests, this);
     this.networkRecordFilmStripSetting.addChangeListener(this.toggleRecordFilmStrip, this);
 
-    this.preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log');
+    this.preserveLogSetting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveNetworkLogSettingDescriptor);
     this.recordLogSetting = Common.Settings.Settings.instance().moduleSetting('network-log.record-log');
     this.recordLogSetting.addChangeListener(({data}) => this.toggleRecord(data));
 

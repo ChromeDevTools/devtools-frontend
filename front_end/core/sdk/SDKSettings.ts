@@ -325,3 +325,9 @@ export const disablePausedStateOverlaySettingDescriptor: Common.Settings.Setting
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const preserveNetworkLogSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'network-log.preserve-log',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};

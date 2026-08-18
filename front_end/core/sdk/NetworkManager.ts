@@ -29,6 +29,7 @@ import {SDKModel} from './SDKModel.js';
 import {
   cacheDisabledSettingDescriptor,
   monitoringXHREnabledSettingDescriptor,
+  preserveNetworkLogSettingDescriptor,
   requestBlockingEnabledSettingDescriptor,
 } from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
@@ -203,7 +204,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     });
 
     if (Root.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled) {
-      const preserveLogSetting = settings.moduleSetting('network-log.preserve-log');
+      const preserveLogSetting = settings.resolve(preserveNetworkLogSettingDescriptor);
       this.#updateDurableMessages(preserveLogSetting.get());
       preserveLogSetting.addChangeListener(this.preserveLogChanged, this);
     }
@@ -561,7 +562,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
   override dispose(): void {
     const settings = this.target().targetManager().settings;
     settings.resolve(cacheDisabledSettingDescriptor).removeChangeListener(this.cacheDisabledSettingChanged, this);
-    settings.moduleSetting('network-log.preserve-log').removeChangeListener(this.preserveLogChanged, this);
+    settings.resolve(preserveNetworkLogSettingDescriptor).removeChangeListener(this.preserveLogChanged, this);
   }
 
   private bypassServiceWorkerChanged(): void {

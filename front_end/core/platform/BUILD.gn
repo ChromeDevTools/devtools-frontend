@@ -56,6 +56,7 @@ devtools_foundation_module("unittests") {
     "NumberUtilities.test.ts",
     "StringUtilities.test.ts",
     "TypedArrayUtilities.test.ts",
+    "TypescriptUtilities.test.ts",
   ]
 
   deps = [

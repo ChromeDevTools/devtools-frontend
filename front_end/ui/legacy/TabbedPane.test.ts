@@ -594,4 +594,49 @@ describeWithEnvironment('TabbedPaneElement', () => {
     assert.notStrictEqual(measuredWidth, 999,
                           'measuredDropDownButtonWidth should be invalidated and re-measured after ZOOM_CHANGED');
   });
+  it('fires close and taborderchanged events and respects properties on TabbedPaneElement', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    render(html`
+      <devtools-tabbed-pane .closeableTabs=${true} .allowTabReorder=${true}>
+        <div id="tab1" title="Tab 1">Content 1</div>
+        <div id="tab2" title="Tab 2" uncloseable>Content 2</div>
+        <div id="tab3" title="Tab 3" closeable>Content 3</div>
+      </devtools-tabbed-pane>
+    `,
+           container);
+    const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
+    const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
+    // doubleRaf is needed for some updates but Lit render might just need raf
+    await new Promise(resolve => requestAnimationFrame(resolve));
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    assert.isTrue(widget.allowTabReorder, 'allowTabReorder should be delegated to the widget');
+
+    const tabs = widget.tabsById;
+    assert.isTrue(tabs.get('tab1')?.closeable, 'tab1 should inherit global closeableTabs=true');
+    assert.isFalse(tabs.get('tab2')?.closeable, 'tab2 should respect uncloseable attribute');
+    assert.isTrue(tabs.get('tab3')?.closeable, 'tab3 should respect closeable attribute');
+
+    let orderChangedEventDetail: {tabId: string, tabIds: string[]}|null = null;
+    tabbedPaneElement.addEventListener('taborderchanged', (e: Event) => {
+      orderChangedEventDetail = (e as CustomEvent).detail;
+    });
+    widget.moveTab('tab3', 0);
+
+    const orderChangedEventDetailTyped = orderChangedEventDetail as {tabId: string, tabIds: string[]} | null;
+    assert.isNotNull(orderChangedEventDetailTyped, 'taborderchanged event should have fired');
+    assert.strictEqual(orderChangedEventDetailTyped.tabId, 'tab3');
+    assert.deepEqual(orderChangedEventDetailTyped.tabIds, ['tab3', 'tab1', 'tab2']);
+
+    let closeEventDetail: {tabId: string}|null = null;
+    tabbedPaneElement.addEventListener('close', (e: Event) => {
+      closeEventDetail = (e as CustomEvent).detail;
+    });
+
+    widget.closeTab('tab1');
+    const closeEventDetailTyped = closeEventDetail as {tabId: string} | null;
+    assert.isNotNull(closeEventDetailTyped, 'close event should have fired');
+    assert.strictEqual(closeEventDetailTyped.tabId, 'tab1');
+  });
 });

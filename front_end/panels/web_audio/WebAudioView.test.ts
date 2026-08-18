@@ -21,7 +21,7 @@ const context1: Protocol.WebAudio.BaseAudioContext = {
   sampleRate: 44100,
   callbackBufferSize: 1024,
   maxOutputChannelCount: 2,
-  renderQuantumSize: 0,
+  renderQuantumSize: 128,
 };
 
 const context2: Protocol.WebAudio.BaseAudioContext = {
@@ -31,7 +31,7 @@ const context2: Protocol.WebAudio.BaseAudioContext = {
   sampleRate: 44100,
   callbackBufferSize: 1024,
   maxOutputChannelCount: 2,
-  renderQuantumSize: 0,
+  renderQuantumSize: 128,
 };
 
 describeWithEnvironment('WebAudioView', () => {
@@ -79,6 +79,25 @@ describeWithEnvironment('WebAudioView', () => {
     },
                  {}, container);
     await assertScreenshot('web_audio/web-audio-view-contexts.png');
+    container.remove();
+  });
+
+  it('renders context detail rows including render quantum size', () => {
+    const viewFunction = WebAudio.WebAudioView.DEFAULT_VIEW;
+    const container = document.createElement('div');
+    renderElementIntoDOM(container, {includeCommonStyles: true});
+    viewFunction({
+      contexts: [context1],
+      selectedContextIndex: 0,
+      onContextSelectorSelectionChanged: () => {},
+      contextRealtimeData: null,
+    },
+                 {}, container);
+
+    const entries = Array.from(container.querySelectorAll('.context-detail-row-entry')).map(e => e.textContent?.trim());
+    const values = Array.from(container.querySelectorAll('.context-detail-row-value')).map(e => e.textContent?.trim());
+    assert.include(entries, 'Render quantum size');
+    assert.include(values, '128 frames');
     container.remove();
   });
 

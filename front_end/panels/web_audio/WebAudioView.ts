@@ -50,6 +50,10 @@ const UIStrings = {
    */
   callbackBufferSize: 'Callback buffer size',
   /**
+   * @description Label for the render quantum size of an audio context.
+   */
+  renderQuantumSize: 'Render quantum size',
+  /**
    * @description Label in the WebAudio tool for the maximum number of output channels of an audio context.
    */
   maxOutputChannels: 'Max output channels',
@@ -149,6 +153,10 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                 <div class="context-detail-row-entry">${i18nString(UIStrings.callbackBufferSize)}</div>
                 <div class="context-detail-row-value">${selectedContext.callbackBufferSize} frames</div>
               </div>` : ''}
+            <div class="context-detail-row">
+              <div class="context-detail-row-entry">${i18nString(UIStrings.renderQuantumSize)}</div>
+              <div class="context-detail-row-value">${selectedContext.renderQuantumSize} frames</div>
+            </div>
             <div class="context-detail-row">
               <div class="context-detail-row-entry">${i18nString(UIStrings.maxOutputChannels)}</div>
               <div class="context-detail-row-value">${selectedContext.maxOutputChannelCount} ch</div>

@@ -272,3 +272,9 @@ export const webpFormatDisabledSettingDescriptor: Common.Settings.SettingDescrip
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const customFormattersSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'custom-formatters',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};

@@ -7,10 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting under the Console category in Settings.
-   */
-  customFormatters: 'Custom formatters',
-  /**
    * @description Title of a setting under the Network category.
    */
   networkRequestBlocking: 'Network request blocking',
@@ -62,14 +58,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.CONSOLE,
-  title: i18nLazyString(UIStrings.customFormatters),
-  settingName: 'custom-formatters',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,

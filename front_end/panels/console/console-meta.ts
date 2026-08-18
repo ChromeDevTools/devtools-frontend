@@ -20,6 +20,10 @@ const UIStrings = {
    */
   doNotPreserveLogUponNavigation: 'Don’t keep log on navigation',
   /**
+   * @description Title of a setting under the Console category in Settings.
+   */
+  customFormatters: 'Custom formatters',
+  /**
    * @description Title of the Console tool.
    */
   console: 'Console',
@@ -472,6 +476,11 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.preserveConsoleLogSett
       title: i18nLazyString(UIStrings.doNotPreserveLogUponNavigation),
     },
   ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.customFormattersSettingDescriptor, {
+  category: Common.Settings.SettingCategory.CONSOLE,
+  title: i18nLazyString(UIStrings.customFormatters),
 });
 
 Common.Revealer.registerRevealer({

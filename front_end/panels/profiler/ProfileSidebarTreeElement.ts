@@ -38,7 +38,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
   profile: ProfileHeader;
   editing: UI.InplaceEditor.Controller|null;
   constructor(dataDisplayDelegate: DataDisplayDelegate, profile: ProfileHeader, className: string) {
-    super('', false);
+    super('', false, 'profile-item');
     this.iconElement = document.createElement('div');
     this.iconElement.classList.add('icon');
     this.titlesElement = document.createElement('div');

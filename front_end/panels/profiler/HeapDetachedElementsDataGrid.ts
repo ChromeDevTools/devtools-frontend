@@ -8,6 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../elements/elements.js';
 
 import heapDetachedElementsDataGridStyles from './heapDetachedElementsDataGrid.css.js';
@@ -60,7 +61,7 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|
           <th id="detached-node-count">${i18nString(UIStrings.nodeSize)}</th>
         </tr>
         ${input.parsedElements.map(parsed => html`
-          <tr>
+          <tr jslog=${VisualLogging.tableRow('detached-element')}>
             <td>
               <devtools-widget
                 ${widget(Elements.ElementsTreeOutline.DOMTreeWidget, {

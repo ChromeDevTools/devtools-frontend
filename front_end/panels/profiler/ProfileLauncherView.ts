@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../ui/lit/lit.js';
@@ -73,7 +74,7 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 export const DEFAULT_VIEW: View = (input, output, target) => {
   render(html`
     <style>${profileLauncherViewStyles}</style>
-    <div class="profile-launcher-view-content vbox">
+    <div class="profile-launcher-view-content vbox" jslog=${VisualLogging.section('profiler.launcher')}>
       <div class="vbox">
         <h1>${input.headerText}</h1>
         <form role="radiogroup" aria-label=${input.headerText}>
@@ -81,21 +82,23 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
             const radioId = `profile-type-${entry.profileType.id}`;
             const customContent = entry.customContent;
             return html`
-              <input id=${radioId} type="radio" name="profile-type"
-                  .checked=${entry.selected}
-                  ?disabled=${input.isProfiling}
-                  @change=${() => input.onProfileTypeChange(entry.profileType)}
-                  jslog=${VisualLogging.toggle().track({change: true}).context('profiler.profile-type')}
-                />
-              <label for=${radioId}>${entry.profileType.name}</label>
-              <p>${entry.profileType.description}</p>
-              ${customContent ? html`
-                <p>
-                  <span role="group" aria-labelledby=${radioId}>
-                    ${customContent}
-                  </span>
-                </p>
-              ` : nothing}
+              <div class="profile-type-option" jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(entry.profileType.id))}>
+                <input id=${radioId} type="radio" name="profile-type"
+                    .checked=${entry.selected}
+                    ?disabled=${input.isProfiling}
+                    @change=${() => input.onProfileTypeChange(entry.profileType)}
+                    jslog=${VisualLogging.toggle().track({change: true}).context('profiler.profile-type')}
+                  />
+                <label for=${radioId}>${entry.profileType.name}</label>
+                <p>${entry.profileType.description}</p>
+                ${customContent ? html`
+                  <p>
+                    <span role="group" aria-labelledby=${radioId}>
+                      ${customContent}
+                    </span>
+                  </p>
+                ` : nothing}
+              </div>
             `;
           })}
         </form>

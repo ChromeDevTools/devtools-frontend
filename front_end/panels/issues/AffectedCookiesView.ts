@@ -67,6 +67,7 @@ export class AffectedCookiesView extends AffectedResourcesView {
   #appendAffectedCookie(cookie: Protocol.Audits.AffectedCookie, hasAssociatedRequest: boolean): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-cookie');
+    element.setAttribute('jslog', `${VisualLogging.tableRow('affected-cookie')}`);
     const name = document.createElement('td');
     if (hasAssociatedRequest) {
       const link = document.createElement('button');
@@ -121,6 +122,7 @@ export class AffectedRawCookieLinesView extends AffectedResourcesView {
     for (const cookie of cookieLinesWithRequestIndicator) {
       const row = document.createElement('tr');
       row.classList.add('affected-resource-directive');
+      row.setAttribute('jslog', `${VisualLogging.tableRow('affected-raw-cookie')}`);
       if (cookie.hasRequest) {
         const cookieLine = document.createElement('td');
         const link = document.createElement('button');

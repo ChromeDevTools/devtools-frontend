@@ -17,6 +17,7 @@ import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.j
 import {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
 import {AffectedCookiesView, AffectedRawCookieLinesView} from './AffectedCookiesView.js';
@@ -95,6 +96,10 @@ class AffectedRequestsView extends AffectedResourcesView {
     for (const affectedRequest of affectedRequests) {
       const element = document.createElement('tr');
       element.classList.add('affected-resource-request');
+      element.setAttribute('jslog', `${VisualLogging.tableRow('affected-request')}`);
+      if (affectedRequest.requestId) {
+        element.setAttribute('data-network-request-id', affectedRequest.requestId);
+      }
       const category = this.issue.getCategory();
       const tab =
           issueTypeToNetworkHeaderMap.get(category) || NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
@@ -413,7 +418,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   #createAffectedResources(): UI.TreeOutline.TreeElement {
-    const wrapper = new UI.TreeOutline.TreeElement();
+    const wrapper = new UI.TreeOutline.TreeElement(undefined, false, 'affected-resources');
     wrapper.setCollapsible(false);
     wrapper.setExpandable(true);
     wrapper.expand();
@@ -427,7 +432,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   #createBody(): void {
-    const messageElement = new UI.TreeOutline.TreeElement();
+    const messageElement = new UI.TreeOutline.TreeElement(undefined, false, 'issue-description');
     messageElement.setCollapsible(false);
     messageElement.selectable = false;
     const markdownComponent = new MarkdownView.MarkdownView.MarkdownView();

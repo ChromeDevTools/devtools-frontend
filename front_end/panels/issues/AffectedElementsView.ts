@@ -6,6 +6,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 
@@ -34,6 +35,10 @@ export class AffectedElementsView extends AffectedResourcesView {
   async #appendAffectedElement(element: IssuesManager.Issue.AffectedElement): Promise<void> {
     const cellElement = await this.createElementCell(element, this.issue.getCategory());
     const rowElement = document.createElement('tr');
+    rowElement.setAttribute('jslog', `${VisualLogging.tableRow('affected-element')}`);
+    if (element.backendNodeId) {
+      rowElement.setAttribute('data-backend-node-id', String(element.backendNodeId));
+    }
     rowElement.appendChild(cellElement);
     this.affectedResources.appendChild(rowElement);
   }

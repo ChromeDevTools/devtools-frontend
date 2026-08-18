@@ -9,7 +9,6 @@ devtools_entrypoint("entrypoint") {
 
   deps = [
     "../../Images:optimize_images",
-    "../../core/sdk:meta",
     "../../entrypoints/inspector_main:meta",
     "../../entrypoints/main:meta",
     "../../models/badges:meta",

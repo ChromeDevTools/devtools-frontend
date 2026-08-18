@@ -22,7 +22,6 @@ node_ts_library("api") {
     "../../front_end/core/protocol_client:puppeteer_devtools_connection",
     "../../front_end/core/root:bundle",
     "../../front_end/core/sdk:bundle",
-    "../../front_end/core/sdk:meta",
     "../../front_end/foundation:bundle",
     "../../front_end/models/badges:meta",
     "../../front_end/models/logs:meta",

@@ -481,7 +481,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     window.focus();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
     const withOverlay = UI.Context.Context.instance().flavor(SDK.Target.Target)?.model(SDK.OverlayModel.OverlayModel) &&
-        !Common.Settings.Settings.instance().moduleSetting('disable-paused-state-overlay').get();
+        !Common.Settings.Settings.instance().resolve(SDK.SDKSettings.disablePausedStateOverlaySettingDescriptor).get();
     if (withOverlay && !this.overlayLoggables) {
       this.overlayLoggables = {debuggerPausedMessage: {}, resumeButton: {}, stepOverButton: {}};
       VisualLogging.registerLoggable(
@@ -1317,7 +1317,9 @@ export class RevealingActionDelegate implements UI.ActionRegistration.ActionDele
         // Do not trigger a resume action, if: the shortcut was forwarded and the
         // paused overlay is enabled.
         const actionHandledInPausedOverlay = context.flavor(UI.ShortcutRegistry.ForwardedShortcut) &&
-            !Common.Settings.Settings.instance().moduleSetting('disable-paused-state-overlay').get();
+            !Common.Settings.Settings.instance()
+                 .resolve(SDK.SDKSettings.disablePausedStateOverlaySettingDescriptor)
+                 .get();
         if (actionHandledInPausedOverlay) {
           // Taken care of by inspector overlay: handled set to true to
           // register user metric.

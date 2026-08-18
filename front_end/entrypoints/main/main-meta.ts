@@ -11,11 +11,19 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import type * as InspectorMain from '../inspector_main/inspector_main.js';
 
 import type * as Main from './main.js';
 
 const UIStrings = {
+  /**
+   * @description Title of a setting under the Appearance category in Settings. When the webpage is
+   * paused by devtools, an overlay is shown on top of the page to indicate that it is paused. The
+   * overlay is a pause/unpause button and some text, which appears on top of the paused page. This
+   * setting turns off this overlay.
+   */
+  disablePaused: 'Disable paused state overlay',
   /**
    * @description Action title to focus the page being debugged.
    */
@@ -717,6 +725,11 @@ Common.Settings.registerSettingExtension({
   settingName: 'shortcut-panel-switch',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.disablePausedStateOverlaySettingDescriptor, {
+  category: Common.Settings.SettingCategory.APPEARANCE,
+  title: i18nLazyString(UIStrings.disablePaused),
 });
 
 Common.Settings.registerSettingExtension({

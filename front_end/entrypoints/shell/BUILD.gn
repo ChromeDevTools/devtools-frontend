@@ -10,7 +10,6 @@ devtools_entrypoint("shell") {
 
   deps = [
     "../../Images:optimize_images",
-    "../../core/sdk:meta",
     "../../entrypoints/main:meta",
     "../../models/badges:meta",
     "../../models/logs:meta",

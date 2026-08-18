@@ -318,3 +318,10 @@ export const monitoringXHREnabledSettingDescriptor: Common.Settings.SettingDescr
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const disablePausedStateOverlaySettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'disable-paused-state-overlay',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

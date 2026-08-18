@@ -85,6 +85,7 @@ devtools_entrypoint("meta") {
     "../../models/workspace:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "../../ui/settings:bundle",
   ]
 
   visibility = [

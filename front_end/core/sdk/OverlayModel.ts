@@ -16,6 +16,7 @@ import type {RemoteObject} from './RemoteObject.js';
 import {SDKModel} from './SDKModel.js';
 import {
   apcaSettingDescriptor,
+  disablePausedStateOverlaySettingDescriptor,
   showAdHighlightsSettingDescriptor,
   showDebugBordersSettingDescriptor,
   showFPSCounterSettingDescriptor,
@@ -122,7 +123,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     const settings = this.target().targetManager().settings;
     this.#debuggerModel = target.model(DebuggerModel);
     if (this.#debuggerModel) {
-      settings.moduleSetting('disable-paused-state-overlay')
+      settings.resolve(disablePausedStateOverlaySettingDescriptor)
           .addChangeListener(this.updatePausedInDebuggerMessage, this);
       this.#debuggerModel.addEventListener(
           DebuggerModelEvents.DebuggerPaused, this.updatePausedInDebuggerMessage, this);
@@ -313,7 +314,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     }
     const settings = this.target().targetManager().settings;
     const message = this.#debuggerModel && this.#debuggerModel.isPaused() &&
-            !settings.moduleSetting('disable-paused-state-overlay').get() ?
+            !settings.resolve(disablePausedStateOverlaySettingDescriptor).get() ?
         i18nString(UIStrings.pausedInDebugger) :
         undefined;
     void this.overlayAgent.invoke_setPausedInDebuggerMessage({message});

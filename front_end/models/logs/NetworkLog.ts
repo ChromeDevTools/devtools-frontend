@@ -19,6 +19,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/logs/NetworkLog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export const recordNetworkLogSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'network-log.record-log',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};
+
 export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
   #requests: SDK.NetworkRequest.NetworkRequest[] = [];
@@ -43,7 +50,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.#settings = settings;
 
     this.#targetManager.observeModels(SDK.NetworkManager.NetworkManager, this);
-    const recordLogSetting: Common.Settings.Setting<boolean> = this.#settings.moduleSetting('network-log.record-log');
+    const recordLogSetting = this.#settings.resolve(recordNetworkLogSettingDescriptor);
     recordLogSetting.addChangeListener(() => {
       const preserveLogSetting = this.#settings.resolve(SDK.SDKSettings.preserveNetworkLogSettingDescriptor);
       if (!preserveLogSetting.get() && recordLogSetting.get()) {

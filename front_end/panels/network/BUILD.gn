@@ -150,6 +150,7 @@ devtools_entrypoint("meta") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../models/logs:bundle",
     "../../models/workspace:bundle",
     "../../panels/common:bundle",
     "../../ui/legacy:bundle",

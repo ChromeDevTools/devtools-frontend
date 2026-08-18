@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Logs from '../../models/logs/logs.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -543,6 +544,11 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.preserveNetworkLogSett
       title: i18nLazyString(UIStrings.doNotKeepLogOnPageReload),
     },
   ],
+});
+
+SettingsUI.SettingUIRegistration.register(Logs.NetworkLog.recordNetworkLogSettingDescriptor, {
+  category: Common.Settings.SettingCategory.NETWORK,
+  title: i18nLazyString(UIStrings.recordNetworkLog),
 });
 
 UI.ViewManager.registerLocationResolver({

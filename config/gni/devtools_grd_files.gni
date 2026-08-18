@@ -640,7 +640,6 @@ grd_files_bundled_sources = [
   "front_end/models/live-metrics/live-metrics.js",
   "front_end/models/live-metrics/web-vitals-injected/spec/spec.js",
   "front_end/models/live-metrics/web-vitals-injected/web-vitals-injected.generated.js",
-  "front_end/models/logs/logs-meta.js",
   "front_end/models/logs/logs.js",
   "front_end/models/network_time_calculator/network_time_calculator.js",
   "front_end/models/persistence/persistence.js",

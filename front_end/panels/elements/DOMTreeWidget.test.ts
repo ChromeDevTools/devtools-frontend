@@ -5,9 +5,10 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
@@ -21,7 +22,6 @@ describeWithEnvironment('DOMTreeWidget', () => {
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(universe.debuggerWorkspaceBinding);
     sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);
-    stubNoopSettings();
     target = createTarget();
   });
 
@@ -63,5 +63,47 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
     it('highlights node on in scope request event', highlightsNodeOnRequestEvent(true));
     it('does not highlight node on out of scope request event', highlightsNodeOnRequestEvent(false));
+  });
+
+  describe('show-html-comments setting', () => {
+    it('updates showComments when setting changes', async () => {
+      const elementsTreeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+      const view = createViewFunctionStub(Elements.ElementsTreeOutline.DOMTreeWidget, {
+        elementsTreeOutline,
+        alreadyExpandedParentTreeElement: null,
+        highlightedTreeElement: null,
+        isUpdatingHighlights: false,
+      });
+      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, view);
+      domTree.performUpdate();
+
+      assert.isTrue(domTree.showComments);
+      assert.isTrue(view.input.showComments);
+
+      const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+      setting.set(false);
+
+      assert.isFalse(domTree.showComments);
+      assert.isFalse(view.input.showComments);
+    });
+
+    it('removes change listener on detach', async () => {
+      const elementsTreeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+      const view = createViewFunctionStub(Elements.ElementsTreeOutline.DOMTreeWidget, {
+        elementsTreeOutline,
+        alreadyExpandedParentTreeElement: null,
+        highlightedTreeElement: null,
+        isUpdatingHighlights: false,
+      });
+      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, view);
+      domTree.performUpdate();
+
+      domTree.detach();
+      const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+      const viewCallCount = view.callCount;
+      setting.set(false);
+
+      sinon.assert.callCount(view, viewCallCount);
+    });
   });
 });

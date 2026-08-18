@@ -151,7 +151,12 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 
   output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
   output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
-  output.elementsTreeOutline.showComments = input.showComments ?? true;
+  let needsUpdate = false;
+  const showComments = input.showComments ?? true;
+  if (output.elementsTreeOutline.showComments !== showComments) {
+    output.elementsTreeOutline.showComments = showComments;
+    needsUpdate = true;
+  }
   output.elementsTreeOutline.showAIButton = input.showAIButton ?? true;
   output.elementsTreeOutline.disableEdits = input.disableEdits ?? false;
   output.elementsTreeOutline.expandRoot = input.expandRoot ?? false;
@@ -167,6 +172,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   output.elementsTreeOutline.setShowSelectionOnKeyboardFocus(input.showSelectionOnKeyboardFocus, input.preventTabOrder);
   if (input.deindentSingleNode) {
     output.elementsTreeOutline.deindentSingleNode();
+  }
+  if (needsUpdate) {
+    output.elementsTreeOutline.update();
   }
   // Node highlighting logic. FIXME: express as a lit template.
   const previousHighlightedNode = output.highlightedTreeElement?.node() ?? null;
@@ -238,7 +246,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   #maxTreeDepth?: number;
   #enableContextMenu = true;
-  #showComments = true;
+  #showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+  #showComments = this.#showHTMLCommentsSetting.get();
   #showAIButton = true;
   #disableEdits = false;
   #expandRoot = false;
@@ -346,6 +355,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       delegatesFocus: false,
     });
     this.#view = view ?? DEFAULT_VIEW;
+    this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
     if (Common.Settings.Settings.instance().moduleSetting('highlight-node-on-hover-in-overlay').get()) {
       SDK.TargetManager.TargetManager.instance().addModelListener(
           SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, this.#highlightNode, this,
@@ -354,6 +364,15 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
           this.#clearHighlightedNode, this, {scoped: true});
     }
+  }
+
+  #onShowHTMLCommentsChange(): void {
+    this.#showComments = this.#showHTMLCommentsSetting.get();
+    const selectedNode = this.selectedDOMNode();
+    if (selectedNode && selectedNode.nodeType() === Node.COMMENT_NODE && !this.#showComments) {
+      this.selectDOMNode(selectedNode.parentNode);
+    }
+    this.performUpdate();
   }
 
   #highlightNode(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
@@ -566,6 +585,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   override detach(overrideHideOnDetach?: boolean): void {
     super.detach(overrideHideOnDetach);
     this.#visible = false;
+    this.#showHTMLCommentsSetting.removeChangeListener(this.#onShowHTMLCommentsChange, this);
     this.performUpdate();
   }
 
@@ -604,7 +624,6 @@ export class ElementsTreeOutline extends
   private updateRecords: Map<SDK.DOMModel.DOMNode, Elements.ElementUpdateRecord.ElementUpdateRecord>;
   private treeElementsBeingUpdated: Set<ElementsTreeElement>;
   decoratorExtensions: MarkerDecoratorRegistration[]|null;
-  private showHTMLCommentsSetting: Common.Settings.Setting<boolean>;
   private multilineEditing?: MultilineEditorController|null;
   private visibleWidthInternal?: number;
   private clipboardNodeData?: ClipboardData;
@@ -710,16 +729,6 @@ export class ElementsTreeOutline extends
     this.treeElementsBeingUpdated = new Set();
 
     this.decoratorExtensions = null;
-    if (this.showComments) {
-      this.showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
-      this.showHTMLCommentsSetting.addChangeListener(this.onShowHTMLCommentsChange.bind(this));
-    } else {
-      this.showHTMLCommentsSetting = {
-        get: () => false,
-        addChangeListener: () => {},
-        removeChangeListener: () => {},
-      } as unknown as Common.Settings.Setting<boolean>;
-    }
     this.setUseLightSelectionColor(true);
     // TODO(changhaohan): refactor the popover to use tooltip component.
     this.#popupHelper = new UI.PopoverHelper.PopoverHelper(this.elementInternal, event => {
@@ -861,14 +870,6 @@ export class ElementsTreeOutline extends
       return;
     }
     this.#nodeElementToIssues.set(element, issues);
-  }
-
-  private onShowHTMLCommentsChange(): void {
-    const selectedNode = this.selectedDOMNode();
-    if (selectedNode && selectedNode.nodeType() === Node.COMMENT_NODE && !this.showHTMLCommentsSetting.get()) {
-      this.selectDOMNode(selectedNode.parentNode);
-    }
-    this.update();
   }
 
   setWordWrap(wrap: boolean): void {
@@ -2117,7 +2118,7 @@ export class ElementsTreeOutline extends
     if (node.childNodeCount()) {
       // Children may be stale when the outline is not wired to receive DOMModel updates.
       let children: SDK.DOMModel.DOMNode[] = node.children() || [];
-      if (!this.showHTMLCommentsSetting.get()) {
+      if (!this.showComments) {
         children = children.filter(n => n.nodeType() !== Node.COMMENT_NODE);
       }
       visibleChildren.push(...children);

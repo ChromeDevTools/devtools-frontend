@@ -6,11 +6,14 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 
 import * as Elements from './elements.js';
 
@@ -104,6 +107,53 @@ describeWithEnvironment('DOMTreeWidget', () => {
       setting.set(false);
 
       sinon.assert.callCount(view, viewCallCount);
+    });
+  });
+
+  describe('image preview popover', () => {
+    it('shows preview when hovering over a link within the elements tree outline', async () => {
+      const clock = sinon.useFakeTimers();
+      try {
+        const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget();
+        domTree.markAsRoot();
+        renderElementIntoDOM(domTree);
+        domTree.performUpdate();
+
+        const shadowHost = domTree.contentElement.firstElementChild as HTMLElement;
+        assert.exists(shadowHost);
+        const elementsTreeOutline = shadowHost.shadowRoot?.querySelector('.elements-tree-outline') as HTMLElement;
+        assert.exists(elementsTreeOutline);
+
+        const link = elementsTreeOutline.createChild('span');
+        link.boxInWindow = () => new AnchorBox(0, 0, 10, 10);
+        const imageUrl = Platform.DevToolsPath.urlString`http://example.com/image.png`;
+        Elements.ImagePreviewPopover.ImagePreviewPopover.setImageUrl(link, imageUrl);
+
+        const buildStub =
+            sinon.stub(Components.ImagePreview.ImagePreview, 'build').resolves(document.createElement('div'));
+
+        const event = new MouseEvent('mousemove', {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+          clientX: 5,
+          clientY: 5,
+        });
+        link.dispatchEvent(event);
+
+        for (let i = 0; i < 20; i++) {
+          if (buildStub.called) {
+            break;
+          }
+          clock.tick(1);
+          await Promise.resolve();
+        }
+
+        sinon.assert.calledWith(buildStub, imageUrl, true);
+        domTree.detach();
+      } finally {
+        clock.restore();
+      }
     });
   });
 });

@@ -121,6 +121,7 @@ interface ViewInput {
 
 interface ViewOutput {
   elementsTreeOutline?: ElementsTreeOutline;
+  imagePreviewPopover?: ImagePreviewPopover;
   highlightedTreeElement: ElementsTreeElement|null;
   isUpdatingHighlights: boolean;
   alreadyExpandedParentTreeElement: ElementsTreeElement|null;
@@ -146,6 +147,25 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         output.elementsTreeOutline.maxRowsShown = undefined;
       }
     }, this);
+    output.imagePreviewPopover = new ImagePreviewPopover(
+        output.elementsTreeOutline.contentElement,
+        event => {
+          let link: (Element|null) = (event.target as Element | null);
+          while (link && !ImagePreviewPopover.getImageURL(link)) {
+            link = link.parentElementOrShadowHost();
+          }
+          return link;
+        },
+        async link => {
+          const listItem = UI.UIUtils.enclosingNodeOrSelfWithNodeName(link, 'li');
+          if (!listItem) {
+            return undefined;
+          }
+
+          const treeElement =
+              (UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem) as ElementsTreeElement | undefined);
+          return await UIComponentUtils.ImagePreview.loadPrecomputedFeatures(treeElement?.node());
+        });
     target.appendChild(output.elementsTreeOutline.element);
   }
 
@@ -166,6 +186,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   }
   if (input.visible !== undefined) {
     output.elementsTreeOutline.setVisible(input.visible);
+    if (!input.visible) {
+      output.imagePreviewPopover?.hide();
+    }
   }
   output.elementsTreeOutline.maxRowsShown = input.maxRowsShown;
   output.elementsTreeOutline.setWordWrap(input.wrap);
@@ -586,10 +609,18 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.performUpdate();
   }
 
+  override wasHidden(): void {
+    super.wasHidden();
+    this.#visible = false;
+    this.#viewOutput.imagePreviewPopover?.hide();
+    this.performUpdate();
+  }
+
   override detach(overrideHideOnDetach?: boolean): void {
     super.detach(overrideHideOnDetach);
     this.#visible = false;
     this.#showHTMLCommentsSetting.removeChangeListener(this.#onShowHTMLCommentsChange, this);
+    this.#viewOutput.imagePreviewPopover?.hide();
     this.performUpdate();
   }
 
@@ -624,7 +655,6 @@ export class ElementsTreeOutline extends
   private rootDOMNodeInternal: SDK.DOMModel.DOMNode|null;
   selectedDOMNodeInternal: SDK.DOMModel.DOMNode|null;
   private visible: boolean;
-  private readonly imagePreviewPopover: ImagePreviewPopover;
   private updateRecords: Map<SDK.DOMModel.DOMNode, Elements.ElementUpdateRecord.ElementUpdateRecord>;
   private treeElementsBeingUpdated: Set<ElementsTreeElement>;
   decoratorExtensions: MarkerDecoratorRegistration[]|null;
@@ -708,26 +738,6 @@ export class ElementsTreeOutline extends
     this.selectedDOMNodeInternal = null;
 
     this.visible = false;
-
-    this.imagePreviewPopover = new ImagePreviewPopover(
-        this.contentElement,
-        event => {
-          let link: (Element|null) = (event.target as Element | null);
-          while (link && !ImagePreviewPopover.getImageURL(link)) {
-            link = link.parentElementOrShadowHost();
-          }
-          return link;
-        },
-        async link => {
-          const listItem = UI.UIUtils.enclosingNodeOrSelfWithNodeName(link, 'li');
-          if (!listItem) {
-            return undefined;
-          }
-
-          const treeElement =
-              (UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem) as ElementsTreeElement | undefined);
-          return await UIComponentUtils.ImagePreview.loadPrecomputedFeatures(treeElement?.node());
-        });
 
     this.updateRecords = new Map();
     this.treeElementsBeingUpdated = new Set();
@@ -1042,7 +1052,6 @@ export class ElementsTreeOutline extends
     }
     this.visible = visible;
     if (!this.visible) {
-      this.imagePreviewPopover.hide();
       if (this.multilineEditing) {
         this.multilineEditing.cancel();
       }
@@ -1704,7 +1713,6 @@ export class ElementsTreeOutline extends
   private reset(): void {
     this.rootDOMNode = null;
     this.selectDOMNode(null, false);
-    this.imagePreviewPopover.hide();
     delete this.clipboardNodeData;
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     this.updateRecords.clear();

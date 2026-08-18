@@ -49,13 +49,4 @@ describe('TypescriptUtilities', () => {
       );
     });
   });
-
-  describe('assertUnhandled', () => {
-    it('returns the value it was given', () => {
-      assert.strictEqual(Platform.assertUnhandled(42), 42);
-
-      const value = {flag: true};
-      assert.strictEqual(Platform.assertUnhandled(value), value);
-    });
-  });
 });

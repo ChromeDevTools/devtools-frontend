@@ -204,11 +204,14 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       case IssuesManager.CorsIssue.IssueCode.NO_CORS_REDIRECT_MODE_NOT_FOLLOW:
         this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
         break;
+      case IssuesManager.CorsIssue.IssueCode.PREFLIGHT_MISSING_ALLOW_EXTERNAL:
+      case IssuesManager.CorsIssue.IssueCode.PREFLIGHT_INVALID_ALLOW_EXTERNAL:
+      case IssuesManager.CorsIssue.IssueCode.INVALID_LOCAL_NETWORK_ACCESS:
+      case IssuesManager.CorsIssue.IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED:
+        // The default columns suffice.
+        break;
       default:
-        Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.PREFLIGHT_MISSING_ALLOW_EXTERNAL|
-                                 IssuesManager.CorsIssue.IssueCode.PREFLIGHT_INVALID_ALLOW_EXTERNAL|
-                                 IssuesManager.CorsIssue.IssueCode.INVALID_LOCAL_NETWORK_ACCESS|
-                                 IssuesManager.CorsIssue.IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED>(issueCode);
+        Platform.assertNever(issueCode, 'Unknow issue code ' + issueCode);
     }
 
     this.affectedResources.appendChild(header);
@@ -428,14 +431,15 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         this.#appendStatus(element, details.isWarning);
         this.appendSourceLocation(element, details.location, issue.model()?.getTargetIfNotDisposed());
         break;
-      default:
+      case IssuesManager.CorsIssue.IssueCode.PREFLIGHT_MISSING_ALLOW_EXTERNAL:
+      case IssuesManager.CorsIssue.IssueCode.PREFLIGHT_INVALID_ALLOW_EXTERNAL:
+      case IssuesManager.CorsIssue.IssueCode.INVALID_LOCAL_NETWORK_ACCESS:
+      case IssuesManager.CorsIssue.IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED:
         element.appendChild(this.createRequestCell(details.request, opts));
         this.#appendStatus(element, details.isWarning);
-        Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.PREFLIGHT_MISSING_ALLOW_EXTERNAL|
-                                 IssuesManager.CorsIssue.IssueCode.PREFLIGHT_INVALID_ALLOW_EXTERNAL|
-                                 IssuesManager.CorsIssue.IssueCode.INVALID_LOCAL_NETWORK_ACCESS|
-                                 IssuesManager.CorsIssue.IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED>(issueCode);
         break;
+      default:
+        Platform.assertNever(issueCode, 'Unknown issue code: ' + issueCode);
     }
 
     this.affectedResources.appendChild(element);

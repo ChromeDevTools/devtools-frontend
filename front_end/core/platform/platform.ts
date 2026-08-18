@@ -24,7 +24,7 @@ import * as UserVisibleError from './UserVisibleError.js';
  * `Platform.TypeScriptUtilities.assertNotNullOrUndefined` causes a compile
  * error).
  */
-export {assertNever, assertNotNullOrUndefined, assertUnhandled} from './TypescriptUtilities.js';
+export {assertNever, assertNotNullOrUndefined} from './TypescriptUtilities.js';
 export {
   ArrayUtilities,
   Brand,

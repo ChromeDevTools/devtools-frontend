@@ -17,15 +17,6 @@ export function assertNever(_type: never, message: string): never {
   throw new Error(message);
 }
 
-/**
- * This is useful to check on the type-level that the unhandled cases of
- * a switch are exactly `T` (where T is usually a union type of enum values).
- * @param caseVariable
- */
-export function assertUnhandled<T>(_caseVariable: T): T {
-  return _caseVariable;
-}
-
 export type FieldsThatExtend<Type, Selector> = {
   [Key in keyof Type]: Type[Key] extends Selector ? Key : never;
 }[keyof Type];

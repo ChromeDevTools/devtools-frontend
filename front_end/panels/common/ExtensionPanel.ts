@@ -200,14 +200,19 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
       callback('operation cancelled');
       return;
     }
-    objectPropertiesView.element.removeChildren();
-    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, title, undefined, undefined,
-                                                                                 /* editable: */ false);
-    if (!title) {
-      section.titleLessMode();
+    objectPropertiesView.detachChildWidgets();
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+      readOnly: true,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+    });
+    section.objectTree.expanded = true;
+    if (title) {
+      const span = document.createElement('span');
+      span.textContent = title;
+      section.title = span;
     }
-    section.firstChild()?.expand();
-    objectPropertiesView.element.appendChild(section.element);
+    section.show(objectPropertiesView.element);
     callback();
   }
 }

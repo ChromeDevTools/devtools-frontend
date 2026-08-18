@@ -401,7 +401,7 @@ ConsoleTestRunner.dumpConsoleCounters = async function() {
 /**
  * @param {!Function} callback
  * @param {function(!Element):boolean} deepFilter
- * @param {function(!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection):boolean} sectionFilter
+ * @param {function(!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget):boolean} sectionFilter
  */
 ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, sectionFilter) {
   Console.ConsoleView.ConsoleView.instance().invalidateViewport();
@@ -424,31 +424,22 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
         if (node.expandStackTraceForTest) {
           node.expandStackTraceForTest();
         }
-        if (node.tagName === 'DEVTOOLS-TREE') {
-          const treeOutline = node.getInternalTreeOutlineForTest();
-          const treeElements = treeOutline.rootElement().children();
-          for (let j = 0; j < treeElements.length; ++j) {
-            for (let treeElement = treeElements[j]; treeElement;
-                 treeElement = treeElement.traverseNextTreeElement(true, null, true)) {
-              if (!deepFilter || deepFilter(treeElement)) {
-                treeElement.expand();
-              }
-            }
-          }
-        }
-        const section = ObjectUI.ObjectPropertiesSection.getObjectPropertiesSectionFrom(node);
-        if (!section) {
+        const section = UI.Widget.Widget.get(node);
+        if (!(section instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget)) {
           continue;
         }
         if (sectionFilter && !sectionFilter(section)) {
           continue;
         }
-        section.expand();
+        if (section.objectTree) {
+          section.objectTree.expanded = true;
+        }
 
         if (!deepFilter) {
           continue;
         }
-        const treeElements = section.rootElement().children();
+        const treeOutline = section.element.querySelector('devtools-tree')?.getInternalTreeOutlineForTest();
+        const treeElements = treeOutline?.rootElement().children() || [];
         for (let j = 0; j < treeElements.length; ++j) {
           for (let treeElement = treeElements[j]; treeElement;
                treeElement = treeElement.traverseNextTreeElement(true, null, true)) {
@@ -466,7 +457,7 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
 
 /**
  * @param {function(!Element):boolean} deepFilter
- * @param {function(!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection):boolean} sectionFilter
+ * @param {function(!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget):boolean} sectionFilter
  * @returns {!Promise}
  */
 ConsoleTestRunner.expandConsoleMessagesPromise = function(deepFilter, sectionFilter) {

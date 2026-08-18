@@ -161,7 +161,6 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/ObjectP
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const EXPANDABLE_MAX_DEPTH = 100;
 
-const objectPropertiesSectionMap = new WeakMap<Element, ObjectPropertiesSection>();
 // TODO(crbug.com/457388389): This cache is a temporary workaround for the <devtools-tree> migration.
 // It can be removed once the entire ObjectPropertiesSection is fully migrated to Lit and
 // the legacy TreeOutline/TreeElement dependencies are removed.
@@ -621,7 +620,7 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
                                                propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
                                              }));
     properties?.push(...this.extraProperties);
-    properties?.sort((a, b) => ObjectPropertiesSection.compareProperties(a, b, this.sortPropertiesAlphabetically));
+    properties?.sort((a, b) => compareProperties(a, b, this.sortPropertiesAlphabetically));
     const accessors = properties && ObjectTreeNodeBase.getGettersAndSetters(properties, this.options);
 
     const internalProperties =
@@ -751,7 +750,7 @@ export class ArrayGroupTreeNode extends ObjectTreeNodeBase {
                                                        ...this.options,
                                                      }));
     properties?.push(...this.extraProperties);
-    properties?.sort((a, b) => ObjectPropertiesSection.compareProperties(a, b, this.sortPropertiesAlphabetically));
+    properties?.sort((a, b) => compareProperties(a, b, this.sortPropertiesAlphabetically));
     const accessors = properties && ObjectTreeNodeBase.getGettersAndSetters(properties, this.options);
     return {properties, accessors};
   }
@@ -929,267 +928,179 @@ export class ObjectTreeNode extends ObjectTreeNodeBase {
   }
 }
 
-export const getObjectPropertiesSectionFrom = (element: Element): ObjectPropertiesSection|undefined => {
-  return objectPropertiesSectionMap.get(element);
-};
-
-export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow {
-  readonly root: ObjectTree;
-  readonly #objectTreeElement: RootElement;
-  titleElement: Element;
-  skipProtoInternal?: boolean;
-
-  constructor(object: SDK.RemoteObject.RemoteObject, title?: string|Element|null,
-              linkifier?: Components.Linkifier.Linkifier, showOverflow?: boolean, editable = true,
-              search?: UI.TreeOutline.TreeSearch<ObjectTreeNodeBase>) {
-    super();
-    this.root = new ObjectTree(object, {
-      readOnly: !editable,
-      propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
-      search,
-    });
-    if (!showOverflow) {
-      this.setHideOverflow(true);
-    }
-    this.setFocusable(true);
-    this.setShowSelectionOnKeyboardFocus(true);
-    this.#objectTreeElement = new RootElement(this.root, linkifier);
-    this.appendChild(this.#objectTreeElement);
-    if (typeof title === 'string' || !title) {
-      this.titleElement = this.element.createChild('span');
-      this.titleElement.textContent = title ? Platform.StringUtilities.escapeUnicodeAsText(title) : '';
-    } else {
-      this.titleElement = title;
-      this.element.appendChild(title);
-    }
-    if (this.titleElement instanceof HTMLElement && !this.titleElement.hasAttribute('tabIndex')) {
-      this.titleElement.tabIndex = -1;
-    }
-
-    objectPropertiesSectionMap.set(this.element, this);
-    this.registerRequiredCSS(objectValueStyles, objectPropertiesSectionStyles);
-    this.rootElement().childrenListElement.classList.add('source-code', 'object-properties-section');
+// The RemoteObjectProperty overload is kept for web test compatibility for now.
+export function compareProperties(propertyA: ObjectTreeNode|SDK.RemoteObject.RemoteObjectProperty,
+                                  propertyB: ObjectTreeNode|SDK.RemoteObject.RemoteObjectProperty,
+                                  sortPropertiesAlphabetically = true): number {
+  if (propertyA instanceof ObjectTreeNode) {
+    propertyA = propertyA.property;
+  }
+  if (propertyB instanceof ObjectTreeNode) {
+    propertyB = propertyB.property;
   }
 
-  // The RemoteObjectProperty overload is kept for web test compatibility for now.
-  static compareProperties(propertyA: ObjectTreeNode|SDK.RemoteObject.RemoteObjectProperty,
-                           propertyB: ObjectTreeNode|SDK.RemoteObject.RemoteObjectProperty,
-                           sortPropertiesAlphabetically = true): number {
-    if (propertyA instanceof ObjectTreeNode) {
-      propertyA = propertyA.property;
-    }
-    if (propertyB instanceof ObjectTreeNode) {
-      propertyB = propertyB.property;
-    }
+  if (!propertyA.synthetic && propertyB.synthetic) {
+    return 1;
+  }
+  if (!propertyB.synthetic && propertyA.synthetic) {
+    return -1;
+  }
+  if (!propertyA.isOwn && propertyB.isOwn) {
+    return 1;
+  }
+  if (!propertyB.isOwn && propertyA.isOwn) {
+    return -1;
+  }
+  if (!propertyA.enumerable && propertyB.enumerable) {
+    return 1;
+  }
+  if (!propertyB.enumerable && propertyA.enumerable) {
+    return -1;
+  }
+  if (propertyA.symbol && !propertyB.symbol) {
+    return 1;
+  }
+  if (propertyB.symbol && !propertyA.symbol) {
+    return -1;
+  }
+  if (propertyA.private && !propertyB.private) {
+    return 1;
+  }
+  if (propertyB.private && !propertyA.private) {
+    return -1;
+  }
 
-    if (!propertyA.synthetic && propertyB.synthetic) {
+  if (sortPropertiesAlphabetically) {
+    const nameA = propertyA.name;
+    const nameB = propertyB.name;
+    if (nameA.startsWith('_') && !nameB.startsWith('_')) {
       return 1;
     }
-    if (!propertyB.synthetic && propertyA.synthetic) {
+    if (nameB.startsWith('_') && !nameA.startsWith('_')) {
       return -1;
     }
-    if (!propertyA.isOwn && propertyB.isOwn) {
-      return 1;
-    }
-    if (!propertyB.isOwn && propertyA.isOwn) {
-      return -1;
-    }
-    if (!propertyA.enumerable && propertyB.enumerable) {
-      return 1;
-    }
-    if (!propertyB.enumerable && propertyA.enumerable) {
-      return -1;
-    }
-    if (propertyA.symbol && !propertyB.symbol) {
-      return 1;
-    }
-    if (propertyB.symbol && !propertyA.symbol) {
-      return -1;
-    }
-    if (propertyA.private && !propertyB.private) {
-      return 1;
-    }
-    if (propertyB.private && !propertyA.private) {
-      return -1;
-    }
+    return Platform.StringUtilities.naturalOrderComparator(nameA, nameB);
+  }
 
-    if (sortPropertiesAlphabetically) {
-      const nameA = propertyA.name;
-      const nameB = propertyB.name;
-      if (nameA.startsWith('_') && !nameB.startsWith('_')) {
-        return 1;
+  return 0;
+}
+
+export function valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string,
+                                                   details?: SDK.DebuggerModel.FunctionDetails|null,
+                                                   linkify?: boolean): LitTemplate {
+  const contents = (description: string, defaultName: string): {prefix: string, abbreviation: string, body: string} => {
+    const text = description.replace(/^function [gs]et /, 'function ')
+                     .replace(/^function [gs]et\(/, 'function\(')
+                     .replace(/^[gs]et /, '');
+
+    // This set of best-effort regular expressions captures common function descriptions.
+    // Ideally, some parser would provide prefix, arguments, function body text separately.
+    const asyncMatch = text.match(/^(async\s+function)/);
+    const isGenerator = text.startsWith('function*');
+    const isGeneratorShorthand = text.startsWith('*');
+    const isBasic = !isGenerator && text.startsWith('function');
+    const isClass = text.startsWith('class ') || text.startsWith('class{');
+    const firstArrowIndex = text.indexOf('=>');
+    const isArrow = !asyncMatch && !isGenerator && !isBasic && !isClass && firstArrowIndex > 0;
+
+    if (isClass) {
+      const body = text.substring('class'.length);
+      const classNameMatch = /^[^{\s]+/.exec(body.trim());
+      let className: string = defaultName;
+      if (classNameMatch) {
+        className = classNameMatch[0].trim() || defaultName;
       }
-      if (nameB.startsWith('_') && !nameA.startsWith('_')) {
-        return -1;
-      }
-      return Platform.StringUtilities.naturalOrderComparator(nameA, nameB);
+      return {prefix: 'class', body, abbreviation: className};
     }
-
-    return 0;
-  }
-
-  static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string,
-                                            details?: SDK.DebuggerModel.FunctionDetails|null,
-                                            linkify?: boolean): LitTemplate {
-    const contents =
-        (description: string, defaultName: string): {prefix: string, abbreviation: string, body: string} => {
-          const text = description.replace(/^function [gs]et /, 'function ')
-                           .replace(/^function [gs]et\(/, 'function\(')
-                           .replace(/^[gs]et /, '');
-
-          // This set of best-effort regular expressions captures common function descriptions.
-          // Ideally, some parser would provide prefix, arguments, function body text separately.
-          const asyncMatch = text.match(/^(async\s+function)/);
-          const isGenerator = text.startsWith('function*');
-          const isGeneratorShorthand = text.startsWith('*');
-          const isBasic = !isGenerator && text.startsWith('function');
-          const isClass = text.startsWith('class ') || text.startsWith('class{');
-          const firstArrowIndex = text.indexOf('=>');
-          const isArrow = !asyncMatch && !isGenerator && !isBasic && !isClass && firstArrowIndex > 0;
-
-          if (isClass) {
-            const body = text.substring('class'.length);
-            const classNameMatch = /^[^{\s]+/.exec(body.trim());
-            let className: string = defaultName;
-            if (classNameMatch) {
-              className = classNameMatch[0].trim() || defaultName;
-            }
-            return {prefix: 'class', body, abbreviation: className};
-          }
-          if (asyncMatch) {
-            const body = text.substring(asyncMatch[1].length);
-            return {prefix: 'async \u0192', body, abbreviation: nameAndArguments(body)};
-          }
-          if (isGenerator) {
-            const body = text.substring('function*'.length);
-            return {prefix: '\u0192*', body, abbreviation: nameAndArguments(body)};
-          }
-          if (isGeneratorShorthand) {
-            const body = text.substring('*'.length);
-            return {prefix: '\u0192*', body, abbreviation: nameAndArguments(body)};
-          }
-          if (isBasic) {
-            const body = text.substring('function'.length);
-            return {prefix: '\u0192', body, abbreviation: nameAndArguments(body)};
-          }
-          if (isArrow) {
-            const maxArrowFunctionCharacterLength = 60;
-            let abbreviation: string = text;
-            if (defaultName) {
-              abbreviation = defaultName + '()';
-            } else if (text.length > maxArrowFunctionCharacterLength) {
-              abbreviation = text.substring(0, firstArrowIndex + 2) + ' {…}';
-            }
-            return {prefix: '', body: text, abbreviation};
-          }
-          return {prefix: '\u0192', body: text, abbreviation: nameAndArguments(text)};
-        };
-
-    const {prefix, body, abbreviation} = contents(description ?? '', defaultName ?? '');
-    const maxFunctionBodyLength = 200;
-
-    const location = details?.location;
-    const clickHandler = linkify && location ? (event: Event) => {
-      void Common.Revealer.reveal(location);
-      event.consume(true);
-    } : undefined;
-
-    const classes = classMap({
-      'object-value-function': true,
-      linkified: Boolean(linkify && location),
-    });
-    const title = description ? Platform.StringUtilities.trimEndWithMaxLength(description, 500) : undefined;
-
-    return html`<span
-      class=${classes}
-      @click=${clickHandler || nothing}
-      title=${ifDefined(title)}>${prefix && html`<span class=object-value-function-prefix>${prefix} </span>`}${
-        includePreview ? Platform.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength) :
-                         abbreviation.replace(/\n/g, ' ')}</span>`;
-
-    function nameAndArguments(contents: string): string {
-      const startOfArgumentsIndex = contents.indexOf('(');
-      const endOfArgumentsMatch = contents.match(/\)\s*{/);
-      if (startOfArgumentsIndex !== -1 && endOfArgumentsMatch?.index !== undefined &&
-          endOfArgumentsMatch.index > startOfArgumentsIndex) {
-        const name = contents.substring(0, startOfArgumentsIndex).trim() || (defaultName ?? '');
-        const args = contents.substring(startOfArgumentsIndex, endOfArgumentsMatch.index + 1);
-        return name + args;
-      }
-      return defaultName + '()';
+    if (asyncMatch) {
+      const body = text.substring(asyncMatch[1].length);
+      return {prefix: 'async \u0192', body, abbreviation: nameAndArguments(body)};
     }
-  }
+    if (isGenerator) {
+      const body = text.substring('function*'.length);
+      return {prefix: '\u0192*', body, abbreviation: nameAndArguments(body)};
+    }
+    if (isGeneratorShorthand) {
+      const body = text.substring('*'.length);
+      return {prefix: '\u0192*', body, abbreviation: nameAndArguments(body)};
+    }
+    if (isBasic) {
+      const body = text.substring('function'.length);
+      return {prefix: '\u0192', body, abbreviation: nameAndArguments(body)};
+    }
+    if (isArrow) {
+      const maxArrowFunctionCharacterLength = 60;
+      let abbreviation: string = text;
+      if (defaultName) {
+        abbreviation = defaultName + '()';
+      } else if (text.length > maxArrowFunctionCharacterLength) {
+        abbreviation = text.substring(0, firstArrowIndex + 2) + ' {…}';
+      }
+      return {prefix: '', body: text, abbreviation};
+    }
+    return {prefix: '\u0192', body: text, abbreviation: nameAndArguments(text)};
+  };
 
-  static getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate {
-    // Directly set styles on memory icon, so that the memory icon is also
-    // styled within the context of code mirror.
-    // clang-format off
-    return !object.isLinearMemoryInspectable() ? nothing : html`<devtools-icon
-      name=memory
-      style="width: var(--sys-size-8); height: 13px; vertical-align: sub; cursor: pointer;"
-      @click=${(event: Event) => {
-        event.consume();
-        void Common.Revealer.reveal(new SDK.RemoteObject.LinearMemoryInspectable(object, expression));
-      }}
-      jslog=${VisualLogging.action('open-memory-inspector').track({click: true})}
-      title=${i18nString(UIStrings.openInMemoryInpector)}
-      aria-label=${i18nString(UIStrings.openInMemoryInpector)}></devtools-icon>`;
-    // clang-format on
-  }
+  const {prefix, body, abbreviation} = contents(description ?? '', defaultName ?? '');
+  const maxFunctionBodyLength = 200;
 
-  static appendMemoryIcon(element: Element, object: SDK.RemoteObject.RemoteObject, expression?: string): void {
-    const fragment = document.createDocumentFragment();
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(ObjectPropertiesSection.getMemoryIcon(object, expression), fragment);
-    element.appendChild(fragment);
-  }
+  const location = details?.location;
+  const clickHandler = linkify && location ? (event: Event) => {
+    void Common.Revealer.reveal(location);
+    event.consume(true);
+  } : undefined;
 
-  static isDisplayableProperty(property: SDK.RemoteObject.RemoteObjectProperty,
+  const classes = classMap({
+    'object-value-function': true,
+    linkified: Boolean(linkify && location),
+  });
+  const title = description ? Platform.StringUtilities.trimEndWithMaxLength(description, 500) : undefined;
+
+  return html`<span
+    class=${classes}
+    @click=${clickHandler || nothing}
+    title=${ifDefined(title)}>${prefix && html`<span class=object-value-function-prefix>${prefix} </span>`}${
+      includePreview ? Platform.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength) :
+                       abbreviation.replace(/\n/g, ' ')}</span>`;
+
+  function nameAndArguments(contents: string): string {
+    const startOfArgumentsIndex = contents.indexOf('(');
+    const endOfArgumentsMatch = contents.match(/\)\s*{/);
+    if (startOfArgumentsIndex !== -1 && endOfArgumentsMatch?.index !== undefined &&
+        endOfArgumentsMatch.index > startOfArgumentsIndex) {
+      const name = contents.substring(0, startOfArgumentsIndex).trim() || (defaultName ?? '');
+      const args = contents.substring(startOfArgumentsIndex, endOfArgumentsMatch.index + 1);
+      return name + args;
+    }
+    return defaultName + '()';
+  }
+}
+
+export function getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate {
+  // Directly set styles on memory icon, so that the memory icon is also
+  // styled within the context of code mirror.
+  // clang-format off
+  return !object.isLinearMemoryInspectable() ? nothing : html`<devtools-icon
+    name=memory
+    style="width: var(--sys-size-8); height: 13px; vertical-align: sub; cursor: pointer;"
+    @click=${(event: Event) => {
+      event.consume();
+      void Common.Revealer.reveal(new SDK.RemoteObject.LinearMemoryInspectable(object, expression));
+    }}
+    jslog=${VisualLogging.action('open-memory-inspector').track({click: true})}
+    title=${i18nString(UIStrings.openInMemoryInpector)}
+    aria-label=${i18nString(UIStrings.openInMemoryInpector)}></devtools-icon>`;
+  // clang-format on
+}
+
+function isDisplayableProperty(property: SDK.RemoteObject.RemoteObjectProperty,
                                parentProperty?: SDK.RemoteObject.RemoteObjectProperty): boolean {
-    if (!parentProperty?.synthetic) {
-      return true;
-    }
-    const name = property.name;
-    const useless = (parentProperty.name === '[[Entries]]' && (name === 'length' || name === '__proto__'));
-    return !useless;
+  if (!parentProperty?.synthetic) {
+    return true;
   }
-
-  skipProto(): void {
-    this.skipProtoInternal = true;
-  }
-
-  expand(): void {
-    this.#objectTreeElement.expand();
-  }
-
-  objectTreeElement(): UI.TreeOutline.TreeElement {
-    return this.#objectTreeElement;
-  }
-
-  enableContextMenu(): void {
-    this.element.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
-  }
-
-  private contextMenuEventFired(event: Event): void {
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.appendApplicableItems(this.root);
-    if (this.root.object instanceof SDK.RemoteObject.LocalJSONObject) {
-      contextMenu.viewSection().appendItem(
-          i18nString(UIStrings.expandRecursively),
-          this.#objectTreeElement.expandRecursively.bind(this.#objectTreeElement, EXPANDABLE_MAX_DEPTH),
-          {jslogContext: 'expand-recursively'});
-      contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren),
-                                           this.#objectTreeElement.collapseChildren.bind(this.#objectTreeElement),
-                                           {jslogContext: 'collapse-children'});
-    }
-    void contextMenu.show();
-  }
-
-  titleLessMode(): void {
-    this.#objectTreeElement.listItemElement.classList.add('hidden');
-    this.#objectTreeElement.childrenListElement.classList.add('title-less-mode');
-    this.#objectTreeElement.expand();
-  }
+  const name = property.name;
+  const useless = (parentProperty.name === '[[Entries]]' && (name === 'length' || name === '__proto__'));
+  return !useless;
 }
 
 export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
@@ -1611,74 +1522,6 @@ export const OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: ObjectPropertiesSectionView
          target);
 };
 
-class RootElement extends UI.TreeOutline.TreeElement {
-  private readonly object: ObjectTree;
-  private readonly linkifier: Components.Linkifier.Linkifier|undefined;
-  private readonly emptyPlaceholder: string|null|undefined;
-  override toggleOnClick: boolean;
-  constructor(object: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null) {
-    const contentElement = document.createElement('slot');
-    super(contentElement);
-
-    this.object = object;
-    this.object.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.onpopulate, this);
-    this.linkifier = linkifier;
-    this.emptyPlaceholder = emptyPlaceholder;
-
-    this.setExpandable(true);
-    this.selectable = true;
-    this.toggleOnClick = true;
-    this.listItemElement.classList.add('object-properties-section-root-element');
-    this.listItemElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
-    if (object.expanded) {
-      this.expand();
-    }
-  }
-
-  override onexpand(): void {
-    this.object.expanded = true;
-    if (this.treeOutline) {
-      this.treeOutline.element.classList.add('expanded');
-    }
-  }
-
-  override oncollapse(): void {
-    this.object.expanded = false;
-    if (this.treeOutline) {
-      this.treeOutline.element.classList.remove('expanded');
-    }
-  }
-
-  override ondblclick(_e: Event): boolean {
-    return true;
-  }
-
-  private onContextMenu(event: Event): void {
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    populateObjectTreeContextMenu(
-        contextMenu,
-        this.object,
-        this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH),
-        this.collapseChildren.bind(this),
-        () => {
-          this.object.sortPropertiesAlphabetically = !this.object.sortPropertiesAlphabetically;
-        },
-        () => {
-          this.object.includeNullOrUndefinedValues = !this.object.includeNullOrUndefinedValues;
-        },
-    );
-    void contextMenu.show();
-  }
-
-  override async onpopulate(): Promise<void> {
-    this.removeChildren();
-    const treeOutline = (this.treeOutline as ObjectPropertiesSection | null);
-    const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
-    return await ObjectPropertyTreeElement.populate(this, this.object, skipProto, false, this.linkifier,
-                                                    this.emptyPlaceholder);
-  }
-}
-
 export function renderPropertyName(name: string|null, isPrivate?: boolean, title?: string): TemplateResult {
   if (name === null) {
     return html`<span class="name" title=${ifDefined(title)}></span>`;
@@ -1701,8 +1544,7 @@ export async function formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject
   // The includePreview flag is false for formats such as console.dir().
   const defaultName = details?.functionName ?? (includePreview ? '' : 'anonymous');
 
-  return ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName,
-                                                                    details, linkify);
+  return valueElementForFunctionDescription(func.description, includePreview, defaultName, details, linkify);
 }
 
 export function renderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean,
@@ -1770,7 +1612,7 @@ export function renderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThr
     title = tooLong ? undefined : text;
     content = tooLong ? widget(ExpandableTextPropertyValue, {text}) : renderTrustedType(description, className);
   } else if (isFunction) {
-    content = ObjectPropertiesSection.valueElementForFunctionDescription(description);
+    content = valueElementForFunctionDescription(description);
   } else if (description.length > maxRenderableStringLength) {
     title = description;
     content = widget(ExpandableTextPropertyValue, {text: description});
@@ -1780,8 +1622,7 @@ export function renderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThr
     const previewContent = hasPreview ?
         new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview, includeNullOrUndefined) :
         description;
-    content = html`${previewContent}${
-        isSyntheticProperty ? nothing : ObjectPropertiesSection.getMemoryIcon(value, variableName)}`;
+    content = html`${previewContent}${isSyntheticProperty ? nothing : getMemoryIcon(value, variableName)}`;
   }
 
   if (wasThrown) {
@@ -1951,7 +1792,7 @@ export const OBJECT_PROPERTY_DEFAULT_VIEW: ObjectPropertyView = (input, output, 
                           Platform.StringUtilities.trimMiddle(property.value.description ?? '',
                                                               maxRenderableStringLength)}${
                       property.synthetic ? nothing :
-                        ObjectPropertiesSection.getMemoryIcon(property.value)}</span>` :
+                        getMemoryIcon(property.value)}</span>` :
                     value()
                   }</devtools-highlight>
                   <datalist id=${completionsId}>${repeat(input.completions, c => html`<option>${c}</option>`)}</datalist>
@@ -2184,7 +2025,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     for (const childNode of ObjectPropertyTreeElement.createNodes(
              value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder,
              property => treeElement instanceof ObjectPropertyTreeElement &&
-                 !ObjectPropertiesSection.isDisplayableProperty(property, treeElement.property?.property))) {
+                 !isDisplayableProperty(property, treeElement.property?.property))) {
       treeElement.appendChild(childNode);
     }
   }
@@ -2224,7 +2065,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       empty = false;
     }
     const sortPropertiesAlphabetically = properties?.[0]?.parent?.sortPropertiesAlphabetically ?? true;
-    properties?.sort((a, b) => ObjectPropertiesSection.compareProperties(a, b, sortPropertiesAlphabetically));
+    properties?.sort((a, b) => compareProperties(a, b, sortPropertiesAlphabetically));
 
     const entriesProperty = internalProperties?.find(({property}) => property.name === '[[Entries]]');
     if (entriesProperty) {
@@ -2285,7 +2126,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     for (const childNode of this.createPropertyNodes(
              children, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder,
              property => treeNode instanceof ObjectPropertyTreeElement &&
-                 !ObjectPropertiesSection.isDisplayableProperty(property, treeNode.property?.property))) {
+                 !isDisplayableProperty(property, treeNode.property?.property))) {
       treeNode.appendChild(childNode);
     }
   }
@@ -2344,12 +2185,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   override async onpopulate(): Promise<void> {
-    const treeOutline = (this.treeOutline as ObjectPropertiesSection | null);
-    const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
     this.removeChildren();
 
     if (this.property.object) {
-      await ObjectPropertyTreeElement.populate(this, this.property, skipProto, false, this.linkifier);
+      await ObjectPropertyTreeElement.populate(this, this.property, false, false, this.linkifier);
       if (this.childCount() > this.maxNumPropertiesToShow) {
         this.createShowAllPropertiesButton();
       }

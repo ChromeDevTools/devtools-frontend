@@ -895,8 +895,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       if (obj.preview) {
         titleElement.classList.add('console-object-preview');
 
-        render(this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined), titleElement);
-        ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
+        render(html`${this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined)}${
+                   ObjectUI.ObjectPropertiesSection.getMemoryIcon(obj)}`,
+               titleElement);
       }
     };
 

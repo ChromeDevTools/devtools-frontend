@@ -225,7 +225,7 @@ describe('ObjectPropertiesSection', () => {
                                                   true, true),
       ];
 
-      properties.sort(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.compareProperties);
+      properties.sort(ObjectUI.ObjectPropertiesSection.compareProperties);
       assert.deepEqual(properties.map(property => property.name), ['visibleA', 'visibleB', 'hiddenA', 'hiddenB']);
     });
 
@@ -242,8 +242,7 @@ describe('ObjectPropertiesSection', () => {
                                                      true, true),
          ];
 
-         properties.sort((a, b) =>
-                             ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.compareProperties(a, b, false));
+         properties.sort((a, b) => ObjectUI.ObjectPropertiesSection.compareProperties(a, b, false));
          assert.deepEqual(properties.map(property => property.name), ['visibleB', 'visibleA', 'hiddenB', 'hiddenA']);
        });
 
@@ -280,26 +279,26 @@ describe('ObjectPropertiesSection', () => {
       appendCheckboxItemSpy.restore();
     });
 
-    describe('appendMemoryIcon', () => {
-      it('appends a memory icon for inspectable object types', () => {
+    describe('getMemoryIcon', () => {
+      it('returns a memory icon for inspectable object types', () => {
         const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
         object.isLinearMemoryInspectable.returns(true);
 
         const div = document.createElement('div');
         assert.isFalse(div.hasChildNodes());
-        ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, object);
+        render(ObjectUI.ObjectPropertiesSection.getMemoryIcon(object), div);
         assert.isTrue(div.hasChildNodes());
         const icon = div.querySelector('devtools-icon');
         assert.isNotNull(icon);
       });
 
-      it('doesn\'t append a memory icon for non-inspectable object types', () => {
+      it('returns nothing for non-inspectable object types', () => {
         const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
         object.isLinearMemoryInspectable.returns(false);
 
         const div = document.createElement('div');
         assert.isFalse(div.hasChildNodes());
-        ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, object);
+        render(ObjectUI.ObjectPropertiesSection.getMemoryIcon(object), div);
         assert.strictEqual(div.childElementCount, 0);
       });
 
@@ -309,7 +308,7 @@ describe('ObjectPropertiesSection', () => {
         const expression = 'foo';
 
         const div = document.createElement('div');
-        ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, object, expression);
+        render(ObjectUI.ObjectPropertiesSection.getMemoryIcon(object, expression), div);
         const icon = div.querySelector('devtools-icon');
         assert.exists(icon);
         const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal');

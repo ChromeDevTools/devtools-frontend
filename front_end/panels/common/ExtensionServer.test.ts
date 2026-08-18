@@ -2118,9 +2118,10 @@ describe('Extension Panels', () => {
       // Verify that the JSON string object is rendered correctly.
       const sectionElement = sidebar.element.firstElementChild?.firstElementChild;
       assert.exists(sectionElement);
-      const section = ObjectUI.ObjectPropertiesSection.getObjectPropertiesSectionFrom(sectionElement);
-      assert.exists(section);
-      assert.strictEqual(section.root.object.value, expectedObject);
+      const section = UI.Widget.Widget.get(sectionElement);
+      assert.instanceOf(section, ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget);
+      assert.exists(section.objectTree?.object);
+      assert.strictEqual(section.objectTree.object.value, expectedObject);
     }
   });
 
@@ -2170,9 +2171,10 @@ describe('Extension Panels', () => {
       // The expression evaluates to the expression itself because of the stub on executionContext.evaluate.
       const sectionElement = sidebar.element.firstElementChild?.firstElementChild;
       assert.exists(sectionElement);
-      const section = ObjectUI.ObjectPropertiesSection.getObjectPropertiesSectionFrom(sectionElement);
-      assert.exists(section);
-      assert.strictEqual(section.root.object.value, expectedObject);
+      const section = UI.Widget.Widget.get(sectionElement);
+      assert.instanceOf(section, ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget);
+      assert.exists(section.objectTree?.object);
+      assert.strictEqual(section.objectTree.object.value, expectedObject);
     }
   });
 

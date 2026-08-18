@@ -15,7 +15,7 @@ import * as Components from '../utils/utils.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
 import objectPopoverStyles from './objectPopover.css.js';
-import {ObjectPropertiesSection, ObjectPropertiesSectionWidget} from './ObjectPropertiesSection.js';
+import {ObjectPropertiesSectionWidget, valueElementForFunctionDescription} from './ObjectPropertiesSection.js';
 import objectValueStyles from './objectValue.css.js';
 
 const UIStrings = {
@@ -68,7 +68,7 @@ export class ObjectPopoverHelper {
         if (result.type === 'function') {
           titleElement.classList.add('source-code');
           // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-          render(ObjectPropertiesSection.valueElementForFunctionDescription(result.description), titleElement);
+          render(valueElementForFunctionDescription(result.description), titleElement);
         } else {
           titleElement.classList.add('monospace');
           titleElement.createChild('span').textContent = description;

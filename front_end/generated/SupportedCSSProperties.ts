@@ -709,6 +709,7 @@ export const generatedProperties = [
    "overscroll-behavior-inline",
    "overscroll-behavior-x",
    "overscroll-behavior-y",
+   "overscroll-container-type",
    "pad",
    "padding-block-end",
    "padding-block-start",
@@ -4295,6 +4296,17 @@ export const generatedProperties = [
    "none"
   ],
   "name": "overscroll-behavior-y"
+ },
+ {
+  "keywords": [
+   "none",
+   "auto",
+   "push",
+   "overlay"
+  ],
+  "name": "overscroll-container-type",
+  "runtime_flag": "OverscrollGestures",
+  "runtime_flag_status": "experimental"
  },
  {
   "is_descriptor": true,
@@ -8351,6 +8363,14 @@ export const generatedPropertyValues = {
    "chain",
    "contain",
    "none"
+  ]
+ },
+ "overscroll-container-type": {
+  "values": [
+   "none",
+   "auto",
+   "push",
+   "overlay"
   ]
  },
  "page": {

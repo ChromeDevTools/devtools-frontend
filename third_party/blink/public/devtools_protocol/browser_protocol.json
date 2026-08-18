@@ -11864,6 +11864,26 @@
                     ]
                 },
                 {
+                    "name": "setCPUPerformanceOverride",
+                    "description": "Overrides the value of navigator.cpuPerformance",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "performanceTier",
+                            "description": "Override value. Omitting the parameter disables the override.",
+                            "optional": true,
+                            "type": "string",
+                            "enum": [
+                                "unknown",
+                                "low",
+                                "mid",
+                                "high",
+                                "ultra"
+                            ]
+                        }
+                    ]
+                },
+                {
                     "name": "setUserAgentOverride",
                     "description": "Allows overriding user agent with the given string.\n`userAgentMetadata` must be set for Client Hint headers to be sent.",
                     "parameters": [
@@ -21772,7 +21792,6 @@
                         "identity-credentials-get",
                         "idle-detection",
                         "interest-cohort",
-                        "join-ad-interest-group",
                         "keyboard-map",
                         "language-detector",
                         "language-model",
@@ -21793,9 +21812,7 @@
                         "private-state-token-redemption",
                         "publickey-credentials-create",
                         "publickey-credentials-get",
-                        "record-ad-auction-events",
                         "rewriter",
-                        "run-ad-auction",
                         "screen-wake-lock",
                         "serial",
                         "shared-storage",

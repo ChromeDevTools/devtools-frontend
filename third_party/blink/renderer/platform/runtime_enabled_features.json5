@@ -315,7 +315,7 @@
       status: "test",
       base_feature: "none",
     },
-        {
+    {
       name: "AIClassifierAPI",
       status: {
         "Win": "experimental",
@@ -994,7 +994,7 @@
       // embed camera and microphone permission request controls directly in the page.
       // https://chromestatus.com/feature/5153829504024576
       name: "CameraAndMicrophoneElements",
-      status: "experimental",
+      status: "stable",
       public: true,
     },
     {
@@ -2666,6 +2666,14 @@
       status: "stable"
     },
     {
+      // Controls whether XSLT processing is selectively re-enabled for
+      // Common Alerting Protocol (CAP) alert XML documents when native XSLT
+      // is otherwise disabled.
+      // crbug.com/435623334.
+      name: "EnableXSLTForCAPAlerts",
+      status: "stable",
+    },
+    {
       name: "EndpointInclusiveCommitStyles",
       status: "stable",
     },
@@ -2738,6 +2746,16 @@
       origin_trial_feature_name: "ExtendedTextMetrics",
       origin_trial_allows_third_party: true,
       status: "experimental",
+    },
+    {
+      name: "ExtensionScriptTagging",
+      public: true,
+      status: "test",
+      base_feature: "ExtensionScriptTagging",
+    },
+    {
+      name: "ExtensionScriptTaggingTestingAPI",
+      base_feature: "ExtensionScriptTaggingTestingAPI",
     },
     {
       // Kill-switch for crbug.com/40434449.
@@ -3327,10 +3345,6 @@
       },
     },
     {
-      // https://crbug.com/40571175
-      name: "GetComputedStyleOutsideFlatTree",
-    },
-    {
       name: "GetDisplayMedia",
       public: true,
       status: {
@@ -3835,12 +3849,15 @@
       // instead of pointerdown and pointerup in order to fix light dismiss
       // bugs for touch inputs.
       // https://issues.chromium.org/issues/408010435
-      // Enabled in M153, can be removed in M157.
       name: "LightDismissFromClick",
-      status: "stable",
+      status: "experimental",
     },
     {
       name: "LineBreakAfterSpaceBeforeOpenTag",
+      status: "stable",
+    },
+    {
+      name: "LineBreakerHanKerningEnd",
       status: "stable",
     },
     {
@@ -3870,6 +3887,11 @@
       // No status because this feature is controlled by
       // network::features::kLocalNetworkAccessChecks and
       // network::features::kLocalNetworkAccessChecksWebRTC.
+    },
+    {
+      name: "LocalNetworkAccessWebSocketsTargetAddressSpace",
+      status: "experimental",
+      depends_on: ["WebSocketOptionBag"],
     },
     {
       name: "LockedMode",
@@ -5092,6 +5114,11 @@
       status: "stable",
     },
     {
+      // See https://crbug.com/539212797
+      name: "RemoveTargetCurrent",
+      status: "stable",
+    },
+    {
       // See https://issues.chromium.org/issues/41311101
       name: "RemoveVisibleSelectionInDOMSelection",
       status: "test",
@@ -5723,6 +5750,7 @@
     {
       name: "SingleAxisScrollContainersForScrollSnap",
       depends_on: ["SingleAxisScrollContainers"],
+      status: "test",
     },
     {
       name: "SkipAd",
@@ -6798,7 +6826,7 @@
       // https://webaudio.github.io/web-audio-api/#dom-baseaudiocontext-renderquantumsize
       name: "WebAudioConfigurableRenderQuantum",
       origin_trial_feature_name: "WebAudioConfigurableRenderQuantum",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "WebAudioRustFft",
@@ -6935,17 +6963,6 @@
       name: "WebGLOnWebGPU",
     },
     {
-      // Launch feature flag for WebGPU Compatibility Mode
-      // https://chromestatus.com/feature/6436406437871616
-      name: "WebGPUCompatibilityMode",
-      origin_trial_feature_name: "WebGPUCompatibilityMode",
-      status: "stable",
-      base_feature: "none",
-      public: true,
-      // Also enabled as part of all experimental WebGPU features.
-      implied_by: ["WebGPUExperimentalFeatures"],
-    },
-    {
       // WebGPU developer features are deliberately not enabled by experimental
       // web platform features.
       name: "WebGPUDeveloperFeatures",
@@ -6967,10 +6984,6 @@
       public: true,
     },
     {
-      name: "WebGPUImmediatesFeature",
-      status: "stable",
-    },
-    {
       // Enables GPUBuffer::mapSync for WebGPU.
       name: "WebGPUMapSyncOnWorkers",
       status: "experimental",
@@ -6983,10 +6996,6 @@
       name: "WebGPUMultithreadDawnWireOnWorkers",
       status: "experimental",
       implied_by: ["WebGPUMapSyncOnWorkers"],
-    },
-    {
-      name: "WebGPUTransientAttachment",
-      status: "stable",
     },
     {
       name: "WebHID",

@@ -2759,6 +2759,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Overrides the value of navigator.cpuPerformance
+     */
+    'Emulation.setCPUPerformanceOverride': {
+      paramsType: [Protocol.Emulation.SetCPUPerformanceOverrideRequest?];
+      returnType: void;
+    };
+    /**
      * Allows overriding user agent with the given string.
      * `userAgentMetadata` must be set for Client Hint headers to be sent.
      */

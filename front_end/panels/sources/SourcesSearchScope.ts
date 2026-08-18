@@ -73,7 +73,9 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
     const searchInAnonymousAndContentScripts =
         Common.Settings.Settings.instance().moduleSetting('search-in-anonymous-and-content-scripts').get();
     const localOverridesEnabled =
-        Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').get();
+        Common.Settings.Settings.instance()
+            .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+            .get();
 
     return Workspace.Workspace.WorkspaceImpl.instance().projects().filter(project => {
       if (project.type() === Workspace.Workspace.projectTypes.Service) {

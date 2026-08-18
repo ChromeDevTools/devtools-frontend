@@ -281,7 +281,9 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
       if (!this.#overrides.every(Persistence.NetworkPersistenceManager.isHeaderOverride)) {
         throw new Error('Type mismatch after parsing');
       }
-      if (Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').get() &&
+      if (Common.Settings.Settings.instance()
+              .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+              .get() &&
           this.#isEditingAllowed === EditingAllowedStatus.DISABLED) {
         this.#isEditingAllowed = EditingAllowedStatus.ENABLED;
       }
@@ -566,7 +568,9 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
     const requestUrl = this.#request.url();
     const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     if (networkPersistenceManager.project()) {
-      Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(true);
+      Common.Settings.Settings.instance()
+          .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+          .set(true);
       await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
     } else {  // If folder for local overrides has not been provided yet
       UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {

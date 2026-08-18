@@ -821,7 +821,9 @@ describe('OverridesNavigatorView', () => {
       universe: backend.universe,
     });
 
-    Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(true);
+    Common.Settings.Settings.instance()
+        .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+        .set(true);
 
     const navigatorView =
         Sources.SourcesNavigator.OverridesNavigatorView.instance({forceNew: true, networkProjectManager});
@@ -836,7 +838,9 @@ describe('OverridesNavigatorView', () => {
     const updatePromise = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().once(
         Persistence.NetworkPersistenceManager.Events.LOCAL_OVERRIDES_PROJECT_UPDATED);
 
-    Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(false);
+    Common.Settings.Settings.instance()
+        .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+        .set(false);
     // Waiting for the event to be fired
     await updatePromise;
 

@@ -2688,7 +2688,8 @@ describe('InterceptedRequest', () => {
     sinon.stub(Common.Settings.Settings, 'instance').returns(settings);
     sinon.stub(SDK.NetworkManager.MultitargetNetworkManager, 'instance').returns(universe.multitargetNetworkManager);
 
-    settings.moduleSetting('persistence-network-overrides-enabled').set(true);
+    settings.resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+        .set(true);
 
     target = universe.createTarget({});
     networkPersistenceManager = await createWorkspaceProject(urlString`file:///path/to/overrides`, [

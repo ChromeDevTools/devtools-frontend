@@ -64,7 +64,9 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
 
   it('can create an overridden file with Local Overrides folder set up but disabled', async () => {
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(false);
+    Common.Settings.Settings.instance()
+        .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+        .set(false);
 
     const url = 'http://www.example.com/list-xhr.json';
     const resourceType = Common.ResourceType.resourceTypes.Document;

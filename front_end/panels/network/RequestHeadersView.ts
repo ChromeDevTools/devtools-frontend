@@ -290,7 +290,7 @@ export class RequestHeadersView extends UI.Widget.Widget {
     this.#workspace.addEventListener(
         Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('persistence-network-overrides-enabled')
+        .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
         .addChangeListener(this.requestUpdate, this);
   }
 
@@ -319,7 +319,7 @@ export class RequestHeadersView extends UI.Widget.Widget {
     this.#workspace.removeEventListener(
         Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('persistence-network-overrides-enabled')
+        .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
         .removeChangeListener(this.requestUpdate, this);
   }
 
@@ -395,8 +395,8 @@ function renderHeaderOverridesLink(input: ViewInput): Lit.LitTemplate {
     event.preventDefault();
     input.revealHeadersFile?.();
   };
-  const overridesSetting: Common.Settings.Setting<boolean> =
-      Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled');
+  const overridesSetting: Common.Settings.Setting<boolean> = Common.Settings.Settings.instance().resolve(
+      Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor);
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
     const fileIcon = html`

@@ -9,6 +9,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Badges from '../../models/badges/badges.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -18,6 +19,39 @@ import type * as InspectorMain from '../inspector_main/inspector_main.js';
 import type * as Main from './main.js';
 
 const UIStrings = {
+  /**
+   * @description Title of a setting under the Persistence category in Settings.
+   */
+  localOverrides: 'Local overrides',
+  /**
+   * @description A tag of enable local overrides setting that can be searched in the command menu.
+   */
+  interception: 'interception',
+  /**
+   * @description A tag of enable local overrides setting that can be searched in the command menu.
+   */
+  override: 'override',
+  /**
+   * @description A tag of group network by frame setting that can be searched in the command menu.
+   */
+  network: 'network',
+  /**
+   * @description A tag of enable local overrides setting that can be searched in the command menu.
+   */
+  rewrite: 'rewrite',
+  /**
+   * @description A tag of enable local overrides setting that can be searched in the command menu.
+   * Noun for network request.
+   */
+  request: 'request',
+  /**
+   * @description Title of an option under the Persistence category that can be invoked through the command menu.
+   */
+  enableOverrideNetworkRequests: 'Enable override network requests',
+  /**
+   * @description Title of an option under the Persistence category that can be invoked through the command menu.
+   */
+  disableOverrideNetworkRequests: 'Disable override network requests',
   /**
    * @description Label for a checkbox in the settings UI. Allows developers to opt-in/opt-out
    * of receiving Google Developer Program (GDP) badges based on their activity in Chrome DevTools.
@@ -814,6 +848,29 @@ SettingsUI.SettingUIRegistration.register(Badges.receiveGdpBadgesSettingDescript
   title: i18nLazyString(UIStrings.earnBadges),
   reloadRequired: true,
 });
+
+SettingsUI.SettingUIRegistration.register(
+    Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor, {
+      category: Common.Settings.SettingCategory.PERSISTENCE,
+      title: i18nLazyString(UIStrings.localOverrides),
+      tags: [
+        i18nLazyString(UIStrings.interception),
+        i18nLazyString(UIStrings.override),
+        i18nLazyString(UIStrings.network),
+        i18nLazyString(UIStrings.rewrite),
+        i18nLazyString(UIStrings.request),
+      ],
+      options: [
+        {
+          value: true,
+          title: i18nLazyString(UIStrings.enableOverrideNetworkRequests),
+        },
+        {
+          value: false,
+          title: i18nLazyString(UIStrings.disableOverrideNetworkRequests),
+        },
+      ],
+    });
 
 Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.SYNCED,

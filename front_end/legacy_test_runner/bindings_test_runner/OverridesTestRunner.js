@@ -26,5 +26,7 @@ export const createOverrideProject = async function(folderPath) {
  * @param {boolean} enabled
  */
 export const setOverridesEnabled = function(enabled) {
-  Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(enabled);
+  Common.Settings.Settings.instance()
+      .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+      .set(enabled);
 };

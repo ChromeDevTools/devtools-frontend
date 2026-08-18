@@ -18,6 +18,12 @@ import {PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';
 
 const forbiddenUrls = ['chromewebstore.google.com', 'chrome.google.com'];
 
+export const persistenceNetworkOverridesEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'persistence-network-overrides-enabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};
+
 export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.Observer {
   #bindings = new WeakMap<Workspace.UISourceCode.UISourceCode, PersistenceBinding>();
@@ -63,7 +69,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     this.#isolatedFileSystemManager = isolatedFileSystemManager;
     this.#multitargetNetworkManager = multitargetNetworkManager;
 
-    this.#enabledSetting = this.#settings.moduleSetting<boolean>('persistence-network-overrides-enabled');
+    this.#enabledSetting = this.#settings.resolve(persistenceNetworkOverridesEnabledSettingDescriptor);
     this.#enabledSetting.addChangeListener(this.enabledChanged, this);
 
     this.#interceptionHandlerBound = this.interceptionHandler.bind(this);

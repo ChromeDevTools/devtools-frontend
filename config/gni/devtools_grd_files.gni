@@ -643,7 +643,6 @@ grd_files_bundled_sources = [
   "front_end/models/logs/logs-meta.js",
   "front_end/models/logs/logs.js",
   "front_end/models/network_time_calculator/network_time_calculator.js",
-  "front_end/models/persistence/persistence-meta.js",
   "front_end/models/persistence/persistence.js",
   "front_end/models/project_settings/project_settings.js",
   "front_end/models/source_map_scopes/source_map_scopes.js",

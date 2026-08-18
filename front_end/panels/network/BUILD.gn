@@ -153,6 +153,7 @@ devtools_entrypoint("meta") {
     "../../models/workspace:bundle",
     "../../panels/common:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/settings:bundle",
     "./forward:bundle",
   ]
 

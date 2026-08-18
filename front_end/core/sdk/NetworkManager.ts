@@ -26,6 +26,7 @@ import {
 } from './NetworkRequest.js';
 import {type ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {SDKModel} from './SDKModel.js';
+import {requestBlockingEnabledSettingDescriptor} from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 import {type SDKModelObserver, TargetManager} from './TargetManager.js';
 
@@ -1992,7 +1993,7 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
   constructor(settings: Common.Settings.Settings) {
     super();
     this.#setting = settings.createSetting<RequestConditionsSetting[]>('network-blocked-patterns', []);
-    this.#conditionsEnabledSetting = settings.moduleSetting<boolean>('request-blocking-enabled');
+    this.#conditionsEnabledSetting = settings.resolve(requestBlockingEnabledSettingDescriptor);
     for (const condition of this.#setting.get()) {
       try {
         this.#conditions.push(RequestCondition.createFromSetting(condition, settings));

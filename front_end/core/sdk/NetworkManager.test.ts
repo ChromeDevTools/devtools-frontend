@@ -1661,7 +1661,7 @@ describe('MultitargetNetworkManager', () => {
     let eventCounter = 0;
     multitargetNetworkManager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED, () => eventCounter++);
-    const blockingEnabledSetting = universe.settings.moduleSetting('request-blocking-enabled');
+    const blockingEnabledSetting = universe.settings.resolve(SDK.SDKSettings.requestBlockingEnabledSettingDescriptor);
 
     // Change blocking setting via Common.Settings.Settings.
     assert.isFalse(multitargetNetworkManager.isBlocking());

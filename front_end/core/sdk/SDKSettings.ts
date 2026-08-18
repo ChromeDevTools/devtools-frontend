@@ -278,3 +278,10 @@ export const customFormattersSettingDescriptor: Common.Settings.SettingDescripto
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 };
+
+export const requestBlockingEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'request-blocking-enabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.LOCAL,
+};

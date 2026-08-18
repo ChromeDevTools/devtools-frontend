@@ -7,18 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting under the Network category.
-   */
-  networkRequestBlocking: 'Network request blocking',
-  /**
-   * @description Title of a setting under the Network category that can be invoked through the Command Menu.
-   */
-  enableNetworkRequestBlocking: 'Enable network request blocking',
-  /**
-   * @description Title of a setting under the Network category that can be invoked through the Command Menu.
-   */
-  disableNetworkRequestBlocking: 'Disable network request blocking',
-  /**
    * @description Title of a setting under the Network category that can be invoked through the Command Menu.
    */
   enableCache: 'Enable cache',
@@ -58,25 +46,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.NETWORK,
-  title: i18nLazyString(UIStrings.networkRequestBlocking),
-  settingName: 'request-blocking-enabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.LOCAL,
-  defaultValue: false,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.enableNetworkRequestBlocking),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.disableNetworkRequestBlocking),
-    },
-  ],
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,

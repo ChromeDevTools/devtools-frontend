@@ -10,11 +10,24 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as NetworkForward from './forward/forward.js';
 import type * as Network from './network.js';
 
 const UIStrings = {
+  /**
+   * @description Title of a setting under the Network category.
+   */
+  networkRequestBlocking: 'Network request blocking',
+  /**
+   * @description Title of a setting under the Network category that can be invoked through the Command Menu.
+   */
+  enableNetworkRequestBlocking: 'Enable network request blocking',
+  /**
+   * @description Title of a setting under the Network category that can be invoked through the Command Menu.
+   */
+  disableNetworkRequestBlocking: 'Disable network request blocking',
   /**
    * @description Command for showing the 'Network' tool
    */
@@ -424,6 +437,21 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.dontGroupNetworkLogItemsByFrame),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.requestBlockingEnabledSettingDescriptor, {
+  category: Common.Settings.SettingCategory.NETWORK,
+  title: i18nLazyString(UIStrings.networkRequestBlocking),
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.enableNetworkRequestBlocking),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.disableNetworkRequestBlocking),
     },
   ],
 });

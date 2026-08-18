@@ -113,7 +113,6 @@ interface ViewInput {
   onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void;
   onElementCollapsed: () => void;
   onElementExpanded: () => void;
-  onSaveNodeToTempVariable?: (node: SDK.DOMModel.DOMNode) => void;
 }
 
 interface ViewOutput {
@@ -217,7 +216,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
   output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
   output.elementsTreeOutline.showContextMenu = (treeElement, event) => {
-    void showContextMenu(treeElement, event, input.onSaveNodeToTempVariable);
+    void showContextMenu(treeElement, event);
   };
   let needsUpdate = false;
   const showComments = input.showComments ?? true;
@@ -546,9 +545,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onElementExpanded: () => {
         this.#clearHighlightedNode();
       },
-      onSaveNodeToTempVariable: node => {
-        void this.saveNodeToTempVariable(node);
-      },
     },
                this.#viewOutput, this.contentElement);
     if (firstRender && this.#viewOutput.elementsTreeOutline) {
@@ -638,10 +634,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   copyStyles(node: SDK.DOMModel.DOMNode): void {
     void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.copyStyles();
-  }
-
-  async saveNodeToTempVariable(node: SDK.DOMModel.DOMNode): Promise<void> {
-    await this.#viewOutput.elementsTreeOutline?.saveNodeToTempVariable(node);
   }
 
   /**
@@ -1549,13 +1541,6 @@ export class ElementsTreeOutline extends
   }
 
   showContextMenu: (treeElement: ElementsTreeElement, event: Event) => void = () => {};
-
-  async saveNodeToTempVariable(node: SDK.DOMModel.DOMNode): Promise<void> {
-    const remoteObjectForConsole = await node.resolveToObject();
-    const consoleModel = remoteObjectForConsole?.runtimeModel().target()?.model(SDK.ConsoleModel.ConsoleModel);
-    await consoleModel?.saveToTempVariable(
-        UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext), remoteObjectForConsole);
-  }
 
   runPendingUpdates(): void {
     this.updateModifiedNodes();

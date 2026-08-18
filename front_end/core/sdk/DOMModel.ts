@@ -40,6 +40,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
+import {ConsoleModel} from './ConsoleModel.js';
 import {CSSModel} from './CSSModel.js';
 import type {FrameManager} from './FrameManager.js';
 import {OverlayModel} from './OverlayModel.js';
@@ -1332,6 +1333,13 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
     return {
       value: result.object.value as T,
     };
+  }
+
+  async saveNodeToTempVariable(): Promise<void> {
+    const remoteObjectForConsole = await this.resolveToObject();
+    const consoleModel = this.#domModel.target().model(ConsoleModel);
+    await consoleModel?.saveToTempVariable(remoteObjectForConsole?.runtimeModel().defaultExecutionContext() ?? null,
+                                           remoteObjectForConsole);
   }
 
   async scrollIntoView(): Promise<void> {

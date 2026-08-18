@@ -440,7 +440,6 @@ export async function populateNodeContextMenu(contextMenu: UI.ContextMenu.Contex
 export async function showContextMenu(
     treeElement: ElementsTreeElement,
     event: Event,
-    onSaveNodeToTempVariable?: (node: SDK.DOMModel.DOMNode) => void,
     ): Promise<UI.ContextMenu.ContextMenu|undefined> {
   if (UI.UIUtils.isEditing()) {
     return;
@@ -472,11 +471,9 @@ export async function showContextMenu(
     textNode = null;
   }
   const commentNode = (node as Element).enclosingNodeOrSelfWithClass?.('webkit-html-comment');
-  if (onSaveNodeToTempVariable) {
-    contextMenu.saveSection().appendItem(i18nString(UIStrings.storeAsGlobalVariable),
-                                         () => onSaveNodeToTempVariable(domNode),
-                                         {jslogContext: 'store-as-global-variable'});
-  }
+  contextMenu.saveSection().appendItem(i18nString(UIStrings.storeAsGlobalVariable),
+                                       () => void domNode.saveNodeToTempVariable(),
+                                       {jslogContext: 'store-as-global-variable'});
   if (textNode) {
     if (!treeElement.isEditing) {
       contextMenu.editSection().appendItem(i18nString(UIStrings.editText),

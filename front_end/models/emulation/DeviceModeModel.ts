@@ -607,6 +607,9 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private currentSafeAreaInsets(): Insets|null {
+    if (!Root.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
+      return null;
+    }
     if (this.#type !== Type.Device || !this.#mode) {
       return null;
     }
@@ -617,7 +620,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!this.#emulationModel) {
       return;
     }
-    if (insets) {
+    if (insets && Root.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
       void this.#emulationModel.setSafeAreaInsets(
           {top: insets.top, left: insets.left, bottom: insets.bottom, right: insets.right});
     } else {
@@ -895,10 +898,14 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       overlayModel.showHingeForDualScreen(null);
     }
 
-    overlayModel.showDisplayCutout(this.currentDisplayCutout());
+    overlayModel.showDisplayCutout(
+        Root.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled ? this.currentDisplayCutout() : null);
   }
 
   private currentDisplayCutout(): SDK.OverlayModel.DisplayCutout|null {
+    if (!Root.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
+      return null;
+    }
     const device = this.#device;
     const mode = this.#mode;
     if (!device || !mode || !device.modes.includes(mode)) {

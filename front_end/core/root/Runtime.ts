@@ -652,6 +652,10 @@ interface DevToolsInstrumentationBreakpoints {
   enabled: boolean;
 }
 
+interface DevToolsMobileSafeAreaEmulation {
+  enabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -710,6 +714,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsUseGcaApi: UseGcaApi,
   devToolsPlusButton: DevToolsPlusButton,
   devToolsInstrumentationBreakpoints: DevToolsInstrumentationBreakpoints,
+  devToolsMobileSafeAreaEmulation: DevToolsMobileSafeAreaEmulation,
   extensionsOnChromeUrls: ExtensionsOnChromeUrls,
 }>;
 

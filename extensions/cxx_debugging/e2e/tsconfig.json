@@ -20,6 +20,7 @@
     "OptionsPageTests.ts",
     "cxx-debugging-extension-helpers.ts",
     "standalone/MemoryInspector.test.ts",
-    "../../../test/e2e/types.d.ts"
+    "../../../test/e2e/types.d.ts",
+    "../../../front_end/legacy/legacy-defs.d.ts"
   ]
 }

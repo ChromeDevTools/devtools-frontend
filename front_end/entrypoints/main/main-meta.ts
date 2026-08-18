@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Badges from '../../models/badges/badges.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -17,6 +18,11 @@ import type * as InspectorMain from '../inspector_main/inspector_main.js';
 import type * as Main from './main.js';
 
 const UIStrings = {
+  /**
+   * @description Label for a checkbox in the settings UI. Allows developers to opt-in/opt-out
+   * of receiving Google Developer Program (GDP) badges based on their activity in Chrome DevTools.
+   */
+  earnBadges: 'Earn badges',
   /**
    * @description Title of a setting under the Appearance category in Settings. When the webpage is
    * paused by devtools, an overlay is shown on top of the page to indicate that it is paused. The
@@ -800,6 +806,12 @@ Common.Settings.registerSettingExtension({
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.saveSettings),
   defaultValue: false,
+  reloadRequired: true,
+});
+
+SettingsUI.SettingUIRegistration.register(Badges.receiveGdpBadgesSettingDescriptor, {
+  category: Common.Settings.SettingCategory.ACCOUNT,
+  title: i18nLazyString(UIStrings.earnBadges),
   reloadRequired: true,
 });
 

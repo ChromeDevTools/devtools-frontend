@@ -73,7 +73,7 @@ function mockGetAwardedBadgeNames(gdpClient: Host.GdpClient.GdpClient, names: st
 }
 
 function setReceiveBadgesSetting(settings: Common.Settings.Settings, value: boolean): void {
-  settings.moduleSetting('receive-gdp-badges').set(value);
+  settings.resolve(Badges.receiveGdpBadgesSettingDescriptor).set(value);
 }
 
 function setStarterBadgeSnoozeCount(settings: Common.Settings.Settings, value: number): void {

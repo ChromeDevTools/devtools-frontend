@@ -8,7 +8,6 @@
 import '../front_end/models/workspace/workspace-meta.js';
 import '../front_end/models/persistence/persistence-meta.js';
 import '../front_end/models/logs/logs-meta.js';
-import '../front_end/models/badges/badges-meta.js';
 
 /**
  * IMPORTANT! Make sure that any class that is exported here has related unit

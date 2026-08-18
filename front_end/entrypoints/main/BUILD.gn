@@ -82,6 +82,7 @@ devtools_entrypoint("meta") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../entrypoints/inspector_main:bundle",
+    "../../models/badges:bundle",
     "../../models/workspace:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",

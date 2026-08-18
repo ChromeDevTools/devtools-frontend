@@ -139,7 +139,7 @@ const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement)
 type View = typeof DEFAULT_VIEW;
 
 function revealBadgeSettings(): void {
-  void Common.Revealer.reveal(Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges'));
+  void Common.Revealer.reveal(Common.Settings.Settings.instance().resolve(Badges.receiveGdpBadgesSettingDescriptor));
 }
 
 export class BadgeNotification extends UI.Widget.Widget {

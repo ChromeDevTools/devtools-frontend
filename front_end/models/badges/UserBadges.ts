@@ -13,6 +13,13 @@ import {DOMDetectiveBadge} from './DOMDetectiveBadge.js';
 import {SpeedsterBadge} from './SpeedsterBadge.js';
 import {StarterBadge} from './StarterBadge.js';
 
+export const receiveGdpBadgesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'receive-gdp-badges',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};
+
 type BadgeClass = new (badgeContext: BadgeContext) => Badge;
 
 export const enum BadgeTriggerReason {
@@ -36,7 +43,7 @@ const DELAY_BEFORE_TRIGGER = 1500;
 export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #badgeActionEventTarget = new Common.ObjectWrapper.ObjectWrapper<BadgeActionEvents>();
 
-  #receiveBadgesSetting: Common.Settings.Setting<Boolean>;
+  #receiveBadgesSetting: Common.Settings.Setting<boolean>;
   #allBadges: Badge[];
 
   #starterBadgeSnoozeCount: Common.Settings.Setting<number>;
@@ -66,7 +73,7 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.#gdpClient = gdpClient;
     this.#inspectorFrontendHost = inspectorFrontendHost;
 
-    this.#receiveBadgesSetting = this.#settings.moduleSetting('receive-gdp-badges');
+    this.#receiveBadgesSetting = this.#settings.resolve(receiveGdpBadgesSettingDescriptor);
     if (!Host.GdpClient.isBadgesEnabled()) {
       this.#receiveBadgesSetting.set(false);
     }

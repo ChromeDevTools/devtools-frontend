@@ -369,7 +369,6 @@ grd_files_bundled_sources = [
   "front_end/models/ai_code_completion/ai_code_completion.js",
   "front_end/models/ai_code_generation/ai_code_generation.js",
   "front_end/models/autofill_manager/autofill_manager.js",
-  "front_end/models/badges/badges-meta.js",
   "front_end/models/badges/badges.js",
   "front_end/models/bindings/bindings.js",
   "front_end/models/breakpoints/breakpoints.js",

@@ -276,7 +276,7 @@ export class SyncSection extends UI.Widget.Widget {
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
-    this.#receiveBadgesSetting = Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges');
+    this.#receiveBadgesSetting = Common.Settings.Settings.instance().resolve(Badges.receiveGdpBadgesSettingDescriptor);
     this.#syncSetting =
         Common.Settings.Settings.instance().moduleSetting('sync-preferences') as Common.Settings.Setting<boolean>;
   }

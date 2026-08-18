@@ -1561,6 +1561,7 @@ export const knownContextValues = new Set([
   'emulate-page-focus-true',
   'emulated-css-media',
   'emulated-css-media-feature-color-gamut',
+  'emulated-css-media-feature-color-gamut-srgb',
   'emulated-css-media-feature-forced-colors',
   'emulated-css-media-feature-forced-colors-active',
   'emulated-css-media-feature-forced-colors-none',

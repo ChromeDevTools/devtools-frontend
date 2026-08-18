@@ -781,7 +781,7 @@ class DevToolsTestHarness(unittest.TestCase):
 
     def test_unit_failure_summary(self):
         abs_test_file = self._resolve_test_file(
-            "test/harness/unit/hooks.test.ts")
+            "test/harness/unit/errors.test.ts")
         stdout, stderr, exit_code = self.run_test_with_output([
             "node_modules/karma/bin/karma", "start",
             os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
@@ -789,10 +789,10 @@ class DevToolsTestHarness(unittest.TestCase):
         ])
         self.assertEqual(exit_code, 1)
         self.assertIn("Failed tests (1):", stdout)
-        self.assertIn("test/harness/unit/hooks.test.ts:block_1:run_1", stdout)
+        self.assertIn("test/harness/unit/errors.test.ts:block_2:run_3", stdout)
         self.assertIn("To rerun:", stdout)
         self.assertIn(
-            "npm run test -- test/harness/unit/hooks.test.ts:block_1:run_1",
+            "npm run test -- test/harness/unit/errors.test.ts:block_2:run_3",
             stdout)
 
     def test_e2e_failure_summary(self):

@@ -433,24 +433,26 @@ function veImpressionForSessionStorageView() {
 function veImpressionForServiceWorkersView() {
   return veImpression('Pane', 'service-workers', [
     veImpression('Section', 'other-origin', [veImpression('Link', 'view-all')]),
-    veImpression(
-        'Section', 'this-origin',
-        [
-          veImpression('Action', 'periodic-sync-tag'),
-          veImpression('Action', 'push-message'),
-          veImpression('Action', 'show-network-requests'),
-          veImpression('Action', 'sync-tag'),
-          veImpression('Action', 'unregister'),
-          veImpression('Action', 'update'),
-          veImpression('Link', 'source-location'),
-          veImpression('TextField', 'periodic-sync-tag'),
-          veImpression('TextField', 'push-message'),
-          veImpression('TextField', 'sync-tag'),
-          veImpression('Toggle', 'bypass-service-worker'),
-          veImpression('Toggle', 'disconnect-from-network'),
-          veImpression('Toggle', 'service-worker-update-on-reload'),
-          veImpression('Tree', 'update-timing-table'),
-        ]),
+    veImpression('Section', 'this-origin',
+                 [
+                   veImpression('Action', 'show-network-requests'),
+                   veImpression('Action', 'unregister'),
+                   veImpression('Action', 'update'),
+                   veImpression('Section', 'service-worker',
+                                [
+                                  veImpression('Action', 'periodic-sync-tag'),
+                                  veImpression('Action', 'push-message'),
+                                  veImpression('Action', 'sync-tag'),
+                                  veImpression('Link', 'source-location'),
+                                  veImpression('TextField', 'periodic-sync-tag'),
+                                  veImpression('TextField', 'push-message'),
+                                  veImpression('TextField', 'sync-tag'),
+                                  veImpression('Tree', 'update-timing-table'),
+                                ]),
+                   veImpression('Toggle', 'bypass-service-worker'),
+                   veImpression('Toggle', 'disconnect-from-network'),
+                   veImpression('Toggle', 'service-worker-update-on-reload'),
+                 ]),
   ]);
 }
 
@@ -468,10 +470,15 @@ function veImpressionForStorageOverview() {
                  ]),
     veImpression('Section', 'usage',
                  [
+                   veImpression('Item', 'storage-usage'),
                    veImpression('Link', 'learn-more'),
-                   veImpression('PieChart', undefined,
+                   veImpression('Item', 'usage-breakdown',
                                 [
-                                  veImpression('Section', 'legend', [veImpression('PieChartTotal', 'select-total')]),
+                                  veImpression('PieChart', undefined,
+                                               [
+                                                 veImpression('Section', 'legend',
+                                                              [veImpression('PieChartTotal', 'select-total')]),
+                                               ]),
                                 ]),
                    veImpression('Toggle', 'simulate-custom-quota'),
                  ]),

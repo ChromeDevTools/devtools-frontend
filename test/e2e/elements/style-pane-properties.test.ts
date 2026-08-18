@@ -1934,7 +1934,7 @@ describe('The Styles pane', () => {
     await waitForAndClickTreeElementWithPartialText(devToolsPage, 'inspected');
 
     const propertiesSectionSelector = getStyleRuleSelector('#inspected');
-    const propertiesSection = await devToolsPage.waitFor(propertiesSectionSelector);
+    let propertiesSection = await devToolsPage.waitFor(propertiesSectionSelector);
     let inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
     assert.sameDeepMembers(inspectedRules, ['font-size: 12px;', 'display: block;', 'unicode-bidi: isolate;']);
     let displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
@@ -1947,6 +1947,11 @@ describe('The Styles pane', () => {
 
     await devToolsPage.click(propertiesSectionSelector);
     await devToolsPage.pasteText('margin-left: 1px');
+    propertiesSection = await devToolsPage.waitFor(propertiesSectionSelector);
+    await devToolsPage.waitForFunction(async () => {
+      const names = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
+      return names.includes('margin-left');
+    });
     await devToolsPage.click(propertiesSectionSelector);
     displayedNames =
         await getDisplayedCSSPropertyNames(devToolsPage, await devToolsPage.waitFor(propertiesSectionSelector));
@@ -1959,7 +1964,12 @@ describe('The Styles pane', () => {
         'incorrectly displayed style after pasting');
 
     await devToolsPage.click(propertiesSectionSelector);
+    propertiesSection = await devToolsPage.waitFor(propertiesSectionSelector);
     await devToolsPage.pasteText('margin-top: 1px; color: red;');
+    await devToolsPage.waitForFunction(async () => {
+      const names = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
+      return names.includes('margin-top') && names.includes('color');
+    });
     await devToolsPage.click(propertiesSectionSelector);
     displayedNames =
         await getDisplayedCSSPropertyNames(devToolsPage, await devToolsPage.waitFor(propertiesSectionSelector));
@@ -1977,6 +1987,11 @@ describe('The Styles pane', () => {
         '.webkit-css-property[aria-label="CSS property name: margin-top"]',
         {root: await devToolsPage.waitFor(propertiesSectionSelector)});
     await devToolsPage.pasteText('foo: bar; moo: zoo;');
+    await devToolsPage.waitForFunction(async () => {
+      const names =
+          await getDisplayedCSSPropertyNames(devToolsPage, await devToolsPage.waitFor(propertiesSectionSelector));
+      return names.includes('foo') && names.includes('moo');
+    });
     await devToolsPage.click(propertiesSectionSelector);
     displayedNames =
         await getDisplayedCSSPropertyNames(devToolsPage, await devToolsPage.waitFor(propertiesSectionSelector));

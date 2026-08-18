@@ -174,7 +174,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         'screenshot-loaded', () => this.dispatchEventToListeners(Events.DATA_CHANGED));
 
     Common.Settings.Settings.instance()
-        .moduleSetting('skip-stack-frames-pattern')
+        .resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor)
         .addChangeListener(this.#onIgnoreListChanged.bind(this));
     Common.Settings.Settings.instance()
         .moduleSetting('skip-content-scripts')

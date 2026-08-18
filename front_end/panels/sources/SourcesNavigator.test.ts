@@ -495,8 +495,9 @@ describe('NetworkNavigatorView', () => {
     });
 
     const updatePatternSetting = async (settingValue: Common.Settings.RegExpSettingItem[]) => {
-      const setting = Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as
-          Common.Settings.RegExpSetting;
+      const setting =
+          Common.Settings.Settings.instance().resolve(
+              Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting;
       const promise = new Promise<void>(resolve => {
         resolveFn = resolve;
       });

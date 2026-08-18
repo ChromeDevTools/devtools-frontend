@@ -187,7 +187,7 @@ export class IgnoreListSetting extends UI.Widget.Widget {
     this.element.classList.remove('vbox', 'flex-auto');
 
     Common.Settings.Settings.instance()
-        .moduleSetting('skip-stack-frames-pattern')
+        .resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor)
         .addChangeListener(this.requestUpdate.bind(this));
     Common.Settings.Settings.instance()
         .moduleSetting('enable-ignore-listing')
@@ -196,8 +196,8 @@ export class IgnoreListSetting extends UI.Widget.Widget {
   }
 
   #getSkipStackFramesPatternSetting(): Common.Settings.RegExpSetting {
-    return Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as
-        Common.Settings.RegExpSetting;
+    return Common.Settings.Settings.instance().resolve(
+               Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting;
   }
 
   #onNewRegexInputFocus(value: string): void {

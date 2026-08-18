@@ -265,17 +265,20 @@ describe('isIgnoreListedEntry', () => {
 
 function ignoreRegex(regexValue: string): void {
   const regexPatterns =
-      (Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting)
+      (Common.Settings.Settings.instance().resolve(
+           Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting)
           .getAsArray();
   regexPatterns.push({pattern: regexValue, disabled: false});
 }
 
 function unignoreRegex(regexValue: string): void {
   const regexPatterns =
-      (Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting)
+      (Common.Settings.Settings.instance().resolve(
+           Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting)
           .getAsArray();
   const result = regexPatterns.filter(regexPattern => regexPattern.pattern !== regexValue);
 
-  (Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting)
+  (Common.Settings.Settings.instance().resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as
+   Common.Settings.RegExpSetting)
       .setAsArray(result);
 }

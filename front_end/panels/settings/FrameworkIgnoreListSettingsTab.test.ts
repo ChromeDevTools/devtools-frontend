@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import * as Common from '../../core/common/common.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
@@ -120,7 +121,8 @@ describeWithEnvironment('FrameworkIgnoreListSettingsTab', () => {
 
   it('renders ignore-list items and updates settings when toggled', () => {
     const regexSetting =
-        Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting;
+        Common.Settings.Settings.instance().resolve(
+            Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting;
     regexSetting.setAsArray([
       {pattern: 'pattern1', disabled: false},
       {pattern: 'pattern2', disabled: true},
@@ -159,7 +161,8 @@ describeWithEnvironment('FrameworkIgnoreListSettingsTab', () => {
 
   it('removes custom regex rules', () => {
     const regexSetting =
-        Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting;
+        Common.Settings.Settings.instance().resolve(
+            Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting;
     regexSetting.setAsArray([
       {pattern: 'pattern1', disabled: false},
       {pattern: 'pattern2', disabled: true},
@@ -189,7 +192,8 @@ describeWithEnvironment('FrameworkIgnoreListSettingsTab', () => {
 
   it('adds custom regex rules', () => {
     const regexSetting =
-        Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting;
+        Common.Settings.Settings.instance().resolve(
+            Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting;
     regexSetting.setAsArray([]);
 
     const shadowRoot = tab.element.shadowRoot;
@@ -223,7 +227,8 @@ describeWithEnvironment('FrameworkIgnoreListSettingsTab', () => {
 
   it('shows validation errors for invalid rules', () => {
     const regexSetting =
-        Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting;
+        Common.Settings.Settings.instance().resolve(
+            Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting;
     regexSetting.setAsArray([
       {pattern: 'duplicate-pattern', disabled: false},
     ]);
@@ -270,7 +275,8 @@ describeWithEnvironment('FrameworkIgnoreListSettingsTab', () => {
 
   it('renders ignore list tab screenshot', async () => {
     const regexSetting =
-        Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting;
+        Common.Settings.Settings.instance().resolve(
+            Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting;
     regexSetting.setAsArray([
       {pattern: 'pattern1', disabled: false},
       {pattern: 'pattern2', disabled: true},
@@ -281,7 +287,8 @@ describeWithEnvironment('FrameworkIgnoreListSettingsTab', () => {
 
   it('renders ignore list tab screenshot when ignore listing is disabled', async () => {
     const regexSetting =
-        Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting;
+        Common.Settings.Settings.instance().resolve(
+            Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting;
     regexSetting.setAsArray([
       {pattern: 'pattern1', disabled: false},
       {pattern: 'pattern2', disabled: true},

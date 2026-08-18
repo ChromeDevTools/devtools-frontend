@@ -274,8 +274,8 @@ describeWithEnvironment('Pattern validator', () => {
 });
 
 function getIgnoredRegexes(): Common.Settings.RegExpSettingItem[] {
-  return (Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as
-          Common.Settings.RegExpSetting)
+  return (Common.Settings.Settings.instance().resolve(
+              Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting)
       .getAsArray();
 }
 

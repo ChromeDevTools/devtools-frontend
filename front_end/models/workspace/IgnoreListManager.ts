@@ -47,6 +47,13 @@ export interface IgnoreListGeneralRules {
   isCurrentlyIgnoreListed?: boolean;
 }
 
+export const skipStackFramesPatternSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'skip-stack-frames-pattern',
+  type: Common.Settings.SettingType.REGEX,
+  defaultValue: '/node_modules/|^node:',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};
+
 export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly #settings: Common.Settings.Settings;
@@ -70,7 +77,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     this.#targetManager.addModelListener(
         SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextDestroyed,
         this.onExecutionContextDestroyed, this, {scoped: true});
-    this.#settings.moduleSetting('skip-stack-frames-pattern').addChangeListener(this.patternChanged.bind(this));
+    this.#settings.resolve(skipStackFramesPatternSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
     this.#settings.moduleSetting('skip-content-scripts').addChangeListener(this.patternChanged.bind(this));
     this.#settings.moduleSetting('automatically-ignore-list-known-third-party-scripts')
         .addChangeListener(this.patternChanged.bind(this));
@@ -162,7 +169,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 
   private getSkipStackFramesPatternSetting(): Common.Settings.RegExpSetting {
-    return this.#settings.moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting;
+    return this.#settings.resolve(skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting;
   }
 
   private setIgnoreListPatterns(debuggerModel: SDK.DebuggerModel.DebuggerModel): Promise<boolean> {

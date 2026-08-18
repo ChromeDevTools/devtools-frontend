@@ -1055,8 +1055,8 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       assert.exists(anchor);
       assert.strictEqual(anchor.textContent?.trim(), 'foo.js:20');
 
-      const setting = Common.Settings.Settings.instance().moduleSetting(
-                          'skip-stack-frames-pattern',
+      const setting = Common.Settings.Settings.instance().resolve(
+                          Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor,
                           ) as Common.Settings.RegExpSetting;
 
       // Ignore-list foo.js: anchor should now point to boo.js:27.

@@ -7,6 +7,7 @@ import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
@@ -179,7 +180,8 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     UI.ARIAUtils.setLabel(addPatternButton, i18nString(UIStrings.addFilenamePattern));
     customExclusionGroup.appendChild(addPatternButton);
     this.setting =
-        Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting;
+        Common.Settings.Settings.instance().resolve(
+            Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting;
     this.setting.addChangeListener(this.settingUpdated, this);
 
     const enabledChanged = (): void => {

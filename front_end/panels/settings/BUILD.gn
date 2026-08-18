@@ -37,6 +37,7 @@ devtools_ui_module("settings") {
     "../../core/root:bundle",
     "../../models/ai_assistance:bundle",
     "../../models/persistence:bundle",
+    "../../models/workspace:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/input:bundle",
     "../../ui/components/switch:bundle",

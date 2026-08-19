@@ -312,3 +312,9 @@ export const consoleUserActivationEvalSettingDescriptor: Common.Settings.Setting
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+export const monitoringXHREnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'monitoring-xhr-enabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

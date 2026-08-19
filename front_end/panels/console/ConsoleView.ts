@@ -481,7 +481,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     toolbar.appendToolbarItem(this.filterStatusText);
     toolbar.appendToolbarItem(this.showSettingsPaneButton);
 
-    const monitoringXHREnabledSetting = Common.Settings.Settings.instance().moduleSetting('monitoring-xhr-enabled');
+    const monitoringXHREnabledSetting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.monitoringXHREnabledSettingDescriptor);
     this.timestampsSetting = Common.Settings.Settings.instance().moduleSetting('console-timestamps-enabled');
     this.consoleHistoryAutocompleteSetting =
         Common.Settings.Settings.instance().moduleSetting('console-history-autocomplete');

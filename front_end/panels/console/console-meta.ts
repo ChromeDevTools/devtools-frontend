@@ -24,6 +24,10 @@ const UIStrings = {
    */
   customFormatters: 'Custom formatters',
   /**
+   * @description Title of a setting under the Console category in Settings.
+   */
+  logXmlhttprequests: 'Log XMLHttpRequests',
+  /**
    * @description Title of the Console tool.
    */
   console: 'Console',
@@ -477,6 +481,11 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.preserveConsoleLogSett
 SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.customFormattersSettingDescriptor, {
   category: Common.Settings.SettingCategory.CONSOLE,
   title: i18nLazyString(UIStrings.customFormatters),
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.monitoringXHREnabledSettingDescriptor, {
+  category: Common.Settings.SettingCategory.CONSOLE,
+  title: i18nLazyString(UIStrings.logXmlhttprequests),
 });
 
 Common.Revealer.registerRevealer({

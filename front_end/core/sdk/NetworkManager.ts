@@ -26,7 +26,11 @@ import {
 } from './NetworkRequest.js';
 import {type ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {SDKModel} from './SDKModel.js';
-import {cacheDisabledSettingDescriptor, requestBlockingEnabledSettingDescriptor} from './SDKSettings.js';
+import {
+  cacheDisabledSettingDescriptor,
+  monitoringXHREnabledSettingDescriptor,
+  requestBlockingEnabledSettingDescriptor,
+} from './SDKSettings.js';
 import {Capability, type Target} from './Target.js';
 import {type SDKModelObserver, TargetManager} from './TargetManager.js';
 
@@ -1405,7 +1409,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.#multitargetNetworkManager.inflightMainResourceRequests.delete(networkRequest.requestId());
 
     const settings = this.#manager.target().targetManager().settings;
-    if (settings.moduleSetting('monitoring-xhr-enabled').get() &&
+    if (settings.resolve(monitoringXHREnabledSettingDescriptor).get() &&
         networkRequest.resourceType().category() === Common.ResourceType.resourceCategories.XHR) {
       let message;
       const failedToLoad = networkRequest.failed || networkRequest.hasErrorStatusCode();

@@ -7,10 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting under the Console category in Settings.
-   */
-  logXmlhttprequests: 'Log XMLHttpRequests',
-  /**
    * @description Title of a setting under the Appearance category in Settings. When the webpage is
    * paused by devtools, an overlay is shown on top of the page to indicate that it is paused. The
    * overlay is a pause/unpause button and some text, which appears on top of the paused page. This
@@ -20,15 +16,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.logXmlhttprequests),
-  settingName: 'monitoring-xhr-enabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,

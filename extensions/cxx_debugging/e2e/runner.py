@@ -281,10 +281,8 @@ class Compile(RunnerCommand):
         ninja(build_root, 'test_suite', verbose)
 
     def build_driver(self, build_root, verbose):
-        tsc = repo_path('//node_modules/typescript/bin/tsc')
+        tsc = repo_path('//third_party/typescript/typescript.py')
         run_process(sys.executable,
-                    NODE,
-                    '--output',
                     tsc,
                     '-p',
                     repo_path('//extensions/cxx_debugging/e2e'),

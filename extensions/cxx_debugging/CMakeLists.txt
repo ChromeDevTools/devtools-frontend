@@ -21,34 +21,38 @@ set(CXX_DEBUGGING_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 option(CXX_DEBUGGING_USE_SANITIZERS "Enable sanitizers" OFF)
 
 # Compile typescript sources
-find_program(TS_COMPILER tsc PATHS ${DEVTOOLS_SOURCE_DIR}/node_modules/.bin REQUIRED NO_DEFAULT_PATH)
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+set(TS_COMPILER ${DEVTOOLS_SOURCE_DIR}/third_party/typescript/typescript.py)
 
 set(TS_COMPILER_ARGS -p ${CMAKE_CURRENT_SOURCE_DIR} --outDir ${PROJECT_BINARY_DIR})
-exec_program(${TS_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}
-  ARGS ${TS_COMPILER_ARGS} --listFiles
+execute_process(
+  COMMAND ${Python3_EXECUTABLE} ${TS_COMPILER} ${TS_COMPILER_ARGS} --listFiles
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   OUTPUT_VARIABLE TS_COMPILER_INPUTS
-  RETURN_VALUE TS_COMPILER_RETVAL)
+  RESULT_VARIABLE TS_COMPILER_RETVAL)
 
 if (NOT ${TS_COMPILER_RETVAL} EQUAL 0)
   message(FATAL_ERROR "Running tsc failed:\n${TS_COMPILER_INPUTS}")
 endif()
 
-string(REPLACE "\n" ";" TS_COMPILER_INPUTS ${TS_COMPILER_INPUTS})
+string(REPLACE "\r\n" "\n" TS_COMPILER_INPUTS "${TS_COMPILER_INPUTS}")
+string(REPLACE "\n" ";" TS_COMPILER_INPUTS "${TS_COMPILER_INPUTS}")
 
 set(TS_COMPILER_OUTPUTS)
 foreach(tsc_input IN LISTS TS_COMPILER_INPUTS)
-  get_filename_component(ext ${tsc_input} EXT)
-  if (NOT ext MATCHES ".d.ts$")
-    file(RELATIVE_PATH rel_path ${CMAKE_CURRENT_SOURCE_DIR} ${tsc_input})
-    get_filename_component(basename ${rel_path} NAME_WE)
-    get_filename_component(dirname ${rel_path} DIRECTORY)
-    list(APPEND TS_COMPILER_OUTPUTS ${CMAKE_CURRENT_BINARY_DIR}/${dirname}/${basename}.js)
+  if (tsc_input)
+    get_filename_component(ext "${tsc_input}" EXT)
+    if (NOT ext MATCHES ".d.ts$")
+      file(RELATIVE_PATH rel_path ${CMAKE_CURRENT_SOURCE_DIR} "${tsc_input}")
+      get_filename_component(basename "${rel_path}" NAME_WE)
+      get_filename_component(dirname "${rel_path}" DIRECTORY)
+      list(APPEND TS_COMPILER_OUTPUTS ${CMAKE_CURRENT_BINARY_DIR}/${dirname}/${basename}.js)
+    endif()
   endif()
 endforeach()
 
 add_custom_command(OUTPUT ${TS_COMPILER_OUTPUTS}
-  COMMAND ${DEVTOOLS_SOURCE_DIR}/third_party/node/node.py --output
-  ${TS_COMPILER} ${TS_COMPILER_ARGS}
+  COMMAND ${Python3_EXECUTABLE} ${TS_COMPILER} ${TS_COMPILER_ARGS}
   COMMENT "Compiling Typescript"
   DEPENDS ${TS_COMPILER_INPUTS} tsconfig.json)
 

@@ -15,8 +15,9 @@ import {
   devtoolsRootPath,
   litAnalyzerExecutablePath,
   nodePath,
-  nodeModulesPath,
   tsconfigJsonPath,
+  typescriptPyPath,
+  vpython3ExecutablePath,
 } from '../devtools_paths.js';
 
 const flags = yargs(hideBin(process.argv))
@@ -315,11 +316,11 @@ function shouldIgnoreFile(path) {
 
 async function runEslintRulesTypeCheck(files) {
   if (files.length === 0) {
-    return { status: true, output: '' };
+    return {status: true, output: ''};
   }
   const messages = [];
   debugLogging(messages, '[lint]: Running EsLint custom rules typechecking...');
-  const tscPath = join(nodeModulesPath(), 'typescript', 'bin', 'tsc');
+  const tscPath = typescriptPyPath();
   const tsConfigEslintRules = join(
     devtoolsRootPath(),
     'scripts',
@@ -338,7 +339,7 @@ async function runEslintRulesTypeCheck(files) {
     };
 
     return await new Promise(resolve => {
-      const tscProcess = spawn(nodePath(), args, {
+      const tscProcess = spawn(vpython3ExecutablePath(), args, {
         cwd: devtoolsRootPath(),
       });
 
@@ -369,7 +370,7 @@ async function runEslintRulesTypeCheck(files) {
   if (result.error) {
     messages.push(result.error);
   }
-  return { status: result.status, output: messages.join('\n') };
+  return {status: result.status, output: messages.join('\n')};
 }
 
 function getFilesToLint() {

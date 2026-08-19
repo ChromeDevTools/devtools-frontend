@@ -33,6 +33,6 @@ cd -
 
 # Copy the source files to our repo, and build it.
 cp -r tmp-repo/src package/src
-../../../node_modules/.bin/tsc --ignoreConfig -d -t esnext -m esnext --moduleResolution bundler --strict --outDir package/dist/modules/ package/src/**/*.ts package/src/index.ts
+vpython3 ../../../third_party/typescript/typescript.py --ignoreConfig --skipLibCheck -d -t esnext -m esnext --moduleResolution bundler --strict --outDir package/dist/modules/ package/src/**/*.ts package/src/index.ts
 
 echo "Rebuild complete."

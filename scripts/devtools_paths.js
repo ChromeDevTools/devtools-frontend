@@ -166,6 +166,10 @@ export function tsconfigJsonPath() {
   return path.join(devtoolsRootPath(), 'front_end', 'tsconfig.json');
 }
 
+export function typescriptPyPath() {
+  return path.join(devtoolsRootPath(), 'third_party', 'typescript', 'typescript.py');
+}
+
 export function downloadedChromeBinaryPath() {
   const arch = os.arch() === 'arm64' ? 'arm64' : 'x64';
   const paths = {

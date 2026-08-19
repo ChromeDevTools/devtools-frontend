@@ -61,4 +61,4 @@ def RunTypeScript(cmd_parts, stdout=None):
 
 
 if __name__ == '__main__':
-    RunTypeScript(sys.argv[1:])
+    sys.stdout.write(RunTypeScript(sys.argv[1:]))

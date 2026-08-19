@@ -39,6 +39,7 @@ import {
   waitForNonEmptyHeapSnapshotData,
   waitForRetainerChain,
   waitForSearchResultNumber,
+  waitForSelectedRowWithText,
   waitUntilRetainerChainSatisfies,
 } from '../helpers/memory-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
@@ -299,14 +300,7 @@ describe('The Memory Panel', function() {
 
     await setSearchFilter(devToolsPage, 'system / descriptorarray');
     // Explicitly wait for the search to complete and results to be updated
-    await devToolsPage.waitForFunction(async () => {
-      const selectedRow = await devToolsPage.$('.data-grid-data-grid-node.selected');
-      if (!selectedRow) {
-        return false;
-      }
-      const text = await selectedRow.evaluate(el => el.textContent);
-      return text?.includes('system / DescriptorArray');
-    });
+    await waitForSelectedRowWithText(devToolsPage, 'system / DescriptorArray');
     // Find the first one as these are system
     await findSearchResult(devToolsPage, 'system / DescriptorArray', /1 of/);
     await devToolsPage.hover('.selected.data-grid-data-grid-node span.object-value-null');
@@ -533,6 +527,7 @@ describe('The Memory Panel', function() {
     await setFilterDropdown(devToolsPage, 'Duplicated strings');
     await setSearchFilter(devToolsPage, '"duplicatedKey":"duplicatedValue"');
     await waitForSearchResultNumber(devToolsPage, 2);
+    await waitForSelectedRowWithText(devToolsPage, 'duplicatedKey');
     await setFilterDropdown(devToolsPage, 'Objects retained by detached DOM nodes');
     await getCategoryRow(devToolsPage, 'ObjectRetainedByDetachedDom', undefined);
     assert.isNotOk(await getCategoryRow(devToolsPage, 'ObjectRetainedByBothDetachedDomAndConsole', false));

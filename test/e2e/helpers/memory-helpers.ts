@@ -115,6 +115,17 @@ export async function waitForSearchResultNumber(devToolsPage: DevToolsPage, resu
   return await devToolsPage.waitForFunction(findMatch);
 }
 
+export async function waitForSelectedRowWithText(devToolsPage: DevToolsPage, text: string) {
+  return await devToolsPage.waitForFunction(async () => {
+    const selectedRow = await devToolsPage.$('.data-grid-data-grid-node.selected');
+    if (!selectedRow) {
+      return false;
+    }
+    const rowText = await selectedRow.evaluate(el => el.textContent);
+    return rowText?.includes(text) ? selectedRow : false;
+  });
+}
+
 /**
  *
  * @param searchResult

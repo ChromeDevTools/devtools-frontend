@@ -2,6 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../ninja/vars.gni")
+import("./typescript_vars.gni")
+
 # Architecture Overview:
 # ======================
 # ts_library_split decouples declaration generation from type-checking and
@@ -95,10 +98,80 @@ template("ts_library_split") {
   assert(defined(invoker.sources),
          "You must specify 'sources' for $target_name")
 
-  not_needed(invoker, "*")
+  _rootdir = "."
+  if (defined(invoker.rootdir)) {
+    _rootdir = invoker.rootdir
+  }
+  _outdir = target_gen_dir
+
+  _dts_target = "${target_name}-dts"
+
+  _all_sources = invoker.sources
+  if (defined(invoker.additional_type_definitions)) {
+    _all_sources += invoker.additional_type_definitions
+  }
+
+  _non_ts_deps = []
+  if (defined(invoker.deps)) {
+    _non_ts_deps = invoker.deps
+  }
+
+  # Compute declaration output paths (tsc does not emit for .d.ts inputs)
+  _dts_outputs = []
+  foreach(src, invoker.sources) {
+    _ext = get_path_info(src, "extension")
+    _name = get_path_info(src, "name")
+    _rel_name = rebase_path(src, _rootdir)
+    _rel_dir = get_path_info(_rel_name, "dir")
+    if (_rel_dir == "" || _rel_dir == ".") {
+      _file_base = get_path_info(_rel_name, "name")
+    } else {
+      _file_base = _rel_dir + "/" + get_path_info(_rel_name, "name")
+    }
+
+    if (!(_ext == "ts" && get_path_info(_name, "extension") == "d")) {
+      _dts_outputs += [ "$_outdir/$_file_base.d.ts" ]
+    }
+  }
+
+  # Sub-target 1: Type definitions (.d.ts only) via direct tsc
+  action(_dts_target) {
+    script = devtools_location_prepend + "scripts/build/run_with_restat.py"
+
+    inputs = typescript_base_inputs + _all_sources
+
+    deps = _non_ts_deps
+
+    outputs = _dts_outputs
+
+    response_file_contents =
+        rebase_path(_dts_outputs, root_build_dir) + [ "--" ] + [
+          rebase_path(tsc_binary, root_build_dir),
+          "--declaration",
+          "--emitDeclarationOnly",
+          "--isolatedDeclarations",
+          "--noCheck",
+          "--noResolve",
+          "--outDir",
+          rebase_path(_outdir, root_build_dir),
+          "--rootDir",
+          rebase_path(_rootdir, root_build_dir),
+        ] + rebase_path(_all_sources, root_build_dir)
+
+    args = [ "@{{response_file_name}}" ]
+
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+    if (defined(invoker.visibility)) {
+      visibility = invoker.visibility
+    }
+  }
 
   # Primary group target
   group(target_name) {
+    public_deps = [ ":$_dts_target" ]
+
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly
     }

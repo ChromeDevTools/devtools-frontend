@@ -2,6 +2,20 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//build/toolchain/rbe.gni")
+
+if (host_os == "linux") {
+  tsc_binary = "//third_party/typescript/linux-amd64/src/lib/tsc"
+} else if (host_os == "win") {
+  tsc_binary = "//third_party/typescript/windows-amd64/src/lib/tsc.exe"
+} else if (host_os == "mac") {
+  if (host_cpu == "arm64") {
+    tsc_binary = "//third_party/typescript/mac-arm64/src/lib/tsc"
+  } else {
+    tsc_binary = "//third_party/typescript/mac-amd64/src/lib/tsc"
+  }
+}
+
 # Standard TypeScript library definitions needed for remote execution (RBE /
 # Siso). Siso packages declared inputs to send to the remote worker.
 typescript_standard_lib_dts_inputs = [
@@ -115,3 +129,8 @@ typescript_standard_lib_dts_inputs = [
   "//third_party/typescript/linux-amd64/src/lib/lib.webworker.iterable.d.ts",
   "//third_party/typescript/linux-amd64/src/lib/tsc",
 ]
+
+typescript_base_inputs = [ tsc_binary ]
+if (use_remoteexec) {
+  typescript_base_inputs += typescript_standard_lib_dts_inputs
+}

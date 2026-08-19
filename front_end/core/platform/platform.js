@@ -1278,8 +1278,7 @@ var BitVectorImpl = class extends Uint8Array {
 var TypescriptUtilities_exports = {};
 __export(TypescriptUtilities_exports, {
   assertNever: () => assertNever,
-  assertNotNullOrUndefined: () => assertNotNullOrUndefined,
-  assertUnhandled: () => assertUnhandled
+  assertNotNullOrUndefined: () => assertNotNullOrUndefined
 });
 function assertNotNullOrUndefined(val, message) {
   if (val === null || val === void 0) {
@@ -1289,9 +1288,6 @@ ${message}` : ""}`);
 }
 function assertNever(_type, message) {
   throw new Error(message);
-}
-function assertUnhandled(_caseVariable) {
-  return _caseVariable;
 }
 
 // gen/front_end/core/platform/UIString.js
@@ -1338,7 +1334,6 @@ export {
   UIString_exports as UIString,
   UserVisibleError_exports as UserVisibleError,
   assertNever,
-  assertNotNullOrUndefined,
-  assertUnhandled
+  assertNotNullOrUndefined
 };
 //# sourceMappingURL=platform.js.map

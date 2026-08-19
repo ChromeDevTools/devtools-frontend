@@ -1592,7 +1592,7 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
   }
   createCacheSection() {
     const section4 = this.createSection(i18nString5(UIStrings5.caching), "network-config-disable-cache");
-    section4.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.disableCache), Common4.Settings.Settings.instance().moduleSetting("cache-disabled")));
+    section4.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.disableCache), Common4.Settings.Settings.instance().resolve(SDK4.SDKSettings.cacheDisabledSettingDescriptor)));
   }
   createNetworkThrottlingSection() {
     const title = i18nString5(UIStrings5.networkThrottling);
@@ -14299,7 +14299,7 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
     this.panelToolbar.appendSeparator();
     this.panelToolbar.appendToolbarItem(new UI24.Toolbar.ToolbarSettingCheckbox(this.preserveLogSetting, i18nString24(UIStrings25.doNotClearLogOnPageReload), i18nString24(UIStrings25.preserveLog)));
     this.panelToolbar.appendSeparator();
-    const disableCacheCheckbox = new UI24.Toolbar.ToolbarSettingCheckbox(Common20.Settings.Settings.instance().moduleSetting("cache-disabled"), i18nString24(UIStrings25.disableCacheWhileDevtoolsIsOpen), i18nString24(UIStrings25.disableCache));
+    const disableCacheCheckbox = new UI24.Toolbar.ToolbarSettingCheckbox(Common20.Settings.Settings.instance().resolve(SDK17.SDKSettings.cacheDisabledSettingDescriptor), i18nString24(UIStrings25.disableCacheWhileDevtoolsIsOpen), i18nString24(UIStrings25.disableCache));
     this.panelToolbar.appendToolbarItem(disableCacheCheckbox);
     this.panelToolbar.appendToolbarItem(this.throttlingSelect);
     const networkConditionsButton = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings25.moreNetworkConditions), "network-settings", void 0, "network-conditions");

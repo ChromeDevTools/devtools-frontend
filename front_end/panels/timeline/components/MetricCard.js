@@ -9,6 +9,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UIHelpers from '../../../ui/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import metricCardStyles from './metricCard.css.js';
 import { renderCompareText, renderDetailedCompareText } from './MetricCompareStrings.js';
 import metricValueStyles from './metricValueStyles.css.js';
@@ -452,7 +453,7 @@ export class MetricCard extends HTMLElement {
         }
         // clang-format off
         return html `
-      <div class="bucket-summaries histogram">
+      <div class="bucket-summaries histogram" jslog=${VisualLogging.canvas('metric-histogram')}>
         ${goodLabel}
         <div class="histogram-bar good-bg" style="width: ${this.#getBarWidthForRating('good')}"></div>
         <div class="histogram-percent">${this.#getPercentLabelForRating('good')}</div>
@@ -484,7 +485,7 @@ export class MetricCard extends HTMLElement {
           ` : nothing}
         </div>
         ${subparts.map(subpart => html `
-          <div class="subpart-table-row" role="row">
+          <div class="subpart-table-row" role="row" jslog=${VisualLogging.tableRow('metric-subpart')}>
             <div role="cell">${subpart[0]}</div>
             <div role="cell" class="subpart-table-value">${i18n.TimeUtilities.preciseMillisToString(subpart[1])}</div>
             ${subpart[2] !== undefined ? html `
@@ -509,7 +510,7 @@ export class MetricCard extends HTMLElement {
         const output = html `
       <style>${metricCardStyles}</style>
       <style>${metricValueStyles}</style>
-      <div class="metric-card">
+      <div class="metric-card" jslog=${VisualLogging.section(Platform.StringUtilities.toKebabCase(this.#data.metric))}>
         <h3 class="title">
           ${this.#getTitle()}
           <devtools-button

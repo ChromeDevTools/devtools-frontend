@@ -31,7 +31,9 @@ export class NetworkPanelIndicator {
         manager.addEventListener("ConditionsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED */, updateVisibility);
         manager.addEventListener("BlockedPatternsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED */, updateVisibility);
         manager.addEventListener("InterceptorsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.INTERCEPTORS_CHANGED */, updateVisibility);
-        Common.Settings.Settings.instance().moduleSetting('cache-disabled').addChangeListener(updateVisibility, this);
+        Common.Settings.Settings.instance()
+            .resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor)
+            .addChangeListener(updateVisibility, this);
         updateVisibility();
         function updateVisibility() {
             const warnings = [];

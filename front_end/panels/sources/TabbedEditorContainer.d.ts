@@ -3,11 +3,8 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type { EditingLocationHistoryManager } from './EditingLocationHistoryManager.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
-export interface TabbedEditorContainerDelegate {
-    viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget;
-    recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame, uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
-}
 declare const TabbedEditorContainer_base: (new (...args: any[]) => {
     __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
@@ -19,7 +16,8 @@ declare const TabbedEditorContainer_base: (new (...args: any[]) => {
 }) & typeof UI.Widget.VBox;
 export declare class TabbedEditorContainer extends TabbedEditorContainer_base {
     #private;
-    delegate: TabbedEditorContainerDelegate;
+    set historyManager(historyManager: EditingLocationHistoryManager);
+    private readonly sourceViewByUISourceCode;
     private readonly tabbedPane;
     private tabIds;
     private readonly files;
@@ -74,6 +72,12 @@ export declare class TabbedEditorContainer extends TabbedEditorContainer_base {
     private uiSourceCodeWorkingCopyChanged;
     private uiSourceCodeWorkingCopyCommitted;
     private generateTabId;
+    getCreatedSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget | undefined;
+    viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget;
+    private getOrCreateSourceView;
+    private createSourceView;
+    recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame, uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
+    private removeSourceFrame;
     currentFile(): Workspace.UISourceCode.UISourceCode | null;
 }
 export declare const enum Events {

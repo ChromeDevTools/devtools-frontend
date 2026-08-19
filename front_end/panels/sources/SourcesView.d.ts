@@ -2,9 +2,10 @@ import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { type SerializedHistoryItem, TabbedEditorContainer, type TabbedEditorContainerDelegate } from './TabbedEditorContainer.js';
+import { EditingLocationHistoryManager } from './EditingLocationHistoryManager.js';
+import { type SerializedHistoryItem, TabbedEditorContainer } from './TabbedEditorContainer.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
 export interface ViewInput {
     searchProvider: UI.SearchableView.Searchable;
@@ -12,7 +13,7 @@ export interface ViewInput {
     searchableViewId: string;
     scriptViewToolbarItems: UI.Toolbar.ToolbarItem[];
     bottomToolbarItems: UI.Toolbar.ToolbarItem[];
-    delegate: TabbedEditorContainerDelegate;
+    historyManager: EditingLocationHistoryManager;
     previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
 }
 export interface ViewOutput {
@@ -31,9 +32,8 @@ declare const SourcesView_base: (new (...args: any[]) => {
     dispatchEventToListeners<T extends keyof EventTypes>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
     dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
-export declare class SourcesView extends SourcesView_base implements TabbedEditorContainerDelegate, UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
+export declare class SourcesView extends SourcesView_base implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
     #private;
-    private readonly sourceViewByUISourceCode;
     editorContainer?: TabbedEditorContainer;
     private readonly historyManager;
     private toolbarChangedListener;
@@ -67,12 +67,8 @@ export declare class SourcesView extends SourcesView_base implements TabbedEdito
     private projectRemoved;
     private updateScriptViewToolbarItems;
     showSourceLocation(uiSourceCode: Workspace.UISourceCode.UISourceCode, location?: SourceFrame.SourceFrame.RevealPosition, omitFocus?: boolean, omitHighlight?: boolean): Promise<void>;
-    private createSourceView;
+    viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget | undefined;
     getSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget | undefined;
-    private getOrCreateSourceView;
-    recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame, uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
-    viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget;
-    private removeSourceFrame;
     private editorClosed;
     private editorSelected;
     private removeToolbarChangedListener;

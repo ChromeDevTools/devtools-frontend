@@ -1870,6 +1870,11 @@ declare namespace ProtocolProxyApi {
     invoke_setHardwareConcurrencyOverride(params: Protocol.Emulation.SetHardwareConcurrencyOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Overrides the value of navigator.cpuPerformance
+     */
+    invoke_setCPUPerformanceOverride(params: Protocol.Emulation.SetCPUPerformanceOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Allows overriding user agent with the given string.
      * `userAgentMetadata` must be set for Client Hint headers to be sent.
      */

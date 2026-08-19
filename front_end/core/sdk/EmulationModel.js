@@ -4,7 +4,7 @@
 import { CSSModel } from './CSSModel.js';
 import { OverlayModel } from './OverlayModel.js';
 import { SDKModel } from './SDKModel.js';
-import { avifFormatDisabledSettingDescriptor, cpuPressureSettingDescriptor, emulatedCSSMediaFeatureColorGamutSettingDescriptor, emulatedCSSMediaFeatureForcedColorsSettingDescriptor, emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor, emulatedCSSMediaFeaturePrefersContrastSettingDescriptor, emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor, emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor, emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor, emulatedCSSMediaSettingDescriptor, emulatedOSTextScaleSettingDescriptor, emulatedVisionDeficiencySettingDescriptor, idleDetectionSettingDescriptor, javaScriptDisabledSettingDescriptor, jpegXlFormatDisabledSettingDescriptor, localFontsDisabledSettingDescriptor, touchSettingDescriptor, webpFormatDisabledSettingDescriptor, } from './SDKSettings.js';
+import { avifFormatDisabledSettingDescriptor, cpuPressureSettingDescriptor, emulateAutoDarkModeSettingDescriptor, emulatedCSSMediaFeatureColorGamutSettingDescriptor, emulatedCSSMediaFeatureForcedColorsSettingDescriptor, emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor, emulatedCSSMediaFeaturePrefersContrastSettingDescriptor, emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor, emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor, emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor, emulatedCSSMediaSettingDescriptor, emulatedOSTextScaleSettingDescriptor, emulatedVisionDeficiencySettingDescriptor, idleDetectionSettingDescriptor, javaScriptDisabledSettingDescriptor, jpegXlFormatDisabledSettingDescriptor, localFontsDisabledSettingDescriptor, touchSettingDescriptor, webpFormatDisabledSettingDescriptor, } from './SDKSettings.js';
 export class EmulationModel extends SDKModel {
     #multitargetNetworkManager;
     #emulationAgent;
@@ -124,7 +124,7 @@ export class EmulationModel extends SDKModel {
             void this.updateCssMedia();
         });
         void this.updateCssMedia();
-        const autoDarkModeSetting = settings.moduleSetting('emulate-auto-dark-mode');
+        const autoDarkModeSetting = settings.resolve(emulateAutoDarkModeSettingDescriptor);
         autoDarkModeSetting.addChangeListener(() => {
             const enabled = autoDarkModeSetting.get();
             mediaFeaturePrefersColorSchemeSetting.set(enabled ? 'dark' : '');

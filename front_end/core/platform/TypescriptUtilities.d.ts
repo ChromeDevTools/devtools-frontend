@@ -5,12 +5,6 @@
  */
 export declare function assertNotNullOrUndefined<T>(val: T, message?: string): asserts val is NonNullable<T>;
 export declare function assertNever(_type: never, message: string): never;
-/**
- * This is useful to check on the type-level that the unhandled cases of
- * a switch are exactly `T` (where T is usually a union type of enum values).
- * @param caseVariable
- */
-export declare function assertUnhandled<T>(_caseVariable: T): T;
 export type FieldsThatExtend<Type, Selector> = {
     [Key in keyof Type]: Type[Key] extends Selector ? Key : never;
 }[keyof Type];

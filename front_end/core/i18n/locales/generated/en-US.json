@@ -449,41 +449,11 @@
   "core/sdk/Script.ts | unableToFetchScriptSource": {
     "message": "Unable to fetch script source."
   },
-  "core/sdk/sdk-meta.ts | customFormatters": {
-    "message": "Custom formatters"
-  },
-  "core/sdk/sdk-meta.ts | disableCache": {
-    "message": "Disable cache while DevTools is open"
-  },
-  "core/sdk/sdk-meta.ts | disableNetworkRequestBlocking": {
-    "message": "Disable network request blocking"
-  },
   "core/sdk/sdk-meta.ts | disablePaused": {
     "message": "Disable paused state overlay"
   },
-  "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
-    "message": "Emulate auto dark mode"
-  },
-  "core/sdk/sdk-meta.ts | enableCache": {
-    "message": "Enable cache"
-  },
-  "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
-    "message": "Enable network request blocking"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Allow loading remote file path resources in DevTools"
-  },
   "core/sdk/sdk-meta.ts | logXmlhttprequests": {
     "message": "Log XMLHttpRequests"
-  },
-  "core/sdk/sdk-meta.ts | networkCacheExplanation": {
-    "message": "Disabling the network cache will simulate a network experience similar to a first time visitor."
-  },
-  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
-    "message": "Network request blocking"
-  },
-  "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
-    "message": "Example resources are source maps. Disabled by default for security reasons."
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
     "message": "Deprecated syntax found for metric \"{PH1}\". Use: <name>;dur=<duration>;desc=<description>"
@@ -616,6 +586,9 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateAFocusedPage": {
     "message": "Emulate a focused page"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateAutoDarkMode": {
+    "message": "Emulate auto dark mode"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateBlurredVision": {
     "message": "Emulate blurred vision"
@@ -6701,6 +6674,9 @@
   "panels/console/console-meta.ts | createLiveExpression": {
     "message": "Create live expression"
   },
+  "panels/console/console-meta.ts | customFormatters": {
+    "message": "Custom formatters"
+  },
   "panels/console/console-meta.ts | doNotAutocompleteFromHistory": {
     "message": "Don’t autocomplete from history"
   },
@@ -7637,6 +7613,138 @@
   "panels/elements/CSSSpecificityBreakdown.ts | typeLikeSpecificity": {
     "message": "(c) Type-like: {PH1}"
   },
+  "panels/elements/DOMTreeContextMenu.ts | addAttribute": {
+    "message": "Add attribute"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | addPadding": {
+    "message": "Add padding"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | alignItems": {
+    "message": "Align items"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | assessVisibility": {
+    "message": "Assess visibility"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | captureNodeScreenshot": {
+    "message": "Capture node screenshot"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | centerElement": {
+    "message": "Center element"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | changeParentProperties": {
+    "message": "Change parent properties"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | collapseChildren": {
+    "message": "Collapse children"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copy": {
+    "message": "Copy"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyElement": {
+    "message": "Copy element"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyFullXpath": {
+    "message": "Copy full XPath"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyJsPath": {
+    "message": "Copy JS path"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyOuterhtml": {
+    "message": "Copy outerHTML"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copySelector": {
+    "message": "Copy selector"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyStyles": {
+    "message": "Copy styles"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyXpath": {
+    "message": "Copy XPath"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | cut": {
+    "message": "Cut"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | deleteElement": {
+    "message": "Delete element"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | distributeItemsEvenly": {
+    "message": "Distribute items evenly"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | duplicateElement": {
+    "message": "Duplicate element"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editAsHtml": {
+    "message": "Edit as HTML"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editAttribute": {
+    "message": "Edit attribute"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editData": {
+    "message": "Edit data"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editText": {
+    "message": "Edit text"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | expandRecursively": {
+    "message": "Expand recursively"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainContainerContext": {
+    "message": "Explain container context"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainContainerQueries": {
+    "message": "Explain container queries"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainContainerTypes": {
+    "message": "Explain container types"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainFlexbox": {
+    "message": "Explain flexbox"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainGridLayout": {
+    "message": "Explain grid layout"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainScrollbars": {
+    "message": "Explain scrollbars"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainSubgrids": {
+    "message": "Explain subgrids"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | findGridDefinition": {
+    "message": "Find grid definition"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | focus": {
+    "message": "Focus"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | hideElement": {
+    "message": "Hide element"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | paste": {
+    "message": "Paste"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | removeScrollbars": {
+    "message": "Remove scrollbars"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | scrollIntoView": {
+    "message": "Scroll into view"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | showFrameDetails": {
+    "message": "Show iframe details"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | startAChat": {
+    "message": "Start a chat"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | storeAsGlobalVariable": {
+    "message": "Store as global variable"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | styleScrollbars": {
+    "message": "Style scrollbars"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | switchToAccessibilityTree": {
+    "message": "Switch to accessibility tree"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
+    "message": "Wrap these items"
+  },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "Invalid element or text node within <optgroup>"
   },
@@ -7904,65 +8012,17 @@
   "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
     "message": "Toggle Element State"
   },
-  "panels/elements/ElementsTreeElement.ts | addAttribute": {
-    "message": "Add attribute"
-  },
-  "panels/elements/ElementsTreeElement.ts | addPadding": {
-    "message": "Add padding"
-  },
-  "panels/elements/ElementsTreeElement.ts | alignItems": {
-    "message": "Align items"
-  },
-  "panels/elements/ElementsTreeElement.ts | assessVisibility": {
-    "message": "Assess visibility"
-  },
-  "panels/elements/ElementsTreeElement.ts | captureNodeScreenshot": {
-    "message": "Capture node screenshot"
-  },
-  "panels/elements/ElementsTreeElement.ts | centerElement": {
-    "message": "Center element"
-  },
-  "panels/elements/ElementsTreeElement.ts | changeParentProperties": {
-    "message": "Change parent properties"
-  },
   "panels/elements/ElementsTreeElement.ts | children": {
     "message": "Children:"
   },
-  "panels/elements/ElementsTreeElement.ts | collapseChildren": {
-    "message": "Collapse children"
-  },
   "panels/elements/ElementsTreeElement.ts | copy": {
     "message": "Copy"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyElement": {
-    "message": "Copy element"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyFullXpath": {
-    "message": "Copy full XPath"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyJsPath": {
-    "message": "Copy JS path"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyOuterhtml": {
-    "message": "Copy outerHTML"
-  },
-  "panels/elements/ElementsTreeElement.ts | copySelector": {
-    "message": "Copy selector"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyStyles": {
-    "message": "Copy styles"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyXpath": {
-    "message": "Copy XPath"
   },
   "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
     "message": "Creator ad script ancestry"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "Cut"
-  },
-  "panels/elements/ElementsTreeElement.ts | deleteElement": {
-    "message": "Delete element"
   },
   "panels/elements/ElementsTreeElement.ts | disableContainer": {
     "message": "Disable container overlay"
@@ -7981,24 +8041,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
     "message": "Disable @starting-style mode"
-  },
-  "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
-    "message": "Distribute items evenly"
-  },
-  "panels/elements/ElementsTreeElement.ts | duplicateElement": {
-    "message": "Duplicate element"
-  },
-  "panels/elements/ElementsTreeElement.ts | editAsHtml": {
-    "message": "Edit as HTML"
-  },
-  "panels/elements/ElementsTreeElement.ts | editAttribute": {
-    "message": "Edit attribute"
-  },
-  "panels/elements/ElementsTreeElement.ts | editData": {
-    "message": "Edit data"
-  },
-  "panels/elements/ElementsTreeElement.ts | editText": {
-    "message": "Edit text"
   },
   "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
     "message": "This element has a scrollable overflow"
@@ -8021,38 +8063,8 @@
   "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
     "message": "Enable @starting-style mode"
   },
-  "panels/elements/ElementsTreeElement.ts | expandRecursively": {
-    "message": "Expand recursively"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainContainerContext": {
-    "message": "Explain container context"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainContainerQueries": {
-    "message": "Explain container queries"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainContainerTypes": {
-    "message": "Explain container types"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainFlexbox": {
-    "message": "Explain flexbox"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainGridLayout": {
-    "message": "Explain grid layout"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainScrollbars": {
-    "message": "Explain scrollbars"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
-    "message": "Explain subgrids"
-  },
   "panels/elements/ElementsTreeElement.ts | filterListRule": {
     "message": "Filter list rule"
-  },
-  "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
-    "message": "Find grid definition"
-  },
-  "panels/elements/ElementsTreeElement.ts | focus": {
-    "message": "Focus"
   },
   "panels/elements/ElementsTreeElement.ts | forceOpenPopover": {
     "message": "Keep this popover open"
@@ -8063,9 +8075,6 @@
   "panels/elements/ElementsTreeElement.ts | forceState": {
     "message": "Force state"
   },
-  "panels/elements/ElementsTreeElement.ts | hideElement": {
-    "message": "Hide element"
-  },
   "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
     "message": "No provenance data is available"
   },
@@ -8075,17 +8084,11 @@
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Paste"
   },
-  "panels/elements/ElementsTreeElement.ts | removeScrollbars": {
-    "message": "Remove scrollbars"
-  },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "reveal"
   },
   "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
     "message": "Root script filter list rule"
-  },
-  "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
-    "message": "Scroll into view"
   },
   "panels/elements/ElementsTreeElement.ts | selectAll": {
     "message": "Select all"
@@ -8096,29 +8099,17 @@
   "panels/elements/ElementsTreeElement.ts | showCustomElementDefinition": {
     "message": "Show custom element definition"
   },
-  "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
-    "message": "Show iframe details"
-  },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
     "message": "Show element associated with the interesttarget attribute"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
     "message": "Show element associated with the popovertarget attribute"
   },
-  "panels/elements/ElementsTreeElement.ts | startAChat": {
-    "message": "Start a chat"
-  },
   "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
     "message": "Stop keeping this popover open"
   },
   "panels/elements/ElementsTreeElement.ts | stopForceShowInterest": {
     "message": "Cancel interest on this element"
-  },
-  "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
-    "message": "Style scrollbars"
-  },
-  "panels/elements/ElementsTreeElement.ts | switchToAccessibilityTree": {
-    "message": "Switch to accessibility tree"
   },
   "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
     "message": "This element was identified as an ad"
@@ -8132,9 +8123,6 @@
   "panels/elements/ElementsTreeElement.ts | viewSourceCode": {
     "message": "View source code"
   },
-  "panels/elements/ElementsTreeElement.ts | wrapTheseItems": {
-    "message": "Wrap these items"
-  },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "Page DOM"
   },
@@ -8143,9 +8131,6 @@
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Show all nodes ({PH1} more)"
-  },
-  "panels/elements/ElementsTreeOutline.ts | storeAsGlobalVariable": {
-    "message": "Store as global variable"
   },
   "panels/elements/ElementsTreeOutline.ts | viewIssue": {
     "message": "View Issue:"
@@ -10418,6 +10403,12 @@
   "panels/network/network-meta.ts | colorcodeResourceTypes": {
     "message": "Color-code resource types"
   },
+  "panels/network/network-meta.ts | disableCache": {
+    "message": "Disable cache while DevTools is open"
+  },
+  "panels/network/network-meta.ts | disableNetworkRequestBlocking": {
+    "message": "Disable network request blocking"
+  },
   "panels/network/network-meta.ts | diskCache": {
     "message": "disk cache"
   },
@@ -10426,6 +10417,12 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Don’t group network log items by frame"
+  },
+  "panels/network/network-meta.ts | enableCache": {
+    "message": "Enable cache"
+  },
+  "panels/network/network-meta.ts | enableNetworkRequestBlocking": {
+    "message": "Enable network request blocking"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "frame"
@@ -10448,8 +10445,14 @@
   "panels/network/network-meta.ts | netWork": {
     "message": "network"
   },
+  "panels/network/network-meta.ts | networkCacheExplanation": {
+    "message": "Disabling the network cache will simulate a network experience similar to a first time visitor."
+  },
   "panels/network/network-meta.ts | networkConditions": {
     "message": "Network conditions"
+  },
+  "panels/network/network-meta.ts | networkRequestBlocking": {
+    "message": "Network request blocking"
   },
   "panels/network/network-meta.ts | networkRequestConditions": {
     "message": "Request conditions"
@@ -14972,6 +14975,9 @@
   "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
     "message": "Enable JavaScript source maps"
   },
+  "panels/sources/sources-meta.ts | enableRemoteFileLoading": {
+    "message": "Allow loading remote file path resources in DevTools"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Enable tab moves focus"
   },
@@ -15040,6 +15046,9 @@
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Quick source"
+  },
+  "panels/sources/sources-meta.ts | remoteFileLoadingInfo": {
+    "message": "Example resources are source maps. Disabled by default for security reasons."
   },
   "panels/sources/sources-meta.ts | rename": {
     "message": "Rename"
@@ -17997,7 +18006,7 @@
     "message": "Settings changed. To apply, reload DevTools."
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
-    "message": "This is a new feature"
+    "message": "New feature"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "No results found"

@@ -5,6 +5,7 @@
 import './InspectElementModeController.js';
 import './ColorSwatchPopoverIcon.js';
 import './DOMPath.js';
+import './DOMTreeContextMenu.js';
 import './ElementsSidebarPane.js';
 import './ElementsTreeElement.js';
 import './AdoptedStyleSheetTreeElement.js';
@@ -40,6 +41,7 @@ import * as CSSRuleValidator from './CSSRuleValidator.js';
 import * as CSSSpecificityBreakdown from './CSSSpecificityBreakdown.js';
 import * as CSSValueTraceView from './CSSValueTraceView.js';
 import * as DOMPath from './DOMPath.js';
+import * as DOMTreeContextMenu from './DOMTreeContextMenu.js';
 import * as ElementsPanel from './ElementsPanel.js';
 import * as ElementsSidebarPane from './ElementsSidebarPane.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
@@ -77,6 +79,7 @@ export {
   CSSSpecificityBreakdown,
   CSSValueTraceView,
   DOMPath,
+  DOMTreeContextMenu,
   ElementsPanel,
   ElementsSidebarPane,
   ElementStatePaneWidget,

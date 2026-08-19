@@ -15,23 +15,23 @@ import { FilteredListWidget, Provider, registerProvider } from './FilteredListWi
 import { QuickOpenImpl } from './QuickOpen.js';
 const UIStrings = {
     /**
-     * @description Message to display if a setting change requires a reload of DevTools
+     * @description Warning message displayed when a setting change requires reloading DevTools.
      */
     settingsChangedReloadDevTools: 'Settings changed. To apply, reload DevTools.',
     /**
-     * @description Text in Command Menu of the Command Menu
+     * @description Message shown when no commands match the query in the command menu.
      */
     noCommandsFound: 'No commands found',
     /**
-     * @description Text for command prefix of run a command
+     * @description Prefix text for the prompt in the command menu.
      */
     run: 'Run',
     /**
-     * @description Text for command suggestion of run a command
+     * @description Suggestion placeholder text for the prompt in the command menu.
      */
     command: 'Command',
     /**
-     * @description Text for help title of run command menu
+     * @description Title for the command menu entry in the help menu.
      */
     runCommand: 'Run command',
 };

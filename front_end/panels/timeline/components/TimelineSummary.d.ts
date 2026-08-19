@@ -3,6 +3,7 @@ export interface CategoryData {
     value: number;
     color: string;
     title: string;
+    name?: string;
 }
 interface ViewInput {
     rangeStart: number;

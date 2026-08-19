@@ -13,7 +13,7 @@ import { RemoteObject } from './RemoteObject.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel, } from './ResourceTreeModel.js';
 import { Events as RuntimeModelEvents, RuntimeModel, } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
-import { preserveConsoleLogSettingDescriptor } from './SDKSettings.js';
+import { consoleUserActivationEvalSettingDescriptor, preserveConsoleLogSettingDescriptor } from './SDKSettings.js';
 import { Type } from './Target.js';
 export { FrontendMessageType } from './ConsoleModelTypes.js';
 const UIStrings = {
@@ -108,13 +108,17 @@ export class ConsoleModel extends SDKModel {
             generatePreview: true,
             replMode: true,
             allowUnsafeEvalBlockedByCSP: false,
-        }, this.target().targetManager().settings.moduleSetting('console-user-activation-eval').get(), 
+        }, this.target().targetManager().settings.resolve(consoleUserActivationEvalSettingDescriptor).get(), 
         /* awaitPromise */ false);
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
         if ('error' in result) {
             return;
         }
-        await this.#console.showPromise();
+        try {
+            await this.#console.showPromise();
+        }
+        catch {
+        }
         this.dispatchEventToListeners(Events.CommandEvaluated, { result: result.object, commandMessage: originatingMessage, exceptionDetails: result.exceptionDetails });
     }
     addCommandMessage(executionContext, text) {

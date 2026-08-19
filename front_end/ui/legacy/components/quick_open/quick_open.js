@@ -202,28 +202,28 @@ devtools-text-prompt {
 // gen/front_end/ui/legacy/components/quick_open/FilteredListWidget.js
 var UIStrings = {
   /**
-   * @description Aria label for quick open dialog prompt
+   * @description Accessible name for the input prompt in the quick open dialog.
    */
   quickOpenPrompt: "Quick open prompt",
   /**
-   * @description Title of quick open dialog
+   * @description Title for the quick open dialog.
    */
   quickOpen: "Quick open",
   /**
-   * @description Text to show no results have been found
+   * @description Message displayed when a search returns no matching items.
    */
   noResultsFound: "No results found",
   /**
-   * @description Aria alert to read the item in list when navigating with screen readers
-   * @example {name} PH1
+   * @description Announcement for screen readers when navigating items in a list.
+   * @example {Show Console} PH1
    * @example {2} PH2
    * @example {5} PH3
    */
   sItemSOfS: "{PH1}, item {PH2} of {PH3}",
   /**
-   * @description Text that should be read out by screen readers when a new badge is available
+   * @description Text announced by screen readers when an item has a new feature badge.
    */
-  newFeature: "This is a new feature"
+  newFeature: "New feature"
 };
 var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/quick_open/FilteredListWidget.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -747,7 +747,7 @@ __export(QuickOpen_exports, {
 import * as i18n3 from "./../../../../core/i18n/i18n.js";
 var UIStrings2 = {
   /**
-   * @description Text of the hint shows under Quick Open input box
+   * @description Hint text displayed below the quick open input prompt.
    */
   typeToSeeAvailableCommands: "Type ? to see available commands"
 };
@@ -833,23 +833,23 @@ var ShowActionDelegate = class {
 // gen/front_end/ui/legacy/components/quick_open/CommandMenu.js
 var UIStrings3 = {
   /**
-   * @description Message to display if a setting change requires a reload of DevTools
+   * @description Warning message displayed when a setting change requires reloading DevTools.
    */
   settingsChangedReloadDevTools: "Settings changed. To apply, reload DevTools.",
   /**
-   * @description Text in Command Menu of the Command Menu
+   * @description Message shown when no commands match the query in the command menu.
    */
   noCommandsFound: "No commands found",
   /**
-   * @description Text for command prefix of run a command
+   * @description Prefix text for the prompt in the command menu.
    */
   run: "Run",
   /**
-   * @description Text for command suggestion of run a command
+   * @description Suggestion placeholder text for the prompt in the command menu.
    */
   command: "Command",
   /**
-   * @description Text for help title of run command menu
+   * @description Title for the command menu entry in the help menu.
    */
   runCommand: "Run command"
 };

@@ -4,6 +4,7 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ElementsTreeElement } from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
+import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import type { MarkerDecoratorRegistration } from './MarkerDecorator.js';
 import { TopLayerContainer } from './TopLayerContainer.js';
 export type View = typeof DEFAULT_VIEW;
@@ -34,9 +35,11 @@ interface ViewInput {
     onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void;
     onElementCollapsed: () => void;
     onElementExpanded: () => void;
+    onSaveNodeToTempVariable?: (node: SDK.DOMModel.DOMNode) => void;
 }
 interface ViewOutput {
     elementsTreeOutline?: ElementsTreeOutline;
+    imagePreviewPopover?: ImagePreviewPopover;
     highlightedTreeElement: ElementsTreeElement | null;
     isUpdatingHighlights: boolean;
     alreadyExpandedParentTreeElement: ElementsTreeElement | null;
@@ -116,9 +119,11 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     highlightMatch(node: SDK.DOMModel.DOMNode, query?: string): void;
     hideMatchHighlights(node: SDK.DOMModel.DOMNode): void;
     toggleHideElement(node: SDK.DOMModel.DOMNode): void;
+    isToggledToHidden(node: SDK.DOMModel.DOMNode): boolean;
     toggleEditAsHTML(node: SDK.DOMModel.DOMNode): void;
     duplicateNode(node: SDK.DOMModel.DOMNode): void;
     copyStyles(node: SDK.DOMModel.DOMNode): void;
+    saveNodeToTempVariable(node: SDK.DOMModel.DOMNode): Promise<void>;
     /**
      * FIXME: used to determine focus state, probably we can have a better
      * way to do it.
@@ -126,6 +131,7 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     empty(): boolean;
     focus(): void;
     wasShown(): void;
+    wasHidden(): void;
     detach(overrideHideOnDetach?: boolean): void;
     show(parentElement: Element, insertBefore?: Node | null, suppressOrphanWidgetError?: boolean): void;
 }
@@ -148,11 +154,9 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     private rootDOMNodeInternal;
     selectedDOMNodeInternal: SDK.DOMModel.DOMNode | null;
     private visible;
-    private readonly imagePreviewPopover;
     private updateRecords;
     private treeElementsBeingUpdated;
     decoratorExtensions: MarkerDecoratorRegistration[] | null;
-    private showHTMLCommentsSetting;
     private multilineEditing?;
     private visibleWidthInternal?;
     private clipboardNodeData?;
@@ -172,7 +176,7 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     static forDOMModel(domModel: SDK.DOMModel.DOMModel): ElementsTreeOutline | null;
     deindentSingleNode(): void;
     updateNodeElementToIssue(element: Element, issues: IssuesManager.Issue.Issue[]): void;
-    private onShowHTMLCommentsChange;
+    issuesByNodeElement(element: Element): IssuesManager.Issue.Issue[] | undefined;
     setWordWrap(wrap: boolean): void;
     setMultilineEditing(multilineEditing: MultilineEditorController | null): void;
     visibleWidth(): number;
@@ -187,7 +191,6 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     duplicateNode(targetNode: SDK.DOMModel.DOMNode): void;
     private onPaste;
     private performPaste;
-    private performDuplicate;
     setVisible(visible: boolean): void;
     get rootDOMNode(): SDK.DOMModel.DOMNode | null;
     set rootDOMNode(x: SDK.DOMModel.DOMNode | null);
@@ -220,19 +223,12 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     private doMove;
     private ondragend;
     private clearDragOverTreeElementMarker;
-    private contextMenuEventFired;
-    showContextMenu(treeElement: ElementsTreeElement, event: Event): Promise<void>;
-    private saveNodeToTempVariable;
+    showContextMenu: (treeElement: ElementsTreeElement, event: Event) => void;
+    saveNodeToTempVariable(node: SDK.DOMModel.DOMNode): Promise<void>;
     runPendingUpdates(): void;
     private onKeyDown;
     toggleEditAsHTML(node: SDK.DOMModel.DOMNode, startEditing?: boolean, callback?: (() => void)): void;
     selectNodeAfterEdit(wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null): ElementsTreeElement | null;
-    /**
-     * Runs a script on the node's remote object that toggles a class name on
-     * the node and injects a stylesheet into the head of the node's document
-     * containing a rule to set "visibility: hidden" on the class and all it's
-     * ancestors.
-     */
     toggleHideElement(node: SDK.DOMModel.DOMNode): Promise<void>;
     isToggledToHidden(node: SDK.DOMModel.DOMNode): boolean;
     private reset;

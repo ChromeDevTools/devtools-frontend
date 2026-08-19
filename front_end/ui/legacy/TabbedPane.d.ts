@@ -230,6 +230,9 @@ export interface TabbedPaneTabDelegate {
 }
 export declare class TabbedPaneElement extends WidgetElement<TabbedPane> {
     #private;
+    set closeableTabs(closeable: boolean);
+    set allowTabReorder(allow: boolean);
+    set automaticReorder(automatic: boolean);
     constructor();
     disconnectedCallback(): void;
 }

@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import timelineSummaryStyles from './timelineSummary.css.js';
 const { render, html } = Lit;
 const UIStrings = {
@@ -31,15 +33,15 @@ export const CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
         <style>${timelineSummaryStyles}</style>
         <style>@scope to (devtools-widget > *) { ${UI.inspectorCommonStyles} }</style>
         <style>@scope to (devtools-widget > *) { ${Buttons.textButtonStyles} }</style>
-        <div class=${summaryClasses}>
+        <div class=${summaryClasses} jslog=${VisualLogging.section('timeline-summary')}>
             <div class="summary-range">${i18nString(UIStrings.rangeSS, { PH1: i18n.TimeUtilities.millisToString(input.rangeStart), PH2: i18n.TimeUtilities.millisToString(input.rangeEnd) })}</div>
             <div class="category-summary">
                 ${input.categories.map(category => {
         return html `
-                        <div class="category-row">
+                        <div class="category-row" jslog=${VisualLogging.item(category.name || Platform.StringUtilities.toKebabCase(category.title))}>
                         <div class="category-swatch" style="background-color: ${category.color};"></div>
                         <div class="category-name">${category.title}</div>
-                        <div class="category-value">
+                        <div class="category-value" jslog=${VisualLogging.value()}>
                             ${i18n.TimeUtilities.preciseMillisToString(category.value)}
                             <div class="background-bar-container">
                                 <div class="background-bar" style='width: ${(category.value * 100 / input.total).toFixed(1)}%;'></div>
@@ -47,10 +49,10 @@ export const CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
                         </div>
                         </div>`;
     })}
-                <div class="category-row">
+                <div class="category-row" jslog=${VisualLogging.item('total')}>
                     <div class="category-swatch"></div>
                     <div class="category-name">${i18nString(UIStrings.total)}</div>
-                    <div class="category-value">
+                    <div class="category-value" jslog=${VisualLogging.value()}>
                         ${i18n.TimeUtilities.preciseMillisToString(input.total)}
                         <div class="background-bar-container">
                             <div class="background-bar"></div>

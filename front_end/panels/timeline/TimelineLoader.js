@@ -102,7 +102,7 @@ export class TimelineLoader {
         const loader = new TimelineLoader(client);
         const stream = new Common.StringOutputStream.StringOutputStream();
         client.loadingStarted();
-        const allowRemoteFilePaths = Common.Settings.Settings.instance().moduleSetting('network.enable-remote-file-loading').get();
+        const allowRemoteFilePaths = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.enableRemoteFileLoadingSettingDescriptor).get();
         Host.ResourceLoader.loadAsStream(url, null, stream, finishedCallback, allowRemoteFilePaths);
         async function finishedCallback(success, _headers, errorDescription) {
             if (!success) {

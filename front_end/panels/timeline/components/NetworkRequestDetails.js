@@ -10,6 +10,7 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import networkRequestDetailsStyles from './networkRequestDetails.css.js';
 import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
 import { NetworkRequestTooltip } from './NetworkRequestTooltip.js';
@@ -179,7 +180,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         <style>${networkRequestDetailsStyles}</style>
         <style>${networkRequestTooltipStyles}</style>
 
-        <div class="network-request-details-content">
+        <div class="network-request-details-content"
+             data-network-request-id=${input.request.args.data.requestId}
+             jslog=${VisualLogging.section('timeline.network-request-details')}>
           ${renderTitle(input.request)}
           ${renderURL(input.request)}
           <div class="network-request-details-cols">
@@ -284,7 +287,7 @@ function renderRow(title, value) {
     }
     // clang-format off
     return html `
-      <div class="network-request-details-row">
+      <div class="network-request-details-row" jslog=${VisualLogging.item('detail-row')}>
         <div class="title">${title}</div>
         <div class="value">${value}</div>
       </div>`;

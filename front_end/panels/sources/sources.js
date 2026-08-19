@@ -5167,11 +5167,9 @@ import * as Bindings7 from "./../../models/bindings/bindings.js";
 import * as Persistence9 from "./../../models/persistence/persistence.js";
 import * as Workspace19 from "./../../models/workspace/workspace.js";
 import * as QuickOpen from "./../../ui/legacy/components/quick_open/quick_open.js";
-import * as SourceFrame10 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html6, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
-import * as Components2 from "./components/components.js";
 
 // gen/front_end/panels/sources/EditingLocationHistoryManager.js
 var EditingLocationHistoryManager_exports = {};
@@ -5344,6 +5342,7 @@ import { html as html5, render as render6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon2 from "./../common/common.js";
 import * as Snippets3 from "./../snippets/snippets.js";
+import * as Components2 from "./components/components.js";
 
 // gen/front_end/panels/sources/UISourceCodeFrame.js
 var UISourceCodeFrame_exports = {};
@@ -9066,9 +9065,14 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("panels/sources/TabbedEditorContainer.ts", UIStrings14);
 var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var HEADER_OVERRIDES_FILENAME = ".headers";
 var tabId = 0;
 var TabbedEditorContainer = class extends Common10.ObjectWrapper.eventMixin(UI14.Widget.VBox) {
-  delegate;
+  #historyManager;
+  set historyManager(historyManager) {
+    this.#historyManager = historyManager;
+  }
+  sourceViewByUISourceCode = /* @__PURE__ */ new Map();
   tabbedPane;
   tabIds;
   files;
@@ -9130,7 +9134,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.eventMixin(UI14
       const networkView = this.tabbedPane.tabView(networkTabId);
       const tabIndex = this.tabbedPane.tabIndex(networkTabId);
       if (networkView instanceof UISourceCodeFrame) {
-        this.delegate.recycleUISourceCodeFrame(networkView, binding.fileSystem);
+        this.recycleUISourceCodeFrame(networkView, binding.fileSystem);
         fileSystemTabId = this.appendFileTab(binding.fileSystem, false, tabIndex, networkView);
       } else {
         fileSystemTabId = this.appendFileTab(binding.fileSystem, false, tabIndex);
@@ -9270,7 +9274,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.eventMixin(UI14
     this.currentView = this.visibleView;
     this.addViewListeners();
     if (this.currentView instanceof UISourceCodeFrame && this.currentView.uiSourceCode() !== uiSourceCode) {
-      this.delegate.recycleUISourceCodeFrame(this.currentView, uiSourceCode);
+      this.recycleUISourceCodeFrame(this.currentView, uiSourceCode);
       if (uiSourceCode.project().type() !== Workspace17.Workspace.projectTypes.FileSystem) {
         uiSourceCode.disableEdit();
       }
@@ -9394,6 +9398,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.eventMixin(UI14
       if (this.idToUISourceCode.get(uiSourceCode.canonicalScriptId()) === uiSourceCode) {
         this.idToUISourceCode.delete(uiSourceCode.canonicalScriptId());
       }
+      this.removeSourceFrame(uiSourceCode);
     }
     this.tabbedPane.closeTabs(tabIds);
   }
@@ -9420,7 +9425,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.eventMixin(UI14
     return uiSourceCode.url();
   }
   appendFileTab(uiSourceCode, userGesture, index, replaceView) {
-    const view = replaceView || this.delegate.viewForFile(uiSourceCode);
+    const view = replaceView || this.viewForFile(uiSourceCode);
     const title = this.titleForFile(uiSourceCode);
     const tooltip = this.tooltipForFile(uiSourceCode);
     const tabId2 = this.generateTabId();
@@ -9479,6 +9484,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.eventMixin(UI14
     this.files.delete(tabId2);
     if (uiSourceCode) {
       this.removeUISourceCodeListeners(uiSourceCode);
+      this.removeSourceFrame(uiSourceCode);
       this.dispatchEventToListeners("EditorClosed", uiSourceCode);
       if (isUserGesture) {
         this.editorClosedByUserAction(uiSourceCode);
@@ -9550,6 +9556,15 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.eventMixin(UI14
   }
   uiSourceCodeTitleChanged(event) {
     const uiSourceCode = event.data;
+    const widget3 = this.sourceViewByUISourceCode.get(uiSourceCode);
+    if (widget3) {
+      if (this.#sourceViewTypeForWidget(widget3) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
+        this.removeUISourceCodes([uiSourceCode]);
+        this.addUISourceCode(uiSourceCode);
+        this.showFile(uiSourceCode);
+        return;
+      }
+    }
     this.updateFileTitle(uiSourceCode);
     this.updateHistory();
     for (const [k, v] of this.uriToUISourceCode) {
@@ -9630,6 +9645,75 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.eventMixin(UI14
     }
     Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.WorkspaceSelectFolder);
     void UI14.ViewManager.ViewManager.instance().showView("navigator-files");
+  }
+  getCreatedSourceView(uiSourceCode) {
+    return this.sourceViewByUISourceCode.get(uiSourceCode);
+  }
+  viewForFile(uiSourceCode) {
+    return this.getOrCreateSourceView(uiSourceCode);
+  }
+  getOrCreateSourceView(uiSourceCode) {
+    return this.sourceViewByUISourceCode.get(uiSourceCode) || this.createSourceView(uiSourceCode);
+  }
+  createSourceView(uiSourceCode) {
+    let sourceView;
+    const contentType = uiSourceCode.contentType();
+    if (contentType === Common10.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith("image/")) {
+      sourceView = new SourceFrame8.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
+    } else if (contentType === Common10.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes("font")) {
+      sourceView = new SourceFrame8.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
+    } else if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
+      sourceView = new Components2.HeadersView.HeadersView(uiSourceCode);
+    } else {
+      sourceView = new UISourceCodeFrame(uiSourceCode);
+      this.#historyManager.trackSourceFrameCursorJumps(sourceView);
+    }
+    this.sourceViewByUISourceCode.set(uiSourceCode, sourceView);
+    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+    return sourceView;
+  }
+  recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
+    sourceFrame.uiSourceCode().removeEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+    this.sourceViewByUISourceCode.delete(sourceFrame.uiSourceCode());
+    sourceFrame.setUISourceCode(uiSourceCode);
+    this.sourceViewByUISourceCode.set(uiSourceCode, sourceFrame);
+    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+  }
+  removeSourceFrame(uiSourceCode) {
+    const sourceView = this.sourceViewByUISourceCode.get(uiSourceCode);
+    this.sourceViewByUISourceCode.delete(uiSourceCode);
+    if (sourceView) {
+      uiSourceCode.removeEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+    }
+    if (sourceView && sourceView instanceof UISourceCodeFrame) {
+      sourceView.dispose();
+    }
+  }
+  #sourceViewTypeForWidget(widget3) {
+    if (widget3 instanceof SourceFrame8.ImageView.ImageView) {
+      return "ImageView";
+    }
+    if (widget3 instanceof SourceFrame8.FontView.FontView) {
+      return "FontView";
+    }
+    if (widget3 instanceof Components2.HeadersView.HeadersView) {
+      return "HeadersView";
+    }
+    return "SourceView";
+  }
+  #sourceViewTypeForUISourceCode(uiSourceCode) {
+    if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
+      return "HeadersView";
+    }
+    const contentType = uiSourceCode.contentType();
+    switch (contentType) {
+      case Common10.ResourceType.resourceTypes.Image:
+        return "ImageView";
+      case Common10.ResourceType.resourceTypes.Font:
+        return "FontView";
+      default:
+        return "SourceView";
+    }
   }
   currentFile() {
     return this.#currentFile || null;
@@ -9826,7 +9910,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
   })}
     >
       <devtools-widget class="vbox flex-auto"
-        ${widget(TabbedEditorContainer, { delegate: input.delegate, previouslyViewedFilesSetting: input.previouslyViewedFilesSetting })}
+        ${widget(TabbedEditorContainer, { historyManager: input.historyManager, previouslyViewedFilesSetting: input.previouslyViewedFilesSetting })}
         ${widgetRef(TabbedEditorContainer, (e) => {
     output.editorContainer = e;
   })}>
@@ -9845,7 +9929,6 @@ var DEFAULT_VIEW5 = (input, output, target) => {
 };
 var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(UI15.Widget.VBox) {
   #searchableView;
-  sourceViewByUISourceCode;
   editorContainer;
   #uiSourceCodes = /* @__PURE__ */ new Set();
   historyManager;
@@ -9880,7 +9963,6 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     this.element.id = "sources-panel-sources-view";
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
     const workspace = Workspace19.Workspace.WorkspaceImpl.instance();
-    this.sourceViewByUISourceCode = /* @__PURE__ */ new Map();
     this.historyManager = new EditingLocationHistoryManager(this);
     this.toolbarChangedListener = null;
     this.#toggleNavigatorSidebarButton = new UI15.Toolbar.ToolbarButton(i18nString14(UIStrings15.showNavigator), "left-panel-open");
@@ -9935,7 +10017,7 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
       searchableViewId: "sources-view-search-config",
       scriptViewToolbarItems: this.#scriptViewToolbarItems,
       bottomToolbarItems: this.#bottomToolbarItems,
-      delegate: this,
+      historyManager: this.historyManager,
       previouslyViewedFilesSetting: this.previouslyViewedFilesSetting
     };
     const that = this;
@@ -10170,7 +10252,6 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     uiSourceCodes.forEach((ui) => this.#uiSourceCodes.delete(ui));
     this.editorContainer?.removeUISourceCodes(uiSourceCodes);
     for (let i = 0; i < uiSourceCodes.length; ++i) {
-      this.removeSourceFrame(uiSourceCodes[i]);
       this.historyManager.removeHistoryForSourceCode(uiSourceCodes[i]);
     }
   }
@@ -10213,83 +10294,11 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
       visibleView.focus();
     }
   }
-  createSourceView(uiSourceCode) {
-    let sourceView;
-    const contentType = uiSourceCode.contentType();
-    if (contentType === Common11.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith("image/")) {
-      sourceView = new SourceFrame10.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
-    } else if (contentType === Common11.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes("font")) {
-      sourceView = new SourceFrame10.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
-    } else if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
-      sourceView = new Components2.HeadersView.HeadersView(uiSourceCode);
-    } else {
-      sourceView = new UISourceCodeFrame(uiSourceCode);
-      this.historyManager.trackSourceFrameCursorJumps(sourceView);
-    }
-    uiSourceCode.addEventListener(Workspace19.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
-    this.sourceViewByUISourceCode.set(uiSourceCode, sourceView);
-    return sourceView;
-  }
-  #sourceViewTypeForWidget(widget3) {
-    if (widget3 instanceof SourceFrame10.ImageView.ImageView) {
-      return "ImageView";
-    }
-    if (widget3 instanceof SourceFrame10.FontView.FontView) {
-      return "FontView";
-    }
-    if (widget3 instanceof Components2.HeadersView.HeadersView) {
-      return "HeadersView";
-    }
-    return "SourceView";
-  }
-  #sourceViewTypeForUISourceCode(uiSourceCode) {
-    if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
-      return "HeadersView";
-    }
-    const contentType = uiSourceCode.contentType();
-    switch (contentType) {
-      case Common11.ResourceType.resourceTypes.Image:
-        return "ImageView";
-      case Common11.ResourceType.resourceTypes.Font:
-        return "FontView";
-      default:
-        return "SourceView";
-    }
-  }
-  #uiSourceCodeTitleChanged(event) {
-    const uiSourceCode = event.data;
-    const widget3 = this.sourceViewByUISourceCode.get(uiSourceCode);
-    if (widget3) {
-      if (this.#sourceViewTypeForWidget(widget3) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
-        this.removeUISourceCodes([uiSourceCode]);
-        this.#uiSourceCodes.add(uiSourceCode);
-        void this.showSourceLocation(uiSourceCode);
-      }
-    }
+  viewForFile(uiSourceCode) {
+    return this.editorContainer?.viewForFile(uiSourceCode);
   }
   getSourceView(uiSourceCode) {
-    return this.sourceViewByUISourceCode.get(uiSourceCode);
-  }
-  getOrCreateSourceView(uiSourceCode) {
-    return this.sourceViewByUISourceCode.get(uiSourceCode) || this.createSourceView(uiSourceCode);
-  }
-  recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
-    sourceFrame.uiSourceCode().removeEventListener(Workspace19.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
-    this.sourceViewByUISourceCode.delete(sourceFrame.uiSourceCode());
-    sourceFrame.setUISourceCode(uiSourceCode);
-    this.sourceViewByUISourceCode.set(uiSourceCode, sourceFrame);
-    uiSourceCode.addEventListener(Workspace19.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
-  }
-  viewForFile(uiSourceCode) {
-    return this.getOrCreateSourceView(uiSourceCode);
-  }
-  removeSourceFrame(uiSourceCode) {
-    const sourceView = this.sourceViewByUISourceCode.get(uiSourceCode);
-    this.sourceViewByUISourceCode.delete(uiSourceCode);
-    if (sourceView && sourceView instanceof UISourceCodeFrame) {
-      sourceView.dispose();
-    }
-    uiSourceCode.removeEventListener(Workspace19.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
+    return this.editorContainer?.getCreatedSourceView(uiSourceCode);
   }
   editorClosed(event) {
     const uiSourceCode = event.data;
@@ -10513,7 +10522,6 @@ var ActionDelegate2 = class {
     return false;
   }
 };
-var HEADER_OVERRIDES_FILENAME = ".headers";
 
 // gen/front_end/panels/sources/ThreadsSidebarPane.js
 var ThreadsSidebarPane_exports = {};

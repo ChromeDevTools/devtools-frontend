@@ -549,25 +549,25 @@ function colorForNetworkRequest(request) {
 var LCP_THRESHOLDS = [2500, 4e3];
 var CLS_THRESHOLDS = [0.1, 0.25];
 var INP_THRESHOLDS = [200, 500];
-function rateMetric(value, thresholds) {
-  if (value <= thresholds[0]) {
+function rateMetric(value2, thresholds) {
+  if (value2 <= thresholds[0]) {
     return "good";
   }
-  if (value <= thresholds[1]) {
+  if (value2 <= thresholds[1]) {
     return "needs-improvement";
   }
   return "poor";
 }
-function renderMetricValue(jslogContext, value, thresholds, format, options) {
+function renderMetricValue(jslogContext, value2, thresholds, format, options) {
   const metricValueEl = document.createElement("span");
   metricValueEl.classList.add("metric-value");
-  if (value === void 0) {
+  if (value2 === void 0) {
     metricValueEl.classList.add("waiting");
     metricValueEl.textContent = "-";
     return metricValueEl;
   }
-  metricValueEl.textContent = format(value);
-  const rating = rateMetric(value, thresholds);
+  metricValueEl.textContent = format(value2);
+  const rating = rateMetric(value2, thresholds);
   metricValueEl.classList.add(rating);
   metricValueEl.setAttribute("jslog", `${VisualLogging2.section(jslogContext)}`);
   if (options?.dim) {
@@ -770,24 +770,24 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
     inp: field.inp?.value !== void 0 ? Trace3.Helpers.Timing.microToMilli(field.inp.value) : void 0
   };
   const showFieldMismatchNotice = !didDismissFieldMismatchNotice && !!fieldValues && isFieldWorseThanLocal(localValues, fieldValues);
-  function renderMetricValue2(metric, value, relevantEvent) {
+  function renderMetricValue2(metric, value2, relevantEvent) {
     let valueText;
     let valueDisplay;
     let classification;
-    if (value === null) {
+    if (value2 === null) {
       valueText = valueDisplay = "-";
       classification = "unclassified";
     } else if (metric === "LCP") {
-      const micros = value;
+      const micros = value2;
       const { text, element } = NumberWithUnit.formatMicroSecondsAsSeconds(micros);
       valueText = text;
       valueDisplay = element;
       classification = Trace3.Handlers.ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(micros);
     } else if (metric === "CLS") {
-      valueText = valueDisplay = value ? value.toFixed(2) : "0";
-      classification = Trace3.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(value);
+      valueText = valueDisplay = value2 ? value2.toFixed(2) : "0";
+      classification = Trace3.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(value2);
     } else if (metric === "INP") {
-      const micros = value;
+      const micros = value2;
       const { text, element } = NumberWithUnit.formatMicroSecondsAsMillisFixed(micros);
       valueText = text;
       valueDisplay = element;
@@ -795,7 +795,7 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
     } else {
       Platform2.TypeScriptUtilities.assertNever(metric, `Unexpected metric ${metric}`);
     }
-    const title = value !== null ? i18nString3(UIStrings3.metricScore, { PH1: metric, PH2: valueText, PH3: classification }) : i18nString3(UIStrings3.metricScoreUnavailable, { PH1: metric });
+    const title = value2 !== null ? i18nString3(UIStrings3.metricScore, { PH1: metric, PH2: valueText, PH3: classification }) : i18nString3(UIStrings3.metricScoreUnavailable, { PH1: metric });
     return html3`
       <button class="metric"
         @click=${relevantEvent ? onClickMetric.bind(relevantEvent) : null}
@@ -1698,11 +1698,11 @@ function renderOriginWarning(input, url) {
       return Lit5.nothing;
     }
     const result = await input.getFieldDataForPage(url);
-    const hasFieldData = Object.entries(result).some(([key, value]) => {
+    const hasFieldData = Object.entries(result).some(([key, value2]) => {
       if (key === "warnings") {
         return false;
       }
-      return Boolean(value);
+      return Boolean(value2);
     });
     if (hasFieldData) {
       return Lit5.nothing;
@@ -1842,10 +1842,10 @@ var OriginMap = class extends UI4.Widget.VBox {
     }
     this.#pushMappingsToSetting(mappings);
   }
-  #developmentValidator(value, indexToIgnore) {
-    const origin = this.#getOrigin(value);
+  #developmentValidator(value2, indexToIgnore) {
+    const origin = this.#getOrigin(value2);
     if (!origin) {
-      return i18nString6(UIStrings6.invalidOrigin, { PH1: value });
+      return i18nString6(UIStrings6.invalidOrigin, { PH1: value2 });
     }
     const mappings = this.#pullMappingsFromSetting();
     for (let i = 0; i < mappings.length; ++i) {
@@ -1859,10 +1859,10 @@ var OriginMap = class extends UI4.Widget.VBox {
     }
     return null;
   }
-  #productionValidator(value) {
-    const origin = this.#getOrigin(value);
+  #productionValidator(value2) {
+    const origin = this.#getOrigin(value2);
     if (!origin) {
-      return i18nString6(UIStrings6.invalidOrigin, { PH1: value });
+      return i18nString6(UIStrings6.invalidOrigin, { PH1: value2 });
     }
     return null;
   }
@@ -1993,9 +1993,9 @@ var FieldSettingsDialog = class extends HTMLElement {
     this.#urlOverrideWarning = "";
   }
   #flushToSetting(enabled) {
-    const value = this.#configSetting.get();
+    const value2 = this.#configSetting.get();
     this.#configSetting.set({
-      ...value,
+      ...value2,
       enabled,
       override: this.#urlOverride,
       overrideEnabled: this.#urlOverrideEnabled
@@ -2007,11 +2007,11 @@ var FieldSettingsDialog = class extends HTMLElement {
   async #urlHasFieldData(url) {
     const cruxManager = CrUXManager5.CrUXManager.instance();
     const result = await cruxManager.getFieldDataForPage(url);
-    return Object.entries(result).some(([key, value]) => {
+    return Object.entries(result).some(([key, value2]) => {
       if (key === "warnings") {
         return false;
       }
-      return Boolean(value);
+      return Boolean(value2);
     });
   }
   async #submit(enabled) {
@@ -2441,8 +2441,8 @@ var IgnoreListSetting = class _IgnoreListSetting extends UI6.Widget.Widget {
   #getSkipStackFramesPatternSetting() {
     return Common2.Settings.Settings.instance().moduleSetting("skip-stack-frames-pattern");
   }
-  #onNewRegexInputFocus(value) {
-    this.#editingRegexSetting = { pattern: value, disabled: false };
+  #onNewRegexInputFocus(value2) {
+    this.#editingRegexSetting = { pattern: value2, disabled: false };
     this.#regexPatterns.push(this.#editingRegexSetting);
   }
   #finishEditing() {
@@ -2462,8 +2462,8 @@ var IgnoreListSetting = class _IgnoreListSetting extends UI6.Widget.Widget {
     this.#newRegexChecked = false;
     this.requestUpdate();
   }
-  #onNewRegexInputBlur(value) {
-    const newRegex = value.trim();
+  #onNewRegexInputBlur(value2) {
+    const newRegex = value2.trim();
     this.#finishEditing();
     if (!regexInputIsValid(newRegex)) {
       return;
@@ -2471,8 +2471,8 @@ var IgnoreListSetting = class _IgnoreListSetting extends UI6.Widget.Widget {
     Workspace.IgnoreListManager.IgnoreListManager.instance().addRegexToIgnoreList(newRegex);
     this.#resetInput();
   }
-  #onNewRegexAdd(value) {
-    this.#onNewRegexInputBlur(value);
+  #onNewRegexAdd(value2) {
+    this.#onNewRegexInputBlur(value2);
     this.#onNewRegexInputFocus("");
   }
   #onNewRegexCancel() {
@@ -2492,8 +2492,8 @@ var IgnoreListSetting = class _IgnoreListSetting extends UI6.Widget.Widget {
     }
     return this.#regexPatterns;
   }
-  #onNewRegexInputChange(value) {
-    const newRegex = value.trim();
+  #onNewRegexInputChange(value2) {
+    const newRegex = value2.trim();
     this.#newRegexValue = newRegex;
     if (this.#editingRegexSetting && regexInputIsValid(newRegex)) {
       this.#editingRegexSetting.pattern = newRegex;
@@ -2658,6 +2658,7 @@ import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyComponents2 from "./../../../ui/legacy/components/utils/utils.js";
 import * as UI9 from "./../../../ui/legacy/legacy.js";
 import * as Lit10 from "./../../../ui/lit/lit.js";
+import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
 import * as Insights4 from "./insights/insights.js";
 
 // gen/front_end/panels/timeline/components/insights/NodeLink.js
@@ -3049,7 +3050,7 @@ function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFresh
     return cluster.events.find((event) => event === layoutShift);
   });
   return html10`
-      <table class="layout-shift-details-table">
+      <table class="layout-shift-details-table" jslog=${VisualLogging5.section("layout-shift-details")}>
         <thead class="table-title">
           <tr>
             <th>${i18nString10(UIStrings10.startTime)}</th>
@@ -3075,10 +3076,10 @@ function renderLayoutShiftClusterDetails(cluster, insightSets, parsedTrace, onEv
   if (!clsInsight) {
     return Lit10.nothing;
   }
-  const clusterCulprits = Array.from(clsInsight.shifts.entries()).filter(([key]) => cluster.events.includes(key)).map(([, value]) => value).flatMap((x) => Object.values(x)).flat();
+  const clusterCulprits = Array.from(clsInsight.shifts.entries()).filter(([key]) => cluster.events.includes(key)).map(([, value2]) => value2).flatMap((x) => Object.values(x)).flat();
   const hasCulprits = Boolean(clusterCulprits.length);
   return html10`
-    <table class="layout-shift-details-table">
+    <table class="layout-shift-details-table" jslog=${VisualLogging5.section("layout-shift-details")}>
       <thead class="table-title">
         <tr>
           <th>${i18nString10(UIStrings10.startTime)}</th>
@@ -3110,7 +3111,7 @@ function renderShiftRow(currentShift, userHasSingleShiftSelected, parsedTrace, e
   }
   const hasCulprits = Boolean(rootCauses && (rootCauses.webFonts.length || rootCauses.iframes.length || rootCauses.nonCompositedAnimations.length || rootCauses.unsizedImages.length));
   return html10`
-      <tr class="shift-row" data-ts=${currentShift.ts}>
+      <tr class="shift-row" data-ts=${currentShift.ts} jslog=${VisualLogging5.tableRow("shift-row")}>
         <td>${renderStartTime(currentShift, userHasSingleShiftSelected, parsedTrace, onEventClick)}</td>
         <td>${score.toFixed(4)}</td>
         ${elementsShifted.length ? html10`
@@ -3236,6 +3237,7 @@ import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
 import * as ComponentHelpers4 from "./../../../ui/components/helpers/helpers.js";
 import * as UIHelpers from "./../../../ui/helpers/helpers.js";
 import * as Lit11 from "./../../../ui/lit/lit.js";
+import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/metricCard.css.js
 var metricCard_css_default = `/*
@@ -4119,7 +4121,7 @@ var MetricCard = class extends HTMLElement {
       `;
     }
     return html11`
-      <div class="bucket-summaries histogram">
+      <div class="bucket-summaries histogram" jslog=${VisualLogging6.canvas("metric-histogram")}>
         ${goodLabel}
         <div class="histogram-bar good-bg" style="width: ${this.#getBarWidthForRating("good")}"></div>
         <div class="histogram-percent">${this.#getPercentLabelForRating("good")}</div>
@@ -4149,7 +4151,7 @@ var MetricCard = class extends HTMLElement {
           ` : nothing9}
         </div>
         ${subparts.map((subpart) => html11`
-          <div class="subpart-table-row" role="row">
+          <div class="subpart-table-row" role="row" jslog=${VisualLogging6.tableRow("metric-subpart")}>
             <div role="cell">${subpart[0]}</div>
             <div role="cell" class="subpart-table-value">${i18n23.TimeUtilities.preciseMillisToString(subpart[1])}</div>
             ${subpart[2] !== void 0 ? html11`
@@ -4172,7 +4174,7 @@ var MetricCard = class extends HTMLElement {
     const output = html11`
       <style>${metricCard_css_default}</style>
       <style>${metricValueStyles_css_default}</style>
-      <div class="metric-card">
+      <div class="metric-card" jslog=${VisualLogging6.section(Platform5.StringUtilities.toKebabCase(this.#data.metric))}>
         <h3 class="title">
           ${this.#getTitle()}
           <devtools-button
@@ -4250,7 +4252,7 @@ import * as Buttons8 from "./../../../ui/components/buttons/buttons.js";
 import * as uiI18n4 from "./../../../ui/i18n/i18n.js";
 import * as UI10 from "./../../../ui/legacy/legacy.js";
 import * as Lit12 from "./../../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon2 from "./../../common/common.js";
 import * as MobileThrottling from "./../../mobile_throttling/mobile_throttling.js";
 
@@ -5114,7 +5116,7 @@ function renderClsCard(input) {
             class="link-to-log"
             title=${i18nString12(UIStrings13.showClsCluster)}
             @click=${() => input.revealLayoutShiftCluster(clusterIds)}
-            jslog=${VisualLogging5.action("timeline.landing.show-cls-cluster").track({ click: true })}
+            jslog=${VisualLogging7.action("timeline.landing.show-cls-cluster").track({ click: true })}
           >${i18nString12(UIStrings13.numShifts, { shiftCount: clusterIds.size })}</button>
         </div>
       ` : nothing11}
@@ -5145,7 +5147,7 @@ function renderInpCard(input) {
             class="link-to-log"
             title=${i18nString12(UIStrings13.showInpInteraction)}
             @click=${() => input.revealInteraction(interaction)}
-            jslog=${VisualLogging5.action("timeline.landing.show-inp-interaction").track({ click: true })}
+            jslog=${VisualLogging7.action("timeline.landing.show-inp-interaction").track({ click: true })}
           >${interaction.interactionType}</button>
         </div>
       ` : nothing11}
@@ -5206,7 +5208,7 @@ function renderRecordingSettings(input) {
       <setting-checkbox
         class="network-cache-setting"
         .data=${{
-    setting: Common3.Settings.Settings.instance().moduleSetting("cache-disabled"),
+    setting: Common3.Settings.Settings.instance().resolve(SDK4.SDKSettings.cacheDisabledSettingDescriptor),
     textOverride: i18nString12(UIStrings13.disableNetworkCache)
   }}
       ></setting-checkbox>
@@ -5799,6 +5801,7 @@ import * as Trace8 from "./../../../models/trace/trace.js";
 import * as LegacyComponents3 from "./../../../ui/legacy/components/utils/utils.js";
 import * as UI12 from "./../../../ui/legacy/legacy.js";
 import * as Lit14 from "./../../../ui/lit/lit.js";
+import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/networkRequestDetails.css.js
 var networkRequestDetails_css_default = `/*
@@ -6459,7 +6462,9 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
         <style>${networkRequestDetails_css_default}</style>
         <style>${networkRequestTooltip_css_default}</style>
 
-        <div class="network-request-details-content">
+        <div class="network-request-details-content"
+             data-network-request-id=${input.request.args.data.requestId}
+             jslog=${VisualLogging8.section("timeline.network-request-details")}>
           ${renderTitle(input.request)}
           ${renderURL(input.request)}
           <div class="network-request-details-cols">
@@ -6552,14 +6557,14 @@ async function renderPreviewElement(request, target, previewElementsCache) {
   }
   return Lit14.nothing;
 }
-function renderRow(title, value) {
-  if (!value) {
+function renderRow(title, value2) {
+  if (!value2) {
     return Lit14.nothing;
   }
   return html14`
-      <div class="network-request-details-row">
+      <div class="network-request-details-row" jslog=${VisualLogging8.item("detail-row")}>
         <div class="title">${title}</div>
-        <div class="value">${value}</div>
+        <div class="value">${value2}</div>
       </div>`;
 }
 function renderEncodedDataLength(request) {
@@ -7001,7 +7006,7 @@ import * as TraceBounds3 from "./../../../services/trace_bounds/trace_bounds.js"
 import * as UI14 from "./../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../../ui/legacy/theme_support/theme_support.js";
 import * as Lit17 from "./../../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging9 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/sidebarAnnotationsTab.css.js
 var sidebarAnnotationsTab_css_default = `/*
@@ -7429,7 +7434,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
                   @mouseout=${() => annotation.type === "ENTRY_LABEL" ? input.onAnnotationHoverOut() : null}
                   aria-label=${label}
                   tabindex="0"
-                  jslog=${VisualLogging6.item(`timeline.annotation-sidebar.annotation-${jslogForAnnotation(annotation)}`).track({ click: true, resize: true })}
+                  jslog=${VisualLogging9.item(`timeline.annotation-sidebar.annotation-${jslogForAnnotation(annotation)}`).track({ click: true, resize: true })}
                 >
                   <div class="annotation">
                     ${renderAnnotationIdentifier(annotation, input.annotationEntryToColorMap)}
@@ -7440,7 +7445,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
                   <button class="delete-button" aria-label=${i18nString16(UIStrings17.deleteButton, { PH1: label })} @click=${(event) => {
       event.stopPropagation();
       input.onAnnotationDelete(annotation);
-    }} jslog=${VisualLogging6.action("timeline.annotation-sidebar.delete").track({ click: true })}>
+    }} jslog=${VisualLogging9.action("timeline.annotation-sidebar.delete").track({ click: true })}>
                     <devtools-icon class="bin-icon extra-large" name="bin"></devtools-icon>
                   </button>
                 </div>`;
@@ -8120,7 +8125,7 @@ __export(TimelineRangeSummaryView_exports, {
   TimelineRangeSummaryView: () => TimelineRangeSummaryView,
   statsForTimeRange: () => statsForTimeRange
 });
-import * as Platform8 from "./../../../core/platform/platform.js";
+import * as Platform9 from "./../../../core/platform/platform.js";
 import * as Trace13 from "./../../../models/trace/trace.js";
 import * as UI19 from "./../../../ui/legacy/legacy.js";
 import * as Lit21 from "./../../../ui/lit/lit.js";
@@ -8178,9 +8183,11 @@ __export(TimelineSummary_exports, {
   CategorySummary: () => CategorySummary
 });
 import * as i18n37 from "./../../../core/i18n/i18n.js";
+import * as Platform8 from "./../../../core/platform/platform.js";
 import * as Buttons10 from "./../../../ui/components/buttons/buttons.js";
 import * as UI18 from "./../../../ui/legacy/legacy.js";
 import * as Lit20 from "./../../../ui/lit/lit.js";
+import * as VisualLogging10 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/timelineSummary.css.js
 var timelineSummary_css_default = `/*
@@ -8287,15 +8294,15 @@ var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
         <style>${timelineSummary_css_default}</style>
         <style>@scope to (devtools-widget > *) { ${UI18.inspectorCommonStyles} }</style>
         <style>@scope to (devtools-widget > *) { ${Buttons10.textButtonStyles} }</style>
-        <div class=${summaryClasses}>
+        <div class=${summaryClasses} jslog=${VisualLogging10.section("timeline-summary")}>
             <div class="summary-range">${i18nString18(UIStrings19.rangeSS, { PH1: i18n37.TimeUtilities.millisToString(input.rangeStart), PH2: i18n37.TimeUtilities.millisToString(input.rangeEnd) })}</div>
             <div class="category-summary">
                 ${input.categories.map((category) => {
     return html20`
-                        <div class="category-row">
+                        <div class="category-row" jslog=${VisualLogging10.item(category.name || Platform8.StringUtilities.toKebabCase(category.title))}>
                         <div class="category-swatch" style="background-color: ${category.color};"></div>
                         <div class="category-name">${category.title}</div>
-                        <div class="category-value">
+                        <div class="category-value" jslog=${VisualLogging10.value()}>
                             ${i18n37.TimeUtilities.preciseMillisToString(category.value)}
                             <div class="background-bar-container">
                                 <div class="background-bar" style='width: ${(category.value * 100 / input.total).toFixed(1)}%;'></div>
@@ -8303,10 +8310,10 @@ var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
                         </div>
                         </div>`;
   })}
-                <div class="category-row">
+                <div class="category-row" jslog=${VisualLogging10.item("total")}>
                     <div class="category-swatch"></div>
                     <div class="category-name">${i18nString18(UIStrings19.total)}</div>
-                    <div class="category-value">
+                    <div class="category-value" jslog=${VisualLogging10.value()}>
                         ${i18n37.TimeUtilities.preciseMillisToString(input.total)}
                         <div class="background-bar-container">
                             <div class="background-bar"></div>
@@ -8375,11 +8382,11 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     if (category.name === Trace13.Styles.EventCategory.IDLE) {
       continue;
     }
-    const value = aggregatedStats[category.name];
-    if (!value) {
+    const value2 = aggregatedStats[category.name];
+    if (!value2) {
       continue;
     }
-    categories.push({ value, color: category.getCSSValue(), title: category.title });
+    categories.push({ value: value2, color: category.getCSSValue(), title: category.title, name: category.name });
   }
   categories.sort((a, b) => b.value - a.value);
   render20(html21`
@@ -8433,20 +8440,20 @@ function statsForTimeRange(events, startTime, endTime) {
     const cache = events[categoryBreakdownCacheSymbol];
     for (const category in cache) {
       const categoryCache = cache[category];
-      const index = Platform8.ArrayUtilities.upperBound(categoryCache.time, time, Platform8.ArrayUtilities.DEFAULT_COMPARATOR);
-      let value;
+      const index = Platform9.ArrayUtilities.upperBound(categoryCache.time, time, Platform9.ArrayUtilities.DEFAULT_COMPARATOR);
+      let value2;
       if (index === 0) {
-        value = 0;
+        value2 = 0;
       } else if (index === categoryCache.time.length) {
-        value = categoryCache.value[categoryCache.value.length - 1];
+        value2 = categoryCache.value[categoryCache.value.length - 1];
       } else {
         const t0 = categoryCache.time[index - 1];
         const t1 = categoryCache.time[index];
         const v0 = categoryCache.value[index - 1];
         const v1 = categoryCache.value[index];
-        value = v0 + (v1 - v0) * (time - t0) / (t1 - t0);
+        value2 = v0 + (v1 - v0) * (time - t0) / (t1 - t0);
       }
-      stats[category] = value;
+      stats[category] = value2;
     }
     return stats;
   }

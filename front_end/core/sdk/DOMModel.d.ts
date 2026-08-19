@@ -175,6 +175,15 @@ export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeE
     removeAttributeInternal(name: string): void;
     copyTo(targetNode: DOMNode, anchorNode: DOMNode | null, callback?: ((arg0: string | null, arg1: DOMNode | null) => void)): void;
     moveTo(targetNode: DOMNode, anchorNode: DOMNode | null, callback?: ((arg0: string | null, arg1: DOMNode | null) => void)): void;
+    duplicate(): void;
+    /**
+     * Runs a script on the node's remote object that toggles a class name on
+     * the node and injects a stylesheet into the head of the node's document
+     * containing a rule to set "visibility: hidden" on the class and all it's
+     * ancestors.
+     */
+    toggleHideElement(): Promise<void>;
+    isToggledToHidden(): boolean;
     isXMLNode(): boolean;
     isCustomElement(): boolean;
     setMarker(name: string, value: unknown): void;
@@ -372,6 +381,7 @@ export declare class DOMNodeSnapshot extends DOMNode {
     removeNode(_callback?: ((arg0: string | null, arg1?: Protocol.DOM.NodeId | undefined) => void) | undefined): Promise<void>;
     copyTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
     moveTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
+    duplicate(): void;
     canInspectNode(): boolean;
     setAsInspectedNode(): Promise<void>;
 }
@@ -386,6 +396,7 @@ export declare class DOMDocumentSnapshot extends DOMDocument {
     removeNode(_callback?: ((arg0: string | null, arg1?: Protocol.DOM.NodeId | undefined) => void) | undefined): Promise<void>;
     copyTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
     moveTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
+    duplicate(): void;
     canInspectNode(): boolean;
     setAsInspectedNode(): Promise<void>;
 }

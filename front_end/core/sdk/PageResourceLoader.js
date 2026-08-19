@@ -8,6 +8,7 @@ import * as Root from '../root/root.js';
 import { IOModel } from './IOModel.js';
 import { MultitargetNetworkManager, NetworkManager } from './NetworkManager.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel, } from './ResourceTreeModel.js';
+import { cacheDisabledSettingDescriptor, enableRemoteFileLoadingSettingDescriptor } from './SDKSettings.js';
 import { TargetManager } from './TargetManager.js';
 const UIStrings = {
     /**
@@ -296,7 +297,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     async loadFromTarget(target, frameId, url, isBinary) {
         const networkManager = target.model(NetworkManager);
         const ioModel = target.model(IOModel);
-        const disableCache = this.#settings.moduleSetting('cache-disabled').get();
+        const disableCache = this.#settings.resolve(cacheDisabledSettingDescriptor).get();
         const resource = await networkManager.loadNetworkResource(frameId, url, { disableCache, includeCredentials: true });
         try {
             const content = resource.stream ?
@@ -326,10 +327,10 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
         if (currentUserAgent) {
             headers['User-Agent'] = currentUserAgent;
         }
-        if (this.#settings.moduleSetting('cache-disabled').get()) {
+        if (this.#settings.resolve(cacheDisabledSettingDescriptor).get()) {
             headers['Cache-Control'] = 'no-cache';
         }
-        const allowRemoteFilePaths = this.#settings.moduleSetting('network.enable-remote-file-loading').get();
+        const allowRemoteFilePaths = this.#settings.resolve(enableRemoteFileLoadingSettingDescriptor).get();
         return await new Promise(resolve => Host.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
             resolve({ success, content, errorDescription });
         }, allowRemoteFilePaths));

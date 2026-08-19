@@ -46,8 +46,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement } from './AdoptedStyleSheetTreeElement.js';
+import { showContextMenu } from './DOMTreeContextMenu.js';
 import { getElementIssueDetails } from './ElementIssueUtils.js';
-import { ElementsPanel } from './ElementsPanel.js';
 import { ElementsTreeElement, InitialChildrenLimit, isOpeningTag } from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
@@ -58,10 +58,6 @@ const UIStrings = {
      * @description ARIA accessible name in Elements Tree Outline of the Elements panel
      */
     pageDom: 'Page DOM',
-    /**
-     * @description A context menu item to store a value as a global variable the Elements Panel
-     */
-    storeAsGlobalVariable: 'Store as global variable',
     /**
      * @description Tree element expand all button element button text content in Elements Tree Outline of the Elements panel
      * @example {3} PH1
@@ -87,22 +83,90 @@ export const DEFAULT_VIEW = (input, output, target) => {
         // FIXME: this is basically a ref to existing imperative
         // implementation. Once this is declarative the ref should not be
         // needed.
-        output.elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter, input.maxTreeDepth, input.enableContextMenu, input.showComments, input.showAIButton, input.disableEdits, input.expandRoot);
-        output.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged, this);
-        output.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ElementsTreeUpdated, input.onElementsTreeUpdated, this);
-        output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, input.onElementExpanded, this);
-        output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, input.onElementCollapsed, this);
-        output.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
-            if (output.elementsTreeOutline?.maxRowsShown) {
+        const elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter, input.maxTreeDepth, input.enableContextMenu, input.showComments, input.showAIButton, input.disableEdits, input.expandRoot);
+        output.elementsTreeOutline = elementsTreeOutline;
+        elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged, this);
+        elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ElementsTreeUpdated, input.onElementsTreeUpdated, this);
+        elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, input.onElementExpanded, this);
+        elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, input.onElementCollapsed, this);
+        elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
+            if (elementsTreeOutline.maxRowsShown) {
                 // Set max to undefined to show all rows
-                output.elementsTreeOutline.maxRowsShown = undefined;
+                elementsTreeOutline.maxRowsShown = undefined;
             }
         }, this);
-        target.appendChild(output.elementsTreeOutline.element);
+        elementsTreeOutline.elementInternal.addEventListener('contextmenu', (event) => {
+            const treeElement = elementsTreeOutline.treeElementFromEventInternal(event);
+            if (treeElement instanceof ElementsTreeElement) {
+                output.elementsTreeOutline?.showContextMenu(treeElement, event);
+            }
+        }, false);
+        output.imagePreviewPopover = new ImagePreviewPopover(elementsTreeOutline.contentElement, event => {
+            let link = event.target;
+            while (link && !ImagePreviewPopover.getImageURL(link)) {
+                link = link.parentElementOrShadowHost();
+            }
+            return link;
+        }, async (link) => {
+            const listItem = UI.UIUtils.enclosingNodeOrSelfWithNodeName(link, 'li');
+            if (!listItem) {
+                return undefined;
+            }
+            const treeElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
+            return await UIComponentUtils.ImagePreview.loadPrecomputedFeatures(treeElement?.node());
+        });
+        // TODO(changhaohan): refactor the popover to use tooltip component.
+        const popupHelper = new UI.PopoverHelper.PopoverHelper(elementsTreeOutline.elementInternal, event => {
+            const hoveredNode = event.composedPath()[0];
+            if (!(hoveredNode instanceof Element) || !hoveredNode.matches('.violating-element')) {
+                return null;
+            }
+            const issues = elementsTreeOutline.issuesByNodeElement(hoveredNode);
+            if (!issues) {
+                return null;
+            }
+            return {
+                box: hoveredNode.boxInWindow(),
+                show: async (popover) => {
+                    popover.setIgnoreLeftMargin(true);
+                    // clang-format off
+                    render(html `
+            <div class="squiggles-content">
+              ${issues.map(issue => {
+                        const elementIssueDetails = getElementIssueDetails(issue);
+                        if (!elementIssueDetails) {
+                            // This shouldn't happen, but add this if check to pass ts check.
+                            return nothing;
+                        }
+                        const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
+                        const openIssueEvent = () => Common.Revealer.reveal(issue);
+                        return html `
+                  <div class="squiggles-content-item">
+                  <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
+                  <devtools-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</devtools-link>
+                  <span>${elementIssueDetails.tooltip}</span>
+                  </div>`;
+                    })}
+            </div>`, popover.contentElement);
+                    // clang-format on
+                    return true;
+                },
+            };
+        }, 'elements.issue');
+        popupHelper.setTimeout(300);
+        target.appendChild(elementsTreeOutline.element);
     }
     output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
     output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
-    output.elementsTreeOutline.showComments = input.showComments ?? true;
+    output.elementsTreeOutline.showContextMenu = (treeElement, event) => {
+        void showContextMenu(treeElement, event, input.onSaveNodeToTempVariable);
+    };
+    let needsUpdate = false;
+    const showComments = input.showComments ?? true;
+    if (output.elementsTreeOutline.showComments !== showComments) {
+        output.elementsTreeOutline.showComments = showComments;
+        needsUpdate = true;
+    }
     output.elementsTreeOutline.showAIButton = input.showAIButton ?? true;
     output.elementsTreeOutline.disableEdits = input.disableEdits ?? false;
     output.elementsTreeOutline.expandRoot = input.expandRoot ?? false;
@@ -111,12 +175,18 @@ export const DEFAULT_VIEW = (input, output, target) => {
     }
     if (input.visible !== undefined) {
         output.elementsTreeOutline.setVisible(input.visible);
+        if (!input.visible) {
+            output.imagePreviewPopover?.hide();
+        }
     }
     output.elementsTreeOutline.maxRowsShown = input.maxRowsShown;
     output.elementsTreeOutline.setWordWrap(input.wrap);
     output.elementsTreeOutline.setShowSelectionOnKeyboardFocus(input.showSelectionOnKeyboardFocus, input.preventTabOrder);
     if (input.deindentSingleNode) {
         output.elementsTreeOutline.deindentSingleNode();
+    }
+    if (needsUpdate) {
+        output.elementsTreeOutline.update();
     }
     // Node highlighting logic. FIXME: express as a lit template.
     const previousHighlightedNode = output.highlightedTreeElement?.node() ?? null;
@@ -178,7 +248,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     onDocumentUpdated = () => { };
     #maxTreeDepth;
     #enableContextMenu = true;
-    #showComments = true;
+    #showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+    #showComments = this.#showHTMLCommentsSetting.get();
     #showAIButton = true;
     #disableEdits = false;
     #expandRoot = false;
@@ -267,10 +338,19 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             delegatesFocus: false,
         });
         this.#view = view ?? DEFAULT_VIEW;
+        this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
         if (Common.Settings.Settings.instance().moduleSetting('highlight-node-on-hover-in-overlay').get()) {
             SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel, "HighlightNodeRequested" /* SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED */, this.#highlightNode, this, { scoped: true });
             SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel, "InspectModeWillBeToggled" /* SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED */, this.#clearHighlightedNode, this, { scoped: true });
         }
+    }
+    #onShowHTMLCommentsChange() {
+        this.#showComments = this.#showHTMLCommentsSetting.get();
+        const selectedNode = this.selectedDOMNode();
+        if (selectedNode && selectedNode.nodeType() === Node.COMMENT_NODE && !this.#showComments) {
+            this.selectDOMNode(selectedNode.parentNode);
+        }
+        this.performUpdate();
     }
     #highlightNode(event) {
         void this.#highlightThrottler.schedule(() => {
@@ -361,6 +441,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             onElementExpanded: () => {
                 this.#clearHighlightedNode();
             },
+            onSaveNodeToTempVariable: node => {
+                void this.saveNodeToTempVariable(node);
+            },
         }, this.#viewOutput, this.contentElement);
         if (firstRender && this.#viewOutput.elementsTreeOutline) {
             this.#viewOutput.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
@@ -424,16 +507,22 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         treeElement.hideSearchHighlights();
     }
     toggleHideElement(node) {
-        void this.#viewOutput.elementsTreeOutline?.toggleHideElement(node);
+        void node.toggleHideElement();
+    }
+    isToggledToHidden(node) {
+        return node.isToggledToHidden();
     }
     toggleEditAsHTML(node) {
         this.#viewOutput.elementsTreeOutline?.toggleEditAsHTML(node);
     }
     duplicateNode(node) {
-        this.#viewOutput.elementsTreeOutline?.duplicateNode(node);
+        node.duplicate();
     }
     copyStyles(node) {
         void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.copyStyles();
+    }
+    async saveNodeToTempVariable(node) {
+        await this.#viewOutput.elementsTreeOutline?.saveNodeToTempVariable(node);
     }
     /**
      * FIXME: used to determine focus state, probably we can have a better
@@ -451,9 +540,17 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         this.#visible = true;
         this.performUpdate();
     }
+    wasHidden() {
+        super.wasHidden();
+        this.#visible = false;
+        this.#viewOutput.imagePreviewPopover?.hide();
+        this.performUpdate();
+    }
     detach(overrideHideOnDetach) {
         super.detach(overrideHideOnDetach);
         this.#visible = false;
+        this.#showHTMLCommentsSetting.removeChangeListener(this.#onShowHTMLCommentsChange, this);
+        this.#viewOutput.imagePreviewPopover?.hide();
         this.performUpdate();
     }
     show(parentElement, insertBefore, suppressOrphanWidgetError = false) {
@@ -485,11 +582,9 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     rootDOMNodeInternal;
     selectedDOMNodeInternal;
     visible;
-    imagePreviewPopover;
     updateRecords;
     treeElementsBeingUpdated;
     decoratorExtensions;
-    showHTMLCommentsSetting;
     multilineEditing;
     visibleWidthInternal;
     clipboardNodeData;
@@ -501,7 +596,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     updateModifiedNodesTimeout;
     #topLayerContainerByDocument = new WeakMap();
     #issuesManager;
-    #popupHelper;
     #nodeElementToIssues = new Map();
     maxTreeDepth;
     enableContextMenu;
@@ -546,9 +640,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
             this.elementInternal.addEventListener('clipboard-cut', this.onCopyOrCut.bind(this, true), false);
             this.elementInternal.addEventListener('clipboard-paste', this.onPaste.bind(this), false);
         }
-        if (this.enableContextMenu) {
-            this.elementInternal.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
-        }
         outlineDisclosureElement.appendChild(this.elementInternal);
         this.element = shadowContainer;
         this.contentElement.setAttribute('jslog', `${VisualLogging.tree('elements')}`);
@@ -557,74 +648,10 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         this.rootDOMNodeInternal = null;
         this.selectedDOMNodeInternal = null;
         this.visible = false;
-        this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
-            let link = event.target;
-            while (link && !ImagePreviewPopover.getImageURL(link)) {
-                link = link.parentElementOrShadowHost();
-            }
-            return link;
-        }, async (link) => {
-            const listItem = UI.UIUtils.enclosingNodeOrSelfWithNodeName(link, 'li');
-            if (!listItem) {
-                return undefined;
-            }
-            const treeElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
-            return await UIComponentUtils.ImagePreview.loadPrecomputedFeatures(treeElement?.node());
-        });
         this.updateRecords = new Map();
         this.treeElementsBeingUpdated = new Set();
         this.decoratorExtensions = null;
-        if (this.showComments) {
-            this.showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
-            this.showHTMLCommentsSetting.addChangeListener(this.onShowHTMLCommentsChange.bind(this));
-        }
-        else {
-            this.showHTMLCommentsSetting = {
-                get: () => false,
-                addChangeListener: () => { },
-                removeChangeListener: () => { },
-            };
-        }
         this.setUseLightSelectionColor(true);
-        // TODO(changhaohan): refactor the popover to use tooltip component.
-        this.#popupHelper = new UI.PopoverHelper.PopoverHelper(this.elementInternal, event => {
-            const hoveredNode = event.composedPath()[0];
-            if (!hoveredNode?.matches('.violating-element')) {
-                return null;
-            }
-            const issues = this.#nodeElementToIssues.get(hoveredNode);
-            if (!issues) {
-                return null;
-            }
-            return {
-                box: hoveredNode.boxInWindow(),
-                show: async (popover) => {
-                    popover.setIgnoreLeftMargin(true);
-                    // clang-format off
-                    render(html `
-            <div class="squiggles-content">
-              ${issues.map(issue => {
-                        const elementIssueDetails = getElementIssueDetails(issue);
-                        if (!elementIssueDetails) {
-                            // This shouldn't happen, but add this if check to pass ts check.
-                            return nothing;
-                        }
-                        const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
-                        const openIssueEvent = () => Common.Revealer.reveal(issue);
-                        return html `
-                  <div class="squiggles-content-item">
-                  <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
-                  <devtools-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</devtools-link>
-                  <span>${elementIssueDetails.tooltip}</span>
-                  </div>`;
-                    })}
-            </div>`, popover.contentElement);
-                    // clang-format on
-                    return true;
-                },
-            };
-        }, 'elements.issue');
-        this.#popupHelper.setTimeout(300);
     }
     static forDOMModel(domModel) {
         return elementsTreeOutlineByDOMModel.get(domModel) || null;
@@ -710,12 +737,8 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         }
         this.#nodeElementToIssues.set(element, issues);
     }
-    onShowHTMLCommentsChange() {
-        const selectedNode = this.selectedDOMNode();
-        if (selectedNode && selectedNode.nodeType() === Node.COMMENT_NODE && !this.showHTMLCommentsSetting.get()) {
-            this.selectDOMNode(selectedNode.parentNode);
-        }
-        this.update();
+    issuesByNodeElement(element) {
+        return this.#nodeElementToIssues.get(element);
     }
     setWordWrap(wrap) {
         this.elementInternal.classList.toggle('elements-tree-nowrap', !wrap);
@@ -818,7 +841,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         }
     }
     duplicateNode(targetNode) {
-        this.performDuplicate(targetNode);
+        targetNode.duplicate();
     }
     onPaste(event) {
         // Do not interfere with text editing.
@@ -850,23 +873,12 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
             this.selectDOMNode(pastedNode);
         }
     }
-    performDuplicate(targetNode) {
-        if (targetNode.isInShadowTree()) {
-            return;
-        }
-        const parentNode = targetNode.parentNode ? targetNode.parentNode : targetNode;
-        if (parentNode.nodeName() === '#document') {
-            return;
-        }
-        targetNode.copyTo(parentNode, targetNode.nextSibling);
-    }
     setVisible(visible) {
         if (visible === this.visible) {
             return;
         }
         this.visible = visible;
         if (!this.visible) {
-            this.imagePreviewPopover.hide();
             if (this.multilineEditing) {
                 this.multilineEditing.cancel();
             }
@@ -1272,53 +1284,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
             delete this.dragOverTreeElement;
         }
     }
-    contextMenuEventFired(event) {
-        const treeElement = this.treeElementFromEventInternal(event);
-        if (treeElement instanceof ElementsTreeElement) {
-            void this.showContextMenu(treeElement, event);
-        }
-    }
-    async showContextMenu(treeElement, event) {
-        if (UI.UIUtils.isEditing() || !this.enableContextMenu) {
-            return;
-        }
-        const node = event.target;
-        if (!node) {
-            return;
-        }
-        // The context menu construction may be async. In order to
-        // make sure that no other (default) context menu shows up, we need
-        // to stop propagating and prevent the default action.
-        event.stopPropagation();
-        event.preventDefault();
-        const contextMenu = new UI.ContextMenu.ContextMenu(event);
-        const isPseudoElement = Boolean(treeElement.node().pseudoType());
-        const isTag = treeElement.node().nodeType() === Node.ELEMENT_NODE && !isPseudoElement;
-        let textNode = node.enclosingNodeOrSelfWithClass('webkit-html-text-node');
-        if (textNode?.classList.contains('bogus')) {
-            textNode = null;
-        }
-        const commentNode = node.enclosingNodeOrSelfWithClass('webkit-html-comment');
-        contextMenu.saveSection().appendItem(i18nString(UIStrings.storeAsGlobalVariable), this.saveNodeToTempVariable.bind(this, treeElement.node()), { jslogContext: 'store-as-global-variable' });
-        if (textNode) {
-            await treeElement.populateTextContextMenu(contextMenu, textNode);
-        }
-        else if (isTag) {
-            await treeElement.populateTagContextMenu(contextMenu, event);
-        }
-        else if (commentNode) {
-            await treeElement.populateNodeContextMenu(contextMenu);
-        }
-        else if (isPseudoElement) {
-            treeElement.populatePseudoElementContextMenu(contextMenu);
-        }
-        else if (treeElement.node().nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-            await treeElement.populateProcessingElementContextMenu(contextMenu);
-        }
-        ElementsPanel.instance().populateAdornerSettingsContextMenu(contextMenu);
-        contextMenu.appendApplicableItems(treeElement.node());
-        void contextMenu.show();
-    }
+    showContextMenu = () => { };
     async saveNodeToTempVariable(node) {
         const remoteObjectForConsole = await node.resolveToObject();
         const consoleModel = remoteObjectForConsole?.runtimeModel().target()?.model(SDK.ConsoleModel.ConsoleModel);
@@ -1410,80 +1376,15 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         }
         return newTreeItem;
     }
-    /**
-     * Runs a script on the node's remote object that toggles a class name on
-     * the node and injects a stylesheet into the head of the node's document
-     * containing a rule to set "visibility: hidden" on the class and all it's
-     * ancestors.
-     */
     async toggleHideElement(node) {
-        let pseudoElementName = node.pseudoType() ? node.nodeName() : null;
-        if (pseudoElementName && node.pseudoIdentifier()) {
-            pseudoElementName += `(${node.pseudoIdentifier()})`;
-        }
-        let effectiveNode = node;
-        while (effectiveNode?.pseudoType()) {
-            if (effectiveNode !== node && effectiveNode.pseudoType() === 'column') {
-                // Ideally we would select the specific column pseudo element, but
-                // we don't have a way to do that at the moment.
-                pseudoElementName = '::column' + pseudoElementName;
-            }
-            effectiveNode = effectiveNode.parentNode;
-        }
-        if (!effectiveNode) {
-            return;
-        }
-        const hidden = node.marker('hidden-marker');
-        const object = await effectiveNode.resolveToObject('');
-        if (!object) {
-            return;
-        }
-        await object.callFunction(toggleClassAndInjectStyleRule, [{ value: pseudoElementName }, { value: !hidden }]);
-        object.release();
-        node.setMarker('hidden-marker', hidden ? null : true);
-        function toggleClassAndInjectStyleRule(pseudoElementName, hidden) {
-            const classNamePrefix = '__web-inspector-hide';
-            const classNameSuffix = '-shortcut__';
-            const styleTagId = '__web-inspector-hide-shortcut-style__';
-            const pseudoElementNameEscaped = pseudoElementName ? pseudoElementName.replace(/[\(\)\:]/g, '_') : '';
-            const className = classNamePrefix + pseudoElementNameEscaped + classNameSuffix;
-            this.classList.toggle(className, hidden);
-            let localRoot = this;
-            while (localRoot.parentNode) {
-                localRoot = localRoot.parentNode;
-            }
-            if (localRoot.nodeType === Node.DOCUMENT_NODE) {
-                localRoot = document.head;
-            }
-            let style = localRoot.querySelector('style#' + styleTagId);
-            if (!style) {
-                const selectors = [];
-                selectors.push('.__web-inspector-hide-shortcut__');
-                selectors.push('.__web-inspector-hide-shortcut__ *');
-                const selector = selectors.join(', ');
-                const ruleBody = '    visibility: hidden !important;';
-                const rule = '\n' + selector + '\n{\n' + ruleBody + '\n}\n';
-                style = document.createElement('style');
-                style.id = styleTagId;
-                style.textContent = rule;
-                localRoot.appendChild(style);
-            }
-            // In addition to putting them on the element we want to hide, we will
-            // also add pseudo element classes to the style element to keep track of
-            // which pseudo elements we have style rules for.
-            if (pseudoElementName && !style.classList.contains(className)) {
-                style.classList.add(className);
-                style.textContent = `.${className}${pseudoElementName}, ${style.textContent}`;
-            }
-        }
+        await node.toggleHideElement();
     }
     isToggledToHidden(node) {
-        return Boolean(node.marker('hidden-marker'));
+        return node.isToggledToHidden();
     }
     reset() {
         this.rootDOMNode = null;
         this.selectDOMNode(null, false);
-        this.imagePreviewPopover.hide();
         delete this.clipboardNodeData;
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         this.updateRecords.clear();
@@ -1767,7 +1668,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         if (node.childNodeCount()) {
             // Children may be stale when the outline is not wired to receive DOMModel updates.
             let children = node.children() || [];
-            if (!this.showHTMLCommentsSetting.get()) {
+            if (!this.showComments) {
                 children = children.filter(n => n.nodeType() !== Node.COMMENT_NODE);
             }
             visibleChildren.push(...children);

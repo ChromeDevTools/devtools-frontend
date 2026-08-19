@@ -390,7 +390,7 @@ export class NetworkPanel extends UI.Panel.Panel {
         this.panelToolbar.appendSeparator();
         this.panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(this.preserveLogSetting, i18nString(UIStrings.doNotClearLogOnPageReload), i18nString(UIStrings.preserveLog)));
         this.panelToolbar.appendSeparator();
-        const disableCacheCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(Common.Settings.Settings.instance().moduleSetting('cache-disabled'), i18nString(UIStrings.disableCacheWhileDevtoolsIsOpen), i18nString(UIStrings.disableCache));
+        const disableCacheCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor), i18nString(UIStrings.disableCacheWhileDevtoolsIsOpen), i18nString(UIStrings.disableCache));
         this.panelToolbar.appendToolbarItem(disableCacheCheckbox);
         this.panelToolbar.appendToolbarItem(this.throttlingSelect);
         const networkConditionsButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.moreNetworkConditions), 'network-settings', undefined, 'network-conditions');

@@ -1435,11 +1435,28 @@ export class TabbedPaneTab {
 const tabIcons = new WeakMap();
 const tabSuffixElements = new WeakMap();
 export class TabbedPaneElement extends WidgetElement {
+    #closeableTabs = false;
+    #allowTabReorder = false;
+    #automaticReorder = false;
+    set closeableTabs(closeable) {
+        this.#closeableTabs = closeable;
+        this.getWidget()?.setCloseableTabs(closeable);
+    }
+    set allowTabReorder(allow) {
+        this.#allowTabReorder = allow;
+        this.getWidget()?.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
+    }
+    set automaticReorder(automatic) {
+        this.#automaticReorder = automatic;
+        this.getWidget()?.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
+    }
     #tabObserver = new MutationObserver(() => this.#updateTabs());
     constructor() {
         super();
         registerWidgetConfig(this, widgetConfig(element => {
             const widget = new TabbedPane(element);
+            widget.setCloseableTabs(this.#closeableTabs);
+            widget.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
             const slot = widget.contentElement.querySelector('slot:not([name])');
             if (slot) {
                 slot.addEventListener('slotchange', () => this.#syncTabs());
@@ -1456,6 +1473,12 @@ export class TabbedPaneElement extends WidgetElement {
                     }
                 }
                 this.dispatchEvent(new CustomEvent('select', { detail: { tabId: widget.selectedTabId } }));
+            });
+            widget.addEventListener(Events.TabClosed, event => {
+                this.dispatchEvent(new CustomEvent('close', { detail: { tabId: event.data.tabId } }));
+            });
+            widget.addEventListener(Events.TabOrderChanged, event => {
+                this.dispatchEvent(new CustomEvent('taborderchanged', { detail: { tabId: event.data.tabId, tabIds: widget.tabIds() } }));
             });
             this.#syncTabs(widget);
             return widget;
@@ -1477,7 +1500,10 @@ export class TabbedPaneElement extends WidgetElement {
         const slot = widget.contentElement.querySelector('slot:not([name])');
         const nodes = slot ? slot.assignedElements() : [];
         for (const child of nodes) {
-            this.#tabObserver.observe(child, { attributes: true, attributeFilter: ['title', 'jslogcontext', 'selected', 'disabled'] });
+            this.#tabObserver.observe(child, {
+                attributes: true,
+                attributeFilter: ['title', 'jslogcontext', 'selected', 'disabled', 'closeable', 'uncloseable'],
+            });
         }
     }
     #updateTabs(widget = this.getWidget()) {
@@ -1493,6 +1519,7 @@ export class TabbedPaneElement extends WidgetElement {
             const jslogContext = child.getAttribute('jslogcontext') || undefined;
             const selected = child.hasAttribute('selected');
             const enabled = !child.hasAttribute('disabled');
+            const isCloseable = child.hasAttribute('closeable') ? true : (child.hasAttribute('uncloseable') ? false : undefined);
             const view = Widget.getOrCreateWidget(child);
             view.setHideOnDetach();
             if (widget.selectedTabId !== id) {
@@ -1509,6 +1536,7 @@ export class TabbedPaneElement extends WidgetElement {
                 jslogContext,
                 selected,
                 enabled,
+                isCloseable,
             });
         }
         widget.tabs = tabs;

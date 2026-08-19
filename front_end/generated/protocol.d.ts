@@ -7127,6 +7127,19 @@ export declare namespace Emulation {
          */
         hardwareConcurrency: integer;
     }
+    const enum SetCPUPerformanceOverrideRequestPerformanceTier {
+        Unknown = "unknown",
+        Low = "low",
+        Mid = "mid",
+        High = "high",
+        Ultra = "ultra"
+    }
+    interface SetCPUPerformanceOverrideRequest {
+        /**
+         * Override value. Omitting the parameter disables the override.
+         */
+        performanceTier?: SetCPUPerformanceOverrideRequestPerformanceTier;
+    }
     interface SetUserAgentOverrideRequest {
         /**
          * User agent to use.
@@ -13532,7 +13545,6 @@ export declare namespace Page {
         IdentityCredentialsGet = "identity-credentials-get",
         IdleDetection = "idle-detection",
         InterestCohort = "interest-cohort",
-        JoinAdInterestGroup = "join-ad-interest-group",
         KeyboardMap = "keyboard-map",
         LanguageDetector = "language-detector",
         LanguageModel = "language-model",
@@ -13553,9 +13565,7 @@ export declare namespace Page {
         PrivateStateTokenRedemption = "private-state-token-redemption",
         PublickeyCredentialsCreate = "publickey-credentials-create",
         PublickeyCredentialsGet = "publickey-credentials-get",
-        RecordAdAuctionEvents = "record-ad-auction-events",
         Rewriter = "rewriter",
-        RunAdAuction = "run-ad-auction",
         ScreenWakeLock = "screen-wake-lock",
         Serial = "serial",
         SharedStorage = "shared-storage",

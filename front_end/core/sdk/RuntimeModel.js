@@ -7,6 +7,7 @@ import { DebuggerModel } from './DebuggerModel.js';
 import { HeapProfilerModel } from './HeapProfilerModel.js';
 import { RemoteFunction, RemoteObject, RemoteObjectImpl, RemoteObjectProperty, ScopeRemoteObject, } from './RemoteObject.js';
 import { SDKModel } from './SDKModel.js';
+import { customFormattersSettingDescriptor } from './SDKSettings.js';
 import { Type } from './Target.js';
 export class RuntimeModel extends SDKModel {
     agent;
@@ -17,11 +18,11 @@ export class RuntimeModel extends SDKModel {
         this.agent = target.runtimeAgent();
         this.target().registerRuntimeDispatcher(new RuntimeDispatcher(this));
         void this.agent.invoke_enable();
-        const settings = this.target().targetManager().context.get(Common.Settings.Settings);
-        if (settings.moduleSetting('custom-formatters').get()) {
+        const customFormattersSetting = this.target().targetManager().context.get(Common.Settings.Settings).resolve(customFormattersSettingDescriptor);
+        if (customFormattersSetting.get()) {
             void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled: true });
         }
-        settings.moduleSetting('custom-formatters').addChangeListener(this.customFormattersStateChanged.bind(this));
+        customFormattersSetting.addChangeListener(this.customFormattersStateChanged.bind(this));
     }
     static isSideEffectFailure(response) {
         const exceptionDetails = 'exceptionDetails' in response && response.exceptionDetails;

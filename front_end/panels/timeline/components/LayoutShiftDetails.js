@@ -9,6 +9,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Insights from './insights/insights.js';
 import { nodeLink } from './insights/NodeLink.js';
 import layoutShiftDetailsStyles from './layoutShiftDetails.css.js';
@@ -178,7 +179,7 @@ function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFresh
     });
     // clang-format off
     return html `
-      <table class="layout-shift-details-table">
+      <table class="layout-shift-details-table" jslog=${VisualLogging.section('layout-shift-details')}>
         <thead class="table-title">
           <tr>
             <th>${i18nString(UIStrings.startTime)}</th>
@@ -214,7 +215,7 @@ function renderLayoutShiftClusterDetails(cluster, insightSets, parsedTrace, onEv
     const hasCulprits = Boolean(clusterCulprits.length);
     // clang-format off
     return html `
-    <table class="layout-shift-details-table">
+    <table class="layout-shift-details-table" jslog=${VisualLogging.section('layout-shift-details')}>
       <thead class="table-title">
         <tr>
           <th>${i18nString(UIStrings.startTime)}</th>
@@ -250,7 +251,7 @@ function renderShiftRow(currentShift, userHasSingleShiftSelected, parsedTrace, e
             rootCauses.unsizedImages.length));
     // clang-format off
     return html `
-      <tr class="shift-row" data-ts=${currentShift.ts}>
+      <tr class="shift-row" data-ts=${currentShift.ts} jslog=${VisualLogging.tableRow('shift-row')}>
         <td>${renderStartTime(currentShift, userHasSingleShiftSelected, parsedTrace, onEventClick)}</td>
         <td>${(score.toFixed(4))}</td>
         ${elementsShifted.length ? html `

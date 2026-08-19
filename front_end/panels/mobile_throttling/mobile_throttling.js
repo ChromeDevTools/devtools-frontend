@@ -777,7 +777,7 @@ var NetworkPanelIndicator = class {
     manager.addEventListener("ConditionsChanged", updateVisibility);
     manager.addEventListener("BlockedPatternsChanged", updateVisibility);
     manager.addEventListener("InterceptorsChanged", updateVisibility);
-    Common3.Settings.Settings.instance().moduleSetting("cache-disabled").addChangeListener(updateVisibility, this);
+    Common3.Settings.Settings.instance().resolve(SDK4.SDKSettings.cacheDisabledSettingDescriptor).addChangeListener(updateVisibility, this);
     updateVisibility();
     function updateVisibility() {
       const warnings = [];

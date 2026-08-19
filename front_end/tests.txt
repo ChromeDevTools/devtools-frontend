@@ -46,6 +46,7 @@ core/platform/MimeType.test.js
 core/platform/NumberUtilities.test.js
 core/platform/StringUtilities.test.js
 core/platform/TypedArrayUtilities.test.js
+core/platform/TypescriptUtilities.test.js
 core/protocol_client/InspectorBackend.test.js
 core/protocol_client/PuppeteerDevToolsConnection.test.js
 core/root/Runtime.test.js
@@ -576,6 +577,7 @@ panels/search/SearchResultsPane.test.js
 panels/search/SearchView.test.js
 panels/security/SecurityModel.test.js
 panels/security/SecurityPanel.test.js
+panels/security/SecurityPanelSidebar.test.js
 panels/sensors/LocationsSettingsTab.test.js
 panels/sensors/SensorsView.test.js
 panels/settings/AISettingsTab.test.js

@@ -2230,7 +2230,7 @@ import * as Workspace5 from "./../../models/workspace/workspace.js";
 import * as TraceBounds15 from "./../../services/trace_bounds/trace_bounds.js";
 import * as PerfUI16 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 import * as TimelineInsights2 from "./components/insights/insights.js";
 
 // gen/front_end/panels/timeline/CountersGraph.js
@@ -2792,7 +2792,7 @@ import * as Tracing5 from "./../../services/tracing/tracing.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html6, nothing as nothing2, render as render6 } from "./../../ui/lit/lit.js";
-import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
 import * as TimelineComponents5 from "./components/components.js";
 
 // gen/front_end/panels/timeline/EventsTimelineTreeView.js
@@ -2806,7 +2806,7 @@ import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as Trace26 from "./../../models/trace/trace.js";
 import * as DataGrid3 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/TimelineFilters.js
 var TimelineFilters_exports = {};
@@ -3040,6 +3040,7 @@ import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport17 from "./../../ui/legacy/theme_support/theme_support.js";
 import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
 import * as SettingUIRegistration3 from "./../../ui/settings/settings.js";
+import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "./../common/common.js";
 import * as TimelineComponents4 from "./components/components.js";
 import * as Extensions2 from "./extensions/extensions.js";
@@ -3175,10 +3176,10 @@ var IsolateSelector = class extends UI2.Toolbar.ToolbarItem {
     }
   }
   #onSelectMenuSelected(event) {
-    this.itemByIsolate.forEach((item, isolate) => {
-      item.selected = item.value === event.itemValue;
-      if (item.selected) {
-        const selectedIsolateTitle = item.textContent?.slice(0, 29);
+    this.itemByIsolate.forEach((item2, isolate) => {
+      item2.selected = item2.value === event.itemValue;
+      if (item2.selected) {
+        const selectedIsolateTitle = item2.textContent?.slice(0, 29);
         this.menu.buttonTitle = selectedIsolateTitle || i18nString10(UIStrings10.empty);
         const model = isolate.runtimeModel();
         UI2.Context.Context.instance().setFlavor(SDK3.CPUProfilerModel.CPUProfilerModel, model?.target().model(SDK3.CPUProfilerModel.CPUProfilerModel) ?? null);
@@ -3239,9 +3240,9 @@ function* arrayOfObjectsJsonGenerator(arrayOfObjects) {
     yield `  ${JSON.stringify(firstItem)}`;
     let itemsRemaining = ITEMS_PER_ITERATION;
     let itemsJSON = "";
-    for (const item of itemsIterator) {
+    for (const item2 of itemsIterator) {
       itemsJSON += `,
-  ${JSON.stringify(item)}`;
+  ${JSON.stringify(item2)}`;
       itemsRemaining--;
       if (itemsRemaining === 0) {
         yield itemsJSON;
@@ -3699,10 +3700,10 @@ var StatusChecker = class {
   #listener = null;
   #currentStatus = null;
   add(title, promise) {
-    const item = { title, complete: false };
-    this.#checkers.push(item);
+    const item2 = { title, complete: false };
+    this.#checkers.push(item2);
     void promise.finally(() => {
-      item.complete = true;
+      item2.complete = true;
       this.#evaluate();
     });
   }
@@ -4864,16 +4865,16 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
   navigateToLandingPage() {
     this.#setActiveTrace({ type: "LANDING_PAGE" });
   }
-  #setActiveTrace(item) {
-    if (item.type === "TRACE_INDEX") {
-      const data = _TimelineHistoryManager.dataForTraceIndex(item.parsedTraceIndex);
+  #setActiveTrace(item2) {
+    if (item2.type === "TRACE_INDEX") {
+      const data = _TimelineHistoryManager.dataForTraceIndex(item2.parsedTraceIndex);
       if (!data) {
         throw new Error("Unable to find data for model");
       }
       data.lastUsed = Date.now();
     }
-    this.lastActiveTrace = item;
-    const modelTitle = this.title(item);
+    this.lastActiveTrace = item2;
+    const modelTitle = this.title(item2);
     const buttonTitle = this.action.title();
     this.#button.setText(modelTitle);
     UI5.ARIAUtils.setLabel(this.#button.element, i18nString14(UIStrings14.currentSessionSS, { PH1: modelTitle, PH2: buttonTitle }));
@@ -4888,11 +4889,11 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
     }
     return data.preview;
   }
-  title(item) {
-    if (item.type === "LANDING_PAGE") {
+  title(item2) {
+    if (item2.type === "LANDING_PAGE") {
       return this.#landingPageTitle;
     }
-    const data = _TimelineHistoryManager.dataForTraceIndex(item.parsedTraceIndex);
+    const data = _TimelineHistoryManager.dataForTraceIndex(item2.parsedTraceIndex);
     if (!data) {
       throw new Error("Unable to find data for model");
     }
@@ -5242,7 +5243,7 @@ var TimelineLoader = class _TimelineLoader {
     const loader = new _TimelineLoader(client);
     const stream = new Common8.StringOutputStream.StringOutputStream();
     client.loadingStarted();
-    const allowRemoteFilePaths = Common8.Settings.Settings.instance().moduleSetting("network.enable-remote-file-loading").get();
+    const allowRemoteFilePaths = Common8.Settings.Settings.instance().resolve(SDK6.SDKSettings.enableRemoteFileLoadingSettingDescriptor).get();
     Host.ResourceLoader.loadAsStream(url, null, stream, finishedCallback, allowRemoteFilePaths);
     async function finishedCallback(success, _headers, errorDescription) {
       if (!success) {
@@ -8739,14 +8740,14 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     if (!items.length) {
       return;
     }
-    const item = items[0];
+    const item2 = items[0];
     Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.PerfPanelTraceImported);
-    if (item.kind === "string") {
+    if (item2.kind === "string") {
       const url = dataTransfer.getData("text/uri-list");
       if (new Common10.ParsedURL.ParsedURL(url).isValid) {
         void this.loadFromURL(url);
       }
-    } else if (item.kind === "file") {
+    } else if (item2.kind === "file") {
       const file = items[0].getAsFile();
       if (!file) {
         return;
@@ -10681,6 +10682,7 @@ var TimelineDetailsContentHelper = class {
     this.target = target;
     this.element = document.createElement("div");
     this.element.classList.add("timeline-details-view-block");
+    this.element.setAttribute("jslog", `${VisualLogging5.section("timeline.event-details")}`);
     this.tableElement = this.element.createChild("div", "vbox timeline-details-chip-body");
     this.fragment.appendChild(this.element);
   }
@@ -10690,6 +10692,7 @@ var TimelineDetailsContentHelper = class {
     } else {
       this.element = document.createElement("div");
       this.element.classList.add("timeline-details-view-block");
+      this.element.setAttribute("jslog", `${VisualLogging5.section("timeline.event-details")}`);
       this.fragment.appendChild(this.element);
     }
     if (title) {
@@ -10739,11 +10742,13 @@ var TimelineDetailsContentHelper = class {
   }
   appendTextRow(title, value) {
     const rowElement = this.tableElement.createChild("div", "timeline-details-view-row");
+    rowElement.setAttribute("jslog", `${VisualLogging5.item("detail-row")}`);
     rowElement.createChild("div", "timeline-details-view-row-title").textContent = title;
     rowElement.createChild("div", "timeline-details-view-row-value").textContent = value.toString();
   }
   appendElementRow(title, content, isWarning, isStacked) {
     const rowElement = this.tableElement.createChild("div", "timeline-details-view-row");
+    rowElement.setAttribute("jslog", `${VisualLogging5.item("detail-row")}`);
     rowElement.setAttribute("data-row-title", title);
     if (isWarning) {
       rowElement.classList.add("timeline-details-warning");
@@ -10811,6 +10816,7 @@ var TimelineDetailsContentHelper = class {
     }
     const stackTraceElement = document.createElement("div");
     stackTraceElement.classList.add("timeline-details-view-row", "timeline-details-stack-values");
+    stackTraceElement.setAttribute("jslog", `${VisualLogging5.item("detail-row")}`);
     callFrameContents.markAsRoot();
     callFrameContents.show(stackTraceElement);
     return stackTraceElement;
@@ -10906,7 +10912,7 @@ import * as DataGrid from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport19 from "./../../ui/legacy/theme_support/theme_support.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 import * as Extensions3 from "./extensions/extensions.js";
 
 // gen/front_end/panels/timeline/timelineTreeView.css.js
@@ -11391,7 +11397,7 @@ var TimelineTreeView = class extends Common12.ObjectWrapper.eventMixin(UI10.Widg
     this.splitWidget = new UI10.SplitWidget.SplitWidget(true, true, "timeline-tree-view-details-split-widget");
     const mainView = new UI10.Widget.VBox();
     const toolbar4 = mainView.element.createChild("devtools-toolbar");
-    toolbar4.setAttribute("jslog", `${VisualLogging5.toolbar()}`);
+    toolbar4.setAttribute("jslog", `${VisualLogging6.toolbar()}`);
     toolbar4.wrappable = true;
     this.populateToolbar(toolbar4);
     this.dataGrid.asWidget().show(mainView.element);
@@ -12212,7 +12218,7 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
 var CallTreeTimelineTreeView = class extends AggregatedTimelineTreeView {
   constructor(element) {
     super(element);
-    this.element.setAttribute("jslog", `${VisualLogging5.pane("call-tree").track({ resize: true })}`);
+    this.element.setAttribute("jslog", `${VisualLogging6.pane("call-tree").track({ resize: true })}`);
     this.dataGrid.markColumnAsSortedBy("total", DataGrid.DataGrid.Order.Descending);
   }
   buildTree() {
@@ -12223,7 +12229,7 @@ var CallTreeTimelineTreeView = class extends AggregatedTimelineTreeView {
 var BottomUpTimelineTreeView = class extends AggregatedTimelineTreeView {
   constructor(element) {
     super(element);
-    this.element.setAttribute("jslog", `${VisualLogging5.pane("bottom-up").track({ resize: true })}`);
+    this.element.setAttribute("jslog", `${VisualLogging6.pane("bottom-up").track({ resize: true })}`);
     this.dataGrid.markColumnAsSortedBy("self", DataGrid.DataGrid.Order.Descending);
   }
   buildTree() {
@@ -12322,7 +12328,7 @@ var EventsTimelineTreeView = class extends TimelineTreeView {
   currentTree;
   constructor(delegate) {
     super();
-    this.element.setAttribute("jslog", `${VisualLogging6.pane("event-log").track({ resize: true })}`);
+    this.element.setAttribute("jslog", `${VisualLogging7.pane("event-log").track({ resize: true })}`);
     this.filtersControl = new Filters();
     this.filtersControl.addEventListener("FilterChanged", this.onFilterChanged, this);
     this.init();
@@ -12458,7 +12464,7 @@ __export(ThirdPartyTreeView_exports, {
 import * as i18n43 from "./../../core/i18n/i18n.js";
 import * as Trace27 from "./../../models/trace/trace.js";
 import * as DataGrid5 from "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/thirdPartyTreeView.css.js
 var thirdPartyTreeView_css_default = `/*
@@ -12626,7 +12632,7 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
   #isInAIWidget = false;
   constructor(element) {
     super(element);
-    this.element.setAttribute("jslog", `${VisualLogging7.pane("third-party-tree").track({ hover: true })}`);
+    this.element.setAttribute("jslog", `${VisualLogging8.pane("third-party-tree").track({ hover: true })}`);
     this.init();
     this.dataGrid.markColumnAsSortedBy("self", DataGrid5.DataGrid.Order.Descending);
     this.dataGrid.setResizeMethod(
@@ -13332,8 +13338,8 @@ var TracingLayer = class {
       if (!fragments.length || !this.paintProfilerModel) {
         return null;
       }
-      const x0 = fragments.reduce((min, item) => Math.min(min, item.x), Infinity);
-      const y0 = fragments.reduce((min, item) => Math.min(min, item.y), Infinity);
+      const x0 = fragments.reduce((min, item2) => Math.min(min, item2.x), Infinity);
+      const y0 = fragments.reduce((min, item2) => Math.min(min, item2.y), Infinity);
       const rect = { x: targetRect[0] - x0, y: targetRect[1] - y0, width: targetRect[2], height: targetRect[3] };
       return this.paintProfilerModel.loadSnapshotFromFragments(fragments).then((snapshot) => snapshot ? { rect, snapshot } : null);
     });
@@ -13656,7 +13662,7 @@ import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as Trace29 from "./../../models/trace/trace.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
 import { html as html5, render as render5 } from "./../../ui/lit/lit.js";
-import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/timelineSelectorStatsView.css.js
 var timelineSelectorStatsView_css_default = `/*
@@ -13826,7 +13832,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
           </tr>`;
   })}
         </table>
-      </devtools-data-grid>`, target, { container: { attributes: { jslog: `${VisualLogging8.pane("selector-stats").track({ resize: true })}` } } });
+      </devtools-data-grid>`, target, { container: { attributes: { jslog: `${VisualLogging9.pane("selector-stats").track({ resize: true })}` } } });
 };
 var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
   #selectorLocations;
@@ -14181,10 +14187,10 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends Common15.ObjectWrap
     this.detailsLinkifier = new Components3.Linkifier.Linkifier();
     this.tabbedPane = new UI15.TabbedPane.TabbedPane();
     this.tabbedPane.show(this.element);
-    this.tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging9.toolbar("sidebar").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`);
+    this.tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging10.toolbar("sidebar").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`);
     this.defaultDetailsWidget = new UI15.Widget.VBox();
     this.defaultDetailsWidget.element.classList.add("timeline-details-view");
-    this.defaultDetailsWidget.element.setAttribute("jslog", `${VisualLogging9.pane("details").track({ resize: true })}`);
+    this.defaultDetailsWidget.element.setAttribute("jslog", `${VisualLogging10.pane("details").track({ resize: true })}`);
     this.#summaryContent.contentElement.classList.add("timeline-details-view-body");
     this.#summaryContent.show(this.defaultDetailsWidget.contentElement);
     this.appendTab(Tab.Details, i18nString24(UIStrings24.summary), this.defaultDetailsWidget);
@@ -15749,7 +15755,7 @@ var TimelineFlameChartView = class extends Common16.ObjectWrapper.eventMixin(UI1
   #networkPersistedGroupConfigSetting;
   #mainPersistedGroupConfigSetting;
   constructor(delegate) {
-    super({ jslog: `${VisualLogging10.section("timeline.flame-chart-view")}` });
+    super({ jslog: `${VisualLogging11.section("timeline.flame-chart-view")}` });
     this.registerRequiredCSS(timelineFlameChartView_css_default);
     this.element.classList.add("timeline-flamechart");
     this.delegate = delegate;
@@ -16605,7 +16611,7 @@ var TimelineFlameChartView = class extends Common16.ObjectWrapper.eventMixin(UI1
       const loggable = this.#loggableForGroupByLogContext.get(group.jslogContext) ?? Symbol(group.jslogContext);
       if (!this.#loggableForGroupByLogContext.has(group.jslogContext)) {
         this.#loggableForGroupByLogContext.set(group.jslogContext, loggable);
-        VisualLogging10.registerLoggable(loggable, `${VisualLogging10.section().context(`timeline.${group.jslogContext}`)}`, this.delegate.element, new DOMRect(0, 0, 200, 100));
+        VisualLogging11.registerLoggable(loggable, `${VisualLogging11.section().context(`timeline.${group.jslogContext}`)}`, this.delegate.element, new DOMRect(0, 0, 200, 100));
       }
     }
   }
@@ -16861,7 +16867,7 @@ var TimelineFlameChartView = class extends Common16.ObjectWrapper.eventMixin(UI1
     if (group?.jslogContext) {
       const loggable = this.#loggableForGroupByLogContext.get(group.jslogContext) ?? null;
       if (loggable) {
-        VisualLogging10.logClick(loggable, new MouseEvent("click"));
+        VisualLogging11.logClick(loggable, new MouseEvent("click"));
       }
     }
     this.delegate.select(dataProvider.createSelection(entryIndex));

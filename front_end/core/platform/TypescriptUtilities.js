@@ -14,12 +14,4 @@ export function assertNotNullOrUndefined(val, message) {
 export function assertNever(_type, message) {
     throw new Error(message);
 }
-/**
- * This is useful to check on the type-level that the unhandled cases of
- * a switch are exactly `T` (where T is usually a union type of enum values).
- * @param caseVariable
- */
-export function assertUnhandled(_caseVariable) {
-    return _caseVariable;
-}
 //# sourceMappingURL=TypescriptUtilities.js.map

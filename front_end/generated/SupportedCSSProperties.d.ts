@@ -1162,6 +1162,9 @@ export declare const generatedPropertyValues: {
     "overscroll-behavior-y": {
         values: string[];
     };
+    "overscroll-container-type": {
+        values: string[];
+    };
     page: {
         values: string[];
     };

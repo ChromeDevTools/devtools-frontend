@@ -229,4 +229,38 @@ export const webpFormatDisabledSettingDescriptor = {
     defaultValue: false,
     storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
 };
+export const customFormattersSettingDescriptor = {
+    name: 'custom-formatters',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+};
+export const requestBlockingEnabledSettingDescriptor = {
+    name: 'request-blocking-enabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Local" /* Common.Settings.SettingStorageType.LOCAL */,
+};
+export const cacheDisabledSettingDescriptor = {
+    name: 'cache-disabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+};
+export const emulateAutoDarkModeSettingDescriptor = {
+    name: 'emulate-auto-dark-mode',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
+export const enableRemoteFileLoadingSettingDescriptor = {
+    name: 'network.enable-remote-file-loading',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const consoleUserActivationEvalSettingDescriptor = {
+    name: 'console-user-activation-eval',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: true,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
 //# sourceMappingURL=SDKSettings.js.map

@@ -17,6 +17,7 @@ import { html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelCommon from '../common/common.js';
 import * as Snippets from '../snippets/snippets.js';
+import * as Components from './components/components.js';
 import { SourcesView } from './SourcesView.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
 const UIStrings = {
@@ -67,9 +68,14 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/TabbedEditorContainer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const HEADER_OVERRIDES_FILENAME = '.headers';
 let tabId = 0;
 export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
-    delegate;
+    #historyManager;
+    set historyManager(historyManager) {
+        this.#historyManager = historyManager;
+    }
+    sourceViewByUISourceCode = new Map();
     tabbedPane;
     tabIds;
     files;
@@ -133,7 +139,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Wi
             const networkView = this.tabbedPane.tabView(networkTabId);
             const tabIndex = this.tabbedPane.tabIndex(networkTabId);
             if (networkView instanceof UISourceCodeFrame) {
-                this.delegate.recycleUISourceCodeFrame(networkView, binding.fileSystem);
+                this.recycleUISourceCodeFrame(networkView, binding.fileSystem);
                 fileSystemTabId = this.appendFileTab(binding.fileSystem, false, tabIndex, networkView);
             }
             else {
@@ -285,7 +291,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Wi
             // We are showing a different UISourceCode in the same tab (because it has the same URL). This
             // commonly happens when switching between workers or iframes containing the same code, and while the
             // contents are usually identical they may not be and it is important to show users when they aren't.
-            this.delegate.recycleUISourceCodeFrame(this.currentView, uiSourceCode);
+            this.recycleUISourceCodeFrame(this.currentView, uiSourceCode);
             if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.FileSystem) {
                 // Disable editing, because it may confuse users that only one of the copies of this code changes.
                 uiSourceCode.disableEdit();
@@ -415,6 +421,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Wi
             if (this.idToUISourceCode.get(uiSourceCode.canonicalScriptId()) === uiSourceCode) {
                 this.idToUISourceCode.delete(uiSourceCode.canonicalScriptId());
             }
+            this.removeSourceFrame(uiSourceCode);
         }
         this.tabbedPane.closeTabs(tabIds);
     }
@@ -441,7 +448,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Wi
         return uiSourceCode.url();
     }
     appendFileTab(uiSourceCode, userGesture, index, replaceView) {
-        const view = replaceView || this.delegate.viewForFile(uiSourceCode);
+        const view = replaceView || this.viewForFile(uiSourceCode);
         const title = this.titleForFile(uiSourceCode);
         const tooltip = this.tooltipForFile(uiSourceCode);
         const tabId = this.generateTabId();
@@ -503,6 +510,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Wi
         this.files.delete(tabId);
         if (uiSourceCode) {
             this.removeUISourceCodeListeners(uiSourceCode);
+            this.removeSourceFrame(uiSourceCode);
             this.dispatchEventToListeners("EditorClosed" /* Events.EDITOR_CLOSED */, uiSourceCode);
             if (isUserGesture) {
                 this.editorClosedByUserAction(uiSourceCode);
@@ -581,6 +589,16 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Wi
     }
     uiSourceCodeTitleChanged(event) {
         const uiSourceCode = event.data;
+        const widget = this.sourceViewByUISourceCode.get(uiSourceCode);
+        if (widget) {
+            if (this.#sourceViewTypeForWidget(widget) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
+                // Remove the existing editor tab and create a new one of the correct type.
+                this.removeUISourceCodes([uiSourceCode]);
+                this.addUISourceCode(uiSourceCode);
+                this.showFile(uiSourceCode);
+                return;
+            }
+        }
         this.updateFileTitle(uiSourceCode);
         this.updateHistory();
         // Remove from map under old url if it has changed.
@@ -668,6 +686,78 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Wi
         }
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.WorkspaceSelectFolder);
         void UI.ViewManager.ViewManager.instance().showView('navigator-files');
+    }
+    getCreatedSourceView(uiSourceCode) {
+        return this.sourceViewByUISourceCode.get(uiSourceCode);
+    }
+    viewForFile(uiSourceCode) {
+        return this.getOrCreateSourceView(uiSourceCode);
+    }
+    getOrCreateSourceView(uiSourceCode) {
+        return this.sourceViewByUISourceCode.get(uiSourceCode) || this.createSourceView(uiSourceCode);
+    }
+    createSourceView(uiSourceCode) {
+        let sourceView;
+        const contentType = uiSourceCode.contentType();
+        if (contentType === Common.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith('image/')) {
+            sourceView = new SourceFrame.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
+        }
+        else if (contentType === Common.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes('font')) {
+            sourceView = new SourceFrame.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
+        }
+        else if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
+            sourceView = new Components.HeadersView.HeadersView(uiSourceCode);
+        }
+        else {
+            sourceView = new UISourceCodeFrame(uiSourceCode);
+            this.#historyManager.trackSourceFrameCursorJumps(sourceView);
+        }
+        this.sourceViewByUISourceCode.set(uiSourceCode, sourceView);
+        uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+        return sourceView;
+    }
+    recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
+        sourceFrame.uiSourceCode().removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+        this.sourceViewByUISourceCode.delete(sourceFrame.uiSourceCode());
+        sourceFrame.setUISourceCode(uiSourceCode);
+        this.sourceViewByUISourceCode.set(uiSourceCode, sourceFrame);
+        uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+    }
+    removeSourceFrame(uiSourceCode) {
+        const sourceView = this.sourceViewByUISourceCode.get(uiSourceCode);
+        this.sourceViewByUISourceCode.delete(uiSourceCode);
+        if (sourceView) {
+            uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+        }
+        if (sourceView && sourceView instanceof UISourceCodeFrame) {
+            (sourceView).dispose();
+        }
+    }
+    #sourceViewTypeForWidget(widget) {
+        if (widget instanceof SourceFrame.ImageView.ImageView) {
+            return "ImageView" /* SourceViewType.IMAGE_VIEW */;
+        }
+        if (widget instanceof SourceFrame.FontView.FontView) {
+            return "FontView" /* SourceViewType.FONT_VIEW */;
+        }
+        if (widget instanceof Components.HeadersView.HeadersView) {
+            return "HeadersView" /* SourceViewType.HEADERS_VIEW */;
+        }
+        return "SourceView" /* SourceViewType.SOURCE_VIEW */;
+    }
+    #sourceViewTypeForUISourceCode(uiSourceCode) {
+        if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
+            return "HeadersView" /* SourceViewType.HEADERS_VIEW */;
+        }
+        const contentType = uiSourceCode.contentType();
+        switch (contentType) {
+            case Common.ResourceType.resourceTypes.Image:
+                return "ImageView" /* SourceViewType.IMAGE_VIEW */;
+            case Common.ResourceType.resourceTypes.Font:
+                return "FontView" /* SourceViewType.FONT_VIEW */;
+            default:
+                return "SourceView" /* SourceViewType.SOURCE_VIEW */;
+        }
     }
     currentFile() {
         return this.#currentFile || null;

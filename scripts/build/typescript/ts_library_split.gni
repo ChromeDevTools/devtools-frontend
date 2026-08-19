@@ -107,10 +107,48 @@ template("ts_library_split") {
   _dts_target = "${target_name}-dts"
   _tsconfig_ref_target = "${target_name}_tsconfig_ref"
   _tsconfig_ref_file = "$target_gen_dir/$target_name-tsconfig.ref.json"
+  _tsconfig_target = "${target_name}_tsconfig"
+  _tsconfig_file = "$target_gen_dir/$target_name-tsconfig.json"
 
   _all_sources = invoker.sources
   if (defined(invoker.additional_type_definitions)) {
     _all_sources += invoker.additional_type_definitions
+  }
+
+  _ts_references = []
+  _ts_deps = []
+  if (defined(invoker.ts_deps)) {
+    _ts_deps = invoker.ts_deps
+    foreach(dep, _ts_deps) {
+      _dep_name = get_label_info(dep, "name")
+      _dep_gen_dir = get_label_info(dep, "target_gen_dir")
+      _ts_references += [
+        {
+          path = rebase_path("$_dep_gen_dir/$_dep_name-tsconfig.ref.json",
+                             target_gen_dir)
+        },
+      ]
+    }
+  }
+
+  _compiler_options = {
+    target = "ES2023"
+    module = "esnext"
+    moduleResolution = "bundler"
+    strict = true
+    skipLibCheck = true
+    allowJs = true
+    checkJs = true
+    forceConsistentCasingInFileNames = true
+    inlineSources = true
+    noEmitOnError = true
+    sourceMap = true
+    declaration = false
+    composite = false
+    incremental = false
+    disableSourceOfProjectReferenceRedirect = true
+    rootDir = rebase_path(_rootdir, target_gen_dir)
+    outDir = "."
   }
 
   _non_ts_deps = []
@@ -193,12 +231,27 @@ template("ts_library_split") {
     }
   }
 
+  # Sub-target 3: Generate tsconfig.json used by sub-target 4 for
+  # actual type-checking and JS transpilation.
+  generated_file(_tsconfig_target) {
+    outputs = [ _tsconfig_file ]
+    output_conversion = "json"
+    contents = {
+      compilerOptions = _compiler_options
+      files = rebase_path(_all_sources, target_gen_dir)
+      references = _ts_references
+    }
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+  }
+
   # Primary group target
   group(target_name) {
     public_deps = [
-      ":$_dts_target",
-      ":$_tsconfig_ref_target",
-    ]
+                    ":$_dts_target",
+                    ":$_tsconfig_ref_target",
+                  ] + _ts_deps
 
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly

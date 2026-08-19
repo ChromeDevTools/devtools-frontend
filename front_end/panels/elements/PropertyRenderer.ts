@@ -17,12 +17,12 @@ import {unescapeCssString} from './StylesSidebarPane.js';
 
 const UIStrings = {
   /**
-   * @description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles panel
+   * @description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles tab of the Elements panel.
    * @example {margin} PH1
    */
   cssPropertyName: '`CSS` property name: {PH1}',
   /**
-   * @description Text that is announced by the screen reader when the user focuses on an input field for entering the value of a CSS property in the Styles panel
+   * @description Text that is announced by the screen reader when the user focuses on an input field for entering the value of a CSS property in the Styles tab of the Elements panel.
    * @example {10px} PH1
    */
   cssPropertyValue: '`CSS` property value: {PH1}',

@@ -15,25 +15,25 @@ import {ElementsPanel} from './ElementsPanel.js';
 
 const UIStrings = {
   /**
-   * @description Prompt text for a text field in the Classes Pane Widget of the Elements panel.
+   * @description Prompt text for a text field to add CSS classes to the selected element in the Styles tab of the Elements panel.
    * Class refers to a CSS class.
    */
   addNewClass: 'Add new class',
   /**
-   * @description Screen reader announcement string when adding a CSS class via the Classes Pane Widget.
+   * @description Screen reader announcement string when adding CSS classes to the selected element in the Styles tab of the Elements panel.
    * @example {vbox flex-auto} PH1
    */
   classesSAdded: 'Classes {PH1} added',
   /**
-   * @description Screen reader announcement string when adding a class via the Classes Pane Widget.
+   * @description Screen reader announcement string when adding a CSS class to the selected element in the Styles tab of the Elements panel.
    * @example {title-container} PH1
    */
   classSAdded: 'Class {PH1} added',
   /**
-   * @description Accessible title read by screen readers for the Classes Pane Widget of the Elements
-   * panel. Element is a HTML DOM Element and classes refers to CSS classes.
+   * @description Accessible title read by screen readers for the element classes widget in the Styles tab of the Elements
+   * panel. Element is an HTML DOM element and classes refers to CSS classes.
    */
-  elementClasses: 'Element Classes',
+  elementClasses: 'Element classes',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ClassesPaneWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

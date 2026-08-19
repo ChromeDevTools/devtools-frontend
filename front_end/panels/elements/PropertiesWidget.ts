@@ -53,14 +53,14 @@ const {repeat} = Directives;
 const UIStrings = {
   /**
    * @description Text on the checkbox in the Properties tab of the Elements panel, which controls whether
-   * all properties of the currently selected DOM element are shown, or only meaningful properties (i.e.
-   * excluding properties whose values aren't set for example).
+   * all properties of the currently selected DOM element are shown, or only meaningful properties (for example,
+   * excluding properties whose values are not set).
    */
   showAll: 'Show all',
   /**
    * @description Tooltip on the checkbox in the Properties tab of the Elements panel, which controls whether
-   * all properties of the currently selected DOM element are shown, or only meaningful properties (i.e.
-   * excluding properties whose values aren't set for example).
+   * all properties of the currently selected DOM element are shown, or only meaningful properties (for example,
+   * excluding properties whose values are not set).
    */
   showAllTooltip: 'When unchecked, only properties whose values are neither null nor undefined will be shown',
   /**

@@ -12,31 +12,31 @@ import platformFontsWidgetStyles from './platformFontsWidget.css.js';
 
 const UIStrings = {
   /**
-   * @description Section title text content in Platform Fonts Widget of the Elements panel
+   * @description Section title text content in the Rendered Fonts section of the Computed styles tab in the Elements panel.
    */
-  renderedFonts: 'Rendered Fonts',
+  renderedFonts: 'Rendered fonts',
   /**
-   * @description Font property title text content in Platform Fonts Widget of the Elements panel
+   * @description Font property title text content in the Rendered Fonts section of the Computed styles tab in the Elements panel. Refers to the CSS `font-family` property (https://developer.mozilla.org/en-US/docs/Web/CSS/font-family).
    */
   familyName: 'Family name',
   /**
-   * @description Font property title text content in Platform Fonts Widget of the Elements panel
+   * @description Font property title text content in the Rendered Fonts section of the Computed styles tab in the Elements panel.
    */
   postScriptName: 'PostScript name',
   /**
-   * @description Font property title text content in Platform Fonts Widget of the Elements panel
+   * @description Font property title text content in the Rendered Fonts section of the Computed styles tab in the Elements panel.
    */
   fontOrigin: 'Font origin',
   /**
-   * @description Text in Platform Fonts Widget of the Elements panel
+   * @description Text in the Rendered Fonts section of the Computed styles tab in the Elements panel.
    */
   networkResource: 'Network resource',
   /**
-   * @description Text in Platform Fonts Widget of the Elements panel
+   * @description Text in the Rendered Fonts section of the Computed styles tab in the Elements panel.
    */
   localFile: 'Local file',
   /**
-   * @description Text in Platform Fonts Widget of the Elements panel. Indicates a number of glyphs (characters) .
+   * @description Text in the Rendered Fonts section of the Computed styles tab in the Elements panel. Indicates a number of glyphs (characters).
    */
   dGlyphs: '{n, plural, =1 {(# glyph)} other {(# glyphs)}}',
 } as const;

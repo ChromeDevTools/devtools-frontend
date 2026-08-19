@@ -20,7 +20,7 @@ const UIStrings = {
    */
   openCubicBezierEditor: 'Open cubic bezier editor',
   /**
-   * @description Tooltip text for an icon that opens shadow editor. The shadow editor is a tool
+   * @description Tooltip text for an icon that opens the shadow editor. The shadow editor is a tool
    * which allows the user to edit CSS shadow properties.
    */
   openShadowEditor: 'Open shadow editor',

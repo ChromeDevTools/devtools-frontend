@@ -101,73 +101,73 @@ const UIStrings = {
    */
   forceState: 'Force state',
   /**
-   * @description Hint element title in Elements Tree Element of the Elements panel
+   * @description Hint element title in the DOM tree of the Elements panel.
    * @example {0} PH1
    */
   useSInTheConsoleToReferToThis: 'Use {PH1} in the console to refer to this element.',
+  /**
+   * @description Text to cut an element, cut should be used as a verb.
+   */
+  cut: 'Cut',
+  /**
+   * @description Text for copying, copy should be used as a verb.
+   */
+  copy: 'Copy',
+  /**
+   * @description Text to paste an element, paste should be used as a verb.
+   */
+  paste: 'Paste',
   /**
    * @description Context menu item in the Edit as HTML editor that selects the editor's entire
    * contents. "Select all" should be used as a verb.
    */
   selectAll: 'Select all',
   /**
-   * @description Text to cut an element, cut should be used as a verb
-   */
-  cut: 'Cut',
-  /**
-   * @description Text for copying, copy should be used as a verb
-   */
-  copy: 'Copy',
-  /**
-   * @description Text to paste an element, paste should be used as a verb
-   */
-  paste: 'Paste',
-  /**
-   * @description Text in Elements Tree Element of the Elements panel
+   * @description Text in the DOM tree of the Elements panel.
    */
   valueIsTooLargeToEdit: '<value is too large to edit>',
   /**
-   * @description Element text content in Elements Tree Element of the Elements panel
+   * @description Element text content in the DOM tree of the Elements panel.
    */
   children: 'Children:',
   /**
-   * @description ARIA label for Elements Tree adorners
+   * @description ARIA label for Elements Tree adorners.
    */
   enableGridMode: 'Enable grid mode',
   /**
-   * @description ARIA label for Elements Tree adorners
+   * @description ARIA label for Elements Tree adorners.
    */
   disableGridMode: 'Disable grid mode',
   /**
-   * @description ARIA label for Elements Tree adorners
+   * @description ARIA label for Elements Tree adorners.
    */
   enableGridLanesMode: 'Enable grid-lanes mode',
   /**
-   * @description ARIA label for Elements Tree adorners
+   * @description ARIA label for Elements Tree adorners.
    */
   disableGridLanesMode: 'Disable grid-lanes mode',
   /**
-   * @description ARIA label for an elements tree adorner
+   * @description ARIA label for an elements tree adorner.
    */
   forceOpenPopover: 'Keep this popover open',
   /**
-   * @description ARIA label for an elements tree adorner
+   * @description ARIA label for an elements tree adorner.
    */
   stopForceOpenPopover: 'Stop keeping this popover open',
   /**
-   * @description ARIA label for an elements tree adorner
+   * @description ARIA label for an elements tree adorner.
    */
   forceShowInterest: 'Trigger interest on this element',
   /**
-   * @description ARIA label for an elements tree adorner
+   * @description ARIA label for an elements tree adorner.
    */
   stopForceShowInterest: 'Cancel interest on this element',
   /**
-   * @description Label of the adorner for flex elements in the Elements panel
+   * @description Label of the adorner for flex elements in the Elements panel.
    */
   enableFlexMode: 'Enable flex mode',
   /**
-   * @description Label of the adorner for flex elements in the Elements panel
+   * @description Label of the adorner for flex elements in the Elements panel.
    */
   disableFlexMode: 'Disable flex mode',
   /**
@@ -202,23 +202,23 @@ const UIStrings = {
   disableStartingStyle: 'Disable @starting-style mode',
   /**
    * @description Label of an adorner in the Elements panel. When clicked, it redirects
-   * to the Media Panel.
+   * to the Media panel.
    */
   openMediaPanel: 'Jump to Media panel',
   /**
-   * @description Text of a tooltip to redirect to another element in the Elements panel
+   * @description Text of a tooltip to redirect to another element in the Elements panel.
    */
   showPopoverTarget: 'Show element associated with the `popovertarget` attribute',
   /**
-   * @description Text of a tooltip to redirect to another element in the Elements panel, associated with the `interesttarget` attribute
+   * @description Text of a tooltip to redirect to another element in the Elements panel, associated with the `interesttarget` attribute.
    */
   showInterestTarget: 'Show element associated with the `interesttarget` attribute',
   /**
-   * @description Text of a tooltip to redirect to another element in the Elements panel, associated with the `commandfor` attribute
+   * @description Text of a tooltip to redirect to another element in the Elements panel, associated with the `commandfor` attribute.
    */
   showCommandForTarget: 'Show element associated with the `commandfor` attribute',
   /**
-   * @description Text of the tooltip for scroll adorner.
+   * @description Text of the tooltip for the scroll adorner.
    */
   elementHasScrollableOverflow: 'This element has a scrollable overflow',
   /**
@@ -231,9 +231,9 @@ const UIStrings = {
    */
   showCustomElementDefinition: 'Show custom element definition',
   /**
-   * @description Link text content in Elements Tree Outline of the Elements panel. When clicked, it "reveals" the true location of an element.
+   * @description ARIA label for the top-layer adorner in the DOM tree of the Elements panel. When clicked, it reveals the true location of an element.
    */
-  reveal: 'reveal',
+  reveal: 'Reveal',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

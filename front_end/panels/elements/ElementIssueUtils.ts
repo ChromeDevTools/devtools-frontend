@@ -8,71 +8,71 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 const UIStrings = {
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a label element has an incorrect for attribute.
    */
   formLabelForNameError: 'Incorrect use of <label for=FORM_ELEMENT>',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a form field has a duplicate ID.
    */
-  formDuplicateIdForInputError: 'Duplicate form field id in the same form',
+  formDuplicateIdForInputError: 'Duplicate form field ID in the same form',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a form field has no label or aria-labelledby attribute.
    */
   formInputWithNoLabelError: 'Form field without valid aria-labelledby attribute or associated label',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an autocomplete attribute is empty or incorrect.
    */
   formAutocompleteAttributeEmptyError: 'Incorrect use of autocomplete attribute',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a form field lacks both ID and name attributes.
    */
-  formEmptyIdAndNameAttributesForInputError: 'A form field element should have an id or name attribute',
+  formEmptyIdAndNameAttributesForInputError: 'A form field element should have an ID or name attribute',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an aria-labelledby attribute references a non-existent element ID.
    */
-  formAriaLabelledByToNonExistingId: 'An aria-labelledby attribute doesn’t match any element id',
+  formAriaLabelledByToNonExistingId: 'An aria-labelledby attribute doesn’t match any element ID',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an element lacks an autocomplete attribute.
    */
   formInputAssignedAutocompleteValueToIdOrNameAttributeError: 'An element doesn’t have an autocomplete attribute',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a label is not associated with any form field.
    */
   formLabelHasNeitherForNorNestedInput: 'No label associated with a form field',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a label's for attribute references a non-existent element ID.
    */
   formLabelForMatchesNonExistingIdError: 'Incorrect use of <label for=FORM_ELEMENT>',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a form field uses a non-standard autocomplete value.
    */
   formInputHasWrongButWellIntendedAutocompleteValueError: 'Non-standard autocomplete attribute value',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an invalid element or text node is inside a select element.
    */
   disallowedSelectChild: 'Invalid element or text node within <select>',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an invalid element or text node is inside an optgroup element.
    */
   disallowedOptGroupChild: 'Invalid element or text node within <optgroup>',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when non-phrasing content is used inside an option element.
    */
   nonPhrasingContentOptionChild: 'Non-phrasing content used within an <option> element',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an interactive element is inside an option element.
    */
   interactiveContentOptionChild: 'Interactive element inside of an <option> element',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an interactive element is inside a legend element.
    */
   interactiveContentLegendChild: 'Interactive element inside of a <legend> element',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an element with invalid attributes is inside a select element.
    */
   interactiveContentAttributesSelectDescendant: 'Element with invalid attributes within a <select> element',
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an interactive element is inside a summary element.
    */
   interactiveContentSummaryDescendant: 'Interactive element inside of a <summary> element',
 } as const;

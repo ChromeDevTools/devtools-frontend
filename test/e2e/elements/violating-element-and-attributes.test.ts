@@ -45,7 +45,7 @@ describe('Element has violating properties', function() {
       return popup.innerText;
     });
 
-    assert.strictEqual(popupText, 'View Issue:\nA form field element should have an id or name attribute');
+    assert.strictEqual(popupText, 'View issue:\nA form field element should have an ID or name attribute');
     // Open the issue panel and look for the title;
     await devToolsPage.click('div.widget devtools-link');
     const highlitedIssue = await devToolsPage.waitFor('.issue .header .title');

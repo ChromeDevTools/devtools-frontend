@@ -47,7 +47,7 @@ const {html, render} = Lit;
 
 const UIStrings = {
   /**
-   * @description Link text content in Elements Tree Outline of the Elements panel
+   * @description Link text content in the DOM tree outline of the Elements panel.
    */
   reveal: 'reveal',
 } as const;

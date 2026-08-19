@@ -15,7 +15,7 @@ const UIStrings = {
   /**
    * @description Text for button that redirects to CSS property documentation.
    */
-  learnMore: 'Learn More',
+  learnMore: 'Learn more',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/CSSHintDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

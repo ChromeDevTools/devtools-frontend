@@ -18,39 +18,39 @@ import layoutPaneStyles from './layoutPane.css.js';
 
 const UIStrings = {
   /**
-   * @description Title of the input to select the overlay color for an element using the color picker
+   * @description Title of the input to select the overlay color for an element using the color picker.
    */
   chooseElementOverlayColor: 'Choose the overlay color for this element',
   /**
-   * @description Title of the show element button in the Layout pane of the Elements panel
+   * @description Title of the show element button in the Layout tab of the Elements panel.
    */
   showElementInTheElementsPanel: 'Show element in the Elements panel',
   /**
-   * @description Title of a section on CSS Grid/Grid Lanes tooling
+   * @description Title of a section on CSS Grid/Grid Lanes tooling.
    */
-  gridOrGridLanes: 'Grid / Grid Lanes',
+  gridOrGridLanes: 'Grid / grid lanes',
   /**
-   * @description Title of a section in the Layout Sidebar pane of the Elements panel
+   * @description Title of a section in the Layout tab of the Elements panel.
    */
   overlayDisplaySettings: 'Overlay display settings',
   /**
-   * @description Title of a section in Layout sidebar pane
+   * @description Title of a section in the Layout tab of the Elements panel.
    */
-  gridOrGridLanesOverlays: 'Grid / Grid Lanes overlays',
+  gridOrGridLanesOverlays: 'Grid / grid lanes overlays',
   /**
-   * @description Message in the Layout panel informing users that no CSS Grid/Grid Lanes layouts were found on the page
+   * @description Message in the Layout tab informing users that no CSS Grid/Grid Lanes layouts were found on the page.
    */
   noGridOrGridLanesLayoutsFoundOnThisPage: 'No grid or grid lanes layouts found on this page',
   /**
-   * @description Title of the Flexbox section in the Layout panel
+   * @description Title of the Flexbox section in the Layout tab of the Elements panel.
    */
   flexbox: 'Flexbox',
   /**
-   * @description Title of a section in the Layout panel
+   * @description Title of a section in the Layout tab of the Elements panel.
    */
   flexboxOverlays: 'Flexbox overlays',
   /**
-   * @description Text in the Layout panel, when no flexbox elements are found
+   * @description Text in the Layout tab, when no flexbox elements are found.
    */
   noFlexboxLayoutsFoundOnThisPage: 'No flexbox layouts found on this page',
   /**

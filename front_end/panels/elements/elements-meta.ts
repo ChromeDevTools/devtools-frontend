@@ -142,11 +142,11 @@ const UIStrings = {
    */
   selectAnElementInThePageTo: 'Select an element in the page to inspect it',
   /**
-   * @description Title/tooltip of an action in the elements panel to add a new style rule.
+   * @description Title/tooltip of an action in the Elements panel to add a new style rule.
    */
-  newStyleRule: 'New Style Rule',
+  newStyleRule: 'New style rule',
   /**
-   * @description Title/tooltip of an action in the elements panel to refresh the event listeners.
+   * @description Title/tooltip of an action in the Elements panel to refresh the event listeners.
    */
   refreshEventListeners: 'Refresh event listeners',
   /**
@@ -166,11 +166,11 @@ const UIStrings = {
    */
   htmlComments: 'HTML comments',
   /**
-   * @description Title of an option under the Elements category that can be invoked through the Command Menu
+   * @description Title of an option under the Elements category that can be invoked through the Command Menu.
    */
   showHtmlComments: 'Show `HTML` comments',
   /**
-   * @description Title of an option under the Elements category that can be invoked through the Command Menu
+   * @description Title of an option under the Elements category that can be invoked through the Command Menu.
    */
   hideHtmlComments: 'Hide `HTML` comments',
   /**
@@ -187,12 +187,12 @@ const UIStrings = {
   detailedInspectTooltip: 'Detailed inspect tooltip',
   /**
    * @description Title of a setting under the Elements category in Settings. Turns on a mode where
-   * hovering over CSS properties in the Styles pane will display a popover with documentation.
+   * hovering over CSS properties in the Styles tab will display a popover with documentation.
    */
   CSSDocumentationTooltip: 'CSS documentation tooltip',
   /**
-   * @description A context menu item (command) in the Elements panel that copy the styles of
-   * the HTML element.
+   * @description A context menu item (command) in the Elements panel that copies the styles of
+   * an HTML element.
    */
   copyStyles: 'Copy styles',
   /**
@@ -201,20 +201,20 @@ const UIStrings = {
    */
   toggleA11yTree: 'Toggle accessibility tree',
   /**
-   * @description Title of a setting under the Elements category. Whether to show/hide hide
+   * @description Title of a setting under the Elements category. Whether to show or hide
    * the shadow DOM nodes of HTML elements that are built into the browser (e.g. the <input> element).
    */
   userAgentShadowDOM: 'User agent shadow `DOM`',
   /**
    * @description Command for showing the 'Computed' tool. Displays computed CSS styles in Elements sidebar.
    */
-  showComputedStyles: 'Show Computed Styles',
+  showComputedStyles: 'Show Computed styles',
   /**
    * @description Command for showing the 'Styles' tool. Displays CSS styles in Elements sidebar.
    */
   showStyles: 'Show Styles',
   /**
-   * @description Command for toggling the eye dropper when the color picker is open
+   * @description Command for toggling the eye dropper when the color picker is open.
    */
   toggleEyeDropper: 'Toggle eye dropper',
   /**
@@ -222,11 +222,11 @@ const UIStrings = {
    */
   cssAnimationsOnlyWhenAnimationsTabOpen: 'Show animation styles only when the Animations tab is open',
   /**
-   * @description Whether CSS rules that do not apply active styles in the Styles pane are collapsed by default.
+   * @description Whether CSS rules that do not apply active styles in the Styles tab are collapsed by default.
    */
   collapseNonContributingCSSRules: 'Collapse non-contributing CSS rules',
   /**
-   * @description Title of a setting in the Event Listeners widget.
+   * @description Title of a setting in the Event listeners tab.
    */
   frameworkListeners: 'Framework listeners',
 } as const;

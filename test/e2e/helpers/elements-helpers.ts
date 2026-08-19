@@ -37,7 +37,7 @@ const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[title="Show all"]';
 export const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
 export const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
 const CLS_PANE_SELECTOR = '.styles-sidebar-toolbar-pane';
-const CLS_BUTTON_SELECTOR = '[aria-label="Element Classes"]';
+const CLS_BUTTON_SELECTOR = '[aria-label="Element classes"]';
 const CLS_INPUT_SELECTOR = '[aria-placeholder="Add new class"]';
 const LAYOUT_PANE_TAB_SELECTOR = '[aria-label="Layout"]';
 const LAYOUT_PANE_TABPANEL_SELECTOR = '[aria-label="Layout panel"]';
@@ -489,7 +489,7 @@ function veImpressionForSelectedNodeMenu(content: string) {
 export const showForceState = async (devToolsPage: DevToolsPage, specificStates = false) => {
   // Check if it is already visible
   if (!(await devToolsPage.$(EMULATE_FOCUSED_PAGE, undefined, 'aria'))) {
-    await devToolsPage.click('[aria-label="Toggle Element State"]');
+    await devToolsPage.click('[aria-label="Toggle element state"]');
     await devToolsPage.waitForAria(EMULATE_FOCUSED_PAGE);
   }
 

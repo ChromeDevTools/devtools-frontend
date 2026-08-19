@@ -500,7 +500,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       await renderHoveredElement(param);
       const popupContent = serializePopupContent();
-      const expectedPopupContent = 'test.Type:arrayLearnMore';
+      const expectedPopupContent = 'test.Type:arrayLearnmore';
       assert.deepEqual(popupContent, expectedPopupContent);
     });
 
@@ -517,7 +517,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       const popupContent = serializePopupContent();
 
-      const expectedPopupContent = 'Description1.Returns:Test1LearnMore';
+      const expectedPopupContent = 'Description1.Returns:Test1Learnmore';
       assert.deepEqual(popupContent, expectedPopupContent);
     });
   });

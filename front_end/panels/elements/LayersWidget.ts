@@ -18,15 +18,15 @@ const {render, html, Directives: {ref}} = Lit;
 
 const UIStrings = {
   /**
-   * @description Title of a section in the Element State Pane Widget of the Elements panel.
+   * @description Title of a section in the Layers tab of the Elements panel.
    * The widget shows the layers present in the context of the currently selected node.
-   * */
+   */
   cssLayersTitle: 'CSS layers',
   /**
-   * @description Tooltip text in Element State Pane Widget of the Elements panel.
+   * @description Tooltip text in the Layers tab of the Elements panel.
    * For a button that opens a tool that shows the layers present in the current document.
    */
-  toggleCSSLayers: 'Toggle CSS Layers view',
+  toggleCSSLayers: 'Toggle CSS layers view',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/LayersWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -43,35 +43,35 @@ const {bindToAction, bindToSetting} = UI.UIUtils;
 
 const UIStrings = {
   /**
-   * @description Title of show framework listeners setting in event listeners widget of the elements panel
+   * @description Title of show framework listeners setting in the Event listeners tab of the Elements panel.
    */
   frameworkListeners: 'Resolve `Framework` listeners',
   /**
-   * @description Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel
+   * @description Tooltip text that appears on the setting when hovering over it in the Event listeners tab of the Elements panel.
    */
   showListenersOnTheAncestors: 'Show listeners on the ancestors',
   /**
-   * @description Alternative title text of a setting in Event Listeners Widget of the Elements panel
+   * @description Alternative title text of a setting in the Event listeners tab of the Elements panel.
    */
   ancestors: 'Ancestors',
   /**
-   * @description Title of dispatch filter in event listeners widget of the elements panel
+   * @description Title of dispatch filter in the Event listeners tab of the Elements panel.
    */
   eventListenersCategory: 'Event listeners category',
   /**
-   * @description Text for everything
+   * @description Text for everything.
    */
   all: 'All',
   /**
-   * @description Text in Event Listeners Widget of the Elements panel
+   * @description Text in the Event listeners tab of the Elements panel.
    */
   passive: 'Passive',
   /**
-   * @description Text in Event Listeners Widget of the Elements panel
+   * @description Text in the Event listeners tab of the Elements panel.
    */
   blocking: 'Blocking',
   /**
-   * @description Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel
+   * @description Tooltip text that appears on the setting when hovering over it in the Event listeners tab of the Elements panel.
    */
   resolveEventListenersBoundWith: 'Resolve event listeners bound with framework',
 } as const;

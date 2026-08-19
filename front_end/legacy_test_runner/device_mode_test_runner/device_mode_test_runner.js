@@ -30,14 +30,10 @@ DeviceModeTestRunner.buildFakePhone = function(overrides) {
       {
         title: 'default',
         orientation: 'vertical',
-
-        insets: {left: 0, top: 0, right: 0, bottom: 0},
       },
       {
         title: 'default',
         orientation: 'horizontal',
-
-        insets: {left: 0, top: 0, right: 0, bottom: 0},
       },
     ],
   };

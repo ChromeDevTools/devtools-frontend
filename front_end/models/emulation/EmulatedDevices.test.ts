@@ -52,7 +52,6 @@ describeWithEnvironment('emulatedDevices', () => {
     rawDevice['modes'] = [{
       title: 'default',
       orientation: 'vertical',
-      insets: {left: 0, top: 0, right: 0, bottom: 0},
       'safe-area-insets': {left: 0, top: 59, right: 0, bottom: 34},
     }];
 
@@ -72,7 +71,6 @@ describeWithEnvironment('emulatedDevices', () => {
     rawDevice['modes'] = [{
       title: 'default',
       orientation: 'vertical',
-      insets: {left: 0, top: 0, right: 0, bottom: 0},
     }];
 
     const device = EmulationModel.EmulatedDevices.EmulatedDevice.fromJSONV1(rawDevice);
@@ -86,7 +84,6 @@ describeWithEnvironment('emulatedDevices', () => {
     withSafeArea['modes'] = [{
       title: 'default',
       orientation: 'vertical',
-      insets: {left: 0, top: 0, right: 0, bottom: 0},
       'safe-area-insets': {left: 1, top: 2, right: 3, bottom: 4},
     }];
     const parsed = EmulationModel.EmulatedDevices.EmulatedDevice.fromJSONV1(withSafeArea);
@@ -99,7 +96,6 @@ describeWithEnvironment('emulatedDevices', () => {
     withoutSafeArea['modes'] = [{
       title: 'default',
       orientation: 'vertical',
-      insets: {left: 0, top: 0, right: 0, bottom: 0},
     }];
     const parsedPlain = EmulationModel.EmulatedDevices.EmulatedDevice.fromJSONV1(withoutSafeArea);
     assert.exists(parsedPlain);
@@ -112,7 +108,6 @@ describeWithEnvironment('emulatedDevices', () => {
     rawDevice['modes'] = [{
       title: 'default',
       orientation: 'vertical',
-      insets: {left: 0, top: 0, right: 0, bottom: 0},
       'safe-area-insets': {left: 0, top: 59, right: 0, bottom: 34, topMax: 59, bottomMax: 34},
     }];
 
@@ -127,7 +122,6 @@ describeWithEnvironment('emulatedDevices', () => {
     rawDevice['modes'] = [{
       title: 'default',
       orientation: 'vertical',
-      insets: {left: 0, top: 0, right: 0, bottom: 0},
       cutout: {shape: 'pill', x: 153, y: 11, width: 125, height: 37, 'border-radius': 19},
     }];
 
@@ -152,7 +146,6 @@ describeWithEnvironment('emulatedDevices', () => {
     rawDevice['modes'] = [{
       title: 'default',
       orientation: 'vertical',
-      insets: {left: 0, top: 0, right: 0, bottom: 0},
       cutout: {shape: 'notch', x: 114, y: 0, width: 162, height: 34, 'upper-radius': 5, 'lower-radius': 22},
     }];
 
@@ -179,7 +172,6 @@ describeWithEnvironment('emulatedDevices', () => {
     rawDevice['modes'] = [{
       title: 'default',
       orientation: 'vertical',
-      insets: {left: 0, top: 0, right: 0, bottom: 0},
       cutout: {shape: 'circle', x: 162, y: 0, width: 37, height: 58, cx: 180, cy: 29, radius: 14},
     }];
 
@@ -207,7 +199,6 @@ describeWithEnvironment('emulatedDevices', () => {
     rawDevice['modes'] = [{
       title: 'default',
       orientation: 'vertical',
-      insets: {left: 0, top: 0, right: 0, bottom: 0},
       cutout: {shape: 'rectangle', x: 126, y: 0, width: 141, height: 45},
     }];
 

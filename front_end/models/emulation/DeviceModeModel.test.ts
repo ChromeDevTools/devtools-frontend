@@ -204,7 +204,6 @@ describe('DeviceModeModel', () => {
       const mode: EmulationModel.EmulatedDevices.Mode = {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,
-        insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
       };
 
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, mobileDevice, mode);
@@ -238,15 +237,11 @@ describe('DeviceModeModel', () => {
         {
           title: 'default',
           orientation: EmulationModel.EmulatedDevices.Vertical,
-          insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-
           safeAreaInsets: new EmulationModel.DeviceModeModel.Insets(0, 59, 0, 34),
         },
         {
           title: 'default',
           orientation: EmulationModel.EmulatedDevices.Horizontal,
-          insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
-
           safeAreaInsets: new EmulationModel.DeviceModeModel.Insets(59, 0, 59, 21),
         },
       ];
@@ -320,7 +315,6 @@ describe('DeviceModeModel', () => {
         const mode: EmulationModel.EmulatedDevices.Mode = {
           title: 'default',
           orientation: EmulationModel.EmulatedDevices.Vertical,
-          insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
 
         };
         deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, mode);
@@ -377,7 +371,6 @@ describe('DeviceModeModel', () => {
         {
           title: 'default',
           orientation: EmulationModel.EmulatedDevices.Vertical,
-          insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
 
           cutout: {
             shape: EmulationModel.EmulatedDevices.CutoutShape.PILL,
@@ -391,7 +384,6 @@ describe('DeviceModeModel', () => {
         {
           title: 'default',
           orientation: EmulationModel.EmulatedDevices.Horizontal,
-          insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
 
         },
       ];
@@ -909,7 +901,6 @@ describe('DeviceModeModel', () => {
       const mode: EmulationModel.EmulatedDevices.Mode = {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,
-        insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
 
       };
 
@@ -942,7 +933,6 @@ describe('DeviceModeModel', () => {
       const mode: EmulationModel.EmulatedDevices.Mode = {
         title: 'default',
         orientation: EmulationModel.EmulatedDevices.Vertical,
-        insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
 
       };
 

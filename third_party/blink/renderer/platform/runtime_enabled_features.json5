@@ -894,10 +894,6 @@
       depends_on: ["BidiCaretAffinity"],
     },
     {
-      name: "BlinkExtensionChromeOS",
-      browser_process_read_write_access: true,
-    },
-    {
       name: "BlinkExtensionWebView",
       public: true,
     },
@@ -1155,13 +1151,6 @@
       // https://issues.chromium.org/issues/373655918
       // https://issues.chromium.org/issues/40253359
       name: "ClearTargetOnlyIfInShadowTree",
-      status: "stable",
-    },
-    {
-      // If the link has tabindex, the status bubble should not persist after
-      // mouse out.
-      // This was added in M146 and can be removed after M148.
-      name: "ClickFocusDoesntPersistStatusBubble",
       status: "stable",
     },
     {
@@ -1429,13 +1418,6 @@
       base_feature_status: "enabled",
       copied_from_base_feature_if: "overridden",
       origin_trial_feature_name: "CrashReportingStorageAPI",
-    },
-    {
-      // Makes createHTMLDocument() return a document whose readyState is
-      // "complete" instead of "loading". Shipped in M151, safe to remove in
-      // M153. https://issues.chromium.org/issues/522868200
-      name: "CreateHTMLDocumentReadyState",
-      status: "stable",
     },
     {
       name: "CreateInlineContentsAnonymousBlock",
@@ -2346,12 +2328,6 @@
       base_feature: "none",
     },
     {
-      // Disconnected <area> elements should not trigger navigation.
-      // This was added in M146, and can be removed in M148.
-      name: "DisallowDisconnectedAreaNavigation",
-      status: "stable",
-    },
-    {
       // For readonly inputs, do not allow access to the picker.
       // This landed in M146 and can be removed in M148.
       name: "DisallowPickerForReadonlyInputs",
@@ -2530,12 +2506,6 @@
       // "already started" so they stay inert when cloned or imported.
       // https://crbug.com/542115030
       name: "DOMParserXmlScriptAlreadyStarted",
-      status: "stable",
-    },
-    {
-      // When enabled, retarget the relatedTarget attribute of drag events.
-      // This landed partly in M146 and more in M150 and can be removed in M152.
-      name: "DontLeakShadowTreesInDragEvents",
       status: "stable",
     },
     {
@@ -2793,6 +2763,13 @@
       public: true,
       status: "stable",
       base_feature: "none",
+    },
+    {
+      name: "FedCmActiveModeMultipleIdentityProviders",
+      depends_on: ["FedCmMultipleIdentityProviders"],
+      status: "experimental",
+      base_feature: "none",
+      public: true,
     },
     {
       name: "FedCmAutofill",
@@ -3640,6 +3617,10 @@
     {
       // See crbug.com/40695399
       name: "InlineBlockLineNavigation",
+      status: "stable",
+    },
+    {
+      name: "InlineCursorSkipNonIfc",
       status: "stable",
     },
     {
@@ -4875,12 +4856,6 @@
     // https://crbug.com/41406914
     {
       name: "ProgrammaticScrollPromise",
-      status: "stable",
-    },
-    {
-      // When enabled, setting progress.max enforces a >0 constraint.
-      // This will be shipped in M150, and it can be removed in M152.
-      name: "ProgressMaxIsPositive",
       status: "stable",
     },
     {

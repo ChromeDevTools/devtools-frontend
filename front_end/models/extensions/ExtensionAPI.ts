@@ -247,9 +247,20 @@ export namespace PrivateAPI {
     scriptUrl: string;
     ranges: PublicAPI.Chrome.DevTools.NamedFunctionRange[];
   }
+  export interface ForwardKeyboardEventRequestEntry {
+    eventType: string;
+    ctrlKey: boolean;
+    altKey: boolean;
+    metaKey: boolean;
+    shiftKey: boolean;
+    key: string;
+    code: string;
+    keyCode: number;
+    location: number;
+  }
   interface ForwardKeyboardEventRequest {
     command: Commands.ForwardKeyboardEvent;
-    entries: Array<KeyboardEventInit&{eventType: string}>;
+    entries: ForwardKeyboardEventRequestEntry[];
   }
   interface GetHARRequest {
     command: Commands.GetHAR;
@@ -1553,52 +1564,52 @@ self.injectedExtensionAPI = function(
     return inspectedTabId;
   }
 
-  let keyboardEventRequestQueue: KeyboardEventInit&Array<{eventType: string}> = [];
+  let keyboardEventRequestQueue: PrivateAPI.ForwardKeyboardEventRequestEntry[] = [];
   let forwardTimer: ReturnType<typeof setTimeout>|undefined;
   function forwardKeyboardEvent(event: KeyboardEvent): void {
-    // Check if the event should be forwarded.
-    // This is a workaround for crbug.com/923338.
-    const focused = document.activeElement;
-    if (focused) {
-      const isInput =
-          focused.nodeName === 'INPUT' || focused.nodeName === 'TEXTAREA' || (focused as HTMLElement).isContentEditable;
-      if (isInput && !(event.ctrlKey || event.altKey || event.metaKey)) {
-        return;
-      }
-    }
-
-    let modifiers = 0;
-    if (event.shiftKey) {
-      modifiers |= 1;
-    }
-    if (event.ctrlKey) {
-      modifiers |= 2;
-    }
-    if (event.altKey) {
-      modifiers |= 4;
-    }
-    if (event.metaKey) {
-      modifiers |= 8;
-    }
-    const num = (event.keyCode & 255) | (modifiers << 8);
-    // We only care about global hotkeys, not about random text
-    if (!keysToForwardSet.has(num)) {
-      return;
-    }
-    event.preventDefault();
-    const requestPayload = {
+    const requestPayload: Readonly<PrivateAPI.ForwardKeyboardEventRequestEntry> = Object.freeze({
       eventType: event.type,
       ctrlKey: event.ctrlKey,
       altKey: event.altKey,
       metaKey: event.metaKey,
       shiftKey: event.shiftKey,
-      // @ts-expect-error keyIdentifier is a deprecated non-standard property that typescript doesn't know about.
-      keyIdentifier: event.keyIdentifier,
       key: event.key,
       code: event.code,
-      location: event.location,
       keyCode: event.keyCode,
-    };
+      location: event.location,
+    });
+
+    // Check if the event should be forwarded.
+    // This is a workaround for crbug.com/923338.
+    const targetDocument = targetWindowForTest?.document ?? document;
+    const focused = targetDocument.activeElement;
+    if (focused) {
+      const isInput =
+          focused.nodeName === 'INPUT' || focused.nodeName === 'TEXTAREA' || (focused as HTMLElement).isContentEditable;
+      if (isInput && !(requestPayload.ctrlKey || requestPayload.altKey || requestPayload.metaKey)) {
+        return;
+      }
+    }
+
+    let modifiers = 0;
+    if (requestPayload.shiftKey) {
+      modifiers |= 1;
+    }
+    if (requestPayload.ctrlKey) {
+      modifiers |= 2;
+    }
+    if (requestPayload.altKey) {
+      modifiers |= 4;
+    }
+    if (requestPayload.metaKey) {
+      modifiers |= 8;
+    }
+    const num = (requestPayload.keyCode & 255) | (modifiers << 8);
+    // We only care about global hotkeys, not about random text
+    if (!keysToForwardSet.has(num)) {
+      return;
+    }
+    event.preventDefault();
     keyboardEventRequestQueue.push(requestPayload);
     if (!forwardTimer) {
       forwardTimer = globalThis.setTimeout(forwardEventQueue, 0);
@@ -1612,7 +1623,7 @@ self.injectedExtensionAPI = function(
     keyboardEventRequestQueue = [];
   }
 
-  document.addEventListener('keydown', forwardKeyboardEvent, false);
+  (targetWindowForTest?.document ?? document).addEventListener('keydown', forwardKeyboardEvent, false);
 
   function ExtensionServerClient(this: APIImpl.ExtensionServerClient, targetWindow: Window): void {
     this._callbacks = {};

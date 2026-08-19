@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -44,9 +45,9 @@ export class BackgroundServiceModel extends SDK.SDKModel.SDKModel<EventTypes> im
 
   backgroundServiceEventReceived({backgroundServiceEvent}:
                                      Protocol.BackgroundService.BackgroundServiceEventReceivedEvent): void {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // @ts-expect-error
-    this.events.get(backgroundServiceEvent.service).push(backgroundServiceEvent);
+    const events = this.events.get(backgroundServiceEvent.service);
+    Platform.assertNotNullOrUndefined(events);
+    events.push(backgroundServiceEvent);
     this.dispatchEventToListeners(Events.BackgroundServiceEventReceived, backgroundServiceEvent);
   }
 }

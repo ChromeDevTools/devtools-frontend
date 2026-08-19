@@ -51,11 +51,11 @@ export async function getFlakyClusters(days = 1): Promise<Cluster[]> {
 
   const payload = {
     project: projectName,
-    failureFilter: 'realm = "devtools-frontend:ci"',
-    orderBy: 'metrics.`failures`.value desc',
+    orderBy: 'metrics.`test-run-failed-in-postsubmit`.value desc',
     metrics: [
       `projects/${projectName}/metrics/critical-failures-exonerated`,
       `projects/${projectName}/metrics/failures`,
+      `projects/${projectName}/metrics/test-run-failed-in-postsubmit`,
       `projects/${projectName}/metrics/human-cls-failed-presubmit`,
     ],
     timeRange: {
@@ -119,7 +119,7 @@ async function main(): Promise<void> {
       const clusterId = cluster.clusterId?.id || 'Unknown ID';
       const algorithm = cluster.clusterId?.algorithm || 'Unknown Algorithm';
 
-      const totalFailures = cluster.metrics?.failures?.value || 0;
+      const totalFailures = cluster.metrics?.['test-run-failed-in-postsubmit']?.value || 0;
       const clusterLink = `https://luci-analysis.appspot.com/p/devtools-frontend/clusters/${algorithm}/${clusterId}`;
 
       console.log(`Cluster: ${title}`);

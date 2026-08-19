@@ -73,8 +73,7 @@ import("./typescript_vars.gni")
 #   |         ^                                                             |
 #   |         |                                                             |
 #   |  [4] module_b_checked (Action: tsc -p module_b-tsconfig.json)         |
-#   |      deps = [ :module_b-dts, :module_b_tsconfig_ref,                  |
-#   |               :module_b_tsconfig, "../a:module_a" ]                   |
+#   |      deps = [ :module_b-dts, :module_b_tsconfig, "../a:module_a" ]    |
 #   |      Resolves module_a types from module_a/*.d.ts                     |
 #   |                                                                       |
 #   |  [group("module_b")]                                                  |
@@ -109,6 +108,7 @@ template("ts_library_split") {
   _tsconfig_ref_file = "$target_gen_dir/$target_name-tsconfig.ref.json"
   _tsconfig_target = "${target_name}_tsconfig"
   _tsconfig_file = "$target_gen_dir/$target_name-tsconfig.json"
+  _js_target = "${target_name}_checked"
 
   _all_sources = invoker.sources
   if (defined(invoker.additional_type_definitions)) {
@@ -131,10 +131,27 @@ template("ts_library_split") {
     }
   }
 
+  _non_ts_deps = []
+  if (defined(invoker.deps)) {
+    _non_ts_deps = invoker.deps
+  }
+
+  _es_target = "ES2023"
+  if (defined(invoker.es_target)) {
+    _es_target = invoker.es_target
+  }
+
+  _module = "esnext"
+  _module_resolution = "bundler"
+  if (defined(invoker.runs_in) && invoker.runs_in == "node_cjs") {
+    _module = "nodenext"
+    _module_resolution = "nodenext"
+  }
+
   _compiler_options = {
-    target = "ES2023"
-    module = "esnext"
-    moduleResolution = "bundler"
+    target = _es_target
+    module = _module
+    moduleResolution = _module_resolution
     strict = true
     skipLibCheck = true
     allowJs = true
@@ -151,13 +168,13 @@ template("ts_library_split") {
     outDir = "."
   }
 
-  _non_ts_deps = []
-  if (defined(invoker.deps)) {
-    _non_ts_deps = invoker.deps
+  if (defined(invoker.es_libs)) {
+    _compiler_options.lib = invoker.es_libs
   }
 
-  # Compute declaration output paths (tsc does not emit for .d.ts inputs)
+  # Compute output file paths (tsc does not emit for .d.ts inputs)
   _dts_outputs = []
+  _js_outputs = []
   foreach(src, invoker.sources) {
     _ext = get_path_info(src, "extension")
     _name = get_path_info(src, "name")
@@ -171,6 +188,10 @@ template("ts_library_split") {
 
     if (!(_ext == "ts" && get_path_info(_name, "extension") == "d")) {
       _dts_outputs += [ "$_outdir/$_file_base.d.ts" ]
+      _js_outputs += [
+        "$_outdir/$_file_base.js",
+        "$_outdir/$_file_base.js.map",
+      ]
     }
   }
 
@@ -246,12 +267,66 @@ template("ts_library_split") {
     }
   }
 
+  # Sub-target 4: JS Transpilation + Type-checking via direct tsc
+  action(_js_target) {
+    script = devtools_location_prepend + "scripts/build/run_with_restat.py"
+
+    inputs = typescript_base_inputs + _all_sources + [ _tsconfig_file ]
+
+    deps = [
+             ":$_dts_target",
+             ":$_tsconfig_target",
+           ] + _ts_deps + _non_ts_deps
+
+    outputs = _js_outputs
+
+    response_file_contents =
+        rebase_path(_js_outputs, root_build_dir) + [ "--" ] + [
+          rebase_path(tsc_binary, root_build_dir),
+          "-p",
+          rebase_path(_tsconfig_file, root_build_dir),
+        ]
+
+    args = [ "@{{response_file_name}}" ]
+
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+  }
+
   # Primary group target
   group(target_name) {
     public_deps = [
                     ":$_dts_target",
                     ":$_tsconfig_ref_target",
                   ] + _ts_deps
+
+    data = _js_outputs
+    if (defined(invoker.data)) {
+      data += invoker.data
+    }
+
+    data_deps = [ ":$_js_target" ]
+    if (defined(invoker.deps)) {
+      data_deps += invoker.deps
+    }
+    if (defined(invoker.data_deps)) {
+      data_deps += invoker.data_deps
+    }
+
+    metadata = {
+      typescript_files = rebase_path(invoker.sources, root_build_dir)
+      tests = filter_include(_js_outputs,
+                             [
+                               "*.test.js",
+                               "*_test.js",
+                               "*.test.api.js",
+                             ])
+    }
+
+    if (!devtools_bundle) {
+      metadata.grd_files = filter_include(_js_outputs, [ "*.js" ])
+    }
 
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly

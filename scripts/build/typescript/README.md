@@ -244,8 +244,7 @@ The diagram below illustrates the exact GN sub-target wiring when `module_b` dep
 |         ^                                                             |
 |         |                                                             |
 |  [4] module_b_checked (Action: tsc -p module_b-tsconfig.json)         |
-|      deps = [ :module_b-dts, :module_b_tsconfig_ref,                  |
-|               :module_b_tsconfig, "../a:module_a" ]                   |
+|      deps = [ :module_b-dts, :module_b_tsconfig, "../a:module_a" ]    |
 |      Resolves module_a types from module_a/*.d.ts                     |
 |                                                                       |
 |  [group("module_b")]                                                  |

@@ -7,7 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("ai_code_completion") {
+devtools_foundation_module("ai_code_completion") {
   sources = [
     "AiCodeCompletion.ts",
     "debug.ts",
@@ -15,6 +15,7 @@ devtools_module("ai_code_completion") {
 
   deps = [
     "../../core/host:bundle",
+    "../../core/platform:bundle",
     "../../core/root:bundle",
   ]
 }
@@ -36,7 +37,7 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-ts_library("unittests") {
+devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [ "AiCodeCompletion.test.ts" ]
@@ -45,6 +46,5 @@ ts_library("unittests") {
     ":bundle",
     "../../core/host:bundle",
     "../../testing",
-    "../../ui/components/text_editor:bundle",
   ]
 }

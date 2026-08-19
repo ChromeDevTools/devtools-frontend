@@ -76,9 +76,9 @@ describe('Click-to-Comment mode across DevTools panels', function() {
   }
 
   async function isPinAndHighlightVisible(devToolsPage: DevToolsPage): Promise<boolean> {
-    const pin = await devToolsPage.$('.comment-pin');
-    const highlight = await devToolsPage.$('.comment-anchor-highlight');
-    return pin !== null && highlight !== null;
+    const pin = await devToolsPage.waitFor('.comment-pin');
+    const highlight = await devToolsPage.waitFor('.comment-anchor-highlight');
+    return Boolean(pin && highlight);
   }
 
   it('creates comment on DOM tree item in Elements panel with TreeItem vePath',

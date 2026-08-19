@@ -7,10 +7,11 @@ import * as path from 'node:path';
 import {pathToFileURL} from 'node:url';
 
 import {
+  checkForDuplicateTests,
+  createTestIdMap,
   duplicateTests,
   pruneSuite,
 } from '../../front_end/testing/MochaHelpers.js';
-import {computeBuildTestId} from '../../front_end/testing/TestIdGeneration.js';
 import {TEST_ID_REGEX} from '../conductor/paths.js';
 import {TestConfig} from '../conductor/test_config.js';
 import {getSkippedTests} from '../conductor/test_expectations.js';
@@ -90,40 +91,11 @@ export async function run(options: Omit<Options, OmitOptions>) {
   const testIds = new Set(
       TestConfig.tests.filter(testId => TEST_ID_REGEX.test(testId)),
   );
-  const seenTestIds = new Set<string>();
   const skippedTests = getSkippedTests();
 
-  function shouldIncludeTest(test: Mocha.Test) {
-    if (!test.file) {
-      throw new Error(`Test ${test.titlePath()} does not have a file.`);
-    }
-    const testId = computeBuildTestId(test.file, test.titlePath());
-    if (seenTestIds.has(testId)) {
-      throw new Error(`Duplicate test ${testId}`);
-    }
-    seenTestIds.add(testId);
-
-    const isSkipped = skippedTests.some((skippedTest: string) => {
-      return testId === skippedTest || testId.startsWith(`${skippedTest}:`);
-    });
-
-    if (isSkipped) {
-      test.pending = true;
-    }
-
-    if (testIds.size === 0) {
-      return true;
-    }
-    for (const id of testIds) {
-      if (testId === id || testId.startsWith(`${id}:`)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  pruneSuite(mocha.suite, shouldIncludeTest);
-
+  const testIdMap = createTestIdMap(mocha.suite);
+  checkForDuplicateTests(testIdMap);
+  pruneSuite(mocha.suite, testIdMap, {testIds, skippedTests});
   duplicateTests(mocha.suite, TestConfig.repetitions);
 
   mocha.enableGlobalSetup(true);

@@ -125,14 +125,22 @@ devtools_foundation_module("test_id_generation") {
 
 devtools_foundation_module("mocha_helpers") {
   sources = [ "MochaHelpers.ts" ]
+
+  deps = [ ":test_id_generation" ]
 }
 
 devtools_foundation_module("foundation_unittests") {
   testonly = true
 
-  sources = [ "TestIdGeneration.test.ts" ]
+  sources = [
+    "MochaHelpers.test.ts",
+    "TestIdGeneration.test.ts",
+  ]
 
-  deps = [ ":test_id_generation" ]
+  deps = [
+    ":mocha_helpers",
+    ":test_id_generation",
+  ]
 }
 
 ts_library("unittests") {

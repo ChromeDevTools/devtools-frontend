@@ -4,12 +4,79 @@
 
 import type * as Mocha from 'mocha';
 
-export function pruneSuite(suite: Mocha.Suite, shouldIncludeTest: (test: Mocha.Test) => boolean) {
-  suite.tests = suite.tests.filter(shouldIncludeTest);
-  suite.suites.forEach(suite => pruneSuite(suite, shouldIncludeTest));
+import {computeBuildTestId} from './TestIdGeneration.js';
+
+export function createTestIdMap(suite: Mocha.Suite): Map<Mocha.Test, string> {
+  const map = new Map<Mocha.Test, string>();
+  function populate(s: Mocha.Suite) {
+    for (const test of s.tests) {
+      if (!test.file) {
+        throw new Error(`Test ${test.titlePath()} does not have a file.`);
+      }
+      const testId = computeBuildTestId(test.file, test.titlePath());
+      map.set(test, testId);
+    }
+    for (const subSuite of s.suites) {
+      populate(subSuite);
+    }
+  }
+  populate(suite);
+  return map;
 }
 
-export function duplicateTests(suite: Mocha.Suite, repetitions: number) {
+export function checkForDuplicateTests(testIdMap: ReadonlyMap<Mocha.Test, string>): void {
+  const seenTestIds = new Set<string>();
+  for (const testId of testIdMap.values()) {
+    if (seenTestIds.has(testId)) {
+      throw new Error(`Duplicate test ${testId}`);
+    }
+    seenTestIds.add(testId);
+  }
+}
+
+export interface PruneSuiteOptions {
+  testIds?: ReadonlySet<string>;
+  skippedTests?: readonly string[];
+}
+
+export function listContainsTestOrSuite(list: Iterable<string>, testId: string): boolean {
+  for (const item of list) {
+    if (testId === item || testId.startsWith(`${item}:`)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function pruneSuite(
+    suite: Mocha.Suite,
+    testIdMap: ReadonlyMap<Mocha.Test, string>,
+    options: PruneSuiteOptions = {},
+    ): void {
+  const skippedTests = options.skippedTests ?? [];
+  const testIds = options.testIds;
+
+  suite.tests = suite.tests.filter(test => {
+    const testId = testIdMap.get(test);
+    if (!testId) {
+      return false;
+    }
+    const isSkipped = listContainsTestOrSuite(skippedTests, testId);
+    if (isSkipped) {
+      test.pending = true;
+    }
+    if (!testIds || testIds.size === 0) {
+      return true;
+    }
+    return listContainsTestOrSuite(testIds, testId);
+  });
+
+  for (const subSuite of suite.suites) {
+    pruneSuite(subSuite, testIdMap, options);
+  }
+}
+
+export function duplicateTests(suite: Mocha.Suite, repetitions: number): void {
   if (repetitions > 1) {
     const originalTests = [...suite.tests];
     suite.tests = [];
@@ -27,5 +94,7 @@ export function duplicateTests(suite: Mocha.Suite, repetitions: number) {
       }
     }
   }
-  suite.suites.forEach(s => duplicateTests(s, repetitions));
+  for (const subSuite of suite.suites) {
+    duplicateTests(subSuite, repetitions);
+  }
 }

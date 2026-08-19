@@ -4,8 +4,12 @@
 
 import type * as Mocha from 'mocha';
 
-import {duplicateTests, pruneSuite} from '../../front_end/testing/MochaHelpers.js';
-import {computeBuildTestId} from '../../front_end/testing/TestIdGeneration.js';
+import {
+  checkForDuplicateTests,
+  createTestIdMap,
+  duplicateTests,
+  pruneSuite,
+} from '../../front_end/testing/MochaHelpers.js';
 
 import {installDevtoolsBdd} from './mocha-interface.js';
 
@@ -120,40 +124,11 @@ const reportTestResult = (test: TestExt) => {
 karma.start = () => {
   const reportedTests = new Set<TestExt>();
   const testIds = new Set(karma.config.testIds);
-  const seenTestIds = new Set<string>();
   const skippedTests = karma.config.skippedTests || [];
 
-  function shouldIncludeTest(test: Mocha.Test) {
-    if (!test.file) {
-      throw new Error(`Test ${test.titlePath()} does not have a file.`);
-    }
-    const testId = computeBuildTestId(test.file, test.titlePath());
-    if (seenTestIds.has(testId)) {
-      throw new Error(`Duplicate test ${testId}`);
-    }
-    seenTestIds.add(testId);
-
-    const isSkipped = skippedTests.some((skippedTest: string) => {
-      return testId === skippedTest || testId.startsWith(`${skippedTest}:`);
-    });
-
-    if (isSkipped) {
-      test.pending = true;
-    }
-
-    if (testIds.size === 0) {
-      return true;
-    }
-    for (const id of testIds) {
-      if (testId === id || testId.startsWith(`${id}:`)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  pruneSuite(mocha.suite, shouldIncludeTest);
-
+  const testIdMap = createTestIdMap(mocha.suite);
+  checkForDuplicateTests(testIdMap);
+  pruneSuite(mocha.suite, testIdMap, {testIds, skippedTests});
   duplicateTests(mocha.suite, karma.config.repetitions);
 
   const runner = mocha.run(() => {

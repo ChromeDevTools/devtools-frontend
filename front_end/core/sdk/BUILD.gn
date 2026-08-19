@@ -248,6 +248,7 @@ devtools_api_test_module("api_tests") {
     "CSSModel.test.api.ts",
     "DOMModel.test.api.ts",
     "DebuggerModel.test.api.ts",
+    "TargetManager.test.api.ts",
   ]
 
   deps = [

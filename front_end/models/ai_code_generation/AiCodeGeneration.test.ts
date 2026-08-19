@@ -6,14 +6,16 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
-import {
-  describeWithEnvironment,
-  updateHostConfig,
-} from '../../testing/EnvironmentHelpers.js';
+import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 
 import * as AiCodeGeneration from './ai_code_generation.js';
 
-describeWithEnvironment('AiCodeGeneration', () => {
+describe('AiCodeGeneration', () => {
+  setupLocaleHooks();
+  setupRuntimeHooks();
+
   beforeEach(() => {
     updateHostConfig({
       devToolsAiCodeGeneration: {

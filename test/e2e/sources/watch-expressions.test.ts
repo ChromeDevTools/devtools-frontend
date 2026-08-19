@@ -26,6 +26,7 @@ describe('Watch Expression Pane', () => {
 
     // Create watch expression "Text"
     await addWatchExpression('Text', devToolsPage);
+    await devToolsPage.waitForElementWithTextContent('Text: ƒ Text()');
 
     // Expand watch element
     const element = await devToolsPage.waitFor('.watch-expression-tree-item');

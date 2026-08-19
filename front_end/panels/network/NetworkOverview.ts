@@ -156,10 +156,10 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     }
 
     const context = this.context();
-    const linesByType = new Map<string, number[]>();
+    const linesByType = new Map<NetworkTimeCalculator.RequestTimeRangeNames, number[]>();
     const paddingTop = PADDING;
 
-    function drawLines(type: string): void {
+    function drawLines(type: NetworkTimeCalculator.RequestTimeRangeNames): void {
       const lines = linesByType.get(type);
       if (!lines) {
         return;
@@ -183,7 +183,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
       }
     }
 
-    function addLine(type: string, y: number, start: number, end: number): void {
+    function addLine(type: NetworkTimeCalculator.RequestTimeRangeNames, y: number, start: number, end: number): void {
       let lines = linesByType.get(type);
       if (!lines) {
         lines = [];
@@ -217,6 +217,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     drawLines(NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER);
     drawLines(NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION);
     drawLines(NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH);
+    drawLines(NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
+    drawLines(NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
     drawLines(NetworkTimeCalculator.RequestTimeRangeNames.PUSH);
     drawLines(NetworkTimeCalculator.RequestTimeRangeNames.PROXY);
     drawLines(NetworkTimeCalculator.RequestTimeRangeNames.DNS);
@@ -224,6 +226,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     drawLines(NetworkTimeCalculator.RequestTimeRangeNames.SENDING);
     drawLines(NetworkTimeCalculator.RequestTimeRangeNames.WAITING);
     drawLines(NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING);
+    drawLines(NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH);
 
     if (this.highlightedRequest) {
       const size = 5;
@@ -297,7 +300,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
   }
 }
 
-export const RequestTimeRangeNameToColor = {
+export const RequestTimeRangeNameToColor: Record<NetworkTimeCalculator.RequestTimeRangeNames, string> = {
   [NetworkTimeCalculator.RequestTimeRangeNames.TOTAL]: '--network-overview-total',
   [NetworkTimeCalculator.RequestTimeRangeNames.BLOCKING]: '--network-overview-blocking',
   [NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING]: '--network-overview-connecting',
@@ -305,6 +308,8 @@ export const RequestTimeRangeNameToColor = {
   [NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION]: '--network-overview-service-worker',
   [NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH]:
       '--network-overview-service-worker-respond-with',
+  [NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION]: '--network-overview-service-worker',
+  [NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP]: '--network-overview-service-worker',
   [NetworkTimeCalculator.RequestTimeRangeNames.PUSH]: '--network-overview-push',
   [NetworkTimeCalculator.RequestTimeRangeNames.PROXY]: '--override-network-overview-proxy',
   [NetworkTimeCalculator.RequestTimeRangeNames.DNS]: '--network-overview-dns',
@@ -312,8 +317,9 @@ export const RequestTimeRangeNameToColor = {
   [NetworkTimeCalculator.RequestTimeRangeNames.SENDING]: '--override-network-overview-sending',
   [NetworkTimeCalculator.RequestTimeRangeNames.WAITING]: '--network-overview-waiting',
   [NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING]: '--network-overview-receiving',
+  [NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH]: '--network-overview-receiving',
   [NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING]: '--network-overview-queueing',
-} as Record<string, string>;
+};
 
 const BAND_HEIGHT = 3;
 const PADDING = 5;

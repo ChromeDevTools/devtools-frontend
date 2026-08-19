@@ -98,7 +98,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this.textLayers = [];
   }
 
-  private static buildRequestTimeRangeStyle(): Map<NetworkTimeCalculator.RequestTimeRangeNames, LayerStyle> {
+  static buildRequestTimeRangeStyle(): Map<NetworkTimeCalculator.RequestTimeRangeNames, LayerStyle> {
     const styleMap = new Map<NetworkTimeCalculator.RequestTimeRangeNames, LayerStyle>();
     styleMap.set(
         NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING,
@@ -141,6 +141,13 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     });
     styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH],
+    });
+    styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION, {
+      fillStyle:
+          RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION],
+    });
+    styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP],
     });
     return styleMap;
   }
@@ -610,8 +617,14 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         continue;
       }
 
-      const style = (this.styleForTimeRangeName.get(range.name) as LayerStyle);
-      const path = (this.pathForStyle.get(style) as Path2D);
+      const style = this.styleForTimeRangeName.get(range.name);
+      if (!style) {
+        continue;
+      }
+      const path = this.pathForStyle.get(style);
+      if (!path) {
+        continue;
+      }
       const lineWidth = style.lineWidth || 0;
       const height = this.getBarHeight(range.name);
       const middleBarY = y + Math.floor(this.rowHeight / 2 - height / 2) + lineWidth / 2;

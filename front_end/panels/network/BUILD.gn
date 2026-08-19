@@ -177,6 +177,7 @@ devtools_ui_module("unittests") {
     "NetworkOverview.test.ts",
     "NetworkPanel.test.ts",
     "NetworkSearchScope.test.ts",
+    "NetworkWaterfallColumn.test.ts",
     "RequestConditionsDrawer.test.ts",
     "RequestCookiesView.test.ts",
     "RequestDeviceBoundSessionsView.test.ts",

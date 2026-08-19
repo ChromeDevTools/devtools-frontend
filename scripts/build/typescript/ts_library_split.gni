@@ -105,6 +105,8 @@ template("ts_library_split") {
   _outdir = target_gen_dir
 
   _dts_target = "${target_name}-dts"
+  _tsconfig_ref_target = "${target_name}_tsconfig_ref"
+  _tsconfig_ref_file = "$target_gen_dir/$target_name-tsconfig.ref.json"
 
   _all_sources = invoker.sources
   if (defined(invoker.additional_type_definitions)) {
@@ -168,9 +170,35 @@ template("ts_library_split") {
     }
   }
 
+  # Sub-target 2: Generate tsconfig.ref.json for downstream consumers.
+  # Downstream dependents point to this tsconfig.ref.json as a project
+  # "reference" in the dependent's tsconfig used for type-checking.
+  generated_file(_tsconfig_ref_target) {
+    outputs = [ _tsconfig_ref_file ]
+    output_conversion = "json"
+    contents = {
+      compilerOptions = {
+        composite = true
+        declaration = true
+        emitDeclarationOnly = true
+        skipLibCheck = true
+        rootDir = rebase_path(_rootdir, target_gen_dir)
+        outDir = "."
+        declarationDir = "."
+      }
+      files = rebase_path(_all_sources, target_gen_dir)
+    }
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+  }
+
   # Primary group target
   group(target_name) {
-    public_deps = [ ":$_dts_target" ]
+    public_deps = [
+      ":$_dts_target",
+      ":$_tsconfig_ref_target",
+    ]
 
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly

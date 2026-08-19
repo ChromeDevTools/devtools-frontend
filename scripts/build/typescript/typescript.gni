@@ -9,6 +9,7 @@
 import("//build/toolchain/rbe.gni")
 import("//build/toolchain/siso.gni")
 import("../ninja/vars.gni")
+import("./ts_library_split.gni")
 import("./typescript_vars.gni")
 
 declare_args() {

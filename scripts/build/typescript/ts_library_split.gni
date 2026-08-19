@@ -1,0 +1,113 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# Architecture Overview:
+# ======================
+# ts_library_split decouples declaration generation from type-checking and
+# JavaScript emission into 4 discrete sub-targets per library:
+#
+#   1) ${target_name}-dts:
+#      Fast, parallel declaration emit (.d.ts) using:
+#      `tsc --declaration --emitDeclarationOnly --isolatedDeclarations --noCheck --noResolve`
+#      Zero dependency on upstream targets.
+#
+#   2) ${target_name}_tsconfig_ref:
+#      Generated reference descriptor (`*-tsconfig.ref.json`) consumed by
+#      downstream tsconfigs.
+#
+#   3) ${target_name}_tsconfig:
+#      Generated compilation descriptor (`*-tsconfig.json`) configured with
+#      `disableSourceOfProjectReferenceRedirect = true` pointing to upstream
+#      `*-tsconfig.ref.json` project references.
+#
+#   4) ${target_name}_checked:
+#      Full type-checking and runtime JavaScript transpilation (.js, .js.map)
+#      using `tsc -p *-tsconfig.json`.
+#
+#   Primary group(${target_name}):
+#      Assembles compile-time `public_deps` (.d.ts + tsconfig.ref) and
+#      runtime `data_deps` (JS).
+#
+# Dependency Graph Example:
+# -------------------------
+# Suppose `module_b` depends on `module_a` (`ts_deps = [ "../a:module_a" ]`):
+#
+#   +-----------------------------------------------------------------------+
+#   |                              module_a                                 |
+#   |                                                                       |
+#   |  [1] module_a-dts (Action)                                            |
+#   |      sources -> module_a/*.d.ts (via --isolatedDeclarations)          |
+#   |         ^                                                             |
+#   |         |                                                             |
+#   |  [2] module_a_tsconfig_ref (generated_file)                           |
+#   |      -> module_a-tsconfig.ref.json                                    |
+#   |         ^                                                             |
+#   |         | (public_deps)                                               |
+#   |  [group("module_a")] --------------------------------+                |
+#   |         | (data_deps)                                |                |
+#   |         v                                            |                |
+#   |  [3] module_a_tsconfig (generated_file)              | (ts_deps)      |
+#   |      -> module_a-tsconfig.json                       |                |
+#   |         ^                                            |                |
+#   |         |                                            |                |
+#   |  [4] module_a_checked (Action)                       |                |
+#   |      module_a/*.ts -> module_a/*.js                  |                |
+#   +------------------------------------------------------|----------------+
+#                                                          |
+#                                                          v
+#   +-----------------------------------------------------------------------+
+#   |                              module_b                                 |
+#   |                                                                       |
+#   |  [1] module_b-dts (Action)                                            |
+#   |      sources -> module_b/*.d.ts (no wait for module_a!)               |
+#   |                                                                       |
+#   |  [2] module_b_tsconfig_ref (generated_file)                           |
+#   |      -> module_b-tsconfig.ref.json                                    |
+#   |                                                                       |
+#   |  [3] module_b_tsconfig (generated_file)                               |
+#   |      references = [ "../a/module_a-tsconfig.ref.json" ]               |
+#   |         ^                                                             |
+#   |         |                                                             |
+#   |  [4] module_b_checked (Action: tsc -p module_b-tsconfig.json)         |
+#   |      deps = [ :module_b-dts, :module_b_tsconfig_ref,                  |
+#   |               :module_b_tsconfig, "../a:module_a" ]                   |
+#   |      Resolves module_a types from module_a/*.d.ts                     |
+#   |                                                                       |
+#   |  [group("module_b")]                                                  |
+#   |      public_deps = [ :module_b-dts, :module_b_tsconfig_ref,           |
+#   |                      "../a:module_a" ]                                |
+#   |      data_deps   = [ :module_b_checked ]                              |
+#   +-----------------------------------------------------------------------+
+#
+# Compilation Flow & Ninja Restat:
+# --------------------------------
+# 1. (Parallel Emit)  :module_a-dts and :module_b-dts execute concurrently
+#    without blocking on upstream JS compilation.
+# 2. (Type-Checking)  :module_b_checked waits for :module_a-dts (via public_deps
+#    of module_a) and consumes `module_a/*.d.ts`.
+# 3. (Pruned Cascades) If module_a implementation changes without modifying
+#    public signatures, `run_with_restat.py` keeps the .d.ts mtime unchanged,
+#    causing Ninja to prune recompilation of :module_b_checked.
+
+# Defines a TypeScript library target using tsc v7+.
+template("ts_library_split") {
+  assert(defined(invoker.sources),
+         "You must specify 'sources' for $target_name")
+
+  not_needed(invoker, "*")
+
+  # Primary group target
+  group(target_name) {
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+    if (defined(invoker.visibility)) {
+      visibility = invoker.visibility
+    }
+  }
+}
+
+set_defaults("ts_library_split") {
+  visibility = [ "*" ]
+}

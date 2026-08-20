@@ -17,16 +17,22 @@ import {
 } from './types.js';
 
 export const UIStrings = {
-  /** Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties. */
+  /**
+   * @description Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties.
+   */
   title: 'Font display',
   /**
    * @description Text to tell the user about the font-display CSS feature to help improve a the UX of a page.
    */
   description:
       'Consider setting [`font-display`](https://developer.chrome.com/docs/performance/insights/font-display) to `swap` or `optional` to ensure text is consistently visible. `swap` can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).',
-  /** Column for a font loaded by the page to render text. */
+  /**
+   * @description Column for a font loaded by the page to render text.
+   */
   fontColumn: 'Font',
-  /** Column for the amount of time wasted. */
+  /**
+   * @description Column for the amount of time wasted.
+   */
   wastedTimeColumn: 'Wasted time',
   /**
    * @description Message shown when no fonts with suboptimal font-display are found.

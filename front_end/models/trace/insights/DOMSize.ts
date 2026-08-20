@@ -43,7 +43,7 @@ export const UIStrings = {
    */
   totalElements: 'Total elements',
   /**
-   * @description Label for a value representing the maximum depth of the Document Object Model (DOM). "DOM" is a acronym and should not be translated.
+   * @description Label for a value representing the maximum depth of the Document Object Model (DOM). "DOM" is an acronym and should not be translated.
    */
   maxDOMDepth: 'DOM depth',
   /**

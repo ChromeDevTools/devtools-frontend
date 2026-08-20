@@ -530,7 +530,7 @@ Available insights:
     relevant trace bounds: {min: 157423489126µs, max: 157426527569µs}
     example question: How do I optimize my network dependency tree?
   - insight name: ImageDelivery
-    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)
+    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery).
     relevant trace bounds: {min: 157423794709µs, max: 157424082831µs}
     estimated metric savings: FCP 0 ms, LCP 0 ms
     estimated wasted bytes: 97.8 kB
@@ -552,7 +552,7 @@ Available insights:
     estimated wasted bytes: 847.4 kB
     example question: What caching strategies can I apply to improve my page performance?
   - insight name: LegacyJavaScript
-    description: Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren’t necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript)
+    description: Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren’t necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript).
     relevant trace bounds: {min: 157423489126µs, max: 157426132225µs}
     estimated metric savings: FCP 0 ms, LCP 0 ms
     estimated wasted bytes: 126.9 kB
@@ -660,7 +660,7 @@ Available insights:
     estimated wasted bytes: 971.5 kB
     example question: What caching strategies can I apply to improve my page performance?
   - insight name: ImageDelivery
-    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)
+    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery).
     relevant trace bounds: {min: 59728701403µs, max: 59729395208µs}
     estimated metric savings: FCP 0 ms, LCP 100 ms
     estimated wasted bytes: 2 MB
@@ -673,7 +673,7 @@ Available insights:
     example question: Which LCP subpart was most problematic?
     example question: What can I do to reduce the LCP time for this page load?
   - insight name: LCPDiscovery
-    description: [Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading
+    description: [Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading.
     relevant trace bounds: {min: 59728656735µs, max: 59729209036µs}
     example question: Suggest fixes to reduce my LCP
     example question: What can I do to reduce my LCP discovery time?
@@ -691,7 +691,7 @@ Available insights:
     example question: How do I decrease the initial loading time of my page?
     example question: Did anything slow down the request for this document?
   - insight name: Viewport
-    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport is not optimized for mobile.
+    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile.
     relevant trace bounds: {min: 59728649746µs, max: 59734400108µs}
     estimated metric savings: INP 0 ms
     example question: How do I make sure my page is optimized for mobile viewing?
@@ -744,7 +744,7 @@ Available insights:
     estimated wasted bytes: 971.5 kB
     example question: What caching strategies can I apply to improve my page performance?
   - insight name: ImageDelivery
-    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)
+    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery).
     relevant trace bounds: {min: 59728701403µs, max: 59729395208µs}
     estimated metric savings: FCP 0 ms, LCP 100 ms
     estimated wasted bytes: 2 MB
@@ -757,7 +757,7 @@ Available insights:
     example question: Which LCP subpart was most problematic?
     example question: What can I do to reduce the LCP time for this page load?
   - insight name: LCPDiscovery
-    description: [Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading
+    description: [Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading.
     relevant trace bounds: {min: 59728656735µs, max: 59729209036µs}
     example question: Suggest fixes to reduce my LCP
     example question: What can I do to reduce my LCP discovery time?
@@ -775,7 +775,7 @@ Available insights:
     example question: How do I decrease the initial loading time of my page?
     example question: Did anything slow down the request for this document?
   - insight name: Viewport
-    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport is not optimized for mobile.
+    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile.
     relevant trace bounds: {min: 59728649746µs, max: 59734400108µs}
     estimated metric savings: INP 0 ms
     example question: How do I make sure my page is optimized for mobile viewing?

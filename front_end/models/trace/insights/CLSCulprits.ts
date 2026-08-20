@@ -18,7 +18,9 @@ import {
 } from './types.js';
 
 export const UIStrings = {
-  /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
+  /**
+   * @description Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons").
+   */
   title: 'Layout shift culprits',
   /**
    * @description Description of a DevTools insight that identifies the reasons that elements shift on the page.
@@ -64,7 +66,7 @@ export const UIStrings = {
    */
   noLayoutShifts: 'No layout shifts',
   /**
-   * @description Text status when there no layout shifts culprits/root causes were found.
+   * @description Text status when no layout shift culprits or root causes were found.
    */
   noCulprits: 'Could not detect any layout shift culprits',
 } as const;

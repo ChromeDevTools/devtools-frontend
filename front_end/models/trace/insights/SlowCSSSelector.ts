@@ -19,23 +19,23 @@ export const UIStrings = {
   /**
    * @description Title of an insight that provides details about slow CSS selectors.
    */
-  title: 'CSS Selector costs',
+  title: 'CSS selector costs',
 
   /**
    * @description Text to describe how to improve the performance of CSS selectors.
    */
   description:
-      'If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/performance/insights/slow-css-selector) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.',
+      'If recalculate style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/performance/insights/slow-css-selector) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.',
   /**
-   * @description Column name for count of elements that the engine attempted to match against a style rule
+   * @description Column name for count of elements that the engine attempted to match against a style rule.
    */
   matchAttempts: 'Match attempts',
   /**
-   * @description Column name for count of elements that matched a style rule
+   * @description Column name for count of elements that matched a style rule.
    */
   matchCount: 'Match count',
   /**
-   * @description Column name for elapsed time spent computing a style rule
+   * @description Column name for elapsed time spent computing a style rule.
    */
   elapsed: 'Elapsed time',
   /**
@@ -50,13 +50,13 @@ export const UIStrings = {
    * @description Text status indicating that no CSS selector data was found.
    */
   enableSelectorData:
-      'No CSS selector data was found. CSS selector stats need to be enabled in the performance panel settings.',
+      'No CSS selector data was found. CSS selector stats need to be enabled in the Performance panel settings.',
   /**
-   * @description top CSS selector when ranked by elapsed time in ms
+   * @description Top CSS selector when ranked by elapsed time in ms.
    */
   topSelectorElapsedTime: 'Top selector elapsed time',
   /**
-   * @description top CSS selector when ranked by match attempt
+   * @description Top CSS selector when ranked by match attempt.
    */
   topSelectorMatchAttempt: 'Top selector match attempt',
 } as const;

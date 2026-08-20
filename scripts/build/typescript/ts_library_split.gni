@@ -208,6 +208,7 @@ template("ts_library_split") {
     response_file_contents =
         rebase_path(_dts_outputs, root_build_dir) + [ "--" ] + [
           rebase_path(tsc_binary, root_build_dir),
+          "--ignoreConfig",
           "--declaration",
           "--emitDeclarationOnly",
           "--isolatedDeclarations",

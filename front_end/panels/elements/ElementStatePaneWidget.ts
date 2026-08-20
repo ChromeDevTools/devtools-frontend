@@ -427,6 +427,9 @@ export class ButtonProvider implements UI.Toolbar.Provider {
   private clicked(): void {
     ElementsPanel.instance().showToolbarPane(!this.view.isShowing() ? this.view : null, this.button);
   }
+  showPane(): void {
+    ElementsPanel.instance().showToolbarPane(this.view, this.button);
+  }
   item(): UI.Toolbar.ToolbarToggle {
     return this.button;
   }

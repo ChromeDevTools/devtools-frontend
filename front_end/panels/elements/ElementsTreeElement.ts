@@ -68,6 +68,7 @@ import * as ElementsComponents from './components/components.js';
 import {cssPath, jsPath, xPath} from './DOMPath.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
+import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
 import {type ElementsTreeOutline, MappedCharToEntity} from './ElementsTreeOutline.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {getRegisteredDecorators, type MarkerDecorator, type MarkerDecoratorRegistration} from './MarkerDecorator.js';
@@ -1264,6 +1265,11 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
     function setPseudoStateCallback(pseudoState: string, enabled: boolean): void {
       node.domModel().cssModel().forcePseudoState(node, pseudoState, enabled);
+      // Show the element state pane after the user sets an element state from
+      // the context menu. We assume it should help the users to discover the
+      // element state pane and prevent overhead of using the context menu
+      // (http://crbug.com/519254907).
+      ElementStatePaneWidget.ButtonProvider.instance().showPane();
     }
   }
 

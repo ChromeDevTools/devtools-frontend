@@ -6,7 +6,10 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
@@ -369,5 +372,27 @@ describeWithEnvironment('ElementStatePaneWidget', () => {
         '::scroll-marker',
         ['read-write', 'target-current'],
     );
+  });
+
+  describe('ButtonProvider', () => {
+    it('shows the pane in the DOM', () => {
+      const universe = new TestUniverse();
+      sinon.stub(IssuesManager.IssuesManager.IssuesManager, 'instance').returns(universe.issuesManager);
+
+      const elementsPanel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
+      elementsPanel.stylesWidget.detach();
+      renderElementIntoDOM(elementsPanel.stylesWidget);
+
+      const buttonProvider = Elements.ElementStatePaneWidget.ButtonProvider.instance({forceNew: true});
+      assert.isFalse(buttonProvider.item().isToggled());
+
+      const view = (buttonProvider as unknown as {view: UI.Widget.Widget}).view;
+      assert.isFalse(view.isShowing());
+
+      buttonProvider.showPane();
+
+      assert.isTrue(view.isShowing());
+      assert.isTrue(buttonProvider.item().isToggled());
+    });
   });
 });

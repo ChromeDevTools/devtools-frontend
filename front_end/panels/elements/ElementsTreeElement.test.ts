@@ -13,6 +13,7 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, registerActions} from '../../testing/EnvironmentHelpers.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
@@ -490,6 +491,30 @@ describeWithEnvironment('ElementsTreeElement', () => {
         debugWithAiItem?.subItems?.map(item => item.label),
         ['Start a chat', 'Explain container queries', 'Explain container types', 'Explain container context']);
   });
+
+  it('opens element state pane when forced state is clicked in context menu', async () => {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+
+    const buttonProvider = sinon.createStubInstance(Elements.ElementStatePaneWidget.ButtonProvider);
+    sinon.stub(Elements.ElementStatePaneWidget.ButtonProvider, 'instance').returns(buttonProvider);
+
+    const event = new Event('contextmenu');
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    Elements.ElementsTreeElement.ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, node);
+
+    const subMenu = findMenuItemWithLabel(contextMenu.debugSection(), 'Force state');
+    assert.instanceOf(subMenu, UI.ContextMenu.SubMenu);
+    const hoverItem = findMenuItemWithLabel(subMenu.defaultSection(), ':hover');
+    assert.exists(hoverItem);
+
+    contextMenu.invokeHandler(hoverItem.id());
+
+    sinon.assert.calledOnce(buttonProvider.showPane);
+  });
+
   it('updates when persistent overlay state changes', async () => {
     const target = createTarget();
     const domModel = target.model(SDK.DOMModel.DOMModel);

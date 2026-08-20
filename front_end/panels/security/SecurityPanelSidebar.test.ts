@@ -189,4 +189,143 @@ describeWithEnvironment('SecurityPanelSidebar', () => {
       await assertScreenshot('security/security_sidebar_populated.png');
     });
   });
+
+  describe('DEFAULT_VIEW', () => {
+    function renderView(input: Partial<Security.SecurityPanelSidebar.ViewInput> = {},
+                        output: Security.SecurityPanelSidebar.ViewOutput = {
+                          onElementSelected: sinon.stub(),
+                          onShowOrigin: sinon.stub(),
+                        }): {container: HTMLElement, output: Security.SecurityPanelSidebar.ViewOutput} {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      const fullInput: Security.SecurityPanelSidebar.ViewInput = {
+        mainOrigin: null,
+        origins: new Map(),
+        originsHidden: false,
+        showOriginsUnconditionally: false,
+        overviewSecurityState: Protocol.Security.SecurityState.Unknown,
+        selectedElementId: 'overview',
+        ...input,
+      };
+      Security.SecurityPanelSidebar.DEFAULT_VIEW(fullInput, output, container);
+      return {container, output};
+    }
+
+    it('renders overview element and origin groups with defaults', async () => {
+      const {container} = renderView();
+      await doubleRaf();
+
+      const tree = container.querySelector('devtools-tree');
+      assert.exists(tree);
+      const shadow = tree.shadowRoot;
+      assert.exists(shadow);
+
+      const overview = shadow.querySelector('.security-main-view-sidebar-tree-item');
+      assert.exists(overview);
+      assert.isTrue(overview.textContent?.includes('Overview'));
+
+      const groups = shadow.querySelectorAll('.security-sidebar-origins');
+      assert.lengthOf(groups, 4);
+
+      const groupTitles =
+          Array.from(groups).map(g => g.querySelector('.security-sidebar-origins-title')?.textContent?.trim());
+      assert.include(groupTitles, 'Main origin');
+      assert.include(groupTitles, 'Non-secure origins');
+      assert.include(groupTitles, 'Secure origins');
+      assert.include(groupTitles, 'Unknown / canceled');
+    });
+
+    it('renders reload message when main origin group is empty', async () => {
+      const {container} = renderView({origins: new Map()});
+      await doubleRaf();
+
+      const reloadMsg =
+          container.querySelector('devtools-tree')!.shadowRoot!.querySelector('.security-main-view-reload-message');
+      assert.exists(reloadMsg);
+      assert.strictEqual(reloadMsg.textContent?.trim(), 'Reload to view details');
+    });
+
+    it('does not render reload message when origins are present', async () => {
+      const mainOrigin = urlString`https://main.example.com`;
+      const origins = new Map([[mainOrigin, Protocol.Security.SecurityState.Secure]]);
+      const {container} = renderView({mainOrigin, origins});
+      await doubleRaf();
+
+      const reloadMsg =
+          container.querySelector('devtools-tree')!.shadowRoot!.querySelector('.security-main-view-reload-message');
+      assert.notExists(reloadMsg);
+    });
+
+    it('renders categorized origins with correct security icons and highlighted URLs', async () => {
+      const mainOrigin = urlString`https://main.example.com`;
+      const secureOrigin = urlString`https://secure.example.com`;
+      const insecureOrigin = urlString`http://insecure.example.com`;
+      const unknownOrigin = urlString`https://unknown.example.com`;
+
+      const origins = new Map([
+        [mainOrigin, Protocol.Security.SecurityState.Secure],
+        [secureOrigin, Protocol.Security.SecurityState.Secure],
+        [insecureOrigin, Protocol.Security.SecurityState.Insecure],
+        [unknownOrigin, Protocol.Security.SecurityState.Unknown],
+      ]);
+
+      const {container} = renderView({mainOrigin, origins});
+      await doubleRaf();
+
+      const shadow = container.querySelector('devtools-tree')!.shadowRoot!;
+      const originItems = shadow.querySelectorAll('.security-sidebar-tree-item');
+      assert.lengthOf(originItems, 4);
+
+      const secureIcon = shadow.querySelector('.security-property-secure');
+      assert.exists(secureIcon);
+
+      const insecureIcon = shadow.querySelector('.security-property-insecure');
+      assert.exists(insecureIcon);
+
+      const unknownIcon = shadow.querySelector('.security-property-unknown');
+      assert.exists(unknownIcon);
+
+      const highlightedUrls = shadow.querySelectorAll('.highlighted-url');
+      assert.lengthOf(highlightedUrls, 4);
+    });
+
+    it('hides origin groups when originsHidden is true', async () => {
+      const {container} = renderView({originsHidden: true});
+      await doubleRaf();
+
+      const groups =
+          container.querySelector('devtools-tree')!.shadowRoot!.querySelectorAll('.security-sidebar-origins');
+      for (const group of groups) {
+        assert.isTrue(group.hasAttribute('hidden') || group.classList.contains('hidden'));
+      }
+    });
+
+    it('invokes callbacks when overview and origins are clicked', async () => {
+      const mainOrigin = urlString`https://main.example.com`;
+      const origins = new Map([[mainOrigin, Protocol.Security.SecurityState.Secure]]);
+      const onElementSelected = sinon.stub();
+      const onShowOrigin = sinon.stub();
+
+      const {container} = renderView({mainOrigin, origins}, {onElementSelected, onShowOrigin});
+      await doubleRaf();
+
+      const shadow = container.querySelector('devtools-tree')!.shadowRoot!;
+
+      // Click overview
+      const overview = shadow.querySelector('.security-main-view-sidebar-tree-item') as HTMLElement;
+      assert.exists(overview);
+      overview.click();
+
+      sinon.assert.calledWith(onElementSelected, 'overview');
+      sinon.assert.calledWith(onShowOrigin, null);
+
+      // Click origin item
+      const originItem = shadow.querySelector('.security-sidebar-tree-item') as HTMLElement;
+      assert.exists(originItem);
+      originItem.click();
+
+      sinon.assert.calledWith(onElementSelected, mainOrigin);
+      sinon.assert.calledWith(onShowOrigin, mainOrigin);
+    });
+  });
 });

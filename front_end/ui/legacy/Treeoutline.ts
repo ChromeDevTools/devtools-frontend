@@ -1876,20 +1876,26 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
   }
 
   #getParentTreeElement(element: HTMLLIElement|TreeElementWrapper):
-      {treeElement: TreeElement, expanded: boolean, classes: DOMTokenList}|null {
+      {treeElement: TreeElement, expanded: boolean, classes: DOMTokenList, attributes?: NamedNodeMap}|null {
     const subtreeRoot = element.parentElement;
     if (!(subtreeRoot instanceof HTMLUListElement)) {
       return null;
     }
     if (subtreeRoot.role === 'tree') {
-      return {treeElement: this.#treeOutline.rootElement(), expanded: false, classes: subtreeRoot.classList};
+      return {
+        treeElement: this.#treeOutline.rootElement(),
+        expanded: false,
+        classes: subtreeRoot.classList,
+        attributes: subtreeRoot.attributes,
+      };
     }
     if (subtreeRoot.role !== 'group' || !subtreeRoot.parentElement) {
       return null;
     }
     const treeElement = TreeViewTreeElement.get(subtreeRoot.parentElement);
     const expanded = treeElement ? treeElement.expanded : hasBooleanAttribute(subtreeRoot.parentElement, 'open');
-    return treeElement ? {expanded, treeElement, classes: subtreeRoot.classList} : null;
+    return treeElement ? {expanded, treeElement, classes: subtreeRoot.classList, attributes: subtreeRoot.attributes} :
+                         null;
   }
 
   protected override updateNode(node: Node, attributeName: string|null): void {
@@ -1929,6 +1935,11 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
       }
       if (parent.treeElement.childCount() === 0) {
         parent.treeElement.childrenListElement.classList.add(...parent.classes.values());
+        for (const attr of parent.attributes || []) {
+          if (attr.name !== 'role' && attr.name !== 'class') {
+            parent.treeElement.childrenListElement.setAttribute(attr.name, attr.value);
+          }
+        }
       }
       let nextElement: TreeElement|null = null;
       for (let e: Element|null = node.nextElementSibling; e; e = e.nextElementSibling) {

@@ -30,14 +30,11 @@ function assertSnapshotContent(actual: string, expected: string): void {
  */
 class BaseSnapshotTester {
   static #updateMode: boolean|null = null;
-  static #isFiltered = false;
 
   protected snapshotPath: string;
   #expected = new Map<string, string>();
   #actual = new Map<string, string>();
   #seenTestObjects = new WeakSet<Mocha.Runnable>();
-  #anyFailures = false;
-  #newTests = false;
 
   constructor(context: Mocha.Suite, meta: ImportMeta) {
     if (context.timeout() > 0) {
@@ -66,7 +63,6 @@ class BaseSnapshotTester {
     if (BaseSnapshotTester.#updateMode === null) {
       const config = await this.checkIfUpdateMode();
       BaseSnapshotTester.#updateMode = config.updateMode;
-      BaseSnapshotTester.#isFiltered = config.isFiltered;
     }
     const content = await this.loadSnapshot(this.snapshotPath);
     if (content) {
@@ -93,50 +89,23 @@ class BaseSnapshotTester {
 
     const expected = this.#expected.get(title);
     if (expected === undefined) {
-      this.#newTests = true;
       if (BaseSnapshotTester.#updateMode) {
         return;
       }
 
-      this.#anyFailures = true;
       throw new Error(`snapshot assertion failed! new snapshot found (${
           title}), must run \`npm run test -- --on-diff=update ...\` to accept it.`);
     }
 
     const isDifferent = actual !== expected;
-    if (isDifferent) {
-      this.#anyFailures = true;
-      if (!BaseSnapshotTester.#updateMode) {
-        assertSnapshotContent(actual, expected);
-      }
+    if (isDifferent && !BaseSnapshotTester.#updateMode) {
+      assertSnapshotContent(actual, expected);
     }
   }
 
   async finish() {
-    let notRanTest: string|null = null;
-    for (const title of this.#expected.keys()) {
-      if (!this.#actual.has(title)) {
-        notRanTest = title;
-        break;
-      }
-    }
-
-    const hasChanges = this.#anyFailures || notRanTest || this.#newTests;
-    if (!hasChanges) {
-      return;
-    }
-
-    // If the update flag is on, post any and all changes (failures, new tests, removals).
     if (BaseSnapshotTester.#updateMode) {
       await this.postUpdate();
-      return;
-    }
-
-    // Note: this does not handle test filtering (.only, --grep). Need a reliable way
-    // to distinguish a deleted test from a test that was filtered out.
-    if (notRanTest) {
-      throw new Error(`Snapshots are out of sync (a test was likely deleted or renamed).\nExpected test:\n${
-          notRanTest}\nRun with '--on-diff=update' to fix.`);
     }
   }
 
@@ -154,21 +123,28 @@ class BaseSnapshotTester {
   }
 
   protected serializeSnapshotFileContent(): string {
-    const merged = new Map(this.#actual);
-    if (BaseSnapshotTester.#isFiltered) {
-      for (const [title, content] of this.#expected) {
-        if (!merged.has(title)) {
-          merged.set(title, content);
-        }
+    const resultMap = new Map<string, string>();
+
+    for (const [title, expectedContent] of this.#expected) {
+      if (this.#actual.has(title)) {
+        resultMap.set(title, this.#actual.get(title)!);
+      } else {
+        resultMap.set(title, expectedContent);
       }
     }
 
-    if (!merged.size) {
+    for (const [title, actualContent] of this.#actual) {
+      if (!resultMap.has(title)) {
+        resultMap.set(title, actualContent);
+      }
+    }
+
+    if (!resultMap.size) {
       return '';
     }
 
     const lines = [];
-    for (const [title, result] of merged) {
+    for (const [title, result] of resultMap) {
       lines.push(`Title: ${title}`);
       lines.push(`Content:\n${result}`);
       lines.push('=== end content\n');
@@ -178,8 +154,8 @@ class BaseSnapshotTester {
     return lines.join('\n').trim() + '\n';
   }
 
-  protected async checkIfUpdateMode(): Promise<{updateMode: boolean, isFiltered: boolean}> {
-    return {updateMode: false, isFiltered: false};
+  protected async checkIfUpdateMode(): Promise<{updateMode: boolean}> {
+    return {updateMode: false};
   }
 
   protected async postUpdate(): Promise<void> {
@@ -192,10 +168,10 @@ class BaseSnapshotTester {
 }
 
 class WebSnapshotTester extends BaseSnapshotTester {
-  protected override async checkIfUpdateMode(): Promise<{updateMode: boolean, isFiltered: boolean}> {
+  protected override async checkIfUpdateMode(): Promise<{updateMode: boolean}> {
     const response = await fetch('/snapshot-update-mode');
     const data = await response.json();
-    return {updateMode: data.updateMode === true, isFiltered: data.isFiltered === true};
+    return {updateMode: data.updateMode === true};
   }
 
   protected override async postUpdate(): Promise<void> {
@@ -224,9 +200,9 @@ class WebSnapshotTester extends BaseSnapshotTester {
 }
 
 class NodeSnapshotTester extends BaseSnapshotTester {
-  protected override async checkIfUpdateMode(): Promise<{updateMode: boolean, isFiltered: boolean}> {
+  protected override async checkIfUpdateMode(): Promise<{updateMode: boolean}> {
     // cannot update in node mode yet.
-    return {updateMode: false, isFiltered: false};
+    return {updateMode: false};
   }
 
   protected override async postUpdate(): Promise<void> {

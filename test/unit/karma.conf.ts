@@ -631,8 +631,7 @@ function snapshotTesterFactory() {
     if (req.url.startsWith('/snapshot-update-mode')) {
       res.writeHead(200, {'Content-Type': 'application/json'});
       const updateMode = TestConfig.onDiff.update === true;
-      const isFiltered = TestConfig.tests.some(t => TEST_ID_REGEX.test(t));
-      res.end(JSON.stringify({updateMode, isFiltered}));
+      res.end(JSON.stringify({updateMode}));
       return;
     }
 

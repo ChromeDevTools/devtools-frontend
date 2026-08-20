@@ -27,3 +27,8 @@ crbug.com/538332664 [ linux ] front_end/ui/legacy/components/object_ui/ObjectPro
 crbug.com/537672763 test/e2e/performance/wasm/performance_profiling.test.ts [ Failure Pass ]
 
 crbug.com/537136541 test/e2e/sources/inline-variable.test.ts:sources_tab:shows_correct_inline_variable_at_definition [ Failure Pass ]
+crbug.com/546489345 front_end/models/trace/Processor.test.ts:traceprocessor:can_use_a_trace_processor [ Failure Pass ]
+crbug.com/549621669 test/e2e/console/console-eval-global.test.ts:the_console_tab:interacts_with_the_global_scope_correctly [ Failure Pass ]
+crbug.com/549585978 test/e2e/cross_tool_integration/click-to-comment.test.ts:click-to-comment_mode_across_devtools_panels:creates_comment_on_dom_tree_item_in_elements_panel_with_treeitem_vepath [ Failure Pass ]
+crbug.com/549620844 test/e2e/elements/classes-pane.test.ts:the_classes_pane:removes_the_previewed_classes_on_esc [ Failure Pass ]
+crbug.com/537311179 test/e2e/memory/memory.test.ts:the_memory_panel:enables_the_sampling_timeline_checkbox_only_when_allocation_sampling_is_selected [ Failure Pass ]

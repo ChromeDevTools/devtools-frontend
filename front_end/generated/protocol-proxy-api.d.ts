@@ -713,6 +713,18 @@ declare namespace ProtocolProxyApi {
      */
     invoke_addPrivacySandboxEnrollmentOverride(params: Protocol.Browser.AddPrivacySandboxEnrollmentOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Gets the current globally-applied privacy control status
+     * See https://www.w3.org/TR/gpc/#get-global-privacy-control
+     */
+    invoke_getGlobalPrivacyControl(): Promise<Protocol.Browser.GetGlobalPrivacyControlResponse>;
+
+    /**
+     * Sets and then gets the current globally-applied privacy control status
+     * See https://www.w3.org/TR/gpc/#set-global-privacy-control
+     */
+    invoke_setGlobalPrivacyControl(params: Protocol.Browser.SetGlobalPrivacyControlRequest): Promise<Protocol.Browser.SetGlobalPrivacyControlResponse>;
+
   }
   export interface BrowserDispatcher {
     /**

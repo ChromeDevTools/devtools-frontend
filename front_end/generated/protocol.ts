@@ -2744,6 +2744,18 @@ export namespace Browser {
     url: string;
   }
 
+  export interface GetGlobalPrivacyControlResponse extends ProtocolResponseWithError {
+    gpc: boolean;
+  }
+
+  export interface SetGlobalPrivacyControlRequest {
+    gpc: boolean;
+  }
+
+  export interface SetGlobalPrivacyControlResponse extends ProtocolResponseWithError {
+    gpc: boolean;
+  }
+
   /**
    * Fired when page is about to start a download.
    */

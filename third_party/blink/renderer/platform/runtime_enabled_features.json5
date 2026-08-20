@@ -2328,12 +2328,6 @@
       base_feature: "none",
     },
     {
-      // For readonly inputs, do not allow access to the picker.
-      // This landed in M146 and can be removed in M148.
-      name: "DisallowPickerForReadonlyInputs",
-      status: "stable",
-    },
-    {
       name: "DisconnectWebSocketOnBFCache",
       status: "stable",
     },
@@ -2507,6 +2501,14 @@
       // https://crbug.com/542115030
       name: "DOMParserXmlScriptAlreadyStarted",
       status: "stable",
+    },
+    {
+      // https://chromestatus.com/feature/4909387902746624
+      // Enables dragging multiple files out of a web page via the
+      // DownloadURL-list drag type.
+      name: "DragAndDropDownloadURLList",
+      public: true,
+      status: "test",
     },
     {
       // Enables JS-constructed File objects (e.g. new File([bytes], 'photo.jpg'))
@@ -4251,7 +4253,7 @@
       // https://chromestatus.com/feature/5054329641893888
       // streamHTML, appendHTML, etc.
       name: "NewHTMLSettingMethods",
-      status: "experimental",
+      status: "stable",
       depends_on: ["SetHTMLCanRunScripts", "StreamingSanitizer", "TrustedTypesCreateParserOptions"]
     },
     {
@@ -5631,7 +5633,7 @@
     },
     {
       name: "SetHTMLCanRunScripts",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "SetSequentialFocusStartingPoint",
@@ -6100,12 +6102,6 @@
       status: "stable",
     },
     {
-      // Don't trigger table border rendering with only bordercolor attribute.
-      // This shipped in M146 and can be removed in M148.
-      name: "TableBorderColorNoImplicitBorder",
-      status: "stable",
-    },
-    {
       // When enabled (the legacy behavior), interior cell borders from the
       // `border`/`rules` attributes inherit the table's border-color. Disable
       // to launch the spec-compliant behavior, where they resolve to
@@ -6145,6 +6141,15 @@
       // This was added in M142 and can be removed after M147.
       // https://issues.chromium.org/issues/41408360
       name: "TargetInShadowDeterminedBeforeListener",
+      status: "stable",
+    },
+    {
+      // Makes getTargetRanges() of a deleteContentBackward beforeinput event
+      // cover only the code points that are actually deleted, instead of the
+      // whole grapheme cluster behind the caret.
+      // Enabled in M153, safe to remove in M155.
+      // https://issues.chromium.org/issues/539754135
+      name: "TargetRangesForBackwardDeletionUnit",
       status: "stable",
     },
     // For unit tests.
@@ -6445,7 +6450,7 @@
       // For example, it can enforce that any HTML setter would go through a
       // sanitizer. See https://github.com/w3c/trusted-types/issues/594
       name: "TrustedTypesCreateParserOptions",
-      status: "experimental",
+      status: "stable",
       depends_on: ["SanitizerAPI", "SetHTMLCanRunScripts"],
     },
     {
@@ -6974,7 +6979,7 @@
     },
     {
       name: "WebHID",
-      status: {"Android": "", "default": "stable"},
+      status: {"Android": "experimental", "default": "stable"},
     },
     {
       // It is only enabled in extension environment for now.
@@ -7356,7 +7361,7 @@
       // with its responseXML document.
       // https://crbug.com/466303347
       name: "XMLRustForNonXslt",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "XMLSerializerConsistentDefaultNsDeclMatching",
@@ -7365,12 +7370,6 @@
     {
       name: "XMLViewerForIframes",
       status: "experimental",
-    },
-    {
-      // Support XPath evaluation within Shadow DOM.
-      // This was added in M146 and can be removed after M148.
-      name: "XPathShadowDOMSupport",
-      status: "stable",
     },
     {
       // A feature flag that controls whether XSLT is supported by the browser.

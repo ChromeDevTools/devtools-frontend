@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../shell/shell.js';
-import '../../panels/js_timeline/js_timeline-meta.js';
+import '../../panels/timeline/timeline-meta.js';
 import '../../panels/mobile_throttling/mobile_throttling-meta.js';
 import '../../panels/network/network-meta.js';
 
@@ -31,12 +31,18 @@ const UIStrings = {
   showNode: 'Show Scripts',
 } as const;
 
-const str_ = i18n.i18n.registerUIStrings('entrypoints/js_app/js_app.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings(
+    'entrypoints/js_app/js_app.ts',
+    UIStrings,
+);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(
+    undefined,
+    str_,
+);
 
 let jsMainImplInstance: JsMainImpl;
-let loadedSourcesModule: (typeof Sources|undefined);
+let loadedSourcesModule: typeof Sources|undefined;
 
 async function loadSourcesModule(): Promise<typeof Sources> {
   if (!loadedSourcesModule) {
@@ -45,7 +51,9 @@ async function loadSourcesModule(): Promise<typeof Sources> {
   return loadedSourcesModule;
 }
 export class JsMainImpl implements Common.Runnable.Runnable {
-  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): JsMainImpl {
+  static instance(
+      opts: {forceNew: boolean|null} = {forceNew: null},
+      ): JsMainImpl {
     const {forceNew} = opts;
     if (!jsMainImplInstance || forceNew) {
       jsMainImplInstance = new JsMainImpl();
@@ -55,10 +63,16 @@ export class JsMainImpl implements Common.Runnable.Runnable {
   }
 
   async run(): Promise<void> {
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSDirectly);
+    Host.userMetrics.actionTaken(
+        Host.UserMetrics.Action.ConnectToNodeJSDirectly,
+    );
     void SDK.Connections.initMainConnection(async () => {
       const target = SDK.TargetManager.TargetManager.instance().createTarget(
-          'main', i18nString(UIStrings.main), SDK.Target.Type.NODE, null);
+          'main',
+          i18nString(UIStrings.main),
+          SDK.Target.Type.NODE,
+          null,
+      );
       void target.runtimeAgent().invoke_runIfWaitingForDebugger();
     }, Components.TargetDetachedDialog.TargetDetachedDialog.connectionLost);
   }
@@ -73,8 +87,10 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView(universe) {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesNavigator.NetworkNavigatorView.instance(
-        {forceNew: null, networkProjectManager: universe.networkProjectManager});
+    return Sources.SourcesNavigator.NetworkNavigatorView.instance({
+      forceNew: null,
+      networkProjectManager: universe.networkProjectManager,
+    });
   },
 });
 

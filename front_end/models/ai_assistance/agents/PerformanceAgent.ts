@@ -5,7 +5,6 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import type {UrlString} from '../../../core/platform/DevToolsPath.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -35,6 +34,8 @@ import {
   ResponseType,
   type ToolResult,
 } from './AiAgent.js';
+
+type UrlString = Platform.DevToolsPath.UrlString;
 
 const UIStringsNotTranslated = {
   /**

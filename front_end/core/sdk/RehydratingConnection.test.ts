@@ -10,13 +10,17 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {SnapshotTester} from '../../testing/SnapshotTester.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Common from '../common/common.js';
-import type {Message} from '../protocol_client/InspectorBackend.js';
+import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 
-import type {
-  RehydratingExecutionContext, RehydratingResource, RehydratingScript, RehydratingTarget, ServerMessage} from
-  './RehydratingObject.js';
 import * as SDK from './sdk.js';
+
+type RehydratingExecutionContext = SDK.RehydratingObject.RehydratingExecutionContext;
+type RehydratingResource = SDK.RehydratingObject.RehydratingResource;
+type RehydratingScript = SDK.RehydratingObject.RehydratingScript;
+type RehydratingTarget = SDK.RehydratingObject.RehydratingTarget;
+type ServerMessage = SDK.RehydratingObject.ServerMessage;
+type Message = ProtocolClient.InspectorBackend.Message;
 
 const mockTarget1: RehydratingTarget = {
   targetId: 'ABCDE' as Protocol.Target.TargetID,
@@ -115,7 +119,10 @@ describe('RehydratingSession', () => {
   const target = mockTarget1;
   let mockRehydratingConnection: MockRehydratingConnection;
   let mockRehydratingSession: SDK.RehydratingConnection.RehydratingSession;
-  const executionContextsForTarget1 = [mockExecutionContext1, mockExecutionContext2];
+  const executionContextsForTarget1 = [
+    mockExecutionContext1,
+    mockExecutionContext2,
+  ];
   const scriptsForTarget1 = [mockScript1, mockScript2];
   const resourcesForTarget1 = [mockResource];
 
@@ -139,8 +146,13 @@ describe('RehydratingSession', () => {
   beforeEach(() => {
     mockRehydratingConnection = new MockRehydratingConnection();
     mockRehydratingSession = new RehydratingSessionForTest(
-        sessionId, target, executionContextsForTarget1, scriptsForTarget1, resourcesForTarget1,
-        mockRehydratingConnection);
+        sessionId,
+        target,
+        executionContextsForTarget1,
+        scriptsForTarget1,
+        resourcesForTarget1,
+        mockRehydratingConnection,
+    );
     mockRehydratingSession.declareSessionAttachedToTarget();
   });
 
@@ -150,10 +162,12 @@ describe('RehydratingSession', () => {
     assert.strictEqual(attachToTargetMessage.method, 'Target.attachedToTarget');
     assert.strictEqual(
         (attachToTargetMessage.params as Protocol.Target.AttachedToTargetEvent).sessionId.toString(),
-        sessionId.toString());
+        sessionId.toString(),
+    );
     assert.strictEqual(
         (attachToTargetMessage.params as Protocol.Target.AttachedToTargetEvent).targetInfo.targetId.toString(),
-        target.targetId.toString());
+        target.targetId.toString(),
+    );
   });
 
   it('sends execution context created while handling runtime enable', async function() {
@@ -167,11 +181,15 @@ describe('RehydratingSession', () => {
     const executionContextCreatedMessages = mockRehydratingConnection.messageQueue.slice(0, 2);
     const resultMessage = mockRehydratingConnection.messageQueue.slice(2);
     for (const executionContextCreatedMessage of executionContextCreatedMessages) {
-      assert.strictEqual(executionContextCreatedMessage.method, 'Runtime.executionContextCreated');
+      assert.strictEqual(
+          executionContextCreatedMessage.method,
+          'Runtime.executionContextCreated',
+      );
       assert.strictEqual(
           (executionContextCreatedMessage.params as Protocol.Runtime.ExecutionContextCreatedEvent)
               .context.auxData.frameId,
-          target.targetId);
+          target.targetId,
+      );
     }
     assert.isNotNull(resultMessage[0]);
     assert.strictEqual(resultMessage[0].id, messageId);
@@ -193,7 +211,8 @@ describe('RehydratingSession', () => {
     assert.strictEqual(scriptSourceTextMessage.id, messageId);
     assert.strictEqual(
         (scriptSourceTextMessage.result as Protocol.Debugger.GetScriptSourceResponse).scriptSource,
-        mockScript1.sourceText);
+        mockScript1.sourceText,
+    );
   });
 });
 
@@ -212,20 +231,25 @@ describeWithEnvironment('RehydratingConnection emittance', function() {
   });
 
   it('emits the expected CDP data', async function() {
-    const contents = await TraceLoader.fixtureContents(this, 'enhanced-paul.json.gz');
+    const contents = await TraceLoader.fixtureContents(
+        this,
+        'enhanced-paul.json.gz',
+    );
 
     const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();
     const messageLog: Array<string|Message> = [];
 
-    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport((e: string) => {
-      throw new Error(`Connection lost: ${e}`);
-    });
+    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(
+        (e: string) => {
+          throw new Error(`Connection lost: ${e}`);
+        },
+    );
 
     // Impractical to invoke the real devtools frontend, so we fake the 3 CDP handlers that
     // `RehydratingSession.handleFrontendMessageAsFakeCDPAgent` cares about
     let id = 1;
     const fakeDevToolsFrontend = (arg0: Message|string): void => {
-      const message = ((typeof arg0 === 'string') ? JSON.parse(arg0) : arg0) as Message;
+      const message = (typeof arg0 === 'string' ? JSON.parse(arg0) : arg0) as Message;
 
       messageLog.push('RehydratingConnection says:', message);
 
@@ -238,8 +262,12 @@ describeWithEnvironment('RehydratingConnection emittance', function() {
       if (message.method === 'Debugger.scriptParsed') {
         const scriptParsedParams = message.params as Protocol.Debugger.ScriptParsedEvent;
         const sessionId = message.sessionId;
-        conn.sendRawMessage(
-            {id: id++, sessionId, method: 'Debugger.getScriptSource', params: {scriptId: scriptParsedParams.scriptId}});
+        conn.sendRawMessage({
+          id: id++,
+          sessionId,
+          method: 'Debugger.getScriptSource',
+          params: {scriptId: scriptParsedParams.scriptId},
+        });
       }
     };
     conn.setOnMessage(fakeDevToolsFrontend);
@@ -252,7 +280,10 @@ describeWithEnvironment('RehydratingConnection emittance', function() {
 
     // Kick off the rehydration process
     conn.onReceiveHostWindowPayload({
-      data: {type: 'REHYDRATING_TRACE_FILE', traceJson: JSON.stringify(contents)},
+      data: {
+        type: 'REHYDRATING_TRACE_FILE',
+        traceJson: JSON.stringify(contents),
+      },
     } as MessageEvent);
 
     // Poll for rehydration complete
@@ -302,27 +333,31 @@ describeWithEnvironment('RehydratingConnection ?traceURL loading', () => {
   // A minimal "enhanced trace" whose single primary frame's url is fully controlled.
   function makeTrace(frameUrl: string): object {
     return {
-      traceEvents: [{
-        cat: 'disabled-by-default-devtools.timeline',
-        name: 'TracingStartedInBrowser',
-        ph: 'I',
-        pid: 1,
-        tid: 1,
-        ts: 0,
-        args: {
-          data: {
-            frames: [{
-              frame: 'FRAME',
-              isInPrimaryMainFrame: true,
-              isOutermostMainFrame: true,
-              parent: '',
-              processId: 1,
-              url: frameUrl,
-              pid: 1,
-            }],
+      traceEvents: [
+        {
+          cat: 'disabled-by-default-devtools.timeline',
+          name: 'TracingStartedInBrowser',
+          ph: 'I',
+          pid: 1,
+          tid: 1,
+          ts: 0,
+          args: {
+            data: {
+              frames: [
+                {
+                  frame: 'FRAME',
+                  isInPrimaryMainFrame: true,
+                  isOutermostMainFrame: true,
+                  parent: '',
+                  processId: 1,
+                  url: frameUrl,
+                  pid: 1,
+                },
+              ],
+            },
           },
         },
-      }],
+      ],
     };
   }
 
@@ -355,7 +390,9 @@ describeWithEnvironment('RehydratingConnection ?traceURL loading', () => {
     respondWith(makeTrace(INJECTED_MARKER));
     const onConnectionLost = sinon.stub();
 
-    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(onConnectionLost);
+    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(
+        onConnectionLost,
+    );
     const messages: ServerMessage[] = [];
     conn.setOnMessage(message => messages.push(message as ServerMessage));
 
@@ -371,7 +408,9 @@ describeWithEnvironment('RehydratingConnection ?traceURL loading', () => {
     respondWith(makeTrace(INJECTED_MARKER));
     const onConnectionLost = sinon.stub();
 
-    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(onConnectionLost);
+    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(
+        onConnectionLost,
+    );
     conn.setOnMessage(() => {});
 
     assert.isUndefined(conn.fetchPromiseForTest);
@@ -386,7 +425,9 @@ describeWithEnvironment('RehydratingConnection ?traceURL loading', () => {
     const onConnectionLost = sinon.stub();
 
     const messages: ServerMessage[] = [];
-    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(onConnectionLost);
+    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(
+        onConnectionLost,
+    );
     conn.setOnMessage(message => messages.push(message as ServerMessage));
 
     await conn.fetchPromiseForTest;
@@ -402,7 +443,9 @@ describeWithEnvironment('RehydratingConnection ?traceURL loading', () => {
     fetchStub.rejects(new TypeError('Failed to fetch'));
     const onConnectionLost = sinon.stub();
 
-    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(onConnectionLost);
+    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(
+        onConnectionLost,
+    );
     conn.setOnMessage(() => {});
 
     await conn.fetchPromiseForTest;
@@ -414,7 +457,9 @@ describe('isTraceUrlAllowed', () => {
   const {isTraceUrlAllowed} = SDK.RehydratingConnection;
 
   it('allows same-origin, devtools: and loopback URLs', () => {
-    assert.isTrue(isTraceUrlAllowed(new URL('/trace.json', window.location.href).href));
+    assert.isTrue(
+        isTraceUrlAllowed(new URL('/trace.json', window.location.href).href),
+    );
     assert.isTrue(isTraceUrlAllowed('/relative/trace.json.gz'));
     assert.isTrue(isTraceUrlAllowed('devtools://devtools/bundled/trace.json'));
     assert.isTrue(isTraceUrlAllowed('http://localhost:1234/trace.json'));
@@ -425,7 +470,9 @@ describe('isTraceUrlAllowed', () => {
   it('rejects arbitrary remote hosts and non-http(s) schemes', () => {
     assert.isFalse(isTraceUrlAllowed('https://evil.example.com/trace.json'));
     // A hostname that merely contains "localhost" must not be treated as loopback.
-    assert.isFalse(isTraceUrlAllowed('https://localhost.evil.example.com/trace.json'));
+    assert.isFalse(
+        isTraceUrlAllowed('https://localhost.evil.example.com/trace.json'),
+    );
     assert.isFalse(isTraceUrlAllowed('javascript:alert(document.domain)'));
     assert.isFalse(isTraceUrlAllowed('data:application/json,%7B%7D'));
     assert.isFalse(isTraceUrlAllowed('file:///etc/passwd'));

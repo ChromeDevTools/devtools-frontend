@@ -335,7 +335,7 @@ export interface ViewOutput {
   editorRef?: TextEditor.TextEditor.TextEditor;
 }
 
-export function adornerRef(): DirectiveResult<typeof Lit.Directives.RefDirective> {
+export function adornerRef(): DirectiveResult {
   let adorner: Adorners.Adorner.Adorner|undefined;
   return ref(el => {
     if (adorner) {

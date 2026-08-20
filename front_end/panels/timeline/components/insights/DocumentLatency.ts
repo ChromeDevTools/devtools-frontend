@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {DocumentLatencyInsightModel} from '../../../../models/trace/insights/DocumentLatency.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -13,7 +12,8 @@ import {Checklist} from './Checklist.js';
 const {html} = Lit;
 const {widget} = UI.Widget;
 
-export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsightModel> {
+export class DocumentLatency extends
+    BaseInsightComponent<Trace.Insights.Models.DocumentLatency.DocumentLatencyInsightModel> {
   override internalName = 'document-latency';
 
   protected override hasAskAiSupport(): boolean {

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {ViewportInsightModel} from '../../../../models/trace/insights/Viewport.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
@@ -11,7 +10,7 @@ import {nodeLink} from './NodeLink.js';
 
 const {html} = Lit;
 
-export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
+export class Viewport extends BaseInsightComponent<Trace.Insights.Models.Viewport.ViewportInsightModel> {
   override internalName = 'viewport';
 
   protected override hasAskAiSupport(): boolean {

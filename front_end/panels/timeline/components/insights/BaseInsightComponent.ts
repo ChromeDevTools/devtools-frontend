@@ -8,7 +8,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Root from '../../../../core/root/root.js';
 import * as AIAssistance from '../../../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../../../models/badges/badges.js';
-import type {InsightModel} from '../../../../models/trace/insights/types.js';
+import type * as Insights from '../../../../models/trace/insights/insights.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
@@ -20,6 +20,8 @@ import baseInsightComponentStyles from './baseInsightComponent.css.js';
 import {md} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import type {TableState} from './Table.js';
+
+type InsightModel = Insights.Types.InsightModel;
 
 const {html} = Lit;
 

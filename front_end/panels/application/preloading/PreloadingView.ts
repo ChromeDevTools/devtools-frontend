@@ -22,7 +22,6 @@ import {Directives, html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as PreloadingComponents from './components/components.js';
-import {capitalizedAction, ruleSetTagOrLocationShort} from './components/PreloadingString.js';
 import * as PreloadingHelper from './helper/helper.js';
 import preloadingViewStyles from './preloadingView.css.js';
 import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
@@ -404,7 +403,11 @@ export function applyFilterText(filterText: string, rows: PreloadingComponents.P
   return rows.filter(row => {
     const attempt = row.pipeline.getOriginallyTriggered();
     const url = attempt.key.url.toLowerCase();
-    const action = capitalizedAction(attempt.action).toLowerCase();
+    const action = PreloadingComponents.PreloadingString
+                       .capitalizedAction(
+                           attempt.action,
+                           )
+                       .toLowerCase();
     const status = PreloadingUIUtils.status(attempt.status).toLowerCase();
 
     // Each term must match (AND logic between terms)
@@ -845,7 +848,10 @@ class PreloadingRuleSetSelector implements
       return i18n.i18n.lockedString('Internal error');
     }
 
-    return ruleSetTagOrLocationShort(ruleSet, pageURL());
+    return PreloadingComponents.PreloadingString.ruleSetTagOrLocationShort(
+        ruleSet,
+        pageURL(),
+    );
   }
 
   subtitleFor(id: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId): string {

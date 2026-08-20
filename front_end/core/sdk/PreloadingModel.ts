@@ -4,8 +4,7 @@
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
-import type * as Common from '../common/common.js';
-import {MapWithDefault} from '../common/MapWithDefault.js';
+import * as Common from '../common/common.js';
 import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import {
@@ -652,12 +651,15 @@ class PreloadingAttemptRegistry {
   private map: Map<PreloadingAttemptId, PreloadingAttemptInternal> =
       new Map<PreloadingAttemptId, PreloadingAttemptInternal>();
   private pipelines:
-      MapWithDefault<Protocol.Preload.PreloadPipelineId, Map<Protocol.Preload.SpeculationAction, PreloadingAttemptId>> =
-          new MapWithDefault<
-              Protocol.Preload.PreloadPipelineId, Map<Protocol.Preload.SpeculationAction, PreloadingAttemptId>>();
+      Common.MapWithDefault.MapWithDefault<Protocol.Preload.PreloadPipelineId,
+                                           Map<Protocol.Preload.SpeculationAction, PreloadingAttemptId>> =
+      new Common.MapWithDefault.MapWithDefault<Protocol.Preload.PreloadPipelineId,
+                                               Map<Protocol.Preload.SpeculationAction, PreloadingAttemptId>>();
 
-  private enrich(attempt: PreloadingAttemptInternal, source: Protocol.Preload.PreloadingAttemptSource|null):
-      PreloadingAttempt {
+  private enrich(
+      attempt: PreloadingAttemptInternal,
+      source: Protocol.Preload.PreloadingAttemptSource|null,
+      ): PreloadingAttempt {
     let ruleSetIds: Protocol.Preload.RuleSetId[] = [];
     let nodeIds: Protocol.DOM.BackendNodeId[] = [];
     if (source !== null) {
@@ -706,12 +708,17 @@ class PreloadingAttemptRegistry {
     if (pipeline.size === 0) {
       throw new Error('unreachable');
     }
-    return [...pipeline.keys()].every(action => getSortKey(action) <= getSortKey(attempt.action));
+    return [...pipeline.keys()].every(
+        action => getSortKey(action) <= getSortKey(attempt.action),
+    );
   }
 
   // Returns reference. Don't save returned values.
   // Returned values may or may not be updated as the time grows.
-  getById(id: PreloadingAttemptId, sources: SourceRegistry): PreloadingAttempt|null {
+  getById(
+      id: PreloadingAttemptId,
+      sources: SourceRegistry,
+      ): PreloadingAttempt|null {
     const attempt = this.map.get(id) || null;
     if (attempt === null) {
       return null;
@@ -725,16 +732,23 @@ class PreloadingAttemptRegistry {
   //
   // Returns reference. Don't save returned values.
   // Returned values may or may not be updated as the time grows.
-  getAllRepresentative(ruleSetId: Protocol.Preload.RuleSetId|null, sources: SourceRegistry):
-      Array<WithId<PreloadingAttemptId, PreloadingAttempt>> {
+  getAllRepresentative(
+      ruleSetId: Protocol.Preload.RuleSetId|null,
+      sources: SourceRegistry,
+      ): Array<WithId<PreloadingAttemptId, PreloadingAttempt>> {
     return [...this.map.entries()]
-        .map(([id, value]) => ({id, value: this.enrich(value, sources.getById(id))}))
+        .map(([id, value]) => ({
+               id,
+               value: this.enrich(value, sources.getById(id)),
+             }))
         .filter(({value}) => !ruleSetId || value.ruleSetIds.includes(ruleSetId))
         .filter(({value}) => this.isAttemptRepresentative(value));
   }
 
-  getPipeline(pipelineId: Protocol.Preload.PreloadPipelineId, sources: SourceRegistry):
-      Map<Protocol.Preload.SpeculationAction, PreloadingAttempt>|null {
+  getPipeline(
+      pipelineId: Protocol.Preload.PreloadPipelineId,
+      sources: SourceRegistry,
+      ): Map<Protocol.Preload.SpeculationAction, PreloadingAttempt>|null {
     const pipeline = this.pipelines.get(pipelineId);
 
     if (pipeline === undefined || pipeline.size === 0) {
@@ -745,11 +759,13 @@ class PreloadingAttemptRegistry {
     for (const [id, attempt] of this.map.entries()) {
       map[id] = attempt;
     }
-    return new Map(pipeline.entries().map(([action, id]) => {
-      const attempt = this.getById(id, sources);
-      assertNotNullOrUndefined(attempt);
-      return [action, attempt];
-    }));
+    return new Map(
+        pipeline.entries().map(([action, id]) => {
+          const attempt = this.getById(id, sources);
+          assertNotNullOrUndefined(attempt);
+          return [action, attempt];
+        }),
+    );
   }
 
   upsert(attempt: PreloadingAttemptInternal): void {
@@ -770,7 +786,10 @@ class PreloadingAttemptRegistry {
         continue;
       }
 
-      const pipeline = this.pipelines.getOrInsertComputed(attempt.pipelineId, () => new Map());
+      const pipeline = this.pipelines.getOrInsertComputed(
+          attempt.pipelineId,
+          () => new Map(),
+      );
       pipeline.set(attempt.action, id);
     }
   }
@@ -830,7 +849,10 @@ class PreloadingAttemptRegistry {
   // Removes keys in `this.map` that are not in `sources`. This is used to
   // remove attempts that no longer have a matching speculation rule.
   cleanUpRemovedAttempts(sources: SourceRegistry): void {
-    const keysToRemove = Array.from(this.map.keys()).filter(key => !sources.getById(key));
+    const keysToRemove = Array.from(this.map.keys())
+                             .filter(
+                                 key => !sources.getById(key),
+                             );
     for (const key of keysToRemove) {
       this.map.delete(key);
     }

@@ -5,7 +5,6 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
-import type {SyntheticInteractionPair} from '../types/TraceEvents.js';
 import type * as Types from '../types/types.js';
 
 import {
@@ -58,8 +57,8 @@ const str_ = i18n.i18n.registerUIStrings('models/trace/insights/INPBreakdown.ts'
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type INPBreakdownInsightModel = InsightModel<typeof UIStrings, {
-  longestInteractionEvent?: SyntheticInteractionPair,
-  highPercentileInteractionEvent?: SyntheticInteractionPair,
+  longestInteractionEvent?: Types.Events.SyntheticInteractionPair,
+  highPercentileInteractionEvent?: Types.Events.SyntheticInteractionPair,
 }>;
 
 export function isINPBreakdownInsight(insight: InsightModel): insight is INPBreakdownInsightModel {
@@ -101,7 +100,7 @@ export function generateInsight(
     return finalize({});
   }
 
-  const longestByInteractionId = new Map<number, SyntheticInteractionPair>();
+  const longestByInteractionId = new Map<number, Types.Events.SyntheticInteractionPair>();
   for (const event of interactionEvents) {
     const key = event.interactionId;
     const longest = longestByInteractionId.get(key);

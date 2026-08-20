@@ -73,12 +73,10 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
-    "../../core/common:bundle",
     "../../models/comment_manager:bundle",
     "../../testing",
     "../../third_party/codemirror.next:bundle",
     "../../ui/legacy:bundle",
-    "../../ui/lit:bundle",
     "../components/text_editor:bundle",
   ]
 }

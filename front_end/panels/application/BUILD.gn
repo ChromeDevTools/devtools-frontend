@@ -215,7 +215,6 @@ devtools_ui_module("unittests") {
     "../../ui/components/report_view:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy:ui",
-    "../../ui/legacy/components/object_ui:bundle",
     "../protocol_monitor:bundle",
     "preloading/components:bundle",
   ]

@@ -165,7 +165,6 @@ devtools_entrypoint("bundle") {
   deps = [
     ":css_files",
     ":timeline",
-    "components:bundle",
     "utils:bundle",
   ]
 
@@ -199,13 +198,10 @@ devtools_entrypoint("meta") {
     ":bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
-    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../models/live-metrics:bundle",
-    "../../panels/profiler:bundle",
     "../../ui/legacy:bundle",
     "../../ui/settings:bundle",
-    "./components:bundle",
   ]
 
   visibility = [ "../../entrypoints/*" ]

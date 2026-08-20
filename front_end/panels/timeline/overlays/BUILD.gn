@@ -52,7 +52,6 @@ devtools_ui_module("unittests") {
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/perf_ui:bundle",
-    "../../common:bundle",
     "components:bundle",
   ]
 }

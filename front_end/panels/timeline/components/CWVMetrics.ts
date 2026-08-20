@@ -12,7 +12,6 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import cwvMetricsStyles from './cwvMetrics.css.js';
-import {md} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import metricValueStyles from './metricValueStyles.css.js';
 import {isFieldWorseThanLocal, NumberWithUnit} from './Utils.js';
@@ -266,7 +265,7 @@ const CWV_METRICS_VIEW: MetricsView = (input, _output, target) => {
           .jslogContext=${'timeline.insights.dismiss-field-mismatch'}
           @click=${onDismisFieldMismatchNotice}
         ></devtools-button>
-        <div class="field-mismatch-notice__body">${md(i18nString(UIStrings.fieldMismatchNotice))}</div>
+        <div class="field-mismatch-notice__body">${Insights.Helpers.md(i18nString(UIStrings.fieldMismatchNotice))}</div>
       </div>
     `;
     // clang-format on

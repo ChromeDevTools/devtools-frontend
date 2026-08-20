@@ -90,7 +90,6 @@ ts_library("unittests") {
     "../../core/text_utils:bundle",
     "../../generated",
     "../../testing",
-    "../bindings:bundle",
     "../breakpoints:bundle",
     "../project_settings:bundle",
     "../workspace:bundle",

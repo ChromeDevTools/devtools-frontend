@@ -5,7 +5,11 @@
 import * as RecordingClient from './RecordingClient.js';
 import * as SelectorPicker from './SelectorPicker.js';
 import type {AccessibilityBindings} from './selectors/ARIASelector.js';
+import {findMinMax} from './selectors/CSSSelector.js';
 import type * as Step from './Step.js';
+
+// Exported for testing
+export {findMinMax};
 
 declare global {
   interface Window {

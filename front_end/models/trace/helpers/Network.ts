@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Protocol from '../../../generated/protocol.js';
-import type {RenderBlocking, SyntheticNetworkRequest} from '../types/TraceEvents.js';
+import type * as Types from '../types/types.js';
+
+type RenderBlocking = Types.Events.RenderBlocking;
+type SyntheticNetworkRequest = Types.Events.SyntheticNetworkRequest;
 
 // Important: we purposefully treat `potentially_blocking` as
 // non-render-blocking here because:

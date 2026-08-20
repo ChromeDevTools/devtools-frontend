@@ -22,7 +22,8 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as NetworkComponents from './components.js';
-import type {EditableSpan} from './EditableSpan.js';
+
+type EditableSpan = NetworkComponents.EditableSpan.EditableSpan;
 
 async function renderHeaderSectionRow(header: NetworkComponents.HeaderSectionRow.HeaderDescriptor): Promise<{
   component: NetworkComponents.HeaderSectionRow.HeaderSectionRow,

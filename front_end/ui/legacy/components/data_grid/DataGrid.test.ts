@@ -10,7 +10,6 @@ import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as DataGrid from './data_grid.js';
-import type {DataGridInternalToken} from './DataGridElement.js';
 
 describeWithEnvironment('DataGrid', () => {
   let container!: HTMLElement;
@@ -28,7 +27,7 @@ describeWithEnvironment('DataGrid', () => {
 
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({displayName: 'Test', columns});
 
-    const token = {token: 'DataGridInternalToken'} as DataGridInternalToken;
+    const token = {token: 'DataGridInternalToken'} as Parameters<typeof dataGrid.setEditCallback>[1];
     const editCallback = sinon.stub();
     dataGrid.setEditCallback(editCallback, token);
 

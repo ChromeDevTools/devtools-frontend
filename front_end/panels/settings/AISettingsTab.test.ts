@@ -8,7 +8,6 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type {LocalizedString} from '../../core/platform/UIString.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
@@ -16,6 +15,8 @@ import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewF
 import * as Switch from '../../ui/components/switch/switch.js';
 
 import * as Settings from './settings.js';
+
+type LocalizedString = Platform.UIString.LocalizedString;
 
 describeWithEnvironment('AISettingsTab', () => {
   let deleteAiAssistanceHistoryStub:

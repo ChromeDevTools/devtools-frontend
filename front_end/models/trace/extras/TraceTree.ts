@@ -4,10 +4,11 @@
 
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Helpers from '../helpers/helpers.js';
-import {SamplesIntegrator} from '../helpers/SamplesIntegrator.js';
 import * as Types from '../types/types.js';
 
 import type {TraceFilter} from './TraceFilter.js';
+
+const SamplesIntegrator = Helpers.SamplesIntegrator.SamplesIntegrator;
 
 export class Node {
   /** ms */

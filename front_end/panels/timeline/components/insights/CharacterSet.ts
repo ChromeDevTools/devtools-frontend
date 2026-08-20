@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {CharacterSetInsightModel} from '../../../../models/trace/insights/CharacterSet.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -13,7 +12,7 @@ import {Checklist} from './Checklist.js';
 const {html} = Lit;
 const {widget} = UI.Widget;
 
-export class CharacterSet extends BaseInsightComponent<CharacterSetInsightModel> {
+export class CharacterSet extends BaseInsightComponent<Trace.Insights.Models.CharacterSet.CharacterSetInsightModel> {
   override internalName = 'character-set';
 
   protected override hasAskAiSupport(): boolean {

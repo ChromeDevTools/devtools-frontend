@@ -8,7 +8,6 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
-import type {SlowCSSSelectorInsightModel} from '../../../../models/trace/insights/SlowCSSSelector.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import type * as Linkifier from '../../../../ui/components/linkifier/linkifier.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
@@ -22,7 +21,8 @@ const {UIStrings, i18nString} = Trace.Insights.Models.SlowCSSSelector;
 const {html} = Lit;
 const {widget} = UI.Widget;
 
-export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsightModel> {
+export class SlowCSSSelector extends
+    BaseInsightComponent<Trace.Insights.Models.SlowCSSSelector.SlowCSSSelectorInsightModel> {
   override internalName = 'slow-css-selector';
   #selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
 

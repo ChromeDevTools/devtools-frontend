@@ -5,7 +5,6 @@
 import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type {CacheInsightModel} from '../../../../models/trace/insights/Cache.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -19,7 +18,7 @@ const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.C
 const {html} = Lit;
 const {widget} = UI.Widget;
 
-export class Cache extends BaseInsightComponent<CacheInsightModel> {
+export class Cache extends BaseInsightComponent<Trace.Insights.Models.Cache.CacheInsightModel> {
   override internalName = 'cache';
 
   protected override hasAskAiSupport(): boolean {

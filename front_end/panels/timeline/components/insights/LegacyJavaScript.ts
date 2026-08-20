@@ -6,8 +6,6 @@ import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
-import type {
-  LegacyJavaScriptInsightModel, PatternMatchResult} from '../../../../models/trace/insights/LegacyJavaScript.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -21,7 +19,8 @@ const {UIStrings, i18nString} = Trace.Insights.Models.LegacyJavaScript;
 const {html} = Lit;
 const {widget} = UI.Widget;
 
-export class LegacyJavaScript extends BaseInsightComponent<LegacyJavaScriptInsightModel> {
+export class LegacyJavaScript extends
+    BaseInsightComponent<Trace.Insights.Models.LegacyJavaScript.LegacyJavaScriptInsightModel> {
   override internalName = 'legacy-javascript';
 
   override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
@@ -32,7 +31,8 @@ export class LegacyJavaScript extends BaseInsightComponent<LegacyJavaScriptInsig
     return true;
   }
 
-  async #revealLocation(script: Trace.Handlers.ModelHandlers.Scripts.Script, match: PatternMatchResult): Promise<void> {
+  async #revealLocation(script: Trace.Handlers.ModelHandlers.Scripts.Script,
+                        match: Trace.Insights.Models.LegacyJavaScript.PatternMatchResult): Promise<void> {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
       return;

@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import type {CategorizedBreakpoint} from '../../core/sdk/CategorizedBreakpoint.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -17,8 +16,8 @@ import * as BrowserDebugger from './browser_debugger.js';
 class TestSidebarPane extends BrowserDebugger.CategorizedBreakpointsSidebarPane.CategorizedBreakpointsSidebarPane {
   readonly view:
       ViewFunctionStub<typeof BrowserDebugger.CategorizedBreakpointsSidebarPane.CategorizedBreakpointsSidebarPane>;
-  readonly breakpoints: CategorizedBreakpoint[];
-  breakpointFromPausedDetails: CategorizedBreakpoint|null = null;
+  readonly breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[];
+  breakpointFromPausedDetails: SDK.CategorizedBreakpoint.CategorizedBreakpoint|null = null;
 
   constructor() {
     const breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[] = [

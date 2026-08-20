@@ -8,7 +8,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
-import type {AggregatedIssue} from '../../models/issues_manager/IssueAggregator.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
@@ -36,7 +35,6 @@ import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBu
 import {AffectedSourcesView} from './AffectedSourcesView.js';
 import {AffectedTrackingSitesView} from './AffectedTrackingSitesView.js';
 import * as Components from './components/components.js';
-import type {HiddenIssuesMenuData} from './components/HideIssuesMenu.js';
 import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
 import {GenericIssueDetailsView} from './GenericIssueDetailsView.js';
 
@@ -220,7 +218,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
 }
 
 export class IssueView extends UI.TreeOutline.TreeElement {
-  #issue: AggregatedIssue;
+  #issue: IssuesManager.IssueAggregator.AggregatedIssue;
   #description: IssuesManager.MarkdownIssueDescription.IssueDescription;
   override toggleOnClick: boolean;
   affectedResources: UI.TreeOutline.TreeElement;
@@ -233,7 +231,8 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   #hiddenIssuesMenu?: Components.HideIssuesMenu.HideIssuesMenu;
   #contentCreated = false;
 
-  constructor(issue: AggregatedIssue, description: IssuesManager.MarkdownIssueDescription.IssueDescription) {
+  constructor(issue: IssuesManager.IssueAggregator.AggregatedIssue,
+              description: IssuesManager.MarkdownIssueDescription.IssueDescription) {
     super(undefined, undefined, Platform.StringUtilities.toKebabCase(issue.getCategory()));
     this.#issue = issue;
     this.#description = description;
@@ -277,7 +276,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
    * this IssueView was initialized with fits the new issue as well, i.e.
    * title and issue description will not be updated.
    */
-  setIssue(issue: AggregatedIssue): void {
+  setIssue(issue: IssuesManager.IssueAggregator.AggregatedIssue): void {
     if (this.#issue !== issue) {
       this.#needsUpdateOnExpand = true;
     }
@@ -397,7 +396,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     }
     this.listItemElement.classList.toggle('hidden-issue', this.#issue.isHidden());
     if (this.#hiddenIssuesMenu) {
-      const data: HiddenIssuesMenuData = {
+      const data: Components.HideIssuesMenu.HiddenIssuesMenuData = {
         menuItemLabel: this.#issue.isHidden() ? i18nString(UIStrings.unhideIssuesLikeThis) :
                                                 i18nString(UIStrings.hideIssuesLikeThis),
         menuItemAction: () => {

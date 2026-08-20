@@ -7,8 +7,11 @@ import {assert} from 'chai';
 import type * as Protocol from '../../generated/protocol.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
-import type {RehydratingExecutionContext, RehydratingScript, RehydratingTarget} from './RehydratingObject.js';
 import * as SDK from './sdk.js';
+
+type RehydratingExecutionContext = SDK.RehydratingObject.RehydratingExecutionContext;
+type RehydratingScript = SDK.RehydratingObject.RehydratingScript;
+type RehydratingTarget = SDK.RehydratingObject.RehydratingTarget;
 
 describe('EnhancedTracesParser', () => {
   let enhancedTracesParser: SDK.EnhancedTracesParser.EnhancedTracesParser;

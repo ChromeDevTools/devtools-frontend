@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type {LCPBreakdownInsightModel} from '../../../../models/trace/insights/LCPBreakdown.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -17,7 +16,7 @@ const {UIStrings, i18nString} = Trace.Insights.Models.LCPBreakdown;
 const {html} = Lit;
 const {widget} = UI.Widget;
 
-export class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel> {
+export class LCPBreakdown extends BaseInsightComponent<Trace.Insights.Models.LCPBreakdown.LCPBreakdownInsightModel> {
   override internalName = 'lcp-by-phase';
   #overlay: Trace.Types.Overlays.TimespanBreakdown|null = null;
 
@@ -100,17 +99,18 @@ export class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel>
       return html`<div class="insight-section">${i18nString(UIStrings.noLcp)}</div>`;
     }
 
-    const rows: TableDataRow[] = Object.values(subparts).map((subpart: Trace.Insights.Models.LCPBreakdown.Subpart) => {
-      const section = this.#overlay?.sections.find(section => subpart.label === section.label);
-      const timing = Trace.Helpers.Timing.microToMilli(subpart.range);
-      return {
-        values: [subpart.label, i18n.TimeUtilities.preciseMillisToString(timing)],
-        overlays: section && [{
-                    type: 'TIMESPAN_BREAKDOWN',
-                    sections: [section],
-                  }],
-      };
-    });
+    const rows: TableDataRow[] =
+        (Object.values(subparts) as Trace.Insights.Models.LCPBreakdown.Subpart[]).map(subpart => {
+          const section = this.#overlay?.sections.find(section => subpart.label === section.label);
+          const timing = Trace.Helpers.Timing.microToMilli(subpart.range);
+          return {
+            values: [subpart.label, i18n.TimeUtilities.preciseMillisToString(timing)],
+            overlays: section && [{
+                        type: 'TIMESPAN_BREAKDOWN',
+                        sections: [section],
+                      }],
+          };
+        });
 
     // clang-format off
     const sections: Lit.LitTemplate[] = [html`

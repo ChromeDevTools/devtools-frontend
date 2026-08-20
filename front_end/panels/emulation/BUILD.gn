@@ -105,7 +105,6 @@ devtools_ui_module("unittests") {
     "../../ui/components/buttons:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/theme_support:bundle",
-    "../../ui/visual_logging:bundle",
     "../mobile_throttling:bundle",
   ]
 }

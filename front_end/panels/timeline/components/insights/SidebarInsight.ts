@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {InsightModel} from '../../../../models/trace/insights/types.js';
+import type * as Insights from '../../../../models/trace/insights/insights.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import type * as Overlays from '../../overlays/overlays.js';
+
+type InsightModel = Insights.Types.InsightModel;
 
 export interface InsightDetails {
   title: string;

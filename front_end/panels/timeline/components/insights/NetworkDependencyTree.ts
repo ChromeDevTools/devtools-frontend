@@ -6,9 +6,6 @@ import './Table.js';
 import '../../../../ui/kit/kit.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type {
-  CriticalRequestNode, NetworkDependencyTreeInsightModel} from
-  '../../../../models/trace/insights/NetworkDependencyTree.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -27,7 +24,8 @@ const {widget} = UI.Widget;
 
 export const MAX_CHAINS_TO_SHOW = 5;
 
-export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependencyTreeInsightModel> {
+export class NetworkDependencyTree extends
+    BaseInsightComponent<Trace.Insights.Models.NetworkDependencyTree.NetworkDependencyTreeInsightModel> {
   override internalName = 'long-critical-network-tree';
 
   #relatedRequests: Set<Trace.Types.Events.SyntheticNetworkRequest>|null = null;
@@ -48,7 +46,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     return overlays;
   }
 
-  #renderNetworkTreeRow(node: CriticalRequestNode): Lit.LitTemplate {
+  #renderNetworkTreeRow(node: Trace.Insights.Models.NetworkDependencyTree.CriticalRequestNode): Lit.LitTemplate {
     const requestStyles = Lit.Directives.styleMap({
       display: 'flex',
       '--override-timeline-link-text-color': node.isLongest ? 'var(--sys-color-error)' : '',
@@ -71,7 +69,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     // clang-format on
   }
 
-  mapNetworkDependencyToRow(node: CriticalRequestNode): TableDataRow|null {
+  mapNetworkDependencyToRow(node: Trace.Insights.Models.NetworkDependencyTree.CriticalRequestNode): TableDataRow|null {
     // Check early if we've exceeded the maximum number of chains to show.
     // If so, and this is a leaf node, increment count and then skip rendering.
     // Otherwise, simply skip rendering.
@@ -93,11 +91,15 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
       values: [this.#renderNetworkTreeRow(node)],
       overlays: this.#createOverlayForChain(node.relatedRequests),
       // Filter out the empty rows otherwise the `Table`component will render a super short row
-      subRows: node.children.map(child => this.mapNetworkDependencyToRow(child)).filter(row => row !== null),
+      subRows: node.children
+                   .map((child: Trace.Insights.Models.NetworkDependencyTree.CriticalRequestNode) =>
+                            this.mapNetworkDependencyToRow(child))
+                   .filter((row: TableDataRow|null) => row !== null),
     };
   }
 
-  #renderNetworkDependencyTree(nodes: CriticalRequestNode[]): Lit.LitTemplate|null {
+  #renderNetworkDependencyTree(nodes: Trace.Insights.Models.NetworkDependencyTree.CriticalRequestNode[]):
+      Lit.LitTemplate|null {
     if (nodes.length === 0) {
       return null;
     }

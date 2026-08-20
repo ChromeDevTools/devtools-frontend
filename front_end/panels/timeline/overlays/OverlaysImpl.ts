@@ -15,7 +15,6 @@ import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
-import type {SectionPosition} from './components/TimespanBreakdownOverlay.js';
 
 const UIStrings = {
   /**
@@ -939,7 +938,7 @@ export class Overlays extends EventTarget {
     widget.left = leftEdgePixel;
     widget.width = rangeWidth;
 
-    const widths: SectionPosition[] = [];
+    const widths: Components.TimespanBreakdownOverlay.SectionPosition[] = [];
     for (const section of overlay.sections) {
       const leftPixel = this.#xPixelForMicroSeconds('main', section.bounds.min);
       const rightPixel = this.#xPixelForMicroSeconds('main', section.bounds.max);

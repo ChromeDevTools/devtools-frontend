@@ -161,7 +161,6 @@ devtools_entrypoint("meta") {
     "../../core/sdk:bundle",
     "../../ui/legacy:bundle",
     "../../ui/settings:bundle",
-    "./components:bundle",
   ]
 
   visibility = [

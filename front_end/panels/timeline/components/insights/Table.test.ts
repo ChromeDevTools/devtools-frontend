@@ -5,12 +5,11 @@
 import {assert} from 'chai';
 
 import * as Insights from './insights.js';
-import type {RowLimitAggregator} from './Table.js';
 
 const {createLimitedRows} = Insights.Table;
 
 describe('rowLimitAggregate', () => {
-  const aggregator: RowLimitAggregator<number> = {
+  const aggregator: Insights.Table.RowLimitAggregator<number> = {
     mapToRow: num => ({values: [num]}),
     createAggregatedTableRow: others => ({values: [`${others.length} others`]}),
   };

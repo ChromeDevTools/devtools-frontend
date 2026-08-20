@@ -221,7 +221,6 @@ devtools_ui_module("unittests") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
-    "../../foundation:bundle",
     "../../testing",
     "../components/buttons:bundle",
     "../components/render_coordinator:bundle",

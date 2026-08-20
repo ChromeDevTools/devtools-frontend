@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type {LCPDiscoveryInsightModel} from '../../../../models/trace/insights/LCPDiscovery.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as uiI18n from '../../../../ui/i18n/i18n.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
@@ -22,7 +21,7 @@ const {html} = Lit;
 // eslint-disable-next-line @devtools/l10n-filename-matches
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPDiscovery.ts', UIStrings);
 
-export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel> {
+export class LCPDiscovery extends BaseInsightComponent<Trace.Insights.Models.LCPDiscovery.LCPDiscoveryInsightModel> {
   override internalName = 'lcp-discovery';
 
   protected override hasAskAiSupport(): boolean {

@@ -53,8 +53,6 @@ devtools_api_test_module("api_tests") {
   sources = [ "Universe.test.api.ts" ]
 
   deps = [
-    ":bundle",
-    "../core/common:bundle",
     "../core/root:bundle",
     "../core/sdk:bundle",
     "../testing",

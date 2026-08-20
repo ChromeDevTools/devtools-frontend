@@ -130,7 +130,6 @@ devtools_ui_module("unittests") {
     "../../core/host:bundle",
     "../../testing",
     "../../ui/components/menus:bundle",
-    "../../ui/components/render_coordinator:bundle",
     "../../ui/components/suggestion_input:bundle",
     "../../ui/legacy:bundle",
     "./converters:bundle",

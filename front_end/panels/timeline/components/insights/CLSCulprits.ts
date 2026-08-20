@@ -4,7 +4,6 @@
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Platform from '../../../../core/platform/platform.js';
-import type {CLSCulpritsInsightModel} from '../../../../models/trace/insights/CLSCulprits.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
@@ -16,7 +15,7 @@ const {UIStrings, i18nString} = Trace.Insights.Models.CLSCulprits;
 
 const {html} = Lit;
 
-export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
+export class CLSCulprits extends BaseInsightComponent<Trace.Insights.Models.CLSCulprits.CLSCulpritsInsightModel> {
   override internalName = 'cls-culprits';
 
   protected override hasAskAiSupport(): boolean {

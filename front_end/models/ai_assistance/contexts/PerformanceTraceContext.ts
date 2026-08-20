@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
-import type {UrlString} from '../../../core/platform/DevToolsPath.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
@@ -23,6 +22,8 @@ import {
 import {PerformanceTraceFormatter} from '../data_formatters/PerformanceTraceFormatter.js';
 import type {AICallTree} from '../performance/AICallTree.js';
 import {AgentFocus} from '../performance/AIContext.js';
+
+type UrlString = Platform.DevToolsPath.UrlString;
 
 /**
  * Labels used to identify specific periods or categories in the trace for getting main thread summary.

@@ -49,6 +49,5 @@ ts_library("unittests") {
     "../bindings:bundle",
     "../formatter:bundle",
     "../trace:bundle",
-    "../workspace:bundle",
   ]
 }

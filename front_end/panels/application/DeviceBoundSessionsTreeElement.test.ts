@@ -13,7 +13,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type {TreeElement} from '../../ui/legacy/Treeoutline.js';
 
 import * as Application from './application.js';
-import type {ResourcesPanel} from './ResourcesPanel.js';
+
+type ResourcesPanel = Application.ResourcesPanel.ResourcesPanel;
 
 describeWithEnvironment('DeviceBoundSessionsTreeElement', () => {
   let model: Application.DeviceBoundSessionsModel.DeviceBoundSessionsModel;

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import type {UrlString} from '../../../core/platform/DevToolsPath.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -16,6 +15,7 @@ import {areOriginsEquivalent, extractContextOrigin, isOpaqueOrigin} from '../AiO
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 import type {ContextHandlerResult, DataHandlerResult} from '../tools/Tool.js';
 
+type UrlString = Platform.DevToolsPath.UrlString;
 const MAX_SUGGESTION_LENGTH = 200;
 
 export const enum ResponseType {

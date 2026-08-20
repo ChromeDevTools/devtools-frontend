@@ -6,7 +6,7 @@ import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import type {PlatformFileSystem} from '../../models/persistence/PlatformFileSystem.js';
+import type * as Persistence from '../../models/persistence/persistence.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../ui/lit/lit.js';
 
@@ -104,7 +104,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 export class EditFileSystemView extends UI.Widget.VBox {
-  #fileSystem?: PlatformFileSystem;
+  #fileSystem?: Persistence.PlatformFileSystem.PlatformFileSystem;
   #excludedFolderPaths: PathWithStatus[] = [];
   readonly #view: View;
 
@@ -113,7 +113,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
     this.#view = view;
   }
 
-  set fileSystem(fileSystem: PlatformFileSystem) {
+  set fileSystem(fileSystem: Persistence.PlatformFileSystem.PlatformFileSystem) {
     this.#fileSystem = fileSystem;
     this.#resyncExcludedFolderPaths();
     this.requestUpdate();
@@ -126,10 +126,11 @@ export class EditFileSystemView extends UI.Widget.VBox {
   }
 
   #resyncExcludedFolderPaths(): void {
-    this.#excludedFolderPaths = this.#fileSystem?.excludedFolders()
-                                    .values()
-                                    .map(path => ({path, status: ExcludedFolderStatus.VALID}))
-                                    .toArray() ??
+    this.#excludedFolderPaths =
+        this.#fileSystem?.excludedFolders()
+            .values()
+            .map((path: Platform.DevToolsPath.EncodedPathString) => ({path, status: ExcludedFolderStatus.VALID}))
+            .toArray() ??
         [];
   }
 

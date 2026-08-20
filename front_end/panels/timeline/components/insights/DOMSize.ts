@@ -6,7 +6,6 @@ import '../../../../ui/kit/kit.js';
 import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type {DOMSizeInsightModel} from '../../../../models/trace/insights/DOMSize.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -22,7 +21,7 @@ const {UIStrings, i18nString} = Trace.Insights.Models.DOMSize;
 const {html} = Lit;
 const {widget} = UI.Widget;
 
-export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
+export class DOMSize extends BaseInsightComponent<Trace.Insights.Models.DOMSize.DOMSizeInsightModel> {
   override internalName = 'dom-size';
 
   protected override hasAskAiSupport(): boolean {

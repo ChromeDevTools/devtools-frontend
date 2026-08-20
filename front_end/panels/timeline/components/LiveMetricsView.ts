@@ -28,7 +28,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../../common/common.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
-import {md} from './insights/Helpers.js';
+import * as Insights from './insights/insights.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
 import type {MetricCardData} from './MetricCard.js';
 import metricValueStyles from './metricValueStyles.css.js';
@@ -633,7 +633,7 @@ function renderRecordingSettings(input: ViewInput): Lit.LitTemplate {
   // clang-format off
   return html`
     <h3 class="card-title">${i18nString(UIStrings.environmentSettings)}</h3>
-    <div class="device-toolbar-description">${md(i18nString(UIStrings.useDeviceToolbar))}</div>
+    <div class="device-toolbar-description">${Insights.Helpers.md(i18nString(UIStrings.useDeviceToolbar))}</div>
     ${fieldEnabled ? html`
       <ul class="environment-recs-list">
         <li>${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.device, {PH1: html`<span class="environment-rec">${deviceRec}</span>`})}</li>

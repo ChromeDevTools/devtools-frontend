@@ -6,7 +6,6 @@ import './Table.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
-import type {ForcedReflowInsightModel} from '../../../../models/trace/insights/ForcedReflow.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
@@ -20,7 +19,7 @@ const {UIStrings, i18nString, createOverlayForEvents} = Trace.Insights.Models.Fo
 const {html, nothing} = Lit;
 const {widget} = UI.Widget;
 
-export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel> {
+export class ForcedReflow extends BaseInsightComponent<Trace.Insights.Models.ForcedReflow.ForcedReflowInsightModel> {
   override internalName = 'forced-reflow';
 
   protected override hasAskAiSupport(): boolean {

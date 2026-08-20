@@ -6,13 +6,14 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
-import type {EventTargetEvent} from '../../core/common/EventTarget.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import {raf} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as UI from './legacy.js';
+
+type EventTargetEvent<T> = Common.EventTarget.EventTargetEvent<T>;
 
 interface MockedLocation {
   location: UI.View.TabbedViewLocation;

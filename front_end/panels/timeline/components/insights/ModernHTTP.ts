@@ -4,7 +4,6 @@
 
 import './Table.js';
 
-import type {ModernHTTPInsightModel} from '../../../../models/trace/insights/ModernHTTP.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -18,7 +17,7 @@ const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.M
 const {html} = Lit;
 const {widget} = UI.Widget;
 
-export class ModernHTTP extends BaseInsightComponent<ModernHTTPInsightModel> {
+export class ModernHTTP extends BaseInsightComponent<Trace.Insights.Models.ModernHTTP.ModernHTTPInsightModel> {
   override internalName = 'modern-http';
 
   protected override hasAskAiSupport(): boolean {

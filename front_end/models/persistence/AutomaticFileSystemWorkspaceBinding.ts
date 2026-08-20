@@ -6,8 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
-import type {ContentDataOrError} from '../../core/text_utils/ContentData.js';
-import type {SearchMatch} from '../../core/text_utils/ContentProvider.js';
+import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {
@@ -19,6 +18,9 @@ import {
   Events as IsolatedFileSystemManagerEvents,
   type IsolatedFileSystemManager,
 } from './IsolatedFileSystemManager.js';
+
+type ContentDataOrError = TextUtils.ContentData.ContentDataOrError;
+type SearchMatch = TextUtils.ContentProvider.SearchMatch;
 
 /**
  * Placeholder project that acts as an empty file system within the workspace,

@@ -6,7 +6,7 @@ import './report_view.js';
 
 import * as Lit from '../../lit/lit.js';
 
-import type {ReportData} from './ReportView.js';
+import type * as ReportView from './report_view.js';
 
 const {html} = Lit;
 
@@ -19,7 +19,7 @@ export function render(container: HTMLElement) {
   // clang-format off
   Lit.render(
       html`
-        <devtools-report .data=${{reportTitle: 'Optional Title'} as ReportData}>
+        <devtools-report .data=${{reportTitle: 'Optional Title'} as ReportView.ReportView.ReportData}>
           <devtools-report-section-header>Section 1</devtools-report-section-header>
           <devtools-report-key>Basic plain text field</devtools-report-key>
           <devtools-report-value>And this is the value</devtools-report-value>

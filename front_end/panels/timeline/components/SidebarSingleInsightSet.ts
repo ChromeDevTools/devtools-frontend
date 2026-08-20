@@ -9,7 +9,6 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
 import {CWVMetrics, getFieldMetrics} from './CWVMetrics.js';
-import {shouldRenderForCategory} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
 import sidebarSingleInsightSetStyles from './sidebarSingleInsightSet.css.js';
@@ -182,7 +181,7 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
     const passedInsights: InsightData[] = [];
 
     for (const [insightName, model] of Object.entries(insightSet.model)) {
-      if (!model || !shouldRenderForCategory({activeCategory, insightCategory: model.category})) {
+      if (!model || !Insights.Helpers.shouldRenderForCategory({activeCategory, insightCategory: model.category})) {
         continue;
       }
 

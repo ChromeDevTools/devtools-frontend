@@ -14,8 +14,11 @@ import {
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
 import * as Trace from '../trace.js';
 
-import type {PreconnectedOrigin} from './NetworkDependencyTree.js';
-import type {InsightSetContextWithNavigation, RelatedEventsMap} from './types.js';
+import type * as Insights from './insights.js';
+
+type PreconnectedOrigin = Insights.Models.NetworkDependencyTree.PreconnectedOrigin;
+type InsightSetContextWithNavigation = Insights.Types.InsightSetContextWithNavigation;
+type RelatedEventsMap = Insights.Types.RelatedEventsMap;
 
 const {urlString} = Platform.DevToolsPath;
 

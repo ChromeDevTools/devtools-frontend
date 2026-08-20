@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {findMinMax} from './CSSSelector.js';
+import {findMinMax} from '../injected.js';
 
 describe('findMinMax', () => {
   it('should work', () => {

@@ -15,7 +15,6 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as Insights from './insights/insights.js';
-import {nodeLink} from './insights/NodeLink.js';
 import layoutShiftDetailsStyles from './layoutShiftDetails.css.js';
 
 const {html, render} = Lit;
@@ -375,7 +374,7 @@ function renderShiftedElements(
     return html`
       ${elementsShifted?.map(el => {
         if (el.node_id !== undefined) {
-          return nodeLink({
+          return Insights.NodeLink.nodeLink({
             backendNodeId: el.node_id,
             frame: shift.args.frame,
             fallbackHtmlSnippet: el.debug_name,
@@ -406,7 +405,7 @@ function renderAnimation(
 
 function renderUnsizedImage(
     frame: string, unsizedImage: Trace.Insights.Models.CLSCulprits.UnsizedImage): Lit.LitTemplate {
-  const nodeLinkEl = nodeLink({
+  const nodeLinkEl = Insights.NodeLink.nodeLink({
     backendNodeId: unsizedImage.backendNodeId,
     frame,
     fallbackUrl: unsizedImage.paintImageEvent.args.data.url as Platform.DevToolsPath.UrlString | undefined,

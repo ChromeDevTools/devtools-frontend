@@ -4,7 +4,6 @@
 
 import '../../../../ui/kit/kit.js';
 
-import type {ImageDeliveryInsightModel} from '../../../../models/trace/insights/ImageDelivery.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -18,7 +17,7 @@ const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.I
 const {html} = Lit;
 const {widget} = UI.Widget;
 
-export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightModel> {
+export class ImageDelivery extends BaseInsightComponent<Trace.Insights.Models.ImageDelivery.ImageDeliveryInsightModel> {
   override internalName = 'image-delivery';
 
   mapToRow(image: Trace.Insights.Models.ImageDelivery.OptimizableImage): TableDataRow {

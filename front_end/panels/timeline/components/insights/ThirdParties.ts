@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type {ThirdPartiesInsightModel} from '../../../../models/trace/insights/ThirdParties.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -18,7 +17,7 @@ const {widget} = UI.Widget;
 
 const MAX_TO_SHOW = 5;
 
-export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel> {
+export class ThirdParties extends BaseInsightComponent<Trace.Insights.Models.ThirdParties.ThirdPartiesInsightModel> {
   override internalName = 'third-parties';
 
   #mainThreadTimeAggregator: RowLimitAggregator<Trace.Extras.ThirdParties.EntitySummary> = {

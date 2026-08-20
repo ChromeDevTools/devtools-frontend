@@ -4,7 +4,6 @@
 // found in the LICENSE file.
 import '../main/main-meta.js';
 import '../inspector_main/inspector_main-meta.js';
-import '../../models/workspace/workspace-meta.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: tsc 6.0 does not support side-effect imports without a type definition.
 // We cannot use `@ts-expect-error` here because the import is correctly resolved

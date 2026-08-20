@@ -173,7 +173,7 @@ export class IgnoreListSetting extends UI.Widget.Widget {
 
   #view: View;
   readonly #ignoreListEnabled: Common.Settings.Setting<boolean> =
-      Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing');
+      Common.Settings.Settings.instance().resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor);
   readonly #regexPatterns = this.#getSkipStackFramesPatternSetting().getAsArray();
   #newRegexValue = '';
   #newRegexChecked = false;
@@ -190,7 +190,7 @@ export class IgnoreListSetting extends UI.Widget.Widget {
         .resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor)
         .addChangeListener(this.requestUpdate.bind(this));
     Common.Settings.Settings.instance()
-        .moduleSetting('enable-ignore-listing')
+        .resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor)
         .addChangeListener(this.requestUpdate.bind(this));
     this.requestUpdate();
   }

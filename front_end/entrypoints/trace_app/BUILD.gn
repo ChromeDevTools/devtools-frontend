@@ -11,7 +11,6 @@ devtools_entrypoint("entrypoint") {
     "../../Images:optimize_images",
     "../../entrypoints/inspector_main:meta",
     "../../entrypoints/main:meta",
-    "../../models/workspace:meta",
     "../../panels/ai_assistance:meta",
     "../../panels/browser_debugger:meta",
     "../../panels/developer_resources:meta",

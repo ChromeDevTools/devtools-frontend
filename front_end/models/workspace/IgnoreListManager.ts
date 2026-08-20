@@ -76,6 +76,13 @@ export const skipAnonymousScriptsSettingDescriptor: Common.Settings.SettingDescr
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
 
+export const enableIgnoreListingSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'enable-ignore-listing',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};
+
 export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly #settings: Common.Settings.Settings;
@@ -103,7 +110,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     this.#settings.resolve(skipContentScriptsSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
     this.#settings.resolve(automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor)
         .addChangeListener(this.patternChanged.bind(this));
-    this.#settings.moduleSetting('enable-ignore-listing').addChangeListener(this.patternChanged.bind(this));
+    this.#settings.resolve(enableIgnoreListingSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
     this.#settings.resolve(skipAnonymousScriptsSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
 
     this.#targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
@@ -353,11 +360,11 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 
   get enableIgnoreListing(): boolean {
-    return this.#settings.moduleSetting('enable-ignore-listing').get();
+    return this.#settings.resolve(enableIgnoreListingSettingDescriptor).get();
   }
 
   set enableIgnoreListing(value: boolean) {
-    this.#settings.moduleSetting('enable-ignore-listing').set(value);
+    this.#settings.resolve(enableIgnoreListingSettingDescriptor).set(value);
   }
 
   get skipContentScripts(): boolean {

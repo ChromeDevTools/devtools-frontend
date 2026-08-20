@@ -183,7 +183,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         .resolve(Workspace.IgnoreListManager.automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor)
         .addChangeListener(this.#onIgnoreListChanged.bind(this));
     Common.Settings.Settings.instance()
-        .moduleSetting('enable-ignore-listing')
+        .resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor)
         .addChangeListener(this.#onIgnoreListChanged.bind(this));
     Common.Settings.Settings.instance()
         .resolve(Workspace.IgnoreListManager.skipAnonymousScriptsSettingDescriptor)

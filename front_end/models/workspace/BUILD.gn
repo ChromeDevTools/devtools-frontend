@@ -85,20 +85,6 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-devtools_entrypoint("meta") {
-  entrypoint = "workspace-meta.ts"
-
-  deps = [ "../../core/common:bundle" ]
-
-  visibility = [
-    "../../../mcp/*",
-    "../../../test/api/*",
-    "../../entrypoints/*",
-    "../../panels/greendev/*",
-    "../../panels/protocol_monitor/*",
-  ]
-}
-
 devtools_foundation_module("foundation_unittests") {
   testonly = true
 

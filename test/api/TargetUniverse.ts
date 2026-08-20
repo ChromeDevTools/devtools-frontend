@@ -33,7 +33,6 @@ export async function createTargetUniverse(
     import('../../front_end/core/sdk/sdk.js'),
     import('../../front_end/core/root/root.js'),
     import('../../front_end/foundation/foundation.js'),
-    import('../../front_end/models/workspace/workspace-meta.js'),
   ]);
 
   if (!registeredExtensions) {

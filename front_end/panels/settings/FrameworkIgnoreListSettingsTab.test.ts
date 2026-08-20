@@ -302,7 +302,9 @@ describeWithEnvironment('FrameworkIgnoreListSettingsTab', () => {
       {pattern: 'pattern2', disabled: true},
     ]);
 
-    Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing').set(false);
+    Common.Settings.Settings.instance()
+        .resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor)
+        .set(false);
 
     await assertScreenshot('settings/framework_ignore_list_settings_tab_disabled.png');
   });

@@ -145,13 +145,17 @@ new RuleTester().run('es-modules-import', rule, {
       code: 'import { Browser } from "./package/lib/puppeteer/common/Browser.js";',
       filename: 'front_end/third_party/puppeteer/puppeteer.ts',
     },
-    // Type imports are unrestricted
+    // Type imports follow the same cross-namespace and entrypoint rules as value imports
     {
-      code: 'import type { Exporting } from \'../namespace/Exporting.js\';',
+      code: 'import {BaseInsightComponent} from \'../../timeline/components/insights/BaseInsightComponent.js\';',
+      filename: 'front_end/panels/ai_assistance/components/ChatMessage.ts',
+    },
+    {
+      code: 'import type * as Namespace from \'../namespace/namespace.js\';',
       filename: 'front_end/common/Importing.js',
     },
     {
-      code: 'import { type Exporting } from \'../namespace/Exporting.js\';',
+      code: 'import type { Exporting } from \'./Exporting.js\';',
       filename: 'front_end/common/Importing.js',
     },
     // Allow ui kit module named imports
@@ -160,8 +164,25 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/common/Importing.js',
     },
     {
+      code: 'import type {ProtocolMapping} from \'../../generated/protocol-mapping.js\';',
+      filename: 'front_end/core/protocol_client/NodeURL.ts',
+    },
+    {
+      code: 'import { type ProtocolMapping } from \'../../generated/protocol-mapping.js\';',
+      filename: 'front_end/core/protocol_client/NodeURL.ts',
+    },
+    {
+      code: 'import {ProtocolMapping} from \'../../generated/protocol-mapping.js\';',
+      filename: 'front_end/core/protocol_client/NodeURL.ts',
+    },
+    {
       code: 'import * as Lit from \'../third_party/lit/lit.js\';',
       filename: 'front_end/ui/lit/anyName.ts',
+    },
+
+    {
+      code: 'import {ListModel} from \'../../legacy.js\';',
+      filename: 'front_end/ui/legacy/components/quick_open/FilteredListWidget.test.ts',
     },
   ],
 
@@ -325,7 +346,6 @@ new RuleTester().run('es-modules-import', rule, {
           messageId: 'crossNamespaceImportThirdParty',
         },
       ],
-
     },
     {
       code: 'import checkboxStyles from \'../../../input/checkbox.css.js\';',
@@ -335,17 +355,14 @@ new RuleTester().run('es-modules-import', rule, {
           messageId: 'crossNamespaceImport',
         },
       ],
-
     },
     {
       // Note the double slash between the visual_logging
       // This does not break compilation but does break at runtime.
-      code: 'import x from \'../ui/visual_logging//visual_logging.js\';',
-      filename: 'front_end/panels/foo/FooPanel.ts',
-      errors: [
-        {messageId: 'doubleSlashInImportPath'},
-      ],
-      output: 'import x from \'../ui/visual_logging/visual_logging.js\';',
+      code: 'import x from \'./visual_logging//visual_logging.js\';',
+      filename: 'front_end/ui/visual_logging/Foo.ts',
+      errors: [{messageId: 'doubleSlashInImportPath'}],
+      output: 'import x from \'./visual_logging/visual_logging.js\';',
     },
     {
       code: 'import * as BadgeNotification from \'./BadgeNotification.js\';',
@@ -353,6 +370,24 @@ new RuleTester().run('es-modules-import', rule, {
       errors: [
         {
           messageId: 'incorrectSameNamespaceTestImport',
+        },
+      ],
+    },
+    {
+      code: 'import type { Exporting } from \'../namespace/Exporting.js\';',
+      filename: 'front_end/common/Importing.js',
+      errors: [
+        {
+          messageId: 'crossNamespaceImport',
+        },
+      ],
+    },
+    {
+      code: 'import { type Exporting } from \'../namespace/Exporting.js\';',
+      filename: 'front_end/common/Importing.js',
+      errors: [
+        {
+          messageId: 'crossNamespaceImport',
         },
       ],
     },

@@ -23,9 +23,12 @@ const UISTRINGS_REGEX = /(UIStrings = .*?\}) as const;\n/s;
 
 export const IGNORED_PATH_COMPONENTS = [
   '**/.git/**',
+  '**/node_modules/**',
   '**/*_test_runner/**',
   '**/third_party/**',
   '**/*.test.ts',
+  '**/*.test.api.ts',
+  '**/*.docs.ts',
 ];
 
 /**

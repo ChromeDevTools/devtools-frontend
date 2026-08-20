@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Workspace from '../workspace/workspace.js';
 
+// eslint-disable-next-line @devtools/es-modules-import
 import type * as StackTrace from './stack_trace.js';
 import type {EvalOrigin, FrameNode, ParsedFrameInfo} from './Trie.js';
 

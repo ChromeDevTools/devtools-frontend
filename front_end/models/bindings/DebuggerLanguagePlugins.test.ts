@@ -16,6 +16,7 @@ import {protocolCallFrame, stringifyFrame} from '../../testing/StackTraceHelpers
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
+// eslint-disable-next-line @devtools/es-modules-import
 import type * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import * as Workspace from '../workspace/workspace.js';
 

@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 
 import stylisticPlugin from '@stylistic/eslint-plugin';
-import { defineConfig, globalIgnores } from 'eslint/config';
+import {defineConfig, globalIgnores} from 'eslint/config';
 import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import litPlugin from 'eslint-plugin-lit';
 import mochaPlugin from 'eslint-plugin-mocha';
 import globals from 'globals';
-import { join } from 'node:path';
+import {join} from 'node:path';
 import typescriptEslint from 'typescript-eslint';
 
 import devToolsPlugin from './scripts/eslint_rules/plugin.mjs';
@@ -731,8 +731,10 @@ export default defineConfig([
     name: 'TypeScript test files',
     files: [
       '*.test.ts',
+      '*.docs.ts',
       // This makes the specificity greater than the front-end ts files
       'front_end/**/*.test.ts',
+      'front_end/**/*.docs.ts',
       'test/**/*.ts',
       '**/testing/*.ts',
       'scripts/eslint_rules/test/**/*',
@@ -870,7 +872,10 @@ export default defineConfig([
   {
     name: 'Keep models/trace isolated',
     files: ['front_end/models/trace/**/*.ts'],
-    ignores: ['front_end/models/trace/**/*.test.ts'],
+    ignores: [
+      'front_end/models/trace/**/*.test.ts',
+      'front_end/models/trace/**/*.docs.ts',
+    ],
     rules: {
       '@devtools/no-imports-in-directory': [
         'error',

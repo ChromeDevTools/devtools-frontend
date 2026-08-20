@@ -5,7 +5,7 @@
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Marked from '../../../third_party/marked/marked.js';
-import type * as MarkdownView from '../../../ui/components/markdown_view/MarkdownView.js';
+import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../common/common.js';
 
@@ -65,7 +65,7 @@ export class StylingAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock 
                 <devtools-markdown-view .data=${{
         tokens: Marked.Marked.lexer(row['Details']),
         renderer: new StylingAgentMarkdownRenderer(this.mainFrameId),
-      } as MarkdownView.MarkdownViewData}></devtools-markdown-view>
+      } as MarkdownView.MarkdownView.MarkdownViewData}></devtools-markdown-view>
               </td>
             </tr>
           `;

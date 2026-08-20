@@ -12,12 +12,6 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import type {
-  AiWidget, BottomUpTreeAiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, LighthouseReportAiWidget,
-  NetworkRequestGeneralHeadersAiWidget, NetworkRequestsListAiWidget, NetworkTrackAiWidget, PerfInsightAiWidget,
-  PerformanceTraceAiWidget, SourceCodeAiWidget, SourceFileAiWidget, SourceFilesListAiWidget, StorageBreakdownAiWidget,
-  StylePropertiesAiWidget, TimelineEventSummaryAiWidget,
-  TimelineRangeSummaryAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
 import * as Formatter from '../../../models/formatter/formatter.js';
@@ -29,7 +23,6 @@ import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
-import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
 import * as UIHelpers from '../../../ui/helpers/helpers.js';
 import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -42,7 +35,6 @@ import * as Lighthouse from '../../lighthouse/lighthouse.js';
 import * as NetworkForward from '../../network/forward/forward.js';
 import * as Network from '../../network/network.js';
 import * as TimelineComponents from '../../timeline/components/components.js';
-import type {BaseInsightComponent} from '../../timeline/components/insights/BaseInsightComponent.js';
 import * as TimelineInsights from '../../timeline/components/insights/insights.js';
 import * as Timeline from '../../timeline/timeline.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
@@ -486,7 +478,7 @@ export interface Step {
   /**
    * Visual widgets rendered alongside this step (e.g. core web vitals, network traces).
    */
-  widgets?: AiWidget[];
+  widgets?: AiAssistanceModel.AiAgent.AiWidget[];
   /**
    * Context item details gathered or inspected during this step.
    */
@@ -517,7 +509,7 @@ export interface StepPart {
  */
 export interface WidgetPart {
   type: 'widget';
-  widgets: AiWidget[];
+  widgets: AiAssistanceModel.AiAgent.AiWidget[];
 }
 
 export type ModelMessagePart = AnswerPart|StepPart|WidgetPart;
@@ -585,7 +577,7 @@ export interface MessageInput {
   isFirstMessage: boolean;
   prompt: string;
   canShowFeedbackForm: boolean;
-  markdownRenderer: MarkdownLitRenderer;
+  markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer;
   onSuggestionClick: (suggestion: string) => void;
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCopyResponseClick: (message: ModelChatMessage) => void;
@@ -670,10 +662,11 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
 
 export type View = typeof DEFAULT_VIEW;
 
-function renderTextAsMarkdown(text: string, markdownRenderer: MarkdownLitRenderer, {animate, ref: refFn}: {
-  animate?: boolean,
-  ref?: (element?: Element) => void,
-} = {}): Lit.TemplateResult {
+function renderTextAsMarkdown(text: string, markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer,
+                              {animate, ref: refFn}: {
+                                animate?: boolean,
+                                ref?: (element?: Element) => void,
+                              } = {}): Lit.TemplateResult {
   let tokens = [];
   try {
     tokens = Marked.Marked.lexer(text);
@@ -756,7 +749,7 @@ function renderStepDetails({
   isLast,
 }: {
   step: Step,
-  markdownRenderer: MarkdownLitRenderer,
+  markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer,
   isLast: boolean,
 }): Lit.LitTemplate {
   const sideEffects =
@@ -954,7 +947,7 @@ function renderStepBadge({step, isLast}: {
 
 export function renderStep({step, markdownRenderer, isLast}: {
   step: Step,
-  markdownRenderer: MarkdownLitRenderer,
+  markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer,
   isLast: boolean,
 }): Lit.LitTemplate {
   const stepClasses = Lit.Directives.classMap({
@@ -1017,7 +1010,8 @@ async function resolveNode(backendNodeId: Protocol.DOM.BackendNodeId): Promise<S
   return resolved;
 }
 
-async function makeStorageBreakdownWidget(widgetData: StorageBreakdownAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeStorageBreakdownWidget(widgetData: AiAssistanceModel.AiAgent.StorageBreakdownAiWidget):
+    Promise<WidgetMakerResponse|null> {
   const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
   if (!target) {
     return null;
@@ -1062,7 +1056,8 @@ async function makeStorageBreakdownWidget(widgetData: StorageBreakdownAiWidget):
   };
 }
 
-async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeComputedStyleWidget(widgetData: AiAssistanceModel.AiAgent.ComputedStyleAiWidget):
+    Promise<WidgetMakerResponse|null> {
   const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
   if (!domNodeForId) {
     return null;
@@ -1112,7 +1107,8 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
   };
 }
 
-async function makeCoreWebVitalsWidget(widgetData: CoreVitalsAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeCoreWebVitalsWidget(widgetData: AiAssistanceModel.AiAgent.CoreVitalsAiWidget):
+    Promise<WidgetMakerResponse|null> {
   // clang-format off
   const renderedWidget = html`<devtools-widget class="core-vitals-widget" ${widget(TimelineComponents.CWVMetrics.CWVMetrics, {data: widgetData.data, skipBottomBorder: true})}>
   </devtools-widget>`;
@@ -1127,7 +1123,8 @@ async function makeCoreWebVitalsWidget(widgetData: CoreVitalsAiWidget): Promise<
   };
 }
 
-async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeStylePropertiesWidget(widgetData: AiAssistanceModel.AiAgent.StylePropertiesAiWidget):
+    Promise<WidgetMakerResponse|null> {
   const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
   if (!domNodeForId) {
     return null;
@@ -1166,7 +1163,7 @@ async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): P
 }
 
 const INSIGHT_METADATA: Record<string, {
-  component: new () => BaseInsightComponent<Trace.Insights.Types.InsightModel>,
+  component: new () => TimelineInsights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>,
   accessibleLabel: string,
   title: string,
   jslog: string,
@@ -1288,15 +1285,21 @@ const INSIGHT_METADATA: Record<string, {
 };
 
 function renderInsightWidget<T extends Trace.Insights.Types.InsightModel>(
-    component: new () => BaseInsightComponent<T>, insight: T, jslog: string, accessibleLabel: string, title: string,
-    bounds?: Trace.Types.Timing.TraceWindowMicro): WidgetMakerResponse {
+    component: new () => TimelineInsights.BaseInsightComponent.BaseInsightComponent<T>,
+    insight: T,
+    jslog: string,
+    accessibleLabel: string,
+    title: string,
+    bounds?: Trace.Types.Timing.TraceWindowMicro,
+    ): WidgetMakerResponse {
   const renderedWidget = html`<devtools-widget
     class=${jslog}
     ${widget(component, {
     model: insight,
     minimal: true,
     bounds: bounds ?? null,
-  })}></devtools-widget>`;
+  })}
+  ></devtools-widget>`;
 
   return {
     renderedWidget,
@@ -1307,7 +1310,8 @@ function renderInsightWidget<T extends Trace.Insights.Types.InsightModel>(
   };
 }
 
-async function makePerfInsightWidget(widgetData: PerfInsightAiWidget): Promise<WidgetMakerResponse|null> {
+async function makePerfInsightWidget(widgetData: AiAssistanceModel.AiAgent.PerfInsightAiWidget):
+    Promise<WidgetMakerResponse|null> {
   const insightKey = widgetData.data.insight;
   const insight = widgetData.data.insightData;
 
@@ -1328,7 +1332,8 @@ async function makePerfInsightWidget(widgetData: PerfInsightAiWidget): Promise<W
   return renderInsightWidget(meta.component, insight, meta.jslog, meta.accessibleLabel, meta.title, bounds);
 }
 
-async function makeBottomUpTimelineTreeWidget(widgetData: BottomUpTreeAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeBottomUpTimelineTreeWidget(widgetData: AiAssistanceModel.AiAgent.BottomUpTreeAiWidget):
+    Promise<WidgetMakerResponse|null> {
   const bottomUpRootNode = AiAssistanceModel.AIQueries.AIQueries.mainThreadActivityBottomUp(
       widgetData.data.bounds, widgetData.data.parsedTrace);
   if (!bottomUpRootNode) {
@@ -1419,7 +1424,8 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
   // clang-format on
 }
 
-async function makePerformanceTraceWidget(widgetData: PerformanceTraceAiWidget): Promise<WidgetMakerResponse|null> {
+async function makePerformanceTraceWidget(widgetData: AiAssistanceModel.AiAgent.PerformanceTraceAiWidget):
+    Promise<WidgetMakerResponse|null> {
   const customRevealTitle = lockedString(UIStringsNotTranslate.revealTrace);
   return {
     renderedWidget: null,
@@ -1431,7 +1437,8 @@ async function makePerformanceTraceWidget(widgetData: PerformanceTraceAiWidget):
   };
 }
 
-async function makeSourceFileWidget(widgetData: SourceFileAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeSourceFileWidget(widgetData: AiAssistanceModel.AiAgent.SourceFileAiWidget):
+    Promise<WidgetMakerResponse|null> {
   const file = widgetData.data.uiSourceCode;
   const customRevealTitle = i18n.i18n.lockedString(`Show ${file.name()}`);
   return {
@@ -1444,7 +1451,8 @@ async function makeSourceFileWidget(widgetData: SourceFileAiWidget): Promise<Wid
   };
 }
 
-async function makeSourceCodeWidget(widgetData: SourceCodeAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeSourceCodeWidget(widgetData: AiAssistanceModel.AiAgent.SourceCodeAiWidget):
+    Promise<WidgetMakerResponse|null> {
   const url = widgetData.data.url;
   const filename = url.split('/').pop() || url;
   const line = widgetData.data.line;
@@ -1510,7 +1518,8 @@ function renderFileRevealButton(
   `;
 }
 
-async function makeSourceFilesListWidget(widgetData: SourceFilesListAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeSourceFilesListWidget(widgetData: AiAssistanceModel.AiAgent.SourceFilesListAiWidget):
+    Promise<WidgetMakerResponse|null> {
   const files = widgetData.data.uiSourceCodes;
   if (files.length === 0) {
     return null;
@@ -1540,12 +1549,12 @@ async function makeSourceFilesListWidget(widgetData: SourceFilesListAiWidget): P
   };
 }
 
-const expandedNetworkRequestsWidgets = new WeakSet<NetworkRequestsListAiWidget>();
+const expandedNetworkRequestsWidgets = new WeakSet<AiAssistanceModel.AiAgent.NetworkRequestsListAiWidget>();
 
 // A widget with a table of the list of network requests sent to the agent.
 // Only show 15 requests maximum in collapsed version. The rest of the requests
 // will be hidden unless the user clicks "Show all".
-async function makeNetworkRequestsListWidget(widgetData: NetworkRequestsListAiWidget):
+async function makeNetworkRequestsListWidget(widgetData: AiAssistanceModel.AiAgent.NetworkRequestsListAiWidget):
     Promise<WidgetMakerResponse|null> {
   const requests = widgetData.data.requests;
   if (requests.length === 0) {
@@ -1613,7 +1622,8 @@ async function makeNetworkRequestsListWidget(widgetData: NetworkRequestsListAiWi
   };
 }
 
-function renderNetworkRequestPreview(networkRequest: NonNullable<DomTreeAiWidget['data']['networkRequest']>):
+function renderNetworkRequestPreview(
+    networkRequest: NonNullable<AiAssistanceModel.AiAgent.DomTreeAiWidget['data']['networkRequest']>):
     Lit.TemplateResult {
   const filename = networkRequest.url.split('/').pop() || networkRequest.url;
   const size = i18n.ByteUtilities.bytesToString(networkRequest.size);
@@ -1643,7 +1653,8 @@ function renderNetworkRequestPreview(networkRequest: NonNullable<DomTreeAiWidget
   // clang-format on
 }
 
-async function makeDomTreeWidget(widgetData: DomTreeAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeDomTreeWidget(widgetData: AiAssistanceModel.AiAgent.DomTreeAiWidget):
+    Promise<WidgetMakerResponse|null> {
   const root = widgetData.data.root;
   if (!(root instanceof SDK.DOMModel.DOMNodeSnapshot)) {
     return null;
@@ -1696,10 +1707,10 @@ async function makeDomTreeWidget(widgetData: DomTreeAiWidget): Promise<WidgetMak
  * corresponding `make...Widget` functions and handling them here.
  */
 /**
- * Generates a deterministic unique identifier for a given AiWidget based on
+ * Generates a deterministic unique identifier for a given AiAssistanceModel.AiAgent.AiWidget based on
  * its name and identifying data. This signature is used for widget deduplication.
  */
-export function getWidgetSignature(widget: AiWidget): string {
+export function getWidgetSignature(widget: AiAssistanceModel.AiAgent.AiWidget): string {
   switch (widget.name) {
     case 'COMPUTED_STYLES':
       return `${widget.name}:${widget.data.backendNodeId}`;
@@ -1738,7 +1749,7 @@ export function getWidgetSignature(widget: AiWidget): string {
       return `${widget.name}:${widget.data.totalUsageBytes}:${
           widget.data.usageBreakdown.map(e => `${e.storageType}_${e.bytes}`).join(',')}`;
     default:
-      Platform.assertNever(widget, 'Unknown AiWidget name');
+      Platform.assertNever(widget, 'Unknown AiAssistanceModel.AiAgent.AiWidget name');
   }
 }
 
@@ -1750,7 +1761,7 @@ export function getWidgetSignature(widget: AiWidget): string {
 export function getDeduplicatedWidgetsMessage(message: ModelChatMessage): ModelChatMessage {
   const seenWidgets = new Set<string>();
 
-  const filterWidgets = (widgets: AiWidget[]): AiWidget[] => {
+  const filterWidgets = (widgets: AiAssistanceModel.AiAgent.AiWidget[]): AiAssistanceModel.AiAgent.AiWidget[] => {
     return widgets.filter(widget => {
       const signature = getWidgetSignature(widget);
       if (seenWidgets.has(signature)) {
@@ -1788,8 +1799,8 @@ export function getDeduplicatedWidgetsMessage(message: ModelChatMessage): ModelC
   };
 }
 
-async function renderWidgets(
-    widgets: AiWidget[]|undefined, options: {wrapperClass?: string} = {}): Promise<Lit.LitTemplate> {
+async function renderWidgets(widgets: AiAssistanceModel.AiAgent.AiWidget[]|undefined,
+                             options: {wrapperClass?: string} = {}): Promise<Lit.LitTemplate> {
   if (!widgets || widgets.length === 0) {
     return Lit.nothing;
   }
@@ -1848,7 +1859,7 @@ async function renderWidgets(
         response = await makeStorageBreakdownWidget(widgetData);
         break;
       default:
-        Platform.assertNever(widgetData, 'Unknown AiWidget name');
+        Platform.assertNever(widgetData, 'Unknown AiAssistanceModel.AiAgent.AiWidget name');
     }
     return renderWidgetResponse(response);
   }));
@@ -2119,7 +2130,7 @@ export class ChatMessage extends UI.Widget.Widget {
   canShowFeedbackForm = false;
   isLastMessage = false;
   isFirstMessage = false;
-  markdownRenderer!: MarkdownLitRenderer;
+  markdownRenderer!: MarkdownView.MarkdownView.MarkdownLitRenderer;
   onSuggestionClick: (suggestion: string) => void = () => {};
   onFeedbackSubmit:
       (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void = () => {};
@@ -2301,7 +2312,7 @@ export class ChatMessage extends UI.Widget.Widget {
   }
 }
 
-async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAiWidget):
+async function makeTimelineRangeSummaryWidget(widgetData: AiAssistanceModel.AiAgent.TimelineRangeSummaryAiWidget):
     Promise<WidgetMakerResponse|null> {
   const {bounds, parsedTrace, track} = widgetData.data;
   let events: readonly Trace.Types.Events.Event[] = [];
@@ -2324,13 +2335,14 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
     const mainThread = AiAssistanceModel.AIQueries.AIQueries.findMainThread(navigationId, parsedTrace);
     if (mainThread) {
       events = mainThread.entries;
-      AiAssistanceModel.Debug.debugLog(
-          `TimelineRangeSummaryAiWidget found main thread. PID:`, mainThread.pid, 'TID:', mainThread.tid,
-          'Number of entries:', mainThread.entries.length);
+      AiAssistanceModel.Debug.debugLog(`AiAssistanceModel.AiAgent.TimelineRangeSummaryAiWidget found main thread. PID:`,
+                                       mainThread.pid, 'TID:', mainThread.tid,
+                                       'Number of entries:', mainThread.entries.length);
     }
   }
   if (!events) {
-    AiAssistanceModel.Debug.debugLog(`Warning: could not find events for TimelineRangeSummaryAiWidget`, widgetData);
+    AiAssistanceModel.Debug.debugLog(
+        `Warning: could not find events for AiAssistanceModel.AiAgent.TimelineRangeSummaryAiWidget`, widgetData);
     return null;
   }
 
@@ -2378,7 +2390,8 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
   };
 }
 
-async function makeNetworkTrackWidget(widgetData: NetworkTrackAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeNetworkTrackWidget(widgetData: AiAssistanceModel.AiAgent.NetworkTrackAiWidget):
+    Promise<WidgetMakerResponse|null> {
   const {parsedTrace, bounds} = widgetData.data;
   const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
 
@@ -2402,7 +2415,8 @@ async function makeNetworkTrackWidget(widgetData: NetworkTrackAiWidget): Promise
   };
 }
 
-async function makeLighthouseReportWidget(widgetData: LighthouseReportAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeLighthouseReportWidget(widgetData: AiAssistanceModel.AiAgent.LighthouseReportAiWidget):
+    Promise<WidgetMakerResponse|null> {
   let reportEl: HTMLElement|null = null;
   try {
     // Snapshot mode audits only collect individual audit results and do not generate
@@ -2431,7 +2445,7 @@ async function makeLighthouseReportWidget(widgetData: LighthouseReportAiWidget):
   };
 }
 
-async function makeTimelineEventSummaryWidget(widgetData: TimelineEventSummaryAiWidget):
+async function makeTimelineEventSummaryWidget(widgetData: AiAssistanceModel.AiAgent.TimelineEventSummaryAiWidget):
     Promise<WidgetMakerResponse|null> {
   const renderedWidget = html`<devtools-widget class="timeline-event-summary-widget" ${widget(() => {
     return Timeline.TimelineDetailsView.TimelineDetailsPane.makeEventWidget(
@@ -2449,8 +2463,8 @@ async function makeTimelineEventSummaryWidget(widgetData: TimelineEventSummaryAi
   };
 }
 
-async function makeNetworkRequestGeneralHeadersWidget(widgetData: NetworkRequestGeneralHeadersAiWidget):
-    Promise<WidgetMakerResponse|null> {
+async function makeNetworkRequestGeneralHeadersWidget(
+    widgetData: AiAssistanceModel.AiAgent.NetworkRequestGeneralHeadersAiWidget): Promise<WidgetMakerResponse|null> {
   const renderedWidget = html`<devtools-widget class="network-request-general-headers-widget" ${widget(() => {
     return Network.RequestHeadersView.RequestHeadersView.createGeneralHeadersView(widgetData.data.request);
   })}></devtools-widget>`;

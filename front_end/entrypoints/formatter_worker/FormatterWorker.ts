@@ -6,7 +6,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 // This file is required to bring some types into scope, even though it
 // is not used.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, @devtools/es-modules-import
 import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-legacy.js';
 
 import {CSSFormatter} from './CSSFormatter.js';

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
-import type {Size} from '../../models/geometry/geometry.js';
+import type * as Geometry from '../../models/geometry/geometry.js';
 
 import glassPaneStyles from './glassPane.css.js';
 import {deepElementFromEvent, measuredScrollbarWidth} from './UIUtils.js';
@@ -16,7 +16,7 @@ export class GlassPane {
   private readonly onMouseDownBound: (event: Event) => void;
   private onClickOutsideCallback: ((arg0: Event) => void)|null = null;
   #onHideCallback: (() => void)|null = null;
-  private maxSize: Size|null = null;
+  private maxSize: Geometry.Size|null = null;
   private positionX: number|null = null;
   private positionY: number|null = null;
   private anchorBox: AnchorBox|null = null;
@@ -60,9 +60,13 @@ export class GlassPane {
 
   setPointerEventsBehavior(pointerEventsBehavior: PointerEventsBehavior): void {
     this.element.classList.toggle(
-        'no-pointer-events', pointerEventsBehavior !== PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
+        'no-pointer-events',
+        pointerEventsBehavior !== PointerEventsBehavior.BLOCKED_BY_GLASS_PANE,
+    );
     this.contentElement.classList.toggle(
-        'no-pointer-events', pointerEventsBehavior === PointerEventsBehavior.PIERCE_CONTENTS);
+        'no-pointer-events',
+        pointerEventsBehavior === PointerEventsBehavior.PIERCE_CONTENTS,
+    );
   }
 
   setOutsideClickCallback(callback: ((arg0: Event) => void)|null): void {
@@ -73,7 +77,7 @@ export class GlassPane {
     this.#onHideCallback = cb;
   }
 
-  setMaxContentSize(size: Size|null): void {
+  setMaxContentSize(size: Geometry.Size|null): void {
     this.maxSize = size;
     this.positionContent();
   }
@@ -133,8 +137,16 @@ export class GlassPane {
 
   #onDetach(): void {
     panes.delete(this);
-    this.element.ownerDocument.body.removeEventListener('mousedown', this.onMouseDownBound, true);
-    this.element.ownerDocument.body.removeEventListener('pointerdown', this.onMouseDownBound, true);
+    this.element.ownerDocument.body.removeEventListener(
+        'mousedown',
+        this.onMouseDownBound,
+        true,
+    );
+    this.element.ownerDocument.body.removeEventListener(
+        'pointerdown',
+        this.onMouseDownBound,
+        true,
+    );
   }
 
   private onMouseDown(event: Event): void {
@@ -157,7 +169,7 @@ export class GlassPane {
     const scrollbarSize = measuredScrollbarWidth(this.element.ownerDocument);
     const offsetSize = 10;
 
-    const container = (containers.get((this.element.ownerDocument))) as HTMLElement;
+    const container = containers.get(this.element.ownerDocument) as HTMLElement;
     if (this.sizeBehavior === SizeBehavior.MEASURE_CONTENT) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = '';
@@ -189,7 +201,7 @@ export class GlassPane {
 
     if (this.anchorBox) {
       const anchorBox = this.anchorBox.relativeToElement(container);
-      let behavior: AnchorBehavior.PREFER_BOTTOM|AnchorBehavior.PREFER_TOP|AnchorBehavior.PREFER_RIGHT|
+      let behavior:|AnchorBehavior.PREFER_BOTTOM|AnchorBehavior.PREFER_TOP|AnchorBehavior.PREFER_RIGHT|
           AnchorBehavior.PREFER_LEFT|AnchorBehavior = this.anchorBehavior;
 
       if (behavior === AnchorBehavior.PREFER_TOP || behavior === AnchorBehavior.PREFER_BOTTOM) {
@@ -226,14 +238,20 @@ export class GlassPane {
           }
         }
 
-        const naturalPositionX = Math.min(anchorBox.x, containerWidth - width - gutterSize);
+        const naturalPositionX = Math.min(
+            anchorBox.x,
+            containerWidth - width - gutterSize,
+        );
         positionX = Math.max(gutterSize, naturalPositionX);
         if (this.#ignoreLeftMargin && gutterSize > naturalPositionX) {
           positionX = 0;
         }
 
         if (!enoughHeight) {
-          positionX = Math.min(positionX + offsetSize, containerWidth - width - gutterSize);
+          positionX = Math.min(
+              positionX + offsetSize,
+              containerWidth - width - gutterSize,
+          );
         } else if (positionX - offsetSize >= gutterSize) {
           positionX -= offsetSize;
         }
@@ -272,9 +290,15 @@ export class GlassPane {
           }
         }
 
-        positionY = Math.max(gutterSize, Math.min(anchorBox.y, containerHeight - height - gutterSize));
+        positionY = Math.max(
+            gutterSize,
+            Math.min(anchorBox.y, containerHeight - height - gutterSize),
+        );
         if (!enoughWidth) {
-          positionY = Math.min(positionY + offsetSize, containerHeight - height - gutterSize);
+          positionY = Math.min(
+              positionY + offsetSize,
+              containerHeight - height - gutterSize,
+          );
         } else if (positionY - offsetSize >= gutterSize) {
           positionY -= offsetSize;
         }
@@ -303,7 +327,7 @@ export class GlassPane {
   }
 
   static setContainer(element: Element): void {
-    containers.set((element.ownerDocument), element);
+    containers.set(element.ownerDocument, element);
     GlassPane.containerMoved(element);
   }
 

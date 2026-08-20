@@ -10,7 +10,6 @@ import type * as Protocol from '../../generated/protocol.js';
 import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type {TreeElement} from '../../ui/legacy/Treeoutline.js';
 
 import * as Application from './application.js';
 
@@ -368,7 +367,7 @@ describeWithEnvironment('DeviceBoundSessionsTreeElement', () => {
     const sessionNode = siteNode.children()[0];
     const sessionNode2 = siteNode.children()[1];
 
-    function checkIcon(node: TreeElement, expectedIcon: string) {
+    function checkIcon(node: UI.TreeOutline.TreeElement, expectedIcon: string) {
       const icon = node.listItemElement.querySelector('devtools-icon');
       assert.exists(icon);
       assert.strictEqual(icon.getAttribute('name'), expectedIcon);

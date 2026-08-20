@@ -22,7 +22,7 @@ type RuleContext = TSESLint.RuleContext<MessageIds, []>;  // Define MessageIds b
 type RuleFixer = TSESLint.RuleFixer;
 
 // Define MessageIds used in the rule
-type MessageIds = 'doubleSlashInImportPath'|'missingExtension'|'invalidRelativeUrl'|'incorrectSameNamespaceImportNamed'|
+type MessageIds =|'doubleSlashInImportPath'|'missingExtension'|'invalidRelativeUrl'|'incorrectSameNamespaceImportNamed'|
     'incorrectSameNamespaceImportStar'|'crossNamespaceImport'|'crossNamespaceImportLs'|'crossNamespaceImportThirdParty'|
     'incorrectSameNamespaceTestImport';
 
@@ -57,7 +57,8 @@ const CROSS_NAMESPACE_MESSAGE =
 // ------------------------------------------------------------------------------
 
 function isSideEffectImportSpecifier(
-    specifiers: Array<ImportSpecifier|ImportDefaultSpecifier|ImportNamespaceSpecifier>): boolean {
+    specifiers: Array<ImportSpecifier|ImportDefaultSpecifier|ImportNamespaceSpecifier>,
+    ): boolean {
   return specifiers.length === 0;
 }
 
@@ -70,6 +71,17 @@ function isModuleEntrypoint(fileName: string): boolean {
 function computeTopLevelFolder(fileName: string): string {
   const namespaceName = path.relative(FRONT_END_DIRECTORY, fileName);
   return namespaceName.substring(0, namespaceName.indexOf(path.sep));
+}
+
+function isGlobalException(exportingFileName: string): boolean {
+  // Extracted exception for generated files
+  if (computeTopLevelFolder(exportingFileName) === 'generated') {
+    return true;
+  }
+  if (exportingFileName.includes('extension-api')) {
+    return true;
+  }
+  return false;
 }
 
 function checkImportExtension(
@@ -104,15 +116,15 @@ function checkImportExtension(
 }
 
 function nodeSpecifiersSpecialImportsOnly(
-    specifiers: Array<ImportSpecifier|ImportDefaultSpecifier|ImportNamespaceSpecifier>): boolean {
+    specifiers: Array<ImportSpecifier|ImportDefaultSpecifier|ImportNamespaceSpecifier>,
+    ): boolean {
   if (specifiers.length !== 1) {
     return false;
   }
   const firstSpecifier = specifiers[0];
 
-  return (
-      firstSpecifier.type === 'ImportSpecifier' && firstSpecifier.imported.type === 'Identifier' &&
-      ['ls', 'assertNotNullOrUndefined'].includes(firstSpecifier.imported.name));
+  return (firstSpecifier.type === 'ImportSpecifier' && firstSpecifier.imported.type === 'Identifier' &&
+          ['ls', 'assertNotNullOrUndefined'].includes(firstSpecifier.imported.name));
 }
 
 function reportIncorrectSameNamespaceTestImport(
@@ -155,7 +167,7 @@ function checkStarImport(
   // The generated code is typically part of a different folder. Therefore,
   // it is allowed to directly import these files, as they are only
   // imported in 1 place at a time.
-  if (computeTopLevelFolder(exportingFileName) === 'generated') {
+  if (isGlobalException(exportingFileName)) {
     return;
   }
 
@@ -166,7 +178,8 @@ function checkStarImport(
 
   // Unit tests must import from the entry points even for same-namespace
   // imports, as we otherwise break the module system (in Release builds).
-  if (isSameFolder && importingFileName.endsWith('.test.ts') && !isModuleEntrypoint(exportingFileName)) {
+  if (isSameFolder && (importingFileName.endsWith('.test.ts') || importingFileName.endsWith('.docs.ts')) &&
+      !isModuleEntrypoint(exportingFileName)) {
     const importingDirectoryName = path.basename(
         path.dirname(importingFileName),
     );
@@ -179,8 +192,8 @@ function checkStarImport(
     reportIncorrectSameNamespaceTestImport(
         context,
         node,
-        importPathForErrorMessage,
         importingDirectoryName,
+        importPathForErrorMessage,
     );
     return;
   }
@@ -191,7 +204,8 @@ function checkStarImport(
     // For `.test.ts` files we also need to use the namespace import syntax, to access
     // the module itself, so we need to allow this as well.
     const importingFileIsEntrypointOrTest = importingFileName.endsWith('-entrypoint.ts') ||
-        importingFileName.endsWith('-meta.ts') || importingFileName.endsWith('.test.ts');
+        importingFileName.endsWith('-meta.ts') || importingFileName.endsWith('.test.ts') ||
+        importingFileName.endsWith('.docs.ts');
 
     if (!importingFileIsEntrypointOrTest) {
       context.report({
@@ -205,6 +219,9 @@ function checkStarImport(
   }
 
   if (invalidCrossFolderUsage) {
+    if (isGlobalException(exportingFileName)) {
+      return;
+    }
     context.report({
       node,
       messageId: 'crossNamespaceImport',
@@ -283,6 +300,7 @@ export default createRule<[], MessageIds>({
               return fixer.replaceText(node.source, `'${fixedValue}'`);
             },
           });
+          return;
         }
 
         // We don't check for bare imports (e.g. import * as fs from 'fs')
@@ -293,22 +311,7 @@ export default createRule<[], MessageIds>({
         const importPath = path.normalize(value);
         const importPathForErrorMessage = value.replace(/\\/g, '/');
 
-        checkImportExtension(
-            value,
-            importPathForErrorMessage,
-            context,
-            node,
-        );
-
-        // Type imports are unrestricted
-        if (node.importKind === 'type') {
-          // `import type ... from ...` syntax
-          return;
-        }
-        // Check specifiers for `import {type T} from ...`
-        if (node.specifiers.every(spec => spec.type === 'ImportSpecifier' && spec.importKind === 'type')) {
-          return;
-        }
+        checkImportExtension(value, importPathForErrorMessage, context, node);
 
         // Accidental relative URL:
         // e.g.: import * as Root from 'front_end/root/root.js';
@@ -354,9 +357,14 @@ export default createRule<[], MessageIds>({
         }
 
         const currentFileDirectory = path.dirname(filename);
-        const resolvedAbsoluteImportPath = path.resolve(currentFileDirectory, importPath);
+        const resolvedAbsoluteImportPath = path.resolve(
+            currentFileDirectory,
+            importPath,
+        );
         // We explicitly allow destructuring imports from 'front_end/ui/kit/kit.js'.
-        if (resolvedAbsoluteImportPath.endsWith(path.join('front_end', 'ui', 'kit', 'kit.js'))) {
+        if (resolvedAbsoluteImportPath.endsWith(
+                path.join('front_end', 'ui', 'kit', 'kit.js'),
+                )) {
           return;
         }
 
@@ -382,9 +390,12 @@ export default createRule<[], MessageIds>({
               exportingFileName,
           );
         } else if (computeTopLevelFolder(importingFileName) !== computeTopLevelFolder(exportingFileName)) {
+          if (isGlobalException(exportingFileName)) {
+            return;
+          }
           // Check if exportingFileName is actually under FRONT_END_DIRECTORY before comparing top level folders
           if (!path.relative(FRONT_END_DIRECTORY, exportingFileName).startsWith('..')) {
-            if (importingFileName.endsWith('.test.ts') &&
+            if ((importingFileName.endsWith('.test.ts') || importingFileName.endsWith('.docs.ts')) &&
                 importPath.includes([path.sep, 'testing', path.sep].join(''))) {
               /** Within test files we allow the direct import of test helpers.*/
               return;
@@ -432,7 +443,8 @@ export default createRule<[], MessageIds>({
             },
           });
         } else if (path.dirname(importingFileName) === path.dirname(exportingFileName)) {
-          if (!importingFileName.endsWith('.test.ts') || !importingFileName.startsWith(FRONT_END_DIRECTORY)) {
+          if (!(importingFileName.endsWith('.test.ts') || importingFileName.endsWith('.docs.ts')) ||
+              !importingFileName.startsWith(FRONT_END_DIRECTORY)) {
             return;
           }
 
@@ -450,8 +462,8 @@ export default createRule<[], MessageIds>({
             reportIncorrectSameNamespaceTestImport(
                 context,
                 node,
-                importPathForErrorMessage,
                 importingDirectoryName,
+                importPathForErrorMessage,
             );
           }
         }

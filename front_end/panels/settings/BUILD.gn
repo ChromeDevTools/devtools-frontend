@@ -105,6 +105,7 @@ devtools_ui_module("unittests") {
     "../../core/platform:bundle",
     "../../models/ai_assistance:bundle",
     "../../models/persistence:bundle",
+    "../../models/workspace:bundle",
     "../../testing",
     "../../ui/components/switch:bundle",
     "../../ui/legacy:bundle",

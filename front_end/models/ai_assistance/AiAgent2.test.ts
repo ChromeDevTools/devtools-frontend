@@ -12,6 +12,7 @@ import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHe
 import type * as Trace from '../trace/trace.js';
 
 import * as AiAssistance from './ai_assistance.js';
+// TODO(nvitkov): crbug.com/468942591 Fix the target for this import
 import type {Skill, SkillName} from './skills/Skill.js';
 import {SKILLS} from './skills/SkillRegistry.js';
 

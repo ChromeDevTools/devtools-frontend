@@ -26,7 +26,6 @@ import type * as Converters from './converters/converters.js';
 import type * as Extensions from './extensions/extensions.js';
 import {ExtensionView} from './ExtensionView.js';
 import * as Models from './models/models.js';
-import {PlayRecordingSpeed} from './models/RecordingPlayer.js';
 import * as Actions from './recorder-actions/recorder-actions.js';
 import recordingViewStyles from './recordingView.css.js';
 import {ReplaySection} from './ReplaySection.js';
@@ -174,7 +173,7 @@ export const enum TargetPanel {
 
 export interface PlayRecordingEvent {
   targetPanel: TargetPanel;
-  speed: PlayRecordingSpeed;
+  speed: Models.RecordingPlayer.PlayRecordingSpeed;
   extension?: Extensions.ExtensionManager.Extension;
 }
 
@@ -769,8 +768,13 @@ interface ViewInput {
   getStepState: (step: Models.Schema.Step) => State;
   onAbortReplay: () => void;
   onMeasurePerformanceClick: (event: Event) => void;
-  onTogglePlaying: (speed: PlayRecordingSpeed, extension?: Extensions.ExtensionManager.Extension) => void;
-  onCodeFormatChange: (event: Menus.SelectMenu.SelectMenuItemSelectedEvent) => void;
+  onTogglePlaying: (
+      speed: Models.RecordingPlayer.PlayRecordingSpeed,
+      extension?: Extensions.ExtensionManager.Extension,
+      ) => void;
+  onCodeFormatChange: (
+      event: Menus.SelectMenu.SelectMenuItemSelectedEvent,
+      ) => void;
   onCopyStep: (step: Models.Schema.Step) => void;
   onEditTitleButtonClick: (event: Event) => void;
   onNetworkConditionsChange: (event: Event) => void;
@@ -781,8 +785,14 @@ interface ViewInput {
   onTimeoutInput: (event: Event) => void;
   onTitleBlur: (event: Event) => void;
   onTitleInputKeyDown: (event: KeyboardEvent) => void;
-  onStepChanged?: (currentStep: Models.Schema.Step, newStep: Models.Schema.Step) => void;
-  onAddStep?: (stepOrSection: Models.Schema.Step|Models.Section.Section, position: AddStepPosition) => void;
+  onStepChanged?: (
+      currentStep: Models.Schema.Step,
+      newStep: Models.Schema.Step,
+      ) => void;
+  onAddStep?: (
+      stepOrSection: Models.Schema.Step|Models.Section.Section,
+      position: AddStepPosition,
+      ) => void;
   onRemoveStep?: (step: Models.Schema.Step) => void;
   onAddBreakpoint?: (index: number) => void;
   onRemoveBreakpoint?: (index: number) => void;
@@ -935,72 +945,78 @@ export class RecordingView extends UI.Widget.Widget {
         ].find(converter => converter.getId() === this.#converterId) ??
         this.builtInConverters[0];
 
-    this.#view({
-      breakpointIndexes: this.breakpointIndexes,
-      builtInConverters: this.builtInConverters,
-      converterId: this.#converterId,
-      converterName: converter?.getFormatName(),
-      currentError: this.currentError ?? null,
-      currentStep: this.currentStep ?? null,
-      editorState: this.#editorState ?? null,
-      extensionConverters: this.extensionConverters,
-      extensionDescriptor: this.extensionDescriptor,
-      isRecording: this.isRecording,
-      isTitleInvalid: this.#isTitleInvalid,
-      lastReplayResult: this.lastReplayResult ?? null,
-      recorderSettings: this.#recorderSettings ?? null,
-      recording: this.recording,
-      recordingTogglingInProgress: this.recordingTogglingInProgress,
-      replayAllowed: this.replayAllowed,
-      replayExtensions: this.replayExtensions ?? [],
-      replaySettingsExpanded: this.#replaySettingsExpanded,
-      replayState: this.replayState,
-      sections: this.sections,
-      selectedStep: this.#selectedStep ?? null,
-      settings: this.settings ?? null,
-      showCodeView: this.#showCodeView,
+    this.#view(
+        {
+          breakpointIndexes: this.breakpointIndexes,
+          builtInConverters: this.builtInConverters,
+          converterId: this.#converterId,
+          converterName: converter?.getFormatName(),
+          currentError: this.currentError ?? null,
+          currentStep: this.currentStep ?? null,
+          editorState: this.#editorState ?? null,
+          extensionConverters: this.extensionConverters,
+          extensionDescriptor: this.extensionDescriptor,
+          isRecording: this.isRecording,
+          isTitleInvalid: this.#isTitleInvalid,
+          lastReplayResult: this.lastReplayResult ?? null,
+          recorderSettings: this.#recorderSettings ?? null,
+          recording: this.recording,
+          recordingTogglingInProgress: this.recordingTogglingInProgress,
+          replayAllowed: this.replayAllowed,
+          replayExtensions: this.replayExtensions ?? [],
+          replaySettingsExpanded: this.#replaySettingsExpanded,
+          replayState: this.replayState,
+          sections: this.sections,
+          selectedStep: this.#selectedStep ?? null,
+          settings: this.settings ?? null,
+          showCodeView: this.#showCodeView,
 
-      onAddAssertion: () => {
-        this.onAddAssertion?.();
-      },
-      onRecordingFinished: () => {
-        this.onRecordingFinished?.();
-      },
-      getSectionState: this.#getSectionState.bind(this),
-      getStepState: this.#getStepState.bind(this),
-      onAbortReplay: () => {
-        this.onAbortReplay?.();
-      },
-      onMeasurePerformanceClick: this.#handleMeasurePerformanceClickEvent.bind(this),
-      onTogglePlaying: (speed: PlayRecordingSpeed, extension?: Extensions.ExtensionManager.Extension) => {
-        this.onPlayRecording?.({
-          targetPanel: TargetPanel.DEFAULT,
-          speed,
-          extension,
-        });
-      },
-      onStepChanged: (currentStep, newStep) => this.onStepChanged?.(currentStep, newStep),
-      onAddStep: (stepOrSection, position) => this.onAddStep?.(stepOrSection, position),
-      onRemoveStep: step => this.onRemoveStep?.(step),
-      onAddBreakpoint: index => this.onAddBreakpoint?.(index),
-      onRemoveBreakpoint: index => this.onRemoveBreakpoint?.(index),
-      onAttributeRequested: send => this.onAttributeRequested?.(send),
-      onCodeFormatChange: this.#onCodeFormatChange.bind(this),
-      onCopyStep: this.#onCopyStepEvent.bind(this),
-      onEditTitleButtonClick: this.#onEditTitleButtonClick.bind(this),
-      onNetworkConditionsChange: this.#onNetworkConditionsChange.bind(this),
-      onReplaySettingsKeydown: this.#onReplaySettingsKeydown.bind(this),
-      onSelectMenuLabelClick: this.#onSelectMenuLabelClick.bind(this),
-      onStepClick: this.#onStepClick.bind(this),
-      onStepHover: this.#onStepHover.bind(this),
-      onTimeoutInput: this.#onTimeoutInput.bind(this),
-      onTitleBlur: this.#onTitleBlur.bind(this),
-      onTitleInputKeyDown: this.#onTitleInputKeyDown.bind(this),
-      onToggleReplaySettings: this.#onToggleReplaySettings.bind(this),
-      onWrapperClick: this.#onWrapperClick.bind(this),
-      showCodeToggle: this.showCodeToggle.bind(this),
-    },
-               this.#viewOutput, this.contentElement);
+          onAddAssertion: () => {
+            this.onAddAssertion?.();
+          },
+          onRecordingFinished: () => {
+            this.onRecordingFinished?.();
+          },
+          getSectionState: this.#getSectionState.bind(this),
+          getStepState: this.#getStepState.bind(this),
+          onAbortReplay: () => {
+            this.onAbortReplay?.();
+          },
+          onMeasurePerformanceClick: this.#handleMeasurePerformanceClickEvent.bind(this),
+          onTogglePlaying: (
+              speed: Models.RecordingPlayer.PlayRecordingSpeed,
+              extension?: Extensions.ExtensionManager.Extension,
+              ) => {
+            this.onPlayRecording?.({
+              targetPanel: TargetPanel.DEFAULT,
+              speed,
+              extension,
+            });
+          },
+          onStepChanged: (currentStep, newStep) => this.onStepChanged?.(currentStep, newStep),
+          onAddStep: (stepOrSection, position) => this.onAddStep?.(stepOrSection, position),
+          onRemoveStep: step => this.onRemoveStep?.(step),
+          onAddBreakpoint: index => this.onAddBreakpoint?.(index),
+          onRemoveBreakpoint: index => this.onRemoveBreakpoint?.(index),
+          onAttributeRequested: send => this.onAttributeRequested?.(send),
+          onCodeFormatChange: this.#onCodeFormatChange.bind(this),
+          onCopyStep: this.#onCopyStepEvent.bind(this),
+          onEditTitleButtonClick: this.#onEditTitleButtonClick.bind(this),
+          onNetworkConditionsChange: this.#onNetworkConditionsChange.bind(this),
+          onReplaySettingsKeydown: this.#onReplaySettingsKeydown.bind(this),
+          onSelectMenuLabelClick: this.#onSelectMenuLabelClick.bind(this),
+          onStepClick: this.#onStepClick.bind(this),
+          onStepHover: this.#onStepHover.bind(this),
+          onTimeoutInput: this.#onTimeoutInput.bind(this),
+          onTitleBlur: this.#onTitleBlur.bind(this),
+          onTitleInputKeyDown: this.#onTitleInputKeyDown.bind(this),
+          onToggleReplaySettings: this.#onToggleReplaySettings.bind(this),
+          onWrapperClick: this.#onWrapperClick.bind(this),
+          showCodeToggle: this.showCodeToggle.bind(this),
+        },
+        this.#viewOutput,
+        this.contentElement,
+    );
   }
 
   override wasShown(): void {
@@ -1217,7 +1233,7 @@ export class RecordingView extends UI.Widget.Widget {
 
     this.onPlayRecording?.({
       targetPanel: TargetPanel.PERFORMANCE_PANEL,
-      speed: PlayRecordingSpeed.NORMAL,
+      speed: Models.RecordingPlayer.PlayRecordingSpeed.NORMAL,
     });
   }
 

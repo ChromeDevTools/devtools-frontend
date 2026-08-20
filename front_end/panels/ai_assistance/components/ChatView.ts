@@ -9,7 +9,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
+import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../../ui/lit/lit.js';
 
@@ -95,7 +95,7 @@ export interface Props {
   textInputValue: string;
   onTextChange: (text: string) => void;
   uploadImageInputEnabled?: boolean;
-  markdownRenderer: MarkdownLitRenderer;
+  markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer;
   generateConversationSummary: (markdown: string) => Promise<string>;
   walkthrough: {
     onOpen: (message: ModelChatMessage) => void,

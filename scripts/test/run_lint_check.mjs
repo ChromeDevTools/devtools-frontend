@@ -416,6 +416,8 @@ async function run() {
       script.includes('front_end') &&
       // Don't lint test files as we don't use Lit
       !script.endsWith('.test.ts') &&
+      !script.endsWith('.test.api.ts') &&
+      !script.endsWith('.docs.ts') &&
       !isInExcludedFolder
     );
   });

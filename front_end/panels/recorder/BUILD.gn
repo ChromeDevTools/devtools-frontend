@@ -70,7 +70,6 @@ devtools_ui_module("recorder") {
     "./converters:bundle",
     "./extensions:bundle",
     "./models:bundle",
-    "./models:recorder",
     "./recorder-actions:bundle",
     "./util:bundle",
   ]

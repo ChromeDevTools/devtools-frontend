@@ -11,7 +11,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type * as Extensions from './extensions/extensions.js';
 import * as Models from './models/models.js';
-import {PlayRecordingSpeed} from './models/RecordingPlayer.js';
 import * as Actions from './recorder-actions/recorder-actions.js';
 import replaySectionStyles from './replaySection.css.js';
 
@@ -72,9 +71,13 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const REPLAY_EXTENSION_PREFIX = 'extension';
 
-function isPlayRecordingSpeed(string: string): string is PlayRecordingSpeed {
-  return string === PlayRecordingSpeed.NORMAL || string === PlayRecordingSpeed.SLOW ||
-      string === PlayRecordingSpeed.VERY_SLOW || string === PlayRecordingSpeed.EXTREMELY_SLOW;
+function isPlayRecordingSpeed(
+    string: string,
+    ): string is Models.RecordingPlayer.PlayRecordingSpeed {
+  return (string === Models.RecordingPlayer.PlayRecordingSpeed.NORMAL ||
+          string === Models.RecordingPlayer.PlayRecordingSpeed.SLOW ||
+          string === Models.RecordingPlayer.PlayRecordingSpeed.VERY_SLOW ||
+          string === Models.RecordingPlayer.PlayRecordingSpeed.EXTREMELY_SLOW);
 }
 
 interface Item {
@@ -190,7 +193,10 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
  * select menu + a button.
  */
 export class ReplaySection extends UI.Widget.Widget {
-  onStartReplay?: (speed: PlayRecordingSpeed, extension?: Extensions.ExtensionManager.Extension) => void;
+  onStartReplay?: (
+      speed: Models.RecordingPlayer.PlayRecordingSpeed,
+      extension?: Extensions.ExtensionManager.Extension,
+      ) => void;
 
   #disabled = false;
   #settings?: Models.RecorderSettings.RecorderSettings;
@@ -209,7 +215,9 @@ export class ReplaySection extends UI.Widget.Widget {
     this.performUpdate();
   }
 
-  set replayExtensions(replayExtensions: Extensions.ExtensionManager.Extension[]) {
+  set replayExtensions(
+      replayExtensions: Extensions.ExtensionManager.Extension[],
+  ) {
     this.#replayExtensions = replayExtensions;
     this.#groups = this.#computeGroups();
     this.performUpdate();
@@ -236,8 +244,10 @@ export class ReplaySection extends UI.Widget.Widget {
           disabled: this.#disabled,
           groups: this.#groups,
           selectedItem,
-          actionTitle:
-              Models.Tooltip.getTooltipForActions(selectedItem.label(), Actions.RecorderActions.REPLAY_RECORDING),
+          actionTitle: Models.Tooltip.getTooltipForActions(
+              selectedItem.label(),
+              Actions.RecorderActions.REPLAY_RECORDING,
+              ),
           onButtonClick: () => this.#onStartReplay(),
           onItemSelected: (item: string) => this.#onItemSelected(item),
         },
@@ -247,35 +257,37 @@ export class ReplaySection extends UI.Widget.Widget {
   }
 
   #computeGroups(): Group[] {
-    const groups: Group[] = [{
-      name: i18nString(UIStrings.speedGroup),
-      items: [
-        {
-          value: PlayRecordingSpeed.NORMAL,
-          buttonIconName: 'play',
-          buttonLabel: () => i18nString(UIStrings.ReplayNormalButtonLabel),
-          label: () => i18nString(UIStrings.ReplayNormalItemLabel),
-        },
-        {
-          value: PlayRecordingSpeed.SLOW,
-          buttonIconName: 'play',
-          buttonLabel: () => i18nString(UIStrings.ReplaySlowButtonLabel),
-          label: () => i18nString(UIStrings.ReplaySlowItemLabel),
-        },
-        {
-          value: PlayRecordingSpeed.VERY_SLOW,
-          buttonIconName: 'play',
-          buttonLabel: () => i18nString(UIStrings.ReplayVerySlowButtonLabel),
-          label: () => i18nString(UIStrings.ReplayVerySlowItemLabel),
-        },
-        {
-          value: PlayRecordingSpeed.EXTREMELY_SLOW,
-          buttonIconName: 'play',
-          buttonLabel: () => i18nString(UIStrings.ReplayExtremelySlowButtonLabel),
-          label: () => i18nString(UIStrings.ReplayExtremelySlowItemLabel),
-        },
-      ],
-    }];
+    const groups: Group[] = [
+      {
+        name: i18nString(UIStrings.speedGroup),
+        items: [
+          {
+            value: Models.RecordingPlayer.PlayRecordingSpeed.NORMAL,
+            buttonIconName: 'play',
+            buttonLabel: () => i18nString(UIStrings.ReplayNormalButtonLabel),
+            label: () => i18nString(UIStrings.ReplayNormalItemLabel),
+          },
+          {
+            value: Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
+            buttonIconName: 'play',
+            buttonLabel: () => i18nString(UIStrings.ReplaySlowButtonLabel),
+            label: () => i18nString(UIStrings.ReplaySlowItemLabel),
+          },
+          {
+            value: Models.RecordingPlayer.PlayRecordingSpeed.VERY_SLOW,
+            buttonIconName: 'play',
+            buttonLabel: () => i18nString(UIStrings.ReplayVerySlowButtonLabel),
+            label: () => i18nString(UIStrings.ReplayVerySlowItemLabel),
+          },
+          {
+            value: Models.RecordingPlayer.PlayRecordingSpeed.EXTREMELY_SLOW,
+            buttonIconName: 'play',
+            buttonLabel: () => i18nString(UIStrings.ReplayExtremelySlowButtonLabel),
+            label: () => i18nString(UIStrings.ReplayExtremelySlowItemLabel),
+          },
+        ],
+      },
+    ];
     if (this.#replayExtensions.length) {
       groups.push({
         name: i18nString(UIStrings.extensionGroup),
@@ -308,20 +320,27 @@ export class ReplaySection extends UI.Widget.Widget {
     const value = this.#settings?.replayExtension || this.#settings?.speed || '';
     if (value.startsWith(REPLAY_EXTENSION_PREFIX)) {
       const origin = value.substring(REPLAY_EXTENSION_PREFIX.length);
-      const extension = this.#replayExtensions.find(ext => ext.getOrigin() === origin);
+      const extension = this.#replayExtensions.find(
+          ext => ext.getOrigin() === origin,
+      );
       if (extension) {
         if (this.#settings) {
           this.#settings.replayExtension = REPLAY_EXTENSION_PREFIX + extension.getOrigin();
         }
         if (this.onStartReplay) {
-          this.onStartReplay(PlayRecordingSpeed.NORMAL, extension);
+          this.onStartReplay(
+              Models.RecordingPlayer.PlayRecordingSpeed.NORMAL,
+              extension,
+          );
         }
         this.performUpdate();
         return;
       }
     }
     if (this.onStartReplay) {
-      this.onStartReplay(this.#settings ? this.#settings.speed : PlayRecordingSpeed.NORMAL);
+      this.onStartReplay(
+          this.#settings ? this.#settings.speed : Models.RecordingPlayer.PlayRecordingSpeed.NORMAL,
+      );
     }
     this.performUpdate();
   }

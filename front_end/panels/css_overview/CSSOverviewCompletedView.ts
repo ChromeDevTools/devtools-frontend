@@ -299,26 +299,31 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
             <!-- Dupe the styles into the main container because of the shadow root will prevent outer styles. -->
             <style>${cssOverviewCompletedViewStyles}</style>
             <div class="results-section horizontally-padded summary"
+                  jslog=${VisualLogging.section('summary')}
                   ${ref(e => { output.revealSection.set('summary', revealSection.bind(null, e));})}>
               <h1>${i18nString(UIStrings.overviewSummary)}</h1>
               ${renderSummary(input.elementCount, input.globalStyleStats, input.mediaQueries)}
             </div>
             <div class="results-section horizontally-padded colors"
+                jslog=${VisualLogging.section('colors')}
                 ${ref(e => { output.revealSection.set('colors', revealSection.bind(null, e));})}>
                 <h1>${i18nString(UIStrings.colors)}</h1>
                 ${renderColors(input.backgroundColors, input.textColors, input.textColorContrastIssues, input.fillColors, input.borderColors)}
               </div>
               <div class="results-section font-info"
+                    jslog=${VisualLogging.section('font-info')}
                     ${ref(e => { output.revealSection.set('font-info', revealSection.bind(null, e));})}>
                 <h1>${i18nString(UIStrings.fontInfo)}</h1>
                 ${renderFontInfo(input.fontInfo)}
               </div>
               <div class="results-section unused-declarations"
+                    jslog=${VisualLogging.section('unused-declarations')}
                     ${ref(e => { output.revealSection.set('unused-declarations', revealSection.bind(null, e));})}>
                 <h1>${i18nString(UIStrings.unusedDeclarations)}</h1>
                 ${renderUnusedDeclarations(input.unusedDeclarations)}
               </div>
               <div class="results-section media-queries"
+                    jslog=${VisualLogging.section('media-queries')}
                     ${ref(e => { output.revealSection.set('media-queries', revealSection.bind(null, e));})}>
               <h1>${i18nString(UIStrings.mediaQueries)}</h1>
               ${renderMediaQueries(input.mediaQueries)}
@@ -355,7 +360,7 @@ function renderSummary(
     elementCount: number, globalStyleStats: GlobalStyleStats,
     mediaQueries: Array<{title: string, nodes: Protocol.CSS.CSSMedia[]}>): TemplateResult {
   const renderSummaryItem = (label: string, value: number): TemplateResult => html`
-    <li>
+    <li jslog=${VisualLogging.item('summary-item')}>
       <div class="label">${label}</div>
       <div class="value">${formatter.format(value)}</div>
     </li>`;
@@ -440,7 +445,7 @@ function renderGroup(
           const width = 100 * nodes.length / total;
           const itemLabel = i18nString(UIStrings.nOccurrences, {n: nodes.length});
 
-          return html`<li>
+          return html`<li jslog=${VisualLogging.item('css-overview.group-item')}>
             <div class="title">${title}</div>
             <button data-type=${type} data-path=${path} data-label=${title}
             jslog=${VisualLogging.action().track({click: true}).context(`css-overview.${type}`)}
@@ -492,7 +497,7 @@ function renderContrastIssue(key: string, issues: ContrastIssue[]): TemplateResu
   const border = getBorderString(minContrastIssue.backgroundColor.asLegacyColor());
 
   // clang-format off
-  return html`<li>
+  return html`<li jslog=${VisualLogging.item('contrast-issue')}>
     <button
       title=${title} aria-label=${title}
       data-type="contrast" data-key=${key} data-section="contrast" class="block"
@@ -525,7 +530,7 @@ function renderColor(section: string, color: string): LitTemplate {
     return nothing;
   }
   // clang-format off
-  return html`<li>
+  return html`<li jslog=${VisualLogging.item('color-item')}>
     <button title=${color} data-type="color" data-color=${color}
       data-section=${section} class="block"
       style=${styleMap({backgroundColor: color, border: getBorderString(borderColor)})}

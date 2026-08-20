@@ -110,9 +110,9 @@ var ApplicationPanelTreeElement = class _ApplicationPanelTreeElement extends UI.
       const icon = AiAssistance.AiUtils.getIconName();
       const onClick = (ev) => {
         ev.stopPropagation();
-        const item2 = storageItemProvider();
-        if (item2) {
-          UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item2);
+        const item3 = storageItemProvider();
+        if (item3) {
+          UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item3);
           void action6.execute();
         }
       };
@@ -175,8 +175,8 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.updateCategoryView();
-    const item2 = this.createGenericStorageAiContext();
-    UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item2);
+    const item3 = this.createGenericStorageAiContext();
+    UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item3);
     return false;
   }
   updateCategoryView() {
@@ -9606,7 +9606,7 @@ var DEFAULT_SECTION_VIEW = (input, _output, target) => {
         <span style="flex: 1 1 auto">${input.title}</span>
         ${renderHeaderButtons(input)}
       </devtools-report-section-header>
-      <div class="service-worker-section">
+      <div class="service-worker-section" jslog=${VisualLogging10.section("service-worker")}>
          ${renderSourceField(input, input.activeVersion ?? input.redundantVersion)}
          ${renderStatusField(input, input.activeVersion, input.waitingVersion, input.installingVersion, input.redundantVersion)}
          ${renderClientsField(input, input.activeVersion ?? input.redundantVersion)}
@@ -10113,7 +10113,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
     })}
                          .iconName=${"cross"}
                          .variant=${"toolbar"}></devtools-button>
-        ${input.mainToolbarItems.map((item2) => item2.element)}
+        ${input.mainToolbarItems.map((item3) => item3.element)}
       </devtools-toolbar>
       ${input.metadataView}`,
     // clang-format on
@@ -10184,8 +10184,8 @@ var StorageItemsToolbar = class extends Common11.ObjectWrapper.eventMixin(UI20.W
     this.#deleteAllButtonIconName = glyph;
     this.requestUpdate();
   }
-  appendToolbarItem(item2) {
-    this.#mainToolbarItems.push(item2);
+  appendToolbarItem(item3) {
+    this.#mainToolbarItems.push(item3);
     this.requestUpdate();
   }
   setStorageKey(storageKey) {
@@ -10511,7 +10511,7 @@ var CookieItemsView = class extends UI21.Widget.VBox {
       }
       return false;
     };
-    return items.filter((item2) => this.#toolbar?.filterRegex?.test(keyFunction(item2)) ?? true).filter(predicate);
+    return items.filter((item3) => this.#toolbar?.filterRegex?.test(keyFunction(item3)) ?? true).filter(predicate);
   }
   /**
    * This will only delete the currently visible cookies.
@@ -11801,23 +11801,23 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
                         ${i18nString24(UIStrings24.value)}
                       </th>
                     </tr>
-                    ${repeat2(input.items, (item2) => item2.key, (item2) => html15`
-                      <tr data-key=${item2.key} data-value=${item2.value}
-                          @select=${() => input.onSelect(item2)}
-                          @edit=${(e) => input.onEdit(item2.key, item2.value, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
-                          @delete=${() => input.onDelete(item2.key)}
-                          @contextmenu=${(e) => input.onContextMenu?.(item2, e.detail)}
-                          selected=${input.selectedKey === item2.key || nothing8}>
+                    ${repeat2(input.items, (item3) => item3.key, (item3) => html15`
+                      <tr data-key=${item3.key} data-value=${item3.value}
+                          @select=${() => input.onSelect(item3)}
+                          @edit=${(e) => input.onEdit(item3.key, item3.value, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
+                          @delete=${() => input.onDelete(item3.key)}
+                          @contextmenu=${(e) => input.onContextMenu?.(item3, e.detail)}
+                          selected=${input.selectedKey === item3.key || nothing8}>
                         <td>${input.showAiButton ? html15`
                             <span class="ai-button-container">
                               <devtools-floating-button
                                 icon-name=${AIAssistance.AiUtils.getIconName()}
                                 title=${ifDefined(input.aiButtonTitle)}
-                                @click=${(e) => input.onAiButtonClick?.(item2, e)}
+                                @click=${(e) => input.onAiButtonClick?.(item3, e)}
                               ></devtools-floating-button>
                             </span>
-                          ` : nothing8}${item2.key}</td>
-                        <td>${item2.value.substr(0, MAX_VALUE_LENGTH)}</td>
+                          ` : nothing8}${item3.key}</td>
+                        <td>${item3.value.substr(0, MAX_VALUE_LENGTH)}</td>
                       </tr>`)}
                       <tr placeholder></tr>
                   </table>
@@ -11867,16 +11867,16 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
       classes: this.#classes,
       showAiButton: this.isAiButtonEnabled(),
       aiButtonTitle: this.isAiButtonEnabled() && UI23.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID) ? UI23.ActionRegistry.ActionRegistry.instance().getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).title() : void 0,
-      onSelect: (item2) => {
-        this.#toolbar?.setCanDeleteSelected(Boolean(item2));
-        void this.#previewEntry(item2);
-        this.selectedItemChanged(item2);
+      onSelect: (item3) => {
+        this.#toolbar?.setCanDeleteSelected(Boolean(item3));
+        void this.#previewEntry(item3);
+        this.selectedItemChanged(item3);
       },
-      onAiButtonClick: this.isAiButtonEnabled() ? (item2, event) => {
-        this.onAiButtonClick(item2, event);
+      onAiButtonClick: this.isAiButtonEnabled() ? (item3, event) => {
+        this.onAiButtonClick(item3, event);
       } : void 0,
-      onContextMenu: (item2, contextMenu) => {
-        this.populateContextMenu(item2, contextMenu);
+      onContextMenu: (item3, contextMenu) => {
+        this.populateContextMenu(item3, contextMenu);
       },
       onSort: (ascending) => {
         this.#isSortOrderAscending = ascending;
@@ -11923,7 +11923,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
     this.#toolbar?.setCanDeleteSelected(false);
   }
   itemRemoved(key) {
-    const index = this.#items.findIndex((item2) => item2.key === key);
+    const index = this.#items.findIndex((item3) => item3.key === key);
     if (index === -1) {
       return;
     }
@@ -11932,21 +11932,21 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
     this.#toolbar?.setCanDeleteSelected(this.#items.length > 1);
   }
   itemAdded(key, value) {
-    if (this.#items.some((item2) => item2.key === key)) {
+    if (this.#items.some((item3) => item3.key === key)) {
       return;
     }
     this.#items.push({ key, value });
     this.performUpdate();
   }
   itemUpdated(key, value) {
-    const item2 = this.#items.find((item3) => item3.key === key);
-    if (!item2) {
+    const item3 = this.#items.find((item4) => item4.key === key);
+    if (!item3) {
       return;
     }
-    if (item2.value === value) {
+    if (item3.value === value) {
       return;
     }
-    item2.value = value;
+    item3.value = value;
     this.performUpdate();
     if (this.#selectedKey !== key) {
       return;
@@ -11958,8 +11958,8 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
   }
   showItems(items) {
     const sortDirection = this.#isSortOrderAscending ? 1 : -1;
-    this.#items = [...items].sort((item1, item2) => sortDirection * (item1.key > item2.key ? 1 : -1));
-    const selectedItem = this.#items.find((item2) => item2.key === this.#selectedKey);
+    this.#items = [...items].sort((item1, item22) => sortDirection * (item1.key > item22.key ? 1 : -1));
+    const selectedItem = this.#items.find((item3) => item3.key === this.#selectedKey);
     if (!selectedItem) {
       this.#selectedKey = null;
     } else {
@@ -12051,7 +12051,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
     this.performUpdate();
   }
   keys() {
-    return this.#items.map((item2) => item2.key);
+    return this.#items.map((item3) => item3.key);
   }
   selectedItemChanged(_item) {
   }
@@ -12170,10 +12170,10 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
       return;
     }
     const { filterRegex } = this.toolbar;
-    const filteredItems = items.map((item2) => ({ key: item2[0], value: item2[1] })).filter((item2) => filterRegex?.test(`${item2.key} ${item2.value}`) ?? true);
+    const filteredItems = items.map((item3) => ({ key: item3[0], value: item3[1] })).filter((item3) => filterRegex?.test(`${item3.key} ${item3.value}`) ?? true);
     this.showItems(filteredItems);
   }
-  #setAiStorageContext(item2) {
+  #setAiStorageContext(item3) {
     const storageKey = this.domStorage.storageKey;
     if (!storageKey) {
       return;
@@ -12187,32 +12187,32 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
       UI24.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, null);
       return;
     }
-    const storageItem = new AiAssistanceModel2.StorageItem.DOMStorageItem(mainPageOrigin, origin, storageKey, storageType, item2 ? item2.key : void 0);
+    const storageItem = new AiAssistanceModel2.StorageItem.DOMStorageItem(mainPageOrigin, origin, storageKey, storageType, item3 ? item3.key : void 0);
     UI24.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, storageItem);
   }
   deleteAllItems() {
     this.domStorage.clear();
     this.domStorageItemsCleared();
   }
-  selectedItemChanged(item2) {
-    this.#setAiStorageContext(item2);
+  selectedItemChanged(item3) {
+    this.#setAiStorageContext(item3);
   }
   isAiButtonEnabled() {
     return UI24.ActionRegistry.ActionRegistry.instance().hasAction("ai-assistance.storage-floating-button");
   }
-  populateContextMenu(item2, contextMenu) {
+  populateContextMenu(item3, contextMenu) {
     const openAiAssistanceId = "ai-assistance.application-panel-context";
     const actionRegistry = UI24.ActionRegistry.ActionRegistry.instance();
     if (actionRegistry.hasAction(openAiAssistanceId)) {
-      this.#setAiStorageContext(item2);
+      this.#setAiStorageContext(item3);
       const action6 = actionRegistry.getAction(openAiAssistanceId);
       const submenu = contextMenu.footerSection().appendSubMenuItem(action6.title(), false, openAiAssistanceId);
       submenu.defaultSection().appendAction(openAiAssistanceId, i18nString25(UIStrings25.startAChat));
       submenu.defaultSection().appendItem(i18nString25(UIStrings25.explainItem), () => action6.execute({ prompt: "Explain this storage item." }), { disabled: !action6.enabled(), jslogContext: openAiAssistanceId + ".storage" });
     }
   }
-  onAiButtonClick(item2, _event) {
-    this.#setAiStorageContext(item2);
+  onAiButtonClick(item3, _event) {
+    this.#setAiStorageContext(item3);
     const aiFloatingActionId = "ai-assistance.storage-floating-button";
     const actionRegistry = UI24.ActionRegistry.ActionRegistry.instance();
     if (actionRegistry.hasAction(aiFloatingActionId)) {
@@ -12319,7 +12319,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
     if (!items || !this.toolbar) {
       return;
     }
-    const filteredItems = Object.entries(items).map(([key, value]) => ({ key, value: typeof value === "string" ? value : JSON.stringify(value) })).filter((item2) => this.toolbar?.filterRegex?.test(`${item2.key} ${item2.value}`) ?? true);
+    const filteredItems = Object.entries(items).map(([key, value]) => ({ key, value: typeof value === "string" ? value : JSON.stringify(value) })).filter((item3) => this.toolbar?.filterRegex?.test(`${item3.key} ${item3.value}`) ?? true);
     this.showItems(filteredItems);
     this.extensionStorageItemsDispatcher.dispatchEventToListeners(
       "ItemsRefreshed"
@@ -12575,7 +12575,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     if (view instanceof UI26.View.SimpleView) {
       void view.toolbarItems().then((items) => {
         if (Array.isArray(items)) {
-          items.map((item2) => this.storageViewToolbar.appendToolbarItem(item2));
+          items.map((item3) => this.storageViewToolbar.appendToolbarItem(item3));
           this.storageViewToolbar.classList.toggle("hidden", !items.length);
         } else {
           render16(items, this.storageViewToolbar);
@@ -13028,6 +13028,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     quota.element.setAttribute("jslog", `${VisualLogging18.section("usage")}`);
     this.quotaRow = quota.appendSelectableRow();
     this.quotaRow.classList.add("quota-usage-row");
+    this.quotaRow.setAttribute("jslog", `${VisualLogging18.item("storage-usage")}`);
     const learnMoreRow = quota.appendRow();
     const learnMore = Link.create("https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses", i18nString27(UIStrings27.learnMore), void 0, "learn-more");
     learnMoreRow.appendChild(learnMore);
@@ -13038,6 +13039,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     this.populatePieChart(0, []);
     const usageBreakdownRow = quota.appendRow();
     usageBreakdownRow.classList.add("usage-breakdown-row");
+    usageBreakdownRow.setAttribute("jslog", `${VisualLogging18.item("usage-breakdown")}`);
     usageBreakdownRow.appendChild(this.pieChart);
     this.previousOverrideFieldValue = "";
     const quotaOverrideCheckboxRow = quota.appendRow();
@@ -15793,9 +15795,9 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
       this.reset();
       const selectedElement = this.sidebarTree.selectedTreeElement;
       if (selectedElement instanceof ExpandableApplicationPanelTreeElement) {
-        const item2 = selectedElement.createGenericStorageAiContext();
-        if (item2) {
-          UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, item2);
+        const item3 = selectedElement.createGenericStorageAiContext();
+        if (item3) {
+          UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, item3);
         }
       }
     }

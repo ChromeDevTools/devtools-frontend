@@ -241,6 +241,7 @@ export class StorageView extends UI.Widget.VBox {
         quota.element.setAttribute('jslog', `${VisualLogging.section('usage')}`);
         this.quotaRow = quota.appendSelectableRow();
         this.quotaRow.classList.add('quota-usage-row');
+        this.quotaRow.setAttribute('jslog', `${VisualLogging.item('storage-usage')}`);
         const learnMoreRow = quota.appendRow();
         const learnMore = Link.create('https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses', i18nString(UIStrings.learnMore), undefined, 'learn-more');
         learnMoreRow.appendChild(learnMore);
@@ -251,6 +252,7 @@ export class StorageView extends UI.Widget.VBox {
         this.populatePieChart(0, []);
         const usageBreakdownRow = quota.appendRow();
         usageBreakdownRow.classList.add('usage-breakdown-row');
+        usageBreakdownRow.setAttribute('jslog', `${VisualLogging.item('usage-breakdown')}`);
         usageBreakdownRow.appendChild(this.pieChart);
         this.previousOverrideFieldValue = '';
         const quotaOverrideCheckboxRow = quota.appendRow();

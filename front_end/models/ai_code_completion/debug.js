@@ -4,8 +4,9 @@
 /**
  * @file Local debugging utilities.
  */
+import * as Platform from '../../core/platform/platform.js';
 export function isDebugMode() {
-    return Boolean(localStorage.getItem('debugAiCodeCompletionEnabled'));
+    return Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem('debugAiCodeCompletionEnabled'));
 }
 export function debugLog(...log) {
     if (!isDebugMode()) {
@@ -15,11 +16,12 @@ export function debugLog(...log) {
     console.log(...log);
 }
 function setDebugAiCodeCompletionEnabled(enabled) {
+    const localStorage = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage();
     if (enabled) {
-        localStorage.setItem('debugAiCodeCompletionEnabled', 'true');
+        localStorage?.setItem('debugAiCodeCompletionEnabled', 'true');
     }
     else {
-        localStorage.removeItem('debugAiCodeCompletionEnabled');
+        localStorage?.removeItem('debugAiCodeCompletionEnabled');
     }
 }
 // @ts-expect-error

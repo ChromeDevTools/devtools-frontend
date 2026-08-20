@@ -13,6 +13,11 @@ import { FileSystemWorkspaceBinding } from './FileSystemWorkspaceBinding.js';
 import { IsolatedFileSystemManager } from './IsolatedFileSystemManager.js';
 import { PersistenceBinding, PersistenceImpl } from './PersistenceImpl.js';
 const forbiddenUrls = ['chromewebstore.google.com', 'chrome.google.com'];
+export const persistenceNetworkOverridesEnabledSettingDescriptor = {
+    name: 'persistence-network-overrides-enabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+};
 export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrapper {
     #bindings = new WeakMap();
     #originalResponseContentPromises = new WeakMap();
@@ -45,7 +50,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         this.#settings = settings;
         this.#isolatedFileSystemManager = isolatedFileSystemManager;
         this.#multitargetNetworkManager = multitargetNetworkManager;
-        this.#enabledSetting = this.#settings.moduleSetting('persistence-network-overrides-enabled');
+        this.#enabledSetting = this.#settings.resolve(persistenceNetworkOverridesEnabledSettingDescriptor);
         this.#enabledSetting.addChangeListener(this.enabledChanged, this);
         this.#interceptionHandlerBound = this.interceptionHandler.bind(this);
         this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, event => {

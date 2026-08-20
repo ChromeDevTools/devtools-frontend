@@ -938,7 +938,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
             resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
             resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
         }
-        const preserveLog = Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log').get();
+        const preserveLog = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveNetworkLogSettingDescriptor).get();
         if (!preserveLog) {
             this.reset();
         }
@@ -1822,7 +1822,9 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
         const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.responseHeaderMatch(request, { name: '', value: '' });
         const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
         if (networkPersistenceManager.project()) {
-            Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(true);
+            Common.Settings.Settings.instance()
+                .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+                .set(true);
             await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
             await Common.Revealer.reveal(requestLocation);
         }

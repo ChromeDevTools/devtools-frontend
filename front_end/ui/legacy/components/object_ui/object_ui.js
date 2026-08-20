@@ -98,7 +98,6 @@ __export(ObjectPropertiesSection_exports, {
   OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: () => OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW,
   OBJECT_PROPERTY_DEFAULT_VIEW: () => OBJECT_PROPERTY_DEFAULT_VIEW,
   OBJECT_TREE_DEFAULT_VIEW: () => OBJECT_TREE_DEFAULT_VIEW,
-  ObjectPropertiesSection: () => ObjectPropertiesSection,
   ObjectPropertiesSectionWidget: () => ObjectPropertiesSectionWidget,
   ObjectPropertiesSectionsTreeOutline: () => ObjectPropertiesSectionsTreeOutline,
   ObjectPropertyTreeElement: () => ObjectPropertyTreeElement,
@@ -108,16 +107,18 @@ __export(ObjectPropertiesSection_exports, {
   ObjectTreeNode: () => ObjectTreeNode,
   ObjectTreeNodeBase: () => ObjectTreeNodeBase,
   ObjectTreeWidget: () => ObjectTreeWidget,
+  compareProperties: () => compareProperties,
   defaultObjectPresentation: () => defaultObjectPresentation,
   formatObjectAsFunction: () => formatObjectAsFunction,
-  getObjectPropertiesSectionFrom: () => getObjectPropertiesSectionFrom,
+  getMemoryIcon: () => getMemoryIcon,
   isWasmObject: () => isWasmObject,
   objectPropertiesSectionStyles: () => objectPropertiesSection_css_default,
   objectValueStyles: () => objectValue_css_default,
   populateObjectTreeContextMenu: () => populateObjectTreeContextMenu,
   renderObjectTree: () => renderObjectTree,
   renderPropertyName: () => renderPropertyName,
-  renderPropertyValue: () => renderPropertyValue
+  renderPropertyValue: () => renderPropertyValue,
+  valueElementForFunctionDescription: () => valueElementForFunctionDescription
 });
 import * as Common2 from "./../../../../core/common/common.js";
 import * as Host from "./../../../../core/host/host.js";
@@ -777,7 +778,6 @@ var UIStrings2 = {
 var str_2 = i18n3.i18n.registerUIStrings("ui/legacy/components/object_ui/ObjectPropertiesSection.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var EXPANDABLE_MAX_DEPTH = 100;
-var objectPropertiesSectionMap = /* @__PURE__ */ new WeakMap();
 var topLevelNodesCache = /* @__PURE__ */ new WeakMap();
 function isWasmObject(object) {
   return object?.subtype === "webassemblymemory" || object?.subtype === "wasmvalue";
@@ -1162,7 +1162,7 @@ var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common2.ObjectWrapper
       propertiesMode: 1
     }));
     properties?.push(...this.extraProperties);
-    properties?.sort((a, b) => ObjectPropertiesSection.compareProperties(a, b, this.sortPropertiesAlphabetically));
+    properties?.sort((a, b) => compareProperties(a, b, this.sortPropertiesAlphabetically));
     const accessors = properties && _ObjectTreeNodeBase.getGettersAndSetters(properties, this.options);
     const internalProperties = objectInternalProperties?.map((p) => new ObjectTreeNode(p, effectiveParent, {
       ...this.options,
@@ -1258,7 +1258,7 @@ var ArrayGroupTreeNode = class _ArrayGroupTreeNode extends ObjectTreeNodeBase {
       ...this.options
     }));
     properties?.push(...this.extraProperties);
-    properties?.sort((a, b) => ObjectPropertiesSection.compareProperties(a, b, this.sortPropertiesAlphabetically));
+    properties?.sort((a, b) => compareProperties(a, b, this.sortPropertiesAlphabetically));
     const accessors = properties && ObjectTreeNodeBase.getGettersAndSetters(properties, this.options);
     return { properties, accessors };
   }
@@ -1411,219 +1411,150 @@ var ObjectTreeNode = class _ObjectTreeNode extends ObjectTreeNodeBase {
     return results;
   }
 };
-var getObjectPropertiesSectionFrom = (element) => {
-  return objectPropertiesSectionMap.get(element);
-};
-var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOutline.TreeOutlineInShadow {
-  root;
-  #objectTreeElement;
-  titleElement;
-  skipProtoInternal;
-  constructor(object, title, linkifier, showOverflow, editable = true, search) {
-    super();
-    this.root = new ObjectTree(object, {
-      readOnly: !editable,
-      propertiesMode: 1,
-      search
-    });
-    if (!showOverflow) {
-      this.setHideOverflow(true);
-    }
-    this.setFocusable(true);
-    this.setShowSelectionOnKeyboardFocus(true);
-    this.#objectTreeElement = new RootElement(this.root, linkifier);
-    this.appendChild(this.#objectTreeElement);
-    if (typeof title === "string" || !title) {
-      this.titleElement = this.element.createChild("span");
-      this.titleElement.textContent = title ? Platform2.StringUtilities.escapeUnicodeAsText(title) : "";
-    } else {
-      this.titleElement = title;
-      this.element.appendChild(title);
-    }
-    if (this.titleElement instanceof HTMLElement && !this.titleElement.hasAttribute("tabIndex")) {
-      this.titleElement.tabIndex = -1;
-    }
-    objectPropertiesSectionMap.set(this.element, this);
-    this.registerRequiredCSS(objectValue_css_default, objectPropertiesSection_css_default);
-    this.rootElement().childrenListElement.classList.add("source-code", "object-properties-section");
+function compareProperties(propertyA, propertyB, sortPropertiesAlphabetically = true) {
+  if (propertyA instanceof ObjectTreeNode) {
+    propertyA = propertyA.property;
   }
-  // The RemoteObjectProperty overload is kept for web test compatibility for now.
-  static compareProperties(propertyA, propertyB, sortPropertiesAlphabetically = true) {
-    if (propertyA instanceof ObjectTreeNode) {
-      propertyA = propertyA.property;
-    }
-    if (propertyB instanceof ObjectTreeNode) {
-      propertyB = propertyB.property;
-    }
-    if (!propertyA.synthetic && propertyB.synthetic) {
+  if (propertyB instanceof ObjectTreeNode) {
+    propertyB = propertyB.property;
+  }
+  if (!propertyA.synthetic && propertyB.synthetic) {
+    return 1;
+  }
+  if (!propertyB.synthetic && propertyA.synthetic) {
+    return -1;
+  }
+  if (!propertyA.isOwn && propertyB.isOwn) {
+    return 1;
+  }
+  if (!propertyB.isOwn && propertyA.isOwn) {
+    return -1;
+  }
+  if (!propertyA.enumerable && propertyB.enumerable) {
+    return 1;
+  }
+  if (!propertyB.enumerable && propertyA.enumerable) {
+    return -1;
+  }
+  if (propertyA.symbol && !propertyB.symbol) {
+    return 1;
+  }
+  if (propertyB.symbol && !propertyA.symbol) {
+    return -1;
+  }
+  if (propertyA.private && !propertyB.private) {
+    return 1;
+  }
+  if (propertyB.private && !propertyA.private) {
+    return -1;
+  }
+  if (sortPropertiesAlphabetically) {
+    const nameA = propertyA.name;
+    const nameB = propertyB.name;
+    if (nameA.startsWith("_") && !nameB.startsWith("_")) {
       return 1;
     }
-    if (!propertyB.synthetic && propertyA.synthetic) {
+    if (nameB.startsWith("_") && !nameA.startsWith("_")) {
       return -1;
     }
-    if (!propertyA.isOwn && propertyB.isOwn) {
-      return 1;
-    }
-    if (!propertyB.isOwn && propertyA.isOwn) {
-      return -1;
-    }
-    if (!propertyA.enumerable && propertyB.enumerable) {
-      return 1;
-    }
-    if (!propertyB.enumerable && propertyA.enumerable) {
-      return -1;
-    }
-    if (propertyA.symbol && !propertyB.symbol) {
-      return 1;
-    }
-    if (propertyB.symbol && !propertyA.symbol) {
-      return -1;
-    }
-    if (propertyA.private && !propertyB.private) {
-      return 1;
-    }
-    if (propertyB.private && !propertyA.private) {
-      return -1;
-    }
-    if (sortPropertiesAlphabetically) {
-      const nameA = propertyA.name;
-      const nameB = propertyB.name;
-      if (nameA.startsWith("_") && !nameB.startsWith("_")) {
-        return 1;
+    return Platform2.StringUtilities.naturalOrderComparator(nameA, nameB);
+  }
+  return 0;
+}
+function valueElementForFunctionDescription(description, includePreview, defaultName, details, linkify) {
+  const contents = (description2, defaultName2) => {
+    const text = description2.replace(/^function [gs]et /, "function ").replace(/^function [gs]et\(/, "function(").replace(/^[gs]et /, "");
+    const asyncMatch = text.match(/^(async\s+function)/);
+    const isGenerator = text.startsWith("function*");
+    const isGeneratorShorthand = text.startsWith("*");
+    const isBasic = !isGenerator && text.startsWith("function");
+    const isClass = text.startsWith("class ") || text.startsWith("class{");
+    const firstArrowIndex = text.indexOf("=>");
+    const isArrow = !asyncMatch && !isGenerator && !isBasic && !isClass && firstArrowIndex > 0;
+    if (isClass) {
+      const body2 = text.substring("class".length);
+      const classNameMatch = /^[^{\s]+/.exec(body2.trim());
+      let className = defaultName2;
+      if (classNameMatch) {
+        className = classNameMatch[0].trim() || defaultName2;
       }
-      if (nameB.startsWith("_") && !nameA.startsWith("_")) {
-        return -1;
-      }
-      return Platform2.StringUtilities.naturalOrderComparator(nameA, nameB);
+      return { prefix: "class", body: body2, abbreviation: className };
     }
-    return 0;
-  }
-  static valueElementForFunctionDescription(description, includePreview, defaultName, details, linkify) {
-    const contents = (description2, defaultName2) => {
-      const text = description2.replace(/^function [gs]et /, "function ").replace(/^function [gs]et\(/, "function(").replace(/^[gs]et /, "");
-      const asyncMatch = text.match(/^(async\s+function)/);
-      const isGenerator = text.startsWith("function*");
-      const isGeneratorShorthand = text.startsWith("*");
-      const isBasic = !isGenerator && text.startsWith("function");
-      const isClass = text.startsWith("class ") || text.startsWith("class{");
-      const firstArrowIndex = text.indexOf("=>");
-      const isArrow = !asyncMatch && !isGenerator && !isBasic && !isClass && firstArrowIndex > 0;
-      if (isClass) {
-        const body2 = text.substring("class".length);
-        const classNameMatch = /^[^{\s]+/.exec(body2.trim());
-        let className = defaultName2;
-        if (classNameMatch) {
-          className = classNameMatch[0].trim() || defaultName2;
-        }
-        return { prefix: "class", body: body2, abbreviation: className };
-      }
-      if (asyncMatch) {
-        const body2 = text.substring(asyncMatch[1].length);
-        return { prefix: "async \u0192", body: body2, abbreviation: nameAndArguments(body2) };
-      }
-      if (isGenerator) {
-        const body2 = text.substring("function*".length);
-        return { prefix: "\u0192*", body: body2, abbreviation: nameAndArguments(body2) };
-      }
-      if (isGeneratorShorthand) {
-        const body2 = text.substring("*".length);
-        return { prefix: "\u0192*", body: body2, abbreviation: nameAndArguments(body2) };
-      }
-      if (isBasic) {
-        const body2 = text.substring("function".length);
-        return { prefix: "\u0192", body: body2, abbreviation: nameAndArguments(body2) };
-      }
-      if (isArrow) {
-        const maxArrowFunctionCharacterLength = 60;
-        let abbreviation2 = text;
-        if (defaultName2) {
-          abbreviation2 = defaultName2 + "()";
-        } else if (text.length > maxArrowFunctionCharacterLength) {
-          abbreviation2 = text.substring(0, firstArrowIndex + 2) + " {\u2026}";
-        }
-        return { prefix: "", body: text, abbreviation: abbreviation2 };
-      }
-      return { prefix: "\u0192", body: text, abbreviation: nameAndArguments(text) };
-    };
-    const { prefix, body, abbreviation } = contents(description ?? "", defaultName ?? "");
-    const maxFunctionBodyLength = 200;
-    const location = details?.location;
-    const clickHandler = linkify && location ? (event) => {
-      void Common2.Revealer.reveal(location);
-      event.consume(true);
-    } : void 0;
-    const classes = classMap({
-      "object-value-function": true,
-      linkified: Boolean(linkify && location)
-    });
-    const title = description ? Platform2.StringUtilities.trimEndWithMaxLength(description, 500) : void 0;
-    return html2`<span
-      class=${classes}
-      @click=${clickHandler || nothing2}
-      title=${ifDefined2(title)}>${prefix && html2`<span class=object-value-function-prefix>${prefix} </span>`}${includePreview ? Platform2.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength) : abbreviation.replace(/\n/g, " ")}</span>`;
-    function nameAndArguments(contents2) {
-      const startOfArgumentsIndex = contents2.indexOf("(");
-      const endOfArgumentsMatch = contents2.match(/\)\s*{/);
-      if (startOfArgumentsIndex !== -1 && endOfArgumentsMatch?.index !== void 0 && endOfArgumentsMatch.index > startOfArgumentsIndex) {
-        const name = contents2.substring(0, startOfArgumentsIndex).trim() || (defaultName ?? "");
-        const args = contents2.substring(startOfArgumentsIndex, endOfArgumentsMatch.index + 1);
-        return name + args;
-      }
-      return defaultName + "()";
+    if (asyncMatch) {
+      const body2 = text.substring(asyncMatch[1].length);
+      return { prefix: "async \u0192", body: body2, abbreviation: nameAndArguments(body2) };
     }
-  }
-  static getMemoryIcon(object, expression) {
-    return !object.isLinearMemoryInspectable() ? nothing2 : html2`<devtools-icon
-      name=memory
-      style="width: var(--sys-size-8); height: 13px; vertical-align: sub; cursor: pointer;"
-      @click=${(event) => {
-      event.consume();
-      void Common2.Revealer.reveal(new SDK3.RemoteObject.LinearMemoryInspectable(object, expression));
-    }}
-      jslog=${VisualLogging.action("open-memory-inspector").track({ click: true })}
-      title=${i18nString2(UIStrings2.openInMemoryInpector)}
-      aria-label=${i18nString2(UIStrings2.openInMemoryInpector)}></devtools-icon>`;
-  }
-  static appendMemoryIcon(element, object, expression) {
-    const fragment = document.createDocumentFragment();
-    render2(_ObjectPropertiesSection.getMemoryIcon(object, expression), fragment);
-    element.appendChild(fragment);
-  }
-  static isDisplayableProperty(property, parentProperty) {
-    if (!parentProperty?.synthetic) {
-      return true;
+    if (isGenerator) {
+      const body2 = text.substring("function*".length);
+      return { prefix: "\u0192*", body: body2, abbreviation: nameAndArguments(body2) };
     }
-    const name = property.name;
-    const useless = parentProperty.name === "[[Entries]]" && (name === "length" || name === "__proto__");
-    return !useless;
-  }
-  skipProto() {
-    this.skipProtoInternal = true;
-  }
-  expand() {
-    this.#objectTreeElement.expand();
-  }
-  objectTreeElement() {
-    return this.#objectTreeElement;
-  }
-  enableContextMenu() {
-    this.element.addEventListener("contextmenu", this.contextMenuEventFired.bind(this), false);
-  }
-  contextMenuEventFired(event) {
-    const contextMenu = new UI2.ContextMenu.ContextMenu(event);
-    contextMenu.appendApplicableItems(this.root);
-    if (this.root.object instanceof SDK3.RemoteObject.LocalJSONObject) {
-      contextMenu.viewSection().appendItem(i18nString2(UIStrings2.expandRecursively), this.#objectTreeElement.expandRecursively.bind(this.#objectTreeElement, EXPANDABLE_MAX_DEPTH), { jslogContext: "expand-recursively" });
-      contextMenu.viewSection().appendItem(i18nString2(UIStrings2.collapseChildren), this.#objectTreeElement.collapseChildren.bind(this.#objectTreeElement), { jslogContext: "collapse-children" });
+    if (isGeneratorShorthand) {
+      const body2 = text.substring("*".length);
+      return { prefix: "\u0192*", body: body2, abbreviation: nameAndArguments(body2) };
     }
-    void contextMenu.show();
+    if (isBasic) {
+      const body2 = text.substring("function".length);
+      return { prefix: "\u0192", body: body2, abbreviation: nameAndArguments(body2) };
+    }
+    if (isArrow) {
+      const maxArrowFunctionCharacterLength = 60;
+      let abbreviation2 = text;
+      if (defaultName2) {
+        abbreviation2 = defaultName2 + "()";
+      } else if (text.length > maxArrowFunctionCharacterLength) {
+        abbreviation2 = text.substring(0, firstArrowIndex + 2) + " {\u2026}";
+      }
+      return { prefix: "", body: text, abbreviation: abbreviation2 };
+    }
+    return { prefix: "\u0192", body: text, abbreviation: nameAndArguments(text) };
+  };
+  const { prefix, body, abbreviation } = contents(description ?? "", defaultName ?? "");
+  const maxFunctionBodyLength = 200;
+  const location = details?.location;
+  const clickHandler = linkify && location ? (event) => {
+    void Common2.Revealer.reveal(location);
+    event.consume(true);
+  } : void 0;
+  const classes = classMap({
+    "object-value-function": true,
+    linkified: Boolean(linkify && location)
+  });
+  const title = description ? Platform2.StringUtilities.trimEndWithMaxLength(description, 500) : void 0;
+  return html2`<span
+    class=${classes}
+    @click=${clickHandler || nothing2}
+    title=${ifDefined2(title)}>${prefix && html2`<span class=object-value-function-prefix>${prefix} </span>`}${includePreview ? Platform2.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength) : abbreviation.replace(/\n/g, " ")}</span>`;
+  function nameAndArguments(contents2) {
+    const startOfArgumentsIndex = contents2.indexOf("(");
+    const endOfArgumentsMatch = contents2.match(/\)\s*{/);
+    if (startOfArgumentsIndex !== -1 && endOfArgumentsMatch?.index !== void 0 && endOfArgumentsMatch.index > startOfArgumentsIndex) {
+      const name = contents2.substring(0, startOfArgumentsIndex).trim() || (defaultName ?? "");
+      const args = contents2.substring(startOfArgumentsIndex, endOfArgumentsMatch.index + 1);
+      return name + args;
+    }
+    return defaultName + "()";
   }
-  titleLessMode() {
-    this.#objectTreeElement.listItemElement.classList.add("hidden");
-    this.#objectTreeElement.childrenListElement.classList.add("title-less-mode");
-    this.#objectTreeElement.expand();
+}
+function getMemoryIcon(object, expression) {
+  return !object.isLinearMemoryInspectable() ? nothing2 : html2`<devtools-icon
+    name=memory
+    style="width: var(--sys-size-8); height: 13px; vertical-align: sub; cursor: pointer;"
+    @click=${(event) => {
+    event.consume();
+    void Common2.Revealer.reveal(new SDK3.RemoteObject.LinearMemoryInspectable(object, expression));
+  }}
+    jslog=${VisualLogging.action("open-memory-inspector").track({ click: true })}
+    title=${i18nString2(UIStrings2.openInMemoryInpector)}
+    aria-label=${i18nString2(UIStrings2.openInMemoryInpector)}></devtools-icon>`;
+}
+function isDisplayableProperty(property, parentProperty) {
+  if (!parentProperty?.synthetic) {
+    return true;
   }
-};
+  const name = property.name;
+  const useless = parentProperty.name === "[[Entries]]" && (name === "length" || name === "__proto__");
+  return !useless;
+}
 var ObjectPropertiesSectionWidget = class extends UI2.Widget.Widget {
   #root;
   #title;
@@ -1928,58 +1859,6 @@ var OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW = (input, _output, target) => {
       </ul>`}>
     </devtools-tree>`, target);
 };
-var RootElement = class extends UI2.TreeOutline.TreeElement {
-  object;
-  linkifier;
-  emptyPlaceholder;
-  toggleOnClick;
-  constructor(object, linkifier, emptyPlaceholder) {
-    const contentElement = document.createElement("slot");
-    super(contentElement);
-    this.object = object;
-    this.object.addEventListener("children-changed", this.onpopulate, this);
-    this.linkifier = linkifier;
-    this.emptyPlaceholder = emptyPlaceholder;
-    this.setExpandable(true);
-    this.selectable = true;
-    this.toggleOnClick = true;
-    this.listItemElement.classList.add("object-properties-section-root-element");
-    this.listItemElement.addEventListener("contextmenu", this.onContextMenu.bind(this), false);
-    if (object.expanded) {
-      this.expand();
-    }
-  }
-  onexpand() {
-    this.object.expanded = true;
-    if (this.treeOutline) {
-      this.treeOutline.element.classList.add("expanded");
-    }
-  }
-  oncollapse() {
-    this.object.expanded = false;
-    if (this.treeOutline) {
-      this.treeOutline.element.classList.remove("expanded");
-    }
-  }
-  ondblclick(_e) {
-    return true;
-  }
-  onContextMenu(event) {
-    const contextMenu = new UI2.ContextMenu.ContextMenu(event);
-    populateObjectTreeContextMenu(contextMenu, this.object, this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH), this.collapseChildren.bind(this), () => {
-      this.object.sortPropertiesAlphabetically = !this.object.sortPropertiesAlphabetically;
-    }, () => {
-      this.object.includeNullOrUndefinedValues = !this.object.includeNullOrUndefinedValues;
-    });
-    void contextMenu.show();
-  }
-  async onpopulate() {
-    this.removeChildren();
-    const treeOutline = this.treeOutline;
-    const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
-    return await ObjectPropertyTreeElement.populate(this, this.object, skipProto, false, this.linkifier, this.emptyPlaceholder);
-  }
-};
 function renderPropertyName(name, isPrivate, title) {
   if (name === null) {
     return html2`<span class="name" title=${ifDefined2(title)}></span>`;
@@ -1996,7 +1875,7 @@ function renderPropertyName(name, isPrivate, title) {
 async function formatObjectAsFunction(func, linkify, includePreview) {
   const details = await func.debuggerModel().functionDetailsPromise(func);
   const defaultName = details?.functionName ?? (includePreview ? "" : "anonymous");
-  return ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName, details, linkify);
+  return valueElementForFunctionDescription(func.description, includePreview, defaultName, details, linkify);
 }
 function renderPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty = false, variableName, includeNullOrUndefined, useCustomPreview = false, valueRef) {
   if (useCustomPreview && value.customPreview()) {
@@ -2052,7 +1931,7 @@ function renderPropertyValue(value, wasThrown, showPreview, linkifier, isSynthet
     title = tooLong ? void 0 : text;
     content = tooLong ? widget(ExpandableTextPropertyValue, { text }) : renderTrustedType(description, className);
   } else if (isFunction) {
-    content = ObjectPropertiesSection.valueElementForFunctionDescription(description);
+    content = valueElementForFunctionDescription(description);
   } else if (description.length > maxRenderableStringLength) {
     title = description;
     content = widget(ExpandableTextPropertyValue, { text: description });
@@ -2060,7 +1939,7 @@ function renderPropertyValue(value, wasThrown, showPreview, linkifier, isSynthet
     title = description;
     const hasPreview = value.preview && showPreview;
     const previewContent = hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview, includeNullOrUndefined) : description;
-    content = html2`${previewContent}${isSyntheticProperty ? nothing2 : ObjectPropertiesSection.getMemoryIcon(value, variableName)}`;
+    content = html2`${previewContent}${isSyntheticProperty ? nothing2 : getMemoryIcon(value, variableName)}`;
   }
   if (wasThrown) {
     return html2`<span ${valueRef ? ref(valueRef) : nothing2} class="error value">${uiI18n.getFormatLocalizedStringTemplate(str_2, UIStrings2.exceptionS, {
@@ -2190,7 +2069,7 @@ var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
                 ?editing=${input.editing}>
                   <devtools-highlight ranges=${valueRanges} current-range=${valueCurrent}>${input.expanded && isExpandable && property.value ? html2`<span
                       class="value object-value-${property.value.subtype || property.value.type}"
-                      title=${ifDefined2(property.value.description)}>${property.value.description === "Object" ? "" : Platform2.StringUtilities.trimMiddle(property.value.description ?? "", maxRenderableStringLength)}${property.synthetic ? nothing2 : ObjectPropertiesSection.getMemoryIcon(property.value)}</span>` : value()}</devtools-highlight>
+                      title=${ifDefined2(property.value.description)}>${property.value.description === "Object" ? "" : Platform2.StringUtilities.trimMiddle(property.value.description ?? "", maxRenderableStringLength)}${property.synthetic ? nothing2 : getMemoryIcon(property.value)}</span>` : value()}</devtools-highlight>
                   <datalist id=${completionsId}>${repeat2(input.completions, (c) => html2`<option>${c}</option>`)}</datalist>
                 </devtools-prompt></span>`}</span>`, target);
 };
@@ -2373,7 +2252,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     await ArrayGroupingTreeElement.populateChildrenIfNeeded(children);
   }
   static populateImpl(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
-    for (const childNode of _ObjectPropertyTreeElement.createNodes(value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, (property) => treeElement instanceof _ObjectPropertyTreeElement && !ObjectPropertiesSection.isDisplayableProperty(property, treeElement.property?.property))) {
+    for (const childNode of _ObjectPropertyTreeElement.createNodes(value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, (property) => treeElement instanceof _ObjectPropertyTreeElement && !isDisplayableProperty(property, treeElement.property?.property))) {
       treeElement.appendChild(childNode);
     }
   }
@@ -2394,7 +2273,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
       empty = false;
     }
     const sortPropertiesAlphabetically = properties?.[0]?.parent?.sortPropertiesAlphabetically ?? true;
-    properties?.sort((a, b) => ObjectPropertiesSection.compareProperties(a, b, sortPropertiesAlphabetically));
+    properties?.sort((a, b) => compareProperties(a, b, sortPropertiesAlphabetically));
     const entriesProperty = internalProperties?.find(({ property }) => property.name === "[[Entries]]");
     if (entriesProperty) {
       const treeElement = new _ObjectPropertyTreeElement(entriesProperty, linkifier);
@@ -2443,7 +2322,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     }
   }
   static populateWithProperties(treeNode, children, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
-    for (const childNode of this.createPropertyNodes(children, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, (property) => treeNode instanceof _ObjectPropertyTreeElement && !ObjectPropertiesSection.isDisplayableProperty(property, treeNode.property?.property))) {
+    for (const childNode of this.createPropertyNodes(children, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, (property) => treeNode instanceof _ObjectPropertyTreeElement && !isDisplayableProperty(property, treeNode.property?.property))) {
       treeNode.appendChild(childNode);
     }
   }
@@ -2492,11 +2371,9 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     this.appendChild(showAllPropertiesButton);
   }
   async onpopulate() {
-    const treeOutline = this.treeOutline;
-    const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
     this.removeChildren();
     if (this.property.object) {
-      await _ObjectPropertyTreeElement.populate(this, this.property, skipProto, false, this.linkifier);
+      await _ObjectPropertyTreeElement.populate(this, this.property, false, false, this.linkifier);
       if (this.childCount() > this.maxNumPropertiesToShow) {
         this.createShowAllPropertiesButton();
       }
@@ -3161,7 +3038,7 @@ var ObjectPopoverHelper = class _ObjectPopoverHelper {
         const titleElement = popoverContentElement.createChild("div", "object-popover-title");
         if (result.type === "function") {
           titleElement.classList.add("source-code");
-          render4(ObjectPropertiesSection.valueElementForFunctionDescription(result.description), titleElement);
+          render4(valueElementForFunctionDescription(result.description), titleElement);
         } else {
           titleElement.classList.add("monospace");
           titleElement.createChild("span").textContent = description;

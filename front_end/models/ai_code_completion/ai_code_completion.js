@@ -5,8 +5,9 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/models/ai_code_completion/debug.js
+import * as Platform from "./../../core/platform/platform.js";
 function isDebugMode() {
-  return Boolean(localStorage.getItem("debugAiCodeCompletionEnabled"));
+  return Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("debugAiCodeCompletionEnabled"));
 }
 function debugLog(...log) {
   if (!isDebugMode()) {
@@ -15,10 +16,11 @@ function debugLog(...log) {
   console.log(...log);
 }
 function setDebugAiCodeCompletionEnabled(enabled) {
+  const localStorage = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage();
   if (enabled) {
-    localStorage.setItem("debugAiCodeCompletionEnabled", "true");
+    localStorage?.setItem("debugAiCodeCompletionEnabled", "true");
   } else {
-    localStorage.removeItem("debugAiCodeCompletionEnabled");
+    localStorage?.removeItem("debugAiCodeCompletionEnabled");
   }
 }
 globalThis.setDebugAiCodeCompletionEnabled = setDebugAiCodeCompletionEnabled;

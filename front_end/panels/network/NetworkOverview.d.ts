@@ -1,4 +1,5 @@
 import * as SDK from '../../core/sdk/sdk.js';
+import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 export declare class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
     private selectedFilmStripTime;
@@ -27,4 +28,4 @@ export declare class NetworkOverview extends PerfUI.TimelineOverviewPane.Timelin
     scheduleUpdate(): void;
     update(): void;
 }
-export declare const RequestTimeRangeNameToColor: Record<string, string>;
+export declare const RequestTimeRangeNameToColor: Record<NetworkTimeCalculator.RequestTimeRangeNames, string>;

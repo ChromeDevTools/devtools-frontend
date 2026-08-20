@@ -391,29 +391,32 @@ var DEFAULT_VIEW = (input, _output, target) => {
       ${nearestLayerShiftingContainingBlock ? html`, <span>${formatStickyAncestorLayer(i18nString2(UIStrings2.nearestLayerShiftingContaining), nearestLayerShiftingContainingBlock)}</span>` : nothing}
     `;
   };
+  const domNode = layer.nodeForSelfOrAncestor();
   Lit.render(html`
-    <div class="layer-details-container">
+    <div class="layer-details-container"
+         data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing}
+         jslog=${VisualLogging.section("layer-details")}>
       <table>
         <tbody>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow("detail-row")}>
             <td>${i18nString2(UIStrings2.size)}</td>
             <td>${i18nString2(UIStrings2.updateRectangleDimensions, { PH1: layer.width(), PH2: layer.height(), PH3: layer.offsetX(), PH4: layer.offsetY() })}</td>
           </tr>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow("detail-row")}>
             <td>${i18nString2(UIStrings2.compositingReasons)}</td>
             <td>
               ${!compositingReasons.length ? "n/a" : html`<ul>${compositingReasons.map((reason) => html`<li>${reason}</li>`)}</ul>`}
             </td>
           </tr>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow("detail-row")}>
             <td>${i18nString2(UIStrings2.memoryEstimate)}</td>
             <td>${i18n3.ByteUtilities.bytesToString(layer.gpuMemoryUsage())}</td>
           </tr>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow("detail-row")}>
             <td>${i18nString2(UIStrings2.paintCount)}</td>
             <td>${layer.paintCount()}</td>
           </tr>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow("detail-row")}>
             <td>${i18nString2(UIStrings2.slowScrollRegions)}</td>
             <td>
               ${slowScrollRects.map((scrollRect, index) => html`
@@ -430,7 +433,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
                 </span>`)}
             </td>
           </tr>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow("detail-row")}>
             <td>${i18nString2(UIStrings2.stickyPositionConstraint)}</td>
             <td>${renderStickyPositionConstraint(stickyPositionConstraint)}</td>
           </tr>
@@ -608,6 +611,8 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     return html2`
       <li role="treeitem"
           data-layer-id=${layer.id()}
+          data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing2}
+          jslog=${VisualLogging2.treeItem("layer-item")}
           class=${isHovered ? "hovered" : ""}
           ?selected=${isSelected}
           aria-expanded=${node.isExpanded ? "true" : "false"}

@@ -290,7 +290,7 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI.Widget.VBox {
     const emailPreference = this.#keepMeUpdated ? Host.GdpClient.EmailPreference.ENABLED : Host.GdpClient.EmailPreference.DISABLED;
     const result = await Host.GdpClient.GdpClient.instance().createProfile({ user, emailPreference });
     if (result) {
-      Common.Settings.Settings.instance().moduleSetting("receive-gdp-badges").set(true);
+      Common.Settings.Settings.instance().resolve(Badges.receiveGdpBadgesSettingDescriptor).set(true);
       await Badges.UserBadges.instance().initialize();
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.GDP_SIGN_UP_COMPLETE);
       this.#onSuccess?.();
@@ -996,7 +996,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
   `, target);
 };
 function revealBadgeSettings() {
-  void Common3.Revealer.reveal(Common3.Settings.Settings.instance().moduleSetting("receive-gdp-badges"));
+  void Common3.Revealer.reveal(Common3.Settings.Settings.instance().resolve(Badges2.receiveGdpBadgesSettingDescriptor));
 }
 var BadgeNotification = class extends UI4.Widget.Widget {
   jslogContext = "";
@@ -1588,20 +1588,19 @@ var ExtensionSidebarPane = class extends UI6.View.SimpleView {
       callback("operation cancelled");
       return;
     }
-    objectPropertiesView.element.removeChildren();
-    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(
-      object,
-      title,
-      void 0,
-      void 0,
-      /* editable: */
-      false
-    );
-    if (!title) {
-      section.titleLessMode();
+    objectPropertiesView.detachChildWidgets();
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+      readOnly: true,
+      propertiesMode: 1
+    });
+    section.objectTree.expanded = true;
+    if (title) {
+      const span = document.createElement("span");
+      span.textContent = title;
+      section.title = span;
     }
-    section.firstChild()?.expand();
-    objectPropertiesView.element.appendChild(section.element);
+    section.show(objectPropertiesView.element);
     callback();
   }
 };
@@ -2673,31 +2672,86 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (message.command !== "_forwardKeyboardEvent") {
       return this.status.E_BADARG("command", `expected ${"_forwardKeyboardEvent"}`);
     }
-    message.entries.forEach(handleEventEntry);
-    function handleEventEntry(entry) {
+    if (!Array.isArray(message.entries)) {
+      return this.status.E_BADARG("entries", "expected array");
+    }
+    const globalShortcutKeys = new Set(UI7.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys());
+    const validEvents = [];
+    for (const entry of message.entries) {
+      if (!entry || typeof entry !== "object") {
+        return this.status.E_BADARG("entries", "expected object");
+      }
+      if (entry.eventType !== "keydown") {
+        return this.status.E_BADARG("eventType", 'expected "keydown"');
+      }
+      if (typeof entry.key !== "string") {
+        return this.status.E_BADARGTYPE("key", typeof entry.key, "string");
+      }
+      if (typeof entry.code !== "string") {
+        return this.status.E_BADARGTYPE("code", typeof entry.code, "string");
+      }
+      if (typeof entry.keyCode !== "number" || !Number.isFinite(entry.keyCode)) {
+        return this.status.E_BADARGTYPE("keyCode", typeof entry.keyCode, "number");
+      }
+      if (typeof entry.location !== "number" || !Number.isFinite(entry.location)) {
+        return this.status.E_BADARGTYPE("location", typeof entry.location, "number");
+      }
+      if (typeof entry.ctrlKey !== "boolean") {
+        return this.status.E_BADARGTYPE("ctrlKey", typeof entry.ctrlKey, "boolean");
+      }
+      if (typeof entry.altKey !== "boolean") {
+        return this.status.E_BADARGTYPE("altKey", typeof entry.altKey, "boolean");
+      }
+      if (typeof entry.shiftKey !== "boolean") {
+        return this.status.E_BADARGTYPE("shiftKey", typeof entry.shiftKey, "boolean");
+      }
+      if (typeof entry.metaKey !== "boolean") {
+        return this.status.E_BADARGTYPE("metaKey", typeof entry.metaKey, "boolean");
+      }
+      let keyCode = entry.keyCode;
+      if (!keyCode && entry.key === Platform2.KeyboardUtilities.ESCAPE_KEY) {
+        keyCode = 27;
+      }
+      if (!Number.isInteger(keyCode) || keyCode < 0 || keyCode > 255) {
+        return this.status.E_BADARG("keyCode", "invalid keyCode");
+      }
+      let modifiers = 0;
+      if (entry.shiftKey) {
+        modifiers |= UI7.KeyboardShortcut.Modifiers.Shift.value;
+      }
+      if (entry.ctrlKey) {
+        modifiers |= UI7.KeyboardShortcut.Modifiers.Ctrl.value;
+      }
+      if (entry.altKey) {
+        modifiers |= UI7.KeyboardShortcut.Modifiers.Alt.value;
+      }
+      if (entry.metaKey) {
+        modifiers |= UI7.KeyboardShortcut.Modifiers.Meta.value;
+      }
+      const keyCombination = keyCode & 255 | modifiers << 8;
+      if (!globalShortcutKeys.has(keyCombination)) {
+        return this.status.E_BADARG("entries", "unexpected shortcut key");
+      }
       const event = new window.KeyboardEvent(entry.eventType, {
         key: entry.key,
         code: entry.code,
-        keyCode: entry.keyCode,
+        keyCode,
         location: entry.location,
         ctrlKey: entry.ctrlKey,
         altKey: entry.altKey,
         shiftKey: entry.shiftKey,
         metaKey: entry.metaKey
       });
-      event.__keyCode = keyCodeForEntry(entry);
+      validEvents.push({ event, keyCode });
+    }
+    for (const { event, keyCode } of validEvents) {
+      event.__keyCode = keyCode;
       document.dispatchEvent(event);
     }
-    function keyCodeForEntry(entry) {
-      let keyCode = entry.keyCode;
-      if (!keyCode) {
-        if (entry.key === Platform2.KeyboardUtilities.ESCAPE_KEY) {
-          keyCode = 27;
-        }
-      }
-      return keyCode || 0;
-    }
     return void 0;
+  }
+  onForwardKeyboardEventForTest(message) {
+    return this.onForwardKeyboardEvent(message);
   }
   dispatchCallback(requestId, port, result) {
     if (requestId) {

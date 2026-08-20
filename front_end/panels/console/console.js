@@ -2551,8 +2551,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     const renderPreview = (includeNullOrUndefined) => {
       if (obj.preview) {
         titleElement.classList.add("console-object-preview");
-        render3(this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined), titleElement);
-        ObjectUI2.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
+        render3(html3`${this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined)}${ObjectUI2.ObjectPropertiesSection.getMemoryIcon(obj)}`, titleElement);
       }
     };
     if (includePreview && obj.preview) {
@@ -6626,7 +6625,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     toolbar2.appendSeparator();
     toolbar2.appendToolbarItem(this.filterStatusText);
     toolbar2.appendToolbarItem(this.showSettingsPaneButton);
-    const monitoringXHREnabledSetting = Common6.Settings.Settings.instance().moduleSetting("monitoring-xhr-enabled");
+    const monitoringXHREnabledSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.monitoringXHREnabledSettingDescriptor);
     this.timestampsSetting = Common6.Settings.Settings.instance().moduleSetting("console-timestamps-enabled");
     this.consoleHistoryAutocompleteSetting = Common6.Settings.Settings.instance().moduleSetting("console-history-autocomplete");
     this.selfXssWarningDisabledSetting = Common6.Settings.Settings.instance().createSetting(

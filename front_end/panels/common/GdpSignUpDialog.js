@@ -186,7 +186,7 @@ export class GdpSignUpDialog extends UI.Widget.VBox {
         const emailPreference = this.#keepMeUpdated ? Host.GdpClient.EmailPreference.ENABLED : Host.GdpClient.EmailPreference.DISABLED;
         const result = await Host.GdpClient.GdpClient.instance().createProfile({ user, emailPreference });
         if (result) {
-            Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges').set(true);
+            Common.Settings.Settings.instance().resolve(Badges.receiveGdpBadgesSettingDescriptor).set(true);
             await Badges.UserBadges.instance().initialize();
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.GDP_SIGN_UP_COMPLETE);
             this.#onSuccess?.();

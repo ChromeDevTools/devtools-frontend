@@ -391,7 +391,7 @@ export async function populateNodeContextMenu(contextMenu, treeElement) {
         }, { jslogContext: 'show-frame-details' });
     }
 }
-export async function showContextMenu(treeElement, event, onSaveNodeToTempVariable) {
+export async function showContextMenu(treeElement, event) {
     if (UI.UIUtils.isEditing()) {
         return;
     }
@@ -417,9 +417,7 @@ export async function showContextMenu(treeElement, event, onSaveNodeToTempVariab
         textNode = null;
     }
     const commentNode = node.enclosingNodeOrSelfWithClass?.('webkit-html-comment');
-    if (onSaveNodeToTempVariable) {
-        contextMenu.saveSection().appendItem(i18nString(UIStrings.storeAsGlobalVariable), () => onSaveNodeToTempVariable(domNode), { jslogContext: 'store-as-global-variable' });
-    }
+    contextMenu.saveSection().appendItem(i18nString(UIStrings.storeAsGlobalVariable), () => void domNode.saveNodeToTempVariable(), { jslogContext: 'store-as-global-variable' });
     if (textNode) {
         if (!treeElement.isEditing) {
             contextMenu.editSection().appendItem(i18nString(UIStrings.editText), () => treeElement.startEditingTextNode(textNode), { jslogContext: 'edit-text' });

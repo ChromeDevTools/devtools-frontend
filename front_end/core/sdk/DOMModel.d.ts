@@ -201,6 +201,7 @@ export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeE
     callFunction<T, U extends string | number>(fn: (this: HTMLElement, ...args: U[]) => T, args?: U[]): Promise<{
         value: T;
     } | null>;
+    saveNodeToTempVariable(): Promise<void>;
     scrollIntoView(): Promise<void>;
     focus(): Promise<void>;
     simpleSelector(): string;

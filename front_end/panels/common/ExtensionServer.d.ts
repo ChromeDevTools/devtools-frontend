@@ -116,6 +116,7 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     private requestId;
     private requestById;
     private onForwardKeyboardEvent;
+    onForwardKeyboardEventForTest(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record | undefined;
     private dispatchCallback;
     private initExtensions;
     private notifyResourceAdded;

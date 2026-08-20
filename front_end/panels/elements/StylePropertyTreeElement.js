@@ -35,44 +35,44 @@ const GridLanesEditor = ElementsComponents.StylePropertyEditor.GridLanesEditor;
 const { widget } = UI.Widget;
 const UIStrings = {
     /**
-     * @description Text in Color Swatch Popover Icon of the Elements panel
+     * @description Text in the color swatch popover icon of the Elements panel.
      */
     shiftClickToChangeColorFormat: 'Shift + Click to change color format.',
     /**
-     * @description Swatch icon element title in Color Swatch Popover Icon of the Elements panel
+     * @description Swatch icon element title in the color swatch popover icon of the Elements panel.
      * @example {Shift + Click to change color format.} PH1
      */
     openColorPickerS: 'Open color picker. {PH1}',
     /**
-     * @description Context menu item for style property in edit mode
+     * @description Context menu item for style property in edit mode.
      */
     togglePropertyAndContinueEditing: 'Toggle property and continue editing',
     /**
-     * @description Context menu item for style property in edit mode
+     * @description Context menu item for style property in edit mode.
      */
     openInSourcesPanel: 'Open in Sources panel',
     /**
-     * @description A context menu item in Styles panel to copy CSS declaration
+     * @description A context menu item in the Styles tab of the Elements panel to copy CSS declaration.
      */
     copyDeclaration: 'Copy declaration',
     /**
-     * @description A context menu item in Styles panel to copy CSS property
+     * @description A context menu item in the Styles tab of the Elements panel to copy CSS property.
      */
     copyProperty: 'Copy property',
     /**
-     * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
+     * @description A context menu item in the Watch expressions sidebar of the Sources panel and Network panel request.
      */
     copyValue: 'Copy value',
     /**
-     * @description A context menu item in Styles panel to copy CSS rule
+     * @description A context menu item in the Styles tab of the Elements panel to copy CSS rule.
      */
     copyRule: 'Copy rule',
     /**
-     * @description A context menu item in Styles panel to copy all CSS declarations
+     * @description A context menu item in the Styles tab of the Elements panel to copy all CSS declarations.
      */
     copyAllDeclarations: 'Copy all declarations',
     /**
-     * @description A context menu item in Styles panel to view the computed CSS property value.
+     * @description A context menu item in the Styles tab of the Elements panel to view the computed CSS property value.
      */
     viewComputedValue: 'View computed value',
     /**
@@ -84,41 +84,41 @@ const UIStrings = {
      */
     openAnimationsPanel: 'Open Animations panel',
     /**
-     * @description Title of the button that opens the flexbox editor in the Styles panel.
+     * @description Title of the button that opens the flexbox editor in the Styles tab of the Elements panel.
      */
     flexboxEditorButton: 'Open `flexbox` editor',
     /**
-     * @description Title of the button that opens the CSS Grid editor in the Styles panel.
+     * @description Title of the button that opens the CSS Grid editor in the Styles tab of the Elements panel.
      */
     gridEditorButton: 'Open `grid` editor',
     /**
-     * @description Title of the button that opens the CSS Grid Lanes editor in the Styles panel.
+     * @description Title of the button that opens the CSS Grid Lanes editor in the Styles tab of the Elements panel.
      */
     gridLanesEditorButton: 'Open `grid-lanes` editor',
     /**
-     * @description A context menu item in Styles panel to copy CSS declaration as JavaScript property.
+     * @description A context menu item in the Styles tab of the Elements panel to copy CSS declaration as JavaScript property.
      */
     copyCssDeclarationAsJs: 'Copy declaration as JS',
     /**
-     * @description A context menu item in Styles panel to copy all declarations of CSS rule as JavaScript properties.
+     * @description A context menu item in the Styles tab of the Elements panel to copy all declarations of CSS rule as JavaScript properties.
      */
     copyAllCssDeclarationsAsJs: 'Copy all declarations as JS',
     /**
-     * @description Title of the link in Styles panel to jump to the Animations panel.
+     * @description Title of the link in the Styles tab of the Elements panel to jump to the Animations panel.
      */
     jumpToAnimationsPanel: 'Jump to Animations panel',
     /**
-     * @description Text displayed in a tooltip shown when hovering over a CSS property value references a name that's not
-     *             defined and can't be linked to.
+     * @description Text displayed in a tooltip shown when hovering over a CSS property value references a name that is not
+     *             defined and cannot be linked to.
      * @example {--my-linkable-name} PH1
      */
     sIsNotDefined: '{PH1} is not defined',
     /**
-     * @description Text in Styles Sidebar Pane of the Elements panel
+     * @description Text in the Styles tab of the Elements panel.
      */
     invalidPropertyValue: 'Invalid property value',
     /**
-     * @description Text in Styles Sidebar Pane of the Elements panel
+     * @description Text in the Styles tab of the Elements panel.
      */
     unknownPropertyName: 'Unknown property name',
     /**
@@ -129,7 +129,7 @@ const UIStrings = {
      */
     invalidString: '{PH1}, property name: {PH2}, property value: {PH3}',
     /**
-     * @description Title in the styles tab for the icon button for jumping to the anchor node.
+     * @description Title in the Styles tab for the icon button for jumping to the anchor node.
      */
     jumpToAnchorNode: 'Jump to anchor node',
 };

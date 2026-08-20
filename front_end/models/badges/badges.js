@@ -163,6 +163,12 @@ var DOMDetectiveBadge = class extends Badge {
 };
 
 // gen/front_end/models/badges/UserBadges.js
+var receiveGdpBadgesSettingDescriptor = {
+  name: "receive-gdp-badges",
+  type: "boolean",
+  defaultValue: false,
+  storageType: "Synced"
+};
 var SNOOZE_TIME_MS = 24 * 60 * 60 * 1e3;
 var MAX_SNOOZE_COUNT = 3;
 var DELAY_BEFORE_TRIGGER = 1500;
@@ -188,7 +194,7 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
     this.#settings = settings;
     this.#gdpClient = gdpClient;
     this.#inspectorFrontendHost = inspectorFrontendHost;
-    this.#receiveBadgesSetting = this.#settings.moduleSetting("receive-gdp-badges");
+    this.#receiveBadgesSetting = this.#settings.resolve(receiveGdpBadgesSettingDescriptor);
     if (!Host.GdpClient.isBadgesEnabled()) {
       this.#receiveBadgesSetting.set(false);
     }
@@ -353,6 +359,7 @@ export {
   BadgeAction,
   SpeedsterBadge,
   StarterBadge,
-  UserBadges
+  UserBadges,
+  receiveGdpBadgesSettingDescriptor
 };
 //# sourceMappingURL=badges.js.map

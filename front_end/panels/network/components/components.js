@@ -1891,7 +1891,7 @@ var ResponseHeaderSection = class extends ResponseHeaderSectionBase {
       if (!this.#overrides.every(Persistence.NetworkPersistenceManager.isHeaderOverride)) {
         throw new Error("Type mismatch after parsing");
       }
-      if (Common2.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").get() && this.#isEditingAllowed === 0) {
+      if (Common2.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).get() && this.#isEditingAllowed === 0) {
         this.#isEditingAllowed = 1;
       }
       for (const header of this.#headerEditors) {
@@ -2109,7 +2109,7 @@ var ResponseHeaderSection = class extends ResponseHeaderSectionBase {
     const requestUrl = this.#request.url();
     const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     if (networkPersistenceManager.project()) {
-      Common2.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
+      Common2.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).set(true);
       await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
     } else {
       UI5.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {

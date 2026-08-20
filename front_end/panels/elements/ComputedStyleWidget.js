@@ -51,17 +51,16 @@ const { bindToSetting } = UI.UIUtils;
 const UIStrings = {
     /**
      * @description Text for a checkbox setting that controls whether the user-supplied filter text
-     * excludes all CSS propreties which are filtered out, or just greys them out. In Computed Style
-     * Widget of the Elements panel
+     * excludes all CSS properties which are filtered out, or just grays them out. In the Computed styles
+     * tab of the Elements panel.
      */
     showAll: 'Show all',
     /**
      * @description Text for a checkbox setting that controls whether similar CSS properties should be
-     * grouped together or not. In Computed Style Widget of the Elements panel.
+     * grouped together or not. In the Computed styles tab of the Elements panel.
      */
     group: 'Group',
     /**
-     * [
      * @description Text shown to the user when a filter is applied to the computed CSS properties, but
      * no properties matched the filter and thus no results were returned.
      */
@@ -81,7 +80,7 @@ const UIStrings = {
      * @example {example} PH1
      * @example {5} PH2
      */
-    filterUpdateAriaText: `Filter applied: {PH1}. Total Results: {PH2}`,
+    filterUpdateAriaText: 'Filter applied: {PH1}. Total results: {PH2}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ComputedStyleWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

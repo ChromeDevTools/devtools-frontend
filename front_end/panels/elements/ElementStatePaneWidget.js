@@ -14,18 +14,18 @@ import elementStatePaneWidgetStyles from './elementStatePaneWidget.css.js';
 const { bindToSetting } = UI.UIUtils;
 const UIStrings = {
     /**
-     * @description Title of a section in the Element State Pane Widget of the Elements panel. The
+     * @description Title of a section in the force element state section of the Styles tab in the Elements panel. The
      * controls in this section allow users to force a particular state on the selected element, e.g. a
      * focused state via :focus or a hover state via :hover.
      */
     forceElementState: 'Force element state',
     /**
-     * @description Tooltip text in Element State Pane Widget of the Elements panel. For a button that
+     * @description Tooltip text in the force element state section of the Styles tab in the Elements panel. For a button that
      * opens a tool that toggles the various states of the selected element on/off.
      */
-    toggleElementState: 'Toggle Element State',
+    toggleElementState: 'Toggle element state',
     /**
-     * @description The name of a checkbox setting in the Element & Page State Pane Widget of the Elements panel.. This setting
+     * @description The name of a checkbox setting in the force element state section of the Styles tab in the Elements panel. This setting
      * emulates/pretends that the webpage is focused.
      */
     emulateFocusedPage: 'Emulate a focused page',
@@ -34,11 +34,11 @@ const UIStrings = {
      */
     emulatesAFocusedPage: 'Keep page focused. Commonly used for debugging disappearing elements.',
     /**
-     * @description Similar with forceElementState but allows users to force specific state of the selected element.
+     * @description Title of a section in the Styles tab of the Elements panel. Allows users to force specific states of the selected element.
      */
     forceElementSpecificStates: 'Force specific element state',
     /**
-     * @description Text that is usually a hyperlink to more documentation
+     * @description Text that is usually a hyperlink to more documentation.
      */
     learnMore: 'Learn more',
 };

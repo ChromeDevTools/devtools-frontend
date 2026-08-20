@@ -12,7 +12,7 @@ import { Cookie } from './Cookie.js';
 import { DirectSocketChunkType, DirectSocketStatus, DirectSocketType, Events as NetworkRequestEvents, NetworkRequest, } from './NetworkRequest.js';
 import { RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
-import { cacheDisabledSettingDescriptor, requestBlockingEnabledSettingDescriptor } from './SDKSettings.js';
+import { cacheDisabledSettingDescriptor, monitoringXHREnabledSettingDescriptor, preserveNetworkLogSettingDescriptor, requestBlockingEnabledSettingDescriptor, } from './SDKSettings.js';
 import { TargetManager } from './TargetManager.js';
 const UIStrings = {
     /**
@@ -168,7 +168,7 @@ export class NetworkManager extends SDKModel {
             reportDirectSocketTraffic: true,
         });
         if (Root.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled) {
-            const preserveLogSetting = settings.moduleSetting('network-log.preserve-log');
+            const preserveLogSetting = settings.resolve(preserveNetworkLogSettingDescriptor);
             this.#updateDurableMessages(preserveLogSetting.get());
             preserveLogSetting.addChangeListener(this.preserveLogChanged, this);
         }
@@ -487,7 +487,7 @@ export class NetworkManager extends SDKModel {
     dispose() {
         const settings = this.target().targetManager().settings;
         settings.resolve(cacheDisabledSettingDescriptor).removeChangeListener(this.cacheDisabledSettingChanged, this);
-        settings.moduleSetting('network-log.preserve-log').removeChangeListener(this.preserveLogChanged, this);
+        settings.resolve(preserveNetworkLogSettingDescriptor).removeChangeListener(this.preserveLogChanged, this);
     }
     bypassServiceWorkerChanged() {
         void this.#networkAgent.invoke_setBypassServiceWorker({ bypass: this.#bypassServiceWorkerSetting.get() });
@@ -1142,7 +1142,7 @@ export class NetworkDispatcher {
         this.#manager.dispatchEventToListeners(Events.RequestFinished, networkRequest);
         this.#multitargetNetworkManager.inflightMainResourceRequests.delete(networkRequest.requestId());
         const settings = this.#manager.target().targetManager().settings;
-        if (settings.moduleSetting('monitoring-xhr-enabled').get() &&
+        if (settings.resolve(monitoringXHREnabledSettingDescriptor).get() &&
             networkRequest.resourceType().category() === Common.ResourceType.resourceCategories.XHR) {
             let message;
             const failedToLoad = networkRequest.failed || networkRequest.hasErrorStatusCode();

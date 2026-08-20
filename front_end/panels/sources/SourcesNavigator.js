@@ -265,12 +265,14 @@ export class OverridesNavigatorView extends NavigatorView {
         this.toolbar.removeToolbarItems();
         const project = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
         if (project) {
-            const enableCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled'));
+            const enableCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(Common.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor));
             this.toolbar.appendToolbarItem(enableCheckbox);
             this.toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator(true));
             const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearConfiguration), 'clear');
             clearButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, () => {
-                Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(false);
+                Common.Settings.Settings.instance()
+                    .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+                    .set(false);
                 project.remove();
             });
             this.toolbar.appendToolbarItem(clearButton);
@@ -288,7 +290,9 @@ export class OverridesNavigatorView extends NavigatorView {
         if (!fileSystem) {
             return;
         }
-        Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(true);
+        Common.Settings.Settings.instance()
+            .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+            .set(true);
     }
     sourceSelected(uiSourceCode, focusSource) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverridesSourceSelected);

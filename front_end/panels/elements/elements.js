@@ -361,7 +361,7 @@ var UIStrings2 = {
    */
   openCubicBezierEditor: "Open cubic bezier editor",
   /**
-   * @description Tooltip text for an icon that opens shadow editor. The shadow editor is a tool
+   * @description Tooltip text for an icon that opens the shadow editor. The shadow editor is a tool
    * which allows the user to edit CSS shadow properties.
    */
   openShadowEditor: "Open shadow editor"
@@ -1183,15 +1183,15 @@ var layersWidget_css_default = `/**
 var { render: render2, html: html3, Directives: { ref: ref2 } } = Lit3;
 var UIStrings3 = {
   /**
-   * @description Title of a section in the Element State Pane Widget of the Elements panel.
+   * @description Title of a section in the Layers tab of the Elements panel.
    * The widget shows the layers present in the context of the currently selected node.
-   * */
+   */
   cssLayersTitle: "CSS layers",
   /**
-   * @description Tooltip text in Element State Pane Widget of the Elements panel.
+   * @description Tooltip text in the Layers tab of the Elements panel.
    * For a button that opens a tool that shows the layers present in the current document.
    */
-  toggleCSSLayers: "Toggle CSS Layers view"
+  toggleCSSLayers: "Toggle CSS layers view"
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/elements/LayersWidget.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
@@ -1505,43 +1505,43 @@ var isMulticolContainer = (computedStyles) => {
 // gen/front_end/panels/elements/CSSRuleValidator.js
 var UIStrings4 = {
   /**
-   * @description The message shown in the Style pane when the user hovers over a property that has no effect due to some other property.
+   * @description The message shown in the Styles tab when the user hovers over a property that has no effect due to some other property.
    * @example {flex-wrap: nowrap} REASON_PROPERTY_DECLARATION_CODE
    * @example {align-content} AFFECTED_PROPERTY_DECLARATION_CODE
    */
   ruleViolatedBySameElementRuleReason: "The {REASON_PROPERTY_DECLARATION_CODE} property prevents {AFFECTED_PROPERTY_DECLARATION_CODE} from having an effect.",
   /**
-   * @description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to some other property.
+   * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to some other property.
    * @example {flex-wrap} PROPERTY_NAME
    * @example {nowrap} PROPERTY_VALUE
    */
   ruleViolatedBySameElementRuleFix: "Try setting {PROPERTY_NAME} to something other than {PROPERTY_VALUE}.",
   /**
-   * @description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to not being a flex or grid container.
+   * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to not being a flex or grid container.
    * @example {display: grid} DISPLAY_GRID_RULE
    * @example {display: flex} DISPLAY_FLEX_RULE
    */
   ruleViolatedBySameElementRuleChangeFlexOrGrid: "Try adding {DISPLAY_GRID_RULE} or {DISPLAY_FLEX_RULE} to make this element into a container.",
   /**
-   * @description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to the current property value.
+   * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to the current property value.
    * @example {display: block} EXISTING_PROPERTY_DECLARATION
    * @example {display: flex} TARGET_PROPERTY_DECLARATION
    */
   ruleViolatedBySameElementRuleChangeSuggestion: "Try setting the {EXISTING_PROPERTY_DECLARATION} property to {TARGET_PROPERTY_DECLARATION}.",
   /**
-   * @description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to properties of the parent element.
+   * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to properties of the parent element.
    * @example {display: block} REASON_PROPERTY_DECLARATION_CODE
    * @example {flex} AFFECTED_PROPERTY_DECLARATION_CODE
    */
   ruleViolatedByParentElementRuleReason: "The {REASON_PROPERTY_DECLARATION_CODE} property on the parent element prevents {AFFECTED_PROPERTY_DECLARATION_CODE} from having an effect.",
   /**
-   * @description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to the properties of the parent element.
+   * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to the properties of the parent element.
    * @example {display: block} EXISTING_PARENT_ELEMENT_RULE
    * @example {display: flex} TARGET_PARENT_ELEMENT_RULE
    */
   ruleViolatedByParentElementRuleFix: "Try setting the {EXISTING_PARENT_ELEMENT_RULE} property on the parent to {TARGET_PARENT_ELEMENT_RULE}.",
   /**
-   * @description The warning text shown in Elements panel when font-variation-settings don't match allowed values
+   * @description The warning text shown in the Elements panel when font-variation-settings don't match allowed values.
    * @example {wdth} PH1
    * @example {100} PH2
    * @example {10} PH3
@@ -1550,28 +1550,28 @@ var UIStrings4 = {
    */
   fontVariationSettingsWarning: 'Value for setting "{PH1}" {PH2} is outside the supported range [{PH3}, {PH4}] for font-family "{PH5}".',
   /**
-   * @description The message shown in the Style pane when the user hovers over a property declaration that has no effect on flex or grid child items.
+   * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect on flex or grid child items.
    * @example {flex} CONTAINER_DISPLAY_NAME
    * @example {align-contents} PROPERTY_NAME
    */
   flexGridContainerPropertyRuleReason: "This element is a {CONTAINER_DISPLAY_NAME} item, i.e. a child of a {CONTAINER_DISPLAY_NAME} container, but {PROPERTY_NAME} only applies to containers.",
   /**
-   * @description The message shown in the Style pane when the user hovers over a property declaration that has no effect on flex or grid child items.
+   * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect on flex or grid child items.
    * @example {align-contents} PROPERTY_NAME
    * @example {align-self} ALTERNATIVE_PROPERTY_NAME
    */
   flexGridContainerPropertyRuleFix: "Try setting the {PROPERTY_NAME} on the container element or use {ALTERNATIVE_PROPERTY_NAME} instead.",
   /**
-   * @description The messages shown in the Style pane when the user hovers over a position-anchor declaration that has no affect on a non-anchor-positioned element.
+   * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a non-anchor-positioned element.
    * @example {relative} POSITION
    */
   invalidAnchorPositioning: 'An anchor was defined but the element was not anchor-positioned but positioned "{POSITION}".',
   /**
-   * @description The messages shown in the Style pane when the user hovers over a position-anchor declaration that has no affect on a non-anchor-positioned element.
+   * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a non-anchor-positioned element.
    */
   invalidAnchorPositioningFix: 'Set position to either "fixed" or "absolute".',
   /**
-   * @description The messages shown in the Style pane when the user hovers over a position-anchor declaration that has no affect on hidden element.
+   * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a hidden element.
    */
   unusedAnchorPositioning: "An anchor was defined but the element is hidden."
 };
@@ -2674,44 +2674,44 @@ var GridLanesEditor = ElementsComponents.StylePropertyEditor.GridLanesEditor;
 var { widget } = UI7.Widget;
 var UIStrings5 = {
   /**
-   * @description Text in Color Swatch Popover Icon of the Elements panel
+   * @description Text in the color swatch popover icon of the Elements panel.
    */
   shiftClickToChangeColorFormat: "Shift + Click to change color format.",
   /**
-   * @description Swatch icon element title in Color Swatch Popover Icon of the Elements panel
+   * @description Swatch icon element title in the color swatch popover icon of the Elements panel.
    * @example {Shift + Click to change color format.} PH1
    */
   openColorPickerS: "Open color picker. {PH1}",
   /**
-   * @description Context menu item for style property in edit mode
+   * @description Context menu item for style property in edit mode.
    */
   togglePropertyAndContinueEditing: "Toggle property and continue editing",
   /**
-   * @description Context menu item for style property in edit mode
+   * @description Context menu item for style property in edit mode.
    */
   openInSourcesPanel: "Open in Sources panel",
   /**
-   * @description A context menu item in Styles panel to copy CSS declaration
+   * @description A context menu item in the Styles tab of the Elements panel to copy CSS declaration.
    */
   copyDeclaration: "Copy declaration",
   /**
-   * @description A context menu item in Styles panel to copy CSS property
+   * @description A context menu item in the Styles tab of the Elements panel to copy CSS property.
    */
   copyProperty: "Copy property",
   /**
-   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
+   * @description A context menu item in the Watch expressions sidebar of the Sources panel and Network panel request.
    */
   copyValue: "Copy value",
   /**
-   * @description A context menu item in Styles panel to copy CSS rule
+   * @description A context menu item in the Styles tab of the Elements panel to copy CSS rule.
    */
   copyRule: "Copy rule",
   /**
-   * @description A context menu item in Styles panel to copy all CSS declarations
+   * @description A context menu item in the Styles tab of the Elements panel to copy all CSS declarations.
    */
   copyAllDeclarations: "Copy all declarations",
   /**
-   * @description A context menu item in Styles panel to view the computed CSS property value.
+   * @description A context menu item in the Styles tab of the Elements panel to view the computed CSS property value.
    */
   viewComputedValue: "View computed value",
   /**
@@ -2723,41 +2723,41 @@ var UIStrings5 = {
    */
   openAnimationsPanel: "Open Animations panel",
   /**
-   * @description Title of the button that opens the flexbox editor in the Styles panel.
+   * @description Title of the button that opens the flexbox editor in the Styles tab of the Elements panel.
    */
   flexboxEditorButton: "Open `flexbox` editor",
   /**
-   * @description Title of the button that opens the CSS Grid editor in the Styles panel.
+   * @description Title of the button that opens the CSS Grid editor in the Styles tab of the Elements panel.
    */
   gridEditorButton: "Open `grid` editor",
   /**
-   * @description Title of the button that opens the CSS Grid Lanes editor in the Styles panel.
+   * @description Title of the button that opens the CSS Grid Lanes editor in the Styles tab of the Elements panel.
    */
   gridLanesEditorButton: "Open `grid-lanes` editor",
   /**
-   * @description A context menu item in Styles panel to copy CSS declaration as JavaScript property.
+   * @description A context menu item in the Styles tab of the Elements panel to copy CSS declaration as JavaScript property.
    */
   copyCssDeclarationAsJs: "Copy declaration as JS",
   /**
-   * @description A context menu item in Styles panel to copy all declarations of CSS rule as JavaScript properties.
+   * @description A context menu item in the Styles tab of the Elements panel to copy all declarations of CSS rule as JavaScript properties.
    */
   copyAllCssDeclarationsAsJs: "Copy all declarations as JS",
   /**
-   * @description Title of the link in Styles panel to jump to the Animations panel.
+   * @description Title of the link in the Styles tab of the Elements panel to jump to the Animations panel.
    */
   jumpToAnimationsPanel: "Jump to Animations panel",
   /**
-   * @description Text displayed in a tooltip shown when hovering over a CSS property value references a name that's not
-   *             defined and can't be linked to.
+   * @description Text displayed in a tooltip shown when hovering over a CSS property value references a name that is not
+   *             defined and cannot be linked to.
    * @example {--my-linkable-name} PH1
    */
   sIsNotDefined: "{PH1} is not defined",
   /**
-   * @description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in the Styles tab of the Elements panel.
    */
   invalidPropertyValue: "Invalid property value",
   /**
-   * @description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in the Styles tab of the Elements panel.
    */
   unknownPropertyName: "Unknown property name",
   /**
@@ -2768,7 +2768,7 @@ var UIStrings5 = {
    */
   invalidString: "{PH1}, property name: {PH2}, property value: {PH3}",
   /**
-   * @description Title in the styles tab for the icon button for jumping to the anchor node.
+   * @description Title in the Styles tab for the icon button for jumping to the anchor node.
    */
   jumpToAnchorNode: "Jump to anchor node"
 };
@@ -5875,7 +5875,7 @@ __export(CSSSpecificityBreakdown_exports, {
 import * as i18n11 from "./../../core/i18n/i18n.js";
 var UIStrings6 = {
   /**
-   * @description Summary line in a tooltip explaining a CSS selector specificity.
+   * @description Summary line in a tooltip explaining CSS selector specificity.
    * @example {1} PH1
    * @example {2} PH2
    * @example {3} PH3
@@ -5950,61 +5950,61 @@ function formatSpecificityTooltip(specificity) {
 // gen/front_end/panels/elements/StylePropertiesSection.js
 var UIStrings7 = {
   /**
-   * @description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
+   * @description Tooltip text that appears when hovering over the add button in the Styles tab of the Elements panel.
    */
   insertStyleRuleBelow: "Insert style rule below",
   /**
-   * @description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in the Styles tab of the Elements panel.
    */
   constructedStylesheet: "constructed stylesheet",
   /**
-   * @description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in the Styles tab of the Elements panel.
    */
   userAgentStylesheet: "user agent stylesheet",
   /**
-   * @description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in the Styles tab of the Elements panel.
    */
   injectedStylesheet: "injected stylesheet",
   /**
-   * @description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in the Styles tab of the Elements panel.
    */
   viaInspector: "via inspector",
   /**
-   * @description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in the Styles tab of the Elements panel.
    */
   styleAttribute: "`style` attribute",
   /**
-   * @description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in the Styles tab of the Elements panel.
    * @example {html} PH1
    */
   sattributesStyle: "{PH1}[Attributes Style]",
   /**
-   * @description Show all button text content in Styles Sidebar Pane of the Elements panel
+   * @description Show all button text content in the Styles tab of the Elements panel.
    * @example {3} PH1
    */
   showAllPropertiesSMore: "Show all properties ({PH1} more)",
   /**
-   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   * @description Text in the DOM tree of the Elements panel, copy should be used as a verb.
    */
   copySelector: "Copy `selector`",
   /**
-   * @description A context menu item in Styles panel to copy CSS rule
+   * @description A context menu item in the Styles tab of the Elements panel to copy CSS rule.
    */
   copyRule: "Copy rule",
   /**
-   * @description A context menu item in Styles panel to copy all CSS declarations
+   * @description A context menu item in the Styles tab of the Elements panel to copy all CSS declarations.
    */
   copyAllDeclarations: "Copy all declarations",
   /**
-   * @description Text that is announced by the screen reader when the user focuses on an input field for editing the name of a CSS selector in the Styles panel
+   * @description Text that is announced by the screen reader when the user focuses on an input field for editing the name of a CSS selector in the Styles tab of the Elements panel.
    */
   cssSelector: "`CSS` selector",
   /**
-   * @description Accessibility label for the button that expands a collapsed CSS rule in the Styles pane.
+   * @description Accessibility label for the button that expands a collapsed CSS rule in the Styles tab.
    */
   expandCollapsedRule: "Expand collapsed rule",
   /**
-   * @description Accessibility label for the button that collapses an expanded CSS rule in the Styles pane.
+   * @description Accessibility label for the button that collapses an expanded CSS rule in the Styles tab.
    */
   collapseExpandedRule: "Collapse expanded rule"
 };
@@ -8474,54 +8474,53 @@ var WebCustomData = class _WebCustomData {
 // gen/front_end/panels/elements/StylesSidebarPane.js
 var UIStrings8 = {
   /**
-   * @description No matches element text content in Styles Sidebar Pane of the Elements panel
+   * @description No matches element text content in the Styles tab of the Elements panel.
    */
   noMatchingSelectorOrStyle: "No matching selector or style",
   /**
-   * /**
-   * @description Text to announce the result of the filter input in the Styles Sidebar Pane of the Elements panel
+   * @description Text to announce the result of the filter input in the Styles tab of the Elements panel.
    */
   visibleSelectors: "{n, plural, =1 {# visible selector listed below} other {# visible selectors listed below}}",
   /**
-   * @description Separator element text content in Styles Sidebar Pane of the Elements panel
+   * @description Separator element text content in the Styles tab of the Elements panel.
    * @example {scrollbar-corner} PH1
    */
   pseudoSElement: "Pseudo ::{PH1} element",
   /**
-   * @description Text of a DOM element in Styles Sidebar Pane of the Elements panel
+   * @description Text of a DOM element in the Styles tab of the Elements panel.
    */
   inheritedFroms: "Inherited from ",
   /**
-   * @description Text of an inherited pseudo element in Styles Sidebar Pane of the Elements panel
+   * @description Text of an inherited pseudo element in the Styles tab of the Elements panel.
    * @example {highlight} PH1
    */
   inheritedFromSPseudoOf: "Inherited from ::{PH1} pseudo of ",
   /**
-   * @description Title of  in styles sidebar pane of the elements panel
+   * @description Tooltip for color values in the Styles tab of the Elements panel.
    * @example {Ctrl} PH1
    * @example {Alt} PH2
    */
   incrementdecrementWithMousewheelOne: "Increment/decrement with mousewheel or up/down keys. {PH1}: R \xB11, Shift: G \xB11, {PH2}: B \xB11",
   /**
-   * @description Title of  in styles sidebar pane of the elements panel
+   * @description Tooltip for color values in the Styles tab of the Elements panel.
    * @example {Ctrl} PH1
    * @example {Alt} PH2
    */
   incrementdecrementWithMousewheelHundred: "Increment/decrement with mousewheel or up/down keys. {PH1}: \xB1100, Shift: \xB110, {PH2}: \xB10.1",
   /**
-   * @description Tooltip text that appears when hovering over the rendering button in the Styles Sidebar Pane of the Elements panel
+   * @description Tooltip text that appears when hovering over the rendering button in the Styles tab of the Elements panel.
    */
   toggleRenderingEmulations: "Toggle common rendering emulations",
   /**
-   * @description Rendering emulation option for toggling the automatic dark mode
+   * @description Rendering emulation option for toggling the automatic dark mode.
    */
   automaticDarkMode: "Automatic dark mode",
   /**
-   * @description Text displayed on layer separators in the styles sidebar pane.
+   * @description Text displayed on layer separators in the Styles tab of the Elements panel.
    */
   layer: "Layer",
   /**
-   * @description Tooltip text for the link in the sidebar pane layer separators that reveals the layer in the layer tree view.
+   * @description Tooltip text for the link in the layer separators that reveals the layer in the layer tree view.
    */
   clickToRevealLayer: "Click to reveal layer in layer tree",
   /**
@@ -8530,7 +8529,7 @@ var UIStrings8 = {
    */
   aiSuggestionAccepted: "{PH1} Suggestion accepted.",
   /**
-   * @description Title of the general at-rule section
+   * @description Title of the general at-rule section.
    */
   atRuleSection: "Other @rules"
 };
@@ -10527,12 +10526,12 @@ var ButtonProvider2 = class _ButtonProvider {
 // gen/front_end/panels/elements/PropertyRenderer.js
 var UIStrings9 = {
   /**
-   * @description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles panel
+   * @description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles tab of the Elements panel.
    * @example {margin} PH1
    */
   cssPropertyName: "`CSS` property name: {PH1}",
   /**
-   * @description Text that is announced by the screen reader when the user focuses on an input field for entering the value of a CSS property in the Styles panel
+   * @description Text that is announced by the screen reader when the user focuses on an input field for entering the value of a CSS property in the Styles tab of the Elements panel.
    * @example {10px} PH1
    */
   cssPropertyValue: "`CSS` property value: {PH1}"
@@ -10982,17 +10981,16 @@ var { bindToSetting } = UI12.UIUtils;
 var UIStrings10 = {
   /**
    * @description Text for a checkbox setting that controls whether the user-supplied filter text
-   * excludes all CSS propreties which are filtered out, or just greys them out. In Computed Style
-   * Widget of the Elements panel
+   * excludes all CSS properties which are filtered out, or just grays them out. In the Computed styles
+   * tab of the Elements panel.
    */
   showAll: "Show all",
   /**
    * @description Text for a checkbox setting that controls whether similar CSS properties should be
-   * grouped together or not. In Computed Style Widget of the Elements panel.
+   * grouped together or not. In the Computed styles tab of the Elements panel.
    */
   group: "Group",
   /**
-   * [
    * @description Text shown to the user when a filter is applied to the computed CSS properties, but
    * no properties matched the filter and thus no results were returned.
    */
@@ -11012,7 +11010,7 @@ var UIStrings10 = {
    * @example {example} PH1
    * @example {5} PH2
    */
-  filterUpdateAriaText: `Filter applied: {PH1}. Total Results: {PH2}`
+  filterUpdateAriaText: "Filter applied: {PH1}. Total results: {PH2}"
 };
 var str_10 = i18n20.i18n.registerUIStrings("panels/elements/ComputedStyleWidget.ts", UIStrings10);
 var i18nString10 = i18n20.i18n.getLocalizedString.bind(void 0, str_10);
@@ -12169,71 +12167,71 @@ import * as i18n22 from "./../../core/i18n/i18n.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 var UIStrings11 = {
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a label element has an incorrect for attribute.
    */
   formLabelForNameError: "Incorrect use of <label for=FORM_ELEMENT>",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a form field has a duplicate ID.
    */
-  formDuplicateIdForInputError: "Duplicate form field id in the same form",
+  formDuplicateIdForInputError: "Duplicate form field ID in the same form",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a form field has no label or aria-labelledby attribute.
    */
   formInputWithNoLabelError: "Form field without valid aria-labelledby attribute or associated label",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an autocomplete attribute is empty or incorrect.
    */
   formAutocompleteAttributeEmptyError: "Incorrect use of autocomplete attribute",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a form field lacks both ID and name attributes.
    */
-  formEmptyIdAndNameAttributesForInputError: "A form field element should have an id or name attribute",
+  formEmptyIdAndNameAttributesForInputError: "A form field element should have an ID or name attribute",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an aria-labelledby attribute references a non-existent element ID.
    */
-  formAriaLabelledByToNonExistingId: "An aria-labelledby attribute doesn\u2019t match any element id",
+  formAriaLabelledByToNonExistingId: "An aria-labelledby attribute doesn\u2019t match any element ID",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an element lacks an autocomplete attribute.
    */
   formInputAssignedAutocompleteValueToIdOrNameAttributeError: "An element doesn\u2019t have an autocomplete attribute",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a label is not associated with any form field.
    */
   formLabelHasNeitherForNorNestedInput: "No label associated with a form field",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a label's for attribute references a non-existent element ID.
    */
   formLabelForMatchesNonExistingIdError: "Incorrect use of <label for=FORM_ELEMENT>",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when a form field uses a non-standard autocomplete value.
    */
   formInputHasWrongButWellIntendedAutocompleteValueError: "Non-standard autocomplete attribute value",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an invalid element or text node is inside a select element.
    */
   disallowedSelectChild: "Invalid element or text node within <select>",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an invalid element or text node is inside an optgroup element.
    */
   disallowedOptGroupChild: "Invalid element or text node within <optgroup>",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when non-phrasing content is used inside an option element.
    */
   nonPhrasingContentOptionChild: "Non-phrasing content used within an <option> element",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an interactive element is inside an option element.
    */
   interactiveContentOptionChild: "Interactive element inside of an <option> element",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an interactive element is inside a legend element.
    */
   interactiveContentLegendChild: "Interactive element inside of a <legend> element",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an element with invalid attributes is inside a select element.
    */
   interactiveContentAttributesSelectDescendant: "Element with invalid attributes within a <select> element",
   /**
-   * @description Tooltip text shown in the Elements panel when an element has an error.
+   * @description Tooltip text shown in the Elements panel when an interactive element is inside a summary element.
    */
   interactiveContentSummaryDescendant: "Interactive element inside of a <summary> element"
 };
@@ -12317,11 +12315,11 @@ __export(MarkerDecorator_exports, {
 import * as i18n24 from "./../../core/i18n/i18n.js";
 var UIStrings12 = {
   /**
-   * @description Title of the Marker Decorator of Elements
+   * @description Title of a marker decorator in the Elements panel.
    */
-  domBreakpoint: "DOM Breakpoint",
+  domBreakpoint: "DOM breakpoint",
   /**
-   * @description Title of the Marker Decorator of Elements
+   * @description Title of a marker decorator in the Elements panel.
    */
   elementIsHidden: "Element is hidden"
 };
@@ -12397,73 +12395,73 @@ var UIStrings13 = {
    */
   forceState: "Force state",
   /**
-   * @description Hint element title in Elements Tree Element of the Elements panel
+   * @description Hint element title in the DOM tree of the Elements panel.
    * @example {0} PH1
    */
   useSInTheConsoleToReferToThis: "Use {PH1} in the console to refer to this element.",
+  /**
+   * @description Text to cut an element, cut should be used as a verb.
+   */
+  cut: "Cut",
+  /**
+   * @description Text for copying, copy should be used as a verb.
+   */
+  copy: "Copy",
+  /**
+   * @description Text to paste an element, paste should be used as a verb.
+   */
+  paste: "Paste",
   /**
    * @description Context menu item in the Edit as HTML editor that selects the editor's entire
    * contents. "Select all" should be used as a verb.
    */
   selectAll: "Select all",
   /**
-   * @description Text to cut an element, cut should be used as a verb
-   */
-  cut: "Cut",
-  /**
-   * @description Text for copying, copy should be used as a verb
-   */
-  copy: "Copy",
-  /**
-   * @description Text to paste an element, paste should be used as a verb
-   */
-  paste: "Paste",
-  /**
-   * @description Text in Elements Tree Element of the Elements panel
+   * @description Text in the DOM tree of the Elements panel.
    */
   valueIsTooLargeToEdit: "<value is too large to edit>",
   /**
-   * @description Element text content in Elements Tree Element of the Elements panel
+   * @description Element text content in the DOM tree of the Elements panel.
    */
   children: "Children:",
   /**
-   * @description ARIA label for Elements Tree adorners
+   * @description ARIA label for Elements Tree adorners.
    */
   enableGridMode: "Enable grid mode",
   /**
-   * @description ARIA label for Elements Tree adorners
+   * @description ARIA label for Elements Tree adorners.
    */
   disableGridMode: "Disable grid mode",
   /**
-   * @description ARIA label for Elements Tree adorners
+   * @description ARIA label for Elements Tree adorners.
    */
   enableGridLanesMode: "Enable grid-lanes mode",
   /**
-   * @description ARIA label for Elements Tree adorners
+   * @description ARIA label for Elements Tree adorners.
    */
   disableGridLanesMode: "Disable grid-lanes mode",
   /**
-   * @description ARIA label for an elements tree adorner
+   * @description ARIA label for an elements tree adorner.
    */
   forceOpenPopover: "Keep this popover open",
   /**
-   * @description ARIA label for an elements tree adorner
+   * @description ARIA label for an elements tree adorner.
    */
   stopForceOpenPopover: "Stop keeping this popover open",
   /**
-   * @description ARIA label for an elements tree adorner
+   * @description ARIA label for an elements tree adorner.
    */
   forceShowInterest: "Trigger interest on this element",
   /**
-   * @description ARIA label for an elements tree adorner
+   * @description ARIA label for an elements tree adorner.
    */
   stopForceShowInterest: "Cancel interest on this element",
   /**
-   * @description Label of the adorner for flex elements in the Elements panel
+   * @description Label of the adorner for flex elements in the Elements panel.
    */
   enableFlexMode: "Enable flex mode",
   /**
-   * @description Label of the adorner for flex elements in the Elements panel
+   * @description Label of the adorner for flex elements in the Elements panel.
    */
   disableFlexMode: "Disable flex mode",
   /**
@@ -12498,23 +12496,23 @@ var UIStrings13 = {
   disableStartingStyle: "Disable @starting-style mode",
   /**
    * @description Label of an adorner in the Elements panel. When clicked, it redirects
-   * to the Media Panel.
+   * to the Media panel.
    */
   openMediaPanel: "Jump to Media panel",
   /**
-   * @description Text of a tooltip to redirect to another element in the Elements panel
+   * @description Text of a tooltip to redirect to another element in the Elements panel.
    */
   showPopoverTarget: "Show element associated with the `popovertarget` attribute",
   /**
-   * @description Text of a tooltip to redirect to another element in the Elements panel, associated with the `interesttarget` attribute
+   * @description Text of a tooltip to redirect to another element in the Elements panel, associated with the `interesttarget` attribute.
    */
   showInterestTarget: "Show element associated with the `interesttarget` attribute",
   /**
-   * @description Text of a tooltip to redirect to another element in the Elements panel, associated with the `commandfor` attribute
+   * @description Text of a tooltip to redirect to another element in the Elements panel, associated with the `commandfor` attribute.
    */
   showCommandForTarget: "Show element associated with the `commandfor` attribute",
   /**
-   * @description Text of the tooltip for scroll adorner.
+   * @description Text of the tooltip for the scroll adorner.
    */
   elementHasScrollableOverflow: "This element has a scrollable overflow",
   /**
@@ -12527,9 +12525,9 @@ var UIStrings13 = {
    */
   showCustomElementDefinition: "Show custom element definition",
   /**
-   * @description Link text content in Elements Tree Outline of the Elements panel. When clicked, it "reveals" the true location of an element.
+   * @description ARIA label for the top-layer adorner in the DOM tree of the Elements panel. When clicked, it reveals the true location of an element.
    */
-  reveal: "reveal"
+  reveal: "Reveal"
 };
 var str_13 = i18n26.i18n.registerUIStrings("panels/elements/ElementsTreeElement.ts", UIStrings13);
 var i18nString12 = i18n26.i18n.getLocalizedString.bind(void 0, str_13);
@@ -15383,7 +15381,7 @@ async function populateNodeContextMenu(contextMenu, treeElement) {
     }, { jslogContext: "show-frame-details" });
   }
 }
-async function showContextMenu(treeElement, event, onSaveNodeToTempVariable) {
+async function showContextMenu(treeElement, event) {
   if (UI15.UIUtils.isEditing()) {
     return;
   }
@@ -15406,9 +15404,7 @@ async function showContextMenu(treeElement, event, onSaveNodeToTempVariable) {
     textNode = null;
   }
   const commentNode = node.enclosingNodeOrSelfWithClass?.("webkit-html-comment");
-  if (onSaveNodeToTempVariable) {
-    contextMenu.saveSection().appendItem(i18nString13(UIStrings14.storeAsGlobalVariable), () => onSaveNodeToTempVariable(domNode), { jslogContext: "store-as-global-variable" });
-  }
+  contextMenu.saveSection().appendItem(i18nString13(UIStrings14.storeAsGlobalVariable), () => void domNode.saveNodeToTempVariable(), { jslogContext: "store-as-global-variable" });
   if (textNode) {
     if (!treeElement.isEditing) {
       contextMenu.editSection().appendItem(i18nString13(UIStrings14.editText), () => treeElement.startEditingTextNode(textNode), { jslogContext: "edit-text" });
@@ -15891,7 +15887,7 @@ import * as ElementsComponents6 from "./components/components.js";
 var { html: html12, render: render10 } = Lit8;
 var UIStrings15 = {
   /**
-   * @description Link text content in Elements Tree Outline of the Elements panel
+   * @description Link text content in the DOM tree outline of the Elements panel.
    */
   reveal: "reveal"
 };
@@ -16034,11 +16030,11 @@ var TopLayerContainer = class extends UI17.TreeOutline.TreeElement {
 // gen/front_end/panels/elements/ElementsTreeOutline.js
 var UIStrings16 = {
   /**
-   * @description ARIA accessible name in Elements Tree Outline of the Elements panel
+   * @description ARIA accessible name in the DOM tree outline of the Elements panel.
    */
   pageDom: "Page DOM",
   /**
-   * @description Tree element expand all button element button text content in Elements Tree Outline of the Elements panel
+   * @description Text for the button to expand all tree nodes in the DOM tree outline of the Elements panel.
    * @example {3} PH1
    */
   showAllNodesDMore: "Show all nodes ({PH1} more)",
@@ -16048,9 +16044,9 @@ var UIStrings16 = {
    */
   showAllLines: "Show all ({PH1} lines)",
   /**
-   * @description Text for popover that directs to Issues panel
+   * @description Text for popover that directs to the Issues panel.
    */
-  viewIssue: "View Issue:"
+  viewIssue: "View issue:"
 };
 var str_16 = i18n32.i18n.registerUIStrings("panels/elements/ElementsTreeOutline.ts", UIStrings16);
 var i18nString15 = i18n32.i18n.getLocalizedString.bind(void 0, str_16);
@@ -16129,7 +16125,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
   output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
   output.elementsTreeOutline.showContextMenu = (treeElement, event) => {
-    void showContextMenu(treeElement, event, input.onSaveNodeToTempVariable);
+    void showContextMenu(treeElement, event);
   };
   let needsUpdate = false;
   const showComments = input.showComments ?? true;
@@ -16399,9 +16395,6 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
       },
       onElementExpanded: () => {
         this.#clearHighlightedNode();
-      },
-      onSaveNodeToTempVariable: (node) => {
-        void this.saveNodeToTempVariable(node);
       }
     }, this.#viewOutput, this.contentElement);
     if (firstRender && this.#viewOutput.elementsTreeOutline) {
@@ -16482,9 +16475,6 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
   }
   copyStyles(node) {
     void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.copyStyles();
-  }
-  async saveNodeToTempVariable(node) {
-    await this.#viewOutput.elementsTreeOutline?.saveNodeToTempVariable(node);
   }
   /**
    * FIXME: used to determine focus state, probably we can have a better
@@ -17219,11 +17209,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common11.ObjectWrap
   }
   showContextMenu = () => {
   };
-  async saveNodeToTempVariable(node) {
-    const remoteObjectForConsole = await node.resolveToObject();
-    const consoleModel = remoteObjectForConsole?.runtimeModel().target()?.model(SDK15.ConsoleModel.ConsoleModel);
-    await consoleModel?.saveToTempVariable(UI18.Context.Context.instance().flavor(SDK15.RuntimeModel.ExecutionContext), remoteObjectForConsole);
-  }
   runPendingUpdates() {
     this.updateModifiedNodes();
   }
@@ -17970,39 +17955,39 @@ var layoutPane_css_default = `/*
 // gen/front_end/panels/elements/LayoutPane.js
 var UIStrings17 = {
   /**
-   * @description Title of the input to select the overlay color for an element using the color picker
+   * @description Title of the input to select the overlay color for an element using the color picker.
    */
   chooseElementOverlayColor: "Choose the overlay color for this element",
   /**
-   * @description Title of the show element button in the Layout pane of the Elements panel
+   * @description Title of the show element button in the Layout tab of the Elements panel.
    */
   showElementInTheElementsPanel: "Show element in the Elements panel",
   /**
-   * @description Title of a section on CSS Grid/Grid Lanes tooling
+   * @description Title of a section on CSS Grid/Grid Lanes tooling.
    */
-  gridOrGridLanes: "Grid / Grid Lanes",
+  gridOrGridLanes: "Grid / grid lanes",
   /**
-   * @description Title of a section in the Layout Sidebar pane of the Elements panel
+   * @description Title of a section in the Layout tab of the Elements panel.
    */
   overlayDisplaySettings: "Overlay display settings",
   /**
-   * @description Title of a section in Layout sidebar pane
+   * @description Title of a section in the Layout tab of the Elements panel.
    */
-  gridOrGridLanesOverlays: "Grid / Grid Lanes overlays",
+  gridOrGridLanesOverlays: "Grid / grid lanes overlays",
   /**
-   * @description Message in the Layout panel informing users that no CSS Grid/Grid Lanes layouts were found on the page
+   * @description Message in the Layout tab informing users that no CSS Grid/Grid Lanes layouts were found on the page.
    */
   noGridOrGridLanesLayoutsFoundOnThisPage: "No grid or grid lanes layouts found on this page",
   /**
-   * @description Title of the Flexbox section in the Layout panel
+   * @description Title of the Flexbox section in the Layout tab of the Elements panel.
    */
   flexbox: "Flexbox",
   /**
-   * @description Title of a section in the Layout panel
+   * @description Title of a section in the Layout tab of the Elements panel.
    */
   flexboxOverlays: "Flexbox overlays",
   /**
-   * @description Text in the Layout panel, when no flexbox elements are found
+   * @description Text in the Layout tab, when no flexbox elements are found.
    */
   noFlexboxLayoutsFoundOnThisPage: "No flexbox layouts found on this page",
   /**
@@ -19090,31 +19075,31 @@ var platformFontsWidget_css_default = `/**
 // gen/front_end/panels/elements/PlatformFontsWidget.js
 var UIStrings18 = {
   /**
-   * @description Section title text content in Platform Fonts Widget of the Elements panel
+   * @description Section title text content in the Rendered Fonts section of the Computed styles tab in the Elements panel.
    */
-  renderedFonts: "Rendered Fonts",
+  renderedFonts: "Rendered fonts",
   /**
-   * @description Font property title text content in Platform Fonts Widget of the Elements panel
+   * @description Font property title text content in the Rendered Fonts section of the Computed styles tab in the Elements panel. Refers to the CSS `font-family` property (https://developer.mozilla.org/en-US/docs/Web/CSS/font-family).
    */
   familyName: "Family name",
   /**
-   * @description Font property title text content in Platform Fonts Widget of the Elements panel
+   * @description Font property title text content in the Rendered Fonts section of the Computed styles tab in the Elements panel.
    */
   postScriptName: "PostScript name",
   /**
-   * @description Font property title text content in Platform Fonts Widget of the Elements panel
+   * @description Font property title text content in the Rendered Fonts section of the Computed styles tab in the Elements panel.
    */
   fontOrigin: "Font origin",
   /**
-   * @description Text in Platform Fonts Widget of the Elements panel
+   * @description Text in the Rendered Fonts section of the Computed styles tab in the Elements panel.
    */
   networkResource: "Network resource",
   /**
-   * @description Text in Platform Fonts Widget of the Elements panel
+   * @description Text in the Rendered Fonts section of the Computed styles tab in the Elements panel.
    */
   localFile: "Local file",
   /**
-   * @description Text in Platform Fonts Widget of the Elements panel. Indicates a number of glyphs (characters) .
+   * @description Text in the Rendered Fonts section of the Computed styles tab in the Elements panel. Indicates a number of glyphs (characters).
    */
   dGlyphs: "{n, plural, =1 {(# glyph)} other {(# glyphs)}}"
 };
@@ -19180,41 +19165,41 @@ var PlatformFontsWidget = class extends UI21.Widget.VBox {
 // gen/front_end/panels/elements/ElementsPanel.js
 var UIStrings19 = {
   /**
-   * @description Placeholder text for the search box the Elements Panel. Selector refers to CSS
+   * @description Placeholder text for the search box in the Elements panel. Selector refers to CSS
    * selectors.
    */
   findByStringSelectorOrXpath: "Find by string, selector, or `XPath`",
   /**
-   * @description Tooltip for the the Computed Styles sidebar toggle in the Styles pane. Command to
+   * @description Tooltip for the computed styles sidebar toggle in the Styles tab of the Elements panel. Command to
    * open/show the sidebar.
    */
-  showComputedStylesSidebar: "Show Computed Styles sidebar",
+  showComputedStylesSidebar: "Show Computed styles sidebar",
   /**
-   * @description Tooltip for the the Computed Styles sidebar toggle in the Styles pane. Command to
+   * @description Tooltip for the computed styles sidebar toggle in the Styles tab of the Elements panel. Command to
    * close/hide the sidebar.
    */
-  hideComputedStylesSidebar: "Hide Computed Styles sidebar",
+  hideComputedStylesSidebar: "Hide Computed styles sidebar",
   /**
    * @description Screen reader announcement when the computed styles sidebar is shown in the Elements panel.
    */
-  computedStylesShown: "Computed Styles sidebar shown",
+  computedStylesShown: "Computed styles sidebar shown",
   /**
    * @description Screen reader announcement when the computed styles sidebar is hidden in the Elements panel.
    */
-  computedStylesHidden: "Computed Styles sidebar hidden",
+  computedStylesHidden: "Computed styles sidebar hidden",
   /**
-   * @description Title of a pane in the Elements panel that shows computed styles for the selected
+   * @description Title of a tab in the Elements panel sidebar that shows computed styles for the selected
    * HTML element. Computed styles are the final, actual styles of the element, including all
    * implicit and specified styles.
    */
   computed: "Computed",
   /**
-   * @description Title of a pane in the Elements panel that shows the CSS styles for the selected
+   * @description Title of a tab in the Elements panel sidebar that shows the CSS styles for the selected
    * HTML element.
    */
   styles: "Styles",
   /**
-   * @description A context menu item to reveal a node in the DOM tree of the Elements Panel
+   * @description A context menu item to reveal a node in the DOM tree of the Elements panel.
    */
   openInElementsPanel: "Open in Elements panel",
   /**
@@ -20501,35 +20486,35 @@ import * as EventListeners from "./../event_listeners/event_listeners.js";
 var { bindToAction, bindToSetting: bindToSetting2 } = UI24.UIUtils;
 var UIStrings20 = {
   /**
-   * @description Title of show framework listeners setting in event listeners widget of the elements panel
+   * @description Title of show framework listeners setting in the Event listeners tab of the Elements panel.
    */
   frameworkListeners: "Resolve `Framework` listeners",
   /**
-   * @description Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel
+   * @description Tooltip text that appears on the setting when hovering over it in the Event listeners tab of the Elements panel.
    */
   showListenersOnTheAncestors: "Show listeners on the ancestors",
   /**
-   * @description Alternative title text of a setting in Event Listeners Widget of the Elements panel
+   * @description Alternative title text of a setting in the Event listeners tab of the Elements panel.
    */
   ancestors: "Ancestors",
   /**
-   * @description Title of dispatch filter in event listeners widget of the elements panel
+   * @description Title of dispatch filter in the Event listeners tab of the Elements panel.
    */
   eventListenersCategory: "Event listeners category",
   /**
-   * @description Text for everything
+   * @description Text for everything.
    */
   all: "All",
   /**
-   * @description Text in Event Listeners Widget of the Elements panel
+   * @description Text in the Event listeners tab of the Elements panel.
    */
   passive: "Passive",
   /**
-   * @description Text in Event Listeners Widget of the Elements panel
+   * @description Text in the Event listeners tab of the Elements panel.
    */
   blocking: "Blocking",
   /**
-   * @description Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel
+   * @description Tooltip text that appears on the setting when hovering over it in the Event listeners tab of the Elements panel.
    */
   resolveEventListenersBoundWith: "Resolve event listeners bound with framework"
 };
@@ -20744,14 +20729,14 @@ var { repeat: repeat2 } = Directives3;
 var UIStrings21 = {
   /**
    * @description Text on the checkbox in the Properties tab of the Elements panel, which controls whether
-   * all properties of the currently selected DOM element are shown, or only meaningful properties (i.e.
-   * excluding properties whose values aren't set for example).
+   * all properties of the currently selected DOM element are shown, or only meaningful properties (for example,
+   * excluding properties whose values are not set).
    */
   showAll: "Show all",
   /**
    * @description Tooltip on the checkbox in the Properties tab of the Elements panel, which controls whether
-   * all properties of the currently selected DOM element are shown, or only meaningful properties (i.e.
-   * excluding properties whose values aren't set for example).
+   * all properties of the currently selected DOM element are shown, or only meaningful properties (for example,
+   * excluding properties whose values are not set).
    */
   showAllTooltip: "When unchecked, only properties whose values are neither null nor undefined will be shown",
   /**
@@ -20975,25 +20960,25 @@ var classesPaneWidget_css_default = `/**
 // gen/front_end/panels/elements/ClassesPaneWidget.js
 var UIStrings22 = {
   /**
-   * @description Prompt text for a text field in the Classes Pane Widget of the Elements panel.
+   * @description Prompt text for a text field to add CSS classes to the selected element in the Styles tab of the Elements panel.
    * Class refers to a CSS class.
    */
   addNewClass: "Add new class",
   /**
-   * @description Screen reader announcement string when adding a CSS class via the Classes Pane Widget.
+   * @description Screen reader announcement string when adding CSS classes to the selected element in the Styles tab of the Elements panel.
    * @example {vbox flex-auto} PH1
    */
   classesSAdded: "Classes {PH1} added",
   /**
-   * @description Screen reader announcement string when adding a class via the Classes Pane Widget.
+   * @description Screen reader announcement string when adding a CSS class to the selected element in the Styles tab of the Elements panel.
    * @example {title-container} PH1
    */
   classSAdded: "Class {PH1} added",
   /**
-   * @description Accessible title read by screen readers for the Classes Pane Widget of the Elements
-   * panel. Element is a HTML DOM Element and classes refers to CSS classes.
+   * @description Accessible title read by screen readers for the element classes widget in the Styles tab of the Elements
+   * panel. Element is an HTML DOM element and classes refers to CSS classes.
    */
-  elementClasses: "Element Classes"
+  elementClasses: "Element classes"
 };
 var str_22 = i18n44.i18n.registerUIStrings("panels/elements/ClassesPaneWidget.ts", UIStrings22);
 var i18nString21 = i18n44.i18n.getLocalizedString.bind(void 0, str_22);
@@ -21358,18 +21343,18 @@ var elementStatePaneWidget_css_default = `/**
 var { bindToSetting: bindToSetting4 } = UI27.UIUtils;
 var UIStrings23 = {
   /**
-   * @description Title of a section in the Element State Pane Widget of the Elements panel. The
+   * @description Title of a section in the force element state section of the Styles tab in the Elements panel. The
    * controls in this section allow users to force a particular state on the selected element, e.g. a
    * focused state via :focus or a hover state via :hover.
    */
   forceElementState: "Force element state",
   /**
-   * @description Tooltip text in Element State Pane Widget of the Elements panel. For a button that
+   * @description Tooltip text in the force element state section of the Styles tab in the Elements panel. For a button that
    * opens a tool that toggles the various states of the selected element on/off.
    */
-  toggleElementState: "Toggle Element State",
+  toggleElementState: "Toggle element state",
   /**
-   * @description The name of a checkbox setting in the Element & Page State Pane Widget of the Elements panel.. This setting
+   * @description The name of a checkbox setting in the force element state section of the Styles tab in the Elements panel. This setting
    * emulates/pretends that the webpage is focused.
    */
   emulateFocusedPage: "Emulate a focused page",
@@ -21378,11 +21363,11 @@ var UIStrings23 = {
    */
   emulatesAFocusedPage: "Keep page focused. Commonly used for debugging disappearing elements.",
   /**
-   * @description Similar with forceElementState but allows users to force specific state of the selected element.
+   * @description Title of a section in the Styles tab of the Elements panel. Allows users to force specific states of the selected element.
    */
   forceElementSpecificStates: "Force specific element state",
   /**
-   * @description Text that is usually a hyperlink to more documentation
+   * @description Text that is usually a hyperlink to more documentation.
    */
   learnMore: "Learn more"
 };

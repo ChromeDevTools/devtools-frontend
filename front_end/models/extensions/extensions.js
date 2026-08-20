@@ -751,44 +751,43 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
   let keyboardEventRequestQueue = [];
   let forwardTimer;
   function forwardKeyboardEvent(event) {
-    const focused = document.activeElement;
-    if (focused) {
-      const isInput = focused.nodeName === "INPUT" || focused.nodeName === "TEXTAREA" || focused.isContentEditable;
-      if (isInput && !(event.ctrlKey || event.altKey || event.metaKey)) {
-        return;
-      }
-    }
-    let modifiers = 0;
-    if (event.shiftKey) {
-      modifiers |= 1;
-    }
-    if (event.ctrlKey) {
-      modifiers |= 2;
-    }
-    if (event.altKey) {
-      modifiers |= 4;
-    }
-    if (event.metaKey) {
-      modifiers |= 8;
-    }
-    const num = event.keyCode & 255 | modifiers << 8;
-    if (!keysToForwardSet.has(num)) {
-      return;
-    }
-    event.preventDefault();
-    const requestPayload = {
+    const requestPayload = Object.freeze({
       eventType: event.type,
       ctrlKey: event.ctrlKey,
       altKey: event.altKey,
       metaKey: event.metaKey,
       shiftKey: event.shiftKey,
-      // @ts-expect-error keyIdentifier is a deprecated non-standard property that typescript doesn't know about.
-      keyIdentifier: event.keyIdentifier,
       key: event.key,
       code: event.code,
-      location: event.location,
-      keyCode: event.keyCode
-    };
+      keyCode: event.keyCode,
+      location: event.location
+    });
+    const targetDocument = targetWindowForTest?.document ?? document;
+    const focused = targetDocument.activeElement;
+    if (focused) {
+      const isInput = focused.nodeName === "INPUT" || focused.nodeName === "TEXTAREA" || focused.isContentEditable;
+      if (isInput && !(requestPayload.ctrlKey || requestPayload.altKey || requestPayload.metaKey)) {
+        return;
+      }
+    }
+    let modifiers = 0;
+    if (requestPayload.shiftKey) {
+      modifiers |= 1;
+    }
+    if (requestPayload.ctrlKey) {
+      modifiers |= 2;
+    }
+    if (requestPayload.altKey) {
+      modifiers |= 4;
+    }
+    if (requestPayload.metaKey) {
+      modifiers |= 8;
+    }
+    const num = requestPayload.keyCode & 255 | modifiers << 8;
+    if (!keysToForwardSet.has(num)) {
+      return;
+    }
+    event.preventDefault();
     keyboardEventRequestQueue.push(requestPayload);
     if (!forwardTimer) {
       forwardTimer = globalThis.setTimeout(forwardEventQueue, 0);
@@ -799,7 +798,7 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
     extensionServer.sendRequest({ command: "_forwardKeyboardEvent", entries: keyboardEventRequestQueue });
     keyboardEventRequestQueue = [];
   }
-  document.addEventListener("keydown", forwardKeyboardEvent, false);
+  (targetWindowForTest?.document ?? document).addEventListener("keydown", forwardKeyboardEvent, false);
   function ExtensionServerClient(targetWindow) {
     this._callbacks = {};
     this._handlers = {};

@@ -4,6 +4,7 @@
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
+import { ConsoleModel } from './ConsoleModel.js';
 import { CSSModel } from './CSSModel.js';
 import { OverlayModel } from './OverlayModel.js';
 import { RemoteObject } from './RemoteObject.js';
@@ -1094,6 +1095,11 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         return {
             value: result.object.value,
         };
+    }
+    async saveNodeToTempVariable() {
+        const remoteObjectForConsole = await this.resolveToObject();
+        const consoleModel = this.#domModel.target().model(ConsoleModel);
+        await consoleModel?.saveToTempVariable(remoteObjectForConsole?.runtimeModel().defaultExecutionContext() ?? null, remoteObjectForConsole);
     }
     async scrollIntoView() {
         const node = this.enclosingElementOrSelf();

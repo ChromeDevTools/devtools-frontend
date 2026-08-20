@@ -2363,7 +2363,8 @@ __export(NetworkPersistenceManager_exports, {
   NetworkPersistenceManager: () => NetworkPersistenceManager,
   escapeRegex: () => escapeRegex,
   extractDirectoryIndex: () => extractDirectoryIndex,
-  isHeaderOverride: () => isHeaderOverride
+  isHeaderOverride: () => isHeaderOverride,
+  persistenceNetworkOverridesEnabledSettingDescriptor: () => persistenceNetworkOverridesEnabledSettingDescriptor
 });
 import * as Common9 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
@@ -2374,6 +2375,11 @@ import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
 import * as Breakpoints from "./../breakpoints/breakpoints.js";
 import * as Workspace9 from "./../workspace/workspace.js";
 var forbiddenUrls = ["chromewebstore.google.com", "chrome.google.com"];
+var persistenceNetworkOverridesEnabledSettingDescriptor = {
+  name: "persistence-network-overrides-enabled",
+  type: "boolean",
+  defaultValue: false
+};
 var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9.ObjectWrapper.ObjectWrapper {
   #bindings = /* @__PURE__ */ new WeakMap();
   #originalResponseContentPromises = /* @__PURE__ */ new WeakMap();
@@ -2406,7 +2412,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     this.#settings = settings;
     this.#isolatedFileSystemManager = isolatedFileSystemManager;
     this.#multitargetNetworkManager = multitargetNetworkManager;
-    this.#enabledSetting = this.#settings.moduleSetting("persistence-network-overrides-enabled");
+    this.#enabledSetting = this.#settings.resolve(persistenceNetworkOverridesEnabledSettingDescriptor);
     this.#enabledSetting.addChangeListener(this.enabledChanged, this);
     this.#interceptionHandlerBound = this.interceptionHandler.bind(this);
     this.#workspace.addEventListener(Workspace9.Workspace.Events.ProjectAdded, (event) => {

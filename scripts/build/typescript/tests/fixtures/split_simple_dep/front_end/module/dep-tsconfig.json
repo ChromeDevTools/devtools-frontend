@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "composite": false,
+    "declaration": false,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "inlineSources": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmitOnError": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../../../../../scripts/build/typescript/tests/fixtures/split_simple_dep/front_end/module",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2023"
+  },
+  "files": [
+    "../../../../../../../../../../../scripts/build/typescript/tests/fixtures/split_simple_dep/front_end/module/exporting.ts"
+  ],
+  "references": [
+
+  ]
+}

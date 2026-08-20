@@ -233,11 +233,20 @@ export declare namespace PrivateAPI {
         scriptUrl: string;
         ranges: PublicAPI.Chrome.DevTools.NamedFunctionRange[];
     }
+    export interface ForwardKeyboardEventRequestEntry {
+        eventType: string;
+        ctrlKey: boolean;
+        altKey: boolean;
+        metaKey: boolean;
+        shiftKey: boolean;
+        key: string;
+        code: string;
+        keyCode: number;
+        location: number;
+    }
     interface ForwardKeyboardEventRequest {
         command: Commands.ForwardKeyboardEvent;
-        entries: Array<KeyboardEventInit & {
-            eventType: string;
-        }>;
+        entries: ForwardKeyboardEventRequestEntry[];
     }
     interface GetHARRequest {
         command: Commands.GetHAR;

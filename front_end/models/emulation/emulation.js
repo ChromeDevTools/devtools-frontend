@@ -80,43 +80,26 @@ var str_ = i18n.i18n.registerUIStrings("models/emulation/EmulatedDevices.ts", UI
 var i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(void 0, str_);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var EmulatedDevice = class _EmulatedDevice {
-  title;
-  type;
+  title = "";
+  type = Type.Unknown;
   order;
-  vertical;
-  horizontal;
-  deviceScaleFactor;
-  capabilities;
-  userAgent;
-  userAgentMetadata;
-  modes;
-  isDualScreen;
-  isFoldableScreen;
-  verticalSpanned;
-  horizontalSpanned;
-  #show;
-  #showByDefault;
-  constructor() {
-    this.title = "";
-    this.type = Type.Unknown;
-    this.vertical = { width: 0, height: 0, hinge: null };
-    this.horizontal = { width: 0, height: 0, hinge: null };
-    this.deviceScaleFactor = 1;
-    this.capabilities = [
-      "touch",
-      "mobile"
-      /* Capability.MOBILE */
-    ];
-    this.userAgent = "";
-    this.userAgentMetadata = null;
-    this.modes = [];
-    this.isDualScreen = false;
-    this.isFoldableScreen = false;
-    this.verticalSpanned = { width: 0, height: 0, hinge: null };
-    this.horizontalSpanned = { width: 0, height: 0, hinge: null };
-    this.#show = Show.Default;
-    this.#showByDefault = true;
-  }
+  vertical = { width: 0, height: 0, hinge: null };
+  horizontal = { width: 0, height: 0, hinge: null };
+  deviceScaleFactor = 1;
+  capabilities = [
+    "touch",
+    "mobile"
+    /* Capability.MOBILE */
+  ];
+  userAgent = "";
+  userAgentMetadata = null;
+  modes = [];
+  isDualScreen = false;
+  isFoldableScreen = false;
+  verticalSpanned = { width: 0, height: 0, hinge: null };
+  horizontalSpanned = { width: 0, height: 0, hinge: null };
+  #show = Show.Default;
+  #showByDefault = true;
   static fromJSONV1(json) {
     try {
       let parseValue = function(object, key, type2, defaultValue) {
@@ -257,11 +240,6 @@ var EmulatedDevice = class _EmulatedDevice {
         if (mode.orientation !== Vertical && mode.orientation !== Horizontal && mode.orientation !== VerticalSpanned && mode.orientation !== HorizontalSpanned) {
           throw new Error("Emulated device mode has wrong orientation '" + mode.orientation + "'");
         }
-        const orientation = result.orientationByName(mode.orientation);
-        mode.insets = parseInsets(parseValue(modes[i], "insets", "object", { left: 0, top: 0, right: 0, bottom: 0 }));
-        if (mode.insets.top < 0 || mode.insets.left < 0 || mode.insets.right < 0 || mode.insets.bottom < 0 || mode.insets.top + mode.insets.bottom > orientation.height || mode.insets.left + mode.insets.right > orientation.width) {
-          throw new Error("Emulated device mode '" + mode.title + "'has wrong mode insets");
-        }
         const safeAreaInsets = parseValue(modes[i], "safe-area-insets", "object", null);
         if (safeAreaInsets) {
           mode.safeAreaInsets = parseInsets(safeAreaInsets);
@@ -374,13 +352,7 @@ var EmulatedDevice = class _EmulatedDevice {
     for (let i = 0; i < this.modes.length; ++i) {
       const mode = {
         title: this.modes[i].title,
-        orientation: this.modes[i].orientation,
-        insets: {
-          left: this.modes[i].insets.left,
-          top: this.modes[i].insets.top,
-          right: this.modes[i].insets.right,
-          bottom: this.modes[i].insets.bottom
-        }
+        orientation: this.modes[i].orientation
       };
       const safeAreaInsets = this.modes[i].safeAreaInsets;
       if (safeAreaInsets) {
@@ -590,13 +562,11 @@ var EmulatedDevicesList = class _EmulatedDevicesList extends Common.ObjectWrappe
         if (!device.modes.length) {
           device.modes.push({
             title: "",
-            orientation: Horizontal,
-            insets: new Insets(0, 0, 0, 0)
+            orientation: Horizontal
           });
           device.modes.push({
             title: "",
-            orientation: Vertical,
-            insets: new Insets(0, 0, 0, 0)
+            orientation: Vertical
           });
         }
       } else {
@@ -704,14 +674,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 44, "right": 0, "bottom": 34 },
         "cutout": { "shape": "notch", "x": 92, "y": 0, "width": 231, "height": 33, "upper-radius": 6, "lower-radius": 25 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 44, "top": 0, "right": 44, "bottom": 21 }
       }
     ]
@@ -739,14 +707,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 47, "right": 0, "bottom": 34 },
         "cutout": { "shape": "notch", "x": 90, "y": 0, "width": 210, "height": 32, "upper-radius": 6, "lower-radius": 23 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 47, "top": 0, "right": 47, "bottom": 21 }
       }
     ]
@@ -774,14 +740,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 47, "right": 0, "bottom": 34 },
         "cutout": { "shape": "notch", "x": 114, "y": 0, "width": 162, "height": 34, "upper-radius": 5, "lower-radius": 22 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 47, "top": 0, "right": 47, "bottom": 21 }
       }
     ]
@@ -809,14 +773,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 47, "right": 0, "bottom": 34 },
         "cutout": { "shape": "notch", "x": 133, "y": 0, "width": 161, "height": 34, "upper-radius": 5, "lower-radius": 22 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 47, "top": 0, "right": 47, "bottom": 21 }
       }
     ]
@@ -844,14 +806,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
         "cutout": { "shape": "pill", "x": 134, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
       }
     ]
@@ -879,14 +839,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
         "cutout": { "shape": "pill", "x": 153, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
       }
     ]
@@ -914,14 +872,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
         "cutout": { "shape": "pill", "x": 134, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
       }
     ]
@@ -949,14 +905,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
         "cutout": { "shape": "pill", "x": 153, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
       }
     ]
@@ -984,14 +938,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
         "cutout": { "shape": "pill", "x": 134, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
       }
     ]
@@ -1019,14 +971,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
         "cutout": { "shape": "pill", "x": 153, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
       }
     ]
@@ -1054,14 +1004,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 47, "right": 0, "bottom": 34 },
         "cutout": { "shape": "notch", "x": 114, "y": 0, "width": 162, "height": 34, "upper-radius": 5, "lower-radius": 22 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 47, "top": 0, "right": 47, "bottom": 21 }
       }
     ]
@@ -1089,14 +1037,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
         "cutout": { "shape": "pill", "x": 134, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
       }
     ]
@@ -1124,14 +1070,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
         "cutout": { "shape": "pill", "x": 153, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
       }
     ]
@@ -1159,14 +1103,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 62, "right": 0, "bottom": 34 },
         "cutout": { "shape": "pill", "x": 139, "y": 14, "width": 125, "height": 37, "border-radius": 19 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 62, "top": 0, "right": 62, "bottom": 21 }
       }
     ]
@@ -1194,14 +1136,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 62, "right": 0, "bottom": 34 },
         "cutout": { "shape": "pill", "x": 158, "y": 14, "width": 125, "height": 37, "border-radius": 19 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 62, "top": 0, "right": 62, "bottom": 21 }
       }
     ]
@@ -1229,14 +1169,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 52, "right": 0, "bottom": 0 },
         "cutout": { "shape": "circle", "x": 183, "y": 0, "width": 55, "height": 52, "cx": 206, "cy": 26, "radius": 13 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 0, "right": 52, "bottom": 0 }
       }
     ]
@@ -1264,14 +1202,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 50, "right": 0, "bottom": 0 },
         "cutout": { "shape": "circle", "x": 182, "y": 0, "width": 46, "height": 50, "cx": 206, "cy": 25, "radius": 14 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 0, "right": 50, "bottom": 0 }
       }
     ]
@@ -1299,14 +1235,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 50, "right": 0, "bottom": 0 },
         "cutout": { "shape": "circle", "x": 205, "y": 0, "width": 37, "height": 50, "cx": 224, "cy": 25, "radius": 14 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 0, "right": 50, "bottom": 0 }
       }
     ]
@@ -1334,14 +1268,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 46, "right": 0, "bottom": 0 },
         "cutout": { "shape": "circle", "x": 185, "y": 0, "width": 42, "height": 46, "cx": 206, "cy": 26, "radius": 13 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 0, "right": 46, "bottom": 0 }
       }
     ]
@@ -1369,14 +1301,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 58, "right": 0, "bottom": 0 },
         "cutout": { "shape": "circle", "x": 188, "y": 0, "width": 37, "height": 58, "cx": 206, "cy": 29, "radius": 14 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 0, "right": 58, "bottom": 0 }
       }
     ]
@@ -1404,14 +1334,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 68, "right": 0, "bottom": 0 },
         "cutout": { "shape": "circle", "x": 195, "y": 0, "width": 36, "height": 68, "cx": 213, "cy": 34, "radius": 16 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 0, "right": 68, "bottom": 0 }
       }
     ]
@@ -1439,14 +1367,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 66, "right": 0, "bottom": 0 },
         "cutout": { "shape": "circle", "x": 205, "y": 0, "width": 38, "height": 66, "cx": 224, "cy": 33, "radius": 16 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 0, "right": 66, "bottom": 0 }
       }
     ]
@@ -1474,14 +1400,12 @@ var emulatedDevices = [
       {
         "title": "default",
         "orientation": "vertical",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 58, "right": 0, "bottom": 0 },
         "cutout": { "shape": "circle", "x": 188, "y": 0, "width": 37, "height": 58, "cx": 206, "cy": 29, "radius": 14 }
       },
       {
         "title": "default",
         "orientation": "horizontal",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
         "safe-area-insets": { "left": 0, "top": 0, "right": 58, "bottom": 0 }
       }
     ]
@@ -1629,13 +1553,12 @@ var emulatedDevices = [
     "user-agent-metadata": { "platform": "Android", "platformVersion": "11.0", "architecture": "", "model": "Surface Duo", "mobile": true },
     "type": "phone",
     "modes": [
-      { "title": "default", "orientation": "vertical", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
-      { "title": "default", "orientation": "horizontal", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
-      { "title": "spanned", "orientation": "vertical-spanned", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
+      { "title": "default", "orientation": "vertical" },
+      { "title": "default", "orientation": "horizontal" },
+      { "title": "spanned", "orientation": "vertical-spanned" },
       {
         "title": "spanned",
-        "orientation": "horizontal-spanned",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+        "orientation": "horizontal-spanned"
       }
     ]
   },
@@ -1698,13 +1621,12 @@ var emulatedDevices = [
     },
     "type": "phone",
     "modes": [
-      { "title": "default", "orientation": "vertical", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
-      { "title": "default", "orientation": "horizontal", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
-      { "title": "spanned", "orientation": "vertical-spanned", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
+      { "title": "default", "orientation": "vertical" },
+      { "title": "default", "orientation": "horizontal" },
+      { "title": "spanned", "orientation": "vertical-spanned" },
       {
         "title": "spanned",
-        "orientation": "horizontal-spanned",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+        "orientation": "horizontal-spanned"
       }
     ]
   },
@@ -1747,13 +1669,12 @@ var emulatedDevices = [
     "user-agent-metadata": { "platform": "Android", "platformVersion": "14", "architecture": "", "model": "SM-F956U", "mobile": true },
     "type": "phone",
     "modes": [
-      { "title": "default", "orientation": "vertical", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
-      { "title": "default", "orientation": "horizontal", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
-      { "title": "spanned", "orientation": "vertical-spanned", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
+      { "title": "default", "orientation": "vertical" },
+      { "title": "default", "orientation": "horizontal" },
+      { "title": "spanned", "orientation": "vertical-spanned" },
       {
         "title": "spanned",
-        "orientation": "horizontal-spanned",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+        "orientation": "horizontal-spanned"
       }
     ]
   },
@@ -1796,13 +1717,12 @@ var emulatedDevices = [
     "user-agent-metadata": { "platform": "Android", "platformVersion": "10.0", "architecture": "", "model": "SM-F946U", "mobile": true },
     "type": "phone",
     "modes": [
-      { "title": "default", "orientation": "vertical", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
-      { "title": "default", "orientation": "horizontal", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
-      { "title": "spanned", "orientation": "vertical-spanned", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
+      { "title": "default", "orientation": "vertical" },
+      { "title": "default", "orientation": "horizontal" },
+      { "title": "spanned", "orientation": "vertical-spanned" },
       {
         "title": "spanned",
-        "orientation": "horizontal-spanned",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+        "orientation": "horizontal-spanned"
       }
     ]
   },
@@ -1845,17 +1765,15 @@ var emulatedDevices = [
     "user-agent-metadata": { "platform": "Windows", "platformVersion": "11.0", "architecture": "", "model": "UX9702AA", "mobile": false },
     "type": "tablet",
     "modes": [
-      { "title": "default", "orientation": "vertical", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
-      { "title": "default", "orientation": "horizontal", "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 } },
+      { "title": "default", "orientation": "vertical" },
+      { "title": "default", "orientation": "horizontal" },
       {
         "title": "spanned",
-        "orientation": "vertical-spanned",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+        "orientation": "vertical-spanned"
       },
       {
         "title": "spanned",
-        "orientation": "horizontal-spanned",
-        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+        "orientation": "horizontal-spanned"
       }
     ]
   },
@@ -2319,7 +2237,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   #updateFitScale() {
     if (this.#type === Type2.Device && this.#device && this.#mode) {
       const orientation = this.#device.orientationByName(this.#mode.orientation);
-      this.#scaleSetting.set(this.calculateFitScale(orientation.width, orientation.height, this.currentInsets()));
+      this.#scaleSetting.set(this.calculateFitScale(orientation.width, orientation.height));
     }
   }
   setAvailableSize(availableSize, preferredSize) {
@@ -2550,12 +2468,6 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   preferredScaledHeight() {
     return Math.floor(this.#preferredSize.height / (this.#scaleSetting.get() || 1));
   }
-  currentInsets() {
-    if (this.#type !== Type2.Device || !this.#mode) {
-      return new Insets(0, 0, 0, 0);
-    }
-    return this.#mode.insets;
-  }
   currentSafeAreaInsets() {
     if (!Root2.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
       return null;
@@ -2600,20 +2512,19 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     }
     if (this.#type === Type2.Device && this.#device && this.#mode) {
       const orientation = this.#device.orientationByName(this.#mode.orientation);
-      const insets = this.currentInsets();
-      this.#fitScale = this.calculateFitScale(orientation.width, orientation.height, insets);
+      this.#fitScale = this.calculateFitScale(orientation.width, orientation.height);
       if (mobile) {
         this.#appliedUserAgentType = this.#device.touch() ? "Mobile" : "Mobile (no touch)";
       } else {
         this.#appliedUserAgentType = this.#device.touch() ? "Desktop (touch)" : "Desktop";
       }
-      this.applyDeviceMetrics(new Geometry.Size(orientation.width, orientation.height), insets, this.#scaleSetting.get(), this.#device.deviceScaleFactor, mobile, this.getScreenOrientationType(), resetPageScaleFactor);
+      this.applyDeviceMetrics(new Geometry.Size(orientation.width, orientation.height), this.#scaleSetting.get(), this.#device.deviceScaleFactor, mobile, this.getScreenOrientationType(), resetPageScaleFactor);
       this.applyUserAgent(this.#device.userAgent, this.#device.userAgentMetadata);
       this.applyTouch(this.#device.touch(), mobile);
     } else if (this.#type === Type2.None) {
       this.#fitScale = this.calculateFitScale(this.#availableSize.width, this.#availableSize.height);
       this.#appliedUserAgentType = "Desktop";
-      this.applyDeviceMetrics(this.#availableSize, new Insets(0, 0, 0, 0), 1, 0, mobile, null, resetPageScaleFactor);
+      this.applyDeviceMetrics(this.#availableSize, 1, 0, mobile, null, resetPageScaleFactor);
       this.applyUserAgent("", null);
       this.applyTouch(false, false);
     } else if (this.#type === Type2.Responsive) {
@@ -2628,7 +2539,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       const defaultDeviceScaleFactor = mobile ? defaultMobileScaleFactor : 0;
       this.#fitScale = this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get());
       this.#appliedUserAgentType = this.#uaSetting.get();
-      this.applyDeviceMetrics(new Geometry.Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), this.#scaleSetting.get(), this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" : "landscapePrimary", resetPageScaleFactor);
+      this.applyDeviceMetrics(new Geometry.Size(screenWidth, screenHeight), this.#scaleSetting.get(), this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" : "landscapePrimary", resetPageScaleFactor);
       this.applyUserAgent(mobile ? _DeviceModeModel.defaultMobileUserAgent() : "", mobile ? _DeviceModeModel.defaultMobileUserAgentMetadata() : null);
       this.applyTouch(
         this.#uaSetting.get() === "Desktop (touch)" || this.#uaSetting.get() === "Mobile",
@@ -2645,19 +2556,17 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       /* Events.UPDATED */
     );
   }
-  calculateFitScale(screenWidth, screenHeight, insets) {
-    const insetsWidth = insets ? insets.left + insets.right : 0;
-    const insetsHeight = insets ? insets.top + insets.bottom : 0;
+  calculateFitScale(screenWidth, screenHeight) {
     let scale = Math.min(screenWidth ? this.#preferredSize.width / screenWidth : 1, screenHeight ? this.#preferredSize.height / screenHeight : 1);
     scale = Math.min(Math.floor(scale * 100), 100);
     let sharpScale = scale;
     while (sharpScale > scale * 0.7) {
       let sharp = true;
       if (screenWidth) {
-        sharp = sharp && Number.isInteger((screenWidth - insetsWidth) * sharpScale / 100);
+        sharp = sharp && Number.isInteger(screenWidth * sharpScale / 100);
       }
       if (screenHeight) {
-        sharp = sharp && Number.isInteger((screenHeight - insetsHeight) * sharpScale / 100);
+        sharp = sharp && Number.isInteger(screenHeight * sharpScale / 100);
       }
       if (sharp) {
         return sharpScale / 100;
@@ -2674,13 +2583,13 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   applyUserAgent(userAgent, userAgentMetadata) {
     this.#multitargetNetworkManager.setUserAgentOverride(userAgent, userAgent ? userAgentMetadata : null);
   }
-  applyDeviceMetrics(screenSize, insets, scale, deviceScaleFactor, mobile, screenOrientation, resetPageScaleFactor) {
+  applyDeviceMetrics(screenSize, scale, deviceScaleFactor, mobile, screenOrientation, resetPageScaleFactor) {
     screenSize.width = Math.max(1, Math.floor(screenSize.width));
     screenSize.height = Math.max(1, Math.floor(screenSize.height));
-    let pageWidth = screenSize.width - insets.left - insets.right;
-    let pageHeight = screenSize.height - insets.top - insets.bottom;
-    const positionX = insets.left;
-    const positionY = insets.top;
+    let pageWidth = screenSize.width;
+    let pageHeight = screenSize.height;
+    const positionX = 0;
+    const positionY = 0;
     const screenOrientationAngle = screenOrientation === "landscapePrimary" ? 90 : 0;
     this.#appliedDeviceSize = screenSize;
     this.#appliedDeviceScaleFactor = deviceScaleFactor || window.devicePixelRatio;

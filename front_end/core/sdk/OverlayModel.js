@@ -7,7 +7,7 @@ import { DebuggerModel, Events as DebuggerModelEvents } from './DebuggerModel.js
 import { DeferredDOMNode, DOMModel, DOMNodeEvents, Events as DOMModelEvents } from './DOMModel.js';
 import { OverlayPersistentHighlighter } from './OverlayPersistentHighlighter.js';
 import { SDKModel } from './SDKModel.js';
-import { apcaSettingDescriptor, showAdHighlightsSettingDescriptor, showDebugBordersSettingDescriptor, showFPSCounterSettingDescriptor, showLayoutShiftRegionsSettingDescriptor, showMetricsRulersSettingDescriptor, showPaintRectsSettingDescriptor, showScrollBottleneckRectsSettingDescriptor, } from './SDKSettings.js';
+import { apcaSettingDescriptor, disablePausedStateOverlaySettingDescriptor, showAdHighlightsSettingDescriptor, showDebugBordersSettingDescriptor, showFPSCounterSettingDescriptor, showLayoutShiftRegionsSettingDescriptor, showMetricsRulersSettingDescriptor, showPaintRectsSettingDescriptor, showScrollBottleneckRectsSettingDescriptor, } from './SDKSettings.js';
 const UIStrings = {
     /**
      * @description Overlay message indicating that execution is paused in the debugger.
@@ -49,7 +49,7 @@ export class OverlayModel extends SDKModel {
         const settings = this.target().targetManager().settings;
         this.#debuggerModel = target.model(DebuggerModel);
         if (this.#debuggerModel) {
-            settings.moduleSetting('disable-paused-state-overlay')
+            settings.resolve(disablePausedStateOverlaySettingDescriptor)
                 .addChangeListener(this.updatePausedInDebuggerMessage, this);
             this.#debuggerModel.addEventListener(DebuggerModelEvents.DebuggerPaused, this.updatePausedInDebuggerMessage, this);
             this.#debuggerModel.addEventListener(DebuggerModelEvents.DebuggerResumed, this.updatePausedInDebuggerMessage, this);
@@ -199,7 +199,7 @@ export class OverlayModel extends SDKModel {
         }
         const settings = this.target().targetManager().settings;
         const message = this.#debuggerModel && this.#debuggerModel.isPaused() &&
-            !settings.moduleSetting('disable-paused-state-overlay').get() ?
+            !settings.resolve(disablePausedStateOverlaySettingDescriptor).get() ?
             i18nString(UIStrings.pausedInDebugger) :
             undefined;
         void this.overlayAgent.invoke_setPausedInDebuggerMessage({ message });

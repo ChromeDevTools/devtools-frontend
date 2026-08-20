@@ -55,11 +55,11 @@ import { ShortcutTreeElement } from './ShortcutTreeElement.js';
 import { TopLayerContainer } from './TopLayerContainer.js';
 const UIStrings = {
     /**
-     * @description ARIA accessible name in Elements Tree Outline of the Elements panel
+     * @description ARIA accessible name in the DOM tree outline of the Elements panel.
      */
     pageDom: 'Page DOM',
     /**
-     * @description Tree element expand all button element button text content in Elements Tree Outline of the Elements panel
+     * @description Text for the button to expand all tree nodes in the DOM tree outline of the Elements panel.
      * @example {3} PH1
      */
     showAllNodesDMore: 'Show all nodes ({PH1} more)',
@@ -69,9 +69,9 @@ const UIStrings = {
      */
     showAllLines: 'Show all ({PH1} lines)',
     /**
-     * @description Text for popover that directs to Issues panel
+     * @description Text for popover that directs to the Issues panel.
      */
-    viewIssue: 'View Issue:',
+    viewIssue: 'View issue:',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -159,7 +159,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
     output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
     output.elementsTreeOutline.showContextMenu = (treeElement, event) => {
-        void showContextMenu(treeElement, event, input.onSaveNodeToTempVariable);
+        void showContextMenu(treeElement, event);
     };
     let needsUpdate = false;
     const showComments = input.showComments ?? true;
@@ -441,9 +441,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             onElementExpanded: () => {
                 this.#clearHighlightedNode();
             },
-            onSaveNodeToTempVariable: node => {
-                void this.saveNodeToTempVariable(node);
-            },
         }, this.#viewOutput, this.contentElement);
         if (firstRender && this.#viewOutput.elementsTreeOutline) {
             this.#viewOutput.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
@@ -520,9 +517,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     copyStyles(node) {
         void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.copyStyles();
-    }
-    async saveNodeToTempVariable(node) {
-        await this.#viewOutput.elementsTreeOutline?.saveNodeToTempVariable(node);
     }
     /**
      * FIXME: used to determine focus state, probably we can have a better
@@ -1285,11 +1279,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         }
     }
     showContextMenu = () => { };
-    async saveNodeToTempVariable(node) {
-        const remoteObjectForConsole = await node.resolveToObject();
-        const consoleModel = remoteObjectForConsole?.runtimeModel().target()?.model(SDK.ConsoleModel.ConsoleModel);
-        await consoleModel?.saveToTempVariable(UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext), remoteObjectForConsole);
-    }
     runPendingUpdates() {
         this.updateModifiedNodes();
     }

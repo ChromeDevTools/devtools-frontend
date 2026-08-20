@@ -7,18 +7,18 @@ import * as Lit from '../../../ui/lit/lit.js';
 import cssVariableValueViewStyles from './cssVariableValueView.css.js';
 const UIStrings = {
     /**
-     * @description Text for a link from custom property to its defining registration
+     * @description Text for a link from a custom property to its defining registration.
      */
     registeredPropertyLinkTitle: 'View registered property',
     /**
      * @description Error message for a property value that failed to parse because it had an incorrect type. The message
      * is shown in a popover when hovering the property value. The `type` placeholder will be rendered as an HTML element
-     * to apply some styling (color and monospace font)
+     * to apply some styling (color and monospace font).
      * @example {<color>} type
      */
     invalidPropertyValue: 'Invalid property value, expected type {type}',
     /**
-     * @description Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles pane when the custom property in this function does not exist. The parameter is the name of the property.
+     * @description Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles tab when the custom property in this function does not exist. The parameter is the name of the property.
      * @example {--my-custom-property-name} PH1
      */
     sIsNotDefined: '{PH1} is not defined',

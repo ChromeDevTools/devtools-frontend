@@ -76,7 +76,6 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     private deviceScaleFactorSettingChanged;
     private preferredScaledWidth;
     private preferredScaledHeight;
-    private currentInsets;
     private currentSafeAreaInsets;
     private applySafeAreaInsets;
     private getScreenOrientationType;

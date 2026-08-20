@@ -90,6 +90,8 @@ models/ai_assistance/data_formatters/LighthouseFormatter.test.js
 models/ai_assistance/data_formatters/NetworkRequestFormatter.test.js
 models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
 models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
+models/ai_code_completion/AiCodeCompletion.test.js
+models/ai_code_generation/AiCodeGeneration.test.js
 models/comment_manager/CommentManager.test.js
 models/crux-manager/CrUXManager.test.js
 models/formatter/FormatterWorkerPool.test.js
@@ -125,4 +127,5 @@ models/workspace/IgnoreListManager.test.js
 models/workspace/SearchConfig.test.js
 models/workspace/UISourceCode.test.js
 models/workspace/WorkspaceImpl.test.js
+testing/MochaHelpers.test.js
 testing/TestIdGeneration.test.js

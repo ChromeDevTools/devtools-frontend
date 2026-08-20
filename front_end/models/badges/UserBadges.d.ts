@@ -1,6 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type { Badge, BadgeAction, BadgeContext } from './Badge.js';
+export declare const receiveGdpBadgesSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 type BadgeClass = new (badgeContext: BadgeContext) => Badge;
 export declare const enum BadgeTriggerReason {
     AWARD = "Award",

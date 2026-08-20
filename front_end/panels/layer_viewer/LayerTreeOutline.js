@@ -44,6 +44,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
         return html `
       <li role="treeitem"
           data-layer-id=${layer.id()}
+          data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing}
+          jslog=${VisualLogging.treeItem('layer-item')}
           class=${isHovered ? 'hovered' : ''}
           ?selected=${isSelected}
           aria-expanded=${node.isExpanded ? 'true' : 'false'}

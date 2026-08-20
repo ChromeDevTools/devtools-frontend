@@ -35,7 +35,6 @@ interface ViewInput {
     onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void;
     onElementCollapsed: () => void;
     onElementExpanded: () => void;
-    onSaveNodeToTempVariable?: (node: SDK.DOMModel.DOMNode) => void;
 }
 interface ViewOutput {
     elementsTreeOutline?: ElementsTreeOutline;
@@ -123,7 +122,6 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     toggleEditAsHTML(node: SDK.DOMModel.DOMNode): void;
     duplicateNode(node: SDK.DOMModel.DOMNode): void;
     copyStyles(node: SDK.DOMModel.DOMNode): void;
-    saveNodeToTempVariable(node: SDK.DOMModel.DOMNode): Promise<void>;
     /**
      * FIXME: used to determine focus state, probably we can have a better
      * way to do it.
@@ -224,7 +222,6 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     private ondragend;
     private clearDragOverTreeElementMarker;
     showContextMenu: (treeElement: ElementsTreeElement, event: Event) => void;
-    saveNodeToTempVariable(node: SDK.DOMModel.DOMNode): Promise<void>;
     runPendingUpdates(): void;
     private onKeyDown;
     toggleEditAsHTML(node: SDK.DOMModel.DOMNode, startEditing?: boolean, callback?: (() => void)): void;

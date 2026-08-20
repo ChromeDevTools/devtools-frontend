@@ -179,6 +179,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
         drawLines("serviceworker" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER */);
         drawLines("serviceworker-preparation" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION */);
         drawLines("serviceworker-respondwith" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */);
+        drawLines("serviceworker-routerevaluation" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION */);
+        drawLines("serviceworker-cachelookup" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP */);
         drawLines("push" /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */);
         drawLines("proxy" /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */);
         drawLines("dns" /* NetworkTimeCalculator.RequestTimeRangeNames.DNS */);
@@ -186,6 +188,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
         drawLines("sending" /* NetworkTimeCalculator.RequestTimeRangeNames.SENDING */);
         drawLines("waiting" /* NetworkTimeCalculator.RequestTimeRangeNames.WAITING */);
         drawLines("receiving" /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING */);
+        drawLines("receiving-push" /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */);
         if (this.highlightedRequest) {
             const size = 5;
             const borderSize = 2;
@@ -254,6 +257,8 @@ export const RequestTimeRangeNameToColor = {
     ["serviceworker" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER */]: '--network-overview-service-worker',
     ["serviceworker-preparation" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION */]: '--network-overview-service-worker',
     ["serviceworker-respondwith" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */]: '--network-overview-service-worker-respond-with',
+    ["serviceworker-routerevaluation" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION */]: '--network-overview-service-worker',
+    ["serviceworker-cachelookup" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP */]: '--network-overview-service-worker',
     ["push" /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */]: '--network-overview-push',
     ["proxy" /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */]: '--override-network-overview-proxy',
     ["dns" /* NetworkTimeCalculator.RequestTimeRangeNames.DNS */]: '--network-overview-dns',
@@ -261,6 +266,7 @@ export const RequestTimeRangeNameToColor = {
     ["sending" /* NetworkTimeCalculator.RequestTimeRangeNames.SENDING */]: '--override-network-overview-sending',
     ["waiting" /* NetworkTimeCalculator.RequestTimeRangeNames.WAITING */]: '--network-overview-waiting',
     ["receiving" /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING */]: '--network-overview-receiving',
+    ["receiving-push" /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */]: '--network-overview-receiving',
     ["queueing" /* NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING */]: '--network-overview-queueing',
 };
 const BAND_HEIGHT = 3;

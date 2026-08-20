@@ -64,54 +64,53 @@ import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
 import { WebCustomData } from './WebCustomData.js';
 const UIStrings = {
     /**
-     * @description No matches element text content in Styles Sidebar Pane of the Elements panel
+     * @description No matches element text content in the Styles tab of the Elements panel.
      */
     noMatchingSelectorOrStyle: 'No matching selector or style',
     /**
-     * /**
-     * @description Text to announce the result of the filter input in the Styles Sidebar Pane of the Elements panel
+     * @description Text to announce the result of the filter input in the Styles tab of the Elements panel.
      */
     visibleSelectors: '{n, plural, =1 {# visible selector listed below} other {# visible selectors listed below}}',
     /**
-     * @description Separator element text content in Styles Sidebar Pane of the Elements panel
+     * @description Separator element text content in the Styles tab of the Elements panel.
      * @example {scrollbar-corner} PH1
      */
     pseudoSElement: 'Pseudo ::{PH1} element',
     /**
-     * @description Text of a DOM element in Styles Sidebar Pane of the Elements panel
+     * @description Text of a DOM element in the Styles tab of the Elements panel.
      */
     inheritedFroms: 'Inherited from ',
     /**
-     * @description Text of an inherited pseudo element in Styles Sidebar Pane of the Elements panel
+     * @description Text of an inherited pseudo element in the Styles tab of the Elements panel.
      * @example {highlight} PH1
      */
     inheritedFromSPseudoOf: 'Inherited from ::{PH1} pseudo of ',
     /**
-     * @description Title of  in styles sidebar pane of the elements panel
+     * @description Tooltip for color values in the Styles tab of the Elements panel.
      * @example {Ctrl} PH1
      * @example {Alt} PH2
      */
     incrementdecrementWithMousewheelOne: 'Increment/decrement with mousewheel or up/down keys. {PH1}: R ±1, Shift: G ±1, {PH2}: B ±1',
     /**
-     * @description Title of  in styles sidebar pane of the elements panel
+     * @description Tooltip for color values in the Styles tab of the Elements panel.
      * @example {Ctrl} PH1
      * @example {Alt} PH2
      */
     incrementdecrementWithMousewheelHundred: 'Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, {PH2}: ±0.1',
     /**
-     * @description Tooltip text that appears when hovering over the rendering button in the Styles Sidebar Pane of the Elements panel
+     * @description Tooltip text that appears when hovering over the rendering button in the Styles tab of the Elements panel.
      */
     toggleRenderingEmulations: 'Toggle common rendering emulations',
     /**
-     * @description Rendering emulation option for toggling the automatic dark mode
+     * @description Rendering emulation option for toggling the automatic dark mode.
      */
     automaticDarkMode: 'Automatic dark mode',
     /**
-     * @description Text displayed on layer separators in the styles sidebar pane.
+     * @description Text displayed on layer separators in the Styles tab of the Elements panel.
      */
     layer: 'Layer',
     /**
-     * @description Tooltip text for the link in the sidebar pane layer separators that reveals the layer in the layer tree view.
+     * @description Tooltip text for the link in the layer separators that reveals the layer in the layer tree view.
      */
     clickToRevealLayer: 'Click to reveal layer in layer tree',
     /**
@@ -120,7 +119,7 @@ const UIStrings = {
      */
     aiSuggestionAccepted: '{PH1} Suggestion accepted.',
     /**
-     * @description Title of the general at-rule section
+     * @description Title of the general at-rule section.
      */
     atRuleSection: 'Other @rules',
 };

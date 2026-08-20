@@ -1110,35 +1110,87 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (message.command !== "_forwardKeyboardEvent" /* Extensions.ExtensionAPI.PrivateAPI.Commands.ForwardKeyboardEvent */) {
             return this.status.E_BADARG('command', `expected ${"_forwardKeyboardEvent" /* Extensions.ExtensionAPI.PrivateAPI.Commands.ForwardKeyboardEvent */}`);
         }
-        message.entries.forEach(handleEventEntry);
-        function handleEventEntry(entry) {
-            // Fool around closure compiler -- it has its own notion of both KeyboardEvent constructor
-            // and initKeyboardEvent methods and overriding these in externs.js does not have effect.
+        if (!Array.isArray(message.entries)) {
+            return this.status.E_BADARG('entries', 'expected array');
+        }
+        const globalShortcutKeys = new Set(UI.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys());
+        const validEvents = [];
+        for (const entry of message.entries) {
+            if (!entry || typeof entry !== 'object') {
+                return this.status.E_BADARG('entries', 'expected object');
+            }
+            if (entry.eventType !== 'keydown') {
+                return this.status.E_BADARG('eventType', 'expected "keydown"');
+            }
+            if (typeof entry.key !== 'string') {
+                return this.status.E_BADARGTYPE('key', typeof entry.key, 'string');
+            }
+            if (typeof entry.code !== 'string') {
+                return this.status.E_BADARGTYPE('code', typeof entry.code, 'string');
+            }
+            if (typeof entry.keyCode !== 'number' || !Number.isFinite(entry.keyCode)) {
+                return this.status.E_BADARGTYPE('keyCode', typeof entry.keyCode, 'number');
+            }
+            if (typeof entry.location !== 'number' || !Number.isFinite(entry.location)) {
+                return this.status.E_BADARGTYPE('location', typeof entry.location, 'number');
+            }
+            if (typeof entry.ctrlKey !== 'boolean') {
+                return this.status.E_BADARGTYPE('ctrlKey', typeof entry.ctrlKey, 'boolean');
+            }
+            if (typeof entry.altKey !== 'boolean') {
+                return this.status.E_BADARGTYPE('altKey', typeof entry.altKey, 'boolean');
+            }
+            if (typeof entry.shiftKey !== 'boolean') {
+                return this.status.E_BADARGTYPE('shiftKey', typeof entry.shiftKey, 'boolean');
+            }
+            if (typeof entry.metaKey !== 'boolean') {
+                return this.status.E_BADARGTYPE('metaKey', typeof entry.metaKey, 'boolean');
+            }
+            let keyCode = entry.keyCode;
+            if (!keyCode && entry.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
+                keyCode = 27;
+            }
+            if (!Number.isInteger(keyCode) || keyCode < 0 || keyCode > 255) {
+                return this.status.E_BADARG('keyCode', 'invalid keyCode');
+            }
+            let modifiers = 0;
+            if (entry.shiftKey) {
+                modifiers |= UI.KeyboardShortcut.Modifiers.Shift.value;
+            }
+            if (entry.ctrlKey) {
+                modifiers |= UI.KeyboardShortcut.Modifiers.Ctrl.value;
+            }
+            if (entry.altKey) {
+                modifiers |= UI.KeyboardShortcut.Modifiers.Alt.value;
+            }
+            if (entry.metaKey) {
+                modifiers |= UI.KeyboardShortcut.Modifiers.Meta.value;
+            }
+            const keyCombination = (keyCode & 255) | (modifiers << 8);
+            if (!globalShortcutKeys.has(keyCombination)) {
+                return this.status.E_BADARG('entries', 'unexpected shortcut key');
+            }
             const event = new window.KeyboardEvent(entry.eventType, {
                 key: entry.key,
                 code: entry.code,
-                keyCode: entry.keyCode,
+                keyCode,
                 location: entry.location,
                 ctrlKey: entry.ctrlKey,
                 altKey: entry.altKey,
                 shiftKey: entry.shiftKey,
                 metaKey: entry.metaKey,
             });
+            validEvents.push({ event, keyCode });
+        }
+        for (const { event, keyCode } of validEvents) {
             // @ts-expect-error
-            event.__keyCode = keyCodeForEntry(entry);
+            event.__keyCode = keyCode;
             document.dispatchEvent(event);
         }
-        function keyCodeForEntry(entry) {
-            let keyCode = entry.keyCode;
-            if (!keyCode) {
-                // This is required only for synthetic events (e.g. dispatched in tests).
-                if (entry.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
-                    keyCode = 27;
-                }
-            }
-            return keyCode || 0;
-        }
         return undefined;
+    }
+    onForwardKeyboardEventForTest(message) {
+        return this.onForwardKeyboardEvent(message);
     }
     dispatchCallback(requestId, port, result) {
         if (requestId) {

@@ -103,6 +103,12 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         styleMap.set("serviceworker-respondwith" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */, {
             fillStyle: RequestTimeRangeNameToColor["serviceworker-respondwith" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */],
         });
+        styleMap.set("serviceworker-routerevaluation" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION */, {
+            fillStyle: RequestTimeRangeNameToColor["serviceworker-routerevaluation" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION */],
+        });
+        styleMap.set("serviceworker-cachelookup" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP */, {
+            fillStyle: RequestTimeRangeNameToColor["serviceworker-cachelookup" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP */],
+        });
         return styleMap;
     }
     static buildResourceTypeStyle() {
@@ -514,7 +520,13 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
                 continue;
             }
             const style = this.styleForTimeRangeName.get(range.name);
+            if (!style) {
+                continue;
+            }
             const path = this.pathForStyle.get(style);
+            if (!path) {
+                continue;
+            }
             const lineWidth = style.lineWidth || 0;
             const height = this.getBarHeight(range.name);
             const middleBarY = y + Math.floor(this.rowHeight / 2 - height / 2) + lineWidth / 2;

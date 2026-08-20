@@ -5,8 +5,9 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/models/ai_code_generation/debug.js
+import * as Platform from "./../../core/platform/platform.js";
 function isDebugMode() {
-  return Boolean(localStorage.getItem("debugAiCodeGenerationEnabled"));
+  return Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("debugAiCodeGenerationEnabled"));
 }
 function debugLog(...log) {
   if (!isDebugMode()) {
@@ -15,10 +16,11 @@ function debugLog(...log) {
   console.log(...log);
 }
 function setDebugAiCodeGenerationEnabled(enabled) {
+  const localStorage = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage();
   if (enabled) {
-    localStorage.setItem("debugAiCodeGenerationEnabled", "true");
+    localStorage?.setItem("debugAiCodeGenerationEnabled", "true");
   } else {
-    localStorage.removeItem("debugAiCodeGenerationEnabled");
+    localStorage?.removeItem("debugAiCodeGenerationEnabled");
   }
 }
 globalThis.setDebugAiCodeGenerationEnabled = setDebugAiCodeGenerationEnabled;

@@ -2,6 +2,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+export declare const recordNetworkLogSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
     #private;
     constructor(targetManager: SDK.TargetManager.TargetManager, settings: Common.Settings.Settings);

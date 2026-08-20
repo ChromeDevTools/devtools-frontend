@@ -5,11 +5,11 @@ import * as i18n from '../../core/i18n/i18n.js';
 import { PseudoStateMarkerDecorator } from './ElementsPanel.js';
 const UIStrings = {
     /**
-     * @description Title of the Marker Decorator of Elements
+     * @description Title of a marker decorator in the Elements panel.
      */
-    domBreakpoint: 'DOM Breakpoint',
+    domBreakpoint: 'DOM breakpoint',
     /**
-     * @description Title of the Marker Decorator of Elements
+     * @description Title of a marker decorator in the Elements panel.
      */
     elementIsHidden: 'Element is hidden',
 };

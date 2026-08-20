@@ -13,49 +13,49 @@ import * as UIHelpers from '../../../helpers/helpers.js';
 import * as UI from '../../legacy.js';
 const UIStrings = {
     /**
-     * @description Label for when no contrast information is available in the color picker
+     * @description Text displayed when no contrast information is available in the color picker.
      */
     noContrastInformationAvailable: 'No contrast information available',
     /**
-     * @description Text of a DOM element in Contrast Details of the Color Picker
+     * @description Label for the contrast ratio section in the contrast details of the color picker.
      */
     contrastRatio: 'Contrast ratio',
     /**
-     * @description Text to show more content
+     * @description Tooltip and title for the expand button in the contrast details of the color picker to show more details.
      */
     showMore: 'Show more',
     /**
-     * @description Choose bg color text content in Contrast Details of the Color Picker
+     * @description Prompt message in the contrast details of the color picker asking the user to pick a background color.
      */
     pickBackgroundColor: 'Pick background color',
     /**
-     * @description Tooltip text that appears when hovering over largeicon eyedropper button in Contrast Details of the Color Picker
+     * @description Tooltip and title for the eyedropper button in the contrast details of the color picker to pick a background color.
      */
     toggleBackgroundColorPicker: 'Toggle background color picker',
     /**
-     * @description Text of a button in Contrast Details of the Color Picker
+     * @description Tooltip and accessible name for the button in the contrast details of the color picker to apply a suggested color to fix low contrast.
      * @example {rgba(0 0 0 / 100%) } PH1
      */
     useSuggestedColorStoFixLow: 'Use suggested color {PH1}to fix low contrast',
     /**
-     * @description Label for the APCA contrast in Color Picker
+     * @description Label for the APCA contrast ratio in the contrast details of the color picker.
      */
     apca: 'APCA',
     /**
-     * @description Label aa text content in Contrast Details of the Color Picker
+     * @description Label for the WCAG AA contrast threshold in the contrast details of the color picker.
      */
     aa: 'AA',
     /**
-     * @description Text that starts with a colon and includes a placeholder
+     * @description Label prefixing a contrast threshold value with a colon in the contrast details of the color picker.
      * @example {3.0} PH1
      */
     placeholderWithColon: ': {PH1}',
     /**
-     * @description Label aaa text content in Contrast Details of the Color Picker
+     * @description Label for the WCAG AAA contrast threshold in the contrast details of the color picker.
      */
     aaa: 'AAA',
     /**
-     * @description Text to show less content
+     * @description Tooltip and title for the expand button in the contrast details of the color picker to show fewer details.
      */
     showLess: 'Show less',
 };

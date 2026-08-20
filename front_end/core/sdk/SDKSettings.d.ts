@@ -45,3 +45,6 @@ export declare const cacheDisabledSettingDescriptor: Common.Settings.SettingDesc
 export declare const emulateAutoDarkModeSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const enableRemoteFileLoadingSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const consoleUserActivationEvalSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const monitoringXHREnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const disablePausedStateOverlaySettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const preserveNetworkLogSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;

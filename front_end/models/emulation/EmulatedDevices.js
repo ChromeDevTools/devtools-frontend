@@ -42,39 +42,22 @@ const str_ = i18n.i18n.registerUIStrings('models/emulation/EmulatedDevices.ts', 
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EmulatedDevice {
-    title;
-    type;
+    title = '';
+    type = Type.Unknown;
     order;
-    vertical;
-    horizontal;
-    deviceScaleFactor;
-    capabilities;
-    userAgent;
-    userAgentMetadata;
-    modes;
-    isDualScreen;
-    isFoldableScreen;
-    verticalSpanned;
-    horizontalSpanned;
-    #show;
-    #showByDefault;
-    constructor() {
-        this.title = '';
-        this.type = Type.Unknown;
-        this.vertical = { width: 0, height: 0, hinge: null };
-        this.horizontal = { width: 0, height: 0, hinge: null };
-        this.deviceScaleFactor = 1;
-        this.capabilities = ["touch" /* Capability.TOUCH */, "mobile" /* Capability.MOBILE */];
-        this.userAgent = '';
-        this.userAgentMetadata = null;
-        this.modes = [];
-        this.isDualScreen = false;
-        this.isFoldableScreen = false;
-        this.verticalSpanned = { width: 0, height: 0, hinge: null };
-        this.horizontalSpanned = { width: 0, height: 0, hinge: null };
-        this.#show = Show.Default;
-        this.#showByDefault = true;
-    }
+    vertical = { width: 0, height: 0, hinge: null };
+    horizontal = { width: 0, height: 0, hinge: null };
+    deviceScaleFactor = 1;
+    capabilities = ["touch" /* Capability.TOUCH */, "mobile" /* Capability.MOBILE */];
+    userAgent = '';
+    userAgentMetadata = null;
+    modes = [];
+    isDualScreen = false;
+    isFoldableScreen = false;
+    verticalSpanned = { width: 0, height: 0, hinge: null };
+    horizontalSpanned = { width: 0, height: 0, hinge: null };
+    #show = Show.Default;
+    #showByDefault = true;
     static fromJSONV1(json) {
         try {
             function parseValue(object, key, type, defaultValue) {
@@ -223,13 +206,6 @@ export class EmulatedDevice {
                     mode.orientation !== HorizontalSpanned) {
                     throw new Error('Emulated device mode has wrong orientation \'' + mode.orientation + '\'');
                 }
-                const orientation = result.orientationByName(mode.orientation);
-                mode.insets = parseInsets(parseValue(modes[i], 'insets', 'object', { left: 0, top: 0, right: 0, bottom: 0 }));
-                if (mode.insets.top < 0 || mode.insets.left < 0 || mode.insets.right < 0 || mode.insets.bottom < 0 ||
-                    mode.insets.top + mode.insets.bottom > orientation.height ||
-                    mode.insets.left + mode.insets.right > orientation.width) {
-                    throw new Error('Emulated device mode \'' + mode.title + '\'has wrong mode insets');
-                }
                 const safeAreaInsets = parseValue(modes[i], 'safe-area-insets', 'object', null);
                 if (safeAreaInsets) {
                     mode.safeAreaInsets = parseInsets(safeAreaInsets);
@@ -347,12 +323,6 @@ export class EmulatedDevice {
             const mode = {
                 title: this.modes[i].title,
                 orientation: this.modes[i].orientation,
-                insets: {
-                    left: this.modes[i].insets.left,
-                    top: this.modes[i].insets.top,
-                    right: this.modes[i].insets.right,
-                    bottom: this.modes[i].insets.bottom,
-                },
             };
             const safeAreaInsets = this.modes[i].safeAreaInsets;
             if (safeAreaInsets) {
@@ -561,12 +531,10 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
                     device.modes.push({
                         title: '',
                         orientation: Horizontal,
-                        insets: new Insets(0, 0, 0, 0),
                     });
                     device.modes.push({
                         title: '',
                         orientation: Vertical,
-                        insets: new Insets(0, 0, 0, 0),
                     });
                 }
             }
@@ -672,14 +640,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 44, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'notch', 'x': 92, 'y': 0, 'width': 231, 'height': 33, 'upper-radius': 6, 'lower-radius': 25 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 44, 'top': 0, 'right': 44, 'bottom': 21 },
             },
         ],
@@ -707,14 +673,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 47, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'notch', 'x': 90, 'y': 0, 'width': 210, 'height': 32, 'upper-radius': 6, 'lower-radius': 23 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 47, 'top': 0, 'right': 47, 'bottom': 21 },
             },
         ],
@@ -742,14 +706,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 47, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'notch', 'x': 114, 'y': 0, 'width': 162, 'height': 34, 'upper-radius': 5, 'lower-radius': 22 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 47, 'top': 0, 'right': 47, 'bottom': 21 },
             },
         ],
@@ -777,14 +739,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 47, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'notch', 'x': 133, 'y': 0, 'width': 161, 'height': 34, 'upper-radius': 5, 'lower-radius': 22 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 47, 'top': 0, 'right': 47, 'bottom': 21 },
             },
         ],
@@ -812,14 +772,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 59, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'pill', 'x': 134, 'y': 11, 'width': 125, 'height': 37, 'border-radius': 19 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 59, 'top': 0, 'right': 59, 'bottom': 21 },
             },
         ],
@@ -847,14 +805,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 59, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'pill', 'x': 153, 'y': 11, 'width': 125, 'height': 37, 'border-radius': 19 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 59, 'top': 0, 'right': 59, 'bottom': 21 },
             },
         ],
@@ -882,14 +838,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 59, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'pill', 'x': 134, 'y': 11, 'width': 125, 'height': 37, 'border-radius': 19 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 59, 'top': 0, 'right': 59, 'bottom': 21 },
             },
         ],
@@ -917,14 +871,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 59, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'pill', 'x': 153, 'y': 11, 'width': 125, 'height': 37, 'border-radius': 19 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 59, 'top': 0, 'right': 59, 'bottom': 21 },
             },
         ],
@@ -952,14 +904,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 59, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'pill', 'x': 134, 'y': 11, 'width': 125, 'height': 37, 'border-radius': 19 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 59, 'top': 0, 'right': 59, 'bottom': 21 },
             },
         ],
@@ -987,14 +937,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 59, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'pill', 'x': 153, 'y': 11, 'width': 125, 'height': 37, 'border-radius': 19 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 59, 'top': 0, 'right': 59, 'bottom': 21 },
             },
         ],
@@ -1022,14 +970,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 47, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'notch', 'x': 114, 'y': 0, 'width': 162, 'height': 34, 'upper-radius': 5, 'lower-radius': 22 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 47, 'top': 0, 'right': 47, 'bottom': 21 },
             },
         ],
@@ -1057,14 +1003,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 59, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'pill', 'x': 134, 'y': 11, 'width': 125, 'height': 37, 'border-radius': 19 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 59, 'top': 0, 'right': 59, 'bottom': 21 },
             },
         ],
@@ -1092,14 +1036,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 59, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'pill', 'x': 153, 'y': 11, 'width': 125, 'height': 37, 'border-radius': 19 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 59, 'top': 0, 'right': 59, 'bottom': 21 },
             },
         ],
@@ -1127,14 +1069,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 62, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'pill', 'x': 139, 'y': 14, 'width': 125, 'height': 37, 'border-radius': 19 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 62, 'top': 0, 'right': 62, 'bottom': 21 },
             },
         ],
@@ -1162,14 +1102,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 62, 'right': 0, 'bottom': 34 },
                 'cutout': { 'shape': 'pill', 'x': 158, 'y': 14, 'width': 125, 'height': 37, 'border-radius': 19 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 62, 'top': 0, 'right': 62, 'bottom': 21 },
             },
         ],
@@ -1197,14 +1135,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 52, 'right': 0, 'bottom': 0 },
                 'cutout': { 'shape': 'circle', 'x': 183, 'y': 0, 'width': 55, 'height': 52, 'cx': 206, 'cy': 26, 'radius': 13 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 0, 'right': 52, 'bottom': 0 },
             },
         ],
@@ -1232,14 +1168,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 50, 'right': 0, 'bottom': 0 },
                 'cutout': { 'shape': 'circle', 'x': 182, 'y': 0, 'width': 46, 'height': 50, 'cx': 206, 'cy': 25, 'radius': 14 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 0, 'right': 50, 'bottom': 0 },
             },
         ],
@@ -1267,14 +1201,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 50, 'right': 0, 'bottom': 0 },
                 'cutout': { 'shape': 'circle', 'x': 205, 'y': 0, 'width': 37, 'height': 50, 'cx': 224, 'cy': 25, 'radius': 14 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 0, 'right': 50, 'bottom': 0 },
             },
         ],
@@ -1302,14 +1234,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 46, 'right': 0, 'bottom': 0 },
                 'cutout': { 'shape': 'circle', 'x': 185, 'y': 0, 'width': 42, 'height': 46, 'cx': 206, 'cy': 26, 'radius': 13 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 0, 'right': 46, 'bottom': 0 },
             },
         ],
@@ -1337,14 +1267,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 58, 'right': 0, 'bottom': 0 },
                 'cutout': { 'shape': 'circle', 'x': 188, 'y': 0, 'width': 37, 'height': 58, 'cx': 206, 'cy': 29, 'radius': 14 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 0, 'right': 58, 'bottom': 0 },
             },
         ],
@@ -1372,14 +1300,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 68, 'right': 0, 'bottom': 0 },
                 'cutout': { 'shape': 'circle', 'x': 195, 'y': 0, 'width': 36, 'height': 68, 'cx': 213, 'cy': 34, 'radius': 16 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 0, 'right': 68, 'bottom': 0 },
             },
         ],
@@ -1407,14 +1333,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 66, 'right': 0, 'bottom': 0 },
                 'cutout': { 'shape': 'circle', 'x': 205, 'y': 0, 'width': 38, 'height': 66, 'cx': 224, 'cy': 33, 'radius': 16 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 0, 'right': 66, 'bottom': 0 },
             },
         ],
@@ -1442,14 +1366,12 @@ const emulatedDevices = [
             {
                 'title': 'default',
                 'orientation': 'vertical',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 58, 'right': 0, 'bottom': 0 },
                 'cutout': { 'shape': 'circle', 'x': 188, 'y': 0, 'width': 37, 'height': 58, 'cx': 206, 'cy': 29, 'radius': 14 },
             },
             {
                 'title': 'default',
                 'orientation': 'horizontal',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
                 'safe-area-insets': { 'left': 0, 'top': 0, 'right': 58, 'bottom': 0 },
             },
         ],
@@ -1597,13 +1519,12 @@ const emulatedDevices = [
         'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '11.0', 'architecture': '', 'model': 'Surface Duo', 'mobile': true },
         'type': 'phone',
         'modes': [
-            { 'title': 'default', 'orientation': 'vertical', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
-            { 'title': 'default', 'orientation': 'horizontal', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
-            { 'title': 'spanned', 'orientation': 'vertical-spanned', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
+            { 'title': 'default', 'orientation': 'vertical' },
+            { 'title': 'default', 'orientation': 'horizontal' },
+            { 'title': 'spanned', 'orientation': 'vertical-spanned' },
             {
                 'title': 'spanned',
                 'orientation': 'horizontal-spanned',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
             },
         ],
     },
@@ -1666,13 +1587,12 @@ const emulatedDevices = [
         },
         'type': 'phone',
         'modes': [
-            { 'title': 'default', 'orientation': 'vertical', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
-            { 'title': 'default', 'orientation': 'horizontal', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
-            { 'title': 'spanned', 'orientation': 'vertical-spanned', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
+            { 'title': 'default', 'orientation': 'vertical' },
+            { 'title': 'default', 'orientation': 'horizontal' },
+            { 'title': 'spanned', 'orientation': 'vertical-spanned' },
             {
                 'title': 'spanned',
                 'orientation': 'horizontal-spanned',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
             },
         ],
     },
@@ -1715,13 +1635,12 @@ const emulatedDevices = [
         'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '14', 'architecture': '', 'model': 'SM-F956U', 'mobile': true },
         'type': 'phone',
         'modes': [
-            { 'title': 'default', 'orientation': 'vertical', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
-            { 'title': 'default', 'orientation': 'horizontal', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
-            { 'title': 'spanned', 'orientation': 'vertical-spanned', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
+            { 'title': 'default', 'orientation': 'vertical' },
+            { 'title': 'default', 'orientation': 'horizontal' },
+            { 'title': 'spanned', 'orientation': 'vertical-spanned' },
             {
                 'title': 'spanned',
                 'orientation': 'horizontal-spanned',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
             },
         ],
     },
@@ -1764,13 +1683,12 @@ const emulatedDevices = [
         'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '10.0', 'architecture': '', 'model': 'SM-F946U', 'mobile': true },
         'type': 'phone',
         'modes': [
-            { 'title': 'default', 'orientation': 'vertical', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
-            { 'title': 'default', 'orientation': 'horizontal', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
-            { 'title': 'spanned', 'orientation': 'vertical-spanned', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
+            { 'title': 'default', 'orientation': 'vertical' },
+            { 'title': 'default', 'orientation': 'horizontal' },
+            { 'title': 'spanned', 'orientation': 'vertical-spanned' },
             {
                 'title': 'spanned',
                 'orientation': 'horizontal-spanned',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
             },
         ],
     },
@@ -1813,17 +1731,15 @@ const emulatedDevices = [
         'user-agent-metadata': { 'platform': 'Windows', 'platformVersion': '11.0', 'architecture': '', 'model': 'UX9702AA', 'mobile': false },
         'type': 'tablet',
         'modes': [
-            { 'title': 'default', 'orientation': 'vertical', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
-            { 'title': 'default', 'orientation': 'horizontal', 'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 } },
+            { 'title': 'default', 'orientation': 'vertical' },
+            { 'title': 'default', 'orientation': 'horizontal' },
             {
                 'title': 'spanned',
                 'orientation': 'vertical-spanned',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
             },
             {
                 'title': 'spanned',
                 'orientation': 'horizontal-spanned',
-                'insets': { 'left': 0, 'top': 0, 'right': 0, 'bottom': 0 },
             },
         ],
     },

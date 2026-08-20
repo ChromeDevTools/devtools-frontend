@@ -307,8 +307,10 @@ export class NetworkPanel extends UI.Panel.Panel {
         this.networkLogShowOverviewSetting.addChangeListener(this.toggleShowOverview, this);
         this.networkLogLargeRowsSetting.addChangeListener(this.toggleLargerRequests, this);
         this.networkRecordFilmStripSetting.addChangeListener(this.toggleRecordFilmStrip, this);
-        this.preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log');
-        this.recordLogSetting = Common.Settings.Settings.instance().moduleSetting('network-log.record-log');
+        this.preserveLogSetting =
+            Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveNetworkLogSettingDescriptor);
+        this.recordLogSetting =
+            Common.Settings.Settings.instance().resolve(Logs.NetworkLog.recordNetworkLogSettingDescriptor);
         this.recordLogSetting.addChangeListener(({ data }) => this.toggleRecord(data));
         this.throttlingSelect = this.createThrottlingConditionsSelect();
         this.setupToolbarButtons(splitWidget);

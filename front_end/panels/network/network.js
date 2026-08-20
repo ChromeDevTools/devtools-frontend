@@ -4297,7 +4297,7 @@ var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
     this.#request?.addEventListener(SDK7.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
     this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
     this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
-    Common7.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").addChangeListener(this.requestUpdate, this);
+    Common7.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).addChangeListener(this.requestUpdate, this);
   }
   wasShown() {
     super.wasShown();
@@ -4316,7 +4316,7 @@ var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
     this.#request?.removeEventListener(SDK7.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
     this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
     this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
-    Common7.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").removeChangeListener(this.requestUpdate, this);
+    Common7.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).removeChangeListener(this.requestUpdate, this);
   }
   #resetAndRefreshHeadersView() {
     this.#request?.deleteAssociatedData(NetworkComponents.ResponseHeaderSection.RESPONSE_HEADER_SECTION_DATA_KEY);
@@ -4383,7 +4383,7 @@ function renderHeaderOverridesLink(input) {
     event.preventDefault();
     input.revealHeadersFile?.();
   };
-  const overridesSetting = Common7.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled");
+  const overridesSetting = Common7.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor);
   const fileIcon = html7`
       <devtools-icon name="document" class=${"medium" + overridesSetting.get() ? "inline-icon dot purple" : "inline-icon"}>
       </devtools-icon>`;
@@ -9428,6 +9428,14 @@ var NetworkOverview = class extends PerfUI2.TimelineOverviewPane.TimelineOvervie
       /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */
     );
     drawLines(
+      "serviceworker-routerevaluation"
+      /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION */
+    );
+    drawLines(
+      "serviceworker-cachelookup"
+      /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP */
+    );
+    drawLines(
       "push"
       /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */
     );
@@ -9454,6 +9462,10 @@ var NetworkOverview = class extends PerfUI2.TimelineOverviewPane.TimelineOvervie
     drawLines(
       "receiving"
       /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING */
+    );
+    drawLines(
+      "receiving-push"
+      /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */
     );
     if (this.highlightedRequest) {
       const size = 5;
@@ -9539,6 +9551,14 @@ var RequestTimeRangeNameToColor = {
     /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */
   ]: "--network-overview-service-worker-respond-with",
   [
+    "serviceworker-routerevaluation"
+    /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION */
+  ]: "--network-overview-service-worker",
+  [
+    "serviceworker-cachelookup"
+    /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP */
+  ]: "--network-overview-service-worker",
+  [
     "push"
     /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */
   ]: "--network-overview-push",
@@ -9565,6 +9585,10 @@ var RequestTimeRangeNameToColor = {
   [
     "receiving"
     /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING */
+  ]: "--network-overview-receiving",
+  [
+    "receiving-push"
+    /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */
   ]: "--network-overview-receiving",
   [
     "queueing"
@@ -9739,6 +9763,18 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
       fillStyle: RequestTimeRangeNameToColor[
         "serviceworker-respondwith"
         /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */
+      ]
+    });
+    styleMap.set("serviceworker-routerevaluation", {
+      fillStyle: RequestTimeRangeNameToColor[
+        "serviceworker-routerevaluation"
+        /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION */
+      ]
+    });
+    styleMap.set("serviceworker-cachelookup", {
+      fillStyle: RequestTimeRangeNameToColor[
+        "serviceworker-cachelookup"
+        /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP */
       ]
     });
     return styleMap;
@@ -10153,7 +10189,13 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
         continue;
       }
       const style = this.styleForTimeRangeName.get(range.name);
+      if (!style) {
+        continue;
+      }
       const path = this.pathForStyle.get(style);
+      if (!path) {
+        continue;
+      }
       const lineWidth = style.lineWidth || 0;
       const height = this.getBarHeight(range.name);
       const middleBarY = y + Math.floor(this.rowHeight / 2 - height / 2) + lineWidth / 2;
@@ -12106,7 +12148,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
       resourceTreeModel.removeEventListener(SDK16.ResourceTreeModel.Events.Load, this.loadEventFired, this);
       resourceTreeModel.removeEventListener(SDK16.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
     }
-    const preserveLog = Common19.Settings.Settings.instance().moduleSetting("network-log.preserve-log").get();
+    const preserveLog = Common19.Settings.Settings.instance().resolve(SDK16.SDKSettings.preserveNetworkLogSettingDescriptor).get();
     if (!preserveLog) {
       this.reset();
     }
@@ -12996,7 +13038,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     const requestLocation = NetworkForward4.UIRequestLocation.UIRequestLocation.responseHeaderMatch(request, { name: "", value: "" });
     const networkPersistenceManager = Persistence2.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     if (networkPersistenceManager.project()) {
-      Common19.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
+      Common19.Settings.Settings.instance().resolve(Persistence2.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).set(true);
       await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
       await Common19.Revealer.reveal(requestLocation);
     } else {
@@ -14222,8 +14264,8 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
     this.networkLogShowOverviewSetting.addChangeListener(this.toggleShowOverview, this);
     this.networkLogLargeRowsSetting.addChangeListener(this.toggleLargerRequests, this);
     this.networkRecordFilmStripSetting.addChangeListener(this.toggleRecordFilmStrip, this);
-    this.preserveLogSetting = Common20.Settings.Settings.instance().moduleSetting("network-log.preserve-log");
-    this.recordLogSetting = Common20.Settings.Settings.instance().moduleSetting("network-log.record-log");
+    this.preserveLogSetting = Common20.Settings.Settings.instance().resolve(SDK17.SDKSettings.preserveNetworkLogSettingDescriptor);
+    this.recordLogSetting = Common20.Settings.Settings.instance().resolve(Logs6.NetworkLog.recordNetworkLogSettingDescriptor);
     this.recordLogSetting.addChangeListener(({ data }) => this.toggleRecord(data));
     this.throttlingSelect = this.createThrottlingConditionsSelect();
     this.setupToolbarButtons(splitWidget);

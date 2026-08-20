@@ -294,49 +294,49 @@ import * as UIHelpers from "./../../../helpers/helpers.js";
 import * as UI from "./../../legacy.js";
 var UIStrings = {
   /**
-   * @description Label for when no contrast information is available in the color picker
+   * @description Text displayed when no contrast information is available in the color picker.
    */
   noContrastInformationAvailable: "No contrast information available",
   /**
-   * @description Text of a DOM element in Contrast Details of the Color Picker
+   * @description Label for the contrast ratio section in the contrast details of the color picker.
    */
   contrastRatio: "Contrast ratio",
   /**
-   * @description Text to show more content
+   * @description Tooltip and title for the expand button in the contrast details of the color picker to show more details.
    */
   showMore: "Show more",
   /**
-   * @description Choose bg color text content in Contrast Details of the Color Picker
+   * @description Prompt message in the contrast details of the color picker asking the user to pick a background color.
    */
   pickBackgroundColor: "Pick background color",
   /**
-   * @description Tooltip text that appears when hovering over largeicon eyedropper button in Contrast Details of the Color Picker
+   * @description Tooltip and title for the eyedropper button in the contrast details of the color picker to pick a background color.
    */
   toggleBackgroundColorPicker: "Toggle background color picker",
   /**
-   * @description Text of a button in Contrast Details of the Color Picker
+   * @description Tooltip and accessible name for the button in the contrast details of the color picker to apply a suggested color to fix low contrast.
    * @example {rgba(0 0 0 / 100%) } PH1
    */
   useSuggestedColorStoFixLow: "Use suggested color {PH1}to fix low contrast",
   /**
-   * @description Label for the APCA contrast in Color Picker
+   * @description Label for the APCA contrast ratio in the contrast details of the color picker.
    */
   apca: "APCA",
   /**
-   * @description Label aa text content in Contrast Details of the Color Picker
+   * @description Label for the WCAG AA contrast threshold in the contrast details of the color picker.
    */
   aa: "AA",
   /**
-   * @description Text that starts with a colon and includes a placeholder
+   * @description Label prefixing a contrast threshold value with a colon in the contrast details of the color picker.
    * @example {3.0} PH1
    */
   placeholderWithColon: ": {PH1}",
   /**
-   * @description Label aaa text content in Contrast Details of the Color Picker
+   * @description Label for the WCAG AAA contrast threshold in the contrast details of the color picker.
    */
   aaa: "AAA",
   /**
-   * @description Text to show less content
+   * @description Tooltip and title for the expand button in the contrast details of the color picker to show fewer details.
    */
   showLess: "Show less"
 };
@@ -968,7 +968,7 @@ import * as i18n3 from "./../../../../core/i18n/i18n.js";
 import * as UI3 from "./../../legacy.js";
 var UIStrings2 = {
   /**
-   * @description Menu warning that some color will be clipped after conversion to match the target gamut
+   * @description Warning item in the color format picker context menu indicating that converting to a narrower gamut will cause color shifts.
    */
   colorShiftWarning: "\u26A0\uFE0F Conversion to a narrow gamut will cause color shifts"
 };
@@ -1815,79 +1815,78 @@ div.palette-preview {
 // gen/front_end/ui/legacy/components/color_picker/Spectrum.js
 var UIStrings3 = {
   /**
-   * @description Tooltip text that appears when hovering over largeicon eyedropper button in Spectrum of the Color Picker
+   * @description Tooltip and title for the eyedropper button in the color picker.
    * @example {c} PH1
    */
   toggleColorPicker: "Eye dropper [{PH1}]",
   /**
-   * @description Aria label for hue slider in Color Picker
+   * @description Accessible name for the hue slider in the color picker.
    */
   changeHue: "Change hue",
   /**
-   * @description Aria label for alpha slider in Color Picker. Alpha refers to the alpha channel of a
-   * color, and this tool allows the user to change the alpha value.
+   * @description Accessible name for the alpha slider in the color picker.
    */
   changeAlpha: "Change alpha",
   /**
-   * @description Aria label for HEX color format input
+   * @description Accessible name for the HEX color format input field in the color picker.
    */
   hex: "HEX",
   /**
-   * @description Aria label for color format switcher button in Color Picker
+   * @description Accessible name and tooltip for the color format switcher button in the color picker.
    */
   changeColorFormat: "Change color format",
   /**
-   * @description Screen reader reads this text when palette switcher button receives focus
+   * @description Accessible name and tooltip for the palette switcher button in the color picker.
    */
   previewPalettes: "Preview palettes",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon add button in the Spectrum of the Color Picker
+   * @description Tooltip and title for the button to add the current color to a custom palette in the color picker.
    */
   addToPalette: "Add to palette",
   /**
-   * @description Title text content in Spectrum of the Color Picker
+   * @description Header title for the color palettes preview section in the color picker.
    */
-  colorPalettes: "Color Palettes",
+  colorPalettes: "Color palettes",
   /**
-   * @description Label for close button in Color Picker
+   * @description Label for the button to return to the main color picker view from the palette preview in the color picker.
    */
   returnToColorPicker: "Return to color picker",
   /**
-   * @description Aria label which declares hex value of a swatch in the Color Picker
+   * @description Accessible name for a color swatch in the color picker palette.
    * @example {#969696} PH1
    */
   colorS: "Color {PH1}",
   /**
-   * @description Color element title in Spectrum of the Color Picker
+   * @description Tooltip for a material palette color swatch explaining how to view alternate color shades in the color picker.
    * @example {#9c1724} PH1
    */
   longclickOrLongpressSpaceToShow: "Long-click or long-press space to show alternate shades of {PH1}",
   /**
-   * @description A context menu item in the Color Picker to organize the user-defined color palette (removes the user-defined color to which this action is performed)"
+   * @description Context menu item in the custom color palette to delete the selected color in the color picker.
    */
   removeColor: "Remove color",
   /**
-   * @description A context menu item in the Color Picker to organize the user-defined color palette (removes all user-defined colors to the right of the color to which this action is performed)"
+   * @description Context menu item in the custom color palette to delete all colors positioned to the right of the selected color in the color picker.
    */
   removeAllToTheRight: "Remove all to the right",
   /**
-   * @description A context menu item in the Color Picker to organize the user-defined color palette (removes all user-defined colors)"
+   * @description Context menu item in the custom color palette to delete all colors from the palette in the color picker.
    */
   clearPalette: "Clear palette",
   /**
-   * @description Aria label for RGBA and HSLA color format inputs in Color Picker
+   * @description Accessible name for an individual channel input field within a color format in the color picker.
    * @example {R} PH1
    * @example {RGBA} PH2
    */
   sInS: "{PH1} in {PH2}",
   /**
-   * @description Swatch copy icon title in Spectrum of the Color Picker
+   * @description Tooltip and title for the copy icon on the color swatch in the color picker.
    */
   copyColorToClipboard: "Copy color to clipboard",
   /**
-   * @description Aria text for the swatch position. Swatch is the color picker spectrum tool.
+   * @description Accessible announcement explaining keyboard controls to move the color swatch in the color picker spectrum.
    */
-  pressArrowKeysMessage: "Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less"
+  pressArrowKeysMessage: "Use arrow keys to move the swatch position. Use Shift to move further, Ctrl to move less, and Alt to move even less."
 };
 var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/components/color_picker/Spectrum.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);

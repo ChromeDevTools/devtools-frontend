@@ -4,7 +4,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
     /**
-     * @description Summary line in a tooltip explaining a CSS selector specificity.
+     * @description Summary line in a tooltip explaining CSS selector specificity.
      * @example {1} PH1
      * @example {2} PH2
      * @example {3} PH3

@@ -55,7 +55,7 @@ span {
 // gen/front_end/panels/elements/components/AccessibilityTreeNode.js
 var UIStrings = {
   /**
-   * @description Ignored node element text content in Accessibility Tree View of the Elements panel
+   * @description Ignored node element text content in the accessibility tree view of the Elements panel.
    */
   ignored: "Ignored"
 };
@@ -544,7 +544,7 @@ var UIStrings2 = {
   /**
    * @description Text for button that redirects to CSS property documentation.
    */
-  learnMore: "Learn More"
+  learnMore: "Learn more"
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/elements/components/CSSHintDetailsView.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -1512,18 +1512,18 @@ var cssVariableValueView_css_default = `/*
 // gen/front_end/panels/elements/components/CSSVariableValueView.js
 var UIStrings4 = {
   /**
-   * @description Text for a link from custom property to its defining registration
+   * @description Text for a link from a custom property to its defining registration.
    */
   registeredPropertyLinkTitle: "View registered property",
   /**
    * @description Error message for a property value that failed to parse because it had an incorrect type. The message
    * is shown in a popover when hovering the property value. The `type` placeholder will be rendered as an HTML element
-   * to apply some styling (color and monospace font)
+   * to apply some styling (color and monospace font).
    * @example {<color>} type
    */
   invalidPropertyValue: "Invalid property value, expected type {type}",
   /**
-   * @description Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles pane when the custom property in this function does not exist. The parameter is the name of the property.
+   * @description Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles tab when the custom property in this function does not exist. The parameter is the name of the property.
    * @example {--my-custom-property-name} PH1
    */
   sIsNotDefined: "{PH1} is not defined"
@@ -1722,8 +1722,8 @@ __export(ElementsBreadcrumbsUtils_exports, {
 import * as i18n9 from "./../../../core/i18n/i18n.js";
 var UIStrings5 = {
   /**
-   * @description Text in Elements Breadcrumbs of the Elements panel. Indicates that a HTML element
-   * is a text node, meaning it contains text only and no other HTML elements. Should be translatd.
+   * @description Text in elements breadcrumbs of the Elements panel. Indicates that an HTML element
+   * is a text node, meaning it contains text only and no other HTML elements.
    */
   text: "(text)"
 };
@@ -2108,7 +2108,7 @@ var elementsTreeExpandButton_css_default = `/*
 // gen/front_end/panels/elements/components/ElementsTreeExpandButton.js
 var UIStrings7 = {
   /**
-   * @description Aria label for a button expanding collapsed subtree
+   * @description ARIA label for a button expanding a collapsed subtree.
    */
   expand: "Expand"
 };

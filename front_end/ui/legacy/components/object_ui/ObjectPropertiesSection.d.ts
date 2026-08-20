@@ -122,25 +122,9 @@ export declare class ObjectTreeNode extends ObjectTreeNodeBase {
     invokeGetter(getter: SDK.RemoteObject.RemoteObject): Promise<void>;
     match(regex: RegExp): ObjectPropertySearchResult[];
 }
-export declare const getObjectPropertiesSectionFrom: (element: Element) => ObjectPropertiesSection | undefined;
-export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow {
-    #private;
-    readonly root: ObjectTree;
-    titleElement: Element;
-    skipProtoInternal?: boolean;
-    constructor(object: SDK.RemoteObject.RemoteObject, title?: string | Element | null, linkifier?: Components.Linkifier.Linkifier, showOverflow?: boolean, editable?: boolean, search?: UI.TreeOutline.TreeSearch<ObjectTreeNodeBase>);
-    static compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, sortPropertiesAlphabetically?: boolean): number;
-    static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string, details?: SDK.DebuggerModel.FunctionDetails | null, linkify?: boolean): LitTemplate;
-    static getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate;
-    static appendMemoryIcon(element: Element, object: SDK.RemoteObject.RemoteObject, expression?: string): void;
-    static isDisplayableProperty(property: SDK.RemoteObject.RemoteObjectProperty, parentProperty?: SDK.RemoteObject.RemoteObjectProperty): boolean;
-    skipProto(): void;
-    expand(): void;
-    objectTreeElement(): UI.TreeOutline.TreeElement;
-    enableContextMenu(): void;
-    private contextMenuEventFired;
-    titleLessMode(): void;
-}
+export declare function compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, sortPropertiesAlphabetically?: boolean): number;
+export declare function valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string, details?: SDK.DebuggerModel.FunctionDetails | null, linkify?: boolean): LitTemplate;
+export declare function getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate;
 export declare class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: ObjectPropertiesSectionView);

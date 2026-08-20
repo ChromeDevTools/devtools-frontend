@@ -271,7 +271,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     #updateFitScale() {
         if (this.#type === Type.Device && this.#device && this.#mode) {
             const orientation = this.#device.orientationByName(this.#mode.orientation);
-            this.#scaleSetting.set(this.calculateFitScale(orientation.width, orientation.height, this.currentInsets()));
+            this.#scaleSetting.set(this.calculateFitScale(orientation.width, orientation.height));
         }
     }
     setAvailableSize(availableSize, preferredSize) {
@@ -502,12 +502,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     preferredScaledHeight() {
         return Math.floor(this.#preferredSize.height / (this.#scaleSetting.get() || 1));
     }
-    currentInsets() {
-        if (this.#type !== Type.Device || !this.#mode) {
-            return new Insets(0, 0, 0, 0);
-        }
-        return this.#mode.insets;
-    }
     currentSafeAreaInsets() {
         if (!Root.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
             return null;
@@ -553,22 +547,21 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         }
         if (this.#type === Type.Device && this.#device && this.#mode) {
             const orientation = this.#device.orientationByName(this.#mode.orientation);
-            const insets = this.currentInsets();
-            this.#fitScale = this.calculateFitScale(orientation.width, orientation.height, insets);
+            this.#fitScale = this.calculateFitScale(orientation.width, orientation.height);
             if (mobile) {
                 this.#appliedUserAgentType = this.#device.touch() ? "Mobile" /* UA.MOBILE */ : "Mobile (no touch)" /* UA.MOBILE_NO_TOUCH */;
             }
             else {
                 this.#appliedUserAgentType = this.#device.touch() ? "Desktop (touch)" /* UA.DESKTOP_TOUCH */ : "Desktop" /* UA.DESKTOP */;
             }
-            this.applyDeviceMetrics(new Geometry.Size(orientation.width, orientation.height), insets, this.#scaleSetting.get(), this.#device.deviceScaleFactor, mobile, this.getScreenOrientationType(), resetPageScaleFactor);
+            this.applyDeviceMetrics(new Geometry.Size(orientation.width, orientation.height), this.#scaleSetting.get(), this.#device.deviceScaleFactor, mobile, this.getScreenOrientationType(), resetPageScaleFactor);
             this.applyUserAgent(this.#device.userAgent, this.#device.userAgentMetadata);
             this.applyTouch(this.#device.touch(), mobile);
         }
         else if (this.#type === Type.None) {
             this.#fitScale = this.calculateFitScale(this.#availableSize.width, this.#availableSize.height);
             this.#appliedUserAgentType = "Desktop" /* UA.DESKTOP */;
-            this.applyDeviceMetrics(this.#availableSize, new Insets(0, 0, 0, 0), 1, 0, mobile, null, resetPageScaleFactor);
+            this.applyDeviceMetrics(this.#availableSize, 1, 0, mobile, null, resetPageScaleFactor);
             this.applyUserAgent('', null);
             this.applyTouch(false, false);
         }
@@ -584,7 +577,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             const defaultDeviceScaleFactor = mobile ? defaultMobileScaleFactor : 0;
             this.#fitScale = this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get());
             this.#appliedUserAgentType = this.#uaSetting.get();
-            this.applyDeviceMetrics(new Geometry.Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), this.#scaleSetting.get(), this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" /* Protocol.Emulation.ScreenOrientationType.PortraitPrimary */ : "landscapePrimary" /* Protocol.Emulation.ScreenOrientationType.LandscapePrimary */, resetPageScaleFactor);
+            this.applyDeviceMetrics(new Geometry.Size(screenWidth, screenHeight), this.#scaleSetting.get(), this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" /* Protocol.Emulation.ScreenOrientationType.PortraitPrimary */ : "landscapePrimary" /* Protocol.Emulation.ScreenOrientationType.LandscapePrimary */, resetPageScaleFactor);
             this.applyUserAgent(mobile ? DeviceModeModel.defaultMobileUserAgent() : '', mobile ? DeviceModeModel.defaultMobileUserAgentMetadata() : null);
             this.applyTouch(this.#uaSetting.get() === "Desktop (touch)" /* UA.DESKTOP_TOUCH */ || this.#uaSetting.get() === "Mobile" /* UA.MOBILE */, this.#uaSetting.get() === "Mobile" /* UA.MOBILE */);
         }
@@ -594,19 +587,17 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         this.applySafeAreaInsets(this.currentSafeAreaInsets());
         this.dispatchEventToListeners("Updated" /* Events.UPDATED */);
     }
-    calculateFitScale(screenWidth, screenHeight, insets) {
-        const insetsWidth = insets ? insets.left + insets.right : 0;
-        const insetsHeight = insets ? insets.top + insets.bottom : 0;
+    calculateFitScale(screenWidth, screenHeight) {
         let scale = Math.min(screenWidth ? this.#preferredSize.width / screenWidth : 1, screenHeight ? this.#preferredSize.height / screenHeight : 1);
         scale = Math.min(Math.floor(scale * 100), 100);
         let sharpScale = scale;
         while (sharpScale > scale * 0.7) {
             let sharp = true;
             if (screenWidth) {
-                sharp = sharp && Number.isInteger((screenWidth - insetsWidth) * sharpScale / 100);
+                sharp = sharp && Number.isInteger(screenWidth * sharpScale / 100);
             }
             if (screenHeight) {
-                sharp = sharp && Number.isInteger((screenHeight - insetsHeight) * sharpScale / 100);
+                sharp = sharp && Number.isInteger(screenHeight * sharpScale / 100);
             }
             if (sharp) {
                 return sharpScale / 100;
@@ -626,13 +617,13 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         // setUserAgentOverride calls that provide metadata without a UA string.
         this.#multitargetNetworkManager.setUserAgentOverride(userAgent, userAgent ? userAgentMetadata : null);
     }
-    applyDeviceMetrics(screenSize, insets, scale, deviceScaleFactor, mobile, screenOrientation, resetPageScaleFactor) {
+    applyDeviceMetrics(screenSize, scale, deviceScaleFactor, mobile, screenOrientation, resetPageScaleFactor) {
         screenSize.width = Math.max(1, Math.floor(screenSize.width));
         screenSize.height = Math.max(1, Math.floor(screenSize.height));
-        let pageWidth = screenSize.width - insets.left - insets.right;
-        let pageHeight = screenSize.height - insets.top - insets.bottom;
-        const positionX = insets.left;
-        const positionY = insets.top;
+        let pageWidth = screenSize.width;
+        let pageHeight = screenSize.height;
+        const positionX = 0;
+        const positionY = 0;
         const screenOrientationAngle = screenOrientation === "landscapePrimary" /* Protocol.Emulation.ScreenOrientationType.LandscapePrimary */ ? 90 : 0;
         this.#appliedDeviceSize = screenSize;
         this.#appliedDeviceScaleFactor = deviceScaleFactor || window.devicePixelRatio;

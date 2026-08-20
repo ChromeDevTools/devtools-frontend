@@ -179,31 +179,34 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     `;
         // clang-format on
     };
+    const domNode = layer.nodeForSelfOrAncestor();
     // clang-format off
     Lit.render(html `
-    <div class="layer-details-container">
+    <div class="layer-details-container"
+         data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing}
+         jslog=${VisualLogging.section('layer-details')}>
       <table>
         <tbody>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow('detail-row')}>
             <td>${i18nString(UIStrings.size)}</td>
             <td>${i18nString(UIStrings.updateRectangleDimensions, { PH1: layer.width(), PH2: layer.height(), PH3: layer.offsetX(), PH4: layer.offsetY() })}</td>
           </tr>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow('detail-row')}>
             <td>${i18nString(UIStrings.compositingReasons)}</td>
             <td>
               ${!compositingReasons.length ? 'n/a' :
         html `<ul>${compositingReasons.map(reason => html `<li>${reason}</li>`)}</ul>`}
             </td>
           </tr>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow('detail-row')}>
             <td>${i18nString(UIStrings.memoryEstimate)}</td>
             <td>${i18n.ByteUtilities.bytesToString(layer.gpuMemoryUsage())}</td>
           </tr>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow('detail-row')}>
             <td>${i18nString(UIStrings.paintCount)}</td>
             <td>${layer.paintCount()}</td>
           </tr>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow('detail-row')}>
             <td>${i18nString(UIStrings.slowScrollRegions)}</td>
             <td>
               ${slowScrollRects.map((scrollRect, index) => html `
@@ -220,7 +223,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                 </span>`)}
             </td>
           </tr>
-          <tr>
+          <tr jslog=${VisualLogging.tableRow('detail-row')}>
             <td>${i18nString(UIStrings.stickyPositionConstraint)}</td>
             <td>${renderStickyPositionConstraint(stickyPositionConstraint)}</td>
           </tr>

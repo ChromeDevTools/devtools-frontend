@@ -627,7 +627,7 @@ export const DEFAULT_SECTION_VIEW = (input, _output, target) => {
         <span style="flex: 1 1 auto">${input.title}</span>
         ${renderHeaderButtons(input)}
       </devtools-report-section-header>
-      <div class="service-worker-section">
+      <div class="service-worker-section" jslog=${VisualLogging.section('service-worker')}>
          ${renderSourceField(input, input.activeVersion ?? input.redundantVersion)}
          ${renderStatusField(input, input.activeVersion, input.waitingVersion, input.installingVersion, input.redundantVersion)}
          ${renderClientsField(input, input.activeVersion ?? input.redundantVersion)}

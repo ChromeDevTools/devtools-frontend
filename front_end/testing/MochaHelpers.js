@@ -1,9 +1,61 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-export function pruneSuite(suite, shouldIncludeTest) {
-    suite.tests = suite.tests.filter(shouldIncludeTest);
-    suite.suites.forEach(suite => pruneSuite(suite, shouldIncludeTest));
+import { computeBuildTestId } from './TestIdGeneration.js';
+export function createTestIdMap(suite) {
+    const map = new Map();
+    function populate(s) {
+        for (const test of s.tests) {
+            if (!test.file) {
+                throw new Error(`Test ${test.titlePath()} does not have a file.`);
+            }
+            const testId = computeBuildTestId(test.file, test.titlePath());
+            map.set(test, testId);
+        }
+        for (const subSuite of s.suites) {
+            populate(subSuite);
+        }
+    }
+    populate(suite);
+    return map;
+}
+export function checkForDuplicateTests(testIdMap) {
+    const seenTestIds = new Set();
+    for (const testId of testIdMap.values()) {
+        if (seenTestIds.has(testId)) {
+            throw new Error(`Duplicate test ${testId}`);
+        }
+        seenTestIds.add(testId);
+    }
+}
+export function listContainsTestOrSuite(list, testId) {
+    for (const item of list) {
+        if (testId === item || testId.startsWith(`${item}:`)) {
+            return true;
+        }
+    }
+    return false;
+}
+export function pruneSuite(suite, testIdMap, options = {}) {
+    const skippedTests = options.skippedTests ?? [];
+    const testIds = options.testIds;
+    suite.tests = suite.tests.filter(test => {
+        const testId = testIdMap.get(test);
+        if (!testId) {
+            return false;
+        }
+        const isSkipped = listContainsTestOrSuite(skippedTests, testId);
+        if (isSkipped) {
+            test.pending = true;
+        }
+        if (!testIds || testIds.size === 0) {
+            return true;
+        }
+        return listContainsTestOrSuite(testIds, testId);
+    });
+    for (const subSuite of suite.suites) {
+        pruneSuite(subSuite, testIdMap, options);
+    }
 }
 export function duplicateTests(suite, repetitions) {
     if (repetitions > 1) {
@@ -23,6 +75,8 @@ export function duplicateTests(suite, repetitions) {
             }
         }
     }
-    suite.suites.forEach(s => duplicateTests(s, repetitions));
+    for (const subSuite of suite.suites) {
+        duplicateTests(subSuite, repetitions);
+    }
 }
 //# sourceMappingURL=MochaHelpers.js.map

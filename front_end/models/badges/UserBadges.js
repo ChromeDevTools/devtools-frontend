@@ -9,6 +9,12 @@ import { CodeWhispererBadge } from './CodeWhispererBadge.js';
 import { DOMDetectiveBadge } from './DOMDetectiveBadge.js';
 import { SpeedsterBadge } from './SpeedsterBadge.js';
 import { StarterBadge } from './StarterBadge.js';
+export const receiveGdpBadgesSettingDescriptor = {
+    name: 'receive-gdp-badges',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
 const SNOOZE_TIME_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MAX_SNOOZE_COUNT = 3;
 const DELAY_BEFORE_TRIGGER = 1500;
@@ -34,7 +40,7 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
         this.#settings = settings;
         this.#gdpClient = gdpClient;
         this.#inspectorFrontendHost = inspectorFrontendHost;
-        this.#receiveBadgesSetting = this.#settings.moduleSetting('receive-gdp-badges');
+        this.#receiveBadgesSetting = this.#settings.resolve(receiveGdpBadgesSettingDescriptor);
         if (!Host.GdpClient.isBadgesEnabled()) {
             this.#receiveBadgesSetting.set(false);
         }

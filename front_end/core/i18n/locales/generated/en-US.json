@@ -449,12 +449,6 @@
   "core/sdk/Script.ts | unableToFetchScriptSource": {
     "message": "Unable to fetch script source."
   },
-  "core/sdk/sdk-meta.ts | disablePaused": {
-    "message": "Disable paused state overlay"
-  },
-  "core/sdk/sdk-meta.ts | logXmlhttprequests": {
-    "message": "Log XMLHttpRequests"
-  },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
     "message": "Deprecated syntax found for metric \"{PH1}\". Use: <name>;dur=<duration>;desc=<description>"
   },
@@ -917,6 +911,12 @@
   "entrypoints/main/main-meta.ts | devtoolsDefault": {
     "message": "DevTools (Default)"
   },
+  "entrypoints/main/main-meta.ts | disableOverrideNetworkRequests": {
+    "message": "Disable override network requests"
+  },
+  "entrypoints/main/main-meta.ts | disablePaused": {
+    "message": "Disable paused state overlay"
+  },
   "entrypoints/main/main-meta.ts | dockToBottom": {
     "message": "Dock to bottom"
   },
@@ -929,8 +929,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Don’t match Chrome color scheme"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Earn badges"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Use Ctrl + 1-9 to switch panels"
+  },
+  "entrypoints/main/main-meta.ts | enableOverrideNetworkRequests": {
+    "message": "Enable override network requests"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Use ⌘ + 1-9 to switch panels"
@@ -947,6 +953,9 @@
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "horizontal"
   },
+  "entrypoints/main/main-meta.ts | interception": {
+    "message": "interception"
+  },
   "entrypoints/main/main-meta.ts | language": {
     "message": "Language:"
   },
@@ -959,6 +968,9 @@
   "entrypoints/main/main-meta.ts | lightLower": {
     "message": "light"
   },
+  "entrypoints/main/main-meta.ts | localOverrides": {
+    "message": "Local overrides"
+  },
   "entrypoints/main/main-meta.ts | matchChromeColorScheme": {
     "message": "Match Chrome color scheme"
   },
@@ -968,8 +980,14 @@
   "entrypoints/main/main-meta.ts | matchChromeColorSchemeDocumentation": {
     "message": "Match DevTools colors to your customized Chrome theme (when enabled)"
   },
+  "entrypoints/main/main-meta.ts | network": {
+    "message": "network"
+  },
   "entrypoints/main/main-meta.ts | nextPanel": {
     "message": "Next panel"
+  },
+  "entrypoints/main/main-meta.ts | override": {
+    "message": "override"
   },
   "entrypoints/main/main-meta.ts | panelLayout": {
     "message": "Panel layout:"
@@ -980,11 +998,17 @@
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Reload DevTools"
   },
+  "entrypoints/main/main-meta.ts | request": {
+    "message": "request"
+  },
   "entrypoints/main/main-meta.ts | resetZoomLevel": {
     "message": "Reset zoom level"
   },
   "entrypoints/main/main-meta.ts | restoreLastDockPosition": {
     "message": "Restore last dock position"
+  },
+  "entrypoints/main/main-meta.ts | rewrite": {
+    "message": "rewrite"
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Right"
@@ -1358,9 +1382,6 @@
   "generated/Deprecation.ts | XSLT": {
     "message": "XSLTProcessor and XSLT Processing Instructions have been deprecated by all browsers. These features will be removed from this browser soon."
   },
-  "models/badges/badges-meta.ts | earnBadges": {
-    "message": "Earn badges"
-  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Unknown error loading file"
   },
@@ -1598,30 +1619,6 @@
   "models/live-metrics/LiveMetrics.ts | lcpVisibilityWarning": {
     "message": "LCP may be inflated because the page started loading in the background."
   },
-  "models/logs/logs-meta.ts | clear": {
-    "message": "clear"
-  },
-  "models/logs/logs-meta.ts | doNotKeepLogOnPageReload": {
-    "message": "Don’t keep log on page reload / navigation"
-  },
-  "models/logs/logs-meta.ts | keep": {
-    "message": "keep"
-  },
-  "models/logs/logs-meta.ts | keepLog": {
-    "message": "Keep log"
-  },
-  "models/logs/logs-meta.ts | keepLogOnPageReload": {
-    "message": "Keep log on page reload / navigation"
-  },
-  "models/logs/logs-meta.ts | preserve": {
-    "message": "preserve"
-  },
-  "models/logs/logs-meta.ts | recordNetworkLog": {
-    "message": "Record network log"
-  },
-  "models/logs/logs-meta.ts | reset": {
-    "message": "reset"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
   },
@@ -1660,30 +1657,6 @@
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Can’t add file system: {PH1}"
-  },
-  "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
-    "message": "Disable override network requests"
-  },
-  "models/persistence/persistence-meta.ts | enableOverrideNetworkRequests": {
-    "message": "Enable override network requests"
-  },
-  "models/persistence/persistence-meta.ts | interception": {
-    "message": "interception"
-  },
-  "models/persistence/persistence-meta.ts | localOverrides": {
-    "message": "Local overrides"
-  },
-  "models/persistence/persistence-meta.ts | network": {
-    "message": "network"
-  },
-  "models/persistence/persistence-meta.ts | override": {
-    "message": "override"
-  },
-  "models/persistence/persistence-meta.ts | request": {
-    "message": "request"
-  },
-  "models/persistence/persistence-meta.ts | rewrite": {
-    "message": "rewrite"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "PlatformFileSystem can’t read files"
@@ -6719,6 +6692,9 @@
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "Hide timestamps"
   },
+  "panels/console/console-meta.ts | logXmlhttprequests": {
+    "message": "Log XMLHttpRequests"
+  },
   "panels/console/console-meta.ts | networkMessages": {
     "message": "Network messages"
   },
@@ -7476,7 +7452,7 @@
     "message": "Class {PH1} added"
   },
   "panels/elements/ClassesPaneWidget.ts | elementClasses": {
-    "message": "Element Classes"
+    "message": "Element classes"
   },
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Open cubic bezier editor"
@@ -7488,7 +7464,7 @@
     "message": "Ignored"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
-    "message": "Learn More"
+    "message": "Learn more"
   },
   "panels/elements/components/CSSPropertyDocsView.ts | browserOnPlatform": {
     "message": "{PH1} on {PH2}"
@@ -7548,7 +7524,7 @@
     "message": "Add {propertyName}: {propertyValue}"
   },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
-    "message": "Filter applied: {PH1}. Total Results: {PH2}"
+    "message": "Filter applied: {PH1}. Total results: {PH2}"
   },
   "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Group"
@@ -7752,16 +7728,16 @@
     "message": "Invalid element or text node within <select>"
   },
   "panels/elements/ElementIssueUtils.ts | formAriaLabelledByToNonExistingId": {
-    "message": "An aria-labelledby attribute doesn’t match any element id"
+    "message": "An aria-labelledby attribute doesn’t match any element ID"
   },
   "panels/elements/ElementIssueUtils.ts | formAutocompleteAttributeEmptyError": {
     "message": "Incorrect use of autocomplete attribute"
   },
   "panels/elements/ElementIssueUtils.ts | formDuplicateIdForInputError": {
-    "message": "Duplicate form field id in the same form"
+    "message": "Duplicate form field ID in the same form"
   },
   "panels/elements/ElementIssueUtils.ts | formEmptyIdAndNameAttributesForInputError": {
-    "message": "A form field element should have an id or name attribute"
+    "message": "A form field element should have an ID or name attribute"
   },
   "panels/elements/ElementIssueUtils.ts | formInputAssignedAutocompleteValueToIdOrNameAttributeError": {
     "message": "An element doesn’t have an autocomplete attribute"
@@ -7863,7 +7839,7 @@
     "message": "Layout"
   },
   "panels/elements/elements-meta.ts | newStyleRule": {
-    "message": "New Style Rule"
+    "message": "New style rule"
   },
   "panels/elements/elements-meta.ts | properties": {
     "message": "Properties"
@@ -7887,7 +7863,7 @@
     "message": "Show area names"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
-    "message": "Show Computed Styles"
+    "message": "Show Computed styles"
   },
   "panels/elements/elements-meta.ts | showElements": {
     "message": "Show Elements"
@@ -7953,10 +7929,10 @@
     "message": "Computed"
   },
   "panels/elements/ElementsPanel.ts | computedStylesHidden": {
-    "message": "Computed Styles sidebar hidden"
+    "message": "Computed styles sidebar hidden"
   },
   "panels/elements/ElementsPanel.ts | computedStylesShown": {
-    "message": "Computed Styles sidebar shown"
+    "message": "Computed styles sidebar shown"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM tree explorer"
@@ -7968,7 +7944,7 @@
     "message": "Find by string, selector, or XPath"
   },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
-    "message": "Hide Computed Styles sidebar"
+    "message": "Hide Computed styles sidebar"
   },
   "panels/elements/ElementsPanel.ts | nodeCannotBeFoundInTheCurrent": {
     "message": "Node cannot be found in the current page."
@@ -7977,7 +7953,7 @@
     "message": "Open in Elements panel"
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
-    "message": "Show Computed Styles sidebar"
+    "message": "Show Computed styles sidebar"
   },
   "panels/elements/ElementsPanel.ts | sidePanelContent": {
     "message": "Side panel content"
@@ -8010,7 +7986,7 @@
     "message": "Learn more"
   },
   "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
-    "message": "Toggle Element State"
+    "message": "Toggle element state"
   },
   "panels/elements/ElementsTreeElement.ts | children": {
     "message": "Children:"
@@ -8085,7 +8061,7 @@
     "message": "Paste"
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
-    "message": "reveal"
+    "message": "Reveal"
   },
   "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
     "message": "Root script filter list rule"
@@ -8133,7 +8109,7 @@
     "message": "Show all nodes ({PH1} more)"
   },
   "panels/elements/ElementsTreeOutline.ts | viewIssue": {
-    "message": "View Issue:"
+    "message": "View issue:"
   },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "All"
@@ -8163,7 +8139,7 @@
     "message": "CSS layers"
   },
   "panels/elements/LayersWidget.ts | toggleCSSLayers": {
-    "message": "Toggle CSS Layers view"
+    "message": "Toggle CSS layers view"
   },
   "panels/elements/LayoutPane.ts | chooseElementOverlayColor": {
     "message": "Choose the overlay color for this element"
@@ -8178,10 +8154,10 @@
     "message": "Flexbox overlays"
   },
   "panels/elements/LayoutPane.ts | gridOrGridLanes": {
-    "message": "Grid / Grid Lanes"
+    "message": "Grid / grid lanes"
   },
   "panels/elements/LayoutPane.ts | gridOrGridLanesOverlays": {
-    "message": "Grid / Grid Lanes overlays"
+    "message": "Grid / grid lanes overlays"
   },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "No flexbox layouts found on this page"
@@ -8196,7 +8172,7 @@
     "message": "Show element in the Elements panel"
   },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
-    "message": "DOM Breakpoint"
+    "message": "DOM breakpoint"
   },
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Element is hidden"
@@ -8220,7 +8196,7 @@
     "message": "PostScript name"
   },
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
-    "message": "Rendered Fonts"
+    "message": "Rendered fonts"
   },
   "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
     "message": "No matching property"
@@ -10394,6 +10370,9 @@
   "panels/network/network-meta.ts | clear": {
     "message": "Clear network log"
   },
+  "panels/network/network-meta.ts | clearTag": {
+    "message": "clear"
+  },
   "panels/network/network-meta.ts | colorCode": {
     "message": "color code"
   },
@@ -10411,6 +10390,9 @@
   },
   "panels/network/network-meta.ts | diskCache": {
     "message": "disk cache"
+  },
+  "panels/network/network-meta.ts | doNotKeepLogOnPageReload": {
+    "message": "Don’t keep log on page reload / navigation"
   },
   "panels/network/network-meta.ts | dontAllowToGenerateHarWithSensitiveData": {
     "message": "Don’t allow to generate HAR with sensitive data"
@@ -10439,6 +10421,15 @@
   "panels/network/network-meta.ts | hideRequestDetails": {
     "message": "Hide request details"
   },
+  "panels/network/network-meta.ts | keep": {
+    "message": "keep"
+  },
+  "panels/network/network-meta.ts | keepLog": {
+    "message": "Keep log"
+  },
+  "panels/network/network-meta.ts | keepLogOnPageReload": {
+    "message": "Keep log on page reload / navigation"
+  },
   "panels/network/network-meta.ts | network": {
     "message": "Network"
   },
@@ -10460,11 +10451,17 @@
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "network throttling"
   },
+  "panels/network/network-meta.ts | preserve": {
+    "message": "preserve"
+  },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Record network log"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
     "message": "Remove all network request blocking or throttling patterns"
+  },
+  "panels/network/network-meta.ts | reset": {
+    "message": "reset"
   },
   "panels/network/network-meta.ts | resourceType": {
     "message": "resource type"
@@ -17255,6 +17252,9 @@
   "panels/web_audio/WebAudioView.ts | renderCapacity": {
     "message": "Render capacity"
   },
+  "panels/web_audio/WebAudioView.ts | renderQuantumSize": {
+    "message": "Render quantum size"
+  },
   "panels/web_audio/WebAudioView.ts | sampleRate": {
     "message": "Sample rate"
   },
@@ -17643,7 +17643,7 @@
     "message": "Clear palette"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | colorPalettes": {
-    "message": "Color Palettes"
+    "message": "Color palettes"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | colorS": {
     "message": "Color {PH1}"
@@ -17658,7 +17658,7 @@
     "message": "Long-click or long-press space to show alternate shades of {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | pressArrowKeysMessage": {
-    "message": "Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less"
+    "message": "Use arrow keys to move the swatch position. Use Shift to move further, Ctrl to move less, and Alt to move even less."
   },
   "ui/legacy/components/color_picker/Spectrum.ts | previewPalettes": {
     "message": "Preview palettes"

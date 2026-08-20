@@ -27,7 +27,7 @@ export declare class NetworkWaterfallColumn extends UI.Widget.VBox {
     private readonly pathForStyle;
     private textLayers;
     constructor(calculator: NetworkTimeCalculator.NetworkTimeCalculator);
-    private static buildRequestTimeRangeStyle;
+    static buildRequestTimeRangeStyle(): Map<NetworkTimeCalculator.RequestTimeRangeNames, LayerStyle>;
     private static buildResourceTypeStyle;
     private resetPaths;
     willHide(): void;
@@ -58,3 +58,9 @@ export declare class NetworkWaterfallColumn extends UI.Widget.VBox {
     private buildTimingBarLayers;
     private decorateRow;
 }
+interface LayerStyle {
+    fillStyle?: string;
+    lineWidth?: number;
+    borderColor?: string;
+}
+export {};

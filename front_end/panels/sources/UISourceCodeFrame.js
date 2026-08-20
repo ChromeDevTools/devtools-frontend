@@ -54,7 +54,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
         this.#persistenceBinding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
         this.#boundOnBindingChanged = this.onBindingChanged.bind(this);
         Common.Settings.Settings.instance()
-            .moduleSetting('persistence-network-overrides-enabled')
+            .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
             .addChangeListener(this.onNetworkPersistenceChanged, this);
         this.#errorPopoverHelper = new UI.PopoverHelper.PopoverHelper(this.textEditor.editor.contentDOM, this.getErrorPopoverContent.bind(this), 'sources.error');
         this.#errorPopoverHelper.setTimeout(100, 100);
@@ -363,7 +363,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
         this.textEditor.editor.destroy();
         this.detach();
         Common.Settings.Settings.instance()
-            .moduleSetting('persistence-network-overrides-enabled')
+            .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
             .removeChangeListener(this.onNetworkPersistenceChanged, this);
     }
     onMessageAdded(event) {

@@ -19,7 +19,6 @@ export declare class EmulatedDevice {
     isFoldableScreen: boolean;
     verticalSpanned: Orientation;
     horizontalSpanned: Orientation;
-    constructor();
     static fromJSONV1(json: any): EmulatedDevice | null;
     static deviceComparator(device1: EmulatedDevice, device2: EmulatedDevice): number;
     modesForOrientation(orientation: string): Mode[];
@@ -87,7 +86,6 @@ export interface EventTypes {
 export interface Mode {
     title: string;
     orientation: string;
-    insets: Insets;
     safeAreaInsets?: Insets;
     cutout?: Cutout;
 }
@@ -126,12 +124,6 @@ export interface Orientation {
 export interface JSONMode {
     title: string;
     orientation: string;
-    insets: {
-        left: number;
-        right: number;
-        top: number;
-        bottom: number;
-    };
     'safe-area-insets'?: {
         left: number;
         right: number;
@@ -212,12 +204,6 @@ declare const emulatedDevices: ({
     modes: ({
         title: string;
         orientation: string;
-        insets: {
-            left: number;
-            top: number;
-            right: number;
-            bottom: number;
-        };
         'safe-area-insets': {
             left: number;
             top: number;
@@ -237,12 +223,6 @@ declare const emulatedDevices: ({
         cutout?: undefined;
         title: string;
         orientation: string;
-        insets: {
-            left: number;
-            top: number;
-            right: number;
-            bottom: number;
-        };
         'safe-area-insets': {
             left: number;
             top: number;
@@ -282,12 +262,6 @@ declare const emulatedDevices: ({
     modes: ({
         title: string;
         orientation: string;
-        insets: {
-            left: number;
-            top: number;
-            right: number;
-            bottom: number;
-        };
         'safe-area-insets': {
             left: number;
             top: number;
@@ -306,12 +280,6 @@ declare const emulatedDevices: ({
         cutout?: undefined;
         title: string;
         orientation: string;
-        insets: {
-            left: number;
-            top: number;
-            right: number;
-            bottom: number;
-        };
         'safe-area-insets': {
             left: number;
             top: number;
@@ -351,12 +319,6 @@ declare const emulatedDevices: ({
     modes: ({
         title: string;
         orientation: string;
-        insets: {
-            left: number;
-            top: number;
-            right: number;
-            bottom: number;
-        };
         'safe-area-insets': {
             left: number;
             top: number;
@@ -377,12 +339,6 @@ declare const emulatedDevices: ({
         cutout?: undefined;
         title: string;
         orientation: string;
-        insets: {
-            left: number;
-            top: number;
-            right: number;
-            bottom: number;
-        };
         'safe-area-insets': {
             left: number;
             top: number;
@@ -479,12 +435,6 @@ declare const emulatedDevices: ({
     modes: {
         title: string;
         orientation: string;
-        insets: {
-            left: number;
-            top: number;
-            right: number;
-            bottom: number;
-        };
     }[];
     'foldable-screen'?: undefined;
 } | {
@@ -561,12 +511,6 @@ declare const emulatedDevices: ({
     modes: {
         title: string;
         orientation: string;
-        insets: {
-            left: number;
-            top: number;
-            right: number;
-            bottom: number;
-        };
     }[];
 } | {
     'dual-screen'?: undefined;

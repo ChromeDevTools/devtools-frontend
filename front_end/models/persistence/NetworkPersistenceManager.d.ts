@@ -6,6 +6,7 @@ import * as Breakpoints from '../breakpoints/breakpoints.js';
 import * as Workspace from '../workspace/workspace.js';
 import { IsolatedFileSystemManager } from './IsolatedFileSystemManager.js';
 import { PersistenceImpl } from './PersistenceImpl.js';
+export declare const persistenceNetworkOverridesEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.Observer {
     #private;
     constructor(workspace: Workspace.Workspace.WorkspaceImpl, persistence: PersistenceImpl, breakpointManager: Breakpoints.BreakpointManager.BreakpointManager, targetManager: SDK.TargetManager.TargetManager, settings: Common.Settings.Settings, isolatedFileSystemManager: IsolatedFileSystemManager, multitargetNetworkManager: SDK.NetworkManager.MultitargetNetworkManager);

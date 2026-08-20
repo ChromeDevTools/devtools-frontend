@@ -203,7 +203,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     });
     objectTree.expanded = true;
     return html`
-      <li role=treeitem class="source-code object-properties-section-root-element object-properties-section" open>
+      <li role=treeitem class="source-code object-properties-section-root-element object-properties-section" toggle-on-click open>
         ${object.description}
         ${object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing}
       </li>
@@ -241,13 +241,14 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
   // clang-format off
   render(html`<style>${requestPayloadViewStyles}</style>
-   <devtools-tree dense class=request-payload-tree .template=${html`
+   <devtools-tree dense show-selection-on-keyboard-focus class=request-payload-tree .template=${html`
      <style>${objectValueStyles}</style>
      <style>${objectPropertiesSectionStyles}</style>
      <style>${requestPayloadTreeStyles}</style>
      <ul role=tree>
       <li
           role=treeitem
+          toggle-on-click
           ?hidden=${!input.queryParameters}
           jslog=${VisualLogging.section().context('query-string')}
           @contextmenu=${onContextMenu(
@@ -280,6 +281,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       </li>
       <li
           role=treeitem
+          toggle-on-click
           ?hidden=${!input.formData || !input.formParameters}
           jslog=${VisualLogging.section().context('form-data')}
           @contextmenu=${onContextMenu(
@@ -311,6 +313,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       </li>
       <li
           role=treeitem
+          toggle-on-click
           ?hidden=${!input.formData || Boolean(input.formParameters) || Boolean(input.binaryPayloadContentData)}
           jslog=${VisualLogging.section().context('request-payload')}
           @contextmenu=${onContextMenu(

@@ -461,4 +461,33 @@ describeWithEnvironment('RequestPayloadView', () => {
     assert.include(getPayloadValues(), 'qBar qBaz');
     assert.include(getPayloadValues(), 'fBar%20fBaz');
   });
+
+  it('toggles section expansion on click', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create('requestId' as Protocol.Network.RequestId,
+                                                             urlString`https://example.com/api?foo=bar`, urlString``,
+                                                             null, null, null);
+    const view = new Network.RequestPayloadView.RequestPayloadView();
+    view.request = request;
+    renderElementIntoDOM(view, {includeCommonStyles: true});
+    view.wasShown();
+
+    await view.updateComplete;
+
+    const tree = view.element.querySelector('devtools-tree');
+    assert.exists(tree);
+    const treeOutline = tree.getInternalTreeOutlineForTest();
+    const sectionElement = treeOutline.rootElement().childAt(0);
+    assert.exists(sectionElement);
+    assert.isTrue(sectionElement.toggleOnClick);
+    assert.isTrue(sectionElement.expanded);
+
+    // Click on the row (not on the disclosure triangle).
+    sectionElement.listItemElement.dispatchEvent(
+        new MouseEvent('click', {bubbles: true, cancelable: true, clientX: 100}));
+    assert.isFalse(sectionElement.expanded);
+
+    sectionElement.listItemElement.dispatchEvent(
+        new MouseEvent('click', {bubbles: true, cancelable: true, clientX: 100}));
+    assert.isTrue(sectionElement.expanded);
+  });
 });

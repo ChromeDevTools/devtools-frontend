@@ -132,7 +132,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             link: WEBAUDIO_EXPLANATION_URL,
           })}
         </div>` : html`<div class="web-audio-details-container vbox flex-auto">
-          <div class="context-detail-container">
+          <div class="context-detail-container" jslog=${VisualLogging.section('audio-context-details')}>
             <div class="context-detail-header">
               <div class="context-detail-title">
                 ${selectedContext.contextType === 'realtime' ? i18n.i18n.lockedString('AudioContext')
@@ -140,24 +140,24 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               </div>
               <div class="context-detail-subtitle">${selectedContext.contextId}</div>
             </div>
-            <div class="context-detail-row">
+            <div class="context-detail-row" jslog=${VisualLogging.item('detail-row')}>
               <div class="context-detail-row-entry">${i18nString(UIStrings.state)}</div>
               <div class="context-detail-row-value">${selectedContext.contextState}</div>
             </div>
-            <div class="context-detail-row">
+            <div class="context-detail-row" jslog=${VisualLogging.item('detail-row')}>
               <div class="context-detail-row-entry">${i18nString(UIStrings.sampleRate)}</div>
               <div class="context-detail-row-value">${selectedContext.sampleRate} Hz</div>
             </div>
             ${selectedContext.contextType === 'realtime' ? html`
-              <div class="context-detail-row">
+              <div class="context-detail-row" jslog=${VisualLogging.item('detail-row')}>
                 <div class="context-detail-row-entry">${i18nString(UIStrings.callbackBufferSize)}</div>
                 <div class="context-detail-row-value">${selectedContext.callbackBufferSize} frames</div>
               </div>` : ''}
-            <div class="context-detail-row">
+            <div class="context-detail-row" jslog=${VisualLogging.item('detail-row')}>
               <div class="context-detail-row-entry">${i18nString(UIStrings.renderQuantumSize)}</div>
               <div class="context-detail-row-value">${selectedContext.renderQuantumSize} frames</div>
             </div>
-            <div class="context-detail-row">
+            <div class="context-detail-row" jslog=${VisualLogging.item('detail-row')}>
               <div class="context-detail-row-entry">${i18nString(UIStrings.maxOutputChannels)}</div>
               <div class="context-detail-row-value">${selectedContext.maxOutputChannelCount} ch</div>
             </div>
@@ -165,7 +165,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         </div>`}
       <div class="web-audio-summary-container">
         ${contextRealtimeData ?
-            html`<div class="context-summary-container">
+            html`<div class="context-summary-container" jslog=${VisualLogging.section('audio-context-summary')}>
             <span>${i18nString(UIStrings.currentTime)}: ${contextRealtimeData.currentTime.toFixed(3)} s</span>
             <span>\u2758</span>
             <span>${i18nString(UIStrings.callbackInterval)}: μ = ${

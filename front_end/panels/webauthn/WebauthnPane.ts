@@ -189,7 +189,7 @@ function renderCredentialsDataGrid(
         </thead>
         <tbody>
         ${credentials.length ? repeat(credentials, c => c.credentialId, credential => html`
-          <tr>
+          <tr jslog=${VisualLogging.tableRow('credential')}>
             <td>${credential.credentialId}</td>
             <td>${credential.isResidentCredential}</td>
             <td>${credential.rpId}</td>
@@ -492,19 +492,19 @@ function renderAuthenticatorFields(
   // clang-format off
   return html`
     <div class="authenticator-fields">
-      <div class="authenticator-field">
+      <div class="authenticator-field" jslog=${VisualLogging.item('authenticator-field')}>
         <label class="authenticator-option-label">${i18nString(UIStrings.uuid)}</label>
         <div class="authenticator-field-value">${authenticatorId}</div>
       </div>
-      <div class="authenticator-field">
+      <div class="authenticator-field" jslog=${VisualLogging.item('authenticator-field')}>
         <label class="authenticator-option-label">${i18nString(UIStrings.protocol)}</label>
         <div class="authenticator-field-value">${options.protocol}</div>
       </div>
-      <div class="authenticator-field">
+      <div class="authenticator-field" jslog=${VisualLogging.item('authenticator-field')}>
         <label class="authenticator-option-label">${i18nString(UIStrings.transport)}</label>
         <div class="authenticator-field-value">${options.transport}</div>
       </div>
-      <div class="authenticator-field">
+      <div class="authenticator-field" jslog=${VisualLogging.item('authenticator-field')}>
         <label class="authenticator-option-label">
           ${i18nString(UIStrings.supportsResidentKeys)}
         </label>
@@ -512,7 +512,7 @@ function renderAuthenticatorFields(
           ${options.hasResidentKey ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
         </div>
       </div>
-      <div class="authenticator-field">
+      <div class="authenticator-field" jslog=${VisualLogging.item('authenticator-field')}>
         <label class="authenticator-option-label">
           ${i18nString(UIStrings.supportsLargeBlob)}
         </label>
@@ -520,7 +520,7 @@ function renderAuthenticatorFields(
           ${options.hasLargeBlob ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
         </div>
       </div>
-      <div class="authenticator-field">
+      <div class="authenticator-field" jslog=${VisualLogging.item('authenticator-field')}>
         <label class="authenticator-option-label">
           ${i18nString(UIStrings.supportsUserVerification)}
         </label>
@@ -528,7 +528,7 @@ function renderAuthenticatorFields(
           ${options.hasUserVerification ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
         </div>
       </div>
-      <div class="authenticator-field">
+      <div class="authenticator-field" jslog=${VisualLogging.item('authenticator-field')}>
         <label class="authenticator-option-label">
           ${i18nString(UIStrings.supportsHmacSecret)}
         </label>
@@ -536,7 +536,7 @@ function renderAuthenticatorFields(
           ${options.hasHmacSecret ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
         </div>
       </div>
-      <div class="authenticator-field">
+      <div class="authenticator-field" jslog=${VisualLogging.item('authenticator-field')}>
         <label class="authenticator-option-label">
           ${i18nString(UIStrings.supportsHmacSecretMc)}
         </label>

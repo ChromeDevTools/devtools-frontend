@@ -86,8 +86,9 @@ const DEFAULT_VIEW: PerformanceMonitorView = (input, output, target) => {
       chartsInfo: input.chartsInfo,
       metrics: input.metrics,
     })} class=${classMap({suspended: input.suspended})}></devtools-widget>
-    <div class="perfmon-chart-container ${classMap({suspended: input.suspended})}">
+    <div class="perfmon-chart-container ${classMap({suspended: input.suspended})}" jslog=${VisualLogging.section('perfmon-chart')}>
       <canvas tabindex="-1" aria-label=${i18nString(UIStrings.graphsDisplayingARealtimeViewOf)}
+          jslog=${VisualLogging.canvas('perfmon-canvas')}
           .width=${Math.round(input.width * window.devicePixelRatio)} .height=${input.height}
           style="height:${input.height / window.devicePixelRatio}px" ${ref(e => {
             if (e) {

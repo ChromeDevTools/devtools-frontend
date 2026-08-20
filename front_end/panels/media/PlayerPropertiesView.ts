@@ -182,6 +182,7 @@ export class PropertyRenderer extends UI.Widget.VBox {
   constructor(title: Platform.UIString.LocalizedString) {
     super();
     this.contentElement.classList.add('media-property-renderer');
+    this.contentElement.setAttribute('jslog', `${VisualLogging.item('property-row')}`);
     const titleElement = this.contentElement.createChild('span', 'media-property-renderer-title');
     this.contents = this.contentElement.createChild('div', 'media-property-renderer-contents');
     UI.UIUtils.createTextChild(titleElement, title);
@@ -295,6 +296,7 @@ export class AttributesView extends UI.Widget.VBox {
     super();
     this.contentHash = 0;
     this.contentElement.classList.add('media-attributes-view');
+    this.contentElement.setAttribute('jslog', `${VisualLogging.section('media-attributes')}`);
     for (const element of elements) {
       element.show(this.contentElement);
       // We just need a really simple way to compare the topical equality

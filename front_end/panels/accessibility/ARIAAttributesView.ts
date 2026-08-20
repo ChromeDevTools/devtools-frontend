@@ -35,6 +35,7 @@ interface ViewInput {
   onCancelEditing: (attribute: SDK.DOMModel.Attribute) => void;
   attributeBeingEdited: SDK.DOMModel.Attribute|null;
   attributes: SDK.DOMModel.Attribute[];
+  backendNodeId?: number;
 }
 
 type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
@@ -70,7 +71,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
            .template=${html`
              <ul role="tree">
               ${input.attributes?.map(attribute => html`
-                <li role="treeitem">
+                <li role="treeitem" jslog=${VisualLogging.treeItem('aria-attribute')}>
                   <style>${accessibilityPropertiesStyles}</style>
                   <span class="ax-name monospace" @mousedown=${onStartEditing.bind(null, attribute)}>
                     ${attribute.name}
@@ -93,7 +94,14 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
              </ul>
            `}></devtools-tree>`,
       // clang-format on
-      target, {container: {attributes: {jslog: `${VisualLogging.section('aria-attributes')}`}}});
+      target, {
+        container: {
+          attributes: {
+            jslog: `${VisualLogging.section('aria-attributes')}`,
+            ...(input.backendNodeId ? {'data-backend-node-id': `${input.backendNodeId}`} : {}),
+          },
+        },
+      });
 };
 
 export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
@@ -150,6 +158,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
       onCommitEditing,
       onCancelEditing,
       propertyCompletions,
+      backendNodeId: this.node()?.backendNodeId(),
     };
     this.#view(input, {}, this.contentElement);
   }

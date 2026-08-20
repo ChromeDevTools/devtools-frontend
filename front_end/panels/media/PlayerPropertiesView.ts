@@ -150,7 +150,8 @@ export const enum PlayerPropertyKeys {
   BITRATE = 'kBitrate',
   MAX_DURATION = 'kMaxDuration',
   START_TIME = 'kStartTime',
-  IS_CDM_ATTACHED = 'kIsCdmAttached',
+  // Not observed
+  // IS_CDM_ATTACHED = 'kIsCdmAttached',
   IS_STREAMING = 'kIsStreaming',
   FRAME_URL = 'kFrameUrl',
   FRAME_TITLE = 'kFrameTitle',
@@ -395,9 +396,9 @@ class GenericTrackMenu extends UI.TabbedPane.TabbedPane {
       }
       this.closeTab(tabId, /* userGesture=*/ false);
     }
-    this.appendTab(
-        tabId,  // No need for localizing, internal ID.
-        `${this.trackName} #${trackNumber}`, element, `${this.decoderName} ${localizedTrackLower} #${trackNumber}`);
+    this.appendTab(tabId,  // No need for localizing, internal ID.
+                   `${this.trackName} #${trackNumber}`, element,
+                   `${this.decoderName} ${localizedTrackLower} #${trackNumber}`);
   }
 }
 
@@ -434,6 +435,139 @@ class NoTracksPlaceholderMenu extends UI.Widget.VBox {
   }
 }
 
+class Property {
+  protected dataInternal: string|null = null;
+  constructor(readonly type: PlayerPropertyKeys) {
+  }
+
+  protected parse<T>(val: string): T {
+    try {
+      return JSON.parse(val) as T;
+    } catch {
+      return val as T;
+    }
+  }
+
+  get data(): string|null {
+    return this.dataInternal;
+  }
+
+  set data(val: string|null) {
+    if (!val) {
+      this.dataInternal = null;
+      return;
+    }
+    // Some properties are just raw strings.
+    this.dataInternal = String(this.parse<string>(val));
+  }
+}
+
+class TotalBytesProperty extends Property {
+  constructor() {
+    super(PlayerPropertyKeys.TOTAL_BYTES);
+  }
+
+  override set data(val: string|null) {
+    this.dataInternal = val === null ? null : TotalBytesProperty.formatFileSize(this.parse<string|number>(val));
+  }
+
+  static formatFileSize(bytes: string|number): string {
+    if (bytes === '') {
+      return '0 bytes';
+    }
+    const actualBytes = Number(bytes);
+    if (actualBytes < 1000) {
+      return `${bytes} bytes`;
+    }
+    const power = Math.floor(Math.log10(actualBytes) / 3);
+    const suffix = ['bytes', 'kB', 'MB', 'GB', 'TB'][power];
+    const bytesDecimal = (actualBytes / Math.pow(1000, power)).toFixed(2);
+    return `${bytesDecimal} ${suffix}`;
+  }
+}
+
+class BitRateProperty extends Property {
+  constructor() {
+    super(PlayerPropertyKeys.BITRATE);
+  }
+
+  override set data(val: string|null) {
+    this.dataInternal = val === null ? null : BitRateProperty.formatKbps(this.parse<string|number>(val));
+  }
+
+  static formatKbps(bitsPerSecond: string|number): string {
+    if (bitsPerSecond === '') {
+      return '0 kbps';
+    }
+    const kbps = Math.floor(Number(bitsPerSecond) / 1000);
+    return `${kbps} kbps`;
+  }
+}
+
+class MaxDurationProperty extends Property {
+  constructor() {
+    super(PlayerPropertyKeys.MAX_DURATION);
+  }
+
+  override set data(val: string|null) {
+    this.dataInternal = val === null ? null : MaxDurationProperty.formatTime(this.parse<string|number>(val));
+  }
+
+  static formatTime(seconds: string|number): string {
+    if (seconds === '') {
+      return '0:00';
+    }
+    const date = new Date(0);
+    date.setSeconds(Number(seconds));
+    return date.toISOString().substring(11, 19);
+  }
+}
+
+class HlsBufferedRangesProperty extends Property {
+  constructor() {
+    super(PlayerPropertyKeys.HLS_BUFFERED_RANGES);
+  }
+
+  override set data(val: string|null) {
+    this.dataInternal =
+        val === null ? null : HlsBufferedRangesProperty.formatBufferedRanges(this.parse<Array<[number, number]>>(val));
+  }
+
+  static formatBufferedRanges(ranges: Array<[number, number]>): string {
+    // ranges is an array of `Range`, where a `Range` is a tuple-array of start/end floating point numbers.
+    return ranges
+        .map(range => {
+          return '[' + range[0] + ' → ' + range[1] + ']';
+        })
+        .join(', ');
+  }
+}
+
+class TrackProperty extends Property {
+  #entries: TabData[]|null = null;
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+  constructor(type: PlayerPropertyKeys.VIDEO_TRACKS|PlayerPropertyKeys.AUDIO_TRACKS|PlayerPropertyKeys.TEXT_TRACKS) {
+    super(type);
+  }
+
+  get entries(): TabData[]|null {
+    return this.#entries;
+  }
+
+  override get data(): never {
+    throw new Error('Cannot access raw data');
+  }
+
+  override set data(val: string|null) {
+    if (val === null) {
+      this.#entries = null;
+      return;
+    }
+    const parsed = this.parse<TabData[]>(val);
+    this.#entries = Array.isArray(parsed) ? parsed : [];
+  }
+}
+
 export class PlayerPropertiesView extends UI.Widget.VBox {
   private readonly mediaElements: PropertyRenderer[];
   private readonly videoDecoderElements: PropertyRenderer[];
@@ -445,6 +579,42 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   private readonly videoDecoderTabs: DecoderTrackMenu;
   private readonly audioDecoderTabs: DecoderTrackMenu;
   private textTracksTabs: GenericTrackMenu|NoTracksPlaceholderMenu|null;
+
+  #properties: Record<PlayerPropertyKeys, Property> = {
+    /* Media properties */
+    [PlayerPropertyKeys.RESOLUTION]: new Property(PlayerPropertyKeys.RESOLUTION),
+    [PlayerPropertyKeys.TOTAL_BYTES]: new TotalBytesProperty(),
+    [PlayerPropertyKeys.BITRATE]: new BitRateProperty(),
+    [PlayerPropertyKeys.MAX_DURATION]: new MaxDurationProperty(),
+    [PlayerPropertyKeys.START_TIME]: new Property(PlayerPropertyKeys.START_TIME),
+    [PlayerPropertyKeys.IS_STREAMING]: new Property(PlayerPropertyKeys.IS_STREAMING),
+    [PlayerPropertyKeys.FRAME_URL]: new Property(PlayerPropertyKeys.FRAME_URL),
+    [PlayerPropertyKeys.FRAME_TITLE]: new Property(PlayerPropertyKeys.FRAME_TITLE),
+    [PlayerPropertyKeys.IS_SINGLE_ORIGIN]: new Property(PlayerPropertyKeys.IS_SINGLE_ORIGIN),
+    [PlayerPropertyKeys.IS_RANGE_HEADER_SUPPORTED]: new Property(PlayerPropertyKeys.IS_RANGE_HEADER_SUPPORTED),
+    [PlayerPropertyKeys.FRAMERATE]: new Property(PlayerPropertyKeys.FRAMERATE),
+    [PlayerPropertyKeys.VIDEO_PLAYBACK_ROUGHNESS]: new Property(PlayerPropertyKeys.VIDEO_PLAYBACK_ROUGHNESS),
+    [PlayerPropertyKeys.VIDEO_PLAYBACK_FREEZING]: new Property(PlayerPropertyKeys.VIDEO_PLAYBACK_FREEZING),
+    [PlayerPropertyKeys.RENDERER_NAME]: new Property(PlayerPropertyKeys.RENDERER_NAME),
+    [PlayerPropertyKeys.HLS_BUFFERED_RANGES]: new HlsBufferedRangesProperty(),
+
+    /* Video Decoder Properties */
+    [PlayerPropertyKeys.VIDEO_DECODER_NAME]: new Property(PlayerPropertyKeys.VIDEO_DECODER_NAME),
+    [PlayerPropertyKeys.IS_PLATFORM_VIDEO_DECODER]: new Property(PlayerPropertyKeys.IS_PLATFORM_VIDEO_DECODER),
+    [PlayerPropertyKeys.VIDEO_ENCODER_NAME]: new Property(PlayerPropertyKeys.VIDEO_ENCODER_NAME),
+    [PlayerPropertyKeys.IS_PLATFORM_VIDEO_ENCODER]: new Property(PlayerPropertyKeys.IS_PLATFORM_VIDEO_ENCODER),
+    [PlayerPropertyKeys.IS_VIDEO_DECRYPTION_DEMUXER_STREAM]:
+        new Property(PlayerPropertyKeys.IS_VIDEO_DECRYPTION_DEMUXER_STREAM),
+    [PlayerPropertyKeys.VIDEO_TRACKS]: new TrackProperty(PlayerPropertyKeys.VIDEO_TRACKS),
+
+    /* Audio Decoder Properties */
+    [PlayerPropertyKeys.AUDIO_DECODER_NAME]: new Property(PlayerPropertyKeys.AUDIO_DECODER_NAME),
+    [PlayerPropertyKeys.IS_PLATFORM_AUDIO_DECODER]: new Property(PlayerPropertyKeys.IS_PLATFORM_AUDIO_DECODER),
+    [PlayerPropertyKeys.IS_AUDIO_DECRYPTING_DEMUXER_STREAM]:
+        new Property(PlayerPropertyKeys.IS_AUDIO_DECRYPTING_DEMUXER_STREAM),
+    [PlayerPropertyKeys.AUDIO_TRACKS]: new TrackProperty(PlayerPropertyKeys.AUDIO_TRACKS),
+    [PlayerPropertyKeys.TEXT_TRACKS]: new TrackProperty(PlayerPropertyKeys.TEXT_TRACKS),
+  };
 
   constructor() {
     super({jslog: `${VisualLogging.pane('properties')}`});
@@ -502,46 +672,10 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
       throw new Error(`Player property "${property.name}" not supported.`);
     }
     renderer.updateData(property.value);
-  }
-
-  formatKbps(bitsPerSecond: string|number): string {
-    if (bitsPerSecond === '') {
-      return '0 kbps';
+    if (!(property.name in this.#properties)) {
+      throw new Error(`Player property "${property.name}" not supported.`);
     }
-    const kbps = Math.floor(Number(bitsPerSecond) / 1000);
-    return `${kbps} kbps`;
-  }
-
-  formatTime(seconds: string|number): string {
-    if (seconds === '') {
-      return '0:00';
-    }
-    const date = new Date();
-    date.setSeconds(Number(seconds));
-    return date.toISOString().substr(11, 8);
-  }
-
-  formatFileSize(bytes: string): string {
-    if (bytes === '') {
-      return '0 bytes';
-    }
-    const actualBytes = Number(bytes);
-    if (actualBytes < 1000) {
-      return `${bytes} bytes`;
-    }
-    const power = Math.floor(Math.log10(actualBytes) / 3);
-    const suffix = ['bytes', 'kB', 'MB', 'GB', 'TB'][power];
-    const bytesDecimal = (actualBytes / Math.pow(1000, power)).toFixed(2);
-    return `${bytesDecimal} ${suffix}`;
-  }
-
-  formatBufferedRanges(ranges: string[]): string {
-    // ranges is an array of `Range`, where a `Range` is a tuple-array of start/end floating point numbers.
-    return ranges
-        .map(range => {
-          return '[' + range[0] + ' → ' + range[1] + ']';
-        })
-        .join(', ');
+    this.#properties[property.name as PlayerPropertyKeys].data = property.value;
   }
 
   populateAttributesAndElements(): void {
@@ -550,15 +684,15 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     this.mediaElements.push(resolution);
     this.attributeMap.set(PlayerPropertyKeys.RESOLUTION, resolution);
 
-    const fileSize = new FormattedPropertyRenderer(i18nString(UIStrings.fileSize), this.formatFileSize);
+    const fileSize = new FormattedPropertyRenderer(i18nString(UIStrings.fileSize), TotalBytesProperty.formatFileSize);
     this.mediaElements.push(fileSize);
     this.attributeMap.set(PlayerPropertyKeys.TOTAL_BYTES, fileSize);
 
-    const bitrate = new FormattedPropertyRenderer(i18nString(UIStrings.bitrate), this.formatKbps);
+    const bitrate = new FormattedPropertyRenderer(i18nString(UIStrings.bitrate), BitRateProperty.formatKbps);
     this.mediaElements.push(bitrate);
     this.attributeMap.set(PlayerPropertyKeys.BITRATE, bitrate);
 
-    const duration = new FormattedPropertyRenderer(i18nString(UIStrings.duration), this.formatTime);
+    const duration = new FormattedPropertyRenderer(i18nString(UIStrings.duration), MaxDurationProperty.formatTime);
     this.mediaElements.push(duration);
     this.attributeMap.set(PlayerPropertyKeys.MAX_DURATION, duration);
 
@@ -602,8 +736,8 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     this.mediaElements.push(rendererName);
     this.attributeMap.set(PlayerPropertyKeys.RENDERER_NAME, rendererName);
 
-    const hlsBufferedRanges =
-        new FormattedPropertyRenderer(i18nString(UIStrings.hlsBufferedRanges), this.formatBufferedRanges);
+    const hlsBufferedRanges = new FormattedPropertyRenderer(i18nString(UIStrings.hlsBufferedRanges),
+                                                            HlsBufferedRangesProperty.formatBufferedRanges);
     this.mediaElements.push(hlsBufferedRanges);
     this.attributeMap.set(PlayerPropertyKeys.HLS_BUFFERED_RANGES, hlsBufferedRanges);
 

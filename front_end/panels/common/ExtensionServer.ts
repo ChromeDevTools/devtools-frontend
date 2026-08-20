@@ -1795,7 +1795,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     void context
-        .evaluateWithSelectedFrameFallback({
+        .evaluate({
           expression,
           objectGroup: 'extension',
           includeCommandLineAPI: exposeCommandLineAPI,
@@ -1803,7 +1803,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
           returnByValue,
           generatePreview: false,
         },
-                                           /* userGesture */ false, /* awaitPromise */ false)
+                  /* userGesture */ false, /* awaitPromise */ false)
         .then(onEvaluate);
 
     function onEvaluate(result: SDK.RuntimeModel.EvaluationResult): void {

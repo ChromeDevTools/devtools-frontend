@@ -1,25 +1,22 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import type {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 
 import lockIconStyles from './lockIcon.css.js';
-import {OriginTreeElement} from './OriginTreeElement.js';
 import {
   createHighlightedUrl,
   getSecurityStateIconForDetailedView,
   getSecurityStateIconForOverview,
   OriginGroup,
 } from './SecurityPanel.js';
-import type {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
 import sidebarStyles from './sidebar.css.js';
 
 const UIStrings = {
@@ -208,245 +205,137 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
 export class SecurityPanelSidebar extends UI.Widget.VBox {
   readonly #securitySidebarLastItemSetting: Common.Settings.Setting<string>;
-  readonly sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
-  readonly #originGroupTitles: Map<OriginGroup, {title: string, icon?: Icon}>;
-  #originGroups: Map<OriginGroup, UI.TreeOutline.TreeElement>;
-  securityOverviewElement: OriginTreeElement;
-  readonly #elementsByOrigin: Map<string, OriginTreeElement>;
-  readonly #mainViewReloadMessage: UI.TreeOutline.TreeElement;
-  #mainOrigin: string|null;
+  #mainOrigin: string|null = null;
+  #origins = new Map<Platform.DevToolsPath.UrlString, Protocol.Security.SecurityState>();
+  #originsHidden = false;
+  #showOriginsUnconditionally = false;
+  #overviewSecurityState = Protocol.Security.SecurityState.Unknown;
+  #selectedElementId = 'overview';
+  readonly #view: View;
+  #onShowOrigin?: (origin: Platform.DevToolsPath.UrlString|null) => void;
 
-  constructor(element?: HTMLElement) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
+    this.#view = view;
+    this.registerRequiredCSS(lockIconStyles, sidebarStyles);
 
     this.#securitySidebarLastItemSetting =
         Common.Settings.Settings.instance().createSetting('security-last-selected-element-path', '');
-    this.#mainOrigin = null;
+  }
 
-    this.sidebarTree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
-    this.sidebarTree.registerRequiredCSS(lockIconStyles, sidebarStyles);
-    this.sidebarTree.element.classList.add('security-sidebar');
-    this.contentElement.appendChild(this.sidebarTree.element);
+  set onShowOrigin(callback: (origin: Platform.DevToolsPath.UrlString|null) => void) {
+    this.#onShowOrigin = callback;
+  }
 
-    const securitySectionTitle = i18nString(UIStrings.security);
-    const securityTreeSection = this.#addSidebarSection(securitySectionTitle, 'security');
-
-    this.securityOverviewElement =
-        new OriginTreeElement('security-main-view-sidebar-tree-item', this.#renderTreeElement);
-    this.securityOverviewElement.tooltip = i18nString(UIStrings.overview);
-    securityTreeSection.appendChild(this.securityOverviewElement);
-
-    this.#originGroupTitles = new Map([
-      [OriginGroup.MainOrigin, {title: i18nString(UIStrings.mainOrigin)}],
-      [
-        OriginGroup.NonSecure,
-        {
-          title: i18nString(UIStrings.nonsecureOrigins),
-          icon: getSecurityStateIconForDetailedView(
-              Protocol.Security.SecurityState.Insecure,
-              `lock-icon lock-icon-${Protocol.Security.SecurityState.Insecure}`),
-        },
-      ],
-      [
-        OriginGroup.Secure,
-        {
-          title: i18nString(UIStrings.secureOrigins),
-          icon: getSecurityStateIconForDetailedView(
-              Protocol.Security.SecurityState.Secure, `lock-icon lock-icon-${Protocol.Security.SecurityState.Secure}`),
-        },
-      ],
-      [
-        OriginGroup.Unknown,
-        {
-          title: i18nString(UIStrings.unknownCanceled),
-          icon: getSecurityStateIconForDetailedView(
-              Protocol.Security.SecurityState.Unknown,
-              `lock-icon lock-icon-${Protocol.Security.SecurityState.Unknown}`),
-        },
-      ],
-    ]);
-
-    this.#originGroups = new Map();
-    for (const group of Object.values(OriginGroup)) {
-      const element = this.#createOriginGroupElement(
-          this.#originGroupTitles.get(group)?.title as string, this.#originGroupTitles.get(group)?.icon);
-      this.#originGroups.set(group, element);
-      securityTreeSection.appendChild(element);
-    }
-
-    this.#mainViewReloadMessage = new UI.TreeOutline.TreeElement(i18nString(UIStrings.reloadToViewDetails));
-    this.#mainViewReloadMessage.selectable = false;
-    this.#mainViewReloadMessage.listItemElement.classList.add('security-main-view-reload-message');
-    const treeElement = this.#originGroups.get(OriginGroup.MainOrigin);
-    (treeElement as UI.TreeOutline.TreeElement).appendChild(this.#mainViewReloadMessage);
-
-    this.#clearOriginGroups();
-
-    this.#elementsByOrigin = new Map();
-
-    this.element.addEventListener('update-sidebar-selection', (event: Event) => {
-      const id: string = (event as CustomEvent).detail.id;
-      this.#securitySidebarLastItemSetting.set(id);
-    });
+  override wasShown(): void {
+    super.wasShown();
     this.showLastSelectedElement();
   }
 
-  // Used in web tests
-  elementsByOrigin(): Map<string, OriginTreeElement> {
-    return this.#elementsByOrigin;
-  }
-
   showLastSelectedElement(): void {
-    this.securityOverviewElement.select();
-    this.securityOverviewElement.showElement();
-  }
-
-  #addSidebarSection(title: string, jslogContext: string): UI.TreeOutline.TreeElement {
-    const treeElement = new UI.TreeOutline.TreeElement(title, true, jslogContext);
-    treeElement.listItemElement.classList.add('security-group-list-item');
-    treeElement.setCollapsible(false);
-    treeElement.selectable = false;
-    this.sidebarTree.appendChild(treeElement);
-    UI.ARIAUtils.markAsHeading(treeElement.listItemElement, 3);
-    UI.ARIAUtils.setLabel(treeElement.childrenListElement, title);
-    return treeElement;
-  }
-
-  #originGroupTitle(originGroup: OriginGroup): string {
-    return this.#originGroupTitles.get(originGroup)?.title as string;
-  }
-
-  #originGroupElement(originGroup: OriginGroup): UI.TreeOutline.TreeElement {
-    return this.#originGroups.get(originGroup) as UI.TreeOutline.TreeElement;
-  }
-
-  #createOriginGroupElement(originGroupTitle: string, originGroupIcon?: Icon): UI.TreeOutline.TreeElement {
-    const originGroup = new UI.TreeOutline.TreeElement(originGroupTitle, true);
-    originGroup.expand();
-    originGroup.listItemElement.classList.add('security-sidebar-origins');
-    if (originGroupIcon) {
-      originGroup.setLeadingIcons([originGroupIcon]);
-    }
-    UI.ARIAUtils.setLabel(originGroup.childrenListElement, originGroupTitle);
-    return originGroup;
+    this.#selectedElementId = 'overview';
+    this.#securitySidebarLastItemSetting.set('overview');
+    this.requestUpdate();
+    this.#onShowOrigin?.(null);
   }
 
   toggleOriginsList(hidden: boolean): void {
-    for (const element of this.#originGroups.values()) {
-      element.hidden = hidden;
-    }
+    this.#originsHidden = hidden;
+    this.#showOriginsUnconditionally = !hidden;
+    this.requestUpdate();
   }
 
   addOrigin(origin: Platform.DevToolsPath.UrlString, securityState: Protocol.Security.SecurityState): void {
-    this.#mainViewReloadMessage.hidden = true;
-    const originElement = new OriginTreeElement('security-sidebar-tree-item', this.#renderTreeElement, origin);
-    originElement.tooltip = origin;
-    this.#elementsByOrigin.set(origin, originElement);
-    this.updateOrigin(origin, securityState);
+    this.#origins.set(origin, securityState);
+    this.requestUpdate();
   }
 
   setMainOrigin(origin: string): void {
     this.#mainOrigin = origin;
+    this.requestUpdate();
   }
 
   get mainOrigin(): string|null {
     return this.#mainOrigin;
   }
 
-  get originGroups(): Map<OriginGroup, UI.TreeOutline.TreeElement> {
-    return this.#originGroups;
+  updateOrigin(origin: Platform.DevToolsPath.UrlString, securityState: Protocol.Security.SecurityState): void {
+    this.#origins.set(origin, securityState);
+    this.requestUpdate();
   }
 
-  updateOrigin(origin: string, securityState: Protocol.Security.SecurityState): void {
-    const originElement = this.#elementsByOrigin.get(origin) as OriginTreeElement;
-    originElement.setSecurityState(securityState);
-
-    let newParent: UI.TreeOutline.TreeElement;
-    if (origin === this.#mainOrigin) {
-      newParent = this.#originGroups.get(OriginGroup.MainOrigin) as UI.TreeOutline.TreeElement;
-      newParent.title = i18nString(UIStrings.mainOrigin);
-      if (securityState === Protocol.Security.SecurityState.Secure) {
-        newParent.setLeadingIcons(
-            [getSecurityStateIconForOverview(securityState, `lock-icon lock-icon-${securityState}`)]);
-      } else {
-        newParent.setLeadingIcons(
-            [getSecurityStateIconForOverview(securityState, `lock-icon lock-icon-${securityState}`)]);
-      }
-      UI.ARIAUtils.setLabel(newParent.childrenListElement, newParent.title);
-    } else {
-      switch (securityState) {
-        case Protocol.Security.SecurityState.Secure:
-          newParent = this.#originGroupElement(OriginGroup.Secure);
-          break;
-        case Protocol.Security.SecurityState.Unknown:
-          newParent = this.#originGroupElement(OriginGroup.Unknown);
-          break;
-        default:
-          newParent = this.#originGroupElement(OriginGroup.NonSecure);
-          break;
-      }
-    }
-
-    const oldParent = originElement.parent;
-    if (oldParent !== newParent) {
-      if (oldParent) {
-        oldParent.removeChild(originElement);
-        if (oldParent.childCount() === 0) {
-          oldParent.hidden = true;
-        }
-      }
-      newParent.appendChild(originElement);
-      newParent.hidden = false;
-    }
-  }
-
-  #clearOriginGroups(): void {
-    for (const [originGroup, originGroupElement] of this.#originGroups) {
-      if (originGroup === OriginGroup.MainOrigin) {
-        for (let i = originGroupElement.childCount() - 1; i > 0; i--) {
-          originGroupElement.removeChildAtIndex(i);
-        }
-        originGroupElement.title = this.#originGroupTitle(OriginGroup.MainOrigin);
-        originGroupElement.hidden = false;
-        this.#mainViewReloadMessage.hidden = false;
-      } else {
-        originGroupElement.removeChildren();
-        originGroupElement.hidden = true;
-      }
-    }
+  updateOverviewSecurityState(securityState: Protocol.Security.SecurityState): void {
+    this.#overviewSecurityState = securityState;
+    this.requestUpdate();
   }
 
   clearOrigins(): void {
-    this.#clearOriginGroups();
-    this.#elementsByOrigin.clear();
+    this.#origins.clear();
+    this.requestUpdate();
   }
 
-  override focus(): void {
-    this.sidebarTree.focus();
-  }
-
-  #renderTreeElement(element: SecurityPanelSidebarTreeElement): void {
-    if (element instanceof OriginTreeElement) {
-      const securityState = element.securityState() ?? Protocol.Security.SecurityState.Unknown;
-
-      const isOverviewElement = element.listItemElement.classList.contains('security-main-view-sidebar-tree-item');
-
-      const icon = isOverviewElement ?
-          getSecurityStateIconForOverview(securityState, `lock-icon lock-icon-${securityState}`) :
-          getSecurityStateIconForDetailedView(securityState, `security-property security-property-${securityState}`);
-
-      element.setLeadingIcons([icon]);
-
-      if (isOverviewElement) {
-        element.title = i18nString(UIStrings.overview);
-      } else {
-        const elementTitle =
-            createHighlightedUrl(element.origin() ?? Platform.DevToolsPath.EmptyUrlString, securityState);
-        if (element.listItemElement.lastChild) {
-          element.listItemElement.removeChild(element.listItemElement.lastChild);
-        }
-        element.listItemElement.appendChild(elementTitle);
-      }
+  // Used in web tests
+  elementsByOrigin(): Map<string, {
+    select: (omitFocus?: boolean, selectedByUser?: boolean) => void,
+    showElement: () => void,
+    origin: () => string,
+    securityState: () => Protocol.Security.SecurityState | undefined,
+  }> {
+    const map = new Map<string, {
+      select: (omitFocus?: boolean, selectedByUser?: boolean) => void,
+      showElement: () => void,
+      origin: () => string,
+      securityState: () => Protocol.Security.SecurityState | undefined,
+    }>();
+    for (const [origin, state] of this.#origins.entries()) {
+      const element = {
+        select: () => {
+          this.#selectedElementId = origin;
+          this.#securitySidebarLastItemSetting.set(origin);
+          this.requestUpdate();
+          this.#onShowOrigin?.(origin);
+        },
+        showElement: () => {
+          this.#onShowOrigin?.(origin);
+        },
+        origin: () => origin,
+        securityState: () => state,
+      };
+      map.set(origin, element);
     }
+    return map;
+  }
+
+  set selectedOrigin(origin: Platform.DevToolsPath.UrlString|null) {
+    this.#selectedElementId = origin ?? 'overview';
+    this.#securitySidebarLastItemSetting.set(this.#selectedElementId);
+    this.requestUpdate();
+    this.#onShowOrigin?.(origin);
+  }
+
+  get selectedOrigin(): string {
+    return this.#selectedElementId;
+  }
+
+  override performUpdate(): void {
+    const input: ViewInput = {
+      mainOrigin: this.#mainOrigin,
+      origins: this.#origins,
+      originsHidden: this.#originsHidden,
+      showOriginsUnconditionally: this.#showOriginsUnconditionally,
+      overviewSecurityState: this.#overviewSecurityState,
+      selectedElementId: this.#selectedElementId,
+    };
+    const output: ViewOutput = {
+      onElementSelected: (id: string) => {
+        this.#selectedElementId = id;
+        this.#securitySidebarLastItemSetting.set(id);
+        this.requestUpdate();
+      },
+      onShowOrigin: (origin: Platform.DevToolsPath.UrlString|null) => {
+        this.#onShowOrigin?.(origin);
+      },
+    };
+    this.#view(input, output, this.contentElement);
   }
 }

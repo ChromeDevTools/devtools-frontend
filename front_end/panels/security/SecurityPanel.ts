@@ -18,7 +18,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import lockIconStyles from './lockIcon.css.js';
 import mainViewStyles from './mainView.css.js';
-import {ShowOriginEvent} from './OriginTreeElement.js';
 import originViewStyles from './originView.css.js';
 import {
   Events,
@@ -580,13 +579,13 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
 
     this.mainView = new SecurityMainView();
     this.mainView.panel = this;
-    this.element.addEventListener(ShowOriginEvent.eventName, (event: ShowOriginEvent) => {
-      if (event.origin) {
-        this.showOrigin(event.origin);
+    this.sidebar.onShowOrigin = (origin: Platform.DevToolsPath.UrlString|null) => {
+      if (origin) {
+        this.showOrigin(origin);
       } else {
         this.setVisibleView(this.mainView);
       }
-    });
+    };
 
     this.lastResponseReceivedForLoaderId = new Map();
 
@@ -641,7 +640,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
   }
 
   private updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {
-    this.sidebar.securityOverviewElement.setSecurityState(visibleSecurityState.securityState);
+    this.sidebar.updateOverviewSecurityState(visibleSecurityState.securityState);
     this.mainView.updateVisibleSecurityState(visibleSecurityState);
   }
 

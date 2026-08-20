@@ -151,11 +151,11 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
             'https://developer.chrome.com/docs/devtools/settings/ignore-list/#skip-third-party'));
     automaticallyIgnoreListContainer.appendChild(automaticallyIgnoreLinkButton);
 
-    const ignoreListAnonymousScripts =
-        generalExclusionGroup.createChild('div', 'ignore-list-option')
-            .appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
-                i18nString(UIStrings.ignoreListAnonymousScripts),
-                Common.Settings.Settings.instance().moduleSetting('skip-anonymous-scripts')));
+    const ignoreListAnonymousScripts = generalExclusionGroup.createChild('div', 'ignore-list-option')
+                                           .appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
+                                               i18nString(UIStrings.ignoreListAnonymousScripts),
+                                               Common.Settings.Settings.instance().resolve(
+                                                   Workspace.IgnoreListManager.skipAnonymousScriptsSettingDescriptor)));
 
     const generalExclusionGroupCard = settingsContent.createChild('devtools-card', 'ignore-list-options');
     generalExclusionGroupCard.heading = i18nString(UIStrings.generalExclusionRules);

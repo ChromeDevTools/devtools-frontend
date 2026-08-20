@@ -69,6 +69,13 @@ export const automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor:
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
 
+export const skipAnonymousScriptsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'skip-anonymous-scripts',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};
+
 export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly #settings: Common.Settings.Settings;
@@ -97,7 +104,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     this.#settings.resolve(automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor)
         .addChangeListener(this.patternChanged.bind(this));
     this.#settings.moduleSetting('enable-ignore-listing').addChangeListener(this.patternChanged.bind(this));
-    this.#settings.moduleSetting('skip-anonymous-scripts').addChangeListener(this.patternChanged.bind(this));
+    this.#settings.resolve(skipAnonymousScriptsSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
 
     this.#targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
@@ -358,7 +365,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 
   get skipAnonymousScripts(): boolean {
-    return this.enableIgnoreListing && this.#settings.moduleSetting('skip-anonymous-scripts').get();
+    return this.enableIgnoreListing && this.#settings.resolve(skipAnonymousScriptsSettingDescriptor).get();
   }
 
   get automaticallyIgnoreListKnownThirdPartyScripts(): boolean {
@@ -381,11 +388,11 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     if (!this.enableIgnoreListing) {
       this.enableIgnoreListing = true;
     }
-    this.#settings.moduleSetting('skip-anonymous-scripts').set(true);
+    this.#settings.resolve(skipAnonymousScriptsSettingDescriptor).set(true);
   }
 
   unIgnoreListAnonymousScripts(): void {
-    this.#settings.moduleSetting('skip-anonymous-scripts').set(false);
+    this.#settings.resolve(skipAnonymousScriptsSettingDescriptor).set(false);
   }
 
   ignoreListThirdParty(): void {

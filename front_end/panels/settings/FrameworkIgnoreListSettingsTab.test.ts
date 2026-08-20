@@ -73,7 +73,9 @@ describeWithEnvironment('FrameworkIgnoreListSettingsTab', () => {
     const checkboxInput1 = generalCheckboxes[2].shadowRoot?.querySelector('input');
     assert.exists(checkboxInput1);
     checkboxInput1.click();
-    assert.isTrue(Common.Settings.Settings.instance().moduleSetting('skip-anonymous-scripts').get());
+    assert.isTrue(Common.Settings.Settings.instance()
+                      .resolve(Workspace.IgnoreListManager.skipAnonymousScriptsSettingDescriptor)
+                      .get());
   });
 
   it('updates checkbox state when settings are changed programmatically', () => {
@@ -88,7 +90,9 @@ describeWithEnvironment('FrameworkIgnoreListSettingsTab', () => {
         .set(false);
     assert.isFalse(generalCheckboxes[0].checked);
 
-    Common.Settings.Settings.instance().moduleSetting('skip-anonymous-scripts').set(true);
+    Common.Settings.Settings.instance()
+        .resolve(Workspace.IgnoreListManager.skipAnonymousScriptsSettingDescriptor)
+        .set(true);
     assert.isTrue(generalCheckboxes[2].checked);
   });
 

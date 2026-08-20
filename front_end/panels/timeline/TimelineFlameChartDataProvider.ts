@@ -186,7 +186,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         .moduleSetting('enable-ignore-listing')
         .addChangeListener(this.#onIgnoreListChanged.bind(this));
     Common.Settings.Settings.instance()
-        .moduleSetting('skip-anonymous-scripts')
+        .resolve(Workspace.IgnoreListManager.skipAnonymousScriptsSettingDescriptor)
         .addChangeListener(this.#onIgnoreListChanged.bind(this));
   }
 

@@ -20,7 +20,7 @@ buildconfig = "//build_overrides/BUILDCONFIG.gn"
 # "gn check" or "gn gen --check".
 check_targets = [ "*" ]
 
-script_executable = "python3"
+script_executable = "//third_party/cpython3/host/bin/python3"
 
 default_args = {
   # Use Siso instead of Ninja.

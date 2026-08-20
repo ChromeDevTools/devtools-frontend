@@ -1475,4 +1475,140 @@ describeWithEnvironment('CommentAnchorResolver', () => {
          assert.isTrue(Comments.CommentAnchorResolver.isElementVisible(visibleEl));
        });
   });
+
+  describe('computeVisibleRect', () => {
+    it('returns null for disconnected, hidden, or zero-sized elements', () => {
+      const disconnected = document.createElement('div');
+      assert.isNull(Comments.CommentAnchorResolver.computeVisibleRect(disconnected));
+
+      const hiddenEl = document.createElement('div');
+      hiddenEl.style.display = 'none';
+      container.appendChild(hiddenEl);
+      assert.isNull(Comments.CommentAnchorResolver.computeVisibleRect(hiddenEl));
+
+      const zeroSize = document.createElement('div');
+      zeroSize.getBoundingClientRect = () => new DOMRect(0, 0, 0, 0);
+      container.appendChild(zeroSize);
+      assert.isNull(Comments.CommentAnchorResolver.computeVisibleRect(zeroSize));
+    });
+
+    it('returns unclipped rect when element is inside unconstrained container', () => {
+      const el = document.createElement('div');
+      el.textContent = 'Unclipped';
+      el.getBoundingClientRect = () => new DOMRect(50, 100, 200, 60);
+      container.appendChild(el);
+
+      const rect = Comments.CommentAnchorResolver.computeVisibleRect(el);
+      assert.isNotNull(rect);
+      assert.strictEqual(rect?.left, 50);
+      assert.strictEqual(rect?.top, 100);
+      assert.strictEqual(rect?.width, 200);
+      assert.strictEqual(rect?.height, 60);
+      assert.strictEqual(rect?.right, 250);
+      assert.strictEqual(rect?.bottom, 160);
+    });
+
+    it('clips element rect to ancestor overflow: hidden / scroll container bounds', () => {
+      const scrollParent = document.createElement('div');
+      scrollParent.style.overflow = 'hidden';
+      scrollParent.style.position = 'relative';
+      scrollParent.getBoundingClientRect = () => new DOMRect(0, 50, 300, 100);
+      container.appendChild(scrollParent);
+
+      const child = document.createElement('div');
+      child.textContent = 'Partially visible child';
+      // Element starts at top: 30 (above parent top: 50) and extends to top: 120 (bottom: 120, inside parent bottom: 150)
+      child.getBoundingClientRect = () => new DOMRect(20, 30, 200, 90);
+      scrollParent.appendChild(child);
+
+      const rect = Comments.CommentAnchorResolver.computeVisibleRect(child);
+      assert.isNotNull(rect);
+      assert.strictEqual(rect?.top, 50);
+      assert.strictEqual(rect?.bottom, 120);
+      assert.strictEqual(rect?.height, 70);
+      assert.strictEqual(rect?.left, 20);
+      assert.strictEqual(rect?.right, 220);
+      assert.strictEqual(rect?.width, 200);
+    });
+
+    it('clips element rect extending past bottom of overflow container', () => {
+      const scrollParent = document.createElement('div');
+      scrollParent.style.overflowY = 'auto';
+      scrollParent.getBoundingClientRect = () => new DOMRect(0, 0, 400, 200);
+      container.appendChild(scrollParent);
+
+      const child = document.createElement('div');
+      child.textContent = 'Bottom overflowing child';
+      // Element starts at top: 150 and extends to bottom: 300 (past parent bottom: 200)
+      child.getBoundingClientRect = () => new DOMRect(10, 150, 100, 150);
+      scrollParent.appendChild(child);
+
+      const rect = Comments.CommentAnchorResolver.computeVisibleRect(child);
+      assert.isNotNull(rect);
+      assert.strictEqual(rect?.top, 150);
+      assert.strictEqual(rect?.bottom, 200);
+      assert.strictEqual(rect?.height, 50);
+      assert.strictEqual(rect?.left, 10);
+      assert.strictEqual(rect?.width, 100);
+    });
+
+    it('returns null when element is completely scrolled out of overflow container', () => {
+      const scrollParent = document.createElement('div');
+      scrollParent.style.overflow = 'hidden';
+      scrollParent.getBoundingClientRect = () => new DOMRect(0, 100, 400, 200);
+      container.appendChild(scrollParent);
+
+      const childScrolledAbove = document.createElement('div');
+      childScrolledAbove.textContent = 'Scrolled above';
+      childScrolledAbove.getBoundingClientRect = () => new DOMRect(0, 10, 100, 50);
+      scrollParent.appendChild(childScrolledAbove);
+
+      assert.isNull(Comments.CommentAnchorResolver.computeVisibleRect(childScrolledAbove));
+
+      const childScrolledBelow = document.createElement('div');
+      childScrolledBelow.textContent = 'Scrolled below';
+      childScrolledBelow.getBoundingClientRect = () => new DOMRect(0, 350, 100, 50);
+      scrollParent.appendChild(childScrolledBelow);
+
+      assert.isNull(Comments.CommentAnchorResolver.computeVisibleRect(childScrolledBelow));
+    });
+
+    it('clips correctly across Shadow DOM boundaries', () => {
+      const scrollParent = document.createElement('div');
+      scrollParent.style.overflow = 'hidden';
+      scrollParent.getBoundingClientRect = () => new DOMRect(0, 0, 300, 150);
+      container.appendChild(scrollParent);
+
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+      scrollParent.appendChild(host);
+
+      const innerChild = document.createElement('div');
+      innerChild.textContent = 'Shadow child';
+      innerChild.getBoundingClientRect = () => new DOMRect(0, 100, 400, 100);
+      shadow.appendChild(innerChild);
+
+      const rect = Comments.CommentAnchorResolver.computeVisibleRect(innerChild);
+      assert.isNotNull(rect);
+      assert.strictEqual(rect?.top, 100);
+      assert.strictEqual(rect?.bottom, 150);
+      assert.strictEqual(rect?.height, 50);
+      assert.strictEqual(rect?.left, 0);
+      assert.strictEqual(rect?.right, 300);
+      assert.strictEqual(rect?.width, 300);
+    });
+
+    it('supports custom targetRect parameter', () => {
+      const el = document.createElement('div');
+      container.appendChild(el);
+
+      const customRect = new DOMRect(15, 25, 80, 40);
+      const rect = Comments.CommentAnchorResolver.computeVisibleRect(el, customRect);
+      assert.isNotNull(rect);
+      assert.strictEqual(rect?.top, 25);
+      assert.strictEqual(rect?.left, 15);
+      assert.strictEqual(rect?.width, 80);
+      assert.strictEqual(rect?.height, 40);
+    });
+  });
 });

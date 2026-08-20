@@ -572,4 +572,88 @@ describeWithEnvironment('CommentOverlayManager', () => {
       assert.strictEqual(pins[1].top, pins[0].top + 26);
     });
   });
+
+  describe('Container and scroll clipping', () => {
+    it('clips highlight box and pin to ancestor scroll container when element is partially visible', () => {
+      const scrollParent = document.createElement('div');
+      scrollParent.style.overflow = 'hidden';
+      scrollParent.getBoundingClientRect = () => new DOMRect(0, 50, 400, 100);
+      container.appendChild(scrollParent);
+
+      const item = document.createElement('div');
+      item.setAttribute('jslog', 'TreeItem; context: clipped-item');
+      item.textContent = 'display: flex;';
+      // Element starts at top: 100 and extends to bottom: 200 (past parent bottom: 150)
+      item.getBoundingClientRect = () => new DOMRect(10, 100, 200, 100);
+      scrollParent.appendChild(item);
+
+      manager.start(container);
+      manager.setCommentMode(true);
+      const thread = manager.createComment(item, 'Clipped comment');
+      assert.isNotNull(thread);
+
+      const highlights = manager.getHighlightRects();
+      assert.lengthOf(highlights, 1);
+      assert.strictEqual(highlights[0].top, 100);
+      assert.strictEqual(highlights[0].height, 50);  // Clipped to 150 - 100 = 50
+      assert.strictEqual(highlights[0].left, 10);
+      assert.strictEqual(highlights[0].width, 200);
+
+      const pins = manager.getPinPositions();
+      assert.lengthOf(pins, 1);
+      assert.strictEqual(pins[0].top, 100 - 12);
+      assert.strictEqual(pins[0].left, 10 + 200 - 12);
+    });
+
+    it('hides highlight box and pin when element is completely scrolled out of scroll container', () => {
+      const scrollParent = document.createElement('div');
+      scrollParent.style.overflow = 'hidden';
+      scrollParent.getBoundingClientRect = () => new DOMRect(0, 50, 400, 100);
+      container.appendChild(scrollParent);
+
+      const item = document.createElement('div');
+      item.setAttribute('jslog', 'TreeItem; context: out-of-view-item');
+      item.textContent = 'display: none;';
+      // Element is completely below scrollParent (top: 200, bottom: 250)
+      item.getBoundingClientRect = () => new DOMRect(10, 200, 200, 50);
+      scrollParent.appendChild(item);
+
+      manager.start(container);
+      manager.setCommentMode(true);
+      const thread = manager.createComment(item, 'Out of view comment');
+      assert.isNotNull(thread);
+
+      const highlights = manager.getHighlightRects();
+      assert.lengthOf(highlights, 0);
+
+      const pins = manager.getPinPositions();
+      assert.lengthOf(pins, 0);
+    });
+
+    it('clips hover highlight to ancestor scroll container boundaries', () => {
+      const scrollParent = document.createElement('div');
+      scrollParent.style.overflow = 'hidden';
+      scrollParent.getBoundingClientRect = () => new DOMRect(0, 0, 300, 100);
+      container.appendChild(scrollParent);
+
+      const item = document.createElement('div');
+      item.setAttribute('jslog', 'TreeItem; context: hover-clipped');
+      item.textContent = 'hover clipped';
+      // Element extends beyond parent bottom (top: 50, bottom: 150)
+      item.getBoundingClientRect = () => new DOMRect(0, 50, 300, 100);
+      scrollParent.appendChild(item);
+
+      manager.start(container);
+      manager.setCommentMode(true);
+
+      const mouseoverEvent = new MouseEvent('mouseover', {bubbles: true, cancelable: true});
+      item.dispatchEvent(mouseoverEvent);
+
+      const hover = manager.getHoverHighlight();
+      assert.isNotNull(hover);
+      assert.strictEqual(hover?.top, 50);
+      assert.strictEqual(hover?.height, 50);  // Clipped to 100 - 50 = 50
+      assert.strictEqual(hover?.width, 300);
+    });
+  });
 });

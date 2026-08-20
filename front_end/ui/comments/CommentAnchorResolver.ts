@@ -507,6 +507,100 @@ export function rematchCommentAnchor(comment: CommentThread, root: Document|Elem
   return candidateList[0] || null;
 }
 
+export interface VisibleRect {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
+}
+
+function isClippingOverflow(overflow: string): boolean {
+  return overflow === 'hidden' || overflow === 'auto' || overflow === 'scroll' || overflow === 'clip';
+}
+
+/**
+ * Computes the visible viewport-relative bounding box of an element after clipping against
+ * all ancestor scroll/overflow containers and viewport boundaries across shadow DOM roots.
+ *
+ * @param element The source DOM element.
+ * @param targetRect Optional explicit bounding box (e.g. for sub-lines or custom targets).
+ * @returns The clipped viewport-relative rectangle or null if the element is completely clipped out of view or invisible.
+ */
+export function computeVisibleRect(element: Element, targetRect?: DOMRect): VisibleRect|null {
+  if (!element.isConnected) {
+    return null;
+  }
+  if (!element.checkVisibility({checkOpacity: true, checkVisibilityCSS: true, contentVisibilityAuto: true})) {
+    return null;
+  }
+
+  const rect = targetRect ?? element.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) {
+    return null;
+  }
+
+  let visibleLeft = rect.left;
+  let visibleRight = rect.right;
+  let visibleTop = rect.top;
+  let visibleBottom = rect.bottom;
+
+  const doc = element.ownerDocument || document;
+  const win = doc.defaultView || window;
+  const viewportWidth = win.innerWidth || doc.documentElement.clientWidth;
+  const viewportHeight = win.innerHeight || doc.documentElement.clientHeight;
+
+  visibleLeft = Math.max(visibleLeft, 0);
+  visibleTop = Math.max(visibleTop, 0);
+  visibleRight = Math.min(visibleRight, viewportWidth);
+  visibleBottom = Math.min(visibleBottom, viewportHeight);
+
+  if (visibleLeft >= visibleRight || visibleTop >= visibleBottom) {
+    return null;
+  }
+
+  let current = element.parentElementOrShadowHost();
+  while (current && current !== doc.documentElement && current !== doc.body) {
+    const style = win.getComputedStyle(current);
+    const clipsX = isClippingOverflow(style.overflowX);
+    const clipsY = isClippingOverflow(style.overflowY);
+
+    if (clipsX || clipsY) {
+      const parentRect = current.getBoundingClientRect();
+      if (clipsX) {
+        visibleLeft = Math.max(visibleLeft, parentRect.left);
+        visibleRight = Math.min(visibleRight, parentRect.right);
+      }
+      if (clipsY) {
+        visibleTop = Math.max(visibleTop, parentRect.top);
+        visibleBottom = Math.min(visibleBottom, parentRect.bottom);
+      }
+
+      if (visibleLeft >= visibleRight || visibleTop >= visibleBottom) {
+        return null;
+      }
+    }
+
+    current = current.parentElementOrShadowHost();
+  }
+
+  const width = visibleRight - visibleLeft;
+  const height = visibleBottom - visibleTop;
+  if (width <= 0 || height <= 0) {
+    return null;
+  }
+
+  return {
+    left: visibleLeft,
+    top: visibleTop,
+    right: visibleRight,
+    bottom: visibleBottom,
+    width,
+    height,
+  };
+}
+
 /**
  * Checks whether an element is connected to the DOM, visible according to `checkVisibility()`,
  * and has non-zero bounding box dimensions.

@@ -1418,9 +1418,10 @@ describe('addRequestHeaders security', () => {
     const multitargetManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
 
     // Set headers while on a permitted page.
+    const headersCall = spyCall(multitargetManager, 'setExtraHTTPHeaders');
     const networkApi = context.chrome.devtools?.network as Extensions.ExtensionAPI.PrivateAPI.Network;
     networkApi.addRequestHeaders(injectedHeaders);
-    await context.chrome.devtools?.network.getHAR(() => {});
+    await headersCall;
 
     // Navigate to a URL where the extension should NOT have access.
     target.setInspectedURL(navigateToUrl);
@@ -1455,15 +1456,20 @@ describe('addRequestHeaders security', () => {
   });
 
   it('extension-injected headers must not leak to forbidden-origin targets after navigation', async () => {
-    // Simulate getOriginsForbiddenForExtensions returning a forbidden origin.
-    window.DevToolsAPI = {
-      getOriginsForbiddenForExtensions: () => ['https://addons.example.com'],
-    };
+    const oldDevToolsAPI = window.DevToolsAPI;
+    try {
+      // Simulate getOriginsForbiddenForExtensions returning a forbidden origin.
+      window.DevToolsAPI = {
+        getOriginsForbiddenForExtensions: () => ['https://addons.example.com'],
+      };
 
-    await assertHeadersNotAppliedAfterNavigation(
-        urlString`https://addons.example.com/extensions`,
-        {Authorization: 'Bearer attacker'},
-    );
+      await assertHeadersNotAppliedAfterNavigation(
+          urlString`https://addons.example.com/extensions`,
+          {Authorization: 'Bearer attacker'},
+      );
+    } finally {
+      window.DevToolsAPI = oldDevToolsAPI;
+    }
   });
 
   it('extension-injected headers must not leak to file:// targets without file access', async () => {

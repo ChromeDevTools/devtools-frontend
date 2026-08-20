@@ -9,8 +9,18 @@ import {
 } from './tool_window_controls.js';
 
 describe('WindowControlsOverlay', () => {
-  const windowControlsOverlay = new WindowControlsOverlay(window, []);
-  const document = windowControlsOverlay.document;
+  let windowControlsOverlay: WindowControlsOverlay;
+  let document: Document;
+
+  beforeEach(() => {
+    windowControlsOverlay = new WindowControlsOverlay(window, []);
+    document = windowControlsOverlay.document;
+    windowControlsOverlay.install();
+  });
+
+  afterEach(() => {
+    windowControlsOverlay.uninstall();
+  });
 
   it('creates initially hidden toolbars', () => {
     const verifyOverlayToolBar = (osType: string, location: string) => {
@@ -23,8 +33,6 @@ describe('WindowControlsOverlay', () => {
       assert.isTrue(
           element.classList.contains(`image-group-${location}`), 'Expect the element to have the "image-group" class');
     };
-
-    windowControlsOverlay.install();
 
     verifyOverlayToolBar('windows', 'right');
     verifyOverlayToolBar('linux', 'right');

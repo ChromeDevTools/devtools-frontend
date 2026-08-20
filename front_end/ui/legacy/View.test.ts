@@ -6,6 +6,7 @@ import {assert} from 'chai';
 
 import type * as Platform from '../../core/platform/platform.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as UI from './legacy.js';
 
@@ -14,19 +15,20 @@ describe('View', () => {
     const {SimpleView} = UI.View;
 
     describe('constructor', () => {
-      assert.throws(
-          () => new SimpleView({
-            title: 'Some title' as Platform.UIString.LocalizedString,
-            viewId: 'foo_bar',
-          }),
-          TypeError);
+      it('throws when initialized with wrong arguments', () => {
+        assert.throws(() => new SimpleView({
+                        title: 'Some title' as Platform.UIString.LocalizedString,
+                        viewId: 'foo_bar',
+                      }),
+                      TypeError);
+      });
     });
   });
 
   describe('TabbedViewLocation', () => {
     let tabbedLocation: UI.View.TabbedViewLocation;
     let viewManager: UI.ViewManager.ViewManager;
-    before(async () => {
+    beforeEach(async () => {
       await initializeGlobalVars();
       ['first', 'second', 'third', 'fourth'].forEach(title => {
         UI.ViewManager.registerViewExtension({
@@ -41,25 +43,28 @@ describe('View', () => {
           },
         });
       });
-      viewManager = UI.ViewManager.ViewManager.instance({forceNew: true});
+      viewManager = UI.ViewManager.ViewManager.instance({forceNew: true, universe: new TestUniverse()});
       tabbedLocation = viewManager.createTabbedLocation(() => {}, 'mock-location', true, true);
     });
 
-    after(async () => await deinitializeGlobalVars());
+    afterEach(async () => await deinitializeGlobalVars());
 
     it('Creates an empty tabbed location', () => {
       assert.deepEqual(tabbedLocation.tabbedPane().tabIds(), []);
     });
 
-    it('Adds a tab for a selected view', () => {
-      void viewManager.showView('first');
-      void viewManager.showView('second');
-      void viewManager.showView('third');
+    it('Adds a tab for a selected view', async () => {
+      await viewManager.showView('first');
+      await viewManager.showView('second');
+      await viewManager.showView('third');
 
       assert.deepEqual(tabbedLocation.tabbedPane().tabIds(), ['first', 'second', 'third']);
     });
 
-    it('Prepends a tab correctly', () => {
+    it('Prepends a tab correctly', async () => {
+      await viewManager.showView('first');
+      await viewManager.showView('second');
+      await viewManager.showView('third');
       const thirdTab = tabbedLocation.tabbedPane().tabsById.get('third');
       if (!thirdTab) {
         throw new Error('Could not find a tab');
@@ -68,12 +73,31 @@ describe('View', () => {
       assert.deepEqual(tabbedLocation.tabbedPane().tabIds(), ['third', 'first', 'second']);
     });
 
-    it('Appends a tab correctly', () => {
-      void viewManager.showView('fourth');
+    it('Appends a tab correctly', async () => {
+      await viewManager.showView('first');
+      await viewManager.showView('second');
+      await viewManager.showView('third');
+      const thirdTab = tabbedLocation.tabbedPane().tabsById.get('third');
+      if (!thirdTab) {
+        throw new Error('Could not find a tab');
+      }
+      tabbedLocation.tabbedPane().insertBefore(thirdTab, 0);
+
+      await viewManager.showView('fourth');
       assert.deepEqual(tabbedLocation.tabbedPane().tabIds(), ['third', 'first', 'second', 'fourth']);
     });
 
-    it('Closes a tab correctly', () => {
+    it('Closes a tab correctly', async () => {
+      await viewManager.showView('first');
+      await viewManager.showView('second');
+      await viewManager.showView('third');
+      const thirdTab = tabbedLocation.tabbedPane().tabsById.get('third');
+      if (!thirdTab) {
+        throw new Error('Could not find a tab');
+      }
+      tabbedLocation.tabbedPane().insertBefore(thirdTab, 0);
+      await viewManager.showView('fourth');
+
       tabbedLocation.tabbedPane().closeTab('second');
       assert.deepEqual(tabbedLocation.tabbedPane().tabIds(), ['third', 'first', 'fourth']);
     });

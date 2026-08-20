@@ -237,19 +237,18 @@ async function evaluateExpression(
     expression: string,
     group: string,
     ): Promise<SDK.RemoteObject.RemoteObject|null> {
-  const result = await context.evaluate(
-      {
-        expression,
-        objectGroup: group,
-        includeCommandLineAPI: true,
-        silent: true,
-        returnByValue: false,
-        generatePreview: false,
-        throwOnSideEffect: true,
-        timeout: 500,
-        replMode: true,
-      },
-      false, false);
+  const result = await context.evaluateWithSelectedFrameFallback({
+    expression,
+    objectGroup: group,
+    includeCommandLineAPI: true,
+    silent: true,
+    returnByValue: false,
+    generatePreview: false,
+    throwOnSideEffect: true,
+    timeout: 500,
+    replMode: true,
+  },
+                                                                 false, false);
   if ('error' in result || result.exceptionDetails || !result.object) {
     return null;
   }

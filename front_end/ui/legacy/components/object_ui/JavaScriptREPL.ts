@@ -78,7 +78,7 @@ export class JavaScriptREPL {
       replMode,
       silent,
     };
-    return await executionContext.evaluate(options, false /* userGesture */, awaitPromise);
+    return await executionContext.evaluateWithSelectedFrameFallback(options, false /* userGesture */, awaitPromise);
   }
 
   static async evaluateAndBuildPreview(

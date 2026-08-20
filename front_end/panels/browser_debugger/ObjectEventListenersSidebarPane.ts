@@ -43,17 +43,16 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (executionContext) {
       this.#lastRequestedContext = executionContext;
-      const result = await executionContext.evaluate(
-          {
-            expression: 'self',
-            objectGroup: objectGroupName,
-            includeCommandLineAPI: false,
-            silent: true,
-            returnByValue: false,
-            generatePreview: false,
-          },
-          /* userGesture */ false,
-          /* awaitPromise */ false);
+      const result = await executionContext.evaluateWithSelectedFrameFallback({
+        expression: 'self',
+        objectGroup: objectGroupName,
+        includeCommandLineAPI: false,
+        silent: true,
+        returnByValue: false,
+        generatePreview: false,
+      },
+                                                                              /* userGesture */ false,
+                                                                              /* awaitPromise */ false);
       if (!('error' in result) && !result.exceptionDetails) {
         windowObjects.push(result.object);
       }

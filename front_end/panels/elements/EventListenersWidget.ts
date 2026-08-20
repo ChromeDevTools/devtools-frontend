@@ -240,17 +240,16 @@ export class EventListenersWidget extends UI.Widget.VBox {
     }
 
     return context
-        .evaluate(
-            {
-              expression: 'self',
-              objectGroup: objectGroupName,
-              includeCommandLineAPI: false,
-              silent: true,
-              returnByValue: false,
-              generatePreview: false,
-            },
-            /* userGesture */ false,
-            /* awaitPromise */ false)
+        .evaluateWithSelectedFrameFallback({
+          expression: 'self',
+          objectGroup: objectGroupName,
+          includeCommandLineAPI: false,
+          silent: true,
+          returnByValue: false,
+          generatePreview: false,
+        },
+                                           /* userGesture */ false,
+                                           /* awaitPromise */ false)
         .then(result => {
           if ('object' in result) {
             return result.object;

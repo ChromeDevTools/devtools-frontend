@@ -145,7 +145,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   async evaluateCommandInConsole(
       executionContext: ExecutionContext, originatingMessage: ConsoleMessage, expression: string,
       useCommandLineAPI: boolean): Promise<void> {
-    const result = await executionContext.evaluate(
+    const result = await executionContext.evaluateWithSelectedFrameFallback(
         {
           expression,
           objectGroup: 'console',

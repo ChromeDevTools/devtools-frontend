@@ -595,16 +595,15 @@ export class MainImpl {
           if (event.data.payload === 'true' || event.data.payload === 'false') {
             VisualLogging.setVeDebuggingEnabled(event.data.payload === 'true', (query: string) => {
               VisualLogging.setVeDebuggingEnabled(false);
-              void runtimeModel?.defaultExecutionContext()?.evaluate(
-                  {
-                    expression: `window.inspect(${JSON.stringify(query)})`,
-                    includeCommandLineAPI: false,
-                    silent: true,
-                    returnByValue: false,
-                    generatePreview: false,
-                  },
-                  /* userGesture */ false,
-                  /* awaitPromise */ false);
+              void runtimeModel?.defaultExecutionContext()?.evaluateWithSelectedFrameFallback({
+                expression: `window.inspect(${JSON.stringify(query)})`,
+                includeCommandLineAPI: false,
+                silent: true,
+                returnByValue: false,
+                generatePreview: false,
+              },
+                                                                                              /* userGesture */ false,
+                                                                                              /* awaitPromise */ false);
             });
           } else {
             VisualLogging.setHighlightedVe(event.data.payload === 'null' ? null : event.data.payload);

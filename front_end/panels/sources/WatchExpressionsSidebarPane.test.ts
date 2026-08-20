@@ -29,7 +29,7 @@ describeWithEnvironment('WatchExpression', () => {
     const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
     debuggerModel.selectedCallFrame.returns(null);
     executionContext.debuggerModel = debuggerModel;
-    executionContext.evaluate.resolves({object, exceptionDetails: undefined});
+    executionContext.evaluateWithSelectedFrameFallback.resolves({object, exceptionDetails: undefined});
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
 
     const expansionTracker = new ObjectUI.ObjectPropertiesSection.ObjectTreeExpansionTracker();
@@ -84,7 +84,7 @@ describeWithEnvironment('WatchExpression', () => {
     const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
     debuggerModel.selectedCallFrame.returns(null);
     executionContext.debuggerModel = debuggerModel;
-    executionContext.evaluate.resolves(
+    executionContext.evaluateWithSelectedFrameFallback.resolves(
         {object: SDK.RemoteObject.RemoteObject.fromLocalObject(2), exceptionDetails: undefined});
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
 
@@ -125,7 +125,7 @@ describeWithEnvironment('WatchExpression', () => {
     const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
     debuggerModel.selectedCallFrame.returns(null);
     executionContext.debuggerModel = debuggerModel;
-    executionContext.evaluate.resolves(
+    executionContext.evaluateWithSelectedFrameFallback.resolves(
         {object: SDK.RemoteObject.RemoteObject.fromLocalObject(2), exceptionDetails: undefined});
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
 
@@ -175,12 +175,13 @@ describeWithEnvironment('WatchExpression', () => {
     debuggerModel.selectedCallFrame.returns(null);
     executionContext.debuggerModel = debuggerModel;
 
-    executionContext.evaluate.callsFake(async (options: SDK.RuntimeModel.EvaluationOptions) => {
-      if (options.expression === '1 + 1') {
-        return {object: object1, exceptionDetails: undefined};
-      }
-      return {object: object2, exceptionDetails: undefined};
-    });
+    executionContext.evaluateWithSelectedFrameFallback.callsFake(
+        async (options: SDK.RuntimeModel.EvaluationOptions) => {
+          if (options.expression === '1 + 1') {
+            return {object: object1, exceptionDetails: undefined};
+          }
+          return {object: object2, exceptionDetails: undefined};
+        });
 
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
     const pane = Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane.instance();
@@ -208,7 +209,7 @@ describeWithEnvironment('WatchExpression', () => {
     debuggerModel.selectedCallFrame.returns(null);
     executionContext.debuggerModel = debuggerModel;
 
-    executionContext.evaluate.resolves({object: object1, exceptionDetails: undefined});
+    executionContext.evaluateWithSelectedFrameFallback.resolves({object: object1, exceptionDetails: undefined});
 
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
 
@@ -322,7 +323,7 @@ describeWithEnvironment('WatchExpression', () => {
     sinon.stub(functionObject, 'getOwnProperties').resolves({properties, internalProperties});
     sinon.stub(functionObject, 'getAllProperties').resolves({properties: [], internalProperties: null});
 
-    executionContext.evaluate.resolves({object: functionObject, exceptionDetails: undefined});
+    executionContext.evaluateWithSelectedFrameFallback.resolves({object: functionObject, exceptionDetails: undefined});
 
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
@@ -353,7 +354,7 @@ describeWithEnvironment('WatchExpression', () => {
     const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
     debuggerModel.selectedCallFrame.returns(null);
     executionContext.debuggerModel = debuggerModel;
-    executionContext.evaluate.resolves({object, exceptionDetails: undefined});
+    executionContext.evaluateWithSelectedFrameFallback.resolves({object, exceptionDetails: undefined});
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
 
     const setting = Common.Settings.Settings.instance().createLocalSetting<string[]>('watch-expressions', []);
@@ -405,7 +406,7 @@ describeWithEnvironment('WatchExpression', () => {
     const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
     debuggerModel.selectedCallFrame.returns(null);
     executionContext.debuggerModel = debuggerModel;
-    executionContext.evaluate.resolves({object, exceptionDetails: undefined});
+    executionContext.evaluateWithSelectedFrameFallback.resolves({object, exceptionDetails: undefined});
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
 
     const setting = Common.Settings.Settings.instance().createLocalSetting<string[]>('watch-expressions', []);
@@ -464,7 +465,7 @@ describeWithEnvironment('WatchExpression', () => {
     const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
     debuggerModel.selectedCallFrame.returns(null);
     executionContext.debuggerModel = debuggerModel;
-    executionContext.evaluate.resolves({object, exceptionDetails: undefined});
+    executionContext.evaluateWithSelectedFrameFallback.resolves({object, exceptionDetails: undefined});
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
 
     const setting = Common.Settings.Settings.instance().createLocalSetting<string[]>('watch-expressions', []);
@@ -537,7 +538,7 @@ describeWithEnvironment('WatchExpression', () => {
     executionContext.debuggerModel = debuggerModel;
     executionContext.runtimeModel = runtimeModel;
     executionContext.globalLexicalScopeNames.resolves([]);
-    executionContext.evaluate.resolves(
+    executionContext.evaluateWithSelectedFrameFallback.resolves(
         {object: SDK.RemoteObject.RemoteObject.fromLocalObject(123), exceptionDetails: undefined});
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
 

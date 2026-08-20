@@ -91,7 +91,7 @@ describeWithEnvironment('EventListenersWidget', () => {
     sinon.stub(parent, 'resolveToObject').withArgs('event-listeners-panel').resolves(parentRemoteObject);
     sinon.stub(grandParent, 'resolveToObject').withArgs('event-listeners-panel').resolves(grandParentRemoteObject);
     const executionContext = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
-    executionContext.evaluate.resolves({object: windowRemoteObject});
+    executionContext.evaluateWithSelectedFrameFallback.resolves({object: windowRemoteObject});
     sinon.stub(runtimeModel, 'executionContexts').returns([executionContext]);
 
     // Set flavor, which will trigger an update.
@@ -120,7 +120,7 @@ describeWithEnvironment('EventListenersWidget', () => {
 
     const windowRemoteObject = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
     const executionContext = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
-    executionContext.evaluate.resolves({object: windowRemoteObject});
+    executionContext.evaluateWithSelectedFrameFallback.resolves({object: windowRemoteObject});
     sinon.stub(runtimeModel, 'executionContexts').returns([executionContext]);
 
     Common.Settings.Settings.instance().moduleSetting('show-event-listeners-for-ancestors').set(true);

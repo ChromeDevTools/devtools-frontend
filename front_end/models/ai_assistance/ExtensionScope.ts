@@ -100,18 +100,17 @@ export class ExtensionScope {
       ): Promise<{
     object: SDK.RemoteObject.RemoteObject,
   }> {
-    const response = await context.evaluate(
-        {
-          expression,
-          replMode: true,
-          includeCommandLineAPI: false,
-          returnByValue,
-          silent: false,
-          generatePreview: false,
-          allowUnsafeEvalBlockedByCSP: true,
-          throwOnSideEffect: false,
-        },
-        /* userGesture */ false, /* awaitPromise */ true);
+    const response = await context.evaluateWithSelectedFrameFallback({
+      expression,
+      replMode: true,
+      includeCommandLineAPI: false,
+      returnByValue,
+      silent: false,
+      generatePreview: false,
+      allowUnsafeEvalBlockedByCSP: true,
+      throwOnSideEffect: false,
+    },
+                                                                     /* userGesture */ false, /* awaitPromise */ true);
 
     if (!response) {
       throw new Error('Response is not found');

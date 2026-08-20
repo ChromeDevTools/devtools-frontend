@@ -392,7 +392,7 @@ describe('ExtensionScope', () => {
       const mockContext = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
       mockContext.id = 1 as Protocol.Runtime.ExecutionContextId;
       const mockRemoteObject = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
-      mockContext.evaluate.resolves({object: mockRemoteObject});
+      mockContext.evaluateWithSelectedFrameFallback.resolves({object: mockRemoteObject});
       sinon.stub(runtimeModel, 'executionContext').returns(mockContext);
 
       const changeManager = new AiAssistance.ChangeManager.ChangeManager();

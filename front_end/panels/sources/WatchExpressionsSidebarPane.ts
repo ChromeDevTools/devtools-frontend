@@ -663,7 +663,7 @@ export class WatchExpression {
     }
 
     try {
-      const result = await executionContext.evaluate({
+      const result = await executionContext.evaluateWithSelectedFrameFallback({
         expression,
         objectGroup: WatchExpression.watchObjectGroupId,
         includeCommandLineAPI: false,
@@ -671,8 +671,8 @@ export class WatchExpression {
         returnByValue: false,
         generatePreview: false,
       },
-                                                     /* userGesture */ false,
-                                                     /* awaitPromise */ false);
+                                                                              /* userGesture */ false,
+                                                                              /* awaitPromise */ false);
       if ('object' in result) {
         const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(result.object, {
           readOnly: true,

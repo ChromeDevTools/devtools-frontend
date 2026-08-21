@@ -29,9 +29,6 @@ describe('The Console Tab', () => {
     });
 
     await step('enter code that references the created bindings', async () => {
-      // TODO: it should actually wait for rendering to finish.
-      await devToolsPage.drainTaskQueue();
-
       await devToolsPage.pasteText('foo;');
       await devToolsPage.pressKey('Enter');
 
@@ -40,16 +37,16 @@ describe('The Console Tab', () => {
         return (await devToolsPage.$$('.console-user-command-result')).length === 2;
       });
 
-      // TODO: it should actually wait for rendering to finish.
-      await devToolsPage.drainTaskQueue();
-
       await devToolsPage.pasteText('bar;');
       await devToolsPage.pressKey('Enter');
+
+      // Wait for the console to be usable again.
+      await devToolsPage.waitForFunction(async () => {
+        return (await devToolsPage.$$('.console-user-command-result')).length === 3;
+      });
     });
 
     await step('check that the expected output is logged', async () => {
-      // TODO: it should actually wait for rendering to finish.
-      await devToolsPage.drainTaskQueue();
       const messages = await getCurrentConsoleMessages(devToolsPage, false, undefined, undefined);
       assert.deepEqual(messages, [
         'undefined',

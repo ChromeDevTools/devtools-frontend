@@ -752,11 +752,8 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.disablePausedStateOver
   title: i18nLazyString(UIStrings.disablePaused),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.currentDockStateSettingDescriptor, {
   category: Common.Settings.SettingCategory.GLOBAL,
-  settingName: 'currentDockState',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'right',
   options: [
     {
       value: 'right',

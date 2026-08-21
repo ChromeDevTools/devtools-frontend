@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as SettingsUI from '../settings/settings.js';
 
 import type {ActionDelegate} from './ActionRegistration.js';
 import {LiveAnnouncer} from './ARIAUtils.js';
@@ -50,7 +51,9 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventType
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.closeWindow.bind(
             Host.InspectorFrontendHost.InspectorFrontendHostInstance));
 
-    this.currentDockStateSetting = Common.Settings.Settings.instance().moduleSetting('currentDockState');
+    this.currentDockStateSetting =
+        Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.currentDockStateSettingDescriptor) as
+        Common.Settings.Setting<DockState>;
     this.lastDockStateSetting = Common.Settings.Settings.instance().createSetting('last-dock-state', DockState.BOTTOM);
 
     if (!canDock) {

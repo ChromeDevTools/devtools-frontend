@@ -38,3 +38,9 @@ export const shortcutPanelSwitchSettingDescriptor: Common.Settings.SettingDescri
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const currentDockStateSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'currentDockState',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'right',
+};

@@ -24,3 +24,10 @@ export const sidebarPositionSettingDescriptor: Common.Settings.SettingDescriptor
   defaultValue: 'auto',
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const languageSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'language',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'en-US',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

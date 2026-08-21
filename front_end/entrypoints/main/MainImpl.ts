@@ -269,7 +269,8 @@ export class MainImpl {
   }
 
   async requestAndRegisterLocaleData(): Promise<void> {
-    const settingLanguage = Common.Settings.Settings.instance().moduleSetting<string>('language').get();
+    const settingLanguage =
+        Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.languageSettingDescriptor).get();
     const devToolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance({
       create: true,
       data: {

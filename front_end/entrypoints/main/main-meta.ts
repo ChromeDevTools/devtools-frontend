@@ -727,13 +727,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.sidebarPositio
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.languageSettingDescriptor, {
   category: Common.Settings.SettingCategory.APPEARANCE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  settingName: 'language',
-  settingType: Common.Settings.SettingType.ENUM,
   title: i18nLazyString(UIStrings.language),
-  defaultValue: 'en-US',
   options: [
     {
       value: 'browserLanguage',

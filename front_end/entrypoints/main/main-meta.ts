@@ -705,13 +705,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.chromeThemeCol
   },
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.sidebarPositionSettingDescriptor, {
   category: Common.Settings.SettingCategory.APPEARANCE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.panelLayout),
-  settingName: 'sidebar-position',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'auto',
   options: [
     {
       title: i18nLazyString(UIStrings.useHorizontalPanelLayout),

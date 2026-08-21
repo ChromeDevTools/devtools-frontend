@@ -48,6 +48,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 
@@ -281,7 +282,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.callstackPane = CallStackSidebarPane.instance();
 
     Common.Settings.Settings.instance()
-        .moduleSetting('sidebar-position')
+        .resolve(Settings.MainSettings.sidebarPositionSettingDescriptor)
         .addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
 
@@ -414,7 +415,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   override onResize(): void {
-    if (Common.Settings.Settings.instance().moduleSetting('sidebar-position').get() === 'auto') {
+    if (Common.Settings.Settings.instance().resolve(Settings.MainSettings.sidebarPositionSettingDescriptor).get() ===
+        'auto') {
       this.element.window().requestAnimationFrame(this.updateSidebarPosition.bind(this));
     }  // Do not force layout.
   }
@@ -1111,7 +1113,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   private updateSidebarPosition(): void {
     let vertically;
-    const position = Common.Settings.Settings.instance().moduleSetting('sidebar-position').get();
+    const position =
+        Common.Settings.Settings.instance().resolve(Settings.MainSettings.sidebarPositionSettingDescriptor).get();
     if (position === 'right') {
       vertically = false;
     } else if (position === 'bottom') {

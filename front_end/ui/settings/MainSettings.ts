@@ -17,3 +17,10 @@ export const chromeThemeColorsSettingDescriptor: Common.Settings.SettingDescript
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const sidebarPositionSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'sidebar-position',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'auto',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

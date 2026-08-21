@@ -44,6 +44,7 @@ import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';
@@ -294,7 +295,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
 
-    this.#settings.moduleSetting('sidebar-position').addChangeListener(this.updateSidebarPosition.bind(this));
+    this.#settings.resolve(SettingsUI.MainSettings.sidebarPositionSettingDescriptor)
+        .addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
 
     this.cssStyleTrackerByCSSModel = new Map();
@@ -1180,7 +1182,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       return;
     }  // We can't reparent extension iframes.
 
-    const position = this.#settings.moduleSetting('sidebar-position').get();
+    const position = this.#settings.resolve(SettingsUI.MainSettings.sidebarPositionSettingDescriptor).get();
     let splitMode = SplitMode.HORIZONTAL;
     if (position === 'right' || (position === 'auto' && this.splitWidget.element.offsetWidth > 680)) {
       splitMode = SplitMode.VERTICAL;

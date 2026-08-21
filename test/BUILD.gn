@@ -10,6 +10,7 @@ group("test") {
     ":api_tests",
     ":run",
     ":unittests",
+    "ai_evals",
     "api",
     "e2e",
     "perf",

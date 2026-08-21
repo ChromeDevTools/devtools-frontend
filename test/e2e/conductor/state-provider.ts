@@ -16,8 +16,8 @@ import {
   DEFAULT_BROWSER_SETTINGS,
   Launcher,
 } from '../shared/browser-helper.js';
-import {DEFAULT_DEVTOOLS_SETTINGS, setupDevToolsPage} from '../shared/frontend-helper.js';
-import {setupInspectedPage} from '../shared/target-helper.js';
+import {DEFAULT_DEVTOOLS_SETTINGS, type DevToolsPage, setupDevToolsPage} from '../shared/frontend-helper.js';
+import {type InspectedPage, setupInspectedPage} from '../shared/target-helper.js';
 
 const DEFAULT_SETTINGS = {
   ...DEFAULT_BROWSER_SETTINGS,
@@ -100,9 +100,9 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
    * This allows us to have a single browser between test
    * that require the same settings.
    */
-  #settingToBrowser = new Map<string, BrowserWrapper>();
+  protected settingToBrowser = new Map<string, BrowserWrapper>();
 
-  private constructor() {
+  protected constructor() {
   }
 
   registerSuiteSettings(suite: Mocha.Suite, suiteSettings: E2E.SuiteSettings): void {
@@ -123,16 +123,17 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
       enabledFeatures: (settings.enabledFeatures ?? []).toSorted(),
       disabledFeatures: (settings.disabledFeatures ?? []).toSorted(),
       extensions: (settings.extensions ?? []).toSorted(),
+      useCFT: settings.useCFT,
     };
     const browserKey = JSON.stringify(browserSettings);
-    browser = this.#settingToBrowser.get(browserKey);
+    browser = this.settingToBrowser.get(browserKey);
     if (browser && !browser.connected) {
       browser?.browser.process()?.kill();
     }
 
     if (!browser?.connected) {
-      browser = await Launcher.browserSetup(browserSettings, StateProvider.serverPort);
-      this.#settingToBrowser.set(browserKey, browser);
+      browser = await this.launchBrowser(browserSettings);
+      this.settingToBrowser.set(browserKey, browser);
     }
     this.#suiteToBrowser.set(suite, browser);
     // Suite needs to be aware of the browser instance to be able to create the
@@ -140,8 +141,10 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
     suite.browser = browser;
   }
 
-  async resolveBrowser(suite: Mocha.Suite): Promise<void> {
-    return await this.prepareSuite(suite);
+  async resolveBrowser(suite?: Mocha.Suite): Promise<void> {
+    if (suite) {
+      await this.prepareSuite(suite);
+    }
   }
 
   async createState(suite: Mocha.Suite): Promise<E2EState> {
@@ -151,12 +154,9 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
       throw new Error('Browser disconnected unexpectedly');
     }
 
-    const browsingContext = await browser.createBrowserContext();
-    const inspectedPage = await setupInspectedPage(browsingContext, StateProvider.serverPort);
-    const devToolsPage = await setupDevToolsPage(
-        inspectedPage,
-        settings,
-    );
+    const browsingContext = await this.browsingContext(browser);
+    const inspectedPage = await this.setupInspectedPage(browsingContext, StateProvider.serverPort);
+    const devToolsPage = await this.devToolsPage(inspectedPage, settings);
     const state: E2EState = {
       devToolsPage,
       inspectedPage,
@@ -167,6 +167,22 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
     // screenshots on failures
     suite.state = state;
     return state;
+  }
+
+  async launchBrowser(settings: BrowserSettings): Promise<BrowserWrapper> {
+    return await Launcher.browserSetup(settings, StateProvider.serverPort);
+  }
+
+  async browsingContext(browser: BrowserWrapper): Promise<puppeteer.BrowserContext> {
+    return await browser.createBrowserContext();
+  }
+
+  async devToolsPage(inspectedPage: InspectedPage, settings: E2E.HarnessSettings): Promise<DevToolsPage> {
+    return await setupDevToolsPage(inspectedPage, settings);
+  }
+
+  async setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number) {
+    return await setupInspectedPage(context, serverPort);
   }
 
   async getState(suite: Mocha.Suite) {
@@ -212,8 +228,8 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
   }
 
   async closeBrowsers() {
-    this.#settingToBrowser.values().next().value?.copyCrashDumps();
-    await Promise.allSettled([...this.#settingToBrowser.values()].map(async browser => {
+    this.settingToBrowser.values().next().value?.copyCrashDumps();
+    await Promise.allSettled([...this.settingToBrowser.values()].map(async browser => {
       await browser.browser.close();
     }));
   }
@@ -233,5 +249,6 @@ export function mergeSettings(s1: E2E.SuiteSettings, s2: E2E.HarnessSettings): E
     devToolsSettings: {...(s2.devToolsSettings ?? {}), ...(s1.devToolsSettings ?? {})},
     dockingMode: s1.dockingMode ?? s2.dockingMode,
     panel: s1.panel ?? s2.panel,
+    useCFT: s1.useCFT ?? s2.useCFT,
   };
 }

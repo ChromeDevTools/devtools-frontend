@@ -114,9 +114,25 @@ export class BrowserWrapper {
     }
   }
 }
+
+export interface BrowserSettings {
+  enabledFeatures: string[];
+  disabledFeatures: string[];
+  extensions?: string[];
+  useCFT?: boolean;
+}
+
+export interface LaunchOptions extends Partial<BrowserSettings> {
+  chromePath?: string;
+  port?: number;
+  headless?: boolean;
+  args?: string[];
+  ignoreDefaultArgs?: string[];
+}
+
 export class Launcher {
   static async browserSetup(settings: BrowserSettings, serverPort: number) {
-    const browser = await Launcher.launchChrome(settings, serverPort);
+    const browser = await Launcher.launchCFT(settings, serverPort);
     setupBrowserProcessIO(browser);
     const wrapper = new BrowserWrapper(browser);
     if (settings.extensions && settings.extensions.length > 0) {
@@ -129,43 +145,61 @@ export class Launcher {
     return wrapper;
   }
 
-  private static launchChrome(settings: BrowserSettings, serverPort: number) {
-    const frontEndDirectory = url.pathToFileURL(
-        path.join(GEN_DIR, 'front_end'),
-    );
-    const disabledFeatures = settings.disabledFeatures?.slice() ?? [];
-    const launchArgs = [
-      '--remote-allow-origins=*',
-      '--remote-debugging-port=0',
+  static launchCFT(settings: BrowserSettings, serverPort: number) {
+    const args = [
       '--enable-experimental-web-platform-features',
       // This fingerprint may be generated from the certificate using
       // openssl x509 -noout -pubkey -in scripts/hosted_mode/cert.pem | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | base64
-      '--ignore-certificate-errors-spki-list=KLy6vv6synForXwI6lDIl+D3ZrMV6Y1EMTY6YpOcAos=',
-      '--site-per-process',  // Default on Desktop anyway, but ensure that we always use out-of-process frames when we intend to.
       `--host-resolver-rules=MAP *.test 127.0.0.1, MAP chromeuxreport.googleapis.com 127.0.0.1:${serverPort}`,
-      '--disable-gpu',
-      `--disable-features=${disabledFeatures.join(',')}`,
-      `--custom-devtools-frontend=${frontEndDirectory}`,
       '--enable-crash-reporter',
       // This has no effect (see https://crbug.com/435638630)
       `--crash-dumps-dir=${TestConfig.artifactsDir}`,
       `--privacy-sandbox-enrollment-overrides=https://localhost:${serverPort}`,
     ];
     const headless = TestConfig.headless;
+    const chromePath = TestConfig.chromeBinary;
+    return Launcher.launchChrome({
+      headless,
+      chromePath,
+      args,
+      port: 0,
+      ...settings,
+    });
+  }
+
+  static launchChrome(launchConfig: LaunchOptions) {
+    const frontEndDirectory = url.pathToFileURL(
+        path.join(GEN_DIR, 'front_end'),
+    );
+    const disabledFeatures = launchConfig.disabledFeatures ?? DEFAULT_BROWSER_SETTINGS.disabledFeatures;
+    const launchArgs = [
+      '--remote-allow-origins=*',
+      '--ignore-certificate-errors-spki-list=KLy6vv6synForXwI6lDIl+D3ZrMV6Y1EMTY6YpOcAos=',
+      `--custom-devtools-frontend=${frontEndDirectory}`,
+      '--site-per-process',  // Default on Desktop anyway, but ensure that we always use out-of-process frames when we intend to.
+      '--disable-gpu',
+      '--enable-crash-reporter',
+      `--disable-features=${disabledFeatures.join(',')}`,
+      `--remote-debugging-port=${launchConfig.port}`,
+    ];
     // CDP commands in e2e and interaction should not generally take
     // more than 20 seconds, but performance tests might require more time.
     const protocolTimeout = TestConfig.debug ? 0 : TestConfig.isPerfTest ? 120_000 : 20_000;
-    const executablePath = TestConfig.chromeBinary;
+    const executablePath = launchConfig.chromePath ?? TestConfig.chromeBinary;
 
     const opts: puppeteer.LaunchOptions = {
-      headless,
+      headless: launchConfig.headless,
       executablePath,
-      dumpio: !headless || TestConfig.isLuci,
+      dumpio: !launchConfig.headless || TestConfig.isLuci,
       protocolTimeout,
       networkEnabled: false,
       enableExtensions: true,
       pipe: true,
-      ignoreDefaultArgs: ['--disable-crash-reporter', '--disable-breakpad'],
+      ignoreDefaultArgs: [
+        '--disable-crash-reporter',
+        '--disable-breakpad',
+        ...(launchConfig.ignoreDefaultArgs ?? []),
+      ],
     };
 
     TestConfig.configureChrome(executablePath);
@@ -183,26 +217,22 @@ export class Launcher {
     // headful mode would result in much smaller actual viewport.
     opts.defaultViewport = {width: viewportWidth, height: viewportHeight};
     // Toggle either viewport or window size depending on headless vs not.
-    if (!headless) {
+    if (!opts.headless) {
       launchArgs.push(`--window-size=${windowWidth},${windowHeight}`);
     }
-    const enabledFeatures = settings.enabledFeatures?.slice() ?? [];
+    const enabledFeatures = launchConfig.enabledFeatures ?? DEFAULT_BROWSER_SETTINGS.enabledFeatures;
     // TODO: remove
     const envChromeFeatures = process.env['CHROME_FEATURES'];
     if (envChromeFeatures) {
       enabledFeatures.push(envChromeFeatures);
     }
     launchArgs.push(`--enable-features=${enabledFeatures.join(',')}`);
-
+    if (launchConfig.args) {
+      launchArgs.push(...launchConfig.args);
+    }
     opts.args = launchArgs;
     return puppeteer.launch(opts);
   }
-}
-
-export interface BrowserSettings {
-  enabledFeatures: string[];
-  disabledFeatures: string[];
-  extensions?: string[];
 }
 
 export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
@@ -222,4 +252,5 @@ export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
     'ScriptSrcHashesV1',                           // crbug.com/443216445
     'RenderDocument',                              // crbug.com/444369637
   ],
+  useCFT: true,
 };

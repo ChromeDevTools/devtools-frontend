@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Mocha from 'mocha';
+import type * as puppeteer from 'puppeteer-core';
 
 import type {TestStateProvider} from '../conductor/mocha-interface-helpers.js';
 import {StateProvider} from '../e2e/conductor/state-provider.js';
@@ -33,6 +34,10 @@ export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteS
     return this.#suiteToSettingsMap.get(suite);
   }
 
+  async setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number) {
+    return await setupInspectedPage(context, serverPort);
+  }
+
   async createState(suite: Mocha.Suite): Promise<API.State> {
     await this.prepareSuite(suite);
     const browserWrapper = suite.browser;
@@ -43,7 +48,7 @@ export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteS
 
     const settings = this.#getSettings(suite);
     const browsingContext = await browser.createBrowserContext();
-    const inspectedPage = await setupInspectedPage(browsingContext, StateProvider.serverPort);
+    const inspectedPage = await this.setupInspectedPage(browsingContext, StateProvider.serverPort);
 
     const targetUrl = settings?.targetUrl ?? `${inspectedPage.domain()}/test/e2e/resources/empty.html`;
     await inspectedPage.goTo(targetUrl);

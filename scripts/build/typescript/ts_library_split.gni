@@ -272,6 +272,7 @@ template("ts_library_split") {
         declarationDir = "."
       }
       files = rebase_path(_all_sources, _tsc_dir)
+      references = _ts_references
     }
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly

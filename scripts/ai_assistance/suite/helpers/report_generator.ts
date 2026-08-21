@@ -5,7 +5,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-import type {Trajectory} from '../types.js';
+import {Role, type Trajectory} from '../types.js';
 
 import {
   type BinaryStats,
@@ -103,7 +103,7 @@ function renderConversationCard(conversation: Trajectory, headerLabel: string, s
                                 detailsHtml: string): string {
   return `
     <div class="card">
-       <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header" onclick="toggleCard(this)">
         <span>${headerLabel} <code>${conversation.metadata.session_id}</code></span>
         ${scoreElement}
       </div>
@@ -122,27 +122,29 @@ function renderConversationCard(conversation: Trajectory, headerLabel: string, s
  * Renders the transcript of a conversation.
  */
 function renderConversationTranscript(conversation: Trajectory): string {
-  return conversation.queries
-      .map(query => {
+  return conversation.data
+      .map(turn => {
         let html = '';
-        if (query.request.content || query.request.functionCallResponse) {
+        if (turn.role === Role.USER) {
           html += '<div class="transcript-header">Request</div>';
-          if (query.request.content) {
-            html += `<pre><strong>Query:</strong>\n${query.request.content}</pre>`;
+          if (turn.content.length) {
+            html += `<pre><strong>Query:</strong>\n${turn.content.join('\n')}</pre>`;
           }
-          if (query.request.functionCallResponse) {
-            html += `<pre><strong>Function Response:</strong>\n${query.request.functionCallResponse}</pre>`;
-          }
-        }
-
-        if (query.response.content || query.response.tool_calls?.length) {
+        } else {
           html += '<div class="transcript-header">Response</div>';
-          if (query.response.content) {
-            html += `<pre><strong>Explanation:</strong>\n${query.response.content}</pre>`;
+          if (turn.content.length) {
+            html += `<pre><strong>Explanation:</strong>\n${turn.content.join('\n')}</pre>`;
           }
-          if (query.response.tool_calls?.length) {
-            const calls =
-                query.response.tool_calls.map(r => `${r.name}(${JSON.stringify(r.args, null, 2)})`).join('\n\n');
+          if (turn.tool_calls?.length) {
+            const calls = turn.tool_calls
+                              .map(r => {
+                                let callStr = `${r.name}(${JSON.stringify(r.args, null, 2)})`;
+                                if (r.result) {
+                                  callStr += `\n\n<strong>Response:</strong>\n${JSON.stringify(r.result, null, 2)}`;
+                                }
+                                return callStr;
+                              })
+                              .join('\n\n');
             html += `<pre><strong>Function Calls:</strong>\n${calls}</pre>`;
           }
         }

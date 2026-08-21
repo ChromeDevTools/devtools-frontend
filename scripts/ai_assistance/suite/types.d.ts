@@ -3,22 +3,20 @@
 // found in the LICENSE file.
 
 /* eslint-disable @typescript-eslint/naming-convention */
-export interface ProcessedQuery {
-  request: {
-    availableFunctionNames: string[],
-    // Populated if the user typed a query
-    content?: string,
-    // Populated if the model decided it needed to call a function; this is the
-    // frontend sending the data back to the server.
-    functionCallResponse?: string,
-  };
-  response: {
-    rpcGlobalId: string,
-    // Populated if the LLM returned a text explanation that was complete.
-    content?: string,
-    // Populated as the name of the functions if the LLM requested it to be called
-    tool_calls?: Array<{name: string, args: Record<string, unknown>}>,
-  };
+export enum Role {
+  USER = 'user',
+  GEMINI = 'gemini',
+}
+
+export interface Turn {
+  turn_id: string;
+  role: Role;
+  content: string[];
+  tool_calls?: Array<{
+    name: string,
+    args: Record<string, unknown>,
+    result?: unknown,
+  }>;
 }
 
 /**
@@ -28,8 +26,13 @@ export interface ProcessedQuery {
 export interface Trajectory {
   metadata: {
     session_id: string,
-    start_time?: string, model: string, chromeVersion: string, autoRunExampleId: string, explanation: string,
+    model: string,
+    chromeVersion: string,
+    autoRunExampleId: string,
+    // These are explanations found in the input example HTML that can be used to
+    // judge the AI's output.
+    explanation: string,
   };
-  queries: ProcessedQuery[];
+  data: Turn[];
 }
 /* eslint-enable @typescript-eslint/naming-convention */

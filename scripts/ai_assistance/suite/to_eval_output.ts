@@ -9,7 +9,7 @@ import * as path from 'node:path';
 import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
-import type {ProcessedQuery, Trajectory} from './types.js';
+import {Role, type Trajectory, type Turn} from './types.js';
 
 /** Note: non-exhaustive. **/
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -89,35 +89,51 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
                 autoRunExampleId: sessionIdFromInput,
                 explanation: exampleMetadata?.explanation ?? '',
               },
-              queries: [],
+              data: [],
             };
 
+            let turnIndex = 1;
             for (const {request, aidaResponse} of data) {
               if (!aidaResponse.completed) {
                 continue;
               }
 
-              const responseText = aidaResponse.explanation?.trim();
+              const userText = request.current_message.parts[0].text;
+              const functionResponse = request.current_message.parts[0].functionResponse;
 
-              const query: ProcessedQuery = {
-                request: {
-                  content: request.current_message.parts[0].text,
-                  functionCallResponse: request.current_message.parts[0].functionResponse?.name,
-                  availableFunctionNames:
-                      request.function_declarations ? request.function_declarations.map(dec => dec.name) : [],
-                },
-                response: {
-                  rpcGlobalId: aidaResponse.metadata.rcpGlobalId ?? '',
-                  content: responseText,
-                  tool_calls: aidaResponse.functionCalls?.map(call => {
-                    return {
-                      name: call.name,
-                      args: call.args,
-                    };
-                  }),
-                },
+              // A client message part can either be a user text query or a tool call result.
+              if (userText) {
+                // If it is user text, it starts a new user turn in the conversation.
+                processed.data.push({
+                  turn_id: String(turnIndex++),
+                  role: Role.USER,
+                  content: [userText],
+                });
+              } else if (functionResponse) {
+                // If it is a tool response, we attach the result back to the matching
+                // tool call in the previous Gemini turn to keep them associated.
+                const prevTurn = processed.data.at(-1);
+                if (prevTurn && prevTurn.role === Role.GEMINI && prevTurn.tool_calls) {
+                  const toolCall = prevTurn.tool_calls.find(tc => tc.name === functionResponse.name);
+                  if (toolCall) {
+                    toolCall.result = functionResponse.response;
+                  }
+                }
+              }
+
+              const responseText = aidaResponse.explanation?.trim();
+              const geminiTurn: Turn = {
+                turn_id: String(turnIndex++),
+                role: Role.GEMINI,
+                content: responseText ? [responseText] : [],
               };
-              processed.queries.push(query);
+              if (aidaResponse.functionCalls?.length) {
+                geminiTurn.tool_calls = aidaResponse.functionCalls.map(call => ({
+                                                                         name: call.name,
+                                                                         args: call.args,
+                                                                       }));
+              }
+              processed.data.push(geminiTurn);
             }
             return processed;
           })

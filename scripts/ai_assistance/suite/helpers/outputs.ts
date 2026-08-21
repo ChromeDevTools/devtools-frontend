@@ -6,28 +6,32 @@ import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import * as path from 'node:path';
 
-import type {Trajectory} from '../types.js';
+import {Role, type Trajectory} from '../types.js';
 
 const BASE_DIR = path.join(path.dirname(import.meta.filename), '..', 'outputs', 'outputs');
 
 export function getMarkdownConversation(example: Trajectory): string {
   let markdown = '';
-  for (const query of example.queries) {
-    markdown += '## REQUEST FROM CLIENT:\n';
-    if (query.request.content) {
-      markdown += `### QUERY:\n${query.request.content}\n`;
-    }
-    if (query.request.functionCallResponse) {
-      markdown += `### FUNCTION CALL RESPONSE:\n${query.request.functionCallResponse}\n`;
-    }
-
-    markdown += '## RESPONSE FROM SERVER:\n';
-    if (query.response.content) {
-      markdown += `### EXPLANATION:\n${query.response.content}\n`;
-    }
-    if (query.response.tool_calls?.length) {
-      const calls = query.response.tool_calls.map(tc => tc.name).join(', ');
-      markdown += `### FUNCTION CALL REQUESTS:\n${calls}\n`;
+  for (const turn of example.data) {
+    if (turn.role === Role.USER) {
+      markdown += '## REQUEST FROM CLIENT:\n';
+      if (turn.content.length) {
+        markdown += `### QUERY:\n${turn.content.join('\n')}\n`;
+      }
+    } else {
+      markdown += '## RESPONSE FROM SERVER:\n';
+      if (turn.content.length) {
+        markdown += `### EXPLANATION:\n${turn.content.join('\n')}\n`;
+      }
+      if (turn.tool_calls?.length) {
+        const calls = turn.tool_calls.map(tc => tc.name).join(', ');
+        markdown += `### FUNCTION CALL REQUESTS:\n${calls}\n`;
+        for (const tc of turn.tool_calls) {
+          if (tc.result) {
+            markdown += `### FUNCTION CALL RESPONSE FOR ${tc.name}:\n${JSON.stringify(tc.result)}\n`;
+          }
+        }
+      }
     }
     markdown += '\n';
   }

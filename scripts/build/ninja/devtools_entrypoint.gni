@@ -17,7 +17,7 @@ import("./vars.gni")
 # 2. it defines a file that is dynamically imported by the
 #    runtime. This uses the same notation, but uses a dynamic
 #    import in `core/root/Runtime.js`.
-template("devtools_entrypoint") {
+template("legacy_devtools_entrypoint") {
   assert(defined(invoker.entrypoint),
          "You must define the 'entrypoint' for a bundle target")
 
@@ -220,6 +220,23 @@ template("devtools_entrypoint") {
       visibility = invoker.visibility
     } else {
       visibility = [ ":*" ]
+    }
+  }
+}
+
+template("devtools_entrypoint") {
+  _split_compilation = false
+  if (defined(invoker.split_compilation)) {
+    _split_compilation = invoker.split_compilation
+  }
+
+  if (_split_compilation) {
+    devtools_entrypoint_split(target_name) {
+      forward_variables_from(invoker, "*", [ "split_compilation" ])
+    }
+  } else {
+    legacy_devtools_entrypoint(target_name) {
+      forward_variables_from(invoker, "*", [ "split_compilation" ])
     }
   }
 }

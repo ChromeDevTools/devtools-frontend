@@ -44,7 +44,7 @@ assert(!devtools_skip_typecheck || !is_official_build,
 #     deps = [ "../../../../front_end/common" ]
 #   }
 #
-template("ts_library") {
+template("legacy_ts_library") {
   action(target_name) {
     script =
         devtools_location_prepend + "scripts/build/typescript/ts_library.py"
@@ -287,6 +287,23 @@ template("ts_library") {
 
     if (!devtools_bundle) {
       metadata.grd_files = _javascript_implementation_files
+    }
+  }
+}
+
+template("ts_library") {
+  _split_compilation = false
+  if (defined(invoker.split_compilation)) {
+    _split_compilation = invoker.split_compilation
+  }
+
+  if (_split_compilation) {
+    ts_library_split(target_name) {
+      forward_variables_from(invoker, "*", [ "split_compilation" ])
+    }
+  } else {
+    legacy_ts_library(target_name) {
+      forward_variables_from(invoker, "*", [ "split_compilation" ])
     }
   }
 }

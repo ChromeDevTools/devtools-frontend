@@ -4,7 +4,9 @@ import * as Handlers from '../handlers/handlers.js';
 import * as Types from '../types/types.js';
 import { type InsightModel, type InsightSetContext } from './types.js';
 export declare const UIStrings: {
-    /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
+    /**
+     * @description Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons").
+     */
     readonly title: 'Layout shift culprits';
     /**
      * @description Description of a DevTools insight that identifies the reasons that elements shift on the page.
@@ -49,7 +51,7 @@ export declare const UIStrings: {
      */
     readonly noLayoutShifts: 'No layout shifts';
     /**
-     * @description Text status when there no layout shifts culprits/root causes were found.
+     * @description Text status when no layout shift culprits or root causes were found.
      */
     readonly noCulprits: 'Could not detect any layout shift culprits';
 };

@@ -99,7 +99,7 @@ export class ConsoleModel extends SDKModel {
         Common.EventTarget.removeEventListeners(this.#targetListeners.get(target) || []);
     }
     async evaluateCommandInConsole(executionContext, originatingMessage, expression, useCommandLineAPI) {
-        const result = await executionContext.evaluate({
+        const result = await executionContext.evaluateWithSelectedFrameFallback({
             expression,
             objectGroup: 'console',
             includeCommandLineAPI: useCommandLineAPI,

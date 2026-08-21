@@ -26,13 +26,10 @@ function assertSnapshotContent(actual, expected) {
  */
 class BaseSnapshotTester {
     static #updateMode = null;
-    static #isFiltered = false;
     snapshotPath;
     #expected = new Map();
     #actual = new Map();
     #seenTestObjects = new WeakSet();
-    #anyFailures = false;
-    #newTests = false;
     constructor(context, meta) {
         if (context.timeout() > 0) {
             // The first usage of SnapshotTester in a test seems to take an extraordinary
@@ -55,7 +52,6 @@ class BaseSnapshotTester {
         if (BaseSnapshotTester.#updateMode === null) {
             const config = await this.checkIfUpdateMode();
             BaseSnapshotTester.#updateMode = config.updateMode;
-            BaseSnapshotTester.#isFiltered = config.isFiltered;
         }
         const content = await this.loadSnapshot(this.snapshotPath);
         if (content) {
@@ -77,42 +73,19 @@ class BaseSnapshotTester {
         this.#actual.set(title, actual);
         const expected = this.#expected.get(title);
         if (expected === undefined) {
-            this.#newTests = true;
             if (BaseSnapshotTester.#updateMode) {
                 return;
             }
-            this.#anyFailures = true;
             throw new Error(`snapshot assertion failed! new snapshot found (${title}), must run \`npm run test -- --on-diff=update ...\` to accept it.`);
         }
         const isDifferent = actual !== expected;
-        if (isDifferent) {
-            this.#anyFailures = true;
-            if (!BaseSnapshotTester.#updateMode) {
-                assertSnapshotContent(actual, expected);
-            }
+        if (isDifferent && !BaseSnapshotTester.#updateMode) {
+            assertSnapshotContent(actual, expected);
         }
     }
     async finish() {
-        let notRanTest = null;
-        for (const title of this.#expected.keys()) {
-            if (!this.#actual.has(title)) {
-                notRanTest = title;
-                break;
-            }
-        }
-        const hasChanges = this.#anyFailures || notRanTest || this.#newTests;
-        if (!hasChanges) {
-            return;
-        }
-        // If the update flag is on, post any and all changes (failures, new tests, removals).
         if (BaseSnapshotTester.#updateMode) {
             await this.postUpdate();
-            return;
-        }
-        // Note: this does not handle test filtering (.only, --grep). Need a reliable way
-        // to distinguish a deleted test from a test that was filtered out.
-        if (notRanTest) {
-            throw new Error(`Snapshots are out of sync (a test was likely deleted or renamed).\nExpected test:\n${notRanTest}\nRun with '--on-diff=update' to fix.`);
         }
     }
     #parseSnapshotFileContent(content) {
@@ -128,19 +101,25 @@ class BaseSnapshotTester {
         }
     }
     serializeSnapshotFileContent() {
-        const merged = new Map(this.#actual);
-        if (BaseSnapshotTester.#isFiltered) {
-            for (const [title, content] of this.#expected) {
-                if (!merged.has(title)) {
-                    merged.set(title, content);
-                }
+        const resultMap = new Map();
+        for (const [title, expectedContent] of this.#expected) {
+            if (this.#actual.has(title)) {
+                resultMap.set(title, this.#actual.get(title));
+            }
+            else {
+                resultMap.set(title, expectedContent);
             }
         }
-        if (!merged.size) {
+        for (const [title, actualContent] of this.#actual) {
+            if (!resultMap.has(title)) {
+                resultMap.set(title, actualContent);
+            }
+        }
+        if (!resultMap.size) {
             return '';
         }
         const lines = [];
-        for (const [title, result] of merged) {
+        for (const [title, result] of resultMap) {
             lines.push(`Title: ${title}`);
             lines.push(`Content:\n${result}`);
             lines.push('=== end content\n');
@@ -149,7 +128,7 @@ class BaseSnapshotTester {
         return lines.join('\n').trim() + '\n';
     }
     async checkIfUpdateMode() {
-        return { updateMode: false, isFiltered: false };
+        return { updateMode: false };
     }
     async postUpdate() {
         throw new Error(`Not implemented`);
@@ -162,7 +141,7 @@ class WebSnapshotTester extends BaseSnapshotTester {
     async checkIfUpdateMode() {
         const response = await fetch('/snapshot-update-mode');
         const data = await response.json();
-        return { updateMode: data.updateMode === true, isFiltered: data.isFiltered === true };
+        return { updateMode: data.updateMode === true };
     }
     async postUpdate() {
         const url = new URL('/update-snapshot', import.meta.url);
@@ -190,7 +169,7 @@ class WebSnapshotTester extends BaseSnapshotTester {
 class NodeSnapshotTester extends BaseSnapshotTester {
     async checkIfUpdateMode() {
         // cannot update in node mode yet.
-        return { updateMode: false, isFiltered: false };
+        return { updateMode: false };
     }
     async postUpdate() {
         const content = this.serializeSnapshotFileContent();

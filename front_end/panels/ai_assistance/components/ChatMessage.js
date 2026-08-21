@@ -1012,7 +1012,8 @@ function renderInsightWidget(component, insight, jslog, accessibleLabel, title, 
         model: insight,
         minimal: true,
         bounds: bounds ?? null,
-    })}></devtools-widget>`;
+    })}
+  ></devtools-widget>`;
     return {
         renderedWidget,
         revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
@@ -1364,7 +1365,7 @@ async function makeDomTreeWidget(widgetData) {
  * corresponding `make...Widget` functions and handling them here.
  */
 /**
- * Generates a deterministic unique identifier for a given AiWidget based on
+ * Generates a deterministic unique identifier for a given AiAssistanceModel.AiAgent.AiWidget based on
  * its name and identifying data. This signature is used for widget deduplication.
  */
 export function getWidgetSignature(widget) {
@@ -1404,7 +1405,7 @@ export function getWidgetSignature(widget) {
         case 'STORAGE_BREAKDOWN':
             return `${widget.name}:${widget.data.totalUsageBytes}:${widget.data.usageBreakdown.map(e => `${e.storageType}_${e.bytes}`).join(',')}`;
         default:
-            Platform.assertNever(widget, 'Unknown AiWidget name');
+            Platform.assertNever(widget, 'Unknown AiAssistanceModel.AiAgent.AiWidget name');
     }
 }
 /**
@@ -1506,7 +1507,7 @@ async function renderWidgets(widgets, options = {}) {
                 response = await makeStorageBreakdownWidget(widgetData);
                 break;
             default:
-                Platform.assertNever(widgetData, 'Unknown AiWidget name');
+                Platform.assertNever(widgetData, 'Unknown AiAssistanceModel.AiAgent.AiWidget name');
         }
         return renderWidgetResponse(response);
     }));
@@ -1922,11 +1923,11 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
         const mainThread = AiAssistanceModel.AIQueries.AIQueries.findMainThread(navigationId, parsedTrace);
         if (mainThread) {
             events = mainThread.entries;
-            AiAssistanceModel.Debug.debugLog(`TimelineRangeSummaryAiWidget found main thread. PID:`, mainThread.pid, 'TID:', mainThread.tid, 'Number of entries:', mainThread.entries.length);
+            AiAssistanceModel.Debug.debugLog(`AiAssistanceModel.AiAgent.TimelineRangeSummaryAiWidget found main thread. PID:`, mainThread.pid, 'TID:', mainThread.tid, 'Number of entries:', mainThread.entries.length);
         }
     }
     if (!events) {
-        AiAssistanceModel.Debug.debugLog(`Warning: could not find events for TimelineRangeSummaryAiWidget`, widgetData);
+        AiAssistanceModel.Debug.debugLog(`Warning: could not find events for AiAssistanceModel.AiAgent.TimelineRangeSummaryAiWidget`, widgetData);
         return null;
     }
     const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();

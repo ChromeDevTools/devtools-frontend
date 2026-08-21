@@ -41,7 +41,7 @@ export declare const UIStrings: {
      */
     readonly fieldDuration: 'Field p75';
     /**
-     * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
+     * @description Text status indicating that the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
      */
     readonly noLcp: 'No LCP detected';
 };

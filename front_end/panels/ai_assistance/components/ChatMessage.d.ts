@@ -1,9 +1,8 @@
 import '../../../ui/components/markdown_view/markdown_view.js';
 import '../../../ui/kit/kit.js';
 import * as Host from '../../../core/host/host.js';
-import type { AiWidget } from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
+import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 /**
@@ -63,7 +62,7 @@ export interface Step {
     /**
      * Visual widgets rendered alongside this step (e.g. core web vitals, network traces).
      */
-    widgets?: AiWidget[];
+    widgets?: AiAssistanceModel.AiAgent.AiWidget[];
     /**
      * Context item details gathered or inspected during this step.
      */
@@ -90,7 +89,7 @@ export interface StepPart {
  */
 export interface WidgetPart {
     type: 'widget';
-    widgets: AiWidget[];
+    widgets: AiAssistanceModel.AiAgent.AiWidget[];
 }
 export type ModelMessagePart = AnswerPart | StepPart | WidgetPart;
 export interface UserChatMessage {
@@ -146,7 +145,7 @@ export interface MessageInput {
     isFirstMessage: boolean;
     prompt: string;
     canShowFeedbackForm: boolean;
-    markdownRenderer: MarkdownLitRenderer;
+    markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer;
     onSuggestionClick: (suggestion: string) => void;
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
     onCopyResponseClick: (message: ModelChatMessage) => void;
@@ -165,7 +164,7 @@ export type View = typeof DEFAULT_VIEW;
 export declare function titleForStep(step: Step): string;
 export declare function renderStep({ step, markdownRenderer, isLast }: {
     step: Step;
-    markdownRenderer: MarkdownLitRenderer;
+    markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer;
     isLast: boolean;
 }): Lit.LitTemplate;
 /**
@@ -186,10 +185,10 @@ export declare function renderStep({ step, markdownRenderer, isLast }: {
  * corresponding `make...Widget` functions and handling them here.
  */
 /**
- * Generates a deterministic unique identifier for a given AiWidget based on
+ * Generates a deterministic unique identifier for a given AiAssistanceModel.AiAgent.AiWidget based on
  * its name and identifying data. This signature is used for widget deduplication.
  */
-export declare function getWidgetSignature(widget: AiWidget): string;
+export declare function getWidgetSignature(widget: AiAssistanceModel.AiAgent.AiWidget): string;
 /**
  * Returns a new ModelChatMessage where widgets have been deduplicated
  * across all parts and steps of the message. The first occurrence of each
@@ -205,7 +204,7 @@ export declare class ChatMessage extends UI.Widget.Widget {
     canShowFeedbackForm: boolean;
     isLastMessage: boolean;
     isFirstMessage: boolean;
-    markdownRenderer: MarkdownLitRenderer;
+    markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer;
     onSuggestionClick: (suggestion: string) => void;
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
     onCopyResponseClick: (message: ModelChatMessage) => void;

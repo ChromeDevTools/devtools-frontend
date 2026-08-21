@@ -10,39 +10,38 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import imagePreviewStyles from './imagePreview.css.js';
 const UIStrings = {
     /**
-     * @description Alt text description of an image's source
+     * @description Fallback text used in image preview alt text when the image source is unknown.
      */
-    unknownSource: 'unknown source',
+    unknownSource: 'Unknown source',
     /**
-     * @description Text to indicate the source of an image
+     * @description Alt text for an image preview displaying its source.
      * @example {example.com} PH1
      */
     imageFromS: 'Image from {PH1}',
     /**
-     * @description Title of the row that shows the file size of an image.
+     * @description Label for the file size row in an image preview.
      */
-    fileSize: 'File size:',
+    fileSize: 'File size',
     /**
-     * @description Title of the row that shows the intrinsic size of an image in pixels.
+     * @description Label for the intrinsic dimensions row in an image preview.
      */
-    intrinsicSize: 'Intrinsic size:',
+    intrinsicSize: 'Intrinsic size',
     /**
-     * @description Title of the row that shows the rendered size of an image in pixels.
+     * @description Label for the rendered dimensions row in an image preview.
      */
-    renderedSize: 'Rendered size:',
+    renderedSize: 'Rendered size',
     /**
-     * @description Title of the row that shows the current URL of an image.
-     * https://html.spec.whatwg.org/multipage/embedded-content.html#dom-img-currentsrc.
+     * @description Label for the source URL row in an image preview.
      */
-    currentSource: 'Current source:',
+    currentSource: 'Current source',
     /**
-     * @description The rendered aspect ratio of an image.
+     * @description Label for the rendered aspect ratio row in an image preview.
      */
-    renderedAspectRatio: 'Rendered aspect ratio:',
+    renderedAspectRatio: 'Rendered aspect ratio',
     /**
-     * @description The intrinsic aspect ratio of an image.
+     * @description Label for the intrinsic aspect ratio row in an image preview.
      */
-    intrinsicAspectRatio: 'Intrinsic aspect ratio:',
+    intrinsicAspectRatio: 'Intrinsic aspect ratio',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/ImagePreview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

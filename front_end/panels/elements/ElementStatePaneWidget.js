@@ -392,6 +392,9 @@ export class ButtonProvider {
     clicked() {
         ElementsPanel.instance().showToolbarPane(!this.view.isShowing() ? this.view : null, this.button);
     }
+    showPane() {
+        ElementsPanel.instance().showToolbarPane(this.view, this.button);
+    }
     item() {
         return this.button;
     }

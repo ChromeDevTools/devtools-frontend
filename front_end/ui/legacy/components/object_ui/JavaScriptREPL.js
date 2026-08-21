@@ -66,7 +66,7 @@ export class JavaScriptREPL {
             replMode,
             silent,
         };
-        return await executionContext.evaluate(options, false /* userGesture */, awaitPromise);
+        return await executionContext.evaluateWithSelectedFrameFallback(options, false /* userGesture */, awaitPromise);
     }
     static async evaluateAndBuildPreview(text, throwOnSideEffect, replMode, timeout, allowErrors, objectGroup, awaitPromise = false, silent = false) {
         const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);

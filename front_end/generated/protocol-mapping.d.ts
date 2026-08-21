@@ -1488,6 +1488,22 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Gets the current globally-applied privacy control status
+     * See https://www.w3.org/TR/gpc/#get-global-privacy-control
+     */
+    'Browser.getGlobalPrivacyControl': {
+      paramsType: [];
+      returnType: Protocol.Browser.GetGlobalPrivacyControlResponse;
+    };
+    /**
+     * Sets and then gets the current globally-applied privacy control status
+     * See https://www.w3.org/TR/gpc/#set-global-privacy-control
+     */
+    'Browser.setGlobalPrivacyControl': {
+      paramsType: [Protocol.Browser.SetGlobalPrivacyControlRequest];
+      returnType: Protocol.Browser.SetGlobalPrivacyControlResponse;
+    };
+    /**
      * Inserts a new rule with the given `ruleText` in a stylesheet with given `styleSheetId`, at the
      * position specified by `location`.
      */

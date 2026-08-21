@@ -13726,7 +13726,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     Common5.EventTarget.removeEventListeners(this.#targetListeners.get(target) || []);
   }
   async evaluateCommandInConsole(executionContext, originatingMessage, expression, useCommandLineAPI) {
-    const result = await executionContext.evaluate(
+    const result = await executionContext.evaluateWithSelectedFrameFallback(
       {
         expression,
         objectGroup: "console",
@@ -29525,11 +29525,11 @@ var ExecutionContext = class {
     }
     return a.name.localeCompare(b.name);
   }
-  async evaluate(options, userGesture, awaitPromise) {
+  async evaluateWithSelectedFrameFallback(options, userGesture, awaitPromise) {
     if (this.debuggerModel.selectedCallFrame()) {
       return await this.debuggerModel.evaluateOnSelectedCallFrame(options);
     }
-    return await this.evaluateGlobal(options, userGesture, awaitPromise);
+    return await this.evaluate(options, userGesture, awaitPromise);
   }
   globalObject(objectGroup, generatePreview) {
     const evaluationOptions = {
@@ -29540,7 +29540,7 @@ var ExecutionContext = class {
       returnByValue: false,
       generatePreview
     };
-    return this.evaluateGlobal(evaluationOptions, false, false);
+    return this.evaluate(evaluationOptions, false, false);
   }
   async callFunctionOn(options) {
     const response = await this.runtimeModel.agent.invoke_callFunctionOn({
@@ -29560,7 +29560,7 @@ var ExecutionContext = class {
     }
     return { object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
   }
-  async evaluateGlobal(options, userGesture, awaitPromise) {
+  async evaluate(options, userGesture, awaitPromise) {
     if (!options.expression) {
       options.expression = "this";
     }
@@ -38947,24 +38947,7 @@ __export(PreloadingModel_exports, {
   PreloadPipeline: () => PreloadPipeline,
   PreloadingModel: () => PreloadingModel
 });
-
-// gen/front_end/core/common/MapWithDefault.js
-var MapWithDefault = class extends Map {
-  getOrInsert(key, defaultValue) {
-    if (!this.has(key)) {
-      this.set(key, defaultValue);
-    }
-    return this.get(key);
-  }
-  getOrInsertComputed(key, callbackFunction) {
-    if (!this.has(key)) {
-      this.set(key, callbackFunction(key));
-    }
-    return this.get(key);
-  }
-};
-
-// gen/front_end/core/sdk/PreloadingModel.js
+import * as Common39 from "./../common/common.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "./../platform/platform.js";
 var PreloadingModel = class _PreloadingModel extends SDKModel {
   agent;
@@ -39401,7 +39384,7 @@ var PreloadPipeline = class _PreloadPipeline {
 };
 var PreloadingAttemptRegistry = class {
   map = /* @__PURE__ */ new Map();
-  pipelines = new MapWithDefault();
+  pipelines = new Common39.MapWithDefault.MapWithDefault();
   enrich(attempt, source) {
     let ruleSetIds = [];
     let nodeIds = [];
@@ -39461,7 +39444,10 @@ var PreloadingAttemptRegistry = class {
   // Returns reference. Don't save returned values.
   // Returned values may or may not be updated as the time grows.
   getAllRepresentative(ruleSetId, sources) {
-    return [...this.map.entries()].map(([id, value]) => ({ id, value: this.enrich(value, sources.getById(id)) })).filter(({ value }) => !ruleSetId || value.ruleSetIds.includes(ruleSetId)).filter(({ value }) => this.isAttemptRepresentative(value));
+    return [...this.map.entries()].map(([id, value]) => ({
+      id,
+      value: this.enrich(value, sources.getById(id))
+    })).filter(({ value }) => !ruleSetId || value.ruleSetIds.includes(ruleSetId)).filter(({ value }) => this.isAttemptRepresentative(value));
   }
   getPipeline(pipelineId, sources) {
     const pipeline = this.pipelines.get(pipelineId);
@@ -39577,6 +39563,9 @@ var SourceRegistry = class {
     this.map = new Map(sources.map((s) => [makePreloadingAttemptId(s.key), s]));
   }
 };
+
+// gen/front_end/core/sdk/RehydratingObject.js
+var RehydratingObject_exports = {};
 
 // gen/front_end/core/sdk/ScreenCaptureModel.js
 var ScreenCaptureModel_exports = {};
@@ -39738,7 +39727,7 @@ __export(ServiceWorkerCacheModel_exports, {
   Cache: () => Cache,
   ServiceWorkerCacheModel: () => ServiceWorkerCacheModel
 });
-import * as Common39 from "./../common/common.js";
+import * as Common40 from "./../common/common.js";
 import * as i18n35 from "./../i18n/i18n.js";
 
 // gen/front_end/core/sdk/StorageBucketsModel.js
@@ -39885,7 +39874,7 @@ var ServiceWorkerCacheModel = class extends SDKModel {
   #caches = /* @__PURE__ */ new Map();
   #storageKeysTracked = /* @__PURE__ */ new Set();
   #storageBucketsUpdated = /* @__PURE__ */ new Set();
-  #throttler = new Common39.Throttler.Throttler(2e3);
+  #throttler = new Common40.Throttler.Throttler(2e3);
   #enabled = false;
   // Used by tests to remove the Throttler timeout.
   #scheduleAsSoonAsPossible = false;
@@ -40131,7 +40120,7 @@ __export(ServiceWorkerManager_exports, {
   ServiceWorkerVersion: () => ServiceWorkerVersion,
   ServiceWorkerVersionState: () => ServiceWorkerVersionState
 });
-import * as Common40 from "./../common/common.js";
+import * as Common41 from "./../common/common.js";
 import * as i18n37 from "./../i18n/i18n.js";
 var UIStrings17 = {
   /**
@@ -40264,7 +40253,7 @@ var ServiceWorkerManager = class extends SDKModel {
     if (!registration) {
       return;
     }
-    const origin = Common40.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
+    const origin = Common41.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
     await this.#agent.invoke_deliverPushMessage({ origin, registrationId, data });
   }
   async dispatchSyncEvent(registrationId, tag, lastChance) {
@@ -40272,7 +40261,7 @@ var ServiceWorkerManager = class extends SDKModel {
     if (!registration) {
       return;
     }
-    const origin = Common40.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
+    const origin = Common41.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
     await this.#agent.invoke_dispatchSyncEvent({ origin, registrationId, tag, lastChance });
   }
   async dispatchPeriodicSyncEvent(registrationId, tag) {
@@ -40280,7 +40269,7 @@ var ServiceWorkerManager = class extends SDKModel {
     if (!registration) {
       return;
     }
-    const origin = Common40.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
+    const origin = Common41.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
     await this.#agent.invoke_dispatchPeriodicSyncEvent({ origin, registrationId, tag });
   }
   async unregister(scopeURL) {
@@ -40401,7 +40390,7 @@ var ServiceWorkerVersion = class {
   update(payload) {
     this.id = payload.versionId;
     this.scriptURL = payload.scriptURL;
-    const parsedURL = new Common40.ParsedURL.ParsedURL(payload.scriptURL);
+    const parsedURL = new Common41.ParsedURL.ParsedURL(payload.scriptURL);
     this.securityOrigin = parsedURL.securityOrigin();
     this.currentState = new ServiceWorkerVersionState(payload.runningStatus, payload.status, this.currentState, Date.now());
     this.scriptLastModified = payload.scriptLastModified;
@@ -40556,7 +40545,7 @@ var ServiceWorkerRegistration = class {
     this.#fingerprint = Symbol("fingerprint");
     this.id = payload.registrationId;
     this.scopeURL = payload.scopeURL;
-    const parsedURL = new Common40.ParsedURL.ParsedURL(payload.scopeURL);
+    const parsedURL = new Common41.ParsedURL.ParsedURL(payload.scopeURL);
     this.securityOrigin = parsedURL.securityOrigin();
     this.isDeleted = payload.isDeleted;
   }
@@ -40652,7 +40641,7 @@ var ServiceWorkerContextNamer = class {
       context.setLabel("");
       return;
     }
-    const parsedUrl = Common40.ParsedURL.ParsedURL.fromString(context.origin);
+    const parsedUrl = Common41.ParsedURL.ParsedURL.fromString(context.origin);
     const label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : context.name;
     const localizedStatus = ServiceWorkerVersion.Status[version.status];
     context.setLabel(i18nString17(UIStrings17.sSS, { PH1: label, PH2: version.id, PH3: localizedStatus() }));
@@ -40786,6 +40775,7 @@ export {
   PerformanceMetricsModel_exports as PerformanceMetricsModel,
   PreloadingModel_exports as PreloadingModel,
   RehydratingConnection_exports as RehydratingConnection,
+  RehydratingObject_exports as RehydratingObject,
   RemoteObject_exports as RemoteObject,
   Resource_exports as Resource,
   ResourceTreeModel_exports as ResourceTreeModel,

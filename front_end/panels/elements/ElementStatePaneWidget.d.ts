@@ -28,6 +28,7 @@ export declare class ButtonProvider implements UI.Toolbar.Provider {
         forceNew: boolean | null;
     }): ButtonProvider;
     private clicked;
+    showPane(): void;
     item(): UI.Toolbar.ToolbarToggle;
 }
 export {};

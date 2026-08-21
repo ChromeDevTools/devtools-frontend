@@ -1,34 +1,32 @@
 // Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import playerPropertiesViewStyles from './playerPropertiesView.css.js';
 const UIStrings = {
-    /**
-     * @description The type of media, for example - video, audio, or text. Capitalized.
-     */
-    video: 'Video',
-    /**
-     * @description The type of media, for example - video, audio, or text. Capitalized.
-     */
-    audio: 'Audio',
     /**
      * @description A video or audio stream - but capitalized.
      */
     track: 'Track',
     /**
-     * @description A device that converts media files into playable streams of audio or video.
+     * @description Title of the video decoder tab in the media player properties view.
      */
-    decoder: 'Decoder',
+    videoDecoderProperties: 'Video Decoder Properties',
     /**
-     * @description Title of the 'Properties' tool in the sidebar of the Elements tool.
+     * @description Title of the audio decoder tab in the media player properties view.
      */
-    properties: 'Properties',
+    audioDecoderProperties: 'Audio Decoder Properties',
+    /**
+     * @description Menu label for media tracks, it is followed by a number, like 'Track #1'.
+     * @example {Track} PH1
+     * @example {1} PH2
+     */
+    trackNumber: '{PH1} #{PH2}',
     /**
      * @description Menu label for text tracks, it is followed by a number, like 'Text track #1'.
      */
@@ -132,314 +130,43 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerPropertiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-export class PropertyRenderer extends UI.Widget.VBox {
-    contents;
-    value;
-    pseudoColorProtectionElement;
-    constructor(title) {
-        super();
-        this.contentElement.classList.add('media-property-renderer');
-        const titleElement = this.contentElement.createChild('span', 'media-property-renderer-title');
-        this.contents = this.contentElement.createChild('div', 'media-property-renderer-contents');
-        UI.UIUtils.createTextChild(titleElement, title);
-        this.value = null;
-        this.pseudoColorProtectionElement = null;
-        this.contentElement.classList.add('media-property-renderer-hidden');
-    }
-    updateData(propvalue) {
-        // convert all empty possibilities into nulls for easier handling.
-        if (propvalue === '' || propvalue === null) {
-            this.changeContents(null);
-        }
-        else if (this.value === propvalue) {
-            return; // Don't rebuild element!
-        }
-        else {
-            this.value = propvalue;
-            this.updateDataInternal(propvalue);
-        }
-    }
-    updateDataInternal(propvalue) {
-        try {
-            const parsed = JSON.parse(propvalue);
-            this.changeContents(parsed);
-        }
-        catch {
-            // Some properties are just raw strings.
-            this.changeContents(propvalue);
-        }
-    }
-    unsetNestedContents() {
-        this.contentElement.classList.add('media-property-renderer-hidden');
-        if (this.pseudoColorProtectionElement === null) {
-            this.pseudoColorProtectionElement = document.createElement('div');
-            this.pseudoColorProtectionElement.classList.add('media-property-renderer');
-            this.pseudoColorProtectionElement.classList.add('media-property-renderer-hidden');
-            this.contentElement.parentNode
-                .insertBefore(this.pseudoColorProtectionElement, this.contentElement);
-        }
-    }
-    changeNestedContents(value) {
-        if (value === null || Object.keys(value).length === 0) {
-            this.unsetNestedContents();
-        }
-        else {
-            if (this.pseudoColorProtectionElement !== null) {
-                this.pseudoColorProtectionElement.remove();
-                this.pseudoColorProtectionElement = null;
-            }
-            this.contentElement.classList.remove('media-property-renderer-hidden');
-            this.contents.removeChildren();
-            const jsonWrapperElement = new SourceFrame.JSONView.JSONView(new SourceFrame.JSONView.ParsedJSON(value, '', ''), true);
-            jsonWrapperElement.show(this.contents);
-        }
-    }
-    changeContents(value) {
-        if (value === null) {
-            this.unsetNestedContents();
-        }
-        else {
-            if (this.pseudoColorProtectionElement !== null) {
-                this.pseudoColorProtectionElement.remove();
-                this.pseudoColorProtectionElement = null;
-            }
-            this.contentElement.classList.remove('media-property-renderer-hidden');
-            this.contents.removeChildren();
-            const spanElement = document.createElement('span');
-            spanElement.textContent = value;
-            this.contents.appendChild(spanElement);
-        }
-    }
-}
-export class FormattedPropertyRenderer extends PropertyRenderer {
-    formatfunction;
-    constructor(title, formatfunction) {
-        super(title);
-        this.formatfunction = formatfunction;
-    }
-    updateDataInternal(propvalue) {
-        try {
-            const parsed = JSON.parse(propvalue);
-            this.changeContents(this.formatfunction(parsed));
-        }
-        catch {
-            const unparsed = propvalue;
-            this.changeContents(this.formatfunction(unparsed));
-        }
-    }
-}
-export class DefaultPropertyRenderer extends PropertyRenderer {
-    constructor(title, defaultText) {
-        super(title);
-        this.changeContents(defaultText);
-    }
-}
-export class NestedPropertyRenderer extends PropertyRenderer {
-    constructor(title, content) {
-        super(title);
-        this.changeNestedContents(content);
-    }
-}
-export class AttributesView extends UI.Widget.VBox {
-    contentHash;
-    constructor(elements) {
-        super();
-        this.contentHash = 0;
-        this.contentElement.classList.add('media-attributes-view');
-        for (const element of elements) {
-            element.show(this.contentElement);
-            // We just need a really simple way to compare the topical equality
-            // of the attributes views in order to avoid deleting and recreating
-            // a node containing exactly the same data.
-            const content = this.contentElement.textContent;
-            if (content !== null) {
-                this.contentHash += Platform.StringUtilities.hashCode(content);
-            }
-        }
-    }
-    getContentHash() {
-        return this.contentHash;
-    }
-}
-export class TrackManager {
+class Property {
     type;
-    view;
-    constructor(propertiesView, type) {
+    dataInternal = null;
+    constructor(type) {
         this.type = type;
-        this.view = propertiesView;
     }
-    updateData(value) {
-        const tabs = this.view.getTabs(this.type);
-        const newTabs = JSON.parse(value);
-        let enumerate = 1;
-        for (const tabData of newTabs) {
-            this.addNewTab(tabs, tabData, enumerate);
-            enumerate++;
+    parse(val) {
+        try {
+            return JSON.parse(val);
+        }
+        catch {
+            return val;
         }
     }
-    addNewTab(tabs, tabData, tabNumber) {
-        const tabElements = [];
-        for (const [name, data] of Object.entries(tabData)) {
-            if (typeof data === 'object') {
-                tabElements.push(new NestedPropertyRenderer(i18n.i18n.lockedString(name), data));
-            }
-            else {
-                tabElements.push(new DefaultPropertyRenderer(i18n.i18n.lockedString(name), data));
-            }
+    get data() {
+        return this.dataInternal;
+    }
+    set data(val) {
+        if (!val) {
+            this.dataInternal = null;
+            return;
         }
-        const newTab = new AttributesView(tabElements);
-        tabs.addNewTab(tabNumber, newTab);
+        // Some properties are just raw strings.
+        this.dataInternal = String(this.parse(val));
     }
 }
-export class VideoTrackManager extends TrackManager {
-    constructor(propertiesView) {
-        super(propertiesView, 'video');
-    }
-}
-export class TextTrackManager extends TrackManager {
-    constructor(propertiesView) {
-        super(propertiesView, 'text');
-    }
-}
-export class AudioTrackManager extends TrackManager {
-    constructor(propertiesView) {
-        super(propertiesView, 'audio');
-    }
-}
-const TrackTypeLocalized = {
-    Video: i18nLazyString(UIStrings.video),
-    Audio: i18nLazyString(UIStrings.audio),
-};
-class GenericTrackMenu extends UI.TabbedPane.TabbedPane {
-    decoderName;
-    trackName;
-    constructor(decoderName, trackName = i18nString(UIStrings.track)) {
-        super();
-        this.decoderName = decoderName;
-        this.trackName = trackName;
-    }
-    addNewTab(trackNumber, element) {
-        const localizedTrackLower = i18nString(UIStrings.track);
-        const tabId = `track-${trackNumber}`;
-        if (this.hasTab(tabId)) {
-            const tabElement = this.tabView(tabId);
-            if (tabElement === null) {
-                return;
-            }
-            if (tabElement.getContentHash() === element.getContentHash()) {
-                return;
-            }
-            this.closeTab(tabId, /* userGesture=*/ false);
-        }
-        this.appendTab(tabId, // No need for localizing, internal ID.
-        `${this.trackName} #${trackNumber}`, element, `${this.decoderName} ${localizedTrackLower} #${trackNumber}`);
-    }
-}
-class DecoderTrackMenu extends GenericTrackMenu {
-    constructor(decoderName, informationalElement) {
-        super(decoderName);
-        const decoderLocalized = i18nString(UIStrings.decoder);
-        const title = `${decoderName} ${decoderLocalized}`;
-        const propertiesLocalized = i18nString(UIStrings.properties);
-        const hoverText = `${title} ${propertiesLocalized}`;
-        this.appendTab('decoder-properties', title, informationalElement, hoverText);
-    }
-}
-class NoTracksPlaceholderMenu extends UI.Widget.VBox {
-    isPlaceholder;
-    wrapping;
-    constructor(wrapping, placeholderText) {
-        super();
-        this.isPlaceholder = true;
-        this.wrapping = wrapping;
-        this.wrapping.appendTab('_placeholder', placeholderText, new UI.Widget.VBox(), placeholderText);
-        this.wrapping.show(this.contentElement);
-    }
-    addNewTab(trackNumber, element) {
-        if (this.isPlaceholder) {
-            this.wrapping.closeTab('_placeholder');
-            this.isPlaceholder = false;
-        }
-        this.wrapping.addNewTab(trackNumber, element);
-    }
-}
-export class PlayerPropertiesView extends UI.Widget.VBox {
-    mediaElements;
-    videoDecoderElements;
-    audioDecoderElements;
-    attributeMap;
-    videoProperties;
-    videoDecoderProperties;
-    audioDecoderProperties;
-    videoDecoderTabs;
-    audioDecoderTabs;
-    textTracksTabs;
+class TotalBytesProperty extends Property {
     constructor() {
-        super({ jslog: `${VisualLogging.pane('properties')}` });
-        this.registerRequiredCSS(playerPropertiesViewStyles);
-        this.contentElement.classList.add('media-properties-frame');
-        this.mediaElements = [];
-        this.videoDecoderElements = [];
-        this.audioDecoderElements = [];
-        this.attributeMap = new Map();
-        this.populateAttributesAndElements();
-        this.videoProperties = new AttributesView(this.mediaElements);
-        this.videoDecoderProperties = new AttributesView(this.videoDecoderElements);
-        this.audioDecoderProperties = new AttributesView(this.audioDecoderElements);
-        this.videoProperties.show(this.contentElement);
-        this.videoDecoderTabs = new DecoderTrackMenu(TrackTypeLocalized.Video(), this.videoDecoderProperties);
-        this.videoDecoderTabs.show(this.contentElement);
-        this.audioDecoderTabs = new DecoderTrackMenu(TrackTypeLocalized.Audio(), this.audioDecoderProperties);
-        this.audioDecoderTabs.show(this.contentElement);
-        this.textTracksTabs = null;
+        super("kTotalBytes" /* PlayerPropertyKeys.TOTAL_BYTES */);
     }
-    lazyCreateTrackTabs() {
-        let textTracksTabs = this.textTracksTabs;
-        if (textTracksTabs === null) {
-            const textTracks = new GenericTrackMenu(i18nString(UIStrings.textTrack));
-            textTracksTabs = new NoTracksPlaceholderMenu(textTracks, i18nString(UIStrings.noTextTracks));
-            textTracksTabs.show(this.contentElement);
-            this.textTracksTabs = textTracksTabs;
-        }
-        return textTracksTabs;
+    get data() {
+        return this.dataInternal;
     }
-    getTabs(type) {
-        if (type === 'audio') {
-            return this.audioDecoderTabs;
-        }
-        if (type === 'video') {
-            return this.videoDecoderTabs;
-        }
-        if (type === 'text') {
-            return this.lazyCreateTrackTabs();
-        }
-        // There should be no other type allowed.
-        throw new Error('Unreachable');
+    set data(val) {
+        this.dataInternal = val === null ? null : TotalBytesProperty.formatFileSize(this.parse(val));
     }
-    onProperty(property) {
-        const renderer = this.attributeMap.get(property.name);
-        if (!renderer) {
-            throw new Error(`Player property "${property.name}" not supported.`);
-        }
-        renderer.updateData(property.value);
-    }
-    formatKbps(bitsPerSecond) {
-        if (bitsPerSecond === '') {
-            return '0 kbps';
-        }
-        const kbps = Math.floor(Number(bitsPerSecond) / 1000);
-        return `${kbps} kbps`;
-    }
-    formatTime(seconds) {
-        if (seconds === '') {
-            return '0:00';
-        }
-        const date = new Date();
-        date.setSeconds(Number(seconds));
-        return date.toISOString().substr(11, 8);
-    }
-    formatFileSize(bytes) {
+    static formatFileSize(bytes) {
         if (bytes === '') {
             return '0 bytes';
         }
@@ -452,7 +179,56 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
         const bytesDecimal = (actualBytes / Math.pow(1000, power)).toFixed(2);
         return `${bytesDecimal} ${suffix}`;
     }
-    formatBufferedRanges(ranges) {
+}
+class BitRateProperty extends Property {
+    constructor() {
+        super("kBitrate" /* PlayerPropertyKeys.BITRATE */);
+    }
+    get data() {
+        return this.dataInternal;
+    }
+    set data(val) {
+        this.dataInternal = val === null ? null : BitRateProperty.formatKbps(this.parse(val));
+    }
+    static formatKbps(bitsPerSecond) {
+        if (bitsPerSecond === '') {
+            return '0 kbps';
+        }
+        const kbps = Math.floor(Number(bitsPerSecond) / 1000);
+        return `${kbps} kbps`;
+    }
+}
+class MaxDurationProperty extends Property {
+    constructor() {
+        super("kMaxDuration" /* PlayerPropertyKeys.MAX_DURATION */);
+    }
+    get data() {
+        return this.dataInternal;
+    }
+    set data(val) {
+        this.dataInternal = val === null ? null : MaxDurationProperty.formatTime(this.parse(val));
+    }
+    static formatTime(seconds) {
+        if (seconds === '') {
+            return '0:00';
+        }
+        const date = new Date(0);
+        date.setSeconds(Number(seconds));
+        return date.toISOString().substring(11, 19);
+    }
+}
+class HlsBufferedRangesProperty extends Property {
+    constructor() {
+        super("kHlsBufferedRanges" /* PlayerPropertyKeys.HLS_BUFFERED_RANGES */);
+    }
+    get data() {
+        return this.dataInternal;
+    }
+    set data(val) {
+        this.dataInternal =
+            val === null ? null : HlsBufferedRangesProperty.formatBufferedRanges(this.parse(val));
+    }
+    static formatBufferedRanges(ranges) {
         // ranges is an array of `Range`, where a `Range` is a tuple-array of start/end floating point numbers.
         return ranges
             .map(range => {
@@ -460,85 +236,225 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
         })
             .join(', ');
     }
-    populateAttributesAndElements() {
+}
+class TrackProperty extends Property {
+    #entries = null;
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+    constructor(type) {
+        super(type);
+    }
+    get entries() {
+        return this.#entries;
+    }
+    get data() {
+        throw new Error('Cannot access raw data');
+    }
+    set data(val) {
+        if (val === null) {
+            this.#entries = null;
+            return;
+        }
+        const parsed = this.parse(val);
+        this.#entries = Array.isArray(parsed) ? parsed : [];
+    }
+}
+const { classMap } = Directives;
+const { widget } = UI.Widget;
+export const DEFAULT_VIEW = (input, output, target) => {
+    function propertyTitle(type) {
+        switch (type) {
+            case "kResolution" /* PlayerPropertyKeys.RESOLUTION */:
+                return i18nString(UIStrings.resolution);
+            case "kTotalBytes" /* PlayerPropertyKeys.TOTAL_BYTES */:
+                return i18nString(UIStrings.fileSize);
+            case "kBitrate" /* PlayerPropertyKeys.BITRATE */:
+                return i18nString(UIStrings.bitrate);
+            case "kMaxDuration" /* PlayerPropertyKeys.MAX_DURATION */:
+                return i18nString(UIStrings.duration);
+            case "kStartTime" /* PlayerPropertyKeys.START_TIME */:
+                return i18nString(UIStrings.startTime);
+            case "kIsStreaming" /* PlayerPropertyKeys.IS_STREAMING */:
+                return i18nString(UIStrings.streaming);
+            case "kFrameUrl" /* PlayerPropertyKeys.FRAME_URL */:
+                return i18nString(UIStrings.playbackFrameUrl);
+            case "kFrameTitle" /* PlayerPropertyKeys.FRAME_TITLE */:
+                return i18nString(UIStrings.playbackFrameTitle);
+            case "kIsSingleOrigin" /* PlayerPropertyKeys.IS_SINGLE_ORIGIN */:
+                return i18nString(UIStrings.singleoriginPlayback);
+            case "kIsRangeHeaderSupported" /* PlayerPropertyKeys.IS_RANGE_HEADER_SUPPORTED */:
+                return i18nString(UIStrings.rangeHeaderSupport);
+            case "kFramerate" /* PlayerPropertyKeys.FRAMERATE */:
+                return i18nString(UIStrings.frameRate);
+            case "kVideoPlaybackRoughness" /* PlayerPropertyKeys.VIDEO_PLAYBACK_ROUGHNESS */:
+                return i18nString(UIStrings.videoPlaybackRoughness);
+            case "kVideoPlaybackFreezing" /* PlayerPropertyKeys.VIDEO_PLAYBACK_FREEZING */:
+                return i18nString(UIStrings.videoFreezingScore);
+            case "kRendererName" /* PlayerPropertyKeys.RENDERER_NAME */:
+                return i18nString(UIStrings.rendererName);
+            case "kHlsBufferedRanges" /* PlayerPropertyKeys.HLS_BUFFERED_RANGES */:
+                return i18nString(UIStrings.hlsBufferedRanges);
+            case "kVideoDecoderName" /* PlayerPropertyKeys.VIDEO_DECODER_NAME */:
+                return i18nString(UIStrings.decoderName);
+            case "kIsPlatformVideoDecoder" /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_DECODER */:
+                return i18nString(UIStrings.hardwareDecoder);
+            case "kVideoEncoderName" /* PlayerPropertyKeys.VIDEO_ENCODER_NAME */:
+                return i18nString(UIStrings.encoderName);
+            case "kIsPlatformVideoEncoder" /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_ENCODER */:
+                return i18nString(UIStrings.hardwareEncoder);
+            case "kIsVideoDecryptingDemuxerStream" /* PlayerPropertyKeys.IS_VIDEO_DECRYPTION_DEMUXER_STREAM */:
+                return i18nString(UIStrings.decryptingDemuxer);
+            case "kAudioDecoderName" /* PlayerPropertyKeys.AUDIO_DECODER_NAME */:
+                return i18nString(UIStrings.decoderName);
+            case "kIsPlatformAudioDecoder" /* PlayerPropertyKeys.IS_PLATFORM_AUDIO_DECODER */:
+                return i18nString(UIStrings.hardwareDecoder);
+            case "kIsAudioDecryptingDemuxerStream" /* PlayerPropertyKeys.IS_AUDIO_DECRYPTING_DEMUXER_STREAM */:
+                return i18nString(UIStrings.decryptingDemuxer);
+            default:
+                return Platform.UIString.LocalizedEmptyString;
+        }
+    }
+    const renderAttribute = (data, title) => {
+        return html `<div class=${classMap({
+            widget: true,
+            vbox: true,
+            'media-property-renderer': true,
+            'media-property-renderer-hidden': data === null,
+        })}>
+      <span class=media-property-renderer-title>${title}</span>
+      <div class=media-property-renderer-contents>${data}</div>
+    </div>`;
+    };
+    const renderProperty = (property) => {
+        let fallback = null;
+        if (property.type === "kVideoDecoderName" /* PlayerPropertyKeys.VIDEO_DECODER_NAME */ ||
+            property.type === "kAudioDecoderName" /* PlayerPropertyKeys.AUDIO_DECODER_NAME */) {
+            fallback = i18nString(UIStrings.noDecoder);
+        }
+        else if (property.type === "kVideoEncoderName" /* PlayerPropertyKeys.VIDEO_ENCODER_NAME */) {
+            fallback = i18nString(UIStrings.noEncoder);
+        }
+        return renderAttribute(property.data ?? fallback, propertyTitle(property.type));
+    };
+    const renderTracks = (property, trackName, idPrefix) => property instanceof TrackProperty && property.entries !== null ?
+        property.entries.map(
+        // clang-format off
+        (track, i) => html `
+              <div id=track-${idPrefix}-${i} title=${i18nString(UIStrings.trackNumber, { PH1: trackName, PH2: i + 1 })}>
+                <div class="widget vbox media-attributes-view">
+                  ${Object.entries(track).map(([name, data]) => renderAttribute(typeof data === 'object' ? html `${widget(e => new SourceFrame.JSONView.JSONView(new SourceFrame.JSONView.ParsedJSON(data, '', ''), true, e))}` :
+            String(data), name))}
+                </div>
+              </div>`)
+        : [nothing];
+    // clang-format on
+    render(
+    // clang-format off
+    html `
+    <style>${playerPropertiesViewStyles}</style>
+    <div class="widget vbox media-attributes-view">
+      ${renderProperty(input.properties["kResolution" /* PlayerPropertyKeys.RESOLUTION */])}
+      ${renderProperty(input.properties["kTotalBytes" /* PlayerPropertyKeys.TOTAL_BYTES */])}
+      ${renderProperty(input.properties["kBitrate" /* PlayerPropertyKeys.BITRATE */])}
+      ${renderProperty(input.properties["kMaxDuration" /* PlayerPropertyKeys.MAX_DURATION */])}
+      ${renderProperty(input.properties["kStartTime" /* PlayerPropertyKeys.START_TIME */])}
+      ${renderProperty(input.properties["kIsStreaming" /* PlayerPropertyKeys.IS_STREAMING */])}
+      ${renderProperty(input.properties["kFrameUrl" /* PlayerPropertyKeys.FRAME_URL */])}
+      ${renderProperty(input.properties["kFrameTitle" /* PlayerPropertyKeys.FRAME_TITLE */])}
+      ${renderProperty(input.properties["kIsSingleOrigin" /* PlayerPropertyKeys.IS_SINGLE_ORIGIN */])}
+      ${renderProperty(input.properties["kIsRangeHeaderSupported" /* PlayerPropertyKeys.IS_RANGE_HEADER_SUPPORTED */])}
+      ${renderProperty(input.properties["kFramerate" /* PlayerPropertyKeys.FRAMERATE */])}
+      ${renderProperty(input.properties["kVideoPlaybackRoughness" /* PlayerPropertyKeys.VIDEO_PLAYBACK_ROUGHNESS */])}
+      ${renderProperty(input.properties["kVideoPlaybackFreezing" /* PlayerPropertyKeys.VIDEO_PLAYBACK_FREEZING */])}
+      ${renderProperty(input.properties["kRendererName" /* PlayerPropertyKeys.RENDERER_NAME */])}
+      ${renderProperty(input.properties["kHlsBufferedRanges" /* PlayerPropertyKeys.HLS_BUFFERED_RANGES */])}
+    </div>
+    <devtools-tabbed-pane>
+      <div id=decoder-properties title=${i18nString(UIStrings.videoDecoderProperties)}>
+        <div class="widget vbox media-attributes-view">
+          ${renderProperty(input.properties["kVideoDecoderName" /* PlayerPropertyKeys.VIDEO_DECODER_NAME */])}
+          ${renderProperty(input.properties["kIsPlatformVideoDecoder" /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_DECODER */])}
+          ${renderProperty(input.properties["kVideoEncoderName" /* PlayerPropertyKeys.VIDEO_ENCODER_NAME */])}
+          ${renderProperty(input.properties["kIsPlatformVideoEncoder" /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_ENCODER */])}
+          ${renderProperty(input.properties["kIsVideoDecryptingDemuxerStream" /* PlayerPropertyKeys.IS_VIDEO_DECRYPTION_DEMUXER_STREAM */])}
+        </div>
+      </div>
+      ${renderTracks(input.properties["kVideoTracks" /* PlayerPropertyKeys.VIDEO_TRACKS */], i18nString(UIStrings.track), 'video')}
+    </devtools-tabbed-pane>
+    <devtools-tabbed-pane>
+      <div id=decoder-properties title=${i18nString(UIStrings.audioDecoderProperties)}>
+        <div class="widget vbox media-attributes-view">
+          ${renderProperty(input.properties["kAudioDecoderName" /* PlayerPropertyKeys.AUDIO_DECODER_NAME */])}
+          ${renderProperty(input.properties["kIsPlatformAudioDecoder" /* PlayerPropertyKeys.IS_PLATFORM_AUDIO_DECODER */])}
+          ${renderProperty(input.properties["kIsAudioDecryptingDemuxerStream" /* PlayerPropertyKeys.IS_AUDIO_DECRYPTING_DEMUXER_STREAM */])}
+        </div>
+      </div>
+      ${renderTracks(input.properties["kAudioTracks" /* PlayerPropertyKeys.AUDIO_TRACKS */], i18nString(UIStrings.track), 'audio')}
+    </devtools-tabbed-pane>
+    ${input.properties["kTextTracks" /* PlayerPropertyKeys.TEXT_TRACKS */] instanceof TrackProperty &&
+        input.properties["kTextTracks" /* PlayerPropertyKeys.TEXT_TRACKS */].entries !== null ? html `
+        <devtools-tabbed-pane>
+          ${input.properties["kTextTracks" /* PlayerPropertyKeys.TEXT_TRACKS */].entries.length === 0 ?
+        html `<div id=_placeholder title=${i18nString(UIStrings.noTextTracks)}></div>` :
+        renderTracks(input.properties["kTextTracks" /* PlayerPropertyKeys.TEXT_TRACKS */], i18nString(UIStrings.textTrack), 'text')}
+        </devtools-tabbed-pane>`
+        : nothing}
+    `, 
+    // clang-format on
+    target, { container: { attributes: { jslog: `${VisualLogging.pane('properties')}` }, classes: ['media-properties-frame'] } });
+};
+export class PlayerPropertiesView extends UI.Widget.VBox {
+    #view;
+    #properties = {
         /* Media properties */
-        const resolution = new PropertyRenderer(i18nString(UIStrings.resolution));
-        this.mediaElements.push(resolution);
-        this.attributeMap.set("kResolution" /* PlayerPropertyKeys.RESOLUTION */, resolution);
-        const fileSize = new FormattedPropertyRenderer(i18nString(UIStrings.fileSize), this.formatFileSize);
-        this.mediaElements.push(fileSize);
-        this.attributeMap.set("kTotalBytes" /* PlayerPropertyKeys.TOTAL_BYTES */, fileSize);
-        const bitrate = new FormattedPropertyRenderer(i18nString(UIStrings.bitrate), this.formatKbps);
-        this.mediaElements.push(bitrate);
-        this.attributeMap.set("kBitrate" /* PlayerPropertyKeys.BITRATE */, bitrate);
-        const duration = new FormattedPropertyRenderer(i18nString(UIStrings.duration), this.formatTime);
-        this.mediaElements.push(duration);
-        this.attributeMap.set("kMaxDuration" /* PlayerPropertyKeys.MAX_DURATION */, duration);
-        const startTime = new PropertyRenderer(i18nString(UIStrings.startTime));
-        this.mediaElements.push(startTime);
-        this.attributeMap.set("kStartTime" /* PlayerPropertyKeys.START_TIME */, startTime);
-        const streaming = new PropertyRenderer(i18nString(UIStrings.streaming));
-        this.mediaElements.push(streaming);
-        this.attributeMap.set("kIsStreaming" /* PlayerPropertyKeys.IS_STREAMING */, streaming);
-        const frameUrl = new PropertyRenderer(i18nString(UIStrings.playbackFrameUrl));
-        this.mediaElements.push(frameUrl);
-        this.attributeMap.set("kFrameUrl" /* PlayerPropertyKeys.FRAME_URL */, frameUrl);
-        const frameTitle = new PropertyRenderer(i18nString(UIStrings.playbackFrameTitle));
-        this.mediaElements.push(frameTitle);
-        this.attributeMap.set("kFrameTitle" /* PlayerPropertyKeys.FRAME_TITLE */, frameTitle);
-        const singleOrigin = new PropertyRenderer(i18nString(UIStrings.singleoriginPlayback));
-        this.mediaElements.push(singleOrigin);
-        this.attributeMap.set("kIsSingleOrigin" /* PlayerPropertyKeys.IS_SINGLE_ORIGIN */, singleOrigin);
-        const rangeHeaders = new PropertyRenderer(i18nString(UIStrings.rangeHeaderSupport));
-        this.mediaElements.push(rangeHeaders);
-        this.attributeMap.set("kIsRangeHeaderSupported" /* PlayerPropertyKeys.IS_RANGE_HEADER_SUPPORTED */, rangeHeaders);
-        const frameRate = new PropertyRenderer(i18nString(UIStrings.frameRate));
-        this.mediaElements.push(frameRate);
-        this.attributeMap.set("kFramerate" /* PlayerPropertyKeys.FRAMERATE */, frameRate);
-        const roughness = new PropertyRenderer(i18nString(UIStrings.videoPlaybackRoughness));
-        this.mediaElements.push(roughness);
-        this.attributeMap.set("kVideoPlaybackRoughness" /* PlayerPropertyKeys.VIDEO_PLAYBACK_ROUGHNESS */, roughness);
-        const freezingScore = new PropertyRenderer(i18nString(UIStrings.videoFreezingScore));
-        this.mediaElements.push(freezingScore);
-        this.attributeMap.set("kVideoPlaybackFreezing" /* PlayerPropertyKeys.VIDEO_PLAYBACK_FREEZING */, freezingScore);
-        const rendererName = new PropertyRenderer(i18nString(UIStrings.rendererName));
-        this.mediaElements.push(rendererName);
-        this.attributeMap.set("kRendererName" /* PlayerPropertyKeys.RENDERER_NAME */, rendererName);
-        const hlsBufferedRanges = new FormattedPropertyRenderer(i18nString(UIStrings.hlsBufferedRanges), this.formatBufferedRanges);
-        this.mediaElements.push(hlsBufferedRanges);
-        this.attributeMap.set("kHlsBufferedRanges" /* PlayerPropertyKeys.HLS_BUFFERED_RANGES */, hlsBufferedRanges);
+        ["kResolution" /* PlayerPropertyKeys.RESOLUTION */]: new Property("kResolution" /* PlayerPropertyKeys.RESOLUTION */),
+        ["kTotalBytes" /* PlayerPropertyKeys.TOTAL_BYTES */]: new TotalBytesProperty(),
+        ["kBitrate" /* PlayerPropertyKeys.BITRATE */]: new BitRateProperty(),
+        ["kMaxDuration" /* PlayerPropertyKeys.MAX_DURATION */]: new MaxDurationProperty(),
+        ["kStartTime" /* PlayerPropertyKeys.START_TIME */]: new Property("kStartTime" /* PlayerPropertyKeys.START_TIME */),
+        ["kIsStreaming" /* PlayerPropertyKeys.IS_STREAMING */]: new Property("kIsStreaming" /* PlayerPropertyKeys.IS_STREAMING */),
+        ["kFrameUrl" /* PlayerPropertyKeys.FRAME_URL */]: new Property("kFrameUrl" /* PlayerPropertyKeys.FRAME_URL */),
+        ["kFrameTitle" /* PlayerPropertyKeys.FRAME_TITLE */]: new Property("kFrameTitle" /* PlayerPropertyKeys.FRAME_TITLE */),
+        ["kIsSingleOrigin" /* PlayerPropertyKeys.IS_SINGLE_ORIGIN */]: new Property("kIsSingleOrigin" /* PlayerPropertyKeys.IS_SINGLE_ORIGIN */),
+        ["kIsRangeHeaderSupported" /* PlayerPropertyKeys.IS_RANGE_HEADER_SUPPORTED */]: new Property("kIsRangeHeaderSupported" /* PlayerPropertyKeys.IS_RANGE_HEADER_SUPPORTED */),
+        ["kFramerate" /* PlayerPropertyKeys.FRAMERATE */]: new Property("kFramerate" /* PlayerPropertyKeys.FRAMERATE */),
+        ["kVideoPlaybackRoughness" /* PlayerPropertyKeys.VIDEO_PLAYBACK_ROUGHNESS */]: new Property("kVideoPlaybackRoughness" /* PlayerPropertyKeys.VIDEO_PLAYBACK_ROUGHNESS */),
+        ["kVideoPlaybackFreezing" /* PlayerPropertyKeys.VIDEO_PLAYBACK_FREEZING */]: new Property("kVideoPlaybackFreezing" /* PlayerPropertyKeys.VIDEO_PLAYBACK_FREEZING */),
+        ["kRendererName" /* PlayerPropertyKeys.RENDERER_NAME */]: new Property("kRendererName" /* PlayerPropertyKeys.RENDERER_NAME */),
+        ["kHlsBufferedRanges" /* PlayerPropertyKeys.HLS_BUFFERED_RANGES */]: new HlsBufferedRangesProperty(),
         /* Video Decoder Properties */
-        const decoderName = new DefaultPropertyRenderer(i18nString(UIStrings.decoderName), i18nString(UIStrings.noDecoder));
-        this.videoDecoderElements.push(decoderName);
-        this.attributeMap.set("kVideoDecoderName" /* PlayerPropertyKeys.VIDEO_DECODER_NAME */, decoderName);
-        const videoPlatformDecoder = new PropertyRenderer(i18nString(UIStrings.hardwareDecoder));
-        this.videoDecoderElements.push(videoPlatformDecoder);
-        this.attributeMap.set("kIsPlatformVideoDecoder" /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_DECODER */, videoPlatformDecoder);
-        const encoderName = new DefaultPropertyRenderer(i18nString(UIStrings.encoderName), i18nString(UIStrings.noEncoder));
-        this.videoDecoderElements.push(encoderName);
-        this.attributeMap.set("kVideoEncoderName" /* PlayerPropertyKeys.VIDEO_ENCODER_NAME */, encoderName);
-        const videoPlatformEncoder = new PropertyRenderer(i18nString(UIStrings.hardwareEncoder));
-        this.videoDecoderElements.push(videoPlatformEncoder);
-        this.attributeMap.set("kIsPlatformVideoEncoder" /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_ENCODER */, videoPlatformEncoder);
-        const videoDDS = new PropertyRenderer(i18nString(UIStrings.decryptingDemuxer));
-        this.videoDecoderElements.push(videoDDS);
-        this.attributeMap.set("kIsVideoDecryptingDemuxerStream" /* PlayerPropertyKeys.IS_VIDEO_DECRYPTION_DEMUXER_STREAM */, videoDDS);
-        const videoTrackManager = new VideoTrackManager(this);
-        this.attributeMap.set("kVideoTracks" /* PlayerPropertyKeys.VIDEO_TRACKS */, videoTrackManager);
+        ["kVideoDecoderName" /* PlayerPropertyKeys.VIDEO_DECODER_NAME */]: new Property("kVideoDecoderName" /* PlayerPropertyKeys.VIDEO_DECODER_NAME */),
+        ["kIsPlatformVideoDecoder" /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_DECODER */]: new Property("kIsPlatformVideoDecoder" /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_DECODER */),
+        ["kVideoEncoderName" /* PlayerPropertyKeys.VIDEO_ENCODER_NAME */]: new Property("kVideoEncoderName" /* PlayerPropertyKeys.VIDEO_ENCODER_NAME */),
+        ["kIsPlatformVideoEncoder" /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_ENCODER */]: new Property("kIsPlatformVideoEncoder" /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_ENCODER */),
+        ["kIsVideoDecryptingDemuxerStream" /* PlayerPropertyKeys.IS_VIDEO_DECRYPTION_DEMUXER_STREAM */]: new Property("kIsVideoDecryptingDemuxerStream" /* PlayerPropertyKeys.IS_VIDEO_DECRYPTION_DEMUXER_STREAM */),
+        ["kVideoTracks" /* PlayerPropertyKeys.VIDEO_TRACKS */]: new TrackProperty("kVideoTracks" /* PlayerPropertyKeys.VIDEO_TRACKS */),
         /* Audio Decoder Properties */
-        const audioDecoder = new DefaultPropertyRenderer(i18nString(UIStrings.decoderName), i18nString(UIStrings.noDecoder));
-        this.audioDecoderElements.push(audioDecoder);
-        this.attributeMap.set("kAudioDecoderName" /* PlayerPropertyKeys.AUDIO_DECODER_NAME */, audioDecoder);
-        const audioPlatformDecoder = new PropertyRenderer(i18nString(UIStrings.hardwareDecoder));
-        this.audioDecoderElements.push(audioPlatformDecoder);
-        this.attributeMap.set("kIsPlatformAudioDecoder" /* PlayerPropertyKeys.IS_PLATFORM_AUDIO_DECODER */, audioPlatformDecoder);
-        const audioDDS = new PropertyRenderer(i18nString(UIStrings.decryptingDemuxer));
-        this.audioDecoderElements.push(audioDDS);
-        this.attributeMap.set("kIsAudioDecryptingDemuxerStream" /* PlayerPropertyKeys.IS_AUDIO_DECRYPTING_DEMUXER_STREAM */, audioDDS);
-        const audioTrackManager = new AudioTrackManager(this);
-        this.attributeMap.set("kAudioTracks" /* PlayerPropertyKeys.AUDIO_TRACKS */, audioTrackManager);
-        const textTrackManager = new TextTrackManager(this);
-        this.attributeMap.set("kTextTracks" /* PlayerPropertyKeys.TEXT_TRACKS */, textTrackManager);
+        ["kAudioDecoderName" /* PlayerPropertyKeys.AUDIO_DECODER_NAME */]: new Property("kAudioDecoderName" /* PlayerPropertyKeys.AUDIO_DECODER_NAME */),
+        ["kIsPlatformAudioDecoder" /* PlayerPropertyKeys.IS_PLATFORM_AUDIO_DECODER */]: new Property("kIsPlatformAudioDecoder" /* PlayerPropertyKeys.IS_PLATFORM_AUDIO_DECODER */),
+        ["kIsAudioDecryptingDemuxerStream" /* PlayerPropertyKeys.IS_AUDIO_DECRYPTING_DEMUXER_STREAM */]: new Property("kIsAudioDecryptingDemuxerStream" /* PlayerPropertyKeys.IS_AUDIO_DECRYPTING_DEMUXER_STREAM */),
+        ["kAudioTracks" /* PlayerPropertyKeys.AUDIO_TRACKS */]: new TrackProperty("kAudioTracks" /* PlayerPropertyKeys.AUDIO_TRACKS */),
+        ["kTextTracks" /* PlayerPropertyKeys.TEXT_TRACKS */]: new TrackProperty("kTextTracks" /* PlayerPropertyKeys.TEXT_TRACKS */),
+    };
+    constructor(target, view = DEFAULT_VIEW) {
+        super(target);
+        this.#view = view;
+    }
+    get properties() {
+        return this.#properties;
+    }
+    onProperty(property) {
+        if (!(property.name in this.#properties)) {
+            throw new Error(`Player property '${property.name}' not supported.`);
+        }
+        this.#properties[property.name].data = property.value;
+        this.requestUpdate();
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    performUpdate() {
+        this.#view(this, {}, this.contentElement);
     }
 }
 //# sourceMappingURL=PlayerPropertiesView.js.map

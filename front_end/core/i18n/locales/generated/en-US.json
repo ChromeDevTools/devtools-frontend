@@ -1683,16 +1683,16 @@
     "message": "A character encoding declaration is required. It can be done with a meta charset tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more about declaring the character encoding](https://developer.chrome.com/docs/insights/charset/)."
   },
   "models/trace/insights/CharacterSet.ts | failedHttpHeader": {
-    "message": "Does not declare charset in HTTP header"
+    "message": "Doesn’t declare charset in HTTP header"
   },
   "models/trace/insights/CharacterSet.ts | failedMetaCharsetLate": {
     "message": "Declares charset using a meta tag after the first 1024 bytes"
   },
   "models/trace/insights/CharacterSet.ts | failedMetaCharsetMissing": {
-    "message": "Does not declare charset using a meta tag"
+    "message": "Doesn’t declare charset using a meta tag"
   },
   "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
-    "message": "Could not determine meta charset declaration from trace"
+    "message": "Couldn’t determine meta charset declaration from trace"
   },
   "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
     "message": "Declares charset in HTTP header"
@@ -1860,7 +1860,7 @@
     "message": "[unattributed]"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)"
+    "message": "Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)."
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (Est {PH2})"
@@ -1944,7 +1944,7 @@
     "message": "LCP breakdown"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "[Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading"
+    "message": "[Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading."
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high applied"
@@ -1956,7 +1956,7 @@
     "message": "fetchpriority=high should be applied to the image preload request"
   },
   "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "LCP resources should not use loading=lazy"
+    "message": "LCP resources shouldn’t use loading=lazy"
   },
   "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "LCP image loaded {PH1} after earliest start point."
@@ -1965,7 +1965,7 @@
     "message": "No LCP detected"
   },
   "models/trace/insights/LCPDiscovery.ts | noLcpResource": {
-    "message": "No LCP resource detected because the LCP is not an image"
+    "message": "No LCP resource detected because the LCP isn’t an image"
   },
   "models/trace/insights/LCPDiscovery.ts | requestDiscoverable": {
     "message": "Request is discoverable in initial document"
@@ -1980,7 +1980,7 @@
     "message": "Wasted bytes"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren’t necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+    "message": "Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren’t necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript)."
   },
   "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
     "message": "No legacy JavaScript found"
@@ -1992,7 +1992,7 @@
     "message": "HTTP/2 and HTTP/3 offer many benefits over HTTP/1.1, such as multiplexing. [Learn more about using modern HTTP](https://developer.chrome.com/docs/performance/insights/modern-http)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
-    "message": "No requests used HTTP/1.1, or its current use of HTTP/1.1 does not present a significant optimization opportunity. HTTP/1.1 requests are only flagged if six or more static assets originate from the same origin, and they are not served from a local development environment or a third-party source."
+    "message": "No requests used HTTP/1.1, or its current use of HTTP/1.1 doesn’t present a significant optimization opportunity. HTTP/1.1 requests are only flagged if six or more static assets originate from the same origin, and they aren’t served from a local development environment or a third-party source."
   },
   "models/trace/insights/ModernHTTP.ts | protocol": {
     "message": "Protocol"
@@ -2040,7 +2040,7 @@
     "message": "No additional origins are good candidates for preconnecting"
   },
   "models/trace/insights/NetworkDependencyTree.ts | noPreconnectOrigins": {
-    "message": "no origins were preconnected"
+    "message": "No origins were preconnected"
   },
   "models/trace/insights/NetworkDependencyTree.ts | preconnectOriginsTableDescription": {
     "message": "[preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to."
@@ -2076,13 +2076,13 @@
     "message": "Render-blocking requests"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/performance/insights/slow-css-selector) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs."
+    "message": "If recalculate style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/performance/insights/slow-css-selector) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Elapsed time"
   },
   "models/trace/insights/SlowCSSSelector.ts | enableSelectorData": {
-    "message": "No CSS selector data was found. CSS selector stats need to be enabled in the performance panel settings."
+    "message": "No CSS selector data was found. CSS selector stats need to be enabled in the Performance panel settings."
   },
   "models/trace/insights/SlowCSSSelector.ts | matchAttempts": {
     "message": "Match attempts"
@@ -2091,7 +2091,7 @@
     "message": "Match count"
   },
   "models/trace/insights/SlowCSSSelector.ts | title": {
-    "message": "CSS Selector costs"
+    "message": "CSS selector costs"
   },
   "models/trace/insights/SlowCSSSelector.ts | topSelectorElapsedTime": {
     "message": "Top selector elapsed time"
@@ -2124,7 +2124,7 @@
     "message": "3rd parties"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport is not optimized for mobile."
+    "message": "Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile."
   },
   "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
     "message": "Mobile tap delay"
@@ -2313,7 +2313,7 @@
     "message": "Install timer"
   },
   "models/trace/Styles.ts | invalidateLayout": {
-    "message": "Invalidate Layout"
+    "message": "Invalidate layout"
   },
   "models/trace/Styles.ts | jsFrame": {
     "message": "JS frame"
@@ -9728,14 +9728,11 @@
   "panels/media/PlayerMessagesView.ts | warning": {
     "message": "Warning"
   },
-  "panels/media/PlayerPropertiesView.ts | audio": {
-    "message": "Audio"
+  "panels/media/PlayerPropertiesView.ts | audioDecoderProperties": {
+    "message": "Audio Decoder Properties"
   },
   "panels/media/PlayerPropertiesView.ts | bitrate": {
     "message": "Bitrate"
-  },
-  "panels/media/PlayerPropertiesView.ts | decoder": {
-    "message": "Decoder"
   },
   "panels/media/PlayerPropertiesView.ts | decoderName": {
     "message": "Decoder name"
@@ -9779,9 +9776,6 @@
   "panels/media/PlayerPropertiesView.ts | playbackFrameUrl": {
     "message": "Playback frame URL"
   },
-  "panels/media/PlayerPropertiesView.ts | properties": {
-    "message": "Properties"
-  },
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range header support"
   },
@@ -9806,8 +9800,11 @@
   "panels/media/PlayerPropertiesView.ts | track": {
     "message": "Track"
   },
-  "panels/media/PlayerPropertiesView.ts | video": {
-    "message": "Video"
+  "panels/media/PlayerPropertiesView.ts | trackNumber": {
+    "message": "{PH1} #{PH2}"
+  },
+  "panels/media/PlayerPropertiesView.ts | videoDecoderProperties": {
+    "message": "Video Decoder Properties"
   },
   "panels/media/PlayerPropertiesView.ts | videoFreezingScore": {
     "message": "Video freezing score"
@@ -17850,7 +17847,7 @@
     "message": "Invoke property getter"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | longTextWasTruncatedS": {
-    "message": "long text was truncated ({PH1})"
+    "message": "Long text was truncated ({PH1})"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "No properties"
@@ -17877,7 +17874,7 @@
     "message": "unknown"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
-    "message": "Value is not accessible to the debugger"
+    "message": "Value isn’t accessible to the debugger"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
     "message": "<value unavailable>"
@@ -18156,28 +18153,28 @@
     "message": "Find"
   },
   "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
-    "message": "Current source:"
+    "message": "Current source"
   },
   "ui/legacy/components/utils/ImagePreview.ts | fileSize": {
-    "message": "File size:"
+    "message": "File size"
   },
   "ui/legacy/components/utils/ImagePreview.ts | imageFromS": {
     "message": "Image from {PH1}"
   },
   "ui/legacy/components/utils/ImagePreview.ts | intrinsicAspectRatio": {
-    "message": "Intrinsic aspect ratio:"
+    "message": "Intrinsic aspect ratio"
   },
   "ui/legacy/components/utils/ImagePreview.ts | intrinsicSize": {
-    "message": "Intrinsic size:"
+    "message": "Intrinsic size"
   },
   "ui/legacy/components/utils/ImagePreview.ts | renderedAspectRatio": {
-    "message": "Rendered aspect ratio:"
+    "message": "Rendered aspect ratio"
   },
   "ui/legacy/components/utils/ImagePreview.ts | renderedSize": {
-    "message": "Rendered size:"
+    "message": "Rendered size"
   },
   "ui/legacy/components/utils/ImagePreview.ts | unknownSource": {
-    "message": "unknown source"
+    "message": "Unknown source"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | addToIgnore": {
     "message": "Add script to ignore list"
@@ -18192,10 +18189,10 @@
     "message": "Show ignore-listed frames"
   },
   "ui/legacy/components/utils/Linkifier.ts | auto": {
-    "message": "auto"
+    "message": "Auto"
   },
   "ui/legacy/components/utils/Linkifier.ts | linkHandling": {
-    "message": "Link handling:"
+    "message": "Link handling"
   },
   "ui/legacy/components/utils/Linkifier.ts | openUsingS": {
     "message": "Open using {PH1}"

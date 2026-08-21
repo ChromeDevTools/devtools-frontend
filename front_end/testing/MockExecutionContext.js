@@ -12,7 +12,7 @@ export class MockExecutionContext extends SDK.RuntimeModel.ExecutionContext {
         assertNotNullOrUndefined(runtimeModel);
         super(runtimeModel, 1, 'test id', 'test name', urlString `test origin`, true);
     }
-    async evaluate(_options, userGesture, _awaitPromise) {
+    async evaluateWithSelectedFrameFallback(_options, userGesture, _awaitPromise) {
         assert.isTrue(userGesture);
         return { error: 'test' };
     }

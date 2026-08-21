@@ -1,4 +1,4 @@
-import type { INPAttribution, Metric } from '../../../../third_party/web-vitals/web-vitals.js';
+import type * as WebVitals from '../../../../third_party/web-vitals/web-vitals.js';
 import type * as Trace from '../../../trace/trace.js';
 export declare const EVENT_BINDING_NAME = "__chromium_devtools_metrics_reporter";
 export declare const INTERNAL_KILL_SWITCH = "__chromium_devtools_kill_live_metrics";
@@ -35,7 +35,7 @@ export interface ClsChangeEvent {
 export interface InpChangeEvent {
     name: 'INP';
     value: Trace.Types.Timing.Milli;
-    interactionType: INPAttribution['interactionType'];
+    interactionType: WebVitals.INPAttribution['interactionType'];
     subparts: InpSubparts;
     startTime: number;
     entryGroupId: InteractionEntryGroupId;
@@ -74,7 +74,7 @@ export interface PerformanceLongAnimationFrameTimingJSON {
  */
 export interface InteractionEntryEvent {
     name: 'InteractionEntry';
-    interactionType?: INPAttribution['interactionType'];
+    interactionType?: WebVitals.INPAttribution['interactionType'];
     eventName: string;
     entryGroupId: InteractionEntryGroupId;
     startTime: number;
@@ -85,7 +85,7 @@ export interface InteractionEntryEvent {
     nodeIndex?: number;
     longAnimationFrameEntries: PerformanceLongAnimationFrameTimingJSON[];
 }
-export type NavigationType = Metric['navigationType'];
+export type NavigationType = WebVitals.Metric['navigationType'];
 export interface LayoutShiftEvent {
     name: 'LayoutShift';
     score: number;

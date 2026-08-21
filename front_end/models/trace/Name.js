@@ -12,7 +12,7 @@ const UIStrings = {
      */
     anonymous: '(anonymous)',
     /**
-     * @description Text used to show an EventDispatch event which has a type associated with it
+     * @description Text used to show an EventDispatch event which has a type associated with it.
      * @example {click} PH1
      */
     eventDispatchS: 'Event: {PH1}',
@@ -21,20 +21,20 @@ const UIStrings = {
      */
     frame: 'Frame',
     /**
-     * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+     * @description Text in the flame chart of the Performance panel.
      */
     wsConnectionOpened: 'WebSocket opened',
     /**
-     * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+     * @description Text in the flame chart of the Performance panel.
      * @example {ws://example.com} PH1
      */
     wsConnectionOpenedWithUrl: 'WebSocket opened: {PH1}',
     /**
-     * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+     * @description Text in the flame chart of the Performance panel.
      */
     wsConnectionClosed: 'WebSocket closed',
     /**
-     * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+     * @description Text in the flame chart of the Performance panel.
      */
     layoutShift: 'Layout shift',
 };

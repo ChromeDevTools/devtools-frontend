@@ -3750,7 +3750,8 @@ function renderInsightWidget(component, insight, jslog, accessibleLabel, title, 
     model: insight,
     minimal: true,
     bounds: bounds ?? null
-  })}></devtools-widget>`;
+  })}
+  ></devtools-widget>`;
   return {
     renderedWidget,
     revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
@@ -4107,7 +4108,7 @@ function getWidgetSignature(widget5) {
     case "STORAGE_BREAKDOWN":
       return `${widget5.name}:${widget5.data.totalUsageBytes}:${widget5.data.usageBreakdown.map((e) => `${e.storageType}_${e.bytes}`).join(",")}`;
     default:
-      Platform3.assertNever(widget5, "Unknown AiWidget name");
+      Platform3.assertNever(widget5, "Unknown AiAssistanceModel.AiAgent.AiWidget name");
   }
 }
 function getDeduplicatedWidgetsMessage(message) {
@@ -4204,7 +4205,7 @@ async function renderWidgets(widgets, options = {}) {
         response = await makeStorageBreakdownWidget(widgetData);
         break;
       default:
-        Platform3.assertNever(widgetData, "Unknown AiWidget name");
+        Platform3.assertNever(widgetData, "Unknown AiAssistanceModel.AiAgent.AiWidget name");
     }
     return renderWidgetResponse(response);
   }));
@@ -4618,11 +4619,11 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
     const mainThread = AiAssistanceModel6.AIQueries.AIQueries.findMainThread(navigationId, parsedTrace);
     if (mainThread) {
       events = mainThread.entries;
-      AiAssistanceModel6.Debug.debugLog(`TimelineRangeSummaryAiWidget found main thread. PID:`, mainThread.pid, "TID:", mainThread.tid, "Number of entries:", mainThread.entries.length);
+      AiAssistanceModel6.Debug.debugLog(`AiAssistanceModel.AiAgent.TimelineRangeSummaryAiWidget found main thread. PID:`, mainThread.pid, "TID:", mainThread.tid, "Number of entries:", mainThread.entries.length);
     }
   }
   if (!events) {
-    AiAssistanceModel6.Debug.debugLog(`Warning: could not find events for TimelineRangeSummaryAiWidget`, widgetData);
+    AiAssistanceModel6.Debug.debugLog(`Warning: could not find events for AiAssistanceModel.AiAgent.TimelineRangeSummaryAiWidget`, widgetData);
     return null;
   }
   const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();

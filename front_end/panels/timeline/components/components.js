@@ -238,10 +238,10 @@ __export(CWVMetrics_exports, {
 import * as i18n5 from "./../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../core/platform/platform.js";
 import * as CrUXManager from "./../../../models/crux-manager/crux-manager.js";
-import * as Trace3 from "./../../../models/trace/trace.js";
+import * as Trace2 from "./../../../models/trace/trace.js";
 import * as Buttons from "./../../../ui/components/buttons/buttons.js";
 import * as UI2 from "./../../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../../ui/lit/lit.js";
+import * as Lit2 from "./../../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/cwvMetrics.css.js
@@ -359,23 +359,8 @@ var cwvMetrics_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./cwvMetrics.css")} */`;
 
-// gen/front_end/panels/timeline/components/insights/Helpers.js
-import "./../../../ui/components/markdown_view/markdown_view.js";
-import * as Trace2 from "./../../../models/trace/trace.js";
-import * as Marked from "./../../../third_party/marked/marked.js";
-import * as Lit2 from "./../../../ui/lit/lit.js";
-var { html: html2 } = Lit2;
-function shouldRenderForCategory(options) {
-  return options.activeCategory === Trace2.Insights.Types.InsightCategory.ALL || options.activeCategory === options.insightCategory;
-}
-function md(markdown) {
-  const tokens = Marked.Marked.lexer(markdown);
-  const data = { tokens };
-  return html2`<devtools-markdown-view .data=${data}></devtools-markdown-view>`;
-}
-
 // gen/front_end/panels/timeline/components/CWVMetrics.js
-import * as Insights3 from "./insights/insights.js";
+import * as Insights2 from "./insights/insights.js";
 
 // gen/front_end/panels/timeline/components/metricValueStyles.css.js
 var metricValueStyles_css_default = `/*
@@ -682,7 +667,7 @@ function isFieldWorseThanLocal(local, field) {
 }
 
 // gen/front_end/panels/timeline/components/CWVMetrics.js
-var { html: html3 } = Lit3.StaticHtml;
+var { html: html2 } = Lit2.StaticHtml;
 var UIStrings3 = {
   /**
    * @description title used for a metric value to tell the user about its score classification
@@ -733,9 +718,9 @@ function getLocalMetrics(parsedTrace, insightSetKey) {
   if (!insightSet) {
     return null;
   }
-  const lcp = Trace3.Insights.Common.getLCP(insightSet);
-  const cls = Trace3.Insights.Common.getCLS(insightSet);
-  const inp = Trace3.Insights.Common.getINP(insightSet);
+  const lcp = Trace2.Insights.Common.getLCP(insightSet);
+  const cls = Trace2.Insights.Common.getCLS(insightSet);
+  const inp = Trace2.Insights.Common.getINP(insightSet);
   return { lcp, cls, inp };
 }
 function getFieldMetrics(parsedTrace, insightSetKey) {
@@ -751,7 +736,7 @@ function getFieldMetrics(parsedTrace, insightSetKey) {
     scope = CrUXManager.CrUXManager.instance().getSelectedScope();
   } catch {
   }
-  const fieldMetricsResults = Trace3.Insights.Common.getFieldMetricsForInsightSet(insightSet, parsedTrace.metadata, scope);
+  const fieldMetricsResults = Trace2.Insights.Common.getFieldMetricsForInsightSet(insightSet, parsedTrace.metadata, scope);
   if (!fieldMetricsResults) {
     return null;
   }
@@ -762,12 +747,12 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
   const local = getLocalMetrics(parsedTrace, insightSetKey);
   const field = getFieldMetrics(parsedTrace, insightSetKey);
   const localValues = {
-    lcp: local?.lcp?.value !== void 0 ? Trace3.Helpers.Timing.microToMilli(local?.lcp.value) : void 0,
-    inp: local?.inp?.value !== void 0 ? Trace3.Helpers.Timing.microToMilli(local?.inp.value) : void 0
+    lcp: local?.lcp?.value !== void 0 ? Trace2.Helpers.Timing.microToMilli(local?.lcp.value) : void 0,
+    inp: local?.inp?.value !== void 0 ? Trace2.Helpers.Timing.microToMilli(local?.inp.value) : void 0
   };
   const fieldValues = field && {
-    lcp: field.lcp?.value !== void 0 ? Trace3.Helpers.Timing.microToMilli(field.lcp.value) : void 0,
-    inp: field.inp?.value !== void 0 ? Trace3.Helpers.Timing.microToMilli(field.inp.value) : void 0
+    lcp: field.lcp?.value !== void 0 ? Trace2.Helpers.Timing.microToMilli(field.lcp.value) : void 0,
+    inp: field.inp?.value !== void 0 ? Trace2.Helpers.Timing.microToMilli(field.inp.value) : void 0
   };
   const showFieldMismatchNotice = !didDismissFieldMismatchNotice && !!fieldValues && isFieldWorseThanLocal(localValues, fieldValues);
   function renderMetricValue2(metric, value2, relevantEvent) {
@@ -782,21 +767,21 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
       const { text, element } = NumberWithUnit.formatMicroSecondsAsSeconds(micros);
       valueText = text;
       valueDisplay = element;
-      classification = Trace3.Handlers.ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(micros);
+      classification = Trace2.Handlers.ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(micros);
     } else if (metric === "CLS") {
       valueText = valueDisplay = value2 ? value2.toFixed(2) : "0";
-      classification = Trace3.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(value2);
+      classification = Trace2.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(value2);
     } else if (metric === "INP") {
       const micros = value2;
       const { text, element } = NumberWithUnit.formatMicroSecondsAsMillisFixed(micros);
       valueText = text;
       valueDisplay = element;
-      classification = Trace3.Handlers.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(micros);
+      classification = Trace2.Handlers.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(micros);
     } else {
       Platform2.TypeScriptUtilities.assertNever(metric, `Unexpected metric ${metric}`);
     }
     const title = value2 !== null ? i18nString3(UIStrings3.metricScore, { PH1: metric, PH2: valueText, PH3: classification }) : i18nString3(UIStrings3.metricScoreUnavailable, { PH1: metric });
-    return html3`
+    return html2`
       <button class="metric"
         @click=${relevantEvent ? onClickMetric.bind(relevantEvent) : null}
         title=${title}
@@ -810,21 +795,21 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
   const inpEl = renderMetricValue2("INP", local?.inp?.value ?? null, local?.inp?.event ?? null);
   const clsEl = renderMetricValue2("CLS", local?.cls?.value ?? null, local?.cls?.worstClusterEvent ?? null);
   const navigation = parsedTrace?.insights?.get(insightSetKey ?? "")?.navigation;
-  const isSoftNav = navigation && Trace3.Types.Events.isSoftNavigationStart(navigation);
-  const softNavBadgeTemplate = isSoftNav ? html3`
+  const isSoftNav = navigation && Trace2.Types.Events.isSoftNavigationStart(navigation);
+  const softNavBadgeTemplate = isSoftNav ? html2`
     <div class="metrics-row soft-nav-badge-row">
       <span class="badge">SOFT NAV</span>
     </div>
-  ` : Lit3.nothing;
-  const localMetricsTemplateResult = html3`
+  ` : Lit2.nothing;
+  const localMetricsTemplateResult = html2`
     <div class="metrics-row">
       <span>${lcpEl}</span>
       <span>${inpEl}</span>
       <span>${clsEl}</span>
       <span class="row-label">Local</span>
     </div>
-    ${!field ? softNavBadgeTemplate : Lit3.nothing}
-    ${!field && input.skipBottomBorder ? Lit3.nothing : html3`<span class="row-border"></span>`}
+    ${!field ? softNavBadgeTemplate : Lit2.nothing}
+    ${!field && input.skipBottomBorder ? Lit2.nothing : html2`<span class="row-border"></span>`}
   `;
   let fieldMetricsTemplateResult;
   if (field) {
@@ -836,7 +821,7 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
     if (lcp?.pageScope === "url" || inp?.pageScope === "url") {
       scope = i18nString3(UIStrings3.urlOption);
     }
-    fieldMetricsTemplateResult = html3`
+    fieldMetricsTemplateResult = html2`
       <div class="metrics-row">
         <span>${lcpEl2}</span>
         <span>${inpEl2}</span>
@@ -844,12 +829,12 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
         <span class="row-label">${i18nString3(UIStrings3.fieldScoreLabel, { PH1: scope })}</span>
       </div>
       ${softNavBadgeTemplate}
-      ${input.skipBottomBorder ? Lit3.nothing : html3`<span class="row-border"></span>`}
+      ${input.skipBottomBorder ? Lit2.nothing : html2`<span class="row-border"></span>`}
     `;
   }
   let fieldIsDifferentEl;
   if (showFieldMismatchNotice) {
-    fieldIsDifferentEl = html3`
+    fieldIsDifferentEl = html2`
       <div class="field-mismatch-notice" jslog=${VisualLogging3.section("timeline.insights.field-mismatch")}>
         <h3>${i18nString3(UIStrings3.fieldMismatchTitle)}</h3>
         <devtools-button
@@ -859,12 +844,12 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
           .jslogContext=${"timeline.insights.dismiss-field-mismatch"}
           @click=${onDismisFieldMismatchNotice}
         ></devtools-button>
-        <div class="field-mismatch-notice__body">${md(i18nString3(UIStrings3.fieldMismatchNotice))}</div>
+        <div class="field-mismatch-notice__body">${Insights2.Helpers.md(i18nString3(UIStrings3.fieldMismatchNotice))}</div>
       </div>
     `;
   }
   const classes = { metrics: true, "metrics--field": Boolean(fieldMetricsTemplateResult) };
-  const metricsTableEl = html3`<div class=${Lit3.Directives.classMap(classes)}>
+  const metricsTableEl = html2`<div class=${Lit2.Directives.classMap(classes)}>
     <div class="metrics-row">
       <span class="metric-label">LCP</span>
       <span class="metric-label">INP</span>
@@ -874,7 +859,7 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
     ${localMetricsTemplateResult}
     ${fieldMetricsTemplateResult}
   </div>`;
-  Lit3.render(html3`
+  Lit2.render(html2`
     <style>${cwvMetrics_css_default}</style>
     <style>${metricValueStyles_css_default}</style>
     ${metricsTableEl}
@@ -908,7 +893,7 @@ var CWVMetrics = class extends UI2.Widget.Widget {
     this.requestUpdate();
   }
   #onClickMetric(traceEvent) {
-    this.element.dispatchEvent(new Insights3.EventRef.EventReferenceClick(traceEvent));
+    this.element.dispatchEvent(new Insights2.EventRef.EventReferenceClick(traceEvent));
   }
   #onDismisFieldMismatchNotice() {
     this.#didDismissFieldMismatchNotice = true;
@@ -944,7 +929,7 @@ __export(DetailsView_exports, {
 });
 import * as i18n7 from "./../../../core/i18n/i18n.js";
 import * as Platform3 from "./../../../core/platform/platform.js";
-import * as Trace4 from "./../../../models/trace/trace.js";
+import * as Trace3 from "./../../../models/trace/trace.js";
 import * as uiI18n from "./../../../ui/i18n/i18n.js";
 import { Link } from "./../../../ui/kit/kit.js";
 var UIStrings4 = {
@@ -1008,7 +993,7 @@ function buildWarningElementsForEvent(event, parsedTrace) {
     return warningElements;
   }
   for (const warning of warnings) {
-    const duration = Trace4.Helpers.Timing.microToMilli(Trace4.Types.Timing.Micro(event.dur || 0));
+    const duration = Trace3.Helpers.Timing.microToMilli(Trace3.Types.Timing.Micro(event.dur || 0));
     const span = document.createElement("span");
     switch (warning) {
       case "FORCED_REFLOW": {
@@ -1017,7 +1002,7 @@ function buildWarningElementsForEvent(event, parsedTrace) {
         break;
       }
       case "IDLE_CALLBACK_OVER_TIME": {
-        if (!Trace4.Types.Events.isFireIdleCallback(event)) {
+        if (!Trace3.Types.Events.isFireIdleCallback(event)) {
           break;
         }
         const exceededMs = i18n7.TimeUtilities.millisToString((duration || 0) - event.args.data["allottedMilliseconds"], true);
@@ -1045,18 +1030,18 @@ function buildWarningElementsForEvent(event, parsedTrace) {
 function buildRowsForWebSocketEvent(event, parsedTrace) {
   const rows = [];
   const initiator = parsedTrace.data.Initiators.eventToInitiator.get(event);
-  if (initiator && Trace4.Types.Events.isWebSocketCreate(initiator)) {
+  if (initiator && Trace3.Types.Events.isWebSocketCreate(initiator)) {
     rows.push({ key: i18n7.i18n.lockedString("URL"), value: initiator.args.data.url });
     if (initiator.args.data.websocketProtocol) {
       rows.push({ key: i18nString4(UIStrings4.websocketProtocol), value: initiator.args.data.websocketProtocol });
     }
-  } else if (Trace4.Types.Events.isWebSocketCreate(event)) {
+  } else if (Trace3.Types.Events.isWebSocketCreate(event)) {
     rows.push({ key: i18n7.i18n.lockedString("URL"), value: event.args.data.url });
     if (event.args.data.websocketProtocol) {
       rows.push({ key: i18nString4(UIStrings4.websocketProtocol), value: event.args.data.websocketProtocol });
     }
   }
-  if (Trace4.Types.Events.isWebSocketTransfer(event)) {
+  if (Trace3.Types.Events.isWebSocketTransfer(event)) {
     if (event.args.data.dataLength) {
       rows.push({
         key: i18nString4(UIStrings4.webSocketDataLength),
@@ -1072,7 +1057,7 @@ function generateInvalidationsList(invalidations) {
   for (const invalidation of invalidations) {
     backendNodeIds.add(invalidation.args.data.nodeId);
     let reason = invalidation.args.data.reason || "unknown";
-    if (reason === "unknown" && Trace4.Types.Events.isScheduleStyleInvalidationTracking(invalidation) && invalidation.args.data.invalidatedSelectorId) {
+    if (reason === "unknown" && Trace3.Types.Events.isScheduleStyleInvalidationTracking(invalidation) && invalidation.args.data.invalidatedSelectorId) {
       switch (invalidation.args.data.invalidatedSelectorId) {
         case "attribute":
           reason = "Attribute";
@@ -1094,10 +1079,10 @@ function generateInvalidationsList(invalidations) {
           break;
       }
     }
-    if (reason === "PseudoClass" && Trace4.Types.Events.isStyleRecalcInvalidationTracking(invalidation) && invalidation.args.data.extraData) {
+    if (reason === "PseudoClass" && Trace3.Types.Events.isStyleRecalcInvalidationTracking(invalidation) && invalidation.args.data.extraData) {
       reason += invalidation.args.data.extraData;
     }
-    if (reason === "Attribute" && Trace4.Types.Events.isStyleRecalcInvalidationTracking(invalidation) && invalidation.args.data.extraData) {
+    if (reason === "Attribute" && Trace3.Types.Events.isStyleRecalcInvalidationTracking(invalidation) && invalidation.args.data.extraData) {
       reason += ` (${invalidation.args.data.extraData})`;
     }
     if (reason === "StyleInvalidator") {
@@ -1125,7 +1110,7 @@ import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
 import * as Dialogs from "./../../../ui/components/dialogs/dialogs.js";
 import * as ComponentHelpers2 from "./../../../ui/components/helpers/helpers.js";
 import * as UI3 from "./../../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../../ui/lit/lit.js";
+import * as Lit3 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/exportTraceOptions.css.js
 var exportTraceOptions_css_default = `/*
@@ -1172,7 +1157,7 @@ devtools-link {
 /*# sourceURL=${import.meta.resolve("./exportTraceOptions.css")} */`;
 
 // gen/front_end/panels/timeline/components/ExportTraceOptions.js
-var { html: html4 } = Lit4;
+var { html: html3 } = Lit3;
 var UIStrings5 = {
   /**
    * @description Text title for the Save performance trace dialog.
@@ -1369,11 +1354,11 @@ var ExportTraceOptions = class _ExportTraceOptions extends HTMLElement {
     checkboxWithLabel.checked = checked;
     checkboxWithLabel.addEventListener("change", this.#checkboxOptionChanged.bind(this, checkboxWithLabel, !checked), false);
     this.#includeSourceMapsCheckbox.disabled = !this.#state.includeResourceContent;
-    return html4`
+    return html3`
         <div class='export-trace-options-row'>
           ${checkboxWithLabel}
 
-          ${checkboxesWithInfoDialog.has(checkboxId) ? html4`
+          ${checkboxesWithInfoDialog.has(checkboxId) ? html3`
             <devtools-button
               aria-details=${`export-trace-tooltip-${checkboxId}`}
               .accessibleLabel=${this.#accessibleLabelForInfoCheckbox(checkboxId)}
@@ -1381,23 +1366,23 @@ var ExportTraceOptions = class _ExportTraceOptions extends HTMLElement {
               .iconName=${"info"}
               .variant=${"icon"}
               ></devtools-button>
-            ` : Lit4.nothing}
+            ` : Lit3.nothing}
         </div>
       `;
   }
   #renderInfoTooltip(checkboxId) {
     if (!checkboxesWithInfoDialog.has(checkboxId)) {
-      return Lit4.nothing;
+      return Lit3.nothing;
     }
-    return html4`
+    return html3`
     <devtools-tooltip
       variant="rich"
       id=${`export-trace-tooltip-${checkboxId}`}
     >
       <div class="info-tooltip-container">
       <p>
-        ${checkboxId === "resource-content" ? i18nString5(UIStrings5.resourceContentPrivacyInfo) : Lit4.nothing}
-        ${checkboxId === "script-source-maps" ? i18nString5(UIStrings5.sourceMapsContentPrivacyInfo) : Lit4.nothing}
+        ${checkboxId === "resource-content" ? i18nString5(UIStrings5.resourceContentPrivacyInfo) : Lit3.nothing}
+        ${checkboxId === "script-source-maps" ? i18nString5(UIStrings5.sourceMapsContentPrivacyInfo) : Lit3.nothing}
       </p>
       </div>
     </devtools-tooltip>`;
@@ -1406,7 +1391,7 @@ var ExportTraceOptions = class _ExportTraceOptions extends HTMLElement {
     if (!ComponentHelpers2.ScheduledRender.isScheduledRender(this)) {
       throw new Error("Export trace options dialog render was not scheduled");
     }
-    const output = html4`
+    const output = html3`
       <style>${exportTraceOptions_css_default}</style>
       <devtools-button-dialog class="export-trace-dialog"
       @click=${this.#onButtonDialogClick.bind(this)}
@@ -1448,12 +1433,12 @@ var ExportTraceOptions = class _ExportTraceOptions extends HTMLElement {
     }}
                 >${i18nString5(UIStrings5.saveButtonTitle)}</devtools-button>
                 </div>
-          ${this.#state.displayResourceContentCheckbox ? this.#renderInfoTooltip("resource-content") : Lit4.nothing}
-          ${this.#state.displayResourceContentCheckbox && this.#state.displaySourceMapsCheckbox ? this.#renderInfoTooltip("script-source-maps") : Lit4.nothing}
+          ${this.#state.displayResourceContentCheckbox ? this.#renderInfoTooltip("resource-content") : Lit3.nothing}
+          ${this.#state.displayResourceContentCheckbox && this.#state.displaySourceMapsCheckbox ? this.#renderInfoTooltip("script-source-maps") : Lit3.nothing}
         </div>
       </devtools-button-dialog>
     `;
-    Lit4.render(output, this.#shadow, { host: this });
+    Lit3.render(output, this.#shadow, { host: this });
   }
   async #onButtonDialogClick() {
     this.state = Object.assign({}, this.#state, {
@@ -1496,7 +1481,7 @@ import * as ComponentHelpers3 from "./../../../ui/components/helpers/helpers.js"
 import * as Input from "./../../../ui/components/input/input.js";
 import * as uiI18n2 from "./../../../ui/i18n/i18n.js";
 import * as UI5 from "./../../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../../ui/lit/lit.js";
+import * as Lit5 from "./../../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/fieldSettingsDialog.css.js
@@ -1632,7 +1617,7 @@ import * as SDK from "./../../../core/sdk/sdk.js";
 import * as CrUXManager3 from "./../../../models/crux-manager/crux-manager.js";
 import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI4 from "./../../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../../ui/lit/lit.js";
+import * as Lit4 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/originMap.css.js
 var originMap_css_default = `/*
@@ -1663,7 +1648,7 @@ var originMap_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./originMap.css")} */`;
 
 // gen/front_end/panels/timeline/components/OriginMap.js
-var { html: html5 } = Lit5;
+var { html: html4 } = Lit4;
 var UIStrings6 = {
   /**
    * @description Title for a column in a data table representing a site origin used for development
@@ -1695,7 +1680,7 @@ var PROD_ORIGIN_CONTROL = "productionOrigin";
 function renderOriginWarning(input, url) {
   return RenderCoordinator.write(async () => {
     if (!input.isCrUXEnabled) {
-      return Lit5.nothing;
+      return Lit4.nothing;
     }
     const result = await input.getFieldDataForPage(url);
     const hasFieldData = Object.entries(result).some(([key, value2]) => {
@@ -1705,9 +1690,9 @@ function renderOriginWarning(input, url) {
       return Boolean(value2);
     });
     if (hasFieldData) {
-      return Lit5.nothing;
+      return Lit4.nothing;
     }
-    return html5`
+    return html4`
       <devtools-icon
         class="origin-warning-icon"
         name="warning-filled"
@@ -1717,8 +1702,8 @@ function renderOriginWarning(input, url) {
   });
 }
 function renderItem(input, originMapping, index) {
-  const warningIcon = Lit5.Directives.until(renderOriginWarning(input, originMapping.productionOrigin));
-  return html5`
+  const warningIcon = Lit4.Directives.until(renderOriginWarning(input, originMapping.productionOrigin));
+  return html4`
     <tr data-index=${index} @edit=${input.onCommitEdit} @delete=${input.onRemoveItemRequested}>
       <td data-value=${originMapping.developmentOrigin}>
         <div class="origin" title=${originMapping.developmentOrigin}>${originMapping.developmentOrigin}</div>
@@ -1732,10 +1717,10 @@ function renderItem(input, originMapping, index) {
 }
 var DEFAULT_VIEW = (input, _output, target) => {
   if (!input.prefillDevelopmentOrigin && input.mappings.length === 0) {
-    Lit5.render(Lit5.nothing, target);
+    Lit4.render(Lit4.nothing, target);
     return;
   }
-  Lit5.render(html5`
+  Lit4.render(html4`
     <devtools-data-grid striped inline
         @click=${(e) => {
     e.stopPropagation();
@@ -1747,14 +1732,14 @@ var DEFAULT_VIEW = (input, _output, target) => {
           <th id=${PROD_ORIGIN_CONTROL} editable weight="1">${i18nString6(UIStrings6.productionOrigin)}</th>
         </tr>
         ${input.mappings.map((mapping, index) => renderItem(input, mapping, index))}
-        ${input.prefillDevelopmentOrigin ? html5`
+        ${input.prefillDevelopmentOrigin ? html4`
           <tr placeholder>
             <td>${input.prefillDevelopmentOrigin}</td>
             <td></td>
-          </tr>` : Lit5.nothing}
+          </tr>` : Lit4.nothing}
       </table>
     </devtools-data-grid>
-    ${input.errorMessage ? html5`<div class="error-message">${input.errorMessage}</div>` : Lit5.nothing}
+    ${input.errorMessage ? html4`<div class="error-message">${input.errorMessage}</div>` : Lit4.nothing}
   `, target);
 };
 var OriginMap = class extends UI4.Widget.VBox {
@@ -1963,7 +1948,7 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/timeline/components/FieldSettingsDialog.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var { html: html6, nothing: nothing5, Directives: { ifDefined } } = Lit6;
+var { html: html5, nothing: nothing5, Directives: { ifDefined } } = Lit5;
 var { widget, widgetRef } = UI5.Widget;
 var ShowDialog = class _ShowDialog extends Event {
   static eventName = "showdialog";
@@ -2060,7 +2045,7 @@ var FieldSettingsDialog = class extends HTMLElement {
   }
   #renderOpenButton() {
     if (this.#configSetting.get().enabled) {
-      return html6`
+      return html5`
         <devtools-button
           class="config-button"
           @click=${this.#showDialog}
@@ -2072,7 +2057,7 @@ var FieldSettingsDialog = class extends HTMLElement {
         >${i18nString7(UIStrings7.configure)}</devtools-button>
       `;
     }
-    return html6`
+    return html5`
       <devtools-button
         class="setup-button"
         @click=${this.#showDialog}
@@ -2086,7 +2071,7 @@ var FieldSettingsDialog = class extends HTMLElement {
     `;
   }
   #renderEnableButton() {
-    return html6`
+    return html5`
       <devtools-button
         @click=${() => {
       void this.#submit(true);
@@ -2103,7 +2088,7 @@ var FieldSettingsDialog = class extends HTMLElement {
   }
   #renderDisableButton() {
     const label = this.#configSetting.get().enabled ? i18nString7(UIStrings7.optOut) : i18nString7(UIStrings7.cancel);
-    return html6`
+    return html5`
       <devtools-button
         @click=${() => {
       void this.#submit(false);
@@ -2139,7 +2124,7 @@ var FieldSettingsDialog = class extends HTMLElement {
     }
   }
   #renderOriginMapGrid() {
-    return html6`
+    return html5`
       <div class="origin-mapping-description">${i18nString7(UIStrings7.mapDevelopmentOrigins)}</div>
       <devtools-widget ${widget(OriginMap)} ${widgetRef(OriginMap, (el) => {
       this.#originMap = el;
@@ -2159,7 +2144,7 @@ var FieldSettingsDialog = class extends HTMLElement {
     `;
   }
   #render = () => {
-    const output = html6`
+    const output = html5`
       <style>${fieldSettingsDialog_css_default}</style>
       <style>${Input.textInputStyles}</style>
       <style>${Input.checkboxStyles}</style>
@@ -2171,7 +2156,7 @@ var FieldSettingsDialog = class extends HTMLElement {
         .jslogContext=${"timeline.field-data.settings"}
         .expectedMutationsSelector=${".timeline-settings-pane option"}
         .dialogTitle=${i18nString7(UIStrings7.configureFieldData)}
-        ${Lit6.Directives.ref((el) => {
+        ${Lit5.Directives.ref((el) => {
       if (el instanceof HTMLElement) {
         this.#dialog = el;
       }
@@ -2180,7 +2165,7 @@ var FieldSettingsDialog = class extends HTMLElement {
         <div class="content">
           <div>
             ${uiI18n2.getFormatLocalizedStringTemplate(str_7, UIStrings7.fetchAggregated, {
-      PH1: html6`<devtools-link
+      PH1: html5`<devtools-link
                   href="https://developer.chrome.com/docs/crux"
                   >${i18n13.i18n.lockedString("Chrome UX Report")}</devtools-link
                 >`
@@ -2214,7 +2199,7 @@ var FieldSettingsDialog = class extends HTMLElement {
                 .value=${this.#urlOverride}
                 placeholder=${ifDefined(this.#urlOverrideEnabled ? i18nString7(UIStrings7.url) : void 0)}
               />
-              ${this.#urlOverrideWarning ? html6`<div class="warning" role="alert" aria-label=${this.#urlOverrideWarning}>${this.#urlOverrideWarning}</div>` : nothing5}
+              ${this.#urlOverrideWarning ? html5`<div class="warning" role="alert" aria-label=${this.#urlOverrideWarning}>${this.#urlOverrideWarning}</div>` : nothing5}
             </div>
           </details>
           <div class="buttons-section">
@@ -2224,7 +2209,7 @@ var FieldSettingsDialog = class extends HTMLElement {
         </div>
       </devtools-dialog>
     `;
-    Lit6.render(output, this.#shadow, { host: this });
+    Lit5.render(output, this.#shadow, { host: this });
   };
 };
 customElements.define("devtools-field-settings-dialog", FieldSettingsDialog);
@@ -2244,7 +2229,7 @@ import * as Workspace from "./../../../models/workspace/workspace.js";
 import * as Buttons4 from "./../../../ui/components/buttons/buttons.js";
 import * as Dialogs3 from "./../../../ui/components/dialogs/dialogs.js";
 import * as UI6 from "./../../../ui/legacy/legacy.js";
-import * as Lit7 from "./../../../ui/lit/lit.js";
+import * as Lit6 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/ignoreListSetting.css.js
 var ignoreListSetting_css_default = `/*
@@ -2309,7 +2294,7 @@ var ignoreListSetting_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./ignoreListSetting.css")} */`;
 
 // gen/front_end/panels/timeline/components/IgnoreListSetting.js
-var { html: html7, Directives: Directives4 } = Lit7;
+var { html: html6, Directives: Directives4 } = Lit6;
 var { live } = Directives4;
 var UIStrings8 = {
   /**
@@ -2351,7 +2336,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   const { ignoreListEnabled, regexes, newRegexValue, newRegexChecked, onExistingRegexEnableToggle, onRemoveRegexByIndex, onNewRegexInputBlur, onNewRegexInputChange, onNewRegexInputFocus, onNewRegexAdd, onNewRegexCancel } = input;
   function renderItem2(regex, index) {
     const helpText = i18nString8(UIStrings8.ignoreScriptsWhoseNamesMatchS, { regex: regex.pattern });
-    return html7`
+    return html6`
       <div class='regex-row'>
         <devtools-checkbox title=${helpText} aria-label=${helpText} ?checked=${!regex.disabled}
           @change=${(event) => onExistingRegexEnableToggle(regex, event.currentTarget.checked)}
@@ -2368,7 +2353,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       </div>
     `;
   }
-  Lit7.render(html7`
+  Lit6.render(html6`
     <style>${ignoreListSetting_css_default}</style>
     <devtools-button-dialog
       @contextmenu=${(e) => e.stopPropagation()}
@@ -2425,7 +2410,7 @@ var IgnoreListSetting = class _IgnoreListSetting extends UI6.Widget.Widget {
     return widgetElement;
   }
   #view;
-  #ignoreListEnabled = Common2.Settings.Settings.instance().moduleSetting("enable-ignore-listing");
+  #ignoreListEnabled = Common2.Settings.Settings.instance().resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor);
   #regexPatterns = this.#getSkipStackFramesPatternSetting().getAsArray();
   #newRegexValue = "";
   #newRegexChecked = false;
@@ -2434,12 +2419,12 @@ var IgnoreListSetting = class _IgnoreListSetting extends UI6.Widget.Widget {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.element.classList.remove("vbox", "flex-auto");
-    Common2.Settings.Settings.instance().moduleSetting("skip-stack-frames-pattern").addChangeListener(this.requestUpdate.bind(this));
-    Common2.Settings.Settings.instance().moduleSetting("enable-ignore-listing").addChangeListener(this.requestUpdate.bind(this));
+    Common2.Settings.Settings.instance().resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor).addChangeListener(this.requestUpdate.bind(this));
+    Common2.Settings.Settings.instance().resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor).addChangeListener(this.requestUpdate.bind(this));
     this.requestUpdate();
   }
   #getSkipStackFramesPatternSetting() {
-    return Common2.Settings.Settings.instance().moduleSetting("skip-stack-frames-pattern");
+    return Common2.Settings.Settings.instance().resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor);
   }
   #onNewRegexInputFocus(value2) {
     this.#editingRegexSetting = { pattern: value2, disabled: false };
@@ -2552,7 +2537,7 @@ __export(InteractionBreakdown_exports, {
 });
 import * as i18n17 from "./../../../core/i18n/i18n.js";
 import * as UI7 from "./../../../ui/legacy/legacy.js";
-import * as Lit8 from "./../../../ui/lit/lit.js";
+import * as Lit7 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/interactionBreakdown.css.js
 var interactionBreakdown_css_default = `/*
@@ -2583,7 +2568,7 @@ var interactionBreakdown_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./interactionBreakdown.css")} */`;
 
 // gen/front_end/panels/timeline/components/InteractionBreakdown.js
-var { html: html8 } = Lit8;
+var { html: html7 } = Lit7;
 var UIStrings9 = {
   /**
    * @description Text shown next to the interaction event's input delay time in the detail view.
@@ -2605,7 +2590,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   const inputDelay = i18n17.TimeUtilities.formatMicroSecondsAsMillisFixed(entry.inputDelay);
   const mainThreadTime = i18n17.TimeUtilities.formatMicroSecondsAsMillisFixed(entry.mainThreadHandling);
   const presentationDelay = i18n17.TimeUtilities.formatMicroSecondsAsMillisFixed(entry.presentationDelay);
-  Lit8.render(html8`<style>${interactionBreakdown_css_default}</style>
+  Lit7.render(html7`<style>${interactionBreakdown_css_default}</style>
       <ul class="breakdown">
         <li data-entry="input-delay">${i18nString9(UIStrings9.inputDelay)}<span class="value">${inputDelay}</span></li>
         <li data-entry="processing-duration">${i18nString9(UIStrings9.processingDuration)}<span class="value">${mainThreadTime}</span></li>
@@ -2616,8 +2601,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
 var InteractionBreakdown = class _InteractionBreakdown extends UI7.Widget.Widget {
   static createWidgetElement(entry) {
     const widgetElement = document.createElement("devtools-widget");
-    const widget8 = new _InteractionBreakdown(widgetElement);
-    widget8.entry = entry;
+    const widget7 = new _InteractionBreakdown(widgetElement);
+    widget7.entry = entry;
     return widgetElement;
   }
   #view;
@@ -2647,124 +2632,19 @@ var InteractionBreakdown = class _InteractionBreakdown extends UI7.Widget.Widget
 // gen/front_end/panels/timeline/components/LayoutShiftDetails.js
 var LayoutShiftDetails_exports = {};
 __export(LayoutShiftDetails_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   LayoutShiftDetails: () => LayoutShiftDetails
 });
 import * as i18n19 from "./../../../core/i18n/i18n.js";
-import * as SDK3 from "./../../../core/sdk/sdk.js";
-import * as Helpers4 from "./../../../models/trace/helpers/helpers.js";
-import * as Trace5 from "./../../../models/trace/trace.js";
-import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
-import * as LegacyComponents2 from "./../../../ui/legacy/components/utils/utils.js";
-import * as UI9 from "./../../../ui/legacy/legacy.js";
-import * as Lit10 from "./../../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
-import * as Insights4 from "./insights/insights.js";
-
-// gen/front_end/panels/timeline/components/insights/NodeLink.js
 import * as SDK2 from "./../../../core/sdk/sdk.js";
+import * as Helpers5 from "./../../../models/trace/helpers/helpers.js";
+import * as Trace4 from "./../../../models/trace/trace.js";
 import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyComponents from "./../../../ui/legacy/components/utils/utils.js";
 import * as UI8 from "./../../../ui/legacy/legacy.js";
-import * as Lit9 from "./../../../ui/lit/lit.js";
-import * as PanelsCommon from "./../../common/common.js";
-var { html: html9 } = Lit9;
-var { widget: widget2 } = UI8.Widget;
-var DEFAULT_VIEW4 = (input, output, target) => {
-  const { relatedNodeEl, fallbackUrl, fallbackHtmlSnippet, fallbackText } = input;
-  let template;
-  if (relatedNodeEl) {
-    template = html9`<div class='node-link'>${relatedNodeEl}</div>`;
-  } else if (fallbackUrl) {
-    const MAX_URL_LENGTH4 = 20;
-    const options = {
-      tabStop: true,
-      showColumnNumber: false,
-      maxLength: MAX_URL_LENGTH4
-    };
-    const linkEl = LegacyComponents.Linkifier.Linkifier.linkifyURL(fallbackUrl, options);
-    template = html9`<div class='node-link'>
-      <style>${Buttons5.textButtonStyles}</style>
-      ${linkEl}
-    </div>`;
-  } else if (fallbackHtmlSnippet) {
-    template = html9`<pre style='text-wrap: auto'>${fallbackHtmlSnippet}</pre>`;
-  } else if (fallbackText) {
-    template = html9`<span>${fallbackText}</span>`;
-  } else {
-    template = Lit9.nothing;
-  }
-  Lit9.render(template, target);
-};
-var NodeLink = class extends UI8.Widget.Widget {
-  #view;
-  #backendNodeId;
-  #frame;
-  #options;
-  #fallbackUrl;
-  #fallbackHtmlSnippet;
-  #fallbackText;
-  /**
-   * Track the linkified Node for a given backend NodeID to avoid repeated lookups on re-render.
-   * Also tracks if we fail to resolve a node, to ensure we don't try on each subsequent re-render.
-   */
-  #linkifiedNodeForBackendId = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW4) {
-    super(element, { useShadowDom: true });
-    this.#view = view;
-  }
-  set data(data) {
-    this.#backendNodeId = data.backendNodeId;
-    this.#frame = data.frame;
-    this.#options = data.options;
-    this.#fallbackUrl = data.fallbackUrl;
-    this.#fallbackHtmlSnippet = data.fallbackHtmlSnippet;
-    this.#fallbackText = data.fallbackText;
-    this.requestUpdate();
-  }
-  async #linkify() {
-    if (this.#backendNodeId === void 0) {
-      return;
-    }
-    const fromCache = this.#linkifiedNodeForBackendId.get(this.#backendNodeId);
-    if (fromCache) {
-      if (fromCache === "NO_NODE_FOUND") {
-        return void 0;
-      }
-      return fromCache;
-    }
-    const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
-    const domModel = target?.model(SDK2.DOMModel.DOMModel);
-    if (!domModel) {
-      return void 0;
-    }
-    const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([this.#backendNodeId]));
-    const node = domNodesMap?.get(this.#backendNodeId);
-    if (!node) {
-      this.#linkifiedNodeForBackendId.set(this.#backendNodeId, "NO_NODE_FOUND");
-      return;
-    }
-    if (node.frameId() !== this.#frame) {
-      this.#linkifiedNodeForBackendId.set(this.#backendNodeId, "NO_NODE_FOUND");
-      return;
-    }
-    const linkedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, this.#options);
-    this.#linkifiedNodeForBackendId.set(this.#backendNodeId, linkedNode);
-    return linkedNode;
-  }
-  async performUpdate() {
-    const input = {
-      relatedNodeEl: await this.#linkify(),
-      fallbackUrl: this.#fallbackUrl,
-      fallbackHtmlSnippet: this.#fallbackHtmlSnippet,
-      fallbackText: this.#fallbackText
-    };
-    this.#view(input, void 0, this.contentElement);
-  }
-};
-function nodeLink(data) {
-  return html9`${widget2(NodeLink, { data })}`;
-}
+import * as Lit8 from "./../../../ui/lit/lit.js";
+import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
+import * as Insights3 from "./insights/insights.js";
 
 // gen/front_end/panels/timeline/components/layoutShiftDetails.css.js
 var layoutShiftDetails_css_default = `/*
@@ -2893,7 +2773,7 @@ var layoutShiftDetails_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./layoutShiftDetails.css")} */`;
 
 // gen/front_end/panels/timeline/components/LayoutShiftDetails.js
-var { html: html10, render: render9 } = Lit10;
+var { html: html8, render: render8 } = Lit8;
 var MAX_URL_LENGTH = 20;
 var UIStrings10 = {
   /**
@@ -2953,12 +2833,12 @@ var UIStrings10 = {
 };
 var str_10 = i18n19.i18n.registerUIStrings("panels/timeline/components/LayoutShiftDetails.ts", UIStrings10);
 var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
-var LayoutShiftDetails = class extends UI9.Widget.Widget {
+var LayoutShiftDetails = class extends UI8.Widget.Widget {
   #view;
   #event = null;
   #parsedTrace = null;
   #isFreshRecording = false;
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element);
     this.#view = view;
   }
@@ -2976,7 +2856,7 @@ var LayoutShiftDetails = class extends UI9.Widget.Widget {
   }
   // TODO(crbug.com/368170718): use eventRef instead
   #handleTraceEventClick(event) {
-    this.contentElement.dispatchEvent(new Insights4.EventRef.EventReferenceClick(event));
+    this.contentElement.dispatchEvent(new Insights3.EventRef.EventReferenceClick(event));
   }
   #togglePopover(e) {
     const show = e.type === "mouseover";
@@ -2990,7 +2870,7 @@ var LayoutShiftDetails = class extends UI9.Widget.Widget {
     if (!rowEl?.parentElement) {
       return;
     }
-    const event = Trace5.Types.Events.isSyntheticLayoutShift(this.#event) ? this.#event : this.#event.events.find((e2) => e2.ts === parseInt(rowEl.getAttribute("data-ts") ?? "", 10));
+    const event = Trace4.Types.Events.isSyntheticLayoutShift(this.#event) ? this.#event : this.#event.events.find((e2) => e2.ts === parseInt(rowEl.getAttribute("data-ts") ?? "", 10));
     this.contentElement.dispatchEvent(new CustomEvent("toggle-popover", { detail: { event, show }, bubbles: true, composed: true }));
   }
   performUpdate() {
@@ -3003,15 +2883,15 @@ var LayoutShiftDetails = class extends UI9.Widget.Widget {
     }, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW5 = (input, _output, target) => {
+var DEFAULT_VIEW4 = (input, _output, target) => {
   if (!input.event || !input.parsedTrace) {
-    render9(Lit10.nothing, target);
+    render8(Lit8.nothing, target);
     return;
   }
-  const title = Trace5.Name.forEntry(input.event);
-  render9(html10`
+  const title = Trace4.Name.forEntry(input.event);
+  render8(html8`
         <style>${layoutShiftDetails_css_default}</style>
-        <style>${Buttons6.textButtonStyles}</style>
+        <style>${Buttons5.textButtonStyles}</style>
 
       <div class="layout-shift-summary-details">
         <div
@@ -3023,7 +2903,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
           <div class="layout-shift-event-title"></div>
           ${title}
         </div>
-        ${Trace5.Types.Events.isSyntheticLayoutShift(input.event) ? renderLayoutShiftDetails(input.event, input.parsedTrace.insights, input.parsedTrace, input.isFreshRecording, input.onEventClick) : renderLayoutShiftClusterDetails(input.event, input.parsedTrace.insights, input.parsedTrace, input.onEventClick)}
+        ${Trace4.Types.Events.isSyntheticLayoutShift(input.event) ? renderLayoutShiftDetails(input.event, input.parsedTrace.insights, input.parsedTrace, input.isFreshRecording, input.onEventClick) : renderLayoutShiftClusterDetails(input.event, input.parsedTrace.insights, input.parsedTrace, input.onEventClick)}
         </div>
       </div>
       `, target);
@@ -3033,11 +2913,11 @@ function findInsightSet(insightSets, navigationId) {
 }
 function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFreshRecording, onEventClick) {
   if (!insightSets) {
-    return Lit10.nothing;
+    return Lit8.nothing;
   }
   const clsInsight = findInsightSet(insightSets, layoutShift.args.data?.navigationId)?.model.CLSCulprits;
   if (!clsInsight) {
-    return Lit10.nothing;
+    return Lit8.nothing;
   }
   const rootCauses = clsInsight.shifts.get(layoutShift);
   let elementsShifted = layoutShift.args.data?.impacted_nodes ?? [];
@@ -3049,16 +2929,16 @@ function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFresh
   const parentCluster = clsInsight.clusters.find((cluster) => {
     return cluster.events.find((event) => event === layoutShift);
   });
-  return html10`
+  return html8`
       <table class="layout-shift-details-table" jslog=${VisualLogging5.section("layout-shift-details")}>
         <thead class="table-title">
           <tr>
             <th>${i18nString10(UIStrings10.startTime)}</th>
             <th>${i18nString10(UIStrings10.shiftScore)}</th>
-            ${hasShiftedElements ? html10`
-              <th>${i18nString10(UIStrings10.elementsShifted)}</th>` : Lit10.nothing}
-            ${hasCulprits ? html10`
-              <th>${i18nString10(UIStrings10.culprit)}</th> ` : Lit10.nothing}
+            ${hasShiftedElements ? html8`
+              <th>${i18nString10(UIStrings10.elementsShifted)}</th>` : Lit8.nothing}
+            ${hasCulprits ? html8`
+              <th>${i18nString10(UIStrings10.culprit)}</th> ` : Lit8.nothing}
           </tr>
         </thead>
         <tbody>
@@ -3070,23 +2950,23 @@ function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFresh
 }
 function renderLayoutShiftClusterDetails(cluster, insightSets, parsedTrace, onEventClick) {
   if (!insightSets) {
-    return Lit10.nothing;
+    return Lit8.nothing;
   }
   const clsInsight = findInsightSet(insightSets, cluster.navigationId)?.model.CLSCulprits;
   if (!clsInsight) {
-    return Lit10.nothing;
+    return Lit8.nothing;
   }
   const clusterCulprits = Array.from(clsInsight.shifts.entries()).filter(([key]) => cluster.events.includes(key)).map(([, value2]) => value2).flatMap((x) => Object.values(x)).flat();
   const hasCulprits = Boolean(clusterCulprits.length);
-  return html10`
+  return html8`
     <table class="layout-shift-details-table" jslog=${VisualLogging5.section("layout-shift-details")}>
       <thead class="table-title">
         <tr>
           <th>${i18nString10(UIStrings10.startTime)}</th>
           <th>${i18nString10(UIStrings10.shiftScore)}</th>
           <th>${i18nString10(UIStrings10.elementsShifted)}</th>
-          ${hasCulprits ? html10`
-            <th>${i18nString10(UIStrings10.culprit)}</th> ` : Lit10.nothing}
+          ${hasCulprits ? html8`
+            <th>${i18nString10(UIStrings10.culprit)}</th> ` : Lit8.nothing}
         </tr>
       </thead>
       <tbody>
@@ -3107,78 +2987,78 @@ function renderLayoutShiftClusterDetails(cluster, insightSets, parsedTrace, onEv
 function renderShiftRow(currentShift, userHasSingleShiftSelected, parsedTrace, elementsShifted, onEventClick, rootCauses) {
   const score = currentShift.args.data?.weighted_score_delta;
   if (!score) {
-    return Lit10.nothing;
+    return Lit8.nothing;
   }
   const hasCulprits = Boolean(rootCauses && (rootCauses.webFonts.length || rootCauses.iframes.length || rootCauses.nonCompositedAnimations.length || rootCauses.unsizedImages.length));
-  return html10`
+  return html8`
       <tr class="shift-row" data-ts=${currentShift.ts} jslog=${VisualLogging5.tableRow("shift-row")}>
         <td>${renderStartTime(currentShift, userHasSingleShiftSelected, parsedTrace, onEventClick)}</td>
         <td>${score.toFixed(4)}</td>
-        ${elementsShifted.length ? html10`
+        ${elementsShifted.length ? html8`
           <td>
             <div class="elements-shifted">
               ${renderShiftedElements(currentShift, elementsShifted)}
             </div>
-          </td>` : Lit10.nothing}
-        ${hasCulprits ? html10`
+          </td>` : Lit8.nothing}
+        ${hasCulprits ? html8`
           <td class="culprits">
             ${rootCauses?.webFonts.map((fontReq) => renderFontRequest(fontReq))}
             ${rootCauses?.iframes.map((iframe) => renderIframe(iframe))}
             ${rootCauses?.nonCompositedAnimations.map((failure) => renderAnimation(failure, onEventClick))}
             ${rootCauses?.unsizedImages.map((unsizedImage) => renderUnsizedImage(currentShift.args.frame, unsizedImage))}
-          </td>` : Lit10.nothing}
+          </td>` : Lit8.nothing}
       </tr>`;
 }
 function renderStartTime(shift, userHasSingleShiftSelected, parsedTrace, onEventClick) {
-  const ts = Trace5.Types.Timing.Micro(shift.ts - parsedTrace.data.Meta.traceBounds.min);
+  const ts = Trace4.Types.Timing.Micro(shift.ts - parsedTrace.data.Meta.traceBounds.min);
   if (userHasSingleShiftSelected) {
-    return html10`${i18n19.TimeUtilities.preciseMillisToString(Helpers4.Timing.microToMilli(ts))}`;
+    return html8`${i18n19.TimeUtilities.preciseMillisToString(Helpers5.Timing.microToMilli(ts))}`;
   }
   const shiftTs = i18n19.TimeUtilities.formatMicroSecondsTime(ts);
-  return html10`
+  return html8`
          <button type="button" class="timeline-link" @click=${() => onEventClick(shift)}>${i18nString10(UIStrings10.layoutShift, { PH1: shiftTs })}</button>`;
 }
 function renderParentCluster(cluster, onEventClick, parsedTrace) {
   if (!cluster) {
-    return Lit10.nothing;
+    return Lit8.nothing;
   }
-  const ts = Trace5.Types.Timing.Micro(cluster.ts - (parsedTrace.data.Meta.traceBounds.min ?? 0));
+  const ts = Trace4.Types.Timing.Micro(cluster.ts - (parsedTrace.data.Meta.traceBounds.min ?? 0));
   const clusterTs = i18n19.TimeUtilities.formatMicroSecondsTime(ts);
-  return html10`
+  return html8`
       <span class="parent-cluster">${i18nString10(UIStrings10.parentCluster)}:<button type="button" class="timeline-link parent-cluster-link" @click=${() => onEventClick(cluster)}>${i18nString10(UIStrings10.cluster, { PH1: clusterTs })}</button>
       </span>`;
 }
 function renderShiftedElements(shift, elementsShifted) {
-  return html10`
+  return html8`
       ${elementsShifted?.map((el) => {
     if (el.node_id !== void 0) {
-      return nodeLink({
+      return Insights3.NodeLink.nodeLink({
         backendNodeId: el.node_id,
         frame: shift.args.frame,
         fallbackHtmlSnippet: el.debug_name
       });
     }
-    return Lit10.nothing;
+    return Lit8.nothing;
   })}`;
 }
 function renderAnimation(failure, onEventClick) {
   const event = failure.animation;
   if (!event) {
-    return Lit10.nothing;
+    return Lit8.nothing;
   }
-  return html10`
+  return html8`
         <span class="culprit">
         <span class="culprit-type">${i18nString10(UIStrings10.nonCompositedAnimation)}: </span>
         <button type="button" class="culprit-value timeline-link" @click=${() => onEventClick(event)}>${i18nString10(UIStrings10.animation)}</button>
       </span>`;
 }
 function renderUnsizedImage(frame, unsizedImage) {
-  const nodeLinkEl = nodeLink({
+  const nodeLinkEl = Insights3.NodeLink.nodeLink({
     backendNodeId: unsizedImage.backendNodeId,
     frame,
     fallbackUrl: unsizedImage.paintImageEvent.args.data.url
   });
-  return html10`
+  return html8`
     <span class="culprit">
       <span class="culprit-type">${i18nString10(UIStrings10.unsizedImage)}: </span>
       <span class="culprit-value">${nodeLinkEl}</span>
@@ -3186,14 +3066,14 @@ function renderUnsizedImage(frame, unsizedImage) {
 }
 function renderFontRequest(request) {
   const linkifiedURL = linkifyURL(request.args.data.url);
-  return html10`
+  return html8`
       <span class="culprit">
         <span class="culprit-type">${i18nString10(UIStrings10.fontRequest)}: </span>
         <span class="culprit-value">${linkifiedURL}</span>
       </span>`;
 }
 function linkifyURL(url) {
-  return LegacyComponents2.Linkifier.Linkifier.linkifyURL(url, {
+  return LegacyComponents.Linkifier.Linkifier.linkifyURL(url, {
     tabStop: true,
     showColumnNumber: false,
     maxLength: MAX_URL_LENGTH
@@ -3201,14 +3081,14 @@ function linkifyURL(url) {
 }
 function renderIframe(iframeRootCause) {
   const domLoadingId = iframeRootCause.frame;
-  const domLoadingFrame = SDK3.FrameManager.FrameManager.instance().getFrame(domLoadingId);
+  const domLoadingFrame = SDK2.FrameManager.FrameManager.instance().getFrame(domLoadingId);
   let el;
   if (domLoadingFrame) {
-    el = LegacyComponents2.Linkifier.Linkifier.linkifyRevealable(domLoadingFrame, domLoadingFrame.displayName());
+    el = LegacyComponents.Linkifier.Linkifier.linkifyRevealable(domLoadingFrame, domLoadingFrame.displayName());
   } else {
     el = linkifyURL(iframeRootCause.url);
   }
-  return html10`
+  return html8`
       <span class="culprit">
         <span class="culprit-type"> ${i18nString10(UIStrings10.injectedIframe)}: </span>
         <span class="culprit-value">${el}</span>
@@ -3218,7 +3098,7 @@ function renderIframe(iframeRootCause) {
 // gen/front_end/panels/timeline/components/LiveMetricsView.js
 var LiveMetricsView_exports = {};
 __export(LiveMetricsView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   LiveMetricsView: () => LiveMetricsView
 });
 import "./../../../ui/components/settings/settings.js";
@@ -3233,10 +3113,10 @@ __export(MetricCard_exports, {
 import * as i18n23 from "./../../../core/i18n/i18n.js";
 import * as Platform5 from "./../../../core/platform/platform.js";
 import * as CrUXManager7 from "./../../../models/crux-manager/crux-manager.js";
-import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
+import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
 import * as ComponentHelpers4 from "./../../../ui/components/helpers/helpers.js";
 import * as UIHelpers from "./../../../ui/helpers/helpers.js";
-import * as Lit11 from "./../../../ui/lit/lit.js";
+import * as Lit9 from "./../../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/metricCard.css.js
@@ -3700,7 +3580,7 @@ function renderDetailedCompareText(options) {
 }
 
 // gen/front_end/panels/timeline/components/MetricCard.js
-var { html: html11, nothing: nothing9 } = Lit11;
+var { html: html9, nothing: nothing8 } = Lit9;
 var UIStrings12 = {
   /**
    * @description Label for a metric value that was measured in the local environment.
@@ -3978,16 +3858,16 @@ var MetricCard = class extends HTMLElement {
     const localValue = this.#getLocalValue();
     if (localValue === void 0) {
       if (this.#data.metric === "INP") {
-        return html11`
+        return html9`
           <div class="compare-text">${i18nString11(UIStrings12.interactToMeasure)}</div>
         `;
       }
-      return Lit11.nothing;
+      return Lit9.nothing;
     }
     const compare = this.#getCompareRating();
     const rating = rateMetric(localValue, this.#getThresholds());
     const valueEl = renderMetricValue(this.#getMetricValueLogContext(true), localValue, this.#getThresholds(), this.#getFormatFn(), { dim: true });
-    return html11`
+    return html9`
       <div class="compare-text">
         ${renderCompareText({
       metric: i18n23.i18n.lockedString(this.#data.metric),
@@ -4001,7 +3881,7 @@ var MetricCard = class extends HTMLElement {
   #renderEnvironmentRecommendations() {
     const compare = this.#getCompareRating();
     if (!compare || compare === "similar") {
-      return Lit11.nothing;
+      return Lit9.nothing;
     }
     const recs = [];
     const metric = this.#data.metric;
@@ -4026,12 +3906,12 @@ var MetricCard = class extends HTMLElement {
       recs.push(i18nString11(UIStrings12.recDynamicContentCLS));
     }
     if (!recs.length) {
-      return Lit11.nothing;
+      return Lit9.nothing;
     }
-    return html11`
+    return html9`
       <details class="environment-recs">
         <summary>${i18nString11(UIStrings12.considerTesting)}</summary>
-        <ul class="environment-recs-list">${recs.map((rec) => html11`<li>${rec}</li>`)}</ul>
+        <ul class="environment-recs-list">${recs.map((rec) => html9`<li>${rec}</li>`)}</ul>
       </details>
     `;
   }
@@ -4042,18 +3922,18 @@ var MetricCard = class extends HTMLElement {
     const localValue = this.#getLocalValue();
     if (localValue === void 0) {
       if (this.#data.metric === "INP") {
-        return html11`
+        return html9`
           <div class="detailed-compare-text">${i18nString11(UIStrings12.interactToMeasure)}</div>
         `;
       }
-      return Lit11.nothing;
+      return Lit9.nothing;
     }
     const localRating = rateMetric(localValue, this.#getThresholds());
     const fieldValue = this.#getFieldValue();
     const fieldRating = fieldValue !== void 0 ? rateMetric(fieldValue, this.#getThresholds()) : void 0;
     const localValueEl = renderMetricValue(this.#getMetricValueLogContext(true), localValue, this.#getThresholds(), this.#getFormatFn(), { dim: true });
     const fieldValueEl = renderMetricValue(this.#getMetricValueLogContext(false), fieldValue, this.#getThresholds(), this.#getFormatFn(), { dim: true });
-    return html11`
+    return html9`
       <div class="detailed-compare-text">${renderDetailedCompareText({
       metric: i18n23.i18n.lockedString(this.#data.metric),
       localRating,
@@ -4093,26 +3973,26 @@ var MetricCard = class extends HTMLElement {
     const fieldEnabled = CrUXManager7.CrUXManager.instance().getConfigSetting().get().enabled;
     const format = this.#getFormatFn();
     const thresholds = this.#getThresholds();
-    const goodLabel = html11`
+    const goodLabel = html9`
       <div class="bucket-label">
         <span>${i18nString11(UIStrings12.good)}</span>
         <span class="bucket-range"> ${i18nString11(UIStrings12.leqRange, { PH1: format(thresholds[0]) })}</span>
       </div>
     `;
-    const needsImprovementLabel = html11`
+    const needsImprovementLabel = html9`
       <div class="bucket-label">
         <span>${i18nString11(UIStrings12.needsImprovement)}</span>
         <span class="bucket-range"> ${i18nString11(UIStrings12.betweenRange, { PH1: format(thresholds[0]), PH2: format(thresholds[1]) })}</span>
       </div>
     `;
-    const poorLabel = html11`
+    const poorLabel = html9`
       <div class="bucket-label">
         <span>${i18nString11(UIStrings12.poor)}</span>
         <span class="bucket-range"> ${i18nString11(UIStrings12.gtRange, { PH1: format(thresholds[1]) })}</span>
       </div>
     `;
     if (!fieldEnabled) {
-      return html11`
+      return html9`
         <div class="bucket-summaries">
           ${goodLabel}
           ${needsImprovementLabel}
@@ -4120,7 +4000,7 @@ var MetricCard = class extends HTMLElement {
         </div>
       `;
     }
-    return html11`
+    return html9`
       <div class="bucket-summaries histogram" jslog=${VisualLogging6.canvas("metric-histogram")}>
         ${goodLabel}
         <div class="histogram-bar good-bg" style="width: ${this.#getBarWidthForRating("good")}"></div>
@@ -4136,27 +4016,27 @@ var MetricCard = class extends HTMLElement {
   }
   #renderSubpartTable(subparts) {
     const hasFieldData = subparts.every((subpart) => subpart[2] !== void 0);
-    return html11`
+    return html9`
       <hr class="divider">
       <div class="subpart-table" role="table">
         <div class="subpart-table-row subpart-table-header-row" role="row">
           <div role="columnheader" style="grid-column: 1">${i18nString11(UIStrings12.subpart)}</div>
           <div role="columnheader" class="subpart-table-value" style="grid-column: 2">${i18nString11(UIStrings12.localValue)}</div>
-          ${hasFieldData ? html11`
+          ${hasFieldData ? html9`
             <div
               role="columnheader"
               class="subpart-table-value"
               style="grid-column: 3"
               title=${i18nString11(UIStrings12.field75thPercentile)}>${i18nString11(UIStrings12.fieldP75)}</div>
-          ` : nothing9}
+          ` : nothing8}
         </div>
-        ${subparts.map((subpart) => html11`
+        ${subparts.map((subpart) => html9`
           <div class="subpart-table-row" role="row" jslog=${VisualLogging6.tableRow("metric-subpart")}>
             <div role="cell">${subpart[0]}</div>
             <div role="cell" class="subpart-table-value">${i18n23.TimeUtilities.preciseMillisToString(subpart[1])}</div>
-            ${subpart[2] !== void 0 ? html11`
+            ${subpart[2] !== void 0 ? html9`
               <div role="cell" class="subpart-table-value">${i18n23.TimeUtilities.preciseMillisToString(subpart[2])}</div>
-            ` : nothing9}
+            ` : nothing8}
           </div>
         `)}
       </div>
@@ -4171,7 +4051,7 @@ var MetricCard = class extends HTMLElement {
     const formatFn = this.#getFormatFn();
     const localValueEl = renderMetricValue(this.#getMetricValueLogContext(true), localValue, thresholds, formatFn);
     const fieldValueEl = renderMetricValue(this.#getMetricValueLogContext(false), fieldValue, thresholds, formatFn);
-    const output = html11`
+    const output = html9`
       <style>${metricCard_css_default}</style>
       <style>${metricValueStyles_css_default}</style>
       <div class="metric-card" jslog=${VisualLogging6.section(Platform5.StringUtilities.toKebabCase(this.#data.metric))}>
@@ -4194,20 +4074,20 @@ var MetricCard = class extends HTMLElement {
         >
           <div class="metric-source-block">
             <div class="metric-source-value" id="local-value">${localValueEl}</div>
-            ${fieldEnabled ? html11`<div class="metric-source-label">${i18nString11(UIStrings12.localValue)}</div>` : nothing9}
+            ${fieldEnabled ? html9`<div class="metric-source-label">${i18nString11(UIStrings12.localValue)}</div>` : nothing8}
           </div>
-          ${fieldEnabled ? html11`
+          ${fieldEnabled ? html9`
             <div class="metric-source-block">
               <div class="metric-source-value" id="field-value">${fieldValueEl}</div>
               <div class="metric-source-label">${i18nString11(UIStrings12.field75thPercentile)}</div>
             </div>
-          ` : nothing9}
+          ` : nothing8}
           <div
             id="tooltip"
             class="tooltip"
             role="tooltip"
             aria-label=${i18nString11(UIStrings12.viewCardDetails)}
-            ${Lit11.Directives.ref((el) => {
+            ${Lit9.Directives.ref((el) => {
       if (el instanceof HTMLElement) {
         this.#tooltipEl = el;
       }
@@ -4219,22 +4099,22 @@ var MetricCard = class extends HTMLElement {
                   ${this.#renderDetailedCompareString()}
                   <hr class="divider">
                   ${this.#renderFieldHistogram()}
-                  ${localValue && this.#data.subparts ? this.#renderSubpartTable(this.#data.subparts) : nothing9}
+                  ${localValue && this.#data.subparts ? this.#renderSubpartTable(this.#data.subparts) : nothing8}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        ${fieldEnabled ? html11`<hr class="divider">` : nothing9}
+        ${fieldEnabled ? html9`<hr class="divider">` : nothing8}
         ${this.#renderCompareString()}
-        ${this.#data.warnings?.map((warning) => html11`
+        ${this.#data.warnings?.map((warning) => html9`
           <div class="warning">${warning}</div>
         `)}
         ${this.#renderEnvironmentRecommendations()}
         <slot name="extra-info"></slot>
       </div>
     `;
-    Lit11.render(output, this.#shadow, { host: this });
+    Lit9.render(output, this.#shadow, { host: this });
   };
 };
 customElements.define("devtools-metric-card", MetricCard);
@@ -4243,18 +4123,19 @@ customElements.define("devtools-metric-card", MetricCard);
 import * as Common3 from "./../../../core/common/common.js";
 import * as i18n25 from "./../../../core/i18n/i18n.js";
 import * as Root from "./../../../core/root/root.js";
-import * as SDK4 from "./../../../core/sdk/sdk.js";
+import * as SDK3 from "./../../../core/sdk/sdk.js";
 import * as CrUXManager9 from "./../../../models/crux-manager/crux-manager.js";
 import * as EmulationModel from "./../../../models/emulation/emulation.js";
 import * as LiveMetrics from "./../../../models/live-metrics/live-metrics.js";
-import * as Trace6 from "./../../../models/trace/trace.js";
-import * as Buttons8 from "./../../../ui/components/buttons/buttons.js";
+import * as Trace5 from "./../../../models/trace/trace.js";
+import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
 import * as uiI18n4 from "./../../../ui/i18n/i18n.js";
-import * as UI10 from "./../../../ui/legacy/legacy.js";
-import * as Lit12 from "./../../../ui/lit/lit.js";
+import * as UI9 from "./../../../ui/legacy/legacy.js";
+import * as Lit10 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon2 from "./../../common/common.js";
+import * as PanelsCommon from "./../../common/common.js";
 import * as MobileThrottling from "./../../mobile_throttling/mobile_throttling.js";
+import * as Insights4 from "./insights/insights.js";
 
 // gen/front_end/panels/timeline/components/liveMetricsView.css.js
 var liveMetricsView_css_default = `/*
@@ -4675,8 +4556,8 @@ devtools-link {
 /*# sourceURL=${import.meta.resolve("./liveMetricsView.css")} */`;
 
 // gen/front_end/panels/timeline/components/LiveMetricsView.js
-var { html: html12, nothing: nothing11, Directives: { live: live2 } } = Lit12;
-var { widget: widget3 } = UI10.Widget;
+var { html: html10, nothing: nothing10, Directives: { live: live2 } } = Lit10;
+var { widget: widget2 } = UI9.Widget;
 var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager9.DEVICE_SCOPE_LIST];
 var RTT_MINIMUM = 60;
 var UIStrings13 = {
@@ -4956,10 +4837,10 @@ function getLcpFieldSubparts(cruxManager) {
     return null;
   }
   return {
-    timeToFirstByte: Trace6.Types.Timing.Milli(ttfb),
-    resourceLoadDelay: Trace6.Types.Timing.Milli(loadDelay),
-    resourceLoadTime: Trace6.Types.Timing.Milli(loadDuration),
-    elementRenderDelay: Trace6.Types.Timing.Milli(renderDelay)
+    timeToFirstByte: Trace5.Types.Timing.Milli(ttfb),
+    resourceLoadDelay: Trace5.Types.Timing.Milli(loadDelay),
+    resourceLoadTime: Trace5.Types.Timing.Milli(loadDuration),
+    elementRenderDelay: Trace5.Types.Timing.Milli(renderDelay)
   };
 }
 function getNetworkRecTitle(cruxManager) {
@@ -4974,7 +4855,7 @@ function getNetworkRecTitle(cruxManager) {
   if (rtt < RTT_MINIMUM) {
     return i18nString12(UIStrings13.tryDisablingThrottling);
   }
-  const conditions = SDK4.NetworkManager.getRecommendedNetworkPreset(rtt);
+  const conditions = SDK3.NetworkManager.getRecommendedNetworkPreset(rtt);
   if (!conditions) {
     return null;
   }
@@ -5058,7 +4939,7 @@ function getCollectionPeriodRange(cruxManager) {
   });
 }
 function createMetricCardRef(cardData) {
-  return Lit12.Directives.ref((el) => {
+  return Lit10.Directives.ref((el) => {
     if (el instanceof HTMLElement) {
       el.data = {
         ...cardData,
@@ -5069,10 +4950,10 @@ function createMetricCardRef(cardData) {
 }
 function renderLcpCard(input) {
   const fieldData = input.cruxManager.getSelectedFieldMetricData("largest_contentful_paint");
-  const nodeLink2 = input.lcpValue?.nodeRef && PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(input.lcpValue?.nodeRef);
+  const nodeLink = input.lcpValue?.nodeRef && PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(input.lcpValue?.nodeRef);
   const subparts = input.lcpValue?.subparts;
   const fieldSubparts = getLcpFieldSubparts(input.cruxManager);
-  return html12`
+  return html10`
     <devtools-metric-card ${createMetricCardRef({
     metric: "LCP",
     localValue: input.lcpValue?.value,
@@ -5086,14 +4967,14 @@ function renderLcpCard(input) {
       [i18nString12(UIStrings13.elementRenderDelay), subparts.elementRenderDelay, fieldSubparts?.elementRenderDelay]
     ]
   })}>
-      ${nodeLink2 ? html12`
+      ${nodeLink ? html10`
           <div class="related-info" slot="extra-info">
             <span class="related-info-label">${i18nString12(UIStrings13.lcpElement)}</span>
             <span class="related-info-link">
-             ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: input.lcpValue?.nodeRef })}
+             ${widget2(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: input.lcpValue?.nodeRef })}
             </span>
           </div>
-        ` : nothing11}
+        ` : nothing10}
     </devtools-metric-card>
   `;
 }
@@ -5101,7 +4982,7 @@ function renderClsCard(input) {
   const fieldData = input.cruxManager.getSelectedFieldMetricData("cumulative_layout_shift");
   const clusterIds = new Set(input.clsValue?.clusterShiftIds || []);
   const clusterIsVisible = clusterIds.size > 0 && input.layoutShifts.some((layoutShift) => clusterIds.has(layoutShift.uniqueLayoutShiftId));
-  return html12`
+  return html10`
     <devtools-metric-card ${createMetricCardRef({
     metric: "CLS",
     localValue: input.clsValue?.value,
@@ -5109,7 +4990,7 @@ function renderClsCard(input) {
     histogram: fieldData?.histogram,
     warnings: input.clsValue?.warnings
   })}>
-      ${clusterIsVisible ? html12`
+      ${clusterIsVisible ? html10`
         <div class="related-info" slot="extra-info">
           <span class="related-info-label">${i18nString12(UIStrings13.worstCluster)}</span>
           <button
@@ -5119,7 +5000,7 @@ function renderClsCard(input) {
             jslog=${VisualLogging7.action("timeline.landing.show-cls-cluster").track({ click: true })}
           >${i18nString12(UIStrings13.numShifts, { shiftCount: clusterIds.size })}</button>
         </div>
-      ` : nothing11}
+      ` : nothing10}
     </devtools-metric-card>
   `;
 }
@@ -5127,7 +5008,7 @@ function renderInpCard(input) {
   const fieldData = input.cruxManager.getSelectedFieldMetricData("interaction_to_next_paint");
   const subparts = input.inpValue?.subparts;
   const interaction = input.inpValue && input.interactions.get(input.inpValue.interactionId);
-  return html12`
+  return html10`
     <devtools-metric-card ${createMetricCardRef({
     metric: "INP",
     localValue: input.inpValue?.value,
@@ -5140,7 +5021,7 @@ function renderInpCard(input) {
       [i18nString12(UIStrings13.presentationDelay), subparts.presentationDelay]
     ]
   })}>
-      ${interaction ? html12`
+      ${interaction ? html10`
         <div class="related-info" slot="extra-info">
           <span class="related-info-label">${i18nString12(UIStrings13.inpInteractionLink)}</span>
           <button
@@ -5150,7 +5031,7 @@ function renderInpCard(input) {
             jslog=${VisualLogging7.action("timeline.landing.show-inp-interaction").track({ click: true })}
           >${interaction.interactionType}</button>
         </div>
-      ` : nothing11}
+      ` : nothing10}
     </devtools-metric-card>
   `;
 }
@@ -5158,7 +5039,7 @@ function renderRecordAction(action4) {
   function onClick() {
     void action4.execute();
   }
-  return html12`
+  return html10`
     <div class="record-action">
       <devtools-button @click=${onClick} .data=${{
     variant: "text",
@@ -5169,7 +5050,7 @@ function renderRecordAction(action4) {
   }}>
         ${action4.title()}
       </devtools-button>
-      <span class="shortcut-label">${UI10.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action4.id())}</span>
+      <span class="shortcut-label">${UI9.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action4.id())}</span>
     </div>
   `;
 }
@@ -5177,19 +5058,19 @@ function renderRecordingSettings(input) {
   const fieldEnabled = input.cruxManager.getConfigSetting().get().enabled;
   const deviceRec = getDeviceRec(input.cruxManager) || i18nString12(UIStrings13.notEnoughData);
   const networkRec = getNetworkRecTitle(input.cruxManager) || i18nString12(UIStrings13.notEnoughData);
-  return html12`
+  return html10`
     <h3 class="card-title">${i18nString12(UIStrings13.environmentSettings)}</h3>
-    <div class="device-toolbar-description">${md(i18nString12(UIStrings13.useDeviceToolbar))}</div>
-    ${fieldEnabled ? html12`
+    <div class="device-toolbar-description">${Insights4.Helpers.md(i18nString12(UIStrings13.useDeviceToolbar))}</div>
+    ${fieldEnabled ? html10`
       <ul class="environment-recs-list">
-        <li>${uiI18n4.getFormatLocalizedStringTemplate(str_13, UIStrings13.device, { PH1: html12`<span class="environment-rec">${deviceRec}</span>` })}</li>
-        <li>${uiI18n4.getFormatLocalizedStringTemplate(str_13, UIStrings13.network, { PH1: html12`<span class="environment-rec">${networkRec}</span>` })}</li>
+        <li>${uiI18n4.getFormatLocalizedStringTemplate(str_13, UIStrings13.device, { PH1: html10`<span class="environment-rec">${deviceRec}</span>` })}</li>
+        <li>${uiI18n4.getFormatLocalizedStringTemplate(str_13, UIStrings13.network, { PH1: html10`<span class="environment-rec">${networkRec}</span>` })}</li>
       </ul>
-    ` : nothing11}
+    ` : nothing10}
     <div class="environment-option">
       <label class="environment-option-label">
         ${i18nString12(UIStrings13.cpuThrottling)}
-        <select ${widget3(MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector)}></select>
+        <select ${widget2(MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector)}></select>
       </label>
       <devtools-icon title=${i18nString12(UIStrings13.recommendedThrottlingReason)} name="info"></devtools-icon>
     </div>
@@ -5197,7 +5078,7 @@ function renderRecordingSettings(input) {
       <label class="environment-option-label">
         ${i18nString12(UIStrings13.networkThrottling)}
         <select
-          ${widget3(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
+          ${widget2(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
     bindToGlobalConditions: true
   })}
         ></select>
@@ -5208,7 +5089,7 @@ function renderRecordingSettings(input) {
       <setting-checkbox
         class="network-cache-setting"
         .data=${{
-    setting: Common3.Settings.Settings.instance().resolve(SDK4.SDKSettings.cacheDisabledSettingDescriptor),
+    setting: Common3.Settings.Settings.instance().resolve(SDK3.SDKSettings.cacheDisabledSettingDescriptor),
     textOverride: i18nString12(UIStrings13.disableNetworkCache)
   }}
       ></setting-checkbox>
@@ -5217,14 +5098,14 @@ function renderRecordingSettings(input) {
 }
 function renderPageScopeSetting(input) {
   if (!input.cruxManager.getConfigSetting().get().enabled) {
-    return Lit12.nothing;
+    return Lit10.nothing;
   }
   const urlLabel = getPageScopeLabel(input.cruxManager, "url");
   const originLabel = getPageScopeLabel(input.cruxManager, "origin");
   const buttonTitle = input.cruxManager.fieldPageScope === "url" ? urlLabel : originLabel;
   const accessibleTitle = i18nString12(UIStrings13.showFieldDataForPage, { PH1: buttonTitle });
   const shouldDisable = !input.cruxManager.pageResult?.["url-ALL"] && !input.cruxManager.pageResult?.["origin-ALL"];
-  return html12`
+  return html10`
     <devtools-select-menu
       id="page-scope-select"
       class="field-data-option"
@@ -5254,11 +5135,11 @@ function renderPageScopeSetting(input) {
 }
 function renderDeviceScopeSetting(input) {
   if (!input.cruxManager.getConfigSetting().get().enabled) {
-    return Lit12.nothing;
+    return Lit10.nothing;
   }
   const shouldDisable = !input.cruxManager.getFieldResponse(input.cruxManager.fieldPageScope, "ALL");
   const currentDeviceLabel = getLabelForDeviceOption(input.cruxManager, input.cruxManager.fieldDeviceOption);
-  return html12`
+  return html10`
     <devtools-select-menu
       id="device-scope-select"
       class="field-data-option"
@@ -5272,7 +5153,7 @@ function renderDeviceScopeSetting(input) {
       title=${i18nString12(UIStrings13.showFieldDataForDevice, { PH1: currentDeviceLabel })}
     >
       ${DEVICE_OPTION_LIST.map((deviceOption) => {
-    return html12`
+    return html10`
           <devtools-menu-item
             .value=${deviceOption}
             .selected=${input.cruxManager.fieldDeviceOption === deviceOption}
@@ -5286,11 +5167,11 @@ function renderDeviceScopeSetting(input) {
 }
 function renderFieldDataHistoryLink(cruxManager) {
   if (!cruxManager.getConfigSetting().get().enabled) {
-    return Lit12.nothing;
+    return Lit10.nothing;
   }
   const normalizedUrl = cruxManager.pageResult?.normalizedUrl;
   if (!normalizedUrl) {
-    return Lit12.nothing;
+    return Lit10.nothing;
   }
   const tmp = new URL("https://cruxvis.withgoogle.com/");
   tmp.searchParams.set("view", "cwvsummary");
@@ -5300,7 +5181,7 @@ function renderFieldDataHistoryLink(cruxManager) {
   const device = cruxManager.getSelectedDeviceScope();
   tmp.searchParams.set("device", device);
   const cruxVis = `${tmp.origin}/#/${tmp.search}`;
-  return html12`
+  return html10`
       (<devtools-link href=${cruxVis}
                class="local-field-link"
                title=${i18nString12(UIStrings13.fieldDataHistoryTooltip)}
@@ -5310,14 +5191,14 @@ function renderFieldDataHistoryLink(cruxManager) {
 function renderCollectionPeriod(cruxManager) {
   const range = getCollectionPeriodRange(cruxManager);
   const dateText = range || i18nString12(UIStrings13.notEnoughData);
-  const fieldDataHistoryLink = range ? renderFieldDataHistoryLink(cruxManager) : Lit12.nothing;
+  const fieldDataHistoryLink = range ? renderFieldDataHistoryLink(cruxManager) : Lit10.nothing;
   const warnings = cruxManager.pageResult?.warnings || [];
-  return html12`
+  return html10`
     <div class="field-data-message">
       <div>${uiI18n4.getFormatLocalizedStringTemplate(str_13, UIStrings13.collectionPeriod, {
-    PH1: html12`<span class="collection-period-range">${dateText}</span>`
+    PH1: html10`<span class="collection-period-range">${dateText}</span>`
   })} ${fieldDataHistoryLink}</div>
-      ${warnings.map((warning) => html12`
+      ${warnings.map((warning) => html10`
         <div class="field-data-warning">${warning}</div>
       `)}
     </div>
@@ -5327,9 +5208,9 @@ function renderFieldDataMessage(cruxManager) {
   if (cruxManager.getConfigSetting().get().enabled) {
     return renderCollectionPeriod(cruxManager);
   }
-  return html12`
+  return html10`
     <div class="field-data-message">
-      ${uiI18n4.getFormatLocalizedStringTemplate(str_13, UIStrings13.seeHowYourLocalMetricsCompare, { PH1: html12`<devtools-link href="https://developer.chrome.com/docs/crux">${i18n25.i18n.lockedString("Chrome UX Report")}</devtools-link>` })}
+      ${uiI18n4.getFormatLocalizedStringTemplate(str_13, UIStrings13.seeHowYourLocalMetricsCompare, { PH1: html10`<devtools-link href="https://developer.chrome.com/docs/crux">${i18n25.i18n.lockedString("Chrome UX Report")}</devtools-link>` })}
     </div>
   `;
 }
@@ -5352,12 +5233,12 @@ function keepScrolledToBottom(listEl) {
 }
 function renderInteractionsLog(input, output) {
   if (!input.interactions.size) {
-    return Lit12.nothing;
+    return Lit10.nothing;
   }
-  return html12`
+  return html10`
     <ol class="log"
       slot="interactions-log-content"
-      ${Lit12.Directives.ref((el) => {
+      ${Lit10.Directives.ref((el) => {
     if (el instanceof HTMLElement) {
       output.shouldKeepInteractionsScrolledToBottom = () => {
         return shouldKeepScrolledToBottom(el);
@@ -5372,28 +5253,28 @@ function renderInteractionsLog(input, output) {
     const metricValue = renderMetricValue("timeline.landing.interaction-event-timing", interaction.duration, INP_THRESHOLDS, (v) => i18n25.TimeUtilities.preciseMillisToString(v), { dim: true });
     const isP98Excluded = input.inpValue && input.inpValue.value < interaction.duration;
     const isInp = input.inpValue?.interactionId === interaction.interactionId;
-    return html12`
+    return html10`
           <li id=${interaction.interactionId} class="log-item interaction" tabindex="-1">
             <details>
               <summary>
                 <span class="interaction-type">
-                  ${interaction.interactionType} ${isInp ? html12`<span class="interaction-inp-chip" title=${i18nString12(UIStrings13.inpInteraction)}>INP</span>` : nothing11}
+                  ${interaction.interactionType} ${isInp ? html10`<span class="interaction-inp-chip" title=${i18nString12(UIStrings13.inpInteraction)}>INP</span>` : nothing10}
                 </span>
                 <span class="interaction-node">
-                  ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}
+                  ${widget2(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}
                 </span>
-                ${isP98Excluded ? html12`<devtools-icon
+                ${isP98Excluded ? html10`<devtools-icon
                   class="interaction-info"
                   name="info"
                   title=${i18nString12(UIStrings13.interactionExcluded)}
-                ></devtools-icon>` : nothing11}
+                ></devtools-icon>` : nothing10}
                 <span class="interaction-duration">${metricValue}</span>
               </summary>
               <div class="subpart-table" role="table">
                 <div class="subpart-table-row subpart-table-header-row" role="row">
                   <div role="columnheader">${i18nString12(UIStrings13.subpart)}</div>
                   <div role="columnheader">
-                    ${interaction.longAnimationFrameTimings.length ? html12`
+                    ${interaction.longAnimationFrameTimings.length ? html10`
                        <button
                          class="log-extra-details-button"
                          title=${i18nString12(UIStrings13.logToConsole)}
@@ -5424,12 +5305,12 @@ function renderInteractionsLog(input, output) {
 }
 function renderLayoutShiftsLog(input, output) {
   if (!input.layoutShifts.length) {
-    return Lit12.nothing;
+    return Lit10.nothing;
   }
-  return html12`
+  return html10`
     <ol class="log"
       slot="layout-shifts-log-content"
-      ${Lit12.Directives.ref((el) => {
+      ${Lit10.Directives.ref((el) => {
     if (el instanceof HTMLElement) {
       output.shouldKeepLayoutShiftsScrolledToBottom = () => {
         return shouldKeepScrolledToBottom(el);
@@ -5450,13 +5331,13 @@ function renderLayoutShiftsLog(input, output) {
       (v) => v.toFixed(4),
       { dim: true }
     );
-    return html12`
+    return html10`
           <li id=${layoutShift.uniqueLayoutShiftId} class="log-item layout-shift" tabindex="-1">
             <div class="layout-shift-score">Layout shift score: ${metricValue}</div>
             <div class="layout-shift-nodes">
-              ${layoutShift.affectedNodeRefs.map((node) => html12`
+              ${layoutShift.affectedNodeRefs.map((node) => html10`
                 <div class="layout-shift-node">
-                  ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node })}
+                  ${widget2(PanelsCommon.DOMLinkifier.DOMNodeLink, { node })}
                 </div>
               `)}
             </div>
@@ -5467,12 +5348,12 @@ function renderLayoutShiftsLog(input, output) {
   `;
 }
 function renderLogSection(input, output) {
-  return html12`
+  return html10`
     <section
       class="logs-section"
       aria-label=${i18nString12(UIStrings13.eventLogs)}
     >
-      <devtools-widget ${widget3(LiveMetricsLogs, {
+      <devtools-widget ${widget2(LiveMetricsLogs, {
     selectedTab: input.highlightedInteractionId ? "interactions" : input.highlightedLayoutShiftClusterIds?.size ? "layout-shifts" : void 0
   })}>
         ${renderInteractionsLog(input, output)}
@@ -5482,7 +5363,7 @@ function renderLogSection(input, output) {
   `;
 }
 function renderNodeView(input) {
-  return html12`
+  return html10`
     <style>${liveMetricsView_css_default}</style>
     <style>${metricValueStyles_css_default}</style>
     <div class="node-view">
@@ -5494,15 +5375,15 @@ function renderNodeView(input) {
     </div>
   `;
 }
-var DEFAULT_VIEW6 = (input, output, target) => {
+var DEFAULT_VIEW5 = (input, output, target) => {
   if (input.isNode) {
-    Lit12.render(renderNodeView(input), target);
+    Lit10.render(renderNodeView(input), target);
     return;
   }
   const fieldEnabled = input.cruxManager.getConfigSetting().get().enabled;
   const liveMetricsTitle = fieldEnabled ? i18nString12(UIStrings13.localAndFieldMetrics) : i18nString12(UIStrings13.localMetrics);
   const helpLink = "https://web.dev/articles/lab-and-field-data-differences#lab_data_versus_field_data";
-  const outputTemplate = html12`
+  const outputTemplate = html10`
     <style>${liveMetricsView_css_default}</style>
     <style>${metricValueStyles_css_default}</style>
     <div class="container">
@@ -5510,7 +5391,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
         <main class="live-metrics">
           <div class="section-header">
             <h2 class="section-title">${liveMetricsTitle}</h2>
-            ${input.navigationType === "soft-navigation" ? html12`<span class="badge">${i18nString12(UIStrings13.softNavigationPillText)}</span>` : nothing11}
+            ${input.navigationType === "soft-navigation" ? html10`<span class="badge">${i18nString12(UIStrings13.softNavigationPillText)}</span>` : nothing10}
           </div>
           <div class="metric-cards">
             <div id="lcp">
@@ -5554,7 +5435,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
       </div>
     </div>
   `;
-  Lit12.render(outputTemplate, target);
+  Lit10.render(outputTemplate, target);
   if (input.highlightedInteractionId) {
     const interactionEl = target.querySelector("#" + CSS.escape(input.highlightedInteractionId));
     if (interactionEl) {
@@ -5563,7 +5444,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
           block: "center"
         });
         interactionEl.focus();
-        UI10.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
+        UI9.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
       });
     }
   }
@@ -5582,13 +5463,13 @@ var DEFAULT_VIEW6 = (input, output, target) => {
         });
         layoutShiftEls[0].focus();
         for (const layoutShiftEl of layoutShiftEls) {
-          UI10.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
+          UI9.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
         }
       });
     }
   }
 };
-var LiveMetricsView = class extends UI10.Widget.Widget {
+var LiveMetricsView = class extends UI9.Widget.Widget {
   isNode = Root.Runtime.Runtime.isNode();
   #lcpValue;
   #clsValue;
@@ -5604,11 +5485,11 @@ var LiveMetricsView = class extends UI10.Widget.Widget {
   #view;
   #viewOutput = {};
   #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: true });
     this.#view = view;
-    this.#toggleRecordAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
-    this.#recordReloadAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
+    this.#toggleRecordAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
+    this.#recordReloadAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
   }
   async #onMetricStatus(event) {
     this.#lcpValue = event.data.lcp;
@@ -5721,7 +5602,7 @@ var LiveMetricsView = class extends UI10.Widget.Widget {
   }
 };
 var LIVE_METRICS_LOGS_VIEW = (input, output, target) => {
-  Lit12.render(html12`
+  Lit10.render(html10`
     <style>
       /* Any children of the root element will be matched to the slots defined within the container
          widget's shadow DOM. */
@@ -5748,7 +5629,7 @@ var LIVE_METRICS_LOGS_VIEW = (input, output, target) => {
     </devtools-tabbed-pane>
   `, target);
 };
-var LiveMetricsLogs = class extends UI10.Widget.Widget {
+var LiveMetricsLogs = class extends UI9.Widget.Widget {
   #view;
   #selectedTab = "interactions";
   set selectedTab(tabId) {
@@ -5789,18 +5670,18 @@ var LiveMetricsLogs = class extends UI10.Widget.Widget {
 // gen/front_end/panels/timeline/components/NetworkRequestDetails.js
 var NetworkRequestDetails_exports = {};
 __export(NetworkRequestDetails_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   NetworkRequestDetails: () => NetworkRequestDetails
 });
 import "./../../../ui/components/request_link_icon/request_link_icon.js";
 import * as Common4 from "./../../../core/common/common.js";
 import * as i18n29 from "./../../../core/i18n/i18n.js";
-import * as SDK6 from "./../../../core/sdk/sdk.js";
-import * as Helpers7 from "./../../../models/trace/helpers/helpers.js";
-import * as Trace8 from "./../../../models/trace/trace.js";
-import * as LegacyComponents3 from "./../../../ui/legacy/components/utils/utils.js";
-import * as UI12 from "./../../../ui/legacy/legacy.js";
-import * as Lit14 from "./../../../ui/lit/lit.js";
+import * as SDK5 from "./../../../core/sdk/sdk.js";
+import * as Helpers9 from "./../../../models/trace/helpers/helpers.js";
+import * as Trace7 from "./../../../models/trace/trace.js";
+import * as LegacyComponents2 from "./../../../ui/legacy/components/utils/utils.js";
+import * as UI11 from "./../../../ui/legacy/legacy.js";
+import * as Lit12 from "./../../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/networkRequestDetails.css.js
@@ -6090,20 +5971,20 @@ var networkRequestTooltip_css_default = `/*
 // gen/front_end/panels/timeline/components/NetworkRequestTooltip.js
 var NetworkRequestTooltip_exports = {};
 __export(NetworkRequestTooltip_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   NetworkRequestTooltip: () => NetworkRequestTooltip
 });
 import "./../../../ui/kit/kit.js";
 import * as i18n27 from "./../../../core/i18n/i18n.js";
 import * as Platform6 from "./../../../core/platform/platform.js";
-import * as SDK5 from "./../../../core/sdk/sdk.js";
-import * as Trace7 from "./../../../models/trace/trace.js";
+import * as SDK4 from "./../../../core/sdk/sdk.js";
+import * as Trace6 from "./../../../models/trace/trace.js";
 import * as PerfUI from "./../../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as UI11 from "./../../../ui/legacy/legacy.js";
-import * as Lit13 from "./../../../ui/lit/lit.js";
+import * as UI10 from "./../../../ui/legacy/legacy.js";
+import * as Lit11 from "./../../../ui/lit/lit.js";
 import * as TimelineUtils from "./../utils/utils.js";
-var { html: html13, nothing: nothing13, Directives: { classMap, ifDefined: ifDefined2 } } = Lit13;
-var { widget: widget4 } = UI11.Widget;
+var { html: html11, nothing: nothing12, Directives: { classMap, ifDefined: ifDefined2 } } = Lit11;
+var { widget: widget3 } = UI10.Widget;
 var MAX_URL_LENGTH2 = 60;
 var UIStrings14 = {
   /**
@@ -6146,7 +6027,7 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("panels/timeline/components/NetworkRequestTooltip.ts", UIStrings14);
 var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var DEFAULT_VIEW7 = (input, output, target) => {
+var DEFAULT_VIEW6 = (input, output, target) => {
   const { networkRequest, entityMapper, throttlingTitle } = input;
   const chipStyle = {
     backgroundColor: `${colorForNetworkRequest(networkRequest)}`
@@ -6155,7 +6036,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
   const entity = entityMapper ? entityMapper.entityForEvent(networkRequest) : null;
   const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity, true);
   const redirectsHtml = NetworkRequestTooltip.renderRedirects(networkRequest);
-  Lit13.render(html13`
+  Lit11.render(html11`
     <style>${networkRequestTooltip_css_default}</style>
     <div class="performance-card">
       <div class="url">${Platform6.StringUtilities.trimMiddle(url.href.replace(url.origin, ""), MAX_URL_LENGTH2)}</div>
@@ -6163,34 +6044,34 @@ var DEFAULT_VIEW7 = (input, output, target) => {
 
       <div class="divider"></div>
       <div class="network-category">
-        <span class="network-category-chip" style=${Lit13.Directives.styleMap(chipStyle)}>
+        <span class="network-category-chip" style=${Lit11.Directives.styleMap(chipStyle)}>
         </span>${networkResourceCategory(networkRequest)}
       </div>
       <div class="priority-row">${i18nString13(UIStrings14.priority)}: ${NetworkRequestTooltip.renderPriorityValue(networkRequest)}</div>
-      ${throttlingTitle ? html13`
+      ${throttlingTitle ? html11`
         <div class="throttled-row">
           ${i18nString13(UIStrings14.wasThrottled, { PH1: throttlingTitle })}
-        </div>` : nothing13}
-      ${Trace7.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(networkRequest) ? html13`<div class="render-blocking"> ${i18nString13(UIStrings14.renderBlocking)} </div>` : Lit13.nothing}
+        </div>` : nothing12}
+      ${Trace6.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(networkRequest) ? html11`<div class="render-blocking"> ${i18nString13(UIStrings14.renderBlocking)} </div>` : Lit11.nothing}
       <div class="divider"></div>
 
       ${NetworkRequestTooltip.renderTimings(networkRequest)}
 
-      ${redirectsHtml ? html13`
+      ${redirectsHtml ? html11`
         <div class="divider"></div>
         ${redirectsHtml}
-      ` : Lit13.nothing}
+      ` : Lit11.nothing}
     </div>
   `, target);
 };
-var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Widget {
+var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI10.Widget.Widget {
   static createWidgetElement(request, entityMapper) {
-    return html13`${widget4(_NetworkRequestTooltip, { networkRequest: request, entityMapper })}`;
+    return html11`${widget3(_NetworkRequestTooltip, { networkRequest: request, entityMapper })}`;
   }
   #view;
   #networkRequest;
   #entityMapper;
-  constructor(element, view = DEFAULT_VIEW7) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -6204,9 +6085,9 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Wid
   }
   static renderPriorityValue(networkRequest) {
     if (networkRequest.args.data.priority === networkRequest.args.data.initialPriority) {
-      return html13`${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(networkRequest.args.data.priority)}`;
+      return html11`${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(networkRequest.args.data.priority)}`;
     }
-    return html13`${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(networkRequest.args.data.initialPriority)}
+    return html11`${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(networkRequest.args.data.initialPriority)}
         <devtools-icon name="arrow-forward" class="priority"></devtools-icon>
         ${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(networkRequest.args.data.priority)}`;
   }
@@ -6223,25 +6104,25 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Wid
     const styleForDownloading = {
       backgroundColor: color
     };
-    const sdkNetworkRequest = SDK5.TraceObject.RevealableNetworkRequest.create(SDK5.TargetManager.TargetManager.instance(), networkRequest);
-    const wasThrottled = sdkNetworkRequest && SDK5.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
+    const sdkNetworkRequest = SDK4.TraceObject.RevealableNetworkRequest.create(SDK4.TargetManager.TargetManager.instance(), networkRequest);
+    const wasThrottled = sdkNetworkRequest && SDK4.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
     const throttledTitle = wasThrottled ? i18nString13(UIStrings14.wasThrottled, {
       PH1: typeof wasThrottled.conditions.title === "string" ? wasThrottled.conditions.title : wasThrottled.conditions.title()
     }) : void 0;
-    const leftWhisker = html13`<span class="whisker-left"> <span class="horizontal"></span> </span>`;
-    const rightWhisker = html13`<span class="whisker-right"> <span class="horizontal"></span> </span>`;
+    const leftWhisker = html11`<span class="whisker-left"> <span class="horizontal"></span> </span>`;
+    const rightWhisker = html11`<span class="whisker-right"> <span class="horizontal"></span> </span>`;
     const classes = classMap({
       ["timings-row timings-row--duration"]: true,
       throttled: Boolean(wasThrottled?.urlPattern)
     });
-    return html13`
+    return html11`
       <div
         class=${classes}
         title=${ifDefined2(throttledTitle)}>
-        ${wasThrottled?.urlPattern ? html13`<devtools-icon
+        ${wasThrottled?.urlPattern ? html11`<devtools-icon
           class=indicator
           name=watch
-          ></devtools-icon>` : html13`<span class="indicator"></span>`}
+          ></devtools-icon>` : html11`<span class="indicator"></span>`}
         ${i18nString13(UIStrings14.duration)}
          <span class="time"> ${i18n27.TimeUtilities.formatMicroSecondsTime(networkRequest.dur)} </span>
       </div>
@@ -6251,12 +6132,12 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Wid
         <span class="time"> ${i18n27.TimeUtilities.formatMicroSecondsTime(queueing)} </span>
       </div>
       <div class="timings-row">
-        <span class="indicator" style=${Lit13.Directives.styleMap(styleForWaiting)}></span>
+        <span class="indicator" style=${Lit11.Directives.styleMap(styleForWaiting)}></span>
         ${i18nString13(UIStrings14.requestSentAndWaiting)}
         <span class="time"> ${i18n27.TimeUtilities.formatMicroSecondsTime(requestPlusWaiting)} </span>
       </div>
       <div class="timings-row">
-        <span class="indicator" style=${Lit13.Directives.styleMap(styleForDownloading)}></span>
+        <span class="indicator" style=${Lit11.Directives.styleMap(styleForDownloading)}></span>
         ${i18nString13(UIStrings14.contentDownloading)}
         <span class="time"> ${i18n27.TimeUtilities.formatMicroSecondsTime(download)} </span>
       </div>
@@ -6270,15 +6151,15 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Wid
   static renderRedirects(networkRequest) {
     const redirectRows = [];
     if (networkRequest.args.data.redirects.length > 0) {
-      redirectRows.push(html13`
+      redirectRows.push(html11`
         <div class="redirects-row">
           ${i18nString13(UIStrings14.redirects)}
         </div>
       `);
       for (const redirect of networkRequest.args.data.redirects) {
-        redirectRows.push(html13`<div class="redirects-row"> ${redirect.url}</div>`);
+        redirectRows.push(html11`<div class="redirects-row"> ${redirect.url}</div>`);
       }
-      return html13`${redirectRows}`;
+      return html11`${redirectRows}`;
     }
     return null;
   }
@@ -6286,8 +6167,8 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Wid
     if (!this.#networkRequest) {
       return;
     }
-    const sdkNetworkRequest = SDK5.TraceObject.RevealableNetworkRequest.create(SDK5.TargetManager.TargetManager.instance(), this.#networkRequest);
-    const networkConditions = sdkNetworkRequest && SDK5.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
+    const sdkNetworkRequest = SDK4.TraceObject.RevealableNetworkRequest.create(SDK4.TargetManager.TargetManager.instance(), this.#networkRequest);
+    const networkConditions = sdkNetworkRequest && SDK4.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
     let throttlingTitle = void 0;
     if (networkConditions) {
       throttlingTitle = typeof networkConditions.conditions.title === "string" ? networkConditions.conditions.title : networkConditions.conditions.title();
@@ -6302,7 +6183,7 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Wid
 };
 
 // gen/front_end/panels/timeline/components/NetworkRequestDetails.js
-var { html: html14, render: render13 } = Lit14;
+var { html: html12, render: render12 } = Lit12;
 var MAX_URL_LENGTH3 = 100;
 var UIStrings15 = {
   /**
@@ -6396,7 +6277,7 @@ var UIStrings15 = {
 };
 var str_15 = i18n29.i18n.registerUIStrings("panels/timeline/components/NetworkRequestDetails.ts", UIStrings15);
 var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var NetworkRequestDetails = class extends UI12.Widget.Widget {
+var NetworkRequestDetails = class extends UI11.Widget.Widget {
   #view;
   #request = null;
   #requestPreviewElements = /* @__PURE__ */ new WeakMap();
@@ -6405,7 +6286,7 @@ var NetworkRequestDetails = class extends UI12.Widget.Widget {
   #linkifier = null;
   #serverTimings = null;
   #parsedTrace = null;
-  constructor(element, view = DEFAULT_VIEW8) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element);
     this.#view = view;
     this.requestUpdate();
@@ -6428,7 +6309,7 @@ var NetworkRequestDetails = class extends UI12.Widget.Widget {
       const headerName = header.name.toLocaleLowerCase();
       if (headerName === "server-timing" || headerName === "server-timing-test") {
         header.name = "server-timing";
-        this.#serverTimings = SDK6.ServerTiming.ServerTiming.parseHeaders([header], Common4.Console.Console.instance());
+        this.#serverTimings = SDK5.ServerTiming.ServerTiming.parseHeaders([header], Common4.Console.Console.instance());
         break;
       }
     }
@@ -6450,15 +6331,15 @@ var NetworkRequestDetails = class extends UI12.Widget.Widget {
     }, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var DEFAULT_VIEW7 = (input, _output, target) => {
   if (!input.request) {
-    render13(Lit14.nothing, target);
+    render12(Lit12.nothing, target);
     return;
   }
   const { request } = input;
   const { data } = request.args;
   const redirectsHtml = NetworkRequestTooltip.renderRedirects(request);
-  render13(html14`
+  render12(html12`
         <style>${networkRequestDetails_css_default}</style>
         <style>${networkRequestTooltip_css_default}</style>
 
@@ -6468,7 +6349,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
           ${renderTitle(input.request)}
           ${renderURL(input.request)}
           <div class="network-request-details-cols">
-            ${Lit14.Directives.until(renderPreviewElement(input.request, input.target, input.previewElementsCache))}
+            ${Lit12.Directives.until(renderPreviewElement(input.request, input.target, input.previewElementsCache))}
             <div class="network-request-details-col">
               ${renderRow(i18nString14(UIStrings15.requestMethod), data.requestMethod)}
               ${renderRow(i18nString14(UIStrings15.protocol), data.protocol)}
@@ -6487,12 +6368,12 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
               </div>
             </div>
             ${renderServerTimings(input.serverTimings)}
-            ${redirectsHtml ? html14`
+            ${redirectsHtml ? html12`
               <div class="column-divider"></div>
               <div class="network-request-details-col redirect-details">
                 ${redirectsHtml}
               </div>
-            ` : Lit14.nothing}
+            ` : Lit12.nothing}
             </div>
             ${renderInitiatedBy(request, input.parsedTrace, input.target, input.linkifier)}
           </div>
@@ -6503,9 +6384,9 @@ function renderTitle(request) {
   const style = {
     backgroundColor: `${colorForNetworkRequest(request)}`
   };
-  return html14`
+  return html12`
     <div class="network-request-details-title">
-      <div style=${Lit14.Directives.styleMap(style)}></div>
+      <div style=${Lit12.Directives.styleMap(style)}></div>
       ${i18nString14(UIStrings15.networkRequest)}
     </div>
   `;
@@ -6516,52 +6397,52 @@ function renderURL(request) {
     showColumnNumber: false,
     maxLength: MAX_URL_LENGTH3
   };
-  const linkifiedURL = LegacyComponents3.Linkifier.Linkifier.linkifyURL(request.args.data.url, options);
-  const networkRequest = SDK6.TraceObject.RevealableNetworkRequest.create(SDK6.TargetManager.TargetManager.instance(), request);
+  const linkifiedURL = LegacyComponents2.Linkifier.Linkifier.linkifyURL(request.args.data.url, options);
+  const networkRequest = SDK5.TraceObject.RevealableNetworkRequest.create(SDK5.TargetManager.TargetManager.instance(), request);
   if (networkRequest) {
     linkifiedURL.addEventListener("contextmenu", (event) => {
-      const contextMenu = new UI12.ContextMenu.ContextMenu(event);
+      const contextMenu = new UI11.ContextMenu.ContextMenu(event);
       contextMenu.appendApplicableItems(networkRequest);
       void contextMenu.show();
     });
-    const urlElement = html14`
+    const urlElement = html12`
         ${linkifiedURL}
         <devtools-request-link-icon .data=${{ request: networkRequest.networkRequest }}>
         </devtools-request-link-icon>
       `;
-    return html14`<div class="network-request-details-item">${urlElement}</div>`;
+    return html12`<div class="network-request-details-item">${urlElement}</div>`;
   }
-  return html14`<div class="network-request-details-item">${linkifiedURL}</div>`;
+  return html12`<div class="network-request-details-item">${linkifiedURL}</div>`;
 }
 async function renderPreviewElement(request, target, previewElementsCache) {
   if (!request.args.data.url || !target) {
-    return Lit14.nothing;
+    return Lit12.nothing;
   }
   const url = request.args.data.url;
   if (!previewElementsCache.get(request)) {
     const previewOpts = {
-      imageAltText: LegacyComponents3.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
+      imageAltText: LegacyComponents2.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
       align: "start",
       hideFileData: true
     };
-    const previewElement = await LegacyComponents3.ImagePreview.ImagePreview.build(url, false, previewOpts);
+    const previewElement = await LegacyComponents2.ImagePreview.ImagePreview.build(url, false, previewOpts);
     if (previewElement) {
       previewElementsCache.set(request, previewElement);
     }
   }
   const requestPreviewElement = previewElementsCache.get(request);
   if (requestPreviewElement) {
-    return html14`
+    return html12`
       <div class="network-request-details-col">${requestPreviewElement}</div>
       <div class="column-divider"></div>`;
   }
-  return Lit14.nothing;
+  return Lit12.nothing;
 }
 function renderRow(title, value2) {
   if (!value2) {
-    return Lit14.nothing;
+    return Lit12.nothing;
   }
-  return html14`
+  return html12`
       <div class="network-request-details-row" jslog=${VisualLogging8.item("detail-row")}>
         <div class="title">${title}</div>
         <div class="value">${value2}</div>
@@ -6585,8 +6466,8 @@ function renderEncodedDataLength(request) {
   return renderRow(i18nString14(UIStrings15.encodedData), lengthText);
 }
 function renderBlockingRow(request) {
-  if (!Helpers7.Network.isSyntheticNetworkRequestEventRenderBlocking(request)) {
-    return Lit14.nothing;
+  if (!Helpers9.Network.isSyntheticNetworkRequestEventRenderBlocking(request)) {
+    return Lit12.nothing;
   }
   let renderBlockingText;
   switch (request.args.data.renderBlocking) {
@@ -6597,7 +6478,7 @@ function renderBlockingRow(request) {
       renderBlockingText = UIStrings15.inBodyParserBlocking;
       break;
     default:
-      return Lit14.nothing;
+      return Lit12.nothing;
   }
   return renderRow(i18nString14(UIStrings15.blocking), renderBlockingText);
 }
@@ -6607,19 +6488,19 @@ function renderFromCache(request) {
 }
 function renderThirdPartyEntity(request, entityMapper) {
   if (!entityMapper) {
-    return Lit14.nothing;
+    return Lit12.nothing;
   }
   const entity = entityMapper.entityForEvent(request);
   if (!entity) {
-    return Lit14.nothing;
+    return Lit12.nothing;
   }
   return renderRow(i18nString14(UIStrings15.entity), entity.name);
 }
 function renderServerTimings(timings) {
   if (!timings || timings.length === 0) {
-    return Lit14.nothing;
+    return Lit12.nothing;
   }
-  return html14`
+  return html12`
     <div class="column-divider"></div>
     <div class="network-request-details-col server-timings">
       <div class="server-timing-column-header">${i18nString14(UIStrings15.serverTiming)}</div>
@@ -6627,7 +6508,7 @@ function renderServerTimings(timings) {
       <div class="server-timing-column-header">${i18nString14(UIStrings15.time)}</div>
       ${timings.map((timing) => {
     const classes = timing.metric.startsWith("(c") ? "synthetic value" : "value";
-    return html14`
+    return html12`
           <div class=${classes}>${timing.metric || "-"}</div>
           <div class=${classes}>${timing.description || "-"}</div>
           <div class=${classes}>${timing.value || "-"}</div>
@@ -6637,22 +6518,22 @@ function renderServerTimings(timings) {
 }
 function renderInitiatedBy(request, parsedTrace, target, linkifier) {
   if (!linkifier) {
-    return Lit14.nothing;
+    return Lit12.nothing;
   }
-  const hasStackTrace = Trace8.Helpers.Trace.stackTraceInEvent(request) !== null;
+  const hasStackTrace = Trace7.Helpers.Trace.stackTraceInEvent(request) !== null;
   let link = null;
   const options = {
     tabStop: true,
     showColumnNumber: true
   };
   if (hasStackTrace) {
-    const topFrame = Trace8.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(request) ?? null;
+    const topFrame = Trace7.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(request) ?? null;
     if (topFrame) {
       link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame, options);
     }
   }
-  const initiator = parsedTrace ? Trace8.Extras.Initiators.getNetworkInitiator(parsedTrace.data, request) : void 0;
-  if (initiator && Trace8.Types.Events.isSyntheticNetworkRequest(initiator)) {
+  const initiator = parsedTrace ? Trace7.Extras.Initiators.getNetworkInitiator(parsedTrace.data, request) : void 0;
+  if (initiator && Trace7.Types.Events.isSyntheticNetworkRequest(initiator)) {
     link = linkifier.maybeLinkifyScriptLocation(
       target,
       null,
@@ -6664,9 +6545,9 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
     );
   }
   if (!link) {
-    return Lit14.nothing;
+    return Lit12.nothing;
   }
-  return html14`
+  return html12`
       <div class="network-request-details-item">
         <div class="title">${i18nString14(UIStrings15.initiatedBy)}</div>
         <div class="value focusable-outline">${link}</div>
@@ -6678,9 +6559,9 @@ var NetworkTrackWidget_exports = {};
 __export(NetworkTrackWidget_exports, {
   NetworkTrackWidget: () => NetworkTrackWidget
 });
-import * as Trace9 from "./../../../models/trace/trace.js";
+import * as Trace8 from "./../../../models/trace/trace.js";
 import * as PerfUI2 from "./../../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as Lit15 from "./../../../ui/lit/lit.js";
+import * as Lit13 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/networkTrackWidget.css.js
 var networkTrackWidget_css_default = `/* Copyright 2026 The Chromium Authors
@@ -6718,7 +6599,7 @@ var networkTrackWidget_css_default = `/* Copyright 2026 The Chromium Authors
 /*# sourceURL=${import.meta.resolve("./networkTrackWidget.css")} */`;
 
 // gen/front_end/panels/timeline/components/NetworkTrackWidget.js
-var { html: html15 } = Lit15;
+var { html: html13 } = Lit13;
 var NetworkTrackWidget = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #flameChartContainer = document.createElement("div");
@@ -6744,15 +6625,15 @@ var NetworkTrackWidget = class extends HTMLElement {
       this.#flameChart = new PerfUI2.FlameChart.FlameChart(this.#dataProvider, this);
       this.#flameChart.show(this.#flameChartContainer, void 0, true);
     }
-    const entityMapper = Trace9.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
+    const entityMapper = Trace8.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
     this.#dataProvider.preparePopoverElement = () => null;
     this.#dataProvider.setModel(parsedTrace, entityMapper);
     const timelineData = this.#dataProvider.timelineData();
     timelineData.groups = [];
-    const bounds = Trace9.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
-      min: Trace9.Types.Timing.Micro(data.bounds.min),
-      max: Trace9.Types.Timing.Micro(data.bounds.max),
-      range: Trace9.Types.Timing.Micro(data.bounds.range)
+    const bounds = Trace8.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
+      min: Trace8.Types.Timing.Micro(data.bounds.min),
+      max: Trace8.Types.Timing.Micro(data.bounds.max),
+      range: Trace8.Types.Timing.Micro(data.bounds.range)
     });
     this.#dataProvider.setWindowTimes(bounds.min, bounds.max);
     this.#flameChart.setWindowTimes(bounds.min, bounds.max);
@@ -6762,11 +6643,11 @@ var NetworkTrackWidget = class extends HTMLElement {
     if (!this.#parsedTrace) {
       return;
     }
-    const output = html15`
+    const output = html13`
         <style>${networkTrackWidget_css_default}</style>
         ${this.#flameChartContainer}
       `;
-    Lit15.render(output, this.#shadow, { host: this });
+    Lit13.render(output, this.#shadow, { host: this });
     if (this.#flameChart) {
       this.#flameChart.update();
     }
@@ -6785,12 +6666,12 @@ if (!customElements.get("devtools-performance-agent-network-track")) {
 // gen/front_end/panels/timeline/components/RelatedInsightChips.js
 var RelatedInsightChips_exports = {};
 __export(RelatedInsightChips_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   RelatedInsightChips: () => RelatedInsightChips
 });
 import * as i18n31 from "./../../../core/i18n/i18n.js";
-import * as UI13 from "./../../../ui/legacy/legacy.js";
-import * as Lit16 from "./../../../ui/lit/lit.js";
+import * as UI12 from "./../../../ui/legacy/legacy.js";
+import * as Lit14 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/relatedInsightChips.css.js
 var relatedInsightChips_css_default = `/*
@@ -6875,7 +6756,7 @@ var relatedInsightChips_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./relatedInsightChips.css")} */`;
 
 // gen/front_end/panels/timeline/components/RelatedInsightChips.js
-var { html: html16, render: render15 } = Lit16;
+var { html: html14, render: render14 } = Lit14;
 var UIStrings16 = {
   /**
    * @description prefix shown next to related insight chips
@@ -6889,11 +6770,11 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("panels/timeline/components/RelatedInsightChips.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var RelatedInsightChips = class extends UI13.Widget.Widget {
+var RelatedInsightChips = class extends UI12.Widget.Widget {
   #view;
   #activeEvent = null;
   #eventToInsightsMap = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW9) {
+  constructor(element, view = DEFAULT_VIEW8) {
     super(element);
     this.#view = view;
   }
@@ -6919,15 +6800,15 @@ var RelatedInsightChips = class extends UI13.Widget.Widget {
     this.#view(input, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW9 = (input, _output, target) => {
+var DEFAULT_VIEW8 = (input, _output, target) => {
   const { activeEvent, eventToInsightsMap } = input;
   const relatedInsights = activeEvent ? eventToInsightsMap.get(activeEvent) ?? [] : [];
   if (!activeEvent || eventToInsightsMap.size === 0 || relatedInsights.length === 0) {
-    render15(Lit16.nothing, target);
+    render14(Lit14.nothing, target);
     return;
   }
   const insightMessages = relatedInsights.flatMap((insight) => {
-    return insight.messages.map((message) => html16`
+    return insight.messages.map((message) => html14`
           <li class="insight-message-box">
             <button type="button" @click=${(event) => {
       event.preventDefault();
@@ -6942,7 +6823,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
         `);
   });
   const insightChips = relatedInsights.flatMap((insight) => {
-    return [html16`
+    return [html14`
           <li class="insight-chip">
             <button type="button" @click=${(event) => {
       event.preventDefault();
@@ -6954,7 +6835,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
           </li>
         `];
   });
-  render15(html16`<style>${relatedInsightChips_css_default}</style>
+  render14(html14`<style>${relatedInsightChips_css_default}</style>
         <ul>${insightMessages}</ul>
         <ul>${insightChips}</ul>`, target);
 };
@@ -6971,41 +6852,24 @@ __export(Sidebar_exports, {
   SidebarWidget: () => SidebarWidget
 });
 import * as Common6 from "./../../../core/common/common.js";
-import * as UI17 from "./../../../ui/legacy/legacy.js";
-
-// gen/front_end/panels/timeline/components/insights/SidebarInsight.js
-var InsightActivated = class _InsightActivated extends Event {
-  model;
-  insightSetKey;
-  static eventName = "insightactivated";
-  constructor(model, insightSetKey) {
-    super(_InsightActivated.eventName, { bubbles: true, composed: true });
-    this.model = model;
-    this.insightSetKey = insightSetKey;
-  }
-};
-var InsightDeactivated = class _InsightDeactivated extends Event {
-  static eventName = "insightdeactivated";
-  constructor() {
-    super(_InsightDeactivated.eventName, { bubbles: true, composed: true });
-  }
-};
+import * as UI16 from "./../../../ui/legacy/legacy.js";
+import * as Insights9 from "./insights/insights.js";
 
 // gen/front_end/panels/timeline/components/SidebarAnnotationsTab.js
 var SidebarAnnotationsTab_exports = {};
 __export(SidebarAnnotationsTab_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW10,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   SidebarAnnotationsTab: () => SidebarAnnotationsTab
 });
 import "./../../../ui/components/settings/settings.js";
 import * as Common5 from "./../../../core/common/common.js";
 import * as i18n33 from "./../../../core/i18n/i18n.js";
 import * as Platform7 from "./../../../core/platform/platform.js";
-import * as Trace10 from "./../../../models/trace/trace.js";
+import * as Trace9 from "./../../../models/trace/trace.js";
 import * as TraceBounds3 from "./../../../services/trace_bounds/trace_bounds.js";
-import * as UI14 from "./../../../ui/legacy/legacy.js";
+import * as UI13 from "./../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../../ui/legacy/theme_support/theme_support.js";
-import * as Lit17 from "./../../../ui/lit/lit.js";
+import * as Lit15 from "./../../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/sidebarAnnotationsTab.css.js
@@ -7120,7 +6984,7 @@ var sidebarAnnotationsTab_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./sidebarAnnotationsTab.css")} */`;
 
 // gen/front_end/panels/timeline/components/SidebarAnnotationsTab.js
-var { html: html17, render: render16 } = Lit17;
+var { html: html15, render: render15 } = Lit15;
 var diagramImageUrl = new URL("../../../Images/performance-panel-diagram.svg", import.meta.url).toString();
 var entryLabelImageUrl = new URL("../../../Images/performance-panel-entry-label.svg", import.meta.url).toString();
 var timeRangeImageUrl = new URL("../../../Images/performance-panel-time-range.svg", import.meta.url).toString();
@@ -7188,14 +7052,14 @@ var UIStrings17 = {
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/timeline/components/SidebarAnnotationsTab.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var SidebarAnnotationsTab = class extends UI14.Widget.Widget {
+var SidebarAnnotationsTab = class extends UI13.Widget.Widget {
   #annotations = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
   #annotationEntryToColorMap = /* @__PURE__ */ new Map();
   #annotationsHiddenSetting;
   #view;
-  constructor(view = DEFAULT_VIEW10) {
+  constructor(view = DEFAULT_VIEW9) {
     super();
     this.#view = view;
     this.#annotationsHiddenSetting = Common5.Settings.Settings.instance().moduleSetting("annotations-hidden");
@@ -7279,7 +7143,7 @@ var SidebarAnnotationsTab = class extends UI14.Widget.Widget {
 function detailedAriaDescriptionForAnnotation(annotation) {
   switch (annotation.type) {
     case "ENTRY_LABEL": {
-      const name = Trace10.Name.forEntry(annotation.entry);
+      const name = Trace9.Name.forEntry(annotation.entry);
       return i18nString16(UIStrings17.entryLabelDescriptionLabel, {
         PH1: name,
         PH2: annotation.label
@@ -7297,8 +7161,8 @@ function detailedAriaDescriptionForAnnotation(annotation) {
       if (!annotation.entryTo) {
         return "";
       }
-      const nameFrom = Trace10.Name.forEntry(annotation.entryFrom);
-      const nameTo = Trace10.Name.forEntry(annotation.entryTo);
+      const nameFrom = Trace9.Name.forEntry(annotation.entryFrom);
+      const nameTo = Trace9.Name.forEntry(annotation.entryTo);
       return i18nString16(UIStrings17.entryLinkDescriptionLabel, {
         PH1: nameFrom,
         PH2: nameTo
@@ -7321,40 +7185,40 @@ function findTextColorForContrast(bgColorText) {
 function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
   switch (annotation.type) {
     case "ENTRY_LABEL": {
-      const entryName = Trace10.Name.forEntry(annotation.entry);
+      const entryName = Trace9.Name.forEntry(annotation.entry);
       const backgroundColor = annotationEntryToColorMap.get(annotation.entry) ?? "";
       const color = findTextColorForContrast(backgroundColor);
       const styleForAnnotationIdentifier = {
         backgroundColor,
         color
       };
-      return html17`
-            <span class="annotation-identifier" style=${Lit17.Directives.styleMap(styleForAnnotationIdentifier)}>
+      return html15`
+            <span class="annotation-identifier" style=${Lit15.Directives.styleMap(styleForAnnotationIdentifier)}>
               ${entryName}
             </span>
       `;
     }
     case "TIME_RANGE": {
       const minTraceBoundsMilli = TraceBounds3.TraceBounds.BoundsManager.instance().state()?.milli.entireTraceBounds.min ?? 0;
-      const timeRangeStartInMs = Math.round(Trace10.Helpers.Timing.microToMilli(annotation.bounds.min) - minTraceBoundsMilli);
-      const timeRangeEndInMs = Math.round(Trace10.Helpers.Timing.microToMilli(annotation.bounds.max) - minTraceBoundsMilli);
-      return html17`
+      const timeRangeStartInMs = Math.round(Trace9.Helpers.Timing.microToMilli(annotation.bounds.min) - minTraceBoundsMilli);
+      const timeRangeEndInMs = Math.round(Trace9.Helpers.Timing.microToMilli(annotation.bounds.max) - minTraceBoundsMilli);
+      return html15`
             <span class="annotation-identifier time-range">
               ${timeRangeStartInMs} - ${timeRangeEndInMs} ms
             </span>
       `;
     }
     case "ENTRIES_LINK": {
-      const entryFromName = Trace10.Name.forEntry(annotation.entryFrom);
+      const entryFromName = Trace9.Name.forEntry(annotation.entryFrom);
       const fromBackgroundColor = annotationEntryToColorMap.get(annotation.entryFrom) ?? "";
       const fromTextColor = findTextColorForContrast(fromBackgroundColor);
       const styleForFromAnnotationIdentifier = {
         backgroundColor: fromBackgroundColor,
         color: fromTextColor
       };
-      return html17`
+      return html15`
         <div class="entries-link">
-          <span class="annotation-identifier" style=${Lit17.Directives.styleMap(styleForFromAnnotationIdentifier)}>
+          <span class="annotation-identifier" style=${Lit15.Directives.styleMap(styleForFromAnnotationIdentifier)}>
             ${entryFromName}
           </span>
           <devtools-icon name="arrow-forward" class="inline-icon large">
@@ -7369,19 +7233,19 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
 }
 function renderEntryToIdentifier(annotation, annotationEntryToColorMap) {
   if (annotation.entryTo) {
-    const entryToName = Trace10.Name.forEntry(annotation.entryTo);
+    const entryToName = Trace9.Name.forEntry(annotation.entryTo);
     const toBackgroundColor = annotationEntryToColorMap.get(annotation.entryTo) ?? "";
     const toTextColor = findTextColorForContrast(toBackgroundColor);
     const styleForToAnnotationIdentifier = {
       backgroundColor: toBackgroundColor,
       color: toTextColor
     };
-    return html17`
-      <span class="annotation-identifier" style=${Lit17.Directives.styleMap(styleForToAnnotationIdentifier)}>
+    return html15`
+      <span class="annotation-identifier" style=${Lit15.Directives.styleMap(styleForToAnnotationIdentifier)}>
         ${entryToName}
       </span>`;
   }
-  return Lit17.nothing;
+  return Lit15.nothing;
 }
 function jslogForAnnotation(annotation) {
   switch (annotation.type) {
@@ -7396,7 +7260,7 @@ function jslogForAnnotation(annotation) {
   }
 }
 function renderTutorial() {
-  return html17`<div class="annotation-tutorial-container">
+  return html15`<div class="annotation-tutorial-container">
     ${i18nString16(UIStrings17.annotationGetStarted)}
       <div class="tutorial-card">
         <div class="tutorial-image"><img src=${entryLabelImageUrl}></div>
@@ -7420,14 +7284,14 @@ function renderTutorial() {
       </div>
     </div>`;
 }
-var DEFAULT_VIEW10 = (input, _output, target) => {
-  render16(html17`
+var DEFAULT_VIEW9 = (input, _output, target) => {
+  render15(html15`
       <style>${sidebarAnnotationsTab_css_default}</style>
       <span class="annotations">
-        ${input.annotations.length === 0 ? renderTutorial() : html17`
+        ${input.annotations.length === 0 ? renderTutorial() : html15`
             ${input.annotations.map((annotation) => {
     const label = detailedAriaDescriptionForAnnotation(annotation);
-    return html17`
+    return html15`
                 <div class="annotation-container"
                   @click=${() => input.onAnnotationClick(annotation)}
                   @mouseover=${() => annotation.type === "ENTRY_LABEL" ? input.onAnnotationHover(annotation) : null}
@@ -7461,13 +7325,13 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
 // gen/front_end/panels/timeline/components/SidebarInsightsTab.js
 var SidebarInsightsTab_exports = {};
 __export(SidebarInsightsTab_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW12,
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   SidebarInsightsTab: () => SidebarInsightsTab
 });
-import * as Trace12 from "./../../../models/trace/trace.js";
-import * as Buttons9 from "./../../../ui/components/buttons/buttons.js";
-import * as UI16 from "./../../../ui/legacy/legacy.js";
-import * as Lit19 from "./../../../ui/lit/lit.js";
+import * as Trace11 from "./../../../models/trace/trace.js";
+import * as Buttons8 from "./../../../ui/components/buttons/buttons.js";
+import * as UI15 from "./../../../ui/legacy/legacy.js";
+import * as Lit17 from "./../../../ui/lit/lit.js";
 import * as Utils from "./../utils/utils.js";
 import * as Insights8 from "./insights/insights.js";
 
@@ -7557,9 +7421,9 @@ __export(SidebarSingleInsightSet_exports, {
 });
 import * as i18n35 from "./../../../core/i18n/i18n.js";
 import * as AIAssistance from "./../../../models/ai_assistance/ai_assistance.js";
-import * as Trace11 from "./../../../models/trace/trace.js";
-import * as UI15 from "./../../../ui/legacy/legacy.js";
-import * as Lit18 from "./../../../ui/lit/lit.js";
+import * as Trace10 from "./../../../models/trace/trace.js";
+import * as UI14 from "./../../../ui/legacy/legacy.js";
+import * as Lit16 from "./../../../ui/lit/lit.js";
 import * as Insights6 from "./insights/insights.js";
 
 // gen/front_end/panels/timeline/components/sidebarSingleInsightSet.css.js
@@ -7585,7 +7449,7 @@ var sidebarSingleInsightSet_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./sidebarSingleInsightSet.css")} */`;
 
 // gen/front_end/panels/timeline/components/SidebarSingleInsightSet.js
-var { html: html18 } = Lit18.StaticHtml;
+var { html: html16 } = Lit16.StaticHtml;
 var INSIGHT_NAME_TO_COMPONENT = {
   Cache: Insights6.Cache.Cache,
   CharacterSet: Insights6.CharacterSet.CharacterSet,
@@ -7616,31 +7480,31 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/timeline/components/SidebarSingleInsightSet.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var { widget: widget5 } = UI15.Widget;
-var DEFAULT_VIEW11 = (input, output, target) => {
+var { widget: widget4 } = UI14.Widget;
+var DEFAULT_VIEW10 = (input, output, target) => {
   const { shownInsights, passedInsights, insightSetKey, parsedTrace, renderInsightComponent } = input;
   function renderMetrics() {
     if (!insightSetKey || !parsedTrace) {
-      return Lit18.nothing;
+      return Lit16.nothing;
     }
-    return html18`${widget5(CWVMetrics, { data: { insightSetKey, parsedTrace } })}`;
+    return html16`${widget4(CWVMetrics, { data: { insightSetKey, parsedTrace } })}`;
   }
   function renderInsights() {
     const shownInsightTemplates = shownInsights.map(renderInsightComponent);
     const passedInsightsTemplates = passedInsights.map(renderInsightComponent);
-    return html18`
+    return html16`
       ${shownInsightTemplates}
-      ${passedInsightsTemplates.length ? html18`
+      ${passedInsightsTemplates.length ? html16`
         <details class="passed-insights-section">
           <summary>${i18nString17(UIStrings18.passedInsights, {
       PH1: passedInsightsTemplates.length
     })}</summary>
           ${passedInsightsTemplates}
         </details>
-      ` : Lit18.nothing}
+      ` : Lit16.nothing}
     `;
   }
-  Lit18.render(html18`
+  Lit16.render(html16`
     <style>${sidebarSingleInsightSet_css_default}</style>
     <div class="navigation">
       ${renderMetrics()}
@@ -7648,17 +7512,17 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     </div>
   `, target);
 };
-var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget.Widget {
+var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI14.Widget.Widget {
   #view;
   #isActiveInsightHighlighted = false;
   #activeHighlightTimeout = -1;
   #data = {
     insightSetKey: null,
-    activeCategory: Trace11.Insights.Types.InsightCategory.ALL,
+    activeCategory: Trace10.Insights.Types.InsightCategory.ALL,
     activeInsight: null,
     parsedTrace: null
   };
-  constructor(element, view = DEFAULT_VIEW11) {
+  constructor(element, view = DEFAULT_VIEW10) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -7693,7 +7557,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
     const shownInsights = [];
     const passedInsights = [];
     for (const [insightName, model] of Object.entries(insightSet.model)) {
-      if (!model || !shouldRenderForCategory({ activeCategory, insightCategory: model.category })) {
+      if (!model || !Insights6.Helpers.shouldRenderForCategory({ activeCategory, insightCategory: model.category })) {
         continue;
       }
       if (model.state === "pass") {
@@ -7706,7 +7570,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
   }
   #renderInsightComponent(insightSet, insightData, fieldMetrics) {
     if (!this.#data.parsedTrace) {
-      return Lit18.nothing;
+      return Lit16.nothing;
     }
     const { insightName, model } = insightData;
     const activeInsight = this.#data.activeInsight;
@@ -7727,12 +7591,12 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
       fieldMetrics
     };
     const items = [{ componentClass, widgetConfig }];
-    const output = Lit18.Directives.repeat(items, (data) => data.widgetConfig.model, (data) => {
-      return html18`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
-        ${widget5(data.componentClass, data.widgetConfig)}
+    const output = Lit16.Directives.repeat(items, (data) => data.widgetConfig.model, (data) => {
+      return html16`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
+        ${widget4(data.componentClass, data.widgetConfig)}
       ></devtools-widget>`;
     });
-    return html18`${output}`;
+    return html16`${output}`;
   }
   performUpdate() {
     const { parsedTrace, insightSetKey } = this.#data;
@@ -7757,16 +7621,16 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
 };
 
 // gen/front_end/panels/timeline/components/SidebarInsightsTab.js
-var { html: html19 } = Lit19;
-var { widget: widget6 } = UI16.Widget;
-var DEFAULT_VIEW12 = (input, output, target) => {
+var { html: html17 } = Lit17;
+var { widget: widget5 } = UI15.Widget;
+var DEFAULT_VIEW11 = (input, output, target) => {
   const { parsedTrace, labels, activeInsightSet, activeInsight, selectedCategory, onInsightSetToggled, onInsightSetHovered, onInsightSetUnhovered, onZoomClick } = input;
   const insights = parsedTrace.insights;
   if (!insights) {
     return;
   }
   const hasMultipleInsightSets = insights.size > 1;
-  Lit19.render(html19`
+  Lit17.render(html17`
     <style>${sidebarInsightsTab_css_default}</style>
     <div class="insight-sets-wrapper">
       ${[...insights.values()].map((insightSet, index) => {
@@ -7778,14 +7642,14 @@ var DEFAULT_VIEW12 = (input, output, target) => {
       parsedTrace
     };
     const selected = insightSet === activeInsightSet;
-    const contents = html19`
+    const contents = html17`
           <devtools-widget
             data-insight-set-key=${id}
-            ${widget6(SidebarSingleInsightSet, { data })}
+            ${widget5(SidebarSingleInsightSet, { data })}
           ></devtools-widget>
         `;
     if (hasMultipleInsightSets) {
-      return html19`<details ?open=${selected}>
+      return html17`<details ?open=${selected}>
             <summary
               @click=${() => onInsightSetToggled(insightSet)}
               @mouseenter=${() => onInsightSetHovered(insightSet)}
@@ -7811,11 +7675,11 @@ var DEFAULT_VIEW12 = (input, output, target) => {
   `, target);
 };
 function renderZoomButton(insightSetToggled) {
-  const classes = Lit19.Directives.classMap({
+  const classes = Lit17.Directives.classMap({
     "zoom-icon": true,
     active: insightSetToggled
   });
-  return html19`
+  return html17`
   <div class=${classes}>
       <devtools-button .data=${{
     variant: "icon",
@@ -7825,11 +7689,11 @@ function renderZoomButton(insightSetToggled) {
     ></devtools-button></div>`;
 }
 function renderDropdownIcon(insightSetToggled) {
-  const containerClasses = Lit19.Directives.classMap({
+  const containerClasses = Lit17.Directives.classMap({
     "dropdown-icon": true,
     active: insightSetToggled
   });
-  return html19`
+  return html17`
     <div class=${containerClasses}>
       <devtools-button .data=${{
     variant: "icon",
@@ -7839,7 +7703,7 @@ function renderDropdownIcon(insightSetToggled) {
     ></devtools-button></div>
   `;
 }
-var SidebarInsightsTab = class _SidebarInsightsTab extends UI16.Widget.Widget {
+var SidebarInsightsTab = class _SidebarInsightsTab extends UI15.Widget.Widget {
   static createWidgetElement() {
     const widgetElement = document.createElement("devtools-widget");
     new _SidebarInsightsTab(widgetElement);
@@ -7848,7 +7712,7 @@ var SidebarInsightsTab = class _SidebarInsightsTab extends UI16.Widget.Widget {
   #view;
   #parsedTrace = null;
   #activeInsight = null;
-  #selectedCategory = Trace12.Insights.Types.InsightCategory.ALL;
+  #selectedCategory = Trace11.Insights.Types.InsightCategory.ALL;
   /**
    * When a trace has sets of insights, we show an accordion with each
    * set within. A set can be specific to a single navigation, or include the
@@ -7856,7 +7720,7 @@ var SidebarInsightsTab = class _SidebarInsightsTab extends UI16.Widget.Widget {
    * You can only have one of these open at any time.
    */
   #selectedInsightSet = null;
-  constructor(element, view = DEFAULT_VIEW12) {
+  constructor(element, view = DEFAULT_VIEW11) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -7971,8 +7835,8 @@ var AnnotationHoverOut = class _AnnotationHoverOut extends Event {
 var DEFAULT_SIDEBAR_TAB = "insights";
 var DEFAULT_SIDEBAR_WIDTH_PX = 240;
 var MIN_SIDEBAR_WIDTH_PX = 170;
-var SidebarWidget = class extends UI17.Widget.VBox {
-  #tabbedPane = new UI17.TabbedPane.TabbedPane();
+var SidebarWidget = class extends UI16.Widget.VBox {
+  #tabbedPane = new UI16.TabbedPane.TabbedPane();
   #insightsView = new InsightsView();
   #annotationsView = new AnnotationsView();
   /**
@@ -8005,7 +7869,7 @@ var SidebarWidget = class extends UI17.Widget.VBox {
     this.#tabbedPane.show(this.element);
     this.#updateAnnotationsCountBadge();
     if (this.#insightToRestoreOnOpen) {
-      this.element.dispatchEvent(new InsightActivated(this.#insightToRestoreOnOpen.model, this.#insightToRestoreOnOpen.insightSetKey));
+      this.element.dispatchEvent(new Insights9.SidebarInsight.InsightActivated(this.#insightToRestoreOnOpen.model, this.#insightToRestoreOnOpen.insightSetKey));
       this.#insightToRestoreOnOpen = null;
     }
     if (this.#tabbedPane.selectedTabId === "insights" && this.#tabbedPane.tabIsDisabled(
@@ -8023,7 +7887,7 @@ var SidebarWidget = class extends UI17.Widget.VBox {
     const currentlyActiveInsight = this.#insightsView.getActiveInsight();
     this.#insightToRestoreOnOpen = currentlyActiveInsight;
     if (currentlyActiveInsight) {
-      this.element.dispatchEvent(new InsightDeactivated());
+      this.element.dispatchEvent(new Insights9.SidebarInsight.InsightDeactivated());
     }
   }
   setAnnotations(updatedAnnotations, annotationEntryToColorMap) {
@@ -8067,7 +7931,7 @@ var SidebarWidget = class extends UI17.Widget.VBox {
     return this.#hasOpenedOnce.get();
   }
 };
-var InsightsView = class extends UI17.Widget.VBox {
+var InsightsView = class extends UI16.Widget.VBox {
   #component = SidebarInsightsTab.createWidgetElement();
   constructor() {
     super();
@@ -8075,21 +7939,21 @@ var InsightsView = class extends UI17.Widget.VBox {
     this.#getWidget().show(this.element);
   }
   #getWidget() {
-    return UI17.Widget.Widget.get(this.#component);
+    return UI16.Widget.Widget.get(this.#component);
   }
   setParsedTrace(parsedTrace) {
-    const widget8 = this.#getWidget();
-    widget8.parsedTrace = parsedTrace;
+    const widget7 = this.#getWidget();
+    widget7.parsedTrace = parsedTrace;
   }
   getActiveInsight() {
     return this.#getWidget().activeInsight;
   }
   setActiveInsight(active, opts) {
-    const widget8 = this.#getWidget();
-    widget8.activeInsight = active;
+    const widget7 = this.#getWidget();
+    widget7.activeInsight = active;
     if (opts.highlight && active) {
-      void widget8.updateComplete.then(() => {
-        void widget8.highlightActiveInsight();
+      void widget7.updateComplete.then(() => {
+        void widget7.highlightActiveInsight();
       });
     }
   }
@@ -8097,7 +7961,7 @@ var InsightsView = class extends UI17.Widget.VBox {
     this.#getWidget().setActiveInsightSet(insightSetKey);
   }
 };
-var AnnotationsView = class extends UI17.Widget.VBox {
+var AnnotationsView = class extends UI16.Widget.VBox {
   #component = new SidebarAnnotationsTab();
   constructor() {
     super();
@@ -8126,9 +7990,9 @@ __export(TimelineRangeSummaryView_exports, {
   statsForTimeRange: () => statsForTimeRange
 });
 import * as Platform9 from "./../../../core/platform/platform.js";
-import * as Trace13 from "./../../../models/trace/trace.js";
-import * as UI19 from "./../../../ui/legacy/legacy.js";
-import * as Lit21 from "./../../../ui/lit/lit.js";
+import * as Trace12 from "./../../../models/trace/trace.js";
+import * as UI18 from "./../../../ui/legacy/legacy.js";
+import * as Lit19 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/timelineRangeSummaryView.css.js
 var timelineRangeSummaryView_css_default = `/*
@@ -8184,9 +8048,9 @@ __export(TimelineSummary_exports, {
 });
 import * as i18n37 from "./../../../core/i18n/i18n.js";
 import * as Platform8 from "./../../../core/platform/platform.js";
-import * as Buttons10 from "./../../../ui/components/buttons/buttons.js";
-import * as UI18 from "./../../../ui/legacy/legacy.js";
-import * as Lit20 from "./../../../ui/lit/lit.js";
+import * as Buttons9 from "./../../../ui/components/buttons/buttons.js";
+import * as UI17 from "./../../../ui/legacy/legacy.js";
+import * as Lit18 from "./../../../ui/lit/lit.js";
 import * as VisualLogging10 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/timelineSummary.css.js
@@ -8270,7 +8134,7 @@ var timelineSummary_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./timelineSummary.css")} */`;
 
 // gen/front_end/panels/timeline/components/TimelineSummary.js
-var { render: render19, html: html20 } = Lit20;
+var { render: render18, html: html18 } = Lit18;
 var UIStrings19 = {
   /**
    * @description Text for total
@@ -8286,19 +8150,19 @@ var UIStrings19 = {
 var str_19 = i18n37.i18n.registerUIStrings("panels/timeline/components/TimelineSummary.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
-  const summaryClasses = Lit20.Directives.classMap({
+  const summaryClasses = Lit18.Directives.classMap({
     "timeline-summary": true,
     "is-in-ai-widget": Boolean(input.isInAIWidget)
   });
-  render19(html20`
+  render18(html18`
         <style>${timelineSummary_css_default}</style>
-        <style>@scope to (devtools-widget > *) { ${UI18.inspectorCommonStyles} }</style>
-        <style>@scope to (devtools-widget > *) { ${Buttons10.textButtonStyles} }</style>
+        <style>@scope to (devtools-widget > *) { ${UI17.inspectorCommonStyles} }</style>
+        <style>@scope to (devtools-widget > *) { ${Buttons9.textButtonStyles} }</style>
         <div class=${summaryClasses} jslog=${VisualLogging10.section("timeline-summary")}>
             <div class="summary-range">${i18nString18(UIStrings19.rangeSS, { PH1: i18n37.TimeUtilities.millisToString(input.rangeStart), PH2: i18n37.TimeUtilities.millisToString(input.rangeEnd) })}</div>
             <div class="category-summary">
                 ${input.categories.map((category) => {
-    return html20`
+    return html18`
                         <div class="category-row" jslog=${VisualLogging10.item(category.name || Platform8.StringUtilities.toKebabCase(category.title))}>
                         <div class="category-swatch" style="background-color: ${category.color};"></div>
                         <div class="category-name">${category.title}</div>
@@ -8326,7 +8190,7 @@ var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
 
       </div>`, target);
 };
-var CategorySummary = class extends UI18.Widget.Widget {
+var CategorySummary = class extends UI17.Widget.Widget {
   #view;
   #rangeStart = 0;
   #rangeEnd = 0;
@@ -8359,16 +8223,16 @@ var CategorySummary = class extends UI18.Widget.Widget {
 };
 
 // gen/front_end/panels/timeline/components/TimelineRangeSummaryView.js
-var { render: render20, html: html21 } = Lit21;
-var { widget: widget7 } = UI19.Widget;
+var { render: render19, html: html19 } = Lit19;
+var { widget: widget6 } = UI18.Widget;
 var categoryBreakdownCacheSymbol = Symbol("categoryBreakdownCache");
 var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
   const { parsedTrace, events, startTime, endTime } = input;
   if (!events || !parsedTrace) {
-    render20(html21`<div class="timeline-details-range-summary"></div>`, target);
+    render19(html19`<div class="timeline-details-range-summary"></div>`, target);
     return;
   }
-  const minBoundsMilli = Trace13.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+  const minBoundsMilli = Trace12.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
   const aggregatedStats = statsForTimeRange(events, startTime, endTime);
   const startOffset = startTime - minBoundsMilli;
   const endOffset = endTime - minBoundsMilli;
@@ -8377,9 +8241,9 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     total += aggregatedStats[categoryName];
   }
   const categories = [];
-  for (const categoryName in Trace13.Styles.getCategoryStyles()) {
-    const category = Trace13.Styles.getCategoryStyles()[categoryName];
-    if (category.name === Trace13.Styles.EventCategory.IDLE) {
+  for (const categoryName in Trace12.Styles.getCategoryStyles()) {
+    const category = Trace12.Styles.getCategoryStyles()[categoryName];
+    if (category.name === Trace12.Styles.EventCategory.IDLE) {
       continue;
     }
     const value2 = aggregatedStats[category.name];
@@ -8389,11 +8253,11 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     categories.push({ value: value2, color: category.getCSSValue(), title: category.title, name: category.name });
   }
   categories.sort((a, b) => b.value - a.value);
-  render20(html21`
+  render19(html19`
     <style>${timelineRangeSummaryView_css_default}</style>
     <div class="timeline-details-range-summary">
       <devtools-widget class="timeline-summary"
-        ${widget7(CategorySummary, {
+        ${widget6(CategorySummary, {
     data: {
       rangeStart: startOffset,
       rangeEnd: endOffset,
@@ -8403,11 +8267,11 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     }
   })}
       ></devtools-widget>
-      ${input.thirdPartyTreeTemplate ?? Lit21.nothing}
+      ${input.thirdPartyTreeTemplate ?? Lit19.nothing}
     </div>
   `, target);
 };
-var TimelineRangeSummaryView = class extends UI19.Widget.Widget {
+var TimelineRangeSummaryView = class extends UI18.Widget.Widget {
   #view;
   #summaryData;
   constructor(element, view = TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW) {
@@ -8471,7 +8335,7 @@ function statsForTimeRange(events, startTime, endTime) {
     const aggregatedStats2 = {};
     const categoryStack = [];
     let lastTime = 0;
-    Trace13.Helpers.Trace.forEachEvent(events2, {
+    Trace12.Helpers.Trace.forEachEvent(events2, {
       onStartEvent,
       onEndEvent
     });
@@ -8498,8 +8362,8 @@ function statsForTimeRange(events, startTime, endTime) {
       }
     }
     function onStartEvent(e) {
-      const { startTime: startTime2 } = Trace13.Helpers.Timing.eventTimingsMilliSeconds(e);
-      const category = Trace13.Styles.getEventStyle(e.name)?.category.name || Trace13.Styles.getCategoryStyles().other.name;
+      const { startTime: startTime2 } = Trace12.Helpers.Timing.eventTimingsMilliSeconds(e);
+      const category = Trace12.Styles.getEventStyle(e.name)?.category.name || Trace12.Styles.getCategoryStyles().other.name;
       const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
       if (category !== parentCategory) {
         categoryChange(parentCategory || null, category, startTime2);
@@ -8507,7 +8371,7 @@ function statsForTimeRange(events, startTime, endTime) {
       categoryStack.push(category);
     }
     function onEndEvent(e) {
-      const { endTime: endTime2 } = Trace13.Helpers.Timing.eventTimingsMilliSeconds(e);
+      const { endTime: endTime2 } = Trace12.Helpers.Timing.eventTimingsMilliSeconds(e);
       const category = categoryStack.pop();
       const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
       if (category !== parentCategory) {

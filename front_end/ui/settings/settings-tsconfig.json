@@ -37,6 +37,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/ui/settings/InspectorMainSettings.ts",
     "../../../../../../front_end/ui/settings/SettingUIRegistration.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

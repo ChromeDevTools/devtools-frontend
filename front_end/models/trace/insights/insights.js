@@ -658,7 +658,7 @@ var UIStrings2 = {
   /**
    * @description Text to tell the user that the charset is NOT declared in the Content-Type HTTP response header.
    */
-  failedHttpHeader: "Does not declare charset in HTTP header",
+  failedHttpHeader: "Doesn\u2019t declare charset in HTTP header",
   /**
    * @description Text to tell the user that a meta charset tag was found in the first 1024 bytes of the HTML.
    */
@@ -670,11 +670,11 @@ var UIStrings2 = {
   /**
    * @description Text to tell the user that no meta charset tag was found in the HTML.
    */
-  failedMetaCharsetMissing: "Does not declare charset using a meta tag",
+  failedMetaCharsetMissing: "Doesn\u2019t declare charset using a meta tag",
   /**
    * @description Text to tell the user that trace data did not include the Blink signal for meta charset.
    */
-  failedMetaCharsetUnknown: "Could not determine meta charset declaration from trace"
+  failedMetaCharsetUnknown: "Couldn\u2019t determine meta charset declaration from trace"
 };
 var str_2 = i18n3.i18n.registerUIStrings("models/trace/insights/CharacterSet.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -783,7 +783,9 @@ import * as Handlers from "./../handlers/handlers.js";
 import * as Helpers3 from "./../helpers/helpers.js";
 import * as Types2 from "./../types/types.js";
 var UIStrings3 = {
-  /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
+  /**
+   * @description Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons").
+   */
   title: "Layout shift culprits",
   /**
    * @description Description of a DevTools insight that identifies the reasons that elements shift on the page.
@@ -828,7 +830,7 @@ var UIStrings3 = {
    */
   noLayoutShifts: "No layout shifts",
   /**
-   * @description Text status when there no layout shifts culprits/root causes were found.
+   * @description Text status when no layout shift culprits or root causes were found.
    */
   noCulprits: "Could not detect any layout shift culprits"
 };
@@ -1473,7 +1475,7 @@ var UIStrings5 = {
    */
   totalElements: "Total elements",
   /**
-   * @description Label for a value representing the maximum depth of the Document Object Model (DOM). "DOM" is a acronym and should not be translated.
+   * @description Label for a value representing the maximum depth of the Document Object Model (DOM). "DOM" is an acronym and should not be translated.
    */
   maxDOMDepth: "DOM depth",
   /**
@@ -1633,9 +1635,13 @@ var UIStrings6 = {
    * @description Description of an insight that identifies multiple copies of the same JavaScript sources, and recommends removing the duplication.
    */
   description: "Remove large, [duplicate JavaScript modules](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) from bundles to reduce unnecessary bytes consumed by network activity.",
-  /** Label for a column in a data table; entries will be the locations of JavaScript or CSS code, e.g. the name of a Javascript package or module. */
+  /**
+   * @description Label for a column in a data table; entries will be the locations of JavaScript or CSS code, e.g. the name of a JavaScript package or module.
+   */
   columnSource: "Source",
-  /** Label for a column in a data table; entries will be the number of wasted bytes due to duplication of a web resource. */
+  /**
+   * @description Label for a column in a data table; entries will be the number of wasted bytes due to duplication of a web resource.
+   */
   columnDuplicatedBytes: "Duplicated bytes",
   /**
    * @description Message shown when no duplicated JavaScript is found.
@@ -1725,15 +1731,21 @@ import * as Platform2 from "./../../../core/platform/platform.js";
 import * as Helpers7 from "./../helpers/helpers.js";
 import * as Types5 from "./../types/types.js";
 var UIStrings7 = {
-  /** Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties. */
+  /**
+   * @description Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties.
+   */
   title: "Font display",
   /**
    * @description Text to tell the user about the font-display CSS feature to help improve a the UX of a page.
    */
   description: "Consider setting [`font-display`](https://developer.chrome.com/docs/performance/insights/font-display) to `swap` or `optional` to ensure text is consistently visible. `swap` can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).",
-  /** Column for a font loaded by the page to render text. */
+  /**
+   * @description Column for a font loaded by the page to render text.
+   */
   fontColumn: "Font",
-  /** Column for the amount of time wasted. */
+  /**
+   * @description Column for the amount of time wasted.
+   */
   wastedTimeColumn: "Wasted time",
   /**
    * @description Message shown when no fonts with suboptimal font-display are found.
@@ -1826,15 +1838,15 @@ var UIStrings8 = {
    */
   description: "A forced reflow occurs when JavaScript queries geometric properties (such as `offsetWidth`) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developer.chrome.com/docs/performance/insights/forced-reflow) and possible mitigations.",
   /**
-   * @description Title of a list to provide related stack trace data
+   * @description Title of a list to provide related stack trace data.
    */
   reflowCallFrames: "Call frames that trigger reflow",
   /**
-   * @description Text to describe the top time-consuming function call
+   * @description Text to describe the top time-consuming function call.
    */
   topTimeConsumingFunctionCall: "Top function call",
   /**
-   * @description Text to describe the total reflow time
+   * @description Text to describe the total reflow time.
    */
   totalReflowTime: "Total reflow time",
   /**
@@ -1842,7 +1854,7 @@ var UIStrings8 = {
    */
   unattributed: "[unattributed]",
   /**
-   * @description Text for the name of anonymous functions
+   * @description Text for the name of anonymous functions.
    */
   anonymous: "(anonymous)"
 };
@@ -1988,7 +2000,7 @@ var UIStrings9 = {
   /**
    * @description Description of an insight that recommends ways to reduce the size of images downloaded and used on the page.
    */
-  description: "Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)",
+  description: "Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery).",
   /**
    * @description Message displayed in a chip explaining that an image file size is large for the # of pixels it has and recommends possible adjustments to improve the image size.
    */
@@ -2017,7 +2029,7 @@ var UIStrings9 = {
    */
   others: "{PH1} others",
   /**
-   * @description Text status indicating that no potential optimizations were found for any image file
+   * @description Text status indicating that no potential optimizations were found for any image file.
    */
   noOptimizableImages: "No optimizable images",
   /**
@@ -2371,7 +2383,7 @@ var UIStrings11 = {
    */
   fieldDuration: "Field p75",
   /**
-   * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
+   * @description Text status indicating that the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
    */
   noLcp: "No LCP detected"
 };
@@ -2513,13 +2525,13 @@ import * as Helpers12 from "./../helpers/helpers.js";
 import * as Types8 from "./../types/types.js";
 var UIStrings12 = {
   /**
-   * @description Title of an insight that provides details about the LCP metric, and the network requests necessary to load it. Details how the LCP request was discoverable - in other words, the path necessary to load it (ex: network requests, JavaScript)
+   * @description Title of an insight that provides details about the LCP metric, and the network requests necessary to load it. Details how the LCP request was discoverable - in other words, the path necessary to load it (ex: network requests, JavaScript).
    */
   title: "LCP request discovery",
   /**
    * @description Description of an insight that provides details about the LCP metric, and the network requests necessary to load it.
    */
-  description: "[Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading",
+  description: "[Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading.",
   /**
    * @description Text to tell the user how long after the earliest discovery time their LCP element loaded.
    * @example {401ms} PH1
@@ -2544,15 +2556,15 @@ var UIStrings12 = {
   /**
    * @description Text to tell the user that LCP resources should avoid using loading=lazy.
    */
-  lazyLoadNotApplied: "LCP resources should not use loading=lazy",
+  lazyLoadNotApplied: "LCP resources shouldn\u2019t use loading=lazy",
   /**
-   * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
+   * @description Text status indicating that the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
    */
   noLcp: "No LCP detected",
   /**
    * @description Text status indicating that the Largest Contentful Paint (LCP) metric was text rather than an image. "LCP" is an acronym and should not be translated.
    */
-  noLcpResource: "No LCP resource detected because the LCP is not an image"
+  noLcpResource: "No LCP resource detected because the LCP isn\u2019t an image"
 };
 var str_12 = i18n23.i18n.registerUIStrings("models/trace/insights/LCPDiscovery.ts", UIStrings12);
 var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
@@ -2702,10 +2714,14 @@ var UIStrings13 = {
   /**
    * @description Description of an insight that identifies polyfills for modern JavaScript features, and recommends their removal.
    */
-  description: "Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren\u2019t necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript)",
-  /** Label for a column in a data table; entries will be the individual JavaScript scripts. */
+  description: "Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren\u2019t necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript).",
+  /**
+   * @description Label for a column in a data table; entries will be the individual JavaScript scripts.
+   */
   columnScript: "Script",
-  /** Label for a column in a data table; entries will be the number of wasted bytes (aka the estimated savings in terms of bytes). */
+  /**
+   * @description Label for a column in a data table; entries will be the number of wasted bytes (aka the estimated savings in terms of bytes).
+   */
   columnWastedBytes: "Wasted bytes",
   /**
    * @description Message shown when no legacy JavaScript is found.
@@ -2800,7 +2816,7 @@ var UIStrings14 = {
    */
   title: "Modern HTTP",
   /**
-   * @description Description of an insight that recommends recommends using HTTP/2 over HTTP/1.1 because of the performance benefits. "HTTP" should not be translated.
+   * @description Description of an insight that recommends using HTTP/2 over HTTP/1.1 because of the performance benefits. "HTTP" should not be translated.
    */
   description: "HTTP/2 and HTTP/3 offer many benefits over HTTP/1.1, such as multiplexing. [Learn more about using modern HTTP](https://developer.chrome.com/docs/performance/insights/modern-http).",
   /**
@@ -2812,9 +2828,9 @@ var UIStrings14 = {
    */
   protocol: "Protocol",
   /**
-   * @description Text explaining that there were not requests that were slowed down by using HTTP/1.1. "HTTP/1.1" should not be translated.
+   * @description Text explaining that there were no requests that were slowed down by using HTTP/1.1. "HTTP/1.1" should not be translated.
    */
-  noOldProtocolRequests: "No requests used HTTP/1.1, or its current use of HTTP/1.1 does not present a significant optimization opportunity. HTTP/1.1 requests are only flagged if six or more static assets originate from the same origin, and they are not served from a local development environment or a third-party source."
+  noOldProtocolRequests: "No requests used HTTP/1.1, or its current use of HTTP/1.1 doesn\u2019t present a significant optimization opportunity. HTTP/1.1 requests are only flagged if six or more static assets originate from the same origin, and they aren\u2019t served from a local development environment or a third-party source."
 };
 var str_14 = i18n27.i18n.registerUIStrings("models/trace/insights/ModernHTTP.ts", UIStrings14);
 var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
@@ -2985,7 +3001,7 @@ var UIStrings15 = {
    */
   warningDescription: "Avoid chaining critical requests by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.",
   /**
-   * @description Text status indicating that there isn't long chaining critical network requests.
+   * @description Text status indicating that there aren’t long chaining critical network requests.
    */
   noNetworkDependencyTree: "No rendering tasks impacted by network dependencies",
   /**
@@ -2993,9 +3009,13 @@ var UIStrings15 = {
    * the browser must download before it can render the page.
    */
   maxCriticalPathLatency: "Max critical path latency:",
-  /** Label for a column in a data table; entries will be the network request */
+  /**
+   * @description Label for a column in a data table; entries will be the network request.
+   */
   columnRequest: "Request",
-  /** Label for a column in a data table; entries will be the time from main document till current network request. */
+  /**
+   * @description Label for a column in a data table; entries will be the time from main document till current network request.
+   */
   columnTime: "Time",
   /**
    * @description Title of the table of the detected preconnect origins.
@@ -3006,9 +3026,9 @@ var UIStrings15 = {
    */
   preconnectOriginsTableDescription: "[preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to.",
   /**
-   * @description Text status indicating that there isn't any preconnected origins.
+   * @description Text status indicating that no origins were preconnected.
    */
-  noPreconnectOrigins: "no origins were preconnected",
+  noPreconnectOrigins: "No origins were preconnected",
   /**
    * @description A warning message that is shown when found more than 4 preconnected links. "preconnect" should not be translated.
    */
@@ -3018,15 +3038,15 @@ var UIStrings15 = {
    */
   unusedWarning: "Unused preconnect. Only use `preconnect` for origins that the page is likely to request.",
   /**
-   * @description A warning message that is shown when the user forget to set the `crossorigin` HTML attribute, or setting it to an incorrect value, on the link is a common mistake when adding preconnect links. "preconnect" should not be translated.
-   * */
+   * @description A warning message that is shown when the user forgets to set the `crossorigin` HTML attribute, or setting it to an incorrect value, on the link is a common mistake when adding preconnect links. "preconnect" should not be translated.
+   */
   crossoriginWarning: "Unused preconnect. Check that the `crossorigin` attribute is used properly.",
   /**
    * @description Label for a column in a data table; entries will be the source of the origin.
    */
   columnSource: "Source",
   /**
-   * @description Text status indicating that there isn't preconnect candidates.
+   * @description Text status indicating that there aren’t preconnect candidates.
    */
   noPreconnectCandidates: "No additional origins are good candidates for preconnecting",
   /**
@@ -3038,7 +3058,7 @@ var UIStrings15 = {
    */
   estSavingTableDescription: "Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4.",
   /**
-   * @description Label for a column in a data table; entries will be the origin of a web resource
+   * @description Label for a column in a data table; entries will be the origin of a web resource.
    */
   columnOrigin: "Origin",
   /**
@@ -3479,7 +3499,7 @@ var UIStrings16 = {
    */
   duration: "Duration",
   /**
-   * @description Text status indicating that no requests blocked the initial render of a navigation
+   * @description Text status indicating that no requests blocked the initial render of a navigation.
    */
   noRenderBlocking: "No render-blocking requests for this navigation"
 };
@@ -3636,78 +3656,26 @@ __export(SlowCSSSelector_exports, {
 });
 import * as i18n33 from "./../../../core/i18n/i18n.js";
 import * as Helpers18 from "./../helpers/helpers.js";
-
-// gen/front_end/models/trace/types/TraceEvents.js
-function isSoftNavigationStart(event) {
-  return event.name === "SoftNavigationStart";
-}
-var markerTypeGuards = [
-  isMarkDOMContent,
-  isMarkLoad,
-  isFirstPaint,
-  isAnyFirstContentfulPaint,
-  isAnyLargestContentfulPaintCandidate,
-  isNavigationStart,
-  isSoftNavigationStart
-];
-var pageLoadEventTypeGuards = [
-  ...markerTypeGuards,
-  isInteractiveTime
-];
-var SelectorTimingsKey;
-(function(SelectorTimingsKey2) {
-  SelectorTimingsKey2["Elapsed"] = "elapsed (us)";
-  SelectorTimingsKey2["RejectPercentage"] = "reject_percentage";
-  SelectorTimingsKey2["FastRejectCount"] = "fast_reject_count";
-  SelectorTimingsKey2["MatchAttempts"] = "match_attempts";
-  SelectorTimingsKey2["MatchCount"] = "match_count";
-  SelectorTimingsKey2["Selector"] = "selector";
-  SelectorTimingsKey2["StyleSheetId"] = "style_sheet_id";
-  SelectorTimingsKey2["InvalidationCount"] = "invalidation_count";
-})(SelectorTimingsKey || (SelectorTimingsKey = {}));
-function isAnyFirstContentfulPaint(event) {
-  return event.name === "firstContentfulPaint" || event.name === "SyntheticSoftFirstContentfulPaint";
-}
-function isAnyLargestContentfulPaintCandidate(event) {
-  return event.name === "largestContentfulPaint::Candidate" || event.name === "largestContentfulPaint::CandidateForSoftNavigation";
-}
-function isMarkLoad(event) {
-  return event.name === "MarkLoad";
-}
-function isFirstPaint(event) {
-  return event.name === "firstPaint";
-}
-function isMarkDOMContent(event) {
-  return event.name === "MarkDOMContent";
-}
-function isInteractiveTime(event) {
-  return event.name === "InteractiveTime";
-}
-function isNavigationStart(event) {
-  return event.name === "navigationStart" && event.args?.data?.documentLoaderURL !== "";
-}
-
-// gen/front_end/models/trace/insights/SlowCSSSelector.js
 import * as Types11 from "./../types/types.js";
 var UIStrings17 = {
   /**
    * @description Title of an insight that provides details about slow CSS selectors.
    */
-  title: "CSS Selector costs",
+  title: "CSS selector costs",
   /**
    * @description Text to describe how to improve the performance of CSS selectors.
    */
-  description: "If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/performance/insights/slow-css-selector) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.",
+  description: "If recalculate style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/performance/insights/slow-css-selector) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.",
   /**
-   * @description Column name for count of elements that the engine attempted to match against a style rule
+   * @description Column name for count of elements that the engine attempted to match against a style rule.
    */
   matchAttempts: "Match attempts",
   /**
-   * @description Column name for count of elements that matched a style rule
+   * @description Column name for count of elements that matched a style rule.
    */
   matchCount: "Match count",
   /**
-   * @description Column name for elapsed time spent computing a style rule
+   * @description Column name for elapsed time spent computing a style rule.
    */
   elapsed: "Elapsed time",
   /**
@@ -3721,13 +3689,13 @@ var UIStrings17 = {
   /**
    * @description Text status indicating that no CSS selector data was found.
    */
-  enableSelectorData: "No CSS selector data was found. CSS selector stats need to be enabled in the performance panel settings.",
+  enableSelectorData: "No CSS selector data was found. CSS selector stats need to be enabled in the Performance panel settings.",
   /**
-   * @description top CSS selector when ranked by elapsed time in ms
+   * @description Top CSS selector when ranked by elapsed time in ms.
    */
   topSelectorElapsedTime: "Top selector elapsed time",
   /**
-   * @description top CSS selector when ranked by match attempt
+   * @description Top CSS selector when ranked by match attempt.
    */
   topSelectorMatchAttempt: "Top selector match attempt"
 };
@@ -3744,13 +3712,13 @@ function aggregateSelectorStats(data, context) {
       continue;
     }
     for (const timing of value.timings) {
-      const key = timing[SelectorTimingsKey.Selector] + "_" + timing[SelectorTimingsKey.StyleSheetId];
+      const key = timing[Types11.Events.SelectorTimingsKey.Selector] + "_" + timing[Types11.Events.SelectorTimingsKey.StyleSheetId];
       const findTiming = selectorMap.get(key);
       if (findTiming !== void 0) {
-        findTiming[SelectorTimingsKey.Elapsed] += timing[SelectorTimingsKey.Elapsed];
-        findTiming[SelectorTimingsKey.FastRejectCount] += timing[SelectorTimingsKey.FastRejectCount];
-        findTiming[SelectorTimingsKey.MatchAttempts] += timing[SelectorTimingsKey.MatchAttempts];
-        findTiming[SelectorTimingsKey.MatchCount] += timing[SelectorTimingsKey.MatchCount];
+        findTiming[Types11.Events.SelectorTimingsKey.Elapsed] += timing[Types11.Events.SelectorTimingsKey.Elapsed];
+        findTiming[Types11.Events.SelectorTimingsKey.FastRejectCount] += timing[Types11.Events.SelectorTimingsKey.FastRejectCount];
+        findTiming[Types11.Events.SelectorTimingsKey.MatchAttempts] += timing[Types11.Events.SelectorTimingsKey.MatchAttempts];
+        findTiming[Types11.Events.SelectorTimingsKey.MatchCount] += timing[Types11.Events.SelectorTimingsKey.MatchCount];
       } else {
         selectorMap.set(key, { ...timing });
       }
@@ -3783,21 +3751,21 @@ function generateInsight17(data, context) {
   let totalMatchAttempts = 0;
   let totalMatchCount = 0;
   selectorTimings.map((timing) => {
-    totalElapsedUs += timing[SelectorTimingsKey.Elapsed];
-    totalMatchAttempts += timing[SelectorTimingsKey.MatchAttempts];
-    totalMatchCount += timing[SelectorTimingsKey.MatchCount];
+    totalElapsedUs += timing[Types11.Events.SelectorTimingsKey.Elapsed];
+    totalMatchAttempts += timing[Types11.Events.SelectorTimingsKey.MatchAttempts];
+    totalMatchCount += timing[Types11.Events.SelectorTimingsKey.MatchCount];
   });
   let topSelectorElapsedMs = null;
   let topSelectorMatchAttempts = null;
   if (selectorTimings.length > 0) {
     topSelectorElapsedMs = selectorTimings.reduce((a, b) => {
-      return a[SelectorTimingsKey.Elapsed] > b[SelectorTimingsKey.Elapsed] ? a : b;
+      return a[Types11.Events.SelectorTimingsKey.Elapsed] > b[Types11.Events.SelectorTimingsKey.Elapsed] ? a : b;
     });
-    if (topSelectorElapsedMs && topSelectorElapsedMs[SelectorTimingsKey.Elapsed] < slowCSSSelectorThreshold) {
+    if (topSelectorElapsedMs && topSelectorElapsedMs[Types11.Events.SelectorTimingsKey.Elapsed] < slowCSSSelectorThreshold) {
       topSelectorElapsedMs = null;
     }
     topSelectorMatchAttempts = selectorTimings.reduce((a, b) => {
-      return a[SelectorTimingsKey.MatchAttempts] > b[SelectorTimingsKey.MatchAttempts] ? a : b;
+      return a[Types11.Events.SelectorTimingsKey.MatchAttempts] > b[Types11.Events.SelectorTimingsKey.MatchAttempts] ? a : b;
     });
   }
   return finalize17({
@@ -3830,21 +3798,29 @@ import * as Extras4 from "./../extras/extras.js";
 import * as Handlers8 from "./../handlers/handlers.js";
 import * as Types12 from "./../types/types.js";
 var UIStrings18 = {
-  /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
+  /**
+   * @description Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code").
+   */
   title: "3rd parties",
   /**
    * @description Description of a DevTools insight that identifies the code on the page that the user doesn't control.
    * This is displayed after a user expands the section to see more. No character length limits.
    */
   description: "3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page\u2019s content.",
-  /** Label for a table column that displays the name of a third-party provider. */
+  /**
+   * @description Label for a table column that displays the name of a third-party provider.
+   */
   columnThirdParty: "3rd party",
-  /** Label for a column in a data table; entries will be the download size of a web resource in kilobytes. */
+  /**
+   * @description Label for a column in a data table; entries will be the download size of a web resource in kilobytes.
+   */
   columnTransferSize: "Transfer size",
-  /** Label for a table column that displays how much time each row spent running on the main thread, entries will be the number of milliseconds spent. */
+  /**
+   * @description Label for a table column that displays how much time each row spent running on the main thread, entries will be the number of milliseconds spent.
+   */
   columnMainThreadTime: "Main thread time",
   /**
-   * @description Text block indicating that no third party content was detected on the page
+   * @description Text block indicating that no third party content was detected on the page.
    */
   noThirdParties: "No third parties found"
 };
@@ -3930,12 +3906,14 @@ import * as Handlers9 from "./../handlers/handlers.js";
 import * as Helpers20 from "./../helpers/helpers.js";
 import * as Types13 from "./../types/types.js";
 var UIStrings19 = {
-  /** Title of an insight that provides details about if the page's viewport is optimized for mobile viewing. */
+  /**
+   * @description Title of an insight that provides details about if the page's viewport is optimized for mobile viewing.
+   */
   title: "Optimize viewport for mobile",
   /**
    * @description Text to tell the user how a viewport meta element can improve performance. \xa0 is a non-breaking space
    */
-  description: "Tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport is not optimized for mobile.",
+  description: "Tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn\u2019t optimized for mobile.",
   /**
    * @description Text for a label describing the portion of an interaction event that was delayed due to a bad mobile viewport.
    */

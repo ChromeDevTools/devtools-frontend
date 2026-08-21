@@ -19,7 +19,7 @@ export const UIStrings = {
     /**
      * @description Text to tell the user that the charset is NOT declared in the Content-Type HTTP response header.
      */
-    failedHttpHeader: 'Does not declare charset in HTTP header',
+    failedHttpHeader: 'Doesn’t declare charset in HTTP header',
     /**
      * @description Text to tell the user that a meta charset tag was found in the first 1024 bytes of the HTML.
      */
@@ -31,11 +31,11 @@ export const UIStrings = {
     /**
      * @description Text to tell the user that no meta charset tag was found in the HTML.
      */
-    failedMetaCharsetMissing: 'Does not declare charset using a meta tag',
+    failedMetaCharsetMissing: 'Doesn’t declare charset using a meta tag',
     /**
      * @description Text to tell the user that trace data did not include the Blink signal for meta charset.
      */
-    failedMetaCharsetUnknown: 'Could not determine meta charset declaration from trace',
+    failedMetaCharsetUnknown: 'Couldn’t determine meta charset declaration from trace',
 };
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/CharacterSet.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -152,19 +152,19 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         });
         Utils.ImageCache.emitter.addEventListener('screenshot-loaded', () => this.dispatchEventToListeners("DataChanged" /* Events.DATA_CHANGED */));
         Common.Settings.Settings.instance()
-            .moduleSetting('skip-stack-frames-pattern')
+            .resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor)
             .addChangeListener(this.#onIgnoreListChanged.bind(this));
         Common.Settings.Settings.instance()
-            .moduleSetting('skip-content-scripts')
+            .resolve(Workspace.IgnoreListManager.skipContentScriptsSettingDescriptor)
             .addChangeListener(this.#onIgnoreListChanged.bind(this));
         Common.Settings.Settings.instance()
-            .moduleSetting('automatically-ignore-list-known-third-party-scripts')
+            .resolve(Workspace.IgnoreListManager.automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor)
             .addChangeListener(this.#onIgnoreListChanged.bind(this));
         Common.Settings.Settings.instance()
-            .moduleSetting('enable-ignore-listing')
+            .resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor)
             .addChangeListener(this.#onIgnoreListChanged.bind(this));
         Common.Settings.Settings.instance()
-            .moduleSetting('skip-anonymous-scripts')
+            .resolve(Workspace.IgnoreListManager.skipAnonymousScriptsSettingDescriptor)
             .addChangeListener(this.#onIgnoreListChanged.bind(this));
     }
     handleTrackConfigurationChange(groups, indexesInVisualOrder) {

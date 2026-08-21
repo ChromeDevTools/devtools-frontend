@@ -1266,87 +1266,87 @@ import * as Helpers6 from "./helpers/helpers.js";
 import * as Types5 from "./types/types.js";
 var UIStrings = {
   /**
-   * @description Category in the Summary view of the Performance panel to indicate time spent to load resources
+   * @description Category in the summary view of the Performance panel to indicate time spent to load resources.
    */
   loading: "Loading",
   /**
-   * @description Text in Timeline for the Experience title
+   * @description Event category in the Performance panel for user experience events, such as layout shifts and event timing.
    */
   experience: "Experience",
   /**
-   * @description Category in the Summary view of the Performance panel to indicate time spent in script execution
+   * @description Category in the summary view of the Performance panel to indicate time spent in script execution.
    */
   scripting: "Scripting",
   /**
-   * @description Category in the Summary view of the Performance panel to indicate time spent in rendering the web page
+   * @description Category in the summary view of the Performance panel to indicate time spent in rendering the web page.
    */
   rendering: "Rendering",
   /**
-   * @description Category in the Summary view of the Performance panel to indicate time spent to visually represent the web page
+   * @description Category in the summary view of the Performance panel to indicate time spent to visually represent the web page.
    */
   painting: "Painting",
   /**
-   * @description Event category in the Performance panel for time spent in the GPU
+   * @description Event category in the Performance panel for time spent in the GPU.
    */
   gpu: "GPU",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Event category in the Performance panel for asynchronous tasks.
    */
   async: "Async",
   /**
-   * @description Category in the Summary view of the Performance panel to indicate time spent in the rest of the system
+   * @description Category in the summary view of the Performance panel to indicate time spent in the rest of the system.
    */
   system: "System",
   /**
-   * @description Category in the Summary view of the Performance panel to indicate idle time
+   * @description Category in the summary view of the Performance panel to indicate idle time.
    */
   idle: "Idle",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Label for main thread tasks in the Performance panel.
    */
   task: "Task",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for running a console task in the Performance panel.
    */
   consoleTaskRun: "Run console task",
   /**
-   * @description Text for other types of items
+   * @description Text shown in the Performance panel timeline for the Program trace event, which represents uncategorized or internal browser execution time.
    */
   other: "Other",
   /**
-   * @description Text that refers to the animation of the web page
+   * @description Text that refers to the animation of the web page.
    */
   animation: "Animation",
   /**
-   * @description Text that refers to some events
+   * @description Text that refers to some events.
    */
   event: "Event",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event requesting a main thread frame in the Performance panel.
    */
   requestMainThreadFrame: "Request main thread frame",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text indicating the start of a frame in the Performance panel.
    */
   frameStart: "Frame start",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event when a message is received in the Performance panel.
    */
   onMessage: "On message",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event scheduling a postMessage in the Performance panel.
    */
   schedulePostMessage: "Schedule postMessage",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Category for messaging events in the Performance panel.
    */
   messaging: "Messaging",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text indicating the start of a frame on the main thread in the Performance panel.
    */
   frameStartMainThread: "Frame start (main thread)",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for drawing a frame in the Performance panel.
    */
   drawFrame: "Draw frame",
   /**
@@ -1356,57 +1356,57 @@ var UIStrings = {
   profilingOverhead: "Profiling overhead",
   /**
    * @description The process the browser uses to determine a target element for a
-   *pointer event. Typically, this is determined by considering the pointer's
-   *location and also the visual layout of elements on the screen.
+   * pointer event. Typically, this is determined by considering the pointer's
+   * location and also the visual layout of elements on the screen.
    */
   hitTest: "Hit test",
   /**
    * @description Noun for an event in the Performance panel. The browser has decided
-   *that the styles for some elements need to be recalculated and scheduled that
-   *recalculation process at some time in the future.
+   * that the styles for some elements need to be recalculated and scheduled that
+   * recalculation process at some time in the future.
    */
   scheduleStyleRecalculation: "Schedule style recalculation",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event recalculating element styles in the Performance panel.
    */
   recalculateStyle: "Recalculate style",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event invalidating page layout in the Performance panel.
    */
-  invalidateLayout: "Invalidate Layout",
+  invalidateLayout: "Invalidate layout",
   /**
    * @description Noun for an event in the Performance panel. Layerize is a step
-   *where we calculate which layers to create.
+   * where we calculate which layers to create.
    */
   layerize: "Layerize",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for a page layout event in the Performance panel.
    */
   layout: "Layout",
   /**
    * @description Noun for an event in the Performance panel. Paint setup is a
-   *step before the 'Paint' event. A paint event is when the browser draws pixels
-   *to the screen. This step is the setup beforehand.
+   * step before the 'Paint' event. A paint event is when the browser draws pixels
+   * to the screen. This step is the setup beforehand.
    */
   paintSetup: "Paint setup",
   /**
    * @description Noun for a paint event in the Performance panel, where an image
-   *was being painted. A paint event is when the browser draws pixels to the
-   *screen, in this case specifically for an image in a website.
+   * was being painted. A paint event is when the browser draws pixels to the
+   * screen, in this case specifically for an image in a website.
    */
   paintImage: "Paint image",
   /**
    * @description Noun for an event in the Performance panel. Pre-paint is a
-   *step before the 'Paint' event. A paint event is when the browser records the
-   *instructions for drawing the page. This step is the setup beforehand.
+   * step before the 'Paint' event. A paint event is when the browser records the
+   * instructions for drawing the page. This step is the setup beforehand.
    */
   prePaint: "Pre-paint",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event updating a compositing layer in the Performance panel.
    */
   updateLayer: "Update layer",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event updating the layer tree in the Performance panel.
    */
   updateLayerTree: "Update layer tree",
   /**
@@ -1414,46 +1414,46 @@ var UIStrings = {
    */
   paint: "Paint",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event rasterizing paint operations in the Performance panel.
    */
   rasterizePaint: "Rasterize paint",
   /**
-   * @description The action to scroll
+   * @description Text shown in the Performance panel timeline for a scroll event, when the browser scrolls a layer.
    */
   scroll: "Scroll",
   /**
    * @description Noun for an event in the Performance panel. Commit is a step
-   *where we send (also known as "commit") layers to the compositor thread. This
-   *step follows the "Layerize" step which is what calculates which layers to
-   *create.
+   * where we send (also known as "commit") layers to the compositor thread. This
+   * step follows the "Layerize" step which is what calculates which layers to
+   * create.
    */
   commit: "Commit",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event compositing layers in the Performance panel.
    */
   compositeLayers: "Composite layers",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event computing element intersections in the Performance panel.
    */
   computeIntersections: "Compute intersections",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event parsing HTML in the Performance panel.
    */
   parseHtml: "Parse HTML",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event parsing a CSS stylesheet in the Performance panel.
    */
   parseStylesheet: "Parse stylesheet",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event installing a timer in the Performance panel.
    */
   installTimer: "Install timer",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event removing a timer in the Performance panel.
    */
   removeTimer: "Remove timer",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event when a timer fires in the Performance panel.
    */
   timerFired: "Timer fired",
   /**
@@ -1470,31 +1470,31 @@ var UIStrings = {
    */
   xhrLoad: "`XHR` load",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event compiling a script in the Performance panel.
    */
   compileScript: "Compile script",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event caching script code in the Performance panel.
    */
   cacheScript: "Cache script code",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event compiling code in the Performance panel.
    */
   compileCode: "Compile code",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event optimizing code in the Performance panel.
    */
   optimizeCode: "Optimize code",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event evaluating a script in the Performance panel.
    */
   evaluateScript: "Evaluate script",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event compiling a JavaScript module in the Performance panel.
    */
   compileModule: "Compile module",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event caching a JavaScript module in the Performance panel.
    */
   cacheModule: "Cache module code",
   /**
@@ -1509,77 +1509,77 @@ var UIStrings = {
    */
   streamingCompileTask: "Streaming compile task",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event waiting for network responses in the Performance panel.
    */
   waitingForNetwork: "Waiting for network",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event parsing and compiling code in the Performance panel.
    */
   parseAndCompile: "Parse and compile",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel.
+   * @description Text in the Performance panel.
    * "Code Cache" refers to JavaScript bytecode cache: https://v8.dev/blog/code-caching-for-devs
    * "Deserialize" refers to the process of reading the code cache.
    */
   deserializeCodeCache: "Deserialize code cache",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event streaming a WebAssembly response in the Performance panel.
    */
   streamingWasmResponse: "Streaming Wasm response",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event compiling a WebAssembly module in the Performance panel.
    */
   compiledWasmModule: "Compiled Wasm module",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event caching a WebAssembly module in the Performance panel.
    */
   cachedWasmModule: "Cached Wasm module",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for a WebAssembly module cache hit in the Performance panel.
    */
   wasmModuleCacheHit: "Wasm module cache hit",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an invalid WebAssembly module cache in the Performance panel.
    */
   wasmModuleCacheInvalid: "Wasm module cache invalid",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event when a frame started loading in the Performance panel.
    */
   frameStartedLoading: "Frame started loading",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for a soft navigation start marker in the Performance panel.
    */
   softNavigationStart: "Soft navigation start",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an onload event marker in the Performance panel.
    */
   onloadEvent: "Onload event",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for a DOMContentLoaded event marker in the Performance panel.
    */
   domcontentloadedEvent: "DOMContentLoaded event",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for the First Paint metric marker in the Performance panel.
    */
   firstPaint: "First Paint",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for the First Contentful Paint metric marker in the Performance panel.
    */
   firstContentfulPaint: "First Contentful Paint",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for the Soft First Contentful Paint metric marker in the Performance panel.
    */
   softFirstContentfulPaint: "Soft First Contentful Paint",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for the Largest Contentful Paint metric marker in the Performance panel.
    */
   largestContentfulPaint: "Largest Contentful Paint",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for the Soft Largest Contentful Paint metric marker in the Performance panel.
    */
   softLargestContentfulPaint: "Soft Largest Contentful Paint",
   /**
-   * @description Text for timestamps of items
+   * @description Text shown in the Performance panel timeline for a `console.timeStamp()` event.
    */
   timestamp: "Timestamp",
   /**
@@ -1591,7 +1591,7 @@ var UIStrings = {
    */
   consoleTime: "Console time",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for a user timing entry in the Performance panel.
    */
   userTiming: "User timing",
   /**
@@ -1601,119 +1601,119 @@ var UIStrings = {
    */
   willSendRequest: "Will send request",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event sending a network request in the Performance panel.
    */
   sendRequest: "Send request",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event receiving a network response in the Performance panel.
    */
   receiveResponse: "Receive response",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event finishing resource loading in the Performance panel.
    */
   finishLoading: "Finish loading",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event receiving network data in the Performance panel.
    */
   receiveData: "Receive data",
   /**
-   * @description Event category in the Performance panel for time spent to execute microtasks in JavaScript
+   * @description Event category in the Performance panel for time spent to execute microtasks in JavaScript.
    */
   runMicrotasks: "Run microtasks",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for a function call event in the Performance panel.
    */
   functionCall: "Function call",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for a garbage collection event in the Performance panel.
    */
   gcEvent: "GC event",
   /**
-   * @description Event category in the Performance panel for time spent to perform a full Garbage Collection pass
+   * @description Event category in the Performance panel for time spent to perform a full garbage collection pass.
    */
   majorGc: "Major GC",
   /**
-   * @description Event category in the Performance panel for time spent to perform a quick Garbage Collection pass
+   * @description Event category in the Performance panel for time spent to perform a quick garbage collection pass.
    */
   minorGc: "Minor GC",
   /**
-   * @description Text for the request animation frame event
+   * @description Text for the request animation frame event.
    */
   requestAnimationFrame: "Request animation frame",
   /**
-   * @description Text to cancel the animation frame
+   * @description Text to cancel the animation frame.
    */
   cancelAnimationFrame: "Cancel animation frame",
   /**
-   * @description Text for the event that an animation frame is fired
+   * @description Text for the event that an animation frame is fired.
    */
   animationFrameFired: "Animation frame fired",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event requesting an idle callback in the Performance panel.
    */
   requestIdleCallback: "Request idle callback",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event cancelling an idle callback in the Performance panel.
    */
   cancelIdleCallback: "Cancel idle callback",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event firing an idle callback in the Performance panel.
    */
   fireIdleCallback: "Fire idle callback",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event creating a WebSocket connection in the Performance panel.
    */
   createWebsocket: "Create WebSocket",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event sending a WebSocket handshake in the Performance panel.
    */
   sendWebsocketHandshake: "Send WebSocket handshake",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event receiving a WebSocket handshake in the Performance panel.
    */
   receiveWebsocketHandshake: "Receive WebSocket handshake",
   /**
-   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in the flame chart of the Performance panel for receiving a WebSocket message.
    */
   wsMessageReceived: "Receive WebSocket message",
   /**
-   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in the flame chart of the Performance panel for sending a WebSocket message.
    */
   wsMessageSent: "Send WebSocket message",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an event destroying a WebSocket connection in the Performance panel.
    */
   destroyWebsocket: "Destroy WebSocket",
   /**
-   * @description Event category in the Performance panel for time spent in the embedder of the WebView
+   * @description Event category in the Performance panel for time spent in the embedder of the WebView.
    */
   embedderCallback: "Embedder callback",
   /**
-   * @description Event category in the Performance panel for time spent decoding an image
+   * @description Event category in the Performance panel for time spent decoding an image.
    */
   imageDecode: "Image decode",
   /**
-   * @description Event category in the Performance panel for time spent to perform Garbage Collection for the Document Object Model
+   * @description Event category in the Performance panel for time spent to perform garbage collection for the Document Object Model.
    */
   domGc: "DOM GC",
   /**
-   * @description Event category in the Performance panel for time spent to perform Garbage Collection for C++: https://chromium.googlesource.com/v8/v8/+/main/include/cppgc/README.md
+   * @description Event category in the Performance panel for time spent to perform garbage collection for C++: https://chromium.googlesource.com/v8/v8/+/main/include/cppgc/README.md.
    */
   cppGc: "C++ GC",
   /**
-   * @description Event category in the Performance panel for time spent to perform encryption
+   * @description Event category in the Performance panel for time spent to perform encryption.
    */
   encrypt: "Encrypt",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an encryption reply event in the Performance panel.
    */
   encryptReply: "Encrypt reply",
   /**
-   * @description Event category in the Performance panel for time spent to perform decryption
+   * @description Event category in the Performance panel for time spent to perform decryption.
    */
   decrypt: "Decrypt",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for a decryption reply event in the Performance panel.
    */
   decryptReply: "Decrypt reply",
   /**
@@ -1723,7 +1723,7 @@ var UIStrings = {
   digest: "Digest",
   /**
    * @description Noun phrase meaning 'the browser was preparing the digest
-   *reply'. Digest: https://developer.mozilla.org/en-US/docs/Glossary/Digest
+   * reply'. Digest: https://developer.mozilla.org/en-US/docs/Glossary/Digest
    */
   digestReply: "Digest reply",
   /**
@@ -1736,39 +1736,39 @@ var UIStrings = {
    */
   signReply: "Sign reply",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for a verification stage event in the Performance panel.
    */
   verify: "Verify",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for a verification reply event in the Performance panel.
    */
   verifyReply: "Verify reply",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Text for an asynchronous task in the Performance panel.
    */
   asyncTask: "Async task",
   /**
-   * @description Text in Timeline for Layout Shift records
+   * @description Text in the Performance panel for layout shift records.
    */
   layoutShift: "Layout shift",
   /**
-   * @description Text in Timeline for Layout Shift records
+   * @description Text in the Performance panel for layout shift cluster records.
    */
   layoutShiftCluster: "Layout shift cluster",
   /**
-   * @description Text in Timeline for an Event Timing record
+   * @description Text in the Performance panel for an event timing record.
    */
   eventTiming: "Event timing",
   /**
-   * @description Event category in the Performance panel for JavaScript nodes in CPUProfile
+   * @description Event category in the Performance panel for JavaScript nodes in CPUProfile.
    */
   jsFrame: "JS frame",
   /**
-   * @description Text in UIDevtools Utils of the Performance panel
+   * @description Text in UIDevtools Utils of the Performance panel.
    */
   rasterizing: "Rasterizing",
   /**
-   * @description Text in UIDevtools Utils of the Performance panel
+   * @description Text in UIDevtools Utils of the Performance panel.
    */
   drawing: "Drawing",
   /**
@@ -2420,7 +2420,7 @@ var UIStrings2 = {
    */
   anonymous: "(anonymous)",
   /**
-   * @description Text used to show an EventDispatch event which has a type associated with it
+   * @description Text used to show an EventDispatch event which has a type associated with it.
    * @example {click} PH1
    */
   eventDispatchS: "Event: {PH1}",
@@ -2429,20 +2429,20 @@ var UIStrings2 = {
    */
   frame: "Frame",
   /**
-   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in the flame chart of the Performance panel.
    */
   wsConnectionOpened: "WebSocket opened",
   /**
-   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in the flame chart of the Performance panel.
    * @example {ws://example.com} PH1
    */
   wsConnectionOpenedWithUrl: "WebSocket opened: {PH1}",
   /**
-   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in the flame chart of the Performance panel.
    */
   wsConnectionClosed: "WebSocket closed",
   /**
-   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in the flame chart of the Performance panel.
    */
   layoutShift: "Layout shift"
 };

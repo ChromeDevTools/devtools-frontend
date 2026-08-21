@@ -1,7 +1,5 @@
-import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
-type TabData = Record<string, string | object>;
 /** Keep this enum in sync with panels/media/base/media_log_properties.h **/
 export declare const enum PlayerPropertyKeys {
     RESOLUTION = "kResolution",
@@ -9,7 +7,6 @@ export declare const enum PlayerPropertyKeys {
     BITRATE = "kBitrate",
     MAX_DURATION = "kMaxDuration",
     START_TIME = "kStartTime",
-    IS_CDM_ATTACHED = "kIsCdmAttached",
     IS_STREAMING = "kIsStreaming",
     FRAME_URL = "kFrameUrl",
     FRAME_TITLE = "kFrameTitle",
@@ -32,80 +29,25 @@ export declare const enum PlayerPropertyKeys {
     VIDEO_PLAYBACK_FREEZING = "kVideoPlaybackFreezing",
     HLS_BUFFERED_RANGES = "kHlsBufferedRanges"
 }
-export declare class PropertyRenderer extends UI.Widget.VBox {
-    private readonly contents;
-    private value;
-    private pseudoColorProtectionElement;
-    constructor(title: Platform.UIString.LocalizedString);
-    updateData(propvalue: string): void;
-    updateDataInternal(propvalue: string): void;
-    protected unsetNestedContents(): void;
-    changeNestedContents(value: object): void;
-    changeContents(value: string | null): void;
+declare class Property {
+    readonly type: PlayerPropertyKeys;
+    protected dataInternal: string | null;
+    constructor(type: PlayerPropertyKeys);
+    protected parse<T>(val: string): T;
+    get data(): string | null;
+    set data(val: string | null);
 }
-export declare class FormattedPropertyRenderer<DataType> extends PropertyRenderer {
-    private readonly formatfunction;
-    constructor(title: Platform.UIString.LocalizedString, formatfunction: (arg0: DataType) => string);
-    updateDataInternal(propvalue: string): void;
+interface ViewInput {
+    properties: Record<PlayerPropertyKeys, Property>;
 }
-export declare class DefaultPropertyRenderer extends PropertyRenderer {
-    constructor(title: Platform.UIString.LocalizedString, defaultText: string);
-}
-export declare class NestedPropertyRenderer extends PropertyRenderer {
-    constructor(title: Platform.UIString.LocalizedString, content: object);
-}
-export declare class AttributesView extends UI.Widget.VBox {
-    private readonly contentHash;
-    constructor(elements: UI.Widget.Widget[]);
-    getContentHash(): number;
-}
-export declare class TrackManager {
-    private readonly type;
-    private readonly view;
-    constructor(propertiesView: PlayerPropertiesView, type: string);
-    updateData(value: string): void;
-    addNewTab(tabs: GenericTrackMenu | NoTracksPlaceholderMenu, tabData: TabData, tabNumber: number): void;
-}
-export declare class VideoTrackManager extends TrackManager {
-    constructor(propertiesView: PlayerPropertiesView);
-}
-export declare class TextTrackManager extends TrackManager {
-    constructor(propertiesView: PlayerPropertiesView);
-}
-export declare class AudioTrackManager extends TrackManager {
-    constructor(propertiesView: PlayerPropertiesView);
-}
-declare class GenericTrackMenu extends UI.TabbedPane.TabbedPane {
-    private readonly decoderName;
-    private readonly trackName;
-    constructor(decoderName: string, trackName?: string);
-    addNewTab(trackNumber: number, element: AttributesView): void;
-}
-declare class NoTracksPlaceholderMenu extends UI.Widget.VBox {
-    private isPlaceholder;
-    private readonly wrapping;
-    constructor(wrapping: GenericTrackMenu, placeholderText: string);
-    addNewTab(trackNumber: number, element: AttributesView): void;
-}
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class PlayerPropertiesView extends UI.Widget.VBox {
-    private readonly mediaElements;
-    private readonly videoDecoderElements;
-    private readonly audioDecoderElements;
-    private readonly attributeMap;
-    private readonly videoProperties;
-    private readonly videoDecoderProperties;
-    private readonly audioDecoderProperties;
-    private readonly videoDecoderTabs;
-    private readonly audioDecoderTabs;
-    private textTracksTabs;
-    constructor();
-    private lazyCreateTrackTabs;
-    getTabs(type: string): GenericTrackMenu | NoTracksPlaceholderMenu;
+    #private;
+    constructor(target?: HTMLElement, view?: View);
+    get properties(): Record<PlayerPropertyKeys, Property>;
     onProperty(property: Protocol.Media.PlayerProperty): void;
-    formatKbps(bitsPerSecond: string | number): string;
-    formatTime(seconds: string | number): string;
-    formatFileSize(bytes: string): string;
-    formatBufferedRanges(ranges: string[]): string;
-    populateAttributesAndElements(): void;
+    wasShown(): void;
+    performUpdate(): void;
 }
 export {};

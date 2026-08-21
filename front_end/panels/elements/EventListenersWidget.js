@@ -199,7 +199,7 @@ export class EventListenersWidget extends UI.Widget.VBox {
             }
         }
         return context
-            .evaluate({
+            .evaluateWithSelectedFrameFallback({
             expression: 'self',
             objectGroup: objectGroupName,
             includeCommandLineAPI: false,

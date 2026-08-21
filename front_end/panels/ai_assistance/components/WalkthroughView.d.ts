@@ -1,10 +1,10 @@
-import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
+import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { type ModelChatMessage, type Step } from './ChatMessage.js';
 export interface ViewInput {
     message: ModelChatMessage | null;
     isLoading: boolean;
-    markdownRenderer: MarkdownLitRenderer;
+    markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer;
     isInlined: boolean;
     isExpanded: boolean;
     prompt: string;
@@ -35,8 +35,8 @@ export declare class WalkthroughView extends UI.Widget.Widget {
     scrollToBottom(): void;
     set isLoading(isLoading: boolean);
     get isLoading(): boolean;
-    get markdownRenderer(): MarkdownLitRenderer | null;
-    set markdownRenderer(markdownRenderer: MarkdownLitRenderer | null);
+    get markdownRenderer(): MarkdownView.MarkdownView.MarkdownLitRenderer | null;
+    set markdownRenderer(markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer | null);
     get message(): ModelChatMessage | null;
     get onOpen(): (message: ModelChatMessage) => void;
     set onOpen(onOpen: (message: ModelChatMessage) => void);

@@ -1,10 +1,11 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type { ContentDataOrError } from '../../core/text_utils/ContentData.js';
-import type { SearchMatch } from '../../core/text_utils/ContentProvider.js';
+import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 import { type AutomaticFileSystem, type AutomaticFileSystemManager } from './AutomaticFileSystemManager.js';
 import { type IsolatedFileSystemManager } from './IsolatedFileSystemManager.js';
+type ContentDataOrError = TextUtils.ContentData.ContentDataOrError;
+type SearchMatch = TextUtils.ContentProvider.SearchMatch;
 /**
  * Placeholder project that acts as an empty file system within the workspace,
  * and automatically disappears when the user connects the automatic workspace
@@ -72,3 +73,4 @@ export declare class AutomaticFileSystemWorkspaceBinding {
      */
     static removeInstance(): void;
 }
+export {};

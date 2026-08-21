@@ -1,6 +1,7 @@
-import type { InsightModel } from '../../../../models/trace/insights/types.js';
+import type * as Insights from '../../../../models/trace/insights/insights.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import type * as Overlays from '../../overlays/overlays.js';
+type InsightModel = Insights.Types.InsightModel;
 export interface InsightDetails {
     title: string;
     description: string;
@@ -44,3 +45,4 @@ declare global {
         [InsightProvideOverlays.eventName]: InsightProvideOverlays;
     }
 }
+export {};

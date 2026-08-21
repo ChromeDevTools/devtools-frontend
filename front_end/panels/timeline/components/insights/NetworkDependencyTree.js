@@ -74,7 +74,9 @@ export class NetworkDependencyTree extends BaseInsightComponent {
             values: [this.#renderNetworkTreeRow(node)],
             overlays: this.#createOverlayForChain(node.relatedRequests),
             // Filter out the empty rows otherwise the `Table`component will render a super short row
-            subRows: node.children.map(child => this.mapNetworkDependencyToRow(child)).filter(row => row !== null),
+            subRows: node.children
+                .map((child) => this.mapNetworkDependencyToRow(child))
+                .filter((row) => row !== null),
         };
     }
     #renderNetworkDependencyTree(nodes) {

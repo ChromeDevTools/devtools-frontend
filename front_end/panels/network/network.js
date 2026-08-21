@@ -5270,7 +5270,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     });
     objectTree.expanded = true;
     return html9`
-      <li role=treeitem class="source-code object-properties-section-root-element object-properties-section" open>
+      <li role=treeitem class="source-code object-properties-section-root-element object-properties-section" toggle-on-click open>
         ${object.description}
         ${object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing8}
       </li>
@@ -5294,13 +5294,14 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     void contextMenu.show();
   };
   render10(html9`<style>${requestPayloadView_css_default}</style>
-   <devtools-tree dense class=request-payload-tree .template=${html9`
+   <devtools-tree dense show-selection-on-keyboard-focus class=request-payload-tree .template=${html9`
      <style>${objectValue_css_default}</style>
      <style>${objectPropertiesSection_css_default}</style>
      <style>${requestPayloadTree_css_default}</style>
      <ul role=tree>
       <li
           role=treeitem
+          toggle-on-click
           ?hidden=${!input.queryParameters}
           jslog=${VisualLogging9.section().context("query-string")}
           @contextmenu=${onContextMenu(input.viewQueryParamSource, input.setViewQueryParamSource, {
@@ -5329,6 +5330,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       </li>
       <li
           role=treeitem
+          toggle-on-click
           ?hidden=${!input.formData || !input.formParameters}
           jslog=${VisualLogging9.section().context("form-data")}
           @contextmenu=${onContextMenu(input.viewFormParamSource, input.setViewFormParamSource, {
@@ -5357,6 +5359,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       </li>
       <li
           role=treeitem
+          toggle-on-click
           ?hidden=${!input.formData || Boolean(input.formParameters) || Boolean(input.binaryPayloadContentData)}
           jslog=${VisualLogging9.section().context("request-payload")}
           @contextmenu=${onContextMenu(input.viewJSONPayloadSource, input.setViewJSONPayloadSource)}

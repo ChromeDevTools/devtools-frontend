@@ -414,7 +414,7 @@ __export(ThirdParties_exports, {
 });
 import * as Handlers2 from "./../handlers/handlers.js";
 import * as Helpers5 from "./../helpers/helpers.js";
-import * as Types8 from "./../types/types.js";
+import * as Types5 from "./../types/types.js";
 
 // gen/front_end/models/trace/extras/TraceFilter.js
 var TraceFilter_exports = {};
@@ -483,493 +483,8 @@ __export(TraceTree_exports, {
   generateEventID: () => generateEventID
 });
 import * as Helpers3 from "./../helpers/helpers.js";
-
-// gen/front_end/models/trace/helpers/SamplesIntegrator.js
-import * as Types6 from "./../types/types.js";
-
-// gen/front_end/models/trace/helpers/Timing.js
-import * as Platform3 from "./../../../core/platform/platform.js";
-import * as Types5 from "./../types/types.js";
-
-// gen/front_end/models/trace/helpers/Trace.js
-import * as Common from "./../../../core/common/common.js";
-import * as Platform2 from "./../../../core/platform/platform.js";
 import * as Types4 from "./../types/types.js";
-function compareBeginAndEnd(aBeginTime, bBeginTime, aEndTime, bEndTime) {
-  if (aBeginTime < bBeginTime) {
-    return -1;
-  }
-  if (aBeginTime > bBeginTime) {
-    return 1;
-  }
-  if (aEndTime > bEndTime) {
-    return -1;
-  }
-  if (aEndTime < bEndTime) {
-    return 1;
-  }
-  return 0;
-}
-function eventTimeComparator(a, b) {
-  const aBeginTime = a.ts;
-  const bBeginTime = b.ts;
-  const aDuration = a.dur ?? 0;
-  const bDuration = b.dur ?? 0;
-  const aEndTime = aBeginTime + aDuration;
-  const bEndTime = bBeginTime + bDuration;
-  const timeDifference = compareBeginAndEnd(aBeginTime, bBeginTime, aEndTime, bEndTime);
-  if (timeDifference) {
-    return timeDifference;
-  }
-  if (Types4.Events.isProfileCall(a) && !Types4.Events.isProfileCall(b)) {
-    return -1;
-  }
-  if (Types4.Events.isProfileCall(b) && !Types4.Events.isProfileCall(a)) {
-    return 1;
-  }
-  return 0;
-}
-function sortTraceEventsInPlace(events) {
-  events.sort(eventTimeComparator);
-}
-function mergeEventsInOrder(eventsArray1, eventsArray2) {
-  const result = [];
-  let i = 0;
-  let j = 0;
-  while (i < eventsArray1.length && j < eventsArray2.length) {
-    const event1 = eventsArray1[i];
-    const event2 = eventsArray2[j];
-    const compareValue = eventTimeComparator(event1, event2);
-    if (compareValue <= 0) {
-      result.push(event1);
-      i++;
-    }
-    if (compareValue === 1) {
-      result.push(event2);
-      j++;
-    }
-  }
-  while (i < eventsArray1.length) {
-    result.push(eventsArray1[i++]);
-  }
-  while (j < eventsArray2.length) {
-    result.push(eventsArray2[j++]);
-  }
-  return result;
-}
-function makeProfileCall(node, profileId, sampleIndex, ts, pid, tid) {
-  return {
-    cat: "",
-    name: "ProfileCall",
-    nodeId: node.id,
-    args: {},
-    ph: "X",
-    pid,
-    tid,
-    ts,
-    dur: Types4.Timing.Micro(0),
-    callFrame: node.callFrame,
-    sampleIndex,
-    profileId
-  };
-}
-function extractSampleTraceId(event) {
-  if (!event.args) {
-    return null;
-  }
-  if ("beginData" in event.args) {
-    const beginData = event.args["beginData"];
-    return beginData.sampleTraceId ?? null;
-  }
-  return event.args?.sampleTraceId ?? event.args?.data?.sampleTraceId ?? null;
-}
-
-// gen/front_end/models/trace/helpers/Timing.js
-var milliToMicro = (value) => Types5.Timing.Micro(value * 1e3);
-
-// gen/front_end/models/trace/helpers/SamplesIntegrator.js
-var _a;
-var SamplesIntegrator = class {
-  /**
-   * The result of running the samples integrator. Holds the JS calls
-   * with their approximated duration after integrating samples into the
-   * trace event tree.
-   */
-  #constructedProfileCalls = [];
-  /**
-   * tracks the state of the JS stack at each point in time to update
-   * the profile call durations as new events arrive. This doesn't only
-   * happen with new profile calls (in which case we would compare the
-   * stack in them) but also with trace events (in which case we would
-   * update the duration of the events we are tracking at the moment).
-   */
-  #currentJSStack = [];
-  /**
-   * Process holding the CPU profile and trace events.
-   */
-  #processId;
-  /**
-   * Thread holding the CPU profile and trace events.
-   */
-  #threadId;
-  /**
-   * Tracks the depth of the JS stack at the moment a trace event starts
-   * or ends. It is assumed that for the duration of a trace event, the
-   * JS stack's depth cannot decrease, since JS calls that started
-   * before a trace event cannot end during the trace event. So as trace
-   * events arrive, we store the "locked" amount of JS frames that were
-   * in the stack before the event came.
-   */
-  #lockedJsStackDepth = [];
-  /**
-   * Used to keep track when samples should be integrated even if they
-   * are not children of invocation trace events. This is used in two cases:
-   * 1. We start tracing half-way through, so we miss the start of JS
-   *    invocation events.
-   * 2. On threads (like Web Workers) without real JS invocation parent events,
-   *    but where trace events (like SchedulePostMessage) integrate stack traces.
-   *    Enabling fake JS mode allows subsequent samples to be processed and
-   *    eventually correct the stack, preventing a deadlock.
-   */
-  #fakeJSInvocation = false;
-  /**
-   * The parsed CPU profile, holding the tree hierarchy of JS frames and
-   * the sample data.
-   */
-  #profileModel;
-  /**
-   * Because GC nodes don't have a stack, we artificially add a stack to
-   * them which corresponds to that of the previous sample. This map
-   * tracks which node is used for the stack of a GC call.
-   * Note that GC samples are not shown in the flamechart, however they
-   * are used during the construction of for profile calls, as we can
-   * infer information about the duration of the executed code when a
-   * GC node is sampled.
-   */
-  #nodeForGC = /* @__PURE__ */ new Map();
-  #engineConfig;
-  #profileId;
-  /**
-   * Keeps track of the individual samples from the CPU Profile.
-   * Only used with Debug Mode experiment enabled.
-   */
-  jsSampleEvents = [];
-  constructor(profileModel, profileId, pid, tid, configuration) {
-    this.#profileModel = profileModel;
-    this.#threadId = tid;
-    this.#processId = pid;
-    this.#engineConfig = configuration || Types6.Configuration.defaults();
-    this.#profileId = profileId;
-  }
-  buildProfileCalls(traceEvents) {
-    const mergedEvents = mergeEventsInOrder(traceEvents, this.callsFromProfileSamples());
-    const stack = [];
-    for (let i = 0; i < mergedEvents.length; i++) {
-      const event = mergedEvents[i];
-      if (event.ph === "I" && !extractSampleTraceId(event)) {
-        continue;
-      }
-      if (stack.length === 0) {
-        if (Types6.Events.isProfileCall(event)) {
-          this.#onProfileCall(event);
-          continue;
-        }
-        stack.push(event);
-        this.#onTraceEventStart(event);
-        continue;
-      }
-      const parentEvent = stack.at(-1);
-      if (parentEvent === void 0) {
-        continue;
-      }
-      const begin = event.ts;
-      const parentBegin = parentEvent.ts;
-      const parentDuration = parentEvent.dur || 0;
-      const parentEnd = parentBegin + parentDuration;
-      const startsAfterParent = begin >= parentEnd;
-      if (startsAfterParent) {
-        this.#onTraceEventEnd(parentEvent);
-        stack.pop();
-        i--;
-        continue;
-      }
-      if (Types6.Events.isProfileCall(event)) {
-        this.#onProfileCall(event, parentEvent);
-        continue;
-      }
-      this.#onTraceEventStart(event, parentEvent);
-      stack.push(event);
-    }
-    while (stack.length) {
-      const last = stack.pop();
-      if (last) {
-        this.#onTraceEventEnd(last);
-      }
-    }
-    sortTraceEventsInPlace(this.jsSampleEvents);
-    return this.#constructedProfileCalls;
-  }
-  #onTraceEventStart(event, parent) {
-    if (event.name === "RunMicrotasks" || event.name === "RunTask") {
-      this.#lockedJsStackDepth = [];
-      this.#truncateJSStack(0, event.ts);
-      this.#fakeJSInvocation = false;
-    }
-    if (this.#fakeJSInvocation) {
-      this.#truncateJSStack(this.#lockedJsStackDepth.pop() || 0, event.ts);
-      this.#fakeJSInvocation = false;
-    }
-    this.#extractStackTrace(event);
-    if (extractSampleTraceId(event)) {
-      const hasJSInvocationParent = parent && Types6.Events.isJSInvocationEvent(parent);
-      if (!hasJSInvocationParent) {
-        this.#fakeJSInvocation = true;
-      }
-    }
-    this.#lockedJsStackDepth.push(this.#currentJSStack.length);
-  }
-  #onProfileCall(event, parent) {
-    if (parent && Types6.Events.isJSInvocationEvent(parent) || this.#fakeJSInvocation) {
-      this.#extractStackTrace(event);
-    } else if (Types6.Events.isProfileCall(event) && this.#currentJSStack.length === 0) {
-      this.#fakeJSInvocation = true;
-      const stackDepthBefore = this.#currentJSStack.length;
-      this.#extractStackTrace(event);
-      this.#lockedJsStackDepth.push(stackDepthBefore);
-    }
-  }
-  #onTraceEventEnd(event) {
-    const endTime = Types6.Timing.Micro(event.ts + (event.dur ?? 0));
-    this.#truncateJSStack(this.#lockedJsStackDepth.pop() || 0, endTime);
-  }
-  /**
-   * Builds the initial calls with no duration from samples. Their
-   * purpose is to be merged with the trace event array being parsed so
-   * that they can be traversed in order with them and their duration
-   * can be updated as the SampleIntegrator callbacks are invoked.
-   */
-  callsFromProfileSamples() {
-    const samples = this.#profileModel.samples;
-    const timestamps = this.#profileModel.timestamps;
-    if (!samples) {
-      return [];
-    }
-    const calls = [];
-    let prevNode;
-    for (let i = 0; i < samples.length; i++) {
-      const node = this.#profileModel.nodeByIndex(i);
-      const timestamp = milliToMicro(Types6.Timing.Milli(timestamps[i]));
-      if (!node) {
-        continue;
-      }
-      const call = makeProfileCall(node, this.#profileId, i, timestamp, this.#processId, this.#threadId);
-      calls.push(call);
-      if (this.#engineConfig.debugMode) {
-        const traceId = this.#profileModel.traceIds?.[i];
-        this.jsSampleEvents.push(this.#makeJSSampleEvent(call, timestamp, traceId));
-      }
-      if (node.id === this.#profileModel.gcNode?.id && prevNode) {
-        this.#nodeForGC.set(call, prevNode);
-        continue;
-      }
-      prevNode = node;
-    }
-    return calls;
-  }
-  /**
-   * Given a synthetic profile call, returns an array of profile calls
-   * representing the stack trace that profile call belongs to based on
-   * its nodeId. The input profile call will be at the top of the
-   * returned stack (last position), meaning that any other frames that
-   * were effectively above it are omitted.
-   * @param profileCall
-   * @param overrideTimeStamp a custom timestamp to use for the returned
-   * profile calls. If not defined, the timestamp of the input
-   * profileCall is used instead. This param is useful for example when
-   * creating the profile calls for a sample with a trace id, since the
-   * timestamp of the corresponding trace event should be used instead
-   * of the sample's.
-   */
-  #makeProfileCallsForStack(profileCall, overrideTimeStamp) {
-    let node = this.#profileModel.nodeById(profileCall.nodeId);
-    const isGarbageCollection = node?.id === this.#profileModel.gcNode?.id;
-    if (isGarbageCollection) {
-      node = this.#nodeForGC.get(profileCall) || null;
-    }
-    if (!node) {
-      return [];
-    }
-    const callFrames = new Array(node.depth + 1 + Number(isGarbageCollection));
-    let i = callFrames.length - 1;
-    if (isGarbageCollection) {
-      callFrames[i--] = profileCall;
-    }
-    while (node) {
-      callFrames[i--] = makeProfileCall(node, profileCall.profileId, profileCall.sampleIndex, overrideTimeStamp ?? profileCall.ts, this.#processId, this.#threadId);
-      node = node.parent;
-    }
-    return callFrames;
-  }
-  #getStackForSampleTraceId(traceId, timestamp) {
-    const nodeId = this.#profileModel.traceIds?.[traceId];
-    const node = nodeId && this.#profileModel.nodeById(nodeId);
-    const maybeCallForTraceId = node && makeProfileCall(node, this.#profileId, -1, timestamp, this.#processId, this.#threadId);
-    if (!maybeCallForTraceId) {
-      return null;
-    }
-    if (this.#engineConfig.debugMode) {
-      this.jsSampleEvents.push(this.#makeJSSampleEvent(maybeCallForTraceId, timestamp, traceId));
-    }
-    return this.#makeProfileCallsForStack(maybeCallForTraceId);
-  }
-  /**
-   * Update tracked stack using this event's call stack.
-   */
-  #extractStackTrace(event) {
-    let stackTrace = this.#currentJSStack;
-    if (Types6.Events.isProfileCall(event)) {
-      stackTrace = this.#makeProfileCallsForStack(event);
-    }
-    const traceId = extractSampleTraceId(event);
-    const maybeCallForTraceId = traceId && this.#getStackForSampleTraceId(traceId, event.ts);
-    if (maybeCallForTraceId) {
-      stackTrace = maybeCallForTraceId;
-    }
-    _a.filterStackFrames(stackTrace, this.#engineConfig);
-    const endTime = event.ts + (event.dur || 0);
-    const minFrames = Math.min(stackTrace.length, this.#currentJSStack.length);
-    let i;
-    for (i = this.#lockedJsStackDepth.at(-1) || 0; i < minFrames; ++i) {
-      const newFrame = stackTrace[i].callFrame;
-      const oldFrame = this.#currentJSStack[i].callFrame;
-      if (!_a.framesAreEqual(newFrame, oldFrame)) {
-        break;
-      }
-      this.#currentJSStack[i].dur = Types6.Timing.Micro(Math.max(this.#currentJSStack[i].dur || 0, endTime - this.#currentJSStack[i].ts));
-    }
-    this.#truncateJSStack(i, event.ts);
-    for (; i < stackTrace.length; ++i) {
-      const call = stackTrace[i];
-      if (call.nodeId === this.#profileModel.programNode?.id || call.nodeId === this.#profileModel.root?.id || call.nodeId === this.#profileModel.idleNode?.id || call.nodeId === this.#profileModel.gcNode?.id) {
-        continue;
-      }
-      this.#currentJSStack.push(call);
-      this.#constructedProfileCalls.push(call);
-    }
-  }
-  /**
-   * When a call stack that differs from the one we are tracking has
-   * been detected in the samples, the latter is "truncated" by
-   * setting the ending time of its call frames and removing the top
-   * call frames that aren't shared with the new call stack. This way,
-   * we can update the tracked stack with the new call frames on top.
-   * @param depth the amount of call frames from bottom to top that
-   * should be kept in the tracking stack trace. AKA amount of shared
-   * call frames between two stacks.
-   * @param time the new end of the call frames in the stack.
-   */
-  #truncateJSStack(depth, time) {
-    if (this.#lockedJsStackDepth.length) {
-      const lockedDepth = this.#lockedJsStackDepth.at(-1);
-      if (lockedDepth && depth < lockedDepth) {
-        console.error(`Child stack is shallower (${depth}) than the parent stack (${lockedDepth}) at ${time}`);
-        depth = lockedDepth;
-      }
-    }
-    if (this.#currentJSStack.length < depth) {
-      console.error(`Trying to truncate higher than the current stack size at ${time}`);
-      depth = this.#currentJSStack.length;
-    }
-    for (let k = 0; k < this.#currentJSStack.length; ++k) {
-      this.#currentJSStack[k].dur = Types6.Timing.Micro(Math.max(time - this.#currentJSStack[k].ts, 0));
-    }
-    this.#currentJSStack.length = depth;
-  }
-  #makeJSSampleEvent(call, timestamp, traceId) {
-    const JSSampleEvent = {
-      name: "JSSample",
-      cat: "devtools.timeline",
-      args: {
-        data: { traceId, stackTrace: this.#makeProfileCallsForStack(call).map((e) => e.callFrame) }
-      },
-      ph: "I",
-      ts: timestamp,
-      dur: Types6.Timing.Micro(0),
-      pid: this.#processId,
-      tid: this.#threadId
-    };
-    return JSSampleEvent;
-  }
-  static framesAreEqual(frame1, frame2) {
-    return frame1.scriptId === frame2.scriptId && frame1.functionName === frame2.functionName && frame1.lineNumber === frame2.lineNumber;
-  }
-  static showNativeName(name, runtimeCallStatsEnabled) {
-    return runtimeCallStatsEnabled && Boolean(_a.nativeGroup(name));
-  }
-  static nativeGroup(nativeName) {
-    if (nativeName.startsWith("Parse")) {
-      return "Parse";
-    }
-    if (nativeName.startsWith("Compile") || nativeName.startsWith("Recompile")) {
-      return "Compile";
-    }
-    return null;
-  }
-  static isNativeRuntimeFrame(frame) {
-    return frame.url === "native V8Runtime";
-  }
-  static filterStackFrames(stack, engineConfig) {
-    const showAllEvents = engineConfig.showAllEvents;
-    if (showAllEvents) {
-      return;
-    }
-    let j = 0;
-    for (let i = 0; i < stack.length; ++i) {
-      const frame = stack[i].callFrame;
-      const nativeRuntimeFrame = _a.isNativeRuntimeFrame(frame);
-      if (nativeRuntimeFrame) {
-        continue;
-      }
-      stack[j++] = stack[i];
-    }
-    stack.length = j;
-  }
-  static createFakeTraceFromCpuProfile(profile, tid) {
-    if (!profile) {
-      return { traceEvents: [], metadata: {} };
-    }
-    const cpuProfileEvent = {
-      cat: "disabled-by-default-devtools.timeline",
-      name: "CpuProfile",
-      ph: "X",
-      pid: Types6.Events.ProcessID(1),
-      tid,
-      ts: Types6.Timing.Micro(profile.startTime),
-      dur: Types6.Timing.Micro(profile.endTime - profile.startTime),
-      args: { data: { cpuProfile: profile } },
-      // Create an arbitrary profile id.
-      id: "0x1"
-    };
-    return {
-      traceEvents: [cpuProfileEvent],
-      metadata: {
-        dataOrigin: "CPUProfile"
-      }
-    };
-  }
-  static extractCpuProfileFromFakeTrace(traceEvents) {
-    const profileEvent = traceEvents.find((e) => Types6.Events.isSyntheticCpuProfile(e));
-    const profile = profileEvent?.args.data.cpuProfile;
-    if (!profile) {
-      throw new Error("Missing cpuProfile data");
-    }
-    return profile;
-  }
-};
-_a = SamplesIntegrator;
-
-// gen/front_end/models/trace/extras/TraceTree.js
-import * as Types7 from "./../types/types.js";
+var SamplesIntegrator2 = Helpers3.SamplesIntegrator.SamplesIntegrator;
 var Node = class {
   /** ms */
   totalTime;
@@ -1130,7 +645,7 @@ var TopDownNode = class _TopDownNode extends Node {
       }
       node.selfTime += duration;
       node.totalTime += duration;
-      if (Types7.Events.isReceivedDataEvent(e)) {
+      if (Types4.Events.isReceivedDataEvent(e)) {
         node.transferSize += e.args.data.encodedDataLength;
       }
       currentDirectChild = node;
@@ -1282,7 +797,7 @@ var BottomUpRootNode = class extends Node {
     const forceGroupIdCallback = this.forceGroupIdCallback;
     const idToIsCacheHit = /* @__PURE__ */ new Map();
     for (const e of this.events) {
-      if (Types7.Events.isReceivedDataEvent(e) && e.name === "ResourceReceiveResponse") {
+      if (Types4.Events.isReceivedDataEvent(e) && e.name === "ResourceReceiveResponse") {
         let id = generateEventID(e);
         if (this.forceGroupIdCallback && this.eventGroupIdCallback) {
           id = `${id}-${this.eventGroupIdCallback(e)}`;
@@ -1291,7 +806,7 @@ var BottomUpRootNode = class extends Node {
       }
     }
     const sumTransferSizeOfInstantEvent = (e) => {
-      if (Types7.Events.isReceivedDataEvent(e)) {
+      if (Types4.Events.isReceivedDataEvent(e)) {
         let id = generateEventID(e);
         if (this.forceGroupIdCallback && this.eventGroupIdCallback) {
           id = `${id}-${this.eventGroupIdCallback(e)}`;
@@ -1513,7 +1028,7 @@ var BottomUpNode = class _BottomUpNode extends Node {
   }
 };
 function eventStackFrame(event) {
-  if (Types7.Events.isProfileCall(event)) {
+  if (Types4.Events.isProfileCall(event)) {
     return event.callFrame;
   }
   const topFrame = event.args?.data?.stackTrace?.[0];
@@ -1523,15 +1038,15 @@ function eventStackFrame(event) {
   return { ...topFrame, scriptId: String(topFrame.scriptId) };
 }
 function generateEventID(event) {
-  if (Types7.Events.isProfileCall(event)) {
-    const name = SamplesIntegrator.isNativeRuntimeFrame(event.callFrame) ? SamplesIntegrator.nativeGroup(event.callFrame.functionName) : event.callFrame.functionName;
+  if (Types4.Events.isProfileCall(event)) {
+    const name = SamplesIntegrator2.isNativeRuntimeFrame(event.callFrame) ? SamplesIntegrator2.nativeGroup(event.callFrame.functionName) : event.callFrame.functionName;
     const location = event.callFrame.scriptId || event.callFrame.url || "";
     return `f:${name}@${location}:${event.callFrame.lineNumber}:${event.callFrame.columnNumber}`;
   }
-  if (Types7.Events.isConsoleTimeStamp(event) && event.args.data) {
+  if (Types4.Events.isConsoleTimeStamp(event) && event.args.data) {
     return `${event.name}:${event.args.data.name}`;
   }
-  if (Types7.Events.isSyntheticNetworkRequest(event) || Types7.Events.isReceivedDataEvent(event)) {
+  if (Types4.Events.isSyntheticNetworkRequest(event) || Types4.Events.isReceivedDataEvent(event)) {
     return `req:${event.args.data.requestId}`;
   }
   return event.name;
@@ -1580,7 +1095,7 @@ function summarizeBottomUpByEntity(root, data) {
     }
     const summary = {
       transferSize: node.transferSize,
-      mainThreadTime: Types8.Timing.Milli(node.selfTime),
+      mainThreadTime: Types5.Timing.Milli(node.selfTime),
       entity,
       relatedEvents: data.Renderer.entityMappings.eventsByEntity.get(entity) ?? []
     };
@@ -1607,7 +1122,7 @@ function summarizeBottomUpByURL(root, data) {
       url,
       entity,
       transferSize: node.transferSize,
-      mainThreadTime: Types8.Timing.Milli(node.selfTime)
+      mainThreadTime: Types5.Timing.Milli(node.selfTime)
     };
     summaries.push(summary);
   }

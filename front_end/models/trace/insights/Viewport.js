@@ -8,12 +8,14 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 import { InsightCategory, InsightKeys, InsightWarning, } from './types.js';
 export const UIStrings = {
-    /** Title of an insight that provides details about if the page's viewport is optimized for mobile viewing. */
+    /**
+     * @description Title of an insight that provides details about if the page's viewport is optimized for mobile viewing.
+     */
     title: 'Optimize viewport for mobile',
     /**
      * @description Text to tell the user how a viewport meta element can improve performance. \xa0 is a non-breaking space
      */
-    description: 'Tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport is not optimized for mobile.',
+    description: 'Tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile.',
     /**
      * @description Text for a label describing the portion of an interaction event that was delayed due to a bad mobile viewport.
      */

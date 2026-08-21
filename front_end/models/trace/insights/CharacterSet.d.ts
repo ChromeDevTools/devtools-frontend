@@ -17,7 +17,7 @@ export declare const UIStrings: {
     /**
      * @description Text to tell the user that the charset is NOT declared in the Content-Type HTTP response header.
      */
-    readonly failedHttpHeader: 'Does not declare charset in HTTP header';
+    readonly failedHttpHeader: 'Doesn’t declare charset in HTTP header';
     /**
      * @description Text to tell the user that a meta charset tag was found in the first 1024 bytes of the HTML.
      */
@@ -29,11 +29,11 @@ export declare const UIStrings: {
     /**
      * @description Text to tell the user that no meta charset tag was found in the HTML.
      */
-    readonly failedMetaCharsetMissing: 'Does not declare charset using a meta tag';
+    readonly failedMetaCharsetMissing: 'Doesn’t declare charset using a meta tag';
     /**
      * @description Text to tell the user that trace data did not include the Blink signal for meta charset.
      */
-    readonly failedMetaCharsetUnknown: 'Could not determine meta charset declaration from trace';
+    readonly failedMetaCharsetUnknown: 'Couldn’t determine meta charset declaration from trace';
 };
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => import("../../../core/platform/UIString.js").LocalizedString;
 export type CharacterSetInsightModel = InsightModel<typeof UIStrings, {

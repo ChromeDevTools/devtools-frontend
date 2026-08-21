@@ -13,15 +13,15 @@ export declare const UIStrings: {
      */
     readonly description: 'A forced reflow occurs when JavaScript queries geometric properties (such as `offsetWidth`) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developer.chrome.com/docs/performance/insights/forced-reflow) and possible mitigations.';
     /**
-     * @description Title of a list to provide related stack trace data
+     * @description Title of a list to provide related stack trace data.
      */
     readonly reflowCallFrames: 'Call frames that trigger reflow';
     /**
-     * @description Text to describe the top time-consuming function call
+     * @description Text to describe the top time-consuming function call.
      */
     readonly topTimeConsumingFunctionCall: 'Top function call';
     /**
-     * @description Text to describe the total reflow time
+     * @description Text to describe the total reflow time.
      */
     readonly totalReflowTime: 'Total reflow time';
     /**
@@ -29,7 +29,7 @@ export declare const UIStrings: {
      */
     readonly unattributed: '[unattributed]';
     /**
-     * @description Text for the name of anonymous functions
+     * @description Text for the name of anonymous functions.
      */
     readonly anonymous: '(anonymous)';
 };

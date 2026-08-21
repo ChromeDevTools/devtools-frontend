@@ -1,4 +1,4 @@
-import type { Size } from '../../models/geometry/geometry.js';
+import type * as Geometry from '../../models/geometry/geometry.js';
 import { Widget } from './Widget.js';
 export declare class GlassPane {
     #private;
@@ -24,7 +24,7 @@ export declare class GlassPane {
     setPointerEventsBehavior(pointerEventsBehavior: PointerEventsBehavior): void;
     setOutsideClickCallback(callback: ((arg0: Event) => void) | null): void;
     setOnHideCallback(cb: () => void): void;
-    setMaxContentSize(size: Size | null): void;
+    setMaxContentSize(size: Geometry.Size | null): void;
     setSizeBehavior(sizeBehavior: SizeBehavior): void;
     setContentPosition(x: number | null, y: number | null): void;
     setContentAnchorBox(anchorBox: AnchorBox | null): void;

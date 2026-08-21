@@ -133,7 +133,7 @@ export class IgnoreListSetting extends UI.Widget.Widget {
         return widgetElement;
     }
     #view;
-    #ignoreListEnabled = Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing');
+    #ignoreListEnabled = Common.Settings.Settings.instance().resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor);
     #regexPatterns = this.#getSkipStackFramesPatternSetting().getAsArray();
     #newRegexValue = '';
     #newRegexChecked = false;
@@ -144,15 +144,15 @@ export class IgnoreListSetting extends UI.Widget.Widget {
         // Otherwise the button in the toolbar is too wide.
         this.element.classList.remove('vbox', 'flex-auto');
         Common.Settings.Settings.instance()
-            .moduleSetting('skip-stack-frames-pattern')
+            .resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor)
             .addChangeListener(this.requestUpdate.bind(this));
         Common.Settings.Settings.instance()
-            .moduleSetting('enable-ignore-listing')
+            .resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor)
             .addChangeListener(this.requestUpdate.bind(this));
         this.requestUpdate();
     }
     #getSkipStackFramesPatternSetting() {
-        return Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern');
+        return Common.Settings.Settings.instance().resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor);
     }
     #onNewRegexInputFocus(value) {
         // Do not need to trim here because this is a temporary one, we will trim the input when finish editing,

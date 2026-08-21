@@ -49,92 +49,83 @@ const { widget, widgetRef } = UI.Widget;
 const { ref, repeat, ifDefined, classMap } = Directives;
 const UIStrings = {
     /**
-     * @description Text in Object Properties Section
+     * @description Text shown in an object properties tree when evaluating a property throws an exception.
      * @example {function alert()  [native code] } PH1
      */
     exceptionS: '[Exception: {PH1}]',
     /**
-     * @description Text in Object Properties Section
+     * @description Placeholder text shown for a property value whose type or value is unknown.
      */
     unknown: 'unknown',
     /**
-     * @description Text to expand something recursively
+     * @description Context menu item to expand an object and all of its child properties recursively.
      */
     expandRecursively: 'Expand recursively',
     /**
-     * @description Text to collapse children of a parent group
+     * @description Context menu item to collapse all child properties of an object.
      */
     collapseChildren: 'Collapse children',
     /**
-     * @description A context menu item in the Object Properties Section to choose property ordering.
+     * @description Context menu item to sort object properties alphabetically.
      */
     sortPropertiesAlphabetically: 'Sort properties alphabetically',
     /**
-     * @description Text in Object Properties Section
+     * @description Message displayed in an object properties tree when an object has no properties.
      */
     noProperties: 'No properties',
     /**
-     * @description Element text content in Object Properties Section
+     * @description Placeholder text indicating more content or an invocable getter in an object properties tree.
      */
     dots: '(...)',
     /**
-     * @description Element title in Object Properties Section
+     * @description Tooltip text for the button that invokes an object property getter.
      */
     invokePropertyGetter: 'Invoke property getter',
     /**
-     * @description Show all text content in Show More Data Grid Node of a data grid
+     * @description Tooltip text on a button to expand and show all hidden child properties.
      * @example {50} PH1
      */
     showAllD: 'Show all {PH1}',
     /**
-     * @description Show all properties including those with null or undefined values
+     * @description Context menu checkbox item to show all properties, including null and undefined values.
      */
     showAll: 'Show all',
     /**
-     * @description Value element text content in Object Properties Section. Shown when the developer is
-     * viewing a variable in the Scope view, whose value is not available (i.e. because it was optimized
-     * out) by the JavaScript engine, or inspecting a JavaScript object accessor property, which has no
-     * getter. This string should be translated.
+     * @description Text shown when a variable or property value is unavailable, such as when optimized out by the JavaScript engine or missing a getter.
      */
     valueUnavailable: '<value unavailable>',
     /**
-     * @description Tooltip for value elements in the Scope view that refer to variables whose values
-     * aren't accessible to the debugger (potentially due to being optimized out by the JavaScript
-     * engine), or for JavaScript object accessor properties which have no getter.
+     * @description Tooltip text for property values that aren't accessible to the debugger.
      */
-    valueNotAccessibleToTheDebugger: 'Value is not accessible to the debugger',
+    valueNotAccessibleToTheDebugger: 'Value isn’t accessible to the debugger',
     /**
-     * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
+     * @description Context menu item to copy the value of a property to the clipboard.
      */
     copyValue: 'Copy value',
     /**
-     * @description A context menu item in the Object Properties Section
+     * @description Context menu item to copy the property path of an object property to the clipboard.
      */
     copyPropertyPath: 'Copy property path',
     /**
-     * @description Text shown when displaying a JavaScript object that has a string property that is
-     * too large for DevTools to properly display a text editor. This is shown instead of the string in
-     * question. Should be translated.
+     * @description Placeholder text shown when a string property is too large to display in a text editor.
      */
     stringIsTooLargeToEdit: '<string is too large to edit>',
     /**
-     * @description Text of attribute value when text is too long
+     * @description Context menu item and button text to expand truncated long text and show the remaining size.
      * @example {30 MB} PH1
      */
     showMoreS: 'Show more ({PH1})',
     /**
-     * @description Text of attribute value when text is too long
+     * @description Button text indicating that a long text string was truncated and showing its total size.
      * @example {30 MB} PH1
      */
-    longTextWasTruncatedS: 'long text was truncated ({PH1})',
+    longTextWasTruncatedS: 'Long text was truncated ({PH1})',
     /**
-     * @description Text for copying
+     * @description Button and context menu item to copy text to the clipboard.
      */
     copy: 'Copy',
     /**
-     * @description A tooltip text that shows when hovering over a button next to value objects,
-     * which are based on bytes and can be shown in a hexadecimal viewer.
-     * Clicking on the button will display that object in the Memory inspector panel.
+     * @description Tooltip text for the button to open a memory buffer object in the Memory inspector panel.
      */
     openInMemoryInpector: 'Open in Memory inspector panel',
 };

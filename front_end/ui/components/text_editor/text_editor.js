@@ -3680,7 +3680,7 @@ function getExecutionContext() {
   return UI8.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
 }
 async function evaluateExpression(context, expression, group) {
-  const result = await context.evaluate({
+  const result = await context.evaluateWithSelectedFrameFallback({
     expression,
     objectGroup: group,
     includeCommandLineAPI: true,

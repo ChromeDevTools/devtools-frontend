@@ -1,7 +1,7 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import { MapWithDefault } from '../common/MapWithDefault.js';
+import * as Common from '../common/common.js';
 import { assertNotNullOrUndefined } from '../platform/platform.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel, } from './ResourceTreeModel.js';
 import { SDKModel } from './SDKModel.js';
@@ -431,7 +431,7 @@ export class PreloadPipeline {
 }
 class PreloadingAttemptRegistry {
     map = new Map();
-    pipelines = new MapWithDefault();
+    pipelines = new Common.MapWithDefault.MapWithDefault();
     enrich(attempt, source) {
         let ruleSetIds = [];
         let nodeIds = [];
@@ -495,7 +495,10 @@ class PreloadingAttemptRegistry {
     // Returned values may or may not be updated as the time grows.
     getAllRepresentative(ruleSetId, sources) {
         return [...this.map.entries()]
-            .map(([id, value]) => ({ id, value: this.enrich(value, sources.getById(id)) }))
+            .map(([id, value]) => ({
+            id,
+            value: this.enrich(value, sources.getById(id)),
+        }))
             .filter(({ value }) => !ruleSetId || value.ruleSetIds.includes(ruleSetId))
             .filter(({ value }) => this.isAttemptRepresentative(value));
     }
@@ -584,7 +587,8 @@ class PreloadingAttemptRegistry {
     // Removes keys in `this.map` that are not in `sources`. This is used to
     // remove attempts that no longer have a matching speculation rule.
     cleanUpRemovedAttempts(sources) {
-        const keysToRemove = Array.from(this.map.keys()).filter(key => !sources.getById(key));
+        const keysToRemove = Array.from(this.map.keys())
+            .filter(key => !sources.getById(key));
         for (const key of keysToRemove) {
             this.map.delete(key);
         }

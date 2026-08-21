@@ -67,7 +67,7 @@ export class ExtensionScope {
         });
     }
     async #simpleEval(context, expression, returnByValue = true) {
-        const response = await context.evaluate({
+        const response = await context.evaluateWithSelectedFrameFallback({
             expression,
             replMode: true,
             includeCommandLineAPI: false,

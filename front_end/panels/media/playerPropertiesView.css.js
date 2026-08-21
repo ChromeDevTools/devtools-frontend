@@ -25,7 +25,7 @@ export default `/*
   }
 }
 
-.media-property-renderer:nth-child(even):not(:hover) {
+.media-property-renderer:nth-child(even of :not(.media-property-renderer-hidden)):not(:hover) {
   background: var(--sys-color-surface1);
 }
 

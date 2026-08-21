@@ -6805,6 +6805,10 @@ export const NativeFunctions = [
         signatures: [["target", "internalformat", "element", "?config"]]
     },
     {
+        name: "texElementSubImage2D",
+        signatures: [["target", "level", "xoffset", "yoffset", "element", "?config"]]
+    },
+    {
         name: "drawingBufferStorage",
         signatures: [["sizedformat", "width", "height"]]
     },
@@ -8146,7 +8150,7 @@ export const NativeFunctions = [
     },
     {
         name: "drawElementImage",
-        signatures: [["element", "dx", "dy", "?dwidth", "?dheight"], ["element", "sx", "sy", "swidth", "sheight", "dx", "dy", "?dwidth", "?dheight"]]
+        signatures: [["element", "dx", "dy", "?options"], ["element", "dx", "dy", "dwidth", "dheight", "?options"], ["element", "sx", "sy", "swidth", "sheight", "dx", "dy", "?options"], ["element", "sx", "sy", "swidth", "sheight", "dx", "dy", "dwidth", "dheight", "?options"]]
     },
     {
         name: "CanvasFilter",

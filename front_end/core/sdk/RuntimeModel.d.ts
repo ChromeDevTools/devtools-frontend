@@ -110,10 +110,10 @@ export declare class ExecutionContext {
     constructor(runtimeModel: RuntimeModel, id: Protocol.Runtime.ExecutionContextId, uniqueId: string, name: string, origin: Platform.DevToolsPath.UrlString, isDefault: boolean, frameId?: Protocol.Page.FrameId);
     target(): Target;
     static comparator(a: ExecutionContext, b: ExecutionContext): number;
-    evaluate(options: EvaluationOptions, userGesture: boolean, awaitPromise: boolean): Promise<EvaluationResult>;
+    evaluateWithSelectedFrameFallback(options: EvaluationOptions, userGesture: boolean, awaitPromise: boolean): Promise<EvaluationResult>;
     globalObject(objectGroup: string, generatePreview: boolean): Promise<EvaluationResult>;
     callFunctionOn(options: CallFunctionOptions): Promise<EvaluationResult>;
-    private evaluateGlobal;
+    evaluate(options: EvaluationOptions, userGesture: boolean, awaitPromise: boolean): Promise<EvaluationResult>;
     globalLexicalScopeNames(): Promise<string[] | null>;
     label(): string | null;
     setLabel(label: string): void;

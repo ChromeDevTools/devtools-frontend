@@ -1,7 +1,9 @@
 import * as Protocol from '../../generated/protocol.js';
-import type { DOMPinnedWebIDLProp, DOMPinnedWebIDLType } from '../common/JavaScriptMetaData.js';
+import type * as Common from '../common/common.js';
 import type { DebuggerModel, FunctionDetails } from './DebuggerModel.js';
 import type { RuntimeModel } from './RuntimeModel.js';
+type DOMPinnedWebIDLProp = Common.JavaScriptMetaData.DOMPinnedWebIDLProp;
+type DOMPinnedWebIDLType = Common.JavaScriptMetaData.DOMPinnedWebIDLType;
 /** This cannot be an interface due to "instanceof RemoteObject" checks in the code. **/
 export declare abstract class RemoteObject {
     static fromLocalObject(value: unknown): RemoteObject;
@@ -205,3 +207,4 @@ export declare class LinearMemoryInspectable {
      */
     constructor(object: RemoteObject, expression?: string);
 }
+export {};

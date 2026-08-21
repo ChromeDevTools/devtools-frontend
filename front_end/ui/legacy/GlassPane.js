@@ -122,7 +122,7 @@ export class GlassPane {
         const gutterSize = this.marginBehavior === "NoMargin" /* MarginBehavior.NO_MARGIN */ ? 0 : 3;
         const scrollbarSize = measuredScrollbarWidth(this.element.ownerDocument);
         const offsetSize = 10;
-        const container = (containers.get((this.element.ownerDocument)));
+        const container = containers.get(this.element.ownerDocument);
         if (this.sizeBehavior === "MeasureContent" /* SizeBehavior.MEASURE_CONTENT */) {
             this.contentElement.positionAt(0, 0);
             this.contentElement.style.width = '';
@@ -263,7 +263,7 @@ export class GlassPane {
         return this.#widget;
     }
     static setContainer(element) {
-        containers.set((element.ownerDocument), element);
+        containers.set(element.ownerDocument, element);
         GlassPane.containerMoved(element);
     }
     static container(document) {

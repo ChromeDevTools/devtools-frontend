@@ -4,7 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../../core/common/common.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import { InsightActivated, InsightDeactivated } from './insights/SidebarInsight.js';
+import * as Insights from './insights/insights.js';
 import { SidebarAnnotationsTab } from './SidebarAnnotationsTab.js';
 import { SidebarInsightsTab } from './SidebarInsightsTab.js';
 export class RemoveAnnotation extends Event {
@@ -73,7 +73,7 @@ export class SidebarWidget extends UI.Widget.VBox {
         this.#tabbedPane.show(this.element);
         this.#updateAnnotationsCountBadge();
         if (this.#insightToRestoreOnOpen) {
-            this.element.dispatchEvent(new InsightActivated(this.#insightToRestoreOnOpen.model, this.#insightToRestoreOnOpen.insightSetKey));
+            this.element.dispatchEvent(new Insights.SidebarInsight.InsightActivated(this.#insightToRestoreOnOpen.model, this.#insightToRestoreOnOpen.insightSetKey));
             this.#insightToRestoreOnOpen = null;
         }
         // Swap to the Annotations tab if:
@@ -89,7 +89,7 @@ export class SidebarWidget extends UI.Widget.VBox {
         const currentlyActiveInsight = this.#insightsView.getActiveInsight();
         this.#insightToRestoreOnOpen = currentlyActiveInsight;
         if (currentlyActiveInsight) {
-            this.element.dispatchEvent(new InsightDeactivated());
+            this.element.dispatchEvent(new Insights.SidebarInsight.InsightDeactivated());
         }
     }
     setAnnotations(updatedAnnotations, annotationEntryToColorMap) {

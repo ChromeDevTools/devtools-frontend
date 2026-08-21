@@ -3,21 +3,29 @@ import * as Handlers from '../handlers/handlers.js';
 import * as Types from '../types/types.js';
 import { type InsightModel, type InsightSetContext } from './types.js';
 export declare const UIStrings: {
-    /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
+    /**
+     * @description Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code").
+     */
     readonly title: '3rd parties';
     /**
      * @description Description of a DevTools insight that identifies the code on the page that the user doesn't control.
      * This is displayed after a user expands the section to see more. No character length limits.
      */
     readonly description: string;
-    /** Label for a table column that displays the name of a third-party provider. */
+    /**
+     * @description Label for a table column that displays the name of a third-party provider.
+     */
     readonly columnThirdParty: '3rd party';
-    /** Label for a column in a data table; entries will be the download size of a web resource in kilobytes. */
+    /**
+     * @description Label for a column in a data table; entries will be the download size of a web resource in kilobytes.
+     */
     readonly columnTransferSize: 'Transfer size';
-    /** Label for a table column that displays how much time each row spent running on the main thread, entries will be the number of milliseconds spent. */
+    /**
+     * @description Label for a table column that displays how much time each row spent running on the main thread, entries will be the number of milliseconds spent.
+     */
     readonly columnMainThreadTime: 'Main thread time';
     /**
-     * @description Text block indicating that no third party content was detected on the page
+     * @description Text block indicating that no third party content was detected on the page.
      */
     readonly noThirdParties: 'No third parties found';
 };

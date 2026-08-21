@@ -74,7 +74,7 @@ export class LCPBreakdown extends BaseInsightComponent {
         if (!subparts) {
             return html `<div class="insight-section">${i18nString(UIStrings.noLcp)}</div>`;
         }
-        const rows = Object.values(subparts).map((subpart) => {
+        const rows = Object.values(subparts).map(subpart => {
             const section = this.#overlay?.sections.find(section => subpart.label === section.label);
             const timing = Trace.Helpers.Timing.microToMilli(subpart.range);
             return {

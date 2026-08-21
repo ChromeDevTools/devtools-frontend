@@ -14947,7 +14947,7 @@ var WatchExpression = class _WatchExpression {
       }
     }
     try {
-      const result = await executionContext.evaluate(
+      const result = await executionContext.evaluateWithSelectedFrameFallback(
         {
           expression,
           objectGroup: _WatchExpression.watchObjectGroupId,

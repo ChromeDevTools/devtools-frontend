@@ -8,7 +8,7 @@ export declare const UIStrings: {
      */
     readonly title: 'Modern HTTP';
     /**
-     * @description Description of an insight that recommends recommends using HTTP/2 over HTTP/1.1 because of the performance benefits. "HTTP" should not be translated.
+     * @description Description of an insight that recommends using HTTP/2 over HTTP/1.1 because of the performance benefits. "HTTP" should not be translated.
      */
     readonly description: 'HTTP/2 and HTTP/3 offer many benefits over HTTP/1.1, such as multiplexing. [Learn more about using modern HTTP](https://developer.chrome.com/docs/performance/insights/modern-http).';
     /**
@@ -20,9 +20,9 @@ export declare const UIStrings: {
      */
     readonly protocol: 'Protocol';
     /**
-     * @description Text explaining that there were not requests that were slowed down by using HTTP/1.1. "HTTP/1.1" should not be translated.
+     * @description Text explaining that there were no requests that were slowed down by using HTTP/1.1. "HTTP/1.1" should not be translated.
      */
-    readonly noOldProtocolRequests: 'No requests used HTTP/1.1, or its current use of HTTP/1.1 does not present a significant optimization opportunity. HTTP/1.1 requests are only flagged if six or more static assets originate from the same origin, and they are not served from a local development environment or a third-party source.';
+    readonly noOldProtocolRequests: 'No requests used HTTP/1.1, or its current use of HTTP/1.1 doesn’t present a significant optimization opportunity. HTTP/1.1 requests are only flagged if six or more static assets originate from the same origin, and they aren’t served from a local development environment or a third-party source.';
 };
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => Platform.UIString.LocalizedString;
 export type ModernHTTPInsightModel = InsightModel<typeof UIStrings, {

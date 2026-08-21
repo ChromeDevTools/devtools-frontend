@@ -183,7 +183,7 @@ export class LinearMemoryViewer extends HTMLElement {
             selected: Math.floor((this.#address - this.#memoryOffset) / this.#numBytesInRow) === row,
         };
         return html `
-    <div class="row">
+    <div class="row" jslog=${VisualLogging.tableRow('linear-memory-row')}>
       <span class=${Lit.Directives.classMap(classMap)}>${toHexString({ number: startIndex + this.#memoryOffset, pad: 8, prefix: false })}</span>
       <span class="divider"></span>
       ${this.#renderByteValues(startIndex, endIndex)}

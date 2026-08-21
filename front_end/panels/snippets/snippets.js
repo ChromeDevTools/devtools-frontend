@@ -144,7 +144,7 @@ async function evaluateScriptSnippet(uiSourceCode) {
   const expression = uiSourceCode.workingCopy();
   Common.Console.Console.instance().show();
   const url = uiSourceCode.url();
-  const result = await executionContext.evaluate({
+  const result = await executionContext.evaluateWithSelectedFrameFallback({
     expression: `${expression}
 //# sourceURL=${url}`,
     objectGroup: "console",

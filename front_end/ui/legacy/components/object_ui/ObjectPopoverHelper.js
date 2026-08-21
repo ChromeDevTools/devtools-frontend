@@ -16,7 +16,7 @@ import { ObjectPropertiesSectionWidget, valueElementForFunctionDescription } fro
 import objectValueStyles from './objectValue.css.js';
 const UIStrings = {
     /**
-     * @description Text that is usually a hyperlink to more documentation
+     * @description Link text for opening documentation in an object popover.
      */
     learnMore: 'Learn more',
 };

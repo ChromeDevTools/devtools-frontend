@@ -8,7 +8,6 @@ import type * as IssuesManager from '../../models/issues_manager/issues_manager.
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
 import type { DirectiveResult } from '../../ui/lit/lit.js';
 declare const enum TagType {
     OPENING = "OPENING_TAG",
@@ -90,7 +89,7 @@ export interface ViewOutput {
     contentElement?: HTMLElement;
     editorRef?: TextEditor.TextEditor.TextEditor;
 }
-export declare function adornerRef(): DirectiveResult<typeof Lit.Directives.RefDirective>;
+export declare function adornerRef(): DirectiveResult;
 export interface Decoration {
     title: string;
     color: string;

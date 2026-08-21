@@ -14,7 +14,6 @@ declare class BaseSnapshotTester {
     protected serializeSnapshotFileContent(): string;
     protected checkIfUpdateMode(): Promise<{
         updateMode: boolean;
-        isFiltered: boolean;
     }>;
     protected postUpdate(): Promise<void>;
     protected loadSnapshot(_snapshotPath: string): Promise<string | undefined>;
@@ -22,7 +21,6 @@ declare class BaseSnapshotTester {
 declare class WebSnapshotTester extends BaseSnapshotTester {
     protected checkIfUpdateMode(): Promise<{
         updateMode: boolean;
-        isFiltered: boolean;
     }>;
     protected postUpdate(): Promise<void>;
     protected loadSnapshot(snapshotPath: string): Promise<string | undefined>;
@@ -31,7 +29,6 @@ declare class NodeSnapshotTester extends BaseSnapshotTester {
     #private;
     protected checkIfUpdateMode(): Promise<{
         updateMode: boolean;
-        isFiltered: boolean;
     }>;
     protected postUpdate(): Promise<void>;
     protected loadSnapshot(snapshotPath: string): Promise<string | undefined>;

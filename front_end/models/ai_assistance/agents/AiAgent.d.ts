@@ -1,5 +1,4 @@
 import * as Host from '../../../core/host/host.js';
-import type { UrlString } from '../../../core/platform/DevToolsPath.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as TextUtils from '../../../core/text_utils/text_utils.js';
@@ -8,6 +7,7 @@ import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as Trace from '../../trace/trace.js';
 import type * as Workspace from '../../workspace/workspace.js';
 import type { ContextHandlerResult, DataHandlerResult } from '../tools/Tool.js';
+type UrlString = Platform.DevToolsPath.UrlString;
 export declare const enum ResponseType {
     CONTEXT = "context",
     TITLE = "title",

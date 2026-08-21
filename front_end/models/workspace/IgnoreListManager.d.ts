@@ -7,6 +7,11 @@ export interface IgnoreListGeneralRules {
     isKnownThirdParty?: boolean;
     isCurrentlyIgnoreListed?: boolean;
 }
+export declare const skipStackFramesPatternSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const skipContentScriptsSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const skipAnonymousScriptsSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const enableIgnoreListingSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
     #private;
     constructor(settings: Common.Settings.Settings, targetManager: SDK.TargetManager.TargetManager);

@@ -19,6 +19,18 @@ import * as UI from "./../../../../ui/legacy/legacy.js";
 import * as Lit from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/preloading/components/PreloadingString.js
+var PreloadingString_exports = {};
+__export(PreloadingString_exports, {
+  PrefetchReasonDescription: () => PrefetchReasonDescription,
+  capitalizedAction: () => capitalizedAction,
+  composedStatus: () => composedStatus,
+  prefetchFailureReason: () => prefetchFailureReason,
+  prerenderFailureReason: () => prerenderFailureReason,
+  ruleSetLocationShort: () => ruleSetLocationShort,
+  ruleSetTagOrLocationShort: () => ruleSetTagOrLocationShort,
+  sortOrder: () => sortOrder,
+  status: () => status
+});
 import * as i18n from "./../../../../core/i18n/i18n.js";
 import * as Platform from "./../../../../core/platform/platform.js";
 import { assertNotNullOrUndefined } from "./../../../../core/platform/platform.js";
@@ -2663,6 +2675,7 @@ export {
   PreloadingDetailsReportView_exports as PreloadingDetailsReportView,
   PreloadingDisabledInfobar_exports as PreloadingDisabledInfobar,
   PreloadingGrid_exports as PreloadingGrid,
+  PreloadingString_exports as PreloadingString,
   RuleSetDetailsView_exports as RuleSetDetailsView,
   RuleSetGrid_exports as RuleSetGrid,
   UsedPreloadingView_exports as UsedPreloadingView

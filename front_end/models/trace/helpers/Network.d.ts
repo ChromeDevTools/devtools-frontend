@@ -1,5 +1,6 @@
 import * as Protocol from '../../../generated/protocol.js';
-import type { SyntheticNetworkRequest } from '../types/TraceEvents.js';
+import type * as Types from '../types/types.js';
+type SyntheticNetworkRequest = Types.Events.SyntheticNetworkRequest;
 export declare function isSyntheticNetworkRequestEventRenderBlocking(event: SyntheticNetworkRequest): boolean;
 export declare function isSyntheticNetworkRequestHighPriority(event: SyntheticNetworkRequest): boolean;
 export interface CacheControl {
@@ -24,3 +25,4 @@ export declare function parseCacheControl(header: string | null): CacheControl |
  * https://github.com/GoogleChrome/lighthouse/pull/11766#discussion_r582340683
  */
 export declare function isSyntheticNetworkRequestLocalhost(event: SyntheticNetworkRequest): boolean;
+export {};

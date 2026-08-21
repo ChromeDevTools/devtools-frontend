@@ -443,12 +443,12 @@ export class ExecutionContext {
         }
         return a.name.localeCompare(b.name);
     }
-    async evaluate(options, userGesture, awaitPromise) {
+    async evaluateWithSelectedFrameFallback(options, userGesture, awaitPromise) {
         // FIXME: It will be moved to separate ExecutionContext.
         if (this.debuggerModel.selectedCallFrame()) {
             return await this.debuggerModel.evaluateOnSelectedCallFrame(options);
         }
-        return await this.evaluateGlobal(options, userGesture, awaitPromise);
+        return await this.evaluate(options, userGesture, awaitPromise);
     }
     globalObject(objectGroup, generatePreview) {
         const evaluationOptions = {
@@ -459,7 +459,7 @@ export class ExecutionContext {
             returnByValue: false,
             generatePreview,
         };
-        return this.evaluateGlobal(evaluationOptions, false, false);
+        return this.evaluate(evaluationOptions, false, false);
     }
     async callFunctionOn(options) {
         const response = await this.runtimeModel.agent.invoke_callFunctionOn({
@@ -479,7 +479,7 @@ export class ExecutionContext {
         }
         return { object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
     }
-    async evaluateGlobal(options, userGesture, awaitPromise) {
+    async evaluate(options, userGesture, awaitPromise) {
         if (!options.expression) {
             // There is no expression, so the completion should happen against global properties.
             options.expression = 'this';

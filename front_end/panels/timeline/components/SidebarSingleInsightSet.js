@@ -7,7 +7,6 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import { CWVMetrics, getFieldMetrics } from './CWVMetrics.js';
-import { shouldRenderForCategory } from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import sidebarSingleInsightSetStyles from './sidebarSingleInsightSet.css.js';
 const { html } = Lit.StaticHtml;
@@ -127,7 +126,7 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
         const shownInsights = [];
         const passedInsights = [];
         for (const [insightName, model] of Object.entries(insightSet.model)) {
-            if (!model || !shouldRenderForCategory({ activeCategory, insightCategory: model.category })) {
+            if (!model || !Insights.Helpers.shouldRenderForCategory({ activeCategory, insightCategory: model.category })) {
                 continue;
             }
             if (model.state === 'pass') {

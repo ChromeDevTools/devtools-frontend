@@ -1254,7 +1254,7 @@ var ExtensionScope = class {
     });
   }
   async #simpleEval(context, expression, returnByValue = true) {
-    const response = await context.evaluate(
+    const response = await context.evaluateWithSelectedFrameFallback(
       {
         expression,
         replMode: true,

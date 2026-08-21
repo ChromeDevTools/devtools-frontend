@@ -2535,6 +2535,15 @@ export declare namespace Browser {
     interface AddPrivacySandboxEnrollmentOverrideRequest {
         url: string;
     }
+    interface GetGlobalPrivacyControlResponse extends ProtocolResponseWithError {
+        gpc: boolean;
+    }
+    interface SetGlobalPrivacyControlRequest {
+        gpc: boolean;
+    }
+    interface SetGlobalPrivacyControlResponse extends ProtocolResponseWithError {
+        gpc: boolean;
+    }
     /**
      * Fired when page is about to start a download.
      */

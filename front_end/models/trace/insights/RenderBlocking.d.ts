@@ -19,7 +19,7 @@ export declare const UIStrings: {
      */
     readonly duration: 'Duration';
     /**
-     * @description Text status indicating that no requests blocked the initial render of a navigation
+     * @description Text status indicating that no requests blocked the initial render of a navigation.
      */
     readonly noRenderBlocking: 'No render-blocking requests for this navigation';
 };

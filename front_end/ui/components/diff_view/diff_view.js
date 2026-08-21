@@ -299,7 +299,7 @@ var DiffRenderer = class _DiffRenderer {
     return html`
       <style>${diffView_css_default}</style>
       <style>${CodeHighlighter.codeHighlighterStyles}</style>
-      <div class="diff-listing" aria-label=${i18nString(UIStrings.changesDiffViewer)}>
+      <div class="diff-listing" aria-label=${i18nString(UIStrings.changesDiffViewer)} jslog=${VisualLogging.section("diff-view")}>
         ${rows.map((row) => this.#renderRow(row))}
       </div>`;
   }

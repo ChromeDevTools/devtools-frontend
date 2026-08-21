@@ -2,7 +2,7 @@ import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
+import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { ChatInput } from './ChatInput.js';
 import { type Message, type ModelChatMessage } from './ChatMessage.js';
@@ -48,7 +48,7 @@ export interface Props {
     textInputValue: string;
     onTextChange: (text: string) => void;
     uploadImageInputEnabled?: boolean;
-    markdownRenderer: MarkdownLitRenderer;
+    markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer;
     generateConversationSummary: (markdown: string) => Promise<string>;
     walkthrough: {
         onOpen: (message: ModelChatMessage) => void;

@@ -96,39 +96,38 @@ var imagePreview_css_default = `/*
 // gen/front_end/ui/legacy/components/utils/ImagePreview.js
 var UIStrings = {
   /**
-   * @description Alt text description of an image's source
+   * @description Fallback text used in image preview alt text when the image source is unknown.
    */
-  unknownSource: "unknown source",
+  unknownSource: "Unknown source",
   /**
-   * @description Text to indicate the source of an image
+   * @description Alt text for an image preview displaying its source.
    * @example {example.com} PH1
    */
   imageFromS: "Image from {PH1}",
   /**
-   * @description Title of the row that shows the file size of an image.
+   * @description Label for the file size row in an image preview.
    */
-  fileSize: "File size:",
+  fileSize: "File size",
   /**
-   * @description Title of the row that shows the intrinsic size of an image in pixels.
+   * @description Label for the intrinsic dimensions row in an image preview.
    */
-  intrinsicSize: "Intrinsic size:",
+  intrinsicSize: "Intrinsic size",
   /**
-   * @description Title of the row that shows the rendered size of an image in pixels.
+   * @description Label for the rendered dimensions row in an image preview.
    */
-  renderedSize: "Rendered size:",
+  renderedSize: "Rendered size",
   /**
-   * @description Title of the row that shows the current URL of an image.
-   * https://html.spec.whatwg.org/multipage/embedded-content.html#dom-img-currentsrc.
+   * @description Label for the source URL row in an image preview.
    */
-  currentSource: "Current source:",
+  currentSource: "Current source",
   /**
-   * @description The rendered aspect ratio of an image.
+   * @description Label for the rendered aspect ratio row in an image preview.
    */
-  renderedAspectRatio: "Rendered aspect ratio:",
+  renderedAspectRatio: "Rendered aspect ratio",
   /**
-   * @description The intrinsic aspect ratio of an image.
+   * @description Label for the intrinsic aspect ratio row in an image preview.
    */
-  intrinsicAspectRatio: "Intrinsic aspect ratio:"
+  intrinsicAspectRatio: "Intrinsic aspect ratio"
 };
 var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/utils/ImagePreview.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -420,33 +419,31 @@ import * as UI from "./../../legacy.js";
 var { ref, ifDefined, classMap } = Directives;
 var UIStrings2 = {
   /**
-   * @description Text in Linkifier
+   * @description Fallback text displayed for a link when the URL or text is unknown.
    */
   unknown: "(unknown)",
   /**
-   * @description Text short for automatic
+   * @description Option in the link handling dropdown to automatically select the handler.
    */
-  auto: "auto",
+  auto: "Auto",
   /**
-   * @description Text in Linkifier
+   * @description Context menu item to reveal an item in a specific destination panel or tool.
    * @example {Sources panel} PH1
    */
   revealInS: "Reveal in {PH1}",
   /**
-   * @description Text for revealing an item in its destination
+   * @description Context menu item to reveal an item in its destination.
    */
   reveal: "Reveal",
   /**
-   * @description A context menu item in the Linkifier
+   * @description Context menu item to open a link or resource using a registered extension.
    * @example {Extension} PH1
    */
   openUsingS: "Open using {PH1}",
   /**
-   * @description The name of a setting which controls how links are handled in the UI. 'Handling'
-   * refers to the ability of extensions to DevTools to be able to intercept link clicks so that they
-   * can react to them.
+   * @description Label for the setting that controls how links are handled in the UI.
    */
-  linkHandling: "Link handling:"
+  linkHandling: "Link handling"
 };
 var str_2 = i18n3.i18n.registerUIStrings("ui/legacy/components/utils/Linkifier.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -1348,19 +1345,19 @@ var ScriptLocationLink = class extends UI.Widget.Widget {
 var { classMap: classMap2 } = Directives2;
 var UIStrings3 = {
   /**
-   * @description Text to stop preventing the debugger from stepping into library code
+   * @description Context menu item on a stack trace link to remove the script from the ignore list.
    */
   removeFromIgnore: "Remove from ignore list",
   /**
-   * @description Text for scripts that should not be stepped into when debugging
+   * @description Context menu item on a stack trace link to add the script to the ignore list.
    */
   addToIgnore: "Add script to ignore list",
   /**
-   * @description A link to show more frames when they are available.
+   * @description Link text in a stack trace preview to show ignore-listed frames.
    */
   showMoreFrames: "Show ignore-listed frames",
   /**
-   * @description A link to rehide frames that are by default hidden.
+   * @description Link text in a stack trace preview to hide ignore-listed frames.
    */
   showLess: "Show less"
 };

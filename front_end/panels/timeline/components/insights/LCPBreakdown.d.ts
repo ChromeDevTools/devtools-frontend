@@ -1,9 +1,8 @@
-import type { LCPBreakdownInsightModel } from '../../../../models/trace/insights/LCPBreakdown.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';
-export declare class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel> {
+export declare class LCPBreakdown extends BaseInsightComponent<Trace.Insights.Models.LCPBreakdown.LCPBreakdownInsightModel> {
     #private;
     internalName: string;
     protected hasAskAiSupport(): boolean;

@@ -101,13 +101,18 @@ template("ts_library_split") {
   if (defined(invoker.rootdir)) {
     _rootdir = invoker.rootdir
   }
-  _outdir = target_gen_dir
+  _tsc_dir = string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc")
+
+  _tsconfig_name = target_name
+  if (defined(invoker.tsconfig_name)) {
+    _tsconfig_name = invoker.tsconfig_name
+  }
 
   _dts_target = "${target_name}-dts"
   _tsconfig_ref_target = "${target_name}_tsconfig_ref"
-  _tsconfig_ref_file = "$target_gen_dir/$target_name-tsconfig.ref.json"
+  _tsconfig_ref_file = "$_tsc_dir/$_tsconfig_name-tsconfig.ref.json"
   _tsconfig_target = "${target_name}_tsconfig"
-  _tsconfig_file = "$target_gen_dir/$target_name-tsconfig.json"
+  _tsconfig_file = "$_tsc_dir/$_tsconfig_name-tsconfig.json"
   _js_target = "${target_name}_checked"
 
   _all_sources = invoker.sources
@@ -122,10 +127,12 @@ template("ts_library_split") {
     foreach(dep, _ts_deps) {
       _dep_name = get_label_info(dep, "name")
       _dep_gen_dir = get_label_info(dep, "target_gen_dir")
+      _dep_tsc_dir =
+          string_replace(_dep_gen_dir, root_gen_dir, "$root_out_dir/tsc")
       _ts_references += [
         {
-          path = rebase_path("$_dep_gen_dir/$_dep_name-tsconfig.ref.json",
-                             target_gen_dir)
+          path = rebase_path("$_dep_tsc_dir/$_dep_name-tsconfig.ref.json",
+                             _tsc_dir)
         },
       ]
     }
@@ -148,6 +155,17 @@ template("ts_library_split") {
     _module_resolution = "nodenext"
   }
 
+  # This is a small optimization and concession that for unbundled builds, we
+  # emit the JS and source map files from sub-target 3 directly into the
+  # `out/<config>/gen` directory. This safes us a copy action for each JS/source
+  # map pair. We might turn this into an option on ts_library_split directly so
+  # this rule becomes more generic.
+  if (devtools_bundle) {
+    _outdir = "."
+  } else {
+    _outdir = rebase_path(target_gen_dir, _tsc_dir)
+  }
+
   _compiler_options = {
     target = _es_target
     module = _module
@@ -164,8 +182,8 @@ template("ts_library_split") {
     composite = false
     incremental = false
     disableSourceOfProjectReferenceRedirect = true
-    rootDir = rebase_path(_rootdir, target_gen_dir)
-    outDir = "."
+    rootDir = rebase_path(_rootdir, _tsc_dir)
+    outDir = _outdir
   }
 
   if (defined(invoker.es_libs)) {
@@ -187,11 +205,18 @@ template("ts_library_split") {
     }
 
     if (!(_ext == "ts" && get_path_info(_name, "extension") == "d")) {
-      _dts_outputs += [ "$_outdir/$_file_base.d.ts" ]
-      _js_outputs += [
-        "$_outdir/$_file_base.js",
-        "$_outdir/$_file_base.js.map",
-      ]
+      _dts_outputs += [ "$_tsc_dir/$_file_base.d.ts" ]
+      if (devtools_bundle) {
+        _js_outputs += [
+          "$_tsc_dir/$_file_base.js",
+          "$_tsc_dir/$_file_base.js.map",
+        ]
+      } else {
+        _js_outputs += [
+          "$target_gen_dir/$_file_base.js",
+          "$target_gen_dir/$_file_base.js.map",
+        ]
+      }
     }
   }
 
@@ -215,7 +240,7 @@ template("ts_library_split") {
           "--noCheck",
           "--noResolve",
           "--outDir",
-          rebase_path(_outdir, root_build_dir),
+          rebase_path(_tsc_dir, root_build_dir),
           "--rootDir",
           rebase_path(_rootdir, root_build_dir),
         ] + rebase_path(_all_sources, root_build_dir)
@@ -242,11 +267,11 @@ template("ts_library_split") {
         declaration = true
         emitDeclarationOnly = true
         skipLibCheck = true
-        rootDir = rebase_path(_rootdir, target_gen_dir)
+        rootDir = rebase_path(_rootdir, _tsc_dir)
         outDir = "."
         declarationDir = "."
       }
-      files = rebase_path(_all_sources, target_gen_dir)
+      files = rebase_path(_all_sources, _tsc_dir)
     }
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly
@@ -260,7 +285,7 @@ template("ts_library_split") {
     output_conversion = "json"
     contents = {
       compilerOptions = _compiler_options
-      files = rebase_path(_all_sources, target_gen_dir)
+      files = rebase_path(_all_sources, _tsc_dir)
       references = _ts_references
     }
     if (defined(invoker.testonly)) {

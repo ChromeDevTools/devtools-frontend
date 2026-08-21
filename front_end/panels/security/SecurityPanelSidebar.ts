@@ -274,38 +274,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  // Used in web tests
-  elementsByOrigin(): Map<string, {
-    select: (omitFocus?: boolean, selectedByUser?: boolean) => void,
-    showElement: () => void,
-    origin: () => string,
-    securityState: () => Protocol.Security.SecurityState | undefined,
-  }> {
-    const map = new Map<string, {
-      select: (omitFocus?: boolean, selectedByUser?: boolean) => void,
-      showElement: () => void,
-      origin: () => string,
-      securityState: () => Protocol.Security.SecurityState | undefined,
-    }>();
-    for (const [origin, state] of this.#origins.entries()) {
-      const element = {
-        select: () => {
-          this.#selectedElementId = origin;
-          this.#securitySidebarLastItemSetting.set(origin);
-          this.requestUpdate();
-          this.#onShowOrigin?.(origin);
-        },
-        showElement: () => {
-          this.#onShowOrigin?.(origin);
-        },
-        origin: () => origin,
-        securityState: () => state,
-      };
-      map.set(origin, element);
-    }
-    return map;
-  }
-
   set selectedOrigin(origin: Platform.DevToolsPath.UrlString|null) {
     this.#selectedElementId = origin ?? 'overview';
     this.#securitySidebarLastItemSetting.set(this.#selectedElementId);

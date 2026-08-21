@@ -8,7 +8,10 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_ui_module("settings") {
-  sources = [ "SettingUIRegistration.ts" ]
+  sources = [
+    "InspectorMainSettings.ts",
+    "SettingUIRegistration.ts",
+  ]
 
   deps = [
     "../../core/common:bundle",

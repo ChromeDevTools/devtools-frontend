@@ -447,13 +447,9 @@ UI.ActionRegistration.registerActionExtension({
   },
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.InspectorMainSettings.adBlockingEnabledSettingDescriptor, {
   category: Common.Settings.SettingCategory.NETWORK,
   title: i18nLazyString(UIStrings.forceAdBlocking),
-  settingName: 'network.ad-blocking-enabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  defaultValue: false,
   options: [
     {
       value: true,

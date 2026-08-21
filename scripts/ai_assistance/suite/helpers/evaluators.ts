@@ -9,7 +9,7 @@ import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
 import {loadInstructions} from '../instructions/load.ts';
-import type {Conversation} from '../types.js';
+import type {Trajectory} from '../types.js';
 
 import {generateGeminiContent} from './gemini.ts';
 import {getGolden, getMarkdownConversation, getOutputs, type Output} from './outputs.ts';
@@ -120,13 +120,13 @@ function parseScoringInstructions(instructions: string): {scoringPrompt: string,
 }
 
 export class FunctionCalled extends Evaluator {
-  static nameOnly(example: Conversation, funcName: string): boolean {
+  static nameOnly(example: Trajectory, funcName: string): boolean {
     return example.queries.some(q => {
       return q.response.tool_calls?.some(call => call.name === funcName);
     });
   }
 
-  static nameAndArguments(example: Conversation, funcName: string, argCheck: Record<string, unknown>): boolean {
+  static nameAndArguments(example: Trajectory, funcName: string, argCheck: Record<string, unknown>): boolean {
     return example.queries.some(q => {
       return q.response.tool_calls?.some(call => {
         if (call.name !== funcName) {
@@ -141,8 +141,8 @@ export class FunctionCalled extends Evaluator {
 export class LLMComparison extends Evaluator {
   static #cachedScoring: {scoringPrompt: string, rubricWeights: RubricWeights}|null = null;
 
-  static async judge(example: Conversation, prompt: string):
-      Promise<{rubricScores: RubricScore[], rubricWeights: RubricWeights}> {
+  static async judge(example: Trajectory,
+                     prompt: string): Promise<{rubricScores: RubricScore[], rubricWeights: RubricWeights}> {
     if (!this.#cachedScoring) {
       const scoringInstructions = loadInstructions('scoring');
       this.#cachedScoring = parseScoringInstructions(scoringInstructions);
@@ -318,9 +318,9 @@ const stateStorage = new AsyncLocalStorage<GroupTestState>();
 export type ItEval = {
   test: string,
 }&({
-  succeed: (example: Conversation) => boolean,
+  succeed: (example: Trajectory) => boolean,
 }|{
-  judge: (example: Conversation) => Promise<{rubricScores: RubricScore[], rubricWeights: RubricWeights}>,
+  judge: (example: Trajectory) => Promise<{rubricScores: RubricScore[], rubricWeights: RubricWeights}>,
 }|{
   rouge: true,
 });
@@ -362,7 +362,7 @@ export async function itEval(config: ItEval): Promise<void> {
     if (!outputs) {
       continue;
     }
-    const conversations = outputs.flatMap(o => o.contents.conversations);
+    const conversations = outputs.map(o => o.contents);
 
     if ('succeed' in config) {
       const details = conversations.map(conversation => ({
@@ -541,15 +541,15 @@ export interface JudgeStats {
 
 export type Result = {
   type: 'BINARY',
-  details: Array<{success: boolean, conversation: Conversation}>,
+  details: Array<{success: boolean, conversation: Trajectory}>,
 }|{
   type: 'JUDGE',
   repetitionCount: number,
   rubricWeights: RubricWeights,
-  details: Array<{conversation: Conversation, rubricScores: RubricScore[]}>,
+  details: Array<{conversation: Trajectory, rubricScores: RubricScore[]}>,
 }|{
   type: 'ROUGE',
-  details: Array<{conversation: Conversation, score: number, goldenResponse: string}>,
+  details: Array<{conversation: Trajectory, score: number, goldenResponse: string}>,
 };
 
 function calculateBinaryStats(result: Extract<Result, {type: 'BINARY'}>): BinaryStats {

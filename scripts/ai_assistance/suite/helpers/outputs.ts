@@ -6,11 +6,11 @@ import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import * as path from 'node:path';
 
-import type {Conversation, EvalFileOutput} from '../types.js';
+import type {Trajectory} from '../types.js';
 
 const BASE_DIR = path.join(path.dirname(import.meta.filename), '..', 'outputs', 'outputs');
 
-export function getMarkdownConversation(example: Conversation): string {
+export function getMarkdownConversation(example: Trajectory): string {
   let markdown = '';
   for (const query of example.queries) {
     markdown += '## REQUEST FROM CLIENT:\n';
@@ -40,7 +40,7 @@ export interface Output {
   label: string;
   dateFolder: string;
   type: string;
-  contents: EvalFileOutput;
+  contents: Trajectory;
 }
 
 export async function getOutputs(type: string, label: string): Promise<Output[]> {
@@ -57,18 +57,18 @@ export async function getOutputs(type: string, label: string): Promise<Output[]>
       dateFolder: parentDir,
       type,
       label,
-      contents: JSON.parse(fs.readFileSync(absoluteFilePath, 'utf8')) as EvalFileOutput,
+      contents: JSON.parse(fs.readFileSync(absoluteFilePath, 'utf8')) as Trajectory,
     };
   });
 }
 
-export async function getGolden(type: string, label: string): Promise<Conversation|null> {
+export async function getGolden(type: string, label: string): Promise<Trajectory|null> {
   const goldenPath = path.join(BASE_DIR, type, 'golden', `${label}.json`);
   if (!fs.existsSync(goldenPath)) {
     return null;
   }
-  const contents = JSON.parse(fs.readFileSync(goldenPath, 'utf8')) as EvalFileOutput;
-  return contents.conversations[0] || null;
+  const contents = JSON.parse(fs.readFileSync(goldenPath, 'utf8')) as Trajectory;
+  return contents || null;
 }
 
 /**

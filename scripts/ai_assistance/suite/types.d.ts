@@ -21,22 +21,15 @@ export interface ProcessedQuery {
   };
 }
 
-export interface EvalFileOutput {
+/**
+ * Represents the evaluation output format for a single conversation session,
+ * containing metadata and the query/response turns.
+ */
+export interface Trajectory {
   metadata: {
-    start_time: string,
-    id: string,
+    session_id: string,
+    start_time?: string, model: string, chromeVersion: string, autoRunExampleId: string, explanation: string,
   };
-  conversations: Conversation[];
-}
-
-export interface Conversation {
-  session_id: string;
-  chromeVersion: string;
-  autoRunExampleId: string;
-  // These are explanations found in the input example HTML that can be used to
-  // judge the AI's output.
-  explanation: string;
-  model: {id: string, version: string};
   queries: ProcessedQuery[];
 }
 /* eslint-enable @typescript-eslint/naming-convention */

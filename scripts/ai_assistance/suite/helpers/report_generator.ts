@@ -5,7 +5,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-import type {Conversation} from '../types.js';
+import type {Trajectory} from '../types.js';
 
 import {
   type BinaryStats,
@@ -99,18 +99,18 @@ const RESULT_RENDERERS: {[K in Result['type']]: (result: Extract<Result, {type: 
 /**
  * Renders a standard expandable card for a conversation.
  */
-function renderConversationCard(
-    conversation: Conversation, headerLabel: string, scoreElement: string, detailsHtml: string): string {
+function renderConversationCard(conversation: Trajectory, headerLabel: string, scoreElement: string,
+                                detailsHtml: string): string {
   return `
     <div class="card">
-      <div class="card-header" onclick="toggleCard(this)">
-        <span>${headerLabel} <code>${conversation.session_id}</code></span>
+       <div class="card-header" onclick="toggleCard(this)">
+        <span>${headerLabel} <code>${conversation.metadata.session_id}</code></span>
         ${scoreElement}
       </div>
       <div class="card-content">
         <div class="metadata">
-          <span><strong>Model:</strong> ${conversation.model.id} (${conversation.model.version})</span>
-          <span><strong>Chrome:</strong> ${conversation.chromeVersion}</span>
+          <span><strong>Model:</strong> ${conversation.metadata.model}</span>
+          <span><strong>Chrome:</strong> ${conversation.metadata.chromeVersion}</span>
         </div>
         ${renderConversationTranscript(conversation)}
         ${detailsHtml}
@@ -121,7 +121,7 @@ function renderConversationCard(
 /**
  * Renders the transcript of a conversation.
  */
-function renderConversationTranscript(conversation: Conversation): string {
+function renderConversationTranscript(conversation: Trajectory): string {
   return conversation.queries
       .map(query => {
         let html = '';
@@ -255,7 +255,7 @@ export function generateReport(stores: ResultStore|ResultStore[]): void {
 /**
  * Renders a summary table comparing results across different dates for a specific test.
  */
-function renderSummaryTable(dateToResult: Map<string, Result>, sortedDates: string[]): string {
+function renderSummaryTable(dateToResult: ReadonlyMap<string, Result>, sortedDates: string[]): string {
   const results = Array.from(dateToResult.values());
   if (results.length === 0) {
     return '';

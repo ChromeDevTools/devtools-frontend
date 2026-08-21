@@ -9,7 +9,7 @@ import * as path from 'node:path';
 import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
-import type {Conversation, EvalFileOutput, ProcessedQuery} from './types.js';
+import type {ProcessedQuery, Trajectory} from './types.js';
 
 /** Note: non-exhaustive. **/
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -62,11 +62,11 @@ interface RawToEvalOptions {
   label: string;
 }
 
-export function convertRawOutputToEval(opts: RawToEvalOptions): EvalFileOutput {
+export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
   const inputHash = hash(JSON.stringify(opts.inputFromAutoRun));
   const sessionIds = opts.inputFromAutoRun.metadata.map(m => m.session_id);
 
-  const processedExamples: Conversation[] =
+  const processedExamples: Trajectory[] =
       sessionIds
           .map((sessionIdFromInput, index) => {
             const data = opts.inputFromAutoRun.examples.filter(e => e.session_id === sessionIdFromInput);
@@ -81,14 +81,13 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): EvalFileOutput {
             const modelData = data.at(0)?.aidaResponse.metadata.inferenceOptionMetadata;
             assert.ok(modelData, 'No inferenceOptionMetadata');
 
-            const processed: Conversation = {
-              session_id: id,
-              autoRunExampleId: sessionIdFromInput,
-              chromeVersion,
-              explanation: exampleMetadata?.explanation ?? '',
-              model: {
-                id: modelData?.modelId,
-                version: modelData?.modelVersion,
+            const processed: Trajectory = {
+              metadata: {
+                session_id: id,
+                model: modelData?.modelId ?? '',
+                chromeVersion,
+                autoRunExampleId: sessionIdFromInput,
+                explanation: exampleMetadata?.explanation ?? '',
               },
               queries: [],
             };
@@ -124,14 +123,7 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): EvalFileOutput {
           })
           .filter(x => x !== null);
 
-  const finalOutput: EvalFileOutput = {
-    metadata: {
-      start_time: new Date().toISOString(),
-      id: hash(processedExamples.map(x => x.session_id).join('')),
-    },
-    conversations: processedExamples,
-  };
-  return finalOutput;
+  return processedExamples;
 }
 
 if (import.meta.main) {
@@ -149,13 +141,15 @@ if (import.meta.main) {
 
   const inputPath = path.isAbsolute(userArgs.file) ? userArgs.file : path.join(process.cwd(), userArgs.file);
   const contents = fs.readFileSync(inputPath, 'utf8');
-  const finalOutput =
+  const trajectories =
       convertRawOutputToEval({inputFromAutoRun: JSON.parse(contents) as RawOutput, label: userArgs.label});
 
-  const stringified = userArgs.pretty ? JSON.stringify(finalOutput, null, 2) : JSON.stringify(finalOutput);
-  const fileName = `${slug(userArgs.label)}-${finalOutput.metadata.id}.json`;
-  fs.writeFileSync(path.join(process.cwd(), fileName), stringified, 'utf8');
-  console.log(`Wrote ${fileName} to disk.`);
+  for (const trajectory of trajectories) {
+    const stringified = userArgs.pretty ? JSON.stringify(trajectory, null, 2) : JSON.stringify(trajectory);
+    const fileName = `${slug(userArgs.label)}-${trajectory.metadata.session_id}.json`;
+    fs.writeFileSync(path.join(process.cwd(), fileName), stringified, 'utf8');
+    console.log(`Wrote ${fileName} to disk.`);
+  }
 }
 
 function hash(str: string) {
@@ -163,7 +157,7 @@ function hash(str: string) {
   return hash.substring(0, 15);
 }
 
-function slug(str: string): string {
+export function slug(str: string): string {
   str = str.replace(/^\s+|\s+$/g, '');  // Trim leading/trailing whitespace
   str = str.toLowerCase();
   str = str.replace(/[^a-z0-9 -]/g, '')  // Remove invalid chars

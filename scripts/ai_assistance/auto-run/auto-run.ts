@@ -10,7 +10,7 @@ import puppeteer from 'puppeteer-core';
 import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
-import {convertRawOutputToEval, type RawOutput} from '../suite/to_eval_output.ts';
+import {convertRawOutputToEval, type RawOutput, slug} from '../suite/to_eval_output.ts';
 import type {ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId} from '../types.js';
 
 import {createTargetExecutor} from './targets/factory.ts';
@@ -524,26 +524,29 @@ function writeOutput(
   console.info(`\n[Info]: Finished exporting results to ${outputPath}, it took ${formatElapsedTime()}`);
 
   if (userArgs.eval || userArgs.grade) {
-    const convertedOutput = convertRawOutputToEval({
+    const trajectories = convertRawOutputToEval({
       inputFromAutoRun: output as RawOutput,
       label: userArgs.label,
     });
-    const evalOutputPath = outputPath.replace('.json', '.eval.json');
-    fs.writeFileSync(evalOutputPath, JSON.stringify(convertedOutput, null, 2));
-    console.info(`\n[Info]: Exported eval output to ${evalOutputPath}`);
 
+    const targetDir = path.resolve(import.meta.dirname, '..', 'suite', 'outputs', 'outputs', userArgs.testTarget,
+                                   new Date().toISOString().slice(0, 10));
     if (userArgs.grade) {
-      const target = userArgs.testTarget;
-      const dateStr = new Date().toISOString().slice(0, 10);
-      const targetDir = path.resolve(import.meta.dirname, '..', 'suite', 'outputs', 'outputs', target, dateStr);
       fs.mkdirSync(targetDir, {recursive: true});
+    }
 
-      const copiedFileName = `${userArgs.label}.json`;
-      const copiedFilePath = path.resolve(targetDir, copiedFileName);
+    for (const trajectory of trajectories) {
+      const evalOutputPath =
+          path.resolve(OUTPUT_DIR, `${slug(userArgs.label)}-${trajectory.metadata.session_id}.eval.json`);
+      fs.writeFileSync(evalOutputPath, JSON.stringify(trajectory, null, 2));
+      console.info(`\n[Info]: Exported eval output to ${evalOutputPath}`);
 
-      fs.copyFileSync(evalOutputPath, copiedFilePath);
-      console.info(`\n[Info]: Copied eval output to ${copiedFilePath}`);
-
+      if (userArgs.grade) {
+        const copiedFileName = `${slug(userArgs.label)}-${trajectory.metadata.session_id}.json`;
+        const copiedFilePath = path.resolve(targetDir, copiedFileName);
+        fs.copyFileSync(evalOutputPath, copiedFilePath);
+        console.info(`\n[Info]: Copied eval output to ${copiedFilePath}`);
+      }
     }
   }
 }

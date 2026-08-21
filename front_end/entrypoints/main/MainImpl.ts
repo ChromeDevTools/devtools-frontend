@@ -56,6 +56,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {html, render} from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';
@@ -427,8 +428,7 @@ export class MainImpl {
         Persistence.IsolatedFileSystemManager.Events.FileSystemError,
         event => Snackbar.Snackbar.Snackbar.show({message: event.data}));
 
-    const defaultThemeSetting = 'systemPreferred';
-    const themeSetting = Common.Settings.Settings.instance().createSetting('ui-theme', defaultThemeSetting);
+    const themeSetting = Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.uiThemeSettingDescriptor);
     UI.UIUtils.initializeUIUtils(document);
 
     // Initialize theme support and apply it.

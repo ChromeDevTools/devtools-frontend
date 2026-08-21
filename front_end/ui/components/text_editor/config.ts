@@ -10,6 +10,7 @@ import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
 import {Icon} from '../../kit/kit.js';
 import * as UI from '../../legacy/legacy.js';
+import * as SettingsUI from '../../settings/settings.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 
@@ -327,7 +328,7 @@ const baseKeymap = CM.keymap.of([
 ]);
 
 function themeIsDark(): boolean {
-  const setting = Common.Settings.Settings.instance().moduleSetting('ui-theme').get();
+  const setting = Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.uiThemeSettingDescriptor).get();
   return setting === 'systemPreferred' ? window.matchMedia('(prefers-color-scheme: dark)').matches : setting === 'dark';
 }
 

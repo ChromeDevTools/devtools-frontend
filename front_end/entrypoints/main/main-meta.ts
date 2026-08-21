@@ -658,13 +658,9 @@ UI.ActionRegistration.registerActionExtension({
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.uiThemeSettingDescriptor, {
   category: Common.Settings.SettingCategory.APPEARANCE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.theme),
-  settingName: 'ui-theme',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'systemPreferred',
   reloadRequired: false,
   options: [
     {

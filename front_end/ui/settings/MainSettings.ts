@@ -10,3 +10,10 @@ export const uiThemeSettingDescriptor: Common.Settings.SettingDescriptor<string>
   defaultValue: 'systemPreferred',
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const chromeThemeColorsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'chrome-theme-colors',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

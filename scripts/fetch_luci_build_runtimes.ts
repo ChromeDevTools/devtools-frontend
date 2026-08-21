@@ -8,9 +8,8 @@ import {parseArgs} from 'node:util';
 export function getLuciToken(): string {
   try {
     return execSync('luci-auth token', {encoding: 'utf-8'}).trim();
-  } catch {
-    console.error('Error: Could not get LUCI auth token. Did you run \'luci-auth login\'?');
-    process.exit(1);
+  } catch (err) {
+    throw new Error('Could not get LUCI auth token. Did you run \'luci-auth login\'?', {cause: err});
   }
 }
 
@@ -54,6 +53,7 @@ export interface BuilderReport {
   overallMinRuntimeMs: number;
   overallMaxRuntimeMs: number;
   changeFromFirstDay: number|null;
+  changeFromSecondDay: number|null;
   dailyStats: DailyBuildStats[];
 }
 
@@ -92,10 +92,23 @@ export function parseTimeRange(options: {
                                        new Date(options.until)) :
                                   new Date();
 
+  if (isNaN(endTime.getTime())) {
+    throw new Error(`Invalid date format for until: "${options.until}"`);
+  }
+
   if (options.since) {
     const startTime = typeof options.since === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(options.since) ?
         new Date(`${options.since}T00:00:00.000Z`) :
         new Date(options.since);
+    if (isNaN(startTime.getTime())) {
+      throw new Error(`Invalid date format for since: "${options.since}"`);
+    }
+    // Always start at midnight UTC of the start day so all builds on the first day are fetched.
+    startTime.setUTCHours(0, 0, 0, 0);
+
+    if (startTime.getTime() > endTime.getTime()) {
+      throw new Error(`Start time (${startTime.toISOString()}) cannot be after end time (${endTime.toISOString()})`);
+    }
     return {startTime, endTime};
   }
 
@@ -111,22 +124,31 @@ export function parseTimeRange(options: {
         days = val * 7;
       } else if (unit === 'm') {
         days = val * 30;
+      } else if (unit === 'y') {
+        days = val * 365;
       } else if (unit === 'h') {
         days = val / 24;
       }
     } else {
       const num = parseFloat(options.period);
-      if (!isNaN(num)) {
+      if (!isNaN(num) && num > 0) {
         days = num;
       }
     }
   }
 
-  if (!days || days <= 0) {
+  if (!days || days <= 0 || isNaN(days)) {
     days = 14;
   }
 
   const startTime = new Date(endTime.getTime() - (days * 24 * 60 * 60 * 1000));
+  // Always start at midnight UTC of the start day so all builds on the first day are fetched.
+  startTime.setUTCHours(0, 0, 0, 0);
+
+  if (startTime.getTime() > endTime.getTime()) {
+    throw new Error(`Start time (${startTime.toISOString()}) cannot be after end time (${endTime.toISOString()})`);
+  }
+
   return {startTime, endTime};
 }
 
@@ -191,7 +213,11 @@ export async function fetchSuccessfulBuilds(options: FetchBuildsOptions = {}): P
     const builds: Build[] = data.builds || [];
     allBuilds.push(...builds);
 
-    pageToken = data.nextPageToken;
+    if (!data.nextPageToken || data.nextPageToken === pageToken) {
+      pageToken = undefined;
+    } else {
+      pageToken = data.nextPageToken;
+    }
   } while (pageToken);
 
   return allBuilds;
@@ -206,13 +232,16 @@ export function computeDailyStats(builds: Build[]): DailyBuildStats[] {
     }
     const start = new Date(build.startTime).getTime();
     const end = new Date(build.endTime).getTime();
+    if (isNaN(start) || isNaN(end)) {
+      continue;
+    }
     const durationMs = end - start;
     if (durationMs < 0) {
       continue;
     }
 
     // Group by UTC date of build start (or createTime)
-    const dateKey = (build.startTime || build.createTime || '').slice(0, 10);
+    const dateKey = new Date(start).toISOString().slice(0, 10);
     if (!dateKey) {
       continue;
     }
@@ -269,7 +298,9 @@ export function generateReport(builder: string, project: string, bucket: string,
   let totalBuilds = 0;
   const allDurations: number[] = [];
 
-  for (const day of dailyStats) {
+  const sortedDailyStats = [...dailyStats].sort((a, b) => a.date.localeCompare(b.date));
+
+  for (const day of sortedDailyStats) {
     totalBuilds += day.count;
     allDurations.push(...day.durationsMs);
   }
@@ -284,10 +315,14 @@ export function generateReport(builder: string, project: string, bucket: string,
   const overallMinRuntimeMs = allDurations.length > 0 ? allDurations[0] : 0;
   const overallMaxRuntimeMs = allDurations.length > 0 ? allDurations[allDurations.length - 1] : 0;
 
-  const firstDay = dailyStats.length > 0 ? dailyStats[0] : null;
-  const lastDay = dailyStats.length > 0 ? dailyStats[dailyStats.length - 1] : null;
-  const changeFromFirstDay = (firstDay && lastDay && firstDay.averageRuntimeMs > 0 && dailyStats.length > 1) ?
+  const firstDay = sortedDailyStats.length > 0 ? sortedDailyStats[0] : null;
+  const secondDay = sortedDailyStats.length > 1 ? sortedDailyStats[1] : null;
+  const lastDay = sortedDailyStats.length > 0 ? sortedDailyStats[sortedDailyStats.length - 1] : null;
+  const changeFromFirstDay = (firstDay && lastDay && firstDay.averageRuntimeMs > 0 && sortedDailyStats.length > 1) ?
       ((lastDay.averageRuntimeMs - firstDay.averageRuntimeMs) / firstDay.averageRuntimeMs) * 100 :
+      null;
+  const changeFromSecondDay = (secondDay && lastDay && secondDay.averageRuntimeMs > 0 && sortedDailyStats.length > 1) ?
+      ((lastDay.averageRuntimeMs - secondDay.averageRuntimeMs) / secondDay.averageRuntimeMs) * 100 :
       null;
 
   return {
@@ -300,11 +335,15 @@ export function generateReport(builder: string, project: string, bucket: string,
     overallMinRuntimeMs,
     overallMaxRuntimeMs,
     changeFromFirstDay,
-    dailyStats,
+    changeFromSecondDay,
+    dailyStats: sortedDailyStats,
   };
 }
 
 export function formatDuration(ms: number): string {
+  if (isNaN(ms) || ms < 0) {
+    return '-';
+  }
   const totalSeconds = Math.round(ms / 1000);
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
@@ -312,17 +351,20 @@ export function formatDuration(ms: number): string {
 }
 
 export function formatPercentDiff(pct: number|null|undefined): string {
-  if (pct === null || pct === undefined) {
+  if (pct === null || pct === undefined || isNaN(pct)) {
     return '-';
   }
-  const formatted = pct.toFixed(1);
-  if (pct > 0) {
+  let formatted = pct.toFixed(1);
+  if (formatted === '-0.0') {
+    formatted = '0.0';
+  }
+  if (pct > 0 && formatted !== '0.0') {
     return `+${formatted}%`;
   }
   return `${formatted}%`;
 }
 
-function resolveBuilderName(name: string): string {
+export function resolveBuilderName(name: string): string {
   const normalized = name.trim().toLowerCase();
   if (normalized === 'linux' || normalized === 'linux-rel' || normalized === 'dtf_linux_rel') {
     return 'dtf_linux_rel';
@@ -337,9 +379,9 @@ function resolveBuilderName(name: string): string {
   return name.trim();
 }
 
-const DEFAULT_BUILDERS = ['dtf_linux_rel', 'dtf_mac_arm64_rel', 'dtf_win64_rel'];
+export const DEFAULT_BUILDERS = ['dtf_linux_rel', 'dtf_mac_arm64_rel', 'dtf_win64_rel'];
 
-async function main(): Promise<void> {
+export async function main(): Promise<void> {
   const {values} = parseArgs({
     options: {
       days: {
@@ -356,6 +398,10 @@ async function main(): Promise<void> {
       },
       builder: {
         type: 'string',
+      },
+      status: {
+        type: 'string',
+        default: 'SUCCESS',
       },
       bucket: {
         type: 'string',
@@ -384,11 +430,12 @@ Fetches runtimes of successful builds from LUCI/Buildbucket and prints daily ave
 Defaults to devtools-frontend try builders: linux-rel, mac arm64, and windows (dtf_linux_rel, dtf_mac_arm64_rel, dtf_win64_rel).
 
 Options:
-  --period <period>        Time period (e.g. 14d, 2w, 1m) (default: 14d)
+  --period <period>        Time period (e.g. 14d, 2w, 1m, 1y) (default: 14d)
   --days <number>          Number of days to look back (e.g. 14)
   --since <date>           Start date / timestamp (e.g. 2026-08-01)
   --until <date>           End date / timestamp (e.g. 2026-08-20)
   --builder <name[,name]>  Builder name(s), comma-separated (default: dtf_linux_rel,dtf_mac_arm64_rel,dtf_win64_rel)
+  --status <status>        Build status (default: SUCCESS)
   --bucket <name>          Bucket name (default: try)
   --project <name>         Project name (default: devtools-frontend)
   --format <format>        Output format: 'table' or 'json' (default: table)
@@ -404,16 +451,17 @@ Options:
   const bucket = values.bucket || 'try';
   const project = values.project || 'devtools-frontend';
   const isJson = values.format === 'json';
+  const status = values.status || 'SUCCESS';
 
   const timeRange = parseTimeRange({days, period, since, until});
   const startStr = timeRange.startTime.toISOString().slice(0, 10);
   const endStr = timeRange.endTime.toISOString().slice(0, 10);
 
-  const builderList =
-      values.builder ? values.builder.split(',').map(resolveBuilderName).filter(Boolean) : DEFAULT_BUILDERS;
+  const parsedBuilders = values.builder ? values.builder.split(',').map(resolveBuilderName).filter(Boolean) : [];
+  const builderList = parsedBuilders.length > 0 ? parsedBuilders : DEFAULT_BUILDERS;
 
   if (!isJson) {
-    console.log(`Fetching successful builds for ${project}/${bucket} [${builderList.join(', ')}] from ${startStr} to ${
+    console.log(`Fetching ${status} builds for ${project}/${bucket} [${builderList.join(', ')}] from ${startStr} to ${
         endStr}...`);
   }
 
@@ -428,6 +476,7 @@ Options:
       period,
       since,
       until,
+      status,
     });
 
     const dailyStats = computeDailyStats(builds);
@@ -448,46 +497,51 @@ Options:
   }
   const sortedDates = [...allDates].sort();
 
-  console.log(`\nDaily Average Build Runtimes (${startStr} to ${endStr} - SUCCESS runs only):`);
-  const colWidth = 27;
+  console.log(`\nDaily Average Build Runtimes (${startStr} to ${endStr} - ${status} runs only):`);
+  const colWidth = Math.max(27, ...reports.map(r => r.builder.length));
   const headerTop = reports.map(r => r.builder.padEnd(colWidth)).join('  ');
   const subCols =
-      reports.map(() => `${'Avg Time'.padStart(9)} ${'+- %'.padStart(7)} ${'(Builds)'.padStart(9)}`).join('  ');
+      reports.map(() => `${'Avg Time'.padStart(9)} ${'+- %'.padStart(7)} ${'(Builds)'.padStart(9)}`.padEnd(colWidth))
+          .join('  ');
 
-  const totalLineWidth = 12 + (colWidth + 2) * reports.length;
+  const totalLineWidth = 12 + 2 + (colWidth + 2) * reports.length - 2;
   console.log('='.repeat(totalLineWidth));
   console.log(`${'Date'.padEnd(12)}  ${headerTop}`);
   console.log(`${''.padEnd(12)}  ${subCols}`);
   console.log('-'.repeat(totalLineWidth));
 
-  for (const date of sortedDates) {
-    const rowCols = reports
-                        .map(r => {
-                          const d = r.dailyStats.find(s => s.date === date);
-                          if (!d) {
-                            return `${'-'.padStart(9)} ${'-'.padStart(7)} ${'-'.padStart(9)}`;
-                          }
-                          const avg = formatDuration(d.averageRuntimeMs).padStart(9);
-                          const diff = formatPercentDiff(d.percentChangeFromPreviousDay).padStart(7);
-                          const count = `(${d.count})`.padStart(9);
-                          return `${avg} ${diff} ${count}`;
-                        })
-                        .join('  ');
+  if (sortedDates.length === 0) {
+    console.log('No builds found for the specified criteria.');
+  } else {
+    for (const date of sortedDates) {
+      const rowCols = reports
+                          .map(r => {
+                            const d = r.dailyStats.find(s => s.date === date);
+                            if (!d) {
+                              return `${'-'.padStart(9)} ${'-'.padStart(7)} ${'-'.padStart(9)}`.padEnd(colWidth);
+                            }
+                            const avg = formatDuration(d.averageRuntimeMs).padStart(9);
+                            const diff = formatPercentDiff(d.percentChangeFromPreviousDay).padStart(7);
+                            const count = `(${d.count})`.padStart(9);
+                            return `${avg} ${diff} ${count}`.padEnd(colWidth);
+                          })
+                          .join('  ');
 
-    console.log(`${date.padEnd(12)}  ${rowCols}`);
+      console.log(`${date.padEnd(12)}  ${rowCols}`);
+    }
   }
 
   console.log('='.repeat(totalLineWidth));
   const changeCols = reports
                          .map(r => {
                            const avg = ''.padStart(9);
-                           const diff = formatPercentDiff(r.changeFromFirstDay).padStart(7);
+                           const diff = formatPercentDiff(r.changeFromSecondDay).padStart(7);
                            const count = `(${r.totalBuilds})`.padStart(9);
-                           return `${avg} ${diff} ${count}`;
+                           return `${avg} ${diff} ${count}`.padEnd(colWidth);
                          })
                          .join('  ');
   console.log(`${'Change*'.padEnd(12)}  ${changeCols}`);
-  console.log('\n* Change compares the last day to the first day of the period.');
+  console.log('\n* Change compares the last day to the second day of the period.');
 }
 
 if (import.meta.main) {

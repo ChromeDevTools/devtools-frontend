@@ -741,14 +741,10 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.languageSettin
   reloadRequired: true,
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.shortcutPanelSwitchSettingDescriptor, {
   category: Common.Settings.SettingCategory.APPEARANCE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: Host.Platform.platform() === 'mac' ? i18nLazyString(UIStrings.enableShortcutToSwitchPanels) :
                                               i18nLazyString(UIStrings.enableCtrlShortcutToSwitchPanels),
-  settingName: 'shortcut-panel-switch',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.disablePausedStateOverlaySettingDescriptor, {

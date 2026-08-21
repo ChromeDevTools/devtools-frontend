@@ -31,3 +31,10 @@ export const languageSettingDescriptor: Common.Settings.SettingDescriptor<string
   defaultValue: 'en-US',
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const shortcutPanelSwitchSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'shortcut-panel-switch',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

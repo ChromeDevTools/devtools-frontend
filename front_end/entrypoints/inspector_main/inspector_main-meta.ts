@@ -462,14 +462,10 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.InspectorMainSettings.adBlo
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.InspectorMainSettings.autoAttachToCreatedPagesSettingDescriptor, {
   category: Common.Settings.SettingCategory.GLOBAL,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.autoOpenDevTools),
-  settingName: 'auto-attach-to-created-pages',
-  settingType: Common.Settings.SettingType.BOOLEAN,
   order: 2,
-  defaultValue: false,
   options: [
     {
       value: true,

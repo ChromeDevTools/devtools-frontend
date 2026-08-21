@@ -10,3 +10,10 @@ export const adBlockingEnabledSettingDescriptor: Common.Settings.SettingDescript
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const autoAttachToCreatedPagesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'auto-attach-to-created-pages',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

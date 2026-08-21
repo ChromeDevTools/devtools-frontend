@@ -248,7 +248,8 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
   readonly #emulatePageFocusSetting: Common.Settings.Setting<boolean>;
 
   constructor() {
-    this.#autoAttachSetting = Common.Settings.Settings.instance().moduleSetting('auto-attach-to-created-pages');
+    this.#autoAttachSetting = Common.Settings.Settings.instance().resolve(
+        SettingsUI.InspectorMainSettings.autoAttachToCreatedPagesSettingDescriptor);
     this.#autoAttachSetting.addChangeListener(this.#updateAutoAttach, this);
     this.#updateAutoAttach();
 

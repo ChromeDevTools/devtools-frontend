@@ -1,0 +1,85 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../typescript/ts_library_split.gni")
+import("./bundle.gni")
+import("./vars.gni")
+
+template("devtools_entrypoint_split") {
+  assert(defined(invoker.entrypoint),
+         "You must define the 'entrypoint' for an entrypoint target")
+
+  if (!devtools_bundle) {
+    ts_library_split(target_name) {
+      sources = [ invoker.entrypoint ]
+      forward_variables_from(invoker,
+                             "*",
+                             [
+                               "entrypoint",
+                               "sources",
+                             ])
+    }
+  } else {
+    _outdir = string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc")
+    _file_name = get_path_info(invoker.entrypoint, "name")
+    _ts_target = "${target_name}_typescript"
+    _bundle_target = "${target_name}_bundle"
+
+    # 1. Compile entrypoint to intermediate out/<config>/tsc JS and .d.ts.
+    ts_library_split(_ts_target) {
+      tsconfig_name = target_name
+      sources = [ invoker.entrypoint ]
+      forward_variables_from(invoker,
+                             "*",
+                             [
+                               "entrypoint",
+                               "sources",
+                               "visibility",
+                             ])
+      visibility = [ ":*" ]
+    }
+
+    # 2. Bundle intermediate JS from out/<config>/tsc to out/<config>/gen.
+    bundle(_bundle_target) {
+      entrypoint = "$_outdir/$_file_name.js"
+      output_file_location = "$target_gen_dir/$_file_name.js"
+      deps = [
+        ":$_ts_target",
+        ":${_ts_target}_checked",
+      ]
+      forward_variables_from(invoker, [ "testonly" ])
+      if (defined(invoker.deps)) {
+        deps += invoker.deps
+      }
+      visibility = [ ":*" ]
+    }
+
+    # 3. Main target exposing d.ts files via public_deps
+    #    and runtime bundled outputs via data_deps.
+    group(target_name) {
+      public_deps = [ ":$_ts_target" ]
+      if (defined(invoker.public_deps)) {
+        public_deps += invoker.public_deps
+      }
+      data = [ "$target_gen_dir/$_file_name.js" ]
+      data_deps = [ ":$_bundle_target" ]
+      if (defined(invoker.data_deps)) {
+        data_deps += invoker.data_deps
+      }
+      metadata = {
+        typescript_files = rebase_path([ invoker.entrypoint ], root_build_dir)
+        grd_files = [ "$target_gen_dir/$_file_name.js" ]
+      }
+      forward_variables_from(invoker,
+                             [
+                               "testonly",
+                               "visibility",
+                             ])
+    }
+  }
+}
+
+set_defaults("devtools_entrypoint_split") {
+  visibility = [ "*" ]
+}

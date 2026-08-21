@@ -5,6 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 import("./bundle.gni")
 import("./copy.gni")
+import("./devtools_entrypoint_split.gni")
 import("./node.gni")
 import("./vars.gni")
 

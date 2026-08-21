@@ -6,14 +6,14 @@ import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import * as path from 'node:path';
 
-import {Role, type Trajectory} from '../types.js';
+import type {Trajectory} from '../types.js';
 
 const BASE_DIR = path.join(path.dirname(import.meta.filename), '..', 'outputs', 'outputs');
 
 export function getMarkdownConversation(example: Trajectory): string {
   let markdown = '';
   for (const turn of example.data) {
-    if (turn.role === Role.USER) {
+    if (turn.role === 'user') {
       markdown += '## REQUEST FROM CLIENT:\n';
       if (turn.content.length) {
         markdown += `### QUERY:\n${turn.content.join('\n')}\n`;

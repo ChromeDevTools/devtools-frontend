@@ -5,7 +5,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-import {Role, type Trajectory} from '../types.js';
+import type {Trajectory} from '../types.js';
 
 import {
   type BinaryStats,
@@ -125,7 +125,7 @@ function renderConversationTranscript(conversation: Trajectory): string {
   return conversation.data
       .map(turn => {
         let html = '';
-        if (turn.role === Role.USER) {
+        if (turn.role === 'user') {
           html += '<div class="transcript-header">Request</div>';
           if (turn.content.length) {
             html += `<pre><strong>Query:</strong>\n${turn.content.join('\n')}</pre>`;

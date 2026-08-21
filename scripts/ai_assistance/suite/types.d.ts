@@ -3,18 +3,22 @@
 // found in the LICENSE file.
 
 /* eslint-disable @typescript-eslint/naming-convention */
-export enum Role {
-  USER = 'user',
-  GEMINI = 'gemini',
-}
-
 export interface Turn {
   turn_id: string;
-  role: Role;
+  role: 'user'|'gemini';
+  timestamp: number;
+  tokens: Record<string, never>;
   content: string[];
-  tool_calls?: Array<{
+  thoughts: Array<{
+    subject: string,
+    description: string,
+    timestamp: number,
+  }>;
+  tool_calls: Array<{
     name: string,
     args: Record<string, unknown>,
+    timestamp: number,
+    status: 'success'|'error',
     result?: unknown,
   }>;
 }

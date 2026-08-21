@@ -9,7 +9,7 @@ import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
 import {loadInstructions} from '../instructions/load.ts';
-import {Role, type Trajectory} from '../types.js';
+import type {Trajectory} from '../types.js';
 
 import {generateGeminiContent} from './gemini.ts';
 import {getGolden, getMarkdownConversation, getOutputs, type Output} from './outputs.ts';
@@ -122,13 +122,13 @@ function parseScoringInstructions(instructions: string): {scoringPrompt: string,
 export class FunctionCalled extends Evaluator {
   static nameOnly(example: Trajectory, funcName: string): boolean {
     return example.data.some(turn => {
-      return turn.role === Role.GEMINI && turn.tool_calls?.some(call => call.name === funcName);
+      return turn.role === 'gemini' && turn.tool_calls?.some(call => call.name === funcName);
     });
   }
 
   static nameAndArguments(example: Trajectory, funcName: string, argCheck: Record<string, unknown>): boolean {
     return example.data.some(turn => {
-      return turn.role === Role.GEMINI && turn.tool_calls?.some(call => {
+      return turn.role === 'gemini' && turn.tool_calls?.some(call => {
         if (call.name !== funcName) {
           return false;
         }
@@ -355,7 +355,7 @@ export async function itEval(config: ItEval): Promise<void> {
   let goldenText = '';
   if ('rouge' in config) {
     const golden = await getGolden(state.store.type, state.store.label);
-    goldenText = golden?.data.filter(t => t.role === Role.GEMINI).at(-1)?.content.join('\n') ?? '';
+    goldenText = golden?.data.filter(t => t.role === 'gemini').at(-1)?.content.join('\n') ?? '';
   }
 
   for (const [date, outputs] of Object.entries(state.outputsByDate)) {
@@ -395,7 +395,7 @@ export async function itEval(config: ItEval): Promise<void> {
       });
     } else if ('rouge' in config) {
       const details = conversations.map(conversation => {
-        const candidateText = conversation.data.filter(t => t.role === Role.GEMINI).at(-1)?.content.join('\n') ?? '';
+        const candidateText = conversation.data.filter(t => t.role === 'gemini').at(-1)?.content.join('\n') ?? '';
         return {
           conversation,
           score: ROUGE.score(candidateText, goldenText),

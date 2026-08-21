@@ -9,7 +9,7 @@ import * as path from 'node:path';
 import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
-import {Role, type Trajectory, type Turn} from './types.js';
+import type {Trajectory, Turn} from './types.js';
 
 /** Note: non-exhaustive. **/
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -106,14 +106,21 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
                 // If it is user text, it starts a new user turn in the conversation.
                 processed.data.push({
                   turn_id: String(turnIndex++),
-                  role: Role.USER,
+                  role: 'user',
+                  timestamp: Math.floor(Date.now() * 1000),
+                  // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
+                  tokens: {},
                   content: [userText],
+                  // TODO: DevTools does not currently receive internal reasoning/thought steps from Aida.
+                  // Temporarily assigning an empty thoughts array to match the KAF eval schema.
+                  thoughts: [],
+                  tool_calls: [],
                 });
               } else if (functionResponse) {
                 // If it is a tool response, we attach the result back to the matching
                 // tool call in the previous Gemini turn to keep them associated.
                 const prevTurn = processed.data.at(-1);
-                if (prevTurn && prevTurn.role === Role.GEMINI && prevTurn.tool_calls) {
+                if (prevTurn && prevTurn.role === 'gemini' && prevTurn.tool_calls) {
                   const toolCall = prevTurn.tool_calls.find(tc => tc.name === functionResponse.name);
                   if (toolCall) {
                     toolCall.result = functionResponse.response;
@@ -122,17 +129,26 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
               }
 
               const responseText = aidaResponse.explanation?.trim();
+              const toolCalls = aidaResponse.functionCalls?.map(call => ({
+                                                                  name: call.name,
+                                                                  args: call.args,
+                                                                  status: 'success' as const,
+                                                                  timestamp: Math.floor(Date.now() * 1000),
+                                                                })) ??
+                  [];
+
               const geminiTurn: Turn = {
                 turn_id: String(turnIndex++),
-                role: Role.GEMINI,
+                role: 'gemini',
+                timestamp: Math.floor(Date.now() * 1000),
+                // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
+                tokens: {},
                 content: responseText ? [responseText] : [],
+                // TODO: DevTools does not currently receive internal reasoning/thought steps from Aida.
+                // Temporarily assigning an empty thoughts array to match the KAF eval schema.
+                thoughts: [],
+                tool_calls: toolCalls,
               };
-              if (aidaResponse.functionCalls?.length) {
-                geminiTurn.tool_calls = aidaResponse.functionCalls.map(call => ({
-                                                                         name: call.name,
-                                                                         args: call.args,
-                                                                       }));
-              }
               processed.data.push(geminiTurn);
             }
             return processed;

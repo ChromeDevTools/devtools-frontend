@@ -93,7 +93,6 @@ devtools_module("ai_assistance") {
     "../../generated",
     "../../models/network_time_calculator:bundle",
     "../../services/tracing:bundle",
-    "../../third_party/diff:bundle",
     "../bindings:bundle",
     "../crux-manager:bundle",
     "../formatter:bundle",

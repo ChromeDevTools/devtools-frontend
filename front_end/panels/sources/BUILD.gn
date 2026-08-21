@@ -92,7 +92,6 @@ devtools_ui_module("sources") {
     "../../panels/snippets:bundle",
     "../../panels/utils:bundle",
     "../../third_party/codemirror.next:bundle",
-    "../../third_party/diff:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/highlighting:bundle",
     "../../ui/components/input:bundle",

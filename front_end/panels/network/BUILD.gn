@@ -90,7 +90,6 @@ devtools_ui_module("network") {
     "../../panels/sources:bundle",
     "../../panels/utils:bundle",
     "../../services/tracing:bundle",
-    "../../third_party/chromium/client-variations:bundle",
     "../../ui/components/adorners:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/input:bundle",

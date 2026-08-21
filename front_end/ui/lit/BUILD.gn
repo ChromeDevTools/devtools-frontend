@@ -28,6 +28,7 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":lit",
+    "../../third_party/lit",
     "../../third_party/lit:bundle",
   ]
 

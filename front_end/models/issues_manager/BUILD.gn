@@ -58,7 +58,6 @@ devtools_module("issues_manager") {
     "../../models/bindings:bundle",
     "../../models/workspace:bundle",
     "../../third_party/marked:bundle",
-    "../../third_party/third-party-web:bundle",
   ]
 
   public_deps = [ ":descriptions" ]

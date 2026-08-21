@@ -25,6 +25,7 @@ ts_library("mocha-adapter-browser") {
   deps = [
     ":browser-globals",
     ":mocha-interface",
+    "../../front_end/testing:mocha_helpers",
   ]
 }
 

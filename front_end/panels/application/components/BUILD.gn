@@ -49,7 +49,6 @@ devtools_ui_module("components") {
     "../../../core/text_utils:bundle",
     "../../../generated",
     "../../../panels/network/forward:bundle",
-    "../../../third_party/csp_evaluator:bundle",
     "../../../ui/components/buttons:bundle",
     "../../../ui/components/expandable_list:bundle",
     "../../../ui/components/input:bundle",

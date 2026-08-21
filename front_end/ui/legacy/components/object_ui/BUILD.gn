@@ -39,7 +39,6 @@ devtools_ui_module("object_ui") {
     "../../../../models/formatter:bundle",
     "../../../../models/geometry:bundle",
     "../../../../models/source_map_scopes:bundle",
-    "../../../../third_party/acorn",
     "../../../../third_party/acorn:bundle",
     "../../../../ui/components/text_editor:bundle",
     "../../../../ui/i18n:bundle",

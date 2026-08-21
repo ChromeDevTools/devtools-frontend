@@ -73,7 +73,6 @@ devtools_entrypoint("bundle") {
   deps = [
     ":css_files",
     ":text_editor",
-    "../../../third_party/codemirror.next:bundle",
   ]
 
   visibility = [

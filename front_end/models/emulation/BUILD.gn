@@ -41,6 +41,7 @@ devtools_entrypoint("bundle") {
     "../../panels/recorder/*",
     "../../panels/settings/emulation/*",
     "../../panels/timeline/*",
+    "../../testing",
     "../crux-manager/*",
   ]
 

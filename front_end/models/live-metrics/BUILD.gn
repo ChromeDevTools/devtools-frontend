@@ -38,6 +38,7 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/main/*",
     "../../foundation/*",
     "../../panels/timeline/*",
+    "../../testing/*",
   ]
 }
 

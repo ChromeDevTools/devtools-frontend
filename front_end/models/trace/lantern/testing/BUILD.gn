@@ -14,7 +14,6 @@ ts_library("testing") {
   deps = [
     "../:bundle",
     "../../:bundle",
-    "../../../../testing",
   ]
 }
 

@@ -44,7 +44,6 @@ devtools_ui_module("lighthouse") {
     "../../models/workspace:bundle",
     "../../panels/emulation:bundle",
     "../../third_party/lighthouse/report",
-    "../../third_party/lighthouse/report:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",

@@ -6719,6 +6719,10 @@ export const NativeFunctions = [
     signatures: [["source","destination"]]
   },
   {
+    name: "drawElementImageToTexture",
+    signatures: [["source","destination"]]
+  },
+  {
     name: "multiDrawIndirect",
     signatures: [["indirectBuffer","indirectOffset","maxDrawCount","?drawCountBuffer","?drawCountBufferOffset"]]
   },

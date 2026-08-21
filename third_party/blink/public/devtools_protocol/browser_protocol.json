@@ -24424,9 +24424,21 @@
                         },
                         {
                             "name": "everyNthFrame",
-                            "description": "Send every n-th frame.",
+                            "description": "Send every n-th frame. Must be a positive integer.",
                             "optional": true,
                             "type": "integer"
+                        },
+                        {
+                            "name": "maxFramesInFlight",
+                            "description": "Maximum number of frames sent until screencastFrameAck is required.\nDefaults to 3. Must be a positive integer.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "sendLastFrame",
+                            "description": "By default, after screencastFrameAck arrives, the next produced frame is sent.\nPassing this flag enables storing the last produced frame in memory, which is\nimmediately sent upon screencastFrameAck. This way, overall performance is\ntraded for a better latency.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },

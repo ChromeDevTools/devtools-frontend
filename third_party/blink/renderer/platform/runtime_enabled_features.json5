@@ -1630,12 +1630,6 @@
       // https://chromestatus.com/feature/5157805733183488
       name: "CSSGapDecoration",
       status: "stable",
-      depends_on: ["CSSGridGapSuppression"],
-    },
-    {
-      // https://chromestatus.com/feature/5157805733183488
-      name: "CSSGridGapSuppression",
-      status: "stable",
     },
     {
       name: "CSSGridLanesLayout",
@@ -2210,11 +2204,6 @@
     {
       name: "DesktopPWAsAdditionalWindowingControls",
       status: "experimental",
-      origin_trial_feature_name: "DesktopPWAsAdditionalWindowingControls",
-      origin_trial_os: ["win", "mac", "linux", "chromeos"],
-      origin_trial_allows_third_party: true,
-      base_feature_status: "enabled",
-      copied_from_base_feature_if: "overridden",
     },
     {
       name: "DesktopPWAsAdditionalWindowingControlsOnMove",
@@ -2782,6 +2771,13 @@
     },
     {
       name: "FedCmDelegation",
+      depends_on: ["FedCm"],
+      public: true,
+      status: "test",
+      base_feature: "none",
+    },
+    {
+      name: "FedCmIdentityHandler",
       depends_on: ["FedCm"],
       public: true,
       status: "test",
@@ -5130,7 +5126,6 @@
     },
     {
       name: "RequestStorageAccessFor",
-      status: "stable",
       base_feature: "none",
     },
     {

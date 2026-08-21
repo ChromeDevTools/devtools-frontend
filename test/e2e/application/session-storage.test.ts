@@ -41,7 +41,8 @@ describe('The Application Tab', () => {
     await selectStorageItemAtIndex(devToolsPage, 0);
     await deleteSelectedStorageItem(devToolsPage);
 
-    const dataGridRowValues = await getStorageItemsData(devToolsPage, ['key', 'value'], 1);
+    const dataGridRowValues =
+        await getStorageItemsData(devToolsPage, ['key', 'value'], 1, /* matchExactNumberOfRows= */ true);
     assert.deepEqual(dataGridRowValues, [
       {
         key: 'secondKey',

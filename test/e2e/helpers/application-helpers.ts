@@ -196,10 +196,11 @@ export async function getFrameTreeTitles(devToolsPage: DevToolsPage) {
   return await Promise.all(treeTitles.map(node => node.evaluate(e => e.textContent)));
 }
 
-export async function getStorageItemsData(devToolsPage: DevToolsPage, columns: string[], leastExpected = 1) {
+export async function getStorageItemsData(devToolsPage: DevToolsPage, columns: string[], leastExpected = 1,
+                                          matchExactNumberOfRows = false) {
   const gridData = await devToolsPage.waitForFunction(async () => {
     const values = await getDataGridData(devToolsPage, '.data-grid table', columns);
-    if (values.length >= leastExpected) {
+    if (matchExactNumberOfRows ? values.length === leastExpected : values.length >= leastExpected) {
       return values;
     }
     return undefined;

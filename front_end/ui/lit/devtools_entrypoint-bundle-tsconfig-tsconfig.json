@@ -47,6 +47,9 @@
       "path": "./lit-tsconfig.json"
     },
     {
+      "path": "../../third_party/lit/lit-tsconfig.json"
+    },
+    {
       "path": "../../third_party/lit/bundle-tsconfig.json"
     }
   ]

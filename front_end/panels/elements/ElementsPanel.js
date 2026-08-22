@@ -40,6 +40,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { AccessibilityTreeView } from './AccessibilityTreeView.js';
 import { ColorSwatchPopoverIcon } from './ColorSwatchPopoverIcon.js';
@@ -228,7 +229,8 @@ export class ElementsPanel extends UI.Panel.Panel {
         this.#computedStyleModel.addEventListener("ComputedStyleChanged" /* ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED */, this.#updateComputedStyles, this);
         this.#computedStyleModel.addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.#updateComputedStyles, this);
         this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
-        this.#settings.moduleSetting('sidebar-position').addChangeListener(this.updateSidebarPosition.bind(this));
+        this.#settings.resolve(SettingsUI.MainSettings.sidebarPositionSettingDescriptor)
+            .addChangeListener(this.updateSidebarPosition.bind(this));
         this.updateSidebarPosition();
         this.cssStyleTrackerByCSSModel = new Map();
         this.currentSearchResultIndex = -1; // -1 represents the initial invalid state
@@ -964,7 +966,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
             return;
         } // We can't reparent extension iframes.
-        const position = this.#settings.moduleSetting('sidebar-position').get();
+        const position = this.#settings.resolve(SettingsUI.MainSettings.sidebarPositionSettingDescriptor).get();
         let splitMode = "Horizontal" /* SplitMode.HORIZONTAL */;
         if (position === 'right' || (position === 'auto' && this.splitWidget.element.offsetWidth > 680)) {
             splitMode = "Vertical" /* SplitMode.VERTICAL */;

@@ -2275,6 +2275,7 @@ import * as PanelCommon3 from "./../common/common.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
+import * as Settings9 from "./../../ui/settings/settings.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 import * as Snippets4 from "./../snippets/snippets.js";
 
@@ -10888,7 +10889,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     this.threadsSidebarPane = null;
     this.watchSidebarPane = UI17.ViewManager.ViewManager.instance().view("sources.watch");
     this.callstackPane = CallStackSidebarPane.instance();
-    Common12.Settings.Settings.instance().moduleSetting("sidebar-position").addChangeListener(this.updateSidebarPosition.bind(this));
+    Common12.Settings.Settings.instance().resolve(Settings9.MainSettings.sidebarPositionSettingDescriptor).addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
     void this.updateDebuggerButtonsAndStatus();
     this.setTarget(UI17.Context.Context.instance().flavor(SDK11.Target.Target));
@@ -10987,7 +10988,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     return true;
   }
   onResize() {
-    if (Common12.Settings.Settings.instance().moduleSetting("sidebar-position").get() === "auto") {
+    if (Common12.Settings.Settings.instance().resolve(Settings9.MainSettings.sidebarPositionSettingDescriptor).get() === "auto") {
       this.element.window().requestAnimationFrame(this.updateSidebarPosition.bind(this));
     }
   }
@@ -11510,7 +11511,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   }
   updateSidebarPosition() {
     let vertically;
-    const position = Common12.Settings.Settings.instance().moduleSetting("sidebar-position").get();
+    const position = Common12.Settings.Settings.instance().resolve(Settings9.MainSettings.sidebarPositionSettingDescriptor).get();
     if (position === "right") {
       vertically = false;
     } else if (position === "bottom") {

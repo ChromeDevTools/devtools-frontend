@@ -24,6 +24,40 @@ var autoAttachToCreatedPagesSettingDescriptor = {
   storageType: "Synced"
 };
 
+// gen/front_end/ui/settings/MainSettings.js
+var MainSettings_exports = {};
+__export(MainSettings_exports, {
+  chromeThemeColorsSettingDescriptor: () => chromeThemeColorsSettingDescriptor,
+  languageSettingDescriptor: () => languageSettingDescriptor,
+  sidebarPositionSettingDescriptor: () => sidebarPositionSettingDescriptor,
+  uiThemeSettingDescriptor: () => uiThemeSettingDescriptor
+});
+import * as Common2 from "./../../core/common/common.js";
+var uiThemeSettingDescriptor = {
+  name: "ui-theme",
+  type: "enum",
+  defaultValue: "systemPreferred",
+  storageType: "Synced"
+};
+var chromeThemeColorsSettingDescriptor = {
+  name: "chrome-theme-colors",
+  type: "boolean",
+  defaultValue: true,
+  storageType: "Synced"
+};
+var sidebarPositionSettingDescriptor = {
+  name: "sidebar-position",
+  type: "enum",
+  defaultValue: "auto",
+  storageType: "Synced"
+};
+var languageSettingDescriptor = {
+  name: "language",
+  type: "enum",
+  defaultValue: "en-US",
+  storageType: "Synced"
+};
+
 // gen/front_end/ui/settings/SettingUIRegistration.js
 var SettingUIRegistration_exports = {};
 __export(SettingUIRegistration_exports, {
@@ -34,19 +68,19 @@ __export(SettingUIRegistration_exports, {
   resetSettings: () => resetSettings,
   resolve: () => resolve
 });
-import * as Common2 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 var registeredSettings = /* @__PURE__ */ new Map();
 function register(settingDescriptor, settingUIDescriptor) {
   const settingName = settingDescriptor.name;
   if (registeredSettings.has(settingName)) {
     throw new Error(`Duplicate setting name '${settingName}'`);
   }
-  Common2.SettingRegistration.registerCategoryOrder(settingUIDescriptor.category, settingUIDescriptor.order);
+  Common3.SettingRegistration.registerCategoryOrder(settingUIDescriptor.category, settingUIDescriptor.order);
   registeredSettings.set(settingName, { descriptor: settingDescriptor, uiDescriptor: settingUIDescriptor });
 }
 function getRegisteredSettings() {
   const combined = /* @__PURE__ */ new Map();
-  for (const legacy of Common2.SettingRegistration.getRegisteredSettings()) {
+  for (const legacy of Common3.SettingRegistration.getRegisteredSettings()) {
     combined.set(legacy.settingName, {
       descriptor: {
         name: legacy.settingName,
@@ -115,12 +149,13 @@ function resolve(settingDescriptor) {
 }
 function resetSettings() {
   for (const { uiDescriptor } of registeredSettings.values()) {
-    Common2.SettingRegistration.removeCategoryOrder(uiDescriptor.category, uiDescriptor.order);
+    Common3.SettingRegistration.removeCategoryOrder(uiDescriptor.category, uiDescriptor.order);
   }
   registeredSettings.clear();
 }
 export {
   InspectorMainSettings_exports as InspectorMainSettings,
+  MainSettings_exports as MainSettings,
   SettingUIRegistration_exports as SettingUIRegistration
 };
 //# sourceMappingURL=settings.js.map

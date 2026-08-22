@@ -82,9 +82,6 @@
       "path": "../../../../models/source_map_scopes/bundle-tsconfig.json"
     },
     {
-      "path": "../../../../third_party/acorn/acorn-tsconfig.json"
-    },
-    {
       "path": "../../../../third_party/acorn/bundle-tsconfig.json"
     },
     {

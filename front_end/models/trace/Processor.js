@@ -506,6 +506,7 @@ export class TraceProcessor extends EventTarget {
                 'missing metric scores for main frame',
                 'missing metric: FCP',
                 'missing metric: LCP',
+                'NO_LCP',
                 'No network requests found in trace',
                 'Trace is too old',
             ];

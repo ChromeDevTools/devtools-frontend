@@ -43,6 +43,7 @@ import * as PanelCommon from '../../panels/common/common.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 import { CallStackSidebarPane } from './CallStackSidebarPane.js';
@@ -251,7 +252,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         this.watchSidebarPane = UI.ViewManager.ViewManager.instance().view('sources.watch');
         this.callstackPane = CallStackSidebarPane.instance();
         Common.Settings.Settings.instance()
-            .moduleSetting('sidebar-position')
+            .resolve(Settings.MainSettings.sidebarPositionSettingDescriptor)
             .addChangeListener(this.updateSidebarPosition.bind(this));
         this.updateSidebarPosition();
         void this.updateDebuggerButtonsAndStatus();
@@ -356,7 +357,8 @@ export class SourcesPanel extends UI.Panel.Panel {
         return true;
     }
     onResize() {
-        if (Common.Settings.Settings.instance().moduleSetting('sidebar-position').get() === 'auto') {
+        if (Common.Settings.Settings.instance().resolve(Settings.MainSettings.sidebarPositionSettingDescriptor).get() ===
+            'auto') {
             this.element.window().requestAnimationFrame(this.updateSidebarPosition.bind(this));
         } // Do not force layout.
     }
@@ -919,7 +921,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     }
     updateSidebarPosition() {
         let vertically;
-        const position = Common.Settings.Settings.instance().moduleSetting('sidebar-position').get();
+        const position = Common.Settings.Settings.instance().resolve(Settings.MainSettings.sidebarPositionSettingDescriptor).get();
         if (position === 'right') {
             vertically = false;
         }

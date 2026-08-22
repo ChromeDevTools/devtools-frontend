@@ -139,9 +139,6 @@
       "path": "../../services/tracing/bundle-tsconfig.json"
     },
     {
-      "path": "../../third_party/diff/bundle-tsconfig.json"
-    },
-    {
       "path": "../bindings/bundle-tsconfig.json"
     },
     {

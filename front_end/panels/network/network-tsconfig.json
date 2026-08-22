@@ -139,9 +139,6 @@
       "path": "../../services/tracing/bundle-tsconfig.json"
     },
     {
-      "path": "../../third_party/chromium/client-variations/bundle-tsconfig.json"
-    },
-    {
       "path": "../../ui/components/adorners/bundle-tsconfig.json"
     },
     {

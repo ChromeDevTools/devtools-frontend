@@ -82,9 +82,6 @@
       "path": "../../network/forward/bundle-tsconfig.json"
     },
     {
-      "path": "../../../third_party/csp_evaluator/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../ui/components/buttons/bundle-tsconfig.json"
     },
     {

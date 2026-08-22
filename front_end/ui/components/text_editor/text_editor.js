@@ -1552,6 +1552,7 @@ import * as TextUtils from "./../../../core/text_utils/text_utils.js";
 import * as CM3 from "./../../../third_party/codemirror.next/codemirror.next.js";
 import { Icon } from "./../../kit/kit.js";
 import * as UI5 from "./../../legacy/legacy.js";
+import * as SettingsUI from "./../../settings/settings.js";
 import * as VisualLogging4 from "./../../visual_logging/visual_logging.js";
 import * as CodeHighlighter from "./../code_highlighter/code_highlighter.js";
 
@@ -1996,7 +1997,7 @@ var baseKeymap = CM3.keymap.of([
   ...CM3.historyKeymap
 ]);
 function themeIsDark() {
-  const setting = Common3.Settings.Settings.instance().moduleSetting("ui-theme").get();
+  const setting = Common3.Settings.Settings.instance().resolve(SettingsUI.MainSettings.uiThemeSettingDescriptor).get();
   return setting === "systemPreferred" ? window.matchMedia("(prefers-color-scheme: dark)").matches : setting === "dark";
 }
 var dummyDarkTheme = CM3.EditorView.theme({}, { dark: true });

@@ -97,12 +97,6 @@
   ],
   "references": [
     {
-      "path": "./mocha_helpers-tsconfig.json"
-    },
-    {
-      "path": "./test_id_generation-tsconfig.json"
-    },
-    {
       "path": "../../extension-api/extension-api-tsconfig.json"
     },
     {
@@ -142,6 +136,12 @@
       "path": "../models/ai_assistance/bundle-tsconfig.json"
     },
     {
+      "path": "../models/autofill_manager/bundle-tsconfig.json"
+    },
+    {
+      "path": "../models/badges/bundle-tsconfig.json"
+    },
+    {
       "path": "../models/bindings/bundle-tsconfig.json"
     },
     {
@@ -157,16 +157,25 @@
       "path": "../models/crux-manager/bundle-tsconfig.json"
     },
     {
+      "path": "../models/emulation/bundle-tsconfig.json"
+    },
+    {
       "path": "../models/extensions/bundle-tsconfig.json"
     },
     {
       "path": "../models/formatter/bundle-tsconfig.json"
     },
     {
+      "path": "../models/issues_manager/issues_manager-tsconfig.json"
+    },
+    {
       "path": "../models/issues_manager/bundle-tsconfig.json"
     },
     {
       "path": "../models/javascript_metadata/bundle-tsconfig.json"
+    },
+    {
+      "path": "../models/live-metrics/bundle-tsconfig.json"
     },
     {
       "path": "../models/logs/bundle-tsconfig.json"
@@ -230,6 +239,9 @@
     },
     {
       "path": "../ui/components/render_coordinator/bundle-tsconfig.json"
+    },
+    {
+      "path": "../ui/components/text_editor/bundle-tsconfig.json"
     },
     {
       "path": "../ui/legacy/bundle-tsconfig.json"

@@ -106,9 +106,6 @@
     },
     {
       "path": "../../third_party/marked/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../third_party/third-party-web/bundle-tsconfig.json"
     }
   ]
 }

@@ -62,9 +62,6 @@
       "path": "../../cpu_profile/bundle-tsconfig.json"
     },
     {
-      "path": "../../../third_party/third-party-web/bundle-tsconfig.json"
-    },
-    {
       "path": "../types/bundle-tsconfig.json"
     }
   ]

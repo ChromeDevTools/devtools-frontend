@@ -37,6 +37,7 @@ import * as SDK19 from "./../../core/sdk/sdk.js";
 import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
 import * as PanelCommon from "./../common/common.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
+import * as SettingsUI from "./../../ui/settings/settings.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/AccessibilityTreeView.js
@@ -19774,7 +19775,7 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
     this.#computedStyleModel.addEventListener("ComputedStyleChanged", this.#updateComputedStyles, this);
     this.#computedStyleModel.addEventListener("CSSModelChanged", this.#updateComputedStyles, this);
     this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
-    this.#settings.moduleSetting("sidebar-position").addChangeListener(this.updateSidebarPosition.bind(this));
+    this.#settings.resolve(SettingsUI.MainSettings.sidebarPositionSettingDescriptor).addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
     this.cssStyleTrackerByCSSModel = /* @__PURE__ */ new Map();
     this.currentSearchResultIndex = -1;
@@ -20464,7 +20465,7 @@ ${node.simpleSelector()} {}`, false);
     if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
       return;
     }
-    const position = this.#settings.moduleSetting("sidebar-position").get();
+    const position = this.#settings.resolve(SettingsUI.MainSettings.sidebarPositionSettingDescriptor).get();
     let splitMode = "Horizontal";
     if (position === "right" || position === "auto" && this.splitWidget.element.offsetWidth > 680) {
       splitMode = "Vertical";

@@ -48,9 +48,6 @@
     },
     {
       "path": "./text_editor-tsconfig.json"
-    },
-    {
-      "path": "../../../third_party/codemirror.next/bundle-tsconfig.json"
     }
   ]
 }

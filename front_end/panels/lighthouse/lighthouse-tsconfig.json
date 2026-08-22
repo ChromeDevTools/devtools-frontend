@@ -94,9 +94,6 @@
       "path": "../../third_party/lighthouse/report/report-tsconfig.json"
     },
     {
-      "path": "../../third_party/lighthouse/report/bundle-tsconfig.json"
-    },
-    {
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {

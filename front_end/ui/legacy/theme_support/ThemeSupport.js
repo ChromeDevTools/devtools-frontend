@@ -35,6 +35,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
+import * as SettingsUI from '../../settings/settings.js';
 let themeSupportInstance;
 const themeValueByTargetByName = new Map();
 export class ThemeSupport extends EventTarget {
@@ -132,7 +133,7 @@ export class ThemeSupport extends EventTarget {
         const useSystemPreferred = this.setting.get() === 'systemPreferred' || isForcedColorsMode;
         this.#themeName = useSystemPreferred ? systemPreferredTheme : this.setting.get();
         document.documentElement.classList.toggle('theme-with-dark-background', this.#themeName === 'dark');
-        const useChromeTheme = Common.Settings.Settings.instance().moduleSetting('chrome-theme-colors').get();
+        const useChromeTheme = Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.chromeThemeColorsSettingDescriptor).get();
         const isIncognito = Root.Runtime.hostConfig.isOffTheRecord === true;
         // Baseline is the name of Chrome's default color theme and there are two of these: default and grayscale.
         // The collective name for the rest of the color themes is dynamic.
@@ -162,7 +163,7 @@ export class ThemeSupport extends EventTarget {
         }
     }
     #fetchColorsAndApplyHostTheme(document) {
-        const useChromeTheme = Common.Settings.Settings.instance().moduleSetting('chrome-theme-colors').get();
+        const useChromeTheme = Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.chromeThemeColorsSettingDescriptor).get();
         if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode() || !useChromeTheme) {
             this.#applyThemeToDocument(document);
             return;

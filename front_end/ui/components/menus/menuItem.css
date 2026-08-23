@@ -6,8 +6,8 @@
 
 .menu-item {
   padding: var(--sys-size-3) 0 var(--sys-size-3) var(--sys-size-9);
-  font-size: 12px;
-  line-height: 16px;
+  font-size: var(--sys-typescale-body4-size);
+  line-height: var(--sys-typescale-body4-line-height);
   position: relative;
   display: block;
   color: var(--sys-color-on-surface);

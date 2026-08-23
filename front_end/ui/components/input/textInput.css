@@ -5,12 +5,12 @@
  */
 
 .devtools-text-input {
-  height: 32px;
+  height: var(--sys-size-13);
   width: 100%;
-  padding: 8px 11px;
+  padding: var(--sys-size-5) 11px;
   line-height: 1.16;
   letter-spacing: 0.015em;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   color: var(--sys-color-on-surface);
   border-radius: 3px;
   background-color: var(--sys-color-cdt-base-container);

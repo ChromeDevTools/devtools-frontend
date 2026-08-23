@@ -23,13 +23,13 @@
 
 .diff-line-marker {
   user-select: none;
-  border-right: 1px solid var(--sys-color-divider);
-  width: 20px;
+  border-right: var(--sys-size-1) solid var(--sys-color-divider);
+  width: var(--sys-size-9);
   text-align: center;
 }
 
 .diff-line-content {
-  padding: 0 4px;
+  padding: 0 var(--sys-size-3);
 }
 
 .diff-line-marker-addition,

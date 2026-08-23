@@ -43,8 +43,8 @@
 }
 
 .infobar:focus {
-  outline: 2px solid var(--sys-color-state-focus-ring);
-  outline-offset: -2px;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: calc(-1 * var(--sys-size-2));
 }
 
 .infobar-warning {

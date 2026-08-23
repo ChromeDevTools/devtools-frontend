@@ -100,7 +100,7 @@ describe('The Extension API', () => {
       await extension.evaluate(resource => window.chrome.devtools.panels.openResource(resource, 29, 160), resource);
       await waitForHighlightedLine(devToolsPage, 30);
       const toolbarText = await getToolbarText(devToolsPage);
-      assert.isTrue(toolbarText.includes('Line 30, Column 161'));
+      assert.isTrue(toolbarText.includes('Line 30, column 161'));
     }
 
     // Accepts a column number and a callback
@@ -112,7 +112,7 @@ describe('The Extension API', () => {
       await waitForHighlightedLine(devToolsPage, 2);
       const toolbarText = await getToolbarText(devToolsPage);
       // Column 38 is the last column in the 2nd line.
-      assert.isTrue(toolbarText.includes('Line 2, Column 38'));
+      assert.isTrue(toolbarText.includes('Line 2, column 38'));
     }
 
     // Accepts a callback with an explicitly undefined columnNumber

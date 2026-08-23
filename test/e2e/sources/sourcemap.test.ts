@@ -642,7 +642,7 @@ describe('The Elements Tab', () => {
        await focusElementsTree(devToolsPage);
        await clickNthChildOfSelectedElementNode(devToolsPage, 1);
        await clickStyleValueWithModifiers('body .text', 'color', 'green', 'app.scss:6', devToolsPage);
-       await devToolsPage.waitForElementWithTextContent('Line 12, Column 9');
+       await devToolsPage.waitForElementWithTextContent('Line 12, column 9');
      });
 
   it('links to the right SASS source for inline CSS with absolute sourcemap (crbug.com/787792)',
@@ -653,7 +653,7 @@ describe('The Elements Tab', () => {
        await focusElementsTree(devToolsPage);
        await clickNthChildOfSelectedElementNode(devToolsPage, 1);
        await clickStyleValueWithModifiers('body .text', 'color', 'green', 'app.scss:6', devToolsPage);
-       await devToolsPage.waitForElementWithTextContent('Line 12, Column 9');
+       await devToolsPage.waitForElementWithTextContent('Line 12, column 9');
      });
 
   it('links to the right SASS source for dynamically added CSS style tags (crbug.com/787792)',
@@ -664,7 +664,7 @@ describe('The Elements Tab', () => {
        await focusElementsTree(devToolsPage);
        await clickNthChildOfSelectedElementNode(devToolsPage, 1);
        await clickStyleValueWithModifiers('body .text', 'color', 'green', 'app.scss:6', devToolsPage);
-       await devToolsPage.waitForElementWithTextContent('Line 12, Column 9');
+       await devToolsPage.waitForElementWithTextContent('Line 12, column 9');
      });
 
   it('links to the right SASS source for dynamically added CSS link tags (crbug.com/787792)',
@@ -675,6 +675,6 @@ describe('The Elements Tab', () => {
        await focusElementsTree(devToolsPage);
        await clickNthChildOfSelectedElementNode(devToolsPage, 1);
        await clickStyleValueWithModifiers('body .text', 'color', 'green', 'app.scss:6', devToolsPage);
-       await devToolsPage.waitForElementWithTextContent('Line 12, Column 9');
+       await devToolsPage.waitForElementWithTextContent('Line 12, column 9');
      });
 });

@@ -20,62 +20,60 @@ import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
-   * @description Text for the source of something
+   * @description Title of the source frame view tab.
    */
   source: 'Source',
   /**
-   * @description Text to pretty print a file
+   * @description Tooltip text for the pretty print button in the toolbar.
    */
   prettyPrint: 'Pretty print',
   /**
-   * @description Text when something is loading
+   * @description Tooltip text for the progress indicator while content is loading in the source frame.
    */
   loading: 'Loading…',
   /**
-   * @description Text when a file is currently being pretty printed/formatted in the editor
+   * @description Placeholder text shown in the editor while formatting content.
    */
   formatting: 'Formatting…',
   /**
-   * @description Shown at the bottom of the Sources panel when the user has made multiple
-   * simultaneous text selections in the text editor.
+   * @description Status bar text in the source frame showing the number of active selection regions.
    * @example {2} PH1
    */
   dSelectionRegions: '{PH1} selection regions',
   /**
-   * @description Position indicator in Source Frame of the Sources panel. The placeholder is a
-   * hexadecimal number value, which is why it is prefixed with '0x'.
+   * @description Status bar text in the source frame showing the current bytecode offset position. The placeholder is a hexadecimal number value, which is why it is prefixed with '0x'.
    * @example {abc} PH1
    */
   bytecodePositionXs: 'Bytecode position `0x`{PH1}',
   /**
-   * @description Text in Source Frame of the Sources panel
+   * @description Status bar text in the source frame showing the cursor line and column position.
    * @example {2} PH1
    * @example {2} PH2
    */
-  lineSColumnS: 'Line {PH1}, Column {PH2}',
+  lineSColumnS: 'Line {PH1}, column {PH2}',
   /**
-   * @description Text in Source Frame of the Sources panel
+   * @description Status bar text in the source frame showing the number of characters selected.
    * @example {2} PH1
    */
   dCharactersSelected: '{PH1} characters selected',
   /**
-   * @description Text in Source Frame of the Sources panel
+   * @description Status bar text in the source frame showing the number of lines and characters selected.
    * @example {2} PH1
    * @example {2} PH2
    */
   dLinesDCharactersSelected: '{PH1} lines, {PH2} characters selected',
   /**
-   * @description Headline of warning shown to users when pasting text/code into DevTools.
+   * @description Title of warning dialog shown to users when pasting code into DevTools.
    */
   doYouTrustThisCode: 'Do you trust this code?',
   /**
-   * @description Warning shown to users when pasting text/code into DevTools. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
+   * @description Warning message shown to users when pasting code into DevTools. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
   doNotPaste:
-      'Don’t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type "{PH1}" below to allow pasting.',
+      'Don’t paste code you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type "{PH1}" below to allow pasting.',
   /**
-   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+   * @description Text the user needs to type to confirm they want to paste code into DevTools.
    */
   allowPasting: 'allow pasting',
   /**
@@ -84,8 +82,7 @@ const UIStrings = {
    */
   typeAllowPasting: 'Type "{PH1}"',
   /**
-   * @description Error message shown when the user tries to open a file that contains non-readable data. "Editor" refers to
-   * a text editor.
+   * @description Error message shown in the text editor when binary data cannot be displayed.
    */
   binaryContentError:
       'Editor can’t show binary data. Use the Response tab in the Network panel to inspect this resource.',

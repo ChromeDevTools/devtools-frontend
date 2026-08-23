@@ -46,7 +46,7 @@ import {type RevealPosition, SourceFrameImpl, type SourceFrameOptions} from './S
 
 const UIStrings = {
   /**
-   * @description Text to find an item
+   * @description Placeholder text for the search input in the resource source frame.
    */
   find: 'Find',
 } as const;

@@ -15,7 +15,7 @@ import xmlViewStyles from './xmlView.css.js';
 
 const UIStrings = {
   /**
-   * @description Text to find an item
+   * @description Placeholder text for the search input in the xml view.
    */
   find: 'Find',
 } as const;

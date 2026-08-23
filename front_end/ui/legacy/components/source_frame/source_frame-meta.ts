@@ -7,39 +7,39 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting under the Sources category in Settings
+   * @description Title of a setting under the Sources category in settings.
    */
-  defaultIndentation: 'Default indentation:',
+  defaultIndentation: 'Default indentation',
   /**
-   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   * @description Title of a setting under the Sources category that can be invoked through the command menu.
    */
   setIndentationToSpaces: 'Set indentation to 2 spaces',
   /**
-   * @description A drop-down menu option to set indentation to 2 spaces
+   * @description Option in a dropdown menu to set indentation to 2 spaces.
    */
   Spaces: '2 spaces',
   /**
-   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   * @description Title of a setting under the Sources category that can be invoked through the command menu.
    */
   setIndentationToFSpaces: 'Set indentation to 4 spaces',
   /**
-   * @description A drop-down menu option to set indentation to 4 spaces
+   * @description Option in a dropdown menu to set indentation to 4 spaces.
    */
   fSpaces: '4 spaces',
   /**
-   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   * @description Title of a setting under the Sources category that can be invoked through the command menu.
    */
   setIndentationToESpaces: 'Set indentation to 8 spaces',
   /**
-   * @description A drop-down menu option to set indentation to 8 spaces
+   * @description Option in a dropdown menu to set indentation to 8 spaces.
    */
   eSpaces: '8 spaces',
   /**
-   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   * @description Title of a setting under the Sources category that can be invoked through the command menu.
    */
   setIndentationToTabCharacter: 'Set indentation to tab character',
   /**
-   * @description A drop-down menu option to set indentation to tab character
+   * @description Option in a dropdown menu to set indentation to tab character.
    */
   tabCharacter: 'Tab character',
 } as const;

@@ -38,9 +38,11 @@ async function setupRequestBlocking(
     await devToolsPage.click(
         useURLPatterns ? 'aria/Add network request blocking or throttling pattern' :
                          'aria/Add network request blocking pattern');
-    await devToolsPage.waitFor('devtools-prompt');
-    await devToolsPage.typeText(useURLPatterns ? `*://*:*/*${pattern}` : pattern);
+    await devToolsPage.waitFor('devtools-prompt[editing]');
+    const formattedPattern = useURLPatterns ? `*://*:*/*${pattern}` : pattern;
+    await devToolsPage.typeText(formattedPattern);
     await devToolsPage.pressKey('Enter');
+    await devToolsPage.waitForElementWithTextContent(formattedPattern);
   }
 
   const networkRequestBlockingCheckbox =
@@ -160,8 +162,13 @@ for (const useURLPatterns of [true]) {
         addBlockedScript(url);
       }, url);
       await waitForSomeRequestsToAppear(devToolsPage, 1);
-      const status = await devToolsPage.waitFor('.network-log-grid tbody .status-column');
-      assert.strictEqual(await status.evaluate(node => node.textContent), expectedStatus);
+      await devToolsPage.waitForFunction(async () => {
+        const status = await devToolsPage.$('.network-log-grid tbody .status-column');
+        if (!status) {
+          return false;
+        }
+        return (await status.evaluate(node => node.textContent)) === expectedStatus;
+      });
 
       await disableRequestBlocking(devToolsPage, useURLPatterns);
     }

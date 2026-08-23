@@ -19,7 +19,7 @@
 }
 
 .clock {
-  top: 6px;
+  top: var(--sys-size-4);
   width: 6em;
   height: 6em;
   background-color: var(--sys-color-cdt-base-container);
@@ -31,7 +31,7 @@
 
 .center,
 .hand {
-  box-shadow: 0 0 2px var(--box-shadow-outline-color);
+  box-shadow: 0 0 var(--sys-size-2) var(--box-shadow-outline-color);
 }
 
 .pointer {
@@ -61,10 +61,10 @@
 }
 
 .dial {
-  width: 2px;
+  width: var(--sys-size-2);
   height: var(--clock-dial-length);
   background-color: var(--override-dial-color);
-  border-radius: 1px;
+  border-radius: var(--sys-size-1);
 }
 
 .hand {
@@ -99,7 +99,7 @@
 :host-context(.theme-with-dark-background) .center,
 :host-context(.theme-with-dark-background) .hand {
   /* stylelint-disable-next-line plugin/use_theme_colors */
-  box-shadow: 0 0 2px hsl(0deg 0% 0% / 60%);
+  box-shadow: 0 0 var(--sys-size-2) hsl(0deg 0% 0% / 60%);
 }
 
 :host-context(.theme-with-dark-background) .clock {

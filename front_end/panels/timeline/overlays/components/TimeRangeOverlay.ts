@@ -13,7 +13,7 @@ import timeRangeOverlayStyles from './timeRangeOverlay.css.js';
 
 const UIStrings = {
   /**
-   * @description Accessible label used to explain to a user that they are viewing an entry label.
+   * @description Accessible label for the time range overlay in the Performance panel.
    */
   timeRange: 'Time range',
 } as const;

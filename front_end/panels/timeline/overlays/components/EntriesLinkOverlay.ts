@@ -15,7 +15,7 @@ import entriesLinkOverlayStyles from './entriesLinkOverlay.css.js';
 
 const UIStrings = {
   /**
-   * @description Accessible label used to explain to a user that they are viewing an arrow representing a link between two entries.
+   * @description Accessible label for the connector container in the entries link overlay of the Performance panel.
    */
   diagram: 'Links between entries',
 } as const;

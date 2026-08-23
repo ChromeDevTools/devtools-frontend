@@ -64,8 +64,8 @@ button {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--sys-color-state-focus-ring);
-    outline-offset: 2px;
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: var(--sys-size-2);
   }
 
   &:disabled > devtools-icon {

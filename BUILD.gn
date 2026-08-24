@@ -26,6 +26,7 @@ group("devtools_all_files") {
 
   data_deps = devtools_frontend_resources_deps + [
                 "front_end:web_test_resources",
+                "scripts/build:tests",
                 "scripts/hosted_mode",
                 "test",
               ]
@@ -218,7 +219,3 @@ group("harness_tests") {
 
 # TODO(@nvitkov): When http://b/469573569 is fixed
 write_file("$target_gen_dir/package.json", "{}")
-
-group("ts_library_split_test") {
-  deps = [ "scripts/build/typescript/tests/fixtures/split_simple_dep" ]
-}

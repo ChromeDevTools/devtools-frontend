@@ -2,26 +2,35 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("./copy.gni")
 import("./node.gni")
 import("./vars.gni")
 
 template("devtools_pre_built") {
-  node_action(target_name) {
-    forward_variables_from(invoker,
-                           [
-                             "sources",
-                             "deps",
-                           ])
+  _gen_target_name = "${target_name}_gen"
+  _tsc_target_name = "${target_name}_tsc"
+  _prebuilt_public_deps = []
+  if (defined(invoker.deps)) {
+    _prebuilt_public_deps += invoker.deps
+  }
+
+  copy_to_gen(_gen_target_name) {
+    sources = invoker.sources
+    deps = _prebuilt_public_deps
+  }
+
+  _tsc_dir = string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc")
+  node_action(_tsc_target_name) {
+    sources = invoker.sources
+    public_deps = _prebuilt_public_deps
 
     script = "scripts/build/ninja/copy-files.js"
-
-    public_deps = invoker.deps
 
     # Expose ts files to dependent targets.
     public_inputs = filter_include(sources, [ "*.ts" ])
 
     _copy_src = rebase_path(get_path_info(target_name, "dir"), root_build_dir)
-    _copy_dest = rebase_path(target_gen_dir, root_build_dir)
+    _copy_dest = rebase_path(_tsc_dir, root_build_dir)
 
     args = [
       _copy_src,
@@ -31,15 +40,27 @@ template("devtools_pre_built") {
 
     outputs = []
     foreach(_source, sources) {
-      outputs += [ "$target_gen_dir/$_source" ]
+      outputs += [ "$_tsc_dir/$_source" ]
     }
+  }
 
-    _javascript_implementation_files = invoker.data + filter_include(outputs,
-                                                                     [
-                                                                       "*.js",
-                                                                       "*.mjs",
-                                                                     ])
-    _javascript_map_files = filter_include(outputs, [ "*.map" ])
+  _gen_outputs = []
+  foreach(_source, invoker.sources) {
+    _gen_outputs += [ "$target_gen_dir/$_source" ]
+  }
+
+  _javascript_implementation_files = invoker.data + filter_include(_gen_outputs,
+                                                                   [
+                                                                     "*.js",
+                                                                     "*.mjs",
+                                                                   ])
+  _javascript_map_files = filter_include(_gen_outputs, [ "*.map" ])
+
+  group(target_name) {
+    public_deps = [
+      ":$_gen_target_name",
+      ":$_tsc_target_name",
+    ]
 
     data = _javascript_implementation_files + _javascript_map_files
 
@@ -47,6 +68,22 @@ template("devtools_pre_built") {
       metadata = {
         grd_files = _javascript_implementation_files
       }
+    }
+
+    if (defined(invoker.visibility)) {
+      visibility = invoker.visibility
+    }
+  }
+
+  # Expose ${target_name}-dts group alias so ts_deps and ts_library_split
+  # dependencies resolve seamlessly to this target.
+  group("${target_name}-dts") {
+    public_deps = [
+      ":$_gen_target_name",
+      ":$_tsc_target_name",
+    ]
+    if (defined(invoker.visibility)) {
+      visibility = invoker.visibility
     }
   }
 }

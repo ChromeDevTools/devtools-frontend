@@ -1,0 +1,22 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../../../ninja/devtools_entrypoint.gni")
+import("../../../../../../../ninja/devtools_pre_built.gni")
+import("../../../../../../typescript.gni")
+
+devtools_pre_built("prebuilt_lib") {
+  sources_are_release = false
+
+  sources = [
+    "package/dist/lib.d.ts",
+    "package/dist/lib.js",
+  ]
+}
+
+devtools_entrypoint_split("bundle") {
+  entrypoint = "prebuilt_lib.ts"
+
+  deps = [ ":prebuilt_lib" ]
+}

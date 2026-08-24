@@ -9,6 +9,7 @@ import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import type * as LHModel from '../lighthouse/lighthouse.js';
 import type * as Trace from '../trace/trace.js';
 
 import * as AiAssistance from './ai_assistance.js';
@@ -663,5 +664,100 @@ describeWithEnvironment('AiAgent2', () => {
     sinon.assert.callCount(aidaClient.doConversation, 3);
     const thirdCallArgs = aidaClient.doConversation.getCall(2).args[0];
     assert.isTrue(thirdCallArgs.metadata?.disable_user_content_logging);
+  });
+
+  it('provides getLighthouseReport capability to GetLighthouseAuditsTool', async () => {
+    const mockReport = {
+      finalDisplayedUrl: 'https://example.com',
+      categories: {},
+      audits: {},
+    } as unknown as LHModel.ReporterTypes.ReportJSON;
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+      }],
+      [{
+        explanation: '',
+        functionCalls: [{name: 'getLighthouseAudits', args: {categoryId: 'accessibility'}}],
+      }],
+      [{
+        explanation: 'Audits retrieved.',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const accessibilityContext = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+
+    const getLighthouseAuditsTool = AiAssistance.ToolRegistry.ToolRegistry.get('getLighthouseAudits');
+    assert.exists(getLighthouseAuditsTool);
+    const handlerStub = sinon.stub(getLighthouseAuditsTool, 'handler').resolves({result: {audits: 'mock audits'}});
+
+    await Array.fromAsync(agent.run('query', {selected: accessibilityContext}));
+
+    sinon.assert.calledOnce(handlerStub);
+    const [, context] = handlerStub.getCall(0).args;
+    assert.strictEqual(context.getLighthouseReport(), mockReport);
+  });
+
+  it('provides runLighthouse capability to RunLighthouseTool', async () => {
+    const mockReport = {
+      finalDisplayedUrl: 'https://example.com',
+      categories: {},
+      audits: {},
+    } as unknown as LHModel.ReporterTypes.ReportJSON;
+    const runLighthouseStub = sinon.stub().resolves(mockReport);
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+      }],
+      [{
+        explanation: '',
+        functionCalls: [{name: 'runLighthouse', args: {explanation: 'run', category: 'accessibility'}}],
+      }],
+      [{
+        explanation: 'Audits run.',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, lighthouseRecording: runLighthouseStub});
+
+    const runLighthouseTool = AiAssistance.ToolRegistry.ToolRegistry.get('runLighthouse');
+    assert.exists(runLighthouseTool);
+    const handlerStub = sinon.stub(runLighthouseTool, 'handler').resolves({result: {audits: 'mock audits'}});
+
+    await Array.fromAsync(agent.run('query', {selected: null}));
+
+    sinon.assert.calledOnce(handlerStub);
+    const [, context] = handlerStub.getCall(0).args;
+    const runResult = await context.runLighthouse();
+    assert.strictEqual(runResult, mockReport);
+    sinon.assert.calledOnce(runLighthouseStub);
+  });
+
+  it('returns null for getLighthouseReport when context is not AccessibilityContext', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+      }],
+      [{
+        explanation: '',
+        functionCalls: [{name: 'getLighthouseAudits', args: {categoryId: 'accessibility'}}],
+      }],
+      [{
+        explanation: 'Done.',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+
+    const getLighthouseAuditsTool = AiAssistance.ToolRegistry.ToolRegistry.get('getLighthouseAudits');
+    assert.exists(getLighthouseAuditsTool);
+    const handlerStub = sinon.stub(getLighthouseAuditsTool, 'handler').resolves({result: {audits: 'mock audits'}});
+
+    await Array.fromAsync(agent.run('query', {selected: null}));
+
+    sinon.assert.calledOnce(handlerStub);
+    const [, context] = handlerStub.getCall(0).args;
+    assert.isNull(context.getLighthouseReport());
   });
 });

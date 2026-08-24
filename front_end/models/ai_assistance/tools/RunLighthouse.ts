@@ -10,7 +10,7 @@ import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
-  type LighthouseCapability,
+  type LighthouseRecordingCapability,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -22,7 +22,7 @@ export interface RunLighthouseArgs extends ToolArgs {
 }
 
 export class RunLighthouseTool implements
-    DataTool<RunLighthouseArgs, {audits: string}, BaseToolCapability&LighthouseCapability> {
+    DataTool<RunLighthouseArgs, {audits: string}, BaseToolCapability&LighthouseRecordingCapability> {
   readonly name = ToolName.RUN_LIGHTHOUSE;
   readonly description =
       'Runs Lighthouse audits on the active page. Supports "navigation" (for full initial page load audits), "snapshot" (for inspecting live in-page modifications without reload), and "timespan" (for interactions).';
@@ -60,14 +60,11 @@ export class RunLighthouseTool implements
     };
   }
 
-  async handler(params: RunLighthouseArgs,
-                context: BaseToolCapability&LighthouseCapability): Promise<DataHandlerResult<{audits: string}>> {
-    if (!context.lighthouseRecording) {
-      return {error: 'Error: Lighthouse recording capability is not available.'};
-    }
+  async handler(params: RunLighthouseArgs, context: BaseToolCapability&LighthouseRecordingCapability):
+      Promise<DataHandlerResult<{audits: string}>> {
     const mode = params.mode ?? 'snapshot';
     try {
-      const report = await context.lighthouseRecording({
+      const report = await context.runLighthouse({
         mode,
         categoryIds: [params.category],
         isAIControlled: true,

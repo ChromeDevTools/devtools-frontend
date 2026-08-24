@@ -62,9 +62,9 @@ describe('RunLighthouseTool', () => {
   describe('handler', () => {
     it('runs dynamic audits for a specified category and mode', async () => {
       const recordingStub = sinon.stub().resolves(mockReport);
-      const context = {
+      const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
         conversationContext: null,
-        lighthouseRecording: recordingStub,
+        runLighthouse: recordingStub,
       };
 
       const result =
@@ -83,9 +83,9 @@ describe('RunLighthouseTool', () => {
 
     it('defaults to snapshot mode when mode is omitted', async () => {
       const recordingStub = sinon.stub().resolves(mockReport);
-      const context = {
+      const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
         conversationContext: null,
-        lighthouseRecording: recordingStub,
+        runLighthouse: recordingStub,
       };
 
       const result = await tool.handler({explanation: 're-audit', category: 'accessibility'}, context);
@@ -100,9 +100,9 @@ describe('RunLighthouseTool', () => {
 
     it('sets snapshotReport to false when running in navigation mode', async () => {
       const recordingStub = sinon.stub().resolves(mockReport);
-      const context = {
+      const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
         conversationContext: null,
-        lighthouseRecording: recordingStub,
+        runLighthouse: recordingStub,
       };
 
       const result =
@@ -117,31 +117,22 @@ describe('RunLighthouseTool', () => {
       });
     });
 
-    it('returns error when lighthouseRecording capability is not available', async () => {
-      const context = {
-        conversationContext: null,
-      };
-      const result = await tool.handler({explanation: 're-audit', category: 'accessibility'}, context);
-      assertIsError(result);
-      assert.strictEqual(result.error, 'Error: Lighthouse recording capability is not available.');
-    });
-
-    it('returns error when lighthouseRecording returns null', async () => {
+    it('returns error when runLighthouse returns null', async () => {
       const recordingStub = sinon.stub().resolves(null);
-      const context = {
+      const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
         conversationContext: null,
-        lighthouseRecording: recordingStub,
+        runLighthouse: recordingStub,
       };
       const result = await tool.handler({explanation: 're-audit', category: 'accessibility'}, context);
       assertIsError(result);
       assert.strictEqual(result.error, 'Error: Failed to record new audits.');
     });
 
-    it('returns error when lighthouseRecording rejects', async () => {
+    it('returns error when runLighthouse rejects', async () => {
       const recordingStub = sinon.stub().rejects(new Error('Navigation timed out'));
-      const context = {
+      const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
         conversationContext: null,
-        lighthouseRecording: recordingStub,
+        runLighthouse: recordingStub,
       };
       const result = await tool.handler({explanation: 're-audit', category: 'accessibility'}, context);
       assertIsError(result);

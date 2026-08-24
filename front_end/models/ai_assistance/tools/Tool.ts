@@ -122,10 +122,17 @@ export interface OriginLockCapability {
 }
 
 /**
- * Capability for tools that need to run or query Lighthouse audits.
+ * Capability for tools that need to inspect an active Lighthouse report from context.
  */
-export interface LighthouseCapability {
-  lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+export interface LighthouseReportCapability {
+  getLighthouseReport(): LHModel.ReporterTypes.ReportJSON|null;
+}
+
+/**
+ * Capability for tools that trigger new Lighthouse audit runs.
+ */
+export interface LighthouseRecordingCapability {
+  runLighthouse(overrides?: LHModel.RunTypes.RunOverrides): Promise<LHModel.ReporterTypes.ReportJSON|null>;
 }
 
 /**
@@ -139,8 +146,9 @@ export interface PerformanceRecordingCapability {
  * Unified context interface providing all capabilities available in the project.
  * Used by the agent to pass a complete context to any tool type-safely.
  */
-export type AllToolsCapabilities = BaseToolCapability&PageExecutionCapability&StyleMutationCapability&TargetCapability&
-    OriginLockCapability&LighthouseCapability&PerformanceRecordingCapability&ServerLoggingCapability;
+export type AllToolsCapabilities =
+    BaseToolCapability&PageExecutionCapability&StyleMutationCapability&TargetCapability&OriginLockCapability&
+    LighthouseReportCapability&LighthouseRecordingCapability&PerformanceRecordingCapability&ServerLoggingCapability;
 
 /**
  * Base argument type for AI Tools.

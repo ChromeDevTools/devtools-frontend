@@ -18,6 +18,7 @@ import {
 } from './agents/AiAgent.js';
 import {type ExecuteJsAgentOptions, executeJsCode} from './agents/ExecuteJavascript.js';
 import {ChangeManager} from './ChangeManager.js';
+import {AccessibilityContext} from './contexts/AccessibilityContext.js';
 import {DOMNodeContext} from './contexts/DOMNodeContext.js';
 import {debugLog} from './debug.js';
 import {ExtensionScope} from './ExtensionScope.js';
@@ -274,7 +275,8 @@ User query: ${enhancedQuery}`;
               (this.context instanceof DOMNodeContext ? this.context.getItem() : this.#getDocumentBodyNode()),
           getTarget: () => this.targetManager.primaryPageTarget(),
           getEstablishedOrigin: () => this.#getConversationOrigin(),
-          lighthouseRecording: this.#lighthouseRecording,
+          getLighthouseReport: () => (this.context instanceof AccessibilityContext ? this.context.getItem() : null),
+          runLighthouse: async overrides => await (this.#lighthouseRecording?.(overrides) ?? null),
           performanceRecordAndReload: this.#performanceRecordAndReload,
           setLoggingEnabled: (enabled: boolean) => {
             this.setServerSideLoggingActive(enabled);

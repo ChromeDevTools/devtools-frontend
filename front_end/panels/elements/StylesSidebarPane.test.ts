@@ -2208,6 +2208,28 @@ describe('StylesSidebarPane', () => {
 
         sinon.assert.notCalled(updateCitationsSpy);
       });
+
+      it('safely handles onFeatureEnabled when not yet attached to style-panes-wrapper and creates toolbar upon show',
+         async () => {
+           const unattachedPane = new Elements.StylesSidebarPane.StylesSidebarPane(
+               new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+           const config = unattachedPane.aiCodeCompletionConfig;
+           assert.exists(config);
+
+           // Enabling before show() should not throw
+           assert.doesNotThrow(() => {
+             config.onFeatureEnabled();
+           });
+
+           const wrapper = new UI.Widget.VBox();
+           wrapper.element.classList.add('style-panes-wrapper');
+           wrapper.markAsRoot();
+           renderElementIntoDOM(wrapper);
+           unattachedPane.show(wrapper.element);
+
+           assert.exists(wrapper.contentElement.querySelector('div.ai-code-completion-summary-toolbar-container'));
+           wrapper.detach();
+         });
     });
   });
 

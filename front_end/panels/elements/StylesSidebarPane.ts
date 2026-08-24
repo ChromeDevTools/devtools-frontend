@@ -232,6 +232,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
   #aiCodeCompletionSummaryToolbarContainer?: HTMLElement;
   #aiCodeCompletionSummaryToolbar?: PanelsCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar;
+  #aiCodeCompletionEnabled = false;
   #shouldRenderLazily = false;
   #lazyRenderObserver?: IntersectionObserver;
   #lazyRenderCallbacks = new WeakMap<Element, () => void>();
@@ -292,9 +293,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         completionContext: {},
         generationContext: {},
         onFeatureEnabled: () => {
+          this.#aiCodeCompletionEnabled = true;
           this.#createAiCodeCompletionSummaryToolbar();
         },
         onFeatureDisabled: () => {
+          this.#aiCodeCompletionEnabled = false;
           this.#cleanupAiCodeCompletion();
         },
         onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
@@ -1441,6 +1444,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   override wasShown(): void {
     UI.Context.Context.instance().setFlavor(StylesSidebarPane, this);
     super.wasShown();
+    if (this.#aiCodeCompletionEnabled && !this.#aiCodeCompletionSummaryToolbar) {
+      this.#createAiCodeCompletionSummaryToolbar();
+    }
   }
 
   override willHide(): void {
@@ -1626,7 +1632,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   #createAiCodeCompletionSummaryToolbar(): void {
-    if (this.#aiCodeCompletionSummaryToolbar) {
+    if (!this.#aiCodeCompletionEnabled || this.#aiCodeCompletionSummaryToolbar) {
+      return;
+    }
+    const containingPane =
+        this.contentElement.enclosingNodeOrSelfWithClass('style-panes-wrapper') as HTMLElement | null;
+    if (!containingPane) {
       return;
     }
     this.#aiCodeCompletionSummaryToolbar =
@@ -1636,7 +1647,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
           spinnerTooltipId: SPINNER_TOOLTIP_ID,
           disclaimerTextVariant: 'styles',
         });
-    const containingPane = this.contentElement.enclosingNodeOrSelfWithClass('style-panes-wrapper') as HTMLElement;
     this.#aiCodeCompletionSummaryToolbarContainer =
         containingPane.createChild('div', 'ai-code-completion-summary-toolbar-container');
     this.#aiCodeCompletionSummaryToolbarContainer.role = 'toolbar';

@@ -37,10 +37,52 @@ const generatedTSConfig = {
       targetPart = path.basename(dep);
     }
 
+    const refPath = `${pathPart}/${targetPart}-tsconfig.ref.json`;
+    const jsonPath = `${pathPart}/${targetPart}-tsconfig.json`;
+    const absRefPath = path.resolve(path.dirname(tsconfigLocation), refPath);
+    const absJsonPath = path.resolve(path.dirname(tsconfigLocation), jsonPath);
+    const chosenPath = (fs.existsSync(absRefPath) || !fs.existsSync(absJsonPath)) ? refPath : jsonPath;
+
     return {
-      path: `${pathPart}/${targetPart}-tsconfig.json`,
+      path: chosenPath,
     };
   }),
 };
 
+const tsconfigRefLocation = tsconfigLocation.replace(/-tsconfig\.json$/, '-tsconfig.ref.json');
+
+const generatedTSConfigRef = {
+  compilerOptions: {
+    composite: true,
+    declaration: true,
+    emitDeclarationOnly: true,
+    skipLibCheck: true,
+    rootDir: path.dirname(originalFrontendMappedLocation),
+    outDir: '.',
+    declarationDir: '.',
+  },
+  files: [originalFrontendMappedLocation],
+  references: generatedTSConfig.references,
+};
+
 fs.writeFileSync(tsconfigLocation, JSON.stringify(generatedTSConfig));
+fs.writeFileSync(tsconfigRefLocation, JSON.stringify(generatedTSConfigRef));
+
+function toTscPath(p) {
+  const parts = path.normalize(p).split(path.sep);
+  const genIndex = parts.lastIndexOf('gen');
+  if (genIndex !== -1) {
+    parts[genIndex] = 'tsc';
+    return parts.join(path.sep);
+  }
+  return p;
+}
+
+const tscRefLocation = toTscPath(tsconfigRefLocation);
+if (tscRefLocation !== tsconfigRefLocation) {
+  const tscDir = path.dirname(tscRefLocation);
+  if (!fs.existsSync(tscDir)) {
+    fs.mkdirSync(tscDir, {recursive: true});
+  }
+  fs.writeFileSync(tscRefLocation, JSON.stringify(generatedTSConfigRef));
+}

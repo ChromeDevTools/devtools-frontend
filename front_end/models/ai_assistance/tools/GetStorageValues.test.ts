@@ -56,11 +56,11 @@ describe('GetStorageValuesTool', () => {
     mockStorage.getItems.resolves([['key1', 'value1']]);
     activeStorages = [mockStorage];
 
-    const setLoggingEnabledStub = sinon.stub();
+    const disableLoggingStub = sinon.stub();
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
-      setLoggingEnabled: setLoggingEnabledStub,
+      disableLogging: disableLoggingStub,
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
@@ -69,7 +69,7 @@ describe('GetStorageValuesTool', () => {
         context,
     );
 
-    sinon.assert.calledWith(setLoggingEnabledStub, false);
+    sinon.assert.calledOnce(disableLoggingStub);
     assert.isTrue('requiresApproval' in response && response.requiresApproval);
     if ('requiresApproval' in response) {
       assert.include(response.description || '', 'key1');
@@ -88,7 +88,7 @@ describe('GetStorageValuesTool', () => {
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
-      setLoggingEnabled: sinon.stub(),
+      disableLogging: sinon.stub(),
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
@@ -126,7 +126,7 @@ describe('GetStorageValuesTool', () => {
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
-      setLoggingEnabled: sinon.stub(),
+      disableLogging: sinon.stub(),
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
@@ -158,7 +158,7 @@ describe('GetStorageValuesTool', () => {
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
-      setLoggingEnabled: sinon.stub(),
+      disableLogging: sinon.stub(),
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
@@ -185,7 +185,7 @@ describe('GetStorageValuesTool', () => {
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
-      setLoggingEnabled: sinon.stub(),
+      disableLogging: sinon.stub(),
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
@@ -208,7 +208,7 @@ describe('GetStorageValuesTool', () => {
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns(''),
-      setLoggingEnabled: sinon.stub(),
+      disableLogging: sinon.stub(),
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
@@ -228,7 +228,7 @@ describe('GetStorageValuesTool', () => {
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
-      setLoggingEnabled: sinon.stub(),
+      disableLogging: sinon.stub(),
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
@@ -260,7 +260,7 @@ describe('GetStorageValuesTool', () => {
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
-      setLoggingEnabled: sinon.stub(),
+      disableLogging: sinon.stub(),
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
@@ -291,7 +291,7 @@ describe('GetStorageValuesTool', () => {
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
-      setLoggingEnabled: sinon.stub(),
+      disableLogging: sinon.stub(),
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
@@ -324,7 +324,7 @@ describe('GetStorageValuesTool', () => {
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
-      setLoggingEnabled: sinon.stub(),
+      disableLogging: sinon.stub(),
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
@@ -359,7 +359,7 @@ describe('GetStorageValuesTool', () => {
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
-      setLoggingEnabled: sinon.stub(),
+      disableLogging: sinon.stub(),
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
@@ -402,7 +402,7 @@ describe('GetStorageValuesTool', () => {
     const context = {
       conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
-      setLoggingEnabled: sinon.stub(),
+      disableLogging: sinon.stub(),
     };
 
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();

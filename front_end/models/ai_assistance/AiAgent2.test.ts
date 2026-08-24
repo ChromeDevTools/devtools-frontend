@@ -654,7 +654,7 @@ describeWithEnvironment('AiAgent2', () => {
     const listStorageKeysTool = AiAssistance.ToolRegistry.ToolRegistry.get('listStorageKeys');
     assert.exists(listStorageKeysTool);
     const handlerStub = sinon.stub(listStorageKeysTool, 'handler').callsFake(async (_args, context) => {
-      context.setLoggingEnabled(false);
+      context.disableLogging();
       return {result: {storageKeysByOrigin: {}}};
     });
 

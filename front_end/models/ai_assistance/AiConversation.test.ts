@@ -11,7 +11,12 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createNetworkRequest, mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
+import {
+  assertSkillLoaded,
+  assertSkillNotLoaded,
+  createNetworkRequest,
+  mockAidaClient,
+} from '../../testing/AiAssistanceHelpers.js';
 import {
   deinitializeGlobalVars,
   updateHostConfig,
@@ -58,6 +63,222 @@ describe('AiConversation', () => {
     conversation.setContext(networkRequest);
 
     assert(conversation.type === AiAssistance.AiHistoryStorage.ConversationType.NETWORK);
+  });
+
+  it('updates conversation type across context changes when devToolsAiV2Architecture is enabled', async () => {
+    updateHostConfig({
+      devToolsAiV2Architecture: {enabled: true},
+    });
+
+    const conversation =
+        new AiAssistance.AiConversation.AiConversation({type: AiAssistance.AiHistoryStorage.ConversationType.NONE});
+
+    const networkRequest = new AiAssistance.RequestContext.RequestContext(
+        createNetworkRequest(), new NetworkTimeCalculator.NetworkTransferTimeCalculator());
+    conversation.setContext(networkRequest);
+    assert.strictEqual(conversation.type, AiAssistance.AiHistoryStorage.ConversationType.NETWORK);
+
+    conversation.setContext(null);
+    assert.strictEqual(conversation.type, AiAssistance.AiHistoryStorage.ConversationType.NONE);
+  });
+
+  it('resets context state when context is removed across conversation turns', async () => {
+    updateHostConfig({
+      devToolsAiV2Architecture: {enabled: true},
+    });
+
+    const origin = Platform.DevToolsPath.urlString`https://example.com`;
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
+
+    const listNetworkRequestsTool = AiAssistance.ToolRegistry.ToolRegistry.get('listNetworkRequests');
+    assert.exists(listNetworkRequestsTool);
+    const capturedContexts: Array<AiAssistance.AiAgent.ConversationContext<unknown>|null> = [];
+    sinon.stub(listNetworkRequestsTool, 'handler').callsFake(async (_args, context) => {
+      capturedContexts.push(context.conversationContext);
+      return {result: {requests: []}};
+    });
+
+    const aidaClient = mockAidaClient([
+      // Turn 1: Model loads network skill and executes listNetworkRequests.
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['network']}}],
+      }],
+      [{
+        explanation: 'Listing requests.',
+        functionCalls: [{name: 'listNetworkRequests', args: {}}],
+      }],
+      [{
+        explanation: 'Turn 1 done.',
+      }],
+      // Turn 2: Query with cleared context. Model calls listNetworkRequests again.
+      [{
+        explanation: 'Listing requests on turn 2.',
+        functionCalls: [{name: 'listNetworkRequests', args: {}}],
+      }],
+      [{
+        explanation: 'Turn 2 done.',
+      }],
+    ]);
+
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      aidaClient,
+    });
+
+    const networkRequest = createNetworkRequest({
+      url: Platform.DevToolsPath.urlString`https://example.com/test`,
+      documentURL: Platform.DevToolsPath.urlString`https://example.com`,
+    });
+    sinon.stub(networkRequest, 'requestContentData')
+        .resolves(new TextUtils.ContentData.ContentData('test content', false, 'text/plain'));
+    const requestContext = new AiAssistance.RequestContext.RequestContext(
+        networkRequest, new NetworkTimeCalculator.NetworkTransferTimeCalculator());
+
+    // Turn 1: Query with active RequestContext. Tool receives RequestContext.
+    conversation.setContext(requestContext);
+    await Array.fromAsync(conversation.run('turn 1'));
+    assert.lengthOf(capturedContexts, 1);
+    assert.strictEqual(capturedContexts[0], requestContext);
+
+    // Turn 2: Query with cleared context. Tool receives null context.
+    conversation.setContext(null);
+    await Array.fromAsync(conversation.run('turn 2'));
+    assert.lengthOf(capturedContexts, 2);
+    assert.isNull(capturedContexts[1]);
+  });
+
+  it('preserves activeSkills across context changes when devToolsAiV2Architecture is enabled', async () => {
+    updateHostConfig({
+      devToolsAiV2Architecture: {enabled: true},
+    });
+
+    const origin = Platform.DevToolsPath.urlString`https://example.com`;
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
+
+    const aidaClient = mockAidaClient([
+      // Turn 1: Model loads 'network' skill.
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['network']}}],
+      }],
+      [{
+        explanation: 'Loaded network skill.',
+      }],
+      // Turn 2: Response after context change.
+      [{
+        explanation: 'Second turn response.',
+      }],
+    ]);
+
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      aidaClient,
+    });
+
+    // Turn 1: Load 'network' skill.
+    await Array.fromAsync(conversation.run('load network skill'));
+
+    // Context changes between turns.
+    const networkRequest = createNetworkRequest({
+      url: Platform.DevToolsPath.urlString`https://example.com/test`,
+      documentURL: Platform.DevToolsPath.urlString`https://example.com`,
+    });
+    sinon.stub(networkRequest, 'requestContentData')
+        .resolves(new TextUtils.ContentData.ContentData('test content', false, 'text/plain'));
+    const requestContext = new AiAssistance.RequestContext.RequestContext(
+        networkRequest, new NetworkTimeCalculator.NetworkTransferTimeCalculator());
+    conversation.setContext(requestContext);
+
+    // Turn 2: Query again.
+    await Array.fromAsync(conversation.run('analyze'));
+
+    // 'network' should remain active on the agent across context changes, so it is omitted from
+    // the unloaded skills manifest, while other unloaded skills like 'styling' remain listed.
+    const lastRequest = aidaClient.doConversation.lastCall.firstArg;
+    const promptText = 'text' in lastRequest.current_message.parts[0] ? lastRequest.current_message.parts[0].text : '';
+    assertSkillLoaded(promptText, 'network');
+    assertSkillNotLoaded(promptText, 'styling');
+  });
+
+  it('disables server-side logging when running with a context that disallows logging', async () => {
+    updateHostConfig({
+      devToolsAiV2Architecture: {enabled: true},
+    });
+
+    const origin = Platform.DevToolsPath.urlString`https://example.com`;
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
+
+    const aidaClient = mockAidaClient([
+      [{explanation: 'Storage query response.'}],
+    ]);
+
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      aidaClient,
+    });
+
+    const cookieItem = new AiAssistance.StorageItem.CookieItem(origin, origin, 'session_id');
+    const storageContext = new AiAssistance.StorageContext.StorageContext(cookieItem);
+    conversation.setContext(storageContext);
+
+    await Array.fromAsync(conversation.run('inspect cookie'));
+
+    sinon.assert.calledOnce(aidaClient.doConversation);
+    const request = aidaClient.doConversation.firstCall.firstArg;
+    assert.isTrue(request.metadata?.disable_user_content_logging);
+  });
+
+  it('does not re-enable server-side logging across context transitions once disabled', async () => {
+    updateHostConfig({
+      devToolsAiV2Architecture: {enabled: true},
+    });
+
+    const origin = Platform.DevToolsPath.urlString`https://example.com`;
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
+
+    const aidaClient = mockAidaClient([
+      [{explanation: 'Turn 1 storage response.'}],
+      [{explanation: 'Turn 2 network response.'}],
+    ]);
+
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      aidaClient,
+    });
+
+    // Turn 1: Run with sensitive StorageContext that disallows logging.
+    const cookieItem = new AiAssistance.StorageItem.CookieItem(origin, origin, 'session_id');
+    const storageContext = new AiAssistance.StorageContext.StorageContext(cookieItem);
+    conversation.setContext(storageContext);
+    await Array.fromAsync(conversation.run('turn 1'));
+
+    const turn1Request = aidaClient.doConversation.firstCall.firstArg;
+    assert.isTrue(turn1Request.metadata?.disable_user_content_logging);
+
+    // Turn 2: Switch to RequestContext which allows logging.
+    const networkRequest = createNetworkRequest({
+      url: Platform.DevToolsPath.urlString`https://example.com/test`,
+      documentURL: Platform.DevToolsPath.urlString`https://example.com`,
+    });
+    sinon.stub(networkRequest, 'requestContentData')
+        .resolves(new TextUtils.ContentData.ContentData('test content', false, 'text/plain'));
+    const requestContext = new AiAssistance.RequestContext.RequestContext(
+        networkRequest, new NetworkTimeCalculator.NetworkTransferTimeCalculator());
+    conversation.setContext(requestContext);
+    await Array.fromAsync(conversation.run('turn 2'));
+
+    sinon.assert.calledTwice(aidaClient.doConversation);
+    const turn2Request = aidaClient.doConversation.secondCall.firstArg;
+    assert.isTrue(turn2Request.metadata?.disable_user_content_logging);
   });
 
   it('should be able to switch agent type when context is removed', async () => {

@@ -86,9 +86,12 @@ export class AiAgent2 extends AiAgent<unknown> {
   }
 
   protected override async preRun(): Promise<void> {
+    // One-way latch: once sensitive data enters the conversation history,
+    // logging must remain disabled for the lifetime of this agent instance.
     if (this.context && !this.context.isLoggingEnabled()) {
-      this.setServerSideLoggingActive(false);
+      this.disableServerSideLogging();
     }
+
     const target = this.targetManager.primaryPageTarget();
     const domModel = target?.model(SDK.DOMModel.DOMModel);
     // Ensure the DOM document is requested and cached in DOMModel so that
@@ -184,6 +187,9 @@ QUERY: ${query}`;
       return enhancedQuery;
     }
 
+    // Note: Test assertion helpers in front_end/testing/AiAssistanceHelpers.ts (assertSkillLoaded,
+    // assertSkillNotLoaded) rely on this formatting (`Available skills that are not yet loaded:`
+    // and `- ${name}: ${skill.description}`). If this format is updated, update those helpers too.
     const skillsManifest = unloadedSkills.map(([name, skill]) => `- ${name}: ${skill.description}`).join('\n');
     return `Available skills that are not yet loaded:
 ${skillsManifest}
@@ -278,8 +284,8 @@ User query: ${enhancedQuery}`;
           getLighthouseReport: () => (this.context instanceof AccessibilityContext ? this.context.getItem() : null),
           runLighthouse: async overrides => await (this.#lighthouseRecording?.(overrides) ?? null),
           performanceRecordAndReload: this.#performanceRecordAndReload,
-          setLoggingEnabled: (enabled: boolean) => {
-            this.setServerSideLoggingActive(enabled);
+          disableLogging: () => {
+            this.disableServerSideLogging();
           },
         };
         return tool.handler(args, context, options);

@@ -38,6 +38,8 @@ import * as AICallTree from './performance/AICallTree.js';
 import * as AIContext from './performance/AIContext.js';
 import * as AIQueries from './performance/AIQueries.js';
 import * as PerformanceAnnotations from './PerformanceAnnotations.js';
+import * as Skill from './skills/Skill.js';
+import * as SkillRegistry from './skills/SkillRegistry.js';
 import * as StorageItem from './StorageItem.js';
 import * as DOMStorageUtils from './tools/DOMStorageUtils.js';
 import * as ExecuteJavaScript from './tools/ExecuteJavaScript.js';
@@ -122,6 +124,8 @@ export {
   ResolveDevtoolsNodePath,
   RunLighthouse,
   SelectTraceEventByKey,
+  Skill,
+  SkillRegistry,
   StorageAgent,
   StorageContext,
   StorageItem,

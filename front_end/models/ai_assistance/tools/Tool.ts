@@ -271,8 +271,13 @@ export type Tool<
     CapabilitiesType extends BaseToolCapability = BaseToolCapability,
     > = DataTool<ArgsType, ReturnType, CapabilitiesType>|ContextTool<ArgsType, ReturnType, CapabilitiesType>;
 
+/**
+ * Capability provided to tools that handle sensitive user data (e.g. cookies or storage values).
+ * Calling `disableLogging()` irreversibly disables server-side logging for the remainder of
+ * the conversation session to prevent sensitive data from being logged on future turns.
+ */
 export interface ServerLoggingCapability {
-  setLoggingEnabled(enabled: boolean): void;
+  disableLogging(): void;
 }
 
 export const enum ToolAnnotation {

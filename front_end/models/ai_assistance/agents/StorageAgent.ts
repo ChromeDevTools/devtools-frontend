@@ -202,7 +202,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
       },
 
       handler: async args => {
-        this.setServerSideLoggingActive(false);
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -288,7 +288,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
       },
 
       handler: async (args, options) => {
-        this.setServerSideLoggingActive(false);
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -388,7 +388,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
         };
       },
       handler: async args => {
-        this.setServerSideLoggingActive(false);
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -448,7 +448,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
         };
       },
       handler: async (args, options) => {
-        this.setServerSideLoggingActive(false);
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -618,9 +618,9 @@ export class StorageAgent extends AiAgent<StorageItem> {
   protected override async preRun(): Promise<void> {
     const item = this.context?.getItem();
     if (item instanceof CookieItem && Boolean(item.name)) {
-      this.setServerSideLoggingActive(false);
+      this.disableServerSideLogging();
     } else if (item instanceof DOMStorageItem && Boolean(item.key)) {
-      this.setServerSideLoggingActive(false);
+      this.disableServerSideLogging();
     }
   }
 

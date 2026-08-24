@@ -97,7 +97,7 @@ export class GetStorageValuesTool implements DataTool<GetStorageValuesArgs, GetS
       context: BaseToolCapability&OriginLockCapability&ServerLoggingCapability,
       options?: FunctionHandlerOptions,
       ): Promise<DataHandlerResult<GetStorageValuesResult>> {
-    context.setLoggingEnabled(false);
+    context.disableLogging();
 
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const targetManager = SDK.TargetManager.TargetManager.instance();

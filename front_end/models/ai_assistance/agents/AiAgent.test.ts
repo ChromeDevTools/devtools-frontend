@@ -6,7 +6,6 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Host from '../../../core/host/host.js';
-import * as Root from '../../../core/root/root.js';
 import {mockAidaClient, MockAidaPayloadLimitError, MockAidaQuotaError} from '../../../testing/AiAssistanceHelpers.js';
 import {
   describeWithEnvironment,
@@ -58,8 +57,8 @@ class AiAgentMock extends AiAssistance.AiAgent.AiAgent<unknown> {
     this.declareFunction(name, declaration);
   }
 
-  setServerSideLoggingActiveForTest(active: boolean): void {
-    this.setServerSideLoggingActive(active);
+  disableServerSideLoggingForTest(): void {
+    this.disableServerSideLogging();
   }
 }
 
@@ -274,50 +273,29 @@ describeWithEnvironment('AiAgent', () => {
     });
   });
 
-  describe('serverSideLoggingActive', () => {
-    it('enables logging when setServerSideLoggingActive(true) is called if logging was allowed', async () => {
+  describe('disableServerSideLogging', () => {
+    it('disables server-side logging when called', async () => {
       const agent = new AiAgentMock({
         aidaClient: mockAidaClient(),
         serverSideLoggingAllowed: true,
       });
 
-      agent.setServerSideLoggingActiveForTest(false);
-      assert.isTrue(
+      assert.isFalse(
           agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).metadata?.disable_user_content_logging);
 
-      agent.setServerSideLoggingActiveForTest(true);
-      assert.isFalse(
+      agent.disableServerSideLoggingForTest();
+      assert.isTrue(
           agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).metadata?.disable_user_content_logging);
     });
 
-    it('does not enable logging when setServerSideLoggingActive(true) is called if logging was not allowed',
-       async () => {
-         const agent = new AiAgentMock({
-           aidaClient: mockAidaClient(),
-           serverSideLoggingAllowed: false,
-         });
+    it('keeps logging disabled when initialized with serverSideLoggingAllowed: false', async () => {
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(),
+        serverSideLoggingAllowed: false,
+      });
 
-         agent.setServerSideLoggingActiveForTest(true);
-         assert.isTrue(agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER)
-                           .metadata?.disable_user_content_logging);
-       });
-
-    it('does not enable logging when setServerSideLoggingActive(true) is called if rebranded is enabled', async () => {
-      const originalDevToolsGeminiRebranding = Root.Runtime.hostConfig.devToolsGeminiRebranding;
-      Root.Runtime.hostConfig.devToolsGeminiRebranding = {enabled: true};
-
-      try {
-        const agent = new AiAgentMock({
-          aidaClient: mockAidaClient(),
-          serverSideLoggingAllowed: true,
-        });
-
-        agent.setServerSideLoggingActiveForTest(true);
-        assert.isTrue(
-            agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).metadata?.disable_user_content_logging);
-      } finally {
-        Root.Runtime.hostConfig.devToolsGeminiRebranding = originalDevToolsGeminiRebranding;
-      }
+      assert.isTrue(
+          agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).metadata?.disable_user_content_logging);
     });
   });
 
@@ -643,22 +621,22 @@ describeWithEnvironment('AiAgent', () => {
       });
     });
 
-    it('toggles logging dynamically during a multi-turn conversation run', async () => {
+    it('disables logging during a multi-turn conversation run and keeps it disabled', async () => {
       const aidaClient = mockAidaClient([
-        // 1. Initial turn: Aida returns a call to 'toggleLoggingFn' with enabled=false
+        // 1. Initial turn: Aida returns a call to 'disableLoggingFn'
         [{
-          explanation: 'I will call toggleLoggingFn to disable logging.',
+          explanation: 'I will call disableLoggingFn to disable logging.',
           functionCalls: [{
-            name: 'toggleLoggingFn',
-            args: {enabled: false},
+            name: 'disableLoggingFn',
+            args: {},
           }],
         }],
-        // 2. Second turn: Aida client responds to the function output and returns a call to 'toggleLoggingFn' with enabled=true
+        // 2. Second turn: Aida client responds to the function output
         [{
-          explanation: 'I will call toggleLoggingFn to enable logging.',
+          explanation: 'Second turn response.',
           functionCalls: [{
-            name: 'toggleLoggingFn',
-            args: {enabled: true},
+            name: 'anotherFn',
+            args: {},
           }],
         }],
         // 3. Third turn: Final answer
@@ -667,7 +645,7 @@ describeWithEnvironment('AiAgent', () => {
         }],
       ]);
 
-      class ToggleLoggingAgent extends AiAssistance.AiAgent.AiAgent<unknown> {
+      class DisableLoggingAgent extends AiAssistance.AiAgent.AiAgent<unknown> {
         override preamble = 'preamble';
         clientFeature: Host.AidaClient.ClientFeature = 0;
         userTier = undefined;
@@ -675,21 +653,28 @@ describeWithEnvironment('AiAgent', () => {
 
         constructor(opts: AiAssistance.AiAgent.AgentOptions) {
           super(opts);
-          this.declareFunction<{enabled: boolean}>('toggleLoggingFn', {
-            description: 'toggles logging',
+          this.declareFunction('disableLoggingFn', {
+            description: 'disables logging',
             parameters: {
               type: Host.AidaClient.ParametersTypes.OBJECT,
-              description: 'Parameters for toggle logging function',
-              properties: {
-                enabled: {
-                  type: Host.AidaClient.ParametersTypes.BOOLEAN,
-                  description: 'Whether to enable logging',
-                },
-              },
-              required: ['enabled'],
+              description: 'Parameters for disable logging function',
+              properties: {},
+              required: [],
             },
-            handler: async args => {
-              this.setServerSideLoggingActive(args.enabled);
+            handler: async () => {
+              this.disableServerSideLogging();
+              return {result: 'ok'};
+            },
+          });
+          this.declareFunction('anotherFn', {
+            description: 'another function',
+            parameters: {
+              type: Host.AidaClient.ParametersTypes.OBJECT,
+              description: 'Parameters for another function',
+              properties: {},
+              required: [],
+            },
+            handler: async () => {
               return {result: 'ok'};
             },
           });
@@ -701,7 +686,7 @@ describeWithEnvironment('AiAgent', () => {
         }
       }
 
-      const agent = new ToggleLoggingAgent({
+      const agent = new DisableLoggingAgent({
         aidaClient,
         serverSideLoggingAllowed: true,
       });
@@ -715,13 +700,13 @@ describeWithEnvironment('AiAgent', () => {
       const firstCallRequest = aidaClient.doConversation.getCall(0).args[0];
       assert.isFalse(firstCallRequest.metadata?.disable_user_content_logging);
 
-      // Second call (after toggleLoggingFn(false)): Logging is inactive (disable_user_content_logging: true)
+      // Second call (after disableLoggingFn()): Logging is inactive (disable_user_content_logging: true)
       const secondCallRequest = aidaClient.doConversation.getCall(1).args[0];
       assert.isTrue(secondCallRequest.metadata?.disable_user_content_logging);
 
-      // Third call (after toggleLoggingFn(true)): Logging is active again (disable_user_content_logging: false)
+      // Third call: Logging remains inactive (disable_user_content_logging: true)
       const thirdCallRequest = aidaClient.doConversation.getCall(2).args[0];
-      assert.isFalse(thirdCallRequest.metadata?.disable_user_content_logging);
+      assert.isTrue(thirdCallRequest.metadata?.disable_user_content_logging);
     });
 
     it('should abort execution if origin becomes blocked after approval', async () => {

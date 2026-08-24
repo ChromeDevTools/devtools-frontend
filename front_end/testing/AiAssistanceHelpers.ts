@@ -10,7 +10,7 @@ import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
-import type * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
+import * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as Logs from '../models/logs/logs.js';
@@ -430,4 +430,26 @@ export function stubPerformanceTraceFormatter(
     ): sinon.SinonStub {
   return sinon.stub(traceContext, 'createFormatter')
       .returns(methods as unknown as AiAssistance.PerformanceTraceFormatter.PerformanceTraceFormatter);
+}
+
+const UNLOADED_SKILLS_MANIFEST_HEADER = 'Available skills that are not yet loaded:';
+
+/**
+ * Asserts that a skill is loaded/active by verifying that its full manifest entry
+ * (`- <name>: <description>`) is omitted from the prompt's unloaded skills manifest.
+ */
+export function assertSkillLoaded(prompt: string, skillName: AiAssistance.Skill.SkillName): void {
+  const expectedLine = `- ${skillName}: ${AiAssistance.SkillRegistry.SKILLS[skillName].description}`;
+  assert.notInclude(prompt, expectedLine,
+                    `Expected skill "${skillName}" to be loaded (omitted from unloaded manifest)`);
+}
+
+/**
+ * Asserts that a skill is not loaded by verifying that its full manifest entry
+ * (`- <name>: <description>`) is present in the prompt's unloaded skills manifest.
+ */
+export function assertSkillNotLoaded(prompt: string, skillName: AiAssistance.Skill.SkillName): void {
+  assert.include(prompt, UNLOADED_SKILLS_MANIFEST_HEADER);
+  const expectedLine = `- ${skillName}: ${AiAssistance.SkillRegistry.SKILLS[skillName].description}`;
+  assert.include(prompt, expectedLine, `Expected skill "${skillName}" to be in the unloaded skills manifest`);
 }

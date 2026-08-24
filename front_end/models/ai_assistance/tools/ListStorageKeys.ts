@@ -84,7 +84,7 @@ export class ListStorageKeysTool implements DataTool<ListStorageKeysArgs, ListSt
       args: ListStorageKeysArgs,
       context: BaseToolCapability&OriginLockCapability&ServerLoggingCapability,
       ): Promise<DataHandlerResult<ListStorageKeysResult>> {
-    context.setLoggingEnabled(false);
+    context.disableLogging();
 
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const targetManager = SDK.TargetManager.TargetManager.instance();

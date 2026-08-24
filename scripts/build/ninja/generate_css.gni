@@ -7,7 +7,58 @@ import("./node.gni")
 import("./vars.gni")
 
 template("generate_css") {
-  node_action(target_name) {
+  assert(defined(invoker.sources),
+         "You must define the 'sources' for a generate_css target")
+
+  _action_target_name = "${target_name}_action"
+  _tsc_dir = string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc")
+  _tsconfig_ref_target = "${target_name}_tsconfig_ref"
+  _tsconfig_ref_file = "$_tsc_dir/$target_name-tsconfig.ref.json"
+  _tsconfig_target = "${target_name}_tsconfig"
+  _tsconfig_file = "$target_gen_dir/$target_name-tsconfig.json"
+
+  _css_outputs = []
+  _js_files = []
+  foreach(_input, invoker.sources) {
+    _css_outputs += [ "$target_gen_dir/$_input.js" ]
+    _js_files += [ "$_input.js" ]
+  }
+
+  generated_file(_tsconfig_ref_target) {
+    outputs = [ _tsconfig_ref_file ]
+    output_conversion = "json"
+    contents = {
+      compilerOptions = {
+        composite = true
+        declaration = true
+        emitDeclarationOnly = true
+        skipLibCheck = true
+        outDir = "."
+        declarationDir = "."
+      }
+      files = rebase_path(_css_outputs, _tsc_dir)
+    }
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+  }
+
+  generated_file(_tsconfig_target) {
+    outputs = [ _tsconfig_file ]
+    output_conversion = "json"
+    contents = {
+      compilerOptions = {
+        composite = true
+        outDir = "."
+      }
+      files = _js_files
+    }
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+  }
+
+  node_action(_action_target_name) {
     forward_variables_from(invoker, [ "sources" ])
 
     script = "scripts/build/generate_css_js_files.js"
@@ -23,25 +74,38 @@ template("generate_css") {
     args = [
       build_timestamp,
       "$_minify",
-      target_name,
       _src,
       _dest,
       string_join(",", sources),
     ]
 
-    _css_outputs = []
-    foreach(_input, sources) {
-      _css_outputs += [ "$target_gen_dir/$_input.js" ]
+    outputs = _css_outputs
+
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
     }
+  }
 
-    outputs = [ "$target_gen_dir/$target_name-tsconfig.json" ] + _css_outputs
+  group(target_name) {
+    public_deps = [
+      ":$_action_target_name",
+      ":$_tsconfig_ref_target",
+      ":$_tsconfig_target",
+    ]
 
-    data = outputs
+    data = _css_outputs
 
     if (!devtools_bundle) {
       metadata = {
         grd_files = _css_outputs
       }
+    }
+
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+    if (defined(invoker.visibility)) {
+      visibility = invoker.visibility
     }
   }
 }

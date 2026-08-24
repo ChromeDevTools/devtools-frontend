@@ -88,7 +88,7 @@ To enable seamless, incremental migration of hundreds of DevTools modules withou
 ### Adapter Mechanisms
 
 1. **Dual Config Emission (`*-tsconfig.ref.json`)**:
-   `ts_library.py`, `generate-tsconfig.js`, `generate_css_js_files.js`, and `devtools_pre_built` emit `*-tsconfig.ref.json` alongside `*-tsconfig.json`.
+   `ts_library.py`, `generate-tsconfig.js`, `generate_css.gni`, and `devtools_pre_built` emit `*-tsconfig.ref.json` alongside `*-tsconfig.json`.
 2. **Dynamic Project Reference Resolution**:
    References automatically point to `*-tsconfig.ref.json` stubs when available, with fallback to `*-tsconfig.json` for legacy static assets.
 3. **GN Syntax Forward Compatibility (`ts_deps`)**:

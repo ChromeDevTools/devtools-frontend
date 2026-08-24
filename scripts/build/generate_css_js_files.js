@@ -40,10 +40,9 @@ export default \`${stylesheetContents}
 }
 
 async function runMain() {
-  const [, , buildTimestamp, isDebugString, targetName, srcDir, targetGenDir, files] = process.argv;
+  const [, , buildTimestamp, isDebugString, srcDir, targetGenDir, files] = process.argv;
 
   const filenames = files.split(',');
-  const configFiles = [];
   const isDebug = isDebugString === 'true';
 
   for (const fileName of filenames) {
@@ -61,23 +60,7 @@ async function runMain() {
     const generatedFileLocation = path.join(targetGenDir, generatedFileName);
 
     writeIfChanged(generatedFileLocation, newContents);
-
-    configFiles.push(`\"${generatedFileName}\"`);
   }
-
-  writeIfChanged(
-      path.join(targetGenDir, `${targetName}-tsconfig.json`),
-      `{
-    "compilerOptions": {
-        "composite": true,
-        "outDir": "."
-    },
-    "files": [
-        ${configFiles.join(',\n        ')}
-    ]
-}
-`,
-  );
 }
 
 if (import.meta.main) {

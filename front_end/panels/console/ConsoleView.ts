@@ -1871,8 +1871,8 @@ export class ConsoleViewFilter {
     this.messageLevelFiltersSetting = ConsoleViewFilter.levelFilterSetting();
     this.networkMessagesSetting =
         Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.networkMessagesSettingDescriptor);
-    this.filterByExecutionContextSetting =
-        Common.Settings.Settings.instance().moduleSetting('selected-context-filter-enabled');
+    this.filterByExecutionContextSetting = Common.Settings.Settings.instance().resolve(
+        Settings.ConsoleSettings.selectedContextFilterEnabledSettingDescriptor);
 
     this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.networkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));

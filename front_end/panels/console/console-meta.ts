@@ -285,13 +285,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.networkMess
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.selectedContextFilterEnabledSettingDescriptor, {
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.selectedContextOnly),
-  settingName: 'selected-context-filter-enabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
   options: [
     {
       value: true,

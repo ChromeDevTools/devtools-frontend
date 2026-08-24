@@ -10,3 +10,10 @@ export const networkMessagesSettingDescriptor: Common.Settings.SettingDescriptor
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const selectedContextFilterEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'selected-context-filter-enabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

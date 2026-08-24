@@ -9,6 +9,7 @@ import("../../visibility.gni")
 
 devtools_ui_module("settings") {
   sources = [
+    "ConsoleSettings.ts",
     "InspectorMainSettings.ts",
     "MainSettings.ts",
     "SettingUIRegistration.ts",

@@ -270,13 +270,9 @@ UI.ActionRegistration.registerActionExtension({
   },
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.networkMessagesSettingDescriptor, {
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.networkMessages),
-  settingName: 'network-messages',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

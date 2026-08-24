@@ -16,4 +16,5 @@ export * as DisabledWidget from './components/DisabledWidget.js';
 export * as WalkthroughUtils from './components/WalkthroughUtils.js';
 export * as WalkthroughView from './components/WalkthroughView.js';
 export * as ExportConversation from './ExportConversation.js';
+export * as ExternalHandler from './ExternalHandler.js';
 export * as ImageResize from './components/ImageResize.js';

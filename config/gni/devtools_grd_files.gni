@@ -1405,6 +1405,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/accessibility/axBreadcrumbs.css.js",
   "front_end/panels/ai_assistance/AiAssistancePanel.js",
   "front_end/panels/ai_assistance/ExportConversation.js",
+  "front_end/panels/ai_assistance/ExternalHandler.js",
   "front_end/panels/ai_assistance/aiAssistancePanel.css.js",
   "front_end/panels/ai_assistance/components/AIv2MarkdownRenderer.js",
   "front_end/panels/ai_assistance/components/AccessibilityAgentMarkdownRenderer.js",

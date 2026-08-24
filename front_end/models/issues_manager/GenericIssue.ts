@@ -6,11 +6,11 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import {Issue, IssueCategory, IssueKind} from './Issue.js';
+import {type AffectedElement, Issue, IssueCategory, IssueKind} from './Issue.js';
 import {
-  resolveLazyDescription,
   type LazyMarkdownIssueDescription,
   type MarkdownIssueDescription,
+  resolveLazyDescription,
 } from './MarkdownIssueDescription.js';
 
 const UIStrings = {
@@ -68,6 +68,18 @@ export class GenericIssue extends Issue<Protocol.Audits.GenericIssueDetails> {
     const details = this.details();
     if (details.request) {
       return [details.request];
+    }
+    return [];
+  }
+
+  override elements(): Iterable<AffectedElement> {
+    const details = this.details();
+    if (details.violatingNodeId) {
+      return [{
+        backendNodeId: details.violatingNodeId,
+        nodeName: '',
+        target: this.model()?.target() ?? null,
+      }];
     }
     return [];
   }

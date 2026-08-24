@@ -136,6 +136,10 @@ export class TestUniverse implements Foundation.Universe.Universe {
       () => new CrUXManager.CrUXManager(this.targetManager, this.settings),
     ],
     [
+      IssuesManager.DOMIssuesManager.DOMIssuesManager,
+      () => new IssuesManager.DOMIssuesManager.DOMIssuesManager(this.issuesManager, this.targetManager),
+    ],
+    [
       Emulation.DeviceModeModel.DeviceModeModel,
       () => new Emulation.DeviceModeModel.DeviceModeModel(this.targetManager, this.settings,
                                                           this.multitargetNetworkManager, this.fileManager),
@@ -413,6 +417,10 @@ export class TestUniverse implements Foundation.Universe.Universe {
 
   get domDebuggerManager(): SDK.DOMDebuggerModel.DOMDebuggerManager {
     return this.get(SDK.DOMDebuggerModel.DOMDebuggerManager);
+  }
+
+  get domIssuesManager(): IssuesManager.DOMIssuesManager.DOMIssuesManager {
+    return this.get(IssuesManager.DOMIssuesManager.DOMIssuesManager);
   }
 
   get domModelUndoStack(): SDK.DOMModel.DOMModelUndoStack {

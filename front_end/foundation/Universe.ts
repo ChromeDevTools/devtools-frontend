@@ -213,6 +213,9 @@ export class Universe {
     );
     context.set(IssuesManager.IssuesManager.IssuesManager, issuesManager);
 
+    const domIssuesManager = new IssuesManager.DOMIssuesManager.DOMIssuesManager(issuesManager, targetManager);
+    context.set(IssuesManager.DOMIssuesManager.DOMIssuesManager, domIssuesManager);
+
     const javaScriptMetadata = new JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl();
     context.set(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl, javaScriptMetadata);
 
@@ -294,6 +297,10 @@ export class Universe {
 
   get domDebuggerManager(): SDK.DOMDebuggerModel.DOMDebuggerManager {
     return this.context.get(SDK.DOMDebuggerModel.DOMDebuggerManager);
+  }
+
+  get domIssuesManager(): IssuesManager.DOMIssuesManager.DOMIssuesManager {
+    return this.context.get(IssuesManager.DOMIssuesManager.DOMIssuesManager);
   }
 
   get domModelUndoStack(): SDK.DOMModel.DOMModelUndoStack {

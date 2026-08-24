@@ -49,6 +49,9 @@ describe('GenericIssue', () => {
         `GenericIssue::FormLabelForNameError-(${'main' as Protocol.Page.FrameId})-(1)-(attribute)-(no-request)`);
     assert.strictEqual(genericIssue.getKind(), IssuesManager.Issue.IssueKind.PAGE_ERROR);
     assert.isNotNull(genericIssue.getDescription());
+    const elements = Array.from(genericIssue.elements());
+    assert.lengthOf(elements, 1);
+    assert.strictEqual(elements[0].backendNodeId, 1);
   });
 
   it('adds an incorrect form label use issue without details', () => {

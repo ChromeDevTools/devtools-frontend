@@ -233,7 +233,6 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #issuesByOutermostTarget: WeakMap<SDK.Target.Target, Set<Issue>> = new Map();
   #frameManager: SDK.FrameManager.FrameManager;
   #targetManager: SDK.TargetManager.TargetManager;
-
   constructor(
       private readonly showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>,
       private readonly hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting>,

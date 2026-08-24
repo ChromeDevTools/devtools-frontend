@@ -36,6 +36,7 @@ ts_e2e_library("elements") {
     "selection-after-delete.test.ts",
     "shadowroot-styles.test.ts",
     "sidebar-event-listeners.test.ts",
+    "style-flash.test.ts",
     "style-pane-properties.test.ts",
     "styles-disable-inherited.test.ts",
     "switch-panels-while-editing-as-html.test.ts",

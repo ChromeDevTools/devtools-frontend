@@ -29,6 +29,7 @@ export interface StylesContainer {
   filterRegex(): RegExp|null;
   setEditingStyle(editing: boolean): void;
   setUserOperation(userOperation: boolean): void;
+  suppressResets(): void;
   forceUpdate(): void;
   hideAllPopovers(): void;
 

@@ -17,7 +17,6 @@ import {
   createTarget,
   describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
-import {spyCall} from '../../testing/ExpectStubCall.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {
   getMatchedStyles,
@@ -227,13 +226,4 @@ describeWithEnvironment('StandaloneStylesContainer', () => {
     assert.lengthOf(container.contentElement.querySelectorAll('.styles-section'), 2);
   });
 
-  it('should refresh all sections when computed styles change', async () => {
-    const {container} = await setupContainer([{name: 'color', value: 'red'}]);
-    const updatePromise = spyCall(container, 'performUpdate');
-
-    container.computedStyleModel().dispatchEventToListeners(
-        ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED);
-
-    await updatePromise;
-  });
 });

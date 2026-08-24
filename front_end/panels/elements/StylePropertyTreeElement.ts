@@ -2361,6 +2361,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     this.#stylesContainer.setUserOperation(true);
+    this.#stylesContainer.suppressResets();
     const success = await this.property.setDisabled(disabled);
     this.#stylesContainer.setUserOperation(false);
 
@@ -3652,6 +3653,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const currentNode = this.#stylesContainer.node();
     this.#stylesContainer.setUserOperation(true);
+    this.#stylesContainer.suppressResets();
 
     styleText += Platform.StringUtilities.findUnclosedCssQuote(styleText);
     styleText += ')'.repeat(Platform.StringUtilities.countUnmatchedLeftParentheses(styleText));

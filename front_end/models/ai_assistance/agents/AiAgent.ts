@@ -1035,9 +1035,11 @@ export abstract class AiAgent<T> {
         sideEffectConfirmationPromiseWithResolvers.resolve(false);
       }
 
-      options?.signal?.addEventListener('abort', () => {
+      const onAbort = (): void => {
         sideEffectConfirmationPromiseWithResolvers.resolve(false);
-      }, {once: true});
+      };
+
+      options?.signal?.addEventListener('abort', onAbort, {once: true});
 
       yield {
         type: ResponseType.SIDE_EFFECT,
@@ -1045,7 +1047,12 @@ export abstract class AiAgent<T> {
         description: result.description,
       };
 
-      const approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
+      let approvedRun = false;
+      try {
+        approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
+      } finally {
+        options?.signal?.removeEventListener('abort', onAbort);
+      }
       if (!approvedRun) {
         yield {
           type: ResponseType.ACTION,

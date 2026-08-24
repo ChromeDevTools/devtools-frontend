@@ -23,6 +23,8 @@ import {
   mockAidaClient,
   openHistoryContextMenu,
   stripId,
+  waitForLoadingToFinish,
+  waitForSideEffectDialog,
 } from '../../testing/AiAssistanceHelpers.js';
 import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
 import {
@@ -783,6 +785,73 @@ describeWithEnvironment('AI Assistance Panel', () => {
       );
 
       sinon.assert.callCount(view, callCount);
+    });
+
+    it('should clean up the abort event listener when inspect element finishes', async () => {
+      updateHostConfig({
+        devToolsAiAssistanceContextSelectionAgent: {enabled: true},
+      });
+
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{
+            name: 'inspectDom',
+            args: {},
+          }],
+        }],
+        [{
+          explanation: 'Inspected element',
+        }],
+      ]);
+
+      const {view} = await createAiAssistancePanel({aidaClient});
+      assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      view.input.props.onContextRemoved?.();
+
+      const addEventListenerSpy = sinon.spy(AbortSignal.prototype, 'addEventListener');
+      const removeEventListenerSpy = sinon.spy(AbortSignal.prototype, 'removeEventListener');
+
+      view.input.props.onTextSubmit('inspect element');
+
+      const sideEffectDialog = await waitForSideEffectDialog(view);
+      sideEffectDialog.onAnswer(true);
+
+      // Allow microtasks to run so handleInspectElement registers its listeners.
+      await new Promise(resolve => setTimeout(resolve, 10));
+
+      sinon.assert.calledWith(addEventListenerSpy, 'abort');
+      const abortListener = addEventListenerSpy.getCalls().find(call => call.args[0] === 'abort')?.args[1];
+      assert.isDefined(abortListener);
+
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
+        nodeType: Node.ELEMENT_NODE,
+      });
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+
+      await waitForLoadingToFinish(view);
+
+      sinon.assert.calledWith(removeEventListenerSpy, 'abort', abortListener);
+    });
+
+    it('waitForSideEffectDialog should throw if conversation finishes without a side effect', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: 'Regular response without tools',
+        }],
+      ]);
+
+      const {view} = await createAiAssistancePanel({aidaClient});
+      assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      view.input.props.onTextSubmit('hello');
+
+      try {
+        await waitForSideEffectDialog(view);
+        assert.fail('Expected waitForSideEffectDialog to throw');
+      } catch (err) {
+        assert.instanceOf(err, Error);
+        assert.strictEqual(err.message, 'Conversation finished without showing a side effect dialog');
+      }
     });
   });
 

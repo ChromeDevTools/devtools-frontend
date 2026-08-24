@@ -806,6 +806,58 @@ describeWithEnvironment('AiAgent', () => {
       assert.strictEqual(errorResponse.error, AiAssistance.AiAgent.ErrorType.CROSS_ORIGIN);
       assert.strictEqual(called, 1);
     });
+
+    it('should remove the abort listener from signal after side effect confirmation resolves', async () => {
+      const abortController = new AbortController();
+      const addEventListenerSpy = sinon.spy(abortController.signal, 'addEventListener');
+      const removeEventListenerSpy = sinon.spy(abortController.signal, 'removeEventListener');
+
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient([
+          [
+            {
+              explanation: 'Calling function',
+              functionCalls: [{name: 'testFn', args: {}}],
+            },
+          ],
+          [{
+            explanation: 'Final answer',
+          }],
+        ]),
+        confirmSideEffectForTest: <T>() => {
+          const resolvers = Promise.withResolvers<T>();
+          resolvers.resolve(true as unknown as T);
+          return resolvers;
+        },
+      });
+
+      agent.declareFunctionForTest('testFn', {
+        description: 'test fn description',
+        parameters: {
+          type: Host.AidaClient.ParametersTypes.OBJECT,
+          description: 'test parameters',
+          properties: {},
+          required: [],
+        },
+        handler: async (_args, options) => {
+          if (!options?.approved) {
+            return {requiresApproval: true, description: 'test approval'};
+          }
+          return {result: 'success'};
+        },
+      });
+
+      await Array.fromAsync(agent.run('query', {
+        selected: mockConversationContext(),
+        signal: abortController.signal,
+      }));
+
+      sinon.assert.calledWith(addEventListenerSpy, 'abort');
+      sinon.assert.calledWith(removeEventListenerSpy, 'abort');
+      const abortListener = addEventListenerSpy.getCalls().find(call => call.args[0] === 'abort')?.args[1];
+      assert.isDefined(abortListener);
+      sinon.assert.calledWith(removeEventListenerSpy, 'abort', abortListener);
+    });
   });
 
   describe('parseTextResponseForSuggestions', () => {

@@ -1677,20 +1677,23 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
       };
 
+      const handleAbort = (): void => {
+        resolve(null);
+        removeListeners();
+      };
+
       const removeListeners = (): void => {
         UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, handleDOMNodeFlavorChange);
         this.#toggleSearchElementAction?.removeEventListener(
             UI.ActionRegistration.Events.TOGGLED, handleInspectModeToggled);
+        this.#runAbortController.signal.removeEventListener('abort', handleAbort);
       };
 
       UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, handleDOMNodeFlavorChange);
       this.#toggleSearchElementAction?.addEventListener(UI.ActionRegistration.Events.TOGGLED, handleInspectModeToggled);
 
       // Clean-up listeners in case of abort.
-      this.#runAbortController.signal.addEventListener('abort', () => {
-        resolve(null);
-        removeListeners();
-      }, {once: true});
+      this.#runAbortController.signal.addEventListener('abort', handleAbort, {once: true});
     });
 
     void this.#toggleSearchElementAction.execute();

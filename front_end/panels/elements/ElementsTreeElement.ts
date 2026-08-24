@@ -49,7 +49,7 @@ import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Elements from '../../models/elements/elements.js';
-import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
@@ -73,7 +73,7 @@ import {type ElementsTreeOutline, MappedCharToEntity} from './ElementsTreeOutlin
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {getRegisteredDecorators, type MarkerDecorator, type MarkerDecoratorRegistration} from './MarkerDecorator.js';
 
-const {html, nothing, render, Directives: {ref, repeat}} = Lit;
+const {html, nothing, render, Directives: {classMap, ref, repeat, until}} = Lit;
 const {animateOn} = UI.UIUtils;
 
 const UIStrings = {
@@ -268,6 +268,7 @@ export interface ViewInput {
   updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null;
   onHighlightSearchResults: () => void;
   onExpand: () => void;
+  issues?: IssuesManager.Issue.Issue[];
 
   containerAdornerActive: boolean;
   flexAdornerActive: boolean;
@@ -379,10 +380,12 @@ function renderTitle(
     updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null,
     onUpdateSearchHighlight: () => void,
     onExpand: () => void,
+    issues?: IssuesManager.Issue.Issue[],
     ): Lit.LitTemplate {
   switch (node.nodeType()) {
     case Node.ATTRIBUTE_NODE:
-      return renderAttribute({name: node.name as string, value: node.value as string}, updateRecord, true, node);
+      return renderAttribute({name: node.name as string, value: node.value as string}, updateRecord, true, node,
+                             issues);
 
     case Node.ELEMENT_NODE: {
       if (node.pseudoType()) {
@@ -396,10 +399,10 @@ function renderTitle(
 
       const tagName = node.nodeNameInCorrectCase();
       if (isClosingTag) {
-        return renderTag(node, tagName, true, expanded, true, updateRecord);
+        return renderTag(node, tagName, true, expanded, true, updateRecord, issues);
       }
 
-      const openingTag = renderTag(node, tagName, false, expanded, false, updateRecord);
+      const openingTag = renderTag(node, tagName, false, expanded, false, updateRecord, issues);
 
       if (isExpandable) {
         if (!expanded) {
@@ -407,7 +410,7 @@ function renderTitle(
               {clickHandler: onExpand} as
               ElementsComponents.ElementsTreeExpandButton
                   .ElementsTreeExpandButtonData}></devtools-elements-tree-expand-button><span style="font-size: 0;"
-                  >…</span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+                  >…</span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
         }
         return openingTag;
       }
@@ -429,14 +432,13 @@ function renderTitle(
 
         return html`${openingTag}<span class="webkit-html-text-node" jslog=${
             VisualLogging.value('text-node').track({change: true, dblclick: true})} ${
-            animateOn(
-                Boolean((updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified())),
-                DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${
-            renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+            animateOn(Boolean((updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified())),
+                      DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${
+            renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
       }
 
       if (isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
-        return html`${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+        return html`${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
       }
       return openingTag;
     }
@@ -609,9 +611,9 @@ function renderLinkifiedValue(value: string, node: SDK.DOMModel.DOMNode): Lit.Te
 const relationPromisesCache = new WeakMap<SDK.DOMModel.DOMNode, Map<string, Promise<string|Lit.LitTemplate>>>();
 const relatedElementsCache = new WeakMap<SDK.DOMModel.DOMNode, Map<string, SDK.DOMModel.DOMNode|null>>();
 
-function renderAttribute(
-    attr: {name: string, value?: string}, updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null,
-    isDiff: boolean, node: SDK.DOMModel.DOMNode): Lit.LitTemplate {
+function renderAttribute(attr: {name: string, value?: string},
+                         updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null, isDiff: boolean,
+                         node: SDK.DOMModel.DOMNode, issues?: IssuesManager.Issue.Issue[]): Lit.LitTemplate {
   const name = attr.name;
   const value = attr.value || '';
   const forceValue = isDiff;
@@ -716,9 +718,15 @@ function renderAttribute(
     dblclick: true,
   });
 
-  return html`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
+  const hasAttributeIssues = Boolean(issues?.some(issue => getElementIssueDetails(issue)?.attribute === name));
+  const attributeNameClasses = {
+    'webkit-html-attribute-name': true,
+    'violating-element': hasAttributeIssues,
+  };
+
+  return html`<span class="webkit-html-attribute" jslog=${jslog}><span class=${classMap(attributeNameClasses)}
       ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${
-      linkifyName && relationPromise ? Lit.Directives.until(relationPromise, name) : name}</span>${
+      linkifyName && relationPromise ? until(relationPromise, name) : name}</span>${
       hasText ?
           html`=\u200B"<span class="webkit-html-attribute-value" ${
               animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText),
@@ -726,16 +734,15 @@ function renderAttribute(
                         ${valueType === ValueType.SRC ? renderLinkifiedValue(value, node) : nothing}
                         ${
               valueType === ValueType.SRCSET ? renderLinkifiedSrcset(Common.Srcset.parseSrcset(value), node) : nothing}
-                        ${linkifyValue && relationPromise ? Lit.Directives.until(relationPromise, value) : nothing}
+                        ${linkifyValue && relationPromise ? until(relationPromise, value) : nothing}
                 </span>"` :
           nothing}</span>`;
 }
 
-function renderTag(
-    node: SDK.DOMModel.DOMNode, tagName: string, isClosingTag: boolean, expanded: boolean,
-    isDistinctTreeElement: boolean,
-    updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null): Lit.LitTemplate {
-  const classMap = {
+function renderTag(node: SDK.DOMModel.DOMNode, tagName: string, isClosingTag: boolean, expanded: boolean,
+                   isDistinctTreeElement: boolean, updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null,
+                   issues?: IssuesManager.Issue.Issue[]): Lit.LitTemplate {
+  const tagClasses = {
     'webkit-html-tag': true,
     close: isClosingTag && isDistinctTreeElement,
   };
@@ -757,14 +764,22 @@ function renderTag(
   });
 
   const tagNameClass = isClosingTag ? 'webkit-html-close-tag-name' : 'webkit-html-tag-name';
+  const hasTagIssues = !isClosingTag && Boolean(issues?.some(issue => {
+    const details = getElementIssueDetails(issue);
+    return Boolean(details && !details.attribute);
+  }));
+  const tagNameClasses = {
+    [tagNameClass]: true,
+    'violating-element': hasTagIssues,
+  };
   const tagString = (isClosingTag ? '/' : '') + tagName;
   const jslog = !isClosingTag ? VisualLogging.value('tag-name').track({change: true, dblclick: true}) : '';
 
   return html`<span
-      class=${Lit.Directives.classMap(classMap)} ${setAriaLabel}
-      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing} ${
+      class=${classMap(tagClasses)} ${setAriaLabel}
+      >&lt;<span class=${classMap(tagNameClasses)} jslog=${jslog || nothing} ${
       animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${
-      attributes.map(attr => html` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
+      attributes.map(attr => html` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
 }
 
 function maybeRenderAdAdorner(input: ViewInput): Lit.TemplateResult|typeof nothing {
@@ -848,11 +863,12 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     input.updateRecord,
     input.onHighlightSearchResults,
     input.onExpand,
+    input.issues,
   )}</span>` : nothing}
       ${input.isHovered || input.isSelected ? html`
         <div class="selection fill ${input.editorState ? 'hidden' : ''}" style=${`margin-left: ${-input.indent}px`}></div>
       ` : nothing}
-      <div class=${Lit.Directives.classMap(gutterContainerClasses)}
+      <div class=${classMap(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
         <devtools-icon name="dots-horizontal"></devtools-icon>
@@ -1078,6 +1094,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 type View = typeof DEFAULT_VIEW;
 
 export class ElementsTreeWidget extends UI.Widget.Widget {
+  static override readonly INJECT = [IssuesManager.DOMIssuesManager.DOMIssuesManager] as const;
+  #domIssuesManager?: IssuesManager.DOMIssuesManager.DOMIssuesManager;
+
   #node!: SDK.DOMModel.DOMNode;
   isClosingTag = false;
   #expanded = false;
@@ -1104,7 +1123,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   revealInTopLayer?: (node: SDK.DOMModel.DOMNode) => void;
   showContextMenu?: (event: Event) => void;
   populateTreeElement?: () => Promise<void>;
-  updateNodeElementToIssue?: (nodeElement: Element, issues: IssuesManager.Issue.Issue[]) => void;
   performCopyOrCut?: (isCut: boolean, node: SDK.DOMModel.DOMNode, isElement?: boolean) => void;
   duplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
   pasteNode?: (node: SDK.DOMModel.DOMNode) => void;
@@ -1133,8 +1151,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   #editorState: CodeMirror.EditorState|null = null;
   #editorWidth: number|null = null;
   expandAllButtonElement: UI.TreeOutline.TreeElement|null;
-  #elementIssues = new Map<string, IssuesManager.Issue.Issue>();
-  #nodeElementToIssue = new Map<Element, IssuesManager.Issue.Issue[]>();
   #highlights: Range[] = [];
 
   #adornersThrottler = new Common.Throttler.Throttler(100);
@@ -1205,8 +1221,28 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     };
   }
 
-  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+  get issues(): IssuesManager.Issue.Issue[] {
+    // The widget is currently created for non-widget ElementsTreeElement so
+    // the domIssuesManager can be empty, relying on the manual resolution.
+    if (!this.#domIssuesManager) {
+      const universe = UI.Widget.lookupUniverseForElement(this.contentElement);
+      if (universe) {
+        this.#domIssuesManager = universe.get(IssuesManager.DOMIssuesManager.DOMIssuesManager);
+        if (this.node?.id) {
+          this.#domIssuesManager.subscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+        }
+      }
+    }
+    return this.#domIssuesManager?.issuesForNode(this.node) ?? [];
+  }
+
+  constructor(
+      element?: HTMLElement,
+      [domIssuesManager]: UI.Widget.WidgetDependencies<typeof ElementsTreeWidget>|[undefined] = [undefined],
+      view: View = DEFAULT_VIEW,
+  ) {
     super(element);
+    this.#domIssuesManager = domIssuesManager;
     this.#view = view;
 
     this.searchQuery = null;
@@ -1382,6 +1418,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       },
       editorState: this.#editorState,
       editorWidth: this.#editorWidth,
+      issues: this.issues,
     },
                output, this.contentElement);
 
@@ -1560,121 +1597,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  addIssue(newIssue: IssuesManager.Issue.Issue): void {
-    if (this.#elementIssues.has(newIssue.primaryKey())) {
-      return;
-    }
-
-    this.#elementIssues.set(newIssue.primaryKey(), newIssue);
-    this.#applyIssueStyleAndTooltip(newIssue);
-  }
-
-  #applyIssueStyleAndTooltip(issue: IssuesManager.Issue.Issue): void {
-    const elementIssueDetails = getElementIssueDetails(issue);
-    if (!elementIssueDetails) {
-      return;
-    }
-
-    if (elementIssueDetails.attribute) {
-      this.#highlightViolatingAttr(elementIssueDetails.attribute, issue);
-    } else {
-      this.#highlightTagAsViolating(issue);
-    }
-  }
-
-  get issuesByNodeElement(): Map<Element, IssuesManager.Issue.Issue[]> {
-    return this.#nodeElementToIssue;
-  }
-
-  #highlightViolatingAttr(name: string, issue: IssuesManager.Issue.Issue): void {
-    const tag = this.contentElement.querySelectorAll('.webkit-html-tag')[0];
-    const attributes = tag.getElementsByClassName('webkit-html-attribute');
-    for (const attribute of attributes) {
-      if (attribute.getElementsByClassName('webkit-html-attribute-name')[0].textContent === name) {
-        const attributeElement = attribute.getElementsByClassName('webkit-html-attribute-name')[0];
-        attributeElement.classList.add('violating-element');
-        this.#recordAndNotifyIssue(attributeElement, issue);
-      }
-    }
-  }
-
-  #highlightTagAsViolating(issue: IssuesManager.Issue.Issue): void {
-    const tagElement = this.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
-    tagElement.classList.add('violating-element');
-    this.#recordAndNotifyIssue(tagElement, issue);
-  }
-
-  #recordAndNotifyIssue(nodeElement: Element, issue: IssuesManager.Issue.Issue): void {
-    let issues = this.#nodeElementToIssue.get(nodeElement);
-    if (!issues) {
-      issues = [];
-      this.#nodeElementToIssue.set(nodeElement, issues);
-    }
-    issues.push(issue);
-    this.updateNodeElementToIssue?.(nodeElement, issues);
-  }
-
-  removeIssue(issue: IssuesManager.Issue.Issue): void {
-    if (!this.#elementIssues.has(issue.primaryKey())) {
-      return;
-    }
-
-    this.#removeIssueStyleAndTooltip(issue);
-    this.#elementIssues.delete(issue.primaryKey());
-  }
-
-  #removeIssueStyleAndTooltip(issue: IssuesManager.Issue.Issue): void {
-    const elementIssueDetails = getElementIssueDetails(issue);
-    if (!elementIssueDetails) {
-      return;
-    }
-
-    if (elementIssueDetails.attribute) {
-      this.#undoHighlightViolatingAttr(elementIssueDetails.attribute, issue);
-    } else {
-      this.#undoHighlightTagAsViolating(issue);
-    }
-  }
-
-  #undoHighlightViolatingAttr(name: string, issue: IssuesManager.Issue.Issue): void {
-    const violatingAttributes = this.contentElement.querySelectorAll('.webkit-html-attribute-name.violating-element');
-    for (const attributeElement of violatingAttributes) {
-      if (attributeElement.textContent === name) {
-        this.#removeFromNodeElementToIssue(attributeElement, issue);
-        if (!this.#nodeElementToIssue.has(attributeElement)) {
-          attributeElement.classList.remove('violating-element');
-        }
-      }
-    }
-  }
-
-  #undoHighlightTagAsViolating(issue: IssuesManager.Issue.Issue): void {
-    const tagElement = this.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
-    if (!tagElement) {
-      return;
-    }
-
-    this.#removeFromNodeElementToIssue(tagElement, issue);
-    if (!this.#nodeElementToIssue.has(tagElement)) {
-      tagElement.classList.remove('violating-element');
-    }
-  }
-
-  #removeFromNodeElementToIssue(nodeElement: Element, issue: IssuesManager.Issue.Issue): void {
-    let issues = this.#nodeElementToIssue.get(nodeElement);
-    if (!issues) {
-      return;
-    }
-
-    issues = issues.filter(i => i !== issue);
-    if (issues.length === 0) {
-      this.#nodeElementToIssue.delete(nodeElement);
-    } else {
-      this.#nodeElementToIssue.set(nodeElement, issues);
-    }
-    this.updateNodeElementToIssue?.(nodeElement, issues);
-  }
-
   expandedChildrenLimit(): number {
     return this.#expandedChildrenLimit;
   }
@@ -1703,6 +1625,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
                                  this.#onPersistentGridOverlayStateChanged, this);
       this.node.addEventListener(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
                                  this.#onPersistentScrollSnapOverlayStateChanged, this);
+      if (this.#domIssuesManager && this.node.id) {
+        this.#domIssuesManager.subscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+      }
     }
   }
 
@@ -1771,6 +1696,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       indent: 0,
       editorState: null,
       editorWidth: null,
+      issues: [],
     },
                {}, this.contentElement);
   }
@@ -1794,7 +1720,14 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
                                   this.#onPersistentGridOverlayStateChanged, this);
     this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
                                   this.#onPersistentScrollSnapOverlayStateChanged, this);
+    if (this.#domIssuesManager && this.node.id) {
+      this.#domIssuesManager.unsubscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+    }
   }
+
+  #onDOMIssueUpdated = (): void => {
+    this.performUpdate();
+  };
 
   #onScrollableFlagUpdated(): void {
     void this.#updateAdorners();
@@ -2561,11 +2494,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     this.performUpdate();
     this.updateDecorations();
 
-    // If there is an issue with this node, make sure to update it.
-    for (const issue of this.#elementIssues.values()) {
-      this.#applyIssueStyleAndTooltip(issue);
-    }
-
     this.#highlightSearchResults();
   }
 
@@ -2859,7 +2787,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     };
   }
 
-  constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean) {
+  constructor(
+      node: SDK.DOMModel.DOMNode,
+      isClosingTag?: boolean,
+  ) {
     super();
     this.nodeInternal = node;
     this.#isClosingTag = Boolean(isClosingTag);
@@ -2944,15 +2875,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   copyStyles(): Promise<void> {
     return this.widget.copyStyles();
   }
-  addIssue(issue: IssuesManager.Issue.Issue): void {
-    this.widget.addIssue(issue);
-  }
-  get issuesByNodeElement(): Map<Element, IssuesManager.Issue.Issue[]> {
-    return this.widget.issuesByNodeElement;
-  }
-  removeIssue(issue: IssuesManager.Issue.Issue): void {
-    this.widget.removeIssue(issue);
-  }
   setInClipboard(inClipboard: boolean): void {
     this.widget.setInClipboard(inClipboard);
     if (this.listItemElement) {
@@ -3036,7 +2958,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.widget.revealInTopLayer = node => outline.revealInTopLayer(node);
       this.widget.showContextMenu = event => void outline.showContextMenu(this, event);
       this.widget.populateTreeElement = async () => await outline.populateTreeElement(this);
-      this.widget.updateNodeElementToIssue = (el, issues) => outline.updateNodeElementToIssue(el, issues);
       this.widget.performCopyOrCut = (isCut, node, isElement) => outline.performCopyOrCut(isCut, node, isElement);
       this.widget.duplicateNode = node => outline.duplicateNode(node);
       this.widget.pasteNode = node => outline.pasteNode(node);

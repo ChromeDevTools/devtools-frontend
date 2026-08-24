@@ -7,7 +7,7 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -377,6 +377,7 @@ describeWithEnvironment('ElementStatePaneWidget', () => {
   describe('ButtonProvider', () => {
     it('shows the pane in the DOM', () => {
       const universe = new TestUniverse();
+      setTestUniverseForWidgets(universe);
       sinon.stub(IssuesManager.IssuesManager.IssuesManager, 'instance').returns(universe.issuesManager);
 
       const elementsPanel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});

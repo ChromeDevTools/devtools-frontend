@@ -10,7 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
-import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
   describeWithEnvironment,
@@ -28,9 +28,11 @@ import * as Elements from './elements.js';
 describeWithEnvironment('ElementsPanel', () => {
   let target: SDK.Target.Target;
   let connection: MockCDPConnection;
+  let universe: TestUniverse;
 
   beforeEach(() => {
-    const universe = new TestUniverse();
+    universe = new TestUniverse();
+    setTestUniverseForWidgets(universe);
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(universe.debuggerWorkspaceBinding);
     sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);

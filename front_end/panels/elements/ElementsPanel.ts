@@ -228,7 +228,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     return this.#domTreeWidget.getTreeOutlineForTesting();
   }
 
-  constructor(targetManager?: SDK.TargetManager.TargetManager, settings?: Common.Settings.Settings) {
+  constructor(
+      targetManager?: SDK.TargetManager.TargetManager,
+      settings?: Common.Settings.Settings,
+  ) {
     super('elements');
     this.#targetManager = targetManager ?? SDK.TargetManager.TargetManager.instance();
     this.#settings = settings ?? Common.Settings.Settings.instance();

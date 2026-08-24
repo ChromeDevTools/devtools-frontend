@@ -8,7 +8,7 @@ import sinon from 'sinon';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 
@@ -24,6 +24,7 @@ describeWithEnvironment('AdoptedStyleSheetTreeElement highlighting', () => {
 
   beforeEach(async () => {
     const universe = new TestUniverse();
+    setTestUniverseForWidgets(universe);
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(universe.debuggerWorkspaceBinding);
     sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);

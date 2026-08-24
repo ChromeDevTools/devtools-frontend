@@ -10,7 +10,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -21,9 +21,11 @@ import * as Elements from './elements.js';
 
 describeWithEnvironment('DOMTreeWidget', () => {
   let target: SDK.Target.Target;
+  let universe: TestUniverse;
 
   beforeEach(() => {
-    const universe = new TestUniverse();
+    universe = new TestUniverse();
+    setTestUniverseForWidgets(universe);
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(universe.debuggerWorkspaceBinding);
     sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);

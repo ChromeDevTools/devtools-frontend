@@ -9,6 +9,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import { createIcon } from '../kit/kit.js';
+import * as SettingsUI from '../settings/settings.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import { ActionRegistry } from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
@@ -578,7 +579,7 @@ export class InspectorView extends VBox {
             return;
         }
         // Ctrl/Cmd + 1-9 should show corresponding panel.
-        const panelShortcutEnabled = Common.Settings.Settings.instance().moduleSetting('shortcut-panel-switch').get();
+        const panelShortcutEnabled = Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.shortcutPanelSwitchSettingDescriptor).get();
         if (panelShortcutEnabled) {
             let panelIndex = -1;
             if (event.keyCode > 0x30 && event.keyCode < 0x3A) {

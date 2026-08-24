@@ -1,6 +1,7 @@
 // Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 export class BackgroundServiceModel extends SDK.SDKModel.SDKModel {
     backgroundServiceAgent;
@@ -29,9 +30,9 @@ export class BackgroundServiceModel extends SDK.SDKModel.SDKModel {
         this.dispatchEventToListeners(Events.RecordingStateChanged, { isRecording, serviceName: service });
     }
     backgroundServiceEventReceived({ backgroundServiceEvent }) {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-        // @ts-expect-error
-        this.events.get(backgroundServiceEvent.service).push(backgroundServiceEvent);
+        const events = this.events.get(backgroundServiceEvent.service);
+        Platform.assertNotNullOrUndefined(events);
+        events.push(backgroundServiceEvent);
         this.dispatchEventToListeners(Events.BackgroundServiceEventReceived, backgroundServiceEvent);
     }
 }

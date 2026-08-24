@@ -5,6 +5,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as SettingsUI from '../settings/settings.js';
 import { LiveAnnouncer } from './ARIAUtils.js';
 import { ToolbarButton } from './Toolbar.js';
 const UIStrings = {
@@ -38,7 +39,8 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
         this.closeButton.element.setAttribute('jslog', `${VisualLogging.close().track({ click: true })}`);
         this.closeButton.element.classList.add('close-devtools');
         this.closeButton.addEventListener("Click" /* ToolbarButton.Events.CLICK */, Host.InspectorFrontendHost.InspectorFrontendHostInstance.closeWindow.bind(Host.InspectorFrontendHost.InspectorFrontendHostInstance));
-        this.currentDockStateSetting = Common.Settings.Settings.instance().moduleSetting('currentDockState');
+        this.currentDockStateSetting =
+            Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.currentDockStateSettingDescriptor);
         this.lastDockStateSetting = Common.Settings.Settings.instance().createSetting('last-dock-state', "bottom" /* DockState.BOTTOM */);
         if (!canDock) {
             this.#dockSide = "undocked" /* DockState.UNDOCKED */;

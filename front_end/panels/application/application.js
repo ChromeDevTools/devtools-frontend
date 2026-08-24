@@ -28,7 +28,7 @@ __export(ApplicationPanelSidebar_exports, {
 import * as Common18 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n57 from "./../../core/i18n/i18n.js";
-import * as Platform10 from "./../../core/platform/platform.js";
+import * as Platform11 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK24 from "./../../core/sdk/sdk.js";
 import * as AiAssistance2 from "./../../models/ai_assistance/ai_assistance.js";
@@ -1697,6 +1697,7 @@ __export(BackgroundServiceModel_exports, {
   BackgroundServiceModel: () => BackgroundServiceModel,
   Events: () => Events
 });
+import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 var BackgroundServiceModel = class extends SDK3.SDKModel.SDKModel {
   backgroundServiceAgent;
@@ -1725,7 +1726,9 @@ var BackgroundServiceModel = class extends SDK3.SDKModel.SDKModel {
     this.dispatchEventToListeners(Events.RecordingStateChanged, { isRecording, serviceName: service });
   }
   backgroundServiceEventReceived({ backgroundServiceEvent }) {
-    this.events.get(backgroundServiceEvent.service).push(backgroundServiceEvent);
+    const events = this.events.get(backgroundServiceEvent.service);
+    Platform2.assertNotNullOrUndefined(events);
+    events.push(backgroundServiceEvent);
     this.dispatchEventToListeners(Events.BackgroundServiceEventReceived, backgroundServiceEvent);
   }
 };
@@ -1745,7 +1748,7 @@ __export(BackgroundServiceView_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
+import * as Platform3 from "./../../core/platform/platform.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
@@ -2009,7 +2012,7 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.VBox
   }
   constructor(serviceName, model) {
     super({
-      jslog: `${VisualLogging2.pane().context(Platform2.StringUtilities.toKebabCase(serviceName))}`,
+      jslog: `${VisualLogging2.pane().context(Platform3.StringUtilities.toKebabCase(serviceName))}`,
       useShadowDom: true
     });
     this.registerRequiredCSS(emptyWidget_css_default, backgroundServiceView_css_default);
@@ -2281,7 +2284,7 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.VBox
    * Saves all currently displayed events in a file (JSON format).
    */
   async saveToFile() {
-    const fileName = `${this.serviceName}-${Platform2.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date())}.json`;
+    const fileName = `${this.serviceName}-${Platform3.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date())}.json`;
     const stream = new Bindings.FileUtils.FileOutputStream(Workspace.FileManager.FileManager.instance());
     const accepted = await stream.open(fileName);
     if (!accepted) {
@@ -2296,7 +2299,7 @@ var EventDataNode = class extends DataGrid.DataGrid.DataGridNode {
   eventMetadata;
   constructor(data, eventMetadata) {
     super(data);
-    this.eventMetadata = eventMetadata.sort((m1, m2) => Platform2.StringUtilities.compare(m1.key, m2.key));
+    this.eventMetadata = eventMetadata.sort((m1, m2) => Platform3.StringUtilities.compare(m1.key, m2.key));
   }
   createPreview() {
     const preview = new UI4.Widget.VBox();
@@ -5814,8 +5817,8 @@ import "./../../ui/kit/kit.js";
 import "./../../ui/legacy/legacy.js";
 import * as Common8 from "./../../core/common/common.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
-import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
+import * as Platform4 from "./../../core/platform/platform.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../core/platform/platform.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
@@ -6107,7 +6110,7 @@ var PreloadingRuleSetView = class extends UI11.Widget.VBox {
   }
   onScopeChange() {
     const model = SDK11.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK11.PreloadingModel.PreloadingModel);
-    assertNotNullOrUndefined(model);
+    assertNotNullOrUndefined2(model);
     this.model = model;
     this.render();
   }
@@ -6273,7 +6276,7 @@ var PreloadingAttemptView = class extends UI11.Widget.VBox {
   }
   onScopeChange() {
     const model = SDK11.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK11.PreloadingModel.PreloadingModel);
-    assertNotNullOrUndefined(model);
+    assertNotNullOrUndefined2(model);
     this.model = model;
     this.render();
   }
@@ -6368,7 +6371,7 @@ var PreloadingAttemptView = class extends UI11.Widget.VBox {
   getPreloadingDetailsForTest() {
     const widgetElement = this.renderContainer.querySelector('div[slot="sidebar"] devtools-widget');
     const widget12 = widgetElement?.getWidget();
-    assertNotNullOrUndefined(widget12);
+    assertNotNullOrUndefined2(widget12);
     return widget12;
   }
   selectRuleSetOnFilterForTest(id) {
@@ -6405,7 +6408,7 @@ var PreloadingSummaryView = class extends UI11.Widget.VBox {
   }
   onScopeChange() {
     const model = SDK11.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK11.PreloadingModel.PreloadingModel);
-    assertNotNullOrUndefined(model);
+    assertNotNullOrUndefined2(model);
     this.model = model;
     this.render();
   }
@@ -6429,7 +6432,7 @@ var PreloadingRuleSetSelector = class {
   dropDown;
   constructor(onSelectionChanged) {
     const model = SDK11.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK11.PreloadingModel.PreloadingModel);
-    assertNotNullOrUndefined(model);
+    assertNotNullOrUndefined2(model);
     this.model = model;
     SDK11.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
     SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.PreloadingModel.PreloadingModel, "ModelUpdated", this.onModelUpdated, this, { scoped: true });
@@ -6446,7 +6449,7 @@ var PreloadingRuleSetSelector = class {
   }
   onScopeChange() {
     const model = SDK11.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK11.PreloadingModel.PreloadingModel);
-    assertNotNullOrUndefined(model);
+    assertNotNullOrUndefined2(model);
     this.model = model;
     this.onModelUpdated();
   }
@@ -6511,7 +6514,7 @@ var PreloadingRuleSetSelector = class {
     const element = document.createElement("div");
     const shadowRoot = UI11.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: preloadingViewDropDown_css_default });
     const title = shadowRoot.createChild("div", "title");
-    UI11.UIUtils.createTextChild(title, Platform3.StringUtilities.trimEndWithMaxLength(this.titleFor(id), 100));
+    UI11.UIUtils.createTextChild(title, Platform4.StringUtilities.trimEndWithMaxLength(this.titleFor(id), 100));
     const subTitle = shadowRoot.createChild("div", "subtitle");
     UI11.UIUtils.createTextChild(subTitle, this.subtitleFor(id));
     return element;
@@ -6692,7 +6695,7 @@ __export(CrashReportContextView_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as i18n23 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Platform5 from "./../../core/platform/platform.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
 import * as UI12 from "./../../ui/legacy/legacy.js";
@@ -6831,7 +6834,7 @@ var CrashReportContextView = class extends UI12.Widget.VBox {
       },
       onFilterChanged: (e) => {
         const text = e.detail;
-        const textFilterRegExp = text ? Platform4.StringUtilities.createPlainTextSearchRegex(text, "i") : null;
+        const textFilterRegExp = text ? Platform5.StringUtilities.createPlainTextSearchRegex(text, "i") : null;
         if (textFilterRegExp) {
           this.#filters = [
             { key: "key,value", regex: textFilterRegExp, negative: false }
@@ -7202,7 +7205,7 @@ __export(ServiceWorkerCacheViews_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common9 from "./../../core/common/common.js";
 import * as i18n29 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
+import * as Platform6 from "./../../core/platform/platform.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
 import * as DataGrid4 from "./../../ui/legacy/components/data_grid/data_grid.js";
@@ -7625,7 +7628,7 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
     }
   }
   createRequest(entry) {
-    const request = SDK14.NetworkRequest.NetworkRequest.createWithoutBackendRequest("cache-storage-" + entry.requestURL, entry.requestURL, Platform5.DevToolsPath.EmptyUrlString, null);
+    const request = SDK14.NetworkRequest.NetworkRequest.createWithoutBackendRequest("cache-storage-" + entry.requestURL, entry.requestURL, Platform6.DevToolsPath.EmptyUrlString, null);
     request.requestMethod = entry.requestMethod;
     request.setRequestHeaders(entry.requestHeaders);
     request.statusCode = entry.responseStatus;
@@ -7637,7 +7640,7 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
     let header = entry.responseHeaders.find((header2) => header2.name.toLowerCase() === "content-type");
     let mimeType = "text/plain";
     if (header) {
-      const result = Platform5.MimeType.parseContentType(header.value);
+      const result = Platform6.MimeType.parseContentType(header.value);
       if (result.mimeType) {
         mimeType = result.mimeType;
       }
@@ -7681,7 +7684,7 @@ var DataGridNode = class extends DataGrid4.DataGrid.DataGridNode {
     this.number = number;
     const parsed = new Common9.ParsedURL.ParsedURL(request.url());
     if (parsed.isValid) {
-      this.name = Platform5.StringUtilities.trimURL(request.url(), parsed.domain());
+      this.name = Platform6.StringUtilities.trimURL(request.url(), parsed.domain());
     } else {
       this.name = request.url();
     }
@@ -9539,7 +9542,7 @@ __export(StorageView_exports, {
 });
 import * as Common16 from "./../../core/common/common.js";
 import * as i18n51 from "./../../core/i18n/i18n.js";
-import * as Platform8 from "./../../core/platform/platform.js";
+import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
 import { Icon, Link } from "./../../ui/kit/kit.js";
@@ -9560,7 +9563,7 @@ __export(ResourcesPanel_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common15 from "./../../core/common/common.js";
-import * as Platform7 from "./../../core/platform/platform.js";
+import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as SourceFrame5 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
@@ -9637,7 +9640,7 @@ __export(StorageItemsToolbar_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common11 from "./../../core/common/common.js";
 import * as i18n39 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
+import * as Platform7 from "./../../core/platform/platform.js";
 import * as Buttons8 from "./../../ui/components/buttons/buttons.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../ui/lit/lit.js";
@@ -9778,7 +9781,7 @@ var StorageItemsToolbar = class extends Common11.ObjectWrapper.eventMixin(UI20.W
     this.metadataView.setStorageKey(storageKey);
   }
   filterChanged({ detail: text }) {
-    this.filterRegex = text ? new RegExp(Platform6.StringUtilities.escapeForRegExp(text), "i") : null;
+    this.filterRegex = text ? new RegExp(Platform7.StringUtilities.escapeForRegExp(text), "i") : null;
     this.dispatchEventToListeners(
       "Refresh"
       /* StorageItemsToolbar.Events.REFRESH */
@@ -12183,7 +12186,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     if (!this.categoryView) {
       this.categoryView = new StorageCategoryView();
     }
-    this.categoryView.element.setAttribute("jslog", `${VisualLogging17.pane().context(Platform7.StringUtilities.toKebabCase(categoryName))}`);
+    this.categoryView.element.setAttribute("jslog", `${VisualLogging17.pane().context(Platform8.StringUtilities.toKebabCase(categoryName))}`);
     this.categoryView.setHeadline(categoryHeadline);
     this.categoryView.setText(categoryDescription);
     this.categoryView.setLink(categoryLink);
@@ -12565,7 +12568,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     this.storageKey = null;
     this.settings = /* @__PURE__ */ new Map();
     for (const type of AllStorageTypes) {
-      this.settings.set(type, Common16.Settings.Settings.instance().createSetting("clear-storage-" + Platform8.StringUtilities.toKebabCase(type), true));
+      this.settings.set(type, Common16.Settings.Settings.instance().createSetting("clear-storage-" + Platform9.StringUtilities.toKebabCase(type), true));
     }
     this.includeThirdPartyCookiesSetting = Common16.Settings.Settings.instance().createSetting("clear-storage-include-third-party-cookies", false);
     const clearSiteData = this.reportView.appendSection(i18nString26(UIStrings26.clearSiteData));
@@ -13114,7 +13117,7 @@ import "./../../ui/legacy/legacy.js";
 import * as Common17 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n55 from "./../../core/i18n/i18n.js";
-import * as Platform9 from "./../../core/platform/platform.js";
+import * as Platform10 from "./../../core/platform/platform.js";
 import * as SDK23 from "./../../core/sdk/sdk.js";
 import * as WebMCP from "./../../models/web_mcp/web_mcp.js";
 import * as Adorners from "./../../ui/components/adorners/adorners.js";
@@ -13702,7 +13705,7 @@ function filterToolCalls(toolCalls, filterState) {
     });
   }
   if (filterState.text) {
-    const regex = Platform9.StringUtilities.createPlainTextSearchRegex(filterState.text, "i");
+    const regex = Platform10.StringUtilities.createPlainTextSearchRegex(filterState.text, "i");
     filtered = filtered.filter((call) => {
       return regex.test(call.tool.name) || regex.test(call.input) || call.result?.output !== void 0 && regex.test(JSON.stringify(call.result.output)) || call.result?.errorText && regex.test(call.result.errorText);
     });
@@ -15579,7 +15582,7 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
   model;
   #selected;
   constructor(storagePanel, serviceName) {
-    super(storagePanel, BackgroundServiceView.getUIString(serviceName), false, Platform10.StringUtilities.toKebabCase(serviceName));
+    super(storagePanel, BackgroundServiceView.getUIString(serviceName), false, Platform11.StringUtilities.toKebabCase(serviceName));
     this.serviceName = serviceName;
     this.#selected = false;
     this.view = null;
@@ -15807,7 +15810,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
   removeIDBDatabaseTreeElement(idbDatabaseTreeElement) {
     idbDatabaseTreeElement.clear();
     this.removeChild(idbDatabaseTreeElement);
-    Platform10.ArrayUtilities.removeElement(this.idbDatabaseTreeElements, idbDatabaseTreeElement);
+    Platform11.ArrayUtilities.removeElement(this.idbDatabaseTreeElements, idbDatabaseTreeElement);
     this.setExpandable(this.childCount() > 0);
   }
   indexedDBLoaded({ data: { database, model, entriesUpdated } }) {

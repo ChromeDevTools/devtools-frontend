@@ -3,3 +3,5 @@ export declare const uiThemeSettingDescriptor: Common.Settings.SettingDescriptor
 export declare const chromeThemeColorsSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const sidebarPositionSettingDescriptor: Common.Settings.SettingDescriptor<string>;
 export declare const languageSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const shortcutPanelSwitchSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const currentDockStateSettingDescriptor: Common.Settings.SettingDescriptor<string>;

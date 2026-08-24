@@ -26,4 +26,15 @@ export const languageSettingDescriptor = {
     defaultValue: 'en-US',
     storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
 };
+export const shortcutPanelSwitchSettingDescriptor = {
+    name: 'shortcut-panel-switch',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const currentDockStateSettingDescriptor = {
+    name: 'currentDockState',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: 'right',
+};
 //# sourceMappingURL=MainSettings.js.map

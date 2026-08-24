@@ -28,7 +28,9 @@ var autoAttachToCreatedPagesSettingDescriptor = {
 var MainSettings_exports = {};
 __export(MainSettings_exports, {
   chromeThemeColorsSettingDescriptor: () => chromeThemeColorsSettingDescriptor,
+  currentDockStateSettingDescriptor: () => currentDockStateSettingDescriptor,
   languageSettingDescriptor: () => languageSettingDescriptor,
+  shortcutPanelSwitchSettingDescriptor: () => shortcutPanelSwitchSettingDescriptor,
   sidebarPositionSettingDescriptor: () => sidebarPositionSettingDescriptor,
   uiThemeSettingDescriptor: () => uiThemeSettingDescriptor
 });
@@ -56,6 +58,17 @@ var languageSettingDescriptor = {
   type: "enum",
   defaultValue: "en-US",
   storageType: "Synced"
+};
+var shortcutPanelSwitchSettingDescriptor = {
+  name: "shortcut-panel-switch",
+  type: "boolean",
+  defaultValue: false,
+  storageType: "Synced"
+};
+var currentDockStateSettingDescriptor = {
+  name: "currentDockState",
+  type: "enum",
+  defaultValue: "right"
 };
 
 // gen/front_end/ui/settings/SettingUIRegistration.js

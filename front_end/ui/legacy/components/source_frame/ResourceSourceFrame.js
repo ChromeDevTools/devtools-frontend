@@ -41,7 +41,7 @@ import resourceSourceFrameStyles from './resourceSourceFrame.css.js';
 import { SourceFrameImpl } from './SourceFrame.js';
 const UIStrings = {
     /**
-     * @description Text to find an item
+     * @description Placeholder text for the search input in the resource source frame.
      */
     find: 'Find',
 };

@@ -41,46 +41,46 @@ import * as UI from '../../legacy.js';
 import imageViewStyles from './imageView.css.js';
 const UIStrings = {
     /**
-     * @description Text in Image View of the Sources panel
+     * @description Title of the image view tab in the Sources panel.
      */
     image: 'Image',
     /**
-     * @description Text that appears when user drag and drop something (for example, a file) in Image View of the Sources panel
+     * @description Drop target message shown when dragging a file into the image view of the Sources panel.
      */
     dropImageFileHere: 'Drop image file here',
     /**
-     * @description Text to indicate the source of an image
-     * @example {example.com} PH1
+     * @description Alt text for the image preview in the image view of the Sources panel.
+     * @example {https://example.com} PH1
      */
     imageFromS: 'Image from {PH1}',
     /**
-     * @description Text in Image View of the Sources panel
-     * @example {2} PH1
-     * @example {2} PH2
+     * @description Dimensions label in the toolbar of the image view showing width and height in pixels.
+     * @example {200} PH1
+     * @example {100} PH2
      */
     dD: '{PH1} × {PH2}',
     /**
-     * @description A context menu item in the Image View of the Sources panel
+     * @description Context menu item in the image view of the Sources panel to copy the image URL.
      */
     copyImageUrl: 'Copy image URL',
     /**
-     * @description A context menu item in the Image View of the Sources panel
+     * @description Context menu item in the image view of the Sources panel to copy the image as a data URI.
      */
     copyImageAsDataUri: 'Copy image as data URI',
     /**
-     * @description A context menu item in the Image View of the Sources panel
+     * @description Context menu item in the image view of the Sources panel to open the image in a new tab.
      */
     openImageInNewTab: 'Open image in new tab',
     /**
-     * @description A context menu item in the Image Preview
+     * @description Context menu item in the image view of the Sources panel to save the image.
      */
     saveImageAs: 'Save image as…',
     /**
-     * @description The default file name when downloading a file
+     * @description Default file name used when saving an image with a data URI.
      */
     download: 'download',
     /**
-     * @description Text indicating an image is too large to display and offering to open it in a new tab
+     * @description Link text shown in the image view of the Sources panel when an image is too large to display.
      */
     thisImageIsTooBig: 'This image is too big to display in DevTools. Click here to open it in a new tab.',
 };

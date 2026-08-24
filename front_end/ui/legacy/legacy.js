@@ -1550,6 +1550,7 @@ import * as Root6 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon5 } from "./../kit/kit.js";
+import * as SettingsUI2 from "./../settings/settings.js";
 import * as VisualLogging9 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/DockController.js
@@ -1563,6 +1564,7 @@ import * as Common4 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as VisualLogging2 from "./../visual_logging/visual_logging.js";
+import * as SettingsUI from "./../settings/settings.js";
 var UIStrings2 = {
   /**
    * @description Text to close something
@@ -1594,7 +1596,7 @@ var DockController = class _DockController extends Common4.ObjectWrapper.ObjectW
     this.closeButton.element.setAttribute("jslog", `${VisualLogging2.close().track({ click: true })}`);
     this.closeButton.element.classList.add("close-devtools");
     this.closeButton.addEventListener("Click", Host3.InspectorFrontendHost.InspectorFrontendHostInstance.closeWindow.bind(Host3.InspectorFrontendHost.InspectorFrontendHostInstance));
-    this.currentDockStateSetting = Common4.Settings.Settings.instance().moduleSetting("currentDockState");
+    this.currentDockStateSetting = Common4.Settings.Settings.instance().resolve(SettingsUI.MainSettings.currentDockStateSettingDescriptor);
     this.lastDockStateSetting = Common4.Settings.Settings.instance().createSetting(
       "last-dock-state",
       "bottom"
@@ -8584,7 +8586,7 @@ var InspectorView = class _InspectorView extends VBox {
     if (!KeyboardShortcut.eventHasCtrlEquivalentKey(event) || event.altKey || event.shiftKey) {
       return;
     }
-    const panelShortcutEnabled = Common11.Settings.Settings.instance().moduleSetting("shortcut-panel-switch").get();
+    const panelShortcutEnabled = Common11.Settings.Settings.instance().resolve(SettingsUI2.MainSettings.shortcutPanelSwitchSettingDescriptor).get();
     if (panelShortcutEnabled) {
       let panelIndex = -1;
       if (event.keyCode > 48 && event.keyCode < 58) {

@@ -18081,7 +18081,7 @@
     "message": "Find"
   },
   "ui/legacy/components/source_frame/source_frame-meta.ts | defaultIndentation": {
-    "message": "Default indentation:"
+    "message": "Default indentation"
   },
   "ui/legacy/components/source_frame/source_frame-meta.ts | eSpaces": {
     "message": "8 spaces"
@@ -18123,7 +18123,7 @@
     "message": "{PH1} lines, {PH2} characters selected"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Don’t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \"{PH1}\" below to allow pasting."
+    "message": "Don’t paste code you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type \"{PH1}\" below to allow pasting."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Do you trust this code?"
@@ -18135,7 +18135,7 @@
     "message": "Formatting…"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
-    "message": "Line {PH1}, Column {PH2}"
+    "message": "Line {PH1}, column {PH2}"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | loading": {
     "message": "Loading…"

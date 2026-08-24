@@ -841,14 +841,10 @@ SettingsUI.SettingUIRegistration.register(
       ],
     });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.searchAsYouTypeSettingDescriptor, {
   category: Common.Settings.SettingCategory.GLOBAL,
-  storageType: Common.Settings.SettingStorageType.LOCAL,
   title: i18nLazyString(UIStrings.searchAsYouTypeSetting),
-  settingName: 'search-as-you-type',
-  settingType: Common.Settings.SettingType.BOOLEAN,
   order: 3,
-  defaultValue: true,
   options: [
     {
       value: true,

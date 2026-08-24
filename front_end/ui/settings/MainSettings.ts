@@ -71,3 +71,10 @@ export const userShortcutsSettingDescriptor: Common.Settings.SettingDescriptor<U
   defaultValue: [],
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const searchAsYouTypeSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'search-as-you-type',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.LOCAL,
+};

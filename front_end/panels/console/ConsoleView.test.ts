@@ -29,6 +29,7 @@ import {dispatchEvent} from '../../testing/MockConnection.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Settings from '../../ui/settings/settings.js';
 import {AiCodeCompletionSummaryToolbar} from '../common/common.js';
 
 import * as Console from './console.js';
@@ -1145,7 +1146,8 @@ describeWithEnvironment('ConsoleView', () => {
     const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
     assert.exists(consoleModel);
 
-    const timestampsSetting = Common.Settings.Settings.instance().moduleSetting('console-timestamps-enabled');
+    const timestampsSetting =
+        Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleTimestampsEnabledSettingDescriptor);
     timestampsSetting.set(false);
 
     const timestamp = 1400000000789;

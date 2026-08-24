@@ -316,7 +316,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   private readonly progressToolbarItem: UI.Toolbar.ToolbarItem;
   private readonly groupSimilarSetting: Common.Settings.Setting<boolean>;
   private readonly showCorsErrorsSetting: Common.Settings.Setting<boolean>;
-  private readonly timestampsSetting: Common.Settings.Setting<unknown>;
+  private readonly timestampsSetting: Common.Settings.Setting<boolean>;
   private readonly consoleHistoryAutocompleteSetting: Common.Settings.Setting<boolean>;
   private selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
   readonly pinPane: ConsolePinPane;
@@ -483,7 +483,8 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     const monitoringXHREnabledSetting =
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.monitoringXHREnabledSettingDescriptor);
-    this.timestampsSetting = Common.Settings.Settings.instance().moduleSetting('console-timestamps-enabled');
+    this.timestampsSetting =
+        Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleTimestampsEnabledSettingDescriptor);
     this.consoleHistoryAutocompleteSetting =
         Common.Settings.Settings.instance().moduleSetting('console-history-autocomplete');
     this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(

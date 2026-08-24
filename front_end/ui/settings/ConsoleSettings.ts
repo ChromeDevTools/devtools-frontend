@@ -17,3 +17,10 @@ export const selectedContextFilterEnabledSettingDescriptor: Common.Settings.Sett
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const consoleTimestampsEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'console-timestamps-enabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

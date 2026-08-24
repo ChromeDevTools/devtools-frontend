@@ -300,13 +300,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.selectedCon
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleTimestampsEnabledSettingDescriptor, {
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.timestamps),
-  settingName: 'console-timestamps-enabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
   options: [
     {
       value: true,

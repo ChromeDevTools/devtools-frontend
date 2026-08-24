@@ -27,7 +27,7 @@ export class ShortcutRegistry {
   private readonly devToolsDefaultShortcutActions: Set<string>;
   private readonly disabledDefaultShortcutsForAction: Platform.MapUtilities.Multimap<string, KeyboardShortcut>;
   private readonly keybindSetSetting: Common.Settings.Setting<string>;
-  private readonly userShortcutsSetting: Common.Settings.Setting<KeyboardShortcut[]>;
+  private readonly userShortcutsSetting: Common.Settings.Setting<Settings.MainSettings.UserShortcut[]>;
 
   constructor(actionRegistry: ActionRegistry) {
     this.actionRegistry = actionRegistry;
@@ -44,7 +44,8 @@ export class ShortcutRegistry {
       Host.userMetrics.keybindSetSettingChanged(event.data);
       this.registerBindings();
     });
-    this.userShortcutsSetting = Common.Settings.Settings.instance().moduleSetting('user-shortcuts');
+    this.userShortcutsSetting =
+        Common.Settings.Settings.instance().resolve(Settings.MainSettings.userShortcutsSettingDescriptor);
     this.userShortcutsSetting.addChangeListener(this.registerBindings, this);
 
     this.registerBindings();

@@ -842,13 +842,6 @@ SettingsUI.SettingUIRegistration.register(
     });
 
 Common.Settings.registerSettingExtension({
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  settingName: 'user-shortcuts',
-  settingType: Common.Settings.SettingType.ARRAY,
-  defaultValue: [],
-});
-
-Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GLOBAL,
   storageType: Common.Settings.SettingStorageType.LOCAL,
   title: i18nLazyString(UIStrings.searchAsYouTypeSetting),

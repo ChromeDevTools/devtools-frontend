@@ -124,7 +124,8 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
 
     const keybindsSetSetting =
         Common.Settings.Settings.instance().resolve(Settings.MainSettings.activeKeybindSetSettingDescriptor);
-    const userShortcutsSetting = Common.Settings.Settings.instance().moduleSetting('user-shortcuts');
+    const userShortcutsSetting =
+        Common.Settings.Settings.instance().resolve(Settings.MainSettings.userShortcutsSettingDescriptor);
     keybindsSetSetting.addChangeListener(this.update, this);
     const keybindsSetSelect = SettingsUI.SettingsUI.createControlForSetting(
         keybindsSetSetting, i18nString(UIStrings.matchShortcutsFromPreset));

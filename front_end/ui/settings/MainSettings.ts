@@ -58,3 +58,16 @@ export const syncPreferencesSettingDescriptor: Common.Settings.SettingDescriptor
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 };
+
+export interface UserShortcut {
+  action: string;
+  descriptors: Array<{key: number, name: string}>;
+  type: string;
+}
+
+export const userShortcutsSettingDescriptor: Common.Settings.SettingDescriptor<UserShortcut[]> = {
+  name: 'user-shortcuts',
+  type: Common.Settings.SettingType.ARRAY,
+  defaultValue: [],
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

@@ -32,6 +32,7 @@
  */
 
 import * as Host from '../../core/host/host.js';
+import type * as Settings from '../settings/settings.js';
 
 import {DefaultShortcutSetting} from './ShortcutRegistry.js';
 
@@ -77,17 +78,13 @@ export class KeyboardShortcut {
     return !this.keybindSets || this.keybindSets.has(keybindSet);
   }
 
-  equals(shortcut: KeyboardShortcut): boolean {
+  equals(shortcut: KeyboardShortcut|Settings.MainSettings.UserShortcut): boolean {
     return this.descriptorsMatch(shortcut.descriptors) && this.type === shortcut.type &&
         this.action === shortcut.action;
   }
 
-  static createShortcutFromSettingObject(settingObject: {
-    action: string,
-    descriptors: Descriptor[],
-    type: Type,
-  }): KeyboardShortcut {
-    return new KeyboardShortcut(settingObject.descriptors, settingObject.action, settingObject.type);
+  static createShortcutFromSettingObject(settingObject: Settings.MainSettings.UserShortcut): KeyboardShortcut {
+    return new KeyboardShortcut(settingObject.descriptors, settingObject.action, settingObject.type as Type);
   }
 
   /**

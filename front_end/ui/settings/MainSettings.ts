@@ -51,3 +51,10 @@ export const activeKeybindSetSettingDescriptor: Common.Settings.SettingDescripto
   defaultValue: 'devToolsDefault',
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+// This name must be kept in sync with DevToolsSettings::kSyncDevToolsPreferencesFrontendName.
+export const syncPreferencesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'sync-preferences',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};

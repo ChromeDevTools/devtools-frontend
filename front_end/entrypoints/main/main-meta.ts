@@ -806,13 +806,9 @@ function createOptionForLocale(localeString: string): Common.Settings.SettingExt
   };
 }
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.syncPreferencesSettingDescriptor, {
   category: Common.Settings.SettingCategory.ACCOUNT,
-  // This name must be kept in sync with DevToolsSettings::kSyncDevToolsPreferencesFrontendName.
-  settingName: 'sync-preferences',
-  settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.saveSettings),
-  defaultValue: false,
   reloadRequired: true,
 });
 

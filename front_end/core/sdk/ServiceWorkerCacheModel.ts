@@ -273,13 +273,6 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void {
   }
 
-  sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void {
-  }
-
-  sharedStorageWorkletOperationExecutionFinished(
-      _event: Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent): void {
-  }
-
   storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void {
   }
 

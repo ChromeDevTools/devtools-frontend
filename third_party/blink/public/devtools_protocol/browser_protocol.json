@@ -688,6 +688,23 @@
                             }
                         }
                     ]
+                },
+                {
+                    "id": "AdScript",
+                    "description": "An ad script.\nNote: when the script is a transitive ad script, we only fill in the\nimmediate ancestor script in the provenance's adScriptAncestry field (as its\nfirst entry), rather than filling in the full ancestry. This saves work for\nthe backend, and the frontend can reconstruct the full ancestry if\nnecessary.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "scriptId",
+                            "description": "The script ID.",
+                            "$ref": "Runtime.ScriptId"
+                        },
+                        {
+                            "name": "provenance",
+                            "description": "The ad provenance.",
+                            "$ref": "Network.AdProvenance"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -698,6 +715,19 @@
                         {
                             "name": "metrics",
                             "$ref": "AdMetrics"
+                        }
+                    ]
+                },
+                {
+                    "name": "getAdScripts",
+                    "description": "Retrieves ad scripts for the current page. To minimize payload size, this\nonly returns the newly tracked ad scripts since the last call to\ngetAdScripts (i.e., the delta).",
+                    "returns": [
+                        {
+                            "name": "newScripts",
+                            "type": "array",
+                            "items": {
+                                "$ref": "AdScript"
+                            }
                         }
                     ]
                 }
@@ -17632,7 +17662,7 @@
                         },
                         {
                             "name": "adScriptAncestry",
-                            "description": "The script ancestry that created the ad, if any.",
+                            "description": "The script ancestry that created the ad, if any.\nNote: depending on the context, this may represent the full ancestry up\nto the root script, or it may contain only one script representing the\nimmediate ancestor.",
                             "optional": true,
                             "$ref": "AdAncestry"
                         }
@@ -26415,6 +26445,98 @@
                     ]
                 },
                 {
+                    "id": "ServiceWorkerRouterCondition",
+                    "description": "Mostly corresponds to `RouterCondition` in ServiceWorker spec\n(https://www.w3.org/TR/service-workers/#dictdef-routercondition) while this\ncurrently lacks support for the nested conditions (\"or\" and \"not\").\nTODO(crbug.com/540469610): Support recursive conditions.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "urlPattern",
+                            "description": "Plain text, or JSON serialization of URLPatternInit or URLPattern",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "requestMethod",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "requestMode",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "requestDestination",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "runningStatus",
+                            "optional": true,
+                            "$ref": "ServiceWorkerVersionRunningStatus"
+                        }
+                    ]
+                },
+                {
+                    "id": "ServiceWorkerRouterSourceType",
+                    "type": "string",
+                    "enum": [
+                        "cache",
+                        "fetchEvent",
+                        "network",
+                        "raceNetworkAndFetchHandler",
+                        "raceNetworkAndCache",
+                        "sourceDict"
+                    ]
+                },
+                {
+                    "id": "ServiceWorkerRouterSourceDict",
+                    "description": "https://www.w3.org/TR/service-workers/#dictdef-routersourcedict",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "cacheName",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "ServiceWorkerRouterSource",
+                    "description": "Corresponds to `RouterSource` in the spec while the representation is different as follows.\n(https://www.w3.org/TR/service-workers/#typedefdef-routersource)\n- `RouterSourceEnum`: `type` equals `cache`, `sourceDict` is null.\n- `RouterSourceDict`: `type` equals `sourceDict`, `sourceDict` has valid value.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "type",
+                            "$ref": "ServiceWorkerRouterSourceType"
+                        },
+                        {
+                            "name": "sourceDict",
+                            "description": "Non-empty iff `type` equals \"sourceDict\".",
+                            "optional": true,
+                            "$ref": "ServiceWorkerRouterSourceDict"
+                        }
+                    ]
+                },
+                {
+                    "id": "ServiceWorkerRouterRule",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "condition",
+                            "$ref": "ServiceWorkerRouterCondition"
+                        },
+                        {
+                            "name": "source",
+                            "$ref": "ServiceWorkerRouterSource"
+                        },
+                        {
+                            "name": "id",
+                            "description": "Rule ID assigned by the browser. Unique within each ServiceWorkerVersion.",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
                     "id": "ServiceWorkerVersion",
                     "description": "ServiceWorker version.",
                     "type": "object",
@@ -26466,8 +26588,17 @@
                         },
                         {
                             "name": "routerRules",
+                            "description": "Migration to `typedRouterRules` is in progress. The browser sends either\n`routerRules` or `typedRouterRules`.\nTODO(crbug.com/540469610): Remove `routerRules` after the migration.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "typedRouterRules",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "ServiceWorkerRouterRule"
+                            }
                         }
                     ]
                 },
@@ -27319,7 +27450,6 @@
                         "websql",
                         "service_workers",
                         "cache_storage",
-                        "shared_storage",
                         "storage_buckets",
                         "all",
                         "other"
@@ -27355,257 +27485,6 @@
                         {
                             "name": "count",
                             "type": "number"
-                        }
-                    ]
-                },
-                {
-                    "id": "SharedStorageAccessScope",
-                    "description": "Enum of shared storage access scopes.",
-                    "type": "string",
-                    "enum": [
-                        "window",
-                        "sharedStorageWorklet",
-                        "header"
-                    ]
-                },
-                {
-                    "id": "SharedStorageAccessMethod",
-                    "description": "Enum of shared storage access methods.",
-                    "type": "string",
-                    "enum": [
-                        "addModule",
-                        "createWorklet",
-                        "selectURL",
-                        "run",
-                        "batchUpdate",
-                        "set",
-                        "append",
-                        "delete",
-                        "clear",
-                        "get",
-                        "keys",
-                        "values",
-                        "entries",
-                        "length",
-                        "remainingBudget"
-                    ]
-                },
-                {
-                    "id": "SharedStorageEntry",
-                    "description": "Struct for a single key-value pair in an origin's shared storage.",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "key",
-                            "type": "string"
-                        },
-                        {
-                            "name": "value",
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
-                    "id": "SharedStorageMetadata",
-                    "description": "Details for an origin's shared storage.",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "creationTime",
-                            "description": "Time when the origin's shared storage was last created.",
-                            "$ref": "Network.TimeSinceEpoch"
-                        },
-                        {
-                            "name": "length",
-                            "description": "Number of key-value pairs stored in origin's shared storage.",
-                            "type": "integer"
-                        },
-                        {
-                            "name": "remainingBudget",
-                            "description": "Current amount of bits of entropy remaining in the navigation budget.",
-                            "type": "number"
-                        },
-                        {
-                            "name": "bytesUsed",
-                            "description": "Total number of bytes stored as key-value pairs in origin's shared\nstorage.",
-                            "type": "integer"
-                        }
-                    ]
-                },
-                {
-                    "id": "SharedStoragePrivateAggregationConfig",
-                    "description": "Represents a dictionary object passed in as privateAggregationConfig to\nrun or selectURL.",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "aggregationCoordinatorOrigin",
-                            "description": "The chosen aggregation service deployment.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "contextId",
-                            "description": "The context ID provided.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "filteringIdMaxBytes",
-                            "description": "Configures the maximum size allowed for filtering IDs.",
-                            "type": "integer"
-                        },
-                        {
-                            "name": "maxContributions",
-                            "description": "The limit on the number of contributions in the final report.",
-                            "optional": true,
-                            "type": "integer"
-                        }
-                    ]
-                },
-                {
-                    "id": "SharedStorageReportingMetadata",
-                    "description": "Pair of reporting metadata details for a candidate URL for `selectURL()`.",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "eventType",
-                            "type": "string"
-                        },
-                        {
-                            "name": "reportingUrl",
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
-                    "id": "SharedStorageUrlWithMetadata",
-                    "description": "Bundles a candidate URL with its reporting metadata.",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "url",
-                            "description": "Spec of candidate URL.",
-                            "type": "string"
-                        },
-                        {
-                            "name": "reportingMetadata",
-                            "description": "Any associated reporting metadata.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "SharedStorageReportingMetadata"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "id": "SharedStorageAccessParams",
-                    "description": "Bundles the parameters for shared storage access events whose\npresence/absence can vary according to SharedStorageAccessType.",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "scriptSourceUrl",
-                            "description": "Spec of the module script URL.\nPresent only for SharedStorageAccessMethods: addModule and\ncreateWorklet.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "dataOrigin",
-                            "description": "String denoting \"context-origin\", \"script-origin\", or a custom\norigin to be used as the worklet's data origin.\nPresent only for SharedStorageAccessMethod: createWorklet.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "operationName",
-                            "description": "Name of the registered operation to be run.\nPresent only for SharedStorageAccessMethods: run and selectURL.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "operationId",
-                            "description": "ID of the operation call.\nPresent only for SharedStorageAccessMethods: run and selectURL.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "keepAlive",
-                            "description": "Whether or not to keep the worket alive for future run or selectURL\ncalls.\nPresent only for SharedStorageAccessMethods: run and selectURL.",
-                            "optional": true,
-                            "type": "boolean"
-                        },
-                        {
-                            "name": "privateAggregationConfig",
-                            "description": "Configures the private aggregation options.\nPresent only for SharedStorageAccessMethods: run and selectURL.",
-                            "optional": true,
-                            "$ref": "SharedStoragePrivateAggregationConfig"
-                        },
-                        {
-                            "name": "serializedData",
-                            "description": "The operation's serialized data in bytes (converted to a string).\nPresent only for SharedStorageAccessMethods: run and selectURL.\nTODO(crbug.com/401011862): Consider updating this parameter to binary.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "urlsWithMetadata",
-                            "description": "Array of candidate URLs' specs, along with any associated metadata.\nPresent only for SharedStorageAccessMethod: selectURL.",
-                            "optional": true,
-                            "type": "array",
-                            "items": {
-                                "$ref": "SharedStorageUrlWithMetadata"
-                            }
-                        },
-                        {
-                            "name": "urnUuid",
-                            "description": "Spec of the URN:UUID generated for a selectURL call.\nPresent only for SharedStorageAccessMethod: selectURL.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "key",
-                            "description": "Key for a specific entry in an origin's shared storage.\nPresent only for SharedStorageAccessMethods: set, append, delete, and\nget.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "value",
-                            "description": "Value for a specific entry in an origin's shared storage.\nPresent only for SharedStorageAccessMethods: set and append.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "ignoreIfPresent",
-                            "description": "Whether or not to set an entry for a key if that key is already present.\nPresent only for SharedStorageAccessMethod: set.",
-                            "optional": true,
-                            "type": "boolean"
-                        },
-                        {
-                            "name": "workletOrdinal",
-                            "description": "A number denoting the (0-based) order of the worklet's\ncreation relative to all other shared storage worklets created by\ndocuments using the current storage partition.\nPresent only for SharedStorageAccessMethods: addModule, createWorklet.",
-                            "optional": true,
-                            "type": "integer"
-                        },
-                        {
-                            "name": "workletTargetId",
-                            "description": "Hex representation of the DevTools token used as the TargetID for the\nassociated shared storage worklet.\nPresent only for SharedStorageAccessMethods: addModule, createWorklet,\nrun, selectURL, and any other SharedStorageAccessMethod when the\nSharedStorageAccessScope is sharedStorageWorklet.",
-                            "optional": true,
-                            "$ref": "Target.TargetID"
-                        },
-                        {
-                            "name": "withLock",
-                            "description": "Name of the lock to be acquired, if present.\nOptionally present only for SharedStorageAccessMethods: batchUpdate,\nset, append, delete, and clear.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "batchUpdateId",
-                            "description": "If the method has been called as part of a batchUpdate, then this\nnumber identifies the batch to which it belongs.\nOptionally present only for SharedStorageAccessMethods:\nbatchUpdate (required), set, append, delete, and clear.",
-                            "optional": true,
-                            "type": "string"
-                        },
-                        {
-                            "name": "batchSize",
-                            "description": "Number of modifier methods sent in batch.\nPresent only for SharedStorageAccessMethod: batchUpdate.",
-                            "optional": true,
-                            "type": "integer"
                         }
                     ]
                 },
@@ -27994,116 +27873,6 @@
                     ]
                 },
                 {
-                    "name": "getSharedStorageMetadata",
-                    "description": "Gets metadata for an origin's shared storage.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "ownerOrigin",
-                            "type": "string"
-                        }
-                    ],
-                    "returns": [
-                        {
-                            "name": "metadata",
-                            "$ref": "SharedStorageMetadata"
-                        }
-                    ]
-                },
-                {
-                    "name": "getSharedStorageEntries",
-                    "description": "Gets the entries in an given origin's shared storage.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "ownerOrigin",
-                            "type": "string"
-                        }
-                    ],
-                    "returns": [
-                        {
-                            "name": "entries",
-                            "type": "array",
-                            "items": {
-                                "$ref": "SharedStorageEntry"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "setSharedStorageEntry",
-                    "description": "Sets entry with `key` and `value` for a given origin's shared storage.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "ownerOrigin",
-                            "type": "string"
-                        },
-                        {
-                            "name": "key",
-                            "type": "string"
-                        },
-                        {
-                            "name": "value",
-                            "type": "string"
-                        },
-                        {
-                            "name": "ignoreIfPresent",
-                            "description": "If `ignoreIfPresent` is included and true, then only sets the entry if\n`key` doesn't already exist.",
-                            "optional": true,
-                            "type": "boolean"
-                        }
-                    ]
-                },
-                {
-                    "name": "deleteSharedStorageEntry",
-                    "description": "Deletes entry for `key` (if it exists) for a given origin's shared storage.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "ownerOrigin",
-                            "type": "string"
-                        },
-                        {
-                            "name": "key",
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
-                    "name": "clearSharedStorageEntries",
-                    "description": "Clears all entries for a given origin's shared storage.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "ownerOrigin",
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
-                    "name": "resetSharedStorageBudget",
-                    "description": "Resets the budget for `ownerOrigin` by clearing all budget withdrawals.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "ownerOrigin",
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
-                    "name": "setSharedStorageTracking",
-                    "description": "Enables/disables issuing of sharedStorageAccessed events.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "enable",
-                            "type": "boolean"
-                        }
-                    ]
-                },
-                {
                     "name": "setStorageBucketTracking",
                     "description": "Set tracking for a storage key's buckets.",
                     "experimental": true,
@@ -28254,88 +28023,6 @@
                         {
                             "name": "bucketId",
                             "description": "Storage bucket to update.",
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
-                    "name": "sharedStorageAccessed",
-                    "description": "Shared storage was accessed by the associated page.\nThe following parameters are included in all events.",
-                    "parameters": [
-                        {
-                            "name": "accessTime",
-                            "description": "Time of the access.",
-                            "$ref": "Network.TimeSinceEpoch"
-                        },
-                        {
-                            "name": "scope",
-                            "description": "Enum value indicating the access scope.",
-                            "$ref": "SharedStorageAccessScope"
-                        },
-                        {
-                            "name": "method",
-                            "description": "Enum value indicating the Shared Storage API method invoked.",
-                            "$ref": "SharedStorageAccessMethod"
-                        },
-                        {
-                            "name": "mainFrameId",
-                            "description": "DevTools Frame Token for the primary frame tree's root.",
-                            "$ref": "Page.FrameId"
-                        },
-                        {
-                            "name": "ownerOrigin",
-                            "description": "Serialization of the origin owning the Shared Storage data.",
-                            "type": "string"
-                        },
-                        {
-                            "name": "ownerSite",
-                            "description": "Serialization of the site owning the Shared Storage data.",
-                            "type": "string"
-                        },
-                        {
-                            "name": "params",
-                            "description": "The sub-parameters wrapped by `params` are all optional and their\npresence/absence depends on `type`.",
-                            "$ref": "SharedStorageAccessParams"
-                        }
-                    ]
-                },
-                {
-                    "name": "sharedStorageWorkletOperationExecutionFinished",
-                    "description": "A shared storage run or selectURL operation finished its execution.\nThe following parameters are included in all events.",
-                    "parameters": [
-                        {
-                            "name": "finishedTime",
-                            "description": "Time that the operation finished.",
-                            "$ref": "Network.TimeSinceEpoch"
-                        },
-                        {
-                            "name": "executionTime",
-                            "description": "Time, in microseconds, from start of shared storage JS API call until\nend of operation execution in the worklet.",
-                            "type": "integer"
-                        },
-                        {
-                            "name": "method",
-                            "description": "Enum value indicating the Shared Storage API method invoked.",
-                            "$ref": "SharedStorageAccessMethod"
-                        },
-                        {
-                            "name": "operationId",
-                            "description": "ID of the operation call.",
-                            "type": "string"
-                        },
-                        {
-                            "name": "workletTargetId",
-                            "description": "Hex representation of the DevTools token used as the TargetID for the\nassociated shared storage worklet.",
-                            "$ref": "Target.TargetID"
-                        },
-                        {
-                            "name": "mainFrameId",
-                            "description": "DevTools Frame Token for the primary frame tree's root.",
-                            "$ref": "Page.FrameId"
-                        },
-                        {
-                            "name": "ownerOrigin",
-                            "description": "Serialization of the origin owning the Shared Storage data.",
                             "type": "string"
                         }
                     ]
@@ -30780,6 +30467,12 @@
                         {
                             "name": "untrustedContent",
                             "description": "A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "consequential",
+                            "description": "A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.",
                             "optional": true,
                             "type": "boolean"
                         },

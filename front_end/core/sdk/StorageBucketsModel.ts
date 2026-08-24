@@ -154,12 +154,6 @@ export class StorageBucketsModel extends SDKModel<EventTypes> implements Protoco
   cacheStorageContentUpdated(_event: Protocol.Storage.CacheStorageContentUpdatedEvent): void {
   }
 
-  sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void {
-  }
-
-  sharedStorageWorkletOperationExecutionFinished(
-      _event: Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent): void {
-  }
 }
 
 SDKModel.register(StorageBucketsModel, {capabilities: Capability.STORAGE, autostart: false});

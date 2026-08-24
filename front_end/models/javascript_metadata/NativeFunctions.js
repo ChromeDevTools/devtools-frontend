@@ -7903,6 +7903,10 @@ export const NativeFunctions = [
     signatures: [["reportId"]]
   },
   {
+    name: "playHaptics",
+    signatures: [["effect","?intensity"]]
+  },
+  {
     name: "addStroke",
     signatures: [["stroke"]]
   },

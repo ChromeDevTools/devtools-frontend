@@ -775,16 +775,6 @@ export namespace ProtocolMapping {
      * The origin's IndexedDB database list has been modified.
      */
     'Storage.indexedDBListUpdated': [Protocol.Storage.IndexedDBListUpdatedEvent];
-    /**
-     * Shared storage was accessed by the associated page.
-     * The following parameters are included in all events.
-     */
-    'Storage.sharedStorageAccessed': [Protocol.Storage.SharedStorageAccessedEvent];
-    /**
-     * A shared storage run or selectURL operation finished its execution.
-     * The following parameters are included in all events.
-     */
-    'Storage.sharedStorageWorkletOperationExecutionFinished': [Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent];
     'Storage.storageBucketCreatedOrUpdated': [Protocol.Storage.StorageBucketCreatedOrUpdatedEvent];
     'Storage.storageBucketDeleted': [Protocol.Storage.StorageBucketDeletedEvent];
     /**
@@ -1072,6 +1062,15 @@ export namespace ProtocolMapping {
     'Ads.getAdMetrics': {
       paramsType: [];
       returnType: Protocol.Ads.GetAdMetricsResponse;
+    };
+    /**
+     * Retrieves ad scripts for the current page. To minimize payload size, this
+     * only returns the newly tracked ad scripts since the last call to
+     * getAdScripts (i.e., the delta).
+     */
+    'Ads.getAdScripts': {
+      paramsType: [];
+      returnType: Protocol.Ads.GetAdScriptsResponse;
     };
     /**
      * Disables animation domain notifications.
@@ -4893,55 +4892,6 @@ export namespace ProtocolMapping {
     'Storage.clearTrustTokens': {
       paramsType: [Protocol.Storage.ClearTrustTokensRequest];
       returnType: Protocol.Storage.ClearTrustTokensResponse;
-    };
-    /**
-     * Gets metadata for an origin's shared storage.
-     */
-    'Storage.getSharedStorageMetadata': {
-      paramsType: [Protocol.Storage.GetSharedStorageMetadataRequest];
-      returnType: Protocol.Storage.GetSharedStorageMetadataResponse;
-    };
-    /**
-     * Gets the entries in an given origin's shared storage.
-     */
-    'Storage.getSharedStorageEntries': {
-      paramsType: [Protocol.Storage.GetSharedStorageEntriesRequest];
-      returnType: Protocol.Storage.GetSharedStorageEntriesResponse;
-    };
-    /**
-     * Sets entry with `key` and `value` for a given origin's shared storage.
-     */
-    'Storage.setSharedStorageEntry': {
-      paramsType: [Protocol.Storage.SetSharedStorageEntryRequest];
-      returnType: void;
-    };
-    /**
-     * Deletes entry for `key` (if it exists) for a given origin's shared storage.
-     */
-    'Storage.deleteSharedStorageEntry': {
-      paramsType: [Protocol.Storage.DeleteSharedStorageEntryRequest];
-      returnType: void;
-    };
-    /**
-     * Clears all entries for a given origin's shared storage.
-     */
-    'Storage.clearSharedStorageEntries': {
-      paramsType: [Protocol.Storage.ClearSharedStorageEntriesRequest];
-      returnType: void;
-    };
-    /**
-     * Resets the budget for `ownerOrigin` by clearing all budget withdrawals.
-     */
-    'Storage.resetSharedStorageBudget': {
-      paramsType: [Protocol.Storage.ResetSharedStorageBudgetRequest];
-      returnType: void;
-    };
-    /**
-     * Enables/disables issuing of sharedStorageAccessed events.
-     */
-    'Storage.setSharedStorageTracking': {
-      paramsType: [Protocol.Storage.SetSharedStorageTrackingRequest];
-      returnType: void;
     };
     /**
      * Set tracking for a storage key's buckets.

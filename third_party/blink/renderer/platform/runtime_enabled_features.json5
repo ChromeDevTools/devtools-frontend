@@ -1799,6 +1799,15 @@
       name: "CSSPositionStickyStaticScrollPosition",
       status: "test",
     },
+    {
+      // The @private rule declares lexically-scoped custom properties that are
+      // visible only within the enclosing style rule and the elements it
+      // matches, with their names rewritten so they are never observable as
+      // author custom properties.
+      // crbug.com/542651959
+      name: "CSSPrivate",
+      status: "experimental",
+    },
     // https://drafts.csswg.org/css-values-5/#progress
     // progress()
     {
@@ -3992,10 +4001,10 @@
     {
       name: "MediaCaptionSettingsButton",
       status: {
-        "Win": "experimental",
-        "Mac": "experimental",
-        "Linux": "experimental",
-        "ChromeOS": "experimental",
+        "Win": "stable",
+        "Mac": "stable",
+        "Linux": "stable",
+        "ChromeOS": "stable",
       },
     },
     {
@@ -5175,6 +5184,12 @@
       origin_trial_feature_name: "RtcAudioJitterBufferMaxPackets",
       status: "experimental",
       base_feature: "none",
+    },
+    {
+      // Non-standard RTCConfiguration.iceTransports alias. Off by default
+      // (alias removed). Enable via Finch to restore if sites break.
+      // https://crbug.com/488071544
+      name: "RTCConfigurationIceTransports",
     },
     {
       name: "RTCDataChannelPriority",
@@ -6966,6 +6981,10 @@
       name: "WebGPUMultithreadDawnWireOnWorkers",
       status: "experimental",
       implied_by: ["WebGPUMapSyncOnWorkers"],
+    },
+    {
+      name: "WebHaptics",
+      status: "experimental",
     },
     {
       name: "WebHID",

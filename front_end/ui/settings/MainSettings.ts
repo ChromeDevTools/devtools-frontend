@@ -44,3 +44,10 @@ export const currentDockStateSettingDescriptor: Common.Settings.SettingDescripto
   type: Common.Settings.SettingType.ENUM,
   defaultValue: 'right',
 };
+
+export const activeKeybindSetSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'active-keybind-set',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'devToolsDefault',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

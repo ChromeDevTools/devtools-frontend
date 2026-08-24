@@ -778,11 +778,7 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.currentDockSta
   ],
 });
 
-Common.Settings.registerSettingExtension({
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  settingName: 'active-keybind-set',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'devToolsDefault',
+SettingsUI.SettingUIRegistration.register(SettingsUI.MainSettings.activeKeybindSetSettingDescriptor, {
   options: [
     {
       value: 'devToolsDefault',

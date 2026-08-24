@@ -15,11 +15,11 @@ const {render, html} = Lit;
 
 const UIStrings = {
   /**
-   * @description Text for total
+   * @description Label for total duration in the summary view of the Performance panel.
    */
   total: 'Total',
   /**
-   * @description Range in Timeline Details View's Summary
+   * @description Time range in the summary view of the Performance panel.
    * @example {1ms} PH1
    * @example {10ms} PH2
    */

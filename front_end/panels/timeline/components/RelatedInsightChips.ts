@@ -13,11 +13,11 @@ const {html, render} = Lit;
 
 const UIStrings = {
   /**
-   * @description prefix shown next to related insight chips
+   * @description Prefix shown next to related insight chips in the Performance panel.
    */
   insightKeyword: 'Insight',
   /**
-   * @description Prefix shown next to related insight chips and containing the insight name.
+   * @description Prefix shown next to related insight chips containing the insight name in the Performance panel.
    * @example {Improve image delivery} PH1
    */
   insightWithName: 'Insight: {PH1}',

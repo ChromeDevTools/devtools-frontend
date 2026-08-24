@@ -509,7 +509,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
       assert.deepEqual(rowData, [
         {
           title: 'Warning',
-          value: 'Long interaction is indicating poor page responsiveness.',
+          value: 'Long interaction indicates poor page responsiveness.',
         },
         {title: 'Duration', value: '979.97\xA0ms'},
         {

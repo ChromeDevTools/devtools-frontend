@@ -17,17 +17,13 @@ const {render, html} = Lit;
 
 const UIStrings = {
   /**
-   * @description A context menu item in the Minimap Breadcrumb context menu.
-   * This context menu option activates the breadcrumb that the context menu was opened on.
+   * @description Context menu item in the Performance panel to activate the selected breadcrumb.
    */
   activateBreadcrumb: 'Activate breadcrumb',
   /**
-   * @description A context menu item in the Minimap Breadcrumb context menu.
-   * This context menu option removed all the child breadcrumbs and activates
-   * the breadcrumb that the context menu was opened on.
+   * @description Context menu item in the Performance panel to remove all child breadcrumbs and activate the selected breadcrumb.
    */
   removeChildBreadcrumbs: 'Remove child breadcrumbs',
-
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/BreadcrumbsUI.ts', UIStrings);

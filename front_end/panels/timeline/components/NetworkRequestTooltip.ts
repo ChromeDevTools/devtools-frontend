@@ -23,39 +23,39 @@ const MAX_URL_LENGTH = 60;
 
 const UIStrings = {
   /**
-   * @description Text that refers to the priority of network request
+   * @description Label for network request priority in the network request tooltip of the Performance panel.
    */
   priority: 'Priority',
   /**
-   * @description Text for the duration of a network request
+   * @description Label for total duration in the network request tooltip of the Performance panel.
    */
   duration: 'Duration',
   /**
-   * @description Text that refers to the queueing and connecting time of a network request
+   * @description Label for the queuing and connecting phase duration in the network request tooltip of the Performance panel.
    */
   queuingAndConnecting: 'Queuing and connecting',
   /**
-   * @description Text that refers to the request sent and waiting time of a network request
+   * @description Label for the request sent and waiting phase duration in the network request tooltip of the Performance panel.
    */
   requestSentAndWaiting: 'Request sent and waiting',
   /**
-   * @description Text that refers to the content downloading time of a network request
+   * @description Label for the content downloading phase duration in the network request tooltip of the Performance panel.
    */
   contentDownloading: 'Content downloading',
   /**
-   * @description Text that refers to the waiting on main thread time of a network request
+   * @description Label for the main thread waiting phase duration in the network request tooltip of the Performance panel.
    */
   waitingOnMainThread: 'Waiting on main thread',
   /**
-   * @description Text that refers to a network request is render-blocking
+   * @description Label indicating that the network request is render-blocking in the network request tooltip of the Performance panel.
    */
   renderBlocking: 'Render-blocking',
   /**
-   * @description Text to refer to the list of redirects.
+   * @description Header label for redirect details in the network request tooltip of the Performance panel.
    */
   redirects: 'Redirects',
   /**
-   * @description Cell title in Network Data Grid Node of the Network panel
+   * @description Tooltip text indicating that the network request was throttled in the Performance panel.
    * @example {Fast 4G} PH1
    */
   wasThrottled: 'Request was throttled ({PH1})',

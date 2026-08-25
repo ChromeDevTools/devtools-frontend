@@ -171,6 +171,12 @@ template("ts_library_split") {
     module = _module
     moduleResolution = _module_resolution
     strict = true
+    useUnknownInCatchVariables = false
+    noImplicitReturns = true
+    noImplicitOverride = true
+    noFallthroughCasesInSwitch = true
+    experimentalDecorators = true
+    allowSyntheticDefaultImports = true
     skipLibCheck = true
     allowJs = true
     checkJs = true
@@ -184,11 +190,45 @@ template("ts_library_split") {
     disableSourceOfProjectReferenceRedirect = true
     rootDir = rebase_path(_rootdir, _tsc_dir)
     outDir = _outdir
+    typeRoots = []
+    types = []
   }
 
-  if (defined(invoker.es_libs)) {
-    _compiler_options.lib = invoker.es_libs
+  _test_only = defined(invoker.testonly) && invoker.testonly
+  _runs_in_node = defined(invoker.runs_in) && (invoker.runs_in == "node_cjs" ||
+                                               invoker.runs_in == "node_esm")
+
+  if (_test_only || _runs_in_node) {
+    _compiler_options.typeRoots = [
+      rebase_path(devtools_location_prepend + "node_modules/@types", _tsc_dir),
+      rebase_path(devtools_location_prepend + "node_modules", _tsc_dir),
+    ]
+    if (_test_only) {
+      _compiler_options.types += [ "mocha" ]
+    }
+    if (_runs_in_node) {
+      _compiler_options.types += [
+        "node",
+        "undici-types",
+      ]
+    }
   }
+
+  _es_libs = [
+    "dom",
+    "dom.iterable",
+  ]
+  if (defined(invoker.es_libs)) {
+    _es_libs = []
+    _es_libs = invoker.es_libs
+  }
+  _compiler_options.lib = _es_libs + [
+                            "ES2023",
+                            "ES2024.Promise",
+                            "ESNext.Iterator",
+                            "ESNext.Collection",
+                            "ESNext.Array",
+                          ]
 
   # Compute output file paths (tsc does not emit for .d.ts inputs)
   _dts_outputs = []
@@ -225,6 +265,9 @@ template("ts_library_split") {
     script = devtools_location_prepend + "scripts/build/run_with_restat.py"
 
     inputs = typescript_base_inputs + _all_sources
+    if (defined(invoker.inputs)) {
+      inputs += invoker.inputs
+    }
 
     deps = _non_ts_deps
 
@@ -306,6 +349,24 @@ template("ts_library_split") {
     script = devtools_location_prepend + "scripts/build/run_with_restat.py"
 
     inputs = typescript_base_inputs + _all_sources + [ _tsconfig_file ]
+    if (defined(invoker.inputs)) {
+      inputs += invoker.inputs
+    }
+
+    if (_test_only) {
+      inputs += [
+        devtools_location_prepend + "node_modules/@types/mocha/index.d.ts",
+        devtools_location_prepend + "node_modules/@types/sinon/index.d.ts",
+        devtools_location_prepend + "node_modules/@types/chai/index.d.ts",
+      ]
+    }
+
+    if (_runs_in_node) {
+      inputs += [
+        devtools_location_prepend + "node_modules/@types/node/index.d.ts",
+        devtools_location_prepend + "node_modules/undici-types/index.d.ts",
+      ]
+    }
 
     deps = [
              ":$_dts_target",
@@ -334,6 +395,9 @@ template("ts_library_split") {
                     ":$_dts_target",
                     ":$_tsconfig_ref_target",
                   ] + _ts_deps
+    if (defined(invoker.public_deps)) {
+      public_deps += invoker.public_deps
+    }
 
     data = _js_outputs
     if (defined(invoker.data)) {

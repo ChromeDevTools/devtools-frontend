@@ -10,19 +10,19 @@
 }
 
 .router-rules {
-  border: 1px solid var(--sys-color-divider);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
   border-spacing: 0;
   padding-left: 10px;
   padding-right: 10px;
   line-height: initial;
   margin-top: 0;
-  padding-bottom: 12px;
+  padding-bottom: var(--sys-size-6);
   text-wrap: balance;
 }
 
 .router-rule {
   display: flex;
-  margin-top: 12px;
+  margin-top: var(--sys-size-6);
   flex-direction: column;
 }
 
@@ -40,7 +40,7 @@
 .source {
   list-style: none;
   display: flex;
-  margin-top: 4px;
+  margin-top: var(--sys-size-3);
   flex-direction: row;
 }
 

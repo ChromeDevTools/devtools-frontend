@@ -46,7 +46,7 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
 devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
   margin: 0 auto;
   padding: 0;
-  padding-right: 1px;
+  padding-right: var(--sys-size-1);
   width: 27px;
   height: 26px;
   display: flex;

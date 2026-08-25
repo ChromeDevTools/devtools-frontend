@@ -10,6 +10,7 @@ import("//build/toolchain/rbe.gni")
 import("//build/toolchain/siso.gni")
 import("../ninja/vars.gni")
 import("./ts_library_split.gni")
+import("./ts_type_check.gni")
 import("./typescript_vars.gni")
 
 declare_args() {
@@ -164,11 +165,7 @@ template("legacy_ts_library") {
 
     if (_test_only) {
       args += [ "--test-only" ]
-      inputs += [
-        devtools_location_prepend + "node_modules/@types/mocha/index.d.ts",
-        devtools_location_prepend + "node_modules/@types/sinon/index.d.ts",
-        devtools_location_prepend + "node_modules/@types/chai/index.d.ts",
-      ]
+      inputs += typescript_test_types_inputs
     }
 
     if (_tsconfig_only) {

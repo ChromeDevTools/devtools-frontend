@@ -1,0 +1,170 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../ninja/vars.gni")
+import("./typescript_vars.gni")
+
+# Defines a TypeScript verification-only target that runs type checking
+# without emitting .d.ts or .js files. Produces a .stamp file upon success.
+template("ts_type_check") {
+  assert(defined(invoker.sources),
+         "You must specify 'sources' for $target_name")
+
+  # We explicitly do not set GN `testonly` on the underlying action to avoid
+  # dependency graph errors when legacy non-testonly GN actions depend on this
+  # verification target.
+  not_needed(invoker,
+             [
+               "testonly",
+               "reset_timestamps",
+             ])
+
+  _rootdir = "."
+  if (defined(invoker.rootdir)) {
+    _rootdir = invoker.rootdir
+  }
+  _tsc_dir = string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc")
+
+  _tsconfig_name = target_name
+  if (defined(invoker.tsconfig_name)) {
+    _tsconfig_name = invoker.tsconfig_name
+  }
+
+  _tsconfig_target = "${target_name}_tsconfig"
+  _tsconfig_file = "$_tsc_dir/$_tsconfig_name-tsconfig.json"
+  _stamp_file = "$_tsc_dir/$_tsconfig_name.stamp"
+
+  _all_sources = invoker.sources
+  if (defined(invoker.additional_type_definitions)) {
+    _all_sources += invoker.additional_type_definitions
+  }
+
+  _ts_references = []
+  _ts_deps = []
+  if (defined(invoker.ts_deps)) {
+    _ts_deps = invoker.ts_deps
+    foreach(dep, _ts_deps) {
+      _dep_name = get_label_info(dep, "name")
+      _dep_gen_dir = get_label_info(dep, "target_gen_dir")
+      _dep_tsc_dir =
+          string_replace(_dep_gen_dir, root_gen_dir, "$root_out_dir/tsc")
+      _ts_references += [
+        {
+          path = rebase_path("$_dep_tsc_dir/$_dep_name-tsconfig.ref.json",
+                             _tsc_dir)
+        },
+      ]
+    }
+  }
+
+  _non_ts_deps = []
+  if (defined(invoker.deps)) {
+    _non_ts_deps = invoker.deps
+  }
+
+  _es_target = "ES2023"
+  if (defined(invoker.es_target)) {
+    _es_target = invoker.es_target
+  }
+
+  _module = "esnext"
+  _module_resolution = "bundler"
+  if (defined(invoker.runs_in) && invoker.runs_in == "node_cjs") {
+    _module = "nodenext"
+    _module_resolution = "nodenext"
+  }
+
+  _compiler_options = default_ts_compiler_options
+  _compiler_options.target = _es_target
+  _compiler_options.module = _module
+  _compiler_options.moduleResolution = _module_resolution
+  _compiler_options.rootDir = rebase_path(_rootdir, _tsc_dir)
+  _compiler_options.outDir = "."
+  _compiler_options.noEmit = true
+
+  _test_only = defined(invoker.testonly) && invoker.testonly
+  _runs_in_node = defined(invoker.runs_in) && (invoker.runs_in == "node_cjs" ||
+                                               invoker.runs_in == "node_esm")
+
+  if (_test_only || _runs_in_node) {
+    _compiler_options.typeRoots = [
+      rebase_path(devtools_location_prepend + "node_modules/@types", _tsc_dir),
+      rebase_path(devtools_location_prepend + "node_modules", _tsc_dir),
+    ]
+    if (_test_only) {
+      _compiler_options.types += [ "mocha" ]
+    }
+    if (_runs_in_node) {
+      _compiler_options.types += [
+        "node",
+        "undici-types",
+      ]
+    }
+  }
+
+  _es_libs = default_ts_dom_libs
+  if (defined(invoker.es_libs)) {
+    _es_libs = []
+    _es_libs = invoker.es_libs
+  }
+  _compiler_options.lib = _es_libs + default_ts_base_libs
+
+  # Sub-target 1: Generate tsconfig.json used for type checking
+  generated_file(_tsconfig_target) {
+    outputs = [ _tsconfig_file ]
+    output_conversion = "json"
+    contents = {
+      compilerOptions = _compiler_options
+      files = rebase_path(_all_sources, _tsc_dir)
+      references = _ts_references
+    }
+  }
+
+  # Primary action target: Type checking via direct tsc
+  action(target_name) {
+    script = devtools_location_prepend + "scripts/build/run_with_stamp.py"
+
+    inputs = typescript_base_inputs + _all_sources + [ _tsconfig_file ]
+    if (defined(invoker.inputs)) {
+      inputs += invoker.inputs
+    }
+
+    if (_test_only) {
+      inputs += typescript_test_types_inputs
+    }
+
+    if (_runs_in_node) {
+      inputs += typescript_node_types_inputs
+    }
+
+    deps = [ ":$_tsconfig_target" ] + _ts_deps + _non_ts_deps
+    if (defined(invoker.public_deps)) {
+      deps += invoker.public_deps
+    }
+
+    outputs = [ _stamp_file ]
+    response_file_contents = [
+      "--stamp",
+      rebase_path(_stamp_file, root_build_dir),
+      "--",
+      rebase_path(tsc_binary, root_build_dir),
+      "-p",
+      rebase_path(_tsconfig_file, root_build_dir),
+    ]
+
+    args = [ "@{{response_file_name}}" ]
+
+    metadata = {
+      typescript_files = rebase_path(invoker.sources, root_build_dir)
+    }
+
+    if (defined(invoker.visibility)) {
+      visibility = invoker.visibility
+    }
+  }
+}
+
+set_defaults("ts_type_check") {
+  visibility = [ "*" ]
+}

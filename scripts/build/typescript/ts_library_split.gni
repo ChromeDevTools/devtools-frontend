@@ -166,33 +166,12 @@ template("ts_library_split") {
     _outdir = rebase_path(target_gen_dir, _tsc_dir)
   }
 
-  _compiler_options = {
-    target = _es_target
-    module = _module
-    moduleResolution = _module_resolution
-    strict = true
-    useUnknownInCatchVariables = false
-    noImplicitReturns = true
-    noImplicitOverride = true
-    noFallthroughCasesInSwitch = true
-    experimentalDecorators = true
-    allowSyntheticDefaultImports = true
-    skipLibCheck = true
-    allowJs = true
-    checkJs = true
-    forceConsistentCasingInFileNames = true
-    inlineSources = true
-    noEmitOnError = true
-    sourceMap = true
-    declaration = false
-    composite = false
-    incremental = false
-    disableSourceOfProjectReferenceRedirect = true
-    rootDir = rebase_path(_rootdir, _tsc_dir)
-    outDir = _outdir
-    typeRoots = []
-    types = []
-  }
+  _compiler_options = default_ts_compiler_options
+  _compiler_options.target = _es_target
+  _compiler_options.module = _module
+  _compiler_options.moduleResolution = _module_resolution
+  _compiler_options.rootDir = rebase_path(_rootdir, _tsc_dir)
+  _compiler_options.outDir = _outdir
 
   _test_only = defined(invoker.testonly) && invoker.testonly
   _runs_in_node = defined(invoker.runs_in) && (invoker.runs_in == "node_cjs" ||
@@ -214,21 +193,12 @@ template("ts_library_split") {
     }
   }
 
-  _es_libs = [
-    "dom",
-    "dom.iterable",
-  ]
+  _es_libs = default_ts_dom_libs
   if (defined(invoker.es_libs)) {
     _es_libs = []
     _es_libs = invoker.es_libs
   }
-  _compiler_options.lib = _es_libs + [
-                            "ES2023",
-                            "ES2024.Promise",
-                            "ESNext.Iterator",
-                            "ESNext.Collection",
-                            "ESNext.Array",
-                          ]
+  _compiler_options.lib = _es_libs + default_ts_base_libs
 
   # Compute output file paths (tsc does not emit for .d.ts inputs)
   _dts_outputs = []
@@ -354,18 +324,11 @@ template("ts_library_split") {
     }
 
     if (_test_only) {
-      inputs += [
-        devtools_location_prepend + "node_modules/@types/mocha/index.d.ts",
-        devtools_location_prepend + "node_modules/@types/sinon/index.d.ts",
-        devtools_location_prepend + "node_modules/@types/chai/index.d.ts",
-      ]
+      inputs += typescript_test_types_inputs
     }
 
     if (_runs_in_node) {
-      inputs += [
-        devtools_location_prepend + "node_modules/@types/node/index.d.ts",
-        devtools_location_prepend + "node_modules/undici-types/index.d.ts",
-      ]
+      inputs += typescript_node_types_inputs
     }
 
     deps = [

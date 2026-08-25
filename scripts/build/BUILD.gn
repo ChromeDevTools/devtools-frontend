@@ -9,6 +9,7 @@ group("build") {
 group("tests") {
   deps = [
     "typescript/tests/fixtures/split_bidirectional",
+    "typescript/tests/fixtures/split_no_emit",
     "typescript/tests/fixtures/split_prebuilt",
     "typescript/tests/fixtures/split_simple_dep",
   ]

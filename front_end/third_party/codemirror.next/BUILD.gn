@@ -4,15 +4,9 @@
 
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
-group("bundle") {
-  public_deps = [
-    ":codemirror.next-compilation",
-    ":codemirror.next-sources",
-  ]
-}
-
-devtools_pre_built("codemirror.next-sources") {
+devtools_pre_built("bundle") {
   sources = [
+    "bundle-tsconfig.json",
     "chunk/angular.js",
     "chunk/angular.js.map",
     "chunk/codemirror.js",
@@ -41,16 +35,8 @@ devtools_pre_built("codemirror.next-sources") {
     "chunk/wast.js.map",
     "chunk/xml.js",
     "chunk/xml.js.map",
+    "codemirror.next.d.ts",
     "codemirror.next.js",
     "codemirror.next.js.map",
-  ]
-}
-
-devtools_pre_built("codemirror.next-compilation") {
-  sources_are_release = false
-
-  sources = [
-    "bundle-tsconfig.json",
-    "codemirror.next.d.ts",
   ]
 }

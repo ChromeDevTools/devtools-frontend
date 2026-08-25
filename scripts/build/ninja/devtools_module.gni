@@ -48,13 +48,26 @@ template("devtools_foundation_module") {
   if (!devtools_skip_typecheck) {
     _node_type_check_target = target_name + "_node_typecheck"
 
-    ts_library(_node_type_check_target) {
-      forward_variables_from(invoker, "*", [ "visibility" ])
+    ts_type_check(_node_type_check_target) {
+      forward_variables_from(invoker,
+                             "*",
+                             [
+                               "deps",
+                               "ts_deps",
+                               "visibility",
+                             ])
+
+      if (defined(invoker.ts_deps)) {
+        ts_deps = invoker.ts_deps
+        if (defined(invoker.deps)) {
+          deps = invoker.deps
+        }
+      } else if (defined(invoker.deps)) {
+        ts_deps = invoker.deps
+      }
 
       es_target = "es2023"
       es_libs = []
-
-      no_emit = true
       runs_in = "node_esm"
     }
   }

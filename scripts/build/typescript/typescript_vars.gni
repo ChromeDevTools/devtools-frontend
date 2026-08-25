@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("//build/toolchain/rbe.gni")
+import("../ninja/vars.gni")
 
 if (host_os == "linux") {
   tsc_binary = "//third_party/typescript/linux-amd64/src/lib/tsc"
@@ -133,4 +134,51 @@ typescript_standard_lib_dts_inputs = [
 typescript_base_inputs = [ tsc_binary ]
 if (use_remoteexec) {
   typescript_base_inputs += typescript_standard_lib_dts_inputs
+}
+
+typescript_test_types_inputs = [
+  devtools_location_prepend + "node_modules/@types/mocha/index.d.ts",
+  devtools_location_prepend + "node_modules/@types/sinon/index.d.ts",
+  devtools_location_prepend + "node_modules/@types/chai/index.d.ts",
+]
+
+typescript_node_types_inputs = [
+  devtools_location_prepend + "node_modules/@types/node/index.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/index.d.ts",
+]
+
+default_ts_base_libs = [
+  "ES2023",
+  "ES2024.Promise",
+  "ESNext.Iterator",
+  "ESNext.Collection",
+  "ESNext.Array",
+]
+
+default_ts_dom_libs = [
+  "dom",
+  "dom.iterable",
+]
+
+default_ts_compiler_options = {
+  strict = true
+  useUnknownInCatchVariables = false
+  noImplicitReturns = true
+  noImplicitOverride = true
+  noFallthroughCasesInSwitch = true
+  experimentalDecorators = true
+  allowSyntheticDefaultImports = true
+  skipLibCheck = true
+  allowJs = true
+  checkJs = true
+  forceConsistentCasingInFileNames = true
+  inlineSources = true
+  noEmitOnError = true
+  sourceMap = true
+  declaration = false
+  composite = false
+  incremental = false
+  disableSourceOfProjectReferenceRedirect = true
+  typeRoots = []
+  types = []
 }

@@ -1,0 +1,22 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../typescript.gni")
+
+ts_type_check("foundation_node_typecheck") {
+  sources = [ "Foundation.ts" ]
+  es_target = "es2023"
+  es_libs = []
+  runs_in = "node_esm"
+}
+
+ts_library_split("foundation_module") {
+  sources = [ "Foundation.ts" ]
+  es_target = "es2023"
+  es_libs = [
+    "dom",
+    "dom.iterable",
+  ]
+  public_deps = [ ":foundation_node_typecheck" ]
+}

@@ -323,7 +323,7 @@ export class Experiment {
 }
 
 /** This must be constructed after the query parameters have been parsed. **/
-export const experiments = new ExperimentsSupport();
+export const experiments: ExperimentsSupport = new ExperimentsSupport();
 
 export enum GenAiEnterprisePolicyValue {
   ALLOW = 0,
@@ -632,6 +632,8 @@ export const hostConfig: Platform.TypeScriptUtilities.RecursiveReadonly<HostConf
  */
 export type Condition = (config?: HostConfig) => boolean;
 
-export const conditions = {
+export const conditions: {
+  canDock: Condition,
+} = {
   canDock: () => Boolean(Runtime.queryParam('can_dock')),
 };

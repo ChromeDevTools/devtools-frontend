@@ -18,7 +18,7 @@ export const ENTER_KEY = 'Enter';
 export const ESCAPE_KEY = 'Escape';
 export const TAB_KEY = 'Tab';
 
-export const ARROW_KEYS = new Set<ArrowKey>([
+export const ARROW_KEYS: Set<ArrowKey> = new Set<ArrowKey>([
   ArrowKey.UP,
   ArrowKey.DOWN,
   ArrowKey.LEFT,

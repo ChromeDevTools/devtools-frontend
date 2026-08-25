@@ -31,6 +31,7 @@ import {StorageAgent} from './agents/StorageAgent.js';
 import {StylingAgent} from './agents/StylingAgent.js';
 import {AiAgent2} from './AiAgent2.js';
 import {AiHistoryStorage, ConversationType, type SerializedConversation} from './AiHistoryStorage.js';
+import {isContextSelectionEnabled} from './AiUtils.js';
 import type {ChangeManager} from './ChangeManager.js';
 import {AccessibilityContext} from './contexts/AccessibilityContext.js';
 import {DOMNodeContext} from './contexts/DOMNodeContext.js';
@@ -189,7 +190,7 @@ export class AiConversation {
   setContext(updateContext: ConversationContext<unknown>|null): void {
     if (!updateContext) {
       this.#contexts = [];
-      if (isAiAssistanceContextSelectionEnabled()) {
+      if (isContextSelectionEnabled()) {
         this.#updateAgent(ConversationType.NONE);
       }
 
@@ -198,7 +199,7 @@ export class AiConversation {
 
     this.#contexts = [updateContext];
 
-    if (isAiAssistanceContextSelectionEnabled()) {
+    if (isContextSelectionEnabled()) {
       if (updateContext instanceof FileContext) {
         this.#updateAgent(ConversationType.FILE);
       } else if (updateContext instanceof DOMNodeContext) {
@@ -571,16 +572,6 @@ export class AiConversation {
  */
 function isAiAssistanceServerSideLoggingAllowed(): boolean {
   return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
-}
-
-/**
- * Returns true if context changes should dynamically update the conversation's
- * agent/type state. Enabled for both the legacy V1 selection agent and the
- * unified V2 architecture.
- */
-function isAiAssistanceContextSelectionEnabled(): boolean {
-  return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) ||
-      Boolean(Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
 }
 
 function getPrimaryPageOrigin(

@@ -678,7 +678,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       const emptyStateSuggestions = await getEmptyStateSuggestions(this.#conversation);
       const markdownRenderer = getMarkdownRenderer(this.#conversation);
       let onContextAdd: (() => void)|null = null;
-      if (isAiAssistanceContextSelectionAgentEnabled() &&
+      if (AiAssistanceModel.AiUtils.isContextSelectionEnabled() &&
           // Only add it the button if can have anything already selected
           this.#getConversationContext(this.#getDefaultConversationType())) {
         onContextAdd = this.#handleContextAdd.bind(this);
@@ -759,7 +759,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onContextClick: this.#handleContextClick.bind(this),
           onNewConversation: this.#handleNewChatRequest.bind(this),
           onCopyResponseClick: this.#onCopyResponseClick.bind(this),
-          onContextRemoved: isAiAssistanceContextSelectionAgentEnabled() ? this.#handleContextRemoved.bind(this) : null,
+          onContextRemoved:
+              AiAssistanceModel.AiUtils.isContextSelectionEnabled() ? this.#handleContextRemoved.bind(this) : null,
           onContextAdd,
           walkthrough: {
             onToggle: this.#toggleWalkthrough.bind(this),
@@ -946,7 +947,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE;
     }
 
-    if (isAiAssistanceContextSelectionAgentEnabled() && !targetConversationType) {
+    if (AiAssistanceModel.AiUtils.isContextSelectionEnabled() && !targetConversationType) {
       return AiAssistanceModel.AiHistoryStorage.ConversationType.NONE;
     }
 
@@ -1023,7 +1024,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     if (this.#conversation) {
-      if (this.#conversation.isEmpty && isAiAssistanceContextSelectionAgentEnabled()) {
+      if (this.#conversation.isEmpty && AiAssistanceModel.AiUtils.isContextSelectionEnabled()) {
         const context = this.#getConversationContext(this.#getDefaultConversationType());
         this.#conversation.setContext(context);
       } else {
@@ -1031,7 +1032,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         // Don't reset to the context selection agent if
         // we remove context automatically.
         // Require explicit user action.
-        if (context || !isAiAssistanceContextSelectionAgentEnabled()) {
+        if (context || !AiAssistanceModel.AiUtils.isContextSelectionEnabled()) {
           this.#conversation.setContext(context);
         }
       }
@@ -1274,7 +1275,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return true;
     }
 
-    if (!this.#conversation.selectedContext && !isAiAssistanceContextSelectionAgentEnabled()) {
+    if (!this.#conversation.selectedContext && !AiAssistanceModel.AiUtils.isContextSelectionEnabled()) {
       return true;
     }
 
@@ -2056,10 +2057,6 @@ function isAiAssistanceMultimodalUploadInputEnabled(): boolean {
 
 function isAiAssistanceMultimodalInputEnabled(): boolean {
   return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodal);
-}
-
-function isAiAssistanceContextSelectionAgentEnabled(): boolean {
-  return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 
 function isAiAssistanceServerSideLoggingEnabled(): boolean {

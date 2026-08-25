@@ -540,6 +540,24 @@ describeWithEnvironment('AI Assistance Panel', () => {
       assert.isTrue(nextInput.props.isTextInputDisabled);
     });
 
+    it('enables text input and context actions when devToolsAiV2Architecture is enabled without selected context',
+       async () => {
+         updateHostConfig({
+           devToolsAiAssistanceContextSelectionAgent: {
+             enabled: false,
+           },
+           devToolsAiV2Architecture: {
+             enabled: true,
+           },
+         });
+         const {panel, view} = await createAiAssistancePanel();
+         void panel.handleAction('freestyler.elements-floating-button');
+         const nextInput = await view.nextInput;
+         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+         assert.isFalse(nextInput.props.isTextInputDisabled);
+         assert.isNotNull(nextInput.props.onContextRemoved);
+       });
+
     it('should suspend auto-selection when context is manually removed', async () => {
       updateHostConfig({
         devToolsAiAssistanceContextSelectionAgent: {

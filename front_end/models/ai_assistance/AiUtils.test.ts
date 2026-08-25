@@ -111,4 +111,38 @@ describe('AiUtils', () => {
       ]);
     });
   });
+
+  describe('isContextSelectionEnabled', () => {
+    it('returns true when devToolsAiAssistanceContextSelectionAgent is enabled', () => {
+      updateHostConfig({
+        devToolsAiAssistanceContextSelectionAgent: {enabled: true},
+        devToolsAiV2Architecture: {enabled: false},
+      });
+      assert.isTrue(AiAssistance.AiUtils.isContextSelectionEnabled());
+    });
+
+    it('returns true when devToolsAiV2Architecture is enabled', () => {
+      updateHostConfig({
+        devToolsAiAssistanceContextSelectionAgent: {enabled: false},
+        devToolsAiV2Architecture: {enabled: true},
+      });
+      assert.isTrue(AiAssistance.AiUtils.isContextSelectionEnabled());
+    });
+
+    it('returns true when both flags are enabled', () => {
+      updateHostConfig({
+        devToolsAiAssistanceContextSelectionAgent: {enabled: true},
+        devToolsAiV2Architecture: {enabled: true},
+      });
+      assert.isTrue(AiAssistance.AiUtils.isContextSelectionEnabled());
+    });
+
+    it('returns false when neither flag is enabled', () => {
+      updateHostConfig({
+        devToolsAiAssistanceContextSelectionAgent: {enabled: false},
+        devToolsAiV2Architecture: {enabled: false},
+      });
+      assert.isFalse(AiAssistance.AiUtils.isContextSelectionEnabled());
+    });
+  });
 });

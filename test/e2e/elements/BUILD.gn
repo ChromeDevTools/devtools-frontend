@@ -39,6 +39,7 @@ ts_e2e_library("elements") {
     "style-flash.test.ts",
     "style-pane-properties.test.ts",
     "styles-disable-inherited.test.ts",
+    "styles-inactive-rules.test.ts",
     "switch-panels-while-editing-as-html.test.ts",
     "violating-element-and-attributes.test.ts",
   ]

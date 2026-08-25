@@ -525,7 +525,10 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
   const selector =
       section.titleElement.querySelector('.selector') || section.titleElement.querySelector('.keyframe-key');
   let selectorText = (includeSelectorGroupMarks ? buildMarkedSelectors(selector) : text(selector));
-  selectorText += text(selector.nextSibling.nextSibling);
+  const openBrace = section.element.querySelector('.sidebar-pane-open-brace');
+  if (openBrace) {
+    selectorText += text(openBrace);
+  }
   const anchor = section.element.querySelector('.styles-section-subtitle');
 
   if (anchor) {

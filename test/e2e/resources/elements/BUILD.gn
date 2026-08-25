@@ -58,6 +58,7 @@ copy_to_gen("elements") {
     "iframe-documenturl.html",
     "inactive-css-page.html",
     "inactive-css-with-invalid-value.html",
+    "inactive-styles.html",
     "limited-quirks-mode.html",
     "low-contrast.html",
     "multiple-constructed-stylesheets.html",

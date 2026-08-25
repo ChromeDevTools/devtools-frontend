@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      @font-palette-values --my-palette-1 {
+        font-family: Arial;
+        base-palette: 1;
+      }
+      @font-palette-values --my-palette-2 {
+        font-family: Arial;
+        base-palette: 2;
+      }
+      @property --my-prop {
+        syntax: "<color>";
+        initial-value: red;
+        inherits: true;
+      }
+      @function --my-func() {
+        result: var(--my-prop);
+      }
+      @function --my-other-func(--a) {
+        result: var(--a);
+      }
+
+      body {
+        margin: 20px;
+      }
+
+      .container {
+        padding: 10px;
+      }
+
+      /* Inherited styles mapped via :focus-within */
+      .container:focus-within {
+        font-family: Arial;
+        font-palette: --my-palette-1;
+        padding: calc(10px + 5px);
+      }
+      .container:not(:focus-within) {
+        font-family: Arial;
+        font-palette: --my-palette-2;
+        padding: calc(5px + 5px);
+      }
+
+      /* Direct styles mapped via :focus */
+      .target-element:focus {
+        color: --my-func();
+        border: 2px solid green;
+      }
+      .target-element:not(:focus) {
+        color: --my-other-func(blue);
+        border: calc(1px * 2) solid red;
+      }
+
+      .other-element:focus {
+        font-palette: --my-palette-2;
+        color: red;
+      }
+
+      /* Animation styles */
+      @keyframes my-animation {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .animated-element.animating {
+        animation: my-animation 1s infinite;
+      }
+
+      /* A/B Test case */
+      .ab-element.state-a {
+        color: orange;
+      }
+      .ab-element.state-b {
+        color: purple;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="container">
+      <button class="target-element" id="target">Focus me!</button>
+    </div>
+    <button class="other-element" id="other">Or focus me!</button>
+
+    <div class="animated-element" id="animated">Click on me for animation!</div>
+
+    <script>
+      document.getElementById("animated").addEventListener("click", function (e) {
+        this.classList.toggle("animating");
+      });
+    </script>
+
+    <div class="ab-element state-a" id="ab-target">A/B test element</div>
+    <script>
+      document.getElementById("ab-target").addEventListener("click", function (e) {
+        if (this.classList.contains("state-a") && !this.classList.contains("state-b")) {
+          this.classList.remove("state-a");
+          this.classList.add("state-b");
+        } else if (this.classList.contains("state-b") && !this.classList.contains("state-a")) {
+          this.classList.add("state-a");
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -226,6 +226,10 @@ const UIStrings = {
    */
   collapseNonContributingCSSRules: 'Collapse non-contributing CSS rules',
   /**
+   * @description Title of a setting under the Elements category in Settings.
+   */
+  showInactiveCSSRules: 'Show inactive CSS rules',
+  /**
    * @description Title of a setting in the Event listeners tab.
    */
   frameworkListeners: 'Framework listeners',
@@ -638,6 +642,16 @@ Common.Settings.registerSettingExtension({
   order: 7,
   title: i18nLazyString(UIStrings.collapseNonContributingCSSRules),
   settingName: 'collapse-non-contributing-css-rules',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.ELEMENTS,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+  order: 8,
+  title: i18nLazyString(UIStrings.showInactiveCSSRules),
+  settingName: 'show-inactive-css-rules',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });

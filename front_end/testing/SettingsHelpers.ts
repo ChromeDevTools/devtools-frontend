@@ -87,6 +87,7 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST: ReadonlyArray<ReturnType<ty
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-ua-shadow-dom', false),
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'css-animations-only-when-animations-tab-open', true),
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'collapse-non-contributing-css-rules', false),
+  createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-inactive-css-rules', false),
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-metrics-rulers', false),
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'apca', false),
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-frameowkr-listeners', true),

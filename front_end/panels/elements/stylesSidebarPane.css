@@ -26,6 +26,23 @@
     font-style: italic;
   }
 
+  &.styles-section-inactive {
+    opacity: 70%;
+
+    .selector,
+    .style-properties {
+      font-style: italic;
+    }
+
+    .selector {
+      text-decoration: line-through;
+    }
+  }
+
+  devtools-icon[name="warning"] {
+    color: var(--icon-warning);
+  }
+
   &:focus-visible,
   &.read-only:focus-visible {
     background-color: var(--sys-color-state-focus-highlight);

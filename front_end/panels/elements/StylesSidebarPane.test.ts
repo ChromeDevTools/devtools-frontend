@@ -24,6 +24,7 @@ import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createStubbedDomNodeWithModels, getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import type {Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -55,34 +56,155 @@ describe('StylesSidebarPane', () => {
     });
 
     it('unescapes CSS strings', () => {
-      assert.strictEqual(
-          Elements.StylesSidebarPane.unescapeCssString(
-              String.raw`"I\F1 t\EB rn\E2 ti\F4 n\E0 liz\E6 ti\F8 n\2603 \1F308  can be \t\r\ic\k\y"`),
-          '"I\xF1t\xEBrn\xE2ti\xF4n\xE0liz\xE6ti\xF8n\u2603\u{1F308} can be tricky"');
+      assert.strictEqual(Elements.StylesSidebarPane.unescapeCssString(
+                             String.raw`"I\F1 t\EB rn\E2 ti\F4 n\E0 liz\E6 ti\F8 n\2603 \1F308  can be \t\r\ic\k\y"`),
+                         '"I\xF1t\xEBrn\xE2ti\xF4n\xE0liz\xE6ti\xF8n\u2603\u{1F308} can be tricky"');
       assert.strictEqual(
           Elements.StylesSidebarPane.unescapeCssString(String.raw`"_\DBFF_\\DBFF_\\\DBFF_\\\\DBFF_\\\\\DBFF_"`),
           '"_\uFFFD_\\DBFF_\\\\DBFF_\\\\\\DBFF_\\\\\\\\DBFF_"');
-      assert.strictEqual(
-          Elements.StylesSidebarPane.unescapeCssString(String.raw`"\0_\DBFF_\DFFF_\110000"`),
-          '"\uFFFD_\uFFFD_\uFFFD_\uFFFD"', 'U+0000, lone surrogates, and values above U+10FFFF should become U+FFFD');
-      assert.strictEqual(
-          Elements.StylesSidebarPane.unescapeCssString(String.raw`"_\D83C\DF08_"`), '"_\uFFFD\uFFFD_"',
-          'surrogates should not be combined');
-      assert.strictEqual(
-          Elements.StylesSidebarPane.unescapeCssString('"_\\41\n_\\41\t_\\41\x20_"'), '"_A_A_A_"',
-          'certain trailing whitespace characters should be consumed as part of the escape sequence');
+      assert.strictEqual(Elements.StylesSidebarPane.unescapeCssString(String.raw`"\0_\DBFF_\DFFF_\110000"`),
+                         '"\uFFFD_\uFFFD_\uFFFD_\uFFFD"',
+                         'U+0000, lone surrogates, and values above U+10FFFF should become U+FFFD');
+      assert.strictEqual(Elements.StylesSidebarPane.unescapeCssString(String.raw`"_\D83C\DF08_"`), '"_\uFFFD\uFFFD_"',
+                         'surrogates should not be combined');
+      assert.strictEqual(Elements.StylesSidebarPane.unescapeCssString('"_\\41\n_\\41\t_\\41\x20_"'), '"_A_A_A_"',
+                         'certain trailing whitespace characters should be consumed as part of the escape sequence');
     });
 
     it('escapes URL as CSS comments', () => {
       assert.strictEqual(Elements.StylesSidebarPane.escapeUrlAsCssComment('https://abc.com/'), 'https://abc.com/');
       assert.strictEqual(Elements.StylesSidebarPane.escapeUrlAsCssComment('https://abc.com/*/'), 'https://abc.com/*/');
-      assert.strictEqual(
-          Elements.StylesSidebarPane.escapeUrlAsCssComment('https://abc.com/*/?q=*'), 'https://abc.com/*/?q=*');
-      assert.strictEqual(
-          Elements.StylesSidebarPane.escapeUrlAsCssComment('https://abc.com/*/?q=*/'), 'https://abc.com/*/?q=*%2F');
-      assert.strictEqual(
-          Elements.StylesSidebarPane.escapeUrlAsCssComment('https://abc.com/*/?q=*/#hash'),
-          'https://abc.com/*/?q=*%2F#hash');
+      assert.strictEqual(Elements.StylesSidebarPane.escapeUrlAsCssComment('https://abc.com/*/?q=*'),
+                         'https://abc.com/*/?q=*');
+      assert.strictEqual(Elements.StylesSidebarPane.escapeUrlAsCssComment('https://abc.com/*/?q=*/'),
+                         'https://abc.com/*/?q=*%2F');
+      assert.strictEqual(Elements.StylesSidebarPane.escapeUrlAsCssComment('https://abc.com/*/?q=*/#hash'),
+                         'https://abc.com/*/?q=*%2F#hash');
+    });
+
+    describe('mergeOrderedItems', () => {
+      interface TestItem {
+        id: string;
+        inactive?: boolean;
+      }
+
+      it('preserves the relative ordering of inactive items when some items become inactive', () => {
+        const oldItems: TestItem[] = [{id: 'a'}, {id: 'b'}, {id: 'c'}];
+        const newItems: TestItem[] = [{id: 'a'}, {id: 'c'}];
+
+        const merged = Elements.StylesSidebarPane.mergeOrderedItems(
+            oldItems,
+            newItems,
+            item => item.id,
+            item => {
+              item.inactive = true;
+            },
+        );
+
+        assert.deepEqual(merged, [
+          {id: 'a'},
+          {id: 'b', inactive: true},
+          {id: 'c'},
+        ]);
+      });
+
+      it('appends and inserts new items into the sequence', () => {
+        const oldItems: TestItem[] = [{id: 'a'}, {id: 'c'}];
+        const newItems: TestItem[] = [{id: 'a'}, {id: 'b'}, {id: 'c'}, {id: 'd'}];
+
+        const merged = Elements.StylesSidebarPane.mergeOrderedItems(
+            oldItems,
+            newItems,
+            item => item.id,
+            item => {
+              item.inactive = true;
+            },
+        );
+
+        assert.deepEqual(merged, [
+          {id: 'a'},
+          {id: 'b'},
+          {id: 'c'},
+          {id: 'd'},
+        ]);
+      });
+
+      it('reorders items when new active items appear in a different order', () => {
+        const oldItems: TestItem[] = [{id: 'a'}, {id: 'b'}];
+        const newItems: TestItem[] = [{id: 'b'}, {id: 'a'}];
+
+        const merged = Elements.StylesSidebarPane.mergeOrderedItems(
+            oldItems,
+            newItems,
+            item => item.id,
+            item => {
+              item.inactive = true;
+            },
+        );
+
+        assert.deepEqual(merged, [
+          {id: 'b'},
+          {id: 'a'},
+        ]);
+      });
+
+      it('restores previously inactive items to active state when matched again', () => {
+        const oldItems: TestItem[] = [{id: 'a'}, {id: 'b', inactive: true}, {id: 'c'}];
+        const newItems: TestItem[] = [{id: 'a'}, {id: 'b'}, {id: 'c'}];
+
+        const merged = Elements.StylesSidebarPane.mergeOrderedItems(
+            oldItems,
+            newItems,
+            item => item.id,
+            item => {
+              item.inactive = true;
+            },
+        );
+
+        assert.deepEqual(merged, [
+          {id: 'a'},
+          {id: 'b'},
+          {id: 'c'},
+        ]);
+      });
+
+      it('handles empty old items list', () => {
+        const oldItems: TestItem[] = [];
+        const newItems: TestItem[] = [{id: 'a'}, {id: 'b'}];
+
+        const merged = Elements.StylesSidebarPane.mergeOrderedItems(
+            oldItems,
+            newItems,
+            item => item.id,
+            item => {
+              item.inactive = true;
+            },
+        );
+
+        assert.deepEqual(merged, [
+          {id: 'a'},
+          {id: 'b'},
+        ]);
+      });
+
+      it('handles empty new items list by marking all old items inactive', () => {
+        const oldItems: TestItem[] = [{id: 'a'}, {id: 'b'}];
+        const newItems: TestItem[] = [];
+
+        const merged = Elements.StylesSidebarPane.mergeOrderedItems(
+            oldItems,
+            newItems,
+            item => item.id,
+            item => {
+              item.inactive = true;
+            },
+        );
+
+        assert.deepEqual(merged, [
+          {id: 'a', inactive: true},
+          {id: 'b', inactive: true},
+        ]);
+      });
     });
 
     describe('update', () => {
@@ -604,19 +726,17 @@ describe('StylesSidebarPane', () => {
         if (!overloadedProperty) {
           assert.fail('Expected overloaded section to have at least one property');
         }
-        assert.strictEqual(
-            matchedStyles.propertyState(overloadedProperty), SDK.CSSMatchedStyles.PropertyState.OVERLOADED,
-            'Expected div{color:blue} to be overloaded by #id{color:red}');
+        assert.strictEqual(matchedStyles.propertyState(overloadedProperty),
+                           SDK.CSSMatchedStyles.PropertyState.OVERLOADED,
+                           'Expected div{color:blue} to be overloaded by #id{color:red}');
 
         // The section with all overloaded properties should be collapsed.
-        assert.isTrue(
-            overloadedSection.element.classList.contains('collapsed'),
-            'Section with all overloaded properties should have collapsed class');
+        assert.isTrue(overloadedSection.element.classList.contains('collapsed'),
+                      'Section with all overloaded properties should have collapsed class');
 
         // The section with active properties should NOT be collapsed.
-        assert.isFalse(
-            activeSection.element.classList.contains('collapsed'),
-            'Section with active properties should not be collapsed');
+        assert.isFalse(activeSection.element.classList.contains('collapsed'),
+                       'Section with active properties should not be collapsed');
       });
 
       it('does not leak LiveLocations when rebuilding styles multiple times', async () => {
@@ -720,12 +840,10 @@ describe('StylesSidebarPane', () => {
           assert.fail('Expected div section to exist');
         }
 
-        assert.isFalse(
-            overloadedSection.element.classList.contains('collapsed'),
-            'Section with all overloaded properties should not collapse when the setting is disabled');
-        assert.isFalse(
-            overloadedSection.element.classList.contains('collapsible'),
-            'Section should not be marked collapsible when automatic collapsing is disabled');
+        assert.isFalse(overloadedSection.element.classList.contains('collapsed'),
+                       'Section with all overloaded properties should not collapse when the setting is disabled');
+        assert.isFalse(overloadedSection.element.classList.contains('collapsible'),
+                       'Section should not be marked collapsible when automatic collapsing is disabled');
       });
 
       it('collapses an empty section (no leading properties)', async () => {
@@ -774,8 +892,8 @@ describe('StylesSidebarPane', () => {
         const emptySection = sectionBlocks[0].sections[1];   // .empty - no properties
 
         assert.isTrue(emptySection.element.classList.contains('collapsed'), 'Empty section should be collapsed');
-        assert.isFalse(
-            activeSection.element.classList.contains('collapsed'), 'Non-empty section should not be collapsed');
+        assert.isFalse(activeSection.element.classList.contains('collapsed'),
+                       'Non-empty section should not be collapsed');
       });
 
       it('does NOT collapse a section containing only disabled properties', async () => {
@@ -824,9 +942,8 @@ describe('StylesSidebarPane', () => {
 
         // A section with disabled properties should NOT be collapsed.
         // Disabled properties are user-intentional and should remain visible.
-        assert.isFalse(
-            disabledSection.element.classList.contains('collapsed'),
-            'Section with disabled properties should not be collapsed');
+        assert.isFalse(disabledSection.element.classList.contains('collapsed'),
+                       'Section with disabled properties should not be collapsed');
       });
 
       it('does NOT collapse a section with at least one active property', async () => {
@@ -876,9 +993,8 @@ describe('StylesSidebarPane', () => {
         assert.lengthOf(sectionBlocks[0].sections, 2);
         const mixedSection = sectionBlocks[0].sections[1];  // div - has one active, one overloaded
 
-        assert.isFalse(
-            mixedSection.element.classList.contains('collapsed'),
-            'Section with at least one active property should not be collapsed');
+        assert.isFalse(mixedSection.element.classList.contains('collapsed'),
+                       'Section with at least one active property should not be collapsed');
       });
 
       it('expands a collapsed section when jump-to targets it', async () => {
@@ -939,20 +1055,19 @@ describe('StylesSidebarPane', () => {
         if (!overloadedProperty) {
           assert.fail('Expected overloaded section to have at least one property');
         }
-        assert.strictEqual(
-            matchedStyles.propertyState(overloadedProperty), SDK.CSSMatchedStyles.PropertyState.OVERLOADED,
-            'Expected div{color:blue} to be overloaded by #id{color:red}');
+        assert.strictEqual(matchedStyles.propertyState(overloadedProperty),
+                           SDK.CSSMatchedStyles.PropertyState.OVERLOADED,
+                           'Expected div{color:blue} to be overloaded by #id{color:red}');
 
         // Verify section is initially collapsed.
-        assert.isTrue(
-            overloadedSection.element.classList.contains('collapsed'), 'Section should be initially collapsed');
+        assert.isTrue(overloadedSection.element.classList.contains('collapsed'),
+                      'Section should be initially collapsed');
 
         stylesSidebarPane.revealProperty(overloadedProperty);
 
         // After reveal, the section should be expanded (not collapsed).
-        assert.isFalse(
-            overloadedSection.element.classList.contains('collapsed'),
-            'Section should be expanded after revealProperty');
+        assert.isFalse(overloadedSection.element.classList.contains('collapsed'),
+                       'Section should be expanded after revealProperty');
       });
 
       it('can be manually expanded and re-collapsed via toggle', async () => {
@@ -1001,19 +1116,17 @@ describe('StylesSidebarPane', () => {
 
         // Initially collapsed.
         assert.isTrue(overloadedSection.isCollapsed(), 'Section should be initially collapsed');
-        assert.isTrue(
-            overloadedSection.element.classList.contains('collapsible'), 'Section should have collapsible class');
+        assert.isTrue(overloadedSection.element.classList.contains('collapsible'),
+                      'Section should have collapsible class');
 
         // Expand manually.
         overloadedSection.expand();
         assert.isFalse(overloadedSection.isCollapsed(), 'Section should be expanded after expand()');
-        assert.isFalse(
-            overloadedSection.element.classList.contains('collapsed'),
-            'Section should not have collapsed class after expand()');
+        assert.isFalse(overloadedSection.element.classList.contains('collapsed'),
+                       'Section should not have collapsed class after expand()');
         // Still marked collapsible so the icon remains visible.
-        assert.isTrue(
-            overloadedSection.element.classList.contains('collapsible'),
-            'Section should retain collapsible class after manual expand');
+        assert.isTrue(overloadedSection.element.classList.contains('collapsible'),
+                      'Section should retain collapsible class after manual expand');
       });
 
       it('reacts to toggling the collapse-non-contributing-css-rules setting at runtime', async () => {
@@ -1065,25 +1178,20 @@ describe('StylesSidebarPane', () => {
           assert.fail('Expected div section to exist');
         }
 
-        assert.isTrue(
-            overloadedSection.element.classList.contains('collapsed'),
-            'Section should be collapsed while the setting is enabled');
+        assert.isTrue(overloadedSection.element.classList.contains('collapsed'),
+                      'Section should be collapsed while the setting is enabled');
 
         collapseSetting.set(false);
-        assert.isFalse(
-            overloadedSection.element.classList.contains('collapsed'),
-            'Section should expand when the setting is turned off');
-        assert.isFalse(
-            overloadedSection.element.classList.contains('collapsible'),
-            'Section should drop the collapsible marker when the setting is turned off');
+        assert.isFalse(overloadedSection.element.classList.contains('collapsed'),
+                       'Section should expand when the setting is turned off');
+        assert.isFalse(overloadedSection.element.classList.contains('collapsible'),
+                       'Section should drop the collapsible marker when the setting is turned off');
 
         collapseSetting.set(true);
-        assert.isTrue(
-            overloadedSection.element.classList.contains('collapsed'),
-            'Section should collapse again when the setting is re-enabled');
-        assert.isTrue(
-            overloadedSection.element.classList.contains('collapsible'),
-            'Section should be marked collapsible again when the setting is re-enabled');
+        assert.isTrue(overloadedSection.element.classList.contains('collapsed'),
+                      'Section should collapse again when the setting is re-enabled');
+        assert.isTrue(overloadedSection.element.classList.contains('collapsible'),
+                      'Section should be marked collapsible again when the setting is re-enabled');
       });
 
       it('expands collapsed sections before adding a new blank property', async () => {
@@ -1201,15 +1309,14 @@ describe('StylesSidebarPane', () => {
         if (!inheritedProperty) {
           assert.fail('Expected inherited section to have at least one property');
         }
-        assert.strictEqual(
-            matchedStyles.propertyState(inheritedProperty), SDK.CSSMatchedStyles.PropertyState.OVERLOADED,
-            'Expected inherited color to be overloaded by element color');
+        assert.strictEqual(matchedStyles.propertyState(inheritedProperty),
+                           SDK.CSSMatchedStyles.PropertyState.OVERLOADED,
+                           'Expected inherited color to be overloaded by element color');
 
         // The inherited section's color property is overloaded by the div rule,
         // so it should be collapsed.
-        assert.isTrue(
-            inheritedSection.element.classList.contains('collapsed'),
-            'Inherited section with all overloaded properties should be collapsed');
+        assert.isTrue(inheritedSection.element.classList.contains('collapsed'),
+                      'Inherited section with all overloaded properties should be collapsed');
       });
     });
 
@@ -1537,12 +1644,10 @@ describe('StylesSidebarPane', () => {
       assert.instanceOf(sectionBlocks[1].sections[0], Elements.StylePropertiesSection.FunctionRuleSection);
       assert.instanceOf(sectionBlocks[1].sections[1], Elements.StylePropertiesSection.FunctionRuleSection);
 
-      assert.strictEqual(
-          sectionBlocks[1].sections[0].element.deepTextContent().replaceAll(/\s+/g, ' ').trim(),
-          '--f() { result: red;}');
-      assert.strictEqual(
-          sectionBlocks[1].sections[1].element.deepTextContent().replaceAll(/\s+/g, ' ').trim(),
-          '--f() { result: blue;}');
+      assert.strictEqual(sectionBlocks[1].sections[0].element.deepTextContent().replaceAll(/\s+/g, ' ').trim(),
+                         '--f() { result: red;}');
+      assert.strictEqual(sectionBlocks[1].sections[1].element.deepTextContent().replaceAll(/\s+/g, ' ').trim(),
+                         '--f() { result: blue;}');
 
       assert.strictEqual(sectionBlocks[1].sections[0].treeScopeDistance(), 1);
       assert.strictEqual(sectionBlocks[1].sections[1].treeScopeDistance(), 2);
@@ -1832,16 +1937,16 @@ describe('StylesSidebarPane', () => {
             const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
                 matchedStyles, new Map(), new Map(), null);
             assert.lengthOf(sectionBlocks[0].sections, 1);
-            assert.include(
-                sectionBlocks[0].sections[0].propertiesTreeOutline.contentElement.textContent, 'color: blue;');
+            assert.include(sectionBlocks[0].sections[0].propertiesTreeOutline.contentElement.textContent,
+                           'color: blue;');
 
             const handledComputedStyleChanged =
                 expectCall(sinon.stub(stylesSidebarPane, 'handledComputedStyleChangedForTest'));
             stylesSidebarPane.onComputedStyleChanged();
             await handledComputedStyleChanged;
 
-            assert.include(
-                sectionBlocks[0].sections[0].propertiesTreeOutline.contentElement.textContent, 'color: red;');
+            assert.include(sectionBlocks[0].sections[0].propertiesTreeOutline.contentElement.textContent,
+                           'color: red;');
             sinon.assert.notCalled(resetUpdateSpy);
           });
         });
@@ -1955,16 +2060,16 @@ describe('StylesSidebarPane', () => {
             const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
                 matchedStyles, new Map(), new Map(), null);
             assert.lengthOf(sectionBlocks[0].sections, 1);
-            assert.include(
-                sectionBlocks[0].sections[0].propertiesTreeOutline.contentElement.textContent, 'color: blue;');
+            assert.include(sectionBlocks[0].sections[0].propertiesTreeOutline.contentElement.textContent,
+                           'color: blue;');
 
             const handledComputedStyleChanged =
                 expectCall(sinon.stub(stylesSidebarPane, 'handledComputedStyleChangedForTest'));
             stylesSidebarPane.onComputedStyleChanged();
             await handledComputedStyleChanged;
 
-            assert.include(
-                sectionBlocks[0].sections[0].propertiesTreeOutline.contentElement.textContent, 'color: red;');
+            assert.include(sectionBlocks[0].sections[0].propertiesTreeOutline.contentElement.textContent,
+                           'color: red;');
             sinon.assert.notCalled(resetUpdateSpy);
           });
         });
@@ -2085,16 +2190,16 @@ describe('StylesSidebarPane', () => {
                  const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
                      matchedStyles, new Map(), new Map(), null);
                  assert.lengthOf(sectionBlocks[1].sections, 1);
-                 assert.include(
-                     sectionBlocks[1].sections[0].propertiesTreeOutline.contentElement.textContent, 'color: blue;');
+                 assert.include(sectionBlocks[1].sections[0].propertiesTreeOutline.contentElement.textContent,
+                                'color: blue;');
 
                  const handledComputedStyleChanged =
                      expectCall(sinon.stub(stylesSidebarPane, 'handledComputedStyleChangedForTest'));
                  stylesSidebarPane.onComputedStyleChanged();
                  await handledComputedStyleChanged;
 
-                 assert.include(
-                     sectionBlocks[1].sections[0].propertiesTreeOutline.contentElement.textContent, 'color: red;');
+                 assert.include(sectionBlocks[1].sections[0].propertiesTreeOutline.contentElement.textContent,
+                                'color: red;');
                  sinon.assert.notCalled(resetUpdateSpy);
                });
           });
@@ -3355,5 +3460,426 @@ color: pink !important;`;
         assert.isTrue(UI.UIUtils.isBeingEdited(newProperty.nameElement));
       });
     });
+  });
+});
+
+describeWithEnvironment('StylesSidebarPane Inactive Styles', () => {
+  let connection: MockCDPConnection;
+  let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
+  let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
+  let cssModel: SDK.CSSModel.CSSModel;
+  let node: SDK.DOMModel.DOMNode;
+
+  beforeEach(() => {
+    Common.Settings.Settings.instance().moduleSetting('show-inactive-css-rules').set(true);
+    connection = new MockCDPConnection();
+    const target = createTarget({connection});
+    cssModel = target.model(SDK.CSSModel.CSSModel)!;
+    computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
+    stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = 1 as Protocol.DOM.NodeId;
+    stylesSidebarPane.setNodeForTest(node);
+  });
+
+  it('does not preserve inactive rules when setting is disabled', async () => {
+    Common.Settings.Settings.instance().moduleSetting('show-inactive-css-rules').set(false);
+
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const rangeA = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10};
+    const rangeB = {startLine: 1, startColumn: 0, endLine: 1, endColumn: 10};
+
+    // 1. Initial match: Rule A and Rule B
+    const matchedStyles1 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.a'}], text: '.a'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {cssProperties: [{name: 'color', value: 'red'}], shorthandEntries: [], range: rangeA},
+            styleSheetId,
+          },
+          matchingSelectors: [0],
+        },
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.b'}], text: '.b'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {cssProperties: [{name: 'color', value: 'blue'}], shorthandEntries: [], range: rangeB},
+            styleSheetId,
+          },
+          matchingSelectors: [0],
+        },
+      ],
+    });
+
+    const blocks1 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks1;
+
+    assert.lengthOf(blocks1[0].sections, 2);
+    const sectionA = blocks1[0].sections[0];
+    const sectionB = blocks1[0].sections[1];
+    assert.strictEqual(sectionA.headerText(), '.b');
+    assert.strictEqual(sectionB.headerText(), '.a');
+
+    // 2. Update: Only Rule A matches. Rule B should NOT be preserved when setting is disabled.
+    const matchedStyles2 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.a'}], text: '.a'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {cssProperties: [{name: 'color', value: 'red'}], shorthandEntries: [], range: rangeA},
+            styleSheetId,
+          },
+          matchingSelectors: [0],
+        },
+      ],
+    });
+
+    const blocks2 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles2, new Map(), new Map(), null);
+
+    assert.lengthOf(blocks2[0].sections, 1);
+    assert.strictEqual(blocks2[0].sections[0].headerText(), '.a');
+    assert.isFalse(blocks2[0].sections[0].element.classList.contains('styles-section-inactive'));
+  });
+
+  it('preserves sections as inactive when they no longer match', async () => {
+    // Initial match: Rule A and Rule B
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const rangeA = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10};
+    const rangeB = {startLine: 1, startColumn: 0, endLine: 1, endColumn: 10};
+
+    const matchedStyles1 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.a'}], text: '.a'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {cssProperties: [{name: 'color', value: 'red'}], shorthandEntries: [], range: rangeA},
+            styleSheetId,
+          },
+          matchingSelectors: [0],
+        },
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.b'}], text: '.b'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {cssProperties: [{name: 'color', value: 'blue'}], shorthandEntries: [], range: rangeB},
+            styleSheetId,
+          },
+          matchingSelectors: [0],
+        },
+      ],
+    });
+
+    const blocks1 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+
+    // Wire blocks into the pane so it can preserve them in the next update
+    stylesSidebarPane.sectionBlocks = blocks1;
+
+    assert.lengthOf(blocks1[0].sections, 2);
+    const sectionA = blocks1[0].sections[0];
+    const sectionB = blocks1[0].sections[1];
+    assert.strictEqual(sectionA.headerText(), '.b');
+    assert.strictEqual(sectionB.headerText(), '.a');
+
+    // Update 1: Only Rule A matches. Rule B should become inactive.
+    const matchedStyles2 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.a'}], text: '.a'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {cssProperties: [{name: 'color', value: 'red'}], shorthandEntries: [], range: rangeA},
+            styleSheetId,
+          },
+          matchingSelectors: [0],
+        },
+      ],
+    });
+
+    const blocks2 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles2, new Map(), new Map(), null);
+
+    assert.lengthOf(blocks2[0].sections, 2, 'Inactive section should be preserved');
+    assert.strictEqual(blocks2[0].sections[0].headerText(), '.b');
+    assert.strictEqual(blocks2[0].sections[1].headerText(), '.a');
+    assert.isTrue(blocks2[0].sections[0].element.classList.contains('styles-section-inactive'));
+    assert.isFalse(blocks2[0].sections[1].element.classList.contains('styles-section-inactive'));
+
+    const statusIconB =
+        blocks2[0].sections[0].element.querySelector('devtools-icon.styles-section-status') as HTMLElement;
+    const statusIconA =
+        blocks2[0].sections[1].element.querySelector('devtools-icon.styles-section-status') as HTMLElement;
+    assert.isNotNull(statusIconB);
+    assert.isFalse(statusIconB.classList.contains('hidden'));
+    assert.strictEqual((statusIconB as Icon).name, 'warning');
+    assert.strictEqual(statusIconB.title, 'This rule doesn’t currently match the selected element');
+    assert.isTrue(statusIconA.classList.contains('hidden'));
+  });
+
+  it('restores inactive sections to active when they match again', async () => {
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const rangeA = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10};
+
+    // 1. Rule A matches.
+    const matchedStyles1 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [ruleMatch('.a', {color: 'red'}, {range: rangeA, styleSheetId})],
+    });
+    const blocks1 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks1;
+
+    // 2. Rule A stops matching.
+    const matchedStyles2 = await getMatchedStyles({connection, cssModel, node, matchedPayload: []});
+    const blocks2 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles2, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks2;
+    assert.isTrue(blocks2[0].sections[0].element.classList.contains('styles-section-inactive'));
+
+    // 3. Rule A matches again.
+    const blocks3 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    assert.isFalse(blocks3[0].sections[0].element.classList.contains('styles-section-inactive'));
+    assert.lengthOf(blocks3[0].sections, 1);
+  });
+
+  it('maintains stable relative ordering of inactive rules', async () => {
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const rangeA = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10};
+    const rangeB = {startLine: 1, startColumn: 0, endLine: 1, endColumn: 10};
+    const rangeC = {startLine: 2, startColumn: 0, endLine: 2, endColumn: 10};
+
+    const matchA = ruleMatch('.a', {color: 'red'}, {range: rangeA, styleSheetId});
+    const matchB = ruleMatch('.b', {color: 'blue'}, {range: rangeB, styleSheetId});
+    const matchC = ruleMatch('.c', {color: 'green'}, {range: rangeC, styleSheetId});
+
+    // 1. Initial: A, B, C matches.
+    const matchedStylesABC =
+        await getMatchedStyles({connection, cssModel, node, matchedPayload: [matchA, matchB, matchC]});
+    const blocks1 = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStylesABC, new Map(),
+                                                                                       new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks1;
+
+    // 2. Update: A and C match. B becomes inactive.
+    const matchedStylesAC = await getMatchedStyles({connection, cssModel, node, matchedPayload: [matchA, matchC]});
+    const blocks2 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStylesAC, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks2;
+
+    assert.strictEqual(blocks2[0].sections[0].headerText(), '.c');
+    assert.strictEqual(blocks2[0].sections[1].headerText(), '.b');  // Inactive, but in original relative order
+    assert.strictEqual(blocks2[0].sections[2].headerText(), '.a');
+    assert.isTrue(blocks2[0].sections[1].element.classList.contains('styles-section-inactive'));
+
+    // 3. Update: Only C matches. A and B inactive.
+    const matchedStylesC = await getMatchedStyles({connection, cssModel, node, matchedPayload: [matchC]});
+    const blocks3 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStylesC, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks3;
+
+    assert.strictEqual(blocks3[0].sections[0].headerText(), '.c');
+    assert.strictEqual(blocks3[0].sections[1].headerText(), '.b');
+    assert.strictEqual(blocks3[0].sections[2].headerText(), '.a');
+    assert.isFalse(blocks3[0].sections[0].element.classList.contains('styles-section-inactive'));
+    assert.isTrue(blocks3[0].sections[1].element.classList.contains('styles-section-inactive'));
+    assert.isTrue(blocks3[0].sections[2].element.classList.contains('styles-section-inactive'));
+  });
+
+  it('clears inactive rules on node change', async () => {
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const rangeA = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10};
+
+    // 1. Match Rule A.
+    const matchedStylesA = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [ruleMatch('.a', {color: 'red'}, {range: rangeA, styleSheetId})],
+    });
+    const blocks1 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStylesA, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks1;
+
+    // 2. Stop matching (Rule A inactive).
+    const blocks2 = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+        await getMatchedStyles({connection, cssModel, node}), new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks2;
+    assert.lengthOf(blocks2[0].sections, 1);
+    assert.isTrue(blocks2[0].sections[0].element.classList.contains('styles-section-inactive'));
+
+    // 3. Change node.
+    const newNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    newNode.id = 2 as Protocol.DOM.NodeId;
+    stylesSidebarPane.setNodeForTest(newNode);
+
+    // 4. Update for new node. Inactive rules from previous node should be gone.
+    const blocks3 = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+        await getMatchedStyles({connection, cssModel, node: newNode}), new Map(), new Map(), null);
+    assert.lengthOf(blocks3[0].sections, 0);
+  });
+
+  it('collapses inactive sections when collapse-non-contributing-css-rules is enabled', async () => {
+    Common.Settings.Settings.instance().moduleSetting('collapse-non-contributing-css-rules').set(true);
+
+    const styleSheetIdA = '0' as Protocol.DOM.StyleSheetId;
+    const styleSheetIdB = '1' as Protocol.DOM.StyleSheetId;
+
+    // 1. Initial match: Rule A and Rule B with non-conflicting properties
+    const matchA = ruleMatch('.a', {color: 'red'}, {styleSheetId: styleSheetIdA});
+    const matchB = ruleMatch('.b', {'background-color': 'blue'}, {styleSheetId: styleSheetIdB});
+    const matchedStyles1 = await getMatchedStyles({connection, cssModel, node, matchedPayload: [matchA, matchB]});
+
+    const blocks1 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks1;
+
+    const sectionB = blocks1[0].sections[0];
+    const sectionA = blocks1[0].sections[1];
+    assert.strictEqual(sectionB.headerText(), '.b');
+    assert.strictEqual(sectionA.headerText(), '.a');
+    assert.isFalse(sectionB.isCollapsed(), 'Rule B should not be collapsed initially');
+    assert.isFalse(sectionA.isCollapsed(), 'Rule A should not be collapsed initially');
+
+    // 2. Update: Only Rule A matches. Rule B becomes inactive and should collapse.
+    const matchedStyles2 = await getMatchedStyles({connection, cssModel, node, matchedPayload: [matchA]});
+    const blocks2 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles2, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks2;
+
+    const sectionB2 = blocks2[0].sections[0];
+    const sectionA2 = blocks2[0].sections[1];
+    assert.isTrue(sectionB2.isInactive());
+    assert.isTrue(sectionB2.isCollapsed(), 'Inactive section should be collapsed when setting is enabled');
+    assert.isFalse(sectionA2.isInactive());
+    assert.isFalse(sectionA2.isCollapsed());
+
+    // 3. User manually expands section B while it is inactive.
+    sectionB2.expand();
+    assert.isFalse(sectionB2.isCollapsed(), 'User manually expanded the inactive section');
+
+    // 4. Update: Still only Rule A matches (Rule B remains inactive).
+    // The previous collapse state (expanded by user) should be preserved because its inactive state did not change.
+    const blocks3 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles2, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks3;
+
+    const sectionB3 = blocks3[0].sections[0];
+    assert.isTrue(sectionB3.isInactive());
+    assert.isFalse(sectionB3.isCollapsed(), 'Manual expansion should be preserved when inactive state did not change');
+
+    // 5. Update: Rule B matches again (transitions from inactive back to active).
+    // Since inactive changed from true to false, it should update its collapsed state to expanded.
+    const blocks4 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks4;
+
+    const sectionB4 = blocks4[0].sections[0];
+    assert.isFalse(sectionB4.isInactive());
+    assert.isFalse(sectionB4.isCollapsed(), 'Section should be uncollapsed when matching again');
+  });
+
+  it('does not collapse inactive sections when collapse-non-contributing-css-rules is disabled', async () => {
+    Common.Settings.Settings.instance().moduleSetting('collapse-non-contributing-css-rules').set(false);
+
+    const styleSheetIdA = '0' as Protocol.DOM.StyleSheetId;
+    const styleSheetIdB = '1' as Protocol.DOM.StyleSheetId;
+
+    // 1. Initial match: Rule A and Rule B
+    const matchA = ruleMatch('.a', {color: 'red'}, {styleSheetId: styleSheetIdA});
+    const matchB = ruleMatch('.b', {'background-color': 'blue'}, {styleSheetId: styleSheetIdB});
+    const matchedStyles1 = await getMatchedStyles({connection, cssModel, node, matchedPayload: [matchA, matchB]});
+
+    const blocks1 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks1;
+
+    // 2. Update: Only Rule A matches. Rule B becomes inactive.
+    const matchedStyles2 = await getMatchedStyles({connection, cssModel, node, matchedPayload: [matchA]});
+    const blocks2 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles2, new Map(), new Map(), null);
+
+    const sectionB = blocks2[0].sections[0];
+    assert.isTrue(sectionB.isInactive());
+    assert.isFalse(sectionB.isCollapsed(), 'Inactive section should not be collapsed when setting is disabled');
+  });
+
+  it('preserves the relative ordering of section blocks across inactive state transitions', async () => {
+    const propertyRule = {
+      propertyName: '--my-prop',
+      style: {
+        cssProperties: [{name: 'syntax', value: '"<color>"'}, {name: 'inherits', value: 'true'}],
+        shorthandEntries: [],
+      },
+    };
+    const keyframesRule = {
+      animationName: {text: 'my-animation'},
+      keyframes: [{
+        keyText: {text: '100%'},
+        style: {cssProperties: [{name: 'opacity', value: '1'}], shorthandEntries: []},
+      }],
+    };
+
+    // 1. Initial State: Only @property matches
+    const matchedStyles1 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      propertyRules: [propertyRule as unknown as Protocol.CSS.CSSPropertyRule],
+    });
+    const blocks1 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks1;
+
+    assert.lengthOf(blocks1, 2);
+    assert.strictEqual(blocks1[1].titleElement()?.textContent, '@property');
+
+    // 2. State 2: Animation starts. @keyframes matches in addition to @property.
+    // In CSS cascade order, @keyframes appears before @property.
+    const matchedStyles2 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      animationsPayload: [keyframesRule as unknown as Protocol.CSS.CSSKeyframesRule],
+      propertyRules: [propertyRule as unknown as Protocol.CSS.CSSPropertyRule],
+    });
+    const blocks2 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles2, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks2;
+
+    assert.lengthOf(blocks2, 3);
+    assert.strictEqual(blocks2[1].titleElement()?.textContent, '@keyframes my-animation');
+    assert.strictEqual(blocks2[2].titleElement()?.textContent, '@property');
+
+    // 3. State 3: Animation stops. @keyframes becomes inactive.
+    // The relative ordering of blocks (@keyframes before @property) should be preserved.
+    const blocks3 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks3;
+
+    assert.lengthOf(blocks3, 3);
+    assert.strictEqual(blocks3[1].titleElement()?.textContent, '@keyframes my-animation');
+    assert.strictEqual(blocks3[2].titleElement()?.textContent, '@property');
+    assert.isTrue(blocks3[1].sections[0].isInactive(), '@keyframes section should be marked inactive');
+    assert.isFalse(blocks3[2].sections[0].isInactive(), '@property section should remain active');
   });
 });

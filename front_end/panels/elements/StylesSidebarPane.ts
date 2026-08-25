@@ -210,7 +210,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private isActivePropertyHighlighted = false;
   private initialUpdateCompleted = false;
   hasMatchedStyles = false;
-  private sectionBlocks: SectionBlock[] = [];
+  sectionBlocks: SectionBlock[] = [];
+  #allKnownBlocks = new Map<string, SectionBlock>();
+  #lastNode: SDK.DOMModel.DOMNode|null = null;
   private idleCallbackManager: IdleCallbackManager|null = null;
   private needsForceUpdate = false;
   private isSuppressingResets = false;
@@ -247,6 +249,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     Common.Settings.Settings.instance()
         .moduleSetting('collapse-non-contributing-css-rules')
         .addChangeListener(this.updateCollapsedSectionsSetting, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('show-inactive-css-rules')
+        .addChangeListener(this.requestUpdate, this);
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
     this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingSelectorOrStyle);
@@ -1009,9 +1014,15 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
     this.#elementsForSyncViewportCheck = [];
     this.linkifier.reset();
+    const node = this.node();
+    if (this.#lastNode !== node) {
+      // Clear inactive styles when a different node is selected.
+      this.#allKnownBlocks.clear();
+      this.#lastNode = node;
+    }
+
     const prevSections = this.sectionBlocks.map(block => block.sections).flat();
 
-    const node = this.node();
     this.hasMatchedStyles = matchedStyles !== null && node !== null;
     if (!this.hasMatchedStyles) {
       this.sectionBlocks = [];
@@ -1103,6 +1114,36 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.matchedStyles = matchedStyles;
   }
 
+  setNodeForTest(node: SDK.DOMModel.DOMNode): void {
+    if (this.#lastNode !== node) {
+      this.#allKnownBlocks.clear();
+      this.#lastNode = node;
+    }
+  }
+
+  private getStyleId(style: SDK.CSSStyleDeclaration.CSSStyleDeclaration): string {
+    if (style.range) {
+      return `${style.styleSheetId || ''}:${style.range.toString()}`;
+    }
+    if (style.type === SDK.CSSStyleDeclaration.Type.Inline || style.type === SDK.CSSStyleDeclaration.Type.Attributes) {
+      return style.type;
+    }
+    if (style.type === SDK.CSSStyleDeclaration.Type.Animation) {
+      return `${style.type}:${style.animationName() || ''}:${style.cssText}`;
+    }
+    const parentRule = style.parentRule;
+    if (parentRule instanceof SDK.CSSRule.CSSStyleRule) {
+      return `${style.type}:${parentRule.selectorText()}`;
+    }
+    if (parentRule instanceof SDK.CSSRule.CSSKeyframeRule) {
+      return `${style.type}:${parentRule.parentRuleName()}:${parentRule.key().text}`;
+    }
+    if (parentRule instanceof SDK.CSSRule.CSSPropertyRule) {
+      return `${style.type}:${parentRule.propertyName().text}`;
+    }
+    return `${style.type}:${style.cssText}`;
+  }
+
   rebuildSectionsForMatchedStyleRulesForTest(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
                                              computedStyles: Map<string, string>|null,
                                              parentsComputedStyles: Map<string, string>|null,
@@ -1128,7 +1169,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     let sectionIdx = 0;
     let lastParentNode: SDK.DOMModel.DOMNode|null = null;
 
-    let lastLayerParent: SectionBlock|undefined;
+    let lastLayerParent: SectionBlock|undefined = blocks[0];
     let lastLayers: SDK.CSSLayer.CSSLayer[]|null = null;
     let sawLayers = false;
 
@@ -1160,12 +1201,15 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     // Always render eagerly for layout tests.
     this.#shouldRenderLazily = !Host.InspectorFrontendHost.isUnderTest() && totalProperties > LAZY_RENDER_THRESHOLD;
 
-    for (const style of matchedStyles.nodeStyles()) {
+    const activeStyles = matchedStyles.nodeStyles().filter(style => {
       const isTransitionOrAnimationStyle = style.type === SDK.CSSStyleDeclaration.Type.Transition ||
           style.type === SDK.CSSStyleDeclaration.Type.Animation;
-      if (isTransitionOrAnimationStyle && cssAnimationsOnlyWhenAnimationsTabOpen && !animationsPanelVisible) {
-        continue;
-      }
+      return !isTransitionOrAnimationStyle || animationsPanelVisible || !cssAnimationsOnlyWhenAnimationsTabOpen;
+    });
+
+    for (const style of activeStyles) {
+      const isTransitionOrAnimationStyle = style.type === SDK.CSSStyleDeclaration.Type.Transition ||
+          style.type === SDK.CSSStyleDeclaration.Type.Animation;
 
       const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
       if (parentNode && parentNode !== lastParentNode) {
@@ -1355,7 +1399,59 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
     await this.idleCallbackManager.awaitDone();
 
-    return blocks;
+    const showInactiveCSSRules = Common.Settings.Settings.instance().moduleSetting('show-inactive-css-rules').get();
+    if (!showInactiveCSSRules) {
+      return blocks;
+    }
+
+    return this.mergeInactiveStyles(blocks);
+  }
+
+  private computeBlockIds(blocks: SectionBlock[]): Map<SectionBlock, string> {
+    let nullBlockCounter = 0;
+    const blockIds = new Map<SectionBlock, string>();
+    for (const block of blocks) {
+      blockIds.set(block, block.titleElement()?.textContent || `MAIN_BLOCK_NULL_${nullBlockCounter++}`);
+    }
+    return blockIds;
+  }
+
+  private mergeInactiveStyles(blocks: SectionBlock[]): SectionBlock[] {
+    const blockIds = this.computeBlockIds(blocks);
+    for (const [id, block] of this.#allKnownBlocks) {
+      if (!blockIds.has(block)) {
+        blockIds.set(block, id);
+      }
+    }
+    const getBlockId = (block: SectionBlock): string => blockIds.get(block) || 'UNKNOWN_BLOCK';
+
+    for (const block of blocks) {
+      const bid = getBlockId(block);
+      const knownBlock = this.#allKnownBlocks.get(bid);
+      if (knownBlock) {
+        block.sections = mergeOrderedItems(
+            knownBlock.sections,
+            block.sections,
+            section => this.getStyleId(section.styleInternal),
+            section => section.setInactive(true),
+        );
+      }
+    }
+
+    const oldBlocks = Array.from(this.#allKnownBlocks.values());
+    const finalBlocks = mergeOrderedItems(
+        oldBlocks,
+        blocks,
+        getBlockId,
+        block => block.sections.forEach(section => section.setInactive(true)),
+    );
+
+    this.#allKnownBlocks.clear();
+    for (const block of finalBlocks) {
+      this.#allKnownBlocks.set(getBlockId(block), block);
+    }
+
+    return finalBlocks;
   }
 
   async createNewRuleInViaInspectorStyleSheet(): Promise<void> {
@@ -2590,6 +2686,43 @@ export function escapeUrlAsCssComment(urlText: string): string {
     return `${url.origin}${url.pathname}${url.search.replaceAll('*/', '*%2F')}${url.hash}`;
   }
   return url.toString();
+}
+
+/**
+ * Merges a newly active list of items with an existing (previously known) list of items,
+ * preserving the relative order of inactive items while updating and inserting active items.
+ */
+export function mergeOrderedItems<T>(
+    oldItems: T[],
+    newItems: T[],
+    getId: (item: T) => string,
+    markInactive: (item: T) => void,
+    ): T[] {
+  const newIds = new Set(newItems.map(getId));
+  const merged: T[] = [];
+  let newIdx = 0;
+
+  for (const oldItem of oldItems) {
+    const oldId = getId(oldItem);
+    if (newIds.has(oldId)) {
+      while (newIdx < newItems.length) {
+        const newItem = newItems[newIdx++];
+        merged.push(newItem);
+        if (getId(newItem) === oldId) {
+          break;
+        }
+      }
+    } else {
+      markInactive(oldItem);
+      merged.push(oldItem);
+    }
+  }
+
+  while (newIdx < newItems.length) {
+    merged.push(newItems[newIdx++]);
+  }
+
+  return merged;
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {

@@ -126,7 +126,8 @@ export class DevToolsPage extends PageWrapper {
       } catch (err) {
         // We might be navigating, so we retry execution context destroyed
         // errors.
-        if (err.message.startsWith('Execution context was destroyed')) {
+        if (err.message.startsWith('Execution context was destroyed') ||
+            err.message.includes('Failed to resolve module specifier')) {
           return false;
         }
         throw err;

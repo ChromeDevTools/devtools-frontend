@@ -6,5 +6,5 @@
 
 .request-initiator-view {
   display: flex;
-  margin: 6px;
+  margin: var(--sys-size-4);
 }

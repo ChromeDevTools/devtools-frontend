@@ -26,19 +26,19 @@
   .data-grid .data-container table.data {
     tr.data-grid-data-grid-node {
       td.resource-chunk-view-td {
-        border-bottom: 1px solid var(--sys-color-divider);
+        border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
       }
 
       &.resource-chunk-view-row-send td:first-child::before {
         content: "\2B06";
         color: var(--sys-color-tertiary);
-        padding-right: 4px;
+        padding-right: var(--sys-size-3);
       }
 
       &.resource-chunk-view-row-receive td:first-child::before {
         content: "\2B07";
         color: var(--sys-color-error);
-        padding-right: 4px;
+        padding-right: var(--sys-size-3);
       }
 
       &.resource-chunk-view-row-send {

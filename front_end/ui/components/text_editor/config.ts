@@ -47,15 +47,23 @@ export const dynamicSetting = CM.Facet.define<DynamicSetting<unknown>>();
 
 export class DynamicSetting<T> {
   compartment = new CM.Compartment();
+  readonly setting: string|Common.Settings.SettingDescriptor<T>;
 
   constructor(
-      readonly settingName: string,
+      setting: string|Common.Settings.SettingDescriptor<T>,
       private readonly getExtension: (value: T) => CM.Extension,
   ) {
+    this.setting = setting;
+  }
+
+  get settingName(): string {
+    return typeof this.setting === 'string' ? this.setting : this.setting.name;
   }
 
   settingValue(): T {
-    return Common.Settings.Settings.instance().moduleSetting(this.settingName).get() as T;
+    return (typeof this.setting === 'string' ? Common.Settings.Settings.instance().moduleSetting(this.setting) :
+                                               Common.Settings.Settings.instance().resolve<unknown>(this.setting))
+               .get() as T;
   }
 
   instance(): CM.Extension {
@@ -71,8 +79,12 @@ export class DynamicSetting<T> {
     return cur === needed ? null : this.compartment.reconfigure(needed);
   }
 
-  static bool(name: string, enabled: CM.Extension, disabled: CM.Extension = empty): DynamicSetting<boolean> {
-    return new DynamicSetting<boolean>(name, val => val ? enabled : disabled);
+  static bool(
+      setting: string|Common.Settings.SettingDescriptor<boolean>,
+      enabled: CM.Extension,
+      disabled: CM.Extension = empty,
+      ): DynamicSetting<boolean> {
+    return new DynamicSetting<boolean>(setting, val => val ? enabled : disabled);
   }
 
   static none: ReadonlyArray<DynamicSetting<unknown>> = [];

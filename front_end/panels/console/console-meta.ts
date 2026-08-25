@@ -330,13 +330,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleHist
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleAutocompleteOnEnterSettingDescriptor, {
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.autocompleteOnEnter),
-  settingName: 'console-autocomplete-on-enter',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
   options: [
     {
       value: true,

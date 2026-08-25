@@ -30,3 +30,10 @@ export const consoleHistoryAutocompleteSettingDescriptor: Common.Settings.Settin
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 };
+
+export const consoleAutocompleteOnEnterSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'console-autocomplete-on-enter',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

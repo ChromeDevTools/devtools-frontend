@@ -22,14 +22,14 @@
 
     details[open] {
       flex-grow: 1;
-      border-bottom: 1px solid var(--sys-color-divider);
+      border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     }
 
     summary {
       background-color: var(--sys-color-surface2);
-      border-bottom: 1px solid var(--sys-color-divider);
+      border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
       overflow: hidden;
-      padding: 2px 5px;
+      padding: var(--sys-size-2) 5px;
       text-overflow: ellipsis;
       white-space: nowrap;
       font: var(--sys-typescale-body4-medium);
@@ -42,13 +42,13 @@
 
       &::marker {
         color: var(--sys-color-on-surface-subtle);
-        font-size: 11px;
+        font-size: var(--sys-typescale-body5-size);
         line-height: 1;
       }
 
       /* make sure the first summary has a top border */
       details:first-child & {
-        border-top: 1px solid var(--sys-color-divider);
+        border-top: var(--sys-size-1) solid var(--sys-color-divider);
       }
     }
   }

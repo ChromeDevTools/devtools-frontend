@@ -438,7 +438,8 @@ export class ConsoleView extends UI.Widget.VBox implements
         Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleGroupSimilarSettingDescriptor);
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
 
-    this.showCorsErrorsSetting = Common.Settings.Settings.instance().moduleSetting('console-shows-cors-errors');
+    this.showCorsErrorsSetting =
+        Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleShowsCorsErrorsSettingDescriptor);
     this.showCorsErrorsSetting.addChangeListener(() => this.updateMessageList());
 
     const toolbar = this.consoleToolbarContainer.createChild('devtools-toolbar', 'console-main-toolbar');

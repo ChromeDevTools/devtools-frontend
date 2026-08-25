@@ -360,12 +360,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleGrou
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleShowsCorsErrorsSettingDescriptor, {
   category: Common.Settings.SettingCategory.CONSOLE,
   title: i18nLazyString(UIStrings.corsErrorsInConsole),
-  settingName: 'console-shows-cors-errors',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

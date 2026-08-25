@@ -44,3 +44,9 @@ export const consoleGroupSimilarSettingDescriptor: Common.Settings.SettingDescri
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const consoleShowsCorsErrorsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'console-shows-cors-errors',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+};

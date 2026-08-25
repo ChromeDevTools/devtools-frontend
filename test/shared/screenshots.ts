@@ -23,7 +23,7 @@ import {TestConfig} from '../conductor/test_config.js';
  * goldens from there.
  */
 const testRunnerCWD = SOURCE_ROOT;
-const GOLDENS_FOLDER = path.join(testRunnerCWD, 'test', 'goldens', platform);
+const GOLDENS_FOLDER = path.join(testRunnerCWD, 'test', 'goldens', 'linux');
 
 /**
  * It's assumed that the image_diff binaries are in CWD/third_party/image_diff/{platform}/image_diff
@@ -68,9 +68,8 @@ export const assertElementScreenshotUnchanged = async (
     options: Partial<puppeteer.ScreenshotOptions> = {},
     ) => {
   assert.isOk(element, `Given element for test ${fileName} was not found.`);
-  // Only assert screenshots on Linux. We don't observe platform-specific differences enough to justify
-  // the costs of asserting 3 platforms per screenshot.
-  if (platform !== 'linux') {
+  // Only assert screenshots on Linux, unless forceScreenshots is enabled.
+  if (platform !== 'linux' && !TestConfig.forceScreenshots) {
     if (TestConfig.onDiff.update) {
       throw new Error(
           'Cannot update screenshots on non-Linux platforms. You must use a Linux machine or use the hosted screenshot bot to update screenshots.');

@@ -166,5 +166,10 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
       .option('expectations-file', {
         type: 'string',
         desc: 'Path to a custom TestExpectations file',
+      })
+      .option('force-screenshots', {
+        type: 'boolean',
+        default: false,
+        desc: 'Force running screenshot tests on non-Linux platforms',
       });
 }

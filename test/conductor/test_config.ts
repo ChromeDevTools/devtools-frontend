@@ -50,6 +50,7 @@ interface Config {
   isPerfTest: boolean;
   expectationsFile?: string;
   bail: boolean;
+  forceScreenshots: boolean;
 }
 
 function sliceArrayFromElement(array: string[], element: string) {
@@ -181,6 +182,7 @@ export const TestConfig: Config = {
   isPerfTest: false,
   expectationsFile: options['expectations-file'],
   bail: options['bail'],
+  forceScreenshots: Boolean(options['force-screenshots']),
 };
 
 export function loadTests(testDirectory: string, filename = 'tests.txt') {

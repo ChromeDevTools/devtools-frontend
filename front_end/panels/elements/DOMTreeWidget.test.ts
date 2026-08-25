@@ -302,7 +302,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         rootTreeElement.expand();
         domTree.performUpdate();
 
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await UI.Widget.Widget.allUpdatesComplete;
 
         await assertScreenshot('elements/elements_tree_outline_default.png');
       } finally {
@@ -311,4 +311,249 @@ describeWithEnvironment('DOMTreeWidget', () => {
     });
   });
 
+  describe('DECLARATIVE_VIEW', () => {
+    it('renders DOM tree declaratively using <devtools-tree> and ElementsTreeWidget', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [{nodeId: 2, nodeName: '#text', nodeValue: 'Hello world'}],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+
+        // Ensure ElementsTreeOutline is not created in declarative mode.
+        assert.isUndefined(domTree.getTreeOutlineForTesting());
+
+        // Wait for devtools-tree to render its template.
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        assert.lengthOf(rootTreeElements, 1);
+
+        // Verify ElementsTreeWidget is rendered for the root node.
+        const widgetElement = rootTreeElements[0].listItemElement.querySelector('devtools-widget');
+        assert.exists(widgetElement);
+        const widget = UI.Widget.Widget.get(widgetElement);
+        assert.instanceOf(widget, Elements.ElementsTreeElement.ElementsTreeWidget);
+        assert.strictEqual((widget as Elements.ElementsTreeElement.ElementsTreeWidget).node, rootNode);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('handles selection and expansion in declarative view', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [{nodeId: 2, nodeName: 'SPAN'}],
+        });
+        domTree.rootDOMNode = rootNode;
+
+        const childNode = rootNode.children()![0];
+        domTree.selectDOMNode(childNode);
+        assert.strictEqual(domTree.selectedDOMNode(), childNode);
+        assert.isTrue(domTree.isNodeExpanded(rootNode));
+
+        domTree.setNodeExpanded(rootNode, false);
+        assert.isFalse(domTree.isNodeExpanded(rootNode));
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('supports omitRootDOMNode in declarative view', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        domTree.omitRootDOMNode = true;
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'BODY',
+          children: [{nodeId: 2, nodeName: 'H1'}],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+
+        // Wait for devtools-tree to render its template.
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const children = internalTree.rootElement().children();
+        assert.lengthOf(children, 1);
+
+        const widgetElement = children[0].listItemElement.querySelector('devtools-widget');
+        assert.exists(widgetElement);
+        const widget = UI.Widget.Widget.get(widgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(widget);
+        assert.strictEqual(widget.node, rootNode.children()![0]);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('fetches children asynchronously when children are not loaded initially', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        domTree.omitRootDOMNode = true;
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+          nodeId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.DOCUMENT_NODE,
+          nodeName: '#document',
+          localName: '',
+          nodeValue: '',
+          childNodeCount: 1,
+        });
+        assert.isNotNull(rootNode);
+
+        let getChildNodesCallback: ((children: SDK.DOMModel.DOMNode[]|null) => void)|undefined;
+        sinon.stub(rootNode, 'getChildNodes').callsFake(callback => {
+          getChildNodesCallback = callback;
+          const htmlNode = createTestDOMTree(domModel, {nodeId: 2, nodeName: 'HTML'});
+          rootNode.childrenInternal = [htmlNode];
+        });
+
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+
+        assert.isDefined(getChildNodesCallback);
+        getChildNodesCallback?.(rootNode.childrenInternal);
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const children = internalTree.rootElement().children();
+        assert.lengthOf(children, 1);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('renders screenshot of declarative view', async () => {
+      const {domTree, domModel} =
+          setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW, {includeCommonStyles: true});
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['id', 'container', 'class', 'main-view'],
+          children: [
+            {nodeId: 2, nodeName: 'H1', children: [{nodeId: 3, nodeName: '#text', nodeValue: 'Title'}]},
+            {nodeId: 4, nodeName: 'SPAN', children: [{nodeId: 5, nodeName: '#text', nodeValue: 'Description'}]},
+          ],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        await assertScreenshot('elements/elements_tree_outline_declarative.png');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('supports maxTreeDepth in declarative view', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [{
+            nodeId: 2,
+            nodeName: 'P',
+            children: [{nodeId: 3, nodeName: 'SPAN'}],
+          }],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.maxTreeDepth = 1;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        assert.lengthOf(rootTreeElements, 1);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('filters comment nodes based on showComments setting in declarative view', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: '#comment', nodeType: Node.COMMENT_NODE, nodeValue: 'comment text'},
+            {nodeId: 3, nodeName: 'SPAN'},
+          ],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.showComments = false;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        assert.isNotEmpty(rootTreeElements);
+        // With comments filtered out, child elements are [SPAN, </DIV>].
+        const childTreeElements = rootTreeElements[0].children();
+        assert.lengthOf(childTreeElements, 2);
+        const spanWidgetElement = childTreeElements[0].listItemElement.querySelector('devtools-widget');
+        assert.exists(spanWidgetElement);
+        const widget = UI.Widget.Widget.get(spanWidgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.strictEqual(widget.node?.nodeName(), 'SPAN');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('sets correct jslog attributes on treeitems in declarative view', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {nodeId: 1, nodeName: 'DIV'});
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        assert.lengthOf(rootTreeElements, 1);
+
+        const jslog = rootTreeElements[0].listItemElement.getAttribute('jslog');
+        assert.isNotNull(jslog);
+        assert.include(jslog, 'TreeItem');
+        assert.include(jslog, 'elementsTreeOutline');
+      } finally {
+        domTree.detach();
+      }
+    });
+  });
 });

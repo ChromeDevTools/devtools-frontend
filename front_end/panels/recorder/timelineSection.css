@@ -13,8 +13,8 @@
 
 .timeline-section {
   position: relative;
-  padding: 8px 0 8px 40px;
-  margin-left: 8px;
+  padding: var(--sys-size-5) 0 var(--sys-size-5) var(--sys-size-14);
+  margin-left: var(--sys-size-5);
 
   --override-color-recording-successful-text: #36a854;
   --override-color-recording-successful-background: #e6f4ea;
@@ -25,7 +25,7 @@
   width: 100vw;
   height: 100%;
   /* Offset of 32px for spacing and 80px for screenshot */
-  left: calc(-32px - 80px);
+  left: calc(-1 * var(--sys-size-13) - var(--sys-size-19));
   top: 0;
   z-index: -1;
   pointer-events: none;
@@ -34,7 +34,7 @@
 @container (max-width: 400px) {
   .overlay {
     /* Offset of 32px for spacing */
-    left: -32px;
+    left: calc(-1 * var(--sys-size-13));
   }
 }
 
@@ -48,28 +48,28 @@
 
 :host-context(.is-stopped) .overlay {
   background: var(--sys-color-state-ripple-primary);
-  outline: 1px solid var(--sys-color-state-focus-ring);
+  outline: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
   z-index: 4;
 }
 
 .is-start-of-group:not(:first-of-type) {
-  padding-top: 16px;
+  padding-top: var(--sys-size-8);
 }
 
 .is-end-of-group {
-  padding-bottom: 16px;
+  padding-bottom: var(--sys-size-8);
 }
 
 .icon {
   position: absolute;
-  left: 4px;
+  left: var(--sys-size-3);
   transform: translateX(-50%);
   z-index: 2;
 }
 
 .bar {
   position: absolute;
-  left: 4px;
+  left: var(--sys-size-3);
   display: block;
   transform: translateX(-50%);
   top: 18px;

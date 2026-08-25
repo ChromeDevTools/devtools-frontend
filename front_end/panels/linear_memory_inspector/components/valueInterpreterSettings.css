@@ -8,13 +8,13 @@
   :scope {
     flex: auto;
     display: flex;
-    min-height: 20px;
+    min-height: var(--sys-size-9);
   }
 
   .settings {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 12px 12px;
+    margin: 0 var(--sys-size-6) var(--sys-size-6);
     gap: 15px 45px;
   }
 

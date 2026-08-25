@@ -4,7 +4,10 @@
 
 // @ts-check
 
+import fs from 'node:fs';
 import path from 'node:path';
+
+import {rootPath} from '../devtools_paths.js';
 
 /**
  * `path.dirname` does not include trailing slashes. If we would always
@@ -165,7 +168,11 @@ export function devtoolsPlugin(source, importer) {
   };
 }
 
-export function esbuildPlugin(outdir) {
+export function esbuildPlugin(outdir, genRoot) {
+  const normGenRoot = path.resolve(genRoot);
+  const root = rootPath();
+  const normOutdir = path.resolve(outdir);
+
   return args => {
     // args.importer is absolute path in esbuild.
     const res = devtoolsPlugin(args.path, args.importer);
@@ -173,18 +180,55 @@ export function esbuildPlugin(outdir) {
       return null;
     }
 
+    const isUnderGenRoot =
+        path.isAbsolute(res.id) && (res.id === normGenRoot || res.id.startsWith(normGenRoot + path.sep));
+
     if (res.external) {
       // res.id can be both of absolutized local JavaScript path or node's
       // builtin module (e.g. 'fs', 'path'), and only relativize the path in
       // former case.
       if (path.isAbsolute(res.id)) {
-        res.id = './' + path.relative(outdir, res.id);
+        const targetInGen = isUnderGenRoot ? res.id : path.join(normGenRoot, path.relative(root, res.id));
+        let rel = path.relative(normOutdir, targetInGen);
+        if (!/^\.\.?($|\/|\\)/.test(rel)) {
+          rel = './' + rel;
+        }
+        res.id = rel.replaceAll('\\', '/');
       }
 
       return {
         external: res.external,
         path: res.id,
       };
+    }
+
+    // For non-external imports to inline:
+    // 1. If exact JS file exists in source tree:
+    if (fs.existsSync(res.id)) {
+      return {
+        path: res.id,
+      };
+    }
+
+    // 2. If TS file exists in source tree:
+    if (res.id.endsWith('.js')) {
+      const tsLocation = res.id.slice(0, -3) + '.ts';
+      if (fs.existsSync(tsLocation)) {
+        return {
+          path: tsLocation,
+        };
+      }
+    }
+
+    // 3. If file exists in gen directory (e.g. .css.js or generated JS):
+    if (!isUnderGenRoot) {
+      const relFromRoot = path.relative(root, res.id);
+      const genLocation = path.join(normGenRoot, relFromRoot);
+      if (fs.existsSync(genLocation)) {
+        return {
+          path: genLocation,
+        };
+      }
     }
 
     return {

@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import fs from 'node:fs';
 import path from 'node:path';
+import sinon from 'sinon';
 
 import {devtoolsPlugin, esbuildPlugin} from '../devtools_plugin.js';
 
@@ -68,16 +70,17 @@ describe('devtools_plugin can compute paths with', () => {
 });
 
 describe('esbuild_plugin can compute paths with', () => {
-  const srcdir = import.meta.dirname;
-  const outdir = path.join(srcdir, 'out');
-  const plugin = esbuildPlugin(outdir);
+  const devtoolsRoot = path.resolve(import.meta.dirname, '../../..');
+  const genRoot = path.join(devtoolsRoot, 'out/Default/gen');
+  const outdir = path.join(genRoot, 'front_end/core/sdk');
+  const plugin = esbuildPlugin(outdir, genRoot);
   it('same directory import', () => {
     assert.deepEqual(
         plugin({
           path: './AnotherFile.js',
-          importer: path.join(srcdir, 'front_end/core/sdk/FirstFile.js'),
+          importer: path.join(devtoolsRoot, 'front_end/core/sdk/FirstFile.js'),
         }),
-        {path: path.join(srcdir, 'front_end', 'core', 'sdk', 'AnotherFile.js')},
+        {path: path.join(devtoolsRoot, 'front_end', 'core', 'sdk', 'AnotherFile.js')},
     );
   });
 
@@ -85,10 +88,10 @@ describe('esbuild_plugin can compute paths with', () => {
     assert.deepEqual(
         plugin({
           path: '../common/common.js',
-          importer: path.join(srcdir, 'front_end/core/sdk/FirstFile.js'),
+          importer: path.join(devtoolsRoot, 'front_end/core/sdk/FirstFile.js'),
         }),
         {
-          path: './' + path.join('..', 'front_end', 'core', 'common', 'common.js'),
+          path: '../common/common.js',
           external: true,
         },
     );
@@ -98,7 +101,7 @@ describe('esbuild_plugin can compute paths with', () => {
     assert.deepEqual(
         plugin({
           path: 'fs',
-          importer: path.join(srcdir, 'scripts/some-script.js'),
+          importer: path.join(devtoolsRoot, 'scripts/some-script.js'),
         }),
         {path: 'fs', external: true},
     );
@@ -108,7 +111,7 @@ describe('esbuild_plugin can compute paths with', () => {
     assert.deepEqual(
         plugin({
           path: '../../lib/codemirror',
-          importer: path.join(srcdir, 'scripts/some-script.js'),
+          importer: path.join(devtoolsRoot, 'scripts/some-script.js'),
         }),
         {path: '../../lib/codemirror', external: true},
     );
@@ -118,7 +121,7 @@ describe('esbuild_plugin can compute paths with', () => {
     assert.strictEqual(
         plugin({
           path: '../../generated/Protocol.js',
-          importer: path.join(srcdir, 'front_end/core/sdk/FirstFile.js'),
+          importer: path.join(devtoolsRoot, 'front_end/core/sdk/FirstFile.js'),
         }),
         null,
     );
@@ -128,22 +131,55 @@ describe('esbuild_plugin can compute paths with', () => {
     assert.deepEqual(
         plugin({
           path: './front_end/third_party/lighthouse/lighthouse-dt-bundle.js',
-          importer: path.join(srcdir, 'front_end/core/sdk/FirstFile.js'),
+          importer: path.join(devtoolsRoot, 'front_end/core/sdk/FirstFile.js'),
         }),
         {
-          path: './' +
-              path.join(
-                  '..',
-                  'front_end',
-                  'core',
-                  'sdk',
-                  'front_end',
-                  'third_party',
-                  'lighthouse',
-                  'lighthouse-dt-bundle.js',
-                  ),
+          path: './front_end/third_party/lighthouse/lighthouse-dt-bundle.js',
           external: true,
         },
     );
+  });
+
+  it('resolves TypeScript source files when importing JS', () => {
+    const importer = path.join(devtoolsRoot, 'front_end/core/root/root.ts');
+    const jsFile = path.join(devtoolsRoot, 'front_end/core/root/FakeModule.js');
+    const tsFile = path.join(devtoolsRoot, 'front_end/core/root/FakeModule.ts');
+    const stub = sinon.stub(fs, 'existsSync');
+    stub.callThrough();
+    stub.withArgs(jsFile).returns(false);
+    stub.withArgs(tsFile).returns(true);
+    try {
+      const res = plugin({
+        path: './FakeModule.js',
+        importer,
+      });
+      assert.deepEqual(res, {
+        path: tsFile,
+      });
+    } finally {
+      stub.restore();
+    }
+  });
+
+  it('resolves generated CSS files from gen directory', () => {
+    const importer = path.join(devtoolsRoot, 'front_end/ui/legacy/legacy.ts');
+    const jsFile = path.join(devtoolsRoot, 'front_end/ui/legacy/fakeCss.css.js');
+    const cssGenFile = path.join(genRoot, 'front_end/ui/legacy/fakeCss.css.js');
+    const legacyPlugin = esbuildPlugin(path.join(genRoot, 'front_end/ui/legacy'), genRoot);
+    const stub = sinon.stub(fs, 'existsSync');
+    stub.callThrough();
+    stub.withArgs(jsFile).returns(false);
+    stub.withArgs(cssGenFile).returns(true);
+    try {
+      const res = legacyPlugin({
+        path: './fakeCss.css.js',
+        importer,
+      });
+      assert.deepEqual(res, {
+        path: cssGenFile,
+      });
+    } finally {
+      stub.restore();
+    }
   });
 });

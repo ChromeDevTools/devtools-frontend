@@ -35,6 +35,8 @@ template("bundle") {
     args = [
       rebase_path(invoker.entrypoint, root_build_dir),
       rebase_path(invoker.output_file_location, root_build_dir),
+      "--rootGenDir",
+      rebase_path(root_gen_dir, root_build_dir),
       "--configSourcemaps",
     ]
 

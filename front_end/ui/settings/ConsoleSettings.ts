@@ -37,3 +37,10 @@ export const consoleAutocompleteOnEnterSettingDescriptor: Common.Settings.Settin
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const consoleGroupSimilarSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'console-group-similar',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

@@ -559,7 +559,9 @@ describeWithEnvironment('ConsoleView', () => {
       consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
       assert.exists(consoleModel);
       messageTimestamp = 0;
-      Common.Settings.Settings.instance().createSetting('console-group-similar', true).set(true);
+      Common.Settings.Settings.instance()
+          .resolve(Settings.ConsoleSettings.consoleGroupSimilarSettingDescriptor)
+          .set(true);
     });
 
     for (const level

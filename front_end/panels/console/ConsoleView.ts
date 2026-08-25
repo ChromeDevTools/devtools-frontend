@@ -434,7 +434,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.showSettingsPaneButton.element.setAttribute(
         'jslog', `${VisualLogging.toggleSubpane('console-settings').track({click: true})}`);
     this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
-    this.groupSimilarSetting = Common.Settings.Settings.instance().moduleSetting('console-group-similar');
+    this.groupSimilarSetting =
+        Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleGroupSimilarSettingDescriptor);
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
 
     this.showCorsErrorsSetting = Common.Settings.Settings.instance().moduleSetting('console-shows-cors-errors');

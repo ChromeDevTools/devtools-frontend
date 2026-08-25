@@ -496,7 +496,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     UI.ARIAUtils.setLabel(settingsPane, i18nString(UIStrings.consoleSettings));
     UI.ARIAUtils.markAsGroup(settingsPane);
 
-    const consoleEagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-eager-eval');
+    const consoleEagerEvalSetting =
+        Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleEagerEvalSettingDescriptor);
     const preserveConsoleLogSetting =
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveConsoleLogSettingDescriptor);
     const userActivationEvalSetting =

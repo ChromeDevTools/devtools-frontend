@@ -50,3 +50,10 @@ export const consoleShowsCorsErrorsSettingDescriptor: Common.Settings.SettingDes
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 };
+
+export const consoleEagerEvalSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'console-eager-eval',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

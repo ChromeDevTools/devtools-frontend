@@ -125,7 +125,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.element.appendChild(this.promptIcon);
     this.iconThrottler = new Common.Throttler.Throttler(0);
 
-    this.eagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-eager-eval');
+    this.eagerEvalSetting =
+        Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleEagerEvalSettingDescriptor);
     this.eagerEvalSetting.addChangeListener(this.eagerSettingChanged.bind(this));
     this.eagerPreviewElement.classList.toggle('hidden', !this.eagerEvalSetting.get());
 

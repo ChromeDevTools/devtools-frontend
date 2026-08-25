@@ -375,13 +375,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleShow
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleEagerEvalSettingDescriptor, {
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.eagerEvaluation),
-  settingName: 'console-eager-eval',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

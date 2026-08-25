@@ -6,8 +6,8 @@
 
 .styles-element-classes-pane {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
-  padding: 6px 2px 2px;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  padding: var(--sys-size-4) var(--sys-size-2) var(--sys-size-2);
 }
 
 .styles-element-classes-container {
@@ -21,15 +21,15 @@
 }
 
 .styles-element-classes-pane .title-container {
-  padding-bottom: 2px;
+  padding-bottom: var(--sys-size-2);
 }
 
 .styles-element-classes-pane .new-class-input {
   padding-left: 3px;
   padding-right: 3px;
   overflow: hidden;
-  border: 1px solid var(--sys-color-neutral-outline);
-  border-radius: 4px;
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  border-radius: var(--sys-shape-corner-extra-small);
   line-height: 15px;
   margin-left: 3px;
   width: calc(100% - 7px);
@@ -37,6 +37,6 @@
   cursor: text;
 
   &:hover {
-    box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
+    box-shadow: 0 0 0 var(--sys-size-1) var(--ref-palette-neutral90);
   }
 }

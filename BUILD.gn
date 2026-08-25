@@ -168,17 +168,14 @@ action("generate_devtools_grd") {
   ]
 
   inputs = []
+  foreach(_grd_file, _expected_grd_files) {
+    inputs += [ "$target_gen_dir/$_grd_file" ]
+  }
 
   if (is_debug) {
     deps = [ ":devtools_frontend_resources" ]
-    foreach(_grd_file, _expected_grd_files) {
-      inputs += [ "$target_gen_dir/$_grd_file" ]
-    }
   } else {
     deps = [ ":compress" ]
-    foreach(_grd_file, _expected_grd_files) {
-      inputs += [ "$target_gen_dir/$_grd_file" ]
-    }
     foreach(_grd_file, _compressable_grd_files) {
       inputs += [ "$target_gen_dir/$_grd_file.compressed" ]
     }

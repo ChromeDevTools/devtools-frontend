@@ -20,7 +20,9 @@ devtools_pre_built("acorn") {
   ]
 }
 
-copy_to_gen("estree") {
+devtools_pre_built("estree") {
+  sources_are_release = false
+
   sources = [
     "estree-legacy.d.ts",
     "estree-tsconfig.json",

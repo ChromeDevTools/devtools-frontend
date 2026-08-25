@@ -56,11 +56,62 @@ template("devtools_pre_built") {
                                                                    ])
   _javascript_map_files = filter_include(_gen_outputs, [ "*.map" ])
 
+  _dts_sources = filter_include(invoker.sources,
+                                [
+                                  "*.d.ts",
+                                  "*.d.mts",
+                                  "*.d.cts",
+                                ])
+
+  _has_dts = _dts_sources != []
+  if (_has_dts) {
+    _ts_references = []
+    if (defined(invoker.ts_deps)) {
+      foreach(dep, invoker.ts_deps) {
+        _dep_name = get_label_info(dep, "name")
+        _dep_gen_dir = get_label_info(dep, "target_gen_dir")
+        _dep_tsc_dir =
+            string_replace(_dep_gen_dir, root_gen_dir, "$root_out_dir/tsc")
+        _ts_references += [
+          {
+            path = rebase_path("$_dep_tsc_dir/$_dep_name-tsconfig.ref.json",
+                               _tsc_dir)
+          },
+        ]
+      }
+    }
+
+    _tsconfig_ref_target = "${target_name}_tsconfig_ref"
+    _tsconfig_ref_file = "$_tsc_dir/${target_name}-tsconfig.ref.json"
+
+    generated_file(_tsconfig_ref_target) {
+      outputs = [ _tsconfig_ref_file ]
+      output_conversion = "json"
+      contents = {
+        compilerOptions = {
+          composite = true
+          declaration = true
+          skipLibCheck = true
+          rootDir = "."
+          outDir = "."
+        }
+        files = _dts_sources
+        references = _ts_references
+      }
+      if (defined(invoker.testonly)) {
+        testonly = invoker.testonly
+      }
+    }
+  }
+
   group(target_name) {
     public_deps = [
       ":$_gen_target_name",
       ":$_tsc_target_name",
     ]
+    if (_has_dts) {
+      public_deps += [ ":$_tsconfig_ref_target" ]
+    }
 
     data = _javascript_implementation_files + _javascript_map_files
 
@@ -82,6 +133,9 @@ template("devtools_pre_built") {
       ":$_gen_target_name",
       ":$_tsc_target_name",
     ]
+    if (_has_dts) {
+      public_deps += [ ":$_tsconfig_ref_target" ]
+    }
     if (defined(invoker.visibility)) {
       visibility = invoker.visibility
     }

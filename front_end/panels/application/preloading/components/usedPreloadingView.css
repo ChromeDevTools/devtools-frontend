@@ -40,26 +40,26 @@ devtools-report-divider {
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
   padding: 0;
 }
 
 .status-badge-container {
   white-space: nowrap;
-  margin: 8px 0 24px;
+  margin: var(--sys-size-5) 0 var(--sys-size-11);
 }
 
 .status-badge-container span {
-  margin-right: 2px;
+  margin-right: var(--sys-size-2);
 }
 
 .status-badge {
-  border-radius: 4px;
-  padding: 4px;
+  border-radius: var(--sys-shape-corner-extra-small);
+  padding: var(--sys-size-3);
 
   devtools-icon {
-    width: 16px;
-    height: 16px;
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
   }
 }
 

@@ -31,7 +31,13 @@ async function processTrace(events: readonly Trace.Types.Events.Event[]): Promis
   }
 }
 
-describe('FramesHandler', () => {
+describe('FramesHandler', function() {
+  // The trace file used here is large because it has all the
+  // AdvancedPaintInstrumentation enabled in order to test this handler.
+  // Therefore the timeout here is larger to allow for the time required to
+  // load the file on the bots.
+  this.timeout(20_000);
+
   it('can parse out a trace and return the frames', async function() {
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
     await processTrace(rawEvents);

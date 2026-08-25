@@ -10,7 +10,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -161,110 +161,154 @@ describeWithEnvironment('DOMTreeWidget', () => {
     });
   });
 
+  interface TestDOMNodeConfig {
+    nodeId: number;
+    nodeName: string;
+    nodeType?: number;
+    attributes?: string[];
+    nodeValue?: string;
+    children?: TestDOMNodeConfig[];
+  }
+
+  function createTestDOMTree(domModel: SDK.DOMModel.DOMModel, config: TestDOMNodeConfig,
+                             parentId?: Protocol.DOM.NodeId): SDK.DOMModel.DOMNode {
+    const convertNode = (nodeConfig: TestDOMNodeConfig, pId?: Protocol.DOM.NodeId): Protocol.DOM.Node => {
+      const isText = nodeConfig.nodeName === '#text';
+      return {
+        nodeId: nodeConfig.nodeId as Protocol.DOM.NodeId,
+        parentId: pId,
+        backendNodeId: nodeConfig.nodeId as Protocol.DOM.BackendNodeId,
+        nodeType: nodeConfig.nodeType ?? (isText ? Node.TEXT_NODE : Node.ELEMENT_NODE),
+        nodeName: nodeConfig.nodeName,
+        localName: isText ? '#text' : nodeConfig.nodeName.toLowerCase(),
+        nodeValue: nodeConfig.nodeValue ?? '',
+        attributes: nodeConfig.attributes,
+        childNodeCount: nodeConfig.children?.length ?? 0,
+        children: nodeConfig.children?.map(child => convertNode(child, nodeConfig.nodeId as Protocol.DOM.NodeId)),
+      };
+    };
+
+    const node = SDK.DOMModel.DOMNode.create(domModel, null, false, convertNode(config, parentId));
+    assert.isNotNull(node);
+    return node;
+  }
+
+  function setupDOMTreeWidget(
+      target: SDK.Target.Target,
+      view?: Elements.ElementsTreeOutline.View,
+      options?: {includeCommonStyles?: boolean},
+      ): {domTree: Elements.ElementsTreeOutline.DOMTreeWidget, domModel: SDK.DOMModel.DOMModel} {
+    const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+    const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, view);
+    domTree.markAsRoot();
+    renderElementIntoDOM(domTree, options);
+    domTree.performUpdate();
+    domTree.modelAdded(domModel);
+    return {domTree, domModel};
+  }
+
   describe('context menu', () => {
     it('allows default context menu on text selection when editing', async () => {
-      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
-      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget();
-      domTree.markAsRoot();
-      renderElementIntoDOM(domTree);
-      domTree.performUpdate();
-      domTree.modelAdded(domModel);
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'BODY',
+          children: [{nodeId: 2, nodeName: '#text', nodeValue: 'Some text'}],
+        });
+        domTree.rootDOMNode = rootNode;
 
-      const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
-        nodeId: 1 as Protocol.DOM.NodeId,
-        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.ELEMENT_NODE,
-        nodeName: 'BODY',
-        localName: 'body',
-        nodeValue: '',
-        childNodeCount: 1,
-        children: [{
-          nodeId: 2 as Protocol.DOM.NodeId,
-          parentId: 1 as Protocol.DOM.NodeId,
-          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.TEXT_NODE,
-          nodeName: '#text',
-          localName: '#text',
-          nodeValue: 'Some text',
-        }],
-      });
-      assert.isNotNull(rootNode);
-      domTree.rootDOMNode = rootNode;
+        const pNode = rootNode.children()![0];
+        domTree.selectDOMNode(pNode);
+        const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+        assert.exists(treeOutline);
+        const treeElement = treeOutline.findTreeElement(pNode) as Elements.ElementsTreeElement.ElementsTreeElement;
+        assert.isNotNull(treeElement);
 
-      const pNode = rootNode.children()![0];
-      domTree.selectDOMNode(pNode);
-      const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-      assert.exists(treeOutline);
-      const treeElement = treeOutline.findTreeElement(pNode) as Elements.ElementsTreeElement.ElementsTreeElement;
-      assert.isNotNull(treeElement);
+        const textNodeContainer = treeElement.widget.contentElement.querySelector('.webkit-html-text-node');
+        assert.isNotNull(textNodeContainer);
 
-      const textNodeContainer = treeElement.widget.contentElement.querySelector('.webkit-html-text-node');
-      assert.isNotNull(textNodeContainer);
+        assert.isFalse(UI.UIUtils.isEditing());
+        UI.UIUtils.markBeingEdited(textNodeContainer, true);
 
-      assert.isFalse(UI.UIUtils.isEditing());
-      UI.UIUtils.markBeingEdited(textNodeContainer, true);
-
-      assert.isTrue(UI.UIUtils.isEditing());
-      const event = new MouseEvent('contextmenu', {bubbles: true, composed: true});
-      sinon.stub(treeOutline, 'treeElementFromEventInternal').returns(treeElement);
-      const preventDefaultSpy = sinon.spy(event, 'preventDefault');
-      textNodeContainer.dispatchEvent(event);
-      sinon.assert.notCalled(preventDefaultSpy);
-      UI.UIUtils.markBeingEdited(textNodeContainer, false);
-      domTree.detach();
+        assert.isTrue(UI.UIUtils.isEditing());
+        const event = new MouseEvent('contextmenu', {bubbles: true, composed: true});
+        sinon.stub(treeOutline, 'treeElementFromEventInternal').returns(treeElement);
+        const preventDefaultSpy = sinon.spy(event, 'preventDefault');
+        textNodeContainer.dispatchEvent(event);
+        sinon.assert.notCalled(preventDefaultSpy);
+        UI.UIUtils.markBeingEdited(textNodeContainer, false);
+      } finally {
+        domTree.detach();
+      }
     });
 
     it('prevents default context menu on node selection and no edit', async () => {
-      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
-      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget();
-      domTree.markAsRoot();
-      renderElementIntoDOM(domTree);
-      domTree.performUpdate();
-      domTree.modelAdded(domModel);
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'BODY',
+          children: [{nodeId: 2, nodeName: '#text', nodeValue: 'Some text'}],
+        });
+        domTree.rootDOMNode = rootNode;
 
-      const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
-        nodeId: 1 as Protocol.DOM.NodeId,
-        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.ELEMENT_NODE,
-        nodeName: 'BODY',
-        localName: 'body',
-        nodeValue: '',
-        childNodeCount: 1,
-        children: [{
-          nodeId: 2 as Protocol.DOM.NodeId,
-          parentId: 1 as Protocol.DOM.NodeId,
-          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.TEXT_NODE,
-          nodeName: '#text',
-          localName: '#text',
-          nodeValue: 'Some text',
-        }],
-      });
-      assert.isNotNull(rootNode);
-      domTree.rootDOMNode = rootNode;
+        const pNode = rootNode.children()![0];
+        domTree.selectDOMNode(pNode);
+        const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+        assert.exists(treeOutline);
+        const treeElement = treeOutline.findTreeElement(pNode) as Elements.ElementsTreeElement.ElementsTreeElement;
+        assert.isNotNull(treeElement);
 
-      const pNode = rootNode.children()![0];
-      domTree.selectDOMNode(pNode);
-      const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-      assert.exists(treeOutline);
-      const treeElement = treeOutline.findTreeElement(pNode) as Elements.ElementsTreeElement.ElementsTreeElement;
-      assert.isNotNull(treeElement);
+        assert.isFalse(UI.UIUtils.isEditing());
 
-      assert.isFalse(UI.UIUtils.isEditing());
+        const textNodeContainer = treeElement.widget.contentElement.querySelector('.webkit-html-text-node');
+        assert.isNotNull(textNodeContainer);
 
-      const textNodeContainer = treeElement.widget.contentElement.querySelector('.webkit-html-text-node');
-      assert.isNotNull(textNodeContainer);
+        const event = new MouseEvent('contextmenu', {
+          bubbles: true,
+          composed: true,
+        });
+        sinon.stub(treeOutline, 'treeElementFromEventInternal').returns(treeElement);
+        const preventDefaultSpy = sinon.spy(event, 'preventDefault');
+        textNodeContainer.dispatchEvent(event);
 
-      const event = new MouseEvent('contextmenu', {
-        bubbles: true,
-        composed: true,
-      });
-      sinon.stub(treeOutline, 'treeElementFromEventInternal').returns(treeElement);
-      const preventDefaultSpy = sinon.spy(event, 'preventDefault');
-      textNodeContainer.dispatchEvent(event);
-
-      sinon.assert.called(preventDefaultSpy);
-      domTree.detach();
+        sinon.assert.called(preventDefaultSpy);
+      } finally {
+        domTree.detach();
+      }
     });
   });
+
+  describe('DEFAULT_VIEW', () => {
+    it('renders screenshot of default view', async () => {
+      const {domTree, domModel} =
+          setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW, {includeCommonStyles: true});
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['id', 'container', 'class', 'main-view'],
+          children: [
+            {nodeId: 2, nodeName: 'H1', children: [{nodeId: 3, nodeName: '#text', nodeValue: 'Title'}]},
+            {nodeId: 4, nodeName: 'SPAN', children: [{nodeId: 5, nodeName: '#text', nodeValue: 'Description'}]},
+          ],
+        });
+        domTree.rootDOMNode = rootNode;
+        const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+        assert.exists(treeOutline);
+        const rootTreeElement = treeOutline.findTreeElement(rootNode);
+        assert.exists(rootTreeElement);
+        rootTreeElement.expand();
+        domTree.performUpdate();
+
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        await assertScreenshot('elements/elements_tree_outline_default.png');
+      } finally {
+        domTree.detach();
+      }
+    });
+  });
+
 });

@@ -59,6 +59,7 @@ template("legacy_ts_library") {
                              "data_deps",
                              "metadata",
                              "additional_type_definitions",
+                             "ts_deps",
                            ])
     if (!defined(inputs)) {
       inputs = []
@@ -91,8 +92,9 @@ template("legacy_ts_library") {
     ]
 
     assert(
-        defined(sources) || defined(deps) || defined(invoker.sourceslist),
-        "You must either specify an array of 'sources' or 'deps' or a 'sourceslist' for $target_name")
+        defined(sources) || defined(deps) || defined(ts_deps) ||
+            defined(invoker.sourceslist),
+        "You must either specify an array of 'sources' or 'deps' or 'ts_deps' or a 'sourceslist' for $target_name")
 
     if (defined(invoker.es_target)) {
       args += [
@@ -120,9 +122,17 @@ template("legacy_ts_library") {
       public_deps = []
     }
 
+    _all_deps = []
     if (defined(deps)) {
+      _all_deps += deps
+    }
+    if (defined(ts_deps)) {
+      _all_deps += ts_deps
+    }
+
+    if (_all_deps != []) {
       args += [ "--deps" ]
-      foreach(dep, deps) {
+      foreach(dep, _all_deps) {
         args += [ rebase_path(get_label_info(dep, "dir"), ".") + "/" +
                   get_label_info(dep, "name") + "-tsconfig.json" ]
       }
@@ -130,7 +140,7 @@ template("legacy_ts_library") {
       # We need to expose our deps in the Ninja chain, to allow
       # `generate_devtools_grd` to eventually roll up all files. If these are
       # not public, Ninja complains that the files are not reachable.
-      public_deps += deps
+      public_deps += _all_deps
     }
 
     # tsc/esbuild resolve the module type from package.json in the build root,
@@ -204,7 +214,12 @@ template("legacy_ts_library") {
       }
     }
 
-    output_files = [ "$target_gen_dir/$target_name-tsconfig.json" ]
+    output_files = [
+      "$target_gen_dir/$target_name-tsconfig.json",
+      "$target_gen_dir/$target_name-tsconfig.ref.json",
+      string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc") + "/" +
+          "$target_name-tsconfig.ref.json",
+    ]
 
     if (defined(sources)) {
       # Expose ts files to dependent targets.
@@ -228,7 +243,11 @@ template("legacy_ts_library") {
         # do that on its own
         if (_extension == "ts" &&
             get_path_info(get_path_info(src, "name"), "extension") == "d") {
-          output_files += [ "$target_gen_dir/$src" ]
+          output_files += [
+            "$target_gen_dir/$src",
+            string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc") +
+                "/$src",
+          ]
           # Any file checked by TypeScript that is jsdoc-typed will be also
           # generating a js file in the gen folder
         } else if (_extension == "js" || _extension == "ts") {
@@ -241,14 +260,19 @@ template("legacy_ts_library") {
               "$target_gen_dir/$_fileName.js",
               "$target_gen_dir/$_fileName.js.map",
             ]
+
+            if (!devtools_skip_typecheck) {
+              output_files += [
+                "$target_gen_dir/$_fileName.d.ts",
+                string_replace(target_gen_dir,
+                               root_gen_dir,
+                               "$root_out_dir/tsc") + "/$_fileName.d.ts",
+              ]
+            }
           }
         } else {
           assert(false,
                  "Incorrect extension on '$src' with extension '$_extension'")
-        }
-
-        if (!devtools_skip_typecheck && !_no_emit) {
-          output_files += [ "$target_gen_dir/$_fileName.d.ts" ]
         }
       }
     }
@@ -331,6 +355,8 @@ template("node_ts_library") {
                              "data_deps",
                              "public_deps",
                              "additional_type_definitions",
+                             "ts_deps",
+                             "split_compilation",
                            ])
   }
 }
@@ -345,6 +371,8 @@ template("ts_e2e_library") {
                              "deps",
                              "data_deps",
                              "public_deps",
+                             "ts_deps",
+                             "split_compilation",
                            ])
   }
 }

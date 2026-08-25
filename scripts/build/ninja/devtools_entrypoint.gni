@@ -27,6 +27,14 @@ template("legacy_devtools_entrypoint") {
   _entrypoint_gen_file_location =
       "$target_gen_dir/$_entrypoint_output_file_name.js"
 
+  _all_deps = []
+  if (defined(invoker.deps)) {
+    _all_deps += invoker.deps
+  }
+  if (defined(invoker.ts_deps)) {
+    _all_deps += invoker.ts_deps
+  }
+
   _devtools_entrypoint_deps = []
 
   # If we don't bundle, the entrypoint is kept as-is. This means we only
@@ -38,11 +46,11 @@ template("legacy_devtools_entrypoint") {
     ts_library(_ts_library_target_name) {
       forward_variables_from(invoker,
                              [
-                               "deps",
                                "es_target",
                                "es_libs",
                                "inputs",
                              ])
+      deps = _all_deps
 
       sources = [ invoker.entrypoint ]
     }
@@ -107,17 +115,17 @@ template("legacy_devtools_entrypoint") {
         _copy_dest,
       ]
 
-      public_deps = invoker.deps
+      public_deps = _all_deps
     }
 
     ts_library(_prebundle_target_name) {
       forward_variables_from(invoker,
                              [
-                               "deps",
                                "es_target",
                                "es_libs",
                                "inputs",
                              ])
+      deps = _all_deps
 
       sources = [ _copy_output_file_name ]
 
@@ -140,7 +148,7 @@ template("legacy_devtools_entrypoint") {
       # is the same. So Ninja will detect that no output has changed for
       # "_typescript_target_name" and bail out. This would then *also* skip
       # the Rollup action.
-      public_deps = [ ":$_prebundle_target_name" ] + invoker.deps
+      public_deps = [ ":$_prebundle_target_name" ] + _all_deps
     }
 
     if (!devtools_skip_typecheck) {
@@ -164,7 +172,11 @@ template("legacy_devtools_entrypoint") {
           ":$_prebundle_target_name",
         ]
 
-        outputs = [ "$target_gen_dir/$_entrypoint_output_file_name.d.ts" ]
+        outputs = [
+          "$target_gen_dir/$_entrypoint_output_file_name.d.ts",
+          string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc") +
+              "/$_entrypoint_output_file_name.d.ts",
+        ]
       }
 
       _devtools_entrypoint_deps += [ ":$_generated_declaration_target_name" ]
@@ -193,7 +205,16 @@ template("legacy_devtools_entrypoint") {
   # artificially mimics what `ts_library` would have generated.
   _generated_tsconfig_location =
       target_gen_dir + "/" + invoker.target_name + "-tsconfig.json"
+  _generated_tsconfig_ref_location =
+      target_gen_dir + "/" + invoker.target_name + "-tsconfig.ref.json"
   _target_outputs = [ _entrypoint_gen_file_location ]
+
+  _entrypoint_outputs = [
+    _generated_tsconfig_location,
+    _generated_tsconfig_ref_location,
+    string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc") + "/" +
+        invoker.target_name + "-tsconfig.ref.json",
+  ]
 
   node_action(target_name) {
     script = "scripts/build/ninja/generate-tsconfig.js"
@@ -204,11 +225,11 @@ template("legacy_devtools_entrypoint") {
     args = [
              rebase_path(_generated_tsconfig_location, root_build_dir),
              rebase_path(invoker.entrypoint, root_build_dir),
-           ] + invoker.deps
+           ] + _all_deps
 
     public_deps = _devtools_entrypoint_deps
 
-    outputs = [ _generated_tsconfig_location ]
+    outputs = _entrypoint_outputs
 
     data = _target_outputs
 

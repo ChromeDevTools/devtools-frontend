@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/network/forward",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../front_end/panels/network/forward/NetworkRequestId.ts",
+    "../../../../../../../front_end/panels/network/forward/UIFilter.ts",
+    "../../../../../../../front_end/panels/network/forward/UIRequestLocation.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/text_utils/bundle-tsconfig.ref.json"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/models/workspace_diff","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/models/workspace_diff/workspace_diff.ts"],"references":[{"path":"./workspace_diff-tsconfig.ref.json"}]}

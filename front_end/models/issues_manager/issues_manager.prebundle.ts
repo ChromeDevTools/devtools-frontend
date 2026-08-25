@@ -10,6 +10,7 @@ import * as CookieIssue from './CookieIssue.js';
 import * as CorsIssue from './CorsIssue.js';
 import * as CrossOriginEmbedderPolicyIssue from './CrossOriginEmbedderPolicyIssue.js';
 import * as DeprecationIssue from './DeprecationIssue.js';
+import * as DOMIssuesManager from './DOMIssuesManager.js';
 import * as ElementAccessibilityIssue from './ElementAccessibilityIssue.js';
 import * as EmailVerificationRequestIssue from './EmailVerificationRequestIssue.js';
 import * as FederatedAuthRequestIssue from './FederatedAuthRequestIssue.js';
@@ -45,6 +46,7 @@ export {
   CorsIssue,
   CrossOriginEmbedderPolicyIssue,
   DeprecationIssue,
+  DOMIssuesManager,
   ElementAccessibilityIssue,
   EmailVerificationRequestIssue,
   FederatedAuthRequestIssue,

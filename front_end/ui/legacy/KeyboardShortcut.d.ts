@@ -1,3 +1,4 @@
+import type * as Settings from '../settings/settings.js';
 export declare class KeyboardShortcut {
     descriptors: Descriptor[];
     action: string;
@@ -10,12 +11,8 @@ export declare class KeyboardShortcut {
     changeKeys(descriptors: Descriptor[]): KeyboardShortcut;
     descriptorsMatch(descriptors: Descriptor[]): boolean;
     hasKeybindSet(keybindSet: string): boolean;
-    equals(shortcut: KeyboardShortcut): boolean;
-    static createShortcutFromSettingObject(settingObject: {
-        action: string;
-        descriptors: Descriptor[];
-        type: Type;
-    }): KeyboardShortcut;
+    equals(shortcut: KeyboardShortcut | Settings.MainSettings.UserShortcut): boolean;
+    static createShortcutFromSettingObject(settingObject: Settings.MainSettings.UserShortcut): KeyboardShortcut;
     /**
      * Creates a number encoding keyCode in the lower 8 bits and modifiers mask in the higher 8 bits.
      * It is useful for matching pressed keys.

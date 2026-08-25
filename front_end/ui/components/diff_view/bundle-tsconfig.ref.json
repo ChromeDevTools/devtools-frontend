@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../../front_end/ui/components/diff_view","outDir":".","declarationDir":"."},"files":["../../../../../../../front_end/ui/components/diff_view/diff_view.ts"],"references":[{"path":"./diff_view-tsconfig.ref.json"}]}

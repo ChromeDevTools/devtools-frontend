@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/models/extensions",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/models/extensions/ExtensionAPI.ts",
+    "../../../../../../front_end/models/extensions/ExtensionEndpoint.ts",
+    "../../../../../../front_end/models/extensions/HostUrlPattern.ts",
+    "../../../../../../front_end/models/extensions/LanguageExtensionEndpoint.ts",
+    "../../../../../../front_end/models/extensions/RecorderExtensionEndpoint.ts",
+    "../../../../../../front_end/models/extensions/RecorderPluginManager.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../extension-api/extension-api-tsconfig.json"
+    },
+    {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../bindings/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../har/bundle-tsconfig.ref.json"
+    }
+  ]
+}

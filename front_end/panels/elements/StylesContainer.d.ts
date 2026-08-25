@@ -22,6 +22,7 @@ export interface StylesContainer {
     filterRegex(): RegExp | null;
     setEditingStyle(editing: boolean): void;
     setUserOperation(userOperation: boolean): void;
+    suppressResets(): void;
     forceUpdate(): void;
     hideAllPopovers(): void;
     getVariablePopoverContents(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string, computedValue: string | null): ElementsComponents.CSSVariableValueView.CSSVariableValueView;

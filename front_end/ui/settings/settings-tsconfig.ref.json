@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/ui/settings",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/ui/settings/ConsoleSettings.ts",
+    "../../../../../../front_end/ui/settings/InspectorMainSettings.ts",
+    "../../../../../../front_end/ui/settings/MainSettings.ts",
+    "../../../../../../front_end/ui/settings/SettingUIRegistration.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    }
+  ]
+}

@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -44,64 +45,64 @@
   ],
   "references": [
     {
-      "path": "../core/common/bundle-tsconfig.json"
+      "path": "../core/common/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../core/host/bundle-tsconfig.json"
+      "path": "../core/host/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../core/root/bundle-tsconfig.json"
+      "path": "../core/root/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../core/sdk/bundle-tsconfig.json"
+      "path": "../core/sdk/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/ai_assistance/bundle-tsconfig.json"
+      "path": "../models/ai_assistance/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/autofill_manager/bundle-tsconfig.json"
+      "path": "../models/autofill_manager/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/badges/bundle-tsconfig.json"
+      "path": "../models/badges/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/bindings/bundle-tsconfig.json"
+      "path": "../models/bindings/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/breakpoints/bundle-tsconfig.json"
+      "path": "../models/breakpoints/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/comment_manager/bundle-tsconfig.json"
+      "path": "../models/comment_manager/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/crux-manager/bundle-tsconfig.json"
+      "path": "../models/crux-manager/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/emulation/bundle-tsconfig.json"
+      "path": "../models/emulation/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/issues_manager/bundle-tsconfig.json"
+      "path": "../models/issues_manager/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/javascript_metadata/bundle-tsconfig.json"
+      "path": "../models/javascript_metadata/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/live-metrics/bundle-tsconfig.json"
+      "path": "../models/live-metrics/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/logs/bundle-tsconfig.json"
+      "path": "../models/logs/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/persistence/bundle-tsconfig.json"
+      "path": "../models/persistence/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/project_settings/bundle-tsconfig.json"
+      "path": "../models/project_settings/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/workspace/bundle-tsconfig.json"
+      "path": "../models/workspace/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/workspace_diff/bundle-tsconfig.json"
+      "path": "../models/workspace_diff/bundle-tsconfig.ref.json"
     }
   ]
 }

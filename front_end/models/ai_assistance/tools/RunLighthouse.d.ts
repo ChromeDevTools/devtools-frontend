@@ -1,6 +1,6 @@
 import * as Host from '../../../core/host/host.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
-import { type BaseToolCapability, type DataHandlerResult, type DataTool, type LighthouseCapability, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type DataHandlerResult, type DataTool, type LighthouseRecordingCapability, type ToolArgs, ToolName } from './Tool.js';
 export interface RunLighthouseArgs extends ToolArgs {
     explanation: string;
     category: LHModel.RunTypes.CategoryId;
@@ -8,7 +8,7 @@ export interface RunLighthouseArgs extends ToolArgs {
 }
 export declare class RunLighthouseTool implements DataTool<RunLighthouseArgs, {
     audits: string;
-}, BaseToolCapability & LighthouseCapability> {
+}, BaseToolCapability & LighthouseRecordingCapability> {
     readonly name = ToolName.RUN_LIGHTHOUSE;
     readonly description = "Runs Lighthouse audits on the active page. Supports \"navigation\" (for full initial page load audits), \"snapshot\" (for inspecting live in-page modifications without reload), and \"timespan\" (for interactions).";
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof RunLighthouseArgs>;
@@ -17,7 +17,7 @@ export declare class RunLighthouseTool implements DataTool<RunLighthouseArgs, {
         thought: string;
         action: string;
     };
-    handler(params: RunLighthouseArgs, context: BaseToolCapability & LighthouseCapability): Promise<DataHandlerResult<{
+    handler(params: RunLighthouseArgs, context: BaseToolCapability & LighthouseRecordingCapability): Promise<DataHandlerResult<{
         audits: string;
     }>>;
 }

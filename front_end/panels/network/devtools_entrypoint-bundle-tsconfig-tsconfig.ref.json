@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "network.prebundle.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../../tsc/front_end/panels/network/css_files-tsconfig.ref.json"
+    },
+    {
+      "path": "./network-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/network_time_calculator/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../tsc/front_end/ui/legacy/components/data_grid/css_files-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../tsc/front_end/ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
+    }
+  ]
+}

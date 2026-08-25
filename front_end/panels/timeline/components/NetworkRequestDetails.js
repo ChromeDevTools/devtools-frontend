@@ -19,91 +19,91 @@ const { html, render } = Lit;
 const MAX_URL_LENGTH = 100;
 const UIStrings = {
     /**
-     * @description Text that refers to the network request method
+     * @description Label for the HTTP request method in the network request details view of the Performance panel.
      */
     requestMethod: 'Request method',
     /**
-     * @description Text that refers to the network request protocol
+     * @description Label for the network protocol in the network request details view of the Performance panel.
      */
     protocol: 'Protocol',
     /**
-     * @description Text to show the priority of an item
+     * @description Label for the network request priority in the network request details view of the Performance panel.
      */
     priority: 'Priority',
     /**
-     * @description Text used when referring to the data sent in a network request that is encoded as a particular file format.
+     * @description Label for the encoded data size in the network request details view of the Performance panel.
      */
     encodedData: 'Encoded data',
     /**
-     * @description Text used to refer to the data sent in a network request that has been decoded.
+     * @description Label for the decoded body size in the network request details view of the Performance panel.
      */
     decodedBody: 'Decoded body',
     /**
-     * @description Text in Timeline indicating that input has happened recently
+     * @description Value indicating yes in the network request details view of the Performance panel.
      */
     yes: 'Yes',
     /**
-     * @description Text in Timeline indicating that input has not happened recently
+     * @description Value indicating no in the network request details view of the Performance panel.
      */
     no: 'No',
     /**
-     * @description Text to indicate to the user they are viewing an event representing a network request.
+     * @description Header title for a network request in the network request details view of the Performance panel.
      */
     networkRequest: 'Network request',
     /**
-     * @description Text for the data source of a network request.
+     * @description Label indicating whether a network request was served from cache in the network request details view of the Performance panel.
      */
     fromCache: 'From cache',
     /**
-     * @description Text used to show the mime-type of the data transferred with a network request (e.g. "application/json").
+     * @description Label for the MIME type of a network request in the network request details view of the Performance panel.
      */
     mimeType: 'MIME type',
     /**
-     * @description Text used to show the user that a request was served from the browser's in-memory cache.
+     * @description Suffix indicating that a network request was served from memory cache in the Performance panel.
      */
     FromMemoryCache: ' (from memory cache)',
     /**
-     * @description Text used to show the user that a request was served from the browser's file cache.
+     * @description Suffix indicating that a network request was served from disk cache in the Performance panel.
      */
     FromCache: ' (from cache)',
     /**
-     * @description Label for a network request indicating that it was a HTTP2 server push instead of a regular network request, in the Performance panel
+     * @description Suffix indicating that a network request was served from server push in the Performance panel.
      */
     FromPush: ' (from push)',
     /**
-     * @description Text used to show a user that a request was served from an installed, active service worker.
+     * @description Suffix indicating that a network request was served from a service worker in the Performance panel.
      */
     FromServiceWorker: ' (from `service worker`)',
     /**
-     * @description Text for the event initiated by another one
+     * @description Label indicating what initiated the network request in the network request details view of the Performance panel.
      */
     initiatedBy: 'Initiated by',
     /**
-     * @description Text that refers to if the network request is blocking
+     * @description Label for the render-blocking status of a network request in the network request details view of the Performance panel.
      */
     blocking: 'Blocking',
     /**
-     * @description Text that refers to if the network request is in-body parser render-blocking
+     * @description Status value indicating that a network request is in-body parser blocking in the Performance panel.
      */
     inBodyParserBlocking: 'In-body parser blocking',
     /**
-     * @description Text that refers to if the network request is render-blocking
+     * @description Status value indicating that a network request is render-blocking in the Performance panel.
      */
     renderBlocking: 'Render-blocking',
     /**
-     * @description Text to refer to a 3rd Party entity.
+     * @description Label for the third-party entity of a network request in the network request details view of the Performance panel.
      */
     entity: '3rd party',
     /**
-     * @description Label for a column containing the names of timings (performance metric) taken in the server side application.
+     * @description Column header for server timing metric names in the network request details view of the Performance panel.
      */
     serverTiming: 'Server timing',
     /**
-     * @description Label for a column containing the values of timings (performance metric) taken in the server side application.
+     * @description Column header for server timing duration values in the network request details view of the Performance panel.
      */
     time: 'Time',
     /**
-     * @description Label for a column containing the description of timings (performance metric) taken in the server side application.
+     * @description Column header for server timing descriptions in the network request details view of the Performance panel.
      */
     description: 'Description',
 };

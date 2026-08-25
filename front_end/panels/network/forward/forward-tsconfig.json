@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -46,10 +47,10 @@
   ],
   "references": [
     {
-      "path": "../../../core/sdk/bundle-tsconfig.json"
+      "path": "../../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../core/text_utils/bundle-tsconfig.json"
+      "path": "../../../core/text_utils/bundle-tsconfig.ref.json"
     }
   ]
 }

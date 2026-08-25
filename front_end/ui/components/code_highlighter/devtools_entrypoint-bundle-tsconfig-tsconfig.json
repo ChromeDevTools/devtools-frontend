@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -44,10 +45,10 @@
   ],
   "references": [
     {
-      "path": "./code_highlighter-tsconfig.json"
+      "path": "./code_highlighter-tsconfig.ref.json"
     },
     {
-      "path": "./css_files-tsconfig.json"
+      "path": "../../../../../tsc/front_end/ui/components/code_highlighter/css_files-tsconfig.ref.json"
     }
   ]
 }

@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/linear_memory_inspector/components",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryInspectorUtils.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryNavigator.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryViewer.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryViewerUtils.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/ValueInterpreterSettings.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/i18n/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/components/buttons/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/kit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/lit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/visual_logging/bundle-tsconfig.ref.json"
+    }
+  ]
+}

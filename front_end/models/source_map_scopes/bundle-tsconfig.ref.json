@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/models/source_map_scopes","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/models/source_map_scopes/source_map_scopes.ts"],"references":[{"path":"./source_map_scopes-tsconfig.ref.json"}]}

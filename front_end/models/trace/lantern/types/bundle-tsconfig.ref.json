@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../../../front_end/models/trace/lantern/types","outDir":".","declarationDir":"."},"files":["../../../../../../../../front_end/models/trace/lantern/types/types.ts"],"references":[{"path":"./types-tsconfig.ref.json"}]}

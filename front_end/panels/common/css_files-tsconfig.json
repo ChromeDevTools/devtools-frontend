@@ -1,13 +1,13 @@
 {
-    "compilerOptions": {
-        "composite": true,
-        "outDir": "."
-    },
-    "files": [
-        "aiCodeCompletionSummaryToolbar.css.js",
-        "badgeNotification.css.js",
-        "domLinkifier.css.js",
-        "gdpSignUpDialog.css.js",
-        "geminiRebrandPromoDialog.css.js"
-    ]
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "."
+  },
+  "files": [
+    "aiCodeCompletionSummaryToolbar.css.js",
+    "badgeNotification.css.js",
+    "domLinkifier.css.js",
+    "gdpSignUpDialog.css.js",
+    "geminiRebrandPromoDialog.css.js"
+  ]
 }

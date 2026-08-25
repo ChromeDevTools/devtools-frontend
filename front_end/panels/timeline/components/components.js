@@ -141,14 +141,11 @@ var breadcrumbsUI_css_default = `/*
 var { render, html } = Lit;
 var UIStrings = {
   /**
-   * @description A context menu item in the Minimap Breadcrumb context menu.
-   * This context menu option activates the breadcrumb that the context menu was opened on.
+   * @description Context menu item in the Performance panel to activate the selected breadcrumb.
    */
   activateBreadcrumb: "Activate breadcrumb",
   /**
-   * @description A context menu item in the Minimap Breadcrumb context menu.
-   * This context menu option removed all the child breadcrumbs and activates
-   * the breadcrumb that the context menu was opened on.
+   * @description Context menu item in the Performance panel to remove all child breadcrumbs and activate the selected breadcrumb.
    */
   removeChildBreadcrumbs: "Remove child breadcrumbs"
 };
@@ -446,16 +443,12 @@ import * as ThemeSupport from "./../../../ui/legacy/theme_support/theme_support.
 import * as VisualLogging2 from "./../../../ui/visual_logging/visual_logging.js";
 var UIStrings2 = {
   /**
-   * @description ms is the short form of milli-seconds and the placeholder is a decimal number.
-   * The shortest form or abbreviation of milliseconds should be used, as there is
-   * limited room in this UI.
+   * @description Short formatted milliseconds string in the Performance panel.
    * @example {2.14} PH1
    */
   fms: "{PH1}[ms]()",
   /**
-   * @description s is short for seconds and the placeholder is a decimal number
-   * The shortest form or abbreviation of seconds should be used, as there is
-   * limited room in this UI.
+   * @description Short formatted seconds string in the Performance panel.
    * @example {2.14} PH1
    */
   fs: "{PH1}[s]()"
@@ -670,43 +663,42 @@ function isFieldWorseThanLocal(local, field) {
 var { html: html2 } = Lit2.StaticHtml;
 var UIStrings3 = {
   /**
-   * @description title used for a metric value to tell the user about its score classification
+   * @description Tooltip and aria label for a metric value indicating its score classification in the Performance panel.
    * @example {INP} PH1
    * @example {1.2s} PH2
    * @example {poor} PH3
    */
   metricScore: "{PH1}: {PH2} {PH3} score",
   /**
-   * @description title used for a metric value to tell the user that the data is unavailable
+   * @description Tooltip and aria label for a metric value indicating that the data is unavailable in the Performance panel.
    * @example {INP} PH1
    */
   metricScoreUnavailable: "{PH1}: unavailable",
   /**
-   * @description Label denoting that metrics were observed in the field, from real use data (CrUX). Also denotes if from URL or Origin dataset.
+   * @description Label denoting that metrics were observed in the field from real user data (CrUX), and whether the data is from the URL or origin dataset in the Performance panel.
    * @example {URL} PH1
    */
   fieldScoreLabel: "Field ({PH1})",
   /**
-   * @description Label for an option that selects the page's specific URL as opposed to it's entire origin/domain.
+   * @description Label for an option that selects the specific URL in the Performance panel.
    */
   urlOption: "URL",
   /**
-   * @description Label for an option that selects the page's entire origin/domain as opposed to it's specific URL.
+   * @description Label for an option that selects the entire origin in the Performance panel.
    */
   originOption: "Origin",
   /**
-   * @description Title for button that closes a warning popup.
+   * @description Tooltip text for the dismiss button that closes a warning popup in the Performance panel.
    */
   dismissTitle: "Dismiss",
   /**
-   * @description Title shown in a warning dialog when field metrics (collected from real users) is worse than the locally observed metrics.
+   * @description Title shown in a warning dialog when field metrics are worse than locally observed metrics in the Performance panel.
    */
   fieldMismatchTitle: "Field & local metrics mismatch",
   /**
-   * @description Text shown in a warning dialog when field metrics (collected from real users) is worse than the locally observed metrics.
-   * Asks user to use features such as throttling and device emulation.
+   * @description Warning notice shown when field metrics are worse than locally observed metrics in the Performance panel.
    */
-  fieldMismatchNotice: "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user\u2019s environment."
+  fieldMismatchNotice: "Local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences) for several reasons. Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user\u2019s environment."
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/timeline/components/CWVMetrics.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
@@ -934,53 +926,49 @@ import * as uiI18n from "./../../../ui/i18n/i18n.js";
 import { Link } from "./../../../ui/kit/kit.js";
 var UIStrings4 = {
   /**
-   * @description Text in the Performance panel for a forced style and layout calculation of elements
-   * in a page. See https://developer.mozilla.org/en-US/docs/Glossary/Reflow
+   * @description Text in the Performance panel for a forced style and layout calculation of elements in a page.
    */
   forcedReflow: "Forced reflow",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Warning message indicating that an event is likely a performance bottleneck in the Performance panel.
    * @example {Forced reflow} PH1
    */
   sIsALikelyPerformanceBottleneck: "{PH1} is a likely performance bottleneck.",
   /**
-   * @description Text in the Performance panel for a function called during a time the browser was
-   * idle (inactive), which to longer to execute than a predefined deadline.
+   * @description Warning message in the Performance panel for an idle callback function that took longer to execute than its predefined deadline.
    * @example {10ms} PH1
    */
   idleCallbackExecutionExtended: "Idle callback execution extended beyond deadline by {PH1}",
   /**
-   * @description Text in the Performance panel which describes how long a task took.
-   * @example {task} PH1
+   * @description Warning message in the Performance panel describing how long a task took.
+   * @example {Task} PH1
    * @example {10ms} PH2
    */
   sTookS: "{PH1} took {PH2}.",
   /**
-   * @description Text in the Performance panel for a task that took long. See
-   * https://developer.mozilla.org/en-US/docs/Glossary/Long_task
+   * @description Label in the Performance panel for a task that took a long time.
    */
   longTask: "Long task",
   /**
-   * @description Text used to highlight a long interaction and link to web.dev/inp
+   * @description Label in the Performance panel for an interaction that took a long time.
    */
   longInteractionINP: "Long interaction",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel when the
-   *             user clicks on a long interaction.
+   * @description Warning message in the Performance panel indicating that an interaction caused poor responsiveness.
    * @example {Long interaction} PH1
    */
-  sIsLikelyPoorPageResponsiveness: "{PH1} is indicating poor page responsiveness.",
+  sIsLikelyPoorPageResponsiveness: "{PH1} indicates poor page responsiveness.",
   /**
-   * @description Text in Timeline UIUtils of the Performance panel
+   * @description Label for the WebSocket sub-protocol in the event details view of the Performance panel.
    */
   websocketProtocol: "WebSocket protocol",
   /**
-   * @description Details text indicating how many bytes were received in a WebSocket message
+   * @description Details text indicating how many bytes were transferred in a WebSocket message in the Performance panel.
    * @example {1024} PH1
    */
   webSocketBytes: "{PH1} byte(s)",
   /**
-   * @description Details text indicating how many bytes were sent in a WebSocket message
+   * @description Details label indicating the data length of a WebSocket message in the Performance panel.
    */
   webSocketDataLength: "Data length"
 };
@@ -1160,49 +1148,49 @@ devtools-link {
 var { html: html3 } = Lit3;
 var UIStrings5 = {
   /**
-   * @description Text title for the Save performance trace dialog.
+   * @description Dialog title for saving a performance trace in the Performance panel.
    */
-  exportTraceOptionsDialogTitle: "Save performance trace ",
+  exportTraceOptionsDialogTitle: "Save performance trace",
   /**
-   * @description Tooltip for the Save performance trace dialog.
+   * @description Tooltip text for the toolbar button that opens the save trace dialog in the Performance panel.
    */
   showExportTraceOptionsDialogTitle: "Save trace\u2026",
   /**
-   * @description Text for the include script content option.
+   * @description Checkbox label to include resource content when saving a trace in the Performance panel.
    */
   includeResourceContent: "Include resource content",
   /**
-   * @description Text for the include script source maps option.
+   * @description Checkbox label to include script source maps when saving a trace in the Performance panel.
    */
   includeSourcemap: "Include script source maps",
   /**
-   * @description Text for the include annotations option.
+   * @description Checkbox label to include annotations when saving a trace in the Performance panel.
    */
   includeAnnotations: "Include annotations",
   /**
-   * @description Text for the compression option.
+   * @description Checkbox label to compress the saved trace with gzip in the Performance panel.
    */
   shouldCompress: "Compress with gzip",
   /**
-   * @description Text for the explanation link
+   * @description Link text to documentation explaining trace export options in the Performance panel.
    */
   explanation: "Explanation",
   /**
-   * @description Text for the save trace button
+   * @description Button label to save the trace in the Performance panel.
    */
   saveButtonTitle: "Save",
   /**
-   * @description Text shown in the information pop-up next to the "Include resource content" option.
+   * @description Tooltip text explaining the privacy implications of including resource content when saving a trace in the Performance panel.
    */
   resourceContentPrivacyInfo: "Includes the full content of all loaded HTML, CSS, and scripts (except extensions).",
   /**
-   * @description Text shown in the information pop-up next to the "Include script sourcemaps" option.
+   * @description Tooltip text explaining the privacy implications of including script source maps when saving a trace in the Performance panel.
    */
   sourceMapsContentPrivacyInfo: "Includes available source maps, which may expose authored code.",
   /**
-   * @description Text used as the start of the accessible label for the information button which shows additional context when the user focuses / hovers.
+   * @description Accessible label prefix for the information button in the Performance panel.
    */
-  moreInfoLabel: "Additional information:"
+  moreInfoLabel: "More information:"
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/timeline/components/ExportTraceOptions.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
@@ -1651,27 +1639,27 @@ var originMap_css_default = `/*
 var { html: html4 } = Lit4;
 var UIStrings6 = {
   /**
-   * @description Title for a column in a data table representing a site origin used for development
+   * @description Column header for development origin in the origin mapping table of the Performance panel.
    */
   developmentOrigin: "Development origin",
   /**
-   * @description Title for a column in a data table representing a site origin used by real users in a production environment
+   * @description Column header for production origin in the origin mapping table of the Performance panel.
    */
   productionOrigin: "Production origin",
   /**
-   * @description Warning message explaining that an input origin is not a valid origin or URL.
+   * @description Warning message explaining that an entered origin is not a valid origin or URL in the Performance panel.
    * @example {http//malformed.com} PH1
    */
-  invalidOrigin: '"{PH1}" is not a valid origin or URL.',
+  invalidOrigin: '"{PH1}" isn\u2019t a valid origin or URL.',
   /**
-   * @description Warning message explaining that an development origin is already mapped to a productionOrigin.
+   * @description Warning message explaining that a development origin is already mapped to a production origin in the Performance panel.
    * @example {https://example.com} PH1
    */
   alreadyMapped: '"{PH1}" is already mapped to a production origin.',
   /**
-   * @description Warning message explaining that a page doesn't have enough real user data to show any information for. "Chrome UX Report" is a product name and should not be translated.
+   * @description Warning message explaining that a page does not have enough real user data in the Performance panel.
    */
-  pageHasNoData: "The Chrome UX Report does not have sufficient real user data for this page."
+  pageHasNoData: "The Chrome UX Report doesn\u2019t have enough real user data for this page."
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/timeline/components/OriginMap.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
@@ -1880,71 +1868,71 @@ var OriginMap = class extends UI4.Widget.VBox {
 // gen/front_end/panels/timeline/components/FieldSettingsDialog.js
 var UIStrings7 = {
   /**
-   * @description Text label for a button that opens a dialog to set up field metrics.
+   * @description Button label that opens a dialog to set up field metrics in the Performance panel.
    */
   setUp: "Set up",
   /**
-   * @description Text label for a button that opens a dialog to configure field metrics.
+   * @description Button label that opens a dialog to configure field metrics in the Performance panel.
    */
   configure: "Configure",
   /**
-   * @description Text label for a button that enables the collection of field metrics.
+   * @description Button label that enables the collection of field metrics in the Performance panel.
    */
   ok: "Ok",
   /**
-   * @description Text label for a button that opts out of the collection of field metrics.
+   * @description Button label that opts out of the collection of field metrics in the Performance panel.
    */
   optOut: "Opt out",
   /**
-   * @description Text label for a button that cancels the setup of field metrics collection.
+   * @description Button label that cancels the setup of field metrics collection in the Performance panel.
    */
   cancel: "Cancel",
   /**
-   * @description Text label for a checkbox that controls if a manual URL override is enabled for field metrics.
+   * @description Checkbox label that controls if a manual URL override is enabled for field metrics in the Performance panel.
    */
   onlyFetchFieldData: "Always show field metrics for the below URL",
   /**
-   * @description Text label for a text box that that contains the manual override URL for fetching field metrics.
+   * @description Label for a text input that contains the manual override URL for fetching field metrics in the Performance panel.
    */
   url: "URL",
   /**
-   * @description Warning message explaining that the Chrome UX Report could not find enough real world speed data for the page. "Chrome UX Report" is a product name and should not be translated.
+   * @description Warning message explaining that the Chrome UX Report could not find enough real-world speed data for the page in the Performance panel.
    */
-  doesNotHaveSufficientData: "The Chrome UX Report does not have sufficient real-world speed data for this page.",
+  doesNotHaveSufficientData: "The Chrome UX Report doesn\u2019t have enough real-world speed data for this page.",
   /**
-   * @description Title for a dialog that contains information and settings related to fetching field metrics.
+   * @description Title for a dialog that contains settings related to fetching field metrics in the Performance panel.
    */
   configureFieldData: "Configure field metrics fetching",
   /**
-   * @description Paragraph explaining where field metrics comes from and and how it can be used. PH1 will be a link with text "Chrome UX Report" that is untranslated because it is a product name.
+   * @description Explanation of where field metrics come from and how they can be used in the Performance panel.
    * @example {Chrome UX Report} PH1
    */
   fetchAggregated: "Fetch aggregated field metrics from the {PH1} to help you contextualize local measurements with what real users experience on the site.",
   /**
-   * @description Heading for a section that explains what user data needs to be collected to fetch field metrics.
+   * @description Heading for a section that explains what user data needs to be collected to fetch field metrics in the Performance panel.
    */
   privacyDisclosure: "Privacy disclosure",
   /**
-   * @description Paragraph explaining what data needs to be sent to Google to fetch field metrics, and when that data will be sent.
+   * @description Explanation of what data is sent to Google to fetch field metrics in the Performance panel.
    */
-  whenPerformanceIsShown: "When DevTools is open, the URLs you visit will be sent to Google to query field metrics. These requests are not tied to your Google account.",
+  whenPerformanceIsShown: "When DevTools is open, the URLs you visit will be sent to Google to query field metrics. These requests aren\u2019t tied to your Google account.",
   /**
-   * @description Header for a section containing advanced settings
+   * @description Header for a section containing advanced settings in the Performance panel.
    */
   advanced: "Advanced",
   /**
-   * @description Paragraph explaining that the user can associate a development origin with a production origin for the purposes of fetching real user data.
+   * @description Explanation of how associating a development origin with a production origin works for fetching real user data in the Performance panel.
    */
   mapDevelopmentOrigins: "Set a development origin to automatically get relevant field metrics for its production origin.",
   /**
-   * @description Text label for a button that adds a new editable row to a data table
+   * @description Button label to add a new editable row to the origin mapping table in the Performance panel.
    */
   new: "New",
   /**
-   * @description Warning message explaining that an input origin is not a valid origin or URL.
+   * @description Warning message explaining that an entered origin is not a valid origin or URL in the Performance panel.
    * @example {http//malformed.com} PH1
    */
-  invalidOrigin: '"{PH1}" is not a valid origin or URL.'
+  invalidOrigin: '"{PH1}" isn\u2019t a valid origin or URL.'
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/timeline/components/FieldSettingsDialog.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
@@ -2298,35 +2286,33 @@ var { html: html6, Directives: Directives4 } = Lit6;
 var { live } = Directives4;
 var UIStrings8 = {
   /**
-   * @description Text title for the button to open the ignore list setting.
+   * @description Tooltip text for the button to open the ignore list settings dialog in the Performance panel.
    */
   showIgnoreListSettingDialog: "Show ignore list setting dialog",
   /**
-   * @description Text title for ignore list setting.
+   * @description Header title for the ignore list settings dialog in the Performance panel.
    */
   ignoreList: "Ignore list",
   /**
-   * @description Text description for ignore list setting.
+   * @description Description text in the ignore list settings dialog of the Performance panel.
    */
   ignoreListDescription: "Add regular expression rules to remove matching scripts from the flame chart.",
   /**
-   * @description Pattern title in Framework Ignore List Settings Tab of the Settings
+   * @description Label for a pattern rule in the ignore list settings dialog of the Performance panel.
    * @example {ad.*?} regex
    */
   ignoreScriptsWhoseNamesMatchS: "Ignore scripts whose names match ''{regex}''",
   /**
-   * @description Label for the button to remove an regex
+   * @description Accessible label for the button to remove a regular expression rule in the ignore list settings dialog of the Performance panel.
    * @example {ad.*?} regex
    */
   removeRegex: "Remove the regex: ''{regex}''",
   /**
-   * @description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the input
-   * field used to add new or edit existing regular expressions that match file names to ignore in the debugger.
+   * @description Accessible label for the text input to add a regular expression rule in the ignore list settings dialog of the Performance panel.
    */
   addNewRegex: "Add a regular expression rule for the script\u2019s URL",
   /**
-   * @description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the checkbox of
-   * the input field used to enable the new regular expressions that match file names to ignore in the debugger.
+   * @description Accessible label for the checkbox to enable a new regular expression rule in the ignore list settings dialog of the Performance panel.
    */
   ignoreScriptsWhoseNamesMatchNewRegex: "Ignore scripts whose names match the new regex"
 };
@@ -2571,15 +2557,15 @@ var interactionBreakdown_css_default = `/*
 var { html: html7 } = Lit7;
 var UIStrings9 = {
   /**
-   * @description Text shown next to the interaction event's input delay time in the detail view.
+   * @description Label for the input delay phase of an interaction event in the event details view of the Performance panel.
    */
   inputDelay: "Input delay",
   /**
-   * @description Text shown next to the interaction event's thread processing duration in the detail view.
+   * @description Label for the processing duration phase of an interaction event in the event details view of the Performance panel.
    */
   processingDuration: "Processing duration",
   /**
-   * @description Text shown next to the interaction event's presentation delay time in the detail view.
+   * @description Label for the presentation delay phase of an interaction event in the event details view of the Performance panel.
    */
   presentationDelay: "Presentation delay"
 };
@@ -2777,57 +2763,57 @@ var { html: html8, render: render8 } = Lit8;
 var MAX_URL_LENGTH = 20;
 var UIStrings10 = {
   /**
-   * @description Text referring to the start time of a given event.
+   * @description Label for the start time of an event in the layout shift details view of the Performance panel.
    */
   startTime: "Start time",
   /**
-   * @description Text for a table header referring to the score of a Layout Shift event.
+   * @description Table column header for the score of a layout shift event in the layout shift details view of the Performance panel.
    */
   shiftScore: "Shift score",
   /**
-   * @description Text for a table header referring to the elements shifted for a Layout Shift event.
+   * @description Table column header for the shifted DOM elements in the layout shift details view of the Performance panel.
    */
   elementsShifted: "Elements shifted",
   /**
-   * @description Text for a table header referring to the culprit of a Layout Shift event.
+   * @description Table column header for the root cause/culprit of a layout shift event in the layout shift details view of the Performance panel.
    */
   culprit: "Culprit",
   /**
-   * @description Text for a culprit type of Injected iframe.
+   * @description Root cause culprit type indicating an injected iframe in the layout shift details view of the Performance panel.
    */
   injectedIframe: "Injected iframe",
   /**
-   * @description Text for a culprit type of Font request.
+   * @description Root cause culprit type indicating a web font request in the layout shift details view of the Performance panel.
    */
   fontRequest: "Font request",
   /**
-   * @description Text for a culprit type of non-composited animation.
+   * @description Root cause culprit type indicating a non-composited animation in the layout shift details view of the Performance panel.
    */
   nonCompositedAnimation: "Non-composited animation",
   /**
-   * @description Text referring to an animation.
+   * @description Label for an animation culprit in the layout shift details view of the Performance panel.
    */
   animation: "Animation",
   /**
-   * @description Text referring to a parent cluster.
+   * @description Link label to navigate to the parent cluster in the layout shift details view of the Performance panel.
    */
   parentCluster: "Parent cluster",
   /**
-   * @description Text referring to a layout shift cluster and its start time.
+   * @description Header title for a layout shift cluster and its start time in the layout shift details view of the Performance panel.
    * @example {32 ms} PH1
    */
   cluster: "Layout shift cluster @ {PH1}",
   /**
-   * @description Text referring to a layout shift and its start time.
+   * @description Title and table row label for an individual layout shift and its start time in the layout shift details view of the Performance panel.
    * @example {32 ms} PH1
    */
   layoutShift: "Layout shift @ {PH1}",
   /**
-   * @description Text referring to the total cumulative score of a layout shift cluster.
+   * @description Label for the total cumulative score row in the layout shift cluster table of the Performance panel.
    */
   total: "Total",
   /**
-   * @description Text for a culprit type of Unsized image.
+   * @description Root cause culprit type indicating an unsized image in the layout shift details view of the Performance panel.
    */
   unsizedImage: "Unsized image"
 };
@@ -3583,108 +3569,108 @@ function renderDetailedCompareText(options) {
 var { html: html9, nothing: nothing8 } = Lit9;
 var UIStrings12 = {
   /**
-   * @description Label for a metric value that was measured in the local environment.
+   * @description Label for a metric value measured in the local environment in the live metrics view of the Performance panel.
    */
   localValue: "Local",
   /**
-   * @description Label for the 75th percentile of a metric according to data collected from real users in the field. This should be interpreted as "75th percentile of real users".
+   * @description Label for the 75th percentile of real user field metrics in the live metrics view of the Performance panel.
    */
   field75thPercentile: "Field 75th percentile",
   /**
-   * @description Column header for the 75th percentile of a metric according to data collected from real users in the field. This should be interpreted as "75th percentile of real users". Width of the column is limited so character length should be as small as possible.
+   * @description Column header for the 75th percentile field metrics in the live metrics view of the Performance panel.
    */
   fieldP75: "Field p75",
   /**
-   * @description Text label for values that are classified as "good".
+   * @description Label for metric values classified as good in the live metrics view of the Performance panel.
    */
   good: "Good",
   /**
-   * @description Text label for values that are classified as "needs improvement".
+   * @description Label for metric values classified as needs improvement in the live metrics view of the Performance panel.
    */
   needsImprovement: "Needs improvement",
   /**
-   * @description Text label for values that are classified as "poor".
+   * @description Label for metric values classified as poor in the live metrics view of the Performance panel.
    */
   poor: "Poor",
   /**
-   * @description Text label for a range of values that are less than or equal to a certain value.
+   * @description Label for a range of values that are less than or equal to a threshold in the live metrics view of the Performance panel.
    * @example {500 ms} PH1
    */
   leqRange: "(\u2264{PH1})",
   /**
-   * @description Text label for a range of values that are between two values.
+   * @description Label for a range of values between two thresholds in the live metrics view of the Performance panel.
    * @example {500 ms} PH1
    * @example {800 ms} PH2
    */
   betweenRange: "({PH1}-{PH2})",
   /**
-   * @description Text label for a range of values that are greater than a certain value.
+   * @description Label for a range of values greater than a threshold in the live metrics view of the Performance panel.
    * @example {500 ms} PH1
    */
   gtRange: "(>{PH1})",
   /**
-   * @description Text for a percentage value in the live metrics view.
+   * @description Percentage value format string in the live metrics view of the Performance panel.
    * @example {13} PH1
    */
   percentage: "{PH1}%",
   /**
-   * @description Text instructing the user to interact with the page because a user interaction is required to measure Interaction to Next Paint (INP).
+   * @description Prompt instructing the user to interact with the page to measure INP in the live metrics view of the Performance panel.
    */
   interactToMeasure: "Interact with the page to measure INP.",
   /**
-   * @description Label for a tooltip that provides more details.
+   * @description Tooltip label to expand more details in the metric card of the Performance panel.
    */
   viewCardDetails: "View card details",
   /**
-   * @description Text block recommending a site developer look at their test environment followed by bullet points that highlight specific things about the test environment. "local" refers to the testing setup of the developer as opposed to the conditions experienced by real users.
+   * @description Header recommending the user inspect their local test environment in the live metrics view of the Performance panel.
    */
   considerTesting: "Consider your local test conditions",
   /**
-   * @description Text block explaining how network conditions can slow down the page load. "network throttling" refers to artificially slowing down the network to simulate slower network conditions.
+   * @description Recommendation explaining how network throttling affects LCP page loads in the Performance panel.
    */
   recThrottlingLCP: "Real users may experience longer page loads due to slower network conditions. Increasing network throttling will simulate slower network conditions.",
   /**
-   * @description Text block explaining how CPU speed affects how long it takes the page to render after an interaction. "CPU throttling" refers to artificially slowing down the CPU to simulate slower devices.
+   * @description Recommendation explaining how CPU throttling affects INP interaction delays in the Performance panel.
    */
   recThrottlingINP: "Real users may experience longer interactions due to slower CPU speeds. Increasing CPU throttling will simulate a slower device.",
   /**
-   * @description Text block explaining how screen size can affect what content is rendered and therefore affects the LCP performance metric. "viewport" and "screen size" are synonymous in this case. "LCP element" refers to the page element that was the largest content on the page.
+   * @description Recommendation explaining how viewport size affects the LCP element in the Performance panel.
    */
   recViewportLCP: "Screen size can influence what the LCP element is. Ensure you are testing common viewport sizes.",
   /**
-   * @description Text block explaining viewport size can affect layout shifts. "viewport" and "screen size" are synonymous in this case. "layout shifts" refer to page instability where content moving around can create a jarring experience.
+   * @description Recommendation explaining how viewport size affects layout shifts in the Performance panel.
    */
   recViewportCLS: "Screen size can influence what layout shifts happen. Ensure you are testing common viewport sizes.",
   /**
-   * @description Text block explaining how a user interacts with the page can cause different amounts of layout shifts. "layout shifts" refer to page instability where content moving around can create a jarring experience.
+   * @description Recommendation explaining how user interaction journeys affect layout shifts in the Performance panel.
    */
   recJourneyCLS: "How a user interacts with the page can influence layout shifts. Ensure you are testing common interactions like scrolling the page.",
   /**
-   * @description Text block explaining how a user interacts with the page can affect interaction delays. "interaction delay" refers to the delay between an interaction and the page rendering new content.
+   * @description Recommendation explaining how user interaction journeys affect interaction delays in the Performance panel.
    */
   recJourneyINP: "How a user interacts with the page influences interaction delays. Ensure you are testing common interactions.",
   /**
-   * @description Text block explaining how dynamic content can affect LCP. "LCP" is a performance metric measuring when the largest content was rendered on the page. "LCP element" refers to the page element that was the largest content on the page.
+   * @description Recommendation explaining how dynamic content affects LCP in the Performance panel.
    */
   recDynamicContentLCP: "The LCP element can vary between page loads if content is dynamic.",
   /**
-   * @description Text block explaining how dynamic content can affect layout shifts. "layout shifts" refer to page instability where content moving around can create a jarring experience.
+   * @description Recommendation explaining how dynamic content affects layout shifts in the Performance panel.
    */
   recDynamicContentCLS: "Dynamic content can influence what layout shifts happen.",
   /**
-   * @description Column header for table cell values representing the subpart/component/stage/section of a larger duration.
+   * @description Table column header for subpart stage names in the live metrics view of the Performance panel.
    */
   subpart: "Subpart",
   /**
-   * @description Tooltip text for a link that goes to documentation explaining the Largest Contentful Paint (LCP) metric. "LCP" is an acronym and should not be translated.
+   * @description Tooltip text explaining the Largest Contentful Paint (LCP) metric in the live metrics view of the Performance panel.
    */
   lcpHelpTooltip: "LCP reports the render time of the largest image, text block, or video visible in the viewport. Click here to learn more about LCP.",
   /**
-   * @description Tooltip text for a link that goes to documentation explaining the Cumulative Layout Shift (CLS) metric. "CLS" is an acronym and should not be translated.
+   * @description Tooltip text explaining the Cumulative Layout Shift (CLS) metric in the live metrics view of the Performance panel.
    */
   clsHelpTooltip: "CLS measures the amount of unexpected shifted content. Click here to learn more about CLS.",
   /**
-   * @description Tooltip text for a link that goes to documentation explaining the Interaction to Next Paint (INP) metric. "INP" is an acronym and should not be translated.
+   * @description Tooltip text explaining the Interaction to Next Paint (INP) metric in the live metrics view of the Performance panel.
    */
   inpHelpTooltip: "INP measures the overall responsiveness to all click, tap, and keyboard interactions. Click here to learn more about INP."
 };
@@ -4562,163 +4548,163 @@ var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager9.DEVICE_SCOPE_LIST];
 var RTT_MINIMUM = 60;
 var UIStrings13 = {
   /**
-   * @description Label of a badge/pill indicating that the metrics are for a soft navigation.
+   * @description Badge label indicating that the metrics are for a soft navigation in the Performance panel.
    */
   softNavigationPillText: "SOFT NAV",
   /**
-   * @description Title of a view that shows performance metrics from the local environment and field metrics collected from real users. "field metrics" should be interpreted as "real user metrics".
+   * @description Title of a view that shows performance metrics from the local environment and field metrics collected from real users in the Performance panel.
    */
   localAndFieldMetrics: "Local and field metrics",
   /**
-   * @description Title of a view that shows performance metrics from the local environment.
+   * @description Title of a view that shows performance metrics from the local environment in the Performance panel.
    */
   localMetrics: "Local metrics",
   /**
-   *@description Text for the link to the historical field data for the specific URL or origin that is shown. This link text appears in parenthesis after the collection period information in the field data dialog. The link opens the CrUX Vis viewer (https://cruxvis.withgoogle.com).
+   * @description Link text to historical field data in the Performance panel.
    */
   fieldDataHistoryLink: "View history",
   /**
-   *@description Tooltip for the CrUX Vis viewer link which shows the history of the field data for the specific URL or origin.
+   * @description Tooltip for the link to historical field data in the Performance panel.
    */
   fieldDataHistoryTooltip: "View field data history in CrUX Vis",
   /**
-   * @description Accessible label for a section that logs user interactions and layout shifts. A layout shift is an event that shifts content in the layout of the page causing a jarring experience for the user.
+   * @description Accessible label for the section that logs user interactions and layout shifts in the Performance panel.
    */
   eventLogs: "Interaction and layout shift logs section",
   /**
-   * @description Title of a section that lists user interactions.
+   * @description Section title for user interactions in the live metrics view of the Performance panel.
    */
   interactions: "Interactions",
   /**
-   * @description Title of a section that lists layout shifts. A layout shift is an event that shifts content in the layout of the page causing a jarring experience for the user.
+   * @description Section title for layout shifts in the live metrics view of the Performance panel.
    */
   layoutShifts: "Layout shifts",
   /**
-   * @description Title of a sidebar section that shows options for the user to take after using the main view.
+   * @description Title of a sidebar section that shows next step options in the Performance panel.
    */
   nextSteps: "Next steps",
   /**
-   * @description Title of a section that shows options for how real user data in the field should be fetched. This should be interpreted as "Real user data".
+   * @description Section title for field metrics in the live metrics view of the Performance panel.
    */
   fieldMetricsTitle: "Field metrics",
   /**
-   * @description Title of a section that shows settings to control the developers local testing environment.
+   * @description Section title for local environment settings in the live metrics view of the Performance panel.
    */
   environmentSettings: "Environment settings",
   /**
-   * @description Label for an select box that selects which device type field metrics be shown for (e.g. desktop/mobile/all devices/etc). "field metrics" should be interpreted as "real user data".
+   * @description Label for a select dropdown to choose the device type for field metrics in the Performance panel.
    * @example {Mobile} PH1
    */
   showFieldDataForDevice: "Show field metrics for device type: {PH1}",
   /**
-   * @description Text indicating that there is not enough data to report real user statistics.
+   * @description Text indicating that there is not enough data to report real user statistics in the Performance panel.
    */
   notEnoughData: "Not enough data",
   /**
-   * @description Label for a text block that describes the network connections of real users.
+   * @description Label for real user network conditions in the live metrics view of the Performance panel.
    * @example {75th percentile is similar to Slow 4G throttling} PH1
    */
   network: "Network: {PH1}",
   /**
-   * @description Label for an select box that selects which device type real user data should be shown for (e.g. desktop/mobile/all devices/etc).
+   * @description Label for a select dropdown to choose the device form factor in the Performance panel.
    * @example {Mobile} PH1
    */
   device: "Device: {PH1}",
   /**
-   * @description Label for an option to select all device form factors.
+   * @description Label for an option to select all device form factors in the Performance panel.
    */
   allDevices: "All devices",
   /**
-   * @description Label for an option to select the desktop form factor.
+   * @description Label for an option to select the desktop form factor in the Performance panel.
    */
   desktop: "Desktop",
   /**
-   * @description Label for an option to select the mobile form factor.
+   * @description Label for an option to select the mobile form factor in the Performance panel.
    */
   mobile: "Mobile",
   /**
-   * @description Label for an option to select the tablet form factor.
+   * @description Label for an option to select the tablet form factor in the Performance panel.
    */
   tablet: "Tablet",
   /**
-   * @description Label for an option to to automatically select the form factor. The automatic selection will be displayed in PH1.
+   * @description Label for an option to automatically select the form factor in the Performance panel.
    * @example {Desktop} PH1
    */
   auto: "Auto ({PH1})",
   /**
-   * @description Label for an option that is loading.
+   * @description Label for an option that is currently loading in the Performance panel.
    * @example {Desktop} PH1
    */
   loadingOption: "{PH1} - Loading\u2026",
   /**
-   * @description Label for an option that does not have enough data and the user should ignore.
+   * @description Label for an option that lacks enough data in the Performance panel.
    * @example {Desktop} PH1
    */
   needsDataOption: "{PH1} - No data",
   /**
-   * @description Label for an option that selects the page's specific URL as opposed to it's entire origin/domain.
+   * @description Label for an option that selects the page specific URL in the Performance panel.
    */
   urlOption: "URL",
   /**
-   * @description Label for an option that selects the page's entire origin/domain as opposed to it's specific URL.
+   * @description Label for an option that selects the entire origin in the Performance panel.
    */
   originOption: "Origin",
   /**
-   * @description Label for an option that selects the page's specific URL as opposed to it's entire origin/domain.
+   * @description Label for an option that selects the specific URL with the URL displayed in the Performance panel.
    * @example {https://example.com/} PH1
    */
   urlOptionWithKey: "URL: {PH1}",
   /**
-   * @description Label for an option that selects the page's entire origin/domain as opposed to it's specific URL.
+   * @description Label for an option that selects the entire origin with the origin displayed in the Performance panel.
    * @example {https://example.com} PH1
    */
   originOptionWithKey: "Origin: {PH1}",
   /**
-   * @description Label for an combo-box that indicates if field metrics should be taken from the page's URL or it's origin/domain. "field metrics" should be interpreted as "real user data".
+   * @description Label for a dropdown indicating whether field metrics are shown for the URL or origin in the Performance panel.
    * @example {Origin: https://example.com} PH1
    */
   showFieldDataForPage: "Show field metrics for {PH1}",
   /**
-   * @description Tooltip text explaining that real user connections are similar to a test environment with no throttling. "throttling" is when the network is intentionally slowed down to simulate a slower connection.
+   * @description Tooltip text explaining that real user connections are too fast to simulate with network throttling in the Performance panel.
    */
   tryDisablingThrottling: "75th percentile is too fast to simulate with throttling",
   /**
-   * @description Tooltip text explaining that real user connections are similar to a specif network throttling setup. "throttling" is when the network is intentionally slowed down to simulate a slower connection.
+   * @description Tooltip text explaining that real user connections are similar to a specific network throttling preset in the Performance panel.
    * @example {Slow 4G} PH1
    */
   tryUsingThrottling: "75th percentile is similar to {PH1} throttling",
   /**
-   * @description Text block listing what percentage of real users are on different device form factors.
+   * @description Text block listing the distribution of real users across device form factors in the Performance panel.
    * @example {60%} PH1
    * @example {30%} PH2
    */
   percentDevices: "{PH1}% mobile, {PH2}% desktop",
   /**
-   * @description Text block explaining how to simulate different mobile and desktop devices.
+   * @description Text block explaining how to simulate different mobile and desktop devices in the Performance panel.
    */
   useDeviceToolbar: "Use the [device toolbar](https://developer.chrome.com/docs/devtools/device-mode) and configure throttling to simulate real user environments and identify more performance issues.",
   /**
-   * @description Text label for a checkbox that controls if the network cache is disabled.
+   * @description Checkbox label that controls if the network cache is disabled in the Performance panel.
    */
   disableNetworkCache: "Disable network cache",
   /**
-   * @description Text label for a selection box showing which CPU throttling option is applied.
+   * @description Label for the CPU throttling dropdown in the live metrics view of the Performance panel.
    */
   cpuThrottling: "CPU:",
   /**
-   * @description Text label for a link to the Largest Contentful Paint (LCP) related page element. This element represents the largest content on the page. "LCP" should not be translated.
+   * @description Link label to the Largest Contentful Paint (LCP) page element in the live metrics view of the Performance panel.
    */
   lcpElement: "LCP element",
   /**
-   * @description Text label for a button that reveals the user interaction associated with the Interaction to Next Paint (INP) performance metric. "INP" should not be translated.
+   * @description Button label to reveal the user interaction associated with INP in the live metrics view of the Performance panel.
    */
   inpInteractionLink: "INP interaction",
   /**
-   * @description Text label for a button that reveals the cluster of layout shift events that affected the page content the most. A cluster is a group of layout shift events that occur in quick succession.
+   * @description Button label to reveal the worst layout shift cluster in the live metrics view of the Performance panel.
    */
   worstCluster: "Worst cluster",
   /**
-   * @description [ICU Syntax] Text content of a button that reveals the cluster of layout shift events that affected the page content the most. A layout shift is an event that shifts content in the layout of the page causing a jarring experience for the user. This text will indicate how many shifts were in the cluster.
+   * @description [ICU Syntax] Button label indicating the number of shifts in the worst layout shift cluster in the live metrics view of the Performance panel.
    * @example {3} shiftCount
    */
   numShifts: `{shiftCount, plural,
@@ -4726,103 +4712,103 @@ var UIStrings13 = {
     other {{shiftCount} shifts}
   }`,
   /**
-   * @description Label for a a range of dates that represents the period of time a set of field metrics is collected from.
+   * @description Label for the date range representing the collection period for field metrics in the Performance panel.
    * @example {Oct 1, 2024 - Nov 1, 2024} PH1
    */
   collectionPeriod: "Collection period: {PH1}",
   /**
-   * @description Text showing a range of dates meant to represent a period of time.
+   * @description Date range format string in the live metrics view of the Performance panel.
    * @example {Oct 1, 2024} PH1
    * @example {Nov 1, 2024} PH2
    */
   dateRange: "{PH1} - {PH2}",
   /**
-   * @description Text block telling the user to see how performance metrics measured on their local computer compare to data collected from real users. PH1 will be a link to more information about the Chrome UX Report and the link text will be untranslated because it is a product name.
+   * @description Text banner explaining how to compare local metrics to real user data in the Performance panel.
    * @example {Chrome UX Report} PH1
    */
   seeHowYourLocalMetricsCompare: "See how your local metrics compare to real user data in the {PH1}.",
   /**
-   * @description Text for a link that goes to more documentation about local and field metrics. "Local" refers to performance metrics measured in the developers local environment. "field metrics" should be interpreted as "real user data".
+   * @description Link text for documentation about local and field metrics in the Performance panel.
    */
   localFieldLearnMoreLink: "Learn more about local and field metrics",
   /**
-   * @description Tooltip text for a link that goes to documentation explaining the difference between local and field metrics. "Local metrics" are performance metrics measured in the developers local environment. "field metrics" should be interpreted as "real user data".
+   * @description Tooltip text explaining the difference between local and field metrics in the Performance panel.
    */
-  localFieldLearnMoreTooltip: "Local metrics are captured from the current page using your network connection and device. field metrics is measured by real users using many different network connections and devices.",
+  localFieldLearnMoreTooltip: "Local metrics are captured from the current page using your network connection and device. Field metrics are measured by real users using many different network connections and devices.",
   /**
-   * @description Tooltip text explaining that this user interaction was ignored when calculating the Interaction to Next Paint (INP) metric because the interaction delay fell beyond the 98th percentile of interaction delays on this page. "INP" is an acronym and should not be translated.
+   * @description Tooltip text explaining why an interaction was excluded from the INP calculation in the Performance panel.
    */
   interactionExcluded: "INP is calculated using the 98th percentile of interaction delays, so some interaction delays may be larger than the INP value.",
   /**
-   * @description Tooltip for a button that will remove everything from the currently selected log.
+   * @description Tooltip for the button to clear the currently selected log in the live metrics view of the Performance panel.
    */
-  clearCurrentLog: "Clear the current log",
+  clearCurrentLog: "Clear current log",
   /**
-   * @description Title for a page load subpart that measures the time between when the page load starts and the time when the first byte of the initial document is downloaded.
+   * @description Label for the time to first byte subpart in the live metrics view of the Performance panel.
    */
   timeToFirstByte: "Time to first byte",
   /**
-   * @description Title for a page load subpart that measures the time between when the first byte of the initial document is downloaded and when the request for the largest image content starts.
+   * @description Label for the resource load delay subpart in the live metrics view of the Performance panel.
    */
   resourceLoadDelay: "Resource load delay",
   /**
-   * @description Title for a page load subpart that measures the time between when the request for the largest image content starts and when it finishes.
+   * @description Label for the resource load duration subpart in the live metrics view of the Performance panel.
    */
   resourceLoadDuration: "Resource load duration",
   /**
-   * @description Title for a page load subpart that measures the time between when the request for the largest image content finishes and when the largest image element is rendered on the page.
+   * @description Label for the element render delay subpart in the live metrics view of the Performance panel.
    */
   elementRenderDelay: "Element render delay",
   /**
-   * @description Title for a subpart during a user interaction that measures the time between when the interaction starts and when the browser starts running interaction handlers.
+   * @description Label for the input delay subpart of an interaction in the live metrics view of the Performance panel.
    */
   inputDelay: "Input delay",
   /**
-   * @description Title for a subpart during a user interaction that measures the time between when the browser starts running interaction handlers and when the browser finishes running interaction handlers.
+   * @description Label for the processing duration subpart of an interaction in the live metrics view of the Performance panel.
    */
   processingDuration: "Processing duration",
   /**
-   * @description Title for a subpart during a user interaction that measures the time between when the browser finishes running interaction handlers and when the browser renders the next visual frame that shows the result of the interaction.
+   * @description Label for the presentation delay subpart of an interaction in the live metrics view of the Performance panel.
    */
   presentationDelay: "Presentation delay",
   /**
-   * @description Tooltip text for a status chip in a list of user interactions that indicates if the associated interaction is the interaction used in the Interaction to Next Paint (INP) performance metric because it's interaction delay is at the 98th percentile.
+   * @description Tooltip text for an interaction status chip indicating that it represents the 98th percentile INP interaction in the Performance panel.
    */
   inpInteraction: "The INP interaction is at the 98th percentile of interaction delays.",
   /**
-   * @description Tooltip text for a button that reveals the user interaction associated with the Interaction to Next Paint (INP) performance metric.
+   * @description Tooltip text for the button to reveal the INP interaction in the live metrics view of the Performance panel.
    */
   showInpInteraction: "Go to the INP interaction.",
   /**
-   * @description Tooltip text for a button that reveals the cluster of layout shift events that affected the page content the most. A layout shift is an event that shifts content in the layout of the page causing a jarring experience for the user. A cluster is a group of layout shift events that occur in quick succession.
+   * @description Tooltip text for the button to reveal the worst layout shift cluster in the live metrics view of the Performance panel.
    */
   showClsCluster: "Go to worst layout shift cluster.",
   /**
-   * @description Column header for table cell values representing the subpart/component/stage/section of a larger duration.
+   * @description Table column header for subpart stage names in the live metrics view of the Performance panel.
    */
   subpart: "Subpart",
   /**
-   * @description Column header for table cell values representing a subpart duration (in milliseconds) that was measured in the developers local environment.
+   * @description Table column header for local duration values in milliseconds in the live metrics view of the Performance panel.
    */
   duration: "Local duration (ms)",
   /**
-   * @description Tooltip text for a button that will open the Chrome DevTools console to and log additional details about a user interaction.
+   * @description Tooltip text for the button to log interaction details to the console in the live metrics view of the Performance panel.
    */
-  logToConsole: "Log additional interaction data to the console",
+  logToConsole: "Log more interaction data to the console",
   /**
-   * @description Title of a view that can be used to analyze the performance of a Node process as a timeline. "Node" is a product name and should not be translated.
+   * @description Section title for Node process performance in the Performance panel.
    */
   nodePerformanceTimeline: "Node performance",
   /**
-   * @description Description of a view that can be used to analyze the performance of a Node process as a timeline. "Node" is a product name and should not be translated.
+   * @description Description text for recording a performance timeline of a connected Node process in the Performance panel.
    */
   nodeClickToRecord: "Record a performance timeline of the connected Node process.",
   /**
-   * @description Text in Timeline Panel of the Performance panel for network throttling
+   * @description Label for the network throttling dropdown in the live metrics view of the Performance panel.
    */
   networkThrottling: "Network:",
   /**
-   * @description Text for why user should change a throttling setting.
+   * @description Tooltip text explaining why the user should adjust throttling settings in the Performance panel.
    */
   recommendedThrottlingReason: "Consider changing setting to simulate real user environments"
 };
@@ -5988,39 +5974,39 @@ var { widget: widget3 } = UI10.Widget;
 var MAX_URL_LENGTH2 = 60;
 var UIStrings14 = {
   /**
-   * @description Text that refers to the priority of network request
+   * @description Label for network request priority in the network request tooltip of the Performance panel.
    */
   priority: "Priority",
   /**
-   * @description Text for the duration of a network request
+   * @description Label for total duration in the network request tooltip of the Performance panel.
    */
   duration: "Duration",
   /**
-   * @description Text that refers to the queueing and connecting time of a network request
+   * @description Label for the queuing and connecting phase duration in the network request tooltip of the Performance panel.
    */
   queuingAndConnecting: "Queuing and connecting",
   /**
-   * @description Text that refers to the request sent and waiting time of a network request
+   * @description Label for the request sent and waiting phase duration in the network request tooltip of the Performance panel.
    */
   requestSentAndWaiting: "Request sent and waiting",
   /**
-   * @description Text that refers to the content downloading time of a network request
+   * @description Label for the content downloading phase duration in the network request tooltip of the Performance panel.
    */
   contentDownloading: "Content downloading",
   /**
-   * @description Text that refers to the waiting on main thread time of a network request
+   * @description Label for the main thread waiting phase duration in the network request tooltip of the Performance panel.
    */
   waitingOnMainThread: "Waiting on main thread",
   /**
-   * @description Text that refers to a network request is render-blocking
+   * @description Label indicating that the network request is render-blocking in the network request tooltip of the Performance panel.
    */
   renderBlocking: "Render-blocking",
   /**
-   * @description Text to refer to the list of redirects.
+   * @description Header label for redirect details in the network request tooltip of the Performance panel.
    */
   redirects: "Redirects",
   /**
-   * @description Cell title in Network Data Grid Node of the Network panel
+   * @description Tooltip text indicating that the network request was throttled in the Performance panel.
    * @example {Fast 4G} PH1
    */
   wasThrottled: "Request was throttled ({PH1})"
@@ -6187,91 +6173,91 @@ var { html: html12, render: render12 } = Lit12;
 var MAX_URL_LENGTH3 = 100;
 var UIStrings15 = {
   /**
-   * @description Text that refers to the network request method
+   * @description Label for the HTTP request method in the network request details view of the Performance panel.
    */
   requestMethod: "Request method",
   /**
-   * @description Text that refers to the network request protocol
+   * @description Label for the network protocol in the network request details view of the Performance panel.
    */
   protocol: "Protocol",
   /**
-   * @description Text to show the priority of an item
+   * @description Label for the network request priority in the network request details view of the Performance panel.
    */
   priority: "Priority",
   /**
-   * @description Text used when referring to the data sent in a network request that is encoded as a particular file format.
+   * @description Label for the encoded data size in the network request details view of the Performance panel.
    */
   encodedData: "Encoded data",
   /**
-   * @description Text used to refer to the data sent in a network request that has been decoded.
+   * @description Label for the decoded body size in the network request details view of the Performance panel.
    */
   decodedBody: "Decoded body",
   /**
-   * @description Text in Timeline indicating that input has happened recently
+   * @description Value indicating yes in the network request details view of the Performance panel.
    */
   yes: "Yes",
   /**
-   * @description Text in Timeline indicating that input has not happened recently
+   * @description Value indicating no in the network request details view of the Performance panel.
    */
   no: "No",
   /**
-   * @description Text to indicate to the user they are viewing an event representing a network request.
+   * @description Header title for a network request in the network request details view of the Performance panel.
    */
   networkRequest: "Network request",
   /**
-   * @description Text for the data source of a network request.
+   * @description Label indicating whether a network request was served from cache in the network request details view of the Performance panel.
    */
   fromCache: "From cache",
   /**
-   * @description Text used to show the mime-type of the data transferred with a network request (e.g. "application/json").
+   * @description Label for the MIME type of a network request in the network request details view of the Performance panel.
    */
   mimeType: "MIME type",
   /**
-   * @description Text used to show the user that a request was served from the browser's in-memory cache.
+   * @description Suffix indicating that a network request was served from memory cache in the Performance panel.
    */
   FromMemoryCache: " (from memory cache)",
   /**
-   * @description Text used to show the user that a request was served from the browser's file cache.
+   * @description Suffix indicating that a network request was served from disk cache in the Performance panel.
    */
   FromCache: " (from cache)",
   /**
-   * @description Label for a network request indicating that it was a HTTP2 server push instead of a regular network request, in the Performance panel
+   * @description Suffix indicating that a network request was served from server push in the Performance panel.
    */
   FromPush: " (from push)",
   /**
-   * @description Text used to show a user that a request was served from an installed, active service worker.
+   * @description Suffix indicating that a network request was served from a service worker in the Performance panel.
    */
   FromServiceWorker: " (from `service worker`)",
   /**
-   * @description Text for the event initiated by another one
+   * @description Label indicating what initiated the network request in the network request details view of the Performance panel.
    */
   initiatedBy: "Initiated by",
   /**
-   * @description Text that refers to if the network request is blocking
+   * @description Label for the render-blocking status of a network request in the network request details view of the Performance panel.
    */
   blocking: "Blocking",
   /**
-   * @description Text that refers to if the network request is in-body parser render-blocking
+   * @description Status value indicating that a network request is in-body parser blocking in the Performance panel.
    */
   inBodyParserBlocking: "In-body parser blocking",
   /**
-   * @description Text that refers to if the network request is render-blocking
+   * @description Status value indicating that a network request is render-blocking in the Performance panel.
    */
   renderBlocking: "Render-blocking",
   /**
-   * @description Text to refer to a 3rd Party entity.
+   * @description Label for the third-party entity of a network request in the network request details view of the Performance panel.
    */
   entity: "3rd party",
   /**
-   * @description Label for a column containing the names of timings (performance metric) taken in the server side application.
+   * @description Column header for server timing metric names in the network request details view of the Performance panel.
    */
   serverTiming: "Server timing",
   /**
-   * @description Label for a column containing the values of timings (performance metric) taken in the server side application.
+   * @description Column header for server timing duration values in the network request details view of the Performance panel.
    */
   time: "Time",
   /**
-   * @description Label for a column containing the description of timings (performance metric) taken in the server side application.
+   * @description Column header for server timing descriptions in the network request details view of the Performance panel.
    */
   description: "Description"
 };
@@ -6759,11 +6745,11 @@ var relatedInsightChips_css_default = `/*
 var { html: html14, render: render14 } = Lit14;
 var UIStrings16 = {
   /**
-   * @description prefix shown next to related insight chips
+   * @description Prefix shown next to related insight chips in the Performance panel.
    */
   insightKeyword: "Insight",
   /**
-   * @description Prefix shown next to related insight chips and containing the insight name.
+   * @description Prefix shown next to related insight chips containing the insight name in the Performance panel.
    * @example {Improve image delivery} PH1
    */
   insightWithName: "Insight: {PH1}"
@@ -6991,60 +6977,60 @@ var timeRangeImageUrl = new URL("../../../Images/performance-panel-time-range.sv
 var deleteAnnotationImageUrl = new URL("../../../Images/performance-panel-delete-annotation.svg", import.meta.url).toString();
 var UIStrings17 = {
   /**
-   * @description Title for entry label.
+   * @description Title for the annotations onboarding section in the Performance panel sidebar.
    */
   annotationGetStarted: "Annotate a trace for yourself and others",
   /**
-   * @description Title for entry label.
+   * @description Header title for the item label tutorial in the Performance panel sidebar.
    */
   entryLabelTutorialTitle: "Label an item",
   /**
-   * @description Text for how to create an entry label.
+   * @description Instructions for how to add an item label in the Performance panel.
    */
-  entryLabelTutorialDescription: "Double-click or press Enter on an item and type to create an item label.",
+  entryLabelTutorialDescription: "Double-click or press Enter on an item and type to add an item label.",
   /**
-   * @description  Title for diagram.
+   * @description Header title for the item connection tutorial in the Performance panel sidebar.
    */
   entryLinkTutorialTitle: "Connect two items",
   /**
-   * @description Text for how to create a diagram between entries.
+   * @description Instructions for how to connect two items in the flame chart of the Performance panel.
    */
   entryLinkTutorialDescription: "Double-click on an item, click on the adjacent rightward arrow, then select the destination item.",
   /**
-   * @description  Title for time range.
+   * @description Header title for the time range tutorial in the Performance panel sidebar.
    */
   timeRangeTutorialTitle: "Define a time range",
   /**
-   * @description Text for how to create a time range selection and add note.
+   * @description Instructions for how to add a time range annotation in the flame chart of the Performance panel.
    */
-  timeRangeTutorialDescription: "Shift-drag in the flamechart then type to create a time range annotation.",
+  timeRangeTutorialDescription: "Shift-drag in the flame chart, then type to add a time range annotation.",
   /**
-   * @description  Title for deleting annotations.
+   * @description Header title for the annotation deletion tutorial in the Performance panel sidebar.
    */
   deleteAnnotationTutorialTitle: "Delete an annotation",
   /**
-   * @description Text for how to access an annotation delete function.
+   * @description Instructions for how to delete an annotation in the Performance panel sidebar.
    */
-  deleteAnnotationTutorialDescription: "Hover over the list in the sidebar with Annotations tab selected to access the delete function.",
+  deleteAnnotationTutorialDescription: "Hover over the list in the sidebar Annotations tab to delete an annotation.",
   /**
-   * @description Text used to describe the delete button to screen readers.
-   * @example {"A paint event annotated with the text hello world"} PH1
-   **/
+   * @description Accessible label for the delete annotation button in the Performance panel sidebar.
+   * @example {A paint event annotated with the text hello world} PH1
+   */
   deleteButton: "Delete annotation: {PH1}",
   /**
-   * @description label used to describe an annotation on an entry
+   * @description Accessible label describing an item annotation in the Performance panel sidebar.
    * @example {Paint} PH1
-   * @example {"Hello world"} PH2
+   * @example {Hello world} PH2
    */
   entryLabelDescriptionLabel: 'A "{PH1}" event annotated with the text "{PH2}"',
   /**
-   * @description label used to describe a time range annotation
+   * @description Accessible label describing a time range annotation in the Performance panel sidebar.
    * @example {2.5 milliseconds} PH1
    * @example {13.5 milliseconds} PH2
    */
   timeRangeDescriptionLabel: "A time range starting at {PH1} and ending at {PH2}",
   /**
-   * @description label used to describe a link from one entry to another.
+   * @description Accessible label describing a link between two events in the Performance panel sidebar.
    * @example {Paint} PH1
    * @example {Recalculate styles} PH2
    */
@@ -7473,7 +7459,7 @@ var INSIGHT_NAME_TO_COMPONENT = {
 };
 var UIStrings18 = {
   /**
-   * @description Summary text for an expandable dropdown that contains all insights in a passing state.
+   * @description Summary text for an expandable dropdown that contains all insights in a passing state in the Performance panel sidebar.
    * @example {4} PH1
    */
   passedInsights: "Passed insights ({PH1})"
@@ -8137,11 +8123,11 @@ var timelineSummary_css_default = `/*
 var { render: render18, html: html18 } = Lit18;
 var UIStrings19 = {
   /**
-   * @description Text for total
+   * @description Label for total duration in the summary view of the Performance panel.
    */
   total: "Total",
   /**
-   * @description Range in Timeline Details View's Summary
+   * @description Time range in the summary view of the Performance panel.
    * @example {1ms} PH1
    * @example {10ms} PH2
    */

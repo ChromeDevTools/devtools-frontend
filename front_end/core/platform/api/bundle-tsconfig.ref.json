@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../../front_end/core/platform/api","outDir":".","declarationDir":"."},"files":["../../../../../../../front_end/core/platform/api/api.ts"],"references":[{"path":"./api-tsconfig.ref.json"}]}

@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -44,13 +45,13 @@
   ],
   "references": [
     {
-      "path": "./css_files-tsconfig.json"
+      "path": "../../../../tsc/front_end/panels/event_listeners/css_files-tsconfig.ref.json"
     },
     {
-      "path": "./event_listeners-tsconfig.json"
+      "path": "./event_listeners-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/legacy/components/object_ui/css_files-tsconfig.json"
+      "path": "../../../../tsc/front_end/ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
     }
   ]
 }

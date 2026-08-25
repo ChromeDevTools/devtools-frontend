@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "."
+  },
+  "files": [
+    "autofillView.css.js"
+  ]
+}

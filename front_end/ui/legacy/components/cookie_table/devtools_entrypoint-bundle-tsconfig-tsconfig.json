@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -44,10 +45,10 @@
   ],
   "references": [
     {
-      "path": "./cookie_table-tsconfig.json"
+      "path": "./cookie_table-tsconfig.ref.json"
     },
     {
-      "path": "./css_files-tsconfig.json"
+      "path": "../../../../../../tsc/front_end/ui/legacy/components/cookie_table/css_files-tsconfig.ref.json"
     }
   ]
 }

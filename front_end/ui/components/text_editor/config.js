@@ -37,15 +37,20 @@ export const dynamicSetting = CM.Facet.define();
 // changes in the setting, and updating the configuration as
 // appropriate.
 export class DynamicSetting {
-    settingName;
     getExtension;
     compartment = new CM.Compartment();
-    constructor(settingName, getExtension) {
-        this.settingName = settingName;
+    setting;
+    constructor(setting, getExtension) {
         this.getExtension = getExtension;
+        this.setting = setting;
+    }
+    get settingName() {
+        return typeof this.setting === 'string' ? this.setting : this.setting.name;
     }
     settingValue() {
-        return Common.Settings.Settings.instance().moduleSetting(this.settingName).get();
+        return (typeof this.setting === 'string' ? Common.Settings.Settings.instance().moduleSetting(this.setting) :
+            Common.Settings.Settings.instance().resolve(this.setting))
+            .get();
     }
     instance() {
         return [
@@ -58,8 +63,8 @@ export class DynamicSetting {
         const needed = this.getExtension(value);
         return cur === needed ? null : this.compartment.reconfigure(needed);
     }
-    static bool(name, enabled, disabled = empty) {
-        return new DynamicSetting(name, val => val ? enabled : disabled);
+    static bool(setting, enabled, disabled = empty) {
+        return new DynamicSetting(setting, val => val ? enabled : disabled);
     }
     static none = [];
 }

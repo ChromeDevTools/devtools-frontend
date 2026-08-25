@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -45,7 +46,7 @@
   ],
   "references": [
     {
-      "path": "../intl-messageformat/bundle-tsconfig.json"
+      "path": "../intl-messageformat/bundle-tsconfig.ref.json"
     }
   ]
 }

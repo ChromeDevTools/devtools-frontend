@@ -94,13 +94,8 @@ export class AiAgent {
     #sessionId;
     #aidaClient;
     /**
-     * Whether server-side logging is permitted by the system policy (based on
-     * user preferences, feature flags, or branding configurations).
-     */
-    #serverSideLoggingAllowed;
-    /**
      * Tracks the dynamic runtime state of logging. Even if logging is allowed
-     * by policy, tools can temporarily deactivate this to avoid logging sensitive data.
+     * by policy, tools or sensitive contexts can deactivate this to avoid logging sensitive data.
      */
     #serverSideLoggingActive;
     confirmSideEffect;
@@ -128,7 +123,6 @@ export class AiAgent {
         if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
             serverSideLoggingAllowed = false;
         }
-        this.#serverSideLoggingAllowed = serverSideLoggingAllowed;
         this.#serverSideLoggingActive = serverSideLoggingAllowed;
         this.#sessionId = opts.sessionId ?? crypto.randomUUID();
         this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
@@ -172,17 +166,14 @@ export class AiAgent {
     clearCache() {
     }
     /**
-     * Toggles whether server-side logging is active.
-     * Note that logging can only be activated if it was allowed by policy/configuration
-     * at startup (i.e., `#serverSideLoggingAllowed` is true).
+     * Disables server-side logging for the remainder of this agent instance's lifetime.
+     *
+     * Logging deactivation is irreversible for the session. Conversation history
+     * accumulates across turns; re-enabling logging later would leak sensitive
+     * data from prior turns to AIDA.
      */
-    setServerSideLoggingActive(active) {
-        if (active && this.#serverSideLoggingAllowed) {
-            this.#serverSideLoggingActive = true;
-        }
-        else {
-            this.#serverSideLoggingActive = false;
-        }
+    disableServerSideLogging() {
+        this.#serverSideLoggingActive = false;
     }
     popPendingMultimodalInput() {
         return undefined;
@@ -332,9 +323,9 @@ export class AiAgent {
     }
     async *run(initialQuery, options, multimodalInput) {
         await options.selected?.refresh();
-        if (options.selected) {
-            this.context = options.selected;
-        }
+        // Reset context on each run so cleared selections (`null`) do not leave
+        // stale context references on long-lived agent instances (e.g. `AiAgent2`).
+        this.context = options.selected ?? undefined;
         await this.preRun();
         const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, multimodalInput?.type);
         if (!enhancedQuery.trim() && !multimodalInput) {

@@ -11,6 +11,17 @@ export class ElementAccessibilityIssue extends Issue {
         ].join('::');
         super(issueCode, issueDetails, issuesModel, issueId);
     }
+    elements() {
+        const details = this.details();
+        if (details.nodeId) {
+            return [{
+                    backendNodeId: details.nodeId,
+                    nodeName: '',
+                    target: this.model()?.target() ?? null,
+                }];
+        }
+        return [];
+    }
     primaryKey() {
         return JSON.stringify(this.details());
     }

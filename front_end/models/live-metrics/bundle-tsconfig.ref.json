@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/models/live-metrics","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/models/live-metrics/live-metrics.ts"],"references":[{"path":"./live-metrics-tsconfig.ref.json"}]}

@@ -37,7 +37,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Elements from '../../models/elements/elements.js';
-import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
@@ -121,8 +120,27 @@ export const DEFAULT_VIEW = (input, output, target) => {
             if (!(hoveredNode instanceof Element) || !hoveredNode.matches('.violating-element')) {
                 return null;
             }
-            const issues = elementsTreeOutline.issuesByNodeElement(hoveredNode);
-            if (!issues) {
+            const listItem = UI.UIUtils.enclosingNodeOrSelfWithNodeName(hoveredNode, 'li');
+            if (!listItem) {
+                return null;
+            }
+            const treeElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
+            const node = treeElement?.node();
+            if (!node) {
+                return null;
+            }
+            let issues = treeElement?.widget?.issues ?? [];
+            if (hoveredNode.classList.contains('webkit-html-attribute-name')) {
+                const attrName = hoveredNode.textContent;
+                issues = issues.filter(issue => getElementIssueDetails(issue)?.attribute === attrName);
+            }
+            else if (hoveredNode.classList.contains('webkit-html-tag-name')) {
+                issues = issues.filter(issue => {
+                    const details = getElementIssueDetails(issue);
+                    return Boolean(details && !details.attribute);
+                });
+            }
+            if (issues.length === 0) {
                 return null;
             }
             return {
@@ -332,12 +350,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         isUpdatingHighlights: false,
     };
     #highlightThrottler = new Common.Throttler.Throttler(100);
-    constructor(element, view) {
+    constructor(element, view = DEFAULT_VIEW) {
         super(element, {
             useShadowDom: false,
             delegatesFocus: false,
         });
-        this.#view = view ?? DEFAULT_VIEW;
+        this.#view = view;
         this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
         if (Common.Settings.Settings.instance().moduleSetting('highlight-node-on-hover-in-overlay').get()) {
             SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel, "HighlightNodeRequested" /* SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED */, this.#highlightNode, this, { scoped: true });
@@ -589,8 +607,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     dragOverTreeElement;
     updateModifiedNodesTimeout;
     #topLayerContainerByDocument = new WeakMap();
-    #issuesManager;
-    #nodeElementToIssues = new Map();
     maxTreeDepth;
     enableContextMenu;
     showComments;
@@ -601,9 +617,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     #showAllButton;
     constructor(omitRootDOMNode, selectEnabled, hideGutter, maxTreeDepth, enableContextMenu, showComments, showAIButton, disableEdits, expandRoot) {
         super();
-        this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
-        this.#issuesManager.addEventListener("IssueAdded" /* IssuesManager.IssuesManager.Events.ISSUE_ADDED */, this.#onIssueAdded, this);
-        this.#issuesManager.addEventListener("IssueHiddenStatusUpdated" /* IssuesManager.IssuesManager.Events.ISSUE_HIDDEN_STATUS_UPDATED */, this.#onIssueHiddenStatusUpdated, this);
         this.treeElementByNode = new WeakMap();
         const shadowContainer = document.createElement('div');
         this.shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(shadowContainer, { cssFile: [elementsTreeOutlineStyles, CodeHighlighter.codeHighlighterStyles] });
@@ -650,89 +663,11 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     static forDOMModel(domModel) {
         return elementsTreeOutlineByDOMModel.get(domModel) || null;
     }
-    #onIssueAdded(event) {
-        void this.#addTreeElementIssue(event.data.issue);
-    }
-    #onIssueHiddenStatusUpdated(event) {
-        const issue = event.data.issue;
-        if (!issue) {
-            return;
-        }
-        if (issue.isHidden()) {
-            void this.#removeTreeElementIssue(issue);
-            return;
-        }
-        void this.#addTreeElementIssue(issue);
-    }
-    #addAllElementIssues() {
-        if (!this.#issuesManager) {
-            return;
-        }
-        for (const issue of this.#issuesManager.issues()) {
-            void this.#addTreeElementIssue(issue);
-        }
-    }
-    async #addTreeElementIssue(issue) {
-        if (issue.isHidden()) {
-            return;
-        }
-        const elementIssueDetails = getElementIssueDetails(issue);
-        if (!elementIssueDetails) {
-            return;
-        }
-        const { nodeId } = elementIssueDetails;
-        if (!this.rootDOMNode || !nodeId) {
-            return;
-        }
-        const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(this.rootDOMNode.domModel().target(), nodeId);
-        const node = await deferredDOMNode.resolvePromise();
-        if (!node) {
-            return;
-        }
-        const treeElement = this.findTreeElement(node);
-        if (treeElement) {
-            treeElement.addIssue(issue);
-            const treeElementNodeElementsToIssues = treeElement.issuesByNodeElement;
-            // This element could be the treeElement tags name or an attribute.
-            for (const [element, issues] of treeElementNodeElementsToIssues) {
-                this.#nodeElementToIssues.set(element, issues);
-            }
-        }
-    }
-    async #removeTreeElementIssue(issue) {
-        const elementIssueDetails = getElementIssueDetails(issue);
-        if (!elementIssueDetails) {
-            return;
-        }
-        const { nodeId } = elementIssueDetails;
-        if (!this.rootDOMNode || !nodeId) {
-            return;
-        }
-        const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(this.rootDOMNode.domModel().target(), nodeId);
-        const node = await deferredDOMNode.resolvePromise();
-        if (!node) {
-            return;
-        }
-        const treeElement = this.findTreeElement(node);
-        if (treeElement) {
-            treeElement.removeIssue(issue);
-        }
-    }
     deindentSingleNode() {
         const firstChild = this.firstChild();
         if (!firstChild || (firstChild && !firstChild.isExpandable())) {
             this.shadowRoot.querySelector('.elements-disclosure')?.classList.add('single-node');
         }
-    }
-    updateNodeElementToIssue(element, issues) {
-        if (!issues || issues.length === 0) {
-            this.#nodeElementToIssues.delete(element);
-            return;
-        }
-        this.#nodeElementToIssues.set(element, issues);
-    }
-    issuesByNodeElement(element) {
-        return this.#nodeElementToIssues.get(element);
     }
     setWordWrap(wrap) {
         this.elementInternal.classList.toggle('elements-tree-nowrap', !wrap);
@@ -1427,7 +1362,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         this.reset();
         if (domModel.existingDocument()) {
             this.rootDOMNode = domModel.existingDocument();
-            this.#addAllElementIssues();
         }
     }
     attributeModified(event) {

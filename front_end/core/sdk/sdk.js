@@ -39848,10 +39848,6 @@ var StorageBucketsModel = class extends SDKModel {
   }
   cacheStorageContentUpdated(_event) {
   }
-  sharedStorageAccessed(_event) {
-  }
-  sharedStorageWorkletOperationExecutionFinished(_event) {
-  }
 };
 SDKModel.register(StorageBucketsModel, { capabilities: 8192, autostart: false });
 
@@ -40066,10 +40062,6 @@ var ServiceWorkerCacheModel = class extends SDKModel {
   indexedDBListUpdated(_event) {
   }
   indexedDBContentUpdated(_event) {
-  }
-  sharedStorageAccessed(_event) {
-  }
-  sharedStorageWorkletOperationExecutionFinished(_event) {
   }
   storageBucketCreatedOrUpdated(_event) {
   }

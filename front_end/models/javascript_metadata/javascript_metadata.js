@@ -7907,6 +7907,10 @@ var NativeFunctions = [
     signatures: [["reportId"]]
   },
   {
+    name: "playHaptics",
+    signatures: [["effect", "?intensity"]]
+  },
+  {
     name: "addStroke",
     signatures: [["stroke"]]
   },

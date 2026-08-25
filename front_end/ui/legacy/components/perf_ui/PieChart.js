@@ -8,7 +8,7 @@ import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import pieChartStyles from './pieChart.css.js';
 const UIStrings = {
     /**
-     * @description Text for sum
+     * @description Label for the total sum in a pie chart legend.
      */
     total: 'Total',
 };

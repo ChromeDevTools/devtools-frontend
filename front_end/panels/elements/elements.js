@@ -4545,6 +4545,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       return;
     }
     this.#stylesContainer.setUserOperation(true);
+    this.#stylesContainer.suppressResets();
     const success = await this.property.setDisabled(disabled);
     this.#stylesContainer.setUserOperation(false);
     if (!success) {
@@ -5566,6 +5567,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     }
     const currentNode = this.#stylesContainer.node();
     this.#stylesContainer.setUserOperation(true);
+    this.#stylesContainer.suppressResets();
     styleText += Platform2.StringUtilities.findUnclosedCssQuote(styleText);
     styleText += ")".repeat(Platform2.StringUtilities.countUnmatchedLeftParentheses(styleText));
     if (styleText.length && !/;\s*$/.test(styleText)) {
@@ -8592,6 +8594,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   sectionBlocks = [];
   idleCallbackManager = null;
   needsForceUpdate = false;
+  isSuppressingResets = false;
   resizeThrottler = new Common5.Throttler.Throttler(100);
   resetUpdateThrottler = new Common5.Throttler.Throttler(500);
   computedStyleUpdateThrottler = new Common5.Throttler.Throttler(500);
@@ -8606,6 +8609,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   aiCodeCompletionProvider;
   #aiCodeCompletionSummaryToolbarContainer;
   #aiCodeCompletionSummaryToolbar;
+  #aiCodeCompletionEnabled = false;
   #shouldRenderLazily = false;
   #lazyRenderObserver;
   #lazyRenderCallbacks = /* @__PURE__ */ new WeakMap();
@@ -8652,9 +8656,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
         completionContext: {},
         generationContext: {},
         onFeatureEnabled: () => {
+          this.#aiCodeCompletionEnabled = true;
           this.#createAiCodeCompletionSummaryToolbar();
         },
         onFeatureDisabled: () => {
+          this.#aiCodeCompletionEnabled = false;
           this.#cleanupAiCodeCompletion();
         },
         onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
@@ -8679,6 +8685,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     return this.#swatchPopoverHelper;
   }
   setUserOperation(userOperation) {
+    if (userOperation) {
+      this.isSuppressingResets = false;
+    }
     this.userOperation = userOperation;
   }
   revealProperty(cssProperty) {
@@ -8971,6 +8980,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     return Promise.resolve();
   }
   resetCache() {
+    this.isSuppressingResets = false;
     const cssModel = this.cssModel();
     if (cssModel) {
       cssModel.discardCachedMatchedCascade();
@@ -8991,6 +9001,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     }
   }
   setEditingStyle(editing) {
+    if (editing) {
+      this.isSuppressingResets = false;
+    }
     if (this.isEditingStyle === editing) {
       return;
     }
@@ -9054,8 +9067,14 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.resetCache();
     this.requestUpdate();
   }
+  suppressResets() {
+    this.isSuppressingResets = true;
+  }
   #scheduleResetUpdateIfNotEditing() {
     this.scheduleResetUpdateIfNotEditingCalledForTest();
+    if (this.isSuppressingResets) {
+      return;
+    }
     if (this.userOperation || this.isEditingStyle) {
       return;
     }
@@ -9518,6 +9537,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   wasShown() {
     UI10.Context.Context.instance().setFlavor(_StylesSidebarPane, this);
     super.wasShown();
+    if (this.#aiCodeCompletionEnabled && !this.#aiCodeCompletionSummaryToolbar) {
+      this.#createAiCodeCompletionSummaryToolbar();
+    }
   }
   willHide() {
     this.hideAllPopovers();
@@ -9680,7 +9702,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.#aiCodeCompletionSummaryToolbar = void 0;
   }
   #createAiCodeCompletionSummaryToolbar() {
-    if (this.#aiCodeCompletionSummaryToolbar) {
+    if (!this.#aiCodeCompletionEnabled || this.#aiCodeCompletionSummaryToolbar) {
+      return;
+    }
+    const containingPane = this.contentElement.enclosingNodeOrSelfWithClass("style-panes-wrapper");
+    if (!containingPane) {
       return;
     }
     this.#aiCodeCompletionSummaryToolbar = new PanelsCommon2.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar({
@@ -9689,7 +9715,6 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       spinnerTooltipId: SPINNER_TOOLTIP_ID,
       disclaimerTextVariant: "styles"
     });
-    const containingPane = this.contentElement.enclosingNodeOrSelfWithClass("style-panes-wrapper");
     this.#aiCodeCompletionSummaryToolbarContainer = containingPane.createChild("div", "ai-code-completion-summary-toolbar-container");
     this.#aiCodeCompletionSummaryToolbarContainer.role = "toolbar";
     this.#aiCodeCompletionSummaryToolbar.show(this.#aiCodeCompletionSummaryToolbarContainer, void 0, true);
@@ -11681,7 +11706,6 @@ import * as i18n34 from "./../../core/i18n/i18n.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
 import * as Badges4 from "./../../models/badges/badges.js";
 import * as Elements from "./../../models/elements/elements.js";
-import * as IssuesManager2 from "./../../models/issues_manager/issues_manager.js";
 import * as CodeHighlighter5 from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting3 from "./../../ui/components/highlighting/highlighting.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
@@ -12150,6 +12174,7 @@ import * as TextUtils7 from "./../../core/text_utils/text_utils.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges3 from "./../../models/badges/badges.js";
 import * as Bindings5 from "./../../models/bindings/bindings.js";
+import * as IssuesManager2 from "./../../models/issues_manager/issues_manager.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as CodeMirror2 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
@@ -12241,8 +12266,12 @@ var i18nString11 = i18n22.i18n.getLocalizedString.bind(void 0, str_11);
 function getElementIssueDetails(issue) {
   if (issue instanceof IssuesManager.GenericIssue.GenericIssue) {
     const issueDetails = issue.details();
+    const tooltip = getTooltipFromGenericIssue(issueDetails.errorType);
+    if (!tooltip) {
+      return void 0;
+    }
     return {
-      tooltip: getTooltipFromGenericIssue(issueDetails.errorType),
+      tooltip,
       nodeId: issueDetails.violatingNodeId,
       attribute: issueDetails.violatingNodeAttribute
     };
@@ -12255,8 +12284,12 @@ function getElementIssueDetails(issue) {
         nodeId: issueDetails.nodeId
       };
     }
+    const tooltip = getTooltipFromElementAccessibilityIssue(issueDetails.elementAccessibilityIssueReason);
+    if (!tooltip) {
+      return void 0;
+    }
     return {
-      tooltip: getTooltipFromElementAccessibilityIssue(issueDetails.elementAccessibilityIssueReason),
+      tooltip,
       nodeId: issueDetails.nodeId
     };
   }
@@ -12802,7 +12835,7 @@ function getRegisteredDecorators() {
 }
 
 // gen/front_end/panels/elements/ElementsTreeElement.js
-var { html: html12, nothing: nothing5, render: render10, Directives: { ref: ref3, repeat } } = Lit7;
+var { html: html12, nothing: nothing5, render: render10, Directives: { classMap: classMap3, ref: ref3, repeat, until } } = Lit7;
 var { animateOn } = UI15.UIUtils;
 var UIStrings14 = {
   /**
@@ -12996,10 +13029,10 @@ function handleAdornerKeydown(cb) {
     }
   };
 }
-function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, updateRecord, onUpdateSearchHighlight, onExpand2) {
+function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, updateRecord, onUpdateSearchHighlight, onExpand2, issues) {
   switch (node.nodeType()) {
     case Node.ATTRIBUTE_NODE:
-      return renderAttribute({ name: node.name, value: node.value }, updateRecord, true, node);
+      return renderAttribute({ name: node.name, value: node.value }, updateRecord, true, node, issues);
     case Node.ELEMENT_NODE: {
       if (node.pseudoType()) {
         let pseudoElementName = node.nodeName();
@@ -13011,13 +13044,13 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
       }
       const tagName = node.nodeNameInCorrectCase();
       if (isClosingTag) {
-        return renderTag(node, tagName, true, expanded, true, updateRecord);
+        return renderTag(node, tagName, true, expanded, true, updateRecord, issues);
       }
-      const openingTag = renderTag(node, tagName, false, expanded, false, updateRecord);
+      const openingTag = renderTag(node, tagName, false, expanded, false, updateRecord, issues);
       if (isExpandable) {
         if (!expanded) {
           return html12`${openingTag}<devtools-elements-tree-expand-button .data=${{ clickHandler: onExpand2 }}></devtools-elements-tree-expand-button><span style="font-size: 0;"
-                  >…</span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+                  >…</span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
         }
         return openingTag;
       }
@@ -13034,10 +13067,10 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
             Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
           }
         });
-        return html12`${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging9.value("text-node").track({ change: true, dblclick: true })} ${animateOn(Boolean(updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+        return html12`${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging9.value("text-node").track({ change: true, dblclick: true })} ${animateOn(Boolean(updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
       }
       if (isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
-        return html12`${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+        return html12`${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
       }
       return openingTag;
     }
@@ -13187,7 +13220,7 @@ function renderLinkifiedValue(value5, node) {
 }
 var relationPromisesCache = /* @__PURE__ */ new WeakMap();
 var relatedElementsCache = /* @__PURE__ */ new WeakMap();
-function renderAttribute(attr, updateRecord, isDiff, node) {
+function renderAttribute(attr, updateRecord, isDiff, node, issues) {
   const name = attr.name;
   const value5 = attr.value || "";
   const forceValue = isDiff;
@@ -13274,15 +13307,20 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
     change: true,
     dblclick: true
   });
-  return html12`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? Lit7.Directives.until(relationPromise, name) : name}</span>${hasText ? html12`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
+  const hasAttributeIssues = Boolean(issues?.some((issue) => getElementIssueDetails(issue)?.attribute === name));
+  const attributeNameClasses = {
+    "webkit-html-attribute-name": true,
+    "violating-element": hasAttributeIssues
+  };
+  return html12`<span class="webkit-html-attribute" jslog=${jslog}><span class=${classMap3(attributeNameClasses)}
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until(relationPromise, name) : name}</span>${hasText ? html12`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
                         ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing5}
                         ${valueType === 2 ? renderLinkifiedSrcset(Common9.Srcset.parseSrcset(value5), node) : nothing5}
-                        ${linkifyValue && relationPromise ? Lit7.Directives.until(relationPromise, value5) : nothing5}
+                        ${linkifyValue && relationPromise ? until(relationPromise, value5) : nothing5}
                 </span>"` : nothing5}</span>`;
 }
-function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
-  const classMap3 = {
+function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord, issues) {
+  const tagClasses = {
     "webkit-html-tag": true,
     close: isClosingTag && isDistinctTreeElement
   };
@@ -13298,11 +13336,19 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
     }
   });
   const tagNameClass = isClosingTag ? "webkit-html-close-tag-name" : "webkit-html-tag-name";
+  const hasTagIssues = !isClosingTag && Boolean(issues?.some((issue) => {
+    const details = getElementIssueDetails(issue);
+    return Boolean(details && !details.attribute);
+  }));
+  const tagNameClasses = {
+    [tagNameClass]: true,
+    "violating-element": hasTagIssues
+  };
   const tagString = (isClosingTag ? "/" : "") + tagName;
   const jslog = !isClosingTag ? VisualLogging9.value("tag-name").track({ change: true, dblclick: true }) : "";
   return html12`<span
-      class=${Lit7.Directives.classMap(classMap3)} ${setAriaLabel}
-      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing5} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html12` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
+      class=${classMap3(tagClasses)} ${setAriaLabel}
+      >&lt;<span class=${classMap3(tagNameClasses)} jslog=${jslog || nothing5} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html12` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
 }
 function maybeRenderAdAdorner(input) {
   if (!input.adProvenance) {
@@ -13369,11 +13415,11 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     <div ${ref3((el) => {
     output.contentElement = el;
   })}>
-      ${input.node ? html12`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand)}</span>` : nothing5}
+      ${input.node ? html12`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand, input.issues)}</span>` : nothing5}
       ${input.isHovered || input.isSelected ? html12`
         <div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>
       ` : nothing5}
-      <div class=${Lit7.Directives.classMap(gutterContainerClasses)}
+      <div class=${classMap3(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
         <devtools-icon name="dots-horizontal"></devtools-icon>
@@ -13595,6 +13641,8 @@ var DEFAULT_VIEW5 = (input, output, target) => {
   `, target);
 };
 var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
+  static INJECT = [IssuesManager2.DOMIssuesManager.DOMIssuesManager];
+  #domIssuesManager;
   #node;
   isClosingTag = false;
   #expanded = false;
@@ -13619,7 +13667,6 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   revealInTopLayer;
   showContextMenu;
   populateTreeElement;
-  updateNodeElementToIssue;
   performCopyOrCut;
   duplicateNode;
   pasteNode;
@@ -13645,8 +13692,6 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   #editorState = null;
   #editorWidth = null;
   expandAllButtonElement;
-  #elementIssues = /* @__PURE__ */ new Map();
-  #nodeElementToIssue = /* @__PURE__ */ new Map();
   #highlights = [];
   #adornersThrottler = new Common9.Throttler.Throttler(100);
   #containerAdornerActive = false;
@@ -13705,8 +13750,21 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       canAddAttributes: this.#node ? this.#node.nodeType() === Node.ELEMENT_NODE : false
     };
   }
-  constructor(element, view = DEFAULT_VIEW5) {
+  get issues() {
+    if (!this.#domIssuesManager) {
+      const universe = UI15.Widget.lookupUniverseForElement(this.contentElement);
+      if (universe) {
+        this.#domIssuesManager = universe.get(IssuesManager2.DOMIssuesManager.DOMIssuesManager);
+        if (this.node?.id) {
+          this.#domIssuesManager.subscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+        }
+      }
+    }
+    return this.#domIssuesManager?.issuesForNode(this.node) ?? [];
+  }
+  constructor(element, [domIssuesManager] = [void 0], view = DEFAULT_VIEW5) {
     super(element);
+    this.#domIssuesManager = domIssuesManager;
     this.#view = view;
     this.searchQuery = null;
     this.#expandedChildrenLimit = InitialChildrenLimit;
@@ -13859,7 +13917,8 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
         }
       },
       editorState: this.#editorState,
-      editorWidth: this.#editorWidth
+      editorWidth: this.#editorWidth,
+      issues: this.issues
     }, output, this.contentElement);
     this.#editorRef = output.editorRef;
     if (this.#updateRecord) {
@@ -14016,104 +14075,6 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     this.#hovered = isHovered;
     this.requestUpdate();
   }
-  addIssue(newIssue) {
-    if (this.#elementIssues.has(newIssue.primaryKey())) {
-      return;
-    }
-    this.#elementIssues.set(newIssue.primaryKey(), newIssue);
-    this.#applyIssueStyleAndTooltip(newIssue);
-  }
-  #applyIssueStyleAndTooltip(issue) {
-    const elementIssueDetails = getElementIssueDetails(issue);
-    if (!elementIssueDetails) {
-      return;
-    }
-    if (elementIssueDetails.attribute) {
-      this.#highlightViolatingAttr(elementIssueDetails.attribute, issue);
-    } else {
-      this.#highlightTagAsViolating(issue);
-    }
-  }
-  get issuesByNodeElement() {
-    return this.#nodeElementToIssue;
-  }
-  #highlightViolatingAttr(name, issue) {
-    const tag = this.contentElement.querySelectorAll(".webkit-html-tag")[0];
-    const attributes = tag.getElementsByClassName("webkit-html-attribute");
-    for (const attribute of attributes) {
-      if (attribute.getElementsByClassName("webkit-html-attribute-name")[0].textContent === name) {
-        const attributeElement = attribute.getElementsByClassName("webkit-html-attribute-name")[0];
-        attributeElement.classList.add("violating-element");
-        this.#recordAndNotifyIssue(attributeElement, issue);
-      }
-    }
-  }
-  #highlightTagAsViolating(issue) {
-    const tagElement = this.contentElement.querySelectorAll(".webkit-html-tag-name")[0];
-    tagElement.classList.add("violating-element");
-    this.#recordAndNotifyIssue(tagElement, issue);
-  }
-  #recordAndNotifyIssue(nodeElement, issue) {
-    let issues = this.#nodeElementToIssue.get(nodeElement);
-    if (!issues) {
-      issues = [];
-      this.#nodeElementToIssue.set(nodeElement, issues);
-    }
-    issues.push(issue);
-    this.updateNodeElementToIssue?.(nodeElement, issues);
-  }
-  removeIssue(issue) {
-    if (!this.#elementIssues.has(issue.primaryKey())) {
-      return;
-    }
-    this.#removeIssueStyleAndTooltip(issue);
-    this.#elementIssues.delete(issue.primaryKey());
-  }
-  #removeIssueStyleAndTooltip(issue) {
-    const elementIssueDetails = getElementIssueDetails(issue);
-    if (!elementIssueDetails) {
-      return;
-    }
-    if (elementIssueDetails.attribute) {
-      this.#undoHighlightViolatingAttr(elementIssueDetails.attribute, issue);
-    } else {
-      this.#undoHighlightTagAsViolating(issue);
-    }
-  }
-  #undoHighlightViolatingAttr(name, issue) {
-    const violatingAttributes = this.contentElement.querySelectorAll(".webkit-html-attribute-name.violating-element");
-    for (const attributeElement of violatingAttributes) {
-      if (attributeElement.textContent === name) {
-        this.#removeFromNodeElementToIssue(attributeElement, issue);
-        if (!this.#nodeElementToIssue.has(attributeElement)) {
-          attributeElement.classList.remove("violating-element");
-        }
-      }
-    }
-  }
-  #undoHighlightTagAsViolating(issue) {
-    const tagElement = this.contentElement.querySelectorAll(".webkit-html-tag-name")[0];
-    if (!tagElement) {
-      return;
-    }
-    this.#removeFromNodeElementToIssue(tagElement, issue);
-    if (!this.#nodeElementToIssue.has(tagElement)) {
-      tagElement.classList.remove("violating-element");
-    }
-  }
-  #removeFromNodeElementToIssue(nodeElement, issue) {
-    let issues = this.#nodeElementToIssue.get(nodeElement);
-    if (!issues) {
-      return;
-    }
-    issues = issues.filter((i) => i !== issue);
-    if (issues.length === 0) {
-      this.#nodeElementToIssue.delete(nodeElement);
-    } else {
-      this.#nodeElementToIssue.set(nodeElement, issues);
-    }
-    this.updateNodeElementToIssue?.(nodeElement, issues);
-  }
   expandedChildrenLimit() {
     return this.#expandedChildrenLimit;
   }
@@ -14133,6 +14094,9 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       this.node.addEventListener(SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
       this.node.addEventListener(SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
       this.node.addEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
+      if (this.#domIssuesManager && this.node.id) {
+        this.#domIssuesManager.subscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+      }
     }
   }
   clearView() {
@@ -14211,7 +14175,8 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       decorationsTooltip: "",
       indent: 0,
       editorState: null,
-      editorWidth: null
+      editorWidth: null,
+      issues: []
     }, {}, this.contentElement);
   }
   onunbind() {
@@ -14226,7 +14191,13 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     this.node.removeEventListener(SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
     this.node.removeEventListener(SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
     this.node.removeEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
+    if (this.#domIssuesManager && this.node.id) {
+      this.#domIssuesManager.unsubscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+    }
   }
+  #onDOMIssueUpdated = () => {
+    this.performUpdate();
+  };
   #onScrollableFlagUpdated() {
     void this.#updateAdorners();
   }
@@ -14818,9 +14789,6 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     }
     this.performUpdate();
     this.updateDecorations();
-    for (const issue of this.#elementIssues.values()) {
-      this.#applyIssueStyleAndTooltip(issue);
-    }
     this.#highlightSearchResults();
   }
   updateDecorations() {
@@ -15142,15 +15110,6 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
   copyStyles() {
     return this.widget.copyStyles();
   }
-  addIssue(issue) {
-    this.widget.addIssue(issue);
-  }
-  get issuesByNodeElement() {
-    return this.widget.issuesByNodeElement;
-  }
-  removeIssue(issue) {
-    this.widget.removeIssue(issue);
-  }
   setInClipboard(inClipboard) {
     this.widget.setInClipboard(inClipboard);
     if (this.listItemElement) {
@@ -15229,7 +15188,6 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
       this.widget.revealInTopLayer = (node) => outline.revealInTopLayer(node);
       this.widget.showContextMenu = (event) => void outline.showContextMenu(this, event);
       this.widget.populateTreeElement = async () => await outline.populateTreeElement(this);
-      this.widget.updateNodeElementToIssue = (el, issues) => outline.updateNodeElementToIssue(el, issues);
       this.widget.performCopyOrCut = (isCut, node, isElement) => outline.performCopyOrCut(isCut, node, isElement);
       this.widget.duplicateNode = (node) => outline.duplicateNode(node);
       this.widget.pasteNode = (node) => outline.pasteNode(node);
@@ -16526,8 +16484,26 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       if (!(hoveredNode instanceof Element) || !hoveredNode.matches(".violating-element")) {
         return null;
       }
-      const issues = elementsTreeOutline.issuesByNodeElement(hoveredNode);
-      if (!issues) {
+      const listItem = UI19.UIUtils.enclosingNodeOrSelfWithNodeName(hoveredNode, "li");
+      if (!listItem) {
+        return null;
+      }
+      const treeElement = UI19.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
+      const node = treeElement?.node();
+      if (!node) {
+        return null;
+      }
+      let issues = treeElement?.widget?.issues ?? [];
+      if (hoveredNode.classList.contains("webkit-html-attribute-name")) {
+        const attrName = hoveredNode.textContent;
+        issues = issues.filter((issue) => getElementIssueDetails(issue)?.attribute === attrName);
+      } else if (hoveredNode.classList.contains("webkit-html-tag-name")) {
+        issues = issues.filter((issue) => {
+          const details = getElementIssueDetails(issue);
+          return Boolean(details && !details.attribute);
+        });
+      }
+      if (issues.length === 0) {
         return null;
       }
       return {
@@ -16727,12 +16703,12 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     isUpdatingHighlights: false
   };
   #highlightThrottler = new Common12.Throttler.Throttler(100);
-  constructor(element, view) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element, {
       useShadowDom: false,
       delegatesFocus: false
     });
-    this.#view = view ?? DEFAULT_VIEW7;
+    this.#view = view;
     this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
     if (Common12.Settings.Settings.instance().moduleSetting("highlight-node-on-hover-in-overlay").get()) {
       SDK16.TargetManager.TargetManager.instance().addModelListener(SDK16.OverlayModel.OverlayModel, "HighlightNodeRequested", this.#highlightNode, this, { scoped: true });
@@ -16982,8 +16958,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
   dragOverTreeElement;
   updateModifiedNodesTimeout;
   #topLayerContainerByDocument = /* @__PURE__ */ new WeakMap();
-  #issuesManager;
-  #nodeElementToIssues = /* @__PURE__ */ new Map();
   maxTreeDepth;
   enableContextMenu;
   showComments;
@@ -16994,9 +16968,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
   #showAllButton;
   constructor(omitRootDOMNode, selectEnabled, hideGutter, maxTreeDepth, enableContextMenu, showComments, showAIButton, disableEdits, expandRoot) {
     super();
-    this.#issuesManager = IssuesManager2.IssuesManager.IssuesManager.instance();
-    this.#issuesManager.addEventListener("IssueAdded", this.#onIssueAdded, this);
-    this.#issuesManager.addEventListener("IssueHiddenStatusUpdated", this.#onIssueHiddenStatusUpdated, this);
     this.treeElementByNode = /* @__PURE__ */ new WeakMap();
     const shadowContainer = document.createElement("div");
     this.shadowRoot = UI19.UIUtils.createShadowRootWithCoreStyles(shadowContainer, { cssFile: [elementsTreeOutline_css_default, CodeHighlighter5.codeHighlighterStyles] });
@@ -17043,88 +17014,11 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
   static forDOMModel(domModel) {
     return elementsTreeOutlineByDOMModel.get(domModel) || null;
   }
-  #onIssueAdded(event) {
-    void this.#addTreeElementIssue(event.data.issue);
-  }
-  #onIssueHiddenStatusUpdated(event) {
-    const issue = event.data.issue;
-    if (!issue) {
-      return;
-    }
-    if (issue.isHidden()) {
-      void this.#removeTreeElementIssue(issue);
-      return;
-    }
-    void this.#addTreeElementIssue(issue);
-  }
-  #addAllElementIssues() {
-    if (!this.#issuesManager) {
-      return;
-    }
-    for (const issue of this.#issuesManager.issues()) {
-      void this.#addTreeElementIssue(issue);
-    }
-  }
-  async #addTreeElementIssue(issue) {
-    if (issue.isHidden()) {
-      return;
-    }
-    const elementIssueDetails = getElementIssueDetails(issue);
-    if (!elementIssueDetails) {
-      return;
-    }
-    const { nodeId } = elementIssueDetails;
-    if (!this.rootDOMNode || !nodeId) {
-      return;
-    }
-    const deferredDOMNode = new SDK16.DOMModel.DeferredDOMNode(this.rootDOMNode.domModel().target(), nodeId);
-    const node = await deferredDOMNode.resolvePromise();
-    if (!node) {
-      return;
-    }
-    const treeElement = this.findTreeElement(node);
-    if (treeElement) {
-      treeElement.addIssue(issue);
-      const treeElementNodeElementsToIssues = treeElement.issuesByNodeElement;
-      for (const [element, issues] of treeElementNodeElementsToIssues) {
-        this.#nodeElementToIssues.set(element, issues);
-      }
-    }
-  }
-  async #removeTreeElementIssue(issue) {
-    const elementIssueDetails = getElementIssueDetails(issue);
-    if (!elementIssueDetails) {
-      return;
-    }
-    const { nodeId } = elementIssueDetails;
-    if (!this.rootDOMNode || !nodeId) {
-      return;
-    }
-    const deferredDOMNode = new SDK16.DOMModel.DeferredDOMNode(this.rootDOMNode.domModel().target(), nodeId);
-    const node = await deferredDOMNode.resolvePromise();
-    if (!node) {
-      return;
-    }
-    const treeElement = this.findTreeElement(node);
-    if (treeElement) {
-      treeElement.removeIssue(issue);
-    }
-  }
   deindentSingleNode() {
     const firstChild = this.firstChild();
     if (!firstChild || firstChild && !firstChild.isExpandable()) {
       this.shadowRoot.querySelector(".elements-disclosure")?.classList.add("single-node");
     }
-  }
-  updateNodeElementToIssue(element, issues) {
-    if (!issues || issues.length === 0) {
-      this.#nodeElementToIssues.delete(element);
-      return;
-    }
-    this.#nodeElementToIssues.set(element, issues);
-  }
-  issuesByNodeElement(element) {
-    return this.#nodeElementToIssues.get(element);
   }
   setWordWrap(wrap) {
     this.elementInternal.classList.toggle("elements-tree-nowrap", !wrap);
@@ -17791,7 +17685,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     this.reset();
     if (domModel.existingDocument()) {
       this.rootDOMNode = domModel.existingDocument();
-      this.#addAllElementIssues();
     }
   }
   attributeModified(event) {
@@ -18856,7 +18749,7 @@ import * as Common14 from "./../../core/common/common.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
 import * as UI21 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html16, nothing as nothing7, render as render14 } from "./../../ui/lit/lit.js";
+import { Directives, html as html16, nothing as nothing7, render as render14 } from "./../../ui/lit/lit.js";
 import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -19013,7 +18906,7 @@ visible. */
 /*# sourceURL=${import.meta.resolve("./metricsSidebarPane.css")} */`;
 
 // gen/front_end/panels/elements/MetricsSidebarPane.js
-var { live } = Directives2;
+var { live } = Directives;
 var DEFAULT_VIEW9 = (input, output, target) => {
   const { style, highlightedMode, node, contentWidth, contentHeight, onHighlightNode, onStartEditing } = input;
   function createBoxPartElement(style2, name, side, suffix) {
@@ -21132,7 +21025,7 @@ import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html19, nothing as nothing8, render as render17 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html19, nothing as nothing8, render as render17 } from "./../../ui/lit/lit.js";
 import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -21161,7 +21054,7 @@ var propertiesWidget_css_default = `/*
 // gen/front_end/panels/elements/PropertiesWidget.js
 var OBJECT_GROUP_NAME = "properties-sidebar-pane";
 var { bindToSetting: bindToSetting4 } = UI26.UIUtils;
-var { repeat: repeat2 } = Directives3;
+var { repeat: repeat2 } = Directives2;
 var UIStrings22 = {
   /**
    * @description Text on the checkbox in the Properties tab of the Elements panel, which controls whether
@@ -21751,13 +21644,6 @@ var StandaloneStylesContainer = class extends Common20.ObjectWrapper.eventMixin(
     super(element, { useShadowDom: true });
     this.#view = view;
     this.#computedStyleModelInternal.addEventListener("CSSModelChanged", this.#onCSSModelChanged, this);
-    this.#computedStyleModelInternal.addEventListener("ComputedStyleChanged", this.#onComputedStyleChanged, this);
-  }
-  #onComputedStyleChanged() {
-    if (this.isEditingStyle || this.userOperation) {
-      return;
-    }
-    this.#rebuildAndUpdate();
   }
   #rebuildAndUpdate() {
     void this.#rebuildThrottler.schedule(async () => {
@@ -21884,6 +21770,8 @@ var StandaloneStylesContainer = class extends Common20.ObjectWrapper.eventMixin(
   }
   setEditingStyle(editing) {
     this.isEditingStyle = editing;
+  }
+  suppressResets() {
   }
   setUserOperation(userOperation) {
     this.userOperation = userOperation;

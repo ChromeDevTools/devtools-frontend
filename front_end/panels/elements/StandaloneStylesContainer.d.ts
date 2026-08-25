@@ -50,6 +50,7 @@ export declare class StandaloneStylesContainer extends StandaloneStylesContainer
     refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement): void;
     filterRegex(): RegExp | null;
     setEditingStyle(editing: boolean): void;
+    suppressResets(): void;
     setUserOperation(userOperation: boolean): void;
     forceUpdate(): void;
     hideAllPopovers(): void;

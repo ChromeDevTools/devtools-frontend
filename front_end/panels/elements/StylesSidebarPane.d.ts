@@ -54,6 +54,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     private sectionBlocks;
     private idleCallbackManager;
     private needsForceUpdate;
+    private isSuppressingResets;
     private readonly resizeThrottler;
     private readonly resetUpdateThrottler;
     private readonly computedStyleUpdateThrottler;
@@ -99,6 +100,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     onCSSModelChanged(event: Common.EventTarget.EventTargetEvent<ComputedStyle.ComputedStyleModel.CSSModelChangedEvent>): void;
     onComputedStyleChanged(): void;
     handledComputedStyleChangedForTest(): void;
+    suppressResets(): void;
     scheduleResetUpdateIfNotEditingCalledForTest(): void;
     focusedSectionIndex(): number;
     continueEditingElement(sectionIndex: number, propertyIndex: number): void;

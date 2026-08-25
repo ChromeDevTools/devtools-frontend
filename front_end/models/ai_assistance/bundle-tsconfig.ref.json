@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/models/ai_assistance","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/models/ai_assistance/ai_assistance.ts"],"references":[{"path":"./ai_assistance-tsconfig.ref.json"}]}

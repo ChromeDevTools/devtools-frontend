@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -79,154 +80,154 @@
   ],
   "references": [
     {
-      "path": "../../core/common/bundle-tsconfig.json"
+      "path": "../../core/common/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/host/bundle-tsconfig.json"
+      "path": "../../core/host/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/i18n/bundle-tsconfig.json"
+      "path": "../../core/i18n/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/platform/bundle-tsconfig.json"
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/root/bundle-tsconfig.json"
+      "path": "../../core/root/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/sdk/bundle-tsconfig.json"
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/text_utils/bundle-tsconfig.json"
+      "path": "../../core/text_utils/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../generated/generated-tsconfig.json"
+      "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
       "path": "../../generated/protocol-tsconfig.json"
     },
     {
-      "path": "../../models/ai_assistance/bundle-tsconfig.json"
+      "path": "../../models/ai_assistance/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/bindings/bundle-tsconfig.json"
+      "path": "../../models/bindings/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/geometry/bundle-tsconfig.json"
+      "path": "../../models/geometry/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/issues_manager/bundle-tsconfig.json"
+      "path": "../../models/issues_manager/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/stack_trace/bundle-tsconfig.json"
+      "path": "../../models/stack_trace/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/web_mcp/bundle-tsconfig.json"
+      "path": "../../models/web_mcp/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/workspace/bundle-tsconfig.json"
+      "path": "../../models/workspace/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../console/bundle-tsconfig.json"
+      "path": "../console/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../mobile_throttling/bundle-tsconfig.json"
+      "path": "../mobile_throttling/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../network/bundle-tsconfig.json"
+      "path": "../network/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../network/forward/bundle-tsconfig.json"
+      "path": "../network/forward/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../protocol_monitor/bundle-tsconfig.json"
+      "path": "../protocol_monitor/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../third_party/csp_evaluator/bundle-tsconfig.json"
+      "path": "../../third_party/csp_evaluator/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../third_party/json5/bundle-tsconfig.json"
+      "path": "../../third_party/json5/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/adorners/bundle-tsconfig.json"
+      "path": "../../ui/components/adorners/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/buttons/bundle-tsconfig.json"
+      "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/expandable_list/bundle-tsconfig.json"
+      "path": "../../ui/components/expandable_list/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/icon_button/bundle-tsconfig.json"
+      "path": "../../ui/components/icon_button/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/legacy_wrapper/bundle-tsconfig.json"
+      "path": "../../ui/components/legacy_wrapper/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/lists/bundle-tsconfig.json"
+      "path": "../../ui/components/lists/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/node_text/bundle-tsconfig.json"
+      "path": "../../ui/components/node_text/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/report_view/bundle-tsconfig.json"
+      "path": "../../ui/components/report_view/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/tree_outline/bundle-tsconfig.json"
+      "path": "../../ui/components/tree_outline/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/helpers/bundle-tsconfig.json"
+      "path": "../../ui/helpers/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/i18n/bundle-tsconfig.json"
+      "path": "../../ui/i18n/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/kit/bundle-tsconfig.json"
+      "path": "../../ui/kit/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/legacy/bundle-tsconfig.json"
+      "path": "../../ui/legacy/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/legacy/components/cookie_table/bundle-tsconfig.json"
+      "path": "../../ui/legacy/components/cookie_table/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/legacy/components/data_grid/bundle-tsconfig.json"
+      "path": "../../ui/legacy/components/data_grid/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/legacy/components/inline_editor/bundle-tsconfig.json"
+      "path": "../../ui/legacy/components/inline_editor/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/legacy/components/object_ui/bundle-tsconfig.json"
+      "path": "../../ui/legacy/components/object_ui/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.json"
+      "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/legacy/components/settings_ui/bundle-tsconfig.json"
+      "path": "../../ui/legacy/components/settings_ui/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/legacy/components/source_frame/bundle-tsconfig.json"
+      "path": "../../ui/legacy/components/source_frame/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/legacy/components/utils/bundle-tsconfig.json"
+      "path": "../../ui/legacy/components/utils/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/lit/bundle-tsconfig.json"
+      "path": "../../ui/lit/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/visual_logging/bundle-tsconfig.json"
+      "path": "../../ui/visual_logging/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../common/bundle-tsconfig.json"
+      "path": "../common/bundle-tsconfig.ref.json"
     },
     {
-      "path": "components/bundle-tsconfig.json"
+      "path": "components/bundle-tsconfig.ref.json"
     },
     {
-      "path": "preloading/components/bundle-tsconfig.json"
+      "path": "preloading/components/bundle-tsconfig.ref.json"
     },
     {
-      "path": "preloading/helper/bundle-tsconfig.json"
+      "path": "preloading/helper/bundle-tsconfig.ref.json"
     }
   ]
 }

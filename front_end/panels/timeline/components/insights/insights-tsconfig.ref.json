@@ -1,0 +1,119 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../../front_end/panels/timeline/components/insights",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../../front_end/panels/timeline/components/insights/BaseInsightComponent.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/CLSCulprits.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/Cache.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/CharacterSet.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/Checklist.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/DOMSize.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/DocumentLatency.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/DuplicatedJavaScript.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/EventRef.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/FontDisplay.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/ForcedReflow.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/Helpers.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/INPBreakdown.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/ImageDelivery.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/ImageRef.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/LCPBreakdown.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/LCPDiscovery.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/LegacyJavaScript.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/ModernHTTP.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/NetworkDependencyTree.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/NodeLink.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/RenderBlocking.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/ScriptRef.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/SidebarInsight.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/SlowCSSSelector.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/Table.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/ThirdParties.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/Viewport.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/types.ts",
+    "../../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../core/i18n/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../models/ai_assistance/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../models/badges/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../models/bindings/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../models/trace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../models/trace/insights/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../third_party/marked/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../ui/components/buttons/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../ui/components/linkifier/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../ui/components/markdown_view/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../ui/i18n/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../ui/kit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../ui/legacy/components/utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../ui/lit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../ui/visual_logging/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../overlays/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../utils/bundle-tsconfig.ref.json"
+    }
+  ]
+}

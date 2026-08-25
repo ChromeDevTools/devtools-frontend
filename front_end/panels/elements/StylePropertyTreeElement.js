@@ -1967,6 +1967,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             return;
         }
         this.#stylesContainer.setUserOperation(true);
+        this.#stylesContainer.suppressResets();
         const success = await this.property.setDisabled(disabled);
         this.#stylesContainer.setUserOperation(false);
         if (!success) {
@@ -3082,6 +3083,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
         const currentNode = this.#stylesContainer.node();
         this.#stylesContainer.setUserOperation(true);
+        this.#stylesContainer.suppressResets();
         styleText += Platform.StringUtilities.findUnclosedCssQuote(styleText);
         styleText += ')'.repeat(Platform.StringUtilities.countUnmatchedLeftParentheses(styleText));
         // Append a ";" if the new text does not end in ";".

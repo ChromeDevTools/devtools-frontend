@@ -419,11 +419,13 @@ export declare abstract class AiAgent<T> {
      */
     clearCache(): void;
     /**
-     * Toggles whether server-side logging is active.
-     * Note that logging can only be activated if it was allowed by policy/configuration
-     * at startup (i.e., `#serverSideLoggingAllowed` is true).
+     * Disables server-side logging for the remainder of this agent instance's lifetime.
+     *
+     * Logging deactivation is irreversible for the session. Conversation history
+     * accumulates across turns; re-enabling logging later would leak sensitive
+     * data from prior turns to AIDA.
      */
-    protected setServerSideLoggingActive(active: boolean): void;
+    protected disableServerSideLogging(): void;
     popPendingMultimodalInput(): MultimodalInput | undefined;
     /**
      * Preamble features appended to the `client_version` in metadata.

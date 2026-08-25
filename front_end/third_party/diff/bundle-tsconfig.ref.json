@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/third_party/diff","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/third_party/diff/diff.ts"],"references":[{"path":"./diff-tsconfig.ref.json"}]}

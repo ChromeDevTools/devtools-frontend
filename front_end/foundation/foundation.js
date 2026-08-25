@@ -127,6 +127,8 @@ var Universe = class {
     context.set(Logs.LogManager.LogManager, logManager);
     const issuesManager = new IssuesManager.IssuesManager.IssuesManager(IssuesManager.Issue.getShowThirdPartyIssuesSetting(settings), IssuesManager.IssuesManager.getHideIssueByCodeSetting(settings), frameManager, targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding);
     context.set(IssuesManager.IssuesManager.IssuesManager, issuesManager);
+    const domIssuesManager = new IssuesManager.DOMIssuesManager.DOMIssuesManager(issuesManager, targetManager);
+    context.set(IssuesManager.DOMIssuesManager.DOMIssuesManager, domIssuesManager);
     const javaScriptMetadata = new JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl();
     context.set(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl, javaScriptMetadata);
     const liveMetrics = new LiveMetrics.LiveMetrics(targetManager, settings, deviceModeModel);
@@ -187,6 +189,9 @@ var Universe = class {
   }
   get domDebuggerManager() {
     return this.context.get(SDK.DOMDebuggerModel.DOMDebuggerManager);
+  }
+  get domIssuesManager() {
+    return this.context.get(IssuesManager.DOMIssuesManager.DOMIssuesManager);
   }
   get domModelUndoStack() {
     return this.context.get(SDK.DOMModel.DOMModelUndoStack);

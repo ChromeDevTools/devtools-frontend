@@ -1,11 +1,11 @@
 {
-    "compilerOptions": {
-        "composite": true,
-        "outDir": "."
-    },
-    "files": [
-        "lighthouseDialog.css.js",
-        "lighthousePanel.css.js",
-        "lighthouseStartView.css.js"
-    ]
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "."
+  },
+  "files": [
+    "lighthouseDialog.css.js",
+    "lighthousePanel.css.js",
+    "lighthouseStartView.css.js"
+  ]
 }

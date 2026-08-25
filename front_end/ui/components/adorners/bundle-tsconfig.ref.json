@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../../front_end/ui/components/adorners","outDir":".","declarationDir":"."},"files":["../../../../../../../front_end/ui/components/adorners/adorners.ts"],"references":[{"path":"./adorners-tsconfig.ref.json"},{"path":"./css_files-tsconfig.json"}]}

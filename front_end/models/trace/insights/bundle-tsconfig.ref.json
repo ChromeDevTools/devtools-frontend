@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../../front_end/models/trace/insights","outDir":".","declarationDir":"."},"files":["../../../../../../../front_end/models/trace/insights/insights.ts"],"references":[{"path":"./insights-tsconfig.ref.json"}]}

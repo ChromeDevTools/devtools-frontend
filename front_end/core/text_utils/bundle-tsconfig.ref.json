@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/core/text_utils","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/core/text_utils/text_utils.ts"],"references":[{"path":"./text_utils-tsconfig.ref.json"}]}

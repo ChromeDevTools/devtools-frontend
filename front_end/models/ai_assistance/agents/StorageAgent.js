@@ -150,7 +150,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args) => {
-                this.setServerSideLoggingActive(false);
+                this.disableServerSideLogging();
                 if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -217,7 +217,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args, options) => {
-                this.setServerSideLoggingActive(false);
+                this.disableServerSideLogging();
                 if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -297,7 +297,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args) => {
-                this.setServerSideLoggingActive(false);
+                this.disableServerSideLogging();
                 if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -346,7 +346,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args, options) => {
-                this.setServerSideLoggingActive(false);
+                this.disableServerSideLogging();
                 if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -480,10 +480,10 @@ export class StorageAgent extends AiAgent {
     async preRun() {
         const item = this.context?.getItem();
         if (item instanceof CookieItem && Boolean(item.name)) {
-            this.setServerSideLoggingActive(false);
+            this.disableServerSideLogging();
         }
         else if (item instanceof DOMStorageItem && Boolean(item.key)) {
-            this.setServerSideLoggingActive(false);
+            this.disableServerSideLogging();
         }
     }
     async *handleContextDetails(context) {

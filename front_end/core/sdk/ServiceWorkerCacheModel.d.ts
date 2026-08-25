@@ -34,8 +34,6 @@ export declare class ServiceWorkerCacheModel extends SDKModel<EventTypes> implem
     cacheStorageContentUpdated({ bucketId, cacheName }: Protocol.Storage.CacheStorageContentUpdatedEvent): void;
     indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void;
     indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void;
-    sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void;
-    sharedStorageWorkletOperationExecutionFinished(_event: Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent): void;
     storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
     storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void;
     setThrottlerSchedulesAsSoonAsPossibleForTest(): void;

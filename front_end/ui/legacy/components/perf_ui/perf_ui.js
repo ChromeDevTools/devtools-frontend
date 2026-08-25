@@ -14,11 +14,11 @@ import * as UI from "./../../legacy.js";
 import * as ThemeSupport from "./../../theme_support/theme_support.js";
 var UIStrings = {
   /**
-   * @description Message congratulating the user for having won a game.
+   * @description Message congratulating the user for winning the brick breaker game.
    */
   congrats: "Congrats, you win!",
   /**
-   * @description A Postscript hinting the user the possibility to open the game using a keycombo.
+   * @description Postscript message explaining how to open the brick breaker game using a keyboard shortcut.
    */
   ps: "PS: You can also open the game by typing `fixme`"
 };
@@ -993,58 +993,57 @@ var KEYBOARD_FAKED_CONTEXT_MENU_DETAIL = -1;
 var SUBTITLE_FONT_SIZE_AND_STYLE = "italic 10px";
 var UIStrings2 = {
   /**
-   * @description Aria alert used to notify the user when an event has been selected because they tabbed into a group.
+   * @description Accessible announcement when an event is selected by tabbing into a group in the flame chart.
    * @example {Paint} PH1
    * @example {Main thread} PH2
-   *
    */
-  eventSelectedFromGroup: "Selected a {PH1} event within {PH2}. Press enter to focus this event.",
+  eventSelectedFromGroup: "Selected a {PH1} event within {PH2}. Press Enter to focus this event.",
   /**
-   * @description Aria accessible name in Flame Chart of the Performance panel
+   * @description Accessible name for the flame chart canvas.
    */
-  flameChart: "Flame Chart",
+  flameChart: "Flame chart",
   /**
-   * @description Text for the screen reader to announce a hovered group
+   * @description Accessible announcement when hovering over a group in the flame chart.
    * @example {Network} PH1
    */
   sHovered: "{PH1} hovered",
   /**
-   * @description Text for screen reader to announce a selected group.
+   * @description Accessible announcement when selecting a group in the flame chart.
    * @example {Network} PH1
    */
   sSelected: "{PH1} selected",
   /**
-   * @description Text for screen reader to announce an expanded group
+   * @description Accessible announcement when expanding a group in the flame chart.
    * @example {Network} PH1
    */
   sExpanded: "{PH1} expanded",
   /**
-   * @description Text for screen reader to announce a collapsed group
+   * @description Accessible announcement when collapsing a group in the flame chart.
    * @example {Network} PH1
    */
   sCollapsed: "{PH1} collapsed",
   /**
-   * @description Text for an action that adds a label annotation to an entry in the Flame Chart
+   * @description Context menu option to add a label annotation to an entry in the flame chart.
    */
   labelEntry: "Label entry",
   /**
-   * @description Text for an action that adds link annotation between entries in the Flame Chart
+   * @description Context menu option to add a link annotation between entries in the flame chart.
    */
   linkEntries: "Link entries",
   /**
-   * @description Shown in the context menu when right clicking on a track header to enable the user to enter the track configuration mode.
+   * @description Context menu option to enter track configuration mode in the flame chart.
    */
   enterTrackConfigurationMode: "Configure tracks",
   /**
-   * @description Shown in the context menu when right clicking on a track header to allow the user to exit track configuration mode.
+   * @description Context menu option to exit track configuration mode in the flame chart.
    */
   exitTrackConfigurationMode: "Finish configuring tracks",
   /**
-   * @description Context menu option to copy the name of the track.
+   * @description Context menu option to copy the track name in the flame chart.
    */
   copyTrackName: "Copy track name",
   /**
-   * @description Context menu option to copy the URL of the track.
+   * @description Context menu option to copy the track URL in the flame chart.
    */
   copyTrackUrl: "Copy track URL"
 };
@@ -4886,24 +4885,24 @@ var filmStripView_css_default = `/*
 // gen/front_end/ui/legacy/components/perf_ui/FilmStripView.js
 var UIStrings3 = {
   /**
-   * @description Element title in Film Strip View of the Performance panel
+   * @description Tooltip text for a screenshot frame in the film strip view of the Performance panel.
    */
-  doubleclickToZoomImageClickTo: "Doubleclick to zoom image. Click to view preceding requests.",
+  doubleclickToZoomImageClickTo: "Double-click to zoom image. Click to view preceding requests.",
   /**
-   * @description Aria label for captured screenshots in network panel.
+   * @description Accessible label for a screenshot frame in the film strip view of the Network panel.
    * @example {3ms} PH1
    */
   screenshotForSSelectToView: "Screenshot for {PH1} - select to view preceding requests.",
   /**
-   * @description Text for one or a group of screenshots
+   * @description Alt text for a screenshot thumbnail image in the film strip view.
    */
   screenshot: "Screenshot",
   /**
-   * @description Prev button title in Film Strip View of the Performance panel
+   * @description Tooltip text for the previous frame button in the film strip dialog.
    */
   previousFrame: "Previous frame",
   /**
-   * @description Next button title in Film Strip View of the Performance panel
+   * @description Tooltip text for the next frame button in the film strip dialog.
    */
   nextFrame: "Next frame"
 };
@@ -5125,7 +5124,7 @@ import * as SDK from "./../../../../core/sdk/sdk.js";
 import * as Snackbars from "./../../../components/snackbars/snackbars.js";
 var UIStrings4 = {
   /**
-   * @description Notification message shown to the user when garbage collection has completed.
+   * @description Notification message shown when garbage collection completes.
    */
   garbageCollectionCompleted: "Garbage collection completed"
 };
@@ -5334,23 +5333,23 @@ __export(NetworkPriorities_exports, {
 import * as i18n9 from "./../../../../core/i18n/i18n.js";
 var UIStrings5 = {
   /**
-   * @description Text in Network Priorities of the Performance panel
+   * @description Label for lowest network priority.
    */
   lowest: "Lowest",
   /**
-   * @description Text in Network Priorities of the Performance panel
+   * @description Label for low network priority.
    */
   low: "Low",
   /**
-   * @description Text in Network Priorities of the Performance panel
+   * @description Label for medium network priority.
    */
   medium: "Medium",
   /**
-   * @description Text in Network Priorities of the Performance panel
+   * @description Label for high network priority.
    */
   high: "High",
   /**
-   * @description Text in Network Priorities of the Performance panel
+   * @description Label for highest network priority.
    */
   highest: "Highest"
 };
@@ -5570,17 +5569,17 @@ var overviewGrid_css_default = `/*
 // gen/front_end/ui/legacy/components/perf_ui/OverviewGrid.js
 var UIStrings6 = {
   /**
-   * @description Label for the window for Overview grids
+   * @description Accessible label for the selection window in the overview grid.
    */
   overviewGridWindow: "Overview grid window",
   /**
-   * @description Label for left window resizer for Overview grids
+   * @description Accessible label for the left window resizer in the overview grid.
    */
-  leftResizer: "Left Resizer",
+  leftResizer: "Left resizer",
   /**
-   * @description Label for right window resizer for Overview grids
+   * @description Accessible label for the right window resizer in the overview grid.
    */
-  rightResizer: "Right Resizer"
+  rightResizer: "Right resizer"
 };
 var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/perf_ui/OverviewGrid.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
@@ -6256,7 +6255,7 @@ var pieChart_css_default = `/*
 // gen/front_end/ui/legacy/components/perf_ui/PieChart.js
 var UIStrings7 = {
   /**
-   * @description Text for sum
+   * @description Label for the total sum in a pie chart legend.
    */
   total: "Total"
 };

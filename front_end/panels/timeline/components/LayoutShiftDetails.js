@@ -16,57 +16,57 @@ const { html, render } = Lit;
 const MAX_URL_LENGTH = 20;
 const UIStrings = {
     /**
-     * @description Text referring to the start time of a given event.
+     * @description Label for the start time of an event in the layout shift details view of the Performance panel.
      */
     startTime: 'Start time',
     /**
-     * @description Text for a table header referring to the score of a Layout Shift event.
+     * @description Table column header for the score of a layout shift event in the layout shift details view of the Performance panel.
      */
     shiftScore: 'Shift score',
     /**
-     * @description Text for a table header referring to the elements shifted for a Layout Shift event.
+     * @description Table column header for the shifted DOM elements in the layout shift details view of the Performance panel.
      */
     elementsShifted: 'Elements shifted',
     /**
-     * @description Text for a table header referring to the culprit of a Layout Shift event.
+     * @description Table column header for the root cause/culprit of a layout shift event in the layout shift details view of the Performance panel.
      */
     culprit: 'Culprit',
     /**
-     * @description Text for a culprit type of Injected iframe.
+     * @description Root cause culprit type indicating an injected iframe in the layout shift details view of the Performance panel.
      */
     injectedIframe: 'Injected iframe',
     /**
-     * @description Text for a culprit type of Font request.
+     * @description Root cause culprit type indicating a web font request in the layout shift details view of the Performance panel.
      */
     fontRequest: 'Font request',
     /**
-     * @description Text for a culprit type of non-composited animation.
+     * @description Root cause culprit type indicating a non-composited animation in the layout shift details view of the Performance panel.
      */
     nonCompositedAnimation: 'Non-composited animation',
     /**
-     * @description Text referring to an animation.
+     * @description Label for an animation culprit in the layout shift details view of the Performance panel.
      */
     animation: 'Animation',
     /**
-     * @description Text referring to a parent cluster.
+     * @description Link label to navigate to the parent cluster in the layout shift details view of the Performance panel.
      */
     parentCluster: 'Parent cluster',
     /**
-     * @description Text referring to a layout shift cluster and its start time.
+     * @description Header title for a layout shift cluster and its start time in the layout shift details view of the Performance panel.
      * @example {32 ms} PH1
      */
     cluster: 'Layout shift cluster @ {PH1}',
     /**
-     * @description Text referring to a layout shift and its start time.
+     * @description Title and table row label for an individual layout shift and its start time in the layout shift details view of the Performance panel.
      * @example {32 ms} PH1
      */
     layoutShift: 'Layout shift @ {PH1}',
     /**
-     * @description Text referring to the total cumulative score of a layout shift cluster.
+     * @description Label for the total cumulative score row in the layout shift cluster table of the Performance panel.
      */
     total: 'Total',
     /**
-     * @description Text for a culprit type of Unsized image.
+     * @description Root cause culprit type indicating an unsized image in the layout shift details view of the Performance panel.
      */
     unsizedImage: 'Unsized image',
 };

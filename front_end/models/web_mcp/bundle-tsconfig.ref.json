@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/models/web_mcp","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/models/web_mcp/web_mcp.ts"],"references":[{"path":"./web_mcp-tsconfig.ref.json"}]}

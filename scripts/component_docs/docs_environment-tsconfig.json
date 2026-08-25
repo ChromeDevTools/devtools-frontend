@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -46,13 +47,13 @@
   ],
   "references": [
     {
-      "path": "../../front_end/core/common/bundle-tsconfig.json"
+      "path": "../../front_end/core/common/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../front_end/testing/testing-tsconfig.json"
+      "path": "../../front_end/testing/testing-tsconfig.ref.json"
     },
     {
-      "path": "../../front_end/ui/legacy/theme_support/bundle-tsconfig.json"
+      "path": "../../front_end/ui/legacy/theme_support/bundle-tsconfig.ref.json"
     }
   ]
 }

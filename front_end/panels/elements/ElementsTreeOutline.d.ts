@@ -1,6 +1,5 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ElementsTreeElement } from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
@@ -173,8 +172,6 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     constructor(omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean, maxTreeDepth?: number, enableContextMenu?: boolean, showComments?: boolean, showAIButton?: boolean, disableEdits?: boolean, expandRoot?: boolean);
     static forDOMModel(domModel: SDK.DOMModel.DOMModel): ElementsTreeOutline | null;
     deindentSingleNode(): void;
-    updateNodeElementToIssue(element: Element, issues: IssuesManager.Issue.Issue[]): void;
-    issuesByNodeElement(element: Element): IssuesManager.Issue.Issue[] | undefined;
     setWordWrap(wrap: boolean): void;
     setMultilineEditing(multilineEditing: MultilineEditorController | null): void;
     visibleWidth(): number;

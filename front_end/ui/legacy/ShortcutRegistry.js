@@ -5,6 +5,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as Settings from '../settings/settings.js';
 import { getRegisteredActionExtensions } from './ActionRegistration.js';
 import { Context } from './Context.js';
 import { Dialog } from './Dialog.js';
@@ -31,12 +32,14 @@ export class ShortcutRegistry {
         this.consumePrefix = null;
         this.devToolsDefaultShortcutActions = new Set();
         this.disabledDefaultShortcutsForAction = new Platform.MapUtilities.Multimap();
-        this.keybindSetSetting = Common.Settings.Settings.instance().moduleSetting('active-keybind-set');
+        this.keybindSetSetting =
+            Common.Settings.Settings.instance().resolve(Settings.MainSettings.activeKeybindSetSettingDescriptor);
         this.keybindSetSetting.addChangeListener(event => {
             Host.userMetrics.keybindSetSettingChanged(event.data);
             this.registerBindings();
         });
-        this.userShortcutsSetting = Common.Settings.Settings.instance().moduleSetting('user-shortcuts');
+        this.userShortcutsSetting =
+            Common.Settings.Settings.instance().resolve(Settings.MainSettings.userShortcutsSettingDescriptor);
         this.userShortcutsSetting.addChangeListener(this.registerBindings, this);
         this.registerBindings();
     }

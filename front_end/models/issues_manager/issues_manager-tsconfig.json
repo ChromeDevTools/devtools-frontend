@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -45,6 +46,7 @@
     "../../../../../../front_end/models/issues_manager/CookieIssue.ts",
     "../../../../../../front_end/models/issues_manager/CorsIssue.ts",
     "../../../../../../front_end/models/issues_manager/CrossOriginEmbedderPolicyIssue.ts",
+    "../../../../../../front_end/models/issues_manager/DOMIssuesManager.ts",
     "../../../../../../front_end/models/issues_manager/DeprecationIssue.ts",
     "../../../../../../front_end/models/issues_manager/ElementAccessibilityIssue.ts",
     "../../../../../../front_end/models/issues_manager/EmailVerificationRequestIssue.ts",
@@ -78,34 +80,34 @@
   ],
   "references": [
     {
-      "path": "../../core/common/bundle-tsconfig.json"
+      "path": "../../core/common/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/host/bundle-tsconfig.json"
+      "path": "../../core/host/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/i18n/bundle-tsconfig.json"
+      "path": "../../core/i18n/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/platform/bundle-tsconfig.json"
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/root/bundle-tsconfig.json"
+      "path": "../../core/root/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/sdk/bundle-tsconfig.json"
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../generated/generated-tsconfig.json"
+      "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../bindings/bundle-tsconfig.json"
+      "path": "../bindings/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../workspace/bundle-tsconfig.json"
+      "path": "../workspace/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../third_party/marked/bundle-tsconfig.json"
+      "path": "../../third_party/marked/bundle-tsconfig.ref.json"
     }
   ]
 }

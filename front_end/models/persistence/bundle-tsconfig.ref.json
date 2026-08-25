@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/models/persistence","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/models/persistence/persistence.ts"],"references":[{"path":"./persistence-tsconfig.ref.json"}]}

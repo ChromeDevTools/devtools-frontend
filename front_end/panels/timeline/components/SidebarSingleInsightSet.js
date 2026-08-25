@@ -38,7 +38,7 @@ const INSIGHT_NAME_TO_COMPONENT = {
 };
 const UIStrings = {
     /**
-     * @description Summary text for an expandable dropdown that contains all insights in a passing state.
+     * @description Summary text for an expandable dropdown that contains all insights in a passing state in the Performance panel sidebar.
      * @example {4} PH1
      */
     passedInsights: 'Passed insights ({PH1})',

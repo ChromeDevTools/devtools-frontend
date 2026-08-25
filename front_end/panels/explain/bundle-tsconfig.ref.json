@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/panels/explain","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/panels/explain/explain.ts"],"references":[{"path":"./explain-tsconfig.ref.json"}]}

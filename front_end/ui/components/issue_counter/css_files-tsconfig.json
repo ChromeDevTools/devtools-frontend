@@ -1,10 +1,10 @@
 {
-    "compilerOptions": {
-        "composite": true,
-        "outDir": "."
-    },
-    "files": [
-        "issueCounter.css.js",
-        "issueLinkIcon.css.js"
-    ]
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "."
+  },
+  "files": [
+    "issueCounter.css.js",
+    "issueLinkIcon.css.js"
+  ]
 }

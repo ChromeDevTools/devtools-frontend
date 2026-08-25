@@ -8,16 +8,12 @@ import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 const UIStrings = {
     /**
-     * @description ms is the short form of milli-seconds and the placeholder is a decimal number.
-     * The shortest form or abbreviation of milliseconds should be used, as there is
-     * limited room in this UI.
+     * @description Short formatted milliseconds string in the Performance panel.
      * @example {2.14} PH1
      */
     fms: '{PH1}[ms]()',
     /**
-     * @description s is short for seconds and the placeholder is a decimal number
-     * The shortest form or abbreviation of seconds should be used, as there is
-     * limited room in this UI.
+     * @description Short formatted seconds string in the Performance panel.
      * @example {2.14} PH1
      */
     fs: '{PH1}[s]()',

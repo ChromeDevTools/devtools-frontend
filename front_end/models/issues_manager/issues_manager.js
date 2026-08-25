@@ -1798,6 +1798,121 @@ var DeprecationIssue = class _DeprecationIssue extends Issue {
   }
 };
 
+// gen/front_end/models/issues_manager/DOMIssuesManager.js
+var DOMIssuesManager_exports = {};
+__export(DOMIssuesManager_exports, {
+  DOMIssuesManager: () => DOMIssuesManager
+});
+import * as Common2 from "./../../core/common/common.js";
+import * as Platform from "./../../core/platform/platform.js";
+import * as SDK2 from "./../../core/sdk/sdk.js";
+var DOMIssuesManager = class extends Common2.ObjectWrapper.ObjectWrapper {
+  #issuesManager;
+  #targetManager;
+  #currentIssues = /* @__PURE__ */ new Set();
+  #nodeToIssues = new Platform.MapUtilities.Multimap();
+  #nodeIdSubscribers = new Platform.MapUtilities.Multimap();
+  constructor(issuesManager, targetManager) {
+    super();
+    this.#issuesManager = issuesManager;
+    this.#targetManager = targetManager;
+    this.#issuesManager.addEventListener("IssueAdded", this.#onIssueAdded, this);
+    this.#issuesManager.addEventListener("IssueHiddenStatusUpdated", this.#onIssueHiddenStatusUpdated, this);
+    this.#issuesManager.addEventListener("FullUpdateRequired", this.#onFullUpdateRequired, this);
+    this.#targetManager.addModelListener(SDK2.DOMModel.DOMModel, SDK2.DOMModel.Events.DocumentUpdated, this.#onDocumentUpdated, this, { scoped: true });
+  }
+  subscribeByNodeId(nodeId, callback) {
+    this.#nodeIdSubscribers.set(nodeId, callback);
+  }
+  unsubscribeByNodeId(nodeId, callback) {
+    this.#nodeIdSubscribers.delete(nodeId, callback);
+  }
+  issuesForNode(node) {
+    return Array.from(this.#nodeToIssues.get(node));
+  }
+  #onIssueAdded(event) {
+    void this.#addIssue(event.data.issue);
+  }
+  #onIssueHiddenStatusUpdated(event) {
+    const { issue } = event.data;
+    if (issue.isHidden()) {
+      void this.#removeIssue(issue);
+    } else {
+      void this.#addIssue(issue);
+    }
+  }
+  #onFullUpdateRequired() {
+    const newIssues = new Set(this.#issuesManager.issues());
+    for (const issue of this.#currentIssues) {
+      if (!newIssues.has(issue) || issue.isHidden()) {
+        void this.#removeIssue(issue);
+      }
+    }
+    for (const issue of newIssues) {
+      if (!issue.isHidden()) {
+        void this.#addIssue(issue);
+      }
+    }
+  }
+  #onDocumentUpdated(_event) {
+    this.#nodeToIssues.clear();
+    for (const issue of this.#issuesManager.issues()) {
+      if (!issue.isHidden()) {
+        void this.#addIssue(issue);
+      }
+    }
+  }
+  async #resolveNodesForIssue(issue) {
+    const primaryTarget = this.#targetManager.primaryPageTarget() ?? this.#targetManager.targets()[0];
+    const nodes = [];
+    for (const element of issue.elements()) {
+      const elementTarget = element.target && typeof element.target.model === "function" ? element.target : primaryTarget;
+      if (!elementTarget) {
+        continue;
+      }
+      const domModel = elementTarget.model(SDK2.DOMModel.DOMModel);
+      if (!domModel) {
+        continue;
+      }
+      const deferredDOMNode = new SDK2.DOMModel.DeferredDOMNode(elementTarget, element.backendNodeId);
+      const node = await deferredDOMNode.resolvePromise();
+      if (node) {
+        nodes.push(node);
+      }
+    }
+    return nodes;
+  }
+  async #addIssue(issue) {
+    if (issue.isHidden()) {
+      return;
+    }
+    this.#currentIssues.add(issue);
+    const nodes = await this.#resolveNodesForIssue(issue);
+    for (const node of nodes) {
+      if (!this.#nodeToIssues.hasValue(node, issue)) {
+        this.#nodeToIssues.set(node, issue);
+        this.dispatchEventToListeners("DOMIssueAdded", { node, issue });
+        for (const callback of this.#nodeIdSubscribers.get(node.id)) {
+          callback();
+        }
+      }
+    }
+  }
+  async #removeIssue(issue) {
+    this.#currentIssues.delete(issue);
+    const nodes = await this.#resolveNodesForIssue(issue);
+    for (const node of nodes) {
+      if (this.#nodeToIssues.hasValue(node, issue)) {
+        this.#nodeToIssues.delete(node, issue);
+        this.dispatchEventToListeners("DOMIssueRemoved", { node, issue });
+        for (const callback of this.#nodeIdSubscribers.get(node.id)) {
+          callback();
+        }
+      }
+    }
+  }
+};
+
 // gen/front_end/models/issues_manager/ElementAccessibilityIssue.js
 var ElementAccessibilityIssue_exports = {};
 __export(ElementAccessibilityIssue_exports, {
@@ -1810,6 +1925,17 @@ var ElementAccessibilityIssue = class _ElementAccessibilityIssue extends Issue {
       issueDetails.elementAccessibilityIssueReason
     ].join("::");
     super(issueCode, issueDetails, issuesModel, issueId);
+  }
+  elements() {
+    const details = this.details();
+    if (details.nodeId) {
+      return [{
+        backendNodeId: details.nodeId,
+        nodeName: "",
+        target: this.model()?.target() ?? null
+      }];
+    }
+    return [];
   }
   primaryKey() {
     return JSON.stringify(this.details());
@@ -2965,6 +3091,17 @@ var GenericIssue = class _GenericIssue extends Issue {
     }
     return [];
   }
+  elements() {
+    const details = this.details();
+    if (details.violatingNodeId) {
+      return [{
+        backendNodeId: details.violatingNodeId,
+        nodeName: "",
+        target: this.model()?.target() ?? null
+      }];
+    }
+    return [];
+  }
   getCategory() {
     return "Generic";
   }
@@ -3301,7 +3438,7 @@ __export(IssueAggregator_exports, {
   AggregatedIssue: () => AggregatedIssue,
   IssueAggregator: () => IssueAggregator
 });
-import * as Common2 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 
 // gen/front_end/models/issues_manager/LazyLoadImageIssue.js
 var LazyLoadImageIssue_exports = {};
@@ -4098,7 +4235,7 @@ var AggregatedIssue = class extends Issue {
     throw new Error("Should not call setHidden on aggregatedIssue");
   }
 };
-var IssueAggregator = class extends Common2.ObjectWrapper.ObjectWrapper {
+var IssueAggregator = class extends Common3.ObjectWrapper.ObjectWrapper {
   issuesManager;
   #aggregatedIssuesByKey = /* @__PURE__ */ new Map();
   #hiddenAggregatedIssuesByKey = /* @__PURE__ */ new Map();
@@ -4180,8 +4317,8 @@ var IssueResolver_exports = {};
 __export(IssueResolver_exports, {
   IssueResolver: () => IssueResolver
 });
-import * as Common3 from "./../../core/common/common.js";
-var IssueResolver = class extends Common3.ResolverBase.ResolverBase {
+import * as Common4 from "./../../core/common/common.js";
+var IssueResolver = class extends Common4.ResolverBase.ResolverBase {
   #issuesListener = null;
   #issuesManager;
   constructor(issuesManager) {
@@ -4208,7 +4345,7 @@ var IssueResolver = class extends Common3.ResolverBase.ResolverBase {
     if (!this.#issuesListener) {
       return;
     }
-    Common3.EventTarget.removeEventListeners([this.#issuesListener]);
+    Common4.EventTarget.removeEventListeners([this.#issuesListener]);
     this.#issuesListener = null;
   }
 };
@@ -4222,9 +4359,9 @@ __export(IssuesManager_exports, {
   getHideIssueByCodeSetting: () => getHideIssueByCodeSetting,
   isIssueCodeSupported: () => isIssueCodeSupported
 });
-import * as Common5 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 import * as Root from "./../../core/root/root.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as Bindings2 from "./../bindings/bindings.js";
 import * as Workspace2 from "./../workspace/workspace.js";
 
@@ -4634,7 +4771,7 @@ __export(SourceFrameIssuesManager_exports, {
   IssueMessage: () => IssueMessage,
   SourceFrameIssuesManager: () => SourceFrameIssuesManager
 });
-import * as Common4 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as Bindings from "./../bindings/bindings.js";
 import * as Workspace from "./../workspace/workspace.js";
 
@@ -4733,7 +4870,7 @@ var SourceFrameIssuesManager = class {
       return;
     }
     const clickHandler = () => {
-      void Common4.Revealer.reveal(issue);
+      void Common5.Revealer.reveal(issue);
     };
     this.#sourceFrameMessageManager.addMessage(new IssueMessage(messageText, issue.getKind(), clickHandler), {
       line: srcLocation.lineNumber,
@@ -5039,7 +5176,7 @@ var issueCodeHandlers = /* @__PURE__ */ new Map([
 function isIssueCodeSupported(code) {
   return issueCodeHandlers.has(code);
 }
-function createIssuesFromProtocolIssue(issuesModel, inspectorIssue, frameManager = SDK2.FrameManager.FrameManager.instance()) {
+function createIssuesFromProtocolIssue(issuesModel, inspectorIssue, frameManager = SDK3.FrameManager.FrameManager.instance()) {
   const handler = issueCodeHandlers.get(inspectorIssue.code);
   if (handler) {
     return handler(issuesModel, inspectorIssue, frameManager);
@@ -5051,10 +5188,10 @@ function defaultHideIssueByCodeSetting() {
   const setting = {};
   return setting;
 }
-function getHideIssueByCodeSetting(settings = Common5.Settings.Settings.instance()) {
+function getHideIssueByCodeSetting(settings = Common6.Settings.Settings.instance()) {
   return settings.createSetting("hide-issue-by-code-setting-experiment-2021", defaultHideIssueByCodeSetting());
 }
-var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWrapper {
+var IssuesManager = class _IssuesManager extends Common6.ObjectWrapper.ObjectWrapper {
   showThirdPartyIssuesSetting;
   hideIssueSetting;
   #eventListeners = /* @__PURE__ */ new WeakMap();
@@ -5067,7 +5204,7 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
   #issuesByOutermostTarget = /* @__PURE__ */ new Map();
   #frameManager;
   #targetManager;
-  constructor(showThirdPartyIssuesSetting, hideIssueSetting, frameManager = SDK2.FrameManager.FrameManager.instance(), targetManager = SDK2.TargetManager.TargetManager.instance(), workspace = Workspace2.Workspace.WorkspaceImpl.instance(), debuggerWorkspaceBinding = (
+  constructor(showThirdPartyIssuesSetting, hideIssueSetting, frameManager = SDK3.FrameManager.FrameManager.instance(), targetManager = SDK3.TargetManager.TargetManager.instance(), workspace = Workspace2.Workspace.WorkspaceImpl.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   ), cssWorkspaceBinding = (
@@ -5080,8 +5217,8 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
     this.#frameManager = frameManager;
     this.#targetManager = targetManager;
     new SourceFrameIssuesManager(this, targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding);
-    this.#targetManager.observeModels(SDK2.IssuesModel.IssuesModel, this);
-    this.#targetManager.addModelListener(SDK2.ResourceTreeModel.ResourceTreeModel, SDK2.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+    this.#targetManager.observeModels(SDK3.IssuesModel.IssuesModel, this);
+    this.#targetManager.addModelListener(SDK3.ResourceTreeModel.ResourceTreeModel, SDK3.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
     this.#frameManager.addEventListener("FrameAddedToTarget", this.#onFrameAddedToTarget, this);
     this.showThirdPartyIssuesSetting?.addChangeListener(() => this.#updateFilteredIssues());
     this.hideIssueSetting?.addChangeListener(() => this.#updateFilteredIssues());
@@ -5119,7 +5256,7 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
       } else if (type === "Activation" && frame.resourceTreeModel().target() === issue.model()?.target()) {
         keptIssues.set(key, issue);
       } else if (issue.code() === "BounceTrackingIssue" || issue.code() === "CookieIssue") {
-        const networkManager = frame.resourceTreeModel().target().model(SDK2.NetworkManager.NetworkManager);
+        const networkManager = frame.resourceTreeModel().target().model(SDK3.NetworkManager.NetworkManager);
         if (networkManager?.requestForLoaderId(frame.loaderId)?.hasUserGesture() === false) {
           keptIssues.set(key, issue);
         }
@@ -5141,7 +5278,7 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
   modelRemoved(issuesModel) {
     const listener = this.#eventListeners.get(issuesModel);
     if (listener) {
-      Common5.EventTarget.removeEventListeners([listener]);
+      Common6.EventTarget.removeEventListeners([listener]);
     }
   }
   #onIssueAddedEvent(event) {
@@ -5153,7 +5290,7 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
       if (!message) {
         continue;
       }
-      issuesModel.target().model(SDK2.ConsoleModel.ConsoleModel)?.addMessage(message);
+      issuesModel.target().model(SDK3.ConsoleModel.ConsoleModel)?.addMessage(message);
     }
   }
   addIssue(issuesModel, issue) {
@@ -5291,8 +5428,8 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
   }
 };
 globalThis.addIssueForTest = (issue) => {
-  const mainTarget = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
-  const issuesModel = mainTarget?.model(SDK2.IssuesModel.IssuesModel);
+  const mainTarget = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
+  const issuesModel = mainTarget?.model(SDK3.IssuesModel.IssuesModel);
   issuesModel?.issueAdded({ issue });
 };
 
@@ -5304,8 +5441,8 @@ __export(RelatedIssue_exports, {
   issuesAssociatedWith: () => issuesAssociatedWith,
   reveal: () => reveal
 });
-import * as Common6 from "./../../core/common/common.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as Common7 from "./../../core/common/common.js";
+import * as SDK4 from "./../../core/sdk/sdk.js";
 function issuesAssociatedWithNetworkRequest(issues, request) {
   return issues.filter((issue) => {
     for (const affectedRequest of issue.requests()) {
@@ -5327,10 +5464,10 @@ function issuesAssociatedWithCookie(issues, domain, name, path) {
   });
 }
 function issuesAssociatedWith(issues, obj) {
-  if (obj instanceof SDK3.NetworkRequest.NetworkRequest) {
+  if (obj instanceof SDK4.NetworkRequest.NetworkRequest) {
     return issuesAssociatedWithNetworkRequest(issues, obj);
   }
-  if (obj instanceof SDK3.Cookie.Cookie) {
+  if (obj instanceof SDK4.Cookie.Cookie) {
     return issuesAssociatedWithCookie(issues, obj.domain(), obj.name(), obj.path());
   }
   throw new Error(`issues can not be associated with ${JSON.stringify(obj)}`);
@@ -5347,13 +5484,13 @@ async function reveal(obj, issuesManager, category) {
   if (typeof obj === "string") {
     const issue = issuesManager.getIssueById(obj);
     if (issue) {
-      return await Common6.Revealer.reveal(issue);
+      return await Common7.Revealer.reveal(issue);
     }
   }
   const issues = Array.from(issuesManager.issues());
   const candidates = issuesAssociatedWith(issues, obj).filter((issue) => !category || issue.getCategory() === category);
   if (candidates.length > 0) {
-    return await Common6.Revealer.reveal(candidates[0]);
+    return await Common7.Revealer.reveal(candidates[0]);
   }
 }
 export {
@@ -5364,6 +5501,7 @@ export {
   CookieIssue_exports as CookieIssue,
   CorsIssue_exports as CorsIssue,
   CrossOriginEmbedderPolicyIssue_exports as CrossOriginEmbedderPolicyIssue,
+  DOMIssuesManager_exports as DOMIssuesManager,
   DeprecationIssue_exports as DeprecationIssue,
   ElementAccessibilityIssue_exports as ElementAccessibilityIssue,
   EmailVerificationRequestIssue_exports as EmailVerificationRequestIssue,

@@ -126,13 +126,13 @@ export class AiConversation {
     setContext(updateContext) {
         if (!updateContext) {
             this.#contexts = [];
-            if (isAiAssistanceContextSelectionAgentEnabled()) {
+            if (isAiAssistanceContextSelectionEnabled()) {
                 this.#updateAgent("none" /* ConversationType.NONE */);
             }
             return;
         }
         this.#contexts = [updateContext];
-        if (isAiAssistanceContextSelectionAgentEnabled()) {
+        if (isAiAssistanceContextSelectionEnabled()) {
             if (updateContext instanceof FileContext) {
                 this.#updateAgent("drjones-file" /* ConversationType.FILE */);
             }
@@ -294,9 +294,20 @@ export class AiConversation {
         if (this.#type === type) {
             return;
         }
-        const isTransitioningFromStorage = this.#type === "storage" /* ConversationType.STORAGE */ && type !== "storage" /* ConversationType.STORAGE */;
-        const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
+        const previousType = this.#type;
         this.#type = type;
+        // In AI Architecture V2, DevTools uses a single unified agent (AiAgent2) that
+        // dynamically loads skills on demand. Reusing the existing agent instance across
+        // context changes preserves its loaded activeSkills and declared tools so the model
+        // does not need to re-learn skills it already acquired earlier in the conversation.
+        if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled && this.#agent instanceof AiAgent2) {
+            return;
+        }
+        // In legacy V1 architecture, agents are recreated when switching conversation types.
+        // Discard conversation history when transitioning away from Storage to prevent
+        // sensitive data (e.g. cookies or storage items) from leaking into subsequent agent queries.
+        const isTransitioningFromStorage = previousType === "storage" /* ConversationType.STORAGE */ && type !== "storage" /* ConversationType.STORAGE */;
+        const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
         const options = {
             aidaClient: this.#aidaClient,
             serverSideLoggingAllowed: isAiAssistanceServerSideLoggingAllowed(),
@@ -446,8 +457,14 @@ export class AiConversation {
 function isAiAssistanceServerSideLoggingAllowed() {
     return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
-function isAiAssistanceContextSelectionAgentEnabled() {
-    return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+/**
+ * Returns true if context changes should dynamically update the conversation's
+ * agent/type state. Enabled for both the legacy V1 selection agent and the
+ * unified V2 architecture.
+ */
+function isAiAssistanceContextSelectionEnabled() {
+    return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) ||
+        Boolean(Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
 }
 function getPrimaryPageOrigin(targetManager) {
     const target = targetManager.primaryPageTarget();

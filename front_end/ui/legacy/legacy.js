@@ -784,6 +784,7 @@ import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as VisualLogging from "./../visual_logging/visual_logging.js";
+import * as Settings3 from "./../settings/settings.js";
 
 // gen/front_end/ui/legacy/KeyboardShortcut.js
 var KeyboardShortcut_exports = {};
@@ -1118,12 +1119,12 @@ var ShortcutRegistry = class _ShortcutRegistry {
     this.consumePrefix = null;
     this.devToolsDefaultShortcutActions = /* @__PURE__ */ new Set();
     this.disabledDefaultShortcutsForAction = new Platform4.MapUtilities.Multimap();
-    this.keybindSetSetting = Common3.Settings.Settings.instance().moduleSetting("active-keybind-set");
+    this.keybindSetSetting = Common3.Settings.Settings.instance().resolve(Settings3.MainSettings.activeKeybindSetSettingDescriptor);
     this.keybindSetSetting.addChangeListener((event) => {
       Host2.userMetrics.keybindSetSettingChanged(event.data);
       this.registerBindings();
     });
-    this.userShortcutsSetting = Common3.Settings.Settings.instance().moduleSetting("user-shortcuts");
+    this.userShortcutsSetting = Common3.Settings.Settings.instance().resolve(Settings3.MainSettings.userShortcutsSettingDescriptor);
     this.userShortcutsSetting.addChangeListener(this.registerBindings, this);
     this.registerBindings();
   }
@@ -15973,14 +15974,18 @@ function createHistoryInput(type = "search", className) {
   }
   function onKeydown(event) {
     if (event.keyCode === Keys.Up.code) {
-      historyPosition = Math.max(historyPosition - 1, 0);
-      historyInput.value = history[historyPosition];
-      historyInput.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+      if (historyPosition > 0) {
+        historyPosition--;
+        historyInput.value = history[historyPosition];
+        historyInput.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+      }
       event.consume(true);
     } else if (event.keyCode === Keys.Down.code) {
-      historyPosition = Math.min(historyPosition + 1, history.length - 1);
-      historyInput.value = history[historyPosition];
-      historyInput.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+      if (historyPosition < history.length - 1) {
+        historyPosition++;
+        historyInput.value = history[historyPosition];
+        historyInput.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+      }
       event.consume(true);
     } else if (event.keyCode === Keys.Enter.code) {
       if (history.length > 1 && history[history.length - 2] === historyInput.value) {
@@ -20611,6 +20616,7 @@ import * as Platform22 from "./../../core/platform/platform.js";
 import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
 import * as Buttons10 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon8 } from "./../kit/kit.js";
+import * as Settings12 from "./../settings/settings.js";
 
 // gen/front_end/ui/legacy/searchableView.css.js
 var searchableView_css_default = `/*
@@ -21308,7 +21314,7 @@ var SearchableView = class extends VBox {
     this.replaceProvider.replaceAllWith(searchConfig, this.replaceInputElement.value);
   }
   onInput() {
-    if (!Common18.Settings.Settings.instance().moduleSetting("search-as-you-type").get()) {
+    if (!Common18.Settings.Settings.instance().resolve(Settings12.MainSettings.searchAsYouTypeSettingDescriptor).get()) {
       this.clearSearch();
       return;
     }

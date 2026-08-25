@@ -17,108 +17,108 @@ import { CLS_THRESHOLDS, determineCompareRating, INP_THRESHOLDS, LCP_THRESHOLDS,
 const { html, nothing } = Lit;
 const UIStrings = {
     /**
-     * @description Label for a metric value that was measured in the local environment.
+     * @description Label for a metric value measured in the local environment in the live metrics view of the Performance panel.
      */
     localValue: 'Local',
     /**
-     * @description Label for the 75th percentile of a metric according to data collected from real users in the field. This should be interpreted as "75th percentile of real users".
+     * @description Label for the 75th percentile of real user field metrics in the live metrics view of the Performance panel.
      */
     field75thPercentile: 'Field 75th percentile',
     /**
-     * @description Column header for the 75th percentile of a metric according to data collected from real users in the field. This should be interpreted as "75th percentile of real users". Width of the column is limited so character length should be as small as possible.
+     * @description Column header for the 75th percentile field metrics in the live metrics view of the Performance panel.
      */
     fieldP75: 'Field p75',
     /**
-     * @description Text label for values that are classified as "good".
+     * @description Label for metric values classified as good in the live metrics view of the Performance panel.
      */
     good: 'Good',
     /**
-     * @description Text label for values that are classified as "needs improvement".
+     * @description Label for metric values classified as needs improvement in the live metrics view of the Performance panel.
      */
     needsImprovement: 'Needs improvement',
     /**
-     * @description Text label for values that are classified as "poor".
+     * @description Label for metric values classified as poor in the live metrics view of the Performance panel.
      */
     poor: 'Poor',
     /**
-     * @description Text label for a range of values that are less than or equal to a certain value.
+     * @description Label for a range of values that are less than or equal to a threshold in the live metrics view of the Performance panel.
      * @example {500 ms} PH1
      */
     leqRange: '(≤{PH1})',
     /**
-     * @description Text label for a range of values that are between two values.
+     * @description Label for a range of values between two thresholds in the live metrics view of the Performance panel.
      * @example {500 ms} PH1
      * @example {800 ms} PH2
      */
     betweenRange: '({PH1}-{PH2})',
     /**
-     * @description Text label for a range of values that are greater than a certain value.
+     * @description Label for a range of values greater than a threshold in the live metrics view of the Performance panel.
      * @example {500 ms} PH1
      */
     gtRange: '(>{PH1})',
     /**
-     * @description Text for a percentage value in the live metrics view.
+     * @description Percentage value format string in the live metrics view of the Performance panel.
      * @example {13} PH1
      */
     percentage: '{PH1}%',
     /**
-     * @description Text instructing the user to interact with the page because a user interaction is required to measure Interaction to Next Paint (INP).
+     * @description Prompt instructing the user to interact with the page to measure INP in the live metrics view of the Performance panel.
      */
     interactToMeasure: 'Interact with the page to measure INP.',
     /**
-     * @description Label for a tooltip that provides more details.
+     * @description Tooltip label to expand more details in the metric card of the Performance panel.
      */
     viewCardDetails: 'View card details',
     /**
-     * @description Text block recommending a site developer look at their test environment followed by bullet points that highlight specific things about the test environment. "local" refers to the testing setup of the developer as opposed to the conditions experienced by real users.
+     * @description Header recommending the user inspect their local test environment in the live metrics view of the Performance panel.
      */
     considerTesting: 'Consider your local test conditions',
     /**
-     * @description Text block explaining how network conditions can slow down the page load. "network throttling" refers to artificially slowing down the network to simulate slower network conditions.
+     * @description Recommendation explaining how network throttling affects LCP page loads in the Performance panel.
      */
     recThrottlingLCP: 'Real users may experience longer page loads due to slower network conditions. Increasing network throttling will simulate slower network conditions.',
     /**
-     * @description Text block explaining how CPU speed affects how long it takes the page to render after an interaction. "CPU throttling" refers to artificially slowing down the CPU to simulate slower devices.
+     * @description Recommendation explaining how CPU throttling affects INP interaction delays in the Performance panel.
      */
     recThrottlingINP: 'Real users may experience longer interactions due to slower CPU speeds. Increasing CPU throttling will simulate a slower device.',
     /**
-     * @description Text block explaining how screen size can affect what content is rendered and therefore affects the LCP performance metric. "viewport" and "screen size" are synonymous in this case. "LCP element" refers to the page element that was the largest content on the page.
+     * @description Recommendation explaining how viewport size affects the LCP element in the Performance panel.
      */
     recViewportLCP: 'Screen size can influence what the LCP element is. Ensure you are testing common viewport sizes.',
     /**
-     * @description Text block explaining viewport size can affect layout shifts. "viewport" and "screen size" are synonymous in this case. "layout shifts" refer to page instability where content moving around can create a jarring experience.
+     * @description Recommendation explaining how viewport size affects layout shifts in the Performance panel.
      */
     recViewportCLS: 'Screen size can influence what layout shifts happen. Ensure you are testing common viewport sizes.',
     /**
-     * @description Text block explaining how a user interacts with the page can cause different amounts of layout shifts. "layout shifts" refer to page instability where content moving around can create a jarring experience.
+     * @description Recommendation explaining how user interaction journeys affect layout shifts in the Performance panel.
      */
     recJourneyCLS: 'How a user interacts with the page can influence layout shifts. Ensure you are testing common interactions like scrolling the page.',
     /**
-     * @description Text block explaining how a user interacts with the page can affect interaction delays. "interaction delay" refers to the delay between an interaction and the page rendering new content.
+     * @description Recommendation explaining how user interaction journeys affect interaction delays in the Performance panel.
      */
     recJourneyINP: 'How a user interacts with the page influences interaction delays. Ensure you are testing common interactions.',
     /**
-     * @description Text block explaining how dynamic content can affect LCP. "LCP" is a performance metric measuring when the largest content was rendered on the page. "LCP element" refers to the page element that was the largest content on the page.
+     * @description Recommendation explaining how dynamic content affects LCP in the Performance panel.
      */
     recDynamicContentLCP: 'The LCP element can vary between page loads if content is dynamic.',
     /**
-     * @description Text block explaining how dynamic content can affect layout shifts. "layout shifts" refer to page instability where content moving around can create a jarring experience.
+     * @description Recommendation explaining how dynamic content affects layout shifts in the Performance panel.
      */
     recDynamicContentCLS: 'Dynamic content can influence what layout shifts happen.',
     /**
-     * @description Column header for table cell values representing the subpart/component/stage/section of a larger duration.
+     * @description Table column header for subpart stage names in the live metrics view of the Performance panel.
      */
     subpart: 'Subpart',
     /**
-     * @description Tooltip text for a link that goes to documentation explaining the Largest Contentful Paint (LCP) metric. "LCP" is an acronym and should not be translated.
+     * @description Tooltip text explaining the Largest Contentful Paint (LCP) metric in the live metrics view of the Performance panel.
      */
     lcpHelpTooltip: 'LCP reports the render time of the largest image, text block, or video visible in the viewport. Click here to learn more about LCP.',
     /**
-     * @description Tooltip text for a link that goes to documentation explaining the Cumulative Layout Shift (CLS) metric. "CLS" is an acronym and should not be translated.
+     * @description Tooltip text explaining the Cumulative Layout Shift (CLS) metric in the live metrics view of the Performance panel.
      */
     clsHelpTooltip: 'CLS measures the amount of unexpected shifted content. Click here to learn more about CLS.',
     /**
-     * @description Tooltip text for a link that goes to documentation explaining the Interaction to Next Paint (INP) metric. "INP" is an acronym and should not be translated.
+     * @description Tooltip text explaining the Interaction to Next Paint (INP) metric in the live metrics view of the Performance panel.
      */
     inpHelpTooltip: 'INP measures the overall responsiveness to all click, tap, and keyboard interactions. Click here to learn more about INP.',
 };

@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -44,22 +45,22 @@
   ],
   "references": [
     {
-      "path": "./css_files-tsconfig.json"
+      "path": "../../../../../tsc/front_end/ui/components/diff_view/css_files-tsconfig.ref.json"
     },
     {
-      "path": "../../../core/i18n/bundle-tsconfig.json"
+      "path": "../../../core/i18n/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../third_party/diff/bundle-tsconfig.json"
+      "path": "../../../third_party/diff/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../lit/bundle-tsconfig.json"
+      "path": "../../lit/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../visual_logging/bundle-tsconfig.json"
+      "path": "../../visual_logging/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../code_highlighter/bundle-tsconfig.json"
+      "path": "../code_highlighter/bundle-tsconfig.ref.json"
     }
   ]
 }

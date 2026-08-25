@@ -53,7 +53,7 @@ import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as SettingUIRegistration from '../../ui/settings/settings.js';
+import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { AiCodeCompletionSummaryToolbar } from '../common/common.js';
 import { ConsoleContextSelector } from './ConsoleContextSelector.js';
@@ -441,9 +441,9 @@ export class ConsoleView extends UI.Widget.VBox {
         toolbar.appendToolbarItem(this.filterStatusText);
         toolbar.appendToolbarItem(this.showSettingsPaneButton);
         const monitoringXHREnabledSetting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.monitoringXHREnabledSettingDescriptor);
-        this.timestampsSetting = Common.Settings.Settings.instance().moduleSetting('console-timestamps-enabled');
-        this.consoleHistoryAutocompleteSetting =
-            Common.Settings.Settings.instance().moduleSetting('console-history-autocomplete');
+        this.timestampsSetting =
+            Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleTimestampsEnabledSettingDescriptor);
+        this.consoleHistoryAutocompleteSetting = Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleHistoryAutocompleteSettingDescriptor);
         this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting('disable-self-xss-warning', false, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
         const settingsPane = this.contentsElement.createChild('div', 'console-settings-pane');
         UI.ARIAUtils.setLabel(settingsPane, i18nString(UIStrings.consoleSettings));
@@ -451,8 +451,7 @@ export class ConsoleView extends UI.Widget.VBox {
         const consoleEagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-eager-eval');
         const preserveConsoleLogSetting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveConsoleLogSettingDescriptor);
         const userActivationEvalSetting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.consoleUserActivationEvalSettingDescriptor);
-        settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.networkMessages), this.filter.networkMessagesSetting, SettingUIRegistration.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.logXMLHttpRequests), monitoringXHREnabledSetting), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.preserveLog), preserveConsoleLogSetting, i18nString(UIStrings.doNotClearLogOnPageReload)), SettingsUI.SettingsUI.createSettingCheckbox(SettingUIRegistration.SettingUIRegistration.resolve(consoleEagerEvalSetting.descriptor()).title, consoleEagerEvalSetting, i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.selectedContextOnly), this.filter.filterByExecutionContextSetting, i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)), SettingsUI.SettingsUI.createSettingCheckbox(SettingUIRegistration.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor())
-            .title, this.consoleHistoryAutocompleteSetting, i18nString(UIStrings.autocompleteFromHistory)), SettingsUI.SettingsUI.createSettingCheckbox(SettingUIRegistration.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title, this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole)), SettingsUI.SettingsUI.createSettingCheckbox(SettingUIRegistration.SettingUIRegistration.resolve(userActivationEvalSetting.descriptor()).title, userActivationEvalSetting, i18nString(UIStrings.treatEvaluationAsUserActivation)), SettingsUI.SettingsUI.createSettingCheckbox(SettingUIRegistration.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title, this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole)));
+        settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.networkMessages), this.filter.networkMessagesSetting, Settings.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.logXMLHttpRequests), monitoringXHREnabledSetting), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.preserveLog), preserveConsoleLogSetting, i18nString(UIStrings.doNotClearLogOnPageReload)), SettingsUI.SettingsUI.createSettingCheckbox(Settings.SettingUIRegistration.resolve(consoleEagerEvalSetting.descriptor()).title, consoleEagerEvalSetting, i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.selectedContextOnly), this.filter.filterByExecutionContextSetting, i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)), SettingsUI.SettingsUI.createSettingCheckbox(Settings.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor()).title, this.consoleHistoryAutocompleteSetting, i18nString(UIStrings.autocompleteFromHistory)), SettingsUI.SettingsUI.createSettingCheckbox(Settings.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title, this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole)), SettingsUI.SettingsUI.createSettingCheckbox(Settings.SettingUIRegistration.resolve(userActivationEvalSetting.descriptor()).title, userActivationEvalSetting, i18nString(UIStrings.treatEvaluationAsUserActivation)), SettingsUI.SettingsUI.createSettingCheckbox(Settings.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title, this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole)));
         if (!this.showSettingsPaneSetting.get()) {
             settingsPane.classList.add('hidden');
         }
@@ -1576,9 +1575,9 @@ export class ConsoleViewFilter {
     constructor(filterChangedCallback) {
         this.filterChanged = filterChangedCallback;
         this.messageLevelFiltersSetting = ConsoleViewFilter.levelFilterSetting();
-        this.networkMessagesSetting = Common.Settings.Settings.instance().moduleSetting('network-messages');
-        this.filterByExecutionContextSetting =
-            Common.Settings.Settings.instance().moduleSetting('selected-context-filter-enabled');
+        this.networkMessagesSetting =
+            Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.networkMessagesSettingDescriptor);
+        this.filterByExecutionContextSetting = Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.selectedContextFilterEnabledSettingDescriptor);
         this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
         this.networkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
         this.filterByExecutionContextSetting.addChangeListener(this.onFilterChanged.bind(this));

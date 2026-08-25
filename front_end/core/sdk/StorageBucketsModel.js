@@ -121,10 +121,6 @@ export class StorageBucketsModel extends SDKModel {
     }
     cacheStorageContentUpdated(_event) {
     }
-    sharedStorageAccessed(_event) {
-    }
-    sharedStorageWorkletOperationExecutionFinished(_event) {
-    }
 }
 SDKModel.register(StorageBucketsModel, { capabilities: 8192 /* Capability.STORAGE */, autostart: false });
 //# sourceMappingURL=StorageBucketsModel.js.map

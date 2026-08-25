@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/third_party/lit","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/third_party/lit/lit.ts"],"references":[{"path":"./lit-tsconfig.json"}]}

@@ -15417,7 +15417,7 @@
     "message": "Dismiss"
   },
   "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user’s environment."
+    "message": "Local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences) for several reasons. Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user’s environment."
   },
   "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
     "message": "Field & local metrics mismatch"
@@ -15453,7 +15453,7 @@
     "message": "{PH1} is a likely performance bottleneck."
   },
   "panels/timeline/components/DetailsView.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} is indicating poor page responsiveness."
+    "message": "{PH1} indicates poor page responsiveness."
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} took {PH2}."
@@ -15471,7 +15471,7 @@
     "message": "Explanation"
   },
   "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
-    "message": "Save performance trace "
+    "message": "Save performance trace"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Include annotations"
@@ -15483,7 +15483,7 @@
     "message": "Include script source maps"
   },
   "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
-    "message": "Additional information:"
+    "message": "More information:"
   },
   "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
     "message": "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)."
@@ -15513,13 +15513,13 @@
     "message": "Configure field metrics fetching"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
-    "message": "The Chrome UX Report does not have sufficient real-world speed data for this page."
+    "message": "The Chrome UX Report doesn’t have enough real-world speed data for this page."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
     "message": "Fetch aggregated field metrics from the {PH1} to help you contextualize local measurements with what real users experience on the site."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
-    "message": "\"{PH1}\" is not a valid origin or URL."
+    "message": "\"{PH1}\" isn’t a valid origin or URL."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
     "message": "Set a development origin to automatically get relevant field metrics for its production origin."
@@ -15546,7 +15546,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "When DevTools is open, the URLs you visit will be sent to Google to query field metrics. These requests are not tied to your Google account."
+    "message": "When DevTools is open, the URLs you visit will be sent to Google to query field metrics. These requests aren’t tied to your Google account."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Add a regular expression rule for the script’s URL"
@@ -15651,7 +15651,7 @@
     "message": "Auto ({PH1})"
   },
   "panels/timeline/components/LiveMetricsView.ts | clearCurrentLog": {
-    "message": "Clear the current log"
+    "message": "Clear current log"
   },
   "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
     "message": "Collection period: {PH1}"
@@ -15723,13 +15723,13 @@
     "message": "Learn more about local and field metrics"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Local metrics are captured from the current page using your network connection and device. field metrics is measured by real users using many different network connections and devices."
+    "message": "Local metrics are captured from the current page using your network connection and device. Field metrics are measured by real users using many different network connections and devices."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Local metrics"
   },
   "panels/timeline/components/LiveMetricsView.ts | logToConsole": {
-    "message": "Log additional interaction data to the console"
+    "message": "Log more interaction data to the console"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Mobile"
@@ -16065,10 +16065,10 @@
     "message": "Development origin"
   },
   "panels/timeline/components/OriginMap.ts | invalidOrigin": {
-    "message": "\"{PH1}\" is not a valid origin or URL."
+    "message": "\"{PH1}\" isn’t a valid origin or URL."
   },
   "panels/timeline/components/OriginMap.ts | pageHasNoData": {
-    "message": "The Chrome UX Report does not have sufficient real user data for this page."
+    "message": "The Chrome UX Report doesn’t have enough real user data for this page."
   },
   "panels/timeline/components/OriginMap.ts | productionOrigin": {
     "message": "Production origin"
@@ -16083,7 +16083,7 @@
     "message": "Annotate a trace for yourself and others"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialDescription": {
-    "message": "Hover over the list in the sidebar with Annotations tab selected to access the delete function."
+    "message": "Hover over the list in the sidebar Annotations tab to delete an annotation."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialTitle": {
     "message": "Delete an annotation"
@@ -16095,7 +16095,7 @@
     "message": "A \"{PH1}\" event annotated with the text \"{PH2}\""
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "Double-click or press Enter on an item and type to create an item label."
+    "message": "Double-click or press Enter on an item and type to add an item label."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "Label an item"
@@ -16113,7 +16113,7 @@
     "message": "A time range starting at {PH1} and ending at {PH2}"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialDescription": {
-    "message": "Shift-drag in the flamechart then type to create a time range annotation."
+    "message": "Shift-drag in the flame chart, then type to add a time range annotation."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
     "message": "Define a time range"
@@ -17682,10 +17682,10 @@
     "message": "Domain"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
-    "message": "Editable Cookies"
+    "message": "Editable cookies"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | httpOnlyCookiesCannotBeAdded": {
-    "message": "HttpOnly cookies cannot be added as context"
+    "message": "HttpOnly cookies can’t be added as context"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | na": {
     "message": "N/A"
@@ -17697,7 +17697,7 @@
     "message": "(opaque)"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | partitionKeySite": {
-    "message": "Partition Key Site"
+    "message": "Partition key site"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | path": {
     "message": "Path"
@@ -17895,7 +17895,7 @@
     "message": "PS: You can also open the game by typing fixme"
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
-    "message": "Doubleclick to zoom image. Click to view preceding requests."
+    "message": "Double-click to zoom image. Click to view preceding requests."
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | nextFrame": {
     "message": "Next frame"
@@ -17919,13 +17919,13 @@
     "message": "Configure tracks"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
-    "message": "Selected a {PH1} event within {PH2}. Press enter to focus this event."
+    "message": "Selected a {PH1} event within {PH2}. Press Enter to focus this event."
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
     "message": "Finish configuring tracks"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
-    "message": "Flame Chart"
+    "message": "Flame chart"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
     "message": "Label entry"
@@ -17964,13 +17964,13 @@
     "message": "Medium"
   },
   "ui/legacy/components/perf_ui/OverviewGrid.ts | leftResizer": {
-    "message": "Left Resizer"
+    "message": "Left resizer"
   },
   "ui/legacy/components/perf_ui/OverviewGrid.ts | overviewGridWindow": {
     "message": "Overview grid window"
   },
   "ui/legacy/components/perf_ui/OverviewGrid.ts | rightResizer": {
-    "message": "Right Resizer"
+    "message": "Right resizer"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | classic": {
     "message": "Classic"

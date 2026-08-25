@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/core/protocol_client","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/core/protocol_client/protocol_client.ts"],"references":[{"path":"./protocol_client-tsconfig.ref.json"}]}

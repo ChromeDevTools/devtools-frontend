@@ -6,6 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import { AiAgent, } from './agents/AiAgent.js';
 import { executeJsCode } from './agents/ExecuteJavascript.js';
 import { ChangeManager } from './ChangeManager.js';
+import { AccessibilityContext } from './contexts/AccessibilityContext.js';
 import { DOMNodeContext } from './contexts/DOMNodeContext.js';
 import { debugLog } from './debug.js';
 import { ExtensionScope } from './ExtensionScope.js';
@@ -59,8 +60,10 @@ export class AiAgent2 extends AiAgent {
         return {};
     }
     async preRun() {
+        // One-way latch: once sensitive data enters the conversation history,
+        // logging must remain disabled for the lifetime of this agent instance.
         if (this.context && !this.context.isLoggingEnabled()) {
-            this.setServerSideLoggingActive(false);
+            this.disableServerSideLogging();
         }
         const target = this.targetManager.primaryPageTarget();
         const domModel = target?.model(SDK.DOMModel.DOMModel);
@@ -149,6 +152,9 @@ QUERY: ${query}`;
         if (unloadedSkills.length === 0) {
             return enhancedQuery;
         }
+        // Note: Test assertion helpers in front_end/testing/AiAssistanceHelpers.ts (assertSkillLoaded,
+        // assertSkillNotLoaded) rely on this formatting (`Available skills that are not yet loaded:`
+        // and `- ${name}: ${skill.description}`). If this format is updated, update those helpers too.
         const skillsManifest = unloadedSkills.map(([name, skill]) => `- ${name}: ${skill.description}`).join('\n');
         return `Available skills that are not yet loaded:
 ${skillsManifest}
@@ -231,10 +237,11 @@ User query: ${enhancedQuery}`;
                     getExecutionContextNode: () => (this.context instanceof DOMNodeContext ? this.context.getItem() : this.#getDocumentBodyNode()),
                     getTarget: () => this.targetManager.primaryPageTarget(),
                     getEstablishedOrigin: () => this.#getConversationOrigin(),
-                    lighthouseRecording: this.#lighthouseRecording,
+                    getLighthouseReport: () => (this.context instanceof AccessibilityContext ? this.context.getItem() : null),
+                    runLighthouse: async (overrides) => await (this.#lighthouseRecording?.(overrides) ?? null),
                     performanceRecordAndReload: this.#performanceRecordAndReload,
-                    setLoggingEnabled: (enabled) => {
-                        this.setServerSideLoggingActive(enabled);
+                    disableLogging: () => {
+                        this.disableServerSideLogging();
                     },
                 };
                 return tool.handler(args, context, options);

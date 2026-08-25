@@ -14,53 +14,49 @@ import { Link } from '../../../ui/kit/kit.js';
 // *********************************************************************
 const UIStrings = {
     /**
-     * @description Text in the Performance panel for a forced style and layout calculation of elements
-     * in a page. See https://developer.mozilla.org/en-US/docs/Glossary/Reflow
+     * @description Text in the Performance panel for a forced style and layout calculation of elements in a page.
      */
     forcedReflow: 'Forced reflow',
     /**
-     * @description Text in Timeline UIUtils of the Performance panel
+     * @description Warning message indicating that an event is likely a performance bottleneck in the Performance panel.
      * @example {Forced reflow} PH1
      */
     sIsALikelyPerformanceBottleneck: '{PH1} is a likely performance bottleneck.',
     /**
-     * @description Text in the Performance panel for a function called during a time the browser was
-     * idle (inactive), which to longer to execute than a predefined deadline.
+     * @description Warning message in the Performance panel for an idle callback function that took longer to execute than its predefined deadline.
      * @example {10ms} PH1
      */
     idleCallbackExecutionExtended: 'Idle callback execution extended beyond deadline by {PH1}',
     /**
-     * @description Text in the Performance panel which describes how long a task took.
-     * @example {task} PH1
+     * @description Warning message in the Performance panel describing how long a task took.
+     * @example {Task} PH1
      * @example {10ms} PH2
      */
     sTookS: '{PH1} took {PH2}.',
     /**
-     * @description Text in the Performance panel for a task that took long. See
-     * https://developer.mozilla.org/en-US/docs/Glossary/Long_task
+     * @description Label in the Performance panel for a task that took a long time.
      */
     longTask: 'Long task',
     /**
-     * @description Text used to highlight a long interaction and link to web.dev/inp
+     * @description Label in the Performance panel for an interaction that took a long time.
      */
     longInteractionINP: 'Long interaction',
     /**
-     * @description Text in Timeline UIUtils of the Performance panel when the
-     *             user clicks on a long interaction.
+     * @description Warning message in the Performance panel indicating that an interaction caused poor responsiveness.
      * @example {Long interaction} PH1
      */
-    sIsLikelyPoorPageResponsiveness: '{PH1} is indicating poor page responsiveness.',
+    sIsLikelyPoorPageResponsiveness: '{PH1} indicates poor page responsiveness.',
     /**
-     * @description Text in Timeline UIUtils of the Performance panel
+     * @description Label for the WebSocket sub-protocol in the event details view of the Performance panel.
      */
     websocketProtocol: 'WebSocket protocol',
     /**
-     * @description Details text indicating how many bytes were received in a WebSocket message
+     * @description Details text indicating how many bytes were transferred in a WebSocket message in the Performance panel.
      * @example {1024} PH1
      */
     webSocketBytes: '{PH1} byte(s)',
     /**
-     * @description Details text indicating how many bytes were sent in a WebSocket message
+     * @description Details label indicating the data length of a WebSocket message in the Performance panel.
      */
     webSocketDataLength: 'Data length',
 };

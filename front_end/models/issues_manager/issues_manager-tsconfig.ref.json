@@ -1,0 +1,84 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/models/issues_manager",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/models/issues_manager/BounceTrackingIssue.ts",
+    "../../../../../../front_end/models/issues_manager/ClientHintIssue.ts",
+    "../../../../../../front_end/models/issues_manager/ConnectionAllowlistIssue.ts",
+    "../../../../../../front_end/models/issues_manager/ContentSecurityPolicyIssue.ts",
+    "../../../../../../front_end/models/issues_manager/CookieDeprecationMetadataIssue.ts",
+    "../../../../../../front_end/models/issues_manager/CookieIssue.ts",
+    "../../../../../../front_end/models/issues_manager/CorsIssue.ts",
+    "../../../../../../front_end/models/issues_manager/CrossOriginEmbedderPolicyIssue.ts",
+    "../../../../../../front_end/models/issues_manager/DOMIssuesManager.ts",
+    "../../../../../../front_end/models/issues_manager/DeprecationIssue.ts",
+    "../../../../../../front_end/models/issues_manager/ElementAccessibilityIssue.ts",
+    "../../../../../../front_end/models/issues_manager/EmailVerificationRequestIssue.ts",
+    "../../../../../../front_end/models/issues_manager/FederatedAuthRequestIssue.ts",
+    "../../../../../../front_end/models/issues_manager/FederatedAuthUserInfoRequestIssue.ts",
+    "../../../../../../front_end/models/issues_manager/GenericIssue.ts",
+    "../../../../../../front_end/models/issues_manager/HeavyAdIssue.ts",
+    "../../../../../../front_end/models/issues_manager/Issue.ts",
+    "../../../../../../front_end/models/issues_manager/IssueAggregator.ts",
+    "../../../../../../front_end/models/issues_manager/IssueResolver.ts",
+    "../../../../../../front_end/models/issues_manager/IssuesManager.ts",
+    "../../../../../../front_end/models/issues_manager/IssuesManagerEvents.ts",
+    "../../../../../../front_end/models/issues_manager/LazyLoadImageIssue.ts",
+    "../../../../../../front_end/models/issues_manager/MarkdownIssueDescription.ts",
+    "../../../../../../front_end/models/issues_manager/MixedContentIssue.ts",
+    "../../../../../../front_end/models/issues_manager/PartitioningBlobURLIssue.ts",
+    "../../../../../../front_end/models/issues_manager/PermissionElementIssue.ts",
+    "../../../../../../front_end/models/issues_manager/PropertyRuleIssue.ts",
+    "../../../../../../front_end/models/issues_manager/QuirksModeIssue.ts",
+    "../../../../../../front_end/models/issues_manager/RelatedIssue.ts",
+    "../../../../../../front_end/models/issues_manager/SRIMessageSignatureIssue.ts",
+    "../../../../../../front_end/models/issues_manager/SelectivePermissionsInterventionIssue.ts",
+    "../../../../../../front_end/models/issues_manager/SharedArrayBufferIssue.ts",
+    "../../../../../../front_end/models/issues_manager/SharedDictionaryIssue.ts",
+    "../../../../../../front_end/models/issues_manager/SourceFrameIssuesManager.ts",
+    "../../../../../../front_end/models/issues_manager/StylesheetLoadingIssue.ts",
+    "../../../../../../front_end/models/issues_manager/UnencodedDigestIssue.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/i18n/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../bindings/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../workspace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/marked/bundle-tsconfig.ref.json"
+    }
+  ]
+}

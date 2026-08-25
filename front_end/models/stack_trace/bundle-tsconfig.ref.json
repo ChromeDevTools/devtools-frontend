@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/models/stack_trace","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/models/stack_trace/stack_trace.ts"],"references":[{"path":"./stack_trace-tsconfig.ref.json"}]}

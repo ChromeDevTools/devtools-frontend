@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/models/formatter","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/models/formatter/formatter.ts"],"references":[{"path":"./formatter-tsconfig.ref.json"}]}

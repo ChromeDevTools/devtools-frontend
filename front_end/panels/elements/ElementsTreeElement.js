@@ -44,6 +44,7 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
@@ -63,7 +64,7 @@ import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
 import { MappedCharToEntity } from './ElementsTreeOutline.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import { getRegisteredDecorators } from './MarkerDecorator.js';
-const { html, nothing, render, Directives: { ref, repeat } } = Lit;
+const { html, nothing, render, Directives: { classMap, ref, repeat, until } } = Lit;
 const { animateOn } = UI.UIUtils;
 const UIStrings = {
     /**
@@ -258,10 +259,10 @@ function handleAdornerKeydown(cb) {
         }
     };
 }
-function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, updateRecord, onUpdateSearchHighlight, onExpand) {
+function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, updateRecord, onUpdateSearchHighlight, onExpand, issues) {
     switch (node.nodeType()) {
         case Node.ATTRIBUTE_NODE:
-            return renderAttribute({ name: node.name, value: node.value }, updateRecord, true, node);
+            return renderAttribute({ name: node.name, value: node.value }, updateRecord, true, node, issues);
         case Node.ELEMENT_NODE: {
             if (node.pseudoType()) {
                 let pseudoElementName = node.nodeName();
@@ -273,13 +274,13 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
             }
             const tagName = node.nodeNameInCorrectCase();
             if (isClosingTag) {
-                return renderTag(node, tagName, true, expanded, true, updateRecord);
+                return renderTag(node, tagName, true, expanded, true, updateRecord, issues);
             }
-            const openingTag = renderTag(node, tagName, false, expanded, false, updateRecord);
+            const openingTag = renderTag(node, tagName, false, expanded, false, updateRecord, issues);
             if (isExpandable) {
                 if (!expanded) {
                     return html `${openingTag}<devtools-elements-tree-expand-button .data=${{ clickHandler: onExpand }}></devtools-elements-tree-expand-button><span style="font-size: 0;"
-                  >…</span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+                  >…</span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
                 }
                 return openingTag;
             }
@@ -296,10 +297,10 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
                         Highlighting.highlightRangesWithStyleClass(el, result.entityRanges, 'webkit-html-entity-value');
                     }
                 });
-                return html `${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging.value('text-node').track({ change: true, dblclick: true })} ${animateOn(Boolean((updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified())), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+                return html `${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging.value('text-node').track({ change: true, dblclick: true })} ${animateOn(Boolean((updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified())), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
             }
             if (isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
-                return html `${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+                return html `${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
             }
             return openingTag;
         }
@@ -451,7 +452,7 @@ function renderLinkifiedValue(value, node) {
 }
 const relationPromisesCache = new WeakMap();
 const relatedElementsCache = new WeakMap();
-function renderAttribute(attr, updateRecord, isDiff, node) {
+function renderAttribute(attr, updateRecord, isDiff, node, issues) {
     const name = attr.name;
     const value = attr.value || '';
     const forceValue = isDiff;
@@ -545,17 +546,22 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
         change: true,
         dblclick: true,
     });
-    return html `<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? Lit.Directives.until(relationPromise, name) : name}</span>${hasText ?
+    const hasAttributeIssues = Boolean(issues?.some(issue => getElementIssueDetails(issue)?.attribute === name));
+    const attributeNameClasses = {
+        'webkit-html-attribute-name': true,
+        'violating-element': hasAttributeIssues,
+    };
+    return html `<span class="webkit-html-attribute" jslog=${jslog}><span class=${classMap(attributeNameClasses)}
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until(relationPromise, name) : name}</span>${hasText ?
         html `=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
                         ${valueType === 1 /* ValueType.SRC */ ? renderLinkifiedValue(value, node) : nothing}
                         ${valueType === 2 /* ValueType.SRCSET */ ? renderLinkifiedSrcset(Common.Srcset.parseSrcset(value), node) : nothing}
-                        ${linkifyValue && relationPromise ? Lit.Directives.until(relationPromise, value) : nothing}
+                        ${linkifyValue && relationPromise ? until(relationPromise, value) : nothing}
                 </span>"` :
         nothing}</span>`;
 }
-function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
-    const classMap = {
+function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord, issues) {
+    const tagClasses = {
         'webkit-html-tag': true,
         close: isClosingTag && isDistinctTreeElement,
     };
@@ -573,11 +579,19 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
         }
     });
     const tagNameClass = isClosingTag ? 'webkit-html-close-tag-name' : 'webkit-html-tag-name';
+    const hasTagIssues = !isClosingTag && Boolean(issues?.some(issue => {
+        const details = getElementIssueDetails(issue);
+        return Boolean(details && !details.attribute);
+    }));
+    const tagNameClasses = {
+        [tagNameClass]: true,
+        'violating-element': hasTagIssues,
+    };
     const tagString = (isClosingTag ? '/' : '') + tagName;
     const jslog = !isClosingTag ? VisualLogging.value('tag-name').track({ change: true, dblclick: true }) : '';
     return html `<span
-      class=${Lit.Directives.classMap(classMap)} ${setAriaLabel}
-      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map(attr => html ` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
+      class=${classMap(tagClasses)} ${setAriaLabel}
+      >&lt;<span class=${classMap(tagNameClasses)} jslog=${jslog || nothing} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map(attr => html ` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
 }
 function maybeRenderAdAdorner(input) {
     if (!input.adProvenance) {
@@ -649,11 +663,11 @@ export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format off
     render(html `
     <div ${ref(el => { output.contentElement = el; })}>
-      ${input.node ? html `<span class="highlight ${input.editorState ? 'hidden' : ''}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand)}</span>` : nothing}
+      ${input.node ? html `<span class="highlight ${input.editorState ? 'hidden' : ''}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand, input.issues)}</span>` : nothing}
       ${input.isHovered || input.isSelected ? html `
         <div class="selection fill ${input.editorState ? 'hidden' : ''}" style=${`margin-left: ${-input.indent}px`}></div>
       ` : nothing}
-      <div class=${Lit.Directives.classMap(gutterContainerClasses)}
+      <div class=${classMap(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
         <devtools-icon name="dots-horizontal"></devtools-icon>
@@ -876,6 +890,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format on
 };
 export class ElementsTreeWidget extends UI.Widget.Widget {
+    static INJECT = [IssuesManager.DOMIssuesManager.DOMIssuesManager];
+    #domIssuesManager;
     #node;
     isClosingTag = false;
     #expanded = false;
@@ -900,7 +916,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     revealInTopLayer;
     showContextMenu;
     populateTreeElement;
-    updateNodeElementToIssue;
     performCopyOrCut;
     duplicateNode;
     pasteNode;
@@ -926,8 +941,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     #editorState = null;
     #editorWidth = null;
     expandAllButtonElement;
-    #elementIssues = new Map();
-    #nodeElementToIssue = new Map();
     #highlights = [];
     #adornersThrottler = new Common.Throttler.Throttler(100);
     #containerAdornerActive = false;
@@ -983,8 +996,23 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             canAddAttributes: this.#node ? this.#node.nodeType() === Node.ELEMENT_NODE : false,
         };
     }
-    constructor(element, view = DEFAULT_VIEW) {
+    get issues() {
+        // The widget is currently created for non-widget ElementsTreeElement so
+        // the domIssuesManager can be empty, relying on the manual resolution.
+        if (!this.#domIssuesManager) {
+            const universe = UI.Widget.lookupUniverseForElement(this.contentElement);
+            if (universe) {
+                this.#domIssuesManager = universe.get(IssuesManager.DOMIssuesManager.DOMIssuesManager);
+                if (this.node?.id) {
+                    this.#domIssuesManager.subscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+                }
+            }
+        }
+        return this.#domIssuesManager?.issuesForNode(this.node) ?? [];
+    }
+    constructor(element, [domIssuesManager] = [undefined], view = DEFAULT_VIEW) {
         super(element);
+        this.#domIssuesManager = domIssuesManager;
         this.#view = view;
         this.searchQuery = null;
         this.#expandedChildrenLimit = InitialChildrenLimit;
@@ -1144,6 +1172,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             },
             editorState: this.#editorState,
             editorWidth: this.#editorWidth,
+            issues: this.issues,
         }, output, this.contentElement);
         this.#editorRef = output.editorRef;
         if (this.#updateRecord) {
@@ -1306,107 +1335,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.#hovered = isHovered;
         this.requestUpdate();
     }
-    addIssue(newIssue) {
-        if (this.#elementIssues.has(newIssue.primaryKey())) {
-            return;
-        }
-        this.#elementIssues.set(newIssue.primaryKey(), newIssue);
-        this.#applyIssueStyleAndTooltip(newIssue);
-    }
-    #applyIssueStyleAndTooltip(issue) {
-        const elementIssueDetails = getElementIssueDetails(issue);
-        if (!elementIssueDetails) {
-            return;
-        }
-        if (elementIssueDetails.attribute) {
-            this.#highlightViolatingAttr(elementIssueDetails.attribute, issue);
-        }
-        else {
-            this.#highlightTagAsViolating(issue);
-        }
-    }
-    get issuesByNodeElement() {
-        return this.#nodeElementToIssue;
-    }
-    #highlightViolatingAttr(name, issue) {
-        const tag = this.contentElement.querySelectorAll('.webkit-html-tag')[0];
-        const attributes = tag.getElementsByClassName('webkit-html-attribute');
-        for (const attribute of attributes) {
-            if (attribute.getElementsByClassName('webkit-html-attribute-name')[0].textContent === name) {
-                const attributeElement = attribute.getElementsByClassName('webkit-html-attribute-name')[0];
-                attributeElement.classList.add('violating-element');
-                this.#recordAndNotifyIssue(attributeElement, issue);
-            }
-        }
-    }
-    #highlightTagAsViolating(issue) {
-        const tagElement = this.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
-        tagElement.classList.add('violating-element');
-        this.#recordAndNotifyIssue(tagElement, issue);
-    }
-    #recordAndNotifyIssue(nodeElement, issue) {
-        let issues = this.#nodeElementToIssue.get(nodeElement);
-        if (!issues) {
-            issues = [];
-            this.#nodeElementToIssue.set(nodeElement, issues);
-        }
-        issues.push(issue);
-        this.updateNodeElementToIssue?.(nodeElement, issues);
-    }
-    removeIssue(issue) {
-        if (!this.#elementIssues.has(issue.primaryKey())) {
-            return;
-        }
-        this.#removeIssueStyleAndTooltip(issue);
-        this.#elementIssues.delete(issue.primaryKey());
-    }
-    #removeIssueStyleAndTooltip(issue) {
-        const elementIssueDetails = getElementIssueDetails(issue);
-        if (!elementIssueDetails) {
-            return;
-        }
-        if (elementIssueDetails.attribute) {
-            this.#undoHighlightViolatingAttr(elementIssueDetails.attribute, issue);
-        }
-        else {
-            this.#undoHighlightTagAsViolating(issue);
-        }
-    }
-    #undoHighlightViolatingAttr(name, issue) {
-        const violatingAttributes = this.contentElement.querySelectorAll('.webkit-html-attribute-name.violating-element');
-        for (const attributeElement of violatingAttributes) {
-            if (attributeElement.textContent === name) {
-                this.#removeFromNodeElementToIssue(attributeElement, issue);
-                if (!this.#nodeElementToIssue.has(attributeElement)) {
-                    attributeElement.classList.remove('violating-element');
-                }
-            }
-        }
-    }
-    #undoHighlightTagAsViolating(issue) {
-        const tagElement = this.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
-        if (!tagElement) {
-            return;
-        }
-        this.#removeFromNodeElementToIssue(tagElement, issue);
-        if (!this.#nodeElementToIssue.has(tagElement)) {
-            tagElement.classList.remove('violating-element');
-        }
-    }
-    #removeFromNodeElementToIssue(nodeElement, issue) {
-        let issues = this.#nodeElementToIssue.get(nodeElement);
-        if (!issues) {
-            return;
-        }
-        issues = issues.filter(i => i !== issue);
-        if (issues.length === 0) {
-            this.#nodeElementToIssue.delete(nodeElement);
-        }
-        else {
-            this.#nodeElementToIssue.set(nodeElement, issues);
-        }
-        this.updateNodeElementToIssue?.(nodeElement, issues);
-    }
     expandedChildrenLimit() {
         return this.#expandedChildrenLimit;
     }
@@ -1426,6 +1354,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             this.node.addEventListener(SDK.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
             this.node.addEventListener(SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
             this.node.addEventListener(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
+            if (this.#domIssuesManager && this.node.id) {
+                this.#domIssuesManager.subscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+            }
         }
     }
     clearView() {
@@ -1493,6 +1424,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             indent: 0,
             editorState: null,
             editorWidth: null,
+            issues: [],
         }, {}, this.contentElement);
     }
     onunbind() {
@@ -1507,7 +1439,13 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
         this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
         this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
+        if (this.#domIssuesManager && this.node.id) {
+            this.#domIssuesManager.unsubscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+        }
     }
+    #onDOMIssueUpdated = () => {
+        this.performUpdate();
+    };
     #onScrollableFlagUpdated() {
         void this.#updateAdorners();
     }
@@ -2143,10 +2081,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         }
         this.performUpdate();
         this.updateDecorations();
-        // If there is an issue with this node, make sure to update it.
-        for (const issue of this.#elementIssues.values()) {
-            this.#applyIssueStyleAndTooltip(issue);
-        }
         this.#highlightSearchResults();
     }
     updateDecorations() {
@@ -2475,15 +2409,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     copyStyles() {
         return this.widget.copyStyles();
     }
-    addIssue(issue) {
-        this.widget.addIssue(issue);
-    }
-    get issuesByNodeElement() {
-        return this.widget.issuesByNodeElement;
-    }
-    removeIssue(issue) {
-        this.widget.removeIssue(issue);
-    }
     setInClipboard(inClipboard) {
         this.widget.setInClipboard(inClipboard);
         if (this.listItemElement) {
@@ -2562,7 +2487,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             this.widget.revealInTopLayer = node => outline.revealInTopLayer(node);
             this.widget.showContextMenu = event => void outline.showContextMenu(this, event);
             this.widget.populateTreeElement = async () => await outline.populateTreeElement(this);
-            this.widget.updateNodeElementToIssue = (el, issues) => outline.updateNodeElementToIssue(el, issues);
             this.widget.performCopyOrCut = (isCut, node, isElement) => outline.performCopyOrCut(isCut, node, isElement);
             this.widget.duplicateNode = node => outline.duplicateNode(node);
             this.widget.pasteNode = node => outline.pasteNode(node);

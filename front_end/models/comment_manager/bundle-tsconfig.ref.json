@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/models/comment_manager","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/models/comment_manager/comment_manager.ts"],"references":[{"path":"./comment_manager-tsconfig.ref.json"}]}

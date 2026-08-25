@@ -1,0 +1,93 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/panels/lighthouse",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/panels/lighthouse/LighthouseController.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthousePanel.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthouseProtocolService.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthouseReportRenderer.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthouseReportSelector.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthouseStartView.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthouseStatusView.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthouseTimespanView.ts",
+    "../../../../../../front_end/panels/lighthouse/RadioSetting.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/i18n/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/protocol_client/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/text_utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/emulation/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/geometry/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/lighthouse/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/workspace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../emulation/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/lighthouse/report/report-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/kit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/components/utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/theme_support/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../common/bundle-tsconfig.ref.json"
+    }
+  ]
+}

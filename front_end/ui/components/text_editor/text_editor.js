@@ -1771,15 +1771,18 @@ var i18nString = i18n9.i18n.getLocalizedString.bind(void 0, str_);
 var empty = [];
 var dynamicSetting = CM3.Facet.define();
 var DynamicSetting = class _DynamicSetting {
-  settingName;
   getExtension;
   compartment = new CM3.Compartment();
-  constructor(settingName, getExtension) {
-    this.settingName = settingName;
+  setting;
+  constructor(setting, getExtension) {
     this.getExtension = getExtension;
+    this.setting = setting;
+  }
+  get settingName() {
+    return typeof this.setting === "string" ? this.setting : this.setting.name;
   }
   settingValue() {
-    return Common3.Settings.Settings.instance().moduleSetting(this.settingName).get();
+    return (typeof this.setting === "string" ? Common3.Settings.Settings.instance().moduleSetting(this.setting) : Common3.Settings.Settings.instance().resolve(this.setting)).get();
   }
   instance() {
     return [
@@ -1792,8 +1795,8 @@ var DynamicSetting = class _DynamicSetting {
     const needed = this.getExtension(value);
     return cur === needed ? null : this.compartment.reconfigure(needed);
   }
-  static bool(name, enabled, disabled = empty) {
-    return new _DynamicSetting(name, (val) => val ? enabled : disabled);
+  static bool(setting, enabled, disabled = empty) {
+    return new _DynamicSetting(setting, (val) => val ? enabled : disabled);
   }
   static none = [];
 };
@@ -4286,7 +4289,7 @@ var TextEditor = class extends HTMLElement {
           this.#activeEditor.dispatch({ effects: change });
         }
       };
-      const setting = Common6.Settings.Settings.instance().moduleSetting(dynamicSetting2.settingName);
+      const setting = typeof dynamicSetting2.setting === "string" ? Common6.Settings.Settings.instance().moduleSetting(dynamicSetting2.setting) : Common6.Settings.Settings.instance().resolve(dynamicSetting2.setting);
       setting.addChangeListener(handler);
       this.#activeSettingListeners.push([setting, handler]);
     }

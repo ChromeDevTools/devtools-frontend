@@ -42,13 +42,6 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         super(element, { useShadowDom: true });
         this.#view = view;
         this.#computedStyleModelInternal.addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.#onCSSModelChanged, this);
-        this.#computedStyleModelInternal.addEventListener("ComputedStyleChanged" /* ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED */, this.#onComputedStyleChanged, this);
-    }
-    #onComputedStyleChanged() {
-        if (this.isEditingStyle || this.userOperation) {
-            return;
-        }
-        this.#rebuildAndUpdate();
     }
     #rebuildAndUpdate() {
         void this.#rebuildThrottler.schedule(async () => {
@@ -175,6 +168,8 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
     }
     setEditingStyle(editing) {
         this.isEditingStyle = editing;
+    }
+    suppressResets() {
     }
     setUserOperation(userOperation) {
         this.userOperation = userOperation;

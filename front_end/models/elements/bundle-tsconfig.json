@@ -1,1 +1,1 @@
-{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/elements"},"files":["../../../../../../front_end/models/elements/elements.ts"],"references":[{"path":"./elements-tsconfig.json"}]}
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/elements"},"files":["../../../../../../front_end/models/elements/elements.ts"],"references":[{"path":"./elements-tsconfig.ref.json"}]}

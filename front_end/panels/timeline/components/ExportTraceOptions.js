@@ -17,49 +17,49 @@ import exportTraceOptionsStyles from './exportTraceOptions.css.js';
 const { html } = Lit;
 const UIStrings = {
     /**
-     * @description Text title for the Save performance trace dialog.
+     * @description Dialog title for saving a performance trace in the Performance panel.
      */
-    exportTraceOptionsDialogTitle: 'Save performance trace ',
+    exportTraceOptionsDialogTitle: 'Save performance trace',
     /**
-     * @description Tooltip for the Save performance trace dialog.
+     * @description Tooltip text for the toolbar button that opens the save trace dialog in the Performance panel.
      */
     showExportTraceOptionsDialogTitle: 'Save trace…',
     /**
-     * @description Text for the include script content option.
+     * @description Checkbox label to include resource content when saving a trace in the Performance panel.
      */
     includeResourceContent: 'Include resource content',
     /**
-     * @description Text for the include script source maps option.
+     * @description Checkbox label to include script source maps when saving a trace in the Performance panel.
      */
     includeSourcemap: 'Include script source maps',
     /**
-     * @description Text for the include annotations option.
+     * @description Checkbox label to include annotations when saving a trace in the Performance panel.
      */
     includeAnnotations: 'Include annotations',
     /**
-     * @description Text for the compression option.
+     * @description Checkbox label to compress the saved trace with gzip in the Performance panel.
      */
     shouldCompress: 'Compress with gzip',
     /**
-     * @description Text for the explanation link
+     * @description Link text to documentation explaining trace export options in the Performance panel.
      */
     explanation: 'Explanation',
     /**
-     * @description Text for the save trace button
+     * @description Button label to save the trace in the Performance panel.
      */
     saveButtonTitle: 'Save',
     /**
-     * @description Text shown in the information pop-up next to the "Include resource content" option.
+     * @description Tooltip text explaining the privacy implications of including resource content when saving a trace in the Performance panel.
      */
     resourceContentPrivacyInfo: 'Includes the full content of all loaded HTML, CSS, and scripts (except extensions).',
     /**
-     * @description Text shown in the information pop-up next to the "Include script sourcemaps" option.
+     * @description Tooltip text explaining the privacy implications of including script source maps when saving a trace in the Performance panel.
      */
     sourceMapsContentPrivacyInfo: 'Includes available source maps, which may expose authored code.',
     /**
-     * @description Text used as the start of the accessible label for the information button which shows additional context when the user focuses / hovers.
+     * @description Accessible label prefix for the information button in the Performance panel.
      */
-    moreInfoLabel: 'Additional information:',
+    moreInfoLabel: 'More information:',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/ExportTraceOptions.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

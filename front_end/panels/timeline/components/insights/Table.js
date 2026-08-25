@@ -8,7 +8,7 @@ import { EventReferenceClick } from './EventRef.js';
 import tableStyles from './table.css.js';
 const UIStrings = {
     /**
-     * @description Table row value representing the remaining items not shown in the table due to size constraints. This row will always represent at least 2 items.
+     * @description Table row label representing the remaining items not shown in the table in the Performance panel sidebar.
      * @example {5} PH1
      */
     others: '{PH1} others',

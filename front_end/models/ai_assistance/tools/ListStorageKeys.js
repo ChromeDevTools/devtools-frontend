@@ -43,7 +43,7 @@ export class ListStorageKeysTool {
         };
     }
     async handler(args, context) {
-        context.setLoggingEnabled(false);
+        context.disableLogging();
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         const targetManager = SDK.TargetManager.TargetManager.instance();
         const primaryPageTarget = targetManager.primaryPageTarget();

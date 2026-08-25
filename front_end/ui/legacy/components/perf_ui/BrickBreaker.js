@@ -7,11 +7,11 @@ import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 const UIStrings = {
     /**
-     * @description Message congratulating the user for having won a game.
+     * @description Message congratulating the user for winning the brick breaker game.
      */
     congrats: 'Congrats, you win!',
     /**
-     * @description A Postscript hinting the user the possibility to open the game using a keycombo.
+     * @description Postscript message explaining how to open the brick breaker game using a keyboard shortcut.
      */
     ps: 'PS: You can also open the game by typing `fixme`',
 };

@@ -473,8 +473,29 @@ export declare namespace Ads {
          */
         removeAdFrames: Page.FrameId[];
     }
+    /**
+     * An ad script.
+     * Note: when the script is a transitive ad script, we only fill in the
+     * immediate ancestor script in the provenance's adScriptAncestry field (as its
+     * first entry), rather than filling in the full ancestry. This saves work for
+     * the backend, and the frontend can reconstruct the full ancestry if
+     * necessary.
+     */
+    interface AdScript {
+        /**
+         * The script ID.
+         */
+        scriptId: Runtime.ScriptId;
+        /**
+         * The ad provenance.
+         */
+        provenance: Network.AdProvenance;
+    }
     interface GetAdMetricsResponse extends ProtocolResponseWithError {
         metrics: AdMetrics;
+    }
+    interface GetAdScriptsResponse extends ProtocolResponseWithError {
+        newScripts: AdScript[];
     }
 }
 export declare namespace Animation {
@@ -10903,6 +10924,9 @@ export declare namespace Network {
         filterlistRule?: string;
         /**
          * The script ancestry that created the ad, if any.
+         * Note: depending on the context, this may represent the full ancestry up
+         * to the root script, or it may contain only one script representing the
+         * immediate ancestor.
          */
         adScriptAncestry?: AdAncestry;
     }
@@ -16443,6 +16467,57 @@ export declare namespace ServiceWorker {
         Redundant = "redundant"
     }
     /**
+     * Mostly corresponds to `RouterCondition` in ServiceWorker spec
+     * (https://www.w3.org/TR/service-workers/#dictdef-routercondition) while this
+     * currently lacks support for the nested conditions ("or" and "not").
+     * TODO(crbug.com/540469610): Support recursive conditions.
+     */
+    interface ServiceWorkerRouterCondition {
+        /**
+         * Plain text, or JSON serialization of URLPatternInit or URLPattern
+         */
+        urlPattern?: string;
+        requestMethod?: string;
+        requestMode?: string;
+        requestDestination?: string;
+        runningStatus?: ServiceWorkerVersionRunningStatus;
+    }
+    const enum ServiceWorkerRouterSourceType {
+        Cache = "cache",
+        FetchEvent = "fetchEvent",
+        Network = "network",
+        RaceNetworkAndFetchHandler = "raceNetworkAndFetchHandler",
+        RaceNetworkAndCache = "raceNetworkAndCache",
+        SourceDict = "sourceDict"
+    }
+    /**
+     * https://www.w3.org/TR/service-workers/#dictdef-routersourcedict
+     */
+    interface ServiceWorkerRouterSourceDict {
+        cacheName: string;
+    }
+    /**
+     * Corresponds to `RouterSource` in the spec while the representation is different as follows.
+     * (https://www.w3.org/TR/service-workers/#typedefdef-routersource)
+     * - `RouterSourceEnum`: `type` equals `cache`, `sourceDict` is null.
+     * - `RouterSourceDict`: `type` equals `sourceDict`, `sourceDict` has valid value.
+     */
+    interface ServiceWorkerRouterSource {
+        type: ServiceWorkerRouterSourceType;
+        /**
+         * Non-empty iff `type` equals "sourceDict".
+         */
+        sourceDict?: ServiceWorkerRouterSourceDict;
+    }
+    interface ServiceWorkerRouterRule {
+        condition: ServiceWorkerRouterCondition;
+        source: ServiceWorkerRouterSource;
+        /**
+         * Rule ID assigned by the browser. Unique within each ServiceWorkerVersion.
+         */
+        id: integer;
+    }
+    /**
      * ServiceWorker version.
      */
     interface ServiceWorkerVersion {
@@ -16462,7 +16537,13 @@ export declare namespace ServiceWorker {
         scriptResponseTime?: number;
         controlledClients?: Target.TargetID[];
         targetId?: Target.TargetID;
+        /**
+         * Migration to `typedRouterRules` is in progress. The browser sends either
+         * `routerRules` or `typedRouterRules`.
+         * TODO(crbug.com/540469610): Remove `routerRules` after the migration.
+         */
         routerRules?: string;
+        typedRouterRules?: ServiceWorkerRouterRule[];
     }
     /**
      * ServiceWorker error message.
@@ -16859,7 +16940,6 @@ export declare namespace Storage {
         Websql = "websql",
         Service_workers = "service_workers",
         Cache_storage = "cache_storage",
-        Shared_storage = "shared_storage",
         Storage_buckets = "storage_buckets",
         All = "all",
         Other = "other"
@@ -16884,209 +16964,6 @@ export declare namespace Storage {
     interface TrustTokens {
         issuerOrigin: string;
         count: number;
-    }
-    /**
-     * Enum of shared storage access scopes.
-     */
-    const enum SharedStorageAccessScope {
-        Window = "window",
-        SharedStorageWorklet = "sharedStorageWorklet",
-        Header = "header"
-    }
-    /**
-     * Enum of shared storage access methods.
-     */
-    const enum SharedStorageAccessMethod {
-        AddModule = "addModule",
-        CreateWorklet = "createWorklet",
-        SelectURL = "selectURL",
-        Run = "run",
-        BatchUpdate = "batchUpdate",
-        Set = "set",
-        Append = "append",
-        Delete = "delete",
-        Clear = "clear",
-        Get = "get",
-        Keys = "keys",
-        Values = "values",
-        Entries = "entries",
-        Length = "length",
-        RemainingBudget = "remainingBudget"
-    }
-    /**
-     * Struct for a single key-value pair in an origin's shared storage.
-     */
-    interface SharedStorageEntry {
-        key: string;
-        value: string;
-    }
-    /**
-     * Details for an origin's shared storage.
-     */
-    interface SharedStorageMetadata {
-        /**
-         * Time when the origin's shared storage was last created.
-         */
-        creationTime: Network.TimeSinceEpoch;
-        /**
-         * Number of key-value pairs stored in origin's shared storage.
-         */
-        length: integer;
-        /**
-         * Current amount of bits of entropy remaining in the navigation budget.
-         */
-        remainingBudget: number;
-        /**
-         * Total number of bytes stored as key-value pairs in origin's shared
-         * storage.
-         */
-        bytesUsed: integer;
-    }
-    /**
-     * Represents a dictionary object passed in as privateAggregationConfig to
-     * run or selectURL.
-     */
-    interface SharedStoragePrivateAggregationConfig {
-        /**
-         * The chosen aggregation service deployment.
-         */
-        aggregationCoordinatorOrigin?: string;
-        /**
-         * The context ID provided.
-         */
-        contextId?: string;
-        /**
-         * Configures the maximum size allowed for filtering IDs.
-         */
-        filteringIdMaxBytes: integer;
-        /**
-         * The limit on the number of contributions in the final report.
-         */
-        maxContributions?: integer;
-    }
-    /**
-     * Pair of reporting metadata details for a candidate URL for `selectURL()`.
-     */
-    interface SharedStorageReportingMetadata {
-        eventType: string;
-        reportingUrl: string;
-    }
-    /**
-     * Bundles a candidate URL with its reporting metadata.
-     */
-    interface SharedStorageUrlWithMetadata {
-        /**
-         * Spec of candidate URL.
-         */
-        url: string;
-        /**
-         * Any associated reporting metadata.
-         */
-        reportingMetadata: SharedStorageReportingMetadata[];
-    }
-    /**
-     * Bundles the parameters for shared storage access events whose
-     * presence/absence can vary according to SharedStorageAccessType.
-     */
-    interface SharedStorageAccessParams {
-        /**
-         * Spec of the module script URL.
-         * Present only for SharedStorageAccessMethods: addModule and
-         * createWorklet.
-         */
-        scriptSourceUrl?: string;
-        /**
-         * String denoting "context-origin", "script-origin", or a custom
-         * origin to be used as the worklet's data origin.
-         * Present only for SharedStorageAccessMethod: createWorklet.
-         */
-        dataOrigin?: string;
-        /**
-         * Name of the registered operation to be run.
-         * Present only for SharedStorageAccessMethods: run and selectURL.
-         */
-        operationName?: string;
-        /**
-         * ID of the operation call.
-         * Present only for SharedStorageAccessMethods: run and selectURL.
-         */
-        operationId?: string;
-        /**
-         * Whether or not to keep the worket alive for future run or selectURL
-         * calls.
-         * Present only for SharedStorageAccessMethods: run and selectURL.
-         */
-        keepAlive?: boolean;
-        /**
-         * Configures the private aggregation options.
-         * Present only for SharedStorageAccessMethods: run and selectURL.
-         */
-        privateAggregationConfig?: SharedStoragePrivateAggregationConfig;
-        /**
-         * The operation's serialized data in bytes (converted to a string).
-         * Present only for SharedStorageAccessMethods: run and selectURL.
-         * TODO(crbug.com/401011862): Consider updating this parameter to binary.
-         */
-        serializedData?: string;
-        /**
-         * Array of candidate URLs' specs, along with any associated metadata.
-         * Present only for SharedStorageAccessMethod: selectURL.
-         */
-        urlsWithMetadata?: SharedStorageUrlWithMetadata[];
-        /**
-         * Spec of the URN:UUID generated for a selectURL call.
-         * Present only for SharedStorageAccessMethod: selectURL.
-         */
-        urnUuid?: string;
-        /**
-         * Key for a specific entry in an origin's shared storage.
-         * Present only for SharedStorageAccessMethods: set, append, delete, and
-         * get.
-         */
-        key?: string;
-        /**
-         * Value for a specific entry in an origin's shared storage.
-         * Present only for SharedStorageAccessMethods: set and append.
-         */
-        value?: string;
-        /**
-         * Whether or not to set an entry for a key if that key is already present.
-         * Present only for SharedStorageAccessMethod: set.
-         */
-        ignoreIfPresent?: boolean;
-        /**
-         * A number denoting the (0-based) order of the worklet's
-         * creation relative to all other shared storage worklets created by
-         * documents using the current storage partition.
-         * Present only for SharedStorageAccessMethods: addModule, createWorklet.
-         */
-        workletOrdinal?: integer;
-        /**
-         * Hex representation of the DevTools token used as the TargetID for the
-         * associated shared storage worklet.
-         * Present only for SharedStorageAccessMethods: addModule, createWorklet,
-         * run, selectURL, and any other SharedStorageAccessMethod when the
-         * SharedStorageAccessScope is sharedStorageWorklet.
-         */
-        workletTargetId?: Target.TargetID;
-        /**
-         * Name of the lock to be acquired, if present.
-         * Optionally present only for SharedStorageAccessMethods: batchUpdate,
-         * set, append, delete, and clear.
-         */
-        withLock?: string;
-        /**
-         * If the method has been called as part of a batchUpdate, then this
-         * number identifies the batch to which it belongs.
-         * Optionally present only for SharedStorageAccessMethods:
-         * batchUpdate (required), set, append, delete, and clear.
-         */
-        batchUpdateId?: string;
-        /**
-         * Number of modifier methods sent in batch.
-         * Present only for SharedStorageAccessMethod: batchUpdate.
-         */
-        batchSize?: integer;
     }
     const enum StorageBucketsDurability {
         Relaxed = "relaxed",
@@ -17287,41 +17164,6 @@ export declare namespace Storage {
          */
         didDeleteTokens: boolean;
     }
-    interface GetSharedStorageMetadataRequest {
-        ownerOrigin: string;
-    }
-    interface GetSharedStorageMetadataResponse extends ProtocolResponseWithError {
-        metadata: SharedStorageMetadata;
-    }
-    interface GetSharedStorageEntriesRequest {
-        ownerOrigin: string;
-    }
-    interface GetSharedStorageEntriesResponse extends ProtocolResponseWithError {
-        entries: SharedStorageEntry[];
-    }
-    interface SetSharedStorageEntryRequest {
-        ownerOrigin: string;
-        key: string;
-        value: string;
-        /**
-         * If `ignoreIfPresent` is included and true, then only sets the entry if
-         * `key` doesn't already exist.
-         */
-        ignoreIfPresent?: boolean;
-    }
-    interface DeleteSharedStorageEntryRequest {
-        ownerOrigin: string;
-        key: string;
-    }
-    interface ClearSharedStorageEntriesRequest {
-        ownerOrigin: string;
-    }
-    interface ResetSharedStorageBudgetRequest {
-        ownerOrigin: string;
-    }
-    interface SetSharedStorageTrackingRequest {
-        enable: boolean;
-    }
     interface SetStorageBucketTrackingRequest {
         storageKey: string;
         enable: boolean;
@@ -17414,77 +17256,6 @@ export declare namespace Storage {
          * Storage bucket to update.
          */
         bucketId: string;
-    }
-    /**
-     * Shared storage was accessed by the associated page.
-     * The following parameters are included in all events.
-     */
-    interface SharedStorageAccessedEvent {
-        /**
-         * Time of the access.
-         */
-        accessTime: Network.TimeSinceEpoch;
-        /**
-         * Enum value indicating the access scope.
-         */
-        scope: SharedStorageAccessScope;
-        /**
-         * Enum value indicating the Shared Storage API method invoked.
-         */
-        method: SharedStorageAccessMethod;
-        /**
-         * DevTools Frame Token for the primary frame tree's root.
-         */
-        mainFrameId: Page.FrameId;
-        /**
-         * Serialization of the origin owning the Shared Storage data.
-         */
-        ownerOrigin: string;
-        /**
-         * Serialization of the site owning the Shared Storage data.
-         */
-        ownerSite: string;
-        /**
-         * The sub-parameters wrapped by `params` are all optional and their
-         * presence/absence depends on `type`.
-         */
-        params: SharedStorageAccessParams;
-    }
-    /**
-     * A shared storage run or selectURL operation finished its execution.
-     * The following parameters are included in all events.
-     */
-    interface SharedStorageWorkletOperationExecutionFinishedEvent {
-        /**
-         * Time that the operation finished.
-         */
-        finishedTime: Network.TimeSinceEpoch;
-        /**
-         * Time, in microseconds, from start of shared storage JS API call until
-         * end of operation execution in the worklet.
-         */
-        executionTime: integer;
-        /**
-         * Enum value indicating the Shared Storage API method invoked.
-         */
-        method: SharedStorageAccessMethod;
-        /**
-         * ID of the operation call.
-         */
-        operationId: string;
-        /**
-         * Hex representation of the DevTools token used as the TargetID for the
-         * associated shared storage worklet.
-         */
-        workletTargetId: Target.TargetID;
-        /**
-         * DevTools Frame Token for the primary frame tree's root.
-         */
-        mainFrameId: Page.FrameId;
-        /**
-         * Serialization of the origin owning the Shared Storage data.
-         */
-        ownerOrigin: string;
     }
     interface StorageBucketCreatedOrUpdatedEvent {
         bucketInfo: StorageBucketInfo;
@@ -18925,6 +18696,10 @@ export declare namespace WebMCP {
          * A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.
          */
         untrustedContent?: boolean;
+        /**
+         * A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.
+         */
+        consequential?: boolean;
         /**
          * If the declarative tool was declared with the autosubmit attribute.
          */

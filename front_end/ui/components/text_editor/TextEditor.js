@@ -135,7 +135,9 @@ export class TextEditor extends HTMLElement {
                     this.#activeEditor.dispatch({ effects: change });
                 }
             };
-            const setting = Common.Settings.Settings.instance().moduleSetting(dynamicSetting.settingName);
+            const setting = typeof dynamicSetting.setting === 'string' ?
+                Common.Settings.Settings.instance().moduleSetting(dynamicSetting.setting) :
+                Common.Settings.Settings.instance().resolve(dynamicSetting.setting);
             setting.addChangeListener(handler);
             this.#activeSettingListeners.push([setting, handler]);
         }

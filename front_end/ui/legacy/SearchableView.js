@@ -39,6 +39,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import { createIcon } from '../kit/kit.js';
+import * as Settings from '../settings/settings.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { InspectorView } from './InspectorView.js';
 import searchableViewStyles from './searchableView.css.js';
@@ -589,7 +590,7 @@ export class SearchableView extends VBox {
         this.replaceProvider.replaceAllWith(searchConfig, this.replaceInputElement.value);
     }
     onInput() {
-        if (!Common.Settings.Settings.instance().moduleSetting('search-as-you-type').get()) {
+        if (!Common.Settings.Settings.instance().resolve(Settings.MainSettings.searchAsYouTypeSettingDescriptor).get()) {
             this.clearSearch();
             return;
         }

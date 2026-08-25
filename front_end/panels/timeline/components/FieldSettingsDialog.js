@@ -17,71 +17,71 @@ import fieldSettingsDialogStyles from './fieldSettingsDialog.css.js';
 import { OriginMap } from './OriginMap.js';
 const UIStrings = {
     /**
-     * @description Text label for a button that opens a dialog to set up field metrics.
+     * @description Button label that opens a dialog to set up field metrics in the Performance panel.
      */
     setUp: 'Set up',
     /**
-     * @description Text label for a button that opens a dialog to configure field metrics.
+     * @description Button label that opens a dialog to configure field metrics in the Performance panel.
      */
     configure: 'Configure',
     /**
-     * @description Text label for a button that enables the collection of field metrics.
+     * @description Button label that enables the collection of field metrics in the Performance panel.
      */
     ok: 'Ok',
     /**
-     * @description Text label for a button that opts out of the collection of field metrics.
+     * @description Button label that opts out of the collection of field metrics in the Performance panel.
      */
     optOut: 'Opt out',
     /**
-     * @description Text label for a button that cancels the setup of field metrics collection.
+     * @description Button label that cancels the setup of field metrics collection in the Performance panel.
      */
     cancel: 'Cancel',
     /**
-     * @description Text label for a checkbox that controls if a manual URL override is enabled for field metrics.
+     * @description Checkbox label that controls if a manual URL override is enabled for field metrics in the Performance panel.
      */
     onlyFetchFieldData: 'Always show field metrics for the below URL',
     /**
-     * @description Text label for a text box that that contains the manual override URL for fetching field metrics.
+     * @description Label for a text input that contains the manual override URL for fetching field metrics in the Performance panel.
      */
     url: 'URL',
     /**
-     * @description Warning message explaining that the Chrome UX Report could not find enough real world speed data for the page. "Chrome UX Report" is a product name and should not be translated.
+     * @description Warning message explaining that the Chrome UX Report could not find enough real-world speed data for the page in the Performance panel.
      */
-    doesNotHaveSufficientData: 'The Chrome UX Report does not have sufficient real-world speed data for this page.',
+    doesNotHaveSufficientData: 'The Chrome UX Report doesn’t have enough real-world speed data for this page.',
     /**
-     * @description Title for a dialog that contains information and settings related to fetching field metrics.
+     * @description Title for a dialog that contains settings related to fetching field metrics in the Performance panel.
      */
     configureFieldData: 'Configure field metrics fetching',
     /**
-     * @description Paragraph explaining where field metrics comes from and and how it can be used. PH1 will be a link with text "Chrome UX Report" that is untranslated because it is a product name.
+     * @description Explanation of where field metrics come from and how they can be used in the Performance panel.
      * @example {Chrome UX Report} PH1
      */
     fetchAggregated: 'Fetch aggregated field metrics from the {PH1} to help you contextualize local measurements with what real users experience on the site.',
     /**
-     * @description Heading for a section that explains what user data needs to be collected to fetch field metrics.
+     * @description Heading for a section that explains what user data needs to be collected to fetch field metrics in the Performance panel.
      */
     privacyDisclosure: 'Privacy disclosure',
     /**
-     * @description Paragraph explaining what data needs to be sent to Google to fetch field metrics, and when that data will be sent.
+     * @description Explanation of what data is sent to Google to fetch field metrics in the Performance panel.
      */
-    whenPerformanceIsShown: 'When DevTools is open, the URLs you visit will be sent to Google to query field metrics. These requests are not tied to your Google account.',
+    whenPerformanceIsShown: 'When DevTools is open, the URLs you visit will be sent to Google to query field metrics. These requests aren’t tied to your Google account.',
     /**
-     * @description Header for a section containing advanced settings
+     * @description Header for a section containing advanced settings in the Performance panel.
      */
     advanced: 'Advanced',
     /**
-     * @description Paragraph explaining that the user can associate a development origin with a production origin for the purposes of fetching real user data.
+     * @description Explanation of how associating a development origin with a production origin works for fetching real user data in the Performance panel.
      */
     mapDevelopmentOrigins: 'Set a development origin to automatically get relevant field metrics for its production origin.',
     /**
-     * @description Text label for a button that adds a new editable row to a data table
+     * @description Button label to add a new editable row to the origin mapping table in the Performance panel.
      */
     new: 'New',
     /**
-     * @description Warning message explaining that an input origin is not a valid origin or URL.
+     * @description Warning message explaining that an entered origin is not a valid origin or URL in the Performance panel.
      * @example {http//malformed.com} PH1
      */
-    invalidOrigin: '"{PH1}" is not a valid origin or URL.',
+    invalidOrigin: '"{PH1}" isn’t a valid origin or URL.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/FieldSettingsDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

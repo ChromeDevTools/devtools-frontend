@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/services/tracing","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/services/tracing/tracing.ts"],"references":[{"path":"./tracing-tsconfig.ref.json"}]}

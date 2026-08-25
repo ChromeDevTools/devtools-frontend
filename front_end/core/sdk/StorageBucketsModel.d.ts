@@ -30,8 +30,6 @@ export declare class StorageBucketsModel extends SDKModel<EventTypes> implements
     indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void;
     cacheStorageListUpdated(_event: Protocol.Storage.CacheStorageListUpdatedEvent): void;
     cacheStorageContentUpdated(_event: Protocol.Storage.CacheStorageContentUpdatedEvent): void;
-    sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void;
-    sharedStorageWorkletOperationExecutionFinished(_event: Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent): void;
 }
 export declare const enum Events {
     BUCKET_ADDED = "BucketAdded",

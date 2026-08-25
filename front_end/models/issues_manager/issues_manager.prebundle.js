@@ -9,6 +9,7 @@ import * as CookieIssue from './CookieIssue.js';
 import * as CorsIssue from './CorsIssue.js';
 import * as CrossOriginEmbedderPolicyIssue from './CrossOriginEmbedderPolicyIssue.js';
 import * as DeprecationIssue from './DeprecationIssue.js';
+import * as DOMIssuesManager from './DOMIssuesManager.js';
 import * as ElementAccessibilityIssue from './ElementAccessibilityIssue.js';
 import * as EmailVerificationRequestIssue from './EmailVerificationRequestIssue.js';
 import * as FederatedAuthRequestIssue from './FederatedAuthRequestIssue.js';
@@ -34,5 +35,5 @@ import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
 import * as SRIMessageSignatureIssue from './SRIMessageSignatureIssue.js';
 import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
 import * as UnencodedDigestIssue from './UnencodedDigestIssue.js';
-export { ClientHintIssue, ConnectionAllowlistIssue, ContentSecurityPolicyIssue, CookieDeprecationMetadataIssue, CookieIssue, CorsIssue, CrossOriginEmbedderPolicyIssue, DeprecationIssue, ElementAccessibilityIssue, EmailVerificationRequestIssue, FederatedAuthRequestIssue, FederatedAuthUserInfoRequestIssue, GenericIssue, HeavyAdIssue, Issue, IssueAggregator, IssueResolver, IssuesManager, LazyLoadImageIssue, MarkdownIssueDescription, MixedContentIssue, PartitioningBlobURLIssue, PermissionElementIssue, PropertyRuleIssue, QuirksModeIssue, RelatedIssue, SelectivePermissionsInterventionIssue, SharedArrayBufferIssue, SharedDictionaryIssue, SourceFrameIssuesManager, SRIMessageSignatureIssue, StylesheetLoadingIssue, UnencodedDigestIssue, };
+export { ClientHintIssue, ConnectionAllowlistIssue, ContentSecurityPolicyIssue, CookieDeprecationMetadataIssue, CookieIssue, CorsIssue, CrossOriginEmbedderPolicyIssue, DeprecationIssue, DOMIssuesManager, ElementAccessibilityIssue, EmailVerificationRequestIssue, FederatedAuthRequestIssue, FederatedAuthUserInfoRequestIssue, GenericIssue, HeavyAdIssue, Issue, IssueAggregator, IssueResolver, IssuesManager, LazyLoadImageIssue, MarkdownIssueDescription, MixedContentIssue, PartitioningBlobURLIssue, PermissionElementIssue, PropertyRuleIssue, QuirksModeIssue, RelatedIssue, SelectivePermissionsInterventionIssue, SharedArrayBufferIssue, SharedDictionaryIssue, SourceFrameIssuesManager, SRIMessageSignatureIssue, StylesheetLoadingIssue, UnencodedDigestIssue, };
 //# sourceMappingURL=issues_manager.prebundle.js.map

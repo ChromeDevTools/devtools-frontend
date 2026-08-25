@@ -4613,10 +4613,6 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
   }
   cacheStorageContentUpdated(_event) {
   }
-  sharedStorageAccessed(_event) {
-  }
-  sharedStorageWorkletOperationExecutionFinished(_event) {
-  }
   storageBucketCreatedOrUpdated(_event) {
   }
   storageBucketDeleted(_event) {

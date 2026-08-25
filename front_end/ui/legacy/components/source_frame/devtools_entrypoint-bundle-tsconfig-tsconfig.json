@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -44,10 +45,10 @@
   ],
   "references": [
     {
-      "path": "./css_files-tsconfig.json"
+      "path": "../../../../../../tsc/front_end/ui/legacy/components/source_frame/css_files-tsconfig.ref.json"
     },
     {
-      "path": "./source_frame-tsconfig.json"
+      "path": "./source_frame-tsconfig.ref.json"
     }
   ]
 }

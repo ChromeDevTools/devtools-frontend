@@ -54,6 +54,7 @@ import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../ui/lit/lit.js';
+import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../elements/elements.js';
 import { format, updateStyle } from './ConsoleFormat.js';
@@ -1100,7 +1101,9 @@ export class ConsoleViewMessage {
         if (!this.contentElementInternal) {
             return;
         }
-        if (Common.Settings.Settings.instance().moduleSetting('console-timestamps-enabled').get()) {
+        if (Common.Settings.Settings.instance()
+            .resolve(Settings.ConsoleSettings.consoleTimestampsEnabledSettingDescriptor)
+            .get()) {
             if (!this.timestampElement) {
                 this.timestampElement = document.createElement('span');
                 this.timestampElement.classList.add('console-timestamp');

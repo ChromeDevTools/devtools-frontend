@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/timeline/utils",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../front_end/panels/timeline/utils/EntryNodes.ts",
+    "../../../../../../../front_end/panels/timeline/utils/Helpers.ts",
+    "../../../../../../../front_end/panels/timeline/utils/IgnoreList.ts",
+    "../../../../../../../front_end/panels/timeline/utils/ImageCache.ts",
+    "../../../../../../../front_end/panels/timeline/utils/Treemap.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/i18n/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../models/trace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../models/trace_source_maps_resolver/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../models/workspace/bundle-tsconfig.ref.json"
+    }
+  ]
+}

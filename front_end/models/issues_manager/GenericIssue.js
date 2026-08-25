@@ -51,6 +51,17 @@ export class GenericIssue extends Issue {
         }
         return [];
     }
+    elements() {
+        const details = this.details();
+        if (details.violatingNodeId) {
+            return [{
+                    backendNodeId: details.violatingNodeId,
+                    nodeName: '',
+                    target: this.model()?.target() ?? null,
+                }];
+        }
+        return [];
+    }
     getCategory() {
         return "Generic" /* IssueCategory.GENERIC */;
     }

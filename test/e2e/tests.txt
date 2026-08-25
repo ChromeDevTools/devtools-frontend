@@ -80,6 +80,7 @@ elements/search-elements.test.js
 elements/selection-after-delete.test.js
 elements/shadowroot-styles.test.js
 elements/sidebar-event-listeners.test.js
+elements/style-flash.test.js
 elements/style-pane-properties.test.js
 elements/styles-disable-inherited.test.js
 elements/switch-panels-while-editing-as-html.test.js

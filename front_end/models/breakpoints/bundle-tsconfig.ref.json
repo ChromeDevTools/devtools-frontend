@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/models/breakpoints","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/models/breakpoints/breakpoints.ts"],"references":[{"path":"./breakpoints-tsconfig.ref.json"}]}

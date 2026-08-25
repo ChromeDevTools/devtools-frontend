@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/core/platform","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/core/platform/platform.ts"],"references":[{"path":"./platform-tsconfig.ref.json"}]}

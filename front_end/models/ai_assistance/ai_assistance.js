@@ -1751,13 +1751,8 @@ var AiAgent = class {
   #sessionId;
   #aidaClient;
   /**
-   * Whether server-side logging is permitted by the system policy (based on
-   * user preferences, feature flags, or branding configurations).
-   */
-  #serverSideLoggingAllowed;
-  /**
    * Tracks the dynamic runtime state of logging. Even if logging is allowed
-   * by policy, tools can temporarily deactivate this to avoid logging sensitive data.
+   * by policy, tools or sensitive contexts can deactivate this to avoid logging sensitive data.
    */
   #serverSideLoggingActive;
   confirmSideEffect;
@@ -1782,7 +1777,6 @@ var AiAgent = class {
     if (Root4.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
       serverSideLoggingAllowed = false;
     }
-    this.#serverSideLoggingAllowed = serverSideLoggingAllowed;
     this.#serverSideLoggingActive = serverSideLoggingAllowed;
     this.#sessionId = opts.sessionId ?? crypto.randomUUID();
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
@@ -1825,16 +1819,14 @@ var AiAgent = class {
   clearCache() {
   }
   /**
-   * Toggles whether server-side logging is active.
-   * Note that logging can only be activated if it was allowed by policy/configuration
-   * at startup (i.e., `#serverSideLoggingAllowed` is true).
+   * Disables server-side logging for the remainder of this agent instance's lifetime.
+   *
+   * Logging deactivation is irreversible for the session. Conversation history
+   * accumulates across turns; re-enabling logging later would leak sensitive
+   * data from prior turns to AIDA.
    */
-  setServerSideLoggingActive(active) {
-    if (active && this.#serverSideLoggingAllowed) {
-      this.#serverSideLoggingActive = true;
-    } else {
-      this.#serverSideLoggingActive = false;
-    }
+  disableServerSideLogging() {
+    this.#serverSideLoggingActive = false;
   }
   popPendingMultimodalInput() {
     return void 0;
@@ -1978,9 +1970,7 @@ var AiAgent = class {
   }
   async *run(initialQuery, options, multimodalInput) {
     await options.selected?.refresh();
-    if (options.selected) {
-      this.context = options.selected;
-    }
+    this.context = options.selected ?? void 0;
     await this.preRun();
     const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, multimodalInput?.type);
     if (!enhancedQuery.trim() && !multimodalInput) {
@@ -6183,62 +6173,6 @@ __export(GetLighthouseAudits_exports, {
   GetLighthouseAuditsTool: () => GetLighthouseAuditsTool
 });
 import * as Host9 from "./../../core/host/host.js";
-
-// gen/front_end/models/ai_assistance/contexts/AccessibilityContext.js
-var AccessibilityContext_exports = {};
-__export(AccessibilityContext_exports, {
-  AccessibilityContext: () => AccessibilityContext
-});
-var AccessibilityContext = class extends ConversationContext {
-  #lh;
-  #cachedPayload = null;
-  constructor(report) {
-    super();
-    this.#lh = report;
-  }
-  #url() {
-    return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
-  }
-  getURL() {
-    return this.#url();
-  }
-  getItem() {
-    return this.#lh;
-  }
-  getTitle() {
-    return `Lighthouse report: ${this.#url()}`;
-  }
-  #getInitialPayload() {
-    if (this.#cachedPayload !== null) {
-      return this.#cachedPayload;
-    }
-    const formatter = new LighthouseFormatter();
-    const summary = formatter.summary(this.#lh);
-    const audits = formatter.audits(this.#lh, "accessibility");
-    const allFailed = Object.values(this.#lh.categories).every((category) => category.score === null);
-    if (allFailed) {
-      this.#cachedPayload = "**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.";
-    } else {
-      this.#cachedPayload = `# Lighthouse Report:
-${summary}
-${audits}`;
-    }
-    return this.#cachedPayload;
-  }
-  async getPromptDetails() {
-    return this.#getInitialPayload();
-  }
-  async getUserFacingDetails() {
-    return [
-      {
-        title: "Lighthouse report",
-        text: this.#getInitialPayload()
-      }
-    ];
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/GetLighthouseAudits.js
 var GetLighthouseAuditsTool = class {
   name = "getLighthouseAudits";
   description = "Returns the audits for a specific Lighthouse category.";
@@ -6262,10 +6196,10 @@ var GetLighthouseAuditsTool = class {
     };
   }
   async handler(params, context) {
-    if (!(context.conversationContext instanceof AccessibilityContext)) {
+    const report = context.getLighthouseReport();
+    if (!report) {
       return { error: "Error: Active context is not a Lighthouse report." };
     }
-    const report = context.conversationContext.getItem();
     const audits = new LighthouseFormatter().audits(report, params.categoryId);
     return {
       result: { audits },
@@ -6853,7 +6787,7 @@ var GetStorageValuesTool = class {
     };
   }
   async handler(args, context, options) {
-    context.setLoggingEnabled(false);
+    context.disableLogging();
     const targetManager = SDK11.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
     const allowedOrigin = context.getEstablishedOrigin();
@@ -7437,7 +7371,7 @@ var ListStorageKeysTool = class {
     };
   }
   async handler(args, context) {
-    context.setLoggingEnabled(false);
+    context.disableLogging();
     const targetManager = SDK14.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
     const allowedOrigin = context.getEstablishedOrigin();
@@ -7639,12 +7573,9 @@ var RunLighthouseTool = class {
     };
   }
   async handler(params, context) {
-    if (!context.lighthouseRecording) {
-      return { error: "Error: Lighthouse recording capability is not available." };
-    }
     const mode = params.mode ?? "snapshot";
     try {
-      const report = await context.lighthouseRecording({
+      const report = await context.runLighthouse({
         mode,
         categoryIds: [params.category],
         isAIControlled: true
@@ -8249,6 +8180,60 @@ import * as Root7 from "./../../core/root/root.js";
 import * as Logs6 from "./../logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 import * as Workspace5 from "./../workspace/workspace.js";
+
+// gen/front_end/models/ai_assistance/contexts/AccessibilityContext.js
+var AccessibilityContext_exports = {};
+__export(AccessibilityContext_exports, {
+  AccessibilityContext: () => AccessibilityContext
+});
+var AccessibilityContext = class extends ConversationContext {
+  #lh;
+  #cachedPayload = null;
+  constructor(report) {
+    super();
+    this.#lh = report;
+  }
+  #url() {
+    return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
+  }
+  getURL() {
+    return this.#url();
+  }
+  getItem() {
+    return this.#lh;
+  }
+  getTitle() {
+    return `Lighthouse report: ${this.#url()}`;
+  }
+  #getInitialPayload() {
+    if (this.#cachedPayload !== null) {
+      return this.#cachedPayload;
+    }
+    const formatter = new LighthouseFormatter();
+    const summary = formatter.summary(this.#lh);
+    const audits = formatter.audits(this.#lh, "accessibility");
+    const allFailed = Object.values(this.#lh.categories).every((category) => category.score === null);
+    if (allFailed) {
+      this.#cachedPayload = "**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.";
+    } else {
+      this.#cachedPayload = `# Lighthouse Report:
+${summary}
+${audits}`;
+    }
+    return this.#cachedPayload;
+  }
+  async getPromptDetails() {
+    return this.#getInitialPayload();
+  }
+  async getUserFacingDetails() {
+    return [
+      {
+        title: "Lighthouse report",
+        text: this.#getInitialPayload()
+      }
+    ];
+  }
+};
 
 // gen/front_end/models/ai_assistance/contexts/FileContext.js
 var FileContext_exports = {};
@@ -10259,7 +10244,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         };
       },
       handler: async (args) => {
-        this.setServerSideLoggingActive(false);
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return { error: "No origin available or not allowed." };
         }
@@ -10326,7 +10311,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         };
       },
       handler: async (args, options) => {
-        this.setServerSideLoggingActive(false);
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return { error: "No origin available or not allowed." };
         }
@@ -10404,7 +10389,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         };
       },
       handler: async (args) => {
-        this.setServerSideLoggingActive(false);
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return { error: "No origin available or not allowed." };
         }
@@ -10453,7 +10438,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         };
       },
       handler: async (args, options) => {
-        this.setServerSideLoggingActive(false);
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return { error: "No origin available or not allowed." };
         }
@@ -10591,9 +10576,9 @@ Key: ${item.key}` : ""}`;
   async preRun() {
     const item = this.context?.getItem();
     if (item instanceof CookieItem && Boolean(item.name)) {
-      this.setServerSideLoggingActive(false);
+      this.disableServerSideLogging();
     } else if (item instanceof DOMStorageItem && Boolean(item.key)) {
-      this.setServerSideLoggingActive(false);
+      this.disableServerSideLogging();
     }
   }
   async *handleContextDetails(context) {
@@ -10869,6 +10854,12 @@ __export(AiAgent2_exports, {
 import * as Host33 from "./../../core/host/host.js";
 import * as SDK20 from "./../../core/sdk/sdk.js";
 
+// gen/front_end/models/ai_assistance/skills/SkillRegistry.js
+var SkillRegistry_exports = {};
+__export(SkillRegistry_exports, {
+  SKILLS: () => SKILLS
+});
+
 // gen/front_end/models/ai_assistance/skills/accessibility.skill.js
 var skill = {
   "name": "accessibility",
@@ -11007,7 +10998,7 @@ var AiAgent2 = class extends AiAgent {
   }
   async preRun() {
     if (this.context && !this.context.isLoggingEnabled()) {
-      this.setServerSideLoggingActive(false);
+      this.disableServerSideLogging();
     }
     const target = this.targetManager.primaryPageTarget();
     const domModel = target?.model(SDK20.DOMModel.DOMModel);
@@ -11174,10 +11165,11 @@ ${skillObj.instructions}
           getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : this.#getDocumentBodyNode(),
           getTarget: () => this.targetManager.primaryPageTarget(),
           getEstablishedOrigin: () => this.#getConversationOrigin(),
-          lighthouseRecording: this.#lighthouseRecording,
+          getLighthouseReport: () => this.context instanceof AccessibilityContext ? this.context.getItem() : null,
+          runLighthouse: async (overrides) => await (this.#lighthouseRecording?.(overrides) ?? null),
           performanceRecordAndReload: this.#performanceRecordAndReload,
-          setLoggingEnabled: (enabled) => {
-            this.setServerSideLoggingActive(enabled);
+          disableLogging: () => {
+            this.disableServerSideLogging();
           }
         };
         return tool.handler(args, context, options);
@@ -11508,7 +11500,7 @@ var AiConversation = class _AiConversation {
   setContext(updateContext) {
     if (!updateContext) {
       this.#contexts = [];
-      if (isAiAssistanceContextSelectionAgentEnabled()) {
+      if (isAiAssistanceContextSelectionEnabled()) {
         this.#updateAgent(
           "none"
           /* ConversationType.NONE */
@@ -11517,7 +11509,7 @@ var AiConversation = class _AiConversation {
       return;
     }
     this.#contexts = [updateContext];
-    if (isAiAssistanceContextSelectionAgentEnabled()) {
+    if (isAiAssistanceContextSelectionEnabled()) {
       if (updateContext instanceof FileContext) {
         this.#updateAgent(
           "drjones-file"
@@ -11699,9 +11691,13 @@ ${item.text.trim()}`);
     if (this.#type === type) {
       return;
     }
-    const isTransitioningFromStorage = this.#type === "storage" && type !== "storage";
-    const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
+    const previousType = this.#type;
     this.#type = type;
+    if (Root14.Runtime.hostConfig.devToolsAiV2Architecture?.enabled && this.#agent instanceof AiAgent2) {
+      return;
+    }
+    const isTransitioningFromStorage = previousType === "storage" && type !== "storage";
+    const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingAllowed: isAiAssistanceServerSideLoggingAllowed(),
@@ -11832,8 +11828,8 @@ Original user query: ${initialQuery}`;
 function isAiAssistanceServerSideLoggingAllowed() {
   return !Root14.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
-function isAiAssistanceContextSelectionAgentEnabled() {
-  return Boolean(Root14.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+function isAiAssistanceContextSelectionEnabled() {
+  return Boolean(Root14.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) || Boolean(Root14.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
 }
 function getPrimaryPageOrigin(targetManager) {
   const target = targetManager.primaryPageTarget();
@@ -12437,6 +12433,9 @@ ${AI_LABEL_GENERATION_PROMPT}`;
     return resultText.trim();
   }
 };
+
+// gen/front_end/models/ai_assistance/skills/Skill.js
+var Skill_exports = {};
 export {
   AICallTree_exports as AICallTree,
   AIContext_exports as AIContext,
@@ -12494,6 +12493,8 @@ export {
   ResolveDevtoolsNodePath_exports as ResolveDevtoolsNodePath,
   RunLighthouse_exports as RunLighthouse,
   SelectTraceEventByKey_exports as SelectTraceEventByKey,
+  Skill_exports as Skill,
+  SkillRegistry_exports as SkillRegistry,
   StorageAgent_exports as StorageAgent,
   StorageContext_exports as StorageContext,
   StorageItem_exports as StorageItem,

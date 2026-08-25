@@ -184,6 +184,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     sectionBlocks = [];
     idleCallbackManager = null;
     needsForceUpdate = false;
+    isSuppressingResets = false;
     resizeThrottler = new Common.Throttler.Throttler(100);
     resetUpdateThrottler = new Common.Throttler.Throttler(500);
     computedStyleUpdateThrottler = new Common.Throttler.Throttler(500);
@@ -198,6 +199,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     aiCodeCompletionProvider;
     #aiCodeCompletionSummaryToolbarContainer;
     #aiCodeCompletionSummaryToolbar;
+    #aiCodeCompletionEnabled = false;
     #shouldRenderLazily = false;
     #lazyRenderObserver;
     #lazyRenderCallbacks = new WeakMap();
@@ -226,16 +228,17 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.forceUpdate, this);
         this.contentElement.addEventListener('copy', this.clipboardCopy.bind(this));
         this.boundOnScroll = this.onScroll.bind(this);
-        this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
-            const link = event.composedPath()[0];
-            if (link instanceof Element) {
-                return link;
-            }
-            return null;
-        }, async () => {
-            const features = await Components.ImagePreview.loadPrecomputedFeatures(this.node());
-            return features;
-        });
+        this.imagePreviewPopover =
+            new ImagePreviewPopover(this.contentElement, event => {
+                const link = event.composedPath()[0];
+                if (link instanceof Element) {
+                    return link;
+                }
+                return null;
+            }, async () => {
+                const features = await Components.ImagePreview.loadPrecomputedFeatures(this.node());
+                return features;
+            });
         UI.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged" /* UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED */, event => {
             if (event.data.revealedViewId === 'animations' || event.data.hiddenViewId === 'animations') {
                 this.#scheduleResetUpdateIfNotEditing();
@@ -246,9 +249,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 completionContext: {},
                 generationContext: {},
                 onFeatureEnabled: () => {
+                    this.#aiCodeCompletionEnabled = true;
                     this.#createAiCodeCompletionSummaryToolbar();
                 },
                 onFeatureDisabled: () => {
+                    this.#aiCodeCompletionEnabled = false;
                     this.#cleanupAiCodeCompletion();
                 },
                 onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
@@ -276,6 +281,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         return this.#swatchPopoverHelper;
     }
     setUserOperation(userOperation) {
+        if (userOperation) {
+            this.isSuppressingResets = false;
+        }
         this.userOperation = userOperation;
     }
     revealProperty(cssProperty) {
@@ -437,7 +445,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             if (this.lastFilterChange) {
                 const stillTyping = Date.now() - this.lastFilterChange < FILTER_IDLE_PERIOD;
                 if (!stillTyping) {
-                    UI.ARIAUtils.LiveAnnouncer.alert(this.visibleSections ? i18nString(UIStrings.visibleSelectors, { n: this.visibleSections }) :
+                    UI.ARIAUtils.LiveAnnouncer.alert(this.visibleSections ?
+                        i18nString(UIStrings.visibleSelectors, { n: this.visibleSections }) :
                         i18nString(UIStrings.noMatchingSelectorOrStyle));
                 }
             }
@@ -568,6 +577,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         return Promise.resolve();
     }
     resetCache() {
+        this.isSuppressingResets = false;
         const cssModel = this.cssModel();
         if (cssModel) {
             cssModel.discardCachedMatchedCascade();
@@ -588,6 +598,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         }
     }
     setEditingStyle(editing) {
+        if (editing) {
+            this.isSuppressingResets = false;
+        }
         if (this.isEditingStyle === editing) {
             return;
         }
@@ -651,8 +664,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         this.resetCache();
         this.requestUpdate();
     }
+    suppressResets() {
+        this.isSuppressingResets = true;
+    }
     #scheduleResetUpdateIfNotEditing() {
         this.scheduleResetUpdateIfNotEditingCalledForTest();
+        if (this.isSuppressingResets) {
+            return;
+        }
         // Don't schedule if editing; the edit completion will handle the update.
         if (this.userOperation || this.isEditingStyle) {
             return;
@@ -665,7 +684,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     }
     #hasAnimatedStyles(animatedStyles) {
         return Boolean(animatedStyles.animationStyles?.length || animatedStyles.transitionsStyle?.cssProperties.length ||
-            animatedStyles.inherited?.some(inherited => inherited.animationStyles?.length || inherited.transitionsStyle?.cssProperties.length));
+            animatedStyles.inherited?.some(inherited => inherited.animationStyles?.length ||
+                inherited.transitionsStyle?.cssProperties.length));
     }
     async #updateAnimatedStyles() {
         if (!this.matchedStyles) {
@@ -681,8 +701,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         }
         if (!this.#hasAnimatedStyles(animatedStyles)) {
             // A computed style change that doesn't correspond to any animation is
-            // likely to be a change in the matched styles. In this case, we should
-            // update the matched styles.
+            // likely to be a change in the matched styles, which is already handled
+            // by CSSModelChanged events. We still schedule a reset update here for
+            // DevTools garbage collection purposes.
             this.#scheduleResetUpdateIfNotEditing();
             return;
         }
@@ -1162,6 +1183,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     wasShown() {
         UI.Context.Context.instance().setFlavor(StylesSidebarPane, this);
         super.wasShown();
+        if (this.#aiCodeCompletionEnabled && !this.#aiCodeCompletionSummaryToolbar) {
+            this.#createAiCodeCompletionSummaryToolbar();
+        }
     }
     willHide() {
         this.hideAllPopovers();
@@ -1195,7 +1219,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         const hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
         const toolbar = hbox.createChild('devtools-toolbar', 'styles-pane-toolbar');
         toolbar.role = 'presentation';
-        const filterInput = new UI.Toolbar.ToolbarFilter(undefined, 1, 1, undefined, undefined, false, undefined, undefined, /* showRegexToggle=*/ true, this.onRegexToggled.bind(this));
+        const filterInput = new UI.Toolbar.ToolbarFilter(undefined, 1, 1, undefined, undefined, false, undefined, undefined, 
+        /* showRegexToggle=*/ true, this.onRegexToggled.bind(this));
         filterInput.addEventListener("TextChanged" /* UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED */, this.onFilterChanged, this);
         toolbar.appendToolbarItem(filterInput);
         void toolbar.appendItemsAtLocation('styles-sidebarpane-toolbar');
@@ -1314,7 +1339,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         this.#aiCodeCompletionSummaryToolbar = undefined;
     }
     #createAiCodeCompletionSummaryToolbar() {
-        if (this.#aiCodeCompletionSummaryToolbar) {
+        if (!this.#aiCodeCompletionEnabled || this.#aiCodeCompletionSummaryToolbar) {
+            return;
+        }
+        const containingPane = this.contentElement.enclosingNodeOrSelfWithClass('style-panes-wrapper');
+        if (!containingPane) {
             return;
         }
         this.#aiCodeCompletionSummaryToolbar =
@@ -1324,7 +1353,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 spinnerTooltipId: SPINNER_TOOLTIP_ID,
                 disclaimerTextVariant: 'styles',
             });
-        const containingPane = this.contentElement.enclosingNodeOrSelfWithClass('style-panes-wrapper');
         this.#aiCodeCompletionSummaryToolbarContainer =
             containingPane.createChild('div', 'ai-code-completion-summary-toolbar-container');
         this.#aiCodeCompletionSummaryToolbarContainer.role = 'toolbar';

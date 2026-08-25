@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -131,40 +132,40 @@
   ],
   "references": [
     {
-      "path": "../common/bundle-tsconfig.json"
+      "path": "../common/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../host/bundle-tsconfig.json"
+      "path": "../host/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../i18n/bundle-tsconfig.json"
+      "path": "../i18n/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../platform/bundle-tsconfig.json"
+      "path": "../platform/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../protocol_client/bundle-tsconfig.json"
+      "path": "../protocol_client/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../root/bundle-tsconfig.json"
+      "path": "../root/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../text_utils/bundle-tsconfig.json"
+      "path": "../text_utils/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../generated/generated-tsconfig.json"
+      "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
       "path": "../../generated/protocol-tsconfig.json"
     },
     {
-      "path": "../../models/formatter/bundle-tsconfig.json"
+      "path": "../../models/formatter/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../third_party/codemirror.next/bundle-tsconfig.json"
     },
     {
-      "path": "../../third_party/source-map-scopes-codec/bundle-tsconfig.json"
+      "path": "../../third_party/source-map-scopes-codec/bundle-tsconfig.ref.json"
     }
   ]
 }

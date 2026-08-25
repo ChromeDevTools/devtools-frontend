@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/ui/settings","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/ui/settings/settings.ts"],"references":[{"path":"./settings-tsconfig.ref.json"}]}

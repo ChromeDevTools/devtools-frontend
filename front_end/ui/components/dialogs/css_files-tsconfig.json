@@ -1,13 +1,13 @@
 {
-    "compilerOptions": {
-        "composite": true,
-        "outDir": "."
-    },
-    "files": [
-        "buttonDialog.css.js",
-        "dialog.css.js",
-        "freDialog.css.js",
-        "shortcutDialog.css.js",
-        "typeToAllowDialog.css.js"
-    ]
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "."
+  },
+  "files": [
+    "buttonDialog.css.js",
+    "dialog.css.js",
+    "freDialog.css.js",
+    "shortcutDialog.css.js",
+    "typeToAllowDialog.css.js"
+  ]
 }

@@ -15,35 +15,33 @@ const { html, Directives } = Lit;
 const { live } = Directives;
 const UIStrings = {
     /**
-     * @description Text title for the button to open the ignore list setting.
+     * @description Tooltip text for the button to open the ignore list settings dialog in the Performance panel.
      */
     showIgnoreListSettingDialog: 'Show ignore list setting dialog',
     /**
-     * @description Text title for ignore list setting.
+     * @description Header title for the ignore list settings dialog in the Performance panel.
      */
     ignoreList: 'Ignore list',
     /**
-     * @description Text description for ignore list setting.
+     * @description Description text in the ignore list settings dialog of the Performance panel.
      */
     ignoreListDescription: 'Add regular expression rules to remove matching scripts from the flame chart.',
     /**
-     * @description Pattern title in Framework Ignore List Settings Tab of the Settings
+     * @description Label for a pattern rule in the ignore list settings dialog of the Performance panel.
      * @example {ad.*?} regex
      */
     ignoreScriptsWhoseNamesMatchS: 'Ignore scripts whose names match \'\'{regex}\'\'',
     /**
-     * @description Label for the button to remove an regex
+     * @description Accessible label for the button to remove a regular expression rule in the ignore list settings dialog of the Performance panel.
      * @example {ad.*?} regex
      */
     removeRegex: 'Remove the regex: \'\'{regex}\'\'',
     /**
-     * @description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the input
-     * field used to add new or edit existing regular expressions that match file names to ignore in the debugger.
+     * @description Accessible label for the text input to add a regular expression rule in the ignore list settings dialog of the Performance panel.
      */
     addNewRegex: 'Add a regular expression rule for the script’s URL',
     /**
-     * @description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the checkbox of
-     * the input field used to enable the new regular expressions that match file names to ignore in the debugger.
+     * @description Accessible label for the checkbox to enable a new regular expression rule in the ignore list settings dialog of the Performance panel.
      */
     ignoreScriptsWhoseNamesMatchNewRegex: 'Ignore scripts whose names match the new regex',
 };

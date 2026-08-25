@@ -6,7 +6,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Snackbars from '../../../components/snackbars/snackbars.js';
 const UIStrings = {
     /**
-     * @description Notification message shown to the user when garbage collection has completed.
+     * @description Notification message shown when garbage collection completes.
      */
     garbageCollectionCompleted: 'Garbage collection completed',
 };

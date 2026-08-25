@@ -1,0 +1,151 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/panels/console",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/panels/console/ConsoleContextSelector.ts",
+    "../../../../../../front_end/panels/console/ConsoleFilter.ts",
+    "../../../../../../front_end/panels/console/ConsoleFormat.ts",
+    "../../../../../../front_end/panels/console/ConsoleInsightTeaser.ts",
+    "../../../../../../front_end/panels/console/ConsolePanel.ts",
+    "../../../../../../front_end/panels/console/ConsolePinPane.ts",
+    "../../../../../../front_end/panels/console/ConsolePrompt.ts",
+    "../../../../../../front_end/panels/console/ConsoleSidebar.ts",
+    "../../../../../../front_end/panels/console/ConsoleView.ts",
+    "../../../../../../front_end/panels/console/ConsoleViewMessage.ts",
+    "../../../../../../front_end/panels/console/ConsoleViewport.ts",
+    "../../../../../../front_end/panels/console/PromptBuilder.ts",
+    "../../../../../../front_end/panels/console/SymbolizedErrorWidget.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/i18n/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/text_utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/ai_assistance/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/ai_code_completion/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/ai_code_generation/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/badges/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/bindings/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/formatter/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/issues_manager/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/logs/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/source_map_scopes/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/stack_trace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/workspace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/codemirror.next/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/code_highlighter/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/dialogs/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/highlighting/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/issue_counter/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/request_link_icon/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/text_editor/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/tooltips/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/kit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/components/data_grid/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/components/object_ui/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../tsc/front_end/ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/components/settings_ui/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/components/utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/settings/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../elements/bundle-tsconfig.ref.json"
+    }
+  ]
+}

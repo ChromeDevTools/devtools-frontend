@@ -29,58 +29,57 @@ const KEYBOARD_FAKED_CONTEXT_MENU_DETAIL = -1;
 const SUBTITLE_FONT_SIZE_AND_STYLE = 'italic 10px';
 const UIStrings = {
     /**
-     * @description Aria alert used to notify the user when an event has been selected because they tabbed into a group.
+     * @description Accessible announcement when an event is selected by tabbing into a group in the flame chart.
      * @example {Paint} PH1
      * @example {Main thread} PH2
-     *
      */
-    eventSelectedFromGroup: 'Selected a {PH1} event within {PH2}. Press enter to focus this event.',
+    eventSelectedFromGroup: 'Selected a {PH1} event within {PH2}. Press Enter to focus this event.',
     /**
-     * @description Aria accessible name in Flame Chart of the Performance panel
+     * @description Accessible name for the flame chart canvas.
      */
-    flameChart: 'Flame Chart',
+    flameChart: 'Flame chart',
     /**
-     * @description Text for the screen reader to announce a hovered group
+     * @description Accessible announcement when hovering over a group in the flame chart.
      * @example {Network} PH1
      */
     sHovered: '{PH1} hovered',
     /**
-     * @description Text for screen reader to announce a selected group.
+     * @description Accessible announcement when selecting a group in the flame chart.
      * @example {Network} PH1
      */
     sSelected: '{PH1} selected',
     /**
-     * @description Text for screen reader to announce an expanded group
+     * @description Accessible announcement when expanding a group in the flame chart.
      * @example {Network} PH1
      */
     sExpanded: '{PH1} expanded',
     /**
-     * @description Text for screen reader to announce a collapsed group
+     * @description Accessible announcement when collapsing a group in the flame chart.
      * @example {Network} PH1
      */
     sCollapsed: '{PH1} collapsed',
     /**
-     * @description Text for an action that adds a label annotation to an entry in the Flame Chart
+     * @description Context menu option to add a label annotation to an entry in the flame chart.
      */
     labelEntry: 'Label entry',
     /**
-     * @description Text for an action that adds link annotation between entries in the Flame Chart
+     * @description Context menu option to add a link annotation between entries in the flame chart.
      */
     linkEntries: 'Link entries',
     /**
-     * @description Shown in the context menu when right clicking on a track header to enable the user to enter the track configuration mode.
+     * @description Context menu option to enter track configuration mode in the flame chart.
      */
     enterTrackConfigurationMode: 'Configure tracks',
     /**
-     * @description Shown in the context menu when right clicking on a track header to allow the user to exit track configuration mode.
+     * @description Context menu option to exit track configuration mode in the flame chart.
      */
     exitTrackConfigurationMode: 'Finish configuring tracks',
     /**
-     * @description Context menu option to copy the name of the track.
+     * @description Context menu option to copy the track name in the flame chart.
      */
     copyTrackName: 'Copy track name',
     /**
-     * @description Context menu option to copy the URL of the track.
+     * @description Context menu option to copy the track URL in the flame chart.
      */
     copyTrackUrl: 'Copy track URL',
 };

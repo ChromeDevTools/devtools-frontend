@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -45,10 +46,10 @@
   ],
   "references": [
     {
-      "path": "../../../../generated/generated-tsconfig.json"
+      "path": "../../../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../../../ui/legacy/bundle-tsconfig.json"
+      "path": "../../../../ui/legacy/bundle-tsconfig.ref.json"
     }
   ]
 }

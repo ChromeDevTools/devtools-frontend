@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -57,13 +58,13 @@
       "path": "./locales_js-tsconfig.json"
     },
     {
-      "path": "../platform/bundle-tsconfig.json"
+      "path": "../platform/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../root/bundle-tsconfig.json"
+      "path": "../root/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../third_party/i18n/bundle-tsconfig.json"
+      "path": "../../third_party/i18n/bundle-tsconfig.ref.json"
     }
   ]
 }

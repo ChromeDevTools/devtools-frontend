@@ -8059,6 +8059,62 @@ function isAiAssistanceContextSelectionAgentEnabled() {
 function isAiAssistanceServerSideLoggingEnabled() {
   return !Root4.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
+
+// gen/front_end/panels/ai_assistance/ExternalHandler.js
+var ExternalHandler_exports = {};
+__export(ExternalHandler_exports, {
+  handleExternalAIRequest: () => handleExternalAIRequest
+});
+import * as Host6 from "./../../core/host/host.js";
+import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as AiAssistanceModel9 from "./../../models/ai_assistance/ai_assistance.js";
+import * as NetworkTimeCalculator from "./../../models/network_time_calculator/network_time_calculator.js";
+import * as UI10 from "./../../ui/legacy/legacy.js";
+function resolveConversationType(contextType) {
+  switch (contextType) {
+    case "NETWORK_REQUEST":
+      return "drjones-network-request";
+    default:
+      return "none";
+  }
+}
+function getMatchingFlavorContext(contextOptions) {
+  if (!contextOptions?.contextIdentifier) {
+    return null;
+  }
+  if (contextOptions.type === "NETWORK_REQUEST") {
+    const raw = UI10.Context.Context.instance().flavor(SDK7.NetworkRequest.NetworkRequest);
+    if (raw) {
+      if (raw.name() !== contextOptions.contextIdentifier && raw.url() !== contextOptions.contextIdentifier) {
+        return null;
+      }
+      return new AiAssistanceModel9.RequestContext.RequestContext(raw, new NetworkTimeCalculator.NetworkTransferTimeCalculator());
+    }
+  }
+  return null;
+}
+async function handleExternalAIRequest(options) {
+  localStorage.setItem("aiAssistanceStructuredLogEnabled", "true");
+  localStorage.removeItem("aiAssistanceStructuredLog");
+  const conversationType = resolveConversationType(options.context?.type);
+  const aidaClient = new Host6.AidaClient.AidaClient();
+  const conversation = new AiAssistanceModel9.AiConversation.AiConversation({
+    type: conversationType,
+    data: [],
+    isReadOnly: false,
+    aidaClient
+  });
+  const resolvedContext = getMatchingFlavorContext(options.context);
+  if (resolvedContext) {
+    conversation.setContext(resolvedContext);
+  }
+  for (const prompt of options.prompts) {
+    await Array.fromAsync(conversation.run(prompt));
+  }
+  const logsRaw = localStorage.getItem("aiAssistanceStructuredLog");
+  return logsRaw ? JSON.parse(logsRaw) : [];
+}
+globalThis.handleExternalAIRequest = handleExternalAIRequest;
 export {
   AIv2MarkdownRenderer,
   AccessibilityAgentMarkdownRenderer,
@@ -8071,6 +8127,7 @@ export {
   ExploreWidget_exports as ExploreWidget,
   ExportConversation_exports as ExportConversation,
   ExportForAgentsDialog_exports as ExportForAgentsDialog,
+  ExternalHandler_exports as ExternalHandler,
   ImageResize_exports as ImageResize,
   MarkdownRendererWithCodeBlock,
   OptInChangeDialog_exports as OptInChangeDialog,

@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/core/sdk","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/core/sdk/sdk.ts"],"references":[{"path":"./sdk-tsconfig.ref.json"},{"path":"../../generated/generated-tsconfig.ref.json"}]}

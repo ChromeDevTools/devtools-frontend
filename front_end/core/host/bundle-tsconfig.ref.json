@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/core/host","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/core/host/host.ts"],"references":[{"path":"./host-tsconfig.ref.json"}]}

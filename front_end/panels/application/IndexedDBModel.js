@@ -356,10 +356,6 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     }
     cacheStorageContentUpdated(_event) {
     }
-    sharedStorageAccessed(_event) {
-    }
-    sharedStorageWorkletOperationExecutionFinished(_event) {
-    }
     storageBucketCreatedOrUpdated(_event) {
     }
     storageBucketDeleted(_event) {

@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../../front_end/panels/timeline/utils","outDir":".","declarationDir":"."},"files":["../../../../../../../front_end/panels/timeline/utils/utils.ts"],"references":[{"path":"./utils-tsconfig.ref.json"}]}

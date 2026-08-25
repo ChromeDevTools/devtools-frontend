@@ -12,12 +12,12 @@ import checklistStyles from './checklist.css.js';
 const { html } = Lit;
 const UIStrings = {
     /**
-     * @description Text for a screen-reader label to tell the user that the icon represents a successful insight check
+     * @description Accessible label indicating that an insight checklist check passed in the Performance panel sidebar.
      * @example {Server response time} PH1
      */
     successAriaLabel: 'Insight check passed: {PH1}',
     /**
-     * @description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
+     * @description Accessible label indicating that an insight checklist check failed in the Performance panel sidebar.
      * @example {Server response time} PH1
      */
     failedAriaLabel: 'Insight check failed: {PH1}',

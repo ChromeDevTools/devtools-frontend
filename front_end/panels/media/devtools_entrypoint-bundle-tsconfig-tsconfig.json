@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -44,10 +45,10 @@
   ],
   "references": [
     {
-      "path": "./css_files-tsconfig.json"
+      "path": "../../../../tsc/front_end/panels/media/css_files-tsconfig.ref.json"
     },
     {
-      "path": "./media-tsconfig.json"
+      "path": "./media-tsconfig.ref.json"
     }
   ]
 }

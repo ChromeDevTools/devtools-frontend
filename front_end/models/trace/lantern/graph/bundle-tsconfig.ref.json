@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../../../front_end/models/trace/lantern/graph","outDir":".","declarationDir":"."},"files":["../../../../../../../../front_end/models/trace/lantern/graph/graph.ts"],"references":[{"path":"./graph-tsconfig.ref.json"}]}

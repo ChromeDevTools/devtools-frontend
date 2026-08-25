@@ -1,10 +1,11 @@
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import { Issue, IssueCategory, IssueKind } from './Issue.js';
+import { type AffectedElement, Issue, IssueCategory, IssueKind } from './Issue.js';
 import { type MarkdownIssueDescription } from './MarkdownIssueDescription.js';
 export declare class GenericIssue extends Issue<Protocol.Audits.GenericIssueDetails> {
     constructor(issueDetails: Protocol.Audits.GenericIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel | null, issueId?: Protocol.Audits.IssueId);
     requests(): Iterable<Protocol.Audits.AffectedRequest>;
+    elements(): Iterable<AffectedElement>;
     getCategory(): IssueCategory;
     primaryKey(): string;
     getDescription(): MarkdownIssueDescription | null;

@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "application.prebundle.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "./application-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../tsc/front_end/panels/application/css_files-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../tsc/front_end/ui/legacy/css_files-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../tsc/front_end/ui/legacy/components/data_grid/css_files-tsconfig.ref.json"
+    },
+    {
+      "path": "components/bundle-tsconfig.ref.json"
+    }
+  ]
+}

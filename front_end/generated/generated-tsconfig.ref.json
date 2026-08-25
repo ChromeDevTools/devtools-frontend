@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../front_end/generated",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../front_end/generated/ARIAProperties.ts",
+    "../../../../../front_end/generated/Deprecation.ts",
+    "../../../../../front_end/generated/InspectorBackendCommands.ts",
+    "../../../../../front_end/generated/SupportedCSSProperties.ts",
+    "../../../../../front_end/generated/protocol.ts",
+    "../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../node_modules/@types/filesystem/index.d.ts"
+  ]
+}

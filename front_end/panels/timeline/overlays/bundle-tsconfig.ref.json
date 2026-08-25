@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../../front_end/panels/timeline/overlays","outDir":".","declarationDir":"."},"files":["../../../../../../../front_end/panels/timeline/overlays/overlays.ts"],"references":[{"path":"./overlays-tsconfig.ref.json"}]}

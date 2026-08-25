@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/ui/dom_extension","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/ui/dom_extension/dom_extension.ts"],"references":[{"path":"./dom_extension-tsconfig.ref.json"}]}

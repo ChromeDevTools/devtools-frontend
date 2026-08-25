@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -44,25 +45,25 @@
   ],
   "references": [
     {
-      "path": "./trace-tsconfig.json"
+      "path": "./trace-tsconfig.ref.json"
     },
     {
-      "path": "extras/bundle-tsconfig.json"
+      "path": "extras/bundle-tsconfig.ref.json"
     },
     {
-      "path": "handlers/bundle-tsconfig.json"
+      "path": "handlers/bundle-tsconfig.ref.json"
     },
     {
-      "path": "helpers/bundle-tsconfig.json"
+      "path": "helpers/bundle-tsconfig.ref.json"
     },
     {
-      "path": "insights/bundle-tsconfig.json"
+      "path": "insights/bundle-tsconfig.ref.json"
     },
     {
-      "path": "lantern/bundle-tsconfig.json"
+      "path": "lantern/bundle-tsconfig.ref.json"
     },
     {
-      "path": "types/bundle-tsconfig.json"
+      "path": "types/bundle-tsconfig.ref.json"
     }
   ]
 }

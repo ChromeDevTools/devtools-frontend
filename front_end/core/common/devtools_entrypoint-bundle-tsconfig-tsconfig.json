@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -44,13 +45,13 @@
   ],
   "references": [
     {
-      "path": "./ColorUtils-tsconfig.json"
+      "path": "./ColorUtils-tsconfig.ref.json"
     },
     {
-      "path": "./common-tsconfig.json"
+      "path": "./common-tsconfig.ref.json"
     },
     {
-      "path": "../platform/bundle-tsconfig.json"
+      "path": "../platform/bundle-tsconfig.ref.json"
     }
   ]
 }

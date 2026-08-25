@@ -37,12 +37,9 @@ export class RunLighthouseTool {
         };
     }
     async handler(params, context) {
-        if (!context.lighthouseRecording) {
-            return { error: 'Error: Lighthouse recording capability is not available.' };
-        }
         const mode = params.mode ?? 'snapshot';
         try {
-            const report = await context.lighthouseRecording({
+            const report = await context.runLighthouse({
                 mode,
                 categoryIds: [params.category],
                 isAIControlled: true,

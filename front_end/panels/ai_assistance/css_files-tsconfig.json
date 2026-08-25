@@ -1,17 +1,17 @@
 {
-    "compilerOptions": {
-        "composite": true,
-        "outDir": "."
-    },
-    "files": [
-        "./aiAssistancePanel.css.js",
-        "./components/chatInput.css.js",
-        "./components/chatMessage.css.js",
-        "./components/chatView.css.js",
-        "./components/disabledWidget.css.js",
-        "./components/exploreWidget.css.js",
-        "./components/exportForAgentsDialog.css.js",
-        "./components/optInChangeDialog.css.js",
-        "./components/walkthroughView.css.js"
-    ]
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "."
+  },
+  "files": [
+    "./aiAssistancePanel.css.js",
+    "./components/chatInput.css.js",
+    "./components/chatMessage.css.js",
+    "./components/chatView.css.js",
+    "./components/disabledWidget.css.js",
+    "./components/exploreWidget.css.js",
+    "./components/exportForAgentsDialog.css.js",
+    "./components/optInChangeDialog.css.js",
+    "./components/walkthroughView.css.js"
+  ]
 }

@@ -78,8 +78,12 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export function getElementIssueDetails(issue) {
     if (issue instanceof IssuesManager.GenericIssue.GenericIssue) {
         const issueDetails = issue.details();
+        const tooltip = getTooltipFromGenericIssue(issueDetails.errorType);
+        if (!tooltip) {
+            return undefined;
+        }
         return {
-            tooltip: getTooltipFromGenericIssue(issueDetails.errorType),
+            tooltip,
             nodeId: issueDetails.violatingNodeId,
             attribute: issueDetails.violatingNodeAttribute,
         };
@@ -92,8 +96,12 @@ export function getElementIssueDetails(issue) {
                 nodeId: issueDetails.nodeId,
             };
         }
+        const tooltip = getTooltipFromElementAccessibilityIssue(issueDetails.elementAccessibilityIssueReason);
+        if (!tooltip) {
+            return undefined;
+        }
         return {
-            tooltip: getTooltipFromElementAccessibilityIssue(issueDetails.elementAccessibilityIssueReason),
+            tooltip,
             nodeId: issueDetails.nodeId,
         };
     }

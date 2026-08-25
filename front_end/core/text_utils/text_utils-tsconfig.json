@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -53,10 +54,10 @@
   ],
   "references": [
     {
-      "path": "../common/bundle-tsconfig.json"
+      "path": "../common/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../platform/bundle-tsconfig.json"
+      "path": "../platform/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../third_party/codemirror.next/bundle-tsconfig.json"

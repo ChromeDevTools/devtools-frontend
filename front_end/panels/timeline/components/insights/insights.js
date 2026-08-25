@@ -308,37 +308,34 @@ var InsightProvideOverlays = class _InsightProvideOverlays extends Event {
 var { html: html2 } = Lit2;
 var UIStrings = {
   /**
-   * @description Text to tell the user the estimated time or size savings for this insight. "&" means "and" - space is limited to prefer abbreviated terms if possible. Text will still fit if not short, it just won't look very good, so using no abbreviations is fine if necessary.
+   * @description Estimated time or size savings for an insight in the Performance panel sidebar.
    * @example {401 ms} PH1
-   * @example {112 kB} PH1
    */
   estimatedSavings: "Est savings: {PH1}",
   /**
-   * @description Text to tell the user the estimated time and size savings for this insight. "&" means "and", "Est" means "Estimated" - space is limited to prefer abbreviated terms if possible. Text will still fit if not short, it just won't look very good, so using no abbreviations is fine if necessary.
+   * @description Estimated time and size savings for an insight in the Performance panel sidebar.
    * @example {401 ms} PH1
    * @example {112 kB} PH2
    */
   estimatedSavingsTimingAndBytes: "Est savings: {PH1} & {PH2}",
   /**
-   * @description Text to tell the user the estimated time savings for this insight that is used for screen readers.
+   * @description Accessible label for the estimated time savings of an insight in the Performance panel sidebar.
    * @example {401 ms} PH1
-   * @example {112 kB} PH1
    */
   estimatedSavingsAriaTiming: "Estimated savings for this insight: {PH1}",
   /**
-   * @description Text to tell the user the estimated size savings for this insight that is used for screen readers. Value is in terms of "transfer size", aka encoded/compressed data length.
-   * @example {401 ms} PH1
+   * @description Accessible label for the estimated size savings of an insight in the Performance panel sidebar.
    * @example {112 kB} PH1
    */
   estimatedSavingsAriaBytes: "Estimated savings for this insight: {PH1} transfer size",
   /**
-   * @description Text to tell the user the estimated time and size savings for this insight that is used for screen readers.
+   * @description Accessible label for both estimated time and size savings of an insight in the Performance panel sidebar.
    * @example {401 ms} PH1
    * @example {112 kB} PH2
    */
   estimatedSavingsTimingAndBytesAria: "Estimated savings for this insight: {PH1} and {PH2} transfer size",
   /**
-   * @description Used for screen-readers as a label on the button to expand an insight to view details
+   * @description Accessible label for the button to expand an insight to view details in the Performance panel sidebar.
    * @example {LCP breakdown} PH1
    */
   viewDetails: "View details for {PH1} insight."
@@ -849,7 +846,7 @@ button.devtools-link {
 // gen/front_end/panels/timeline/components/insights/Table.js
 var UIStrings2 = {
   /**
-   * @description Table row value representing the remaining items not shown in the table due to size constraints. This row will always represent at least 2 items.
+   * @description Table row label representing the remaining items not shown in the table in the Performance panel sidebar.
    * @example {5} PH1
    */
   others: "{PH1} others"
@@ -1151,12 +1148,12 @@ ul {
 var { html: html6 } = Lit6;
 var UIStrings4 = {
   /**
-   * @description Text for a screen-reader label to tell the user that the icon represents a successful insight check
+   * @description Accessible label indicating that an insight checklist check passed in the Performance panel sidebar.
    * @example {Server response time} PH1
    */
   successAriaLabel: "Insight check passed: {PH1}",
   /**
-   * @description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
+   * @description Accessible label indicating that an insight checklist check failed in the Performance panel sidebar.
    * @example {Server response time} PH1
    */
   failedAriaLabel: "Insight check failed: {PH1}"

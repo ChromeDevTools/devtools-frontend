@@ -6,6 +6,7 @@
     "checkJs": true,
     "composite": true,
     "declaration": true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
@@ -45,6 +46,5 @@
     "../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../node_modules/@types/filesystem/index.d.ts"
-  ],
-  "references": []
+  ]
 }

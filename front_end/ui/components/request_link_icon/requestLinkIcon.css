@@ -35,8 +35,8 @@ button {
 }
 
 devtools-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
   vertical-align: middle;
   color: var(--icon-no-request);
 

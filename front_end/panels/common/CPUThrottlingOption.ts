@@ -4,6 +4,11 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+
+export type CalibratedCPUThrottling = SDK.CPUThrottlingManager.CalibratedCPUThrottling;
+export import CalibrationError = SDK.CPUThrottlingManager.CalibrationError;
+export import CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
 
 const UIStrings = {
   /**
@@ -106,16 +111,6 @@ function makeCalibratedThrottlingOption(calibratedDeviceType: CalibratedDeviceTy
 
 export const CalibratedLowTierMobileThrottlingOption = makeCalibratedThrottlingOption('low-tier-mobile');
 export const CalibratedMidTierMobileThrottlingOption = makeCalibratedThrottlingOption('mid-tier-mobile');
-
-export interface CalibratedCPUThrottling {
-  /** Either the CPU multiplier, or an error code for why it could not be determined. */
-  low?: number|CalibrationError;
-  mid?: number|CalibrationError;
-}
-
-export enum CalibrationError {
-  DEVICE_TOO_WEAK = 'DEVICE_TOO_WEAK',
-}
 
 export function calibrationErrorToString(error: CalibrationError): string {
   if (error === CalibrationError.DEVICE_TOO_WEAK) {

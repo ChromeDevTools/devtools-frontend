@@ -426,6 +426,11 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
     await this.#emulationAgent.invoke_setHardwareConcurrencyOverride({hardwareConcurrency});
   }
 
+  async setCPUPerformanceOverride(performanceTier?: Protocol.Emulation.SetCPUPerformanceOverrideRequestPerformanceTier):
+      Promise<void> {
+    await this.#emulationAgent.invoke_setCPUPerformanceOverride({performanceTier});
+  }
+
   async emulateTouch(enabled: boolean, mobile: boolean): Promise<void> {
     this.#touchEnabled = enabled && this.#touchEmulationAllowed;
     this.#touchMobile = mobile && this.#touchEmulationAllowed;

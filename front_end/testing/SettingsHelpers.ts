@@ -8,16 +8,25 @@ import * as Common from '../core/common/common.js';
 
 function createSettingValue(category: Common.Settings.SettingCategory, settingName: string, defaultValue: unknown,
                             settingType = Common.Settings.SettingType.BOOLEAN,
-                            title?: string|
-                            (() => Common.UIString.LocalizedString)): Common.Settings.SettingRegistration {
+                            title?: string|(() => Common.UIString.LocalizedString),
+                            options?: Common.SettingRegistration.SettingRegistration['options']):
+    Common.SettingRegistration.SettingRegistration {
   return {
     category,
     settingName,
     defaultValue,
     settingType,
     title: typeof title === 'string' ? () => title as Common.UIString.LocalizedString : title,
+    options,
   };
 }
+
+const rawOption = (value: string, title: string) => ({
+  value,
+  title: () => title as Common.UIString.LocalizedString,
+  text: title,
+  raw: true as const,
+});
 
 export function stubNoopSettings() {
   const createDummySetting = (name: string|{name: string}) => {
@@ -178,6 +187,15 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST: ReadonlyArray<ReturnType<ty
                      Common.Settings.SettingType.ENUM),
   createSettingValue(Common.Settings.SettingCategory.EMULATION, 'emulation.cpu-pressure', '',
                      Common.Settings.SettingType.ENUM),
+  createSettingValue(Common.Settings.SettingCategory.EMULATION, 'emulation.cpu-performance', 'no-override',
+                     Common.Settings.SettingType.ENUM, undefined, [
+                       rawOption('no-override', 'No override'),
+                       rawOption('unknown', 'Tier 0: UNKNOWN'),
+                       rawOption('low', 'Tier 1: LOW'),
+                       rawOption('mid', 'Tier 2: MID'),
+                       rawOption('high', 'Tier 3: HIGH'),
+                       rawOption('ultra', 'Tier 4: ULTRA'),
+                     ]),
   createSettingValue(Common.Settings.SettingCategory.EMULATION, 'emulation.locations', [],
                      Common.Settings.SettingType.ARRAY),
   createSettingValue(Common.Settings.SettingCategory.MOBILE, 'emulation.show-rulers', false),

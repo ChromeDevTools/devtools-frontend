@@ -5,7 +5,7 @@
  */
 
 .network-config {
-  padding: 12px;
+  padding: var(--sys-size-6);
   display: block;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .network-config-title {
-  margin-right: 16px;
+  margin-right: var(--sys-size-8);
   width: 130px;
 }
 
@@ -31,14 +31,14 @@
 }
 
 .panel-section-separator {
-  height: 1px;
+  height: var(--sys-size-1);
   margin-bottom: 10px;
   background: var(--sys-color-divider);
 }
 /* Disable cache */
 
 .network-config-disable-cache {
-  line-height: 28px;
+  line-height: var(--sys-size-12);
   border-top: none;
   padding-top: 0;
 }
@@ -65,32 +65,32 @@
   }
 
   & > .network-config-title {
-    line-height: 24px;
+    line-height: var(--sys-size-11);
   }
 }
 /* User agent */
 
 .network-config-ua > .network-config-title {
-  line-height: 20px;
+  line-height: var(--sys-size-9);
 }
 
 .network-config-ua input {
   display: block;
-  width: calc(100% - 20px);
+  width: calc(100% - var(--sys-size-9));
 }
 
 .network-config-ua input[type="text"],
 .network-config-ua select {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .network-config-ua select {
-  width: calc(100% - 20px);
+  width: calc(100% - var(--sys-size-9));
   max-width: 250px;
 }
 
 .network-config-ua-custom {
-  padding-bottom: 8px;
+  padding-bottom: var(--sys-size-5);
 
   input,
   devtools-user-agent-client-hints-form {
@@ -107,7 +107,7 @@
 
 devtools-user-agent-client-hints-form {
   display: block;
-  margin-top: 14px;
+  margin-top: var(--sys-size-7);
   width: min(100%, 400px);
 }
 

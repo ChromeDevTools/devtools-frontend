@@ -25,12 +25,15 @@ describeWithEnvironment('EventListenersView', () => {
   it('shows one-liner if in sources', () => {
     const eventListenersView = new EventListeners.EventListenersView.EventListenersView();
     const container = document.createElement('div');
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     container.classList.add('sources', 'panel');
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
 
-    assertElementDisplayStyle(eventListenersView, '.empty-view-scroller', 'none');
+    const emptyWidgetElement = eventListenersView.emptyHolder.lastElementChild;
+    assert.exists(emptyWidgetElement);
+    // Check that the EmptyWidget's host element is properly hidden in the sources panel
+    assert.deepEqual(window.getComputedStyle(emptyWidgetElement).display, 'none');
     assertElementDisplayStyle(eventListenersView, '.placeholder .gray-info-message', 'inline');
 
     assert.deepEqual(
@@ -41,18 +44,22 @@ describeWithEnvironment('EventListenersView', () => {
   it('shows empty widget if in elements panel', () => {
     const eventListenersView = new EventListeners.EventListenersView.EventListenersView();
     const container = document.createElement('div');
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     container.classList.add('elements', 'panel');
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
-    assertElementDisplayStyle(eventListenersView, '.empty-view-scroller', 'flex');
+    const emptyWidgetElement = eventListenersView.emptyHolder.lastElementChild;
+    assert.exists(emptyWidgetElement);
+    // Check that the EmptyWidget's host element is visible in the elements panel
+    assert.deepEqual(window.getComputedStyle(emptyWidgetElement).display, 'flex');
     assertElementDisplayStyle(eventListenersView, '.placeholder .gray-info-message', 'none');
 
-    assert.deepEqual(
-        eventListenersView.contentElement.querySelector('.empty-state-header')?.textContent, 'No event listeners');
-    assert.deepEqual(
-        eventListenersView.contentElement.querySelector('.empty-state-description')?.textContent,
-        'On this page you will find registered event listeners');
+    const emptyWidgetShadowRoot = emptyWidgetElement.shadowRoot;
+    assert.exists(emptyWidgetShadowRoot);
+
+    assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-header')?.textContent, 'No event listeners');
+    assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-description > span')?.textContent,
+                     'On this page you will find registered event listeners');
   });
 
   it('removes event listener from the view and calls remove on the model', async () => {
@@ -83,7 +90,7 @@ describeWithEnvironment('EventListenersView', () => {
 
     const eventListenersView = new EventListeners.EventListenersView.EventListenersView();
     const container = document.createElement('div');
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
 

@@ -58,6 +58,20 @@ describeWithEnvironment('BackgroundServiceView', () => {
     view = new Resources.BackgroundServiceView.BackgroundServiceView(serviceName, backgroundServiceModel);
   });
 
+  function assertEmptyState(expectedHeader: string, expectedDescription?: string): ShadowRoot {
+    const emptyWidget = view.contentElement.querySelector('.empty-widget-container');
+    assert.exists(emptyWidget);
+    const shadowRoot = emptyWidget.shadowRoot;
+    assert.exists(shadowRoot);
+    const header = shadowRoot.querySelector('.empty-state-header')?.textContent;
+    assert.deepEqual(header, expectedHeader);
+    if (expectedDescription !== undefined) {
+      const description = shadowRoot.querySelector('.empty-state-description')?.textContent;
+      assert.deepEqual(description, expectedDescription);
+    }
+    return shadowRoot;
+  }
+
   it('updates event list when main storage key changes', () => {
     assert.exists(backgroundServiceModel);
     assert.exists(manager);
@@ -82,25 +96,18 @@ describeWithEnvironment('BackgroundServiceView', () => {
     manager.updateStorageKeys(new Set([testKey]));
     manager.setMainStorageKey(testKey);
 
-    assert.isNotNull(view.contentElement.querySelector('.empty-state'));
-    const header = view.contentElement.querySelector('.empty-state-header')?.textContent;
-    const description = view.contentElement.querySelector('.empty-state-description')?.textContent;
-    assert.deepEqual(header, 'No event selected');
-    assert.deepEqual(description, 'Select an event to view its metadata');
+    assertEmptyState('No event selected', 'Select an event to view its metadata');
   });
 
   it('shows placeholder text', () => {
-    assert.isNotNull(view.contentElement.querySelector('.empty-state'));
-    const header = view.contentElement.querySelector('.empty-state-header')?.textContent;
-    const description = view.contentElement.querySelector('.empty-state-description')?.textContent;
-    assert.deepEqual(header, 'No recording yet');
-    assert.deepEqual(
-        description,
+    assertEmptyState(
+        'No recording yet',
         'Start to debug background services by using the "Start recording events" button or by pressing Ctrl.Learn more');
   });
 
   it('Triggers record on button click', () => {
-    const recordButton = view.contentElement.querySelector('.empty-state devtools-button');
+    const shadowRoot = assertEmptyState('No recording yet');
+    const recordButton = shadowRoot.querySelector('devtools-button');
     assert.exists(recordButton);
     assert.deepEqual(recordButton.textContent, 'Start recording events');
 
@@ -113,12 +120,8 @@ describeWithEnvironment('BackgroundServiceView', () => {
     backgroundServiceModel?.recordingStateChanged(
         {isRecording: true, service: Protocol.BackgroundService.ServiceName.BackgroundFetch});
 
-    assert.isNotNull(view.contentElement.querySelector('.empty-state'));
-    const header = view.contentElement.querySelector('.empty-state-header')?.textContent;
-    const description = view.contentElement.querySelector('.empty-state-description')?.textContent;
-    assert.deepEqual(header, 'Recording background fetch activity…');
-    assert.deepEqual(
-        description, 'DevTools will record all background fetch activity for up to 3 days, even when closed.');
+    assertEmptyState('Recording background fetch activity…',
+                     'DevTools will record all background fetch activity for up to 3 days, even when closed.');
   });
 
   it('clears preview when view is cleared', async () => {
@@ -130,7 +133,7 @@ describeWithEnvironment('BackgroundServiceView', () => {
     view.getDataGrid().asWidget().dataGrid.rootNode().children[0].select();
 
     // Metadata is shown.
-    assert.isNull(view.contentElement.querySelector('.empty-state'));
+    assert.isNull(view.contentElement.querySelector('.empty-widget-container'));
 
     const toolbar = view.contentElement.querySelector('devtools-toolbar');
     assert.exists(toolbar);
@@ -139,9 +142,7 @@ describeWithEnvironment('BackgroundServiceView', () => {
     dispatchClickEvent(clearButton);
 
     // Preview is cleared, showing general empty state text.
-    assert.isNotNull(view.contentElement.querySelector('.empty-state'));
-    const header = view.contentElement.querySelector('.empty-state-header')?.textContent;
-    assert.deepEqual(header, 'No recording yet');
+    assertEmptyState('No recording yet');
   });
 
   it('shows metadata in preview and renders a screenshot', async () => {

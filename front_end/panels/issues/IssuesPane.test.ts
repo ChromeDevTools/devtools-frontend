@@ -24,21 +24,24 @@ describeWithEnvironment('IssuesPane', () => {
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     sinon.stub(issuesManager, 'numberOfAllStoredIssues').returns(10);
     const issuesPane = new Issues.IssuesPane.IssuesPane();
-    assert.exists(issuesPane.contentElement.querySelector('.empty-state'));
-    assert.deepEqual(
-        issuesPane.contentElement.querySelector('.empty-state-header')?.textContent,
-        'Only third-party cookie issues detected');
-    assert.deepEqual(
-        issuesPane.contentElement.querySelector('.empty-state-description > span')?.textContent,
-        'On this page you can find warnings from the browser.');
+    const emptyWidgetElement = issuesPane.contentElement.querySelector('.empty-widget-container');
+    assert.exists(emptyWidgetElement);
+    const emptyWidgetShadowRoot = emptyWidgetElement.shadowRoot;
+    assert.exists(emptyWidgetShadowRoot);
+    assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-header')?.textContent,
+                     'Only third-party cookie issues detected');
+    assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-description > span')?.textContent,
+                     'On this page you can find warnings from the browser.');
   });
 
   it('shows placeholder', () => {
     const issuesPane = new Issues.IssuesPane.IssuesPane();
-    assert.exists(issuesPane.contentElement.querySelector('.empty-state'));
-    assert.deepEqual(issuesPane.contentElement.querySelector('.empty-state-header')?.textContent, 'No issues detected');
-    assert.deepEqual(
-        issuesPane.contentElement.querySelector('.empty-state-description > span')?.textContent,
-        'On this page you can find warnings from the browser.');
+    const emptyWidgetElement = issuesPane.contentElement.querySelector('.empty-widget-container');
+    assert.exists(emptyWidgetElement);
+    const emptyWidgetShadowRoot = emptyWidgetElement.shadowRoot;
+    assert.exists(emptyWidgetShadowRoot);
+    assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-header')?.textContent, 'No issues detected');
+    assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-description > span')?.textContent,
+                     'On this page you can find warnings from the browser.');
   });
 });

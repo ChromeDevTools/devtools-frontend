@@ -6,7 +6,7 @@ import '../../ui/kit/kit.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import {Directives, html, render} from '../lit/lit.js';
+import {html, render} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import emptyWidgetStyles from './emptyWidget.css.js';
@@ -21,34 +21,27 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/EmptyWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {ref} = Directives;
 
-interface EmptyWidgetInput {
+interface ViewInput {
   header: string;
   text: string;
   link?: Platform.DevToolsPath.UrlString|null;
-  extraElements?: Element[];
 }
 
-interface EmptyWidgetOutput {
-  contentElement?: Element;
-}
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-type View = (input: EmptyWidgetInput, output: EmptyWidgetOutput, target: HTMLElement) => void;
-
-const DEFAULT_VIEW: View = (input, output, target) => {
+const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
     <style>${inspectorCommonStyles}</style>
     <style>${emptyWidgetStyles}</style>
-    <div class="empty-state" jslog=${VisualLogging.section('empty-view')}
-         ${ref(e => {output.contentElement = e;})}>
+    <div class="empty-state" jslog=${VisualLogging.section('empty-view')}>
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
         ${input.link ? html`<devtools-link href=${input.link} jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>` : ''}
       </div>
-      ${input.extraElements}
+      <slot></slot>
     </div>`, target, {container: {classes: ['empty-view-scroller']}});
   // clang-format on
 };
@@ -58,54 +51,40 @@ export class EmptyWidget extends VBox {
   #text: string;
   #link: Platform.DevToolsPath.UrlString|undefined|null;
   #view: View;
-  #firstUpdate = true;
-  #extraElements: Element[] = [];
 
   constructor(headerOrElement: string|HTMLElement, text = '', element?: HTMLElement, view = DEFAULT_VIEW) {
     const header = typeof headerOrElement === 'string' ? headerOrElement : '';
     if (!element && headerOrElement instanceof HTMLElement) {
       element = headerOrElement;
     }
-    super(element);
+    super(element, {useShadowDom: true, classes: ['empty-widget-container']});
     this.#header = header;
     this.#text = text;
     this.#link = undefined;
     this.#view = view;
+    // TODO: migrate to `requestUpdate()` once callers don't manipulate DOM directly and synchronously anymore.
     this.performUpdate();
   }
 
   set link(link: Platform.DevToolsPath.UrlString|undefined|null) {
     this.#link = link;
+    // TODO: migrate to `requestUpdate()` once callers don't manipulate DOM directly and synchronously anymore.
     this.performUpdate();
   }
 
   set text(text: string) {
     this.#text = text;
+    // TODO: migrate to `requestUpdate()` once callers don't manipulate DOM directly and synchronously anymore.
     this.performUpdate();
   }
 
   set header(header: string) {
     this.#header = header;
+    // TODO: migrate to `requestUpdate()` once callers don't manipulate DOM directly and synchronously anymore.
     this.performUpdate();
   }
 
-  set extraElements(elements: HTMLElement[]) {
-    this.#extraElements = elements;
-    this.#firstUpdate = false;
-    this.requestUpdate();
-  }
-
   override performUpdate(): void {
-    if (this.#firstUpdate) {
-      this.#extraElements = [...this.element.children];
-      this.#firstUpdate = false;
-    }
-    const output: EmptyWidgetOutput = {};
-    this.#view(
-        {header: this.#header, text: this.#text, link: this.#link, extraElements: this.#extraElements}, output,
-        this.element);
-    if (output.contentElement) {
-      this.contentElement = output.contentElement as HTMLElement;
-    }
+    this.#view({header: this.#header, text: this.#text, link: this.#link}, undefined, this.contentElement);
   }
 }

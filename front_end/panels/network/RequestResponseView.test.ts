@@ -88,8 +88,11 @@ describeWithEnvironment('RequestResponseView', () => {
             UI.Widget.WidgetElement<UI.EmptyWidget.EmptyWidget>|
         null;
     assert.instanceOf(widget?.getWidget(), UI.EmptyWidget.EmptyWidget);
-    assert.deepEqual(
-        widget.getWidget()?.contentElement.textContent, 'Failed to load response dataNo network manager for request');
+    assert.strictEqual(widget?.getWidget()?.contentElement.querySelector('.empty-state-header')?.textContent,
+                       'Failed to load response data');
+    assert.strictEqual(
+        widget?.getWidget()?.contentElement.querySelector('.empty-state-description > span')?.textContent,
+        'No network manager for request');
 
     component.detach();
   });
@@ -149,6 +152,9 @@ describeWithEnvironment('RequestResponseView', () => {
 
     await component.updateComplete;
     const element = component.contentElement.querySelector<HTMLElement>('devtools-widget');
-    assert.strictEqual(element?.innerText, 'Nothing to preview\nThis request has no response data available');
+    const widget = (element as UI.Widget.WidgetElement<UI.EmptyWidget.EmptyWidget>)?.getWidget();
+    assert.strictEqual(widget?.contentElement.querySelector('.empty-state-header')?.textContent, 'Nothing to preview');
+    assert.strictEqual(widget?.contentElement.querySelector('.empty-state-description > span')?.textContent,
+                       'This request has no response data available');
   });
 });

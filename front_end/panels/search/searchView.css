@@ -93,7 +93,7 @@
   padding-right: 5px;
 }
 
-.search-results:has(.empty-state) + .search-toolbar-summary {
+.search-results:has(.empty-widget-container) + .search-toolbar-summary {
   display: none;
 }
 

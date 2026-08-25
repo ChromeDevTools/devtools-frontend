@@ -24,6 +24,16 @@ describeWithEnvironment('MediaMainView', () => {
     target = createTarget();
   });
 
+  function assertEmptyState(mainView: Media.MainView.MainView, expectedHeader: string, expectedDescription: string) {
+    const emptyWidgetElement = mainView.contentElement.querySelector('.empty-widget-container');
+    assert.exists(emptyWidgetElement);
+    const emptyWidgetShadowRoot = emptyWidgetElement.shadowRoot;
+    assert.exists(emptyWidgetShadowRoot);
+    assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-header')?.textContent, expectedHeader);
+    assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-description span')?.textContent,
+                     expectedDescription);
+  }
+
   const testUiUpdate = <T extends keyof Media.MediaModel.EventTypes>(
       event: Platform.TypeScriptUtilities.NoUnion<T>, expectedMethod: keyof Media.MainView.PlayerDataDownloadManager,
       inScope: boolean) => async () => {
@@ -62,11 +72,7 @@ describeWithEnvironment('MediaMainView', () => {
 
   it('shows a placeholder if no player is available', () => {
     const mainView = new Media.MainView.MainView();
-    assert.exists(mainView.contentElement.querySelector('.empty-state'));
-    assert.deepEqual(mainView.contentElement.querySelector('.empty-state-header')?.textContent, 'No media player');
-    assert.deepEqual(
-        mainView.contentElement.querySelector('.empty-state-description span')?.textContent,
-        'On this page you can view and export media player details.');
+    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details.');
     mainView.detach();
   });
 
@@ -79,12 +85,7 @@ describeWithEnvironment('MediaMainView', () => {
     renderElementIntoDOM(mainView);
 
     model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
-    assert.exists(mainView.contentElement.querySelector('.empty-state'));
-    assert.deepEqual(
-        mainView.contentElement.querySelector('.empty-state-header')?.textContent, 'No media player selected');
-    assert.deepEqual(
-        mainView.contentElement.querySelector('.empty-state-description span')?.textContent,
-        'Select a media player to inspect its details.');
+    assertEmptyState(mainView, 'No media player selected', 'Select a media player to inspect its details.');
     mainView.detach();
   });
 
@@ -99,11 +100,7 @@ describeWithEnvironment('MediaMainView', () => {
     model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
     mainView.markPlayerForDeletion(PLAYER_ID);
 
-    assert.exists(mainView.contentElement.querySelector('.empty-state'));
-    assert.deepEqual(mainView.contentElement.querySelector('.empty-state-header')?.textContent, 'No media player');
-    assert.deepEqual(
-        mainView.contentElement.querySelector('.empty-state-description span')?.textContent,
-        'On this page you can view and export media player details.');
+    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details.');
     mainView.detach();
   });
 
@@ -117,13 +114,10 @@ describeWithEnvironment('MediaMainView', () => {
 
     model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
     mainView.renderMainPanel(PLAYER_ID);
-    assert.isNull(mainView.contentElement.querySelector('.empty-state'));
+    assert.isNull(mainView.contentElement.querySelector('.empty-widget-container'));
     mainView.markPlayerForDeletion(PLAYER_ID);
 
-    assert.deepEqual(mainView.contentElement.querySelector('.empty-state-header')?.textContent, 'No media player');
-    assert.deepEqual(
-        mainView.contentElement.querySelector('.empty-state-description span')?.textContent,
-        'On this page you can view and export media player details.');
+    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details.');
     mainView.detach();
   });
 

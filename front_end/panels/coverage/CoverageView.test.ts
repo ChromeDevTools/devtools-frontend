@@ -22,7 +22,7 @@ import * as Coverage from './coverage.js';
 const {urlString} = Platform.DevToolsPath;
 
 const isShowingLandingPage = (view: Coverage.CoverageView.CoverageView) => {
-  return Boolean(view.contentElement.querySelector('.empty-state'));
+  return Boolean(view.contentElement.querySelector('devtools-widget')?.shadowRoot?.querySelector('.empty-state'));
 };
 
 const isShowingResults = (view: Coverage.CoverageView.CoverageView) => {
@@ -111,7 +111,7 @@ describeWithEnvironment('CoverageView', () => {
     await view.updateComplete;
     assert.isTrue(isShowingLandingPage(view));
 
-    const button = view.contentElement.querySelector('.empty-state devtools-button');
+    const button = view.contentElement.querySelector('devtools-widget devtools-button');
     assert.exists(button);
 
     const toggleSpy =

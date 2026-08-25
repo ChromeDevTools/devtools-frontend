@@ -185,6 +185,7 @@ devtools_ui_module("unittests") {
     "DOMUtilities.test.ts",
     "Dialog.test.ts",
     "DockController.test.ts",
+    "EmptyWidget.test.ts",
     "FilterBar.test.ts",
     "Infobar.test.ts",
     "InspectorDrawerView.test.ts",

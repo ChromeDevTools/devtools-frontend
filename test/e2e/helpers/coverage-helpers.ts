@@ -14,7 +14,7 @@ export async function waitForTheCoveragePanelToLoad(devToolsPage: DevToolsPage) 
   // Open panel and wait for content
   await openPanelViaMoreTools(devToolsPage, 'Coverage');
   await devToolsPage.waitFor('div[aria-label="Coverage panel"]');
-  await devToolsPage.waitFor('.coverage-results .empty-state');
+  await devToolsPage.waitFor('.coverage-results .empty-widget-container');
 }
 
 export async function navigateToCoverageTestSite(inspectedPage: InspectedPage) {
@@ -23,7 +23,7 @@ export async function navigateToCoverageTestSite(inspectedPage: InspectedPage) {
 
 export async function startInstrumentingCoverage(devToolsPage: DevToolsPage) {
   await devToolsPage.click(START_INSTRUMENTING_BUTTON);
-  await devToolsPage.waitForNone('.coverage-results .empty-state');
+  await devToolsPage.waitForNone('.coverage-results .empty-widget-container');
 }
 
 export async function stopInstrumentingCoverage(devToolsPage: DevToolsPage) {
@@ -33,7 +33,7 @@ export async function stopInstrumentingCoverage(devToolsPage: DevToolsPage) {
 
 export async function clearCoverageContent(devToolsPage: DevToolsPage) {
   await devToolsPage.click('button[title="Clear coverage"]');
-  await devToolsPage.waitFor('.coverage-results .empty-state');
+  await devToolsPage.waitFor('.coverage-results .empty-widget-container');
 }
 
 export async function getCoverageData(devToolsPage: DevToolsPage, expectedCount: number) {

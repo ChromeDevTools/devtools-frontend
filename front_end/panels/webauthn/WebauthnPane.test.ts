@@ -357,10 +357,11 @@ describeWithEnvironment('WebAuthn pane', () => {
   it('shows the placeholder', () => {
     const panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
     renderElementIntoDOM(panel);
-    assert.exists(panel.contentElement.querySelector('.empty-state'));
-    assert.deepEqual(panel.contentElement.querySelector('.empty-state-header')?.textContent, 'No authenticator set up');
-    assert.deepEqual(
-        panel.contentElement.querySelector('.empty-state-description > span')?.textContent,
-        'Use WebAuthn for phishing-resistant authentication.');
+    const emptyWidget = panel.contentElement.querySelector('devtools-widget')!;
+    assert.exists(emptyWidget.shadowRoot?.querySelector('.empty-state'));
+    assert.deepEqual(emptyWidget.shadowRoot?.querySelector('.empty-state-header')?.textContent,
+                     'No authenticator set up');
+    assert.deepEqual(emptyWidget.shadowRoot!.querySelector('.empty-state-description > span')?.textContent,
+                     'Use WebAuthn for phishing-resistant authentication.');
   });
 });

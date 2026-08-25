@@ -156,7 +156,7 @@ describeWithEnvironment('ExtensionStorageItemsView', function() {
     const parent = document.createElement('div');
     parent.style.width = '780px';
     parent.style.height = '400px';
-    renderElementIntoDOM(parent);
+    renderElementIntoDOM(parent, {includeCommonStyles: true});
 
     const view = new View.ExtensionStorageItemsView(extensionStorage);
     view.markAsRoot();

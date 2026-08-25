@@ -64,6 +64,10 @@ export declare class CdpFrame extends Frame {
     mainRealm(): IsolatedWorld;
     isolatedRealm(): IsolatedWorld;
     setContent(html: string, options?: SetContentWaitForOptions): Promise<void>;
+    /**
+     * @internal
+     */
+    setFrameContent(content: string): Promise<void>;
     url(): string;
     parentFrame(): CdpFrame | null;
     childFrames(): CdpFrame[];

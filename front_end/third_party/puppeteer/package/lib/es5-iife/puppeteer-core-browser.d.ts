@@ -8519,6 +8519,7 @@ declare namespace Puppeteer_2 {
     NetworkConditions,
     InternalNetworkConditions,
     TracingOptions,
+    WebMCPToolExecuteOptions,
     WebMCPToolsAddedEvent,
     WebMCPToolsRemovedEvent,
     WebMCPToolCallResult,
@@ -9936,7 +9937,10 @@ export declare class WebMCPTool extends EventEmitter<{
   /**
    * Executes tool with input parameters, matching tool's `inputSchema`.
    */
-  execute(input?: object): Promise<WebMCPToolCallResult>;
+  execute(
+    input?: object,
+    options?: WebMCPToolExecuteOptions,
+  ): Promise<WebMCPToolCallResult>;
 }
 
 /**
@@ -9987,6 +9991,16 @@ export declare interface WebMCPToolCallResult {
    * The exception object, if the javascript tool threw an error.
    */
   exception?: Protocol.Runtime.RemoteObject;
+}
+
+/**
+ * @public
+ */
+export declare interface WebMCPToolExecuteOptions {
+  /**
+   * A signal object that allows you to cancel the tool execution.
+   */
+  signal?: AbortSignal;
 }
 
 /**

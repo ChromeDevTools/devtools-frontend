@@ -83,16 +83,26 @@ export class WebMCPTool extends EventEmitter {
     /**
      * Executes tool with input parameters, matching tool's `inputSchema`.
      */
-    async execute(input = {}) {
+    async execute(input = {}, options = {}) {
         const { invocationId } = await this.#webmcp.invokeTool(this, input);
         return await new Promise(resolve => {
+            const onAbort = () => {
+                void this.#webmcp.cancelInvocation(invocationId);
+            };
             const handler = (event) => {
                 if (event.id === invocationId) {
+                    options.signal?.removeEventListener('abort', onAbort);
                     this.#webmcp.off('toolresponded', handler);
                     resolve(event);
                 }
             };
             this.#webmcp.on('toolresponded', handler);
+            if (options.signal?.aborted) {
+                onAbort();
+            }
+            else {
+                options.signal?.addEventListener('abort', onAbort, { once: true });
+            }
         });
     }
 }
@@ -253,6 +263,18 @@ export class WebMCP extends EventEmitter {
             frameId: tool.frame._id,
             toolName: tool.name,
             input,
+        });
+    }
+    /**
+     * @internal
+     */
+    async cancelInvocation(invocationId) {
+        return await this.#client
+            .send('WebMCP.cancelInvocation', {
+            invocationId,
+        })
+            .catch(err => {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(err);
         });
     }
     /**

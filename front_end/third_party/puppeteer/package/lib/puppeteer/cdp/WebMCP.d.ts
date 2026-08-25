@@ -60,7 +60,16 @@ export declare class WebMCPTool extends EventEmitter<{
     /**
      * Executes tool with input parameters, matching tool's `inputSchema`.
      */
-    execute(input?: object): Promise<WebMCPToolCallResult>;
+    execute(input?: object, options?: WebMCPToolExecuteOptions): Promise<WebMCPToolCallResult>;
+}
+/**
+ * @public
+ */
+export interface WebMCPToolExecuteOptions {
+    /**
+     * A signal object that allows you to cancel the tool execution.
+     */
+    signal?: AbortSignal;
 }
 /**
  * @public
@@ -177,6 +186,10 @@ export declare class WebMCP extends EventEmitter<{
     invokeTool(tool: WebMCPTool, input: object): Promise<{
         invocationId: string;
     }>;
+    /**
+     * @internal
+     */
+    cancelInvocation(invocationId: string): Promise<void>;
     /**
      * Gets all WebMCP tools defined by the page.
      */

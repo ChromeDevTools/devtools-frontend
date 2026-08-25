@@ -57,3 +57,10 @@ export const consoleEagerEvalSettingDescriptor: Common.Settings.SettingDescripto
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const consoleTraceExpandSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'console-trace-expand',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

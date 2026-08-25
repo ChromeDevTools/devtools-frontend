@@ -405,13 +405,9 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.consoleUserActivationE
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleTraceExpandSettingDescriptor, {
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.expandConsoleTraceMessagesByDefault),
-  settingName: 'console-trace-expand',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

@@ -688,7 +688,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     clickableElement.addEventListener('click', toggleStackTrace, false);
     if (this.message.type === Protocol.Runtime.ConsoleAPICalledEventType.Trace &&
-        Common.Settings.Settings.instance().moduleSetting('console-trace-expand').get()) {
+        Common.Settings.Settings.instance()
+            .resolve(Settings.ConsoleSettings.consoleTraceExpandSettingDescriptor)
+            .get()) {
       this.expandTrace(true);
     }
 

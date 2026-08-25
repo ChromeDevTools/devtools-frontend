@@ -13,13 +13,13 @@
 }
 
 .wrapper {
-  padding: 24px;
+  padding: var(--sys-size-11);
   flex: 1;
 }
 
 h1 {
-  font-size: 18px;
-  line-height: 24px;
+  font-size: var(--sys-typescale-headline3-size);
+  line-height: var(--sys-typescale-headline3-line-height);
   letter-spacing: 0.02em;
   color: var(--sys-color-on-surface);
   margin: 0;
@@ -28,13 +28,13 @@ h1 {
 
 .row-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 16px;
+  font-size: var(--sys-typescale-body5-size);
+  line-height: var(--sys-typescale-body5-line-height);
   letter-spacing: 0.8px;
   text-transform: uppercase;
   color: var(--sys-color-secondary);
-  margin-bottom: 8px;
-  margin-top: 32px;
+  margin-bottom: var(--sys-size-5);
+  margin-top: var(--sys-size-13);
   display: flex;
   align-items: center;
   gap: 3px;
@@ -43,8 +43,8 @@ h1 {
 .footer {
   display: flex;
   justify-content: center;
-  border-top: 1px solid var(--sys-color-divider);
-  padding: 12px;
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  padding: var(--sys-size-6);
   background: var(--sys-color-cdt-base-container);
 }
 
@@ -53,14 +53,14 @@ h1 {
 }
 
 .error {
-  margin: 16px 0 0;
-  padding: 8px;
+  margin: var(--sys-size-8) 0 0;
+  padding: var(--sys-size-5);
   background: var(--sys-color-error-container);
   color: var(--sys-color-error);
 }
 
 .row-label .link:focus-visible {
-  outline: var(--sys-color-state-focus-ring) auto 1px;
+  outline: var(--sys-color-state-focus-ring) auto var(--sys-size-1);
 }
 
 .header-wrapper {
@@ -74,9 +74,9 @@ h1 {
   align-items: center;
   overflow: hidden;
   text-overflow: ellipsis;
-  gap: 4px;
+  gap: var(--sys-size-3);
   line-height: 1.1;
-  padding: 4px;
+  padding: var(--sys-size-3);
 }
 
 .checkbox-container {
@@ -86,10 +86,10 @@ h1 {
 }
 
 input[type="checkbox"]:focus-visible {
-  outline: var(--sys-color-state-focus-ring) auto 1px;
+  outline: var(--sys-color-state-focus-ring) auto var(--sys-size-1);
 }
 
 devtools-icon[name="help"] {
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
 }

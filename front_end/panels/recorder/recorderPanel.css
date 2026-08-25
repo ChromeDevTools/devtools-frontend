@@ -39,7 +39,7 @@ devtools-create-recording-view {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   padding: 0 5px;
   gap: 3px;
   flex-shrink: 0;
@@ -47,7 +47,7 @@ devtools-create-recording-view {
 
 .separator {
   background-color: var(--sys-color-divider);
-  width: 1px;
+  width: var(--sys-size-1);
   height: 17px;
   margin: 0;
 }
@@ -119,28 +119,28 @@ devtools-recording-list-view {
 
 .error {
   color: var(--sys-color-error);
-  border: 1px solid var(--sys-color-error);
+  border: var(--sys-size-1) solid var(--sys-color-error);
   background-color: var(--sys-color-error-container);
-  padding: 4px;
+  padding: var(--sys-size-3);
 }
 
 .feedback {
   margin-left: auto;
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 .feedback .devtools-link {
   letter-spacing: 0.03em;
   text-decoration-line: underline;
   font-size: var(--sys-typescale-body4-size);
-  line-height: 16px;
+  line-height: var(--sys-typescale-body4-line-height);
   color: var(--sys-color-primary);
   outline-offset: 3px;
 }
 
 .feedback .devtools-link:focus-visible,
 .empty-state-description .devtools-link:focus-visible {
-  outline: -webkit-focus-ring-color auto 1px;
+  outline: -webkit-focus-ring-color auto var(--sys-size-1);
 }
 
 .empty-state {

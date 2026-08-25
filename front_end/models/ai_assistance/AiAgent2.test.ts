@@ -127,6 +127,21 @@ describeWithEnvironment('AiAgent2', () => {
     assert.propertyVal(callArgs, 'client_feature', Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT);
   });
 
+  it('parses and yields follow-up suggestions from model response', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation:
+          'Root Cause: CSS error\n\nSuggestion: Fix layout\nSUGGESTIONS: ["Can you fix this?", "Explain why this happens"]',
+    }]]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+
+    const responses = await Array.fromAsync(agent.run('question', {selected: null}));
+
+    const answerResponse = responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.ANSWER);
+    assert.isDefined(answerResponse);
+    assert.strictEqual(answerResponse.text, 'Root Cause: CSS error\n\nSuggestion: Fix layout');
+    assert.deepEqual(answerResponse.suggestions, ['Can you fix this?', 'Explain why this happens']);
+  });
+
   it('handles learning skills correctly (UI step and AIDA response)', async () => {
     const aidaClient = mockAidaClient([
       [{

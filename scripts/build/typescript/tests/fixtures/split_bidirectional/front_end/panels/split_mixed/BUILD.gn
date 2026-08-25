@@ -1,0 +1,22 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../../../ninja/devtools_entrypoint.gni")
+import("../../../../../../typescript.gni")
+
+ts_library("split_mixed") {
+  split_compilation = true
+  sources = [ "SplitMixed.ts" ]
+  ts_deps = [
+    "../legacy_consumer:bundle",
+    "../split_consumer:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  split_compilation = true
+  entrypoint = "split_mixed.ts"
+  ts_deps = [ ":split_mixed" ]
+  visibility = [ "*" ]
+}

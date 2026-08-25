@@ -247,7 +247,7 @@ template("legacy_devtools_entrypoint") {
 
 template("devtools_entrypoint") {
   _split_compilation = false
-  if (defined(invoker.split_compilation)) {
+  if (defined(invoker.split_compilation) && !devtools_skip_typecheck) {
     _split_compilation = invoker.split_compilation
   }
 

@@ -1,0 +1,16 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../../../ninja/devtools_entrypoint.gni")
+import("../../../../../../typescript.gni")
+
+ts_library("legacy_producer") {
+  sources = [ "LegacyProducer.ts" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "legacy_producer.ts"
+  ts_deps = [ ":legacy_producer" ]
+  visibility = [ "*" ]
+}

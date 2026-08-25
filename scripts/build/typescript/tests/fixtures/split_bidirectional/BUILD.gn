@@ -1,0 +1,14 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+group("split_bidirectional") {
+  deps = [
+    "front_end/core/legacy_producer:bundle",
+    "front_end/core/split_producer:bundle",
+    "front_end/panels/legacy_consumer:bundle",
+    "front_end/panels/legacy_mixed:bundle",
+    "front_end/panels/split_consumer:bundle",
+    "front_end/panels/split_mixed:bundle",
+  ]
+}

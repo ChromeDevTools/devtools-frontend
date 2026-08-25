@@ -317,7 +317,7 @@ template("legacy_ts_library") {
 
 template("ts_library") {
   _split_compilation = false
-  if (defined(invoker.split_compilation)) {
+  if (defined(invoker.split_compilation) && !devtools_skip_typecheck) {
     _split_compilation = invoker.split_compilation
   }
 

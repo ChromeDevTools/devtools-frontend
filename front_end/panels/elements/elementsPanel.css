@@ -37,7 +37,7 @@
 
 #elements-content {
   overflow: auto;
-  padding: 2px 0 0;
+  padding: var(--sys-size-2) 0 0;
   height: 100%;
 }
 
@@ -47,7 +47,7 @@
 }
 
 .style-panes-wrapper:not(.computed-styles-pane-wrapper) > div:not(:last-child) {
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .style-panes-wrapper > div:has(+ .ai-code-completion-summary-toolbar-container) {
@@ -71,14 +71,14 @@
 
 #elements-crumbs {
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
   width: 100%;
 }
 
 devtools-adorner-settings-pane {
   margin-bottom: 10px;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: auto;
 }
 

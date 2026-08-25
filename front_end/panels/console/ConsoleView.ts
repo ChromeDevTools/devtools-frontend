@@ -485,8 +485,8 @@ export class ConsoleView extends UI.Widget.VBox implements
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.monitoringXHREnabledSettingDescriptor);
     this.timestampsSetting =
         Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleTimestampsEnabledSettingDescriptor);
-    this.consoleHistoryAutocompleteSetting =
-        Common.Settings.Settings.instance().moduleSetting('console-history-autocomplete');
+    this.consoleHistoryAutocompleteSetting = Common.Settings.Settings.instance().resolve(
+        Settings.ConsoleSettings.consoleHistoryAutocompleteSettingDescriptor);
     this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
         'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
 

@@ -24,3 +24,9 @@ export const consoleTimestampsEnabledSettingDescriptor: Common.Settings.SettingD
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const consoleHistoryAutocompleteSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'console-history-autocomplete',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+};

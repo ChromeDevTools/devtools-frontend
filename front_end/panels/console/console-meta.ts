@@ -315,12 +315,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleTime
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleHistoryAutocompleteSettingDescriptor, {
   category: Common.Settings.SettingCategory.CONSOLE,
   title: i18nLazyString(UIStrings.autocompleteFromHistory),
-  settingName: 'console-history-autocomplete',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

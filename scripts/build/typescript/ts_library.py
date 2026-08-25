@@ -259,10 +259,56 @@ def main():
     ]
     tsconfig['checkJs'] = True
 
+    # Maps paths from the Ninja generated directory (`gen/`) to the TypeScript output
+    # directory (`tsc/`) used by split compilation targets.
+    def to_tsc_path(p):
+        p_norm = path.normpath(p)
+        gen_dir = path.normpath(path.join(os.getcwd(), 'gen'))
+        tsc_dir = path.normpath(path.join(os.getcwd(), 'tsc'))
+        if p_norm == gen_dir:
+            return tsc_dir
+        if p_norm.startswith(gen_dir + os.sep):
+            return p_norm.replace(gen_dir + os.sep, tsc_dir + os.sep, 1)
+        if p_norm == 'gen':
+            return 'tsc'
+        if p_norm.startswith(f'gen{os.sep}'):
+            return f'tsc{os.sep}{p_norm[4:]}'
+        return p
+
     if (opts.deps is not None):
-        tsconfig['references'] = [{'path': src} for src in opts.deps]
+
+        # Resolves project references to prefer `*-tsconfig.ref.json` across both `gen/`
+        # and `tsc/` locations, ensuring interoperability with split compilation targets.
+        def resolve_ref(src):
+            if src.endswith('-tsconfig.json'):
+                ref_src = src[:-len('-tsconfig.json')] + '-tsconfig.ref.json'
+                abs_ref = path.join(tsconfig_output_directory, ref_src)
+                if path.exists(abs_ref):
+                    return ref_src
+                abs_tsc_ref = to_tsc_path(abs_ref)
+                if path.exists(abs_tsc_ref):
+                    return path.relpath(abs_tsc_ref, tsconfig_output_directory)
+                abs_json = path.join(tsconfig_output_directory, src)
+                if path.exists(abs_json):
+                    return src
+                abs_tsc_json = to_tsc_path(abs_json)
+                if path.exists(abs_tsc_json):
+                    return path.relpath(abs_tsc_json,
+                                        tsconfig_output_directory)
+                if path.exists(path.dirname(abs_tsc_ref)):
+                    return path.relpath(abs_tsc_ref, tsconfig_output_directory)
+                return ref_src
+            return src
+
+        tsconfig['references'] = [{
+            'path': resolve_ref(src)
+        } for src in opts.deps]
     if (not opts.verify_lib_check):
         tsconfig['compilerOptions']['skipLibCheck'] = True
+    # Disables redirection to source files so tsc resolves imports against emitted `.d.ts`
+    # files of referenced projects instead of jumping directly to `.ts` sources.
+    tsconfig['compilerOptions'][
+        'disableSourceOfProjectReferenceRedirect'] = True
     tsconfig['compilerOptions'][
         'rootDir'] = get_relative_path_from_output_directory(
             opts.front_end_directory)
@@ -305,8 +351,64 @@ def main():
     if maybe_update_tsconfig_file(tsconfig_output_location, tsconfig) == 1:
         return 1
 
+    # Emits a companion `*-tsconfig.ref.json` configured with declaration-only emit
+    # and composite mode so downstream targets can reference this target.
+    if tsconfig_output_location.endswith('-tsconfig.json'):
+        tsconfig_ref_location = tsconfig_output_location[:-len(
+            '-tsconfig.json')] + '-tsconfig.ref.json'
+    else:
+        tsconfig_ref_location = tsconfig_output_location + '.ref.json'
+    front_end_rel_dir = get_relative_path_from_output_directory(
+        opts.front_end_directory)
+    tsconfig_ref = {
+        'compilerOptions': {
+            'composite': True,
+            'declaration': True,
+            'emitDeclarationOnly': True,
+            'skipLibCheck': True,
+            'rootDir': front_end_rel_dir,
+            'outDir': '.',
+            'declarationDir': '.',
+        },
+        'files':
+        [get_relative_path_from_output_directory(x) for x in all_ts_files],
+    }
+    if 'references' in tsconfig:
+        tsconfig_ref['references'] = tsconfig['references']
+    if maybe_update_tsconfig_file(tsconfig_ref_location, tsconfig_ref) == 1:
+        return 1
+
+    # Mirrors `*-tsconfig.ref.json` to the corresponding `tsc/` directory so split
+    # compilation consumers looking in `tsc/` can resolve project references.
+    tsc_ref_location = to_tsc_path(tsconfig_ref_location)
+    if tsc_ref_location != tsconfig_ref_location:
+        tsc_ref_dir = path.dirname(tsc_ref_location)
+        os.makedirs(tsc_ref_dir, exist_ok=True)
+        tsc_tsconfig_ref = dict(tsconfig_ref)
+        tsc_tsconfig_ref['compilerOptions'] = dict(
+            tsconfig_ref['compilerOptions'])
+        if 'rootDir' in tsc_tsconfig_ref['compilerOptions']:
+            abs_root = path.join(
+                tsconfig_output_directory,
+                tsc_tsconfig_ref['compilerOptions']['rootDir'])
+            tsc_tsconfig_ref['compilerOptions']['rootDir'] = path.relpath(
+                abs_root, tsc_ref_dir)
+        if 'files' in tsc_tsconfig_ref:
+            tsc_tsconfig_ref['files'] = [
+                path.relpath(path.join(tsconfig_output_directory, f),
+                             tsc_ref_dir) for f in tsc_tsconfig_ref['files']
+            ]
+        if 'references' in tsconfig_ref:
+            tsc_tsconfig_ref['references'] = []
+            for ref in tsconfig_ref['references']:
+                abs_ref = path.join(tsconfig_output_directory, ref['path'])
+                tsc_tsconfig_ref['references'].append(
+                    {'path': path.relpath(abs_ref, tsc_ref_dir)})
+        if maybe_update_tsconfig_file(tsc_ref_location, tsc_tsconfig_ref) == 1:
+            return 1
+
     # If there are no sources to compile, we can bail out and don't call tsc.
-    # That's because tsc can successfully compile dependents solely on the
+    # That's because tsc can successfully compile dependents solely on
     # the tsconfig.json
     if len(sources) == 0 and not opts.verify_lib_check:
         return 0
@@ -340,6 +442,40 @@ def main():
         print(errors)
         print('')
         return 1
+
+    # Synchronizes generated and source `.d.ts` files to `tsc/` when compiling into `gen/`,
+    # providing declaration files required by downstream split compilation targets.
+    tsc_out_dir = to_tsc_path(tsconfig_output_directory)
+    if tsc_out_dir != tsconfig_output_directory:
+        os.makedirs(tsc_out_dir, exist_ok=True)
+        for src_fname in sources:
+            gen_rel = path.relpath(
+                path.join(os.getcwd(), src_fname),
+                path.join(os.getcwd(), opts.front_end_directory))
+            if gen_rel.endswith('.d.ts'):
+                gen_fname = gen_rel
+            else:
+                gen_fname = path.splitext(gen_rel)[0] + '.d.ts'
+            gen_path = path.join(tsconfig_output_directory, gen_fname)
+            dts_contents = None
+            if path.exists(gen_path):
+                with open(gen_path, 'rb') as src_fp:
+                    dts_contents = src_fp.read()
+            elif gen_rel.endswith('.d.ts') and path.exists(
+                    path.join(os.getcwd(), src_fname)):
+                with open(path.join(os.getcwd(), src_fname), 'rb') as src_fp:
+                    dts_contents = src_fp.read()
+            if dts_contents is not None:
+                tsc_dts_path = path.join(tsc_out_dir, gen_fname)
+                os.makedirs(path.dirname(tsc_dts_path), exist_ok=True)
+                should_write = True
+                if path.exists(tsc_dts_path):
+                    with open(tsc_dts_path, 'rb') as dst_fp:
+                        if dst_fp.read() == dts_contents:
+                            should_write = False
+                if should_write:
+                    with open(tsc_dts_path, 'wb') as dst_fp:
+                        dst_fp.write(dts_contents)
 
     return 0
 

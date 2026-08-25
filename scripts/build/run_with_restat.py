@@ -28,30 +28,14 @@ arguments to be passed inside a single GN/Ninja response file:
 
 import hashlib
 import os
-import shlex
 import subprocess
 import sys
 
+_SCRIPTS_BUILD_DIR = os.path.dirname(os.path.abspath(__file__))
+if _SCRIPTS_BUILD_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_BUILD_DIR)
 
-def expand_response_files(args, visited=None):
-    """Expands any @response_file arguments in-place recursively."""
-    if visited is None:
-        visited = set()
-    expanded = []
-    for arg in args:
-        if arg.startswith('@'):
-            rsp_path = os.path.abspath(arg[1:])
-            if rsp_path in visited:
-                raise ValueError(
-                    f"Circular response file reference detected: {arg[1:]}")
-            visited.add(rsp_path)
-            with open(rsp_path, 'r', encoding='utf-8') as f:
-                nested_args = shlex.split(f.read())
-            expanded.extend(expand_response_files(nested_args, visited))
-            visited.remove(rsp_path)
-        else:
-            expanded.append(arg)
-    return expanded
+from response_file import expand_response_files
 
 
 def hash_file(path):

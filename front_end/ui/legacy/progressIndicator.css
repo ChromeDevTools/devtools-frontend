@@ -8,8 +8,8 @@
   background-color: var(--sys-color-error-bright);
   border: 0;
   width: 10px;
-  height: 12px;
-  border-radius: 2px;
+  height: var(--sys-size-6);
+  border-radius: var(--sys-size-2);
 }
 
 .progress-indicator-shadow-container {
@@ -22,12 +22,12 @@
   text-overflow: ellipsis;
   overflow: hidden;
   max-width: 150px;
-  margin-right: 2px;
+  margin-right: var(--sys-size-2);
   color: var(--sys-color-token-subtle);
 }
 
 .progress-indicator-shadow-container progress {
   flex: auto;
-  margin: 0 2px;
+  margin: 0 var(--sys-size-2);
   width: 100px;
 }

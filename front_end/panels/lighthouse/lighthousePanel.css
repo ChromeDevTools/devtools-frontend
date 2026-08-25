@@ -29,7 +29,7 @@ button.view-trace {
 .lighthouse-settings-pane {
   flex: none;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .lighthouse-settings-pane devtools-toolbar {
@@ -50,7 +50,7 @@ select.lighthouse-report {
 
 .lighthouse-toolbar-container > devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .lighthouse-toolbar-container > :first-child {
@@ -65,7 +65,7 @@ select.lighthouse-report {
   position: relative;
 
   :focus-visible {
-    outline: -webkit-focus-ring-color auto 1px;
+    outline: -webkit-focus-ring-color auto var(--sys-size-1);
   }
 
   .lh-tools__button {
@@ -79,7 +79,7 @@ select.lighthouse-report {
     }
 
     &.lh-active + .lh-tools__dropdown {
-      clip: rect(-8px, 204px, 270px, -10px);  /* stylelint-disable-line property-no-deprecated */
+      clip: rect(calc(-1 * var(--sys-size-5)), 204px, 270px, -10px);  /* stylelint-disable-line property-no-deprecated */
     }
   }
 
@@ -87,7 +87,7 @@ select.lighthouse-report {
     padding: var(--sys-size-5) 0;
     border-radius: var(--sys-shape-corner-small);
     box-shadow: var(--sys-elevation-level3);
-    top: 24px;
+    top: var(--sys-size-11);
 
     &:hover a:focus {
       background-color: transparent;

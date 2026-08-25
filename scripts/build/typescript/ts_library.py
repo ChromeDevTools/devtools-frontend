@@ -72,6 +72,8 @@ def maybe_update_tsconfig_file(tsconfig_output_location, tsconfig):
     new_contents = json.dumps(tsconfig, sort_keys=True, indent=2)
     if old_contents is None or new_contents != old_contents:
         try:
+            os.makedirs(os.path.dirname(tsconfig_output_location),
+                        exist_ok=True)
             with open(tsconfig_output_location, 'w', encoding="utf8") as fp:
                 fp.write(new_contents)
         except Exception as e:
@@ -263,17 +265,13 @@ def main():
     # directory (`tsc/`) used by split compilation targets.
     def to_tsc_path(p):
         p_norm = path.normpath(p)
-        gen_dir = path.normpath(path.join(os.getcwd(), 'gen'))
-        tsc_dir = path.normpath(path.join(os.getcwd(), 'tsc'))
-        if p_norm == gen_dir:
-            return tsc_dir
-        if p_norm.startswith(gen_dir + os.sep):
-            return p_norm.replace(gen_dir + os.sep, tsc_dir + os.sep, 1)
-        if p_norm == 'gen':
-            return 'tsc'
-        if p_norm.startswith(f'gen{os.sep}'):
-            return f'tsc{os.sep}{p_norm[4:]}'
-        return p
+        parts = p_norm.split(os.sep)
+        try:
+            gen_index = len(parts) - 1 - parts[::-1].index('gen')
+            parts[gen_index] = 'tsc'
+            return os.sep.join(parts)
+        except ValueError:
+            return p
 
     if (opts.deps is not None):
 

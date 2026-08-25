@@ -19,14 +19,14 @@
 }
 
 .tree-outline li {
-  height: 16px;
+  height: var(--sys-size-8);
 }
 
 li.search-result {
   cursor: pointer;
-  font-size: 12px;
-  margin-top: 8px;
-  padding: 2px 0 2px 4px;
+  font-size: var(--sys-typescale-body4-size);
+  margin-top: var(--sys-size-5);
+  padding: var(--sys-size-2) 0 var(--sys-size-2) var(--sys-size-3);
   overflow-wrap: normal;
   white-space: pre;
 }
@@ -50,7 +50,7 @@ li.search-result .search-result-file-name {
 
 li.search-result .search-result-matches-count {
   color: var(--sys-color-token-subtle);
-  margin: 0 8px;
+  margin: 0 var(--sys-size-5);
 }
 
 li.search-result.expanded .search-result-matches-count {
@@ -60,7 +60,7 @@ li.search-result.expanded .search-result-matches-count {
 li.show-more-matches {
   color: var(--sys-color-on-surface);
   cursor: pointer;
-  margin: 8px 0 0 -4px;
+  margin: var(--sys-size-5) 0 0 calc(-1 * var(--sys-size-3));
 }
 
 li.show-more-matches:hover {
@@ -68,7 +68,7 @@ li.show-more-matches:hover {
 }
 
 li.search-match {
-  margin: 2px 0;
+  margin: var(--sys-size-2) 0;
   overflow-wrap: normal;
   white-space: pre;
 }
@@ -90,7 +90,7 @@ li.search-match .search-match-line-number {
   text-align: right;
   vertical-align: top;
   word-break: normal;
-  padding: 2px 4px 2px 6px;
+  padding: var(--sys-size-2) var(--sys-size-3) var(--sys-size-2) var(--sys-size-4);
   margin-right: 5px;
 }
 
@@ -105,7 +105,7 @@ li.search-match .search-match-content {
 }
 
 ol.children.expanded {
-  padding-bottom: 4px;
+  padding-bottom: var(--sys-size-3);
 }
 
 li.search-match .link-style.search-match-link {
@@ -121,5 +121,5 @@ li.search-match .link-style.search-match-link {
 
 .search-result-dash {
   color: var(--sys-color-surface-variant);
-  margin: 0 4px;
+  margin: 0 var(--sys-size-3);
 }

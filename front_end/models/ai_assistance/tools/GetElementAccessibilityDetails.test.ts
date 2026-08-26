@@ -35,6 +35,7 @@ describe('GetElementAccessibilityDetailsTool', () => {
     hasAxModel?: boolean,
     hasAxNode?: boolean,
     canResolveDOMNode?: boolean,
+    ignoredReasons?: Protocol.Accessibility.AXProperty[],
   }) {
     const nodeUrl = overrides?.nodeUrl ?? 'https://example.com/page.html';
     const establishedOrigin =
@@ -43,10 +44,13 @@ describe('GetElementAccessibilityDetailsTool', () => {
     const hasAxModel = overrides?.hasAxModel ?? true;
     const hasAxNode = overrides?.hasAxNode ?? true;
     const canResolveDOMNode = overrides?.canResolveDOMNode ?? true;
+    const ignoredReasons = overrides?.ignoredReasons ?? [];
 
     const mockAxNode = hasAxNode ? {
       role: () => ({value: 'button'}),
-      name: () => ({value: 'Click me'}),
+      name: () => ({value: 'Click me', sources: [{type: 'attribute' as Protocol.Accessibility.AXValueSourceType}]}),
+      ignored: () => false,
+      ignoredReasons: () => ignoredReasons,
       properties: () => [{name: 'aria-expanded', value: {value: 'true'}}],
     } :
                                    null;
@@ -69,6 +73,11 @@ describe('GetElementAccessibilityDetailsTool', () => {
 
     const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     mockNode.backendNodeId.returns(123 as Protocol.DOM.BackendNodeId);
+    mockNode.getAttribute.withArgs('tabindex').returns(undefined);
+    mockNode.attributes.returns([
+      {name: 'aria-label', value: 'Click me', _node: mockNode},
+      {name: 'role', value: 'button', _node: mockNode},
+    ]);
 
     const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
     mockDocument.documentURL = urlString`${nodeUrl}`;
@@ -101,7 +110,15 @@ describe('GetElementAccessibilityDetailsTool', () => {
     assert.deepEqual(JSON.parse(response.result), {
       role: 'button',
       name: 'Click me',
+      nameSource: 'attribute',
       properties: [{name: 'aria-expanded', value: 'true'}],
+      ariaAttributes: {
+        'aria-label': 'Click me',
+        role: 'button',
+      },
+      isIgnored: false,
+      ignoredReasons: [],
+      backendNodeId: 123,
     });
     assert.deepEqual(response.widgets, [{
                        name: 'DOM_TREE',
@@ -111,6 +128,22 @@ describe('GetElementAccessibilityDetailsTool', () => {
                          accessibleRevealLabel: 'Reveal element' as Platform.UIString.LocalizedString,
                        },
                      }]);
+  });
+
+  it('correctly maps ignored reasons', async () => {
+    const {context} = createMockContext({
+      ignoredReasons: [{
+        name: 'uninteresting' as Protocol.Accessibility.AXPropertyName,
+        value: {type: 'boolean' as Protocol.Accessibility.AXValueType, value: true},
+      }],
+    });
+
+    const tool = new AiAssistance.GetElementAccessibilityDetails.GetElementAccessibilityDetailsTool();
+    const response = await tool.handler({element: 123, explanation: 'Inspect details'}, context);
+
+    assertIsResult(response);
+    const parsed = JSON.parse(response.result);
+    assert.deepEqual(parsed.ignoredReasons, [{name: 'uninteresting', value: true}]);
   });
 
   it('returns error when target is missing', async () => {

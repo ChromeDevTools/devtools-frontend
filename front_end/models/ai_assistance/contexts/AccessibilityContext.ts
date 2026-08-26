@@ -3,7 +3,11 @@
 // found in the LICENSE file.
 
 import type * as LHModel from '../../lighthouse/lighthouse.js';
-import {type ContextDetail, ConversationContext} from '../agents/AiAgent.js';
+import {
+  type AiWidget,
+  type ContextDetail,
+  ConversationContext,
+} from '../agents/AiAgent.js';
 import {LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
 
 export class AccessibilityContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
@@ -57,6 +61,17 @@ export class AccessibilityContext extends ConversationContext<LHModel.ReporterTy
       {
         title: 'Lighthouse report',
         text: this.#getInitialPayload(),
+      },
+    ];
+  }
+
+  override async getWidgets(): Promise<AiWidget[]> {
+    return [
+      {
+        name: 'LIGHTHOUSE_REPORT',
+        data: {
+          report: this.#lh,
+        },
       },
     ];
   }

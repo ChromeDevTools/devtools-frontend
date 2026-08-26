@@ -1880,6 +1880,8 @@ describe('The Styles pane', () => {
       </div>`);
     await waitForElementsStyleSection(devToolsPage, undefined);
     await waitForAndClickTreeElementWithPartialText(devToolsPage, 'container');
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'container');
+    await waitForStyleRule(devToolsPage, '#container');
 
     let propertiesSection = await getStyleRule(devToolsPage, '#container');
     let displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
@@ -1908,14 +1910,27 @@ describe('The Styles pane', () => {
                      }]);
 
     // Delete the style rule
-    await deletePropertyByBackspace(devToolsPage, '.webkit-css-property[aria-label="CSS property name: font-weight"]');
+    await deletePropertyByBackspace(devToolsPage, '.webkit-css-property[aria-label="CSS property name: font-weight"]',
+                                    propertiesSection);
+    await devToolsPage.waitForFunction(async () => {
+      const names = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
+      return names.length === 0;
+    });
 
     // Select another node (#other)
     await waitForAndClickTreeElementWithPartialText(devToolsPage, 'other');
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'other');
+    await devToolsPage.waitForNone(getStyleRuleSelector('#container'));
 
-    // Selected #inspected again
+    // Select #container again
     await waitForAndClickTreeElementWithPartialText(devToolsPage, 'container');
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'container');
+    await waitForStyleRule(devToolsPage, '#container');
     propertiesSection = await getStyleRule(devToolsPage, '#container');
+    await devToolsPage.waitForFunction(async () => {
+      const names = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
+      return names.length === 0;
+    });
     displayedNames = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
     assert.isEmpty(displayedNames);
   });

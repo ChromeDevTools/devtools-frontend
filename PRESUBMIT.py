@@ -34,6 +34,10 @@ _EXCLUDED_PATHS = [
     r'^front_end[\\/]core[\\/]sdk[\\/]Resource\.ts$',  # Apple copyright
     r'^front_end[\\/]core[\\/]sdk[\\/]Script\.ts$',  # Apple copyright
     # Apple copyright
+    r'^front_end[\\/]panels[\\/]application[\\/]resourcesPanel\.css$',
+    r'^front_end[\\/]panels[\\/]profiler[\\/]profilesPanel\.css$',
+    r'^front_end[\\/]panels[\\/]sources[\\/]navigatorTree\.css$',
+    r'^front_end[\\/]panels[\\/]sources[\\/]sourcesPanel\.css$',
     r'^front_end[\\/]panels[\\/]network[\\/]networkPanel\.css$',
     r'^front_end[\\/]panels[\\/]profiler[\\/]heapProfiler\.css$',
     r'^front_end[\\/]panels[\\/]timeline[\\/]timelinePanel\.css$',

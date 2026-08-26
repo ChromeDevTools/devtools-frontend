@@ -32,7 +32,7 @@ span.ax-internal-role {
 }
 
 .source-order-checkbox {
-  margin: 2px 2px 2px 5px;
+  margin: var(--sys-size-2) var(--sys-size-2) var(--sys-size-2) 5px;
 }
 
 .info-message-overflow {

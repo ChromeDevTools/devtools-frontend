@@ -10,19 +10,19 @@
 }
 
 .ax-breadcrumbs {
-  padding-top: 1px;
+  padding-top: var(--sys-size-1);
   margin: 0;
   position: relative;
 }
 
 .ax-breadcrumbs .ax-node {
   align-items: center;
-  margin-top: 1px;
-  min-height: 16px;
+  margin-top: var(--sys-size-1);
+  min-height: var(--sys-size-8);
   overflow-x: hidden;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-top: 1px;
+  padding-left: var(--sys-size-3);
+  padding-right: var(--sys-size-3);
+  padding-top: var(--sys-size-1);
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -35,7 +35,7 @@
 }
 
 .ax-breadcrumbs .ax-node .wrapper {
-  padding-left: 12px;
+  padding-left: var(--sys-size-6);
   overflow-x: hidden;
 }
 
@@ -46,9 +46,9 @@
   content: "";
   text-shadow: none;
   margin-left: -5px;
-  margin-top: -2px;
-  height: 16px;
-  width: 16px;
+  margin-top: calc(-1 * var(--sys-size-2));
+  height: var(--sys-size-8);
+  width: var(--sys-size-8);
   position: absolute;
   display: inline-block;
 }
@@ -99,14 +99,14 @@
 .ax-breadcrumbs .ax-node.preselected:not(.inspected) .selection,
 .ax-breadcrumbs .ax-node.hovered:not(.inspected) .selection {
   display: block;
-  left: 2px;
-  right: 2px;
+  left: var(--sys-size-2);
+  right: var(--sys-size-2);
   background-color: var(--sys-color-state-hover-on-subtle);
   border-radius: 5px;
 }
 
 .ax-breadcrumbs .ax-node.preselected:not(.inspected):focus .selection {
-  border: 1px solid var(--sys-color-primary);
+  border: var(--sys-size-1) solid var(--sys-color-primary);
 }
 
 @media (forced-colors: active) {

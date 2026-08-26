@@ -6,24 +6,24 @@
 
 .overview-processing-view {
   overflow: hidden;
-  padding: 16px;
+  padding: var(--sys-size-8);
   justify-content: center;
   align-items: center;
   height: 100%;
 }
 
 .overview-processing-view h1 {
-  font-size: 16px;
+  font-size: var(--sys-typescale-body1-size);
   text-align: center;
   font-weight: normal;
   margin: 0;
-  padding: 8px;
+  padding: var(--sys-size-5);
 }
 
 .overview-processing-view h2 {
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   text-align: center;
   font-weight: normal;
   margin: 0;
-  padding-top: 32px;
+  padding-top: var(--sys-size-13);
 }

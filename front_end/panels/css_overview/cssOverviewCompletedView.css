@@ -8,8 +8,8 @@
   .overview-completed-view {
     overflow: auto;
 
-    --overview-default-padding: 28px;
-    --overview-icon-padding: 32px;
+    --overview-default-padding: var(--sys-size-12);
+    --overview-icon-padding: var(--sys-size-13);
   }
 
   .overview-completed-view .summary ul,
@@ -24,13 +24,13 @@
   .overview-completed-view .summary ul {
     display: grid;
     grid-template-columns: repeat(auto-fill, 140px);
-    gap: 16px;
+    gap: var(--sys-size-8);
   }
 
   .overview-completed-view .colors ul li {
     display: inline-block;
-    margin: 0 0 16px;
-    padding: 0 8px 0 0;
+    margin: 0 0 var(--sys-size-8);
+    padding: 0 var(--sys-size-5) 0 0;
   }
 
   .overview-completed-view .summary ul li {
@@ -40,8 +40,8 @@
   }
 
   .overview-completed-view li .label {
-    font-size: 12px;
-    padding-bottom: 2px;
+    font-size: var(--sys-typescale-body4-size);
+    padding-bottom: var(--sys-size-2);
   }
 
   .overview-completed-view li .value {
@@ -85,17 +85,17 @@
     width: 65px;
     height: 25px;
     border-radius: 3px;
-    margin-right: 16px;
+    margin-right: var(--sys-size-8);
 
     &:focus-visible {
-      outline: 2px solid var(--sys-color-state-focus-ring);
-      outline-offset: 2px;
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: var(--sys-size-2);
     }
   }
 
   .block-title {
-    padding-top: 4px;
-    font-size: 12px;
+    padding-top: var(--sys-size-3);
+    font-size: var(--sys-typescale-body4-size);
     color: var(--sys-color-on-surface);
     letter-spacing: 0;
     text-transform: uppercase;
@@ -113,7 +113,7 @@
 
   .results-section {
     flex-shrink: 0;
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     padding: var(--overview-default-padding) 0 var(--overview-default-padding) 0;
   }
 
@@ -126,7 +126,7 @@
     font-size: 15px;
     font-weight: normal;
     padding: 0;
-    margin: 0 0 20px;
+    margin: 0 0 var(--sys-size-9);
     padding-left: calc(var(--overview-default-padding) + var(--overview-icon-padding));
     position: relative;
     height: 26px;
@@ -179,8 +179,8 @@
   }
 
   .results-section.colors h2 {
-    margin-top: 20px;
-    font-size: 13px;
+    margin-top: var(--sys-size-9);
+    font-size: var(--sys-typescale-body3-size);
     font-weight: normal;
   }
 
@@ -198,8 +198,8 @@
   .overview-completed-view .unused-declarations ul li {
     display: grid;
     grid-template-columns: 2fr 3fr;
-    gap: 12px;
-    margin-bottom: 4px;
+    gap: var(--sys-size-6);
+    margin-bottom: var(--sys-size-3);
     align-items: center;
   }
 
@@ -208,7 +208,7 @@
   .overview-completed-view .unused-declarations button .details {
     min-width: 100px;
     text-align: right;
-    margin-right: 8px;
+    margin-right: var(--sys-size-5);
     color: var(--sys-color-primary);
     pointer-events: none;
   }
@@ -223,10 +223,10 @@
   .overview-completed-view .font-info button .bar,
   .overview-completed-view .media-queries button .bar,
   .overview-completed-view .unused-declarations button .bar {
-    height: 8px;
+    height: var(--sys-size-5);
     background: var(--sys-color-primary-bright);
-    border-radius: 2px;
-    min-width: 2px;
+    border-radius: var(--sys-size-2);
+    min-width: var(--sys-size-2);
   }
 
   .overview-completed-view .font-info button,
@@ -238,17 +238,17 @@
     margin: 0;
     display: flex;
     align-items: center;
-    border-radius: 2px;
+    border-radius: var(--sys-size-2);
     cursor: pointer;
-    height: 28px;
+    height: var(--sys-size-12);
     background: none;
 
     &:focus-visible {
-      outline: 2px solid var(--sys-color-state-focus-ring);
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
     }
 
     &:hover {
-      border-radius: 12px;
+      border-radius: var(--sys-shape-corner-medium-small);
       background: var(--sys-color-state-hover-on-subtle);
     }
 
@@ -267,7 +267,7 @@
   .overview-completed-view .font-info .font-metric {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
+    gap: var(--sys-size-6);
   }
 
   .overview-completed-view .font-info ul {
@@ -279,13 +279,13 @@
   }
 
   .overview-completed-view .font-info h2 {
-    font-size: 14px;
+    font-size: var(--sys-typescale-body2-size);
     font-weight: bold;
     margin: 0 0 1em;
   }
 
   .overview-completed-view .font-info h3 {
-    font-size: 13px;
+    font-size: var(--sys-typescale-body3-size);
     font-weight: normal;
     font-style: italic;
     margin: 0 0 0.5em;
@@ -310,7 +310,7 @@
   .contrast-warning {
     display: flex;
     align-items: center;
-    margin-top: 2px;
+    margin-top: var(--sys-size-2);
   }
 
   .contrast-warning .threshold-label {
@@ -319,7 +319,7 @@
   }
 
   .contrast-warning devtools-icon {
-    margin-left: 2px;
+    margin-left: var(--sys-size-2);
   }
 
   .contrast-preview {
@@ -338,7 +338,7 @@
 
   ::part(node-id-column) {
     align-items: center;
-    height: 20px;
+    height: var(--sys-size-9);
 
     --show-element-display: none;
   }
@@ -350,8 +350,8 @@
 
   ::part(show-element) {
     display: var(--show-element-display);
-    height: 16px;
-    width: 16px;
+    height: var(--sys-size-8);
+    width: var(--sys-size-8);
   }
 
   .results-section.colors {

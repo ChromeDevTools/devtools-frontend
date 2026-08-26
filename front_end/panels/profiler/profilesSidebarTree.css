@@ -13,8 +13,8 @@
 
 /* Icon-related changes */
 li .icon {
-  width: 20px;
-  height: 20px;
+  width: var(--sys-size-9);
+  height: var(--sys-size-9);
   margin-right: var(--sys-size-6);
   flex: none;
 }
@@ -32,8 +32,8 @@ li .icon {
 }
 
 li.small .icon {
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
 }
 
 li.wait .icon {
@@ -86,13 +86,13 @@ ol.tree-outline {
   }
 
   & .selection {
-    border-radius: 0 100px 100px 0;
+    border-radius: 0 var(--sys-shape-corner-full) var(--sys-shape-corner-full) 0;
   }
 }
 
 .tree-outline .profile-launcher-view-tree-item,
 .tree-outline li.profiles-tree-section + .children > li {
-  border-radius: 0 100px 100px 0;
+  border-radius: 0 var(--sys-shape-corner-full) var(--sys-shape-corner-full) 0;
   position: relative;
 
   &.selected {
@@ -121,7 +121,7 @@ ol.tree-outline {
   }
 
   &:focus-visible {
-    box-shadow: inset 0 0 0 2px var(--sys-color-state-focus-ring);
+    box-shadow: inset 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring);
   }
 }
 
@@ -146,17 +146,17 @@ ol.tree-outline {
 /* Generic items styling */
 
 li.wait .spinner::before {
-  --dimension: 20px;
+  --dimension: var(--sys-size-9);
 
   margin: 0;
 }
 
 li.wait.small .spinner::before {
-  --dimension: 14px;
+  --dimension: var(--sys-size-7);
   --clip-size: 9px;
-  --override-spinner-size: 2px;
+  --override-spinner-size: var(--sys-size-2);
 
-  margin: 1px;
+  margin: var(--sys-size-1);
 }
 
 li.wait.selected .spinner::before {
@@ -174,7 +174,7 @@ li.wait.selected .spinner::before {
 }
 
 li.small {
-  height: 20px;
+  height: var(--sys-size-9);
 }
 
 li .titles {
@@ -199,7 +199,7 @@ li .titles > .title-container .title.editing {
 }
 
 li.small .titles {
-  top: 2px;
+  top: var(--sys-size-2);
   line-height: normal;
 }
 

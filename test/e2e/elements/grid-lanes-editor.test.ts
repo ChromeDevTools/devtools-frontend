@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
 import {
   clickNthChildOfSelectedElementNode,
   focusElementsTree,
@@ -38,7 +36,9 @@ describe('Grid Lanes Editor', function() {
     await waitForCSSPropertyValue(devToolsPage, '#target', 'justify-items', 'start', undefined);
     await clickPropertyButton(devToolsPage, '[title="Remove justify-items: start"]');
     await devToolsPage.waitFor('[title="Add justify-items: start"]');
-    const property = await getCSSPropertyInRule(devToolsPage, '#target', 'justify-items', undefined);
-    assert.isUndefined(property);
+    await devToolsPage.waitForFunction(async () => {
+      const property = await getCSSPropertyInRule(devToolsPage, '#target', 'justify-items', undefined);
+      return property === undefined;
+    });
   });
 });

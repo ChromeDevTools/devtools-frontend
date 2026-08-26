@@ -45,7 +45,7 @@
   ],
   "references": [
     {
-      "path": "./legacy-javascript-tsconfig.json"
+      "path": "../../../../tsc/front_end/third_party/legacy-javascript/legacy-javascript-tsconfig.ref.json"
     }
   ]
 }

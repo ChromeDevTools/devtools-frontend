@@ -7,11 +7,11 @@ import targetCrashedScreenStyles from './targetCrashedScreen.css.js';
 import { VBox } from './Widget.js';
 const UIStrings = {
     /**
-     * @description Text in dialog box when the target page crashed
+     * @description Message shown when the inspected page crashes and DevTools is disconnected.
      */
     devtoolsWasDisconnectedFromThe: 'DevTools was disconnected from the page.',
     /**
-     * @description Text content of content element
+     * @description Message explaining that DevTools will reconnect once the page is reloaded.
      */
     oncePageIsReloadedDevtoolsWill: 'Once page is reloaded, DevTools will automatically reconnect.',
 };

@@ -15,11 +15,11 @@ export default `/*
 }
 
 li.storage-group-list-item {
-  padding: 10px 8px 6px;
+  padding: 10px var(--sys-size-5) var(--sys-size-4);
 }
 
 li.storage-group-list-item:not(:first-child) {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 li.storage-group-list-item::before {
@@ -55,16 +55,16 @@ li.storage-group-list-item::before {
   display: inherit;
 
   & > devtools-icon {
-    height: 16px;
-    width: 16px;
+    height: var(--sys-size-8);
+    width: var(--sys-size-8);
   }
 }
 
 .player-entry-status-icon {
-  width: 28px;
-  min-width: 28px;
+  width: var(--sys-size-12);
+  min-width: var(--sys-size-12);
   height: 26px;
-  border-right: 1px solid var(--sys-color-divider);
+  border-right: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
 }
 
@@ -74,7 +74,7 @@ li.storage-group-list-item::before {
   min-width: 125px;
   text-overflow: ellipsis;
   padding: 0 10px;
-  border-right: 1px solid var(--sys-color-divider);
+  border-right: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
 }
 
@@ -89,7 +89,7 @@ li.storage-group-list-item::before {
   line-height: 27px;
   min-height: 27px;
   padding-left: 10px;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve('./playerListView.css')} */`;

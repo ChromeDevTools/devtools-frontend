@@ -13,28 +13,28 @@ import { Tooltip } from './Tooltip.js';
 import { createTextChild, ElementFocusRestorer } from './UIUtils.js';
 const UIStrings = {
     /**
-     * @description Text exposed to screen readers on checked items.
+     * @description Accessible state text for checked items in a context menu.
      */
     checked: 'checked',
     /**
-     * @description Accessible text exposed to screen readers when the screen reader encounters an unchecked checkbox.
+     * @description Accessible state text for unchecked items in a context menu.
      */
     unchecked: 'unchecked',
     /**
-     * @description Accessibility label for checkable SoftContextMenuItems with shortcuts
-     * @example {Open File} PH1
+     * @description Accessible label pattern combining label, shortcut, and state in a context menu item.
+     * @example {Open file} PH1
      * @example {Ctrl + P} PH2
      * @example {checked} PH3
      */
     sSS: '{PH1}, {PH2}, {PH3}',
     /**
-     * @description Generic text with two placeholders separated by a comma
-     * @example {1 613 680} PH1
-     * @example {44 %} PH2
+     * @description Accessible label pattern combining two strings separated by a comma.
+     * @example {Console} PH1
+     * @example {Ctrl + R} PH2
      */
     sS: '{PH1}, {PH2}',
     /**
-     * @description Accessible text exposed to screen readers appended to menu items that have a new badge.
+     * @description Accessible text appended to menu items with a new feature badge.
      */
     newFeature: 'This is a new feature',
 };

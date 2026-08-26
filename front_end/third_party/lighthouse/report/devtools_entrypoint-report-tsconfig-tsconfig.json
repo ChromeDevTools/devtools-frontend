@@ -45,7 +45,7 @@
   ],
   "references": [
     {
-      "path": "./bundle-tsconfig.json"
+      "path": "../../../../../tsc/front_end/third_party/lighthouse/report/bundle-tsconfig.ref.json"
     }
   ]
 }

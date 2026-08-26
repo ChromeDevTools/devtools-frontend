@@ -9,7 +9,7 @@ export type LocalizedMessages = Record<string, {
 export declare class I18n {
     readonly supportedLocales: ReadonlySet<Intl.UnicodeBCP47LocaleIdentifier>;
     private localeData;
-    readonly defaultLocale: string;
+    readonly defaultLocale: Intl.UnicodeBCP47LocaleIdentifier;
     constructor(supportedLocales: readonly Intl.UnicodeBCP47LocaleIdentifier[], defaultLocale: Intl.UnicodeBCP47LocaleIdentifier);
     registerLocaleData(locale: Intl.UnicodeBCP47LocaleIdentifier, messages: LocalizedMessages): void;
     hasLocaleDataForTest(locale: Intl.UnicodeBCP47LocaleIdentifier): boolean;

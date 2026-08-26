@@ -53,7 +53,7 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../generated/protocol-tsconfig.json"
+      "path": "../../../../tsc/front_end/generated/protocol-tsconfig.ref.json"
     },
     {
       "path": "../../models/trace/bundle-tsconfig.ref.json"

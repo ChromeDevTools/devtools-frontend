@@ -340,4 +340,41 @@ export function assertSkillNotLoaded(prompt, skillName) {
     const expectedLine = `- ${skillName}: ${AiAssistance.SkillRegistry.SKILLS[skillName].description}`;
     assert.include(prompt, expectedLine, `Expected skill "${skillName}" to be in the unloaded skills manifest`);
 }
+/**
+ * Consumes view updates sequentially until a side-effect confirmation dialog
+ * (`needs_approval` step state) appears in the message stream.
+ *
+ * @param view The view function stub representing the AI Assistance panel view.
+ * @returns The confirmation dialog handler to approve or decline the side effect.
+ */
+export async function waitForSideEffectDialog(view) {
+    let nextInput = await view.nextInput;
+    while (nextInput.state === "chat-view" /* AiAssistancePanel.ViewState.CHAT_VIEW */) {
+        const lastMessage = nextInput.props.messages.at(-1);
+        const stepPart = lastMessage && 'parts' in lastMessage ?
+            lastMessage.parts.find(p => p.type === 'step' && p.step.state.type === 'needs_approval') :
+            null;
+        if (stepPart && stepPart.type === 'step' && stepPart.step.state.type === 'needs_approval') {
+            return stepPart.step.state.sideEffectDialog;
+        }
+        if (!nextInput.props.isLoading) {
+            throw new Error('Conversation finished without showing a side effect dialog');
+        }
+        nextInput = await view.nextInput;
+    }
+    throw new Error('Side effect dialog was not reached');
+}
+/**
+ * Consumes view updates sequentially until the conversation finishes loading.
+ *
+ * @param view The view function stub representing the AI Assistance panel view.
+ * @returns The final view input after loading has completed.
+ */
+export async function waitForLoadingToFinish(view) {
+    let nextInput = await view.nextInput;
+    while (nextInput.state === "chat-view" /* AiAssistancePanel.ViewState.CHAT_VIEW */ && nextInput.props.isLoading) {
+        nextInput = await view.nextInput;
+    }
+    return nextInput;
+}
 //# sourceMappingURL=AiAssistanceHelpers.js.map

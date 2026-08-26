@@ -20,15 +20,15 @@ export default `/*
 }
 
 input {
-  height: 12px;
-  width: 12px;
+  height: var(--sys-size-6);
+  width: var(--sys-size-6);
   flex-shrink: 0;
   accent-color: var(--sys-color-primary-bright);
   color: var(--sys-color-on-primary);
 }
 
 :host(:not(.small)) input:not(.small) {
-  margin: 6px;
+  margin: var(--sys-size-4);
 }
 
 :host(.inside-datagrid) input {

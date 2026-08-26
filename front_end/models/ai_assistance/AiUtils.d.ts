@@ -12,6 +12,18 @@ export declare const aiAssistanceEnabledSettingDescriptor: Common.Settings.Condi
 export declare const aiAssistanceV2OptInChangeDialogSeenSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare function isGeminiBranding(): boolean;
 /**
+ * Returns true if context selection / dynamic context switching is enabled.
+ *
+ * In the legacy V1 architecture, this corresponds to the `ContextSelectionAgent`,
+ * which dynamically routes conversations and allows changing the active context.
+ * In the unified V2 architecture (`AiAgent2`), dynamic context selection is natively
+ * supported across the single agent instance.
+ *
+ * This bridge function checks either flag during the transition phase and can be
+ * removed in the future when V2 ships permanently and the V1 architecture is removed.
+ */
+export declare function isContextSelectionEnabled(): boolean;
+/**
  * Preconditions determined entirely on the DevTools frontend side (e.g. Incognito
  * mode or age restrictions) that prevent AI assistance features from running.
  * These are evaluated independently of AIDA service-level availability.

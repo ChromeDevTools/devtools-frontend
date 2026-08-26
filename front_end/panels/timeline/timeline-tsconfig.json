@@ -90,7 +90,7 @@
   ],
   "references": [
     {
-      "path": "./easter-egg-tsconfig.json"
+      "path": "../../../../tsc/front_end/panels/timeline/easter-egg-tsconfig.ref.json"
     },
     {
       "path": "../../core/common/bundle-tsconfig.ref.json"

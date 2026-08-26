@@ -9,6 +9,7 @@ import type * as Trace from '../models/trace/trace.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as AiAssistancePanel from '../panels/ai_assistance/ai_assistance.js';
 import * as UI from '../ui/legacy/legacy.js';
+import { type ViewFunctionStub } from './ViewFunctionHelpers.js';
 export declare const MockAidaAbortError: {
     readonly abortError: true;
 };
@@ -54,7 +55,7 @@ export declare function createAiAssistancePanel(options?: {
     chatView?: AiAssistancePanel.ChatView;
 }): Promise<{
     panel: AiAssistancePanel.AiAssistancePanel;
-    view: import("./ViewFunctionHelpers.js").ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>;
+    view: ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>;
     aidaClient: Host.AidaClient.AidaClient;
     stubAidaCheckAccessPreconditions: (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) => sinon.SinonStub<[], Promise<Host.AidaClient.AidaAccessPreconditions>>;
 }>;
@@ -119,3 +120,18 @@ export declare function assertSkillLoaded(prompt: string, skillName: AiAssistanc
  * (`- <name>: <description>`) is present in the prompt's unloaded skills manifest.
  */
 export declare function assertSkillNotLoaded(prompt: string, skillName: AiAssistance.Skill.SkillName): void;
+/**
+ * Consumes view updates sequentially until a side-effect confirmation dialog
+ * (`needs_approval` step state) appears in the message stream.
+ *
+ * @param view The view function stub representing the AI Assistance panel view.
+ * @returns The confirmation dialog handler to approve or decline the side effect.
+ */
+export declare function waitForSideEffectDialog(view: ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>): Promise<AiAssistancePanel.ChatMessage.ConfirmSideEffectDialog>;
+/**
+ * Consumes view updates sequentially until the conversation finishes loading.
+ *
+ * @param view The view function stub representing the AI Assistance panel view.
+ * @returns The final view input after loading has completed.
+ */
+export declare function waitForLoadingToFinish(view: ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>): Promise<AiAssistancePanel.ViewInput>;

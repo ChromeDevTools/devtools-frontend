@@ -8,7 +8,10 @@ var __export = (target, all) => {
 var ConsoleSettings_exports = {};
 __export(ConsoleSettings_exports, {
   consoleAutocompleteOnEnterSettingDescriptor: () => consoleAutocompleteOnEnterSettingDescriptor,
+  consoleEagerEvalSettingDescriptor: () => consoleEagerEvalSettingDescriptor,
+  consoleGroupSimilarSettingDescriptor: () => consoleGroupSimilarSettingDescriptor,
   consoleHistoryAutocompleteSettingDescriptor: () => consoleHistoryAutocompleteSettingDescriptor,
+  consoleShowsCorsErrorsSettingDescriptor: () => consoleShowsCorsErrorsSettingDescriptor,
   consoleTimestampsEnabledSettingDescriptor: () => consoleTimestampsEnabledSettingDescriptor,
   networkMessagesSettingDescriptor: () => networkMessagesSettingDescriptor,
   selectedContextFilterEnabledSettingDescriptor: () => selectedContextFilterEnabledSettingDescriptor
@@ -41,6 +44,23 @@ var consoleAutocompleteOnEnterSettingDescriptor = {
   name: "console-autocomplete-on-enter",
   type: "boolean",
   defaultValue: false,
+  storageType: "Synced"
+};
+var consoleGroupSimilarSettingDescriptor = {
+  name: "console-group-similar",
+  type: "boolean",
+  defaultValue: true,
+  storageType: "Synced"
+};
+var consoleShowsCorsErrorsSettingDescriptor = {
+  name: "console-shows-cors-errors",
+  type: "boolean",
+  defaultValue: true
+};
+var consoleEagerEvalSettingDescriptor = {
+  name: "console-eager-eval",
+  type: "boolean",
+  defaultValue: true,
   storageType: "Synced"
 };
 

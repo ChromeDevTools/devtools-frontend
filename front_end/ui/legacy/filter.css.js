@@ -15,7 +15,7 @@ export default `/*
   flex: none;
   flex-wrap: wrap;
   align-items: center;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   color: var(--sys-color-on-surface-subtle);
 }
 
@@ -26,7 +26,7 @@ export default `/*
 }
 
 .filter-bitset-filter {
-  padding: 2px;
+  padding: var(--sys-size-2);
   display: inline-flex;
   overflow: hidden;
   min-height: var(--sys-size-11);
@@ -39,19 +39,19 @@ export default `/*
 
 .filter-bitset-filter span {
   color: var(--sys-color-on-surface);
-  outline: 1px solid var(--sys-color-neutral-outline);
-  outline-offset: -1px;
+  outline: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  outline-offset: calc(-1 * var(--sys-size-1));
   box-sizing: border-box;
   display: inline-block;
   flex: none;
-  margin: auto 2px;
+  margin: auto var(--sys-size-2);
   padding: 3px 6px;
   background: transparent;
-  border-radius: 6px;
+  border-radius: var(--sys-size-4);
   overflow: hidden;
   cursor: pointer;
   font-weight: 500;
-  font-size: 11px;
+  font-size: var(--sys-typescale-body5-size);
 }
 
 .filter-bitset-filter span:focus-visible {
@@ -79,21 +79,21 @@ export default `/*
 
 .filter-bitset-filter-divider {
   background-color: var(--sys-color-divider);
-  height: 16px;
-  width: 1px;
-  margin: auto 2px;
+  height: var(--sys-size-8);
+  width: var(--sys-size-1);
+  margin: auto var(--sys-size-2);
   display: inline-block;
 }
 
 .filter-checkbox-filter {
-  padding-left: 1px;
+  padding-left: var(--sys-size-1);
   padding-right: 7px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   display: inline-flex;
   vertical-align: middle;
-  height: 24px;
+  height: var(--sys-size-11);
   position: relative;
 }
 
@@ -108,15 +108,15 @@ export default `/*
 
 .filter-divider {
   background-color: var(--sys-color-divider);
-  width: 1px;
+  width: var(--sys-size-1);
   margin: 5px 4px;
-  height: 16px;
+  height: var(--sys-size-8);
 }
 
 .toolbar-button {
   white-space: nowrap;
   overflow: hidden;
-  min-width: 28px;
+  min-width: var(--sys-size-12);
   background: transparent;
   border-radius: 0;
 }
@@ -133,7 +133,7 @@ export default `/*
 }
 
 .toolbar-text {
-  margin: 0 4px 0 0;
+  margin: 0 var(--sys-size-3) 0 0;
   text-overflow: ellipsis;
   flex: auto;
   overflow: hidden;
@@ -170,7 +170,7 @@ export default `/*
   }
 
   &:focus-visible {
-    outline: 2px solid var(--sys-color-state-focus-ring);
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   }
 }
 

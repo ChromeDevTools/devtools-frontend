@@ -36,9 +36,9 @@ export default `/*
     box-sizing: border-box;
     width: 10px;
     height: 10px;
-    border: 1px solid var(--sys-color-divider);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     display: inline-block;
-    margin-right: 4px;
+    margin-right: var(--sys-size-3);
   }
 
   devtools-icon.priority {
@@ -53,7 +53,7 @@ export default `/*
   }
 
   .divider {
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
     margin: 5px 0;
   }
 
@@ -65,18 +65,18 @@ export default `/*
 
   .indicator {
     display: inline-block;
-    width: 12px;
-    height: 6px;
+    width: var(--sys-size-6);
+    height: var(--sys-size-4);
     margin-right: 5px;
-    border: 1px solid var(--sys-color-on-surface-subtle);
+    border: var(--sys-size-1) solid var(--sys-color-on-surface-subtle);
     box-sizing: border-box;
   }
 
   devtools-icon.indicator {
     vertical-align: middle;
-    height: 12px;
-    width: 12px;
-    margin-right: 4px;
+    height: var(--sys-size-6);
+    width: var(--sys-size-6);
+    margin-right: var(--sys-size-3);
     color: var(--sys-color-yellow);
     border: none;
   }
@@ -86,9 +86,9 @@ export default `/*
     align-self: center;
     display: inline-flex;
     width: 11px;
-    height: 6px;
+    height: var(--sys-size-4);
     margin-right: 5px;
-    border-left: 1px solid var(--sys-color-on-surface-subtle);
+    border-left: var(--sys-size-1) solid var(--sys-color-on-surface-subtle);
     box-sizing: border-box;
   }
 
@@ -96,15 +96,15 @@ export default `/*
     align-self: center;
     display: inline-flex;
     width: 11px;
-    height: 6px;
+    height: var(--sys-size-4);
     margin-right: 5px;
-    border-right: 1px solid var(--sys-color-on-surface-subtle);
+    border-right: var(--sys-size-1) solid var(--sys-color-on-surface-subtle);
     box-sizing: border-box;
   }
 
   .horizontal {
     background-color: var(--sys-color-on-surface-subtle);
-    height: 1px;
+    height: var(--sys-size-1);
     width: 10px;
     align-self: center;
   }

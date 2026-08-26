@@ -10,7 +10,7 @@ export default `/*
  */
 .media-messages-header {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   min-height: 26px;
 }
 
@@ -31,19 +31,19 @@ export default `/*
   float: left;
   width: 18px;
   height: 100%;
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
 }
 
 .media-messages-message-container {
-  margin: 4px;
-  font-size: 14px;
+  margin: var(--sys-size-3);
+  font-size: var(--sys-typescale-body2-size);
   line-height: 18px;
-  padding: 4px;
+  padding: var(--sys-size-3);
   user-select: text;
 }
 
 .media-messages-message-container + .media-messages-message-container {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 
   &.media-message-warning,
   &.media-message-error {
@@ -73,9 +73,9 @@ export default `/*
 
 .status-error-box {
   font-family: var(--monospace-font-family);
-  border: 1px solid var(--sys-color-error-outline);
+  border: var(--sys-size-1) solid var(--sys-color-error-outline);
   border-radius: 5px;
-  padding: 4px;
+  padding: var(--sys-size-3);
 }
 
 .status-error-field-label {

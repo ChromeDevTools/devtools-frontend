@@ -119,7 +119,7 @@
       "path": "../utils/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../third_party/codemirror.next/bundle-tsconfig.json"
+      "path": "../../../../tsc/front_end/third_party/codemirror.next/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/components/adorners/bundle-tsconfig.ref.json"

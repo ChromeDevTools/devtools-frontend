@@ -45,7 +45,7 @@
   ],
   "references": [
     {
-      "path": "./lit-tsconfig.json"
+      "path": "../../../../tsc/front_end/third_party/lit/lit-tsconfig.ref.json"
     }
   ]
 }

@@ -45,7 +45,7 @@
   ],
   "references": [
     {
-      "path": "../../../third_party/codemirror.next/bundle-tsconfig.json"
+      "path": "../../../../../tsc/front_end/third_party/codemirror.next/bundle-tsconfig.ref.json"
     }
   ]
 }

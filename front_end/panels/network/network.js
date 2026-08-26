@@ -8583,7 +8583,7 @@ var networkLogView_css_default = `/*
 }
 
 #network-container.grid-focused.no-node-selected:focus-within {
-  border: 1px solid var(--sys-color-state-focus-ring);
+  border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
 }
 
 .network-summary-bar {
@@ -8591,7 +8591,7 @@ var networkLogView_css_default = `/*
   line-height: 27px;
   padding-left: 5px;
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -8603,7 +8603,7 @@ var networkLogView_css_default = `/*
 }
 
 .network-summary-bar dt-icon-label {
-  margin-right: 6px;
+  margin-right: var(--sys-size-4);
 }
 
 .network-summary-bar > * {
@@ -8616,7 +8616,7 @@ var networkLogView_css_default = `/*
 
 .network-log-grid.data-grid td {
   height: 41px;
-  border-left: 1px solid var(--sys-color-divider);
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
   vertical-align: middle;
 }
 
@@ -8634,8 +8634,8 @@ var networkLogView_css_default = `/*
 
 .network-waterfall-header,
 .network-log-grid.data-grid thead th {
-  border-bottom: 1px solid var(--sys-color-divider);
-  border-left: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .network-waterfall-header,
@@ -8657,7 +8657,7 @@ var networkLogView_css_default = `/*
 }
 
 .network-log-grid.data-grid .waterfall-column {
-  padding: 1px 0;
+  padding: var(--sys-size-1) 0;
 }
 
 .network-log-grid.data-grid .waterfall-column .sort-order-icon-container {
@@ -8675,7 +8675,7 @@ var networkLogView_css_default = `/*
 }
 
 .network-badge {
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 .status-column .devtools-link {
@@ -8687,7 +8687,7 @@ var networkLogView_css_default = `/*
   color: inherit;
   background-color: transparent;
   outline-offset: 0;
-  max-height: 16px;
+  max-height: var(--sys-size-8);
 }
 
 .network-error-row,
@@ -8758,7 +8758,7 @@ var networkLogView_css_default = `/*
 
 .network-log-grid.data-grid.small .network-cell-subtitle.always-visible {
   display: inline;
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
 }
 
 .network-log-grid tr.highlighted-row {
@@ -8783,9 +8783,9 @@ var networkLogView_css_default = `/*
 
 .network-log-grid.data-grid .icon {
   float: left;
-  width: 32px;
-  height: 32px;
-  margin-top: 1px;
+  width: var(--sys-size-13);
+  height: var(--sys-size-13);
+  margin-top: var(--sys-size-1);
   margin-right: 3px;
 }
 
@@ -8803,8 +8803,8 @@ var networkLogView_css_default = `/*
   devtools-icon {
     color: var(--sys-color-yellow);
     vertical-align: middle;
-    width: 16px;
-    height: 16px;
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
   }
 
   .image.icon::before,
@@ -8829,8 +8829,8 @@ td.time-column {
 .data-grid-data-grid-node devtools-icon[name="arrow-up-down-circle"],
 .data-grid-data-grid-node devtools-icon.network-console-icon,
 .network-log-grid.data-grid.small .icon {
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
   vertical-align: sub;
 }
 
@@ -8848,15 +8848,15 @@ td.time-column {
   position: absolute;
   max-width: 18px;
   max-height: 21px;
-  min-width: 1px;
-  min-height: 1px;
+  min-width: var(--sys-size-1);
+  min-height: var(--sys-size-1);
 }
 
 .network-log-grid.data-grid.small .image-network-icon-preview {
-  left: 2px;
-  right: 2px;
+  left: var(--sys-size-2);
+  right: var(--sys-size-2);
   max-width: 10px;
-  max-height: 12px;
+  max-height: var(--sys-size-6);
 }
 
 .network-log-grid.data-grid .trailing-link-icon {
@@ -8870,7 +8870,7 @@ td.time-column {
 }
 
 .network-frame-divider {
-  width: 2px;
+  width: var(--sys-size-2);
   background-color: var(--network-frame-divider-color); /* stylelint-disable-line plugin/use_theme_colors */
   z-index: 10;
   visibility: hidden;
@@ -8929,38 +8929,38 @@ td.time-column {
 
 .network-waterfall-header div {
   display: table-cell;
-  line-height: 14px;
+  line-height: var(--sys-size-7);
   margin: auto 0;
   vertical-align: middle;
   text-align: left;
   font-weight: normal;
-  padding: 0 4px;
+  padding: 0 var(--sys-size-3);
 }
 
 /* All network-waterfall-header rules are defined here instead of above */
 .network-waterfall-header .sort-order-icon-container {
   position: absolute;
-  top: 1px;
+  top: var(--sys-size-1);
   right: 0;
-  bottom: 1px;
+  bottom: var(--sys-size-1);
   display: flex;
   align-items: center;
 }
 
 .network-waterfall-header .sort-order-icon {
   align-items: center;
-  margin-right: 4px;
-  margin-bottom: -2px;
+  margin-right: var(--sys-size-3);
+  margin-bottom: calc(-1 * var(--sys-size-2));
 }
 
 .network-frame-group-icon {
   display: inline-block;
-  margin: -7px 1px;
+  margin: -7px var(--sys-size-1);
   vertical-align: baseline;
 }
 
 .network-frame-group-badge {
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 .network-override-marker {
@@ -8971,11 +8971,11 @@ td.time-column {
 .network-override-marker::before {
   background-color: var(--sys-color-purple-bright);
   content: var(--image-file-empty);
-  width: 6px;
-  height: 6px;
+  width: var(--sys-size-4);
+  height: var(--sys-size-4);
   border-radius: 50%;
-  outline: 1px solid var(--icon-gap-toolbar);
-  left: 8px;
+  outline: var(--sys-size-1) solid var(--icon-gap-toolbar);
+  left: var(--sys-size-5);
   position: absolute;
   top: 10px;
   z-index: 1;

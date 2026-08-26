@@ -105,87 +105,87 @@ function getRegisteredListeners() {
 // gen/front_end/ui/legacy/ActionRegistration.js
 var UIStrings = {
   /**
-   * @description Title of the keybind category 'Elements' in Settings' Shortcuts pannel.
+   * @description Title of the Elements shortcut category in the shortcuts tab in the Settings panel.
    */
   elements: "Elements",
   /**
-   * @description Title of the keybind category 'Screenshot' in Settings' Shortcuts pannel.
+   * @description Title of the Screenshot shortcut category in the shortcuts tab in the Settings panel.
    */
   screenshot: "Screenshot",
   /**
-   * @description Title of the keybind category 'Network' in Settings' Shortcuts pannel.
+   * @description Title of the Network shortcut category in the shortcuts tab in the Settings panel.
    */
   network: "Network",
   /**
-   * @description Title of the keybind category 'Memory' in Settings' Shortcuts pannel.
+   * @description Title of the Memory shortcut category in the shortcuts tab in the Settings panel.
    */
   memory: "Memory",
   /**
-   * @description Title of the keybind category 'JavaScript Profiler' in Settings' Shortcuts pannel.
+   * @description Title of the JavaScript profiler shortcut category in the shortcuts tab in the Settings panel.
    */
-  javascript_profiler: "JavaScript Profiler",
+  javascript_profiler: "JavaScript profiler",
   /**
-   * @description Title of the keybind category 'Console' in Settings' Shortcuts pannel.
+   * @description Title of the Console shortcut category in the shortcuts tab in the Settings panel.
    */
   console: "Console",
   /**
-   * @description Title of the keybind category 'Performance' in Settings' Shortcuts pannel.
+   * @description Title of the Performance shortcut category in the shortcuts tab in the Settings panel.
    */
   performance: "Performance",
   /**
-   * @description Title of the keybind category 'Mobile' in Settings' Shortcuts pannel.
+   * @description Title of the Mobile shortcut category in the shortcuts tab in the Settings panel.
    */
   mobile: "Mobile",
   /**
-   * @description Title of the keybind category 'Help' in Settings' Shortcuts pannel.
+   * @description Title of the Help shortcut category in the shortcuts tab in the Settings panel.
    */
   help: "Help",
   /**
-   * @description Title of the keybind category 'Layers' in Settings' Shortcuts pannel.
+   * @description Title of the Layers shortcut category in the shortcuts tab in the Settings panel.
    */
   layers: "Layers",
   /**
-   * @description Title of the keybind category 'Navigation' in Settings' Shortcuts pannel.
+   * @description Title of the Navigation shortcut category in the shortcuts tab in the Settings panel.
    */
   navigation: "Navigation",
   /**
-   * @description Title of the keybind category 'Drawer' in Settings' Shortcuts pannel.
+   * @description Title of the Drawer shortcut category in the shortcuts tab in the Settings panel.
    */
   drawer: "Drawer",
   /**
-   * @description Title of the keybind category 'Global' in Settings' Shortcuts pannel.
+   * @description Title of the Global shortcut category in the shortcuts tab in the Settings panel.
    */
   global: "Global",
   /**
-   * @description Title of the keybind category 'Resources' in Settings' Shortcuts pannel.
+   * @description Title of the Resources shortcut category in the shortcuts tab in the Settings panel.
    */
   resources: "Resources",
   /**
-   * @description Title of the keybind category 'Background Services' in Settings' Shortcuts pannel.
+   * @description Title of the Background services shortcut category in the shortcuts tab in the Settings panel.
    */
-  background_services: "Background Services",
+  background_services: "Background services",
   /**
-   * @description Title of the keybind category 'Settings' in Settings' Shortcuts pannel.
+   * @description Title of the Settings shortcut category in the shortcuts tab in the Settings panel.
    */
   settings: "Settings",
   /**
-   * @description Title of the keybind category 'Debugger' in Settings' Shortcuts pannel.
+   * @description Title of the Debugger shortcut category in the shortcuts tab in the Settings panel.
    */
   debugger: "Debugger",
   /**
-   * @description Title of the keybind category 'Sources' in Settings' Shortcuts pannel.
+   * @description Title of the Sources shortcut category in the shortcuts tab in the Settings panel.
    */
   sources: "Sources",
   /**
-   * @description Title of the keybind category 'Rendering' in Settings' Shortcuts pannel.
+   * @description Title of the Rendering shortcut category in the shortcuts tab in the Settings panel.
    */
   rendering: "Rendering",
   /**
-   * @description Title of the keybind category 'Recorder' in Settings' Shortcuts pannel.
+   * @description Title of the Recorder shortcut category in the shortcuts tab in the Settings panel.
    */
   recorder: "Recorder",
   /**
-   * @description Title of the keybind category 'Changes' in Settings' Shortcuts pannel.
+   * @description Title of the Changes shortcut category in the shortcuts tab in the Settings panel.
    */
   changes: "Changes"
 };
@@ -1568,15 +1568,15 @@ import * as VisualLogging2 from "./../visual_logging/visual_logging.js";
 import * as SettingsUI from "./../settings/settings.js";
 var UIStrings2 = {
   /**
-   * @description Text to close something
+   * @description Tooltip text for the close DevTools button in the main toolbar.
    */
   close: "Close",
   /**
-   * @description Text announced when the DevTools are undocked
+   * @description Announcement text for screen readers when DevTools is undocked.
    */
   devtoolsUndocked: "DevTools is undocked",
   /**
-   * @description Text announced when the DevTools are docked to the left, right, or bottom of the browser tab
+   * @description Announcement text for screen readers when DevTools is docked to a side of the browser window.
    * @example {bottom} PH1
    */
   devToolsDockedTo: "DevTools is docked to {PH1}"
@@ -1781,8 +1781,8 @@ var infobar_css_default = `/*
 }
 
 .infobar:focus {
-  outline: 2px solid var(--sys-color-state-focus-ring);
-  outline-offset: -2px;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: calc(-1 * var(--sys-size-2));
 }
 
 .infobar-warning {
@@ -1913,11 +1913,11 @@ details {
 // gen/front_end/ui/legacy/Infobar.js
 var UIStrings3 = {
   /**
-   * @description Text on a button to close the infobar and never show the infobar in the future
+   * @description Button text to permanently dismiss an infobar and prevent it from appearing again.
    */
   dontShowAgain: "Don\u2019t show again",
   /**
-   * @description Text to close something
+   * @description Accessible label for the close button in an infobar.
    */
   close: "Close"
 };
@@ -2306,9 +2306,9 @@ var tabbedPane_css_default = `/*
     text-align: left;
 
     &:focus-visible {
-      outline: 2px solid var(--sys-color-state-focus-ring);
-      outline-offset: 2px;
-      border-radius: 2px;
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: var(--sys-size-2);
+      border-radius: var(--sys-size-2);
     }
   }
 }
@@ -2316,7 +2316,7 @@ var tabbedPane_css_default = `/*
 .tabbed-pane-header {
   display: flex;
   flex: 0 0 27px;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: visible;
   width: 100%;
   background-color: var(--app-color-toolbar-background);
@@ -2339,7 +2339,7 @@ var tabbedPane_css_default = `/*
 }
 
 .tabbed-pane-header-tab-icon {
-  min-width: 14px;
+  min-width: var(--sys-size-7);
   display: flex;
   align-items: center;
   margin-right: var(--sys-size-2);
@@ -2444,7 +2444,7 @@ var tabbedPane_css_default = `/*
   --override-dragging-box-shadow-color: rgb(0 0 0 / 37%);
 
   position: relative;
-  box-shadow: 0 1px 4px 0 var(--override-dragging-box-shadow-color);
+  box-shadow: 0 var(--sys-size-1) var(--sys-size-3) 0 var(--override-dragging-box-shadow-color);
   background-color: var(--app-color-toolbar-background);
 }
 
@@ -2521,9 +2521,9 @@ var tabbedPane_css_default = `/*
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab {
-  height: var(--size-12, 28px);
-  padding: 0 var(--size-8, 16px) 0 var(--size-7, 14px);
-  border-radius: 0 100px 100px 0;
+  height: var(--sys-size-12);
+  padding: 0 var(--sys-size-8) 0 var(--sys-size-7);
+  border-radius: 0 var(--sys-shape-corner-full) var(--sys-shape-corner-full) 0;
   color: var(--sys-color-on-surface);
   position: relative;
 
@@ -2542,7 +2542,7 @@ var tabbedPane_css_default = `/*
   }
 
   &:focus-visible {
-    outline: 2px solid var(--sys-color-state-focus-ring);
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   }
 
   &:active::before {
@@ -2560,7 +2560,7 @@ var tabbedPane_css_default = `/*
 .tabbed-pane-tab-slider {
   height: 3px;
   position: absolute;
-  bottom: -1px;
+  bottom: calc(-1 * var(--sys-size-1));
   background-color: var(--sys-color-primary);
   border-radius: var(--sys-shape-corner-full) var(--sys-shape-corner-full) 0 0;
   left: 0;
@@ -2585,20 +2585,20 @@ var tabbedPane_css_default = `/*
 }
 
 .tabbed-pane-left-toolbar {
-  margin-right: -4px;
+  margin-right: calc(-1 * var(--sys-size-3));
   flex: none;
 }
 
 .tabbed-pane-right-toolbar {
-  margin-left: -4px;
+  margin-left: calc(-1 * var(--sys-size-3));
   flex: none;
 }
 
 .preview-icon {
   --override-tabbed-pane-preview-icon-color: var(--icon-default);
 
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2618,7 +2618,7 @@ var tabbedPane_css_default = `/*
 
   .tabbed-pane-header {
     forced-color-adjust: none;
-    border-bottom: 1px solid transparent;
+    border-bottom: var(--sys-size-1) solid transparent;
     background-color: ButtonFace;
   }
 
@@ -2695,7 +2695,7 @@ var tabbedPane_css_default = `/*
 
 .spark {
   position: absolute;
-  top: 2px;
+  top: var(--sys-size-2);
 
   --icon-default: var(--sys-color-primary);
 }
@@ -4016,40 +4016,40 @@ var ZoomManager = class _ZoomManager extends Common5.ObjectWrapper.ObjectWrapper
 // gen/front_end/ui/legacy/TabbedPane.js
 var UIStrings4 = {
   /**
-   * @description The aria label for the button to open more tabs at the right tabbed pane in Elements tools
+   * @description Tooltip and accessible label for the more tabs dropdown button in a tab strip.
    */
   moreTabs: "More tabs",
   /**
-   * @description Text in Tabbed Pane
-   * @example {tab} PH1
+   * @description Tooltip text and accessible label for the close button on a tab in a tab strip.
+   * @example {Console} PH1
    */
   closeS: "Close {PH1}",
   /**
-   * @description Text to close something
+   * @description Context menu item to close the selected tab in a tab strip.
    */
   close: "Close",
   /**
-   * @description Text on a menu option to close other drawers when right click on a drawer title
+   * @description Context menu item to close other tabs in a tab strip.
    */
   closeOthers: "Close others",
   /**
-   * @description Text on a menu option to close the drawer to the right when right click on a drawer title
+   * @description Context menu item to close all tabs to the right of the selected tab in a tab strip.
    */
   closeTabsToTheRight: "Close tabs to the right",
   /**
-   * @description Text on a menu option to close all the drawers except Console when right click on a drawer title
+   * @description Context menu item to close all tabs in a tab strip.
    */
   closeAll: "Close all",
   /**
-   * @description Indicates that a tab contains a preview feature (i.e., a beta / experimental feature).
+   * @description Tooltip text and accessible label indicating that a tab contains a preview feature.
    */
   previewFeature: "Preview feature",
   /**
-   * @description Text to move a tab forwar.
+   * @description Context menu item to move a tab to the right in a tab strip.
    */
   moveTabRight: "Move right",
   /**
-   * @description Text to move a tab backward.
+   * @description Context menu item to move a tab to the left in a tab strip.
    */
   moveTabLeft: "Move left"
 };
@@ -5516,9 +5516,7 @@ import * as i18n9 from "./../../core/i18n/i18n.js";
 import { Directives as Directives2, html as html2, render as render2 } from "./../lit/lit.js";
 var UIStrings5 = {
   /**
-   * @description Default tooltip / accessible name of the "plus" button shown
-   * after the visible tabs in a tab strip. Clicking it opens a menu listing
-   * tools that are not currently shown as a visible tab.
+   * @description Default tooltip and accessible name for the plus button shown in a tab strip.
    */
   moreTools: "More tools"
 };
@@ -5932,31 +5930,31 @@ import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
 var UIStrings6 = {
   /**
-   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Elements' panel.
+   * @description Badge label for an entry in the command menu that opens the Elements panel.
    */
   elements: "Elements",
   /**
-   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Drawer' panel.
+   * @description Badge label for an entry in the command menu that opens the drawer.
    */
   drawer: "Drawer",
   /**
-   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Drawer sidebar' panel.
+   * @description Badge label for an entry in the command menu that opens the drawer sidebar.
    */
   drawer_sidebar: "Drawer sidebar",
   /**
-   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Panel'.
+   * @description Badge label for an entry in the command menu that opens a panel.
    */
   panel: "Panel",
   /**
-   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Network' panel.
+   * @description Badge label for an entry in the command menu that opens the Network panel.
    */
   network: "Network",
   /**
-   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Settings' panel.
+   * @description Badge label for an entry in the command menu that opens the Settings panel.
    */
   settings: "Settings",
   /**
-   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Sources' panel.
+   * @description Badge label for an entry in the command menu that opens the Sources panel.
    */
   sources: "Sources"
 };
@@ -6018,7 +6016,7 @@ function getLocalizedViewLocationCategory(category) {
 // gen/front_end/ui/legacy/ViewManager.js
 var UIStrings7 = {
   /**
-   * @description Aria label for the tab panel view container
+   * @description Accessible label for a panel view container.
    * @example {Sensors} PH1
    */
   sPanel: "{PH1} panel"
@@ -6750,23 +6748,23 @@ var DrawerTabbedPane = class extends TabbedPane {
 };
 var UIStrings8 = {
   /**
-   * @description Title of more tabs button in the drawer view.
+   * @description Title and tooltip text for the more tools menu button in the drawer.
    */
-  moreTools: "More Tools",
+  moreTools: "More tools",
   /**
-   * @description Text that appears when hover over the minimize button on the drawer view.
+   * @description Tooltip text for the minimize button in the drawer.
    */
   minimizeDrawer: "Minimize drawer",
   /**
-   * @description Text that appears when hover over the expand button on the drawer view.
+   * @description Tooltip text for the expand button in the drawer.
    */
   expandDrawer: "Expand drawer",
   /**
-   * @description Text that appears when hover over the close button on the drawer view.
+   * @description Tooltip text for the close button in the drawer.
    */
   closeDrawer: "Close drawer",
   /**
-   * @description Text that appears when hover the toggle orientation button.
+   * @description Tooltip text for the toggle orientation button in the drawer.
    */
   toggleDrawerOrientation: "Toggle drawer orientation"
 };
@@ -8071,84 +8069,77 @@ var UIUserMetrics = class _UIUserMetrics {
 // gen/front_end/ui/legacy/InspectorView.js
 var UIStrings9 = {
   /**
-   * @description The aria label for the drawer minimized.
+   * @description Announcement text for screen readers when the drawer is minimized.
    */
   drawerMinimized: "Drawer minimized",
   /**
-   * @description The aria label for the drawer expanded.
+   * @description Announcement text for screen readers when the drawer is expanded.
    */
   drawerExpanded: "Drawer expanded",
   /**
-   * @description The ARIA label for the main tab bar that contains the DevTools panels
+   * @description Accessible label for the main tab bar that contains panels.
    */
   panels: "Panels",
   /**
-   * @description Title of an action that reloads the tab currently being debugged by DevTools
+   * @description Button text in an infobar to reload the inspected page.
    */
   reloadDebuggedTab: "Reload page",
   /**
-   * @description Title of an action that reloads the DevTools
+   * @description Button text in an infobar to reload DevTools.
    */
   reloadDevtools: "Reload DevTools",
   /**
-   * @description Title of an action that restarts Chrome
+   * @description Button text in an infobar to restart Chrome.
    */
   restartChrome: "Restart Chrome",
   /**
-   * @description Confirmation dialog text for restarting Chrome
+   * @description Confirmation prompt text when restarting Chrome.
    */
   areYouSureYouWantToRestartChrome: "Are you sure you want to restart Chrome?",
   /**
-   * @description Text for context menu action to move a tab to the main tab bar
+   * @description Context menu item to move a tab to the main tab bar.
    */
   moveToMainTabBar: "Move to main tab bar",
   /**
-   * @description Text for context menu action to move a tab to the drawer
+   * @description Context menu item to move a tab to the drawer.
    */
   moveToDrawer: "Move to drawer",
   /**
-   * @description Text shown in a prompt to the user when DevTools is started and the
-   * currently selected DevTools locale does not match Chrome's locale.
-   * The placeholder is the current Chrome language.
+   * @description Infobar message shown when the DevTools language does not match the browser language.
    * @example {German} PH1
    */
   devToolsLanguageMissmatch: "DevTools is now available in {PH1}",
   /**
-   * @description An option the user can select when we notice that DevTools
-   * is configured with a different locale than Chrome. This option means DevTools will
-   * always try and display the DevTools UI in the same language as Chrome.
+   * @description Button text in an infobar to configure DevTools to match the browser language.
    */
   setToBrowserLanguage: "Always match Chrome\u2019s language",
   /**
-   * @description An option the user can select when DevTools notices that DevTools
-   * is configured with a different locale than Chrome. This option means DevTools UI
-   * will be switched to the language specified in the placeholder.
+   * @description Button text in an infobar to switch DevTools to a specific language.
    * @example {German} PH1
    */
   setToSpecificLanguage: "Switch DevTools to {PH1}",
   /**
-   * @description The aria label for main toolbar
+   * @description Accessible label for the main toolbar.
    */
   mainToolbar: "Main toolbar",
   /**
-   * @description The aria label for the drawer.
+   * @description Accessible label for the drawer.
    */
-  drawer: "Tool drawer",
+  drawer: "Drawer",
   /**
-   * @description The aria label for the drawer shown.
+   * @description Announcement text for screen readers when the drawer is shown.
    */
   drawerShown: "Drawer shown",
   /**
-   * @description The aria label for the drawer hidden.
+   * @description Announcement text for screen readers when the drawer is hidden.
    */
   drawerHidden: "Drawer hidden",
   /**
-   * @description Request for the user to select a local file system folder for DevTools
-   * to store local overrides in.
+   * @description Infobar message prompting the user to select a folder for local overrides.
    */
   selectOverrideFolder: "Select a folder to store override files in",
   /**
-   * @description Label for a button which opens a file picker.
+   * @description Button text in an infobar to open a folder picker for local overrides.
    */
   selectFolder: "Select folder"
 };
@@ -9003,28 +8994,28 @@ var softContextMenu_css_default = `/*
 // gen/front_end/ui/legacy/SoftContextMenu.js
 var UIStrings10 = {
   /**
-   * @description Text exposed to screen readers on checked items.
+   * @description Accessible state text for checked items in a context menu.
    */
   checked: "checked",
   /**
-   * @description Accessible text exposed to screen readers when the screen reader encounters an unchecked checkbox.
+   * @description Accessible state text for unchecked items in a context menu.
    */
   unchecked: "unchecked",
   /**
-   * @description Accessibility label for checkable SoftContextMenuItems with shortcuts
-   * @example {Open File} PH1
+   * @description Accessible label pattern combining label, shortcut, and state in a context menu item.
+   * @example {Open file} PH1
    * @example {Ctrl + P} PH2
    * @example {checked} PH3
    */
   sSS: "{PH1}, {PH2}, {PH3}",
   /**
-   * @description Generic text with two placeholders separated by a comma
-   * @example {1 613 680} PH1
-   * @example {44 %} PH2
+   * @description Accessible label pattern combining two strings separated by a comma.
+   * @example {Console} PH1
+   * @example {Ctrl + R} PH2
    */
   sS: "{PH1}, {PH2}",
   /**
-   * @description Accessible text exposed to screen readers appended to menu items that have a new badge.
+   * @description Accessible text appended to menu items with a new feature badge.
    */
   newFeature: "This is a new feature"
 };
@@ -11195,14 +11186,14 @@ var suggestBox_css_default = `/*
 // gen/front_end/ui/legacy/SuggestBox.js
 var UIStrings11 = {
   /**
-   * @description Aria alert to read the suggestion for the suggestion box when typing in text editor
+   * @description Announcement text for screen readers when navigating suggestions in a suggestion box.
    * @example {name} PH1
    * @example {2} PH2
    * @example {5} PH3
    */
   sSuggestionSOfS: "{PH1}, suggestion {PH2} of {PH3}",
   /**
-   * @description Aria alert to confirm the suggestion when it is selected from the suggestion box
+   * @description Announcement text for screen readers when a suggestion is selected in a suggestion box.
    * @example {name} PH1
    */
   sSuggestionSSelected: "{PH1}, suggestion selected"
@@ -12495,23 +12486,23 @@ devtools-toolbar-input {
 // gen/front_end/ui/legacy/Toolbar.js
 var UIStrings12 = {
   /**
-   * @description Announced screen reader message for ToolbarSettingToggle when the setting is toggled on.
+   * @description Announcement text for screen readers when a toolbar toggle button is pressed.
    */
   pressed: "pressed",
   /**
-   * @description Announced screen reader message for ToolbarSettingToggle when the setting is toggled off.
+   * @description Announcement text for screen readers when a toolbar toggle button is not pressed.
    */
   notPressed: "not pressed",
   /**
-   * @description Tooltip shown when the user hovers over the clear icon to empty the text input.
+   * @description Tooltip text and accessible label for the clear input button in a toolbar input.
    */
   clearInput: "Clear",
   /**
-   * @description Placeholder for filter bars that shows before the user types in a filter keyword.
+   * @description Placeholder text for a filter input in a toolbar.
    */
   filter: "Filter",
   /**
-   * @description Tooltip shown when the user hovers over the regex icon to toggle regular-expression filtering.
+   * @description Tooltip text and accessible label for the regular expression toggle button in a filter toolbar.
    */
   useRegularExpression: "Use regular expression"
 };
@@ -13689,15 +13680,15 @@ var checkboxTextLabel_css_default = `/*
 }
 
 input {
-  height: 12px;
-  width: 12px;
+  height: var(--sys-size-6);
+  width: var(--sys-size-6);
   flex-shrink: 0;
   accent-color: var(--sys-color-primary-bright);
   color: var(--sys-color-on-primary);
 }
 
 :host(:not(.small)) input:not(.small) {
-  margin: 6px;
+  margin: var(--sys-size-4);
 }
 
 :host(.inside-datagrid) input {
@@ -15187,51 +15178,51 @@ div.error {
 var { Directives: Directives3, render: render6 } = Lit2;
 var UIStrings13 = {
   /**
-   * @description label to open link externally
+   * @description Context menu item to open a link in a new tab.
    */
   openInNewTab: "Open in new tab",
   /**
-   * @description label to copy link address
+   * @description Context menu item to copy a link address.
    */
   copyLinkAddress: "Copy link address",
   /**
-   * @description label to copy file name
+   * @description Context menu item to copy a file name.
    */
   copyFileName: "Copy file name",
   /**
-   * @description label for the profiler control button
+   * @description Warning message shown when attempting to start a profiler while another is already active.
    */
   anotherProfilerIsAlreadyActive: "Another profiler is already active",
   /**
-   * @description Text in UIUtils
+   * @description Label for a resolved promise in asynchronous call stacks.
    */
   promiseResolvedAsync: "Promise resolved (async)",
   /**
-   * @description Text in UIUtils
+   * @description Label for a rejected promise in asynchronous call stacks.
    */
   promiseRejectedAsync: "Promise rejected (async)",
   /**
-   * @description Text for the title of asynchronous function calls group in Call Stack
+   * @description Title for a group of asynchronous function calls in the call stack.
    */
-  asyncCall: "Async Call",
+  asyncCall: "Async call",
   /**
-   * @description Text for the name of anonymous functions
+   * @description Fallback name for anonymous functions in the call stack.
    */
   anonymous: "(anonymous)",
   /**
-   * @description Text to close something
+   * @description Tooltip text and accessible label for a close button.
    */
   close: "Close",
   /**
-   * @description Text on a button for message dialog
+   * @description Button text for confirming an action in a dialog.
    */
   ok: "OK",
   /**
-   * @description Text to cancel something
+   * @description Button text for canceling an action in a dialog.
    */
   cancel: "Cancel",
   /**
-   * @description Text for the new badge appearing next to some menu items
+   * @description Text for a badge highlighting a new feature next to menu items.
    */
   new: "NEW"
 };
@@ -17304,7 +17295,7 @@ var GlassPanePanes = panes;
 // gen/front_end/ui/legacy/Dialog.js
 var UIStrings14 = {
   /**
-   * @description Text to close the dialog
+   * @description Tooltip text and accessible label for the close button in a dialog.
    */
   close: "Close"
 };
@@ -18071,7 +18062,7 @@ var emptyWidget_css_default = `/*
 // gen/front_end/ui/legacy/EmptyWidget.js
 var UIStrings15 = {
   /**
-   * @description Text that is usually a hyperlink to more documentation
+   * @description Link text in an empty state view leading to external documentation.
    */
   learnMore: "Learn more"
 };
@@ -18172,7 +18163,7 @@ var filter_css_default = `/*
   flex: none;
   flex-wrap: wrap;
   align-items: center;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   color: var(--sys-color-on-surface-subtle);
 }
 
@@ -18183,7 +18174,7 @@ var filter_css_default = `/*
 }
 
 .filter-bitset-filter {
-  padding: 2px;
+  padding: var(--sys-size-2);
   display: inline-flex;
   overflow: hidden;
   min-height: var(--sys-size-11);
@@ -18196,19 +18187,19 @@ var filter_css_default = `/*
 
 .filter-bitset-filter span {
   color: var(--sys-color-on-surface);
-  outline: 1px solid var(--sys-color-neutral-outline);
-  outline-offset: -1px;
+  outline: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  outline-offset: calc(-1 * var(--sys-size-1));
   box-sizing: border-box;
   display: inline-block;
   flex: none;
-  margin: auto 2px;
+  margin: auto var(--sys-size-2);
   padding: 3px 6px;
   background: transparent;
-  border-radius: 6px;
+  border-radius: var(--sys-size-4);
   overflow: hidden;
   cursor: pointer;
   font-weight: 500;
-  font-size: 11px;
+  font-size: var(--sys-typescale-body5-size);
 }
 
 .filter-bitset-filter span:focus-visible {
@@ -18236,21 +18227,21 @@ var filter_css_default = `/*
 
 .filter-bitset-filter-divider {
   background-color: var(--sys-color-divider);
-  height: 16px;
-  width: 1px;
-  margin: auto 2px;
+  height: var(--sys-size-8);
+  width: var(--sys-size-1);
+  margin: auto var(--sys-size-2);
   display: inline-block;
 }
 
 .filter-checkbox-filter {
-  padding-left: 1px;
+  padding-left: var(--sys-size-1);
   padding-right: 7px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   display: inline-flex;
   vertical-align: middle;
-  height: 24px;
+  height: var(--sys-size-11);
   position: relative;
 }
 
@@ -18265,15 +18256,15 @@ var filter_css_default = `/*
 
 .filter-divider {
   background-color: var(--sys-color-divider);
-  width: 1px;
+  width: var(--sys-size-1);
   margin: 5px 4px;
-  height: 16px;
+  height: var(--sys-size-8);
 }
 
 .toolbar-button {
   white-space: nowrap;
   overflow: hidden;
-  min-width: 28px;
+  min-width: var(--sys-size-12);
   background: transparent;
   border-radius: 0;
 }
@@ -18290,7 +18281,7 @@ var filter_css_default = `/*
 }
 
 .toolbar-text {
-  margin: 0 4px 0 0;
+  margin: 0 var(--sys-size-3) 0 0;
   text-overflow: ellipsis;
   flex: auto;
   overflow: hidden;
@@ -18327,7 +18318,7 @@ var filter_css_default = `/*
   }
 
   &:focus-visible {
-    outline: 2px solid var(--sys-color-state-focus-ring);
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   }
 }
 
@@ -18346,20 +18337,20 @@ var filter_css_default = `/*
 // gen/front_end/ui/legacy/FilterBar.js
 var UIStrings16 = {
   /**
-   * @description Text to filter result items
+   * @description Tooltip text for the filter toggle button in the filter bar.
    */
   filter: "Filter",
   /**
-   * @description Text that appears when hover over the filter bar in the Network tool
+   * @description Placeholder text for the search input in the filter bar.
    */
   egSmalldUrlacomb: "e.g. `/small[d]+/ url:a.com/b`",
   /**
-   * @description Text that appears when hover over the All button in the Network tool
+   * @description Tooltip text for the filter buttons in the filter bar.
    * @example {Ctrl + } PH1
    */
   sclickToSelectMultipleTypes: "{PH1}Click to select multiple types",
   /**
-   * @description Text for everything
+   * @description Label for the option to show all types in a filter bar.
    */
   allStrings: "All"
 };
@@ -19233,31 +19224,31 @@ var listWidget_css_default = `/*
 // gen/front_end/ui/legacy/ListWidget.js
 var UIStrings17 = {
   /**
-   * @description Text on a button to start editing text
+   * @description Tooltip text for the edit button in a list widget.
    */
   editString: "Edit",
   /**
-   * @description Label for an item to remove something
+   * @description Tooltip text for the remove button in a list widget.
    */
   removeString: "Remove",
   /**
-   * @description Text to save something
+   * @description Button text to save changes when editing an item in a list widget.
    */
   saveString: "Save",
   /**
-   * @description Text to add something
+   * @description Button text to add a new item in a list widget.
    */
   addString: "Add",
   /**
-   * @description Text to cancel something
+   * @description Button text to cancel editing an item in a list widget.
    */
   cancelString: "Cancel",
   /**
-   * @description Text for screen reader to announce that an item has been saved.
+   * @description Announcement text for screen readers when changes to a list widget item are saved.
    */
   changesSaved: "Changes to item have been saved",
   /**
-   * @description Text for screen reader to announce that an item has been removed.
+   * @description Announcement text for screen readers when a list widget item is removed.
    */
   removedItem: "Item has been removed"
 };
@@ -20144,26 +20135,26 @@ var remoteDebuggingTerminatedScreen_css_default = `/*
 // gen/front_end/ui/legacy/RemoteDebuggingTerminatedScreen.js
 var UIStrings18 = {
   /**
-   * @description Text in a dialog box in DevTools stating that remote debugging has been terminated.
+   * @description Dialog title indicating that the remote debugging connection was closed.
    * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
    * (see https://developer.chrome.com/docs/devtools/remote-debugging/).
    */
   debuggingConnectionWasClosed: "Debugging connection was closed",
   /**
-   * @description Text in a dialog box in DevTools stating the reason for remote debugging being terminated.
+   * @description Text in a dialog stating the reason why the remote debugging connection was closed.
    * @example {target_closed} PH1
    */
   connectionClosedReason: "Reason: {PH1}.",
   /**
-   * @description Text in a dialog box showing how to reconnect to DevTools when remote debugging has been terminated.
+   * @description Instructions in a dialog on how to reconnect remote debugging by reopening DevTools.
    * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
    * (see https://developer.chrome.com/docs/devtools/remote-debugging/).
-   * "Reconnect when ready", refers to the state of the mobile device. The developer first has to put the mobile
-   * device back in a state where it can be inspected, before DevTools can reconnect to it.
+   * "Reconnect when ready" refers to the state of the mobile device: the developer first has to put the mobile
+   * device back in a state where it can be inspected before DevTools can reconnect to it.
    */
   reconnectWhenReadyByReopening: "Reconnect when ready by reopening DevTools.",
   /**
-   * @description Text on a button to reconnect Devtools when remote debugging terminated.
+   * @description Button text to reconnect DevTools when remote debugging is terminated.
    * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
    * (see https://developer.chrome.com/docs/devtools/remote-debugging/).
    */
@@ -20787,72 +20778,72 @@ var searchableView_css_default = `/*
 // gen/front_end/ui/legacy/SearchableView.js
 var UIStrings19 = {
   /**
-   * @description Text on a button to replace one instance with input text for the ctrl+F search bar
+   * @description Button text and placeholder to replace the current search match in the search bar.
    */
   replace: "Replace",
   /**
-   * @description Tooltip text on a toggle to enable replacing one instance with input text for the ctrl+F search bar
+   * @description Tooltip text and accessible label to enable find and replace in the search bar.
    */
   enableFindAndReplace: "Find and replace",
   /**
-   * @description Tooltip text on a toggle to disable replacing one instance with input text for the ctrl+F search bar
+   * @description Tooltip text and accessible label to disable find and replace in the search bar.
    */
   disableFindAndReplace: "Disable find and replace",
   /**
-   * @description Text to find an item
+   * @description Placeholder text for the search input in the search bar.
    */
   findString: "Find",
   /**
-   * @description Tooltip text on a button to search previous instance for the ctrl+F search bar
+   * @description Tooltip text and accessible label for the show previous result button in the search bar.
    */
   searchPrevious: "Show previous result",
   /**
-   * @description Tooltip text on a button to search next instance for the ctrl+F search bar
+   * @description Tooltip text and accessible label for the show next result button in the search bar.
    */
   searchNext: "Show next result",
   /**
-   * @description Tooltip text on a toggle to enable/disable search by matching the exact case.
+   * @description Tooltip text and accessible label for the match case toggle in the search bar.
    */
   matchCase: "Match case",
   /**
-   * @description Tooltip text on a toggle to enable/disable search by matching the exact word.
+   * @description Tooltip text and accessible label for the match whole word toggle in the search bar.
    */
   matchWholeWord: "Match whole word",
   /**
-   * @description Tooltip text on a toggle to enable/disable searching with regular expression.
+   * @description Tooltip text and accessible label for the regular expression toggle in the search bar.
    */
   useRegularExpression: "Use regular expression",
   /**
-   * @description Tooltip text on a button to close the search bar
+   * @description Tooltip text for the close button in the search bar.
    */
   closeSearchBar: "Close search bar",
   /**
-   * @description Text on a button to replace all instances with input text for the ctrl+F search bar
+   * @description Button text to replace all search matches in the search bar.
    */
   replaceAll: "Replace all",
   /**
-   * @description Text to indicate the current match index and the total number of matches for the ctrl+F search bar
+   * @description Text showing the current search match index and the total match count in the search bar.
    * @example {2} PH1
    * @example {3} PH2
    */
   dOfD: "{PH1} of {PH2}",
   /**
-   * @description Tooltip text to indicate the current match index and the total number of matches for the ctrl+F search bar
+   * @description Accessible label showing the current search match index and the total match count in the search bar.
    * @example {2} PH1
    * @example {3} PH2
    */
   accessibledOfD: "Shows result {PH1} of {PH2}",
   /**
-   * @description Text to indicate search result for the ctrl+F search bar
+   * @description Text indicating a single match in the search bar.
    */
   matchString: "1 match",
   /**
-   * @description Text to indicate search result for the ctrl+F search bar
+   * @description Text indicating multiple matches in the search bar.
    * @example {2} PH1
    */
   dMatches: "{PH1} matches",
   /**
-   * @description Text on a button to search previous instance for the ctrl+F search bar
+   * @description Tooltip text and accessible label for the clear input button in the search bar.
    */
   clearInput: "Clear"
 };
@@ -21491,7 +21482,7 @@ button.soft-dropdown:hover:not(:active) > .title {
 // gen/front_end/ui/legacy/SoftDropDown.js
 var UIStrings20 = {
   /**
-   * @description Placeholder text in Soft Drop Down
+   * @description Placeholder text in a dropdown when no item is selected.
    */
   noItemSelected: "(no item selected)"
 };
@@ -21789,11 +21780,11 @@ var targetCrashedScreen_css_default = `/*
 // gen/front_end/ui/legacy/TargetCrashedScreen.js
 var UIStrings21 = {
   /**
-   * @description Text in dialog box when the target page crashed
+   * @description Message shown when the inspected page crashes and DevTools is disconnected.
    */
   devtoolsWasDisconnectedFromThe: "DevTools was disconnected from the page.",
   /**
-   * @description Text content of content element
+   * @description Message explaining that DevTools will reconnect once the page is reloaded.
    */
   oncePageIsReloadedDevtoolsWill: "Once page is reloaded, DevTools will automatically reconnect."
 };
@@ -21849,7 +21840,7 @@ var treeoutline_css_default = `/*
 
 :host {
   flex: 1 1 auto;
-  padding: 2px 0 0;
+  padding: var(--sys-size-2) 0 0;
 }
 
 :host(devtools-tree) {
@@ -21862,14 +21853,14 @@ var treeoutline_css_default = `/*
 }
 
 .tree-outline {
-  padding: 0 0 4px 4px;
+  padding: 0 0 var(--sys-size-3) var(--sys-size-3);
   margin: 0;
   z-index: 0;
   position: relative;
 }
 
 .tree-outline:focus-visible {
-  box-shadow: 0 0 0 2px var(--sys-color-state-focus-ring) inset;
+  box-shadow: 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring) inset;
 }
 
 .tree-outline li .selection {
@@ -21889,8 +21880,8 @@ var treeoutline_css_default = `/*
 
 .tree-outline:not(.hide-selection-when-blurred) li.elements-drag-over .selection {
   display: block;
-  margin-top: -2px;
-  border-top: 2px solid;
+  margin-top: calc(-1 * var(--sys-size-2));
+  border-top: var(--sys-size-2) solid;
   border-top-color: var(--sys-color-tonal-container);
 }
 
@@ -21908,7 +21899,7 @@ var treeoutline_css_default = `/*
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.in-clipboard .highlight {
-  outline: 1px dotted var(--sys-color-neutral-outline);
+  outline: var(--sys-size-1) dotted var(--sys-color-neutral-outline);
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
@@ -21921,7 +21912,7 @@ ol.tree-outline,
 }
 
 .tree-outline ol {
-  padding-left: 12px;
+  padding-left: var(--sys-size-6);
 }
 
 .tree-outline li {
@@ -21930,7 +21921,7 @@ ol.tree-outline,
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 16px;
+  min-height: var(--sys-size-8);
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
@@ -21953,11 +21944,11 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
 }
 
 .tree-outline li .leading-icons {
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 .tree-outline li .trailing-icons {
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
 }
 
 .tree-outline li::before {
@@ -21988,8 +21979,8 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
 }
 
 .tree-outline.tree-outline-dense li {
-  margin-top: 1px;
-  min-height: 12px;
+  margin-top: var(--sys-size-1);
+  min-height: var(--sys-size-6);
 }
 
 .tree-outline.tree-outline-dense li.parent {
@@ -22006,7 +21997,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
 
 .tree-outline.hide-selection-when-blurred .selected:focus-visible {
   background: var(--sys-color-state-focus-highlight);
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
 }
 
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .selected:focus-visible {
@@ -22024,7 +22015,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
   height: var(--sys-size-10);
   margin-right: var(--sys-size-3);
   padding-right: var(--sys-size-3);
-  padding-left: 6px;
+  padding-left: var(--sys-size-4);
 
   &::before {
     flex-shrink: 0;

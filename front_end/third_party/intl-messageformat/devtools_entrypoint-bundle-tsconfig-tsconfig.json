@@ -45,7 +45,7 @@
   ],
   "references": [
     {
-      "path": "./intl-messageformat-tsconfig.json"
+      "path": "../../../../tsc/front_end/third_party/intl-messageformat/intl-messageformat-tsconfig.ref.json"
     }
   ]
 }

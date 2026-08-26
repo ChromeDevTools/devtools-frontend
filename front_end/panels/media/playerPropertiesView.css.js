@@ -10,13 +10,13 @@ export default `/*
  */
 
 .media-attributes-view {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .media-property-renderer {
-  line-height: 20px;
-  min-height: 28px;
-  padding: 4px 10px;
+  line-height: var(--sys-size-9);
+  min-height: var(--sys-size-12);
+  padding: var(--sys-size-3) 10px;
   display: block;
   overflow: hidden;
 
@@ -34,7 +34,7 @@ export default `/*
 }
 
 .media-property-renderer:has(.json-view > .expanded) {
-  padding-bottom: 4px;
+  padding-bottom: var(--sys-size-3);
 }
 
 .media-property-renderer-hidden {
@@ -42,7 +42,7 @@ export default `/*
 }
 
 .media-property-renderer-title {
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   float: left;
   width: 150px;
 }

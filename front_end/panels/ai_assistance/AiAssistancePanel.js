@@ -526,7 +526,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             const emptyStateSuggestions = await getEmptyStateSuggestions(this.#conversation);
             const markdownRenderer = getMarkdownRenderer(this.#conversation);
             let onContextAdd = null;
-            if (isAiAssistanceContextSelectionAgentEnabled() &&
+            if (AiAssistanceModel.AiUtils.isContextSelectionEnabled() &&
                 // Only add it the button if can have anything already selected
                 this.#getConversationContext(this.#getDefaultConversationType())) {
                 onContextAdd = this.#handleContextAdd.bind(this);
@@ -601,7 +601,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     onContextClick: this.#handleContextClick.bind(this),
                     onNewConversation: this.#handleNewChatRequest.bind(this),
                     onCopyResponseClick: this.#onCopyResponseClick.bind(this),
-                    onContextRemoved: isAiAssistanceContextSelectionAgentEnabled() ? this.#handleContextRemoved.bind(this) : null,
+                    onContextRemoved: AiAssistanceModel.AiUtils.isContextSelectionEnabled() ? this.#handleContextRemoved.bind(this) : null,
                     onContextAdd,
                     walkthrough: {
                         onToggle: this.#toggleWalkthrough.bind(this),
@@ -761,7 +761,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         else if (isApplicationPanelVisible && hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
             targetConversationType = "storage" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE */;
         }
-        if (isAiAssistanceContextSelectionAgentEnabled() && !targetConversationType) {
+        if (AiAssistanceModel.AiUtils.isContextSelectionEnabled() && !targetConversationType) {
             return "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */;
         }
         return targetConversationType;
@@ -827,7 +827,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             this.#conversation = conversation;
         }
         if (this.#conversation) {
-            if (this.#conversation.isEmpty && isAiAssistanceContextSelectionAgentEnabled()) {
+            if (this.#conversation.isEmpty && AiAssistanceModel.AiUtils.isContextSelectionEnabled()) {
                 const context = this.#getConversationContext(this.#getDefaultConversationType());
                 this.#conversation.setContext(context);
             }
@@ -836,7 +836,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 // Don't reset to the context selection agent if
                 // we remove context automatically.
                 // Require explicit user action.
-                if (context || !isAiAssistanceContextSelectionAgentEnabled()) {
+                if (context || !AiAssistanceModel.AiUtils.isContextSelectionEnabled()) {
                     this.#conversation.setContext(context);
                 }
             }
@@ -1000,7 +1000,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (!this.#conversation) {
             return true;
         }
-        if (!this.#conversation.selectedContext && !isAiAssistanceContextSelectionAgentEnabled()) {
+        if (!this.#conversation.selectedContext && !AiAssistanceModel.AiUtils.isContextSelectionEnabled()) {
             return true;
         }
         return false;
@@ -1351,17 +1351,19 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     }, 50);
                 }
             };
+            const handleAbort = () => {
+                resolve(null);
+                removeListeners();
+            };
             const removeListeners = () => {
                 UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, handleDOMNodeFlavorChange);
                 this.#toggleSearchElementAction?.removeEventListener("Toggled" /* UI.ActionRegistration.Events.TOGGLED */, handleInspectModeToggled);
+                this.#runAbortController.signal.removeEventListener('abort', handleAbort);
             };
             UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, handleDOMNodeFlavorChange);
             this.#toggleSearchElementAction?.addEventListener("Toggled" /* UI.ActionRegistration.Events.TOGGLED */, handleInspectModeToggled);
             // Clean-up listeners in case of abort.
-            this.#runAbortController.signal.addEventListener('abort', () => {
-                resolve(null);
-                removeListeners();
-            }, { once: true });
+            this.#runAbortController.signal.addEventListener('abort', handleAbort, { once: true });
         });
         void this.#toggleSearchElementAction.execute();
         try {
@@ -1687,9 +1689,6 @@ function isAiAssistanceMultimodalUploadInputEnabled() {
 }
 function isAiAssistanceMultimodalInputEnabled() {
     return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodal);
-}
-function isAiAssistanceContextSelectionAgentEnabled() {
-    return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 function isAiAssistanceServerSideLoggingEnabled() {
     return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;

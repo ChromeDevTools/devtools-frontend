@@ -50,7 +50,7 @@
   ],
   "references": [
     {
-      "path": "./locales_js-tsconfig.json"
+      "path": "../../../../tsc/front_end/core/i18n/locales_js-tsconfig.ref.json"
     },
     {
       "path": "../platform/bundle-tsconfig.ref.json"

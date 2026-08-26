@@ -15,12 +15,12 @@ export default `/*
 
 .color-swatch {
   position: relative;
-  margin-left: 1px;
-  margin-right: 2px;
-  width: 12px;
-  height: 12px;
+  margin-left: var(--sys-size-1);
+  margin-right: var(--sys-size-2);
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   transform: scale(0.8);
-  vertical-align: -2px;
+  vertical-align: calc(-1 * var(--sys-size-2));
   display: inline-block;
   user-select: none;
   background-image: var(--image-file-checker);
@@ -31,7 +31,7 @@ export default `/*
   width: 100%;
   height: 100%;
   display: inline-block;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   box-sizing: border-box;
   cursor: pointer;
 }
@@ -41,7 +41,7 @@ export default `/*
 }
 
 .color-swatch:not(.readonly) .color-swatch-inner:hover {
-  border: 1px solid var(--sys-color-outline);
+  border: var(--sys-size-1) solid var(--sys-color-outline);
 }
 
 @media (forced-colors: active) {

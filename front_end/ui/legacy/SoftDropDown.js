@@ -15,7 +15,7 @@ import softDropDownButtonStyles from './softDropDownButton.css.js';
 import { createShadowRootWithCoreStyles } from './UIUtils.js';
 const UIStrings = {
     /**
-     * @description Placeholder text in Soft Drop Down
+     * @description Placeholder text in a dropdown when no item is selected.
      */
     noItemSelected: '(no item selected)',
 };

@@ -843,8 +843,6 @@
   "front_end/panels/screencast/screencast.js",
   "front_end/panels/screencast/screencast-meta.js",
   "front_end/entrypoints/inspector/inspector.js",
-  "front_end/panels/js_timeline/js_timeline.js",
-  "front_end/panels/js_timeline/js_timeline-meta.js",
   "front_end/entrypoints/js_app/js_app.js",
   "front_end/entrypoints/lighthouse_worker/lighthouse_worker.js",
   "front_end/entrypoints/ndb_app/ndb_app.js",

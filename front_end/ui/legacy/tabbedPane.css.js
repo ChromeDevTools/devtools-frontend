@@ -139,9 +139,9 @@ export default `/*
     text-align: left;
 
     &:focus-visible {
-      outline: 2px solid var(--sys-color-state-focus-ring);
-      outline-offset: 2px;
-      border-radius: 2px;
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: var(--sys-size-2);
+      border-radius: var(--sys-size-2);
     }
   }
 }
@@ -149,7 +149,7 @@ export default `/*
 .tabbed-pane-header {
   display: flex;
   flex: 0 0 27px;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: visible;
   width: 100%;
   background-color: var(--app-color-toolbar-background);
@@ -172,7 +172,7 @@ export default `/*
 }
 
 .tabbed-pane-header-tab-icon {
-  min-width: 14px;
+  min-width: var(--sys-size-7);
   display: flex;
   align-items: center;
   margin-right: var(--sys-size-2);
@@ -277,7 +277,7 @@ export default `/*
   --override-dragging-box-shadow-color: rgb(0 0 0 / 37%);
 
   position: relative;
-  box-shadow: 0 1px 4px 0 var(--override-dragging-box-shadow-color);
+  box-shadow: 0 var(--sys-size-1) var(--sys-size-3) 0 var(--override-dragging-box-shadow-color);
   background-color: var(--app-color-toolbar-background);
 }
 
@@ -354,9 +354,9 @@ export default `/*
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab {
-  height: var(--size-12, 28px);
-  padding: 0 var(--size-8, 16px) 0 var(--size-7, 14px);
-  border-radius: 0 100px 100px 0;
+  height: var(--sys-size-12);
+  padding: 0 var(--sys-size-8) 0 var(--sys-size-7);
+  border-radius: 0 var(--sys-shape-corner-full) var(--sys-shape-corner-full) 0;
   color: var(--sys-color-on-surface);
   position: relative;
 
@@ -375,7 +375,7 @@ export default `/*
   }
 
   &:focus-visible {
-    outline: 2px solid var(--sys-color-state-focus-ring);
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   }
 
   &:active::before {
@@ -393,7 +393,7 @@ export default `/*
 .tabbed-pane-tab-slider {
   height: 3px;
   position: absolute;
-  bottom: -1px;
+  bottom: calc(-1 * var(--sys-size-1));
   background-color: var(--sys-color-primary);
   border-radius: var(--sys-shape-corner-full) var(--sys-shape-corner-full) 0 0;
   left: 0;
@@ -418,20 +418,20 @@ export default `/*
 }
 
 .tabbed-pane-left-toolbar {
-  margin-right: -4px;
+  margin-right: calc(-1 * var(--sys-size-3));
   flex: none;
 }
 
 .tabbed-pane-right-toolbar {
-  margin-left: -4px;
+  margin-left: calc(-1 * var(--sys-size-3));
   flex: none;
 }
 
 .preview-icon {
   --override-tabbed-pane-preview-icon-color: var(--icon-default);
 
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -451,7 +451,7 @@ export default `/*
 
   .tabbed-pane-header {
     forced-color-adjust: none;
-    border-bottom: 1px solid transparent;
+    border-bottom: var(--sys-size-1) solid transparent;
     background-color: ButtonFace;
   }
 
@@ -528,7 +528,7 @@ export default `/*
 
 .spark {
   position: absolute;
-  top: 2px;
+  top: var(--sys-size-2);
 
   --icon-default: var(--sys-color-primary);
 }

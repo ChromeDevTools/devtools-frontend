@@ -9,26 +9,26 @@ import remoteDebuggingTerminatedScreenStyles from './remoteDebuggingTerminatedSc
 import { VBox } from './Widget.js';
 const UIStrings = {
     /**
-     * @description Text in a dialog box in DevTools stating that remote debugging has been terminated.
+     * @description Dialog title indicating that the remote debugging connection was closed.
      * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
      * (see https://developer.chrome.com/docs/devtools/remote-debugging/).
      */
     debuggingConnectionWasClosed: 'Debugging connection was closed',
     /**
-     * @description Text in a dialog box in DevTools stating the reason for remote debugging being terminated.
+     * @description Text in a dialog stating the reason why the remote debugging connection was closed.
      * @example {target_closed} PH1
      */
     connectionClosedReason: 'Reason: {PH1}.',
     /**
-     * @description Text in a dialog box showing how to reconnect to DevTools when remote debugging has been terminated.
+     * @description Instructions in a dialog on how to reconnect remote debugging by reopening DevTools.
      * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
      * (see https://developer.chrome.com/docs/devtools/remote-debugging/).
-     * "Reconnect when ready", refers to the state of the mobile device. The developer first has to put the mobile
-     * device back in a state where it can be inspected, before DevTools can reconnect to it.
+     * "Reconnect when ready" refers to the state of the mobile device: the developer first has to put the mobile
+     * device back in a state where it can be inspected before DevTools can reconnect to it.
      */
     reconnectWhenReadyByReopening: 'Reconnect when ready by reopening DevTools.',
     /**
-     * @description Text on a button to reconnect Devtools when remote debugging terminated.
+     * @description Button text to reconnect DevTools when remote debugging is terminated.
      * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
      * (see https://developer.chrome.com/docs/devtools/remote-debugging/).
      */

@@ -5,31 +5,31 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 const UIStrings = {
     /**
-     * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Elements' panel.
+     * @description Badge label for an entry in the command menu that opens the Elements panel.
      */
     elements: 'Elements',
     /**
-     * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Drawer' panel.
+     * @description Badge label for an entry in the command menu that opens the drawer.
      */
     drawer: 'Drawer',
     /**
-     * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Drawer sidebar' panel.
+     * @description Badge label for an entry in the command menu that opens the drawer sidebar.
      */
     drawer_sidebar: 'Drawer sidebar',
     /**
-     * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Panel'.
+     * @description Badge label for an entry in the command menu that opens a panel.
      */
     panel: 'Panel',
     /**
-     * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Network' panel.
+     * @description Badge label for an entry in the command menu that opens the Network panel.
      */
     network: 'Network',
     /**
-     * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Settings' panel.
+     * @description Badge label for an entry in the command menu that opens the Settings panel.
      */
     settings: 'Settings',
     /**
-     * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Sources' panel.
+     * @description Badge label for an entry in the command menu that opens the Sources panel.
      */
     sources: 'Sources',
 };

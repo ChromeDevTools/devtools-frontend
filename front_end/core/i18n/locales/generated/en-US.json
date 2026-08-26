@@ -9023,30 +9023,6 @@
   "panels/issues/IssueView.ts | warned": {
     "message": "Warned"
   },
-  "panels/js_timeline/js_timeline-meta.ts | performance": {
-    "message": "Performance"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | record": {
-    "message": "Record"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | recordAndReload": {
-    "message": "Record and reload"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | showPerformance": {
-    "message": "Show Performance"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | showRecentTimelineSessions": {
-    "message": "Show recent timeline sessions"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | stop": {
-    "message": "Stop"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
-    "message": "Timeline debug mode (trace event details, etc.)"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
-    "message": "Show all events"
-  },
   "panels/layer_viewer/layer_viewer-meta.ts | paints": {
     "message": "Paints"
   },
@@ -17526,7 +17502,7 @@
     "message": "{PH1}, suggestion {PH2} of {PH3}"
   },
   "ui/legacy/ActionRegistration.ts | background_services": {
-    "message": "Background Services"
+    "message": "Background services"
   },
   "ui/legacy/ActionRegistration.ts | changes": {
     "message": "Changes"
@@ -17550,7 +17526,7 @@
     "message": "Help"
   },
   "ui/legacy/ActionRegistration.ts | javascript_profiler": {
-    "message": "JavaScript Profiler"
+    "message": "JavaScript profiler"
   },
   "ui/legacy/ActionRegistration.ts | layers": {
     "message": "Layers"
@@ -18249,7 +18225,7 @@
     "message": "Minimize drawer"
   },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
-    "message": "More Tools"
+    "message": "More tools"
   },
   "ui/legacy/InspectorDrawerView.ts | toggleDrawerOrientation": {
     "message": "Toggle drawer orientation"
@@ -18261,7 +18237,7 @@
     "message": "DevTools is now available in {PH1}"
   },
   "ui/legacy/InspectorView.ts | drawer": {
-    "message": "Tool drawer"
+    "message": "Drawer"
   },
   "ui/legacy/InspectorView.ts | drawerExpanded": {
     "message": "Drawer expanded"
@@ -18477,7 +18453,7 @@
     "message": "Another profiler is already active"
   },
   "ui/legacy/UIUtils.ts | asyncCall": {
-    "message": "Async Call"
+    "message": "Async call"
   },
   "ui/legacy/UIUtils.ts | cancel": {
     "message": "Cancel"

@@ -19,7 +19,7 @@
       "path": "./lit-tsconfig.ref.json"
     },
     {
-      "path": "../../third_party/lit/lit-tsconfig.json"
+      "path": "../../../../tsc/front_end/third_party/lit/lit-tsconfig.ref.json"
     },
     {
       "path": "../../third_party/lit/bundle-tsconfig.ref.json"

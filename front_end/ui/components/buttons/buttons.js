@@ -50,7 +50,7 @@ var button_css_default = `/*
 button {
   --hover-layer-color: var(--sys-color-state-hover-on-subtle);
   --active-layer-color: var(--sys-color-state-ripple-neutral-on-subtle);
-  --button-border-size: 1px;
+  --button-border-size: var(--sys-size-1);
   --button-height: var(--sys-size-11);
   --button-width: fit-content;
 
@@ -146,7 +146,7 @@ button {
 
     devtools-icon.long-click {
       position: absolute;
-      top: 2px;
+      top: var(--sys-size-2);
       left: 3px;
     }
 
@@ -346,21 +346,21 @@ button {
 
 .spinner {
   display: block;
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
-  border: 2px solid var(--sys-color-cdt-base-container);
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
+  border-radius: var(--sys-size-4);
+  border: var(--sys-size-2) solid var(--sys-color-cdt-base-container);
   animation: spinner-animation 1s linear infinite;
   border-right-color: transparent;
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 
   &.outlined {
-    border: 2px solid var(--sys-color-primary);
+    border: var(--sys-size-2) solid var(--sys-color-primary);
     border-right-color: transparent;
   }
 
   &.disabled {
-    border: 2px solid var(--sys-color-state-disabled);
+    border: var(--sys-size-2) solid var(--sys-color-state-disabled);
     border-right-color: transparent;
   }
 }
@@ -757,8 +757,8 @@ button {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--sys-color-state-focus-ring);
-    outline-offset: 2px;
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: var(--sys-size-2);
   }
 
   &:disabled > devtools-icon {
@@ -912,13 +912,13 @@ var textButton_css_default = `/*
  */
 
 .text-button {
-  margin: 2px;
-  height: 24px;
-  font-size: 12px;
+  margin: var(--sys-size-2);
+  height: var(--sys-size-11);
+  font-size: var(--sys-typescale-body4-size);
   font-family: var(--default-font-family);
-  border: 1px solid var(--sys-color-tonal-outline);
-  border-radius: 12px;
-  padding: 0 12px;
+  border: var(--sys-size-1) solid var(--sys-color-tonal-outline);
+  border-radius: var(--sys-shape-corner-medium-small);
+  padding: 0 var(--sys-size-6);
   font-weight: 500;
   color: var(--sys-color-primary);
   background-color: var(--sys-color-cdt-base-container);
@@ -937,7 +937,7 @@ var textButton_css_default = `/*
 }
 
 .text-button:not(:disabled, .primary-button):focus-visible {
-  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   color: var(--sys-color-on-primary);
   background-color: var(--sys-color-cdt-base-container);
 }
@@ -954,7 +954,7 @@ var textButton_css_default = `/*
   background: none;
   border: none;
   outline: none;
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
   margin: 0;
   padding: 0 !important; /* stylelint-disable-line declaration-no-important */
   font: inherit;
@@ -981,8 +981,8 @@ var textButton_css_default = `/*
 
 .text-button.primary-button:not(:disabled):focus-visible {
   background-color: var(--sys-color-primary);
-  outline-offset: 2px;
-  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline-offset: var(--sys-size-2);
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   color: var(--sys-color-on-primary);
 }
 
@@ -1006,7 +1006,7 @@ var textButton_css_default = `/*
     background-color: ButtonFace;
     color: Highlight !important; /* stylelint-disable-line declaration-no-important */
     border-color: Highlight;
-    outline: 2px solid ButtonText;
+    outline: var(--sys-size-2) solid ButtonText;
     box-shadow: var(--legacy-focus-ring-active-shadow);
   }
 
@@ -1022,7 +1022,7 @@ var textButton_css_default = `/*
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;
-    border: 1px solid Highlight;
+    border: var(--sys-size-1) solid Highlight;
   }
 
   .text-button.primary-button:not(:disabled):focus-visible {

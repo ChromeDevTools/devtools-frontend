@@ -531,15 +531,22 @@ export class AiAgent {
             if (options?.signal?.aborted) {
                 sideEffectConfirmationPromiseWithResolvers.resolve(false);
             }
-            options?.signal?.addEventListener('abort', () => {
+            const onAbort = () => {
                 sideEffectConfirmationPromiseWithResolvers.resolve(false);
-            }, { once: true });
+            };
+            options?.signal?.addEventListener('abort', onAbort, { once: true });
             yield {
                 type: "side-effect" /* ResponseType.SIDE_EFFECT */,
                 confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
                 description: result.description,
             };
-            const approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
+            let approvedRun = false;
+            try {
+                approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
+            }
+            finally {
+                options?.signal?.removeEventListener('abort', onAbort);
+            }
             if (!approvedRun) {
                 yield {
                     type: "action" /* ResponseType.ACTION */,

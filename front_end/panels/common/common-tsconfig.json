@@ -54,7 +54,7 @@
   ],
   "references": [
     {
-      "path": "../../../extension-api/extension-api-tsconfig.json"
+      "path": "../../../../tsc/extension-api/extension-api-tsconfig.ref.json"
     },
     {
       "path": "../../core/common/bundle-tsconfig.ref.json"

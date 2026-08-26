@@ -9,9 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import { Directives, html, render } from '../lit/lit.js';
 const UIStrings = {
     /**
-     * @description Default tooltip / accessible name of the "plus" button shown
-     * after the visible tabs in a tab strip. Clicking it opens a menu listing
-     * tools that are not currently shown as a visible tab.
+     * @description Default tooltip and accessible name for the plus button shown in a tab strip.
      */
     moreTools: 'More tools',
 };

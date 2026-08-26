@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "./web-vitals-tsconfig.json"
+      "path": "../../../../tsc/front_end/third_party/web-vitals/web-vitals-tsconfig.ref.json"
     }
   ]
 }

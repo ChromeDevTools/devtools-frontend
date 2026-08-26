@@ -1178,12 +1178,12 @@ var colorSwatch_css_default = `/*
 
 .color-swatch {
   position: relative;
-  margin-left: 1px;
-  margin-right: 2px;
-  width: 12px;
-  height: 12px;
+  margin-left: var(--sys-size-1);
+  margin-right: var(--sys-size-2);
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   transform: scale(0.8);
-  vertical-align: -2px;
+  vertical-align: calc(-1 * var(--sys-size-2));
   display: inline-block;
   user-select: none;
   background-image: var(--image-file-checker);
@@ -1194,7 +1194,7 @@ var colorSwatch_css_default = `/*
   width: 100%;
   height: 100%;
   display: inline-block;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   box-sizing: border-box;
   cursor: pointer;
 }
@@ -1204,7 +1204,7 @@ var colorSwatch_css_default = `/*
 }
 
 .color-swatch:not(.readonly) .color-swatch-inner:hover {
-  border: 1px solid var(--sys-color-outline);
+  border: var(--sys-size-1) solid var(--sys-color-outline);
 }
 
 @media (forced-colors: active) {
@@ -1374,7 +1374,7 @@ var cssAngleEditor_css_default = `/*
 }
 
 .clock {
-  top: 6px;
+  top: var(--sys-size-4);
   width: 6em;
   height: 6em;
   background-color: var(--sys-color-cdt-base-container);
@@ -1386,7 +1386,7 @@ var cssAngleEditor_css_default = `/*
 
 .center,
 .hand {
-  box-shadow: 0 0 2px var(--box-shadow-outline-color);
+  box-shadow: 0 0 var(--sys-size-2) var(--box-shadow-outline-color);
 }
 
 .pointer {
@@ -1416,10 +1416,10 @@ var cssAngleEditor_css_default = `/*
 }
 
 .dial {
-  width: 2px;
+  width: var(--sys-size-2);
   height: var(--clock-dial-length);
   background-color: var(--override-dial-color);
-  border-radius: 1px;
+  border-radius: var(--sys-size-1);
 }
 
 .hand {
@@ -1454,7 +1454,7 @@ var cssAngleEditor_css_default = `/*
 :host-context(.theme-with-dark-background) .center,
 :host-context(.theme-with-dark-background) .hand {
   /* stylelint-disable-next-line plugin/use_theme_colors */
-  box-shadow: 0 0 2px hsl(0deg 0% 0% / 60%);
+  box-shadow: 0 0 var(--sys-size-2) hsl(0deg 0% 0% / 60%);
 }
 
 :host-context(.theme-with-dark-background) .clock {
@@ -2042,18 +2042,18 @@ var cssShadowEditor_css_default = `/*
 
 :host {
   user-select: none;
-  border: 1px solid transparent;
+  border: var(--sys-size-1) solid transparent;
 }
 
 .shadow-editor-field {
-  height: 24px;
-  margin-top: 8px;
-  font-size: 12px;
+  height: var(--sys-size-11);
+  margin-top: var(--sys-size-5);
+  font-size: var(--sys-typescale-body4-size);
   flex-shrink: 0;
 }
 
 .shadow-editor-field:last-of-type {
-  margin-bottom: 8px;
+  margin-bottom: var(--sys-size-5);
 }
 
 .shadow-editor-flex-field {
@@ -2063,33 +2063,33 @@ var cssShadowEditor_css_default = `/*
 }
 
 .shadow-editor-field.shadow-editor-blur-field {
-  margin-top: 40px;
+  margin-top: var(--sys-size-14);
 }
 
 .shadow-editor-2D-slider {
   position: absolute;
   height: 88px;
   width: 88px;
-  border: 1px solid var(--divider-line);
-  border-radius: 2px;
+  border: var(--sys-size-1) solid var(--divider-line);
+  border-radius: var(--sys-size-2);
 }
 
 .shadow-editor-label {
   display: inline-block;
   width: 52px;
-  height: 24px;
-  line-height: 24px;
-  margin-right: 8px;
+  height: var(--sys-size-11);
+  line-height: var(--sys-size-11);
+  margin-right: var(--sys-size-5);
   text-align: right;
 }
 
 .shadow-editor-button-left,
 .shadow-editor-button-right {
   width: 74px;
-  height: 24px;
+  height: var(--sys-size-11);
   padding: 3px 7px;
-  line-height: 16px;
-  border: 1px solid var(--divider-line);
+  line-height: var(--sys-size-8);
+  border: var(--sys-size-1) solid var(--divider-line);
   color: var(--sys-color-on-surface);
   background-color: var(--sys-color-cdt-base-container);
   text-align: center;
@@ -2097,17 +2097,17 @@ var cssShadowEditor_css_default = `/*
 }
 
 .shadow-editor-button-left {
-  border-radius: 2px 0 0 2px;
+  border-radius: var(--sys-size-2) 0 0 var(--sys-size-2);
 }
 
 .shadow-editor-button-right {
-  border-radius: 0 2px 2px 0;
+  border-radius: 0 var(--sys-size-2) var(--sys-size-2) 0;
   border-left-width: 0;
 }
 
 .shadow-editor-button-left:hover,
 .shadow-editor-button-right:hover {
-  box-shadow: 0 1px 1px var(--color-background-elevation-1);
+  box-shadow: 0 var(--sys-size-1) var(--sys-size-1) var(--color-background-elevation-1);
 }
 
 .shadow-editor-button-left:focus,
@@ -2130,7 +2130,7 @@ var cssShadowEditor_css_default = `/*
 
 .shadow-editor-text-input {
   width: 52px;
-  margin-right: 8px;
+  margin-right: var(--sys-size-5);
   text-align: right;
   box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }

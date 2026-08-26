@@ -6,9 +6,10 @@ import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import type { MarkerDecoratorRegistration } from './MarkerDecorator.js';
 import { TopLayerContainer } from './TopLayerContainer.js';
-export type View = typeof DEFAULT_VIEW;
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export { elementsTreeOutlineStyles };
 interface ViewInput {
+    rootDOMNode: SDK.DOMModel.DOMNode | null;
     omitRootDOMNode: boolean;
     selectEnabled: boolean;
     hideGutter: boolean;
@@ -34,6 +35,13 @@ interface ViewInput {
     onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void;
     onElementCollapsed: () => void;
     onElementExpanded: () => void;
+    onSelect?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
+    onExpand?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
+    onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
+    onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => void;
+    isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
+    onDuplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
+    isNodeExpanded?: (node: SDK.DOMModel.DOMNode) => boolean;
 }
 interface ViewOutput {
     elementsTreeOutline?: ElementsTreeOutline;
@@ -43,6 +51,7 @@ interface ViewOutput {
     alreadyExpandedParentTreeElement: ElementsTreeElement | null;
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DECLARATIVE_VIEW: View;
 /**
  * The main goal of this presenter is to wrap ElementsTreeOutline until
  * ElementsTreeOutline can be fully integrated into DOMTreeWidget.
@@ -63,6 +72,8 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
         focus: boolean;
     }>) => void;
     onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void;
+    onElementCollapsed: () => void;
+    onElementExpanded: () => void;
     onDocumentUpdated: (domModel: SDK.DOMModel.DOMModel) => void;
     set maxRows(maxRows: number | undefined);
     get maxRows(): number | undefined;
@@ -88,6 +99,8 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     set wrap(wrap: boolean);
     setWordWrap(wrap: boolean): void;
     selectedDOMNode(): SDK.DOMModel.DOMNode | null;
+    setNodeExpanded(node: SDK.DOMModel.DOMNode, expanded: boolean): void;
+    isNodeExpanded(node: SDK.DOMModel.DOMNode): boolean;
     /**
      * FIXME: this is called to re-render everything from scratch, for
      * example, if global settings changed. Instead, the setting values

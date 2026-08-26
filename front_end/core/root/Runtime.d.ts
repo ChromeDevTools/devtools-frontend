@@ -345,6 +345,6 @@ export declare const hostConfig: Platform.TypeScriptUtilities.RecursiveReadonly<
  */
 export type Condition = (config?: HostConfig) => boolean;
 export declare const conditions: {
-    canDock: () => boolean;
+    canDock: Condition;
 };
 export {};

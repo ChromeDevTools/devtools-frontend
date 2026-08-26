@@ -27,84 +27,77 @@ import { ViewManager } from './ViewManager.js';
 import { VBox, WidgetFocusRestorer } from './Widget.js';
 const UIStrings = {
     /**
-     * @description The aria label for the drawer minimized.
+     * @description Announcement text for screen readers when the drawer is minimized.
      */
     drawerMinimized: 'Drawer minimized',
     /**
-     * @description The aria label for the drawer expanded.
+     * @description Announcement text for screen readers when the drawer is expanded.
      */
     drawerExpanded: 'Drawer expanded',
     /**
-     * @description The ARIA label for the main tab bar that contains the DevTools panels
+     * @description Accessible label for the main tab bar that contains panels.
      */
     panels: 'Panels',
     /**
-     * @description Title of an action that reloads the tab currently being debugged by DevTools
+     * @description Button text in an infobar to reload the inspected page.
      */
     reloadDebuggedTab: 'Reload page',
     /**
-     * @description Title of an action that reloads the DevTools
+     * @description Button text in an infobar to reload DevTools.
      */
     reloadDevtools: 'Reload DevTools',
     /**
-     * @description Title of an action that restarts Chrome
+     * @description Button text in an infobar to restart Chrome.
      */
     restartChrome: 'Restart Chrome',
     /**
-     * @description Confirmation dialog text for restarting Chrome
+     * @description Confirmation prompt text when restarting Chrome.
      */
     areYouSureYouWantToRestartChrome: 'Are you sure you want to restart Chrome?',
     /**
-     * @description Text for context menu action to move a tab to the main tab bar
+     * @description Context menu item to move a tab to the main tab bar.
      */
     moveToMainTabBar: 'Move to main tab bar',
     /**
-     * @description Text for context menu action to move a tab to the drawer
+     * @description Context menu item to move a tab to the drawer.
      */
     moveToDrawer: 'Move to drawer',
     /**
-     * @description Text shown in a prompt to the user when DevTools is started and the
-     * currently selected DevTools locale does not match Chrome's locale.
-     * The placeholder is the current Chrome language.
+     * @description Infobar message shown when the DevTools language does not match the browser language.
      * @example {German} PH1
      */
     devToolsLanguageMissmatch: 'DevTools is now available in {PH1}',
     /**
-     * @description An option the user can select when we notice that DevTools
-     * is configured with a different locale than Chrome. This option means DevTools will
-     * always try and display the DevTools UI in the same language as Chrome.
+     * @description Button text in an infobar to configure DevTools to match the browser language.
      */
     setToBrowserLanguage: 'Always match Chrome’s language',
     /**
-     * @description An option the user can select when DevTools notices that DevTools
-     * is configured with a different locale than Chrome. This option means DevTools UI
-     * will be switched to the language specified in the placeholder.
+     * @description Button text in an infobar to switch DevTools to a specific language.
      * @example {German} PH1
      */
     setToSpecificLanguage: 'Switch DevTools to {PH1}',
     /**
-     * @description The aria label for main toolbar
+     * @description Accessible label for the main toolbar.
      */
     mainToolbar: 'Main toolbar',
     /**
-     * @description The aria label for the drawer.
+     * @description Accessible label for the drawer.
      */
-    drawer: 'Tool drawer',
+    drawer: 'Drawer',
     /**
-     * @description The aria label for the drawer shown.
+     * @description Announcement text for screen readers when the drawer is shown.
      */
     drawerShown: 'Drawer shown',
     /**
-     * @description The aria label for the drawer hidden.
+     * @description Announcement text for screen readers when the drawer is hidden.
      */
     drawerHidden: 'Drawer hidden',
     /**
-     * @description Request for the user to select a local file system folder for DevTools
-     * to store local overrides in.
+     * @description Infobar message prompting the user to select a folder for local overrides.
      */
     selectOverrideFolder: 'Select a folder to store override files in',
     /**
-     * @description Label for a button which opens a file picker.
+     * @description Button text in an infobar to open a folder picker for local overrides.
      */
     selectFolder: 'Select folder',
 };

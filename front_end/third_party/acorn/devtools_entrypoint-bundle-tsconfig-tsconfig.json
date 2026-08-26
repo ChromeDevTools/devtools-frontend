@@ -45,10 +45,10 @@
   ],
   "references": [
     {
-      "path": "./acorn-tsconfig.json"
+      "path": "../../../../tsc/front_end/third_party/acorn/acorn-tsconfig.ref.json"
     },
     {
-      "path": "./estree-tsconfig.json"
+      "path": "../../../../tsc/front_end/third_party/acorn/estree-tsconfig.ref.json"
     }
   ]
 }

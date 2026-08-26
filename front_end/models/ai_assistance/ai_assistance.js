@@ -22,6 +22,7 @@ __export(AiUtils_exports, {
   consoleInsightsEnabledSettingDescriptor: () => consoleInsightsEnabledSettingDescriptor,
   getDisabledReasons: () => getDisabledReasons,
   getIconName: () => getIconName,
+  isContextSelectionEnabled: () => isContextSelectionEnabled,
   isGeminiBranding: () => isGeminiBranding,
   isSameOrigin: () => isSameOrigin,
   runOneShotPrompt: () => runOneShotPrompt
@@ -184,6 +185,9 @@ var aiAssistanceV2OptInChangeDialogSeenSettingDescriptor = {
 };
 function isGeminiBranding() {
   return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
+}
+function isContextSelectionEnabled() {
+  return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) || Boolean(Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
 }
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
@@ -2179,15 +2183,21 @@ var AiAgent = class {
       if (options?.signal?.aborted) {
         sideEffectConfirmationPromiseWithResolvers.resolve(false);
       }
-      options?.signal?.addEventListener("abort", () => {
+      const onAbort = () => {
         sideEffectConfirmationPromiseWithResolvers.resolve(false);
-      }, { once: true });
+      };
+      options?.signal?.addEventListener("abort", onAbort, { once: true });
       yield {
         type: "side-effect",
         confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
         description: result.description
       };
-      const approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
+      let approvedRun = false;
+      try {
+        approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
+      } finally {
+        options?.signal?.removeEventListener("abort", onAbort);
+      }
       if (!approvedRun) {
         yield {
           type: "action",
@@ -10935,7 +10945,7 @@ var skill6 = {
     "executeJavaScript",
     "getStyles"
   ],
-  "instructions": 'You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.\nYou always suggest considering the best web development practices and the newest platform features such as view transitions.\nThe user selected a DOM element in the browser\'s DevTools and sends a query about the page or the selected DOM element.\nFirst, examine the provided context, then use the getStyles and executeJavaScript functions to gather additional context and resolve the user request.\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before moving on. Gather comprehensive information about the element\'s parent, siblings, children, and any overlapping elements, paying close attention to properties that are likely relevant to the query.\n* Be aware of the different node types (element, text, comment, document fragment, etc.) and their properties. You will always be provided with information about node types of parent, siblings and children of the selected element.\n* Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.\n* Always explore multiple possible explanations for the observed behavior before settling on a conclusion.\n* When presenting solutions, clearly distinguish between the primary cause and contributing factors.\n* Please answer only if you are sure about the answer. Otherwise, explain why you\'re not able to answer.\n* When answering, always consider MULTIPLE possible solutions.\n* When answering, remember to consider CSS concepts such as the CSS cascade, explicit and implicit stacking contexts and various CSS layout types.\n* Use the functions available to you to investigate and fulfill the user request.\n* After applying a fix, please ask the user to confirm if the fix worked or not.\n* ALWAYS OUTPUT a list of follow-up queries at the end of your text response. The format is SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]. Make sure that the array and the `SUGGESTIONS: ` text is in the same line. You\'re also capable of executing the fix for the issue user mentioned. Reflect this in your suggestions.\n* Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don\'t add repeated information, and keep the whole answer short.\n* **CRITICAL** NEVER output text before a function call. Always do a function call first.\n* **CRITICAL** When answering questions about positioning or layout, ALWAYS inspect `position`, `display` and all other related properties. You MUST provide a specific list of CSS property names when calling getStyles. Do not use generic values like "all" or "*".\n* **CRITICAL** When writing JavaScript via the `executeJavaScript` tool:\n    - To return data, define a top-level `data` variable and populate it with a JSON-serializable object.\n    - If you modify styles on an element, ALWAYS call the pre-defined global `async setElementStyles(el: Element, styles: object)` function. This function is an internal mechanism and should never be presented to the user.\n    - Never assume a selector for the elements unless you verified your knowledge.\n    - Consider that `data` variables from previous function calls are not available in a new function call.\n* **CRITICAL** You are a CSS/DOM/HTML debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can\'t answer that. I\'m best at questions about debugging web pages." to such questions.\n\n## Response Structure\n\nIf the user asks a question that requires an investigation of a problem, use this structure:\n- If available, point out the root cause(s) of the problem.\n  - Example: "**Root Cause**: The page is slow because of [reason]."\n    - Example: "**Root Causes**:"\n      - [Reason 1]\n      - [Reason 2]\n- if applicable, list actionable solution suggestion(s) in order of impact:\n  - Example: "**Suggestion**: [Suggestion 1]\n    - Example: "**Suggestions**:"\n      - [Suggestion 1]\n      - [Suggestion 2]'
+  "instructions": 'You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.\nYou always suggest considering the best web development practices and the newest platform features such as view transitions.\nThe user selected a DOM element in the browser\'s DevTools and sends a query about the page or the selected DOM element.\nFirst, examine the provided context, then use the getStyles and executeJavaScript functions to gather additional context and resolve the user request.\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before moving on. Gather comprehensive information about the element\'s parent, siblings, children, and any overlapping elements, paying close attention to properties that are likely relevant to the query.\n* Be aware of the different node types (element, text, comment, document fragment, etc.) and their properties. You will always be provided with information about node types of parent, siblings and children of the selected element.\n* Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.\n* Always explore multiple possible explanations for the observed behavior before settling on a conclusion.\n* When presenting solutions, clearly distinguish between the primary cause and contributing factors.\n* Please answer only if you are sure about the answer. Otherwise, explain why you\'re not able to answer.\n* When answering, always consider MULTIPLE possible solutions.\n* When answering, remember to consider CSS concepts such as the CSS cascade, explicit and implicit stacking contexts and various CSS layout types.\n* Use the functions available to you to investigate and fulfill the user request.\n* After applying a fix, please ask the user to confirm if the fix worked or not.\n* Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don\'t add repeated information, and keep the whole answer short.\n* **CRITICAL** NEVER output text before a function call. Always do a function call first.\n* **CRITICAL** When answering questions about positioning or layout, ALWAYS inspect `position`, `display` and all other related properties. You MUST provide a specific list of CSS property names when calling getStyles. Do not use generic values like "all" or "*".\n* **CRITICAL** When writing JavaScript via the `executeJavaScript` tool:\n    - To return data, define a top-level `data` variable and populate it with a JSON-serializable object.\n    - If you modify styles on an element, ALWAYS call the pre-defined global `async setElementStyles(el: Element, styles: object)` function. This function is an internal mechanism and should never be presented to the user.\n    - Never assume a selector for the elements unless you verified your knowledge.\n    - Consider that `data` variables from previous function calls are not available in a new function call.\n* **CRITICAL** You are a CSS/DOM/HTML debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can\'t answer that. I\'m best at questions about debugging web pages." to such questions.\n\n## Response Structure\n\nIf the user asks a question that requires an investigation of a problem, use this structure:\n- If available, point out the root cause(s) of the problem.\n  - Example: "**Root Cause**: The page is slow because of [reason]."\n    - Example: "**Root Causes**:"\n      - [Reason 1]\n      - [Reason 2]\n- if applicable, list actionable solution suggestion(s) in order of impact:\n  - Example: "**Suggestion**: [Suggestion 1]\n    - Example: "**Suggestions**:"\n      - [Suggestion 1]\n      - [Suggestion 2]'
 };
 
 // gen/front_end/models/ai_assistance/skills/SkillRegistry.js
@@ -10978,6 +10988,11 @@ If the user asks a question that requires an investigation or debugging, use thi
   - Example: "**Root Cause**: [reason]" or "**Root Causes**:" followed by a bulleted list.
 * **Suggestion(s)**: List actionable solution suggestion(s) in order of impact.
   - Example: "**Suggestion**: [Suggestion]" or "**Suggestions**:" followed by a bulleted list.
+
+# Follow-up Suggestions
+* Output a list of suggested follow-up queries or actions for the user at the very end of your response.
+* The format MUST be SUGGESTIONS: ["suggestion 1", "suggestion 2"] on its own single line.
+* Ensure suggestions are relevant, concise, and helpful next steps for the user.
 
 # Constraints
 * **CRITICAL**: You are a web development assistant. NEVER provide answers to questions of unrelated topics (such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non-web-development topics). If asked about these, respond with: "Sorry, I can't answer that. I'm best at questions about web development and debugging."
@@ -11500,7 +11515,7 @@ var AiConversation = class _AiConversation {
   setContext(updateContext) {
     if (!updateContext) {
       this.#contexts = [];
-      if (isAiAssistanceContextSelectionEnabled()) {
+      if (isContextSelectionEnabled()) {
         this.#updateAgent(
           "none"
           /* ConversationType.NONE */
@@ -11509,7 +11524,7 @@ var AiConversation = class _AiConversation {
       return;
     }
     this.#contexts = [updateContext];
-    if (isAiAssistanceContextSelectionEnabled()) {
+    if (isContextSelectionEnabled()) {
       if (updateContext instanceof FileContext) {
         this.#updateAgent(
           "drjones-file"
@@ -11827,9 +11842,6 @@ Original user query: ${initialQuery}`;
 };
 function isAiAssistanceServerSideLoggingAllowed() {
   return !Root14.Runtime.hostConfig.aidaAvailability?.disallowLogging;
-}
-function isAiAssistanceContextSelectionEnabled() {
-  return Boolean(Root14.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) || Boolean(Root14.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
 }
 function getPrimaryPageOrigin(targetManager) {
   const target = targetManager.primaryPageTarget();

@@ -103,6 +103,21 @@ export function isGeminiBranding() {
     return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }
 /**
+ * Returns true if context selection / dynamic context switching is enabled.
+ *
+ * In the legacy V1 architecture, this corresponds to the `ContextSelectionAgent`,
+ * which dynamically routes conversations and allows changing the active context.
+ * In the unified V2 architecture (`AiAgent2`), dynamic context selection is natively
+ * supported across the single agent instance.
+ *
+ * This bridge function checks either flag during the transition phase and can be
+ * removed in the future when V2 ships permanently and the V1 architecture is removed.
+ */
+export function isContextSelectionEnabled() {
+    return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) ||
+        Boolean(Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
+}
+/**
  * Returns the list of active preconditions currently preventing AI assistance from being enabled.
  * Checks local frontend constraints (e.g. incognito, age check) and combines them with the
  * provided AIDA service availability status.

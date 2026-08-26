@@ -11,7 +11,7 @@ export default `/*
 
 :host {
   flex: 1 1 auto;
-  padding: 2px 0 0;
+  padding: var(--sys-size-2) 0 0;
 }
 
 :host(devtools-tree) {
@@ -24,14 +24,14 @@ export default `/*
 }
 
 .tree-outline {
-  padding: 0 0 4px 4px;
+  padding: 0 0 var(--sys-size-3) var(--sys-size-3);
   margin: 0;
   z-index: 0;
   position: relative;
 }
 
 .tree-outline:focus-visible {
-  box-shadow: 0 0 0 2px var(--sys-color-state-focus-ring) inset;
+  box-shadow: 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring) inset;
 }
 
 .tree-outline li .selection {
@@ -51,8 +51,8 @@ export default `/*
 
 .tree-outline:not(.hide-selection-when-blurred) li.elements-drag-over .selection {
   display: block;
-  margin-top: -2px;
-  border-top: 2px solid;
+  margin-top: calc(-1 * var(--sys-size-2));
+  border-top: var(--sys-size-2) solid;
   border-top-color: var(--sys-color-tonal-container);
 }
 
@@ -70,7 +70,7 @@ export default `/*
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.in-clipboard .highlight {
-  outline: 1px dotted var(--sys-color-neutral-outline);
+  outline: var(--sys-size-1) dotted var(--sys-color-neutral-outline);
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
@@ -83,7 +83,7 @@ ol.tree-outline,
 }
 
 .tree-outline ol {
-  padding-left: 12px;
+  padding-left: var(--sys-size-6);
 }
 
 .tree-outline li {
@@ -92,7 +92,7 @@ ol.tree-outline,
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 16px;
+  min-height: var(--sys-size-8);
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
@@ -115,11 +115,11 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
 }
 
 .tree-outline li .leading-icons {
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 .tree-outline li .trailing-icons {
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
 }
 
 .tree-outline li::before {
@@ -150,8 +150,8 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
 }
 
 .tree-outline.tree-outline-dense li {
-  margin-top: 1px;
-  min-height: 12px;
+  margin-top: var(--sys-size-1);
+  min-height: var(--sys-size-6);
 }
 
 .tree-outline.tree-outline-dense li.parent {
@@ -168,7 +168,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
 
 .tree-outline.hide-selection-when-blurred .selected:focus-visible {
   background: var(--sys-color-state-focus-highlight);
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
 }
 
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .selected:focus-visible {
@@ -186,7 +186,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
   height: var(--sys-size-10);
   margin-right: var(--sys-size-3);
   padding-right: var(--sys-size-3);
-  padding-left: 6px;
+  padding-left: var(--sys-size-4);
 
   &::before {
     flex-shrink: 0;

@@ -14,14 +14,14 @@ import suggestBoxStyles from './suggestBox.css.js';
 import { createShadowRootWithCoreStyles, measuredScrollbarWidth, measurePreferredSize } from './UIUtils.js';
 const UIStrings = {
     /**
-     * @description Aria alert to read the suggestion for the suggestion box when typing in text editor
+     * @description Announcement text for screen readers when navigating suggestions in a suggestion box.
      * @example {name} PH1
      * @example {2} PH2
      * @example {5} PH3
      */
     sSuggestionSOfS: '{PH1}, suggestion {PH2} of {PH3}',
     /**
-     * @description Aria alert to confirm the suggestion when it is selected from the suggestion box
+     * @description Announcement text for screen readers when a suggestion is selected in a suggestion box.
      * @example {name} PH1
      */
     sSuggestionSSelected: '{PH1}, suggestion selected',

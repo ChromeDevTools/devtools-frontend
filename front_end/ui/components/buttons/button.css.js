@@ -39,7 +39,7 @@ export default `/*
 button {
   --hover-layer-color: var(--sys-color-state-hover-on-subtle);
   --active-layer-color: var(--sys-color-state-ripple-neutral-on-subtle);
-  --button-border-size: 1px;
+  --button-border-size: var(--sys-size-1);
   --button-height: var(--sys-size-11);
   --button-width: fit-content;
 
@@ -135,7 +135,7 @@ button {
 
     devtools-icon.long-click {
       position: absolute;
-      top: 2px;
+      top: var(--sys-size-2);
       left: 3px;
     }
 
@@ -335,21 +335,21 @@ button {
 
 .spinner {
   display: block;
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
-  border: 2px solid var(--sys-color-cdt-base-container);
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
+  border-radius: var(--sys-size-4);
+  border: var(--sys-size-2) solid var(--sys-color-cdt-base-container);
   animation: spinner-animation 1s linear infinite;
   border-right-color: transparent;
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 
   &.outlined {
-    border: 2px solid var(--sys-color-primary);
+    border: var(--sys-size-2) solid var(--sys-color-primary);
     border-right-color: transparent;
   }
 
   &.disabled {
-    border: 2px solid var(--sys-color-state-disabled);
+    border: var(--sys-size-2) solid var(--sys-color-state-disabled);
     border-right-color: transparent;
   }
 }

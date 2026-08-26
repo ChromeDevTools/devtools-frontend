@@ -10,13 +10,13 @@ export default `/*
  */
 
 .text-button {
-  margin: 2px;
-  height: 24px;
-  font-size: 12px;
+  margin: var(--sys-size-2);
+  height: var(--sys-size-11);
+  font-size: var(--sys-typescale-body4-size);
   font-family: var(--default-font-family);
-  border: 1px solid var(--sys-color-tonal-outline);
-  border-radius: 12px;
-  padding: 0 12px;
+  border: var(--sys-size-1) solid var(--sys-color-tonal-outline);
+  border-radius: var(--sys-shape-corner-medium-small);
+  padding: 0 var(--sys-size-6);
   font-weight: 500;
   color: var(--sys-color-primary);
   background-color: var(--sys-color-cdt-base-container);
@@ -35,7 +35,7 @@ export default `/*
 }
 
 .text-button:not(:disabled, .primary-button):focus-visible {
-  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   color: var(--sys-color-on-primary);
   background-color: var(--sys-color-cdt-base-container);
 }
@@ -52,7 +52,7 @@ export default `/*
   background: none;
   border: none;
   outline: none;
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
   margin: 0;
   padding: 0 !important; /* stylelint-disable-line declaration-no-important */
   font: inherit;
@@ -79,8 +79,8 @@ export default `/*
 
 .text-button.primary-button:not(:disabled):focus-visible {
   background-color: var(--sys-color-primary);
-  outline-offset: 2px;
-  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline-offset: var(--sys-size-2);
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   color: var(--sys-color-on-primary);
 }
 
@@ -104,7 +104,7 @@ export default `/*
     background-color: ButtonFace;
     color: Highlight !important; /* stylelint-disable-line declaration-no-important */
     border-color: Highlight;
-    outline: 2px solid ButtonText;
+    outline: var(--sys-size-2) solid ButtonText;
     box-shadow: var(--legacy-focus-ring-active-shadow);
   }
 
@@ -120,7 +120,7 @@ export default `/*
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;
-    border: 1px solid Highlight;
+    border: var(--sys-size-1) solid Highlight;
   }
 
   .text-button.primary-button:not(:disabled):focus-visible {

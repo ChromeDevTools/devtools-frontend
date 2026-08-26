@@ -55,11 +55,11 @@ export default `/*
     word-break: normal;
     overflow-wrap: anywhere;
     padding: var(--sys-size-8) 0;
-    gap: 6px;
+    gap: var(--sys-size-4);
   }
 
   .annotation-identifier {
-    padding: 4px 8px;
+    padding: var(--sys-size-3) var(--sys-size-5);
     border-radius: 10px;
     font-weight: bold;
 
@@ -72,7 +72,7 @@ export default `/*
   .entries-link {
     display: flex;
     flex-wrap: wrap;
-    row-gap: 2px;
+    row-gap: var(--sys-size-2);
     align-items: center;
   }
 
@@ -91,7 +91,7 @@ export default `/*
     padding: 10px;
     border-radius: var(--sys-shape-corner-extra-small);
     overflow: hidden;
-    border: 1px solid var(--sys-color-divider);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     background-color: var(--sys-color-base);
   }
 

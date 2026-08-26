@@ -5853,9 +5853,9 @@ var networkRequestTooltip_css_default = `/*
     box-sizing: border-box;
     width: 10px;
     height: 10px;
-    border: 1px solid var(--sys-color-divider);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     display: inline-block;
-    margin-right: 4px;
+    margin-right: var(--sys-size-3);
   }
 
   devtools-icon.priority {
@@ -5870,7 +5870,7 @@ var networkRequestTooltip_css_default = `/*
   }
 
   .divider {
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
     margin: 5px 0;
   }
 
@@ -5882,18 +5882,18 @@ var networkRequestTooltip_css_default = `/*
 
   .indicator {
     display: inline-block;
-    width: 12px;
-    height: 6px;
+    width: var(--sys-size-6);
+    height: var(--sys-size-4);
     margin-right: 5px;
-    border: 1px solid var(--sys-color-on-surface-subtle);
+    border: var(--sys-size-1) solid var(--sys-color-on-surface-subtle);
     box-sizing: border-box;
   }
 
   devtools-icon.indicator {
     vertical-align: middle;
-    height: 12px;
-    width: 12px;
-    margin-right: 4px;
+    height: var(--sys-size-6);
+    width: var(--sys-size-6);
+    margin-right: var(--sys-size-3);
     color: var(--sys-color-yellow);
     border: none;
   }
@@ -5903,9 +5903,9 @@ var networkRequestTooltip_css_default = `/*
     align-self: center;
     display: inline-flex;
     width: 11px;
-    height: 6px;
+    height: var(--sys-size-4);
     margin-right: 5px;
-    border-left: 1px solid var(--sys-color-on-surface-subtle);
+    border-left: var(--sys-size-1) solid var(--sys-color-on-surface-subtle);
     box-sizing: border-box;
   }
 
@@ -5913,15 +5913,15 @@ var networkRequestTooltip_css_default = `/*
     align-self: center;
     display: inline-flex;
     width: 11px;
-    height: 6px;
+    height: var(--sys-size-4);
     margin-right: 5px;
-    border-right: 1px solid var(--sys-color-on-surface-subtle);
+    border-right: var(--sys-size-1) solid var(--sys-color-on-surface-subtle);
     box-sizing: border-box;
   }
 
   .horizontal {
     background-color: var(--sys-color-on-surface-subtle);
-    height: 1px;
+    height: var(--sys-size-1);
     width: 10px;
     align-self: center;
   }
@@ -6669,7 +6669,7 @@ var relatedInsightChips_css_default = `/*
 @scope to (devtools-widget > *) {
   :scope {
     display: block;
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     flex: none;
   }
 
@@ -6911,11 +6911,11 @@ var sidebarAnnotationsTab_css_default = `/*
     word-break: normal;
     overflow-wrap: anywhere;
     padding: var(--sys-size-8) 0;
-    gap: 6px;
+    gap: var(--sys-size-4);
   }
 
   .annotation-identifier {
-    padding: 4px 8px;
+    padding: var(--sys-size-3) var(--sys-size-5);
     border-radius: 10px;
     font-weight: bold;
 
@@ -6928,7 +6928,7 @@ var sidebarAnnotationsTab_css_default = `/*
   .entries-link {
     display: flex;
     flex-wrap: wrap;
-    row-gap: 2px;
+    row-gap: var(--sys-size-2);
     align-items: center;
   }
 
@@ -6947,7 +6947,7 @@ var sidebarAnnotationsTab_css_default = `/*
     padding: 10px;
     border-radius: var(--sys-shape-corner-extra-small);
     overflow: hidden;
-    border: 1px solid var(--sys-color-divider);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     background-color: var(--sys-color-base);
   }
 
@@ -7346,14 +7346,14 @@ var sidebarInsightsTab_css_default = `/*
 
     details[open] {
       flex-grow: 1;
-      border-bottom: 1px solid var(--sys-color-divider);
+      border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     }
 
     summary {
       background-color: var(--sys-color-surface2);
-      border-bottom: 1px solid var(--sys-color-divider);
+      border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
       overflow: hidden;
-      padding: 2px 5px;
+      padding: var(--sys-size-2) 5px;
       text-overflow: ellipsis;
       white-space: nowrap;
       font: var(--sys-typescale-body4-medium);
@@ -7366,13 +7366,13 @@ var sidebarInsightsTab_css_default = `/*
 
       &::marker {
         color: var(--sys-color-on-surface-subtle);
-        font-size: 11px;
+        font-size: var(--sys-typescale-body5-size);
         line-height: 1;
       }
 
       /* make sure the first summary has a top border */
       details:first-child & {
-        border-top: 1px solid var(--sys-color-divider);
+        border-top: var(--sys-size-1) solid var(--sys-color-divider);
       }
     }
   }

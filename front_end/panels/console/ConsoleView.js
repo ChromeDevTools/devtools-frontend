@@ -398,9 +398,11 @@ export class ConsoleView extends UI.Widget.VBox {
         this.showSettingsPaneButton = new UI.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.consoleSettings), 'gear-filled');
         this.showSettingsPaneButton.element.setAttribute('jslog', `${VisualLogging.toggleSubpane('console-settings').track({ click: true })}`);
         this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
-        this.groupSimilarSetting = Common.Settings.Settings.instance().moduleSetting('console-group-similar');
+        this.groupSimilarSetting =
+            Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleGroupSimilarSettingDescriptor);
         this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
-        this.showCorsErrorsSetting = Common.Settings.Settings.instance().moduleSetting('console-shows-cors-errors');
+        this.showCorsErrorsSetting =
+            Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleShowsCorsErrorsSettingDescriptor);
         this.showCorsErrorsSetting.addChangeListener(() => this.updateMessageList());
         const toolbar = this.consoleToolbarContainer.createChild('devtools-toolbar', 'console-main-toolbar');
         toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
@@ -448,7 +450,7 @@ export class ConsoleView extends UI.Widget.VBox {
         const settingsPane = this.contentsElement.createChild('div', 'console-settings-pane');
         UI.ARIAUtils.setLabel(settingsPane, i18nString(UIStrings.consoleSettings));
         UI.ARIAUtils.markAsGroup(settingsPane);
-        const consoleEagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-eager-eval');
+        const consoleEagerEvalSetting = Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleEagerEvalSettingDescriptor);
         const preserveConsoleLogSetting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveConsoleLogSettingDescriptor);
         const userActivationEvalSetting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.consoleUserActivationEvalSettingDescriptor);
         settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.networkMessages), this.filter.networkMessagesSetting, Settings.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.logXMLHttpRequests), monitoringXHREnabledSetting), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.preserveLog), preserveConsoleLogSetting, i18nString(UIStrings.doNotClearLogOnPageReload)), SettingsUI.SettingsUI.createSettingCheckbox(Settings.SettingUIRegistration.resolve(consoleEagerEvalSetting.descriptor()).title, consoleEagerEvalSetting, i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)), SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.selectedContextOnly), this.filter.filterByExecutionContextSetting, i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)), SettingsUI.SettingsUI.createSettingCheckbox(Settings.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor()).title, this.consoleHistoryAutocompleteSetting, i18nString(UIStrings.autocompleteFromHistory)), SettingsUI.SettingsUI.createSettingCheckbox(Settings.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title, this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole)), SettingsUI.SettingsUI.createSettingCheckbox(Settings.SettingUIRegistration.resolve(userActivationEvalSetting.descriptor()).title, userActivationEvalSetting, i18nString(UIStrings.treatEvaluationAsUserActivation)), SettingsUI.SettingsUI.createSettingCheckbox(Settings.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title, this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole)));

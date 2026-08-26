@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "./json5-tsconfig.json"
+      "path": "../../../../tsc/front_end/third_party/json5/json5-tsconfig.ref.json"
     }
   ]
 }

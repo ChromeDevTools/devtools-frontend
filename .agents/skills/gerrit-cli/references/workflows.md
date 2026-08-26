@@ -7,7 +7,7 @@ provided with a link or ID:
 
 1. **Query CL Metadata**: Retrieve CL details and verify its current status:
    ```bash
-   vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+   gerrit_client.py \
      changes \
      --host https://chromium-review.googlesource.com \
      --query "change:<id>"
@@ -15,7 +15,7 @@ provided with a link or ID:
 2. **Fetch File Contents**: Retrieve the content of specific files modified in
    the CL:
    ```bash
-   vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+   gerrit_client.py \
      content \
      --host https://chromium-review.googlesource.com \
      --project <project> \
@@ -26,7 +26,7 @@ provided with a link or ID:
 4. **Add Review Comment**: Post a patchset-level comment containing the review
    findings:
    ```bash
-   vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+   gerrit_client.py \
      addpatchsetcomment \
      --host https://chromium-review.googlesource.com \
      --change <change_id> --revision current \
@@ -40,14 +40,14 @@ Execute these steps in chronological order to approve and merge a Change List:
 1. **Check Related Changes**: Retrieve the status of all related changes to
    ensure there are no unresolved blockers:
    ```bash
-   vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+   gerrit_client.py \
      relatedchanges \
      --host https://chromium-review.googlesource.com \
      --change <change_id> --revision current
    ```
 2. **Vote on Review Labels**: Apply the required Code-Review approval vote:
    ```bash
-   vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+   gerrit_client.py \
      setlabel \
      --host https://chromium-review.googlesource.com \
      --change <change_id> \
@@ -56,7 +56,7 @@ Execute these steps in chronological order to approve and merge a Change List:
 3. **Submit Change**: Merge the change once all CQ presubmits pass and all
    approval requirements are satisfied:
    ```bash
-   vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+   gerrit_client.py \
      submitchange \
      --host https://chromium-review.googlesource.com \
      --change <change_id>

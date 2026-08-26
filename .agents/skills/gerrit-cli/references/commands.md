@@ -1,9 +1,9 @@
 # Gerrit CLI Common Commands & Usage (Public)
 
-Run the tool directly using the wrapper script path with the `--help` flag:
+Run `gerrit_client.py` directly with the `--help` flag:
 
-- `vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py --help`
-- `vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py changes --help`
+- `gerrit_client.py --help`
+- `gerrit_client.py changes --help`
 
 ## Global Flags
 
@@ -22,11 +22,24 @@ ______________________________________________________________________
 - **Query active changes:**
 
   ```bash
-  vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+  gerrit_client.py \
     changes \
     --host https://chromium-review.googlesource.com \
     --query "owner:self status:open"
   ```
+
+- **Get published file and line comments across patchsets:**
+
+  ```bash
+  gerrit_client.py \
+    comments \
+    --host https://chromium-review.googlesource.com \
+    --change <change_id> \
+    --json_file <path>
+  ```
+
+  This writes the unchanged structured Gerrit JSON to `--json_file`. Filtering,
+  threading, and presentation are the caller's responsibility.
 
 - **View the content of a specific file in a change:**
 
@@ -34,7 +47,7 @@ ______________________________________________________________________
   stdout redirection (`>`).
 
   ```bash
-  vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+  gerrit_client.py \
     content \
     --host https://chromium-review.googlesource.com \
     --project <project> \
@@ -44,10 +57,27 @@ ______________________________________________________________________
     > output_file
   ```
 
+- **Get a formatted patch for a change:**
+
+  `--revision <revision>` is optional and defaults to `current`. Use the
+  optional `--path <file_path>`, `--parent <parent_number>`, and
+  `--context <lines>` flags to customize the patch.
+
+  **Note:** Decoded formatted patch bytes are written to stdout, so redirect
+  them to a file (`>`). The `--json_file` flag is not used for patch bytes.
+
+  ```bash
+  gerrit_client.py \
+    patch \
+    --host https://chromium-review.googlesource.com \
+    --change <change_id> \
+    > output.patch
+  ```
+
 - **Get related changes:**
 
   ```bash
-  vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+  gerrit_client.py \
     relatedchanges \
     --host https://chromium-review.googlesource.com \
     --change <change_id> --revision <revision>
@@ -57,7 +87,7 @@ ______________________________________________________________________
 
 - **Add a patchset-level comment:**
   ```bash
-  vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+  gerrit_client.py \
     addpatchsetcomment \
     --host https://chromium-review.googlesource.com \
     --change <change_id> --revision <revision> \
@@ -65,7 +95,7 @@ ______________________________________________________________________
   ```
 - **Vote on a review label (e.g., Code-Review +1):**
   ```bash
-  vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+  gerrit_client.py \
     setlabel \
     --host https://chromium-review.googlesource.com \
     --change <change_id> \
@@ -76,14 +106,14 @@ ______________________________________________________________________
 
 - **Submit/Merge a change:**
   ```bash
-  vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+  gerrit_client.py \
     submitchange \
     --host https://chromium-review.googlesource.com \
     --change <change_id>
   ```
 - **Abandon a change:**
   ```bash
-  vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+  gerrit_client.py \
     abandon \
     --host https://chromium-review.googlesource.com \
     --change <change_id> \
@@ -91,7 +121,7 @@ ______________________________________________________________________
   ```
 - **Restore an abandoned change:**
   ```bash
-  vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+  gerrit_client.py \
     restore \
     --host https://chromium-review.googlesource.com \
     --change <change_id> \
@@ -105,24 +135,26 @@ ______________________________________________________________________
 Explore the built-in CLI help for additional subcommands or advanced syntax:
 
 - Display all top-level commands:
-  `vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py --help`
+  `gerrit_client.py --help`
 - Display help for a specific subcommand:
   ```bash
-  vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+  gerrit_client.py \
     help <command>
   ```
 
-
 ## Advanced / Escape Hatch: Arbitrary REST API Calls (`rawapi`)
 
-If the built-in subcommands do not cover a specific action or metadata query, you can use the `rawapi` subcommand to execute arbitrary HTTP requests against the Gerrit REST API.
+If the built-in subcommands do not cover a specific action or metadata query,
+you can use the `rawapi` subcommand to execute arbitrary HTTP requests against
+the Gerrit REST API.
 
-- **Endpoint Reference**: [Gerrit REST API - Changes](https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html)
+- **Endpoint Reference**:
+  [Gerrit REST API - Changes](https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html)
 
 ### Usage
 
 ```bash
-vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
+gerrit_client.py \
   rawapi \
   --host https://chromium-review.googlesource.com \
   --path "/changes/<change_id>/detail?o=SUBMITTABLE" \
@@ -130,7 +162,8 @@ vpython3 .agents/skills/gerrit-cli/scripts/gerrit_client_wrapper.py \
 ```
 
 - **Options**:
-  - `--path`: HTTP path of the API endpoint (e.g. `/changes/<change_id>/revisions/current/mergeable`).
+  - `--path`: HTTP path of the API endpoint (e.g.
+    `/changes/<change_id>/revisions/current/mergeable`).
   - `--method`: HTTP method (GET, POST, PUT, DELETE). Defaults to GET.
   - `--body`: JSON string body for write requests (e.g., POST/PUT).
   - `--accept_status`: Comma-separated list of successful HTTP status codes.

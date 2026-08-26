@@ -76,3 +76,7 @@
 .background-service-record-inline-button {
   margin-bottom: 6px;
 }
+
+.start-recording-button {
+  margin-top: var(--sys-size-7);
+}

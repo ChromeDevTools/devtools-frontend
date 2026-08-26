@@ -56,6 +56,7 @@ describeWithEnvironment('BackgroundServiceView', () => {
     } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
     assert.exists(backgroundServiceModel);
     view = new Resources.BackgroundServiceView.BackgroundServiceView(serviceName, backgroundServiceModel);
+    renderElementIntoDOM(view, {width: 800, height: 800, includeCommonStyles: true});
   });
 
   function assertEmptyState(expectedHeader: string, expectedDescription?: string): ShadowRoot {
@@ -106,8 +107,8 @@ describeWithEnvironment('BackgroundServiceView', () => {
   });
 
   it('Triggers record on button click', () => {
-    const shadowRoot = assertEmptyState('No recording yet');
-    const recordButton = shadowRoot.querySelector('devtools-button');
+    assertEmptyState('No recording yet');
+    const recordButton = view.contentElement.querySelector('devtools-button.start-recording-button');
     assert.exists(recordButton);
     assert.deepEqual(recordButton.textContent, 'Start recording events');
 
@@ -146,8 +147,6 @@ describeWithEnvironment('BackgroundServiceView', () => {
   });
 
   it('shows metadata in preview and renders a screenshot', async () => {
-    renderElementIntoDOM(view, {width: 800, height: 800, includeCommonStyles: true});
-
     backgroundServiceModel?.backgroundServiceEventReceived({backgroundServiceEvent: BACKGROUND_SERVICE_EVENT});
 
     const eventWithMetadata = {

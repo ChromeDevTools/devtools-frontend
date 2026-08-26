@@ -78,6 +78,25 @@ describeWithEnvironment('ExportForAgentsDialog', () => {
     assert.strictEqual((component.contentElement.getRootNode() as Document).activeElement, promptRadioButton);
   });
 
+  it('shows a focus indicator on the read-only textarea', async () => {
+    const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
+      dialog,
+      promptText,
+      markdownText,
+      onConversationSaveAs: noop,
+    });
+    renderElementIntoDOM(component);
+    await component.updateComplete;
+
+    const textarea = querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
+    textarea.focus();
+
+    assert.isTrue(textarea.matches(':focus-visible'));
+    const textareaStyles = getComputedStyle(textarea);
+    assert.strictEqual(textareaStyles.outlineStyle, 'solid');
+    assert.strictEqual(textareaStyles.outlineWidth, '2px');
+  });
+
   it('renders loading state when promptText is a Promise and updates when it is loaded', async () => {
     let resolvePrompt: (value: string) => void = () => {};
     const promptTextPromise = new Promise<string>(resolve => {

@@ -1989,16 +1989,76 @@ export const cloneCustomElement = <T extends HTMLElement>(element: T, deep?: boo
 };
 
 class UIUtilsWidgetDirective extends WidgetUtils.WidgetDirective {
-  override update(part: Lit.Directive.Part, args: Parameters<WidgetUtils.WidgetDirective['render']>): unknown {
-    const result = super.update(part, args as unknown as Parameters<this['render']>);
+  #renderedElement?: HTMLElement;
+  #lastWidgetClass?: unknown;
+  #lastKey?: unknown;
+
+  override update(part: Lit.Directive.Part, args: Parameters<this['render']>): unknown {
+    const [widgetClass, widgetParams] = args;
+
     if (part.type === Lit.Directive.PartType.ELEMENT) {
-      const lightNode = (part as Lit.Directive.ElementPart).element;
-      for (const clone of HTMLElementWithLightDOMTemplate.getClones(lightNode)) {
-        super.update({type: Lit.Directive.PartType.ELEMENT, element: clone} as Lit.Directive.ElementPart,
-                     args as unknown as Parameters<this['render']>);
-      }
+      const element = (part as Lit.Directive.ElementPart).element as HTMLElement;
+      this.#updateElementAndClones(element, widgetClass, widgetParams);
+      return Lit.nothing;
     }
-    return result;
+
+    if (part.type === Lit.Directive.PartType.CHILD) {
+      let classChanged = false;
+      if (this.#lastWidgetClass !== widgetClass) {
+        this.#lastWidgetClass = widgetClass;
+        const newKey =
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            WidgetUtils.Widget.isPrototypeOf(widgetClass as any) ? widgetClass : (widgetClass as any).toString();
+        if (this.#lastKey !== newKey) {
+          this.#lastKey = newKey;
+          classChanged = true;
+        }
+      }
+
+      if (!this.#renderedElement || classChanged) {
+        // Initial render or class changed: cache the element
+        this.#renderedElement = document.createElement('devtools-widget');
+        this.#updateElementAndClones(this.#renderedElement, widgetClass, widgetParams);
+        return this.#renderedElement;
+      }
+      // Subsequent updates: mutate cached element and its clones
+      this.#updateElementAndClones(this.#renderedElement, widgetClass, widgetParams);
+      return Lit.noChange;  // Prevent Lit from recreating the DOM node
+    }
+
+    return super.update(part, args);
+  }
+
+  #updateElementAndClones<F extends WidgetUtils.WidgetFactory<WidgetUtils.AnyWidget>,
+                                    ParamKeys extends keyof WidgetUtils.InferWidgetTFromFactory<F>>(
+      element: HTMLElement, widgetClass: F,
+      widgetParams?: Pick<WidgetUtils.InferWidgetTFromFactory<F>, ParamKeys>&
+      Partial<WidgetUtils.InferWidgetTFromFactory<F>>): void {
+    const update = (el: HTMLElement): void => {
+      const config = WidgetUtils.widgetConfig<F, ParamKeys>(widgetClass, widgetParams);
+      const oldConfig = WidgetUtils.widgetConfigs.get(el);
+      const widget = WidgetUtils.Widget.get(el);
+      if (widget && config.widgetParams) {
+        let needsUpdate = false;
+        for (const key in config.widgetParams) {
+          if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) &&
+              config.widgetParams[key] !== oldConfig?.widgetParams?.[key]) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (widget as any)[key] = config.widgetParams[key];
+            needsUpdate = true;
+          }
+        }
+        if (needsUpdate) {
+          widget.requestUpdate();
+        }
+      }
+      WidgetUtils.registerWidgetConfig(el, config);
+    };
+
+    update(element);
+    for (const clone of HTMLElementWithLightDOMTemplate.getClones(element)) {
+      update(clone as HTMLElement);
+    }
   }
 }
 

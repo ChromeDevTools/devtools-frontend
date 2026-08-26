@@ -40,7 +40,7 @@
   display: inline-block;
   flex: none;
   margin: auto var(--sys-size-2);
-  padding: 3px 6px;
+  padding: 3px var(--sys-size-4);
   background: transparent;
   border-radius: var(--sys-size-4);
   overflow: hidden;
@@ -104,7 +104,7 @@
 .filter-divider {
   background-color: var(--sys-color-divider);
   width: var(--sys-size-1);
-  margin: 5px 4px;
+  margin: 5px var(--sys-size-3);
   height: var(--sys-size-8);
 }
 

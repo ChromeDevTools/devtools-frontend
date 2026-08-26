@@ -531,10 +531,7 @@ export default defineConfig([
 
       '@typescript-eslint/no-inferrable-types': 'error',
 
-      '@typescript-eslint/consistent-generic-constructors': [
-        'error',
-        'constructor',
-      ],
+      '@typescript-eslint/consistent-generic-constructors': 'off',
 
       // This is more performant
       // And should provide better stack trace when debugging

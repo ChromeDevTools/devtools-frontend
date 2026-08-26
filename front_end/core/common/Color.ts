@@ -2403,7 +2403,7 @@ console.assert(
     COLOR_TO_RGBA_ENTRIES.every(([nickname]) => nickname.toLowerCase() === nickname),
     'All color nicknames must be lowercase.');
 
-export const Nicknames: Map<string, number[]> = new Map<string, number[]>(COLOR_TO_RGBA_ENTRIES);
+export const Nicknames: Map<string, number[]> = new Map(COLOR_TO_RGBA_ENTRIES);
 
 const RGBAToNickname = new Map(
     // Default opacity to 1 if the color only specified 3 channels

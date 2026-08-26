@@ -431,7 +431,7 @@ const mimeTypeByName = new Map([
 ]);
 
 // clang-format off
-export const resourceTypeByExtension: Map<string, ResourceType> = new Map<string, ResourceType>([
+export const resourceTypeByExtension: Map<string, ResourceType> = new Map([
   ['js', resourceTypes.Script],
   ['mjs', resourceTypes.Script],
 
@@ -466,7 +466,7 @@ export const resourceTypeByExtension: Map<string, ResourceType> = new Map<string
 ]);
 // clang-format on
 
-export const mimeTypeByExtension: Map<string, string> = new Map<string, string>([
+export const mimeTypeByExtension: Map<string, string> = new Map([
   // Web extensions
   ['js', 'text/javascript'],
   ['mjs', 'text/javascript'],

@@ -242,12 +242,8 @@ template("ts_library_split") {
 
     outputs = _dts_outputs
 
-    # Expose ts files to dependent targets.
-    public_inputs = filter_include(_all_sources,
-                                   [
-                                     "*.ts",
-                                     "*.d.ts",
-                                   ])
+    # Expose handwritten .d.ts files to dependent targets if any.
+    public_inputs = filter_include(_all_sources, [ "*.d.ts" ])
 
     response_file_contents =
         rebase_path(_dts_outputs, root_build_dir) + [ "--" ] + [

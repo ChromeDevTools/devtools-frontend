@@ -33,18 +33,6 @@ group("front_end") {
   ]
 }
 
-# Dedicated packaging group collecting all entrypoint bundle targets for
-# resource packaging. This ensures action("generate_devtools_grd") and
-# node_action("compress") in the root BUILD.gn have an explicit deps/public_deps
-# path to the generated bundle JS files to satisfy GN's C++ input generator
-# validation rule (which requires an explicit compile-time dependency edge for
-# any action input produced by another target), without exposing bundle targets
-# in public_deps of compile-time TypeScript consumers.
-group("front_end_bundles") {
-  public_deps = [ ":front_end" ]
-  data_deps = [ ":front_end" ]
-}
-
 copy_to_gen_with_grd("color_tokens") {
   sources = [
     "application_tokens.css",

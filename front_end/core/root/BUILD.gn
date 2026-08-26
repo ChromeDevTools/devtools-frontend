@@ -7,27 +7,30 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_foundation_module("root") {
+  split_compilation = true
   sources = [
     "DevToolsContext.ts",
     "ExperimentNames.ts",
     "Runtime.ts",
   ]
 
-  deps = [ "../../core/platform:bundle" ]
+  ts_deps = [ "../../core/platform:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "root.ts"
 
-  deps = [ ":root" ]
+  ts_deps = [ ":root" ]
 
   visibility = [ "*" ]
 }
 
 devtools_foundation_module("foundation_unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [ "Runtime.test.ts" ]
 
-  deps = [ ":bundle" ]
+  ts_deps = [ ":bundle" ]
 }

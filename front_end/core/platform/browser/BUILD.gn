@@ -6,6 +6,7 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("browser") {
+  split_compilation = true
   sources = [ "HostRuntime.ts" ]
 
   es_target = "es2023"
@@ -14,13 +15,14 @@ devtools_module("browser") {
     "dom.iterable",
   ]
 
-  deps = [ "../api:bundle" ]
+  ts_deps = [ "../api:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "browser.ts"
 
-  deps = [ ":browser" ]
+  ts_deps = [ ":browser" ]
 
   visibility = [ "../*" ]
 }

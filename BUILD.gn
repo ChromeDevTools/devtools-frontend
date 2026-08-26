@@ -12,11 +12,9 @@ import("./third_party/blink/public/public_features.gni")
 
 #-------------------------------------------------------------------------------
 
-# Resource packaging dependency list: includes static assets, favicon, and the
-# front_end packaging group containing all entrypoints and bundles.
 devtools_frontend_resources_deps = [
   ":favicon",
-  "front_end:front_end_bundles",
+  "front_end",
 ]
 
 group("devtools_all_files") {
@@ -36,12 +34,6 @@ group("devtools_all_files") {
   public_deps = [ "scripts/component_docs" ]
 }
 
-# Dedicated packaging group for DevTools frontend resources. Resource packaging
-# actions (action("generate_devtools_grd") and node_action("compress")) depend
-# on this group to ensure an explicit compile-time dependency path
-# (deps/public_deps) to all generated bundle JS files and static resources,
-# satisfying GN's C++ input generator validation rule without exposing bundle
-# targets to compile-time TypeScript type checking.
 group("devtools_frontend_resources") {
   public_deps = devtools_frontend_resources_deps
   deps = [

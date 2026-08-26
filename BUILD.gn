@@ -136,13 +136,14 @@ if (!is_debug) {
   node_action("compress") {
     script = "scripts/build/compress_files.js"
     public_deps = [ ":devtools_frontend_resources" ]
+    depfile = "$target_gen_dir/$target_name.d"
 
-    sources = []
+    _compressable_inputs = []
     foreach(_grd_file, _compressable_grd_files) {
-      sources += [ "$target_gen_dir/$_grd_file" ]
+      _compressable_inputs += [ "$target_gen_dir/$_grd_file" ]
     }
 
-    response_file_contents = rebase_path(sources, root_build_dir)
+    response_file_contents = rebase_path(_compressable_inputs, root_build_dir)
 
     outputs = []
     foreach(_grd_file, _compressable_grd_files) {
@@ -155,6 +156,8 @@ if (!is_debug) {
     args = [
       "--file_list",
       "{{response_file_name}}",
+      "--depfile",
+      rebase_path(depfile, root_build_dir),
     ]
   }
 } else {
@@ -163,6 +166,7 @@ if (!is_debug) {
 
 action("generate_devtools_grd") {
   script = "scripts/build/generate_devtools_grd.py"
+  depfile = "$target_gen_dir/$target_name.d"
 
   response_file_contents = rebase_path(_expected_grd_files, "front_end")
   outfile = "$target_gen_dir/front_end/devtools_resources.grd"
@@ -173,20 +177,13 @@ action("generate_devtools_grd") {
     "{{response_file_name}}",
     "--output",
     rebase_path(outfile, root_build_dir),
+    "--depfile",
+    rebase_path(depfile, root_build_dir),
   ]
 
-  inputs = []
-  foreach(_grd_file, _expected_grd_files) {
-    inputs += [ "$target_gen_dir/$_grd_file" ]
-  }
-
-  if (is_debug) {
-    deps = [ ":devtools_frontend_resources" ]
-  } else {
-    deps = [ ":compress" ]
-    foreach(_grd_file, _compressable_grd_files) {
-      inputs += [ "$target_gen_dir/$_grd_file.compressed" ]
-    }
+  deps = [ ":devtools_frontend_resources" ]
+  if (!is_debug) {
+    deps += [ ":compress" ]
 
     # Compression is slow, particularly in debug builds, so only compress in
     # non-debug builds.

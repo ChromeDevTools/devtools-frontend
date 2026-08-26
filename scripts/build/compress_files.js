@@ -89,8 +89,17 @@ async function main(argv) {
   const fileListPosition = argv.indexOf('--file_list');
   const fileList = argv[fileListPosition + 1];
   const fileListContents = await readTextFile(fileList);
-  const files = fileListContents.split(' ');
+  const files = fileListContents.split(/\s+/).filter(Boolean);
   await Promise.all(files.map(filename => filename.trim()).map(compressFile));
+
+  const depfileIndex = argv.indexOf('--depfile');
+  if (depfileIndex !== -1 && files.length > 0) {
+    const depfilePath = argv[depfileIndex + 1];
+    const firstOutput = (files[0] + '.compressed').replaceAll('\\', '/');
+    const normalizedFiles = files.map(f => f.replaceAll('\\', '/'));
+    const depfileContent = `${firstOutput}: ${normalizedFiles.join(' ')}\n`;
+    await writeTextFile(depfilePath, depfileContent);
+  }
 }
 
 main(process.argv).catch(err => {

@@ -5,6 +5,7 @@
 """Creates a grd file for packaging the inspector files."""
 
 import os
+import posixpath
 import shlex
 import sys
 from xml.dom import minidom
@@ -32,25 +33,31 @@ kGrdTemplate = '''<?xml version="1.0" encoding="UTF-8"?>
 
 class ParsedArgs:
 
-    def __init__(self, file_list, output_filename, compress):
+    def __init__(self, file_list, output_filename, compress, depfile=None):
         self.file_list = file_list
         file_list_file = open(file_list, 'r')
         file_list_contents = file_list_file.read()
         self.source_files = shlex.split(file_list_contents)
         self.output_filename = output_filename
         self.compress = compress
+        self.depfile = depfile
 
 
 def parse_args(argv):
     # The arguments are of the format:
     #   --file_list <input_file_list>
     #   --output <output_file>
+    #   --depfile <depfile>
     #   --compress
     file_list_position = argv.index('--file_list')
     output_position = argv.index('--output')
     file_list = argv[file_list_position + 1]
     compress = argv.count('--compress') > 0
-    return ParsedArgs(file_list, argv[output_position + 1], compress)
+    depfile = None
+    if '--depfile' in argv:
+        depfile_position = argv.index('--depfile')
+        depfile = argv[depfile_position + 1]
+    return ParsedArgs(file_list, argv[output_position + 1], compress, depfile)
 
 
 def make_name_from_filename(filename):
@@ -91,6 +98,23 @@ def main(argv):
 
     with open(parsed_args.output_filename, 'wb') as output_file:
         output_file.write(doc.toxml(encoding='UTF-8'))
+
+    if parsed_args.depfile:
+        output_file = parsed_args.output_filename.replace('\\', '/')
+        output_dir = posixpath.dirname(output_file)
+        depfile_inputs = []
+        for filename in parsed_args.source_files:
+            filename = filename.replace('\\', '/')
+            ext = posixpath.splitext(filename)[1]
+            if parsed_args.compress and ext in [
+                    '.css', '.html', '.js', '.svg', '.json', '.md'
+            ]:
+                depfile_inputs.append(
+                    posixpath.join(output_dir, filename + '.compressed'))
+            else:
+                depfile_inputs.append(posixpath.join(output_dir, filename))
+        with open(parsed_args.depfile, 'w', encoding='utf-8') as f:
+            f.write(f"{output_file}: {' '.join(depfile_inputs)}\n")
 
 
 if __name__ == '__main__':

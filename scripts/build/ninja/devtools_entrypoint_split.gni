@@ -57,7 +57,7 @@ template("devtools_entrypoint_split") {
       if (defined(invoker.ts_deps)) {
         deps += invoker.ts_deps
       }
-      visibility = [ "*" ]
+      visibility = [ ":*" ]
     }
 
     # 3. Main target exposing d.ts files via public_deps and runtime bundled outputs
@@ -80,12 +80,11 @@ template("devtools_entrypoint_split") {
     #    (.js) would be updated on every code edit, invalidating downstream targets and
     #    defeating Ninja's restat pruning.
     #
-    # Resource packaging (e.g., `generate_devtools_grd` and `compress` in root
-    # BUILD.gn) requires an explicit compile-time dependency path to the
-    # generated bundle JS files to satisfy GN's C++ input generator validation
-    # rule. This is provided via dedicated packaging groups (e.g.,
-    # `front_end:front_end_bundles` -> `devtools_frontend_resources`) without
-    # leaking bundle targets into compile-time TypeScript dependencies.
+    # Resource packaging (action("generate_devtools_grd") and
+    # node_action("compress") in root BUILD.gn) uses dynamic depfiles to track
+    # generated bundle JS files in Ninja's dependency database, allowing runtime
+    # outputs to remain in data_deps without requiring manual bundle target
+    # registration in packaging groups.
     group(target_name) {
       public_deps = [ ":$_ts_target" ]
       if (defined(invoker.public_deps)) {

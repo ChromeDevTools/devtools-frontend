@@ -126,6 +126,7 @@ interface ViewInput {
   onExpand?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
   onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
   onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => void;
+  onKeyDown?: (event: KeyboardEvent) => void;
   isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
   onDuplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
   isNodeExpanded?: (node: SDK.DOMModel.DOMNode) => boolean;
@@ -165,6 +166,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       if (treeElement instanceof ElementsTreeElement) {
         output.elementsTreeOutline?.showContextMenu(treeElement, event);
       }
+    }, false);
+    elementsTreeOutline.elementInternal.addEventListener('keydown', (event: KeyboardEvent) => {
+      input.onKeyDown?.(event);
     }, false);
     output.imagePreviewPopover = new ImagePreviewPopover(
         elementsTreeOutline.contentElement,
@@ -481,7 +485,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     // TODO: Move AdoptedStyleSheet rendering (AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement) into dedicated declarative widgets.
     // TODO: Move tree node pagination ("Show all nodes" button and expandedChildrenLimit) to a declarative tree slice model.
     // TODO: Move ImagePreviewPopover and issue tooltip helpers into declarative Lit directives or tooltip components.
-    // TODO: Move keyboard shortcuts (F2 for edit, Delete/Backspace for node deletion, 'h' for toggle hide, Enter for attribute edit) into DOMTreeWidget.
+    // TODO: Move in-place keyboard shortcuts (F2 for edit, Enter for attribute edit) into DOMTreeWidget.
     // TODO: Move DOMModel event subscription and reactive state synchronization (updateRecords, DOM update animations) directly into DOMTreeWidget.
 
     const onSelect = (): void => {
@@ -568,6 +572,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         aria-label=${i18nString(UIStrings.pageDom)}
         jslog=${VisualLogging.tree('elements')}
         ?show-selection-on-keyboard-focus=${input.showSelectionOnKeyboardFocus}
+        @keydown=${input.onKeyDown}
         .template=${html`
           <style>${elementsTreeOutlineStyles}</style>
           <style>${CodeHighlighter.codeHighlighterStyles}</style>
@@ -955,6 +960,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onToggleHideElement: (node: SDK.DOMModel.DOMNode) => {
         this.toggleHideElement(node);
       },
+      onKeyDown: (event: KeyboardEvent) => {
+        this.onKeyDown(event);
+      },
       isToggledToHidden: (node: SDK.DOMModel.DOMNode) => {
         return this.isToggledToHidden(node);
       },
@@ -1085,6 +1093,20 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     void node.toggleHideElement();
   }
 
+  async removeNode(node: SDK.DOMModel.DOMNode): Promise<void> {
+    if (this.isToggledToHidden(node)) {
+      // Unhide the node before removing. This avoids inconsistent state if the node is restored via undo.
+      this.toggleHideElement(node);
+    }
+    if (node.pseudoType()) {
+      return;
+    }
+    if (!node.parentNode || node.parentNode.nodeType() === Node.DOCUMENT_NODE) {
+      return;
+    }
+    void node.removeNode();
+  }
+
   isToggledToHidden(node: SDK.DOMModel.DOMNode): boolean {
     return node.isToggledToHidden();
   }
@@ -1095,6 +1117,54 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   duplicateNode(node: SDK.DOMModel.DOMNode): void {
     node.duplicate();
+  }
+
+  selectNodeAfterEdit(wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null): void {
+    if (error || !newNode) {
+      return;
+    }
+    this.selectDOMNode(newNode, /* selectedByUser= */ true);
+    if (wasExpanded) {
+      this.setNodeExpanded(newNode, true);
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent): boolean {
+    if (UI.UIUtils.isEditing()) {
+      return false;
+    }
+    const node = this.selectedDOMNode();
+    if (!node) {
+      return false;
+    }
+
+    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && node.parentNode) {
+      const wasExpanded = this.isNodeExpanded(node);
+      if (event.key === 'ArrowUp' && node.previousSibling) {
+        node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+        event.consume(true);
+        return true;
+      }
+      if (event.key === 'ArrowDown' && node.nextSibling) {
+        node.moveTo(node.parentNode, node.nextSibling.nextSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+        event.consume(true);
+        return true;
+      }
+    }
+
+    if (event.key === 'Delete' || event.key === 'Backspace') {
+      void this.removeNode(node);
+      event.consume(true);
+      return true;
+    }
+
+    if (event.key === 'h' || event.key === 'H') {
+      this.toggleHideElement(node);
+      event.consume(true);
+      return true;
+    }
+
+    return false;
   }
 
   copyStyles(node: SDK.DOMModel.DOMNode): void {
@@ -1224,7 +1294,6 @@ export class ElementsTreeOutline extends
     this.elementInternal.addEventListener('mousedown', this.onmousedown.bind(this), false);
     this.elementInternal.addEventListener('mousemove', this.onmousemove.bind(this), false);
     this.elementInternal.addEventListener('mouseleave', this.onmouseleave.bind(this), false);
-    this.elementInternal.addEventListener('keydown', this.onKeyDown.bind(this), false);
 
     if (!this.disableEdits) {
       this.elementInternal.addEventListener('dragstart', this.ondragstart.bind(this), false);
@@ -1920,35 +1989,6 @@ export class ElementsTreeOutline extends
 
   runPendingUpdates(): void {
     this.updateModifiedNodes();
-  }
-
-  private onKeyDown(event: Event): void {
-    const keyboardEvent = (event as KeyboardEvent);
-    if (UI.UIUtils.isEditing()) {
-      return;
-    }
-    const node = this.selectedDOMNode();
-    if (!node) {
-      return;
-    }
-    const treeElement = this.treeElementByNode.get(node);
-    if (!treeElement) {
-      return;
-    }
-
-    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent) && node.parentNode) {
-      if (keyboardEvent.key === 'ArrowUp' && node.previousSibling) {
-        node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
-        keyboardEvent.consume(true);
-        return;
-      }
-      if (keyboardEvent.key === 'ArrowDown' && node.nextSibling) {
-        node.moveTo(
-            node.parentNode, node.nextSibling.nextSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
-        keyboardEvent.consume(true);
-        return;
-      }
-    }
   }
 
   toggleEditAsHTML(node: SDK.DOMModel.DOMNode, startEditing?: boolean, callback?: (() => void)): void {

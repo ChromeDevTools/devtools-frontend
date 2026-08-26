@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -686,5 +687,76 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.detach();
       }
     });
+
+    it('handles keyboard shortcuts (h to toggle hide, Delete to remove, Ctrl+ArrowUp/Down to reorder) in declarative view',
+       async () => {
+         SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+         sinon.stub(domModel, 'requestDocument').resolves(null);
+         const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'DIV',
+             children: [
+               {nodeId: 2, nodeName: 'P'},
+               {nodeId: 3, nodeName: 'SPAN'},
+             ],
+           });
+           domTree.rootDOMNode = rootNode;
+           domTree.expandRoot = true;
+           domTree.performUpdate();
+
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+           assert.exists(tree);
+
+           const pNode = rootNode.children()![0];
+           const spanNode = rootNode.children()![1];
+
+           // 1. Select pNode and press 'h' to toggle hide.
+           domTree.selectDOMNode(pNode);
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           const toggleHideSpy = sinon.spy(pNode, 'toggleHideElement');
+           tree.dispatchEvent(new KeyboardEvent('keydown', {key: 'h', bubbles: true}));
+           sinon.assert.calledOnce(toggleHideSpy);
+
+           // 2. Press Ctrl+ArrowDown (Cmd+ArrowDown on Mac) to move pNode down.
+           const moveToSpy = sinon.spy(pNode, 'moveTo');
+           const isMac = Host.Platform.isMac();
+           tree.dispatchEvent(new KeyboardEvent('keydown', {
+             key: 'ArrowDown',
+             ctrlKey: !isMac,
+             metaKey: isMac,
+             bubbles: true,
+           }));
+           sinon.assert.calledOnce(moveToSpy);
+
+           // 3. Select spanNode and press 'Delete' to remove.
+           domTree.selectDOMNode(spanNode);
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           const removeSpy = sinon.spy(spanNode, 'removeNode');
+           tree.dispatchEvent(new KeyboardEvent('keydown', {key: 'Delete', bubbles: true}));
+           sinon.assert.calledOnce(removeSpy);
+
+           // 4. Press 'Backspace' on pNode to remove.
+           domTree.selectDOMNode(pNode);
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           const removePSpy = sinon.spy(pNode, 'removeNode');
+           tree.dispatchEvent(new KeyboardEvent('keydown', {key: 'Backspace', bubbles: true}));
+           sinon.assert.calledOnce(removePSpy);
+
+           // 5. Verify selectNodeAfterEdit selects node and restores expansion.
+           domTree.selectNodeAfterEdit(/* wasExpanded= */ true, /* error= */ null, pNode);
+           assert.strictEqual(domTree.selectedDOMNode(), pNode);
+           assert.isTrue(domTree.isNodeExpanded(pNode));
+         } finally {
+           domTree.detach();
+         }
+       });
   });
 });

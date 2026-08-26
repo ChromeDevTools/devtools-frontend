@@ -39,7 +39,7 @@ import {type AnyWidget, VBox, type Widget} from './Widget.js';
 
 const UIStrings = {
   /**
-   * @description Aria label for the tab panel view container
+   * @description Accessible label for a panel view container.
    * @example {Sensors} PH1
    */
   sPanel: '{PH1} panel',

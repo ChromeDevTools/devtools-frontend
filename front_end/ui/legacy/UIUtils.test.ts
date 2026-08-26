@@ -800,9 +800,9 @@ describe('bindCheckbox', () => {
   describe('asyncFragmentLabel', () => {
     setupLocaleHooks();
 
-    it('returns "Async Call" if description is missing', () => {
+    it('returns "Async call" if description is missing', () => {
       const stackTrace = StubStackTrace.create([], [{description: '', frames: []}]);
-      assert.strictEqual(UI.UIUtils.asyncFragmentLabel(stackTrace, stackTrace.asyncFragments[0]), 'Async Call');
+      assert.strictEqual(UI.UIUtils.asyncFragmentLabel(stackTrace, stackTrace.asyncFragments[0]), 'Async call');
     });
 
     it('returns the description as is for other descriptions', () => {

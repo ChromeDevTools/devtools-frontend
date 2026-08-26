@@ -15,7 +15,7 @@ import {VBox} from './Widget.js';
 
 const UIStrings = {
   /**
-   * @description Text that is usually a hyperlink to more documentation
+   * @description Link text in an empty state view leading to external documentation.
    */
   learnMore: 'Learn more',
 } as const;

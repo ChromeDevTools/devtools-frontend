@@ -53,72 +53,72 @@ import {VBox} from './Widget.js';
 
 const UIStrings = {
   /**
-   * @description Text on a button to replace one instance with input text for the ctrl+F search bar
+   * @description Button text and placeholder to replace the current search match in the search bar.
    */
   replace: 'Replace',
   /**
-   * @description Tooltip text on a toggle to enable replacing one instance with input text for the ctrl+F search bar
+   * @description Tooltip text and accessible label to enable find and replace in the search bar.
    */
   enableFindAndReplace: 'Find and replace',
   /**
-   * @description Tooltip text on a toggle to disable replacing one instance with input text for the ctrl+F search bar
+   * @description Tooltip text and accessible label to disable find and replace in the search bar.
    */
   disableFindAndReplace: 'Disable find and replace',
   /**
-   * @description Text to find an item
+   * @description Placeholder text for the search input in the search bar.
    */
   findString: 'Find',
   /**
-   * @description Tooltip text on a button to search previous instance for the ctrl+F search bar
+   * @description Tooltip text and accessible label for the show previous result button in the search bar.
    */
   searchPrevious: 'Show previous result',
   /**
-   * @description Tooltip text on a button to search next instance for the ctrl+F search bar
+   * @description Tooltip text and accessible label for the show next result button in the search bar.
    */
   searchNext: 'Show next result',
   /**
-   * @description Tooltip text on a toggle to enable/disable search by matching the exact case.
+   * @description Tooltip text and accessible label for the match case toggle in the search bar.
    */
   matchCase: 'Match case',
   /**
-   * @description Tooltip text on a toggle to enable/disable search by matching the exact word.
+   * @description Tooltip text and accessible label for the match whole word toggle in the search bar.
    */
   matchWholeWord: 'Match whole word',
   /**
-   * @description Tooltip text on a toggle to enable/disable searching with regular expression.
+   * @description Tooltip text and accessible label for the regular expression toggle in the search bar.
    */
   useRegularExpression: 'Use regular expression',
   /**
-   * @description Tooltip text on a button to close the search bar
+   * @description Tooltip text for the close button in the search bar.
    */
   closeSearchBar: 'Close search bar',
   /**
-   * @description Text on a button to replace all instances with input text for the ctrl+F search bar
+   * @description Button text to replace all search matches in the search bar.
    */
   replaceAll: 'Replace all',
   /**
-   * @description Text to indicate the current match index and the total number of matches for the ctrl+F search bar
+   * @description Text showing the current search match index and the total match count in the search bar.
    * @example {2} PH1
    * @example {3} PH2
    */
   dOfD: '{PH1} of {PH2}',
   /**
-   * @description Tooltip text to indicate the current match index and the total number of matches for the ctrl+F search bar
+   * @description Accessible label showing the current search match index and the total match count in the search bar.
    * @example {2} PH1
    * @example {3} PH2
    */
   accessibledOfD: 'Shows result {PH1} of {PH2}',
   /**
-   * @description Text to indicate search result for the ctrl+F search bar
+   * @description Text indicating a single match in the search bar.
    */
   matchString: '1 match',
   /**
-   * @description Text to indicate search result for the ctrl+F search bar
+   * @description Text indicating multiple matches in the search bar.
    * @example {2} PH1
    */
   dMatches: '{PH1} matches',
   /**
-   * @description Text on a button to search previous instance for the ctrl+F search bar
+   * @description Tooltip text and accessible label for the clear input button in the search bar.
    */
   clearInput: 'Clear',
 } as const;

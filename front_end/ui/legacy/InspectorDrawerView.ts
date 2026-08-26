@@ -42,23 +42,23 @@ class DrawerTabbedPane extends TabbedPane {
 
 const UIStrings = {
   /**
-   * @description Title of more tabs button in the drawer view.
+   * @description Title and tooltip text for the more tools menu button in the drawer.
    */
-  moreTools: 'More Tools',
+  moreTools: 'More tools',
   /**
-   * @description Text that appears when hover over the minimize button on the drawer view.
+   * @description Tooltip text for the minimize button in the drawer.
    */
   minimizeDrawer: 'Minimize drawer',
   /**
-   * @description Text that appears when hover over the expand button on the drawer view.
+   * @description Tooltip text for the expand button in the drawer.
    */
   expandDrawer: 'Expand drawer',
   /**
-   * @description Text that appears when hover over the close button on the drawer view.
+   * @description Tooltip text for the close button in the drawer.
    */
   closeDrawer: 'Close drawer',
   /**
-   * @description Text that appears when hover the toggle orientation button.
+   * @description Tooltip text for the toggle orientation button in the drawer.
    */
   toggleDrawerOrientation: 'Toggle drawer orientation',
 } as const;

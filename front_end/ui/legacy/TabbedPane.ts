@@ -24,41 +24,41 @@ import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
 const UIStrings = {
   /**
-   * @description The aria label for the button to open more tabs at the right tabbed pane in Elements tools
+   * @description Tooltip and accessible label for the more tabs dropdown button in a tab strip.
    */
   moreTabs: 'More tabs',
   /**
-   * @description Text in Tabbed Pane
-   * @example {tab} PH1
+   * @description Tooltip text and accessible label for the close button on a tab in a tab strip.
+   * @example {Console} PH1
    */
   closeS: 'Close {PH1}',
   /**
-   * @description Text to close something
+   * @description Context menu item to close the selected tab in a tab strip.
    */
   close: 'Close',
   /**
-   * @description Text on a menu option to close other drawers when right click on a drawer title
+   * @description Context menu item to close other tabs in a tab strip.
    */
   closeOthers: 'Close others',
   /**
-   * @description Text on a menu option to close the drawer to the right when right click on a drawer title
+   * @description Context menu item to close all tabs to the right of the selected tab in a tab strip.
    */
   closeTabsToTheRight: 'Close tabs to the right',
   /**
-   * @description Text on a menu option to close all the drawers except Console when right click on a drawer title
+   * @description Context menu item to close all tabs in a tab strip.
    */
   closeAll: 'Close all',
   /**
-   * @description Indicates that a tab contains a preview feature (i.e., a beta / experimental feature).
+   * @description Tooltip text and accessible label indicating that a tab contains a preview feature.
    */
   previewFeature: 'Preview feature',
 
   /**
-   * @description Text to move a tab forwar.
+   * @description Context menu item to move a tab to the right in a tab strip.
    */
   moveTabRight: 'Move right',
   /**
-   * @description Text to move a tab backward.
+   * @description Context menu item to move a tab to the left in a tab strip.
    */
   moveTabLeft: 'Move left',
 } as const;

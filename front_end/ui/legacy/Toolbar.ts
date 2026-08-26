@@ -28,23 +28,23 @@ import {Widget} from './Widget.js';
 
 const UIStrings = {
   /**
-   * @description Announced screen reader message for ToolbarSettingToggle when the setting is toggled on.
+   * @description Announcement text for screen readers when a toolbar toggle button is pressed.
    */
   pressed: 'pressed',
   /**
-   * @description Announced screen reader message for ToolbarSettingToggle when the setting is toggled off.
+   * @description Announcement text for screen readers when a toolbar toggle button is not pressed.
    */
   notPressed: 'not pressed',
   /**
-   * @description Tooltip shown when the user hovers over the clear icon to empty the text input.
+   * @description Tooltip text and accessible label for the clear input button in a toolbar input.
    */
   clearInput: 'Clear',
   /**
-   * @description Placeholder for filter bars that shows before the user types in a filter keyword.
+   * @description Placeholder text for a filter input in a toolbar.
    */
   filter: 'Filter',
   /**
-   * @description Tooltip shown when the user hovers over the regex icon to toggle regular-expression filtering.
+   * @description Tooltip text and accessible label for the regular expression toggle button in a filter toolbar.
    */
   useRegularExpression: 'Use regular expression',
 } as const;

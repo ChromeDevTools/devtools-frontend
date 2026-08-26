@@ -75,51 +75,51 @@ const {Directives, render} = Lit;
 
 const UIStrings = {
   /**
-   * @description label to open link externally
+   * @description Context menu item to open a link in a new tab.
    */
   openInNewTab: 'Open in new tab',
   /**
-   * @description label to copy link address
+   * @description Context menu item to copy a link address.
    */
   copyLinkAddress: 'Copy link address',
   /**
-   * @description label to copy file name
+   * @description Context menu item to copy a file name.
    */
   copyFileName: 'Copy file name',
   /**
-   * @description label for the profiler control button
+   * @description Warning message shown when attempting to start a profiler while another is already active.
    */
   anotherProfilerIsAlreadyActive: 'Another profiler is already active',
   /**
-   * @description Text in UIUtils
+   * @description Label for a resolved promise in asynchronous call stacks.
    */
   promiseResolvedAsync: 'Promise resolved (async)',
   /**
-   * @description Text in UIUtils
+   * @description Label for a rejected promise in asynchronous call stacks.
    */
   promiseRejectedAsync: 'Promise rejected (async)',
   /**
-   * @description Text for the title of asynchronous function calls group in Call Stack
+   * @description Title for a group of asynchronous function calls in the call stack.
    */
-  asyncCall: 'Async Call',
+  asyncCall: 'Async call',
   /**
-   * @description Text for the name of anonymous functions
+   * @description Fallback name for anonymous functions in the call stack.
    */
   anonymous: '(anonymous)',
   /**
-   * @description Text to close something
+   * @description Tooltip text and accessible label for a close button.
    */
   close: 'Close',
   /**
-   * @description Text on a button for message dialog
+   * @description Button text for confirming an action in a dialog.
    */
   ok: 'OK',
   /**
-   * @description Text to cancel something
+   * @description Button text for canceling an action in a dialog.
    */
   cancel: 'Cancel',
   /**
-   * @description Text for the new badge appearing next to some menu items
+   * @description Text for a badge highlighting a new feature next to menu items.
    */
   new: 'NEW',
 } as const;

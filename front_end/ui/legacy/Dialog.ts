@@ -20,7 +20,7 @@ import {Widget, WidgetFocusRestorer} from './Widget.js';
 
 const UIStrings = {
   /**
-   * @description Text to close the dialog
+   * @description Tooltip text and accessible label for the close button in a dialog.
    */
   close: 'Close',
 } as const;

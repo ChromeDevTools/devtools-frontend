@@ -20,31 +20,31 @@ import {VBox} from './Widget.js';
 
 const UIStrings = {
   /**
-   * @description Text on a button to start editing text
+   * @description Tooltip text for the edit button in a list widget.
    */
   editString: 'Edit',
   /**
-   * @description Label for an item to remove something
+   * @description Tooltip text for the remove button in a list widget.
    */
   removeString: 'Remove',
   /**
-   * @description Text to save something
+   * @description Button text to save changes when editing an item in a list widget.
    */
   saveString: 'Save',
   /**
-   * @description Text to add something
+   * @description Button text to add a new item in a list widget.
    */
   addString: 'Add',
   /**
-   * @description Text to cancel something
+   * @description Button text to cancel editing an item in a list widget.
    */
   cancelString: 'Cancel',
   /**
-   * @description Text for screen reader to announce that an item has been saved.
+   * @description Announcement text for screen readers when changes to a list widget item are saved.
    */
   changesSaved: 'Changes to item have been saved',
   /**
-   * @description Text for screen reader to announce that an item has been removed.
+   * @description Announcement text for screen readers when a list widget item is removed.
    */
   removedItem: 'Item has been removed',
 } as const;

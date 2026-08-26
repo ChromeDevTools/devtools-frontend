@@ -17,11 +17,11 @@ import type {Widget} from './Widget.js';
 
 const UIStrings = {
   /**
-   * @description Text on a button to close the infobar and never show the infobar in the future
+   * @description Button text to permanently dismiss an infobar and prevent it from appearing again.
    */
   dontShowAgain: 'Don’t show again',
   /**
-   * @description Text to close something
+   * @description Accessible label for the close button in an infobar.
    */
   close: 'Close',
 } as const;

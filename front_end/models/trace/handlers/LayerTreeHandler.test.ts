@@ -19,7 +19,7 @@ describe('LayerTreeHandler', function() {
     Trace.Handlers.ModelHandlers.LayerTree.reset();
   });
 
-  it('creates a relationship between paint events and the snapshot event', async function() {
+  it('creates a relationship between paint events and the legacy snapshot event', async function() {
     const events = await TraceLoader.rawEvents(this, 'web-dev-with-advanced-instrumentation.json.gz');
 
     for (const event of events) {
@@ -38,7 +38,8 @@ describe('LayerTreeHandler', function() {
       return paint.ts === 42482841188;
     });
     const snapshotEvent = data.snapshots.find(snapshot => {
-      return snapshot.id2?.local === '0x10c038b6d80';
+      return snapshot.name === Trace.Types.Events.Name.LEGACY_DISPLAY_ITEM_LIST_SNAPSHOT &&
+          snapshot.id2?.local === '0x10c038b6d80';
     });
     if (!paintEvent || !snapshotEvent) {
       throw new Error('Could not find expected paint and snapshot events');

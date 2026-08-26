@@ -51,6 +51,19 @@ describeWithEnvironment('TraceEvent types', function() {
     assert.isFalse(isFlowPhase(Phase.BEGIN));
   });
 
+  it('recognizes instant display item list snapshots from current traces', async function() {
+    const events = await TraceLoader.rawEvents(this, 'display-item-list-instant-snapshot.json.gz');
+    assert.lengthOf(events, 1);
+
+    const snapshotEvent = events[0];
+    if (!Trace.Types.Events.isDisplayListItemListSnapshot(snapshotEvent)) {
+      throw new Error('Could not recognize the instant display item list snapshot');
+    }
+    assert.strictEqual(snapshotEvent.name, Trace.Types.Events.Name.DISPLAY_ITEM_LIST_SNAPSHOT);
+    assert.strictEqual(snapshotEvent.ph, Trace.Types.Events.Phase.INSTANT);
+    assert.isNotEmpty(snapshotEvent.args.snapshot.skp64);
+  });
+
   it('is able to determine that an event is a synthetic user timing event', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
     const timingEvent = parsedTrace.data.UserTimings.performanceMeasures[0];

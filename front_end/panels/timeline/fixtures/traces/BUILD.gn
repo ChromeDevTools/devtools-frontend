@@ -27,6 +27,7 @@ copy_to_gen("traces") {
     "cls-with-iframes.json.gz",
     "collapsible-tracks.json.gz",
     "crux.json.gz",
+    "display-item-list-instant-snapshot.json.gz",
     "dom-size-long.json.gz",
     "dom-size-overlap.json.gz",
     "dom-size.json.gz",

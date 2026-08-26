@@ -56,6 +56,12 @@ not found in other traces:
 1. A sourcemap in the metadata array with a 'chrome-extension' protocol.
 2. 'V8SourceRundownSourcesScriptCatchupEvent' traces that have a 'chrome-extension' protocol with associated source text.
 
+### display-item-list-instant-snapshot.json.gz
+
+A `cc::DisplayItemList:snapshot` instant event extracted from a trace recorded on a minimal page with advanced
+paint instrumentation enabled in Chrome for Testing 152.0.7977.64. Used to test the current display item list
+snapshot format alongside older object snapshot traces.
+
 ### dom-size.json.gz
 
 Generate from a recording of [this HTML file](https://gist.github.com/adamraine/bfdb3cecca2322bf74f1e725d9a4699d) with the following steps:

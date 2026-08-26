@@ -56,7 +56,7 @@ describeWithEnvironment('BackgroundServiceView', () => {
     } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
     assert.exists(backgroundServiceModel);
     view = new Resources.BackgroundServiceView.BackgroundServiceView(serviceName, backgroundServiceModel);
-    renderElementIntoDOM(view, {width: 800, height: 800, includeCommonStyles: true});
+    renderElementIntoDOM(view, {width: 1100, height: 800, includeCommonStyles: true});
   });
 
   function assertEmptyState(expectedHeader: string, expectedDescription?: string): ShadowRoot {

@@ -178,7 +178,7 @@ export interface RevealerRegistration<T> {
   destination?: RevealerDestination;
 }
 
-export const RevealerDestination = {
+export const RevealerDestination: Record<string, RevealerDestination> = {
   DEVELOPER_RESOURCES_PANEL: i18nLazyString(UIStrings.developerResourcesPanel),
   ELEMENTS_PANEL: i18nLazyString(UIStrings.elementsPanel),
   STYLES_SIDEBAR: i18nLazyString(UIStrings.stylesSidebar),

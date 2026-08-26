@@ -110,10 +110,10 @@ export class Settings {
 
   readonly #settingRegistrations: SettingRegistration[];
   readonly #sessionStorage = new SettingsStorage({});
-  settingNameSet = new Set<string>();
+  settingNameSet: Set<string> = new Set<string>();
   #eventSupport = new ObjectWrapper<GenericEvents>();
   #registry = new Map<string, Setting<unknown>>();
-  readonly moduleSettings = new Map<string, Setting<unknown>>();
+  readonly moduleSettings: Map<string, Setting<unknown>> = new Map<string, Setting<unknown>>();
   #logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
   readonly #console: Console;
 

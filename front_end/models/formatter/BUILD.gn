@@ -8,12 +8,13 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_foundation_module("formatter") {
+  split_compilation = true
   sources = [
     "FormatterWorkerPool.ts",
     "ScriptFormatter.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/platform/api:bundle",
@@ -22,9 +23,10 @@ devtools_foundation_module("formatter") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "formatter.ts"
 
-  deps = [ ":formatter" ]
+  ts_deps = [ ":formatter" ]
 
   visibility = [
     ":*",
@@ -55,13 +57,14 @@ devtools_entrypoint("bundle") {
 
 devtools_foundation_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "FormatterWorkerPool.test.ts",
     "ScriptFormatter.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
   ]

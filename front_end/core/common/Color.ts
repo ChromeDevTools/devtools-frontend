@@ -2403,7 +2403,7 @@ console.assert(
     COLOR_TO_RGBA_ENTRIES.every(([nickname]) => nickname.toLowerCase() === nickname),
     'All color nicknames must be lowercase.');
 
-export const Nicknames = new Map(COLOR_TO_RGBA_ENTRIES);
+export const Nicknames: Map<string, number[]> = new Map<string, number[]>(COLOR_TO_RGBA_ENTRIES);
 
 const RGBAToNickname = new Map(
     // Default opacity to 1 if the color only specified 3 channels
@@ -2414,7 +2414,7 @@ const RGBAToNickname = new Map(
 
 const LAYOUT_LINES_HIGHLIGHT_COLOR = [127, 32, 210];
 
-export const PageHighlight = {
+export const PageHighlight: Record<string, Legacy> = {
   Content: Legacy.fromRGBA([111, 168, 220, .66]),
   ContentLight: Legacy.fromRGBA([111, 168, 220, .5]),
   ContentOutline: Legacy.fromRGBA([9, 83, 148]),
@@ -2435,12 +2435,12 @@ export const PageHighlight = {
   GridAreaBorder: Legacy.fromRGBA([26, 115, 232, 1]),
 };
 
-export const SourceOrderHighlight = {
+export const SourceOrderHighlight: Record<string, Legacy> = {
   ParentOutline: Legacy.fromRGBA([224, 90, 183, 1]),
   ChildOutline: Legacy.fromRGBA([0, 120, 212, 1]),
 };
 
-export const IsolationModeHighlight = {
+export const IsolationModeHighlight: Record<string, Legacy> = {
   Resizer: Legacy.fromRGBA([222, 225, 230, 1]),  // --color-background-elevation-2
   ResizerHandle: Legacy.fromRGBA([166, 166, 166, 1]),
   Mask: Legacy.fromRGBA([248, 249, 249, 1]),

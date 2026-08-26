@@ -368,9 +368,9 @@ export class ResourceCategory {
   }
 }
 
-export const resourceCategories = {
-  XHR: new ResourceCategory(
-      'Fetch and XHR', i18nLazyString(UIStrings.fetchAndXHR), i18n.i18n.lockedLazyString('Fetch/XHR')),
+export const resourceCategories: Record<string, ResourceCategory> = {
+  XHR: new ResourceCategory('Fetch and XHR', i18nLazyString(UIStrings.fetchAndXHR),
+                            i18n.i18n.lockedLazyString('Fetch/XHR')),
   Document: new ResourceCategory(UIStrings.document, i18nLazyString(UIStrings.document), i18nLazyString(UIStrings.doc)),
   Stylesheet: new ResourceCategory(UIStrings.css, i18nLazyString(UIStrings.css), i18nLazyString(UIStrings.css)),
   Script:
@@ -380,11 +380,10 @@ export const resourceCategories = {
   Media: new ResourceCategory(UIStrings.media, i18nLazyString(UIStrings.media), i18nLazyString(UIStrings.media)),
   Manifest:
       new ResourceCategory(UIStrings.manifest, i18nLazyString(UIStrings.manifest), i18nLazyString(UIStrings.manifest)),
-  Socket: new ResourceCategory(
-      'Socket', i18n.i18n.lockedLazyString('WebSocket | WebTransport | DirectSocket'),
-      i18nLazyString(UIStrings.socketShort)),
-  Wasm: new ResourceCategory(
-      UIStrings.webassembly, i18nLazyString(UIStrings.webassembly), i18nLazyString(UIStrings.wasm)),
+  Socket: new ResourceCategory('Socket', i18n.i18n.lockedLazyString('WebSocket | WebTransport | DirectSocket'),
+                               i18nLazyString(UIStrings.socketShort)),
+  Wasm: new ResourceCategory(UIStrings.webassembly, i18nLazyString(UIStrings.webassembly),
+                             i18nLazyString(UIStrings.wasm)),
   Other: new ResourceCategory(UIStrings.other, i18nLazyString(UIStrings.other), i18nLazyString(UIStrings.other)),
 };
 
@@ -394,7 +393,7 @@ export const resourceCategories = {
  * (for example Wasm that is based on Fetch), additional types are added here.
  * For these types, make sure to update `fromMimeTypeOverride` to implement the custom logic.
  */
-export const resourceTypes = {
+export const resourceTypes: Record<string, ResourceType> = {
   Document: new ResourceType('document', i18nLazyString(UIStrings.document), resourceCategories.Document, true),
   Stylesheet: new ResourceType('stylesheet', i18nLazyString(UIStrings.stylesheet), resourceCategories.Stylesheet, true),
   Image: new ResourceType('image', i18nLazyString(UIStrings.image), resourceCategories.Image, false),
@@ -416,8 +415,8 @@ export const resourceTypes = {
   SignedExchange:
       new ResourceType('signed-exchange', i18nLazyString(UIStrings.signedexchange), resourceCategories.Other, false),
   Ping: new ResourceType('ping', i18nLazyString(UIStrings.ping), resourceCategories.Other, false),
-  CSPViolationReport: new ResourceType(
-      'csp-violation-report', i18nLazyString(UIStrings.cspviolationreport), resourceCategories.Other, false),
+  CSPViolationReport: new ResourceType('csp-violation-report', i18nLazyString(UIStrings.cspviolationreport),
+                                       resourceCategories.Other, false),
   Other: new ResourceType('other', i18nLazyString(UIStrings.other), resourceCategories.Other, false),
   Preflight: new ResourceType('preflight', i18nLazyString(UIStrings.preflight), resourceCategories.Other, true),
   SourceMapScript: new ResourceType('sm-script', i18nLazyString(UIStrings.script), resourceCategories.Script, true),
@@ -432,7 +431,7 @@ const mimeTypeByName = new Map([
 ]);
 
 // clang-format off
-export const resourceTypeByExtension = new Map([
+export const resourceTypeByExtension: Map<string, ResourceType> = new Map<string, ResourceType>([
   ['js', resourceTypes.Script],
   ['mjs', resourceTypes.Script],
 
@@ -467,7 +466,7 @@ export const resourceTypeByExtension = new Map([
 ]);
 // clang-format on
 
-export const mimeTypeByExtension = new Map([
+export const mimeTypeByExtension: Map<string, string> = new Map<string, string>([
   // Web extensions
   ['js', 'text/javascript'],
   ['mjs', 'text/javascript'],

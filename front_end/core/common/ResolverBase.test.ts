@@ -9,7 +9,7 @@ import * as Common from './common.js';
 class TestClass {}
 
 export class ResolverTestImpl extends Common.ResolverBase.ResolverBase<string, TestClass> {
-  items = new Map<string, TestClass>();
+  items: Map<string, TestClass> = new Map<string, TestClass>();
   currentlyListening = false;
 
   constructor(id?: string, obj?: TestClass) {
@@ -39,7 +39,7 @@ export class ResolverTestImpl extends Common.ResolverBase.ResolverBase<string, T
     assert.isFalse(this.currentlyListening, 'Expected to be listening');
   }
 
-  override onResolve(id: string, obj: TestClass) {
+  override onResolve(id: string, obj: TestClass): void {
     super.onResolve(id, obj);
   }
 }

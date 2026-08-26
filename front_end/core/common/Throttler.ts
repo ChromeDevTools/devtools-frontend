@@ -49,7 +49,7 @@ export class Throttler {
     this.#process = null;
   }
 
-  async schedule(process: () => (void|Promise<unknown>), scheduling = Scheduling.DEFAULT): Promise<void> {
+  async schedule(process: () => (void|Promise<unknown>), scheduling: Scheduling = Scheduling.DEFAULT): Promise<void> {
     // Deliberately skip previous #process.
     this.#process = process;
 

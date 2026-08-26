@@ -5,8 +5,8 @@
 import {Trie} from './Trie.js';
 
 export class TextDictionary {
-  readonly words = new Map<string, number>();
-  readonly index = Trie.newStringTrie();
+  readonly words: Map<string, number> = new Map<string, number>();
+  readonly index: Trie<string> = Trie.newStringTrie();
 
   addWord(word: string): void {
     let count = this.words.get(word) || 0;

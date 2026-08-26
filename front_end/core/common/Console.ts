@@ -30,7 +30,8 @@ export class Console extends ObjectWrapper<EventTypes> {
    * @param show whether to show the Console panel (if it's not already shown).
    * @param source the message source.
    */
-  addMessage(text: string, level = MessageLevel.INFO, show = false, source?: FrontendMessageSource): void {
+  addMessage(text: string, level: MessageLevel = MessageLevel.INFO, show = false,
+             source?: FrontendMessageSource): void {
     const message = new Message(text, level, Date.now(), show, source);
     this.#messages.push(message);
     this.dispatchEventToListeners(Events.MESSAGE_ADDED, message);

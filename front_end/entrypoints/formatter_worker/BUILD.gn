@@ -53,9 +53,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("formatter_actions") {
+  split_compilation = true
   entrypoint = "FormatterActions.ts"
 
-  deps = []
+  ts_deps = []
 
   visibility = [
     ":*",

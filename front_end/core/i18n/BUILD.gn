@@ -12,6 +12,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("//$devtools_root_location/config/gni/i18n.gni")
 
 devtools_foundation_module("i18n") {
+  split_compilation = true
   sources = [
     "ByteUtilities.ts",
     "DevToolsLocale.ts",
@@ -21,8 +22,9 @@ devtools_foundation_module("i18n") {
     "time-utilities.ts",
   ]
 
-  deps = [
-    ":locales_js",
+  deps = [ ":locales_js" ]
+
+  ts_deps = [
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../third_party/i18n:bundle",
@@ -30,8 +32,9 @@ devtools_foundation_module("i18n") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "i18n.ts"
-  deps = [ ":i18n" ]
+  ts_deps = [ ":i18n" ]
 
   visibility = [
     # IMPORTANT: Be careful when extending visibility of front_end/core/i18n,
@@ -116,6 +119,7 @@ devtools_pre_built("locales_js") {
 
 devtools_foundation_module("foundation_unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "ByteUtilities.test.ts",
@@ -126,7 +130,7 @@ devtools_foundation_module("foundation_unittests") {
     "time-utilities.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../testing",
     "../../third_party/i18n:bundle",

@@ -67,7 +67,7 @@ export async function fetchAndRegisterLocaleData(
     locale: Intl.UnicodeBCP47LocaleIdentifier,
     // Type issue with universal types.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    location = (globalThis as any).location?.toString() ?? ''): Promise<void> {
+    location: string = (globalThis as any).location?.toString() ?? ''): Promise<void> {
   const localeDataTextPromise =
       fetch(getLocaleFetchUrl(locale, location)).then(result => result.json()) as Promise<I18n.I18n.LocalizedMessages>;
   const timeoutPromise = new Promise<never>(

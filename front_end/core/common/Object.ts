@@ -119,8 +119,8 @@ export type EventMixinBase = {
   dispatchDOMEvent ? (event: Event) : void,
 }&object;
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function eventMixin<Events, Base extends Platform.Constructor.Constructor<EventMixinBase>>(base: Base) {
+export function eventMixin<Events, Base extends Platform.Constructor.Constructor<EventMixinBase>>(base: Base):
+    Platform.Constructor.Constructor<EventTarget<Events>>&Base {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   console.assert(base as any !== HTMLElement);
   return class EventHandling extends base implements EventTarget<Events> {

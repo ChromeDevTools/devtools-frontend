@@ -347,7 +347,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
-    it('handles selection and expansion in declarative view', async () => {
+    it('handles selection and expansion', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
       try {
         const rootNode = createTestDOMTree(domModel, {
@@ -369,7 +369,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
-    it('supports omitRootDOMNode in declarative view', async () => {
+    it('supports omitRootDOMNode', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
       try {
         domTree.omitRootDOMNode = true;
@@ -468,7 +468,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
-    it('supports maxTreeDepth in declarative view', async () => {
+    it('supports maxTreeDepth', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
       try {
         const rootNode = createTestDOMTree(domModel, {
@@ -497,7 +497,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
-    it('filters comment nodes based on showComments setting in declarative view', async () => {
+    it('filters comment nodes based on showComments setting', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
       try {
         const rootNode = createTestDOMTree(domModel, {
@@ -532,7 +532,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
-    it('sets correct jslog attributes on treeitems in declarative view', async () => {
+    it('sets correct jslog attributes on treeitems', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
       try {
         const rootNode = createTestDOMTree(domModel, {nodeId: 1, nodeName: 'DIV'});
@@ -551,6 +551,137 @@ describeWithEnvironment('DOMTreeWidget', () => {
         assert.isNotNull(jslog);
         assert.include(jslog, 'TreeItem');
         assert.include(jslog, 'elementsTreeOutline');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('computes left indent correctly across nesting levels', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'SECTION',
+              children: [{nodeId: 3, nodeName: 'SPAN'}],
+            },
+          ],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        const sectionNode = rootNode.children()![0];
+        domTree.setNodeExpanded(sectionNode, true);
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        assert.lengthOf(rootTreeElements, 1);
+
+        // Root DIV (depth 0, expandable): 12 * (0 - 1) + 1 = -11.
+        const rootWidgetElement = rootTreeElements[0].listItemElement.querySelector('devtools-widget');
+        const rootWidget = UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.strictEqual(rootWidget.computeLeftIndent, -11);
+
+        // Section (depth 1, expandable): 12 * (1 - 1) + 1 = 1.
+        const sectionTreeElement = rootTreeElements[0].children()[0];
+        const sectionWidgetElement = sectionTreeElement.listItemElement.querySelector('devtools-widget');
+        const sectionWidget =
+            UI.Widget.Widget.get(sectionWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.strictEqual(sectionWidget.computeLeftIndent, 1);
+
+        // Span (depth 2, not expandable): 12 * (2 - 1) + 12 = 24.
+        const spanTreeElement = sectionTreeElement.children()[0];
+        const spanWidgetElement = spanTreeElement.listItemElement.querySelector('devtools-widget');
+        const spanWidget = UI.Widget.Widget.get(spanWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.strictEqual(spanWidget.computeLeftIndent, 24);
+
+        // Closing DIV (depth 0, not expandable): 12 * (0 - 1) + 12 = 0.
+        const closingDivTreeElement = rootTreeElements[0].children()[1];
+        const closingDivWidgetElement = closingDivTreeElement.listItemElement.querySelector('devtools-widget');
+        const closingDivWidget =
+            UI.Widget.Widget.get(closingDivWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.strictEqual(closingDivWidget.computeLeftIndent, 0);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('highlights and reveals node when highlighted in overlay', async () => {
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'P',
+              children: [{nodeId: 3, nodeName: 'SPAN'}],
+            },
+          ],
+        });
+        domTree.rootDOMNode = rootNode;
+        // Keep root node and P collapsed initially.
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        assert.lengthOf(rootTreeElements, 1);
+        assert.isFalse(rootTreeElements[0].expanded);
+
+        const overlayModel = target.model(SDK.OverlayModel.OverlayModel);
+        assert.exists(overlayModel);
+        const pNode = rootNode.children()![0];
+        const spanNode = pNode.children()![0];
+        assert.strictEqual(spanNode.parentNode, pNode);
+        assert.strictEqual(pNode.parentNode, rootNode);
+
+        // Trigger overlay highlight on spanNode.
+        overlayModel.dispatchEventToListeners(SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, spanNode);
+        await new Promise(resolve => setTimeout(resolve, 150));
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        assert.isNull(domTree.selectedDOMNode());
+
+        // Ancestors should be auto-expanded to reveal the highlighted node.
+        const currentRootTreeElements = internalTree.rootElement().children();
+        assert.isNotEmpty(currentRootTreeElements);
+        const rootTreeElement = currentRootTreeElements[0];
+        assert.isTrue(rootTreeElement.expanded);
+
+        const pTreeElements = rootTreeElement.children();
+        assert.isNotEmpty(pTreeElements);
+        const pTreeElement = pTreeElements[0];
+        assert.isTrue(pTreeElement.expanded);
+
+        const spanTreeElement = pTreeElement.children()[0];
+        assert.exists(spanTreeElement);
+        assert.isTrue(spanTreeElement.listItemElement.classList.contains('hovered'));
+
+        const spanWidgetElement = spanTreeElement.listItemElement.querySelector('devtools-widget');
+        const spanWidget = UI.Widget.Widget.get(spanWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.isTrue(spanWidget.hovered);
+
+        // Clear overlay highlight.
+        overlayModel.dispatchEventToListeners(SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED, overlayModel);
+        await new Promise(resolve => setTimeout(resolve, 150));
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        assert.isFalse(spanWidget.hovered);
       } finally {
         domTree.detach();
       }

@@ -428,6 +428,21 @@ function getVisibleChildren(node: SDK.DOMModel.DOMNode, showComments = true): SD
   return children;
 }
 
+function isAncestorOf(ancestor: SDK.DOMModel.DOMNode, descendant: SDK.DOMModel.DOMNode): boolean {
+  let current: SDK.DOMModel.DOMNode|null = descendant.parentNode;
+  while (current) {
+    if (current === ancestor) {
+      return true;
+    }
+    current = current.parentNode;
+  }
+  return false;
+}
+
+function computeLeftIndent(depth: number, isExpandable: boolean): number {
+  return 12 * (depth - 1) + (isExpandable ? 1 : 12);
+}
+
 export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
   let rootNodes: SDK.DOMModel.DOMNode[] = [];
   const rootDOMNode = input.rootDOMNode;
@@ -439,12 +454,15 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     }
   }
 
-  const renderNode = (node: SDK.DOMModel.DOMNode): Lit.LitTemplate => {
+  const renderNode = (node: SDK.DOMModel.DOMNode, depth = 0): Lit.LitTemplate => {
     const isSelected = input.selectedNode === node;
-    const isExpanded = input.isNodeExpanded ?
-        input.isNodeExpanded(node) :
-        Boolean(input.expandRoot &&
-                (node === input.rootDOMNode || (input.omitRootDOMNode && node.parentNode === input.rootDOMNode)));
+    const isHovered = input.currentHighlightedNode === node;
+    const isExpanded = Boolean(
+        (input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode)) ||
+        (input.isNodeExpanded ?
+             input.isNodeExpanded(node) :
+             (input.expandRoot &&
+              (node === input.rootDOMNode || (input.omitRootDOMNode && node.parentNode === input.rootDOMNode)))));
     const hasChildren = nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
     const children = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
     const tagName = node.nodeName().toLowerCase();
@@ -478,6 +496,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     return html`
       <li role="treeitem"
           ?selected=${isSelected}
+          class=${isHovered ? 'hovered' : ''}
           ?open=${isExpanded}
           @select=${onSelect}
           @expand=${onExpand}
@@ -494,6 +513,8 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           isExpandable: hasChildren,
           selected: isSelected,
           isDOMNodeSelected: isSelected,
+          hovered: isHovered,
+          computeLeftIndent: computeLeftIndent(depth, hasChildren),
           disableEdits: input.disableEdits ?? false,
           showAIButton: input.showAIButton ?? true,
           selectDOMNode: (n: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => input.onSelect?.(n, selectedByUser),
@@ -512,7 +533,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         ${hasChildren ? html`
           <ul role="group">
             ${UI.TreeOutline.ifExpanded(html`
-              ${children.map(child => renderNode(child))}
+              ${children.map(child => renderNode(child, depth + 1))}
               ${needsClosingTag ? html`
                 <li role="treeitem" jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
                   ${UI.Widget.widget(ElementsTreeWidget, {
@@ -522,6 +543,8 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
                     isExpandable: false,
                     selected: false,
                     isDOMNodeSelected: false,
+                    hovered: false,
+                    computeLeftIndent: computeLeftIndent(depth, false),
                     disableEdits: input.disableEdits ?? false,
                     showAIButton: false,
                   })}
@@ -840,7 +863,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         this.#expandedNodes.delete(node);
         this.onElementCollapsed();
       }
-      this.#clearHighlightedNode();
+      if (!this.#currentHighlightedNode || !isAncestorOf(node, this.#currentHighlightedNode)) {
+        this.#clearHighlightedNode();
+      }
       this.performUpdate();
       return;
     }

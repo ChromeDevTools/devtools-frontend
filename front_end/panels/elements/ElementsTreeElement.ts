@@ -1115,7 +1115,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   childCount?: () => number;
   closingTagElement?: () => Element | null;
   updateShadowRootDepth?: (depth: number) => void;
-  computeLeftIndent?: () => number;
+  computeLeftIndent?: number|(() => number);
   setChildrenListElementVisible?: (visible: boolean) => void;
 
   findStartTagWidget?: () => ElementsTreeWidget | null;
@@ -1366,7 +1366,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       decorations: this.#decorations,
       descendantDecorations: this.#expanded ? [] : this.#descendantDecorations,
       decorationsTooltip: this.#decorationsTooltip,
-      indent: this.computeLeftIndent ? this.computeLeftIndent() : 0,
+      indent: this.#getLeftIndent(),
       showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
       scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
       showSlotAdorner: Boolean(this.node.assignedSlot) && !isClosingTag,
@@ -2272,7 +2272,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
     function resize(this: ElementsTreeWidget): void {
       if (this.visibleWidth) {
-        this.#editorWidth = this.visibleWidth() - (this.computeLeftIndent ? this.computeLeftIndent() : 0) - 30;
+        this.#editorWidth = this.visibleWidth() - this.#getLeftIndent() - 30;
         this.requestUpdate();
       }
     }
@@ -2497,10 +2497,17 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     this.#highlightSearchResults();
   }
 
+  #getLeftIndent(): number {
+    if (typeof this.computeLeftIndent === 'function') {
+      return this.computeLeftIndent();
+    }
+    return this.computeLeftIndent ?? 0;
+  }
+
   updateDecorations(): void {
     // Important to keep the entire tree node row as a clickable area for that
     // node.
-    this.element.style.setProperty('--indent', (this.computeLeftIndent ? this.computeLeftIndent() : 0) + 'px');
+    this.element.style.setProperty('--indent', this.#getLeftIndent() + 'px');
 
     if (this.isClosingTag) {
       return;

@@ -9,6 +9,8 @@ import {clickOnContextMenu, CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../h
 
 describe('The Console Tab', function() {
   const RESULT_SELECTOR = '.console-message-text';
+  // Targets the root tree element of object previews (like Maps and Sets) in the Console
+  const OBJECT_SELECTOR = '.object-properties-section-root-element';
   const LINE_END = platform === 'win32' ? '\r\n' : '\n';
 
   it('can copy contents for strings', async ({devToolsPage}) => {
@@ -86,8 +88,8 @@ describe('The Console Tab', function() {
     await devToolsPage.click(CONSOLE_TAB_SELECTOR);
     await focusConsolePrompt(devToolsPage);
     await devToolsPage.typeText('new Map([["key1","value1"],["key2","value2"]])\n');
-    await devToolsPage.waitFor(RESULT_SELECTOR);
-    await clickOnContextMenu(devToolsPage, RESULT_SELECTOR, 'copy-object');
+    await devToolsPage.waitFor(OBJECT_SELECTOR);
+    await clickOnContextMenu(devToolsPage, OBJECT_SELECTOR, 'copy-object');
     const copiedContent = await devToolsPage.readClipboard();
     assert.deepEqual(
         copiedContent,
@@ -99,8 +101,8 @@ describe('The Console Tab', function() {
     await devToolsPage.click(CONSOLE_TAB_SELECTOR);
     await focusConsolePrompt(devToolsPage);
     await devToolsPage.typeText('new Set(["a","b","c"])\n');
-    await devToolsPage.waitFor(RESULT_SELECTOR);
-    await clickOnContextMenu(devToolsPage, RESULT_SELECTOR, 'copy-object');
+    await devToolsPage.waitFor(OBJECT_SELECTOR);
+    await clickOnContextMenu(devToolsPage, OBJECT_SELECTOR, 'copy-object');
     const copiedContent = await devToolsPage.readClipboard();
     assert.deepEqual(copiedContent, `new Set([${LINE_END}    "a",${LINE_END}    "b",${LINE_END}    "c"${LINE_END}])`);
   });

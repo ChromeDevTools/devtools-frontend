@@ -17,17 +17,16 @@ import { getInteractionCount } from './polyfills/interactionCountPolyfill.js';
 // To prevent unnecessary memory usage on pages with lots of interactions,
 // store at most 10 of the longest interactions to consider as INP candidates.
 const MAX_INTERACTIONS_TO_CONSIDER = 10;
-// Used to store the interaction count after a bfcache restore, since p98
-// interaction latencies should only consider the current navigation.
-let prevInteractionCount = 0;
-/**
- * Returns the interaction count since the last bfcache restore (or for the
- * full page lifecycle if there were no bfcache restores).
- */
-const getInteractionCountForNavigation = () => {
-    return getInteractionCount() - prevInteractionCount;
-};
 export class InteractionManager {
+    /**
+     * The interaction count at the start of the current navigation, so p98
+     * interaction latencies only consider interactions since then.
+     *
+     * This is per-instance rather than module state: `initUnique()` gives every
+     * `onINP()` call its own manager, and a shared counter would let whichever
+     * instance resets first hide the interactions from all the others.
+     */
+    _prevInteractionCount = 0;
     /**
      * A list of longest interactions on the page (by latency) sorted so the
      * longest one is first. The list is at most MAX_INTERACTIONS_TO_CONSIDER
@@ -41,8 +40,15 @@ export class InteractionManager {
     _longestInteractionMap = new Map();
     _onBeforeProcessingEntry;
     _onAfterProcessingINPCandidate;
+    /**
+     * Returns the interaction count since the start of the current navigation
+     * (or the full page lifecycle if there were no soft navs / bfcache restores).
+     */
+    _getInteractionCountForNavigation() {
+        return getInteractionCount() - this._prevInteractionCount;
+    }
     _resetInteractions() {
-        prevInteractionCount = getInteractionCount();
+        this._prevInteractionCount = getInteractionCount();
         this._longestInteractionList.length = 0;
         this._longestInteractionMap.clear();
     }
@@ -51,7 +57,7 @@ export class InteractionManager {
      * interaction candidates and the interaction count for the current page.
      */
     _estimateP98LongestInteraction(navigationType) {
-        const interactionCountForNavigation = getInteractionCountForNavigation();
+        const interactionCountForNavigation = this._getInteractionCountForNavigation();
         const candidateInteractionIndex = Math.min(this._longestInteractionList.length - 1, Math.floor(interactionCountForNavigation / 50));
         // If we have a non-zero interactionCountForNavigation but no
         // candidateInteractionIndex, then it's below the 16ms limit
@@ -79,7 +85,7 @@ export class InteractionManager {
     _processEntry(entry) {
         this._onBeforeProcessingEntry?.(entry);
         // Skip further processing for entries that cannot be INP candidates.
-        if (!(entry.interactionId || entry.entryType === 'first-input'))
+        if (!entry.interactionId)
             return;
         // The least-long of the 10 longest interactions.
         const minLongestInteraction = this._longestInteractionList.at(-1);

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 export const checkSoftNavsEnabled = (opts) => {
-    return (PerformanceObserver.supportedEntryTypes.includes('soft-navigation') &&
+    return (
+    // Firefox has a preference to disable this, which some people use so add a guard
+    globalThis.PerformanceObserver?.supportedEntryTypes?.includes('soft-navigation') &&
         // Older implementations expose the value as an attribute rather than the
         // method. We only support the newer method as that was what was launched
         // to stable unflagged.

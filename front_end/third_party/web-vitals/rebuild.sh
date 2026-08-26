@@ -4,8 +4,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-VERSION=6.0.0
-GIT_SHA=67a9ddb4cf77f8d1cb2c877ccd870b9c821aa853 # web-vitals does not tag releases.
+VERSION=6.2.1
+GIT_SHA=582ee7450ca5c60a947edbfd95ad53e135ca5dde # web-vitals does not tag releases.
 
 # Note: this is just to handle updating README.chromium.
 # For the actual sources, below we checkout the repo, apply local patches, then build with tsc.
@@ -17,7 +17,7 @@ cd "$SCRIPT_DIR"
 rm -rf package/src package/dist
 
 if [ ! -d tmp-repo ]; then
-    git clone http://github.com/GoogleChrome/web-vitals tmp-repo
+    git clone https://github.com/GoogleChrome/web-vitals tmp-repo
 fi
 
 cd tmp-repo

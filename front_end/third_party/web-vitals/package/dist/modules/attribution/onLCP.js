@@ -18,7 +18,27 @@ import { getSelector } from '../lib/getSelector.js';
 import { initUnique } from '../lib/initUnique.js';
 import { LCPEntryManager } from '../lib/LCPEntryManager.js';
 import { checkSoftNavsEnabled } from '../lib/softNavs.js';
+import { observe } from '../lib/observe.js';
 import { onLCP as unattributedOnLCP } from '../onLCP.js';
+/**
+ * Default resource buffer size to 50 to help attribute media LCPs to a URL and
+ * for subpart attribution. This can be increased for pages that request a
+ * large number of resources between the LCP resource and LCP candidates being
+ * processed, particularly for soft navigations where the browser default first
+ * 250 entries may not contain the LCP resource.
+ */
+const DEFAULT_RESOURCE_BUFFER_SIZE = 50;
+let resourceBufferSizeLimit = DEFAULT_RESOURCE_BUFFER_SIZE;
+const resourceBuffer = [];
+observe(['resource'], (entries) => {
+    for (const entry of entries) {
+        resourceBuffer.push(entry);
+        // Keep only the last resourceBufferSizeLimit entries.
+        if (resourceBuffer.length > resourceBufferSizeLimit) {
+            resourceBuffer.shift();
+        }
+    }
+});
 /**
  * Calculates the [LCP](https://web.dev/articles/lcp) value for the current page and
  * calls the `callback` function once the value is ready (along with the
@@ -36,6 +56,9 @@ export const onLCP = (onReport, opts = {}) => {
     // this function invocation and the `unattributedOnLCP()` invocation below
     // (which is passed the same `opts` object).
     opts = Object.assign({}, opts);
+    if (opts.resourceBufferSize != undefined) {
+        resourceBufferSizeLimit = opts.resourceBufferSize;
+    }
     const lcpEntryManager = initUnique(opts, LCPEntryManager);
     const lcpTargetMap = new WeakMap();
     if (checkSoftNavsEnabled(opts)) {
@@ -64,10 +87,14 @@ export const onLCP = (onReport, opts = {}) => {
         if (metric.entries.length) {
             // The `metric.entries.length` check ensures there will be an entry.
             const lcpEntry = metric.entries.at(-1);
+            // Get the Resource Timing entry checking the local buffer first
+            // Use findLast to get the latest entry in case a resource is requested
+            // multiple times (can particularly affect soft nav page views).
             const lcpResourceEntry = lcpEntry.url &&
-                performance
-                    .getEntriesByType('resource')
-                    .find((e) => e.name === lcpEntry.url);
+                (resourceBuffer.findLast((e) => e.name === lcpEntry.url) ||
+                    performance
+                        .getEntriesByType('resource')
+                        .findLast((e) => e.name === lcpEntry.url));
             attribution.target = lcpTargetMap.get(lcpEntry);
             attribution.lcpEntry = lcpEntry;
             // Only attribute the URL and resource entry if they exist.

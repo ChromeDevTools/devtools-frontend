@@ -79,6 +79,7 @@ devtools_ui_module("unittests") {
 
   sources = [
     "ARIAAttributesView.test.ts",
+    "AccessibilityAnnouncementRecordingView.test.ts",
     "AccessibilitySidebarView.test.ts",
   ]
 

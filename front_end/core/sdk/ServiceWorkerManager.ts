@@ -358,7 +358,9 @@ export class ServiceWorkerVersion {
     }
     this.targetId = payload.targetId || null;
     this.routerRules = null;
-    if (payload.routerRules) {
+    if (payload.typedRouterRules) {
+      this.routerRules = this.parseTypedRules(payload.typedRouterRules);
+    } else if (payload.routerRules) {
       this.routerRules = this.parseJSONRules(payload.routerRules);
     }
   }
@@ -454,6 +456,60 @@ export class ServiceWorkerVersion {
       console.error('Parse error: Invalid `routerRules` in ServiceWorkerVersion');
       return null;
     }
+  }
+
+  /**
+   * `urlPattern` can be either plain text (e.g. '/foo/*') or a JSON-serialized URLPattern/URLPatternInit object.
+   * Parses it to an object if valid JSON, otherwise falls back to the original string.
+   */
+  private parseURLPatternCondition(urlPattern: string): string|Record<string, unknown>|null {
+    try {
+      const parsed = JSON.parse(urlPattern);
+      if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+        // URLPattern or URLPatternInit
+        return parsed as Record<string, unknown>;
+      }
+      if (typeof parsed !== 'string') {
+        return null;
+      }
+    } catch {
+      // fallthrough
+    }
+    return urlPattern;
+  }
+
+  private parseTypedRules(rules: Protocol.ServiceWorker.ServiceWorkerRouterRule[]): ServiceWorkerRouterRule[]|null {
+    const routerRules: ServiceWorkerRouterRule[] = [];
+    for (const rule of rules) {
+      const condition: Record<string, unknown> = {...rule.condition};
+      // "urlPattern" condition can have structural URLPatternInit encoded into a JSON string.
+      // If `condition` is directly stringified, such JSON strings are double-escaped (`"abc"` -> `\"abc\""`).
+      // Expand "urlPattern" condition to native object and stringify whole conditions in such cases to avoid this.
+      if (rule.condition.urlPattern) {
+        condition.urlPattern = this.parseURLPatternCondition(rule.condition.urlPattern);
+        if (condition.urlPattern === null) {
+          console.error('Parse error: Invalid "urlPattern" condition in `typedRouterRules` in ServiceWorkerVersion');
+          return null;
+        }
+      }
+      let source: Protocol.ServiceWorker.ServiceWorkerRouterSourceType|
+          Protocol.ServiceWorker.ServiceWorkerRouterSourceDict;
+      if (rule.source.type === Protocol.ServiceWorker.ServiceWorkerRouterSourceType.SourceDict) {
+        if (!rule.source.sourceDict) {
+          console.error('Parse error: `sourceDict` is missing in `typedRouterRules` source');
+          return null;
+        }
+        source = rule.source.sourceDict;
+      } else {
+        if (rule.source.sourceDict !== undefined) {
+          console.error('Parse error: Unexpected `sourceDict` in `typedRouterRules` source');
+          return null;
+        }
+        source = rule.source.type;
+      }
+      routerRules.push(new ServiceWorkerRouterRule(JSON.stringify(condition), JSON.stringify(source), rule.id));
+    }
+    return routerRules;
   }
 }
 

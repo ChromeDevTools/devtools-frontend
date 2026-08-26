@@ -93,9 +93,8 @@ template("legacy_ts_library") {
     ]
 
     assert(
-        defined(sources) || defined(deps) || defined(ts_deps) ||
-            defined(invoker.sourceslist),
-        "You must either specify an array of 'sources' or 'deps' or 'ts_deps' or a 'sourceslist' for $target_name")
+        defined(sources) || defined(deps) || defined(ts_deps),
+        "You must either specify an array of 'sources' or 'deps' or 'ts_deps' for $target_name")
 
     if (defined(invoker.es_target)) {
       args += [
@@ -110,7 +109,6 @@ template("legacy_ts_library") {
 
     _test_only = defined(invoker.testonly) && invoker.testonly
     _no_emit = defined(invoker.no_emit) && invoker.no_emit
-    _tsconfig_only = defined(invoker.tsconfigonly) && invoker.tsconfigonly
     _verify_lib_check =
         defined(invoker.verify_lib_check) && invoker.verify_lib_check
     _rootdir = "."
@@ -168,20 +166,9 @@ template("legacy_ts_library") {
       inputs += typescript_test_types_inputs
     }
 
-    if (_tsconfig_only) {
-      args += [ "--tsconfig-only" ]
-    }
-
     if (defined(invoker.additional_type_definitions)) {
       args += [ "--additional-type-definitions" ] +
               rebase_path(invoker.additional_type_definitions, root_build_dir)
-    }
-
-    if (defined(invoker.sourceslist)) {
-      args += [
-        "--sources-list",
-        rebase_path(invoker.sourceslist, root_build_dir),
-      ]
     }
 
     if (_no_emit) {

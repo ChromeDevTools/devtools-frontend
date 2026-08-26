@@ -195,9 +195,6 @@ def main():
                         '--sources',
                         nargs='*',
                         help='List of TypeScript source files')
-    parser.add_argument('--sources-list',
-                        type=argparse.FileType('r'),
-                        help='List of TypeScript source files')
     parser.add_argument('-deps',
                         '--deps',
                         nargs='*',
@@ -217,7 +214,6 @@ def main():
                         required=False,
                         help='List of TypeScript declaration files')
     parser.add_argument('--use-esbuild', action='store_true')
-    parser.add_argument('--tsconfig-only', action='store_true')
     parser.add_argument('--es-target', required=False)
     parser.add_argument('--es-libs', nargs='*', required=False)
     # Restrict supported features to the ones supported by Node 22.
@@ -248,8 +244,6 @@ def main():
                             tsconfig_output_directory)
 
     sources = opts.sources or []
-    if len(sources) == 0 and opts.sources_list:
-        sources = shlex.split(opts.sources_list.read())
 
     all_ts_files = sources + GLOBAL_TYPESCRIPT_DEFINITION_FILES
 
@@ -409,9 +403,6 @@ def main():
     # That's because tsc can successfully compile dependents solely on
     # the tsconfig.json
     if len(sources) == 0 and not opts.verify_lib_check:
-        return 0
-
-    if opts.tsconfig_only:
         return 0
 
     if opts.use_esbuild:

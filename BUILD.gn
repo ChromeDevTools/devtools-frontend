@@ -187,6 +187,7 @@ action("generate_devtools_grd") {
 }
 
 generated_file("indexer_ts_files") {
+  testonly = true
   outputs = [ "$root_build_dir/indexer_ts_files.txt" ]
   data_keys = [ "typescript_files" ]
 
@@ -196,10 +197,37 @@ generated_file("indexer_ts_files") {
   ]
 }
 
-ts_library("frontend_indexer_tsconfig") {
-  tsconfigonly = true
-  sourceslist = "$root_build_dir/indexer_ts_files.txt"
+action("frontend_indexer_tsconfig") {
+  testonly = true
+  script = devtools_location_prepend +
+           "scripts/build/typescript/generate_indexer_tsconfig.py"
+  _sourceslist = "$root_build_dir/indexer_ts_files.txt"
+  _tsconfig_base =
+      devtools_location_prepend + "config/typescript/tsconfig.base.json"
+  _global_defs = [
+    devtools_location_prepend + "front_end/global_typings/global_defs.d.ts",
+    devtools_location_prepend + "front_end/legacy/legacy-defs.d.ts",
+    devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
+  ]
   public_deps = [ ":indexer_ts_files" ]
+  inputs = [
+             _sourceslist,
+             _tsconfig_base,
+           ] + _global_defs
+  _output_location = "$target_gen_dir/frontend_indexer_tsconfig-tsconfig.json"
+  outputs = [ _output_location ]
+  response_file_contents = [
+                             "--tsconfig-base",
+                             rebase_path(_tsconfig_base, root_build_dir),
+                             "--tsconfig-output-location",
+                             rebase_path(_output_location, root_build_dir),
+                             "--front-end-directory",
+                             rebase_path(".", root_build_dir),
+                             "--sources-list",
+                             rebase_path(_sourceslist, root_build_dir),
+                             "--additional-type-definitions",
+                           ] + rebase_path(_global_defs, root_build_dir)
+  args = [ "@{{response_file_name}}" ]
 }
 
 copy_to_gen("favicon") {

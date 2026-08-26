@@ -35,17 +35,17 @@ found in the LICENSE file. */
   display: flex;
   align-items: center;
   background-color: var(--sys-color-surface2);
-  height: 22px;
+  height: var(--sys-size-10);
   padding: 0 5px;
   white-space: nowrap;
   overflow: hidden;
   position: relative;
-  border-bottom: 1px solid transparent;
+  border-bottom: var(--sys-size-1) solid transparent;
 }
 
 .expandable-view-title.expanded,
 .expandable-view-title:last-child {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .expandable-view-title devtools-toolbar {
@@ -63,8 +63,8 @@ found in the LICENSE file. */
 }
 
 .title-expand-icon {
-  margin-right: 2px;
-  margin-bottom: -2px;
+  margin-right: var(--sys-size-2);
+  margin-bottom: calc(-1 * var(--sys-size-2));
 }
 
 .expandable-view-title:focus-visible {
@@ -80,7 +80,7 @@ found in the LICENSE file. */
     forced-color-adjust: none;
     color: HighlightText;
     background-color: Highlight;
-    box-shadow: 0 0 0 2px Highlight inset;
+    box-shadow: 0 0 0 var(--sys-size-2) Highlight inset;
   }
 
   .expandable-view-title:focus-visible .title-expand-icon {

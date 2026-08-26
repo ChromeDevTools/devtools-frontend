@@ -21,9 +21,13 @@ ts_e2e_library("tests") {
   ]
 
   deps = [
+    "../../front_end/core/sdk:bundle",
+    "../../front_end/panels/ai_assistance:bundle",
     "../e2e/conductor:implementation",
+    "../e2e/helpers",
     "../e2e/shared",
     "../shared",
+    "helpers",
   ]
 }
 

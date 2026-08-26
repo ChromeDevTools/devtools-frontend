@@ -33,7 +33,7 @@ function resolveConversationType(contextType?: ContextType): AiAssistanceModel.A
   }
 }
 
-function getMatchingFlavorContext(
+export function getMatchingFlavorContext(
     contextOptions?: ExternalAIRequestOptions['context'],
     ): AiAssistanceModel.AiAgent.ConversationContext<unknown>|null {
   if (!contextOptions?.contextIdentifier) {

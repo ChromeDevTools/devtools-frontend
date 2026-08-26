@@ -117,10 +117,10 @@
     "message": "חלונית מקורות"
   },
   "core/common/Revealer.ts | stylesSidebar": {
-    "message": "סרגל הצד של הסגנונות"
+    "message": "סרגל הצד \"סגנונות\""
   },
   "core/common/Revealer.ts | timelinePanel": {
-    "message": "חלונית ביצועים"
+    "message": "חלונית הביצועים"
   },
   "core/common/SettingRegistration.ts | account": {
     "message": "חשבון"
@@ -135,7 +135,7 @@
     "message": "מראה"
   },
   "core/common/SettingRegistration.ts | console": {
-    "message": "מסוף"
+    "message": "המסוף"
   },
   "core/common/SettingRegistration.ts | debugger": {
     "message": "כלי לניפוי באגים"
@@ -167,9 +167,6 @@
   "core/common/SettingRegistration.ts | persistence": {
     "message": "התמדה"
   },
-  "core/common/SettingRegistration.ts | privacy": {
-    "message": "פרטיות"
-  },
   "core/common/SettingRegistration.ts | rendering": {
     "message": "רינדור"
   },
@@ -192,7 +189,7 @@
     "message": "שגיאת חיבור"
   },
   "core/host/ResourceLoader.ts | decodingDataUrlFailed": {
-    "message": "כתובת ה-URL של הנתונים לא פוענחה"
+    "message": "הייתה בעיה וכתובת ה-URL של הנתונים לא פוענחה"
   },
   "core/host/ResourceLoader.ts | dnsResolverError": {
     "message": "שגיאת מקודד DNS"
@@ -276,7 +273,7 @@
     "message": "מודול"
   },
   "core/sdk/DebuggerModel.ts | returnValue": {
-    "message": "ערך החזרה"
+    "message": "הערך המוחזר"
   },
   "core/sdk/DebuggerModel.ts | script": {
     "message": "סקריפט"
@@ -345,25 +342,25 @@
     "message": "הניסיון להגדיר קובץ Cookie באמצעות הכותרת \"Set-Cookie\" נחסם כי המאפיין \"Domain\" לא תואם לכתובת ה-URL של המארח הנוכחי."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidPrefix": {
-    "message": "הניסיון להגדיר קובץ Cookie באמצעות הכותרת \"Set-Cookie\" נחסם כי השם הכיל את הקידומות \"__Secure-\" או \"__Host-\". ניסיון ההגדרה הזה הפר את הכללים הנוספים שחלים על קובצי Cookie עם הקידומות האלה (כפי שהוגדר ב-https://tools.ietf.org/html/draft-west-cookie-prefixes-05)."
+    "message": "הניסיון להגדיר קובץ Cookie באמצעות הכותרת Set-Cookie נחסם כי השם הכיל את הקידומות __Secure- או __Host-. ניסיון ההגדרה הזה הפר את הכללים הנוספים שחלים על קובצי Cookie עם הקידומות האלה (כמו שהוגדר ב-https://tools.ietf.org/html/draft-west-cookie-prefixes-05)."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
     "message": "הניסיון להגדיר קובץ Cookie באמצעות הכותרת \"Set-Cookie\" נחסם כי הוא לא נשלח בחיבור מאובטח, והיה עלול לדרוס קובץ Cookie עם המאפיין \"Secure\"."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
-    "message": "הניסיון להגדיר קובץ Cookie באמצעות כותרת \"Set-Cookie\" נחסם כי הקובץ הכיל את המאפיין \"SameSite=None\" אבל לא את המאפיין \"Secure\" שנדרש כדי להשתמש ב-\"SameSite=None\"."
+    "message": "הניסיון להגדיר קובץ Cookie באמצעות הכותרת \"Set-Cookie\" נחסם כי היא הכילה את המאפיין \"SameSite=None\" אבל לא את המאפיין \"Secure\" שנדרש כדי להשתמש ב-\"SameSite=None\"."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrictLax": {
     "message": "הניסיון להגדיר קובץ Cookie באמצעות הכותרת \"Set-Cookie\" נחסם כי הוא מכיל את המאפיין \"{PH1}\", אבל הוא הגיע מתגובה בין אתרים ולא כתגובה לניווט ברמה העליונה."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
-    "message": "הכותרת \"Set-Cookie\" לא ציינה מאפיין \"SameSite\" והשתמשה בערך \"SameSite=Lax\" כברירת מחדל. היא נחסמה כי הגיעה מתגובה חוצת-אתרים ולא כתגובה לניווט ברמה העליונה. כדי לאפשר שימוש חוצה-אתרים, היה צריך להגדיר את הכותרת \"Set-Cookie\" עם הערך \"SameSite=None\"."
+    "message": "הכותרת Set-Cookie לא ציינה מאפיין SameSite ולכן נקבע לה ערך ברירת המחדל SameSite=Lax. היא נחסמה כי היא הגיעה בתגובה חוצת-אתרים ולא בתגובה לניווט ברמה העליונה. כדי לאפשר שימוש חוצה-אתרים, הכותרת Set-Cookie צריכה את הערך SameSite=None."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSecureOnly": {
     "message": "הניסיון להגדיר קובץ Cookie באמצעות הכותרת \"Set-Cookie\" נחסם כי הקובץ הכיל את המאפיין \"Secure\" אבל לא התקבל בחיבור מאובטח."
   },
   "core/sdk/NetworkRequest.ts | domainMismatch": {
-    "message": "קובץ ה-Cookie נחסם כי הדומיין של כתובת ה-URL של הבקשה לא התאים בדיוק לדומיין של קובץ ה-Cookie. כמו כן, הדומיין של כתובת ה-URL של הבקשה הוא לא תת-דומיין של ערך המאפיין Domain בקובץ ה-Cookie."
+    "message": "קובץ ה-Cookie נחסם כי הדומיין של כתובת ה-URL של הבקשה לא זהה לדומיין של קובץ ה-Cookie. בנוסף, הדומיין בכתובת ה-URL של הבקשה הוא לא תת-דומיין של ערך המאפיין Domain בקובץ ה-Cookie."
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
     "message": "השימוש בקובץ ה-Cookie הזה מותר במסגרת מדיניות Chrome Enterprise. מידע נוסף זמין בכתובת: goo.gle/ce-3pc"
@@ -396,7 +393,7 @@
     "message": "קובץ ה-cookie נחסם כי הוא כולל את המאפיין \"SameSite=Strict\" והבקשה נשלחה מאתר אחר. גם בקשות ניווט ברמות העליונות שנוצרו באתרים אחרים נכללות בכך."
   },
   "core/sdk/NetworkRequest.ts | sameSiteUnspecifiedTreatedAsLax": {
-    "message": "קובץ ה-Cookie הזה לא ציין מאפיין \"SameSite\" בזמן האחסון וקיבל את ערך ברירת המחדל \"SameSite=Lax\". הקובץ נחסם כי הבקשה נשלחה מאתר אחר ולא התחילה מניווט ברמה העליונה. כדי לאפשר שימוש חוצה-אתרים, קובץ ה-Cookie היה צריך להיות מוגדר עם \"SameSite=None\"."
+    "message": "קובץ ה-Cookie הזה לא ציין מאפיין SameSite בזמן האחסון ולכן נקבע לו ערך ברירת המחדל SameSite=Lax. הקובץ נחסם כי הבקשה נשלחה מאתר אחר ולא התחילה מניווט ברמה העליונה. כדי לאפשר שימוש חוצה-אתרים, קובץ ה-Cookie צריך את הערך SameSite=None."
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "קובץ ה-cookie נחסם כי הוא כולל את המאפיין \"Secure\" והחיבור לא היה מאובטח."
@@ -411,13 +408,13 @@
     "message": "קובץ ה-Cookie הזה נחסם בגלל תכונות ניסיוניות של Chrome או בגלל הגדרות הדפדפן. מידע נוסף זמין בחלונית 'בעיות'."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadADisallowedCharacter": {
-    "message": "הכותרת \"Set-Cookie\" הכילה תו אסור (תו בקרת ASCII אסור, או תו Tab אם הוא מופיע באמצע השם של קובץ ה-Cookie, ערך, שם מאפיין או ערך מאפיין)."
+    "message": "הכותרת \"Set-Cookie\" הכילה תו אסור (תו בקרה אסור של ASCII, או תו Tab אם הוא מופיע באמצע השם של קובץ ה-Cookie, ערך, שם מאפיין או ערך מאפיין)."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
-    "message": "הכותרת \"Set-Cookie\" מכילה תחביר לא תקין."
+    "message": "התחביר לא תקין הכותרת \"Set-Cookie\"."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize": {
-    "message": "הניסיון להגדיר קובץ Cookie באמצעות הכותרת \"Set-Cookie\" נחסם כי הקובץ היה גדול מדי. הגודל המשולב של השם והערך חייב להיות 4,096 תווים או פחות."
+    "message": "נחסם הניסיון להגדיר קובץ Cookie באמצעות הכותרת Set-Cookie, כי הקובץ היה גדול מדי. הגודל המשולב של השם והערך יכול להיות עד 4,096."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueThirdPartyPhaseout": {
     "message": "הגדרת קובץ ה-Cookie הזה נחסמה בגלל תכונות ניסיוניות של Chrome או בגלל הגדרות הדפדפן. מידע נוסף זמין בחלונית 'בעיות'."
@@ -519,331 +516,7 @@
     "message": "מקומיים"
   },
   "core/sdk/SourceMapScopeChainEntry.ts | returnValue": {
-    "message": "ערך החזרה"
-  },
-  "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "עיוורון צבעים מוחלט (ללא אף צבע)"
-  },
-  "core/sdk/sdk-meta.ts | apca": {
-    "message": "האלגוריתם המתקדם לניגודיות תפיסתית (APCA) מחליף את יחס הניגודיות הקודם ואת ההנחיות הקודמות של AA/AAA"
-  },
-  "core/sdk/sdk-meta.ts | blurredVision": {
-    "message": "ראייה מטושטשת"
-  },
-  "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
-    "message": "תיעוד דוחות של קריסות באופן אסינכרוני"
-  },
-  "core/sdk/sdk-meta.ts | cpuPressure": {
-    "message": "עומס על המעבד (CPU)"
-  },
-  "core/sdk/sdk-meta.ts | critical": {
-    "message": "מצב קריטי"
-  },
-  "core/sdk/sdk-meta.ts | customFormatters": {
-    "message": "כלים לעיצוב בהתאמה אישית"
-  },
-  "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "עיוורון לירוק (ללא ירוק)"
-  },
-  "core/sdk/sdk-meta.ts | devicebased": {
-    "message": "תלוי מכשיר"
-  },
-  "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
-    "message": "השבתת דוח הקריסות האסינכרוני"
-  },
-  "core/sdk/sdk-meta.ts | disableAvifFormat": {
-    "message": "השבתת הפורמט AVIF"
-  },
-  "core/sdk/sdk-meta.ts | disableCache": {
-    "message": "השבתת המטמון בזמן שכלי הפיתוח פתוחים"
-  },
-  "core/sdk/sdk-meta.ts | disableJavascript": {
-    "message": "השבתה של JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "השבתת הפורמט JPEG XL"
-  },
-  "core/sdk/sdk-meta.ts | disableLocalFonts": {
-    "message": "השבתת גופנים מקומיים"
-  },
-  "core/sdk/sdk-meta.ts | disableNetworkRequestBlocking": {
-    "message": "השבתת החסימה של בקשת הרשת"
-  },
-  "core/sdk/sdk-meta.ts | disablePaused": {
-    "message": "השבתה של יצירת שכבת-על במצב מושהה"
-  },
-  "core/sdk/sdk-meta.ts | disableWebpFormat": {
-    "message": "השבתת הפורמט WebP"
-  },
-  "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
-    "message": "אין לתעד את דוח הקריסות האסינכרוני"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateAFocusedPage": {
-    "message": "אין לבצע אמולציה של דף במיקוד"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateAnyVisionDeficiency": {
-    "message": "אין לבצע אמולציה של אף לקות ראייה"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateCss": {
-    "message": "אין ליצור אמולציה של {PH1} של CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
-    "message": "אין לבצע אמולציה של סוג מדיה של CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
-    "message": "לא ליצור אמולציה של קנה המידה של הטקסט במערכת ההפעלה"
-  },
-  "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
-    "message": "אין להאריך קווי רשת"
-  },
-  "core/sdk/sdk-meta.ts | doNotHighlightAdFrames": {
-    "message": "אין להדגיש מסגרות של מודעות"
-  },
-  "core/sdk/sdk-meta.ts | doNotShowGridNamedAreas": {
-    "message": "אין להציג אזורים ששמותיהם מופיעים ברשת"
-  },
-  "core/sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
-    "message": "אין להציג את הגדלים של קווי הרשת"
-  },
-  "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
-    "message": "הסתרת סרגלים כשהסמן מוצב מעליהם"
-  },
-  "core/sdk/sdk-meta.ts | emulateAFocusedPage": {
-    "message": "יצירת אמולציה של דף במיקוד"
-  },
-  "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "אמולציה של עיוורון צבעים מוחלט (ללא אף צבע)"
-  },
-  "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
-    "message": "אמולציה של מצב כהה אוטומטי"
-  },
-  "core/sdk/sdk-meta.ts | emulateBlurredVision": {
-    "message": "יצירת אמולציה לראייה מטושטשת"
-  },
-  "core/sdk/sdk-meta.ts | emulateCss": {
-    "message": "יצירת אמולציה של {PH1} של CSS"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssMediaFeature": {
-    "message": "יצירת אמולציה של מדיה של CSS עם {PH1}"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssMediaType": {
-    "message": "יצירת אמולציה לסוג מדיה CSS"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssPrintMediaType": {
-    "message": "יצירת אמולציה של סוג מדיה להדפסה של CSS"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssScreenMediaType": {
-    "message": "יצירת אמולציה לסוג מדיה של מסך CSS"
-  },
-  "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "אמולציה של עיוורון לירוק (ללא ירוק)"
-  },
-  "core/sdk/sdk-meta.ts | emulateIdleDetectorState": {
-    "message": "אמולציה של מצב לא פעיל של גלאי"
-  },
-  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
-    "message": "אמולציה של קנה המידה של הטקסט במערכת ההפעלה"
-  },
-  "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "אמולציה של עיוורון לאדום (ללא אדום)"
-  },
-  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
-    "message": "אמולציה של ירידה ברגישות לניגודיות"
-  },
-  "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "אמולציה של עיוורון לכחול (ללא כחול)"
-  },
-  "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
-    "message": "אמולציה של לקויות ראייה"
-  },
-  "core/sdk/sdk-meta.ts | enableAvifFormat": {
-    "message": "הפעלת הפורמט AVIF"
-  },
-  "core/sdk/sdk-meta.ts | enableCache": {
-    "message": "הפעלת שמירה במטמון"
-  },
-  "core/sdk/sdk-meta.ts | enableJavascript": {
-    "message": "הפעלת JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "הפעלת הפורמט JPEG XL"
-  },
-  "core/sdk/sdk-meta.ts | enableLocalFonts": {
-    "message": "הפעלת גופנים מקומיים"
-  },
-  "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
-    "message": "הפעלת חסימה של בקשת רשת"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "יש הרשאה לטעון משאבים מנתיבי קבצים מרוחקים בכלי הפיתוח"
-  },
-  "core/sdk/sdk-meta.ts | enableWebpFormat": {
-    "message": "הפעלת הפורמט WebP"
-  },
-  "core/sdk/sdk-meta.ts | extendGridLines": {
-    "message": "הארכת קווי רשת"
-  },
-  "core/sdk/sdk-meta.ts | fair": {
-    "message": "מצב סביר"
-  },
-  "core/sdk/sdk-meta.ts | forceEnabled": {
-    "message": "האילוץ הופעל"
-  },
-  "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
-    "message": "הסתרת מד הפריימים לשנייה (FPS)"
-  },
-  "core/sdk/sdk-meta.ts | hideLayerBorders": {
-    "message": "הסתרת גבולות של שכבות"
-  },
-  "core/sdk/sdk-meta.ts | hideLayoutShiftRegions": {
-    "message": "הסתרת אזורים שהוזזו בפריסה"
-  },
-  "core/sdk/sdk-meta.ts | hideLineLabels": {
-    "message": "הסתרה של תוויות השורה"
-  },
-  "core/sdk/sdk-meta.ts | hidePaintFlashingRectangles": {
-    "message": "הסתרת מלבנים של הדגשה לצורך הצגת תוכן"
-  },
-  "core/sdk/sdk-meta.ts | hideScrollPerformanceBottlenecks": {
-    "message": "הסתרה של גורמי צוואר בקבוק בביצועי גלילה"
-  },
-  "core/sdk/sdk-meta.ts | highlightAdFrames": {
-    "message": "הדגשת מסגרות של מודעות"
-  },
-  "core/sdk/sdk-meta.ts | logXmlhttprequests": {
-    "message": "רישום XMLHttpRequests"
-  },
-  "core/sdk/sdk-meta.ts | networkCacheExplanation": {
-    "message": "השבתת המטמון של הרשת תאפשר לדמות חוויית רשת דומה לחוויה של משתמש שמבקר לראשונה."
-  },
-  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
-    "message": "חסימה של בקשות רשת"
-  },
-  "core/sdk/sdk-meta.ts | noEmulation": {
-    "message": "ללא אמולציה"
-  },
-  "core/sdk/sdk-meta.ts | noIdleEmulation": {
-    "message": "לא נמצאה אמולציה ללא פעילות"
-  },
-  "core/sdk/sdk-meta.ts | noPressureEmulation": {
-    "message": "ללא שינוי מברירת המחדל"
-  },
-  "core/sdk/sdk-meta.ts | nominal": {
-    "message": "מצב נומינלי"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
-    "message": "‫100% (ברירת מחדל)"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
-    "message": "115%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
-    "message": "130%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
-    "message": "150%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
-    "message": "180%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
-    "message": "200%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation250": {
-    "message": "250%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation300": {
-    "message": "300%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation350": {
-    "message": "350%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
-    "message": "85%"
-  },
-  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
-    "message": "ללא אמולציה"
-  },
-  "core/sdk/sdk-meta.ts | print": {
-    "message": "הדפסה"
-  },
-  "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "עיוורון לאדום (ללא אדום)"
-  },
-  "core/sdk/sdk-meta.ts | query": {
-    "message": "שאילתה"
-  },
-  "core/sdk/sdk-meta.ts | reducedContrast": {
-    "message": "ירידה ברגישות לניגודיות"
-  },
-  "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
-    "message": "מפות מקור הן דוגמה למשאב. ההגדרה מושבתת כברירת מחדל מטעמי אבטחה."
-  },
-  "core/sdk/sdk-meta.ts | rulersOnHover": {
-    "message": "הצגת סרגלים עם הצבת הסמן עליהם"
-  },
-  "core/sdk/sdk-meta.ts | screen": {
-    "message": "מסך"
-  },
-  "core/sdk/sdk-meta.ts | serious": {
-    "message": "מצב רציני"
-  },
-  "core/sdk/sdk-meta.ts | showAreaNames": {
-    "message": "הצגת שמות האזורים"
-  },
-  "core/sdk/sdk-meta.ts | showFramesPerSecondFpsMeter": {
-    "message": "הצגת מד FPS"
-  },
-  "core/sdk/sdk-meta.ts | showGridNamedAreas": {
-    "message": "הצגת אזורים ששמותיהם מופיעים ברשת"
-  },
-  "core/sdk/sdk-meta.ts | showGridTrackSizes": {
-    "message": "הצגת הגדלים של קווי הרשת"
-  },
-  "core/sdk/sdk-meta.ts | showLayerBorders": {
-    "message": "הצגה של גבולות הפריסה"
-  },
-  "core/sdk/sdk-meta.ts | showLayoutShiftRegions": {
-    "message": "הצגת האזורים שזזו בפריסה"
-  },
-  "core/sdk/sdk-meta.ts | showLineLabels": {
-    "message": "הצגת תוויות השורות"
-  },
-  "core/sdk/sdk-meta.ts | showLineNames": {
-    "message": "הצגת שמות השורה"
-  },
-  "core/sdk/sdk-meta.ts | showLineNumbers": {
-    "message": "הצגת מספרי השורות"
-  },
-  "core/sdk/sdk-meta.ts | showPaintFlashingRectangles": {
-    "message": "הצגת מלבנים עם הבזקי צבע"
-  },
-  "core/sdk/sdk-meta.ts | showRulersOnHover": {
-    "message": "הצגת הסרגלים בהעברת העכבר מעליהם"
-  },
-  "core/sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
-    "message": "הצגה של צווארי בקבוק בביצועי גלילה"
-  },
-  "core/sdk/sdk-meta.ts | showTrackSizes": {
-    "message": "הצגת גדלים של קהל יעד מצומצם"
-  },
-  "core/sdk/sdk-meta.ts | touch": {
-    "message": "מגע"
-  },
-  "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "עיוורון לכחול (ללא כחול)"
-  },
-  "core/sdk/sdk-meta.ts | userActiveScreenLocked": {
-    "message": "המשתמש פעיל, המסך ננעל"
-  },
-  "core/sdk/sdk-meta.ts | userActiveScreenUnlocked": {
-    "message": "המשתמש פעיל, נעילת המסך בוטלה"
-  },
-  "core/sdk/sdk-meta.ts | userIdleScreenLocked": {
-    "message": "משתמש לא פעיל, המסך ננעל"
-  },
-  "core/sdk/sdk-meta.ts | userIdleScreenUnlocked": {
-    "message": "משתמש ללא פעילות, נעילת המסך בוטלה"
+    "message": "הערך המוחזר"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript מושבת"
@@ -912,7 +585,7 @@
     "message": "קביעה ידנית של תכונת המדיה prefers-reduced-transparency של CSS"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
-    "message": "קביעת סוג המדיה באופן ידני כדי לבדוק את הסגנונות print ו-screen"
+    "message": "קביעת סוג המדיה באופן ידני כדי לבדוק סגנונות של print ו-screen"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
     "message": "אילוץ אמולציה של קנה מידה לטקסט במערכת ההפעלה"
@@ -959,11 +632,17 @@
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "הצגת גבולות השכבות (כתום/זית) ואריחים (ציאן)"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | achromatopsia": {
+    "message": "עיוורון צבעים מוחלט (ללא אף צבע)"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
     "message": "פתיחה אוטומטית של כלי הפיתוח עבור פריטים קופצים"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | blockAds": {
     "message": "חסימת המודעות באתר הזה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | blurredVision": {
+    "message": "ראייה מטושטשת"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | colorVisionDeficiency": {
     "message": "לקות בראיית צבעים"
@@ -974,8 +653,83 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | cssMediaType": {
     "message": "סוג מדיה CSS"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | deuteranopia": {
+    "message": "עיוורון לירוק (ללא ירוק)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disableAvifFormat": {
+    "message": "השבתת הפורמט AVIF"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disableLocalFonts": {
+    "message": "השבתת גופנים מקומיים"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
     "message": "אין לפתוח אוטומטית כלי פיתוח עבור פריטים קופצים"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateAFocusedPage": {
+    "message": "אין לבצע אמולציה של דף במיקוד"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateAnyVisionDeficiency": {
+    "message": "אין לבצע אמולציה של אף לקות ראייה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCss": {
+    "message": "אין ליצור אמולציה של {PH1} של CSS"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCssMediaType": {
+    "message": "אין לבצע אמולציה של סוג מדיה של CSS"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateOsTextScale": {
+    "message": "לא ליצור אמולציה של קנה המידה של הטקסט במערכת ההפעלה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotHighlightAdFrames": {
+    "message": "אין להדגיש מסגרות של מודעות"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateAFocusedPage": {
+    "message": "יצירת אמולציה של דף במיקוד"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateAchromatopsia": {
+    "message": "אמולציה של עיוורון צבעים מוחלט (ללא אף צבע)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateBlurredVision": {
+    "message": "יצירת אמולציה לראייה מטושטשת"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateCss": {
+    "message": "יצירת אמולציה של {PH1} של CSS"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateCssMediaFeature": {
+    "message": "יצירת אמולציה של מדיה של CSS עם {PH1}"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateCssMediaType": {
+    "message": "יצירת אמולציה לסוג מדיה CSS"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateCssPrintMediaType": {
+    "message": "יצירת אמולציה של סוג מדיה להדפסה של CSS"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateCssScreenMediaType": {
+    "message": "יצירת אמולציה לסוג מדיה של מסך CSS"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateDeuteranopia": {
+    "message": "אמולציה של עיוורון לירוק (ללא ירוק)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateOsTextScale": {
+    "message": "אמולציה של קנה המידה של הטקסט במערכת ההפעלה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateProtanopia": {
+    "message": "אמולציה של עיוורון לאדום (ללא אדום)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateReducedContrast": {
+    "message": "אמולציה של ירידה ברגישות לניגודיות"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateTritanopia": {
+    "message": "אמולציה של עיוורון לכחול (ללא כחול)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateVisionDeficiencies": {
+    "message": "אמולציה של לקויות ראייה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | enableAvifFormat": {
+    "message": "הפעלת הפורמט AVIF"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | enableLocalFonts": {
+    "message": "הפעלת גופנים מקומיים"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | forceAdBlocking": {
     "message": "אילוץ חוסם מודעות באתר הזה"
@@ -986,11 +740,77 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | hardReloadPage": {
     "message": "טעינה קשיחה מחדש של הדף"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hideFramesPerSecondFpsMeter": {
+    "message": "הסתרת מד הפריימים לשנייה (FPS)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hideLayerBorders": {
+    "message": "הסתרת גבולות של שכבות"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hideLayoutShiftRegions": {
+    "message": "הסתרת אזורים שהוזזו בפריסה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hidePaintFlashingRectangles": {
+    "message": "הסתרת מלבנים של הדגשה לצורך הצגת תוכן"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hideScrollPerformanceBottlenecks": {
+    "message": "הסתרה של גורמי צוואר בקבוק בביצועי גלילה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | highlightAdFrames": {
+    "message": "הדגשת מסגרות של מודעות"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | layout": {
     "message": "פריסה"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | noEmulation": {
+    "message": "בלי אמולציה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation100": {
+    "message": "‫100% (ברירת מחדל)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation250": {
+    "message": "250%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation300": {
+    "message": "300%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation350": {
+    "message": "350%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | osTextScaleEmulationNone": {
+    "message": "ללא אמולציה"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | paint": {
     "message": "הצגת תוכן"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | print": {
+    "message": "הדפסה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | protanopia": {
+    "message": "עיוורון לאדום (ללא אדום)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | query": {
+    "message": "שאילתה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | reducedContrast": {
+    "message": "ירידה ברגישות לניגודיות"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | reloadPage": {
     "message": "טעינת הדף מחדש"
@@ -998,14 +818,35 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "רינדור"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | screen": {
+    "message": "מסך"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "הצגת מודעות באתר הזה, אם המערכת מאפשרת זאת"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showFramesPerSecondFpsMeter": {
+    "message": "הצגת מד FPS"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showLayerBorders": {
+    "message": "הצגה של גבולות הפריסה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showLayoutShiftRegions": {
+    "message": "הצגת האזורים שזזו בפריסה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showPaintFlashingRectangles": {
+    "message": "הצגת מלבנים עם הבזקי צבע"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showRendering": {
     "message": "הצגת הרינדור"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showScrollPerformanceBottlenecks": {
+    "message": "הצגה של צווארי בקבוק בביצועי גלילה"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
     "message": "החלפת המצב של תכונת המדיה prefers-color-scheme ב-CSS"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | tritanopia": {
+    "message": "עיוורון לכחול (ללא כחול)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "לקות ראייה"
@@ -1047,10 +888,10 @@
     "message": "הצמדה לתחתית החלון"
   },
   "entrypoints/main/MainImpl.ts | dockToLeft": {
-    "message": "הצמדה לשמאל"
+    "message": "הצמדה לימין"
   },
   "entrypoints/main/MainImpl.ts | dockToRight": {
-    "message": "הצמדה לימין"
+    "message": "הצמדה לשמאל"
   },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "התמקדות בדף הנוכחי"
@@ -1107,7 +948,7 @@
     "message": "הצמדה לשמאל"
   },
   "entrypoints/main/main-meta.ts | dockToRight": {
-    "message": "הצמדה לימין"
+    "message": "הצמדה לשמאל"
   },
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "ביטול התאמה לערכת הצבעים של Chrome"
@@ -1206,7 +1047,7 @@
     "message": "הפעלה או השבתה של כיוון חלונית ההזזה"
   },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
-    "message": "ביטול ההצמדה ופתיחת חלון נפרד"
+    "message": "פתיחת בחלון נפרד"
   },
   "entrypoints/main/main-meta.ts | undocked": {
     "message": "ללא הצמדה"
@@ -1266,7 +1107,7 @@
     "message": "צומת"
   },
   "entrypoints/node_app/node_app.ts | showApplication": {
-    "message": "לחלונית \"אפליקציה\""
+    "message": "הצגת החלונית \"אפליקציה\""
   },
   "entrypoints/node_app/node_app.ts | showConnection": {
     "message": "הצגת כלי החיבור"
@@ -1496,9 +1337,6 @@
   "generated/Deprecation.ts | XSLT": {
     "message": "כל הדפדפנים הוציאו משימוש את XSLTProcessor ואת הוראות העיבוד של XSLT. התכונות האלה יוסרו מהדפדפן הזה בקרוב."
   },
-  "models/badges/badges-meta.ts | earnBadges": {
-    "message": "זכייה בתגים"
-  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "אירעה שגיאה לא מזוהה בזמן טעינת הקובץ"
   },
@@ -1519,12 +1357,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] סמלי ניפוי הבאגים של {PH2} (באמצעות {PH3}) בטעינה…"
-  },
-  "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
-    "message": "הידור LiveEdit נכשל: {PH1}"
-  },
-  "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
-    "message": "LiveEdit נכשל: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
     "message": "המדדים מהשטח הם של כתובת URL שונה מזו של הדף הנוכחי."
@@ -1562,6 +1394,9 @@
   "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
     "message": "הרוחב חייב להיות קטן מ-{PH1} או שווה לו."
   },
+  "models/emulation/EmulatedDevices.ts | foldablesGroup": {
+    "message": "מכשירים מתקפלים"
+  },
   "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
     "message": "מחשב נייד עם מסך HiDPI"
   },
@@ -1571,11 +1406,20 @@
   "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
     "message": "מחשב נייד עם מסך מגע"
   },
+  "models/emulation/EmulatedDevices.ts | mobileGroup": {
+    "message": "מכשיר נייד"
+  },
+  "models/emulation/EmulatedDevices.ts | smartDisplaysGroup": {
+    "message": "מסכים חכמים"
+  },
+  "models/emulation/EmulatedDevices.ts | tabletsAndDesktopsGroup": {
+    "message": "טאבלטים ומחשבים"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "מתבצע איסוף תוכן…"
   },
   "models/har/Writer.ts | writingFile": {
-    "message": "מתבצעת כתיבה לקובץ…"
+    "message": "מתבצעת כתיבה בקובץ…"
   },
   "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
     "message": "הקלות במעקב אחרי הפניה אוטומטית"
@@ -1605,7 +1449,7 @@
     "message": "שינויים בטיפול של Chrome בקובצי Cookie של צד שלישי"
   },
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
-    "message": "קובץ Cookie של צד שלישי נחסם ב-Chrome בגלל הגדרות flag ב-Chrome או הגדרות הדפדפן."
+    "message": "‫Chrome חסם קובץ Cookie של צד שלישי בגלל הגדרות flag או הגדרות הדפדפן."
   },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "דיווח על באג"
@@ -1636,6 +1480,9 @@
   },
   "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
     "message": "פרוטוקול לאימות אימייל"
+  },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | connectionAllowlist": {
+    "message": "Connection Allowlists API"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Management API של פרטי הכניסה המשותפים"
@@ -1707,7 +1554,7 @@
     "message": "תקינות מבוססת חתימה"
   },
   "models/issues_manager/SelectivePermissionsInterventionIssue.ts | selectivePermissionsIntervention": {
-    "message": "התערבות עקב הרשאות סלקטיביות"
+    "message": "התערבות בנושא הרשאות סלקטיביות"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "הפעלת SharedArrayBuffer"
@@ -1722,37 +1569,13 @@
     "message": "מפרט HTTP Unencoded Digest"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
-    "message": "סימולציה של מכשיר אחרי טעינת הדף יכולה להשפיע על ה-LCP. כדי לקבל ערך LCP מדויק, צריך לטעון מחדש את הדף."
+    "message": "כשמתחילים סימולציה של מכשיר אחרי שהדף נטען, זה מעוות את מדד ה-LCP. כדי לקבל ערך LCP מדויק, צריך לטעון מחדש את הדף."
   },
   "models/live-metrics/LiveMetrics.ts | lcpVisibilityWarning": {
     "message": "יכול להיות שערך ה-LCP גבוה יותר כי הדף התחיל להיטען ברקע."
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<אנונימי>"
-  },
-  "models/logs/logs-meta.ts | clear": {
-    "message": "מחיקה"
-  },
-  "models/logs/logs-meta.ts | doNotKeepLogOnPageReload": {
-    "message": "ללא שמירת היומן בזמן הטעינה מחדש או הניווט"
-  },
-  "models/logs/logs-meta.ts | keep": {
-    "message": "שמירה"
-  },
-  "models/logs/logs-meta.ts | keepLog": {
-    "message": "שמירת יומן הרישום"
-  },
-  "models/logs/logs-meta.ts | keepLogOnPageReload": {
-    "message": "שמירת יומן הרישום בזמן הניווט או הטעינה מחדש של הדף"
-  },
-  "models/logs/logs-meta.ts | preserve": {
-    "message": "שמירה"
-  },
-  "models/logs/logs-meta.ts | recordNetworkLog": {
-    "message": "הקלטת יומן הרשת"
-  },
-  "models/logs/logs-meta.ts | reset": {
-    "message": "איפוס"
   },
   "models/network_time_calculator/NetworkTimeCalculator.ts | sDownload": {
     "message": "{PH1} בהורדה"
@@ -1770,7 +1593,7 @@
     "message": "{PH1} זמן אחזור, {PH2} הורדה (סה\"כ {PH3})"
   },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
-    "message": "לא הצלחנו לטעון את Blob."
+    "message": "ה-Blob לא נטען"
   },
   "models/persistence/IsolatedFileSystem.ts | cantReadFileSS": {
     "message": "אי אפשר לקרוא את הקובץ: {PH1}: ‏{PH2}"
@@ -1779,7 +1602,7 @@
     "message": "שינויים מברירת המחדל: יצירת הספרייה {PH1} נכשלה. האם סביבת העבודה או השינויים מברירת המחדל מוגדרים בצורה נכונה?"
   },
   "models/persistence/IsolatedFileSystem.ts | createDirFailedBecausePathIsFile": {
-    "message": "שינויים מברירת המחדל: לא ניתן ליצור את הספרייה {PH1} כי הנתיב קיים ומדובר בקובץ."
+    "message": "שינויים מברירת המחדל: הספרייה {PH1} לא נוצרה כי הנתיב קיים ומדובר בקובץ"
   },
   "models/persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
     "message": "שגיאה במערכת הקבצים: {PH1}"
@@ -1788,34 +1611,10 @@
     "message": "מקושר אל {PH1}"
   },
   "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
-    "message": "לא הצלחנו להוסיף מערכת קבצים: {PH1}"
+    "message": "אי אפשר להוסיף את מערכת הקבצים: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
-    "message": "לא ניתן לקרוא קבצים באמצעות PlatformFileSystem."
-  },
-  "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
-    "message": "השבתה של ביטול בקשות רשת"
-  },
-  "models/persistence/persistence-meta.ts | enableOverrideNetworkRequests": {
-    "message": "הפעלה של בקשות לשינוי מברירת המחדל של רשתות"
-  },
-  "models/persistence/persistence-meta.ts | interception": {
-    "message": "יירוט"
-  },
-  "models/persistence/persistence-meta.ts | localOverrides": {
-    "message": "שינויים מקומיים מברירת המחדל"
-  },
-  "models/persistence/persistence-meta.ts | network": {
-    "message": "רשת"
-  },
-  "models/persistence/persistence-meta.ts | override": {
-    "message": "שינוי מברירת המחדל"
-  },
-  "models/persistence/persistence-meta.ts | request": {
-    "message": "בקשה"
-  },
-  "models/persistence/persistence-meta.ts | rewrite": {
-    "message": "שכתוב"
+    "message": "אי אפשר לקרוא קבצים באמצעות PlatformFileSystem"
   },
   "models/trace/Name.ts | anonymous": {
     "message": "(אנונימי)"
@@ -2520,7 +2319,7 @@
     "message": "בייטים מבוזבזים"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "רכיבי Polyfill וטרנספורמציות מאפשרים לדפדפנים ישנים יותר להשתמש בתכונות JavaScript חדשות. עם זאת, רבים מהם לא נחוצים לדפדפנים מתקדמים. כדי להימנע מטרנספילציה של תכונות [Baseline](https://web.dev/articles/baseline-and-polyfills), כדאי לשקול לשנות את תהליך ה-build של JavaScript, אלא אם נדרשת תמיכה בדפדפנים ישנים יותר. [למה רוב האתרים יכולים לפרוס קוד ES6+‎ ללא טרנספילציה](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+    "message": "טרנספורמציות ורכיבי Polyfill מאפשרים לדפדפנים ישנים להשתמש בתכונות JavaScript חדשות. עם זאת, רבים מהם לא נחוצים לדפדפנים מתקדמים. אם לא נדרשת תמיכה בדפדפנים ישנים, אפשר להימנע מטרנספילציה של תכונות [Baseline](https://web.dev/articles/baseline-and-polyfills) בתהליך ה-build של JavaScript. [למה רוב האתרים יכולים לפרוס קוד ES6+‎ ללא טרנספילציה](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
   },
   "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
     "message": "לא נמצא קוד JavaScript מדור קודם"
@@ -2655,7 +2454,7 @@
     "message": "גודל ההעברה"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "קוד של צד שלישי עשוי להשפיע בצורה משמעותית על ביצועי הטעינה. כדי לתעדף את תוכן הדף, [אפשר לצמצם ולדחות טעינת קוד של צד שלישי](https://developer.chrome.com/docs/performance/insights/third-parties)."
+    "message": "קוד של צד שלישי עלול לפגוע משמעותית בביצועי הטעינה. כדי לתעדף את תוכן הדף, [אפשר לצמצם ולדחות טעינת קוד של צד שלישי](https://developer.chrome.com/docs/performance/insights/third-parties)."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "לא נמצאו צדדים שלישיים"
@@ -2694,13 +2493,16 @@
     "message": "(אינדקס)"
   },
   "models/workspace/UISourceCode.ts | thisFileWasChangedExternally": {
-    "message": "הקובץ הזה שונה מחוץ למערכת. לטעון מחדש?"
+    "message": "הקובץ הזה נערך מחוץ לדפדפן. לטעון מחדש?"
   },
   "panels/accessibility/ARIAAttributesView.ts | ariaAttributes": {
     "message": "מאפייני ARIA"
   },
   "panels/accessibility/ARIAAttributesView.ts | noAriaAttributes": {
     "message": "אין מאפיינים מסוג ARIA"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveRecording": {
+    "message": "הקלטת הודעות נגישות"
   },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "צומת הנגישות לא חשוף"
@@ -2709,10 +2511,10 @@
     "message": "הרכיבים המשניים של ישות האם נועדו לעיצוב בלבד: "
   },
   "panels/accessibility/AccessibilityNodeView.ts | computedProperties": {
-    "message": "נכסים מחושבים"
+    "message": "מאפיינים מחושבים"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementHasEmptyAltText": {
-    "message": "לרכיב יש טקסט חלופי ריק."
+    "message": "הטקסט החלופי של הרכיב ריק"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementHasPlaceholder": {
     "message": "ברכיב יש {PH1}."
@@ -2727,28 +2529,28 @@
     "message": "הרכיב נמצא בעץ משנה inert מ- "
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsInert": {
-    "message": "הרכיב הוא inert."
+    "message": "הרכיב הוא inert"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsNotRendered": {
-    "message": "הרכיב לא עבר רינדור."
+    "message": "הרכיב לא עבר רינדור"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsNotVisible": {
-    "message": "הרכיב לא גלוי."
+    "message": "הרכיב לא גלוי"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsPlaceholder": {
     "message": "הרכיב הוא {PH1}."
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsPresentational": {
-    "message": "הרכיב נועד להצגה."
+    "message": "הרכיב נועד להצגה בלבד"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementNotInteresting": {
-    "message": "אין עניין ביצירת נגישות לרכיב הזה."
+    "message": "הרכיב לא רלוונטי לנגישות"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementsInheritsPresentational": {
     "message": "תפקיד ההצגה של הרכיב מתקבל בירושה מ- "
   },
   "panels/accessibility/AccessibilityNodeView.ts | invalidSource": {
-    "message": "מקור לא תקף."
+    "message": "מקור לא תקין"
   },
   "panels/accessibility/AccessibilityNodeView.ts | labelFor": {
     "message": "התווית של "
@@ -2757,10 +2559,10 @@
     "message": "אין צומת נגישות"
   },
   "panels/accessibility/AccessibilityNodeView.ts | noNodeWithThisId": {
-    "message": "אין צומת עם המזהה הזה."
+    "message": "אין צומת בעל המזהה הזה"
   },
   "panels/accessibility/AccessibilityNodeView.ts | noTextContent": {
-    "message": "אין תוכן טקסט."
+    "message": "אין תוכן טקסטואלי"
   },
   "panels/accessibility/AccessibilityNodeView.ts | notSpecified": {
     "message": "לא צוין"
@@ -2775,7 +2577,7 @@
     "message": "הצגת עץ הנגישות"
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
-    "message": "גרסה הקריאה לבני אדם של הערך של ווידג'ט טווח (לפי הצורך)."
+    "message": "גרסה קריאה לאנשים של הערך של ווידג'ט הטווח (לפי הצורך)"
   },
   "panels/accessibility/AccessibilityStrings.ts | activeDescendant": {
     "message": "צאצא פעיל"
@@ -2811,19 +2613,19 @@
     "message": "ניתן לעריכה"
   },
   "panels/accessibility/AccessibilityStrings.ts | elementOrElementsWhichFormThe": {
-    "message": "רכיב או רכיבים שמהווים את התיאור של רכיב זה."
+    "message": "רכיב או רכיבים שמשמשים כתיאור של הרכיב הזה"
   },
   "panels/accessibility/AccessibilityStrings.ts | elementOrElementsWhichMayFormThe": {
-    "message": "רכיב או רכיבים שעשויים להרכיב את שם הרכיב הזה."
+    "message": "רכיב או רכיבים שעשויים לקבוע את השם של הרכיב הזה"
   },
   "panels/accessibility/AccessibilityStrings.ts | elementOrElementsWhichShouldBe": {
-    "message": "רכיב או רכיבים שצריכים להיחשב כצאצאים של הרכיב הזה, למרות שהם לא מוגדרים כצאצאים ב-DOM."
+    "message": "רכיב או רכיבים שצריך להחשיב כצאצאים של הרכיב הזה, למרות שהם לא מוגדרים כצאצאים ב-DOM"
   },
   "panels/accessibility/AccessibilityStrings.ts | elementOrElementsWhoseContentOr": {
-    "message": "רכיב או רכיבים שתוכנם או שנוכחותם תחת בקרה של הווידג'ט הזה."
+    "message": "רכיב או רכיבים שהווידג'ט הזה שולט בתוכן או בנוכחות שלהם"
   },
   "panels/accessibility/AccessibilityStrings.ts | elementToWhichTheUserMayChooseTo": {
-    "message": "רכיב שאליו המשתמש עשוי לבחור לעבור לאחר הרכיב הנוכחי, במקום לעבור לרכיב הבא לפי סדר ה-DOM."
+    "message": "רכיב שאליו המשתמש עשוי לבחור לנווט אחרי הרכיב הנוכחי, במקום לרכיב הבא לפי סדר ה-DOM"
   },
   "panels/accessibility/AccessibilityStrings.ts | expanded": {
     "message": "מורחב"
@@ -2835,22 +2637,22 @@
     "message": "ממוקד"
   },
   "panels/accessibility/AccessibilityStrings.ts | forARangeWidgetTheMaximumAllowed": {
-    "message": "לווידג'ט של טווח, הערך המקסימלי המותר."
+    "message": "לווידג'ט טווח, הערך המקסימלי המותר"
   },
   "panels/accessibility/AccessibilityStrings.ts | forARangeWidgetTheMinimumAllowed": {
-    "message": "לווידג'ט טווח, הערך המינימלי המותר."
+    "message": "לווידג'ט טווח, הערך המינימלי המותר"
   },
   "panels/accessibility/AccessibilityStrings.ts | fromAttribute": {
     "message": "ממאפיין"
   },
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
-    "message": "מcaption"
+    "message": "מתוך caption"
   },
   "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
-    "message": "מdescription"
+    "message": "מתוך description"
   },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
-    "message": "מlabel"
+    "message": "מתוך label"
   },
   "panels/accessibility/AccessibilityStrings.ts | fromLabelFor": {
     "message": "מ-label (מאפיין for=)"
@@ -2859,7 +2661,7 @@
     "message": "מlabel (wrapped)"
   },
   "panels/accessibility/AccessibilityStrings.ts | fromLegend": {
-    "message": "מlegend"
+    "message": "מתוך legend"
   },
   "panels/accessibility/AccessibilityStrings.ts | fromNativeHtml": {
     "message": "מ-HTML מקורי"
@@ -2886,40 +2688,40 @@
     "message": "עזרה"
   },
   "panels/accessibility/AccessibilityStrings.ts | ifAndHowThisElementCanBeEdited": {
-    "message": "המקרים והאופן שבהם ניתן לערוך את הרכיב הזה."
+    "message": "אם וכיצד ניתן לערוך את הרכיב הזה"
   },
   "panels/accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLive": {
-    "message": "אם הרכיב הזה יקבל עדכונים בזמן אמת, במקרה שהאזור הפעיל יוצג למשתמש בשינויים בשלמותו, או רק במקרה של צמתים שהשתנו."
+    "message": "אם הרכיב הזה עשוי לקבל עדכונים בזמן אמת, אם האזור הפעיל כולו יוצג למשתמש במהלך שינויים, או רק הצמתים שהשתנו"
   },
   "panels/accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLiveUpdates": {
-    "message": "אם הרכיב הזה יקבל עדכונים בזמן אמת, איזה סוג עדכון יפעיל התראה."
+    "message": "אם הרכיב הזה יכול לקבל עדכונים בזמן אמת, אילו סוגי עדכונים אמורים להפעיל התראה"
   },
   "panels/accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLiveUpdatesThe": {
-    "message": "אם הרכיב הזה יקבל עדכונים בזמן אמת, רכיב הבסיס של האזור הפעיל המכיל."
+    "message": "אם הרכיב הזה עשוי לקבל עדכונים בזמן אמת, רכיב הבסיס של האזור הפעיל (live region) המכיל"
   },
   "panels/accessibility/AccessibilityStrings.ts | ifTrueThisElementCanReceiveFocus": {
-    "message": "אם הערך הוא True, ניתן להתמקד ברכיב הזה."
+    "message": "אם הערך הוא true, הרכיב הזה יכול לקבל מיקוד"
   },
   "panels/accessibility/AccessibilityStrings.ts | ifTrueThisElementCurrentlyCannot": {
-    "message": "אם הערך הוא True, כרגע לא ניתן לקיים אינטראקציה עם רכיב זה."
+    "message": "אם הערך הוא true, כרגע אי אפשר לקיים אינטראקציה עם הרכיב הזה"
   },
   "panels/accessibility/AccessibilityStrings.ts | ifTrueThisElementCurrentlyHas": {
-    "message": "אם הערך הוא true, לרכיב הזה יש עכשיו מיקוד."
+    "message": "אם הערך הוא true, הרכיב הזה נמצא כרגע במיקוד"
   },
   "panels/accessibility/AccessibilityStrings.ts | ifTrueThisElementMayBeInteracted": {
-    "message": "אם הערך הוא True, ייתכן שניתן לקיים אינטראקציה עם הרכיב הזה, אבל לא ניתן לשנות את הערך שלו."
+    "message": "אם הערך הוא true, אפשר לקיים אינטראקציה עם הרכיב הזה, אבל אי אפשר לשנות את הערך שלו"
   },
   "panels/accessibility/AccessibilityStrings.ts | ifTrueThisElementsUserentered": {
-    "message": "אם המאפיין מוגדר בתור true, הערך שהמשתמש ציין לגבי הרכיב לא עומד בדרישת האימות."
+    "message": "אם true, הערך שהוזן ברכיב הזה לא עומד בדרישת האימות"
   },
   "panels/accessibility/AccessibilityStrings.ts | implicit": {
     "message": "משתמע"
   },
   "panels/accessibility/AccessibilityStrings.ts | implicitValue": {
-    "message": "ערך מרומז."
+    "message": "ערך משתמע"
   },
   "panels/accessibility/AccessibilityStrings.ts | indicatesThePurposeOfThisElement": {
-    "message": "מציין את המטרה של הרכיב, כגון אידיום של ממשק משתמש עבור ווידג'ט או תפקיד מבני בתוך מסמך."
+    "message": "מציין את הייעוד של הרכיב הזה, כגון דפוס ממשק משתמש עבור ווידג'ט או תפקיד מבני בתוך מסמך"
   },
   "panels/accessibility/AccessibilityStrings.ts | invalidUserEntry": {
     "message": "ערך משתמש לא חוקי"
@@ -2973,22 +2775,22 @@
     "message": "נבחר"
   },
   "panels/accessibility/AccessibilityStrings.ts | theAccessibleDescriptionForThis": {
-    "message": "התיאור הנגיש של הרכיב הזה."
+    "message": "התיאור הנגיש של הרכיב הזה"
   },
   "panels/accessibility/AccessibilityStrings.ts | theComputedHelpTextForThis": {
-    "message": "תוכן העזרה המחושב עבור הרכיב הזה."
+    "message": "תוכן העזרה המחושב של הרכיב הזה"
   },
   "panels/accessibility/AccessibilityStrings.ts | theComputedNameOfThisElement": {
-    "message": "השם המחושב של הרכיב הזה."
+    "message": "השם המחושב של הרכיב הזה"
   },
   "panels/accessibility/AccessibilityStrings.ts | theDescendantOfThisElementWhich": {
-    "message": "הצאצא הפעיל של רכיב זה, כלומר, הרכיב שבו צריך להתמקד."
+    "message": "הצאצא הפעיל של הרכיב הזה, כלומר, הרכיב שאליו צריך להעביר את המיקוד"
   },
   "panels/accessibility/AccessibilityStrings.ts | theHierarchicalLevelOfThis": {
-    "message": "הערך ההיררכי של הרכיב הזה."
+    "message": "הרמה ההיררכית של הרכיב הזה"
   },
   "panels/accessibility/AccessibilityStrings.ts | theValueOfThisElementThisMayBe": {
-    "message": "הערך של הרכיב הזה. ייתכן שיסופק על ידי המשתמש או המפתח, תלוי ברכיב."
+    "message": "הערך של הרכיב הזה. המשתמש או המפתח עשויים לספק את הערך, בהתאם לרכיב"
   },
   "panels/accessibility/AccessibilityStrings.ts | value": {
     "message": "ערך"
@@ -2997,88 +2799,88 @@
     "message": "תיאור ערך"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
-    "message": "ערך ממאפיין."
+    "message": "ערך ממאפיין"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
-    "message": "ערך מרכיב description."
+    "message": "ערך מרכיב description"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
-    "message": "ערך מתוכן הרכיב."
+    "message": "ערך מתוכן הרכיב"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromFigcaptionElement": {
-    "message": "ערך מהרכיב figcaption."
+    "message": "ערך מרכיב figcaption"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromLabelElement": {
-    "message": "ערך מרכיב label."
+    "message": "ערך מרכיב label"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromLabelElementWithFor": {
-    "message": "ערך מרכיב label עם מאפיין for=."
+    "message": "ערך מרכיב label עם מאפיין for="
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromLabelElementWrapped": {
-    "message": "ערך מרכיב Wrapping label."
+    "message": "ערך מרכיב label עוטף"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromLegendElement": {
-    "message": "ערך מרכיב legend."
+    "message": "ערך מרכיב legend"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromNativeHtmlRuby": {
-    "message": "ערך מהערת Ruby של HTML רגיל."
+    "message": "ערך מהערת Ruby ב-HTML פשוט"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromNativeHtmlUnknownSource": {
-    "message": "ערך מ-HTML מקורי (מקור לא מוכר)."
+    "message": "ערך מ-HTML מקורי (מקור לא ידוע)"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromPlaceholderAttribute": {
-    "message": "ערך ממאפיין של placeholder."
+    "message": "ערך ממאפיין הפלייסהולדר"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromRelatedElement": {
-    "message": "ערך מרכיב קשור."
+    "message": "ערך מהרכיב הקשור"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromStyle": {
-    "message": "ערך מסגנון."
+    "message": "ערך מהסגנון"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromTableCaption": {
-    "message": "ערך מהcaption של הtable."
+    "message": "ערך מתוך caption table"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromTitleAttribute": {
-    "message": "ערך ממאפיין שם הפריט."
+    "message": "ערך ממאפיין הכותרת"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherAUserMaySelectMoreThanOne": {
-    "message": "אם משתמש יכול לבחור יותר מאפשרות אחת מהווידג'ט הזה."
+    "message": "אם המשתמש יכול לבחור יותר מאפשרות אחת מהווידג'ט הזה"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherAndWhatPriorityOfLive": {
-    "message": "האם לרכיב זה צפויה עדיפות של עדכונים בזמן אמת ואם כן, איזו עדיפות."
+    "message": "עדיפות העדכונים בזמן אמת הצפויה עבור רכיב זה, אם קיימת"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherAndWhatTypeOfAutocomplete": {
-    "message": "האם הצעות השלמה אוטומטיות מסופקות כעת על ידי הרכיב הזה ומאיזה סוג."
+    "message": "אם רכיב זה מספק כרגע הצעות להשלמה אוטומטית, ומאילו סוגים"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherTheOptionRepresentedBy": {
-    "message": "אם האפשרות שמיוצגת על ידי הרכיב הזה מסומנת כרגע."
+    "message": "אם האפשרות שהרכיב הזה מייצג נבחרה כרגע"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherTheValueOfThisElementCan": {
-    "message": "אם הערך של הרכיב הזה ניתן להגדרה."
+    "message": "אם ניתן להגדיר את הערך של הרכיב הזה"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherThisCheckboxRadioButtonOr": {
-    "message": "אם תיבת הסימון, כפתור הבחירה או הפריט בעץ מסומנים, אם הסימון שלהם בוטל או גם וגם (לדוגמה: אם יש רכיבי צאצא מסומנים וגם רכיבי צאצא שהסימון שלהם בוטל)."
+    "message": "אם תיבת הסימון הזו, כפתור הבחירה הזה או פריט העץ הזה מסומנים, לא מסומנים או נמצאים במצב מעורב (לדוגמה, כשיש להם גם רכיבי צאצא מסומנים וגם רכיבי צאצא לא מסומנים)"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherThisElementHasCausedSome": {
-    "message": "אם הרכיב הזה גרם להופעת רכיב קופץ מכל סוג שהוא (כמו למשל תפריט)."
+    "message": "אם הרכיב הזה גרם להופעה של חלון קופץ מכל סוג שהוא (כמו תפריט)"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherThisElementIsARequired": {
-    "message": "אם הרכיב הזה הוא שדה חובה בטופס."
+    "message": "אם הרכיב הזה הוא שדה חובה בטופס"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherThisElementOrAnother": {
-    "message": "רכיב זה, או קבוצת רכיבים אחרת שבשליטה שלו, יורחב."
+    "message": "אם רכיב זה, או רכיב קיבוץ אחר שבשליטתו, נמצא במצב מורחב"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherThisElementOrItsSubtree": {
-    "message": "אם הרכיב הזה או עץ המשנה שלו עדיין בתהליך עדכון (ולכן עשויים להיות במצב לא עקבי)."
+    "message": "אם הרכיב הזה או עץ המשנה שלו מתעדכנים ברגע זה (ולכן עשויים להיות במצב לא עקבי)"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherThisLinearElements": {
-    "message": "קובע אם הכיוון של הרכיב הלינארי הזה הוא אופקי או אנכי."
+    "message": "אם הכיוון של הרכיב הלינארי הזה הוא אופקי או אנכי"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherThisTextBoxMayHaveMore": {
-    "message": "אם לתיבת הטקסט הזו יכולה להיות יותר משורה אחת."
+    "message": "אם תיבת הטקסט הזו יכולה להכיל יותר משורה אחת"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherThisToggleButtonIs": {
-    "message": "אם כפתור החלפת המצב הזה נמצא כרגע במצב לחוץ."
+    "message": "אם כפתור החלפת המצב הזה נמצא כרגע במצב לחוץ"
   },
   "panels/accessibility/SourceOrderView.ts | noSourceOrderInformation": {
     "message": "אין מידע זמין לגבי סדר המקורות"
@@ -3087,7 +2889,7 @@
     "message": "הצגה של סדר המקורות"
   },
   "panels/accessibility/SourceOrderView.ts | sourceOrderViewer": {
-    "message": "כלי להצגת סדר מקורות"
+    "message": "כלי להצגה לפי סדר המקור"
   },
   "panels/accessibility/SourceOrderView.ts | thereMayBeADelayInDisplaying": {
     "message": "ייתכן עיכוב בהצגת סדר המקורות לרכיבים בעלי צאצאים רבים"
@@ -3155,20 +2957,11 @@
   "panels/ai_assistance/ai_assistance-meta.ts | gemini": {
     "message": "Gemini"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | geoRestricted": {
-    "message": "התכונה הזו לא זמינה באזור שלך."
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | policyRestricted": {
-    "message": "ההגדרה הזו מנוהלת על-ידי האדמין."
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "הצגת סיוע מבוסס-AI"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
     "message": "הצגת Gemini"
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
-    "message": "כדי להשתמש בתכונה הזו, צריך להגדיר את העדפת השפה לאנגלית בהגדרות של כלי הפיתוח."
   },
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "אפשר גם להשתמש באחד מהפרומפטים שמוצעים למעלה כדי להתחיל את השיחה"
@@ -3297,7 +3090,7 @@
     "message": "ציר זמן של הפעלה"
   },
   "panels/animation/AnimationTimeline.ts | playbackRatePlaceholder": {
-    "message": "%‏{PH1}"
+    "message": "{PH1}%"
   },
   "panels/animation/AnimationTimeline.ts | playbackRates": {
     "message": "קצב הפעלה"
@@ -3375,7 +3168,7 @@
     "message": "לא הצלחנו להוריד סמל נדרש מהמניפסט"
   },
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
-    "message": "התאמה אישית של שכבת-העל של פקדי החלון בסרגל הכותרת של ה-PWA"
+    "message": "התאמה אישית של שכבת-העל של כפתורי החלון בסרגל הכותרת של ה-PWA"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "תיאור"
@@ -4428,7 +4221,7 @@
     "message": "ה-constructor של SharedArrayBuffer זמין, אבל אי אפשר להעביר את SABs באמצעות postMessage"
   },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
-    "message": "סכמת המסגרת לא מאובטחת"
+    "message": "למסגרת הוגדרה סכמה לא מאובטחת"
   },
   "panels/application/FrameDetailsView.ts | thePerformanceAPI": {
     "message": "ממשק ה-API של performance.measureUserAgentSpecificMemory() זמין"
@@ -4892,6 +4685,9 @@
   "panels/application/StorageView.ts | localAndSessionStorage": {
     "message": "אחסון מקומי ואחסון סשן"
   },
+  "panels/application/StorageView.ts | localStorage": {
+    "message": "אחסון מקומי"
+  },
   "panels/application/StorageView.ts | mb": {
     "message": "MB"
   },
@@ -4912,6 +4708,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "קובצי שירות (service worker)"
+  },
+  "panels/application/StorageView.ts | sessionStorage": {
+    "message": "אחסון הסשן"
   },
   "panels/application/StorageView.ts | simulateCustomStorage": {
     "message": "הדמיה של מכסת אחסון מותאמת אישית"
@@ -4976,6 +4775,9 @@
   "panels/application/WebMCPView.ts | declarative": {
     "message": "הצהרתיים"
   },
+  "panels/application/WebMCPView.ts | description": {
+    "message": "תיאור"
+  },
   "panels/application/WebMCPView.ts | editAndRun": {
     "message": "עריכה והרצה"
   },
@@ -5020,6 +4822,9 @@
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
     "message": "כלי WebMCP אפשריים"
+  },
+  "panels/application/WebMCPView.ts | origin": {
+    "message": "מקור"
   },
   "panels/application/WebMCPView.ts | output": {
     "message": "פלט"
@@ -5081,6 +4886,9 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "הפסקה של הקלטת אירועים"
   },
+  "panels/application/components/AdsView.ts | adDetectionMistakes": {
+    "message": "זיהוי המודעות ב-Chrome עלול לטעות."
+  },
   "panels/application/components/AdsView.ts | adIframes": {
     "message": "מסגרות iframe של מודעות"
   },
@@ -5105,6 +4913,9 @@
   "panels/application/components/AdsView.ts | initialOrigin": {
     "message": "מקור ראשוני"
   },
+  "panels/application/components/AdsView.ts | learnMore": {
+    "message": "מידע נוסף"
+  },
   "panels/application/components/AdsView.ts | metrics": {
     "message": "מדדים"
   },
@@ -5124,7 +4935,7 @@
     "message": "סך השימוש ברשת על ידי מודעות"
   },
   "panels/application/components/AdsView.ts | unnamed": {
-    "message": "<ללא שם>"
+    "message": "<בלי שם>"
   },
   "panels/application/components/AdsView.ts | viewportAdCount": {
     "message": "ספירת המודעות באזור התצוגה"
@@ -5535,7 +5346,7 @@
     "message": "מידע נוסף: אין להשתמש ב-handler של הסרת הנתונים שנטענו"
   },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
-    "message": "לא הוצג מתוך מטמון לדף הקודם/הבא (bfcache): כדי להפעיל את התכונה \"מטמון לדף הקודם/הבא (bfcache)\", צריך להשתמש בכפתורי \"הקודם\"/\"הבא\" של Chrome. כדי לנווט אוטומטית לדף הקודם ולדף הבא, אפשר גם להשתמש בכפתור הבדיקה שלמטה."
+    "message": "לא הוצג תוכן מתוך המטמון לדף הקודם/הבא (bfcache): כדי לנסות שוב, צריך ללחוץ על כפתורי \"הקודם\"/\"הבא\" של Chrome. כדי לנווט אוטומטית לדף הקודם ולדף הבא, אפשר גם להשתמש בכפתור הבדיקה שלמטה."
   },
   "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
     "message": "ניתן לנקוט פעולה"
@@ -5637,7 +5448,7 @@
     "message": "הסתרת הפרטים"
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
-    "message": "הצגת הפרטים"
+    "message": "הצגת פרטים"
   },
   "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
     "message": "בחירת handler של פרוטוקול"
@@ -5922,10 +5733,10 @@
     "message": "כן"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "הטעינה מראש מושבתת בגלל מצב החיסכון בסוללה של מערכת ההפעלה."
+    "message": "הטעינה מראש מושבתת בגלל מצב \"חיסכון בסוללה\" במערכת ההפעלה."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "הטעינה מראש מושבתת בגלל המצב Data Saver של מערכת ההפעלה."
+    "message": "הטעינה מראש מושבתת בגלל מצב Data Saver במערכת ההפעלה."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "השליפה מראש (prefetch) הופעלה באילוץ כי כלי הפיתוח פתוחים. אחרי הסגירה של כלי הפיתוח, השליפה מראש תושבת כי הסשן בדפדפן שייך לקבוצת ניסוי להשוואות ביצועים."
@@ -6060,7 +5871,7 @@
     "message": "אירעה שגיאה בחיבור לרשת במהלך ניסיון להגדיר חיבור לשרת ה-proxy לשליפה מראש (prefetch)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "הדף שעבר עיבוד מראש הופעל במהלך הניווט במסגרת הראשית של הדף היוזם."
+    "message": "הדף שהמערכת רינדרה מראש הופעל במהלך הניווט במסגרת הראשית של הדף היוזם."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts": {
     "message": "לא נעשה שימוש בעיבוד מראש כי במהלך ההפעלה היו חלונות אחרים עם הפניה פעילה לכלי פתיחה של הדף שמתחיל את התהליך, וכרגע אין בו תמיכה."
@@ -6138,7 +5949,7 @@
     "message": "העיבוד מראש שהופעל על ידי הדפדפן לא בוצע כי בדף שמתחיל את התהליך כבר יש פעילות מתמשכת של יותר מדי עיבודים מראש."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "העיבוד מראש הקודם מסוג non-eager בוטל באופן אוטומטי כי התחיל אחד חדש. העיבוד הקודם היה בעל ערך eagerness של moderate או conservative, והוא הופעל על ידי הצבת הסמן מעל קישורים או לחיצה עליהם. כדי להפעיל אותו מחדש, אפשר להציב את הסמן מעל הקישור או ללחוץ עליו."
+    "message": "התחיל רינדור מחדש מסוג non-eager וביטל תהליך דומה שלא הסתיים. ניסיון הרינדור הקודם היה ברמת eagerness של moderate או conservative, והוא הופעל על ידי הצבת הסמן מעל קישור או לחיצה עליו. כדי להפעיל מחדש את הרינדור הקודם, אפשר להציב את הסמן מעל הקישור או ללחוץ עליו."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "העיבוד מראש לא בוצע כי הדפדפן חרג ממגבלת הזיכרון לעיבוד מראש."
@@ -6204,7 +6015,7 @@
     "message": "הדף שעבר עיבוד מראש עבר לכתובת URL שהפנתה לכתובת URL ממקור אחר באותו אתר, אבל תגובת היעד לא הכילה את הכותרת Supports-Loading-Mode המתאימה."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
-    "message": "הוסרו הנתונים שנטענו בדף שעבר עיבוד מראש. הדבר קרה כי הדף שהתחיל את התהליך הסיר את כלל העיבוד מראש הרלוונטי מ-<script type=\"speculationrules\">."
+    "message": "הוסרו הנתונים של הדף שרונדר מראש, כי הדף היוזם הסיר את כלל הרינדור מראש הרלוונטי מ-<script type=\"speculationrules\">."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
     "message": "המעבר לעיבוד מראש נכשל בגלל אישור SSL לא תקין."
@@ -6294,7 +6105,7 @@
     "message": "הסיבה לכשל"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
-    "message": "הדף שמתחיל את התהליך ניסה לעבד מראש את כתובת ה-URL של הדף הזה. העיבוד מראש נכשל, אבל בכל זאת נעשה שימוש בגוף התגובה שהתקבל לצורך שליפה מראש (prefetch)."
+    "message": "הדף היוזם ניסה לרנדר מראש את הדף שבכתובת הזו. הרינדור מראש נכשל, אבל גוף התגובה שהתקבל שימש בכל זאת כשליפה מראש (prefetch)."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | headerName": {
     "message": "שם הכותרת"
@@ -6315,7 +6126,7 @@
     "message": "הדף היוזם לא ניסה לטעון מראש את כתובת ה-URL של הדף הזה."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
-    "message": "הדף שמתחיל את התהליך ניסה לשלוף מראש את כתובת ה-URL של הדף הזה, אבל השליפה מראש לא הצליחה, ובמקומה נעשה ניווט מלא."
+    "message": "הדף היוזם ניסה לשלוף מראש את הדף שבכתובת הזו, אבל השליפה נכשלה – במקומה, הדפדפן עבר לכתובת החדשה."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "השליפה מראש (prefetch) של הדף הזה בוצעה בהצלחה."
@@ -6324,7 +6135,7 @@
     "message": "כתובות ה-URL נטענות באופן ספקולטיבי על ידי הדף שמתחיל את התהליך"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
-    "message": "הדף שמתחיל את התהליך ניסה לעבד מראש את כתובת ה-URL של הדף הזה, אבל העיבוד מראש לא הצליח, ובמקומו נעשה ניווט מלא."
+    "message": "הדף היוזם ניסה לרנדר מראש את הדף שבכתובת הזו, אבל הרינדור נכשל – במקומו הדפדפן עבר לכתובת החדשה."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "הדף הזה עבר בהצלחה עיבוד מראש."
@@ -6351,7 +6162,7 @@
     "message": "פתיחה אוטומטית של החלונית"
   },
   "panels/autofill/AutofillView.ts | autoShowTooltip": {
-    "message": "פתיחה אוטומטית של חלונית המילוי האוטומטי כשמזוהה פעילות של מילוי אוטומטי."
+    "message": "אם מזוהה פעילות מילוי אוטומטי, חלונית המילוי האוטומטי נפתחת"
   },
   "panels/autofill/AutofillView.ts | autocompleteAttribute": {
     "message": "מאפיין ההשלמה האוטומטית"
@@ -6378,13 +6189,13 @@
     "message": "הערך הצפוי למילוי אוטומטי"
   },
   "panels/autofill/AutofillView.ts | sendFeedback": {
-    "message": "שליחת משוב"
+    "message": "לשליחת משוב"
   },
   "panels/autofill/AutofillView.ts | showTestAddressesInAutofillMenu": {
     "message": "הצגת הכתובות לבדיקה בתפריט המילוי האוטומטי"
   },
   "panels/autofill/AutofillView.ts | toStartDebugging": {
-    "message": "כדי להתחיל לנפות באגים במילוי אוטומטי, צריך למלא טופס כתובת באמצעות תפריט המילוי האוטומטי של Chrome."
+    "message": "כדי להתחיל לנפות באגים במילוי האוטומטי, צריך למלא טופס כתובת באמצעות תפריט המילוי האוטומטי של Chrome"
   },
   "panels/autofill/AutofillView.ts | value": {
     "message": "ערך"
@@ -6396,13 +6207,13 @@
     "message": "הצגת המילוי האוטומטי"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
-    "message": "Animation"
+    "message": "אנימציה"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
-    "message": "Ad auction worklet"
+    "message": "מודול worklet של מכרז מודעות"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
-    "message": "breakpoint hit"
+    "message": "נקודת העצירה הופעלה"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
     "message": "לוח הציור"
@@ -6414,10 +6225,10 @@
     "message": "פקד"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
-    "message": "Device"
+    "message": "מכשיר"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
-    "message": "DOM mutation"
+    "message": "מוטציה של DOM"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
     "message": "גרירה / שחרור"
@@ -6432,7 +6243,7 @@
     "message": "טעינה"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
-    "message": "Media"
+    "message": "מדיה"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
     "message": "עכבר"
@@ -6441,25 +6252,25 @@
     "message": "הודעה"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
-    "message": "Parse"
+    "message": "ניתוח"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
-    "message": "Picture-in-picture"
+    "message": "תמונה בתוך תמונה"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
     "message": "מצביע"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
-    "message": "Script"
+    "message": "סקריפט"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
     "message": "טיימר"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
-    "message": "Touch"
+    "message": "מגע"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
-    "message": "Trusted Type violations"
+    "message": "‫Trusted Type הפרות"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
     "message": "WebAudio"
@@ -6480,7 +6291,7 @@
     "message": "עצירה"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | breakpointHit": {
-    "message": "breakpoint hit"
+    "message": "נקודת העצירה הופעלה"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | breakpointRemoved": {
     "message": "נקודת העצירה (breakpoint) הוסרה"
@@ -6495,7 +6306,7 @@
     "message": "נקודות עצירה של DOM משהות את הקוד שמשנה צומת DOM או את הצמתים המשניים שלו."
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | domBreakpointsList": {
-    "message": "DOM breakpoints list"
+    "message": "רשימת נקודות עצירה של DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "אין נקודות עצירה (breakpoints) ב-DOM"
@@ -6507,7 +6318,7 @@
     "message": "הסרת כל נקודות העצירה ב-DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "Remove breakpoint"
+    "message": "הסרת נקודת עצירה"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | revealDomNodeInElementsPanel": {
     "message": "הצגת הצומת של DOM בחלונית הרכיבים"
@@ -6516,7 +6327,7 @@
     "message": "הגעה לנקודת עצירה (breakpoint): {PH1}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
-    "message": "{PH1}: {PH2}"
+    "message": "{PH1}: ‏{PH2}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
     "message": "{PH1}‏: {PH2}‏, {PH3}"
@@ -6528,7 +6339,7 @@
     "message": "לא מסומנת"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | addBreakpoint": {
-    "message": "Add breakpoint"
+    "message": "הוספת נקודת עצירה"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | addXhrfetchBreakpoint": {
     "message": "הוספת נקודת עצירה של אחזור/XHR"
@@ -6540,46 +6351,46 @@
     "message": "פיצול כאשר כתובת ה-URL מכילה:"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | breakpointHit": {
-    "message": "breakpoint hit"
+    "message": "נקודת העצירה הופעלה"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "אין נקודות עצירה (breakpoint)"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | removeAllBreakpoints": {
-    "message": "Remove all breakpoints"
+    "message": "הסרת כל נקודות העצירה"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "Remove breakpoint"
+    "message": "הסרת נקודת עצירה"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | urlBreakpoint": {
-    "message": "URL breakpoint"
+    "message": "נקודת עצירה של כתובת URL"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | urlContainsS": {
     "message": "כתובת ה-URL מכילה \"{PH1}\""
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | xhrfetchBreakpoints": {
-    "message": "XHR/fetch breakpoints"
+    "message": "נקודות עצירה של בקשות XHR/fetch"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | contentScripts": {
-    "message": "Content scripts"
+    "message": "סקריפטים של תוכן"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | cspViolationBreakpoints": {
-    "message": "CSP violation breakpoints"
+    "message": "נקודות עצירה של הפרת CSP"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | domBreakpoints": {
-    "message": "DOM breakpoints"
+    "message": "נקודות עצירה של DOM"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | eventListenerBreakpoints": {
-    "message": "Event listener breakpoints"
+    "message": "נקודות עצירה של רכיב event listener"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | globalListeners": {
-    "message": "Global listeners"
+    "message": "‫listeners גלובליים"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | overrides": {
-    "message": "Overrides"
+    "message": "שינויים מברירת המחדל"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | page": {
-    "message": "Page"
+    "message": "דף"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | refreshGlobalListeners": {
     "message": "רענון הרשימה של פונקציות listener גלובליות"
@@ -6588,16 +6399,16 @@
     "message": "הצגת סקריפטים של תוכן"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showCspViolationBreakpoints": {
-    "message": "Show CSP violation breakpoints"
+    "message": "הצגת נקודות עצירה של הפרת CSP"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showDomBreakpoints": {
-    "message": "Show DOM breakpoints"
+    "message": "הצגת נקודות עצירה של DOM"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showEventListenerBreakpoints": {
-    "message": "Show Event listener breakpoints"
+    "message": "הצגת נקודות עצירה של רכיב event listener"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showGlobalListeners": {
-    "message": "Show Global listeners"
+    "message": "הצגת listeners גלובליים"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showOverrides": {
     "message": "הצגת השינויים מברירות המחדל"
@@ -6606,10 +6417,10 @@
     "message": "הצגת הדף"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showXhrfetchBreakpoints": {
-    "message": "Show XHR/fetch breakpoints"
+    "message": "הצגת נקודות עצירה של בקשות XHR/fetch"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | xhrfetchBreakpoints": {
-    "message": "XHR/fetch breakpoints"
+    "message": "נקודות עצירה של בקשות XHR/fetch"
   },
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "‫{PH1} (ממפת המקור)"
@@ -6657,7 +6468,7 @@
     "message": "זכית בתג {PH1} על {PH2}! כדי לקבל אותו, צריך להפעיל את התגים."
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
-    "message": "אל הפרופיל"
+    "message": "צפייה בפרופיל"
   },
   "panels/common/CPUThrottlingOption.ts | calibratedLowTierMobile": {
     "message": "נייד ברמה נמוכה"
@@ -6677,18 +6488,6 @@
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<צומת>"
   },
-  "panels/common/FreDialog.ts | cancel": {
-    "message": "ביטול"
-  },
-  "panels/common/FreDialog.ts | gotIt": {
-    "message": "הבנתי"
-  },
-  "panels/common/FreDialog.ts | learnMore": {
-    "message": "מידע נוסף"
-  },
-  "panels/common/FreDialog.ts | thingsToConsider": {
-    "message": "מה כדאי לקחת בחשבון"
-  },
   "panels/common/GdpSignUpDialog.ts | cancel": {
     "message": "ביטול"
   },
@@ -6699,7 +6498,7 @@
     "message": "אנחנו פה בשביל לעזור לך להצליח"
   },
   "panels/common/GdpSignUpDialog.ts | designedForSuccessBody": {
-    "message": "משפרים את המיומנויות, מפתחים בעזרת AI וזוכים בתגים שאפשר להציג בפרופיל המפתחים"
+    "message": "משפרים את המיומנויות, מפתחים בעזרת AI וזוכים בתגים שאפשר להציג בפרופיל המפתחים."
   },
   "panels/common/GdpSignUpDialog.ts | gdpDialogAriaLabel": {
     "message": "תיבת דו-שיח להרשמה ל-Google Developer Program"
@@ -6708,7 +6507,7 @@
     "message": "אני רוצה להתעדכן"
   },
   "panels/common/GdpSignUpDialog.ts | keepUpdatedBody": {
-    "message": "התכונות הכי חדשות של כלי הפיתוח, הזמנות לאירועים ותובנות מותאמות אישית מגיעות ישירות לתיבת הדואר הנכנס שלך"
+    "message": "התכונות החדשות ביותר של כלי הפיתוח, הזמנות לאירועים ותובנות מותאמות אישית מגיעות ישירות לתיבת הדואר הנכנס שלך."
   },
   "panels/common/GdpSignUpDialog.ts | learnMore": {
     "message": "מידע נוסף"
@@ -6723,13 +6522,13 @@
     "message": "הרשמה"
   },
   "panels/common/GdpSignUpDialog.ts | signUpFailed": {
-    "message": "לא ניתן היה ליצור את הפרופיל שלך ב-Google Developer Program. אפשר לנסות שוב אחר כך."
+    "message": "לא הצלחנו ליצור את פרופיל המפתח שלך ב-Google. אפשר לנסות שוב אחר כך."
   },
   "panels/common/GdpSignUpDialog.ts | tailorProfile": {
     "message": "התאמה אישית של הפרופיל"
   },
   "panels/common/GdpSignUpDialog.ts | tailorProfileBody": {
-    "message": "השם מחשבון Google ותחומי העניין שלך יופיעו בפרופיל המפתח שלך ב-Google Developers. השם שלך עשוי להופיע במקומות שבהם הוספת תוכן, ואפשר לשנות אותו בכל שלב."
+    "message": "השם שבחשבון Google שלך ותחומי העניין שלך יופיעו בפרופיל המפתח שלך ב-Google. השם שלך עשוי להופיע במקומות שבהם הוספת תוכן, ואפשר לשנות אותו בכל שלב."
   },
   "panels/common/GdpSignUpDialog.ts | tailorProfileBodyDisclaimer": {
     "message": "יצירת פרופיל של מפתח מבטאת את הסכמתך ל{PH1}. השימוש שלך בשירות הזה כפוף ל{PH2} ול{PH3} של Google."
@@ -6763,12 +6562,6 @@
   },
   "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
     "message": "מקושר למפת מקור: {PH1}"
-  },
-  "panels/common/common.ts | allow": {
-    "message": "אישור"
-  },
-  "panels/common/common.ts | cancel": {
-    "message": "ביטול"
   },
   "panels/console/ConsoleContextSelector.ts | extension": {
     "message": "תוסף"
@@ -6948,7 +6741,7 @@
     "message": "שמירת היומן"
   },
   "panels/console/ConsoleView.ts | resend": {
-    "message": "Resend"
+    "message": "שליחה מחדש"
   },
   "panels/console/ConsoleView.ts | sHidden": {
     "message": "{n,plural, =1{הודעת מסוף אחת מוסתרת}one{# הודעות מסוף מוסתרות}two{# הודעות מסוף מוסתרות}other{# הודעות מסוף מוסתרות}}"
@@ -6981,7 +6774,7 @@
     "message": "אזהרות"
   },
   "panels/console/ConsoleView.ts | writingFile": {
-    "message": "מתבצעת כתיבה לקובץ…"
+    "message": "מתבצעת כתיבה בקובץ…"
   },
   "panels/console/ConsoleViewMessage.ts | Mxx": {
     "message": " M<XX>‎"
@@ -6998,6 +6791,9 @@
   "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
     "message": "נקודת עצירה מותנית"
   },
+  "panels/console/ConsoleViewMessage.ts | collapseChildren": {
+    "message": "כיווץ רכיבי הצאצא"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "מסוף"
   },
@@ -7005,7 +6801,7 @@
     "message": "המסוף ריק"
   },
   "panels/console/ConsoleViewMessage.ts | consoleclearWasPreventedDueTo": {
-    "message": "הפעולה console.clear() נמנעה עקב \"שמירת יומן הרישום\""
+    "message": "הפעולה console.clear() לא בוצעה עקב \"מניעת איפוס של היומן\""
   },
   "panels/console/ConsoleViewMessage.ts | copyAsCsv": {
     "message": "העתקה כקובץ CSV"
@@ -7030,6 +6826,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | exception": {
     "message": "<חריג>"
+  },
+  "panels/console/ConsoleViewMessage.ts | expandRecursively": {
+    "message": "הרחבה חוזרת"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisError": {
     "message": "הסבר על השגיאה"
@@ -7139,6 +6938,9 @@
   "panels/console/console-meta.ts | doNotGroupSimilarMessages": {
     "message": "הודעות דומות לא יקובצו"
   },
+  "panels/console/console-meta.ts | doNotPreserveLogUponNavigation": {
+    "message": "ללא שמירת היומן בזמן הניווט"
+  },
   "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
     "message": "לא להציג שגיאות CORS במסוף"
   },
@@ -7171,6 +6973,9 @@
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "הצגת הודעות מההקשר הנוכחי בלבד (top, ‏iframe, ‏worker, תוסף)"
+  },
+  "panels/console/console-meta.ts | preserveLogUponNavigation": {
+    "message": "מניעת איפוס של היומן כשמנווטים לדף חדש"
   },
   "panels/console/console-meta.ts | selectedContextOnly": {
     "message": "ההקשר שנבחר בלבד"
@@ -7221,7 +7026,7 @@
     "message": "כיסוי JS עם רמת פירוט לכל בלוק קוד: לאחר הרצת בלוק של JavaScript, הוא מסומן כ\"מכוסה\"."
   },
   "panels/coverage/CoverageListView.ts | jsCoverageWithPerFunction": {
-    "message": "כיסוי JavaScript עם רמת פירוט לכל פונקציה: אחרי ההרצה, כל הפונקציה נכללת בנתוני הכיסוי."
+    "message": "כיסוי JavaScript עם פירוט ברמת הפונקציה: אחרי ההרצה, כל הפונקציה נכללת בנתוני הכיסוי."
   },
   "panels/coverage/CoverageListView.ts | jsPerBlock": {
     "message": "JavaScript (לבלוק)"
@@ -7263,7 +7068,7 @@
     "message": "כתובת URL"
   },
   "panels/coverage/CoverageListView.ts | usageVisualization": {
-    "message": "המחשת שימוש"
+    "message": "המחשת השימוש בקוד"
   },
   "panels/coverage/CoverageView.ts | activationNoCapture": {
     "message": "לא ניתן היה לתעד את פרטי הכיסוי כי הדף עבר עיבוד מראש ברקע."
@@ -7485,7 +7290,7 @@
     "message": "התחלה מהירה: תחילת העבודה עם החלונית החדשה לסקירה כללית של CSS"
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
-    "message": "‫Bottom חל על פריט שמיקומו סטטי"
+    "message": "‫Bottom משפיע על פריט במיקום סטטי"
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | heightAppliedToAnInlineElement": {
     "message": "‫Height מתייחס לרכיב בתוך השורה"
@@ -7494,10 +7299,10 @@
     "message": "Left חל על פריט שמיקומו סטטי"
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | rightAppliedToAStatically": {
-    "message": "‫Right חל על פריט שמיקומו סטטי"
+    "message": "‫Right משפיע על פריט במיקום סטטי"
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | topAppliedToAStatically": {
-    "message": "‫Top חל על פריט שמיקומו סטטי"
+    "message": "‫Top משפיע על פריט במיקום סטטי"
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | verticalAlignmentAppliedTo": {
     "message": "יישור לאורך החל על רכיב שאינו inline ואינו table-cell"
@@ -7518,7 +7323,7 @@
     "message": "העתקת כתובת ה-URL"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | developerResources": {
-    "message": "מקורות מידע למפתחים"
+    "message": "משאבים למפתחים"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | duration": {
     "message": "משך"
@@ -7563,7 +7368,7 @@
     "message": "סינון לפי כתובת URL ושגיאה"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "טעינת משאבים למפתחים מסוג ‏HTTP(S) דרך האתר שנבדק, ולא דרך כלי הפיתוח"
+    "message": "טעינת משאבי HTTP(S) למפתחים דרך האתר שנבדק, ולא דרך כלי הפיתוח"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{משאב אחד}one{‫# משאבים}two{‫# משאבים}other{‫# משאבים}}"
@@ -7572,7 +7377,7 @@
     "message": "{PH1} מקורות מידע, {PH2} טוענים כעת"
   },
   "panels/developer_resources/developer_resources-meta.ts | developerResources": {
-    "message": "מקורות מידע למפתחים"
+    "message": "משאבים למפתחים"
   },
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "הצגת מקורות המידע למפתחים"
@@ -7623,16 +7428,16 @@
     "message": "הוגדר עוגן אבל הרכיב מוסתר."
   },
   "panels/elements/CSSSpecificityBreakdown.ts | classLikeSpecificity": {
-    "message": "(ב) מחלקה: {PH1}"
+    "message": "(ב) דמוי מחלקה: {PH1}"
   },
   "panels/elements/CSSSpecificityBreakdown.ts | idLikeSpecificity": {
-    "message": "(א) כמו מזהה: {PH1}"
+    "message": "(א) דמוי מזהה: {PH1}"
   },
   "panels/elements/CSSSpecificityBreakdown.ts | specificity": {
     "message": "ספציפיות: ({PH1},‏{PH2},‏{PH3})"
   },
   "panels/elements/CSSSpecificityBreakdown.ts | typeLikeSpecificity": {
-    "message": "(ג) סוג: {PH1}"
+    "message": "(ג) דמוי סוג: {PH1}"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "הוספת מחלקה חדשה"
@@ -7787,65 +7592,17 @@
   "panels/elements/ElementsPanel.ts | theRemoteObjectCouldNotBe": {
     "message": "אי אפשר לבצע התאמת נתונים של האובייקט המרוחק לצומת תקין."
   },
-  "panels/elements/ElementsTreeElement.ts | addAttribute": {
-    "message": "הוספת מאפיין"
-  },
-  "panels/elements/ElementsTreeElement.ts | addPadding": {
-    "message": "הוספת מרווח פנימי"
-  },
-  "panels/elements/ElementsTreeElement.ts | alignItems": {
-    "message": "יישור הפריטים"
-  },
-  "panels/elements/ElementsTreeElement.ts | assessVisibility": {
-    "message": "בדיקת החשיפה"
-  },
-  "panels/elements/ElementsTreeElement.ts | captureNodeScreenshot": {
-    "message": "יצירת צילום מסך של צומת"
-  },
-  "panels/elements/ElementsTreeElement.ts | centerElement": {
-    "message": "מרכוז הרכיב"
-  },
-  "panels/elements/ElementsTreeElement.ts | changeParentProperties": {
-    "message": "שינוי מאפייני ההורה"
-  },
   "panels/elements/ElementsTreeElement.ts | children": {
     "message": "צאצאים:"
   },
-  "panels/elements/ElementsTreeElement.ts | collapseChildren": {
-    "message": "כיווץ רכיבי הצאצא"
-  },
   "panels/elements/ElementsTreeElement.ts | copy": {
     "message": "העתקה"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyElement": {
-    "message": "העתקת הרכיב"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyFullXpath": {
-    "message": "העתקת ה-XPath המלא"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyJsPath": {
-    "message": "העתקת נתיב JS"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyOuterhtml": {
-    "message": "העתקה של outerHTML"
-  },
-  "panels/elements/ElementsTreeElement.ts | copySelector": {
-    "message": "selector של עותקים"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyStyles": {
-    "message": "העתקת הסגנונות"
-  },
-  "panels/elements/ElementsTreeElement.ts | copyXpath": {
-    "message": "העתקת XPath"
   },
   "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
     "message": "ישות האב של סקריפט המודעה שיצר את האלמנט"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "גזירה"
-  },
-  "panels/elements/ElementsTreeElement.ts | deleteElement": {
-    "message": "מחיקת הרכיב"
   },
   "panels/elements/ElementsTreeElement.ts | disableContainer": {
     "message": "השבתת שכבת-העל של המאגר"
@@ -7864,24 +7621,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
     "message": "השבתת מצב ‎@starting-style"
-  },
-  "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
-    "message": "חלוקת הפריטים באופן שווה"
-  },
-  "panels/elements/ElementsTreeElement.ts | duplicateElement": {
-    "message": "רכיב כפול"
-  },
-  "panels/elements/ElementsTreeElement.ts | editAsHtml": {
-    "message": "עריכה כ-HTML"
-  },
-  "panels/elements/ElementsTreeElement.ts | editAttribute": {
-    "message": "עריכת מאפיין"
-  },
-  "panels/elements/ElementsTreeElement.ts | editData": {
-    "message": "עריכת הנתונים"
-  },
-  "panels/elements/ElementsTreeElement.ts | editText": {
-    "message": "עריכת טקסט"
   },
   "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
     "message": "לרכיב הזה יש אפשרויות נוספות שניתנות לגלילה"
@@ -7904,47 +7643,17 @@
   "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
     "message": "הפעלת מצב ‎@starting-style"
   },
-  "panels/elements/ElementsTreeElement.ts | expandRecursively": {
-    "message": "הרחבה חוזרת"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainContainerContext": {
-    "message": "הסבר על ההקשר של המאגר"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainContainerQueries": {
-    "message": "הסבר על שאילתות בנוגע למאגר"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainContainerTypes": {
-    "message": "הסבר על סוגי המאגרים"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainFlexbox": {
-    "message": "הסבר על Flexbox"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainGridLayout": {
-    "message": "הסבר על פריסת הרשת"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainScrollbars": {
-    "message": "הסבר על סרגלי גלילה"
-  },
-  "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
-    "message": "הסבר על רשתות משנה"
-  },
   "panels/elements/ElementsTreeElement.ts | filterListRule": {
     "message": "כלל של רשימת מסננים"
-  },
-  "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
-    "message": "חיפוש הגדרת רשת (grid)"
-  },
-  "panels/elements/ElementsTreeElement.ts | focus": {
-    "message": "מיקוד"
   },
   "panels/elements/ElementsTreeElement.ts | forceOpenPopover": {
     "message": "שמירה על החלון הקופץ פתוח"
   },
+  "panels/elements/ElementsTreeElement.ts | forceShowInterest": {
+    "message": "הדמיית התעניינות ברכיב הזה"
+  },
   "panels/elements/ElementsTreeElement.ts | forceState": {
     "message": "אילוץ מצב"
-  },
-  "panels/elements/ElementsTreeElement.ts | hideElement": {
-    "message": "הסתרת אלמנט"
   },
   "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
     "message": "אין נתוני מקור"
@@ -7955,17 +7664,11 @@
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "הדבקה"
   },
-  "panels/elements/ElementsTreeElement.ts | removeScrollbars": {
-    "message": "הסרת סרגלי הגלילה"
-  },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "חשיפה"
   },
   "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
     "message": "כלל של רשימת המסננים של סקריפט השורש"
-  },
-  "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
-    "message": "גלילה עד שהתוכן יהיה גלוי לעין"
   },
   "panels/elements/ElementsTreeElement.ts | selectAll": {
     "message": "בחירת הכול"
@@ -7974,10 +7677,7 @@
     "message": "הצגת הרכיב שמשויך למאפיין commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showCustomElementDefinition": {
-    "message": "הגדרת הרכיב המותאם אישית"
-  },
-  "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
-    "message": "הצגת הפרטים של iframe"
+    "message": "מה ההגדרה של הרכיב המותאם אישית?"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
     "message": "הצגת הרכיב שמשויך למאפיין interesttarget"
@@ -7985,17 +7685,11 @@
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
     "message": "הצגת הרכיב שמשויך למאפיין popovertarget"
   },
-  "panels/elements/ElementsTreeElement.ts | startAChat": {
-    "message": "התחלת צ'אט"
-  },
   "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
     "message": "הפסקת ההצגה של החלון הקופץ הזה"
   },
-  "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
-    "message": "עיצוב סרגלי הגלילה"
-  },
-  "panels/elements/ElementsTreeElement.ts | switchToAccessibilityTree": {
-    "message": "מעבר לעץ הנגישות"
+  "panels/elements/ElementsTreeElement.ts | stopForceShowInterest": {
+    "message": "ביטול הדמיית התעניינות ברכיב"
   },
   "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
     "message": "האלמנט הזה זוהה כמודעה"
@@ -8009,9 +7703,6 @@
   "panels/elements/ElementsTreeElement.ts | viewSourceCode": {
     "message": "הצגת קוד המקור"
   },
-  "panels/elements/ElementsTreeElement.ts | wrapTheseItems": {
-    "message": "הצגת הפריטים האלה בכמה שורות"
-  },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "DOM של הדף"
   },
@@ -8020,9 +7711,6 @@
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "הצגת כל הצמתים (עוד {PH1})"
-  },
-  "panels/elements/ElementsTreeOutline.ts | storeAsGlobalVariable": {
-    "message": "אחסון כמשתנה גלובלי"
   },
   "panels/elements/ElementsTreeOutline.ts | viewIssue": {
     "message": "לעיון בבעיה:"
@@ -8348,6 +8036,9 @@
   "panels/elements/elements-meta.ts | CSSDocumentationTooltip": {
     "message": "הסבר קצר עם מאמרי עזרה על CSS"
   },
+  "panels/elements/elements-meta.ts | apca": {
+    "message": "האלגוריתם המתקדם לניגודיות תפיסתית (APCA) מחליף את יחס הניגודיות הקודם ואת ההנחיות הקודמות של AA/AAA"
+  },
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "יצירת צילום מסך של האזור"
   },
@@ -8363,6 +8054,18 @@
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "הסבר קצר עם פירוט על הבדיקה"
   },
+  "panels/elements/elements-meta.ts | doNotExtendGridLines": {
+    "message": "אין להאריך קווי רשת"
+  },
+  "panels/elements/elements-meta.ts | doNotShowGridNamedAreas": {
+    "message": "אין להציג אזורים ששמותיהם מופיעים ברשת"
+  },
+  "panels/elements/elements-meta.ts | doNotShowGridTrackSizes": {
+    "message": "אין להציג את הגדלים של קווי הרשת"
+  },
+  "panels/elements/elements-meta.ts | doNotShowRulersOnHover": {
+    "message": "הסתרת סרגלים כשהסמן מוצב מעליהם"
+  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "רכיב כפול"
   },
@@ -8375,6 +8078,9 @@
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "פונקציות מסוג Event Listener"
   },
+  "panels/elements/elements-meta.ts | extendGridLines": {
+    "message": "הארכת קווי רשת"
+  },
   "panels/elements/elements-meta.ts | frameworkListeners": {
     "message": "רכיבי listener של framework"
   },
@@ -8383,6 +8089,9 @@
   },
   "panels/elements/elements-meta.ts | hideHtmlComments": {
     "message": "הסתרת תגובות HTML"
+  },
+  "panels/elements/elements-meta.ts | hideLineLabels": {
+    "message": "הסתרה של תוויות השורה"
   },
   "panels/elements/elements-meta.ts | htmlComments": {
     "message": "הערות HTML"
@@ -8405,8 +8114,14 @@
   "panels/elements/elements-meta.ts | revealDomNodeOnHover": {
     "message": "חשיפת צומת DOM בהצבת הסמן מעל"
   },
+  "panels/elements/elements-meta.ts | rulersOnHover": {
+    "message": "הצגת סרגלים עם הצבת הסמן עליהם"
+  },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "יש לבחור רכיב בדף כדי לבדוק אותו"
+  },
+  "panels/elements/elements-meta.ts | showAreaNames": {
+    "message": "הצגת שמות האזורים"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "הצגת הסגנונות המחושבים"
@@ -8417,17 +8132,38 @@
   "panels/elements/elements-meta.ts | showEventListeners": {
     "message": "הצגת פונקציות מסוג Event Listener"
   },
+  "panels/elements/elements-meta.ts | showGridNamedAreas": {
+    "message": "הצגת אזורים ששמותיהם מופיעים ברשת"
+  },
+  "panels/elements/elements-meta.ts | showGridTrackSizes": {
+    "message": "הצגת הגדלים של קווי הרשת"
+  },
   "panels/elements/elements-meta.ts | showHtmlComments": {
     "message": "הצגת תגובות HTML"
   },
   "panels/elements/elements-meta.ts | showLayout": {
     "message": "הצגת הפריסה"
   },
+  "panels/elements/elements-meta.ts | showLineLabels": {
+    "message": "הצגת תוויות השורות"
+  },
+  "panels/elements/elements-meta.ts | showLineNames": {
+    "message": "הצגת שמות השורה"
+  },
+  "panels/elements/elements-meta.ts | showLineNumbers": {
+    "message": "הצגת מספרי השורות"
+  },
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "הצגת המאפיינים"
   },
+  "panels/elements/elements-meta.ts | showRulersOnHover": {
+    "message": "הצגת הסרגלים בהעברת העכבר מעליהם"
+  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "הצגת הסגנונות"
+  },
+  "panels/elements/elements-meta.ts | showTrackSizes": {
+    "message": "הצגת גדלים של קהל יעד מצומצם"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "החלפת המצב של עץ הנגישות"
@@ -8460,7 +8196,7 @@
     "message": "‫{PH1} (ברירת מחדל)"
   },
   "panels/emulation/DeviceModeToolbar.ts | devicePixelRatio": {
-    "message": "יחס פיקסלים של המכשיר"
+    "message": "יחס הפיקסלים של המכשיר"
   },
   "panels/emulation/DeviceModeToolbar.ts | devicePosture": {
     "message": "מצב המכשיר"
@@ -8482,9 +8218,6 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | heightLeaveEmptyForFull": {
     "message": "גובה (לקבלת גובה הדף המלא יש להשאיר את התיבה ריקה)"
-  },
-  "panels/emulation/DeviceModeToolbar.ts | hideDeviceFrame": {
-    "message": "הסתרת מסגרת המכשיר"
   },
   "panels/emulation/DeviceModeToolbar.ts | hideMediaQueries": {
     "message": "הסתרת שאילתות מדיה"
@@ -8522,9 +8255,6 @@
   "panels/emulation/DeviceModeToolbar.ts | screenOrientationOptions": {
     "message": "אפשרויות לכיוון המסך"
   },
-  "panels/emulation/DeviceModeToolbar.ts | showDeviceFrame": {
-    "message": "הצגת מסגרת המכשיר"
-  },
   "panels/emulation/DeviceModeToolbar.ts | showMediaQueries": {
     "message": "הצגת שאילתות מדיה"
   },
@@ -8532,7 +8262,7 @@
     "message": "הצגת סרגלים"
   },
   "panels/emulation/DeviceModeToolbar.ts | throttling": {
-    "message": "ויסות נתונים"
+    "message": "ויסות נתונים (throttle)"
   },
   "panels/emulation/DeviceModeToolbar.ts | toggleDualscreenMode": {
     "message": "החלפת המצב של המסך המפוצל"
@@ -8579,23 +8309,17 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "מכשיר"
   },
-  "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
-    "message": "הסתרת מסגרת המכשיר"
-  },
   "panels/emulation/emulation-meta.ts | hideMediaQueries": {
     "message": "הסתרת שאילתות מדיה"
   },
   "panels/emulation/emulation-meta.ts | hideRulers": {
-    "message": "הסתרת הסרגלים בסרגל הכלים של מצב המכשיר (Device Mode)"
-  },
-  "panels/emulation/emulation-meta.ts | showDeviceFrame": {
-    "message": "הצגת מסגרת סביב המכשיר"
+    "message": "הסתרת הסרגלים בסרגל הכלים של מצב המכשיר"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "הצגת שאילתות מדיה"
   },
   "panels/emulation/emulation-meta.ts | showRulers": {
-    "message": "הצגת הסרגלים בסרגל הכלים של מצב המכשיר (Device Mode)"
+    "message": "הצגת הסרגלים בסרגל הכלים של מצב המכשיר"
   },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "החלפת המצב של סרגל הכלים של המכשיר"
@@ -8610,13 +8334,13 @@
     "message": "אין פונקציות event listener"
   },
   "panels/event_listeners/EventListenersView.ts | openInElementsPanel": {
-    "message": "Open in Elements panel"
+    "message": "פתיחה בחלונית \"רכיבים\""
   },
   "panels/event_listeners/EventListenersView.ts | passive": {
-    "message": "Passive"
+    "message": "פסיבי"
   },
   "panels/event_listeners/EventListenersView.ts | togglePassive": {
-    "message": "Toggle passive"
+    "message": "החלפת מצב פסיבי"
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "החלפת מצב אם הפונקציה event listener היא סבילה או חוסמת"
@@ -8658,7 +8382,7 @@
     "message": "אי אפשר להשתמש בכלים מבוססי-AI במצב פרטי או במצב אורח"
   },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
-    "message": "יש לך אפשרות להשתמש בתכונה הזו רק אם התחברת ל-Chrome עם חשבון Google."
+    "message": "התכונה הזו נתמכת רק אם התחברת ל-Chrome עם חשבון Google."
   },
   "panels/explain/components/ConsoleInsight.ts | offline": {
     "message": "כדאי לבדוק את החיבור לאינטרנט ולנסות שוב."
@@ -8721,10 +8445,10 @@
     "message": "משאב שנחסם"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | nRequests": {
-    "message": "{n,plural, =1{בקשה אחת}one{# בקשות}two{# בקשות}other{# בקשות}}"
+    "message": "{n,plural, =1{בקשה אחת}one{‫# בקשות}two{‫# בקשות}other{‫# בקשות}}"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | parentFrame": {
-    "message": "מסגרת הורה"
+    "message": "מסגרת אב"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | requestC": {
     "message": "בקשה"
@@ -8733,13 +8457,13 @@
     "message": "דומיין"
   },
   "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
-    "message": "הצגה של בקשות הרשת עם כותרת Set-Cookie הזו בחלונית 'רשת'"
+    "message": "הצגת בקשות לאחזור מהרשת שכוללות את הכותרת Set-Cookie בחלונית \"רשת\""
   },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{קובץ cookie אחד}one{# קובצי cookie}two{# קובצי cookie}other{# קובצי cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
-    "message": "{n,plural, =1{כותרת גולמית אחת מסוג Set-Cookie}one{# כותרות גולמיות מסוג Set-Cookie}two{# כותרות גולמיות מסוג Set-Cookie}other{# כותרות גולמיות מסוג Set-Cookie}}"
+    "message": "{n,plural, =1{כותרת גולמית אחת מסוג Set-Cookie}one{‫# כותרות גולמיות מסוג Set-Cookie}two{‫# כותרות גולמיות מסוג Set-Cookie}other{# כותרות גולמיות מסוג Set-Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "שם"
@@ -8769,7 +8493,7 @@
     "message": "{n,plural, =1{הוראה אחת}one{# הוראות}two{# הוראות}other{# הוראות}}"
   },
   "panels/issues/AffectedDirectivesView.ts | reportonly": {
-    "message": "דוחות בלבד"
+    "message": "לדיווח בלבד"
   },
   "panels/issues/AffectedDirectivesView.ts | resourceC": {
     "message": "משאב"
@@ -8808,7 +8532,7 @@
     "message": "חריגה ממגבלה"
   },
   "panels/issues/AffectedHeavyAdView.ts | nResources": {
-    "message": "{n,plural, =1{משאב אחד}one{# משאבים}two{# משאבים}other{# משאבים}}"
+    "message": "{n,plural, =1{משאב אחד}one{‫# משאבים}two{‫# משאבים}other{‫# משאבים}}"
   },
   "panels/issues/AffectedHeavyAdView.ts | networkLimit": {
     "message": "הגבלת רשת"
@@ -8817,10 +8541,10 @@
     "message": "הוסר"
   },
   "panels/issues/AffectedHeavyAdView.ts | resolutionStatus": {
-    "message": "סטטוס הטיפול בבעיה"
+    "message": "סטטוס הטיפול"
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
-    "message": "קיבלה אזהרה"
+    "message": "הוצגה אזהרה"
   },
   "panels/issues/AffectedLazyLoadImagesView.ts | nElements": {
     "message": "{n,plural, =1{רכיב אחד}one{‫# רכיבים}two{‫# רכיבים}other{‫# רכיבים}}"
@@ -8853,7 +8577,7 @@
     "message": "לא ידוע"
   },
   "panels/issues/AffectedSelectivePermissionsInterventionView.ts | adAncestry": {
-    "message": "ההיסטוריה של המודעה"
+    "message": "ישות האם של המודעה"
   },
   "panels/issues/AffectedSelectivePermissionsInterventionView.ts | api": {
     "message": "API"
@@ -8862,7 +8586,7 @@
     "message": "בטעינה…"
   },
   "panels/issues/AffectedSelectivePermissionsInterventionView.ts | nViolations": {
-    "message": "{n,plural, =1{הפרה אחת}one{# הפרות}two{# הפרות}other{# הפרות}}"
+    "message": "{n,plural, =1{הפרה אחת}one{‫# הפרות}two{‫# הפרות}other{‫# הפרות}}"
   },
   "panels/issues/AffectedSelectivePermissionsInterventionView.ts | script": {
     "message": "סקריפט"
@@ -8880,10 +8604,10 @@
     "message": "יצירת אובייקט"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | nViolations": {
-    "message": "{n,plural, =1{הפרה אחת}one{# הפרות}two{# הפרות}other{# הפרות}}"
+    "message": "{n,plural, =1{הפרה אחת}one{‫# הפרות}two{‫# הפרות}other{‫# הפרות}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
-    "message": "SharedArrayBuffer הועבר להקשר שאינו מבודד ממקורות שונים"
+    "message": "SharedArrayBuffer הועבר להקשר שאינו חסום לגישה מדומיינים אחרים"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sourceLocation": {
     "message": "מיקום המקור"
@@ -8916,22 +8640,22 @@
     "message": "נחסם"
   },
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestHeader": {
-    "message": "כותרת הבקשה אינה מורשית"
+    "message": "‫request header אסורה"
   },
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestMethod": {
-    "message": "שיטת הבקשה אינה מורשית"
+    "message": "שיטת בקשה לא מורשית"
   },
   "panels/issues/CorsIssueDetailsView.ts | failedRequest": {
-    "message": "הבקשה נכשלה"
+    "message": "בקשה שנכשלה"
   },
   "panels/issues/CorsIssueDetailsView.ts | header": {
     "message": "כותרת"
   },
   "panels/issues/CorsIssueDetailsView.ts | initiatorAddressSpace": {
-    "message": "כתובת היוזם"
+    "message": "כתובת המאתחל"
   },
   "panels/issues/CorsIssueDetailsView.ts | initiatorContext": {
-    "message": "הקשר של מאתחל"
+    "message": "ההקשר של המאתחל"
   },
   "panels/issues/CorsIssueDetailsView.ts | insecure": {
     "message": "לא מאובטח"
@@ -8940,7 +8664,7 @@
     "message": "ערך לא תקין (אם הוא זמין)"
   },
   "panels/issues/CorsIssueDetailsView.ts | nRequests": {
-    "message": "{n,plural, =1{בקשה אחת}one{# בקשות}two{# בקשות}other{# בקשות}}"
+    "message": "{n,plural, =1{בקשה אחת}one{‫# בקשות}two{‫# בקשות}other{‫# בקשות}}"
   },
   "panels/issues/CorsIssueDetailsView.ts | preflightDisallowedRedirect": {
     "message": "התגובה לקדם ההפעלה הייתה הפנייה אוטומטית"
@@ -8958,19 +8682,19 @@
     "message": "בעיה"
   },
   "panels/issues/CorsIssueDetailsView.ts | problemInvalidValue": {
-    "message": "ערך לא חוקי"
+    "message": "ערך לא תקין"
   },
   "panels/issues/CorsIssueDetailsView.ts | problemMissingHeader": {
-    "message": "כותרת חסרה"
+    "message": "חסרה כותרת"
   },
   "panels/issues/CorsIssueDetailsView.ts | problemMultipleValues": {
-    "message": "ערכים מרובים"
+    "message": "מספר ערכים"
   },
   "panels/issues/CorsIssueDetailsView.ts | request": {
     "message": "בקשה"
   },
   "panels/issues/CorsIssueDetailsView.ts | resourceAddressSpace": {
-    "message": "כתובת של משאב"
+    "message": "כתובת המשאב"
   },
   "panels/issues/CorsIssueDetailsView.ts | secure": {
     "message": "מאובטח"
@@ -8982,7 +8706,7 @@
     "message": "סטטוס"
   },
   "panels/issues/CorsIssueDetailsView.ts | unsupportedScheme": {
-    "message": "סכמה שאינה נתמכת"
+    "message": "סכמה לא נתמכת"
   },
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "אזהרה"
@@ -8991,7 +8715,7 @@
     "message": "מסגרת"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{משאב אחד}one{# משאבים}two{# משאבים}other{# משאבים}}"
+    "message": "{n,plural, =1{משאב אחד}one{‫# משאבים}two{‫# משאבים}other{‫# משאבים}}"
   },
   "panels/issues/GenericIssueDetailsView.ts | violatingNode": {
     "message": "צומת עם הפרת המדיניות"
@@ -9012,10 +8736,10 @@
     "message": "הסתרת כל השגיאות הנוכחיות בדף"
   },
   "panels/issues/IssueView.ts | affectedResources": {
-    "message": "מקורות המידע שהושפעו"
+    "message": "המשאבים המושפעים"
   },
   "panels/issues/IssueView.ts | automaticallyUpgraded": {
-    "message": "שודרג באופן אוטומטי"
+    "message": "שודרג אוטומטית"
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "נחסם"
@@ -9027,10 +8751,10 @@
     "message": "מידע נוסף: {PH1}"
   },
   "panels/issues/IssueView.ts | nRequests": {
-    "message": "{n,plural, =1{בקשה אחת}one{# בקשות}two{# בקשות}other{# בקשות}}"
+    "message": "{n,plural, =1{בקשה אחת}one{‫# בקשות}two{‫# בקשות}other{‫# בקשות}}"
   },
   "panels/issues/IssueView.ts | nResources": {
-    "message": "{n,plural, =1{משאב אחד}one{# משאבים}two{# משאבים}other{# משאבים}}"
+    "message": "{n,plural, =1{משאב אחד}one{‫# משאבים}two{‫# משאבים}other{‫# משאבים}}"
   },
   "panels/issues/IssueView.ts | name": {
     "message": "שם"
@@ -9042,7 +8766,7 @@
     "message": "ביטול ההסתרה של בעיות כאלה"
   },
   "panels/issues/IssueView.ts | warned": {
-    "message": "קיבלה אזהרה"
+    "message": "הוצגה אזהרה"
   },
   "panels/issues/IssuesPane.ts | contentSecurityPolicy": {
     "message": "Content Security Policy"
@@ -9051,7 +8775,7 @@
     "message": "שיתוף משאבים בין מקורות"
   },
   "panels/issues/IssuesPane.ts | crossOriginEmbedderPolicy": {
-    "message": "מדיניות הטמעה ממקורות שונים"
+    "message": "מדיניות כלי ההטמעה ממקורות שונים"
   },
   "panels/issues/IssuesPane.ts | generic": {
     "message": "גנרית"
@@ -9066,13 +8790,13 @@
     "message": "בעיות שמוצגות בקבוצות בקטגוריות משויכות"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "בקבוצה היו בעיות כמו שגיאות בדפים, שיפורים ושינויי תוכנה שעלולים לגרום לכשלים"
+    "message": "קיבוץ הבעיות המוצגות כשיפורים, שגיאות בדפים ושינויי תוכנה שעלולים לגרום לכשלים."
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "מודעות כבדות"
   },
   "panels/issues/IssuesPane.ts | includeCookieIssuesCausedBy": {
-    "message": "הכללת בעיות בקובצי cookie שנגרמו על ידי אתרים של צד שלישי"
+    "message": "הכללת בעיות בקובצי Cookie שמקורן באתרי צד שלישי"
   },
   "panels/issues/IssuesPane.ts | includeThirdpartyCookieIssues": {
     "message": "הכללת בעיות בקובצי cookie של צד שלישי"
@@ -9081,7 +8805,7 @@
     "message": "בדף הזה אפשר למצוא אזהרות מהדפדפן."
   },
   "panels/issues/IssuesPane.ts | lowTextContrast": {
-    "message": "ניגודיות נמוכה של טקסט"
+    "message": "ניגודיות טקסט נמוכה"
   },
   "panels/issues/IssuesPane.ts | mixedContent": {
     "message": "תוכן מעורב"
@@ -9096,16 +8820,16 @@
     "message": "אחר"
   },
   "panels/issues/IssuesPane.ts | permissionElement": {
-    "message": "רכיב PEPC"
+    "message": "רכיב הרשאה"
   },
   "panels/issues/IssuesPane.ts | quirksMode": {
     "message": "מצב תאימות (quirks mode)"
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
-    "message": "קובץ cookie מסוג SameSite"
+    "message": "קובץ Cookie עם מאפיין SameSite"
   },
   "panels/issues/IssuesPane.ts | selectivePermissionsIntervention": {
-    "message": "התערבות עקב הרשאות סלקטיביות"
+    "message": "התערבות בנושא הרשאות סלקטיביות"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "הסתרת הבעיות"
@@ -9116,35 +8840,11 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "הצגת בעיות"
   },
-  "panels/js_timeline/js_timeline-meta.ts | performance": {
-    "message": "ביצועים"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | record": {
-    "message": "הקלטה"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | recordAndReload": {
-    "message": "הקלטה וטעינה מחדש"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | showPerformance": {
-    "message": "הצגת הביצועים"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | showRecentTimelineSessions": {
-    "message": "הצגת ביקורים מהזמן האחרון בציר הזמן"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | stop": {
-    "message": "הפסקה"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
-    "message": "מצב ניפוי באגים בציר הזמן (פירוט אירועי המעקב וכו')"
-  },
-  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
-    "message": "לכל האירועים"
-  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
-    "message": "איחוד סיבות"
+    "message": "סיבות לקומפוזיציה"
   },
   "panels/layer_viewer/LayerDetailsView.ts | containingBlocRectangleDimensions": {
-    "message": "מכיל בלוק {PH1} × {PH2} (ב-{PH3} {PH4})"
+    "message": "הבלוק המכיל: {PH1} × {PH2} (ב-{PH3}, {PH4})"
   },
   "panels/layer_viewer/LayerDetailsView.ts | mainThreadScrollingReason": {
     "message": "הסיבה לגלילה בשרשור הראשי"
@@ -9156,7 +8856,7 @@
     "message": "הבלוק הקרוב ביותר המכיל תזוזות של שכבות"
   },
   "panels/layer_viewer/LayerDetailsView.ts | nearestLayerShiftingStickyBox": {
-    "message": "התיבה ה\"דביקה\" הקרובה ביותר להחלפת שכבות"
+    "message": "התיבה ה\"דביקה\" הקרובה ביותר שגורמת לתזוזת שכבות"
   },
   "panels/layer_viewer/LayerDetailsView.ts | noLayerSelected": {
     "message": "לא נבחרה שכבה"
@@ -9168,7 +8868,7 @@
     "message": "מספר הצבעים"
   },
   "panels/layer_viewer/LayerDetailsView.ts | paintProfiler": {
-    "message": "הכלי לניתוח ביצועי צבע"
+    "message": "הכלי לניתוח צביעה"
   },
   "panels/layer_viewer/LayerDetailsView.ts | repaintsOnScroll": {
     "message": "הצגה מחדש בעת גלילה"
@@ -9189,7 +8889,7 @@
     "message": "{PH1}: {PH2} ({PH3})"
   },
   "panels/layer_viewer/LayerDetailsView.ts | stickyBoxRectangleDimensions": {
-    "message": "Sticky Box {PH1} × {PH2} (ב-{PH3}, {PH4})"
+    "message": "התיבה ה\"דביקה\": {PH1} × {PH2} (ב-{PH3}, {PH4})"
   },
   "panels/layer_viewer/LayerDetailsView.ts | stickyPositionConstraint": {
     "message": "מגבלה על מיקום קבוע"
@@ -9198,7 +8898,7 @@
     "message": "גורם מטפל באירועי מגע"
   },
   "panels/layer_viewer/LayerDetailsView.ts | unnamed": {
-    "message": "<ללא שם>"
+    "message": "<בלי שם>"
   },
   "panels/layer_viewer/LayerDetailsView.ts | updateRectangleDimensions": {
     "message": "{PH1} × {PH2} (ב-{PH3}, {PH4})"
@@ -9210,10 +8910,10 @@
     "message": "‫{PH1} שכבות"
   },
   "panels/layer_viewer/LayerTreeOutline.ts | layersTreePane": {
-    "message": "חלונית עץ השכבות"
+    "message": "עץ השכבות"
   },
   "panels/layer_viewer/LayerTreeOutline.ts | showPaintProfiler": {
-    "message": "הצגת הכלי לניתוח צבעים"
+    "message": "הצגת הכלי לניתוח צביעה"
   },
   "panels/layer_viewer/LayerTreeOutline.ts | updateChildDimension": {
     "message": " ({PH1} × {PH2})"
@@ -9228,7 +8928,7 @@
     "message": "בדיקה של {PH1} למציאת סיבות אפשריות."
   },
   "panels/layer_viewer/Layers3DView.ts | dLayersView": {
-    "message": "הצגה של שכבות תלת ממדיות"
+    "message": "הצגה תלת-ממדית של השכבות"
   },
   "panels/layer_viewer/Layers3DView.ts | layerExplanation": {
     "message": "בדף הזה אפשר לראות את שכבות המסמך ולבדוק אותן."
@@ -9240,7 +8940,7 @@
     "message": "איפוס התצוגה"
   },
   "panels/layer_viewer/Layers3DView.ts | showPaintProfiler": {
-    "message": "הצגת הכלי לניתוח צבעים"
+    "message": "הצגת הכלי לניתוח צביעה"
   },
   "panels/layer_viewer/Layers3DView.ts | webglSupportIsDisabledInYour": {
     "message": "התמיכה ב-WebGL מושבתת בדפדפן שלך."
@@ -9306,7 +9006,7 @@
     "message": "הגדלת התצוגה"
   },
   "panels/layer_viewer/layer_viewer-meta.ts | zoomOut": {
-    "message": "התרחקות"
+    "message": "הקטנת התצוגה"
   },
   "panels/layers/LayersPanel.ts | details": {
     "message": "פרטים"
@@ -9333,7 +9033,7 @@
     "message": "החלת אמולציה למחשב במהלך הביקורת"
   },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
-    "message": "הפעלת אמולציה בניידים"
+    "message": "הפעלת אמולציה של מכשיר נייד"
   },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulationDuring": {
     "message": "החלת אמולציה לנייד במהלך הביקורת"
@@ -9378,7 +9078,7 @@
     "message": "האם אנשים עם מוגבלויות או לקויות יכולים להשתמש בדף הזה"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "‫JavaScript מושבת. כדי לבדוק את הדף הזה צריך להפעיל את JavaScript. כדי להפעיל את JavaScript, צריך לפתוח את תפריט הפקודות ולהריץ את הפקודה \"הפעלת JavaScript\"."
+    "message": "‫JavaScript מושבת. כדי לבדוק את הדף הזה צריך להפעיל את JavaScript: לפתוח את תפריט הפקודות ולהריץ את הפקודה \"הפעלת JavaScript\"."
   },
   "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
     "message": "מצב Lighthouse"
@@ -9423,10 +9123,10 @@
     "message": "המצב של תמונת מצב מיועד לניתוח הדף במצב מסוים. לרוב, הניתוח מתבצע לאחר אינטראקציות של משתמשים."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
-    "message": "ייתכן שיש נתונים שמורים שמשפיעים על ביצועי הטעינה במיקומים האלה: {PH1}. כדי שהמשאבים האלה לא ישפיעו על הציונים, כדאי לבדוק את הדף הזה בחלון פרטי."
+    "message": "יכול להיות שיש נתונים שמורים שפוגמים בביצועי הטעינה במיקומים האלה: {PH1}. כדי שהמשאבים האלה לא יפגעו בציונים, כדאי לבדוק את הדף הזה בחלון פרטי."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
-    "message": "ייתכן שיש נתונים שמורים שמשפיעים על ביצועי הטעינה במיקום הזה: {PH1}. כדי שהמשאבים האלה לא ישפיעו על הציונים, כדאי לבדוק את הדף הזה בחלון פרטי."
+    "message": "יכול להיות שיש נתונים שמורים שפוגמים בביצועי הטעינה במיקום הזה: {PH1}. כדי שהמשאבים האלה לא יפגעו בציונים, כדאי לבדוק את הדף הזה בחלון פרטי."
   },
   "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
     "message": "שיטת ויסות הנתונים (throttle)"
@@ -9630,7 +9330,7 @@
     "message": "שיטת ויסות הנתונים (throttle)"
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
-    "message": "הכלי לבדיקת זיכרון לא נפתח: לא נמצא מאגר נתונים זמני."
+    "message": "הייתה בעיה והכלי לבדיקת זיכרון לא נפתח: לא נמצא מאגר נתונים זמני."
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | openInMemoryInspectorPanel": {
     "message": "פתיחה בחלונית של הכלי לבדיקת זיכרון"
@@ -9672,7 +9372,7 @@
     "message": "רענון"
   },
   "panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts | changeEndianness": {
-    "message": "שינוי סדר הבתים (endianness)"
+    "message": "שינוי סדר הבייטים (endianness)"
   },
   "panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
     "message": "החלפת מצב של הגדרות סוג ערך"
@@ -9756,7 +9456,7 @@
     "message": "מאפיינים"
   },
   "panels/media/PlayerDetailView.ts | timeline": {
-    "message": "ציר זמן"
+    "message": "ציר הזמן"
   },
   "panels/media/PlayerListView.ts | hideAllOthers": {
     "message": "הסתרת כל האחרים"
@@ -9812,14 +9512,8 @@
   "panels/media/PlayerMessagesView.ts | warning": {
     "message": "אזהרה"
   },
-  "panels/media/PlayerPropertiesView.ts | audio": {
-    "message": "אודיו"
-  },
   "panels/media/PlayerPropertiesView.ts | bitrate": {
     "message": "קצב העברת נתונים"
-  },
-  "panels/media/PlayerPropertiesView.ts | decoder": {
-    "message": "מפענח קוד"
   },
   "panels/media/PlayerPropertiesView.ts | decoderName": {
     "message": "שם של מפענח הקוד"
@@ -9863,9 +9557,6 @@
   "panels/media/PlayerPropertiesView.ts | playbackFrameUrl": {
     "message": "כתובת URL של מסגרת הפעלה"
   },
-  "panels/media/PlayerPropertiesView.ts | properties": {
-    "message": "מאפיינים"
-  },
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "תמיכה בכותרת Range"
   },
@@ -9890,9 +9581,6 @@
   "panels/media/PlayerPropertiesView.ts | track": {
     "message": "טראק"
   },
-  "panels/media/PlayerPropertiesView.ts | video": {
-    "message": "סרטונים"
-  },
   "panels/media/PlayerPropertiesView.ts | videoFreezingScore": {
     "message": "ציון למצב קפיאה של סרטון"
   },
@@ -9908,29 +9596,38 @@
   "panels/media/media-meta.ts | video": {
     "message": "סרטונים"
   },
-  "panels/mobile_throttling/CalibrationController.ts | runningCalibration": {
-    "message": "מתבצע כיול של המעבד (CPU). אין לצאת מהכרטיסייה הזו או לסגור את כלי הפיתוח."
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | calibrate": {
+    "message": "צריך לכייל…"
   },
-  "panels/mobile_throttling/MobileThrottlingSelector.ts | advanced": {
-    "message": "הגדרות מתקדמות"
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | cpuThrottling": {
+    "message": "ויסות נתונים (throttle) של מעבד (CPU): {PH1}"
   },
-  "panels/mobile_throttling/MobileThrottlingSelector.ts | disabled": {
-    "message": "מושבת"
-  },
-  "panels/mobile_throttling/MobileThrottlingSelector.ts | presets": {
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | defaultPresets": {
     "message": "הגדרות קבועות מראש"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "קבוצת הכותרות של Content-Encoding שאושרו שונתה על ידי כלי הפיתוח. ניתן לעיין בחלונית תנאי הרשת"
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | disabledThrottlingPreset": {
+    "message": "מושבת"
+  },
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | labelCalibratedPresets": {
+    "message": "הגדרות מכוילות קבועות מראש"
+  },
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | recalibrate": {
+    "message": "כיול מחדש…"
+  },
+  "panels/mobile_throttling/CPUThrottlingSelector.ts | recommendedThrottling": {
+    "message": "‫{PH1} – מומלץ"
+  },
+  "panels/mobile_throttling/CalibrationController.ts | runningCalibration": {
+    "message": "מתבצע כיול של המעבד (CPU). אין לצאת מהכרטיסייה הזו או לסגור את כלי הפיתוח."
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "הגבלת רוחב פס מופעלת"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
-    "message": "יכול להיות שהבקשות חסומות. ניתן לעיין בחלונית החסימה של בקשות הרשת"
+    "message": "יכול להיות שחלק מהבקשות חסומות. מידע נוסף מופיע בחלונית חסימת הבקשות מהרשת"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
-    "message": "יכול להיות שבקשות יבוטלו באופן מקומי. ניתן לעיין בחלונית 'מקורות'"
+    "message": "יכול להיות שהגדרות וקבצים מקומיים יחליפו את הבקשות. מידע נוסף מופיע בחלונית \"מקורות\""
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
     "message": "הוספה…"
@@ -9954,7 +9651,7 @@
     "message": "‫{PH1} – מומלץ"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
-    "message": "{PH1}: {PH2}"
+    "message": "{PH1}: ‏{PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "צריך לכייל…"
@@ -9975,7 +9672,7 @@
     "message": "הפעלות בו-זמניות בחומרה"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingLabel": {
-    "message": "שינוי הערך שדווח על ידי navigator.hardwareConcurrency"
+    "message": "עקיפת הערך שדווח על ידי navigator.hardwareConcurrency"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noSaveDataOverride": {
     "message": "‫Save-Data: ברירת מחדל"
@@ -9999,10 +9696,7 @@
     "message": "‫Save-Data: מופעל"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
-    "message": "שינוי הערך שדווח על ידי navigator.connection.saveData בדף"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | throttling": {
-    "message": "ויסות נתונים (throttle)"
+    "message": "עקיפת הערך שדווח על ידי navigator.connection.saveData בדף"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | checkNetworkAndPerformancePanels": {
     "message": "בדיקת חלוניות רשת וביצועים"
@@ -10017,7 +9711,7 @@
     "message": "‫3G מהיר והאטה פי {PH1} במהירות התגובה של המעבד (CPU)"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | lowTierMobile": {
-    "message": "נייד ברמה נמוכה"
+    "message": "נייד ברמה בסיסית"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | midtierMobile": {
     "message": "נייד ברמה בינונית"
@@ -10050,10 +9744,10 @@
     "message": "ניצול המעבד (CPU) גבוה מדי"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationWarningLowBattery": {
-    "message": "הסוללה של המכשיר חלשה (פחות מ-20%). יכול להיות שהתוצאות מושפעות מוויסות הנתונים של המעבד (CPU)"
+    "message": "הסוללה של המכשיר חלשה (פחות מ-20%). יכול להיות שוויסות הנתונים של המעבד ישפיע על התוצאות"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationWarningRunningOnBattery": {
-    "message": "המכשיר משתמש בסוללה. כדי לקבל את התוצאות הטובות ביותר, צריך לחבר את המטען."
+    "message": "המכשיר משתמש בסוללה. כדי לקבל את התוצאות הטובות ביותר, צריך לחבר את המטען"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | cancel": {
     "message": "ביטול"
@@ -10074,7 +9768,7 @@
     "message": "האטה של {PH1}×"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | defaultProfiles": {
-    "message": "פרופילים של ברירת המחדל"
+    "message": "הפרופילים שמוגדרים כברירת מחדל"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | dms": {
     "message": "{PH1} ms"
@@ -10098,7 +9792,7 @@
     "message": "צריך לכייל"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | off": {
-    "message": "מצב מושבת"
+    "message": "כבוי"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | on": {
     "message": "מצב פעיל"
@@ -10128,7 +9822,7 @@
     "message": "שם פרופיל"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileNameCharactersLengthMust": {
-    "message": "מספר התווים בשם הפרופיל חייב להיות בין 1 לבין {PH1} כולל"
+    "message": "שם הפרופיל צריך לכלול 1 עד {PH1} תווים"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | recalibrate": {
     "message": "כיול מחדש"
@@ -10173,13 +9867,13 @@
     "message": "הועתק בפורמט Hex"
   },
   "panels/network/BinaryResourceView.ts | copiedAsUtf": {
-    "message": "הועתק כ-UTF-8"
+    "message": "הועתק בפורמט UTF-8"
   },
   "panels/network/BinaryResourceView.ts | copyAsBase": {
-    "message": "העתקה בפורמט Base64"
+    "message": "העתקה כ-Base64"
   },
   "panels/network/BinaryResourceView.ts | copyAsHex": {
-    "message": "העתקה בפורמט Hex"
+    "message": "העתקה כ-Hex"
   },
   "panels/network/BinaryResourceView.ts | copyAsUtf": {
     "message": "העתקה כ-UTF-8"
@@ -10188,19 +9882,19 @@
     "message": "העתקה ללוח"
   },
   "panels/network/BinaryResourceView.ts | hexViewer": {
-    "message": "הכלי להצגת Hex"
+    "message": "מציג Hex"
   },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "ניקוי הכול"
   },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
-    "message": "העתקת הודעה"
+    "message": "העתקת ההודעה"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "נתונים"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
-    "message": "המקור המשויך לאירוע"
+    "message": "מקור אירועים"
   },
   "panels/network/EventSourceMessagesView.ts | filterByRegex": {
     "message": "סינון לפי ביטוי רגולרי (לדוגמה: https?‎)"
@@ -10209,13 +9903,76 @@
     "message": "מזהה"
   },
   "panels/network/EventSourceMessagesView.ts | time": {
-    "message": "שעה"
+    "message": "משך זמן"
   },
   "panels/network/EventSourceMessagesView.ts | type": {
     "message": "סוג"
   },
-  "panels/network/NetworkConfigView.ts | acceptedEncoding": {
-    "message": "Content-Encoding אושרו"
+  "panels/network/FetchHeaderCommenting.ts | browserAndProxiesManageMetadata": {
+    "message": "הדפדפן ושרתי ה-proxy מנהלים את המטא-נתונים של ההעברה"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserBlocksForbiddenMethods": {
+    "message": "הדפדפן חוסם ביטול של שיטות אסורות"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserCalculatesFromBody": {
+    "message": "הדפדפן מחשב זאת מגוף הבקשה"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserControlsRequestDate": {
+    "message": "הדפדפן מנהל את תאריך הבקשה"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserDerivesFromUrl": {
+    "message": "הדפדפן יגזור זאת מכתובת ה-URL"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesConnections": {
+    "message": "הדפדפן מנהל את החיבורים"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesCookieJar": {
+    "message": "הדפדפן מנהל זאת מתוך מאגר קובצי ה-Cookie"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesProtocolUpgrades": {
+    "message": "הדפדפן מנהל את שדרוגי הפרוטוקול"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesRequestExpectations": {
+    "message": "הדפדפן מנהל את דרישות הבקשה"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesRequestTrailers": {
+    "message": "הדפדפן מנהל את כותרות הטריילר של הבקשות"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesTransferCodings": {
+    "message": "הדפדפן מנהל את קידודי ההעברה"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserManagesTransferEncoding": {
+    "message": "הדפדפן מנהל את קידוד ההעברה"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserNegotiatesCompression": {
+    "message": "הדפדפן מתאם את הדחיסה"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserSetsDuringCorsPreflight": {
+    "message": "הדפדפן מגדיר במהלך קדם-הפעלה של CORS"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserSetsPrivacyPreferences": {
+    "message": "הדפדפן מגדיר זאת לפי העדפות הפרטיות של המשתמש"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserSetsReferrer": {
+    "message": "הדפדפן יגדיר זאת על סמך האפשרות והמדיניות של הגורם המפנה"
+  },
+  "panels/network/FetchHeaderCommenting.ts | browserSetsRequestContext": {
+    "message": "הדפדפן יגדיר את הכותרת על סמך הקשר הבקשה"
+  },
+  "panels/network/FetchHeaderCommenting.ts | deprecatedBrowserDoesNotSend": {
+    "message": "הוצא משימוש; הדפדפן לא שולח את הכותרת הזו"
+  },
+  "panels/network/FetchHeaderCommenting.ts | deprecatedCookieHeader": {
+    "message": "כותרת קובץ Cookie שהוצאה משימוש; הדפדפן חוסם אותה"
+  },
+  "panels/network/FetchHeaderCommenting.ts | proxyHeadersSetByBrowser": {
+    "message": "הדפדפן מגדיר את כל כותרות proxy-‎*‎"
+  },
+  "panels/network/FetchHeaderCommenting.ts | responseHeaderBlockedOnRequests": {
+    "message": "כותרת תגובה; הדפדפן חוסם אותה בבקשות"
+  },
+  "panels/network/FetchHeaderCommenting.ts | secHeadersSetByBrowser": {
+    "message": "הדפדפן מגדיר את כל כותרות sec-‎*‎"
   },
   "panels/network/NetworkConfigView.ts | caching": {
     "message": "מתבצעת שמירה במטמון"
@@ -10248,10 +10005,10 @@
     "message": "סוכן משתמש"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "במסגרת Chrome, נעשה שימוש בחיבור HTTP/3 בעקבות כותרת 'Alt-Svc' כי הוא היה המהיר ביותר במדידת הזמן ליצירת חיבור באמצעות גרסה שונה של HTTP."
+    "message": "ב-Chrome, נעשה שימוש ב-HTTP/3 (שפורסם בכותרת \"Alt-Svc\") כי הוא היה המהיר ביותר ביצירת חיבור בהשוואה לגרסאות HTTP אחרות"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "חיבור HTTP/3 שימש את Chrome בעקבות כותרת 'Alt-Svc', ללא מרוץ למדידת זמן ליצירת חיבור באמצעות גרסה שונה של HTTP."
+    "message": "‫Chrome השתמש ב-HTTP/3 (שפורסם בכותרת \"Alt-Svc\") מבלי שהתחרה על מדידת זמן מול גרסאות HTTP אחרות"
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "הבקשה הזו נחסמה בגלל כותרות תגובה שהוגדרו באופן לא תקין. יש ללחוץ כדי לצפות בכותרות"
@@ -10263,7 +10020,7 @@
     "message": "חסימה"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Chrome לא ניסה ליצור חיבור HTTP/3 כי הוא סומן כלא תקין."
+    "message": "‫Chrome לא ניסה ליצור חיבור HTTP/3 כי HTTP/3 סומן כלא תקין עבור המארח הזה"
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(בוטל)"
@@ -10305,10 +10062,10 @@
     "message": "(מטמון אחסון)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "במסגרת Chrome, נעשה שימוש בחיבור HTTP/3 עקב DNS record עם תמיכה ב-HTTP/3, שהיה הפרוטוקול המוביל במדידת זמנים ליצירת חיבור באמצעות גרסה שונה של HTTP."
+    "message": "ב-Chrome, נעשה שימוש ב-HTTP/3 (שפורסם ב-DNS record) כי הוא היה המהיר ביותר ביצירת חיבור בהשוואה לגרסאות HTTP אחרות"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "במסגרת Chrome, נעשה שימוש בחיבור HTTP/3 עקב DNS record עם תמיכה ב-HTTP/3. לא נערכה בדיקה למדידת המהירות של יצירת החיבור באמצעות גרסה שונה של HTTP."
+    "message": "‫Chrome השתמש ב-HTTP/3 (שפורסם על ידי DNS record) מבלי שהתחרה על מדידת זמן מול גרסאות HTTP אחרות"
   },
   "panels/network/NetworkDataGridNode.ts | earlyHints": {
     "message": "Early-hints"
@@ -10332,10 +10089,10 @@
     "message": "רמה 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "הפרוטוקול הזה שימש את Chrome כי הוא היה המהיר ביותר ביצירת חיבור HTTP/3."
+    "message": "Chrome, השתמש בפרוטוקול הזה כי הוא היה המהיר ביותר ביצירת חיבור בהשוואה ל-HTTP/3"
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "במסגרת Chrome, לא נעשה שימוש בגרסה חלופית של HTTP כי לא היה מידע זמין על פרוטוקול חלופי כשהבקשה נשלחה, אבל בתגובה הייתה כותרת 'Alt-Svc'."
+    "message": "Chrome, לא השתמש בגרסה חלופית של HTTP כי לא נשמרה גרסה כזו במטמון בזמן שליחת הבקשה, אבל כותרת \"Alt-Svc\" התקבלה בתגובה"
   },
   "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouter": {
     "message": "תואם למשאב ServiceWorker router#{PH1}, גודל המשאב: {PH2}"
@@ -10449,7 +10206,7 @@
     "message": "התשובה הזו מכילה כותרות שבוטלו על ידי כלי הפיתוח"
   },
   "panels/network/NetworkItemView.ts | cookies": {
-    "message": "קובצי cookie"
+    "message": "קובצי Cookie"
   },
   "panels/network/NetworkItemView.ts | deviceBoundSessions": {
     "message": "סשנים שמוגבלים למכשירים"
@@ -10643,6 +10400,12 @@
   "panels/network/NetworkLogView.ts | dropHarFilesHere": {
     "message": "כאן יש לשחרר קובצי HAR"
   },
+  "panels/network/NetworkLogView.ts | editAndEnterToResend": {
+    "message": "‫// עורכים לפי הצורך, ואז לוחצים על ENTER לשליחה מחדש"
+  },
+  "panels/network/NetworkLogView.ts | editAndResendAsFetch": {
+    "message": "עריכה ושליחה מחדש בתור fetch"
+  },
   "panels/network/NetworkLogView.ts | explainFailures": {
     "message": "הסבר על הכשלים"
   },
@@ -10694,6 +10457,9 @@
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "הצגת רק בקשות עם מקור השונה ממקור הדף"
   },
+  "panels/network/NetworkLogView.ts | originallyCalledFromContext": {
+    "message": "‫// הקריאה בוצעה במקור מההקשר {PH1}."
+  },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "שינוי כותרות"
   },
@@ -10713,7 +10479,10 @@
     "message": "סוגי הבקשות להכללה"
   },
   "panels/network/NetworkLogView.ts | resend": {
-    "message": "Resend"
+    "message": "שליחה מחדש"
+  },
+  "panels/network/NetworkLogView.ts | resendableCopyOfRequest": {
+    "message": "עותק של בקשת {PH1} אל {PH2} שניתן לשלוח מחדש"
   },
   "panels/network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
     "message": "משאבים של {PH1} בייט נטענו על ידי הדף"
@@ -10744,6 +10513,9 @@
   },
   "panels/network/NetworkLogView.ts | sTransferred": {
     "message": "{PH1} הועבר"
+  },
+  "panels/network/NetworkLogView.ts | selectExecutionContextInConsole": {
+    "message": "‫// כדי לשלוח מחדש מאותו הקשר הרצה, צריך לבחור אותו בסרגל הכלים של המסוף."
   },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "הצגה בלבד/הסתרה של בקשות"
@@ -10782,7 +10554,7 @@
     "message": "תוכן"
   },
   "panels/network/NetworkLogViewColumns.ts | cookies": {
-    "message": "קובצי cookie"
+    "message": "קובצי Cookie"
   },
   "panels/network/NetworkLogViewColumns.ts | domain": {
     "message": "דומיין"
@@ -10803,13 +10575,13 @@
     "message": "מרחב הכתובות של המאתחל"
   },
   "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
-    "message": "קשורה למודעה"
+    "message": "קשור למודעות"
   },
   "panels/network/NetworkLogViewColumns.ts | isPreloaded": {
     "message": "נטענה מראש"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
-    "message": "זמן אחזור"
+    "message": "זמן טעינה"
   },
   "panels/network/NetworkLogViewColumns.ts | manageHeaderColumns": {
     "message": "ניהול עמודות הכותרות…"
@@ -10839,10 +10611,10 @@
     "message": "מרחב כתובות מרוחק"
   },
   "panels/network/NetworkLogViewColumns.ts | renderBlocking": {
-    "message": "חסימת עיבוד"
+    "message": "חסימת רינדור"
   },
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
-    "message": "כותרות הבקשה"
+    "message": "Request headers"
   },
   "panels/network/NetworkLogViewColumns.ts | requestNumber": {
     "message": "בקשה #"
@@ -10857,7 +10629,7 @@
     "message": "סכמה"
   },
   "panels/network/NetworkLogViewColumns.ts | setCookies": {
-    "message": "הגדרת קובצי cookie"
+    "message": "הגדרת קובצי Cookie"
   },
   "panels/network/NetworkLogViewColumns.ts | size": {
     "message": "גודל"
@@ -10872,7 +10644,7 @@
     "message": "טקסט"
   },
   "panels/network/NetworkLogViewColumns.ts | time": {
-    "message": "השעה"
+    "message": "משך זמן"
   },
   "panels/network/NetworkLogViewColumns.ts | totalDuration": {
     "message": "משך זמן כולל"
@@ -10953,7 +10725,7 @@
     "message": "פתיחה בחלונית \"רשת\" (הבקשה חסרה)"
   },
   "panels/network/NetworkPanel.ts | preserveLog": {
-    "message": "שמירת יומן הרישום"
+    "message": "מניעת איפוס של היומן"
   },
   "panels/network/NetworkPanel.ts | recordingFrames": {
     "message": "הקלטת המסגרות מתבצעת…"
@@ -11010,7 +10782,7 @@
     "message": "אין ויסות או חסימה"
   },
   "panels/network/RequestConditionsDrawer.ts | noThrottlingOrBlockingPattern": {
-    "message": "כדי לווסת את הנתונים (throttle) של בקשת רשת או לחסום אותה, אפשר להוסיף כאן כלל באופן ידני או דרך תפריט ההקשר של החלונית \"רשת\". {PH1}"
+    "message": "כדי לווסת נתונים (throttle) בקשה לאחזור מהרשת או לחסום אותה, אפשר להוסיף כאן כלל באופן ידני או דרך תפריט ההקשר בחלונית \"רשת\". {PH1}"
   },
   "panels/network/RequestConditionsDrawer.ts | patternAlreadyExists": {
     "message": "הדפוס כבר קיים."
@@ -11052,19 +10824,19 @@
     "message": "מידע נוסף"
   },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
-    "message": "קובצי cookie שגויים של תגובה"
+    "message": "קובצי Cookie של התגובה בפורמט שגוי"
   },
   "panels/network/RequestCookiesView.ts | noRequestCookiesWereSent": {
     "message": "לא נשלחו קובצי cookie של בקשה."
   },
   "panels/network/RequestCookiesView.ts | requestCookies": {
-    "message": "קובצי cookie של בקשות"
+    "message": "קובצי Cookie של הבקשה"
   },
   "panels/network/RequestCookiesView.ts | responseCookies": {
-    "message": "קובצי cookie של תגובה"
+    "message": "קובצי Cookie של התגובה"
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
-    "message": "הצגת קובצי cookie של בקשה שסוננו"
+    "message": "הצגת קובצי Cookie של הבקשה שסוננו"
   },
   "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
     "message": "לאתר הזה יש קובצי cookie במחיצה אחרת, שלא נשלחו עם הבקשה הזו. {PH1}"
@@ -11124,16 +10896,16 @@
     "message": "גולמי"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
-    "message": "מדיניות הגורם המפנה"
+    "message": "מדיניות מקור ההפניה (referrer)"
   },
   "panels/network/RequestHeadersView.ts | remoteAddress": {
     "message": "כתובת מרוחקת"
   },
   "panels/network/RequestHeadersView.ts | requestHeaders": {
-    "message": "כותרות הבקשה"
+    "message": "Request headers"
   },
   "panels/network/RequestHeadersView.ts | requestMethod": {
-    "message": "שיטת בקשה"
+    "message": "שיטת הבקשה"
   },
   "panels/network/RequestHeadersView.ts | requestUrl": {
     "message": "בקשה של כתובת URL"
@@ -11148,7 +10920,7 @@
     "message": "קוד סטטוס"
   },
   "panels/network/RequestInitiatorView.ts | console": {
-    "message": "מסוף"
+    "message": "המסוף"
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
     "message": "אין נתונים על מי שיזם את הבקשה"
@@ -11172,10 +10944,10 @@
     "message": "נתוני טופס"
   },
   "panels/network/RequestPayloadView.ts | queryStringParameters": {
-    "message": "פרמטרים למחרוזות שאילתה"
+    "message": "פרמטרים של מחרוזת השאילתה"
   },
   "panels/network/RequestPayloadView.ts | requestPayload": {
-    "message": "יש לבקש מטען ייעודי (payload)"
+    "message": "המטען הייעודי (payload) של הבקשה"
   },
   "panels/network/RequestPayloadView.ts | unableToDecodeValue": {
     "message": "(לא ניתן לפענח את הערך)"
@@ -11214,10 +10986,10 @@
     "message": "שם המטמון באחסון המטמון: לא ידוע"
   },
   "panels/network/RequestTimingView.ts | cautionRequestIsNotFinishedYet": {
-    "message": "זהירות: יצירת הבקשה עדיין לא הסתיימה!"
+    "message": "זהירות: הבקשה עדיין לא הסתיימה"
   },
   "panels/network/RequestTimingView.ts | connectionStart": {
-    "message": "התחלת ההתחברות"
+    "message": "תחילת החיבור"
   },
   "panels/network/RequestTimingView.ts | contentDownload": {
     "message": "הורדת תוכן"
@@ -11280,7 +11052,7 @@
     "message": "בקשה אל ServiceWorker"
   },
   "panels/network/RequestTimingView.ts | resourceScheduling": {
-    "message": "תזמון משאב"
+    "message": "תזמון משאבים"
   },
   "panels/network/RequestTimingView.ts | respondwith": {
     "message": "respondWith"
@@ -11304,7 +11076,7 @@
     "message": "מקור תואם: {PH1}"
   },
   "panels/network/RequestTimingView.ts | serverPush": {
-    "message": "דחיפה של שרת"
+    "message": "דחיפת שרת"
   },
   "panels/network/RequestTimingView.ts | serverTiming": {
     "message": "תזמון שרת"
@@ -11391,7 +11163,7 @@
     "message": "נתונים"
   },
   "panels/network/ResourceDirectSocketChunkView.ts | directSocketChunk": {
-    "message": "Direct Socket Chunk"
+    "message": "Direct socket chunk"
   },
   "panels/network/ResourceDirectSocketChunkView.ts | filterUsingRegex": {
     "message": "סינון באמצעות ביטוי רגולרי (regex) (לדוגמה: (direct)?socket)"
@@ -11409,10 +11181,10 @@
     "message": "הודעה בינארית"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
-    "message": "הודעה על סגירת חיבור"
+    "message": "הודעת סגירת חיבור"
   },
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
-    "message": "מסגרת המשכיות"
+    "message": "מסגרת המשך"
   },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "סינון באמצעות ביטוי רגולרי (לדוגמה: (שקע)?אינטרנט)"
@@ -11436,7 +11208,7 @@
     "message": "הודעת טקסט"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
-    "message": "מסגרת WebSocket"
+    "message": "‫WebSocket frame"
   },
   "panels/network/ShowMoreDetailsWidget.ts | showMore": {
     "message": "הצגת פרטים נוספים"
@@ -11535,7 +11307,7 @@
     "message": "joinedMulticastGroups"
   },
   "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
-    "message": "פתיחת מידע"
+    "message": "מידע על החיבור הפתוח"
   },
   "panels/network/components/DirectSocketConnectionView.ts | options": {
     "message": "אפשרויות"
@@ -11562,7 +11334,7 @@
     "message": "שינוי הכותרת"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "שמות של כותרות צריכים להכיל רק אותיות, ספרות, מקפים או קווים תחתונים"
+    "message": "שמות כותרות צריכים להכיל רק אותיות, ספרות, מקפים או קווים תחתונים"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "מידע נוסף"
@@ -11634,10 +11406,10 @@
     "message": "הפעולה בוצעה באופן מקומי, לא נשלחה בקשה."
   },
   "panels/network/components/RequestTrustTokensView.ts | theOperationsResultWasServedFrom": {
-    "message": "התוצאה של הפעולות הגיעה מהמטמון."
+    "message": "תוצאת הפעולה התקבלה מהמטמון."
   },
   "panels/network/components/RequestTrustTokensView.ts | theServersResponseWasMalformedOr": {
-    "message": "תגובת השרתים היתה שגויה או לא תקינה."
+    "message": "תגובת השרת פגומה או שאינה תקינה מסיבה אחרת."
   },
   "panels/network/components/RequestTrustTokensView.ts | topLevelOrigin": {
     "message": "מקור ברמה העליונה"
@@ -11769,7 +11541,7 @@
     "message": "מסמכים"
   },
   "panels/performance_monitor/PerformanceMonitor.ts | domNodes": {
-    "message": "צמתי DOM"
+    "message": "צומתי DOM"
   },
   "panels/performance_monitor/PerformanceMonitor.ts | graphsDisplayingARealtimeViewOf": {
     "message": "גרפים שבהם מופיעים מדדי ביצועים בזמן אמת"
@@ -11823,7 +11595,7 @@
     "message": "רכיבים מנותקים {PH1}"
   },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsDescription": {
-    "message": "ברכיבים מנותקים מוצגים אובייקטים שנשמרים על ידי הפניה ב-JS."
+    "message": "תצוגת הרכיבים המנותקים מראה אובייקטים שנשארו בזיכרון בגלל הפניה ב-JS."
   },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsTitle": {
     "message": "רכיבים מנותקים"
@@ -11856,7 +11628,7 @@
     "message": "כלי ליצירת תמונת מצב של ערימה (heap profiler) מקליט עכשיו"
   },
   "panels/profiler/HeapProfileView.ts | heavyBottomUp": {
-    "message": "כבד (מלמטה למעלה)"
+    "message": "פונקציות כבדות (מלמטה למעלה)"
   },
   "panels/profiler/HeapProfileView.ts | name": {
     "message": "שם"
@@ -11880,7 +11652,7 @@
     "message": "אומדן הקצאות הזיכרון על ידי דגימה של פעולות ארוכות עם תקורה מינימלית וקבלת פירוט לפי סטאק ביצוע של JavaScript"
   },
   "panels/profiler/HeapProfileView.ts | recording": {
-    "message": "ההקלטה מתבצעת…"
+    "message": "התוכן בהקלטה…"
   },
   "panels/profiler/HeapProfileView.ts | restoreAllFunctions": {
     "message": "שחזור כל הפונקציות"
@@ -11928,7 +11700,7 @@
     "message": "כתובת URL"
   },
   "panels/profiler/HeapProfilerPanel.ts | revealInSummaryView": {
-    "message": "הצגה בתצוגת הסיכום"
+    "message": "צפייה באובייקט בתצוגת הסיכום"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | Deleted": {
     "message": "בוצעה מחיקה של #"
@@ -11970,22 +11742,22 @@
     "message": "הבדל בתמונת מצב של ערימה (heap snapshot)"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | heapSnapshotRetainment": {
-    "message": "קיזוז תמונת מצב של ערימה (heap snapshot)"
+    "message": "שימור זיכרון בתמונת מצב של ערימה (heap snapshot)"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | liveCount": {
-    "message": "ספירה בזמן אמת"
+    "message": "מספר הפריטים הפעילים"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | liveSize": {
-    "message": "גודל מקורי"
+    "message": "גודל פריטים פעילים"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | object": {
     "message": "אובייקט"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | retainedSize": {
-    "message": "הגודל נשמר"
+    "message": "הנפח שמתפנה (retained size)"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | shallowSize": {
-    "message": "גודל שטחי"
+    "message": "נפח בסיסי (shallow size)"
   },
   "panels/profiler/HeapSnapshotDataGrids.ts | size": {
     "message": "גודל"
@@ -12045,13 +11817,13 @@
     "message": "אובייקט פנימי שמאחסן את המאפיינים שהוזכרו באובייקט JavaScript."
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | previewIsNotAvailable": {
-    "message": "התצוגה המקדימה אינה זמינה"
+    "message": "אין תצוגה מקדימה"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealInSummaryView": {
-    "message": "הצגה בתצוגת הסיכום"
+    "message": "צפייה באובייקט בתצוגת הסיכום"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "חשיפת האובייקט '{PH1}' עם המזהה @{PH2} בתצוגת הסיכום"
+    "message": "לצפייה באובייקט \"{PH1}\" (מזהה: @{PH2}) בתצוגת הסיכום"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
     "message": "מחרוזת שמייצגת חלק מהתווים ממחרוזת אחרת."
@@ -12168,7 +11940,7 @@
     "message": "אובייקטים אחרים שהם לא JS (כמו HTML ו-CSS)"
   },
   "panels/profiler/HeapSnapshotView.ts | percentagePlaceholder": {
-    "message": "‎{PH1}%‎"
+    "message": "%{PH1}"
   },
   "panels/profiler/HeapSnapshotView.ts | perspective": {
     "message": "פרספקטיבה"
@@ -12177,7 +11949,7 @@
     "message": "דוחות קריסות של הקצאות (יותר תקורת)"
   },
   "panels/profiler/HeapSnapshotView.ts | recording": {
-    "message": "ההקלטה מתבצעת…"
+    "message": "פרופיל הזיכרון בהקלטה…"
   },
   "panels/profiler/HeapSnapshotView.ts | restoreIgnoredRetainers": {
     "message": "שחזור של ריטיינרים שהתעלמת מהם"
@@ -12195,7 +11967,7 @@
     "message": "נוצרת תמונת מצב…"
   },
   "panels/profiler/HeapSnapshotView.ts | stackWasNotRecordedForThisObject": {
-    "message": "הסטאק של האובייקט הזה לא נשמר מפני שהוא הוקצה לפני שההקלטה התחילה בפרופיל הזה."
+    "message": "הסטאק של האובייקט הזה לא נשמר מפני שהוא הוקצה לפני שהכלי התחיל ליצור את תמונת המצב של הערימה."
   },
   "panels/profiler/HeapSnapshotView.ts | startRecordingHeapProfile": {
     "message": "התחלת ההקלטה של תמונת המצב של הערימה"
@@ -12270,7 +12042,7 @@
     "message": "מתבצע חישוב מרחקים…"
   },
   "panels/profiler/ModuleUIStrings.ts | calculatingNativeContextAttribution": {
-    "message": "מתבצע חישוב של שיוך בהקשר של תוכן מקורי…"
+    "message": "כבר יוצגו תוצאות השיוך לסביבה הפנימית שבה הופעלו המשימות…"
   },
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "מתבצע חישוב תכונות ניסיוניות של צמתים…"
@@ -12339,7 +12111,7 @@
     "message": "התחלה"
   },
   "panels/profiler/ProfileLauncherView.ts | stop": {
-    "message": "הפסקה"
+    "message": "עצירה"
   },
   "panels/profiler/ProfileLauncherView.ts | takeSnapshot": {
     "message": "צילום תמונת מצב"
@@ -12447,7 +12219,7 @@
     "message": "סינון"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
-    "message": "הסתרת הכלי לעריכת פקודות CDP"
+    "message": "הסתרת עורך הפקודות של CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "שיטה"
@@ -12480,7 +12252,7 @@
     "message": "שליחת פקודת CDP גולמית"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
-    "message": "פורמט: \"Domain.commandName\" לפקודה ללא פרמטרים, או ‏\"{\"command\":\"Domain.commandName\", \"parameters\": {…}}\" כאובייקט JSON לפקודה עם פרמטרים. הערכים \"cmd\" או \"method\" וגם \"args\" או \"params\" או \"arguments\" יכולים לשמש גם כמפתחות חלופיים לאובייקט JSON."
+    "message": "פורמט: \"Domain.commandName\" לפקודה ללא פרמטרים, או ‏\"{\"command\":\"Domain.commandName\", \"parameters\": {…}}\" כאובייקט JSON לפקודה עם פרמטרים. גם הערכים \"cmd\" / \"method\" וגם \"args\" / \"params\" / \"arguments\" יכולים לשמש כמפתחות חלופיים לאובייקט JSON."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "סשן"
@@ -12555,7 +12327,7 @@
     "message": "אישור ייבוא"
   },
   "panels/recorder/RecorderPanel.ts | continueReplay": {
-    "message": "המשך"
+    "message": "להמשך"
   },
   "panels/recorder/RecorderPanel.ts | copyShortcut": {
     "message": "העתקת ההקלטה או השלב שנבחר"
@@ -12564,7 +12336,7 @@
     "message": "יצירת הקלטה"
   },
   "panels/recorder/RecorderPanel.ts | deleteRecording": {
-    "message": "מחיקת הקלטה"
+    "message": "מחיקת ההקלטה"
   },
   "panels/recorder/RecorderPanel.ts | doNotImport": {
     "message": "אסור לייבא לכלי הפיתוח הקלטות של פעולות משתמשים שלא מובנות לך או שלא בדקת בעצמך. פעולה כזאת עלולה לאפשר לתוקפים לגנוב את הזהות שלך או להשתלט על המחשב. כדי לאפשר ייבוא, צריך להקליד \"{PH1}\" בהמשך."
@@ -12627,7 +12399,7 @@
     "message": "החלפת מצב של תצוגת הקוד"
   },
   "panels/recorder/RecorderPanel.ts | typeAllowImporting": {
-    "message": "מקלידים \"{PH1}\""
+    "message": "מקלידים כאן \"{PH1}\""
   },
   "panels/recorder/RecordingListView.ts | createRecording": {
     "message": "יצירת הקלטה חדשה"
@@ -13161,7 +12933,7 @@
     "message": "הצגת הפרטים המלאים"
   },
   "panels/security/SecurityPanel.ts | showLess": {
-    "message": "פחות פרטים"
+    "message": "פחות"
   },
   "panels/security/SecurityPanel.ts | showMoreSTotal": {
     "message": "הצגת פריטים נוספים (סה\"כ {PH1})"
@@ -13185,7 +12957,7 @@
     "message": "שרשרת האישורים של האתר הזה כוללת אישור שנחתם באמצעות SHA-1."
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteDoesNot": {
-    "message": "באישור של האתר הזה אין הרחבת Subject Alternative Name שמכילה שם דומיין או כתובת IP."
+    "message": "באישור של האתר הזה אין תוספת Subject Alternative Name שמכילה שם דומיין או כתובת IP."
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteExpires": {
     "message": "תוקף האישור של האתר הזה יפוג תוך פחות מ-48 שעות ויש לחדש אותו."
@@ -13266,7 +13038,7 @@
     "message": "סטטוס אימות"
   },
   "panels/security/SecurityPanel.ts | viewCertificate": {
-    "message": "לאישור"
+    "message": "אל האישור"
   },
   "panels/security/SecurityPanel.ts | viewDRequestsInNetworkPanel": {
     "message": "{n,plural, =1{לפתיחת בקשה אחת בחלונית \"רשת\"}one{לפתיחת # בקשות בחלונית \"רשת\"}two{לפתיחת # בקשות בחלונית \"רשת\"}other{לפתיחת # בקשות בחלונית \"רשת\"}}"
@@ -13326,13 +13098,13 @@
     "message": "הוספת מיקום"
   },
   "panels/sensors/LocationsSettingsTab.ts | cancel": {
-    "message": "Cancel"
+    "message": "ביטול"
   },
   "panels/sensors/LocationsSettingsTab.ts | close": {
-    "message": "Close"
+    "message": "סגירה"
   },
   "panels/sensors/LocationsSettingsTab.ts | editLocation": {
-    "message": "Edit location"
+    "message": "עריכת המיקום"
   },
   "panels/sensors/LocationsSettingsTab.ts | lat": {
     "message": "Lat"
@@ -13383,7 +13155,7 @@
     "message": "האורך חייב להיות קטן מ-{PH1} או שווה לו."
   },
   "panels/sensors/LocationsSettingsTab.ts | save": {
-    "message": "Save"
+    "message": "שמירה"
   },
   "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
     "message": "מזהה אזור זמן"
@@ -13499,8 +13271,26 @@
   "panels/sensors/sensors-meta.ts | accelerometer": {
     "message": "מד תאוצה"
   },
+  "panels/sensors/sensors-meta.ts | cpuPressure": {
+    "message": "עומס על המעבד (CPU)"
+  },
+  "panels/sensors/sensors-meta.ts | critical": {
+    "message": "מצב קריטי"
+  },
   "panels/sensors/sensors-meta.ts | deviceOrientation": {
     "message": "כיוון המכשיר"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "תלוי מכשיר"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "אמולציה של מצב לא פעיל של גלאי"
+  },
+  "panels/sensors/sensors-meta.ts | fair": {
+    "message": "מצב סביר"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "האילוץ הופעל"
   },
   "panels/sensors/sensors-meta.ts | geolocation": {
     "message": "מיקום גאוגרפי"
@@ -13514,8 +13304,20 @@
   "panels/sensors/sensors-meta.ts | locations": {
     "message": "מיקומים"
   },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "לא נמצאה אמולציה ללא פעילות"
+  },
+  "panels/sensors/sensors-meta.ts | noPressureEmulation": {
+    "message": "ללא שינוי מברירת המחדל"
+  },
+  "panels/sensors/sensors-meta.ts | nominal": {
+    "message": "מצב נומינלי"
+  },
   "panels/sensors/sensors-meta.ts | sensors": {
     "message": "חיישנים"
+  },
+  "panels/sensors/sensors-meta.ts | serious": {
+    "message": "מצב רציני"
   },
   "panels/sensors/sensors-meta.ts | showLocations": {
     "message": "הצגת מיקומים"
@@ -13526,11 +13328,41 @@
   "panels/sensors/sensors-meta.ts | timezones": {
     "message": "אזורי זמן"
   },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "מגע"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "המשתמש פעיל, המסך ננעל"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "המשתמש פעיל, נעילת המסך בוטלה"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "משתמש לא פעיל, המסך ננעל"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "משתמש ללא פעילות, נעילת המסך בוטלה"
+  },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "יצירת כותרות אוטומטית להערות במעקב ביצועים"
   },
   "panels/settings/AISettingsTab.ts | ageRestricted": {
     "message": "רק משתמשים בגיל 18 ומעלה יכולים להשתמש בתכונה הזו."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescription": {
+    "message": "קבלת עזרה מותאמת להקשר של הדף שנבדק"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsider": {
+    "message": "כדי ליצור הסברים, נשלחים ל-Google הנתונים הבאים: ההודעות בצ'אט, הנתונים שאפשר לגשת אליהם באתר הזה דרך חלוניות כלי הפיתוח וממשקי Web API, והפריטים שבחרת – כמו בקשות רשת, קבצים ומעקב ביצועים. בחלק מהמקרים, הנתונים האלה עוברים גם בדיקה אנושית כדי לשפר את התכונה הזו. זוהי תכונת AI ניסיונית והתוצאות שלה לא תמיד מדויקות."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLogging": {
+    "message": "כדי ליצור הסברים, נשלחים ל-Google הנתונים הבאים: ההודעות בצ'אט, הנתונים שאפשר לגשת אליהם באתר הזה דרך חלוניות כלי הפיתוח וממשקי Web API, והפריטים שבחרת – כמו בקשות רשת, קבצים ומעקב ביצועים. Google לא תשפר מודלים של AI באמצעות התוכן ששלחת והתוכן שהתכונה הזו תיצור. זוהי תכונת AI ניסיונית והתוצאות שלה לא תמיד מדויקות."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1": {
+    "message": "כלי פיתוח מבוססי-AI עוזרים לך לנפות באגים בעיצוב, ברשת, בביצועים, בקוד המקור, בנגישות ובבעיות אחסון"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2": {
+    "message": "כדי למצוא נתוני מקור רלוונטיים שהסוכן בדק, אפשר לעבור על שלבי החשיבה הרציונלית שלו"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "כשמקלידים בחלונית המסוף או בחלונית המקורות, מוצגות הצעות לקוד. כדי לבחור אחת מהן, לוחצים על Tab."
@@ -13589,6 +13421,9 @@
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
     "message": "כדי ליצור הצעות להערות, נתוני מעקב הביצועים נשלחים ל-Google. הנתונים האלה לא ישמשו לשיפור מודלים של Google AI. הארגון שלך יכול לשנות את ההגדרות האלה בכל שלב."
   },
+  "panels/settings/AISettingsTab.ts | geoRestricted": {
+    "message": "התכונה הזו לא זמינה באזור שלך."
+  },
   "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
     "message": "אפשר לקבל עזרה בהוספת הערות למעקב הביצועים באמצעות תוויות שנוצרות באופן אוטומטי"
   },
@@ -13609,6 +13444,9 @@
   },
   "panels/settings/AISettingsTab.ts | offline": {
     "message": "התכונה הזו זמינה רק כשיש חיבור פעיל לאינטרנט."
+  },
+  "panels/settings/AISettingsTab.ts | policyRestricted": {
+    "message": "ההגדרה הזו מנוהלת על-ידי האדמין."
   },
   "panels/settings/AISettingsTab.ts | privacyNotice": {
     "message": "מדיניות הפרטיות של Google"
@@ -13645,6 +13483,9 @@
   },
   "panels/settings/AISettingsTab.ts | whenOn": {
     "message": "במצב מופעל"
+  },
+  "panels/settings/AISettingsTab.ts | wrongLocale": {
+    "message": "כדי להשתמש בתכונה הזו, צריך לשנות את השפה לאנגלית דרך ההגדרות של כלי הפיתוח."
   },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "יש להזין נתיב"
@@ -13698,7 +13539,7 @@
     "message": "מידע נוסף"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "הוספת כלל של ביטוי רגולרי לכתובת ה-URL של הסקריפט"
+    "message": "הוספת כלל בביטוי רגולרי לכתובת ה-URL של הסקריפט"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "הכלל כבר קיים"
@@ -13862,8 +13703,59 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "הוספת מכשיר מותאם אישית"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | circleDisplayCutout": {
+    "message": "עיגול"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | circleMustFitCutoutBounds": {
+    "message": "העיגול חייב בגבולות המגרעת."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | customDevices": {
     "message": "מכשירים בהתאמה אישית"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutBorderRadius": {
+    "message": "רדיוס הגלולה"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutCenterX": {
+    "message": "נקודת המרכז על ציר ה-x"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutCenterY": {
+    "message": "מרכז על ציר ה-Y"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutFieldRequired": {
+    "message": "כשמופעלת מגרעת במסך, נדרש {PH1}."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutHeight": {
+    "message": "גובה המגרעת"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutLowerRadius": {
+    "message": "רדיוס תחתון"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutRadius": {
+    "message": "רדיוס"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutUpperRadius": {
+    "message": "רדיוס עליון"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutValueMustBeInRange": {
+    "message": "בשדה {PH1} צריך להיות מספר שלם בין 0 ל-{PH2}."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutValueMustBePositiveInteger": {
+    "message": "‫{PH1} חייב להיות מספר שלם חיובי."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutWidth": {
+    "message": "רוחב המגרעת"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutX": {
+    "message": "ציר x של המגרעת"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutXAndWidthExceedDeviceWidth": {
+    "message": "הסכום של x ורוחב המגרעת לא יכול להיות גדול מרוחב המכשיר."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutY": {
+    "message": "ציר y של המגרעת"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cutoutYAndHeightExceedDeviceHeight": {
+    "message": "הסכום של y וגובה המגרעת לא יכול להיות גדול מגובה המכשיר."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | defaultDevices": {
     "message": "מכשירי ברירת מחדל"
@@ -13886,8 +13778,50 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
     "message": "יחס הפיקסלים של המכשיר"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | displayCutout": {
+    "message": "מגרעת במסך"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | height": {
     "message": "גובה"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | landscapeSafeArea": {
+    "message": "אזור בטוח במצב לרוחב"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | noDisplayCutout": {
+    "message": "ללא מגרעת"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | notchDisplayCutout": {
+    "message": "חריץ"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | pillDisplayCutout": {
+    "message": "גלולה"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | portraitSafeArea": {
+    "message": "אזור בטוח במצב לאורך"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | rectangleDisplayCutout": {
+    "message": "מלבן"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaBottom": {
+    "message": "‫inset עליון"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaHorizontalInsetsExceedWidth": {
+    "message": "‫{PH1}: הסכום של מרווחי ה-inset משמאל ומימין לא יכול להיות גדול מרוחב המכשיר."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaLeft": {
+    "message": "‫inset שמאל"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaRight": {
+    "message": "‫inset ימין"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaTop": {
+    "message": "‫inset עליון"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaValueMustBeInRange": {
+    "message": "‫{PH1}: בשדה {PH2} צריך להיות מספר שלם בין 0 ל-{PH3}."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
+    "message": "‫{PH1}: מרווחי ה-inset העליונים והתחתונים לא יכולים להיות גדולים מגובה המכשיר."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "מחרוזת של סוכן משתמש"
@@ -14106,7 +14040,7 @@
     "message": "ביטוי לבדיקה לפני השהיה, לדוגמה, x > 5"
   },
   "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
-    "message": "מידע נוסף: סוגי נקודות עצירה"
+    "message": "מידע נוסף: סוגי נקודות עצירה (Breakpoint)"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "הוספת הודעה למסוף, ללא הפסקה"
@@ -14154,7 +14088,7 @@
     "message": "נקודת רישום (logpoint): {PH1}"
   },
   "panels/sources/BreakpointsView.ts | pauseOnCaughtExceptions": {
-    "message": "השהיה בחריגות שזוהו"
+    "message": "השהיה בחריגים שזוהו"
   },
   "panels/sources/BreakpointsView.ts | pauseOnUncaughtExceptions": {
     "message": "השהיה בחריגים שלא זוהו"
@@ -14166,7 +14100,7 @@
     "message": "צריך להסיר את כל נקודות העצירה (breakpoint) בקובץ"
   },
   "panels/sources/BreakpointsView.ts | removeBreakpoint": {
-    "message": "הסרה של נקודת עצירה (breakpoint) אחת"
+    "message": "הסרה של נקודת עצירה (breakpoint)"
   },
   "panels/sources/BreakpointsView.ts | removeOtherBreakpoints": {
     "message": "הסרה של נקודות עצירה (breakpoint) אחרות"
@@ -14280,7 +14214,7 @@
     "message": "הופעלה אזהרת WebGL"
   },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
-    "message": "יש ללחוץ כדי להציג חלונית כיסוי"
+    "message": "אפשר ללחוץ כדי להציג את חלונית הכיסוי"
   },
   "panels/sources/CoveragePlugin.ts | coverageNa": {
     "message": "כיסוי: לא זמין"
@@ -14289,7 +14223,7 @@
     "message": "כיסוי: {PH1}"
   },
   "panels/sources/CoveragePlugin.ts | showDetails": {
-    "message": "הצגת הפרטים"
+    "message": "הצגת פרטים"
   },
   "panels/sources/DebuggerPausedMessage.ts | attributeModifications": {
     "message": "שינויים במאפיינים"
@@ -14346,10 +14280,10 @@
     "message": "שינויים בעץ המשנה"
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypePolicyViolation": {
-    "message": "הפרת מדיניות Trusted Type"
+    "message": "הפרת מדיניות אחת (Trusted Type)"
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
-    "message": "Trusted Type הפרת Sink"
+    "message": "הפרה/הפרות Sink ‏(Trusted Type)"
   },
   "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
     "message": "הופעלה שגיאת WebGL ({PH1})"
@@ -14379,7 +14313,7 @@
     "message": "הגדרה"
   },
   "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
-    "message": "לא ניתן היה לטעון את קובץ ניפוי הבאגים '{PH1}'."
+    "message": "קובץ ניפוי הבאגים \"{PH1}\" לא נטען."
   },
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "הטעינה של המידע על תוצאות ניפוי הבאגים של {PH1} נכשלה"
@@ -14397,13 +14331,13 @@
     "message": "{n,plural, =1{הפעלת נקודת העצירה (breakpoint)}one{הפעלת כל נקודות העצירה (breakpoint) בשורה}two{הפעלת כל נקודות העצירה (breakpoint) בשורה}other{הפעלת כל נקודות העצירה (breakpoint) בשורה}}"
   },
   "panels/sources/DebuggerPlugin.ts | errorLoading": {
-    "message": "קרתה שגיאה בטעינת כתובת ה-URL ‏{PH1}: ‏{PH2}"
+    "message": "טעינת הכתובת {PH1} לא הצליחה בגלל שגיאה: {PH2}"
   },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "אין להשהות כאן"
   },
   "panels/sources/DebuggerPlugin.ts | openDeveloperResources": {
-    "message": "פתיחת הבקשה בחלונית המשאבים למפתחים"
+    "message": "הבקשה תיפתח בחלונית המשאבים למפתחים"
   },
   "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
     "message": "כדי להפעיל שוב את ניפוי הבאגים, צריך לוודא שהקובץ לא נמצא ברשימת קטעי הקוד להתעלמות ואז לטעון את הדף מחדש."
@@ -14412,7 +14346,7 @@
     "message": "{n,plural, =1{הסרה של נקודת עצירה (breakpoint) אחת}one{הסרה של כל נקודות העצירה (breakpoint) שבשורה}two{הסרה של כל נקודות העצירה (breakpoint) שבשורה}other{הסרה של כל נקודות העצירה (breakpoint) שבשורה}}"
   },
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
-    "message": "הסרה מרשימת הפריטים להתעלמות"
+    "message": "הסרה מרשימת קטעי הקוד להתעלמות"
   },
   "panels/sources/DebuggerPlugin.ts | showRequest": {
     "message": "הצגת הבקשה"
@@ -14436,7 +14370,7 @@
     "message": "לא נמצאו קבצים"
   },
   "panels/sources/FilteredUISourceCodeListProvider.ts | sIgnoreListed": {
-    "message": "{PH1} (מופיע ברשימת קטעי הקוד להתעלמות)"
+    "message": "‫{PH1} (מופיע ברשימת קטעי הקוד להתעלמות)"
   },
   "panels/sources/FilteredUISourceCodeListProvider.ts | workspace": {
     "message": "סביבת עבודה"
@@ -14469,7 +14403,7 @@
     "message": "לא ניתן לבטל את הפעולה הזו."
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
-    "message": "להסיר את '{PH1}' מסביבת העבודה?"
+    "message": "להסיר את \"{PH1}\" מסביבת העבודה?"
   },
   "panels/sources/NavigatorView.ts | authored": {
     "message": "כפי שנוצר"
@@ -14529,10 +14463,10 @@
     "message": "שינוי שם…"
   },
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
-    "message": "{PH1} (ממפת המקור)"
+    "message": "‫{PH1} (ממפת המקור)"
   },
   "panels/sources/NavigatorView.ts | sIgnoreListed": {
-    "message": "{PH1} (מופיע ברשימת קטעי הקוד להתעלמות)"
+    "message": "‫{PH1} (מופיע ברשימת קטעי הקוד להתעלמות)"
   },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "חיפוש בכל הקבצים"
@@ -14568,7 +14502,7 @@
     "message": "שמירה בשם…"
   },
   "panels/sources/PersistenceActions.ts | saveFailed": {
-    "message": "הניסיון לשמור את הקובץ בדיסק נכשל."
+    "message": "שמירת הקובץ בדיסק לא הצליחה."
   },
   "panels/sources/PersistenceActions.ts | saveImage": {
     "message": "שמירת תמונה"
@@ -14681,12 +14615,6 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "העתקת תוכן המחרוזת"
   },
-  "panels/sources/SourcesPanel.ts | debuggerHidden": {
-    "message": "סרגל הצד של הכלי לניפוי באגים מוסתר"
-  },
-  "panels/sources/SourcesPanel.ts | debuggerShown": {
-    "message": "סרגל הצד של הכלי לניפוי באגים מוצג"
-  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "כאן יש לשחרר את התיקייה של סביבת העבודה"
   },
@@ -14697,34 +14625,22 @@
     "message": "הסבר על הסקריפט הזה"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "קיבוץ לפי 'כפי שנוצר'/'פרוס'"
+    "message": "קיבוץ לפי \"כפי שנוצר\"/\"כפי שנפרס\""
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "קיבוץ לפי תיקייה"
   },
-  "panels/sources/SourcesPanel.ts | hideDebugger": {
-    "message": "הסתרת הכלי לניפוי באגים"
-  },
   "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
     "message": "הסתרת מקורות שכלולים ברשימת הפריטים להתעלמות"
   },
-  "panels/sources/SourcesPanel.ts | hideNavigator": {
-    "message": "הסתרת Navigator"
-  },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "אפשרויות נוספות"
-  },
-  "panels/sources/SourcesPanel.ts | navigatorHidden": {
-    "message": "סרגל הצד לניווט מוסתר"
-  },
-  "panels/sources/SourcesPanel.ts | navigatorShown": {
-    "message": "סרגל הצד לניווט מוצג"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "פתיחה בחלונית \"מקורות\""
   },
   "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
-    "message": "השהייה בחריגים שזוהו"
+    "message": "השהיה בחריגים שזוהו"
   },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "המשך עם כל ההשהיות חסומות למשך 500 אלפיות השנייה"
@@ -14732,14 +14648,8 @@
   "panels/sources/SourcesPanel.ts | revealInSidebar": {
     "message": "הצגה בסרגל הצד של כלי הניווט"
   },
-  "panels/sources/SourcesPanel.ts | showDebugger": {
-    "message": "הצגת הכלי לניפוי באגים"
-  },
   "panels/sources/SourcesPanel.ts | showFunctionDefinition": {
     "message": "הצגה של הגדרת הפונקציה"
-  },
-  "panels/sources/SourcesPanel.ts | showNavigator": {
-    "message": "הצגת Navigator"
   },
   "panels/sources/SourcesPanel.ts | startAChat": {
     "message": "התחלת צ'אט"
@@ -14750,20 +14660,29 @@
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "סגירת הקריאה הנוכחית של JavaScript"
   },
-  "panels/sources/SourcesView.ts | openFile": {
-    "message": "פתיחת קובץ"
+  "panels/sources/SourcesView.ts | debuggerHidden": {
+    "message": "סרגל הצד של הכלי לניפוי באגים מוסתר"
   },
-  "panels/sources/SourcesView.ts | runCommand": {
-    "message": "הרצת פקודה"
+  "panels/sources/SourcesView.ts | debuggerShown": {
+    "message": "סרגל הצד של הכלי לניפוי באגים מוצג"
   },
-  "panels/sources/SourcesView.ts | selectFolder": {
-    "message": "בחירת תיקייה"
+  "panels/sources/SourcesView.ts | hideDebugger": {
+    "message": "הסתרת הכלי לניפוי באגים"
   },
-  "panels/sources/SourcesView.ts | sourceViewActions": {
-    "message": "פעולות להצגת המקור"
+  "panels/sources/SourcesView.ts | hideNavigator": {
+    "message": "הסתרת Navigator"
   },
-  "panels/sources/SourcesView.ts | workspaceDropInAFolderToSyncSources": {
-    "message": "כדי לסנכרן את העריכות בסביבת העבודה, צריך לשחרר תיקייה עם המקורות כאן או:"
+  "panels/sources/SourcesView.ts | navigatorHidden": {
+    "message": "סרגל הצד לניווט מוסתר"
+  },
+  "panels/sources/SourcesView.ts | navigatorShown": {
+    "message": "סרגל הצד לניווט מוצג"
+  },
+  "panels/sources/SourcesView.ts | showDebugger": {
+    "message": "הצגת הכלי לניפוי באגים"
+  },
+  "panels/sources/SourcesView.ts | showNavigator": {
+    "message": "הצגת Navigator"
   },
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "בחרת לסגור את הקובץ הלא שמור: {PH1}. להמשיך?"
@@ -14772,10 +14691,25 @@
     "message": "השינויים לא נשמרו במערכת הקבצים. כדי לשמור אותם, צריך להוסיף את {PH1} לסביבת העבודה."
   },
   "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
-    "message": "השינויים לא נשמרו במערכת הקבצים. כדי לשמור אותם, צריך להגדיר את {PH1}."
+    "message": "השינויים לא נשמרו במערכת הקבצים. כדי לשמור אותם, צריך להגדיר {PH1}."
+  },
+  "panels/sources/TabbedEditorContainer.ts | openFile": {
+    "message": "פתיחת קובץ"
+  },
+  "panels/sources/TabbedEditorContainer.ts | runCommand": {
+    "message": "הרצת פקודה"
+  },
+  "panels/sources/TabbedEditorContainer.ts | selectFolder": {
+    "message": "בחירת תיקייה"
+  },
+  "panels/sources/TabbedEditorContainer.ts | sourceViewActions": {
+    "message": "פעולות להצגת המקור"
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "לא ניתן לטעון את התוכן הזה."
+  },
+  "panels/sources/TabbedEditorContainer.ts | workspaceDropInAFolderToSyncSources": {
+    "message": "כדי לסנכרן את העריכות בסביבת העבודה, צריך לשחרר תיקייה עם המקורות כאן או:"
   },
   "panels/sources/ThreadsSidebarPane.ts | paused": {
     "message": "מושהה"
@@ -14864,6 +14798,9 @@
   "panels/sources/sources-meta.ts | breakpoints": {
     "message": "נקודות עצירה (breakpoint)"
   },
+  "panels/sources/sources-meta.ts | captureAsyncStackTraces": {
+    "message": "תיעוד דוחות של קריסות באופן אסינכרוני"
+  },
   "panels/sources/sources-meta.ts | closeAll": {
     "message": "סגירת הכול"
   },
@@ -14888,6 +14825,9 @@
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "זיהוי של כניסת פיסקה"
   },
+  "panels/sources/sources-meta.ts | disableAsyncStackTraces": {
+    "message": "השבתת דוח הקריסות האסינכרוני"
+  },
   "panels/sources/sources-meta.ts | disableAutoFocusOnDebuggerPaused": {
     "message": "לא להתמקד בחלונית 'מקורות' בהפעלה של נקודת עצירה"
   },
@@ -14909,6 +14849,9 @@
   "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
     "message": "השבתת מפות המקור של JavaScript"
   },
+  "panels/sources/sources-meta.ts | disableJavascript": {
+    "message": "השבתה של JavaScript"
+  },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "ביטול מיקוד העברת כרטיסיות"
   },
@@ -14927,11 +14870,17 @@
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
     "message": "אין לחשוף קבצים בסרגל הצד באופן אוטומטי"
   },
+  "panels/sources/sources-meta.ts | doNotCaptureAsyncStackTraces": {
+    "message": "אין לתעד את דוח הקריסות האסינכרוני"
+  },
   "panels/sources/sources-meta.ts | doNotDetectIndentation": {
     "message": "אין לזהות כניסת פיסקה"
   },
   "panels/sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
     "message": "הסתרת ערכי משתנים בתוך השורה"
+  },
+  "panels/sources/sources-meta.ts | doNotPauseOnExceptions": {
+    "message": "אין להשהות כשמתגלים חריגים"
   },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
     "message": "אין לחפש בסקריפטים אנונימיים ובסקריפטים של תוכן"
@@ -14959,6 +14908,9 @@
   },
   "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
     "message": "הפעלת מפות מקור של JavaScript"
+  },
+  "panels/sources/sources-meta.ts | enableJavascript": {
+    "message": "הפעלת JavaScript"
   },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "הפעלת מיקוד בתנועות בין כרטיסיות"
@@ -15013,6 +14965,9 @@
   },
   "panels/sources/sources-meta.ts | openFile": {
     "message": "פתיחת קובץ"
+  },
+  "panels/sources/sources-meta.ts | pauseOnExceptions": {
+    "message": "השהיה בחריגות"
   },
   "panels/sources/sources-meta.ts | pauseScriptExecution": {
     "message": "השהיית ביצוע הסקריפט"
@@ -15419,6 +15374,9 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "פעילות נוכחית: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | customTitleWithSequence": {
+    "message": "{PH1} ({PH2})"
+  },
   "panels/timeline/TimelineHistoryManager.ts | dSlowdown": {
     "message": "האטה של {PH1}×"
   },
@@ -15480,7 +15438,7 @@
     "message": "המערכת דוחסת נתונים…"
   },
   "panels/timeline/TimelinePanel.ts | cpu": {
-    "message": ":CPU"
+    "message": "מעבד:"
   },
   "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
     "message": "השבתת דגימות של JavaScript, הפחתת תקורה בעת הפעלה במכשירים ניידים"
@@ -15512,6 +15470,12 @@
   "panels/timeline/TimelinePanel.ts | learnMore": {
     "message": "מידע נוסף"
   },
+  "panels/timeline/TimelinePanel.ts | loadCpuProfileConfirmation": {
+    "message": "האם לטעון את פרופיל המעבד המוקלט \"{PH1}\" בחלונית הביצועים?"
+  },
+  "panels/timeline/TimelinePanel.ts | loadCpuProfileHeader": {
+    "message": "רוצה לטעון את פרופיל המעבד?"
+  },
   "panels/timeline/TimelinePanel.ts | loadTrace": {
     "message": "טעינת נתוני המעקב…"
   },
@@ -15520,9 +15484,6 @@
   },
   "panels/timeline/TimelinePanel.ts | network": {
     "message": "רשת:"
-  },
-  "panels/timeline/TimelinePanel.ts | networkConditions": {
-    "message": "תנאי הרשת"
   },
   "panels/timeline/TimelinePanel.ts | preparingTraceForDownload": {
     "message": "בהכנה…"
@@ -16112,27 +16073,6 @@
   "panels/timeline/components/BreadcrumbsUI.ts | removeChildBreadcrumbs": {
     "message": "הסרת נתיבי הניווט של הצאצא"
   },
-  "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "צריך לכייל…"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
-    "message": "‫CPU: {PH1}"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
-    "message": "ויסות נתונים (throttle) של מעבד (CPU): {PH1}"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | labelCalibratedPresets": {
-    "message": "הגדרות מכוילות קבועות מראש"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "כיול מחדש…"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
-    "message": "‫{PH1} – מומלץ"
-  },
-  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
-    "message": "כדאי לשנות את ההגדרה כדי לדמות סביבות של משתמשים אמיתיים"
-  },
   "panels/timeline/components/CWVMetrics.ts | dismissTitle": {
     "message": "סגירה"
   },
@@ -16221,7 +16161,7 @@
     "message": "כולל מפות מקור זמינות, שעשויות לחשוף קוד שנכתב."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
-    "message": "הגדרות מתקדמות"
+    "message": "מתקדמת"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "ביטול"
@@ -16349,6 +16289,9 @@
   "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
     "message": "תקופת האיסוף: {PH1}"
   },
+  "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
+    "message": "מעבד:"
+  },
   "panels/timeline/components/LiveMetricsView.ts | dateRange": {
     "message": "{PH1} – {PH2}"
   },
@@ -16389,7 +16332,7 @@
     "message": "אינטראקציה ב-INP"
   },
   "panels/timeline/components/LiveMetricsView.ts | inputDelay": {
-    "message": "השהיה לאחר קלט"
+    "message": "העיכוב אחרי קלט"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactionExcluded": {
     "message": "מדד INP מחושב על סמך האחוזון ה-98 של עיכובים באינטראקציה, לכן חלק מהעיכובים יכולים להיות גדולים יותר מהערך של מדד INP."
@@ -16430,6 +16373,9 @@
   "panels/timeline/components/LiveMetricsView.ts | network": {
     "message": "רשת: {PH1}"
   },
+  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
+    "message": "רשת:"
+  },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "השלבים הבאים"
   },
@@ -16460,6 +16406,9 @@
   "panels/timeline/components/LiveMetricsView.ts | processingDuration": {
     "message": "משך העיבוד"
   },
+  "panels/timeline/components/LiveMetricsView.ts | recommendedThrottlingReason": {
+    "message": "כדאי לשנות את ההגדרה כדי לדמות סביבות של משתמשים אמיתיים"
+  },
   "panels/timeline/components/LiveMetricsView.ts | resourceLoadDelay": {
     "message": "עיכוב בטעינת משאבים"
   },
@@ -16482,7 +16431,7 @@
     "message": "מעבר אל INP (מהירות התגובה לאינטראקציה באתר)."
   },
   "panels/timeline/components/LiveMetricsView.ts | softNavigationPillText": {
-    "message": "SOFT NAV"
+    "message": "ניווט רך"
   },
   "panels/timeline/components/LiveMetricsView.ts | subpart": {
     "message": "חלק משני"
@@ -16704,7 +16653,7 @@
     "message": "חסימת עיבוד"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | requestMethod": {
-    "message": "שיטת בקשה"
+    "message": "שיטת הבקשה"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | serverTiming": {
     "message": "תזמון שרת"
@@ -16741,30 +16690,6 @@
   },
   "panels/timeline/components/NetworkRequestTooltip.ts | wasThrottled": {
     "message": "הבקשה הוגבלה ({PH1})"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | add": {
-    "message": "הוספה…"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | custom": {
-    "message": "בהתאמה אישית"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | disabled": {
-    "message": "מצב מושבת"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | network": {
-    "message": "רשת: {PH1}"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | networkThrottling": {
-    "message": "הגבלת רוחב פס: {PH1}"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
-    "message": "הגדרות קבועות מראש"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottling": {
-    "message": "‫{PH1} – מומלץ"
-  },
-  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottlingReason": {
-    "message": "כדאי לשנות את ההגדרה כדי לדמות סביבות של משתמשים אמיתיים"
   },
   "panels/timeline/components/OriginMap.ts | alreadyMapped": {
     "message": "הכתובת '{PH1}' כבר ממופה למקור ייצור."
@@ -16923,7 +16848,7 @@
     "message": "הפעלת נתונים סטטיסטיים של סלקטור ב-CSS (איטי)"
   },
   "panels/timeline/timeline-meta.ts | enableSoftNavigations": {
-    "message": "Enable soft navigation performance monitoring"
+    "message": "הפעלת מעקב אחר ביצועים בניווט רך"
   },
   "panels/timeline/timeline-meta.ts | gpuMemory": {
     "message": "זיכרון GPU"
@@ -17040,7 +16965,7 @@
     "message": "השעה הנוכחית"
   },
   "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
-    "message": "מספר מקסימלי של ערוצי פלט"
+    "message": "המספר המקסימלי של ערוצי פלט"
   },
   "panels/web_audio/WebAudioView.ts | noRecordings": {
     "message": "(אין הקלטות)"
@@ -17052,7 +16977,7 @@
     "message": "פתיחת דף המשתמש ב-Web Audio API לצורך התחלת מעקב."
   },
   "panels/web_audio/WebAudioView.ts | renderCapacity": {
-    "message": "קיבולת הרינדור"
+    "message": "עומס הרינדור"
   },
   "panels/web_audio/WebAudioView.ts | sampleRate": {
     "message": "תדירות הדגימה"
@@ -17157,7 +17082,7 @@
     "message": "שימוש ב-WebAuthn לצורך אימות עמיד בפני פישינג."
   },
   "panels/webauthn/WebauthnPane.ts | userHandle": {
-    "message": "כינוי המשתמש"
+    "message": "כינוי המשתמש/ת"
   },
   "panels/webauthn/WebauthnPane.ts | uuid": {
     "message": "UUID"
@@ -17195,14 +17120,35 @@
   "panels/whats_new/whats_new-meta.ts | whatsNew": {
     "message": "מה חדש"
   },
+  "ui/comments/comments-meta.ts | toggleCommentMode": {
+    "message": "הוספת הערות לשליחה לסוכן התכנות מבוסס ה-AI שלך"
+  },
   "ui/components/dialogs/Dialog.ts | close": {
     "message": "סגירה"
+  },
+  "ui/components/dialogs/FreDialog.ts | cancel": {
+    "message": "ביטול"
+  },
+  "ui/components/dialogs/FreDialog.ts | gotIt": {
+    "message": "הבנתי"
+  },
+  "ui/components/dialogs/FreDialog.ts | learnMore": {
+    "message": "מידע נוסף"
+  },
+  "ui/components/dialogs/FreDialog.ts | thingsToConsider": {
+    "message": "מה כדאי לקחת בחשבון"
   },
   "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
     "message": "מקשי קיצור"
   },
   "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
     "message": "הצגת מקשי הקיצור"
+  },
+  "ui/components/dialogs/TypeToAllowDialog.ts | allow": {
+    "message": "אישור"
+  },
+  "ui/components/dialogs/TypeToAllowDialog.ts | cancel": {
+    "message": "ביטול"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … מתבצע דילוג על {PH1} שורות תואמות … )"
@@ -17636,6 +17582,12 @@
   "ui/legacy/Toolbar.ts | useRegularExpression": {
     "message": "שימוש בביטוי רגולרי"
   },
+  "ui/legacy/Treeoutline.ts | collapsed": {
+    "message": "מכווץ"
+  },
+  "ui/legacy/Treeoutline.ts | expanded": {
+    "message": "מורחב"
+  },
   "ui/legacy/UIUtils.ts | anonymous": {
     "message": "(אנונימית)"
   },
@@ -17850,7 +17802,7 @@
     "message": "מסומן"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | collapsed": {
-    "message": "במצב מכווץ"
+    "message": "מכווץ"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | delete": {
     "message": "מחיקה"
@@ -18135,7 +18087,7 @@
     "message": "הרצת פקודה"
   },
   "ui/legacy/components/settings_ui/SettingsUI.ts | settingsChangedReloadDevTools": {
-    "message": "ההגדרות השתנו. כדי להחיל את השינוי, צריך לטעון מחדש את כלי הפיתוח."
+    "message": "ההגדרות השתנו. כדי להחיל את השינויים, צריך לטעון מחדש את כלי הפיתוח"
   },
   "ui/legacy/components/settings_ui/SettingsUI.ts | srequiresReload": {
     "message": "*נדרשת טעינה מחדש"
@@ -18213,7 +18165,7 @@
     "message": "הקוד הזה מהימן?"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | formatting": {
-    "message": "מתבצע פירמוט…"
+    "message": "מתבצע עיצוב…"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "שורה {PH1}, עמודה {PH2}"

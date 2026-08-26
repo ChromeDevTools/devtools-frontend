@@ -33,6 +33,18 @@ group("front_end") {
   ]
 }
 
+# Dedicated packaging group collecting all entrypoint bundle targets for
+# resource packaging. This ensures action("generate_devtools_grd") and
+# node_action("compress") in the root BUILD.gn have an explicit deps/public_deps
+# path to the generated bundle JS files to satisfy GN's C++ input generator
+# validation rule (which requires an explicit compile-time dependency edge for
+# any action input produced by another target), without exposing bundle targets
+# in public_deps of compile-time TypeScript consumers.
+group("front_end_bundles") {
+  public_deps = [ ":front_end" ]
+  data_deps = [ ":front_end" ]
+}
+
 copy_to_gen_with_grd("color_tokens") {
   sources = [
     "application_tokens.css",
@@ -109,6 +121,7 @@ copy_to_gen_with_grd("embedder-scripts") {
 }
 
 group("unittests") {
+  testonly = true
   deps = [
     ":foundation_unittests",
     "Images:optimize_images",
@@ -268,6 +281,7 @@ group("unittests") {
 }
 
 group("foundation_unittests") {
+  testonly = true
   deps = [
     "core/common:foundation_unittests",
     "core/host:foundation_unittests",
@@ -296,6 +310,7 @@ group("foundation_unittests") {
 }
 
 group("api_tests") {
+  testonly = true
   deps = [
     "core/sdk:api_tests",
     "foundation:api_tests",
@@ -303,6 +318,7 @@ group("api_tests") {
 }
 
 generated_file("api_test_inputs") {
+  testonly = true
   outputs = [ "$target_gen_dir/api_tests.txt" ]
   data_keys = [ "tests" ]
   rebase = target_gen_dir
@@ -311,6 +327,7 @@ generated_file("api_test_inputs") {
 }
 
 generated_file("foundation_test_inputs") {
+  testonly = true
   outputs = [ "$target_gen_dir/foundation_tests.txt" ]
   data_keys = [ "tests" ]
   rebase = target_gen_dir
@@ -319,6 +336,7 @@ generated_file("foundation_test_inputs") {
 }
 
 generated_file("test_inputs") {
+  testonly = true
   outputs = [ "$target_gen_dir/tests.txt" ]
   data_keys = [ "tests" ]
   rebase = target_gen_dir

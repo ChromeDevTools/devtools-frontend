@@ -201,8 +201,6 @@ template("legacy_ts_library") {
     output_files = [
       "$target_gen_dir/$target_name-tsconfig.json",
       "$target_gen_dir/$target_name-tsconfig.ref.json",
-      string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc") + "/" +
-          "$target_name-tsconfig.ref.json",
     ]
 
     if (defined(sources)) {
@@ -227,11 +225,7 @@ template("legacy_ts_library") {
         # do that on its own
         if (_extension == "ts" &&
             get_path_info(get_path_info(src, "name"), "extension") == "d") {
-          output_files += [
-            "$target_gen_dir/$src",
-            string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc") +
-                "/$src",
-          ]
+          output_files += [ "$target_gen_dir/$src" ]
           # Any file checked by TypeScript that is jsdoc-typed will be also
           # generating a js file in the gen folder
         } else if (_extension == "js" || _extension == "ts") {
@@ -246,12 +240,7 @@ template("legacy_ts_library") {
             ]
 
             if (!devtools_skip_typecheck) {
-              output_files += [
-                "$target_gen_dir/$_fileName.d.ts",
-                string_replace(target_gen_dir,
-                               root_gen_dir,
-                               "$root_out_dir/tsc") + "/$_fileName.d.ts",
-              ]
+              output_files += [ "$target_gen_dir/$_fileName.d.ts" ]
             }
           }
         } else {

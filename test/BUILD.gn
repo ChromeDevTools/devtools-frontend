@@ -6,6 +6,7 @@ import("../scripts/build/ninja/copy.gni")
 import("../scripts/build/typescript/typescript.gni")
 
 group("test") {
+  testonly = true
   deps = [
     ":api_tests",
     ":run",
@@ -19,6 +20,7 @@ group("test") {
 }
 
 group("api_tests") {
+  testonly = true
   deps = [
     "../front_end:api_test_inputs",
     "../front_end:api_tests",
@@ -26,6 +28,7 @@ group("api_tests") {
   ]
 }
 group("unittests") {
+  testonly = true
   deps = [
     "../front_end:test_inputs",
     "../front_end:unittests",

@@ -22,15 +22,15 @@ template("devtools_entrypoint_split") {
     }
   } else {
     _entrypoint_name = target_name
-    _outdir = string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc")
     _file_name = get_path_info(invoker.entrypoint, "name")
     _ts_target = "${target_name}_typescript"
     _bundle_target = "${target_name}_bundle"
 
-    # 1. Compile entrypoint to intermediate out/<config>/tsc JS and .d.ts.
+    # 1. Type-check entrypoint and generate .d.ts in out/<config>/gen (no JS emit).
     ts_library_split(_ts_target) {
       tsconfig_name = _entrypoint_name
       sources = [ invoker.entrypoint ]
+      no_js_emit = true
       forward_variables_from(invoker,
                              "*",
                              [
@@ -45,23 +45,47 @@ template("devtools_entrypoint_split") {
       visibility = [ ":*" ]
     }
 
-    # 2. Bundle intermediate JS from out/<config>/tsc to out/<config>/gen.
+    # 2. Bundle from the source TS file to out/<config>/gen.
     bundle(_bundle_target) {
-      entrypoint = "$_outdir/$_file_name.js"
+      entrypoint = invoker.entrypoint
       output_file_location = "$target_gen_dir/$_file_name.js"
-      deps = [
-        ":$_ts_target",
-        ":${_ts_target}_checked",
-      ]
+      deps = [ ":$_ts_target" ]
       forward_variables_from(invoker, [ "testonly" ])
       if (defined(invoker.deps)) {
         deps += invoker.deps
       }
-      visibility = [ ":*" ]
+      if (defined(invoker.ts_deps)) {
+        deps += invoker.ts_deps
+      }
+      visibility = [ "*" ]
     }
 
-    # 3. Main target exposing d.ts files via public_deps
-    #    and runtime bundled outputs via data_deps.
+    # 3. Main target exposing d.ts files via public_deps and runtime bundled outputs
+    #    via data_deps.
+    #
+    # Architecture Note:
+    # ------------------
+    # Downstream TypeScript targets depend on this entrypoint target to resolve types
+    # (.d.ts) at compile time. Placing `_bundle_target` in `data_deps` (instead of
+    # `public_deps`) is critical for two reasons:
+    #
+    # 1. Parallelism: Decouples compile-time TypeScript type checking from Rollup/esbuild
+    #    bundling. Downstream `ts_library` and `devtools_entrypoint` targets can begin
+    #    type checking immediately once `_ts_target` emits declarations (.d.ts), without
+    #    being blocked waiting for the slower bundling step to complete.
+    # 2. Ninja Restat Pruning: When implementation code changes without modifying
+    #    public type signatures, `--isolatedDeclarations` produces identical .d.ts files.
+    #    `run_with_restat.py` preserves the .d.ts timestamp, allowing Ninja to prune
+    #    downstream recompilation. If `_bundle_target` were in `public_deps`, its output
+    #    (.js) would be updated on every code edit, invalidating downstream targets and
+    #    defeating Ninja's restat pruning.
+    #
+    # Resource packaging (e.g., `generate_devtools_grd` and `compress` in root
+    # BUILD.gn) requires an explicit compile-time dependency path to the
+    # generated bundle JS files to satisfy GN's C++ input generator validation
+    # rule. This is provided via dedicated packaging groups (e.g.,
+    # `front_end:front_end_bundles` -> `devtools_frontend_resources`) without
+    # leaking bundle targets into compile-time TypeScript dependencies.
     group(target_name) {
       public_deps = [ ":$_ts_target" ]
       if (defined(invoker.public_deps)) {

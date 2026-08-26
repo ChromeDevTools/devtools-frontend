@@ -11,9 +11,8 @@ template("generate_css") {
          "You must define the 'sources' for a generate_css target")
 
   _action_target_name = "${target_name}_action"
-  _tsc_dir = string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc")
   _tsconfig_ref_target = "${target_name}_tsconfig_ref"
-  _tsconfig_ref_file = "$_tsc_dir/$target_name-tsconfig.ref.json"
+  _tsconfig_ref_file = "$target_gen_dir/$target_name-tsconfig.ref.json"
   _tsconfig_target = "${target_name}_tsconfig"
   _tsconfig_file = "$target_gen_dir/$target_name-tsconfig.json"
 
@@ -36,7 +35,7 @@ template("generate_css") {
         outDir = "."
         declarationDir = "."
       }
-      files = rebase_path(_css_outputs, _tsc_dir)
+      files = _js_files
     }
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly

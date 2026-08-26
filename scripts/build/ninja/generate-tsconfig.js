@@ -67,22 +67,3 @@ const generatedTSConfigRef = {
 
 fs.writeFileSync(tsconfigLocation, JSON.stringify(generatedTSConfig));
 fs.writeFileSync(tsconfigRefLocation, JSON.stringify(generatedTSConfigRef));
-
-function toTscPath(p) {
-  const parts = path.normalize(p).split(path.sep);
-  const genIndex = parts.lastIndexOf('gen');
-  if (genIndex !== -1) {
-    parts[genIndex] = 'tsc';
-    return parts.join(path.sep);
-  }
-  return p;
-}
-
-const tscRefLocation = toTscPath(tsconfigRefLocation);
-if (tscRefLocation !== tsconfigRefLocation) {
-  const tscDir = path.dirname(tscRefLocation);
-  if (!fs.existsSync(tscDir)) {
-    fs.mkdirSync(tscDir, {recursive: true});
-  }
-  fs.writeFileSync(tscRefLocation, JSON.stringify(generatedTSConfigRef));
-}

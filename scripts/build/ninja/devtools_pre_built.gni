@@ -3,12 +3,10 @@
 # found in the LICENSE file.
 
 import("./copy.gni")
-import("./node.gni")
 import("./vars.gni")
 
 template("devtools_pre_built") {
   _gen_target_name = "${target_name}_gen"
-  _tsc_target_name = "${target_name}_tsc"
   _prebuilt_public_deps = []
   if (defined(invoker.deps)) {
     _prebuilt_public_deps += invoker.deps
@@ -17,31 +15,6 @@ template("devtools_pre_built") {
   copy_to_gen(_gen_target_name) {
     sources = invoker.sources
     deps = _prebuilt_public_deps
-  }
-
-  _tsc_dir = string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc")
-  node_action(_tsc_target_name) {
-    sources = invoker.sources
-    public_deps = _prebuilt_public_deps
-
-    script = "scripts/build/ninja/copy-files.js"
-
-    # Expose ts files to dependent targets.
-    public_inputs = filter_include(sources, [ "*.ts" ])
-
-    _copy_src = rebase_path(get_path_info(target_name, "dir"), root_build_dir)
-    _copy_dest = rebase_path(_tsc_dir, root_build_dir)
-
-    args = [
-      _copy_src,
-      _copy_dest,
-      string_join(",", sources),
-    ]
-
-    outputs = []
-    foreach(_source, sources) {
-      outputs += [ "$_tsc_dir/$_source" ]
-    }
   }
 
   _gen_outputs = []
@@ -70,19 +43,17 @@ template("devtools_pre_built") {
       foreach(dep, invoker.ts_deps) {
         _dep_name = get_label_info(dep, "name")
         _dep_gen_dir = get_label_info(dep, "target_gen_dir")
-        _dep_tsc_dir =
-            string_replace(_dep_gen_dir, root_gen_dir, "$root_out_dir/tsc")
         _ts_references += [
           {
-            path = rebase_path("$_dep_tsc_dir/$_dep_name-tsconfig.ref.json",
-                               _tsc_dir)
+            path = rebase_path("$_dep_gen_dir/$_dep_name-tsconfig.ref.json",
+                               target_gen_dir)
           },
         ]
       }
     }
 
     _tsconfig_ref_target = "${target_name}_tsconfig_ref"
-    _tsconfig_ref_file = "$_tsc_dir/${target_name}-tsconfig.ref.json"
+    _tsconfig_ref_file = "$target_gen_dir/${target_name}-tsconfig.ref.json"
 
     generated_file(_tsconfig_ref_target) {
       outputs = [ _tsconfig_ref_file ]
@@ -105,13 +76,14 @@ template("devtools_pre_built") {
   }
 
   group(target_name) {
-    public_deps = [
-      ":$_gen_target_name",
-      ":$_tsc_target_name",
-    ]
+    public_deps = [ ":$_gen_target_name" ]
     if (_has_dts) {
       public_deps += [ ":$_tsconfig_ref_target" ]
     }
+    if (defined(invoker.public_deps)) {
+      public_deps += invoker.public_deps
+    }
+    public_deps += _prebuilt_public_deps
 
     data = _javascript_implementation_files + _javascript_map_files
 
@@ -129,13 +101,14 @@ template("devtools_pre_built") {
   # Expose ${target_name}-dts group alias so ts_deps and ts_library_split
   # dependencies resolve seamlessly to this target.
   group("${target_name}-dts") {
-    public_deps = [
-      ":$_gen_target_name",
-      ":$_tsc_target_name",
-    ]
+    public_deps = [ ":$_gen_target_name" ]
     if (_has_dts) {
       public_deps += [ ":$_tsconfig_ref_target" ]
     }
+    if (defined(invoker.public_deps)) {
+      public_deps += invoker.public_deps
+    }
+    public_deps += _prebuilt_public_deps
     if (defined(invoker.visibility)) {
       visibility = invoker.visibility
     }

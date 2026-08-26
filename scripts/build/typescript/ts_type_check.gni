@@ -18,13 +18,13 @@ template("ts_type_check") {
              [
                "testonly",
                "reset_timestamps",
+               "split_compilation",
              ])
 
   _rootdir = "."
   if (defined(invoker.rootdir)) {
     _rootdir = invoker.rootdir
   }
-  _tsc_dir = string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc")
 
   _tsconfig_name = target_name
   if (defined(invoker.tsconfig_name)) {
@@ -32,8 +32,8 @@ template("ts_type_check") {
   }
 
   _tsconfig_target = "${target_name}_tsconfig"
-  _tsconfig_file = "$_tsc_dir/$_tsconfig_name-tsconfig.json"
-  _stamp_file = "$_tsc_dir/$_tsconfig_name.stamp"
+  _tsconfig_file = "$target_gen_dir/$_tsconfig_name-tsconfig.json"
+  _stamp_file = "$target_gen_dir/$_tsconfig_name.stamp"
 
   _all_sources = invoker.sources
   if (defined(invoker.additional_type_definitions)) {
@@ -47,12 +47,10 @@ template("ts_type_check") {
     foreach(dep, _ts_deps) {
       _dep_name = get_label_info(dep, "name")
       _dep_gen_dir = get_label_info(dep, "target_gen_dir")
-      _dep_tsc_dir =
-          string_replace(_dep_gen_dir, root_gen_dir, "$root_out_dir/tsc")
       _ts_references += [
         {
-          path = rebase_path("$_dep_tsc_dir/$_dep_name-tsconfig.ref.json",
-                             _tsc_dir)
+          path = rebase_path("$_dep_gen_dir/$_dep_name-tsconfig.ref.json",
+                             target_gen_dir)
         },
       ]
     }
@@ -79,7 +77,7 @@ template("ts_type_check") {
   _compiler_options.target = _es_target
   _compiler_options.module = _module
   _compiler_options.moduleResolution = _module_resolution
-  _compiler_options.rootDir = rebase_path(_rootdir, _tsc_dir)
+  _compiler_options.rootDir = rebase_path(_rootdir, target_gen_dir)
   _compiler_options.outDir = "."
   _compiler_options.noEmit = true
 
@@ -89,8 +87,9 @@ template("ts_type_check") {
 
   if (_test_only || _runs_in_node) {
     _compiler_options.typeRoots = [
-      rebase_path(devtools_location_prepend + "node_modules/@types", _tsc_dir),
-      rebase_path(devtools_location_prepend + "node_modules", _tsc_dir),
+      rebase_path(devtools_location_prepend + "node_modules/@types",
+                  target_gen_dir),
+      rebase_path(devtools_location_prepend + "node_modules", target_gen_dir),
     ]
     if (_test_only) {
       _compiler_options.types += [ "mocha" ]
@@ -116,7 +115,7 @@ template("ts_type_check") {
     output_conversion = "json"
     contents = {
       compilerOptions = _compiler_options
-      files = rebase_path(_all_sources, _tsc_dir)
+      files = rebase_path(_all_sources, target_gen_dir)
       references = _ts_references
     }
   }

@@ -97,11 +97,12 @@ template("ts_library_split") {
   assert(defined(invoker.sources),
          "You must specify 'sources' for $target_name")
 
+  not_needed(invoker, [ "reset_timestamps" ])
+
   _rootdir = "."
   if (defined(invoker.rootdir)) {
     _rootdir = invoker.rootdir
   }
-  _tsc_dir = string_replace(target_gen_dir, root_gen_dir, "$root_out_dir/tsc")
 
   _tsconfig_name = target_name
   if (defined(invoker.tsconfig_name)) {
@@ -110,9 +111,9 @@ template("ts_library_split") {
 
   _dts_target = "${target_name}-dts"
   _tsconfig_ref_target = "${target_name}_tsconfig_ref"
-  _tsconfig_ref_file = "$_tsc_dir/$_tsconfig_name-tsconfig.ref.json"
+  _tsconfig_ref_file = "$target_gen_dir/$_tsconfig_name-tsconfig.ref.json"
   _tsconfig_target = "${target_name}_tsconfig"
-  _tsconfig_file = "$_tsc_dir/$_tsconfig_name-tsconfig.json"
+  _tsconfig_file = "$target_gen_dir/$_tsconfig_name-tsconfig.json"
   _js_target = "${target_name}_checked"
 
   _all_sources = invoker.sources
@@ -127,12 +128,10 @@ template("ts_library_split") {
     foreach(dep, _ts_deps) {
       _dep_name = get_label_info(dep, "name")
       _dep_gen_dir = get_label_info(dep, "target_gen_dir")
-      _dep_tsc_dir =
-          string_replace(_dep_gen_dir, root_gen_dir, "$root_out_dir/tsc")
       _ts_references += [
         {
-          path = rebase_path("$_dep_tsc_dir/$_dep_name-tsconfig.ref.json",
-                             _tsc_dir)
+          path = rebase_path("$_dep_gen_dir/$_dep_name-tsconfig.ref.json",
+                             target_gen_dir)
         },
       ]
     }
@@ -155,23 +154,22 @@ template("ts_library_split") {
     _module_resolution = "nodenext"
   }
 
-  # This is a small optimization and concession that for unbundled builds, we
-  # emit the JS and source map files from sub-target 3 directly into the
-  # `out/<config>/gen` directory. This safes us a copy action for each JS/source
-  # map pair. We might turn this into an option on ts_library_split directly so
-  # this rule becomes more generic.
-  if (devtools_bundle) {
-    _outdir = "."
-  } else {
-    _outdir = rebase_path(target_gen_dir, _tsc_dir)
+  _no_js_emit = false
+  if (defined(invoker.no_js_emit)) {
+    _no_js_emit = invoker.no_js_emit
   }
+
+  _outdir = "."
 
   _compiler_options = default_ts_compiler_options
   _compiler_options.target = _es_target
   _compiler_options.module = _module
   _compiler_options.moduleResolution = _module_resolution
-  _compiler_options.rootDir = rebase_path(_rootdir, _tsc_dir)
+  _compiler_options.rootDir = rebase_path(_rootdir, target_gen_dir)
   _compiler_options.outDir = _outdir
+  if (_no_js_emit) {
+    _compiler_options.noEmit = true
+  }
 
   _test_only = defined(invoker.testonly) && invoker.testonly
   _runs_in_node = defined(invoker.runs_in) && (invoker.runs_in == "node_cjs" ||
@@ -179,8 +177,9 @@ template("ts_library_split") {
 
   if (_test_only || _runs_in_node) {
     _compiler_options.typeRoots = [
-      rebase_path(devtools_location_prepend + "node_modules/@types", _tsc_dir),
-      rebase_path(devtools_location_prepend + "node_modules", _tsc_dir),
+      rebase_path(devtools_location_prepend + "node_modules/@types",
+                  target_gen_dir),
+      rebase_path(devtools_location_prepend + "node_modules", target_gen_dir),
     ]
     if (_test_only) {
       _compiler_options.types += [ "mocha" ]
@@ -202,7 +201,9 @@ template("ts_library_split") {
 
   # Compute output file paths (tsc does not emit for .d.ts inputs)
   _dts_outputs = []
-  _js_outputs = []
+  if (!_no_js_emit) {
+    _js_outputs = []
+  }
   foreach(src, invoker.sources) {
     _ext = get_path_info(src, "extension")
     _name = get_path_info(src, "name")
@@ -215,13 +216,8 @@ template("ts_library_split") {
     }
 
     if (!(_ext == "ts" && get_path_info(_name, "extension") == "d")) {
-      _dts_outputs += [ "$_tsc_dir/$_file_base.d.ts" ]
-      if (devtools_bundle) {
-        _js_outputs += [
-          "$_tsc_dir/$_file_base.js",
-          "$_tsc_dir/$_file_base.js.map",
-        ]
-      } else {
+      _dts_outputs += [ "$target_gen_dir/$_file_base.d.ts" ]
+      if (!_no_js_emit) {
         _js_outputs += [
           "$target_gen_dir/$_file_base.js",
           "$target_gen_dir/$_file_base.js.map",
@@ -232,6 +228,9 @@ template("ts_library_split") {
 
   # Sub-target 1: Type definitions (.d.ts only) via direct tsc
   action(_dts_target) {
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
     script = devtools_location_prepend + "scripts/build/run_with_restat.py"
 
     inputs = typescript_base_inputs + _all_sources
@@ -260,16 +259,13 @@ template("ts_library_split") {
           "--noCheck",
           "--noResolve",
           "--outDir",
-          rebase_path(_tsc_dir, root_build_dir),
+          rebase_path(target_gen_dir, root_build_dir),
           "--rootDir",
           rebase_path(_rootdir, root_build_dir),
         ] + rebase_path(_all_sources, root_build_dir)
 
     args = [ "@{{response_file_name}}" ]
 
-    if (defined(invoker.testonly)) {
-      testonly = invoker.testonly
-    }
     if (defined(invoker.visibility)) {
       visibility = invoker.visibility
     }
@@ -279,6 +275,9 @@ template("ts_library_split") {
   # Downstream dependents point to this tsconfig.ref.json as a project
   # "reference" in the dependent's tsconfig used for type-checking.
   generated_file(_tsconfig_ref_target) {
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
     outputs = [ _tsconfig_ref_file ]
     output_conversion = "json"
     contents = {
@@ -287,37 +286,35 @@ template("ts_library_split") {
         declaration = true
         emitDeclarationOnly = true
         skipLibCheck = true
-        rootDir = rebase_path(_rootdir, _tsc_dir)
+        rootDir = rebase_path(_rootdir, target_gen_dir)
         outDir = "."
         declarationDir = "."
       }
-      files = rebase_path(_all_sources, _tsc_dir)
+      files = rebase_path(_all_sources, target_gen_dir)
       references = _ts_references
-    }
-    if (defined(invoker.testonly)) {
-      testonly = invoker.testonly
     }
   }
 
   # Sub-target 3: Generate tsconfig.json used by sub-target 4 for
   # actual type-checking and JS transpilation.
   generated_file(_tsconfig_target) {
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
     outputs = [ _tsconfig_file ]
     output_conversion = "json"
     contents = {
       compilerOptions = _compiler_options
-      files = rebase_path(_all_sources, _tsc_dir)
+      files = rebase_path(_all_sources, target_gen_dir)
       references = _ts_references
-    }
-    if (defined(invoker.testonly)) {
-      testonly = invoker.testonly
     }
   }
 
   # Sub-target 4: JS Transpilation + Type-checking via direct tsc
   action(_js_target) {
-    script = devtools_location_prepend + "scripts/build/run_with_restat.py"
-
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
     inputs = typescript_base_inputs + _all_sources + [ _tsconfig_file ]
     if (defined(invoker.inputs)) {
       inputs += invoker.inputs
@@ -336,24 +333,37 @@ template("ts_library_split") {
              ":$_tsconfig_target",
            ] + _ts_deps + _non_ts_deps
 
-    outputs = _js_outputs
-
-    response_file_contents =
-        rebase_path(_js_outputs, root_build_dir) + [ "--" ] + [
-          rebase_path(tsc_binary, root_build_dir),
-          "-p",
-          rebase_path(_tsconfig_file, root_build_dir),
-        ]
+    if (_no_js_emit) {
+      script = devtools_location_prepend + "scripts/build/run_with_stamp.py"
+      _stamp_file = "$target_gen_dir/$_tsconfig_name.stamp"
+      outputs = [ _stamp_file ]
+      response_file_contents = [
+        "--stamp",
+        rebase_path(_stamp_file, root_build_dir),
+        "--",
+        rebase_path(tsc_binary, root_build_dir),
+        "-p",
+        rebase_path(_tsconfig_file, root_build_dir),
+      ]
+    } else {
+      script = devtools_location_prepend + "scripts/build/run_with_restat.py"
+      outputs = _js_outputs
+      response_file_contents =
+          rebase_path(_js_outputs, root_build_dir) + [ "--" ] + [
+            rebase_path(tsc_binary, root_build_dir),
+            "-p",
+            rebase_path(_tsconfig_file, root_build_dir),
+          ]
+    }
 
     args = [ "@{{response_file_name}}" ]
-
-    if (defined(invoker.testonly)) {
-      testonly = invoker.testonly
-    }
   }
 
   # Primary group target
   group(target_name) {
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
     public_deps = [
                     ":$_dts_target",
                     ":$_tsconfig_ref_target",
@@ -362,9 +372,13 @@ template("ts_library_split") {
       public_deps += invoker.public_deps
     }
 
-    data = _js_outputs
-    if (defined(invoker.data)) {
-      data += invoker.data
+    if (!_no_js_emit) {
+      data = _js_outputs
+      if (defined(invoker.data)) {
+        data += invoker.data
+      }
+    } else if (defined(invoker.data)) {
+      data = invoker.data
     }
 
     data_deps = [ ":$_js_target" ]
@@ -377,21 +391,21 @@ template("ts_library_split") {
 
     metadata = {
       typescript_files = rebase_path(invoker.sources, root_build_dir)
-      tests = filter_include(_js_outputs,
-                             [
-                               "*.test.js",
-                               "*_test.js",
-                               "*.test.api.js",
-                             ])
+      if (!_no_js_emit) {
+        tests = filter_include(_js_outputs,
+                               [
+                                 "*.test.js",
+                                 "*_test.js",
+                                 "*.test.api.js",
+                               ])
+      }
     }
 
-    if (!devtools_bundle) {
+    if (!_no_js_emit && !devtools_bundle) {
+      public_deps += [ ":$_js_target" ]
       metadata.grd_files = filter_include(_js_outputs, [ "*.js" ])
     }
 
-    if (defined(invoker.testonly)) {
-      testonly = invoker.testonly
-    }
     if (defined(invoker.visibility)) {
       visibility = invoker.visibility
     }

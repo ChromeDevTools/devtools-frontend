@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
 import {
   clickNthChildOfSelectedElementNode,
   editCSSProperty,
@@ -39,8 +37,10 @@ describe('Flexbox Editor', function() {
     // Wait for the button's title to be updated so that we know the change
     // was made.
     await devToolsPage.waitFor('[title="Add flex-direction: column"]');
-    const property = await getCSSPropertyInRule(devToolsPage, '#target', 'flex-direction', undefined);
-    assert.isUndefined(property);
+    await devToolsPage.waitForFunction(async () => {
+      const property = await getCSSPropertyInRule(devToolsPage, '#target', 'flex-direction', undefined);
+      return property === undefined;
+    });
   });
 
   it('can be opened for flexbox styles with !important', async ({devToolsPage, inspectedPage}) => {

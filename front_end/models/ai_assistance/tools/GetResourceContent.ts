@@ -9,12 +9,12 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import {canResourceContentsBeReadForTrace} from '../AiOrigins.js';
-import {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
 
 import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  type PerformanceTraceCapability,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -30,8 +30,8 @@ export interface GetResourceContentArgs extends ToolArgs {
   url: string;
 }
 
-export class GetResourceContentTool implements
-    DataTool<GetResourceContentArgs, {content: string}, BaseToolCapability&TargetCapability> {
+export class GetResourceContentTool implements DataTool<
+    GetResourceContentArgs, {content: string}, BaseToolCapability&TargetCapability&PerformanceTraceCapability> {
   readonly name = ToolName.GET_RESOURCE_CONTENT;
   readonly description =
       'Returns the content of the resource with the given url. Only use this for text resource types.';
@@ -62,23 +62,23 @@ export class GetResourceContentTool implements
 
   async handler(
       params: GetResourceContentArgs,
-      capabilities: BaseToolCapability&TargetCapability,
+      capabilities: BaseToolCapability&TargetCapability&PerformanceTraceCapability,
       ): Promise<DataHandlerResult<{content: string}>> {
-    const conversationContext = capabilities.conversationContext;
-    if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+    const performanceTraceContext = capabilities.getPerformanceTraceContext();
+    if (!performanceTraceContext) {
       return {error: 'Performance trace context is not available.'};
     }
 
-    if (conversationContext.getOrigin().startsWith('imported-trace://')) {
+    if (performanceTraceContext.getOrigin().startsWith('imported-trace://')) {
       return {error: 'Cannot use this tool on an imported file.'};
     }
 
-    const allowedOrigin = conversationContext.getOrigin();
+    const allowedOrigin = performanceTraceContext.getOrigin();
     if (!canResourceContentsBeReadForTrace(params.url, allowedOrigin)) {
       return {error: 'Resource not found'};
     }
 
-    const focus = conversationContext.getItem();
+    const focus = performanceTraceContext.getItem();
     const {parsedTrace} = focus;
 
     let content: string;

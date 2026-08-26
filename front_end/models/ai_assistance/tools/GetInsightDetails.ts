@@ -9,7 +9,6 @@ import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Logs from '../../logs/logs.js';
 import * as Trace from '../../trace/trace.js';
 import type {AiWidget} from '../agents/AiAgent.js';
-import {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
 import {PerformanceInsightFormatter} from '../data_formatters/PerformanceInsightFormatter.js';
 import {debugLog} from '../debug.js';
 
@@ -18,6 +17,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   MAX_FUNCTION_RESULT_BYTE_LENGTH,
+  type PerformanceTraceCapability,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -54,7 +54,7 @@ export interface GetInsightDetailsArgs extends ToolArgs {
 }
 
 export class GetInsightDetailsTool implements
-    DataTool<GetInsightDetailsArgs, string, BaseToolCapability&TargetCapability> {
+    DataTool<GetInsightDetailsArgs, string, BaseToolCapability&TargetCapability&PerformanceTraceCapability> {
   readonly name = ToolName.GET_INSIGHT_DETAILS;
   readonly description =
       'Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.';
@@ -156,10 +156,10 @@ export class GetInsightDetailsTool implements
 
   async handler(
       params: GetInsightDetailsArgs,
-      capabilities: BaseToolCapability&TargetCapability,
+      capabilities: BaseToolCapability&TargetCapability&PerformanceTraceCapability,
       ): Promise<DataHandlerResult<string>> {
-    const conversationContext = capabilities.conversationContext;
-    if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+    const performanceTraceContext = capabilities.getPerformanceTraceContext();
+    if (!performanceTraceContext) {
       return {error: 'Performance trace context is not available.'};
     }
 
@@ -167,12 +167,12 @@ export class GetInsightDetailsTool implements
       return {error: 'Missing required arguments: insightSetId and insightName must be provided.'};
     }
 
-    const focus = conversationContext.getItem();
+    const focus = performanceTraceContext.getItem();
     const parsedTrace = focus.parsedTrace;
 
     const insightSet = parsedTrace.insights?.get(params.insightSetId);
     if (!insightSet) {
-      const formatter = conversationContext.createFormatter();
+      const formatter = performanceTraceContext.createFormatter();
       const valid = ([...parsedTrace.insights?.values() ?? []])
                         .map(insightSet => `id: ${insightSet.id}, url: ${insightSet.url}, bounds: ${
                                  formatter.serializeBounds(insightSet.bounds)}`)
@@ -205,7 +205,7 @@ export class GetInsightDetailsTool implements
     }
 
     const widgets: AiWidget[] = [];
-    const isImportedTrace = conversationContext.getOrigin().startsWith('imported-trace://');
+    const isImportedTrace = performanceTraceContext.getOrigin().startsWith('imported-trace://');
     if (!isImportedTrace) {
       const domTreeWidget = await this.#generateDOMTreeWidget(insight, insightSet, capabilities.getTarget());
       if (domTreeWidget) {

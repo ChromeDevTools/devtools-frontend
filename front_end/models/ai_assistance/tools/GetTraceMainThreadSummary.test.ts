@@ -39,9 +39,10 @@ describe('GetTraceMainThreadSummaryTool', () => {
     assert.strictEqual(displayInfo.action, 'getTraceMainThreadSummary(\'nav-to-lcp\')');
   });
 
-  it('returns error when conversationContext is not available', async () => {
-    const context = {
+  it('returns error when PerformanceTraceContext is not available', async () => {
+    const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
       conversationContext: null,
+      getPerformanceTraceContext: () => null,
     };
 
     const tool = new GetTraceMainThreadSummaryTool();
@@ -62,8 +63,9 @@ describe('GetTraceMainThreadSummaryTool', () => {
     );
     sinon.stub(traceContext, 'getBoundsForLabel').returns(null);
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetTraceMainThreadSummaryTool();
@@ -89,8 +91,9 @@ describe('GetTraceMainThreadSummaryTool', () => {
       formatMainThreadTrackSummary: sinon.stub().resolves('mock main thread summary details'),
     });
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetTraceMainThreadSummaryTool();

@@ -60,7 +60,8 @@ describe('GetInsightDetailsTool', () => {
         universe.debuggerWorkspaceBinding,
     );
     return {
-      conversationContext: traceContext,
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
       getTarget: () => options.target ?? universe.targetManager.primaryPageTarget(),
     };
   }
@@ -72,9 +73,11 @@ describe('GetInsightDetailsTool', () => {
     assert.strictEqual(displayInfo.action, 'getInsightDetails(\'set-1\', \'LCPBreakdown\')');
   });
 
-  it('returns error when conversationContext is not available', async () => {
-    const context = {
+  it('returns error when PerformanceTraceContext is not available', async () => {
+    const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.TargetCapability&
+        AiAssistance.Tool.PerformanceTraceCapability = {
       conversationContext: null,
+      getPerformanceTraceContext: () => null,
       getTarget: () => universe.targetManager.primaryPageTarget(),
     };
 

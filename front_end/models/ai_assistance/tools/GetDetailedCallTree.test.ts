@@ -39,9 +39,10 @@ describe('GetDetailedCallTreeTool', () => {
     assert.strictEqual(displayInfo.action, 'getDetailedCallTree(\'event-key-1\')');
   });
 
-  it('returns error when conversationContext is not available', async () => {
-    const context = {
+  it('returns error when PerformanceTraceContext is not available', async () => {
+    const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
       conversationContext: null,
+      getPerformanceTraceContext: () => null,
     };
 
     const tool = new GetDetailedCallTreeTool();
@@ -63,8 +64,9 @@ describe('GetDetailedCallTreeTool', () => {
         universe.debuggerWorkspaceBinding,
     );
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetDetailedCallTreeTool();
@@ -86,8 +88,9 @@ describe('GetDetailedCallTreeTool', () => {
     const focus = traceContext.getItem();
     sinon.stub(focus, 'lookupEvent').returns(null);
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetDetailedCallTreeTool();
@@ -116,8 +119,9 @@ describe('GetDetailedCallTreeTool', () => {
     sinon.stub(focus, 'lookupEvent').withArgs('valid-key').returns(mockEvent);
     sinon.stub(AiAssistance.AICallTree.AICallTree, 'fromEvent').returns(null);
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetDetailedCallTreeTool();
@@ -151,8 +155,9 @@ describe('GetDetailedCallTreeTool', () => {
       formatCallTree: sinon.stub().resolves('mock formatted call tree'),
     });
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetDetailedCallTreeTool();

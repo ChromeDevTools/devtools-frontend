@@ -42,9 +42,10 @@ describe('GetFunctionCodeTool', () => {
     assert.strictEqual(displayInfo.action, 'getFunctionCode(\'https://example.com/app.js\', 10, 5)');
   });
 
-  it('returns error when conversationContext is not available', async () => {
-    const context = {
+  it('returns error when PerformanceTraceContext is not available', async () => {
+    const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
       conversationContext: null,
+      getPerformanceTraceContext: () => null,
     };
 
     const tool = new GetFunctionCodeTool();
@@ -66,8 +67,9 @@ describe('GetFunctionCodeTool', () => {
         universe.debuggerWorkspaceBinding,
     );
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetFunctionCodeTool();
@@ -89,8 +91,9 @@ describe('GetFunctionCodeTool', () => {
         universe.debuggerWorkspaceBinding,
     );
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetFunctionCodeTool();
@@ -113,8 +116,9 @@ describe('GetFunctionCodeTool', () => {
         universe.debuggerWorkspaceBinding,
     );
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetFunctionCodeTool();
@@ -136,8 +140,9 @@ describe('GetFunctionCodeTool', () => {
         universe.debuggerWorkspaceBinding,
     );
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetFunctionCodeTool();
@@ -160,8 +165,9 @@ describe('GetFunctionCodeTool', () => {
         universe.debuggerWorkspaceBinding,
     );
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetFunctionCodeTool();
@@ -188,8 +194,9 @@ describe('GetFunctionCodeTool', () => {
       resolveFunctionCodeAtLocation: sinon.stub().resolves(null),
     });
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetFunctionCodeTool();
@@ -224,8 +231,9 @@ describe('GetFunctionCodeTool', () => {
       formatFunctionCode: sinon.stub().returns('mock formatted function code with annotations'),
     });
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new GetFunctionCodeTool();

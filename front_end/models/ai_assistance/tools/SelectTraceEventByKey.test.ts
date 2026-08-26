@@ -42,9 +42,10 @@ describe('SelectTraceEventByKeyTool', () => {
     assert.strictEqual(displayInfo.action, 'selectTraceEventByKey(\'event-key-1\')');
   });
 
-  it('returns error when conversationContext is not available', async () => {
-    const context = {
+  it('returns error when PerformanceTraceContext is not available', async () => {
+    const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
       conversationContext: null,
+      getPerformanceTraceContext: () => null,
     };
 
     const tool = new SelectTraceEventByKeyTool();
@@ -66,8 +67,9 @@ describe('SelectTraceEventByKeyTool', () => {
     const focus = traceContext.getItem();
     sinon.stub(focus, 'lookupEvent').returns(null);
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new SelectTraceEventByKeyTool();
@@ -94,8 +96,9 @@ describe('SelectTraceEventByKeyTool', () => {
 
     sinon.stub(focus, 'lookupEvent').withArgs('valid-key').returns(mockEvent);
 
-    const capabilities = {
-      conversationContext: traceContext,
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
     };
 
     const tool = new SelectTraceEventByKeyTool();

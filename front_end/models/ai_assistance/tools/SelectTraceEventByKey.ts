@@ -6,12 +6,12 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
 
 import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  type PerformanceTraceCapability,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -26,7 +26,8 @@ export interface SelectTraceEventByKeyArgs extends ToolArgs {
   eventKey: string;
 }
 
-export class SelectTraceEventByKeyTool implements DataTool<SelectTraceEventByKeyArgs, string, BaseToolCapability> {
+export class SelectTraceEventByKeyTool implements
+    DataTool<SelectTraceEventByKeyArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name = ToolName.SELECT_TRACE_EVENT_BY_KEY;
   readonly description = 'Selects and reveals a specific event by its key in the Performance panel Flamechart.';
 
@@ -56,14 +57,14 @@ export class SelectTraceEventByKeyTool implements DataTool<SelectTraceEventByKey
 
   async handler(
       params: SelectTraceEventByKeyArgs,
-      capabilities: BaseToolCapability,
+      capabilities: BaseToolCapability&PerformanceTraceCapability,
       ): Promise<DataHandlerResult<string>> {
-    const conversationContext = capabilities.conversationContext;
-    if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+    const performanceTraceContext = capabilities.getPerformanceTraceContext();
+    if (!performanceTraceContext) {
       return {error: 'Performance trace context is not available.'};
     }
 
-    const focus = conversationContext.getItem();
+    const focus = performanceTraceContext.getItem();
     const event = focus.lookupEvent(params.eventKey);
     if (!event) {
       return {error: `Could not find event with key "${params.eventKey}".`};

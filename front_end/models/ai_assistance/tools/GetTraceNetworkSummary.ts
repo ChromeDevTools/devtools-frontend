@@ -4,13 +4,13 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
 
 import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   MAX_FUNCTION_RESULT_BYTE_LENGTH,
+  type PerformanceTraceCapability,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -26,7 +26,8 @@ export interface GetTraceNetworkSummaryArgs extends ToolArgs {
   max?: number;
 }
 
-export class GetTraceNetworkSummaryTool implements DataTool<GetTraceNetworkSummaryArgs, string, BaseToolCapability> {
+export class GetTraceNetworkSummaryTool implements
+    DataTool<GetTraceNetworkSummaryArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name = ToolName.GET_TRACE_NETWORK_SUMMARY;
   readonly description = 'Returns a summary of the network requests for the given bounds.';
 
@@ -68,20 +69,20 @@ export class GetTraceNetworkSummaryTool implements DataTool<GetTraceNetworkSumma
 
   async handler(
       params: GetTraceNetworkSummaryArgs,
-      capabilities: BaseToolCapability,
+      capabilities: BaseToolCapability&PerformanceTraceCapability,
       ): Promise<DataHandlerResult<string>> {
-    const conversationContext = capabilities.conversationContext;
-    if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+    const performanceTraceContext = capabilities.getPerformanceTraceContext();
+    if (!performanceTraceContext) {
       return {error: 'Performance trace context is not available.'};
     }
 
-    const focus = conversationContext.getItem();
-    const bounds = conversationContext.createBounds(params.min, params.max);
+    const focus = performanceTraceContext.getItem();
+    const bounds = performanceTraceContext.createBounds(params.min, params.max);
     if (!bounds) {
       return {error: 'Invalid bounds.'};
     }
 
-    const formatter = conversationContext.createFormatter();
+    const formatter = performanceTraceContext.createFormatter();
     const summary = formatter.formatNetworkTrackSummary(bounds);
     if (summary.length > MAX_FUNCTION_RESULT_BYTE_LENGTH) {
       return {

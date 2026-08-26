@@ -4,13 +4,13 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
 import {formatEventForAI} from '../data_formatters/PerformanceTraceFormatter.js';
 
 import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  type PerformanceTraceCapability,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -25,7 +25,8 @@ export interface GetTraceEventByKeyArgs extends ToolArgs {
   eventKey: string;
 }
 
-export class GetTraceEventByKeyTool implements DataTool<GetTraceEventByKeyArgs, string, BaseToolCapability> {
+export class GetTraceEventByKeyTool implements
+    DataTool<GetTraceEventByKeyArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name = ToolName.GET_TRACE_EVENT_BY_KEY;
   readonly description = 'Get details for a specific trace event by its event key.';
 
@@ -55,14 +56,14 @@ export class GetTraceEventByKeyTool implements DataTool<GetTraceEventByKeyArgs, 
 
   async handler(
       params: GetTraceEventByKeyArgs,
-      capabilities: BaseToolCapability,
+      capabilities: BaseToolCapability&PerformanceTraceCapability,
       ): Promise<DataHandlerResult<string>> {
-    const conversationContext = capabilities.conversationContext;
-    if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+    const performanceTraceContext = capabilities.getPerformanceTraceContext();
+    if (!performanceTraceContext) {
       return {error: 'Performance trace context is not available.'};
     }
 
-    const focus = conversationContext.getItem();
+    const focus = performanceTraceContext.getItem();
     const event = focus.lookupEvent(params.eventKey);
     if (!event) {
       return {error: `Could not find event with key "${params.eventKey}".`};

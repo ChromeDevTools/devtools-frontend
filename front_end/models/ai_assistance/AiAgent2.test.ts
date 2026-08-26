@@ -775,4 +775,59 @@ describeWithEnvironment('AiAgent2', () => {
     const [, context] = handlerStub.getCall(0).args;
     assert.isNull(context.getLighthouseReport());
   });
+
+  it('provides getPerformanceTraceContext capability to performance tools', async () => {
+    const traceContext = sinon.createStubInstance(AiAssistance.PerformanceTraceContext.PerformanceTraceContext);
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['performance']}}],
+      }],
+      [{
+        explanation: '',
+        functionCalls: [{name: 'getDetailedCallTree', args: {eventKey: 'key-1'}}],
+      }],
+      [{
+        explanation: 'Call tree retrieved.',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+
+    const getDetailedCallTreeTool = AiAssistance.ToolRegistry.ToolRegistry.get('getDetailedCallTree');
+    assert.exists(getDetailedCallTreeTool);
+    const handlerStub = sinon.stub(getDetailedCallTreeTool, 'handler').resolves({result: 'mock tree'});
+
+    await Array.fromAsync(agent.run('query', {selected: traceContext}));
+
+    sinon.assert.calledOnce(handlerStub);
+    const [, context] = handlerStub.getCall(0).args;
+    assert.strictEqual(context.getPerformanceTraceContext(), traceContext);
+  });
+
+  it('returns null for getPerformanceTraceContext when context is not PerformanceTraceContext', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['performance']}}],
+      }],
+      [{
+        explanation: '',
+        functionCalls: [{name: 'getDetailedCallTree', args: {eventKey: 'key-1'}}],
+      }],
+      [{
+        explanation: 'Done.',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+
+    const getDetailedCallTreeTool = AiAssistance.ToolRegistry.ToolRegistry.get('getDetailedCallTree');
+    assert.exists(getDetailedCallTreeTool);
+    const handlerStub = sinon.stub(getDetailedCallTreeTool, 'handler').resolves({result: 'mock tree'});
+
+    await Array.fromAsync(agent.run('query', {selected: null}));
+
+    sinon.assert.calledOnce(handlerStub);
+    const [, context] = handlerStub.getCall(0).args;
+    assert.isNull(context.getPerformanceTraceContext());
+  });
 });

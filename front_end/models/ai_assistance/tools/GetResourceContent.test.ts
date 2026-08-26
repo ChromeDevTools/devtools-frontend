@@ -38,6 +38,18 @@ describe('GetResourceContentTool', () => {
     universe.createTarget();
   });
 
+  function createCapabilities(
+      traceContext: AiAssistance.PerformanceTraceContext.PerformanceTraceContext|null,
+      target: SDK.Target.Target|null = universe.targetManager.primaryPageTarget(),
+      ): AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.TargetCapability&
+      AiAssistance.Tool.PerformanceTraceCapability {
+    return {
+      conversationContext: null,
+      getPerformanceTraceContext: () => traceContext,
+      getTarget: () => target,
+    };
+  }
+
   it('returns display info', () => {
     const tool = new GetResourceContentTool();
     const displayInfo = tool.displayInfoFromArgs({url: 'https://example.com/script.js'});
@@ -45,11 +57,8 @@ describe('GetResourceContentTool', () => {
     assert.strictEqual(displayInfo.action, 'getResourceContent(\'https://example.com/script.js\')');
   });
 
-  it('returns error when conversationContext is not available', async () => {
-    const context = {
-      conversationContext: null,
-      getTarget: () => universe.targetManager.primaryPageTarget(),
-    };
+  it('returns error when PerformanceTraceContext is not available', async () => {
+    const context = createCapabilities(null);
 
     const tool = new GetResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, context);
@@ -69,10 +78,7 @@ describe('GetResourceContentTool', () => {
         universe.debuggerWorkspaceBinding,
     );
 
-    const capabilities = {
-      conversationContext: traceContext,
-      getTarget: () => universe.targetManager.primaryPageTarget(),
-    };
+    const capabilities = createCapabilities(traceContext);
 
     const tool = new GetResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, capabilities);
@@ -93,10 +99,7 @@ describe('GetResourceContentTool', () => {
         universe.debuggerWorkspaceBinding,
     );
 
-    const capabilities = {
-      conversationContext: traceContext,
-      getTarget: () => universe.targetManager.primaryPageTarget(),
-    };
+    const capabilities = createCapabilities(traceContext);
 
     const tool = new GetResourceContentTool();
     const result = await tool.handler({url: 'https://cross-origin.com/script.js'}, capabilities);
@@ -127,10 +130,7 @@ describe('GetResourceContentTool', () => {
         universe.debuggerWorkspaceBinding,
     );
 
-    const capabilities = {
-      conversationContext: traceContext,
-      getTarget: () => universe.targetManager.primaryPageTarget(),
-    };
+    const capabilities = createCapabilities(traceContext);
 
     const tool = new GetResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, capabilities);
@@ -165,10 +165,7 @@ describe('GetResourceContentTool', () => {
 
     sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'resourceForURL').returns(mockResource);
 
-    const capabilities = {
-      conversationContext: traceContext,
-      getTarget: () => universe.targetManager.primaryPageTarget(),
-    };
+    const capabilities = createCapabilities(traceContext);
 
     const tool = new GetResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, capabilities);
@@ -202,10 +199,7 @@ describe('GetResourceContentTool', () => {
 
     sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'resourceForURL').returns(mockResource);
 
-    const capabilities = {
-      conversationContext: traceContext,
-      getTarget: () => universe.targetManager.primaryPageTarget(),
-    };
+    const capabilities = createCapabilities(traceContext);
 
     const tool = new GetResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, capabilities);
@@ -232,10 +226,7 @@ describe('GetResourceContentTool', () => {
 
     sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'resourceForURL').returns(mockResource);
 
-    const capabilities = {
-      conversationContext: traceContext,
-      getTarget: () => universe.targetManager.primaryPageTarget(),
-    };
+    const capabilities = createCapabilities(traceContext);
 
     const tool = new GetResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/image.png'}, capabilities);
@@ -258,10 +249,7 @@ describe('GetResourceContentTool', () => {
 
     sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'resourceForURL').returns(null);
 
-    const capabilities = {
-      conversationContext: traceContext,
-      getTarget: () => universe.targetManager.primaryPageTarget(),
-    };
+    const capabilities = createCapabilities(traceContext);
 
     const tool = new GetResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/missing.js'}, capabilities);
@@ -282,10 +270,7 @@ describe('GetResourceContentTool', () => {
         universe.debuggerWorkspaceBinding,
     );
 
-    const capabilities = {
-      conversationContext: traceContext,
-      getTarget: () => null,
-    };
+    const capabilities = createCapabilities(traceContext, null);
 
     const tool = new GetResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, capabilities);

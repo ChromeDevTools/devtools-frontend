@@ -6,12 +6,12 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import {canResourceContentsBeReadForTrace} from '../AiOrigins.js';
-import {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
 
 import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  type PerformanceTraceCapability,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -28,7 +28,8 @@ export interface GetFunctionCodeArgs extends ToolArgs {
   column: number;
 }
 
-export class GetFunctionCodeTool implements DataTool<GetFunctionCodeArgs, string, BaseToolCapability> {
+export class GetFunctionCodeTool implements
+    DataTool<GetFunctionCodeArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name = ToolName.GET_FUNCTION_CODE;
   readonly description =
       'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.';
@@ -69,14 +70,14 @@ export class GetFunctionCodeTool implements DataTool<GetFunctionCodeArgs, string
 
   async handler(
       params: GetFunctionCodeArgs,
-      capabilities: BaseToolCapability,
+      capabilities: BaseToolCapability&PerformanceTraceCapability,
       ): Promise<DataHandlerResult<string>> {
-    const conversationContext = capabilities.conversationContext;
-    if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+    const performanceTraceContext = capabilities.getPerformanceTraceContext();
+    if (!performanceTraceContext) {
       return {error: 'Performance trace context is not available.'};
     }
 
-    if (conversationContext.getOrigin().startsWith('imported-trace://')) {
+    if (performanceTraceContext.getOrigin().startsWith('imported-trace://')) {
       return {error: 'Cannot use this tool on an imported file.'};
     }
 
@@ -84,7 +85,7 @@ export class GetFunctionCodeTool implements DataTool<GetFunctionCodeArgs, string
       return {error: 'Missing arg: scriptUrl'};
     }
 
-    const allowedOrigin = conversationContext.getOrigin();
+    const allowedOrigin = performanceTraceContext.getOrigin();
     if (!canResourceContentsBeReadForTrace(params.scriptUrl, allowedOrigin)) {
       return {error: 'Script not found'};
     }
@@ -97,7 +98,7 @@ export class GetFunctionCodeTool implements DataTool<GetFunctionCodeArgs, string
       return {error: 'Missing arg: column'};
     }
 
-    const formatter = conversationContext.createFormatter();
+    const formatter = performanceTraceContext.createFormatter();
     const url = params.scriptUrl as Platform.DevToolsPath.UrlString;
     const code = await formatter.resolveFunctionCodeAtLocation(url, params.line, params.column);
     if (!code) {

@@ -1312,7 +1312,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   copyStyles(node: SDK.DOMModel.DOMNode): void {
-    this.#domTreeWidget.copyStyles(node);
+    void this.#domTreeWidget.copyStyles(node);
   }
 
   protected static firstInspectElementCompletedForTest = function(): void {};

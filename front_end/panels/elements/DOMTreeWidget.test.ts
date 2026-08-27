@@ -897,5 +897,97 @@ describeWithEnvironment('DOMTreeWidget', () => {
            domTree.detach();
          }
        });
+
+    it('handles setHoveredNode to highlight node in overlay and clear highlight on null', async () => {
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'P'},
+          ],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.expandRoot = true;
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const pNode = rootNode.children()![0];
+        const highlightSpy = sinon.spy(domModel.overlayModel(), 'highlightInOverlay');
+        const hideSpy = sinon.spy(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+
+        // Hover over pNode.
+        domTree.setHoveredNode(pNode, /* showInfo= */ true);
+        sinon.assert.calledWith(highlightSpy, sinon.match({node: pNode, selectorList: undefined}), 'all', true);
+        assert.strictEqual(domTree.hoveredDOMNode(), pNode);
+
+        // Hovering again with the same node should be a no-op.
+        highlightSpy.resetHistory();
+        domTree.setHoveredNode(pNode, /* showInfo= */ true);
+        sinon.assert.notCalled(highlightSpy);
+
+        // Hover over null to hide highlight.
+        domTree.setHoveredNode(null);
+        sinon.assert.calledOnce(hideSpy);
+        assert.isNull(domTree.hoveredDOMNode());
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('dispatches mousemove and mouseleave to trigger overlay highlight and .hovered styling in declarative view',
+       async () => {
+         SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+         sinon.stub(domModel, 'requestDocument').resolves(null);
+         const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'DIV',
+             children: [
+               {nodeId: 2, nodeName: 'P'},
+             ],
+           });
+           domTree.omitRootDOMNode = true;
+           domTree.rootDOMNode = rootNode;
+           domTree.performUpdate();
+
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+           assert.exists(tree);
+           const internalTree = tree.getInternalTreeOutlineForTest();
+           const rootElement = internalTree.rootElement().children()[0];
+           const pItem = rootElement.listItemElement;
+
+           const pNode = rootNode.children()![0];
+           const highlightSpy = sinon.spy(domModel.overlayModel(), 'highlightInOverlay');
+           const hideSpy = sinon.spy(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+
+           // 1. Dispatch mousemove over P item.
+           pItem.dispatchEvent(new MouseEvent('mousemove', {bubbles: true}));
+           sinon.assert.calledWith(highlightSpy, sinon.match({node: pNode}), 'all', true);
+           assert.strictEqual(domTree.hoveredDOMNode(), pNode);
+
+           await UI.Widget.Widget.allUpdatesComplete;
+           assert.isTrue(pItem.classList.contains('hovered'));
+
+           // 2. Dispatch mouseleave on devtools-tree.
+           tree.dispatchEvent(new MouseEvent('mouseleave', {bubbles: true}));
+           sinon.assert.calledOnce(hideSpy);
+           assert.isNull(domTree.hoveredDOMNode());
+
+           await UI.Widget.Widget.allUpdatesComplete;
+           assert.isFalse(pItem.classList.contains('hovered'));
+         } finally {
+           domTree.detach();
+         }
+       });
   });
 });

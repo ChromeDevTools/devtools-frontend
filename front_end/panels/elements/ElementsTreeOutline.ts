@@ -97,6 +97,7 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 export {elementsTreeOutlineStyles};
 
 interface ViewInput {
+  domTreeWidget?: DOMTreeWidget;
   rootDOMNode: SDK.DOMModel.DOMNode|null;
   omitRootDOMNode: boolean;
   selectEnabled: boolean;
@@ -115,6 +116,7 @@ interface ViewInput {
   preventTabOrder: boolean;
   deindentSingleNode: boolean;
   currentHighlightedNode: SDK.DOMModel.DOMNode|null;
+  hoveredNode?: SDK.DOMModel.DOMNode|null;
 
   selectedNode: SDK.DOMModel.DOMNode|null;
 
@@ -127,6 +129,8 @@ interface ViewInput {
   onSelect?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
   onExpand?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
   onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
+  onHoverNode?: (node: SDK.DOMModel.DOMNode, showInfo?: boolean) => void;
+  onLeave?: () => void;
   onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => void;
   onKeyDown?: (event: KeyboardEvent) => void;
   isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
@@ -150,9 +154,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     // FIXME: this is basically a ref to existing imperative
     // implementation. Once this is declarative the ref should not be
     // needed.
-    const elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter,
-                                                        input.maxTreeDepth, input.enableContextMenu, input.showComments,
-                                                        input.showAIButton, input.disableEdits, input.expandRoot);
+    const elementsTreeOutline = new ElementsTreeOutline(
+        input.omitRootDOMNode, input.selectEnabled, input.hideGutter, input.maxTreeDepth, input.enableContextMenu,
+        input.showComments, input.showAIButton, input.disableEdits, input.expandRoot, input.domTreeWidget);
     output.elementsTreeOutline = elementsTreeOutline;
     elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged,
                                          this);
@@ -474,7 +478,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
 
   const renderNode = (node: SDK.DOMModel.DOMNode, depth = 0): Lit.LitTemplate => {
     const isSelected = input.selectedNode === node;
-    const isHovered = input.currentHighlightedNode === node;
+    const isHovered = (input.currentHighlightedNode === node) || (input.hoveredNode === node);
     const isExpanded = Boolean(
         (input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode)) ||
         (input.isNodeExpanded ?
@@ -491,7 +495,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     // TODO: Move multiline/HTML editing (toggleEditAsHTML, MultilineEditorController) from ElementsTreeOutline into DOMTreeWidget.
     // TODO: Move Drag and Drop reordering support (ondragstart, ondragover, ondrop, insertion markers) out of ElementsTreeOutline into a declarative drag-and-drop controller for <devtools-tree>.
     // TODO: Move context menu building (DOMTreeContextMenu, showContextMenu) out of ElementsTreeElement / ElementsTreeOutline to operate directly on SDK.DOMModel.DOMNode and DOMTreeWidget.
-    // TODO: Move overlay hovering (highlightInOverlay, setHoverEffect) and inspect mode synchronization into DOMTreeWidget pointer event handlers.
     // TODO: Move search match highlighting (highlightSearchResults, hideSearchHighlights) and navigation (highlightMatch, scrollIntoViewIfNeeded) into DOMTreeWidget search state.
     // TODO: Move marker decorators and descendant gutter decorations (MarkerDecoratorRegistration, updateDecorations) into declarative state passed to ElementsTreeWidget.
     // TODO: Move TopLayerContainer rendering for top layer elements into a declarative tree element item.
@@ -514,6 +517,12 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
       'in-clipboard': Boolean(input.isNodeInClipboard?.(node)),
     });
 
+    const onMouseMove = (event: MouseEvent): void => {
+      event.stopPropagation();
+      const showInfo = !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
+      input.onHoverNode?.(node, showInfo);
+    };
+
     /* clang-format off */
     return html`
       <li role="treeitem"
@@ -522,6 +531,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           ?open=${isExpanded}
           @select=${onSelect}
           @expand=${onExpand}
+          @mousemove=${onMouseMove}
           jslog=${VisualLogging.treeItem().parent('elementsTreeOutline').track({
             keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
             resize: true,
@@ -557,7 +567,10 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
             ${UI.TreeOutline.ifExpanded(html`
               ${children.map(child => renderNode(child, depth + 1))}
               ${needsClosingTag ? html`
-                <li role="treeitem" jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
+                <li role="treeitem"
+                    class=${classMap({hovered: isHovered})}
+                    jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}
+                    @mousemove=${onMouseMove}>
                   ${UI.Widget.widget(ElementsTreeWidget, {
                     node,
                     isClosingTag: true,
@@ -565,7 +578,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
                     isExpandable: false,
                     selected: false,
                     isDOMNodeSelected: false,
-                    hovered: false,
+                    hovered: isHovered,
                     computeLeftIndent: computeLeftIndent(depth, false),
                     disableEdits: input.disableEdits ?? false,
                     showAIButton: false,
@@ -594,6 +607,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         @clipboard-copy=${(event: Event) => input.onCopyOrCut?.(false, event)}
         @clipboard-cut=${(event: Event) => input.onCopyOrCut?.(true, event)}
         @clipboard-paste=${(event: Event) => input.onPaste?.(event)}
+        @mouseleave=${input.onLeave}
         .template=${html`
           <style>${elementsTreeOutlineStyles}</style>
           <style>${CodeHighlighter.codeHighlighterStyles}</style>
@@ -930,9 +944,43 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     return this.#viewOutput.elementsTreeOutline?.findTreeElement(node) || null;
   }
 
+  #hoveredDOMNode: SDK.DOMModel.DOMNode|null = null;
+
+  hoveredDOMNode(): SDK.DOMModel.DOMNode|null {
+    if (this.#view === DECLARATIVE_VIEW) {
+      return this.#hoveredDOMNode;
+    }
+    const hoveredElement = this.#viewOutput.elementsTreeOutline?.hoveredTreeElement;
+    if (hoveredElement instanceof ElementsTreeElement) {
+      return hoveredElement.node();
+    }
+    return null;
+  }
+
+  setHoveredNode(node: SDK.DOMModel.DOMNode|null, showInfo = true): void {
+    if (this.#hoveredDOMNode === node) {
+      return;
+    }
+    this.#hoveredDOMNode = node;
+    if (node) {
+      const treeElement = this.treeElementForNode(node);
+      const selectorList = treeElement?.isDisplayContents() ? '*' : undefined;
+      node.domModel().overlayModel().highlightInOverlay({node, selectorList}, 'all', showInfo);
+    } else {
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
+    }
+    if (this.#view === DECLARATIVE_VIEW) {
+      this.performUpdate();
+    } else {
+      const treeElement = node ? this.treeElementForNode(node) : null;
+      this.#viewOutput.elementsTreeOutline?.setHoverEffect(treeElement);
+    }
+  }
+
   override performUpdate(): void {
     const firstRender = !this.#viewOutput.elementsTreeOutline;
     this.#view({
+      domTreeWidget: this,
       rootDOMNode: this.#rootDOMNode,
       omitRootDOMNode: this.omitRootDOMNode,
       selectEnabled: this.selectEnabled,
@@ -952,6 +1000,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       deindentSingleNode: this.deindentSingleNode,
 
       currentHighlightedNode: this.#currentHighlightedNode,
+      hoveredNode: this.#hoveredDOMNode,
       selectedNode: this.selectedDOMNode(),
       onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
       onSelectedNodeChanged: event => {
@@ -963,6 +1012,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       },
       onElementExpanded: () => {
         this.#clearHighlightedNode();
+      },
+      onHoverNode: (node: SDK.DOMModel.DOMNode, showInfo?: boolean) => {
+        this.setHoveredNode(node, showInfo);
+      },
+      onLeave: () => {
+        this.setHoveredNode(null);
       },
       onSelect: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => {
         this.selectDOMNode(node, selectedByUser);
@@ -1476,12 +1531,16 @@ export class ElementsTreeOutline extends
   #showAllButton?: HTMLElement;
   domTreeWidget: DOMTreeWidget|null = null;
 
-  constructor(
-      omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean, maxTreeDepth?: number,
-      enableContextMenu?: boolean, showComments?: boolean, showAIButton?: boolean, disableEdits?: boolean,
-      expandRoot?: boolean) {
+  get hoveredTreeElement(): UI.TreeOutline.TreeElement|null {
+    return this.previousHoveredElement ?? null;
+  }
+
+  constructor(omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean, maxTreeDepth?: number,
+              enableContextMenu?: boolean, showComments?: boolean, showAIButton?: boolean, disableEdits?: boolean,
+              expandRoot?: boolean, domTreeWidget?: DOMTreeWidget|null) {
     super();
 
+    this.domTreeWidget = domTreeWidget ?? null;
     this.treeElementByNode = new WeakMap();
     const shadowContainer = document.createElement('div');
     this.shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(
@@ -1918,9 +1977,15 @@ export class ElementsTreeOutline extends
       return;
     }
 
+    const showInfo = !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
+    if (this.domTreeWidget && element instanceof ElementsTreeElement) {
+      this.domTreeWidget.setHoveredNode(element.node(), showInfo);
+      return;
+    }
+
+    this.domTreeWidget?.setHoveredNode(null);
     this.setHoverEffect(element);
-    this.highlightTreeElement(
-        (element as UI.TreeOutline.TreeElement), !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event));
+    this.highlightTreeElement((element as UI.TreeOutline.TreeElement), showInfo);
   }
 
   private highlightTreeElement(element: UI.TreeOutline.TreeElement, showInfo: boolean): void {
@@ -1938,6 +2003,7 @@ export class ElementsTreeOutline extends
   }
 
   private onmouseleave(_event: MouseEvent): void {
+    this.domTreeWidget?.setHoveredNode(null);
     this.setHoverEffect(null);
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
   }

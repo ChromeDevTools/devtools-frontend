@@ -10,7 +10,8 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: 999990;
+    /* Needs to be above regular panel widgets (e.g. flame chart at z-index 2000) but below floating glass panes (which start at z-index 3000). */
+    z-index: 2500;
     overflow: hidden;
     width: 100vw;
     height: 100vh;

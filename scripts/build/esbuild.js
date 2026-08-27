@@ -4,6 +4,7 @@
 
 // @ts-check
 
+import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -39,6 +40,9 @@ const rootDir = rootDirFlagIndex !== -1 ? additionalArgs[rootDirFlagIndex + 1] :
 const rootGenDirFlagIndex = additionalArgs.indexOf('--rootGenDir');
 const rootGenDir = rootGenDirFlagIndex !== -1 ? additionalArgs[rootGenDirFlagIndex + 1] : undefined;
 
+const depfileFlagIndex = additionalArgs.indexOf('--depfile');
+const depfile = depfileFlagIndex !== -1 ? additionalArgs[depfileFlagIndex + 1] : undefined;
+
 const outdir = path.dirname(outfile);
 const genRoot = rootGenDir ? path.resolve(rootGenDir) : path.join(devtoolsRootPath(), 'out', 'Default', 'gen');
 const root = rootDir ? path.resolve(rootDir) : devtoolsRootPath();
@@ -52,7 +56,7 @@ const plugin = {
 };
 
 try {
-  await esbuild.build({
+  const result = await esbuild.build({
     entryPoints,
     outfile,
     bundle: true,
@@ -61,7 +65,20 @@ try {
     plugins: [plugin],
     sourcemap: useSourceMaps,
     minify,
+    metafile: Boolean(depfile),
   });
+
+  if (depfile && result.metafile) {
+    const cwd = process.cwd();
+    const inputs = Object.keys(result.metafile.inputs).map(inputFile => {
+      const absPath = path.isAbsolute(inputFile) ? inputFile : path.resolve(cwd, inputFile);
+      return path.relative(cwd, absPath).replaceAll('\\', '/');
+    });
+
+    const normalizedOutfile = outfile.replaceAll('\\', '/');
+    const depfileContent = `${normalizedOutfile}: ${inputs.join(' ')}\n`;
+    await fs.promises.writeFile(depfile, depfileContent, 'utf-8');
+  }
 } catch (err) {
   console.error('Failed to run esbuild:', err);
   console.error(

@@ -32,6 +32,9 @@ template("bundle") {
       inputs += [ _esbuild ]
     }
 
+    _depfile = "$target_gen_dir/$target_name.d"
+    depfile = _depfile
+
     args = [
       rebase_path(invoker.entrypoint, root_build_dir),
       rebase_path(invoker.output_file_location, root_build_dir),
@@ -40,6 +43,8 @@ template("bundle") {
       "--rootGenDir",
       rebase_path(root_gen_dir, root_build_dir),
       "--configSourcemaps",
+      "--depfile",
+      rebase_path(_depfile, root_build_dir),
     ]
 
     if (!is_debug) {

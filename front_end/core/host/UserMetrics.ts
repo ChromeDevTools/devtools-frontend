@@ -340,121 +340,135 @@ function createDynamicEnumProxy<T extends object>(enumName: string, fallbackEnum
 }
 
 export type Action = Enums.Action;
-export const Action = createDynamicEnumProxy<typeof Enums.Action>('Action', Enums.Action);
+export const Action: typeof Enums.Action = createDynamicEnumProxy<typeof Enums.Action>('Action', Enums.Action);
 
 export type PanelCodes = Enums.PanelCodes;
-export const PanelCodes = createDynamicEnumProxy<typeof Enums.PanelCodes>('PanelCodes', Enums.PanelCodes);
+export const PanelCodes: typeof Enums.PanelCodes =
+    createDynamicEnumProxy<typeof Enums.PanelCodes>('PanelCodes', Enums.PanelCodes);
 
 export type MediaTypes = Enums.MediaTypes;
-export const MediaTypes = createDynamicEnumProxy<typeof Enums.MediaTypes>('MediaTypes', Enums.MediaTypes);
+export const MediaTypes: typeof Enums.MediaTypes =
+    createDynamicEnumProxy<typeof Enums.MediaTypes>('MediaTypes', Enums.MediaTypes);
 
 export type KeybindSetSettings = Enums.KeybindSetSettings;
-export const KeybindSetSettings =
+export const KeybindSetSettings: typeof Enums.KeybindSetSettings =
     createDynamicEnumProxy<typeof Enums.KeybindSetSettings>('KeybindSetSettings', Enums.KeybindSetSettings);
 
 export type KeyboardShortcutAction = Enums.KeyboardShortcutAction;
-export const KeyboardShortcutAction =
+export const KeyboardShortcutAction: typeof Enums.KeyboardShortcutAction =
     createDynamicEnumProxy<typeof Enums.KeyboardShortcutAction>('KeyboardShortcutAction', Enums.KeyboardShortcutAction);
 
 export type IssueOpener = Enums.IssueOpener;
-export const IssueOpener = createDynamicEnumProxy<typeof Enums.IssueOpener>('IssueOpener', Enums.IssueOpener);
+export const IssueOpener: typeof Enums.IssueOpener =
+    createDynamicEnumProxy<typeof Enums.IssueOpener>('IssueOpener', Enums.IssueOpener);
 
 export type DevtoolsExperiments = Enums.DevtoolsExperiments;
-export const DevtoolsExperiments =
+export const DevtoolsExperiments: typeof Enums.DevtoolsExperiments =
     createDynamicEnumProxy<typeof Enums.DevtoolsExperiments>('DevtoolsExperiments', Enums.DevtoolsExperiments);
 
 export type IssueExpanded = Enums.IssueExpanded;
-export const IssueExpanded = createDynamicEnumProxy<typeof Enums.IssueExpanded>('IssueExpanded', Enums.IssueExpanded);
+export const IssueExpanded: typeof Enums.IssueExpanded =
+    createDynamicEnumProxy<typeof Enums.IssueExpanded>('IssueExpanded', Enums.IssueExpanded);
 
 export type IssueResourceOpened = Enums.IssueResourceOpened;
-export const IssueResourceOpened =
+export const IssueResourceOpened: typeof Enums.IssueResourceOpened =
     createDynamicEnumProxy<typeof Enums.IssueResourceOpened>('IssueResourceOpened', Enums.IssueResourceOpened);
 
 export type IssueCreated = Enums.IssueCreated;
-export const IssueCreated = createDynamicEnumProxy<typeof Enums.IssueCreated>('IssueCreated', Enums.IssueCreated);
+export const IssueCreated: typeof Enums.IssueCreated =
+    createDynamicEnumProxy<typeof Enums.IssueCreated>('IssueCreated', Enums.IssueCreated);
 
 export type DeveloperResourceLoaded = Enums.DeveloperResourceLoaded;
-export const DeveloperResourceLoaded = createDynamicEnumProxy<typeof Enums.DeveloperResourceLoaded>(
-    'DeveloperResourceLoaded', Enums.DeveloperResourceLoaded);
+export const DeveloperResourceLoaded: typeof Enums.DeveloperResourceLoaded =
+    createDynamicEnumProxy<typeof Enums.DeveloperResourceLoaded>('DeveloperResourceLoaded',
+                                                                 Enums.DeveloperResourceLoaded);
 
 export type DeveloperResourceScheme = Enums.DeveloperResourceScheme;
-export const DeveloperResourceScheme = createDynamicEnumProxy<typeof Enums.DeveloperResourceScheme>(
-    'DeveloperResourceScheme', Enums.DeveloperResourceScheme);
+export const DeveloperResourceScheme: typeof Enums.DeveloperResourceScheme =
+    createDynamicEnumProxy<typeof Enums.DeveloperResourceScheme>('DeveloperResourceScheme',
+                                                                 Enums.DeveloperResourceScheme);
 
 export type Language = Enums.Language;
-export const Language = createDynamicEnumProxy<typeof Enums.Language>('Language', Enums.Language);
+export const Language: typeof Enums.Language =
+    createDynamicEnumProxy<typeof Enums.Language>('Language', Enums.Language);
 
 export type SyncSetting = Enums.SyncSetting;
-export const SyncSetting = createDynamicEnumProxy<typeof Enums.SyncSetting>('SyncSetting', Enums.SyncSetting);
+export const SyncSetting: typeof Enums.SyncSetting =
+    createDynamicEnumProxy<typeof Enums.SyncSetting>('SyncSetting', Enums.SyncSetting);
 
 export type RecordingToggled = Enums.RecordingToggled;
-export const RecordingToggled =
+export const RecordingToggled: typeof Enums.RecordingToggled =
     createDynamicEnumProxy<typeof Enums.RecordingToggled>('RecordingToggled', Enums.RecordingToggled);
 
 export type RecordingAssertion = Enums.RecordingAssertion;
-export const RecordingAssertion =
+export const RecordingAssertion: typeof Enums.RecordingAssertion =
     createDynamicEnumProxy<typeof Enums.RecordingAssertion>('RecordingAssertion', Enums.RecordingAssertion);
 
 export type RecordingReplayFinished = Enums.RecordingReplayFinished;
-export const RecordingReplayFinished = createDynamicEnumProxy<typeof Enums.RecordingReplayFinished>(
-    'RecordingReplayFinished', Enums.RecordingReplayFinished);
+export const RecordingReplayFinished: typeof Enums.RecordingReplayFinished =
+    createDynamicEnumProxy<typeof Enums.RecordingReplayFinished>('RecordingReplayFinished',
+                                                                 Enums.RecordingReplayFinished);
 
 export type RecordingReplaySpeed = Enums.RecordingReplaySpeed;
-export const RecordingReplaySpeed =
+export const RecordingReplaySpeed: typeof Enums.RecordingReplaySpeed =
     createDynamicEnumProxy<typeof Enums.RecordingReplaySpeed>('RecordingReplaySpeed', Enums.RecordingReplaySpeed);
 
 export type RecordingReplayStarted = Enums.RecordingReplayStarted;
-export const RecordingReplayStarted =
+export const RecordingReplayStarted: typeof Enums.RecordingReplayStarted =
     createDynamicEnumProxy<typeof Enums.RecordingReplayStarted>('RecordingReplayStarted', Enums.RecordingReplayStarted);
 
 export type RecordingEdited = Enums.RecordingEdited;
-export const RecordingEdited =
+export const RecordingEdited: typeof Enums.RecordingEdited =
     createDynamicEnumProxy<typeof Enums.RecordingEdited>('RecordingEdited', Enums.RecordingEdited);
 
 export type RecordingExported = Enums.RecordingExported;
-export const RecordingExported =
+export const RecordingExported: typeof Enums.RecordingExported =
     createDynamicEnumProxy<typeof Enums.RecordingExported>('RecordingExported', Enums.RecordingExported);
 
 export type RecordingCodeToggled = Enums.RecordingCodeToggled;
-export const RecordingCodeToggled =
+export const RecordingCodeToggled: typeof Enums.RecordingCodeToggled =
     createDynamicEnumProxy<typeof Enums.RecordingCodeToggled>('RecordingCodeToggled', Enums.RecordingCodeToggled);
 
 export type RecordingCopiedToClipboard = Enums.RecordingCopiedToClipboard;
-export const RecordingCopiedToClipboard = createDynamicEnumProxy<typeof Enums.RecordingCopiedToClipboard>(
-    'RecordingCopiedToClipboard', Enums.RecordingCopiedToClipboard);
+export const RecordingCopiedToClipboard: typeof Enums.RecordingCopiedToClipboard =
+    createDynamicEnumProxy<typeof Enums.RecordingCopiedToClipboard>('RecordingCopiedToClipboard',
+                                                                    Enums.RecordingCopiedToClipboard);
 
 export type ManifestSectionCodes = Enums.ManifestSectionCodes;
-export const ManifestSectionCodes =
+export const ManifestSectionCodes: typeof Enums.ManifestSectionCodes =
     createDynamicEnumProxy<typeof Enums.ManifestSectionCodes>('ManifestSectionCodes', Enums.ManifestSectionCodes);
 
 export type LighthouseModeRun = Enums.LighthouseModeRun;
-export const LighthouseModeRun =
+export const LighthouseModeRun: typeof Enums.LighthouseModeRun =
     createDynamicEnumProxy<typeof Enums.LighthouseModeRun>('LighthouseModeRun', Enums.LighthouseModeRun);
 
 export type LighthouseCategoryUsed = Enums.LighthouseCategoryUsed;
-export const LighthouseCategoryUsed =
+export const LighthouseCategoryUsed: typeof Enums.LighthouseCategoryUsed =
     createDynamicEnumProxy<typeof Enums.LighthouseCategoryUsed>('LighthouseCategoryUsed', Enums.LighthouseCategoryUsed);
 
 export type SwatchType = Enums.SwatchType;
-export const SwatchType = createDynamicEnumProxy<typeof Enums.SwatchType>('SwatchType', Enums.SwatchType);
+export const SwatchType: typeof Enums.SwatchType =
+    createDynamicEnumProxy<typeof Enums.SwatchType>('SwatchType', Enums.SwatchType);
 
 export type BadgeType = Enums.BadgeType;
-export const BadgeType = createDynamicEnumProxy<typeof Enums.BadgeType>('BadgeType', Enums.BadgeType);
+export const BadgeType: typeof Enums.BadgeType =
+    createDynamicEnumProxy<typeof Enums.BadgeType>('BadgeType', Enums.BadgeType);
 
 export type AnimationsPlaybackRate = Enums.AnimationsPlaybackRate;
-export const AnimationsPlaybackRate =
+export const AnimationsPlaybackRate: typeof Enums.AnimationsPlaybackRate =
     createDynamicEnumProxy<typeof Enums.AnimationsPlaybackRate>('AnimationsPlaybackRate', Enums.AnimationsPlaybackRate);
 
 export type TimelineNavigationSetting = Enums.TimelineNavigationSetting;
-export const TimelineNavigationSetting = createDynamicEnumProxy<typeof Enums.TimelineNavigationSetting>(
-    'TimelineNavigationSetting', Enums.TimelineNavigationSetting);
+export const TimelineNavigationSetting: typeof Enums.TimelineNavigationSetting =
+    createDynamicEnumProxy<typeof Enums.TimelineNavigationSetting>('TimelineNavigationSetting',
+                                                                   Enums.TimelineNavigationSetting);
 
 export type BuiltInAiAvailability = Enums.BuiltInAiAvailability;
-export const BuiltInAiAvailability =
+export const BuiltInAiAvailability: typeof Enums.BuiltInAiAvailability =
     createDynamicEnumProxy<typeof Enums.BuiltInAiAvailability>('BuiltInAiAvailability', Enums.BuiltInAiAvailability);
 
 export type ResendRequestType = Enums.ResendRequestType;
-export const ResendRequestType =
+export const ResendRequestType: typeof Enums.ResendRequestType =
     createDynamicEnumProxy<typeof Enums.ResendRequestType>('ResendRequestType', Enums.ResendRequestType);
 
 const resendRequestTypeMap = new Map<Common.ResourceType.ResourceType, keyof typeof Enums.ResendRequestType>([

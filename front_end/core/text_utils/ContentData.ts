@@ -282,6 +282,6 @@ export class ContentData {
   }
 }
 
-export const EMPTY_TEXT_CONTENT_DATA = new ContentData('', /* isBase64 */ false, 'text/plain');
+export const EMPTY_TEXT_CONTENT_DATA: ContentData = new ContentData('', /* isBase64 */ false, 'text/plain');
 
 export type ContentDataOrError = ContentData|{error: string};

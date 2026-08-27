@@ -42,7 +42,7 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export const EventDescriptors = [
+export const EventDescriptors: ReadonlyArray<readonly[Events, readonly string[], boolean?]> = [
   [Events.AppendedToURL, ['url']],
   [Events.CanceledSaveURL, ['url']],
   [Events.ColorThemeChanged, []],
@@ -60,7 +60,7 @@ export const EventDescriptors = [
   [Events.FileSystemRemoved, ['fileSystemPath']],
   [Events.FileSystemAdded, ['errorMessage', 'fileSystem']],
   [Events.FileSystemFilesChangedAddedRemoved, ['changed', 'added', 'removed']],
-  [Events.IndexingTotalWorkCalculated, , ['requestId', 'fileSystemPath', 'totalWork']],
+  [Events.IndexingTotalWorkCalculated, ['requestId', 'fileSystemPath', 'totalWork']],
   [Events.IndexingWorked, ['requestId', 'fileSystemPath', 'worked']],
   [Events.IndexingDone, ['requestId', 'fileSystemPath']],
   [Events.KeyEventUnhandled, ['event']],

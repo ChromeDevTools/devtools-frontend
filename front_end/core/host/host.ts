@@ -28,4 +28,4 @@ export {
   UserMetrics,
 };
 
-export const userMetrics = new UserMetrics.UserMetrics();
+export const userMetrics: UserMetrics.UserMetrics = new UserMetrics.UserMetrics();

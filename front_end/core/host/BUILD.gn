@@ -6,6 +6,7 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("host") {
+  split_compilation = true
   sources = [
     "AidaClient.ts",
     "AidaClientTypes.ts",
@@ -23,7 +24,7 @@ devtools_module("host") {
     "UserMetricsEnums.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
@@ -32,15 +33,17 @@ devtools_module("host") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "host.ts"
 
-  deps = [ ":host" ]
+  ts_deps = [ ":host" ]
 
   visibility = [ "*" ]
 }
 
 devtools_foundation_module("foundation_unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "AidaClient.test.ts",
@@ -50,7 +53,7 @@ devtools_foundation_module("foundation_unittests") {
     "GdpClient.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../testing",
     "../common:bundle",

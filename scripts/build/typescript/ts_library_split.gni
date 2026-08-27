@@ -116,7 +116,7 @@ template("ts_library_split") {
   _tsconfig_file = "$target_gen_dir/$_tsconfig_name-tsconfig.json"
   _js_target = "${target_name}_checked"
 
-  _all_sources = invoker.sources
+  _all_sources = invoker.sources + typescript_global_definition_files
   if (defined(invoker.additional_type_definitions)) {
     _all_sources += invoker.additional_type_definitions
   }

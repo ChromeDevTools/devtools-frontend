@@ -65,10 +65,11 @@ type ReadonlyEventParameterNames = ReadonlyMap<QualifiedName, string[]>;
 type CommandParameter = InspectorBackendCommands.CommandParameter;
 
 export class InspectorBackend implements InspectorBackendCommands.InspectorBackendAPI {
-  readonly agentPrototypes = new Map<ProtocolDomainName, AgentPrototype>();
-  #eventParameterNamesForDomain = new Map<ProtocolDomainName, EventParameterNames>();
-  readonly typeMap = new Map<QualifiedName, CommandParameter[]>();
-  readonly enumMap = new Map<QualifiedName, Record<string, string>>();
+  readonly agentPrototypes: Map<ProtocolDomainName, AgentPrototype> = new Map<ProtocolDomainName, AgentPrototype>();
+  #eventParameterNamesForDomain: Map<ProtocolDomainName, EventParameterNames> =
+      new Map<ProtocolDomainName, EventParameterNames>();
+  readonly typeMap: Map<QualifiedName, CommandParameter[]> = new Map<QualifiedName, CommandParameter[]>();
+  readonly enumMap: Map<QualifiedName, Record<string, string>> = new Map<QualifiedName, Record<string, string>>();
 
   constructor() {
     // Create the global here because registering commands will involve putting
@@ -673,7 +674,7 @@ const IGNORED_ERRORS = new Set<CDPErrorStatus>([
  * The reasons this is done is so that on the prototypes we can install the implementations
  * of the invoke_enable, etc. methods that the front-end uses.
  */
-class AgentPrototype {
+export class AgentPrototype {
   description = '';
   metadata: Record<string, {parameters: CommandParameter[], description: string, replyArgs: string[]}>;
   readonly domain: string;
@@ -773,4 +774,4 @@ class DispatcherManager<Domain extends ProtocolDomainName> {
   }
 }
 
-export const inspectorBackend = new InspectorBackend();
+export const inspectorBackend: InspectorBackend = new InspectorBackend();

@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_foundation_module("protocol_client") {
+  split_compilation = true
   sources = [
     "CDPConnection.ts",
     "ConnectionTransport.ts",
@@ -14,7 +15,7 @@ devtools_foundation_module("protocol_client") {
     "InspectorBackend.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../generated",
     "../../generated:protocol",
     "../platform:bundle",
@@ -24,31 +25,34 @@ devtools_foundation_module("protocol_client") {
 # TODO: We keep PuppeteerDevToolsConnection in a separate target because node
 # types will leak into the rest of DevTools compilation otherwise!
 devtools_foundation_module("puppeteer_devtools_connection") {
+  split_compilation = true
   sources = [ "PuppeteerDevToolsConnection.ts" ]
 
-  deps = [
+  ts_deps = [
     ":protocol_client",
     "../../third_party/puppeteer:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "protocol_client.ts"
 
-  deps = [ ":protocol_client" ]
+  ts_deps = [ ":protocol_client" ]
 
   visibility = [ "*" ]
 }
 
 devtools_foundation_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "InspectorBackend.test.ts",
     "PuppeteerDevToolsConnection.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     ":puppeteer_devtools_connection",
     "../../generated:protocol",

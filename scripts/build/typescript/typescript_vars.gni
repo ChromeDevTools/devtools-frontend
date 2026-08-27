@@ -147,6 +147,12 @@ typescript_node_types_inputs = [
   devtools_location_prepend + "node_modules/undici-types/index.d.ts",
 ]
 
+typescript_global_definition_files = [
+  devtools_location_prepend + "front_end/legacy/legacy-defs.d.ts",
+  devtools_location_prepend + "front_end/global_typings/global_defs.d.ts",
+  devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
+]
+
 default_ts_base_libs = [
   "ES2023",
   "ES2024.Promise",

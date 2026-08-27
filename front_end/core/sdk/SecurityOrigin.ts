@@ -25,4 +25,8 @@ export class SecurityOrigin {
     }
     return this.#urlOrigin === other.#urlOrigin && this.#urlOrigin !== undefined;
   }
+
+  siteId(): string {
+    return this.#opaqueUuid ?? (this.#urlOrigin ?? 'unknown-origin');
+  }
 }

@@ -68,6 +68,28 @@ describe('CompilerScriptMapping', () => {
     ]);
   });
 
+  it('assigns the script network origin to the compiled source project and id', async () => {
+    const target = backend.createTarget();
+
+    const sourceRoot = 'http://example.com';
+    const sources = ['foo.ts'];
+    const scriptInfo = {
+      url: 'http://attacker.com/bundle.js',
+      embedderName: 'http://attacker.com/bundle.js',
+      content: '1;\n',
+    };
+    const sourceMapInfo = {url: `${scriptInfo.url}.map`, content: {version: 3, mappings: '', sourceRoot, sources}};
+
+    const [uiSourceCode] = await Promise.all([
+      waitForUISourceCodeAdded(`${sourceRoot}/foo.ts`, target),
+      backend.addScript(target, scriptInfo, sourceMapInfo),
+    ]);
+
+    const project = uiSourceCode.project();
+    assert.strictEqual(project.securityOrigin()?.siteId(), 'http://attacker.com');
+    assert.isTrue(project.id().includes('http://attacker.com'));
+  });
+
   it('removes webpack hashes from display names', async () => {
     const target = backend.createTarget();
 

@@ -758,5 +758,144 @@ describeWithEnvironment('DOMTreeWidget', () => {
            domTree.detach();
          }
        });
+
+    it('supports copying paths (CSS path, JS path, XPath, full XPath, outerHTML) and styles in DOMTreeWidget',
+       async () => {
+         SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+         sinon.stub(domModel, 'requestDocument').resolves(null);
+         const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'DIV',
+             children: [
+               {nodeId: 2, nodeName: 'P', attributes: ['id', 'test-p']},
+             ],
+           });
+           domTree.rootDOMNode = rootNode;
+           domTree.expandRoot = true;
+           domTree.performUpdate();
+
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           const pNode = rootNode.children()![0];
+           const copyTextStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
+
+           // 1. Copy CSS path
+           domTree.copyCSSPath(pNode);
+           sinon.assert.calledWith(copyTextStub, sinon.match('#test-p'));
+
+           // 2. Copy JS path
+           copyTextStub.resetHistory();
+           domTree.copyJSPath(pNode);
+           sinon.assert.calledWith(copyTextStub, sinon.match('document.querySelector'));
+
+           // 3. Copy XPath
+           copyTextStub.resetHistory();
+           domTree.copyXPath(pNode);
+           sinon.assert.calledWith(copyTextStub, '//*[@id="test-p"]');
+
+           // 4. Copy full XPath
+           copyTextStub.resetHistory();
+           domTree.copyFullXPath(pNode);
+           sinon.assert.calledWith(copyTextStub, sinon.match('/p'));
+
+           // 5. Copy outer HTML
+           copyTextStub.resetHistory();
+           sinon.stub(pNode, 'getOuterHTML').resolves('<p id="test-p"></p>');
+           await domTree.copyOuterHTML(pNode);
+           sinon.assert.calledWith(copyTextStub, '<p id="test-p"></p>');
+
+           // 6. Copy styles
+           const cssModel = domModel.cssModel();
+           sinon.stub(cssModel, 'cachedMatchedCascadeForNode').resolves(null);
+           await domTree.copyStyles(pNode);
+         } finally {
+           domTree.detach();
+         }
+       });
+
+    it('handles clipboard operations (cut, copy, paste, .in-clipboard styling, and events) in declarative view',
+       async () => {
+         SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+         sinon.stub(domModel, 'requestDocument').resolves(null);
+         const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'DIV',
+             children: [
+               {nodeId: 2, nodeName: 'P'},
+               {nodeId: 3, nodeName: 'SPAN'},
+             ],
+           });
+           domTree.rootDOMNode = rootNode;
+           domTree.setNodeExpanded(rootNode, true);
+           domTree.expandRoot = true;
+           domTree.performUpdate();
+
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           const pNode = rootNode.children()![0];
+           const spanNode = rootNode.children()![1];
+
+           sinon.stub(pNode, 'getOuterHTML').resolves('<p></p>');
+           sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
+
+           // 1. Cut pNode: verify clipboard state and in-clipboard class
+           domTree.performCopyOrCut(/* isCut= */ true, pNode);
+           assert.isTrue(domTree.isNodeInClipboard(pNode));
+           assert.isFalse(domTree.isNodeInClipboard(spanNode));
+
+           await UI.Widget.Widget.allUpdatesComplete;
+           const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+           assert.exists(tree);
+
+           const internalTree = tree.getInternalTreeOutlineForTest();
+           const rootTreeElements = internalTree.rootElement().children();
+           const pTreeElement = rootTreeElements[0].children()[0];
+           assert.isTrue(pTreeElement.listItemElement.classList.contains('in-clipboard'));
+
+           // 2. Paste cut pNode into spanNode
+           assert.isTrue(domTree.canPaste(spanNode));
+           const moveToSpy = sinon.spy(pNode, 'moveTo');
+           domTree.pasteNode(spanNode);
+           sinon.assert.calledOnce(moveToSpy);
+           assert.isNull(domTree.clipboardData());
+
+           // 3. Copy pNode (not cut)
+           domTree.performCopyOrCut(/* isCut= */ false, pNode);
+           assert.isFalse(domTree.isNodeInClipboard(pNode));
+           assert.isTrue(domTree.canPaste(spanNode));
+           const copyToSpy = sinon.spy(pNode, 'copyTo');
+           domTree.pasteNode(spanNode);
+           sinon.assert.calledOnce(copyToSpy);
+
+           // 4. Reset clipboard on removed node
+           domTree.setClipboardData({node: pNode, isCut: true});
+           assert.isTrue(domTree.isNodeInClipboard(pNode));
+           domTree.resetClipboardIfNeeded(pNode);
+           assert.isFalse(domTree.isNodeInClipboard(pNode));
+
+           // 5. Test clipboard events dispatched on <devtools-tree>
+           domTree.selectDOMNode(pNode);
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           const cutEvent = new CustomEvent('clipboard-cut', {bubbles: true});
+           Object.defineProperty(cutEvent, 'target', {value: tree});
+           tree.dispatchEvent(cutEvent);
+           assert.isTrue(domTree.isNodeInClipboard(pNode));
+
+           const pasteEvent = new CustomEvent('clipboard-paste', {bubbles: true});
+           Object.defineProperty(pasteEvent, 'target', {value: tree});
+           domTree.selectDOMNode(spanNode);
+           tree.dispatchEvent(pasteEvent);
+           sinon.assert.calledTwice(moveToSpy);
+         } finally {
+           domTree.detach();
+         }
+       });
   });
 });

@@ -35,6 +35,7 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Badges from '../../models/badges/badges.js';
@@ -48,6 +49,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement} from './AdoptedStyleSheetTreeElement.js';
+import {cssPath, jsPath, xPath} from './DOMPath.js';
 import {showContextMenu} from './DOMTreeContextMenu.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {
@@ -63,7 +65,7 @@ import type {MarkerDecoratorRegistration} from './MarkerDecorator.js';
 import {ShortcutTreeElement} from './ShortcutTreeElement.js';
 import {TopLayerContainer} from './TopLayerContainer.js';
 
-const {html, nothing, render} = Lit;
+const {html, nothing, render, Directives: {classMap}} = Lit;
 
 const UIStrings = {
   /**
@@ -130,6 +132,9 @@ interface ViewInput {
   isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
   onDuplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
   isNodeExpanded?: (node: SDK.DOMModel.DOMNode) => boolean;
+  isNodeInClipboard?: (node: SDK.DOMModel.DOMNode) => boolean;
+  onCopyOrCut?: (isCut: boolean, event: Event) => void;
+  onPaste?: (event: Event) => void;
 }
 
 interface ViewOutput {
@@ -169,6 +174,15 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     }, false);
     elementsTreeOutline.elementInternal.addEventListener('keydown', (event: KeyboardEvent) => {
       input.onKeyDown?.(event);
+    }, false);
+    elementsTreeOutline.elementInternal.addEventListener('clipboard-copy', (event: Event) => {
+      input.onCopyOrCut?.(false, event);
+    }, false);
+    elementsTreeOutline.elementInternal.addEventListener('clipboard-cut', (event: Event) => {
+      input.onCopyOrCut?.(true, event);
+    }, false);
+    elementsTreeOutline.elementInternal.addEventListener('clipboard-paste', (event: Event) => {
+      input.onPaste?.(event);
     }, false);
     output.imagePreviewPopover = new ImagePreviewPopover(
         elementsTreeOutline.contentElement,
@@ -476,7 +490,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     // TODO: Move in-place editing (startEditingAttribute, startEditingTextNode, InplaceEditor) out of ElementsTreeElement into ElementsTreeWidget and DOMTreeWidget.
     // TODO: Move multiline/HTML editing (toggleEditAsHTML, MultilineEditorController) from ElementsTreeOutline into DOMTreeWidget.
     // TODO: Move Drag and Drop reordering support (ondragstart, ondragover, ondrop, insertion markers) out of ElementsTreeOutline into a declarative drag-and-drop controller for <devtools-tree>.
-    // TODO: Move clipboard actions (Copy outerHTML, Copy JS Path, Copy CSS Selector, Copy XPath, Cut, Paste, clipboard state styling) into DOMTreeWidget.
     // TODO: Move context menu building (DOMTreeContextMenu, showContextMenu) out of ElementsTreeElement / ElementsTreeOutline to operate directly on SDK.DOMModel.DOMNode and DOMTreeWidget.
     // TODO: Move overlay hovering (highlightInOverlay, setHoverEffect) and inspect mode synchronization into DOMTreeWidget pointer event handlers.
     // TODO: Move search match highlighting (highlightSearchResults, hideSearchHighlights) and navigation (highlightMatch, scrollIntoViewIfNeeded) into DOMTreeWidget search state.
@@ -496,11 +509,16 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
       input.onExpand?.(node, event.detail.expanded);
     };
 
+    const classes = classMap({
+      hovered: isHovered,
+      'in-clipboard': Boolean(input.isNodeInClipboard?.(node)),
+    });
+
     /* clang-format off */
     return html`
       <li role="treeitem"
           ?selected=${isSelected}
-          class=${isHovered ? 'hovered' : ''}
+          class=${classes}
           ?open=${isExpanded}
           @select=${onSelect}
           @expand=${onExpand}
@@ -518,6 +536,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           selected: isSelected,
           isDOMNodeSelected: isSelected,
           hovered: isHovered,
+          inClipboard: input.isNodeInClipboard?.(node) ?? false,
           computeLeftIndent: computeLeftIndent(depth, hasChildren),
           disableEdits: input.disableEdits ?? false,
           showAIButton: input.showAIButton ?? true,
@@ -527,7 +546,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
             return Promise.resolve();
           },
           isToggledToHidden: (n: SDK.DOMModel.DOMNode) => input.isToggledToHidden?.(n) ?? false,
-          duplicateNode: (n: SDK.DOMModel.DOMNode) => input.onDuplicateNode?.(n),
           showContextMenu: (event: Event) => {
             if (event instanceof MouseEvent) {
               input.onContextMenu?.(node, event);
@@ -573,6 +591,9 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         jslog=${VisualLogging.tree('elements')}
         ?show-selection-on-keyboard-focus=${input.showSelectionOnKeyboardFocus}
         @keydown=${input.onKeyDown}
+        @clipboard-copy=${(event: Event) => input.onCopyOrCut?.(false, event)}
+        @clipboard-cut=${(event: Event) => input.onCopyOrCut?.(true, event)}
+        @clipboard-paste=${(event: Event) => input.onPaste?.(event)}
         .template=${html`
           <style>${elementsTreeOutlineStyles}</style>
           <style>${CodeHighlighter.codeHighlighterStyles}</style>
@@ -972,8 +993,20 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       isNodeExpanded: (node: SDK.DOMModel.DOMNode) => {
         return this.isNodeExpanded(node);
       },
+      isNodeInClipboard: (node: SDK.DOMModel.DOMNode) => {
+        return this.isNodeInClipboard(node);
+      },
+      onCopyOrCut: (isCut: boolean, event: Event) => {
+        this.onCopyOrCut(isCut, event);
+      },
+      onPaste: (event: Event) => {
+        this.onPaste(event);
+      },
     },
                this.#viewOutput, this.contentElement);
+    if (this.#viewOutput.elementsTreeOutline) {
+      this.#viewOutput.elementsTreeOutline.domTreeWidget = this;
+    }
     if (firstRender && this.#viewOutput.elementsTreeOutline) {
       this.#viewOutput.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
         this.maxRows = undefined;
@@ -1167,8 +1200,183 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     return false;
   }
 
-  copyStyles(node: SDK.DOMModel.DOMNode): void {
-    void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.copyStyles();
+  #clipboardData: ClipboardData|null = null;
+
+  clipboardData(): ClipboardData|null {
+    return this.#clipboardData;
+  }
+
+  setClipboardData(data: ClipboardData|null): void {
+    if (this.#clipboardData) {
+      const prevTreeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(this.#clipboardData.node);
+      if (prevTreeElement) {
+        prevTreeElement.setInClipboard(false);
+      }
+      this.#clipboardData = null;
+    }
+
+    if (data) {
+      const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(data.node);
+      if (treeElement) {
+        treeElement.setInClipboard(true);
+      }
+      this.#clipboardData = data;
+    }
+    this.requestUpdate();
+  }
+
+  resetClipboardIfNeeded(removedNode: SDK.DOMModel.DOMNode): void {
+    if (this.#clipboardData?.node === removedNode) {
+      this.setClipboardData(null);
+    }
+  }
+
+  isNodeInClipboard(node: SDK.DOMModel.DOMNode): boolean {
+    return Boolean(this.#clipboardData?.isCut && this.#clipboardData?.node === node);
+  }
+
+  async copyOuterHTML(node: SDK.DOMModel.DOMNode, includeShadowRoots = false): Promise<void> {
+    const outerHTML = await node.getOuterHTML(includeShadowRoots);
+    if (outerHTML !== null) {
+      UI.UIUtils.copyTextToClipboard(outerHTML);
+    }
+  }
+
+  copyCSSPath(node: SDK.DOMModel.DOMNode): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssPath(node, true));
+  }
+
+  copyJSPath(node: SDK.DOMModel.DOMNode): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(jsPath(node, true));
+  }
+
+  copyXPath(node: SDK.DOMModel.DOMNode, optimized = true): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(node, optimized));
+  }
+
+  copyFullXPath(node: SDK.DOMModel.DOMNode): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(node, false));
+  }
+
+  async copyStyles(node: SDK.DOMModel.DOMNode): Promise<void> {
+    const cssModel = node.domModel().cssModel();
+    const cascade = await cssModel.cachedMatchedCascadeForNode(node);
+    if (!cascade) {
+      return;
+    }
+
+    const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
+    const lines: string[] = [];
+    for (const style of cascade.nodeStyles().reverse()) {
+      for (const property of style.leadingProperties()) {
+        if (!property.parsedOk || property.disabled || !property.activeInStyle() || property.implicit) {
+          continue;
+        }
+        if (cascade.isInherited(style) && !SDK.CSSMetadata.cssMetadata().isPropertyInherited(property.name)) {
+          continue;
+        }
+        if (style.parentRule?.isUserAgent()) {
+          continue;
+        }
+        if (cascade.propertyState(property) !== SDK.CSSMatchedStyles.PropertyState.ACTIVE) {
+          continue;
+        }
+        lines.push(`${indent}${property.name}: ${property.value};`);
+      }
+    }
+
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(lines.join('\n'));
+  }
+
+  performCopyOrCut(isCut: boolean, node: SDK.DOMModel.DOMNode|null, includeShadowRoots = false): void {
+    if (!node) {
+      return;
+    }
+    if (isCut && (node.isShadowRoot() || node.ancestorUserAgentShadowRoot())) {
+      return;
+    }
+    void this.copyOuterHTML(node, includeShadowRoots);
+    this.setClipboardData({node, isCut});
+  }
+
+  canPaste(targetNode: SDK.DOMModel.DOMNode): boolean {
+    if (targetNode.isShadowRoot() || targetNode.ancestorUserAgentShadowRoot()) {
+      return false;
+    }
+
+    if (!this.#clipboardData) {
+      return false;
+    }
+
+    const node = this.#clipboardData.node;
+    if (this.#clipboardData.isCut && (node === targetNode || node.isAncestor(targetNode))) {
+      return false;
+    }
+
+    if (targetNode.domModel() !== node.domModel()) {
+      return false;
+    }
+    return true;
+  }
+
+  pasteNode(targetNode: SDK.DOMModel.DOMNode): void {
+    if (!this.canPaste(targetNode) || !this.#clipboardData) {
+      return;
+    }
+    const wasExpanded = this.isNodeExpanded(this.#clipboardData.node);
+    if (this.#clipboardData.isCut) {
+      this.#clipboardData.node.moveTo(targetNode, null, this.selectNodeAfterEdit.bind(this, wasExpanded));
+      this.setClipboardData(null);
+    } else {
+      this.#clipboardData.node.copyTo(targetNode, null, this.selectNodeAfterEdit.bind(this, wasExpanded));
+    }
+  }
+
+  onCopyOrCut(isCut: boolean, event: Event): void {
+    this.setClipboardData(null);
+    // @ts-expect-error this bound in the main entry point
+    const originalEvent = (event as CustomEvent)['original'] || event;
+
+    if (!originalEvent?.target) {
+      return;
+    }
+
+    // Don't prevent the normal copy if the user has a selection.
+    if (originalEvent.target instanceof Node && (originalEvent.target as HTMLElement).hasSelection?.()) {
+      return;
+    }
+
+    // Do not interfere with text editing.
+    if (UI.UIUtils.isEditing()) {
+      return;
+    }
+
+    const targetNode = this.selectedDOMNode();
+    if (!targetNode) {
+      return;
+    }
+
+    if (originalEvent.clipboardData) {
+      originalEvent.clipboardData.clearData();
+    }
+    (event as {handled?: boolean}).handled = true;
+
+    this.performCopyOrCut(isCut, targetNode);
+  }
+
+  onPaste(event: Event): void {
+    // Do not interfere with text editing.
+    if (UI.UIUtils.isEditing()) {
+      return;
+    }
+
+    const targetNode = this.selectedDOMNode();
+    if (!targetNode || !this.canPaste(targetNode)) {
+      return;
+    }
+
+    (event as {handled?: boolean}).handled = true;
+    this.pasteNode(targetNode);
   }
 
   /**
@@ -1251,7 +1459,6 @@ export class ElementsTreeOutline extends
   decoratorExtensions: MarkerDecoratorRegistration[]|null;
   private multilineEditing?: MultilineEditorController|null;
   private visibleWidthInternal?: number;
-  private clipboardNodeData?: ClipboardData;
   private isXMLMimeTypeInternal?: boolean|null;
   suppressRevealAndSelect = false;
   private previousHoveredElement?: UI.TreeOutline.TreeElement;
@@ -1267,6 +1474,7 @@ export class ElementsTreeOutline extends
   expandRoot: boolean;
   #maxRowsShown?: number;
   #showAllButton?: HTMLElement;
+  domTreeWidget: DOMTreeWidget|null = null;
 
   constructor(
       omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean, maxTreeDepth?: number,
@@ -1301,10 +1509,6 @@ export class ElementsTreeOutline extends
       this.elementInternal.addEventListener('dragleave', this.ondragleave.bind(this), false);
       this.elementInternal.addEventListener('drop', this.ondrop.bind(this), false);
       this.elementInternal.addEventListener('dragend', this.ondragend.bind(this), false);
-      this.elementInternal.addEventListener('clipboard-beforecopy', this.onBeforeCopy.bind(this), false);
-      this.elementInternal.addEventListener('clipboard-copy', this.onCopyOrCut.bind(this, false), false);
-      this.elementInternal.addEventListener('clipboard-cut', this.onCopyOrCut.bind(this, true), false);
-      this.elementInternal.addEventListener('clipboard-paste', this.onPaste.bind(this), false);
     }
 
     outlineDisclosureElement.appendChild(this.elementInternal);
@@ -1355,145 +1559,28 @@ export class ElementsTreeOutline extends
     }
   }
 
-  private setClipboardData(data: ClipboardData|null): void {
-    if (this.clipboardNodeData) {
-      const treeElement = this.findTreeElement(this.clipboardNodeData.node);
-      if (treeElement) {
-        treeElement.setInClipboard(false);
-      }
-      delete this.clipboardNodeData;
-    }
-
-    if (data) {
-      const treeElement = this.findTreeElement(data.node);
-      if (treeElement) {
-        treeElement.setInClipboard(true);
-      }
-      this.clipboardNodeData = data;
-    }
+  setClipboardData(data: ClipboardData|null): void {
+    this.domTreeWidget?.setClipboardData(data);
   }
 
   resetClipboardIfNeeded(removedNode: SDK.DOMModel.DOMNode): void {
-    if (this.clipboardNodeData?.node === removedNode) {
-      this.setClipboardData(null);
-    }
-  }
-
-  private onBeforeCopy(event: Event): void {
-    event.handled = true;
-  }
-
-  private onCopyOrCut(isCut: boolean, event: Event): void {
-    this.setClipboardData(null);
-    // @ts-expect-error this bound in the main entry point
-    const originalEvent = event['original'];
-
-    if (!originalEvent?.target) {
-      return;
-    }
-
-    // Don't prevent the normal copy if the user has a selection.
-    if (originalEvent.target instanceof Node && originalEvent.target.hasSelection()) {
-      return;
-    }
-
-    // Do not interfere with text editing.
-    if (UI.UIUtils.isEditing()) {
-      return;
-    }
-
-    const targetNode = this.selectedDOMNode();
-    if (!targetNode) {
-      return;
-    }
-
-    if (!originalEvent.clipboardData) {
-      return;
-    }
-    originalEvent.clipboardData.clearData();
-    event.handled = true;
-
-    this.performCopyOrCut(isCut, targetNode);
+    this.domTreeWidget?.resetClipboardIfNeeded(removedNode);
   }
 
   performCopyOrCut(isCut: boolean, node: SDK.DOMModel.DOMNode|null, includeShadowRoots = false): void {
-    if (!node) {
-      return;
-    }
-    if (isCut && (node.isShadowRoot() || node.ancestorUserAgentShadowRoot())) {
-      return;
-    }
-    void node.getOuterHTML(includeShadowRoots).then(outerHTML => {
-      if (outerHTML !== null) {
-        UI.UIUtils.copyTextToClipboard(outerHTML);
-      }
-    });
-    this.setClipboardData({node, isCut});
+    this.domTreeWidget?.performCopyOrCut(isCut, node, includeShadowRoots);
   }
 
   canPaste(targetNode: SDK.DOMModel.DOMNode): boolean {
-    if (targetNode.isShadowRoot() || targetNode.ancestorUserAgentShadowRoot()) {
-      return false;
-    }
-
-    if (!this.clipboardNodeData) {
-      return false;
-    }
-
-    const node = this.clipboardNodeData.node;
-    if (this.clipboardNodeData.isCut && (node === targetNode || node.isAncestor(targetNode))) {
-      return false;
-    }
-
-    if (targetNode.domModel() !== node.domModel()) {
-      return false;
-    }
-    return true;
+    return this.domTreeWidget?.canPaste(targetNode) ?? false;
   }
 
   pasteNode(targetNode: SDK.DOMModel.DOMNode): void {
-    if (this.canPaste(targetNode)) {
-      this.performPaste(targetNode);
-    }
+    this.domTreeWidget?.pasteNode(targetNode);
   }
 
   duplicateNode(targetNode: SDK.DOMModel.DOMNode): void {
-    targetNode.duplicate();
-  }
-
-  private onPaste(event: Event): void {
-    // Do not interfere with text editing.
-    if (UI.UIUtils.isEditing()) {
-      return;
-    }
-
-    const targetNode = this.selectedDOMNode();
-    if (!targetNode || !this.canPaste(targetNode)) {
-      return;
-    }
-
-    event.handled = true;
-    this.performPaste(targetNode);
-  }
-
-  private performPaste(targetNode: SDK.DOMModel.DOMNode): void {
-    if (!this.clipboardNodeData) {
-      return;
-    }
-    if (this.clipboardNodeData.isCut) {
-      this.clipboardNodeData.node.moveTo(targetNode, null, expandCallback.bind(this));
-      this.setClipboardData(null);
-    } else {
-      this.clipboardNodeData.node.copyTo(targetNode, null, expandCallback.bind(this));
-    }
-
-    function expandCallback(
-        this: ElementsTreeOutline, error: string|null, pastedNode: SDK.DOMModel.DOMNode|null): void {
-      if (error || !pastedNode) {
-        return;
-      }
-      this.selectDOMNode(pastedNode);
-    }
+    this.domTreeWidget?.duplicateNode(targetNode);
   }
 
   setVisible(visible: boolean): void {
@@ -2076,7 +2163,7 @@ export class ElementsTreeOutline extends
   private reset(): void {
     this.rootDOMNode = null;
     this.selectDOMNode(null, false);
-    delete this.clipboardNodeData;
+    this.setClipboardData(null);
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     this.updateRecords.clear();
   }

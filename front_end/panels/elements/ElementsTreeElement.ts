@@ -65,7 +65,6 @@ import * as PanelsCommon from '../common/common.js';
 import * as Media from '../media/media.js';
 
 import * as ElementsComponents from './components/components.js';
-import {cssPath, jsPath, xPath} from './DOMPath.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
@@ -1123,10 +1122,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   revealInTopLayer?: (node: SDK.DOMModel.DOMNode) => void;
   showContextMenu?: (event: Event) => void;
   populateTreeElement?: () => Promise<void>;
-  performCopyOrCut?: (isCut: boolean, node: SDK.DOMModel.DOMNode, isElement?: boolean) => void;
-  duplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
-  pasteNode?: (node: SDK.DOMModel.DOMNode) => void;
-  canPaste?: (node: SDK.DOMModel.DOMNode) => boolean;
   toggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
   isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
   selectNodeAfterEdit?: (wasExpanded: boolean, error: string|null,
@@ -1141,7 +1136,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   private searchQuery: string|null;
   #expandedChildrenLimit: number;
   private readonly decorationsThrottler: Common.Throttler.Throttler;
-  private inClipboard: boolean;
+  inClipboard = false;
   #hovered: boolean;
   editing: EditorHandles|null;
   #editorRef?: TextEditor.TextEditor.TextEditor;
@@ -2630,53 +2625,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     void node.getOuterHTML().then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback));
   }
 
-  copyCSSPath(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssPath(this.node, true));
-  }
-
-  copyJSPath(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(jsPath(this.node, true));
-  }
-
-  copyXPath(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.node, true));
-  }
-
-  copyFullXPath(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.node, false));
-  }
-
-  async copyStyles(): Promise<void> {
-    const node = this.node;
-    const cssModel = node.domModel().cssModel();
-    const cascade = await cssModel.cachedMatchedCascadeForNode(node);
-    if (!cascade) {
-      return;
-    }
-
-    const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
-    const lines: string[] = [];
-    for (const style of cascade.nodeStyles().reverse()) {
-      for (const property of style.leadingProperties()) {
-        if (!property.parsedOk || property.disabled || !property.activeInStyle() || property.implicit) {
-          continue;
-        }
-        if (cascade.isInherited(style) && !SDK.CSSMetadata.cssMetadata().isPropertyInherited(property.name)) {
-          continue;
-        }
-        if (style.parentRule?.isUserAgent()) {
-          continue;
-        }
-        if (cascade.propertyState(property) !== SDK.CSSMatchedStyles.PropertyState.ACTIVE) {
-          continue;
-        }
-        lines.push(`${indent}${property.name}: ${property.value};`);
-      }
-    }
-
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(lines.join('\n'));
-  }
-
   #highlightSearchResults(): void {
     this.hideSearchHighlights();
 
@@ -2880,7 +2828,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.widget.hideSearchHighlights();
   }
   copyStyles(): Promise<void> {
-    return this.widget.copyStyles();
+    const outline = this.treeOutline as ElementsTreeOutline | null;
+    return outline?.domTreeWidget?.copyStyles(this.nodeInternal) ?? Promise.resolve();
   }
   setInClipboard(inClipboard: boolean): void {
     this.widget.setInClipboard(inClipboard);
@@ -2911,16 +2860,20 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.widget.editAsHTML();
   }
   copyCSSPath(): void {
-    this.widget.copyCSSPath();
+    const outline = this.treeOutline as ElementsTreeOutline | null;
+    outline?.domTreeWidget?.copyCSSPath(this.nodeInternal);
   }
   copyJSPath(): void {
-    this.widget.copyJSPath();
+    const outline = this.treeOutline as ElementsTreeOutline | null;
+    outline?.domTreeWidget?.copyJSPath(this.nodeInternal);
   }
   copyXPath(): void {
-    this.widget.copyXPath();
+    const outline = this.treeOutline as ElementsTreeOutline | null;
+    outline?.domTreeWidget?.copyXPath(this.nodeInternal);
   }
   copyFullXPath(): void {
-    this.widget.copyFullXPath();
+    const outline = this.treeOutline as ElementsTreeOutline | null;
+    outline?.domTreeWidget?.copyFullXPath(this.nodeInternal);
   }
   hasEditableNode(): boolean {
     return this.widget.hasEditableNode();
@@ -2965,10 +2918,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.widget.revealInTopLayer = node => outline.revealInTopLayer(node);
       this.widget.showContextMenu = event => void outline.showContextMenu(this, event);
       this.widget.populateTreeElement = async () => await outline.populateTreeElement(this);
-      this.widget.performCopyOrCut = (isCut, node, isElement) => outline.performCopyOrCut(isCut, node, isElement);
-      this.widget.duplicateNode = node => outline.duplicateNode(node);
-      this.widget.pasteNode = node => outline.pasteNode(node);
-      this.widget.canPaste = node => outline.canPaste(node);
       this.widget.toggleHideElement = node => outline.toggleHideElement(node);
       this.widget.isToggledToHidden = node => outline.isToggledToHidden(node);
       this.widget.selectNodeAfterEdit = (wasExpanded, error, newNode) => {

@@ -180,6 +180,7 @@ export const enum ToolName {
   LIST_PAGE_ORIGINS = 'listPageOrigins',
   LIST_STORAGE_KEYS = 'listStorageKeys',
   GET_STORAGE_VALUES = 'getStorageValues',
+  LIST_COOKIES = 'listCookies',
   GET_TRACE_EVENT_BY_KEY = 'getTraceEventByKey',
   SELECT_TRACE_EVENT_BY_KEY = 'selectTraceEventByKey',
   LIST_SOURCES = 'listSources',

@@ -648,6 +648,7 @@ describeWithEnvironment('AiAgent2', () => {
     assert.include(declaredNames, 'listPageOrigins');
     assert.include(declaredNames, 'listStorageKeys');
     assert.include(declaredNames, 'getStorageValues');
+    assert.include(declaredNames, 'listCookies');
   });
 
   it('disables server logging when calling storage tools in AiAgent2', async () => {

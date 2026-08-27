@@ -33,17 +33,21 @@ const additionalArgs = process.argv.slice(4);
 const useSourceMaps = additionalArgs.includes('--configSourcemaps');
 const minify = additionalArgs.includes('--minify');
 
+const rootDirFlagIndex = additionalArgs.indexOf('--rootDir');
+const rootDir = rootDirFlagIndex !== -1 ? additionalArgs[rootDirFlagIndex + 1] : undefined;
+
 const rootGenDirFlagIndex = additionalArgs.indexOf('--rootGenDir');
 const rootGenDir = rootGenDirFlagIndex !== -1 ? additionalArgs[rootGenDirFlagIndex + 1] : undefined;
 
 const outdir = path.dirname(outfile);
 const genRoot = rootGenDir ? path.resolve(rootGenDir) : path.join(devtoolsRootPath(), 'out', 'Default', 'gen');
+const root = rootDir ? path.resolve(rootDir) : devtoolsRootPath();
 
 const plugin = {
   name: 'devtools-plugin',
   setup(build) {
     // https://esbuild.github.io/plugins/#on-resolve
-    build.onResolve({filter: /.*/}, esbuildPlugin(outdir, genRoot));
+    build.onResolve({filter: /.*/}, esbuildPlugin(outdir, genRoot, root));
   },
 };
 

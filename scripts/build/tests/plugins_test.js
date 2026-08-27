@@ -73,7 +73,7 @@ describe('esbuild_plugin can compute paths with', () => {
   const devtoolsRoot = path.resolve(import.meta.dirname, '../../..');
   const genRoot = path.join(devtoolsRoot, 'out/Default/gen');
   const outdir = path.join(genRoot, 'front_end/core/sdk');
-  const plugin = esbuildPlugin(outdir, genRoot);
+  const plugin = esbuildPlugin(outdir, genRoot, devtoolsRoot);
   it('same directory import', () => {
     assert.deepEqual(
         plugin({
@@ -165,7 +165,7 @@ describe('esbuild_plugin can compute paths with', () => {
     const importer = path.join(devtoolsRoot, 'front_end/ui/legacy/legacy.ts');
     const jsFile = path.join(devtoolsRoot, 'front_end/ui/legacy/fakeCss.css.js');
     const cssGenFile = path.join(genRoot, 'front_end/ui/legacy/fakeCss.css.js');
-    const legacyPlugin = esbuildPlugin(path.join(genRoot, 'front_end/ui/legacy'), genRoot);
+    const legacyPlugin = esbuildPlugin(path.join(genRoot, 'front_end/ui/legacy'), genRoot, devtoolsRoot);
     const stub = sinon.stub(fs, 'existsSync');
     stub.callThrough();
     stub.withArgs(jsFile).returns(false);
@@ -181,5 +181,43 @@ describe('esbuild_plugin can compute paths with', () => {
     } finally {
       stub.restore();
     }
+  });
+
+  it('correctly resolves external paths when root is devtools root inside chromium checkout', () => {
+    const chromiumRoot = '/workspace/chromium/src';
+    const devtoolsInsideChromiumRoot = path.join(chromiumRoot, 'third_party/devtools-frontend/src');
+    const genRootDir = path.join(devtoolsInsideChromiumRoot, 'out/Default/gen');
+    const outDir = path.join(genRootDir, 'front_end/core/sdk');
+    const customPlugin = esbuildPlugin(outDir, genRootDir, devtoolsInsideChromiumRoot);
+
+    assert.deepEqual(
+        customPlugin({
+          path: '../common/common.js',
+          importer: path.join(devtoolsInsideChromiumRoot, 'front_end/core/sdk/FirstFile.js'),
+        }),
+        {
+          path: '../common/common.js',
+          external: true,
+        },
+    );
+  });
+
+  it('correctly resolves external paths when root is chromium checkout root', () => {
+    const chromiumRoot = '/workspace/chromium/src';
+    const devtoolsInsideChromiumRoot = path.join(chromiumRoot, 'third_party/devtools-frontend/src');
+    const genRootDir = path.join(chromiumRoot, 'out/Default/gen');
+    const outDir = path.join(genRootDir, 'third_party/devtools-frontend/src/front_end/core/sdk');
+    const customPlugin = esbuildPlugin(outDir, genRootDir, chromiumRoot);
+
+    assert.deepEqual(
+        customPlugin({
+          path: '../common/common.js',
+          importer: path.join(devtoolsInsideChromiumRoot, 'front_end/core/sdk/FirstFile.js'),
+        }),
+        {
+          path: '../common/common.js',
+          external: true,
+        },
+    );
   });
 });

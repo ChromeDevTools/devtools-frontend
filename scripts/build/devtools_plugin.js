@@ -7,8 +7,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import {rootPath} from '../devtools_paths.js';
-
 /**
  * `path.dirname` does not include trailing slashes. If we would always
  * use `path.dirname` and then later perform comparisons on the paths that
@@ -168,9 +166,9 @@ export function devtoolsPlugin(source, importer) {
   };
 }
 
-export function esbuildPlugin(outdir, genRoot) {
+export function esbuildPlugin(outdir, genRoot, rootDir) {
   const normGenRoot = path.resolve(genRoot);
-  const root = rootPath();
+  const root = path.resolve(rootDir);
   const normOutdir = path.resolve(outdir);
 
   return args => {

@@ -16,8 +16,10 @@ import type {DevToolsPage} from '../shared/frontend-helper.js';
 async function addWatchExpression(expression: string, devToolsPage: DevToolsPage) {
   await devToolsPage.click('[aria-label="Watch"]');
   await devToolsPage.click('[aria-label="Add watch expression"]');
+  await devToolsPage.waitFor('.watch-expression-editing');
   await devToolsPage.typeText(expression);
   await devToolsPage.pressKey('Enter');
+  await devToolsPage.waitForNone('.watch-expression-editing');
 }
 
 describe('Watch Expression Pane', () => {
@@ -33,19 +35,21 @@ describe('Watch Expression Pane', () => {
     await devToolsPage.click('.watch-expression-tree-item');
     await devToolsPage.pressKey('ArrowRight');
 
-    // Retrieve watch element and ensure that it is expanded
-    const initialExpandCheck = await element.evaluate(e => e.classList.contains('expanded'));
-    assert.isTrue(initialExpandCheck);
+    // Wait for watch element to be expanded
+    await devToolsPage.waitForClass(element, 'expanded');
 
     // Begin editing and check that element is now collapsed.
     await devToolsPage.pressKey('Enter');
+    await devToolsPage.waitFor('.watch-expression-editing');
     await devToolsPage.waitForFunction(async () => {
       return await element.evaluate(e => !e.classList.contains('expanded'));
     });
 
     // Remove the watch so that it does not interfere with other tests.
     await devToolsPage.pressKey('Escape');
-    await devToolsPage.pressKey('Delete');
+    await devToolsPage.waitForNone('.watch-expression-editing');
+    await devToolsPage.click('.watch-expression-delete-button');
+    await devToolsPage.waitForNone('.watch-expression-tree-item');
   });
 
   it('deobfuscates variable names', async ({devToolsPage, inspectedPage}) => {

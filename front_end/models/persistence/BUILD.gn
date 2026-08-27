@@ -58,7 +58,7 @@ devtools_entrypoint("bundle") {
     "../../panels/sources/*",
     "../../panels/utils/*",
     "../../testing/*",
-    "../bindings:unittests",
+    "../bindings:*",
     "../breakpoints/*",
     "../workspace:*",
     "../workspace_diff/*",
